@@ -1,0 +1,53 @@
+import {ThemeConfig} from 'antd/es/config-provider/context';
+
+const theme: ThemeConfig = {
+  token: {
+    fontFamily: "'DM Sans', sans-serif",
+    colorPrimary: '#1c3557',
+    colorPrimaryText: '#0c1625',
+    colorPrimaryBg: '#b9c0cb',
+    colorPrimaryBorder: '#1c3557',
+    colorPrimaryHover: '#1c3557',
+    colorPrimaryActive: '#31576f',
+    colorError: '#812532',
+    colorErrorBg: '#f9c5cc',
+    colorErrorBorder: '#631d26',
+    colorErrorHover: '#eb445a',
+    colorErrorActive: '#d63e52',
+    colorSuccess: '#157e3f',
+    colorSuccessBg: '#98dbb3',
+    colorSuccessBorder: '#116131',
+    colorSuccessHover: '#116131',
+    colorSuccessActive: '#116131',
+    colorWarning: '#82650c',
+    colorWarningBg: '#f2cf63',
+    colorWarningBorder: '#634d09',
+    colorWarningHover: '#82650c',
+    colorWarningActive: '#634d09',
+
+    // colorInfo: "#4A90E2",
+    // colorInfoBg: "#DBE9F9",
+    // colorInfoBorder: "#A4C7F0",
+    // colorInfoHover: "#68A2E7",
+    // colorInfoActive: "#254871",
+    // colorLink: "#0F6C6A",
+    // colorLinkHover: "#378483",
+    // colorLinkActive: "#083635",
+    // colorText: "#2A2A2A",
+    // colorTextSecondary: "#767676",
+    // colorBgContainer: "#ffffff",
+    // colorBgElevated: "#fcfcfd",
+    // colorBgLayout: "#ffffff",
+    // colorBorder: "#EAECF0",
+    // colorBorderSecondary: "#E3E5E5",
+  },
+  components: {
+    Button: {
+      borderRadius: 12,
+      colorText: '#1c3557',
+      colorBorder: '#1c3557',
+      boxShadow: 'none',
+    },
+  },
+};
+export default theme;
