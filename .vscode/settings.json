@@ -1,0 +1,24 @@
+{
+    "editor.quickSuggestions": {
+      "strings": true
+    },
+    "workbench.colorCustomizations": {
+      "editorRuler.foreground": "#FF69B4"
+    },
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.formatDocument": true,
+      "source.fixAll.eslint": true,
+    },
+    "eslint.validate": [
+      "javascript",
+      "typescript"
+    ],
+    "[css]": {
+      "editor.defaultFormatter": "vscode.css-language-features"
+    },
+    "[json]": {
+      "editor.defaultFormatter": "vscode.json-language-features"
+    }
+  }

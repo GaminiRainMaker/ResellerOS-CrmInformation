@@ -73,9 +73,17 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <div
-        style={{display: 'flex', alignItems: 'center', flexDirection: 'column'}}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          flexDirection: 'column',
+        }}
       >
-        <Typography as="div" name="Display 1" color={token?.colorPrimary}>
+        <Typography
+          as="div"
+          name="Display 1/Medium"
+          color={token?.colorPrimary}
+        >
           Welcome to ResselerOS
         </Typography>
         <br />

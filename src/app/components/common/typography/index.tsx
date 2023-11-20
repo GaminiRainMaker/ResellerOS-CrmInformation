@@ -21,8 +21,8 @@ const Typography: FC<TypographyInterface> = ({
   const [token] = useThemeToken();
   let DynamicTag = `${as ?? 'span'}` as keyof JSX.IntrinsicElements;
   if (
-    name === 'Display 1' ||
-    name === 'Display 2' ||
+    name === 'Display 1/Regular' ||
+    name === 'Display 2/Medium' ||
     name.toLowerCase().includes('display')
   ) {
     DynamicTag = `${as ?? 'div'}` as keyof JSX.IntrinsicElements;

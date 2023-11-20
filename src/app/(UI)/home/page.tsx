@@ -6,7 +6,7 @@ const page = () => {
 
   return (
     <div>
-      <Typography name="Display 1"> Working Fine!!!</Typography>
+      <Typography name="Display 1/Regular"> Working Fine!!!</Typography>
     </div>
   );
 };

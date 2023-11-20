@@ -15,7 +15,6 @@ export const DynamicDiv = styled.div<{
   font-family: ${(props) => `${props.styles.fontFamily}`};
   font-size: ${(props) => `${props.styles.fontSize}`};
   line-height: ${(props) => `${props.styles.lineHeight}`};
-  letter-spacing: ${(props) => `${props.styles.letterSpacing}`};
   font-weight: ${(props) => `${props.styles.fontWeight}`};
   color: ${(props) => props.color};
   cursor: ${(props) => props.cursor};

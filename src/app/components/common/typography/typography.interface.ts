@@ -12,39 +12,72 @@ export type LetterSpacing =
   | '0.6px'
   | '1px';
 export type FontSize =
-  | '8px'
-  | '10px'
   | '12px'
   | '14px'
   | '16px'
   | '18px'
   | '20px'
   | '24px'
-  | '35px'
-  | '45px';
+  | '30px'
+  | '36px'
+  | '48px'
+  | '60px';
 export type Lineheight =
-  | '12px'
-  | '14px'
-  | '15px'
-  | '16px'
   | '18px'
-  | '19px'
   | '20px'
-  | '21px'
-  | '22px'
+  | '24px'
   | '28px'
+  | '30px'
   | '32px'
-  | '45px'
-  | '54px';
-export type StyleName = 'Display 1' | 'Display 2' | 'Checked';
+  | '38px'
+  | '44px'
+  | '60px'
+  | '72px';
+export type StyleName =
+  | 'Display 1/Regular'
+  | 'Display 2/Regular'
+  | 'Heading 1/Regular'
+  | 'Heading 2/Regular'
+  | 'Heading 3/Regular'
+  | 'Body 1/Regular'
+  | 'Body 2/Regular'
+  | 'Body 3/Regular'
+  | 'Body 4/Regular'
+  | 'Display 1/Medium'
+  | 'Display 2/Medium'
+  | 'Heading 1/Medium'
+  | 'Heading 2/Medium'
+  | 'Heading 3/Medium'
+  | 'Body 1/Medium'
+  | 'Body 2/Medium'
+  | 'Body 3/Medium'
+  | 'Body 4/Medium'
+  | 'Display 1/Bold'
+  | 'Display 2/Bold'
+  | 'Heading 1/Bold'
+  | 'Heading 2/Bold'
+  | 'Heading 3/Bold'
+  | 'Body 1/Bold'
+  | 'Body 2/Bold'
+  | 'Body 3/Bold'
+  | 'Body 4/Bold'
+  | 'Display 1/Extra Bold'
+  | 'Display 2/Extra Bold'
+  | 'Heading 1/Extra Bold'
+  | 'Heading 2/Extra Bold'
+  | 'Heading 3/Extra Bold'
+  | 'Body 1/Extra Bold'
+  | 'Body 2/Extra Bold'
+  | 'Body 3/Extra Bold'
+  | 'Body 4/Extra Bold';
 
 export interface TypographyMapping {
   name: StyleName;
   fontFamily: FontFamily;
   fontSize: FontSize;
   lineHeight: Lineheight;
-  letterSpacing: LetterSpacing;
-  fontWeight: 400 | 500 | 600 | 700;
+  // letterSpacing: LetterSpacing;
+  fontWeight: 400 | 500 | 600 | 700 | 800;
 }
 
 export interface TypographyMap {
