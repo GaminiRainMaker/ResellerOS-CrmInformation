@@ -43,6 +43,7 @@ export type StyleName =
   | 'Body 2/Regular'
   | 'Body 3/Regular'
   | 'Body 4/Regular'
+  | 'Caption Regular'
   | 'Display 1/Medium'
   | 'Display 2/Medium'
   | 'Heading 1/Medium'
@@ -52,6 +53,7 @@ export type StyleName =
   | 'Body 2/Medium'
   | 'Body 3/Medium'
   | 'Body 4/Medium'
+  | 'Caption Medium'
   | 'Display 1/Bold'
   | 'Display 2/Bold'
   | 'Heading 1/Bold'
@@ -61,6 +63,7 @@ export type StyleName =
   | 'Body 2/Bold'
   | 'Body 3/Bold'
   | 'Body 4/Bold'
+  | 'Caption Bold'
   | 'Display 1/Extra Bold'
   | 'Display 2/Extra Bold'
   | 'Heading 1/Extra Bold'
@@ -69,7 +72,10 @@ export type StyleName =
   | 'Body 1/Extra Bold'
   | 'Body 2/Extra Bold'
   | 'Body 3/Extra Bold'
-  | 'Body 4/Extra Bold';
+  | 'Body 4/Extra Bold'
+  | 'Caption Extra Bold'
+  | 'Button 1'
+  | 'Button 2';
 
 export interface TypographyMapping {
   name: StyleName;

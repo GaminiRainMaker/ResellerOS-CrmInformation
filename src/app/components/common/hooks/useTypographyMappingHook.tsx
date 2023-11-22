@@ -72,6 +72,13 @@ const useTypographyMappingHook: UseTypographyMappingHook = () => {
       fontWeight: 400,
       lineHeight: '20px',
     },
+    'Caption Regular': {
+      name: 'Caption Regular',
+      fontFamily: "'DM Sans', sans-serif",
+      fontSize: '12px',
+      fontWeight: 400,
+      lineHeight: '18px',
+    },
     'Display 1/Medium': {
       name: 'Display 1/Medium',
       fontFamily: "'DM Sans', sans-serif",
@@ -134,6 +141,13 @@ const useTypographyMappingHook: UseTypographyMappingHook = () => {
       fontSize: '14px',
       fontWeight: 500,
       lineHeight: '20px',
+    },
+    'Caption Medium': {
+      name: 'Caption Medium',
+      fontFamily: "'DM Sans', sans-serif",
+      fontSize: '12px',
+      fontWeight: 500,
+      lineHeight: '18px',
     },
     'Display 1/Bold': {
       name: 'Display 1/Bold',
@@ -198,6 +212,13 @@ const useTypographyMappingHook: UseTypographyMappingHook = () => {
       fontWeight: 700,
       lineHeight: '72px',
     },
+    'Caption Bold': {
+      name: 'Caption Bold',
+      fontFamily: "'DM Sans', sans-serif",
+      fontSize: '12px',
+      fontWeight: 700,
+      lineHeight: '18px',
+    },
     'Display 1/Extra Bold': {
       name: 'Display 1/Extra Bold',
       fontFamily: "'DM Sans', sans-serif",
@@ -259,6 +280,27 @@ const useTypographyMappingHook: UseTypographyMappingHook = () => {
       fontFamily: "'DM Sans', sans-serif",
       fontSize: '14px',
       fontWeight: 800,
+      lineHeight: '20px',
+    },
+    'Caption Extra Bold': {
+      name: 'Caption Extra Bold',
+      fontFamily: "'DM Sans', sans-serif",
+      fontSize: '12px',
+      fontWeight: 800,
+      lineHeight: '18px',
+    },
+    'Button 1': {
+      name: 'Button 1',
+      fontFamily: "'DM Sans', sans-serif",
+      fontSize: '16px',
+      fontWeight: 400,
+      lineHeight: '24px',
+    },
+    'Button 2': {
+      name: 'Button 2',
+      fontFamily: "'DM Sans', sans-serif",
+      fontSize: '14px',
+      fontWeight: 400,
       lineHeight: '20px',
     },
   };

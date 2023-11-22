@@ -1,14 +1,12 @@
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable no-console */
 
 'use client';
 
 import {message, Upload} from 'antd';
 import axios from 'axios';
-import {useState} from 'react';
 import useThemeToken from './components/common/hooks/useThemeToken';
-import OsButton from './components/common/os-button';
+import OsButton, {ButtonType} from './components/common/os-button';
 import Typography from './components/common/typography';
 import styles from './page.module.css';
 
@@ -28,12 +26,12 @@ const convertFileToBase64 = (file: File): Promise<string> =>
 
 export default function Home() {
   const [token] = useThemeToken();
-  const [base64File, setBase64File] = useState<string | null>(null);
+  // const [base64File, setBase64File] = useState<string | null>(null);
 
   // Define your Nanonets API key and endpoint
   const API_KEY = '76211feb-7e49-11ee-865f-22778caf775b';
   const API_ENDPOINT =
-    'https://app.nanonets.com/api/v2/OCR/Model/e2fecf65-ccfc-4c05-be1c-2f7c9fdf7180/LabelFile/';
+    'https://app.nanonets.com/api/v2/OCR/Model/fe2c7a28-7345-45d6-b9c5-0fed622b0f92/LabelFile/';
 
   const sendImageToNanonets = async (base64Data: string, file: File) => {
     console.log('base64Data', base64Data);
@@ -50,8 +48,14 @@ export default function Home() {
         },
       });
 
-      console.log('Nanonets API Response:', response.data);
-      return response.data;
+      const labelOcrMap: any = {};
+      response.data?.result[0]?.prediction.forEach((item: any) => {
+        labelOcrMap[item?.label] = item.ocr_text;
+      });
+
+      console.log('labelOcrMap', labelOcrMap);
+
+      return labelOcrMap;
     } catch (error) {
       console.error('Error sending image to Nanonets API:', error);
       throw error;
@@ -61,7 +65,7 @@ export default function Home() {
   const beforeUpload = (file: File) => {
     convertFileToBase64(file)
       .then((base64String) => {
-        setBase64File(base64String);
+        // setBase64File(base64String);
         sendImageToNanonets(base64String, file);
       })
       .catch((error) => {
@@ -81,17 +85,22 @@ export default function Home() {
       >
         <Typography
           as="div"
-          name="Display 1/Medium"
+          name="Display 1/Regular"
           color={token?.colorPrimary}
         >
-          Welcome to ResselerOS
+          Welcome to ResellerOS
         </Typography>
+
         <br />
         <br />
         <br />
         <br />
         <Upload beforeUpload={beforeUpload} showUploadList={false}>
-          <OsButton type="primary">Select File</OsButton>
+          <OsButton type="primary" buttontype={ButtonType.PRIMARY_LARGE}>
+            <Typography name="Button 1" color={token?.colorBgBase}>
+              Button
+            </Typography>
+          </OsButton>
         </Upload>
       </div>
     </main>
