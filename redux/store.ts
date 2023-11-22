@@ -1,0 +1,25 @@
+/* eslint-disable import/no-extraneous-dependencies */
+import {Action, AnyAction, configureStore} from '@reduxjs/toolkit';
+import logger from 'redux-logger';
+import thunk, {ThunkAction, ThunkDispatch} from 'redux-thunk';
+import quote from './slices/quote';
+
+// Configure redux store
+const store = configureStore({
+  reducer: {quote},
+  middleware: [thunk, logger],
+  devTools: true,
+});
+
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+export type TypedDispatch = ThunkDispatch<AppDispatch, any, AnyAction>;
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>;
+
+export default store;
