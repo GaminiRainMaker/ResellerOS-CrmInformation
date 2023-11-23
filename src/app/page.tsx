@@ -2,10 +2,10 @@
 
 import {message, Upload} from 'antd';
 import axios from 'axios';
-import {useEffect} from 'react';
-import {getQuote, insertQuote} from '../../redux/actions/quote';
-import {useAppDispatch, useAppSelector} from '../../redux/hook';
-import {Table} from './components/common/antd/Table';
+import {useRouter} from 'next/navigation';
+import {useState} from 'react';
+import {insertQuote} from '../../redux/actions/quote';
+import {useAppDispatch} from '../../redux/hook';
 import useThemeToken from './components/common/hooks/useThemeToken';
 import OsButton, {ButtonType} from './components/common/os-button';
 import Typography from './components/common/typography';
@@ -27,44 +27,20 @@ const convertFileToBase64 = (file: File): Promise<string> =>
 export default function Home() {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const {data} = useAppSelector((state) => state.quote);
-
-  useEffect(() => {
-    dispatch(getQuote());
-  }, []);
-
-  const columns = [
-    {
-      title: 'Quote No',
-      dataIndex: 'quote_no',
-      key: 'quote_no',
-    },
-    {
-      title: 'Quote Date',
-      dataIndex: 'quote_date',
-      key: 'quote_date',
-    },
-    {
-      title: 'Shipping Amount',
-      dataIndex: 'shipping_amount',
-      key: 'shipping_amount',
-    },
-    {
-      title: 'Total Price',
-      dataIndex: 'total_price',
-      key: 'total_price',
-    },
-  ];
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Define your Nanonets API key and endpoint
-  const API_KEY = '76211feb-7e49-11ee-865f-22778caf775b';
+  const API_KEY = '198c15fd-9680-11ed-82f6-7a0abc6e8cc8';
   const API_ENDPOINT =
-    'https://app.nanonets.com/api/v2/OCR/Model/fe2c7a28-7345-45d6-b9c5-0fed622b0f92/LabelFile/';
+    'https://app.nanonets.com/api/v2/OCR/Model/91814dd8-75f6-44d7-aad3-776df449b59f/LabelFile/';
 
   const sendDataToNanonets = async (base64Data: string, file: File) => {
     const formData = new FormData();
     formData.append('file', file);
+    setLoading(false);
     try {
+      setLoading(true);
       const response = await axios.post(API_ENDPOINT, formData, {
         headers: {
           Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString(
@@ -73,19 +49,18 @@ export default function Home() {
           'Content-Type': 'application/pdf',
         },
       });
-
       const labelOcrMap: any = {};
       response?.data?.result?.[0]?.prediction?.forEach((item: any) => {
         labelOcrMap[item?.label?.toLowerCase()] = item?.ocr_text;
       });
-
-      console.log('labelOcrMap', labelOcrMap);
-
       if (labelOcrMap) {
-        dispatch(insertQuote(labelOcrMap));
+        dispatch(insertQuote(labelOcrMap)).then(() => {
+          router.push('/quote');
+        });
       }
-      return labelOcrMap;
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error('Error sending image to Nanonets API:', error);
       throw error;
     }
@@ -101,7 +76,6 @@ export default function Home() {
       });
     return false;
   };
-
   return (
     <main>
       <div
@@ -109,7 +83,7 @@ export default function Home() {
           display: 'flex',
           alignItems: 'center',
           flexDirection: 'column',
-          marginTop: '5rem',
+          margin: '2rem',
         }}
       >
         <Typography
@@ -129,21 +103,17 @@ export default function Home() {
           showUploadList={false}
           name="file"
         >
-          <OsButton type="primary" buttontype={ButtonType.PRIMARY_LARGE}>
+          <OsButton
+            type="primary"
+            buttontype={ButtonType.PRIMARY_LARGE}
+            loading={loading}
+          >
             <Typography name="Button 1" color={token?.colorBgBase}>
               Upload File
             </Typography>
           </OsButton>
         </Upload>
-        <br />
-        <br />
-        <br />
-        <br />
-        <Typography name="Heading 1/Medium" color={token?.colorPrimary}>
-          Quote Data
-        </Typography>
       </div>
-      <Table dataSource={data?.data} columns={columns} />;
     </main>
   );
 }

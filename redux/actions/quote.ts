@@ -7,7 +7,6 @@ export const getQuote = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const res = await QUOTEAPI.get();
-      console.log('ffgsdf', res);
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error?.message);
@@ -18,7 +17,6 @@ export const getQuote = createAsyncThunk(
 export const insertQuote = createAsyncThunk(
   'quote/insertQuote',
   async (data: any, thunkApi) => {
-    console.log('sdfgsgfgfs', data);
     try {
       const res = await QUOTEAPI.post(data);
       return res.data;
@@ -32,7 +30,6 @@ export const getQuoteById = createAsyncThunk(
   'quote/id',
   async (id: number, thunkApi) => {
     try {
-      console.log('CSADCASCDSC', id);
       const res = await QUOTEAPI.getById(id);
       return res.data;
     } catch (error) {

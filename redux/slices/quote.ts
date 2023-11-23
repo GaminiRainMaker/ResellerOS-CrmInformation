@@ -1,11 +1,12 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-extraneous-dependencies */
-import {createSlice} from '@reduxjs/toolkit';
+import {PayloadAction, createSlice} from '@reduxjs/toolkit';
+import {Quote} from '@/app/(UI)/quote/quote.interface';
 import {insertQuote, getQuoteById, getQuote} from '../actions/quote';
 
 type QuoteState = {
   loading: boolean;
-  error: string | null | any;
+  error: string | null;
   data: any;
   quote: any;
 };
@@ -30,11 +31,14 @@ const quoteSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(insertQuote.fulfilled, (state, action) => {
-        state.loading = false;
-        state.data = action.payload;
-      })
-      .addCase(insertQuote.rejected, (state, action) => {
+      .addCase(
+        insertQuote.fulfilled,
+        (state, action: PayloadAction<Quote[]>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(insertQuote.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       })
@@ -42,11 +46,11 @@ const quoteSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(getQuote.fulfilled, (state, action) => {
+      .addCase(getQuote.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.data = action.payload;
       })
-      .addCase(getQuote.rejected, (state, action) => {
+      .addCase(getQuote.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       })
@@ -54,11 +58,11 @@ const quoteSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(getQuoteById.fulfilled, (state, action) => {
+      .addCase(getQuoteById.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.data = action.payload;
       })
-      .addCase(getQuoteById.rejected, (state, action) => {
+      .addCase(getQuoteById.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       });

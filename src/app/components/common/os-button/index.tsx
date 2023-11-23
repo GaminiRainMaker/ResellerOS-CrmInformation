@@ -13,8 +13,8 @@ interface ButtonInterface extends ButtonProps {
   text?: string;
 }
 
-const OsButton: FC<ButtonInterface> = forwardRef((props, ref) => (
+const OsButton: FC<ButtonInterface> = (props) => (
   <ButtonStyled buttontype={ButtonType} {...props} />
-));
+);
 
 export default OsButton;
