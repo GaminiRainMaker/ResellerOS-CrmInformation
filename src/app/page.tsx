@@ -9,6 +9,7 @@ import {useAppDispatch} from '../../redux/hook';
 import useThemeToken from './components/common/hooks/useThemeToken';
 import OsButton, {ButtonType} from './components/common/os-button';
 import Typography from './components/common/typography';
+import {insertQuoteLineItem} from '../../redux/actions/quotelineitem';
 
 const convertFileToBase64 = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -48,13 +49,39 @@ export default function Home() {
           )}`,
           'Content-Type': 'application/pdf',
         },
+        onUploadProgress: (progressEvent: any) => {
+          const {loaded, total} = progressEvent;
+          const progress = (loaded / total) * 100;
+          console.log(`Upload Progress: ${progress.toFixed(2)}%`);
+        },
       });
+
+      const arrayOfTableObjects =
+        response?.data?.result?.[0]?.prediction?.filter(
+          (item: any) => item.label === 'table',
+        );
+      const formattedData = {};
+      arrayOfTableObjects?.[0]?.cells.forEach((item: any) => {
+        const rowNum = item.row;
+        if (!formattedData[rowNum]) {
+          formattedData[rowNum] = {};
+        }
+        formattedData[rowNum][item.label] = item.text;
+      });
+      const formattedArray = Object.values(formattedData);
       const labelOcrMap: any = {};
       response?.data?.result?.[0]?.prediction?.forEach((item: any) => {
         labelOcrMap[item?.label?.toLowerCase()] = item?.ocr_text;
       });
       if (labelOcrMap) {
-        dispatch(insertQuote(labelOcrMap)).then(() => {
+        dispatch(insertQuote(labelOcrMap)).then((d) => {
+          if (d?.payload?.data?.id) {
+            const lineitemData = formattedArray?.map((item: any) => ({
+              ...item,
+              qoute_id: d?.payload?.data?.id,
+            }));
+            dispatch(insertQuoteLineItem(lineitemData));
+          }
           router.push('/quote');
         });
       }

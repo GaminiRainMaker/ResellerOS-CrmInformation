@@ -3,4 +3,8 @@ export const API = {
     INDEX: '/quote',
     QUERY: '/quote/query',
   },
+  QUOTE_LINE_ITEM: {
+    INDEX: '/quoteLineItem',
+    QUERY: '/quoteLineItem/query',
+  },
 };

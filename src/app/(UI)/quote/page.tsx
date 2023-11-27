@@ -6,14 +6,19 @@ import Typography from '@/app/components/common/typography';
 import {useEffect} from 'react';
 import {getQuote} from '../../../../redux/actions/quote';
 import {useAppDispatch, useAppSelector} from '../../../../redux/hook';
+import {getQuoteLineItem} from '../../../../redux/actions/quotelineitem';
 
 const Home = () => {
   const dispatch = useAppDispatch();
   const {data} = useAppSelector((state) => state.quote);
+  const {data: quoteLineItemData} = useAppSelector(
+    (state) => state.quoteLineItem,
+  );
   const [token] = useThemeToken();
 
   useEffect(() => {
     dispatch(getQuote());
+    dispatch(getQuoteLineItem());
   }, []);
 
   const columns = [
@@ -247,7 +252,47 @@ const Home = () => {
       key: 'uei',
     },
   ];
-  // console.log('vsdfgsgfdg', data?.data);
+
+  const quoteLineItemColumn = [
+    {
+      title: 'Line Number ',
+      dataIndex: 'line_number',
+      key: 'line_number',
+    },
+    {
+      title: 'Product Code',
+      dataIndex: 'product_code',
+      key: 'product_code',
+    },
+    {
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description',
+    },
+    {
+      title: 'List Price',
+      dataIndex: 'list_price',
+      key: 'list_price',
+    },
+    {
+      title: 'Adjusted Price',
+      dataIndex: 'adjusted_price',
+      key: 'adjusted_price',
+    },
+    {
+      title: 'Quantity',
+      dataIndex: 'quantity',
+      key: 'quantity',
+    },
+    {
+      title: 'Line Amount',
+      dataIndex: 'line_amount',
+      key: 'line_amount',
+    },
+  ];
+
+  console.log('quoteLineItemData', quoteLineItemData);
+
   return (
     <div
       style={{
@@ -264,6 +309,19 @@ const Home = () => {
       <Table
         dataSource={data?.data}
         columns={columns}
+        style={{overflow: 'auto', margin: '2rem'}}
+        pagination={false}
+      />
+      <br />
+      <br />
+      <br />
+      <br />
+      <Typography name="Heading 1/Extra Bold" color={token?.colorPrimary}>
+        Quote Line Item
+      </Typography>
+      <Table
+        dataSource={quoteLineItemData?.data}
+        columns={quoteLineItemColumn}
         style={{overflow: 'auto', margin: '2rem'}}
         pagination={false}
       />
