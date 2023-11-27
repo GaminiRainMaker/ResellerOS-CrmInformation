@@ -66,7 +66,7 @@ export default function Home() {
         if (!formattedData[rowNum]) {
           formattedData[rowNum] = {};
         }
-        formattedData[rowNum][item.label] = item.text;
+        formattedData[rowNum][item.label?.toLowerCase()] = item.text;
       });
       const formattedArray = Object.values(formattedData);
       const labelOcrMap: any = {};
