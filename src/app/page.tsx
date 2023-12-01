@@ -25,6 +25,12 @@ const convertFileToBase64 = (file: File): Promise<string> =>
     reader.readAsDataURL(file);
   });
 
+interface FormattedData {
+  [key: string]: {
+    [key: string]: string | undefined; // Define the inner object structure
+  };
+}
+
 export default function Home() {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -60,7 +66,7 @@ export default function Home() {
         response?.data?.result?.[0]?.prediction?.filter(
           (item: any) => item.label === 'table',
         );
-      const formattedData = {};
+      const formattedData: FormattedData = {};
       arrayOfTableObjects?.[0]?.cells.forEach((item: any) => {
         const rowNum = item.row;
         if (!formattedData[rowNum]) {
