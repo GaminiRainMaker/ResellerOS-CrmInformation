@@ -24,6 +24,7 @@ const AuthLayout: FC<AuthLayoutInterface> = ({
   buttonText,
   form,
   onClick,
+  inputFields,
 }) => {
   const [token] = useThemeToken();
   return (
@@ -50,6 +51,7 @@ const AuthLayout: FC<AuthLayoutInterface> = ({
             buttonText={buttonText}
             form={form}
             onClick={onClick}
+            inputFields={inputFields}
           />
           {/* <Outlet /> */}
         </Content>

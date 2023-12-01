@@ -12,4 +12,5 @@ export interface AuthLayoutInterface {
   form?: FormInstance;
   onClick?: any;
   buttonText: string;
+  inputFields?: any;
 }

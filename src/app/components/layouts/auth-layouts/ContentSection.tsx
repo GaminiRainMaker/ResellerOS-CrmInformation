@@ -1,6 +1,6 @@
-import Form from 'antd/es/form';
 import Image from 'next/image';
 import {FC} from 'react';
+import {Button, Form} from 'antd';
 import {Space} from '../../common/Space';
 import useThemeToken from '../../common/hooks/useThemeToken';
 import OsButton, {ButtonType} from '../../common/os-button';
@@ -24,10 +24,16 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   registerNow,
   rememberPassword,
   buttonText,
-  form,
   onClick,
+  inputFields,
 }) => {
   const [token] = useThemeToken();
+
+  const onSubmitForm = (values: any) => {
+    debugger;
+    console.log(values, 'dndjf');
+    onClick(values);
+  };
 
   return (
     <ContentSectionWrapper direction="vertical" size={72}>
@@ -53,8 +59,63 @@ const ContentSection: FC<AuthLayoutInterface> = ({
             )}
           </Space>
 
-          <Form layout="vertical" requiredMark={false} onFinish={onClick}>
-            {username && (
+          <Form
+            layout="vertical"
+            name="authForm"
+            onFinish={onSubmitForm}
+            autoComplete="off"
+            requiredMark={false}
+          >
+            {inputFields?.map((item: any) => {
+              return (
+                <Form.Item
+                  key={item?.name}
+                  rules={[
+                    {
+                      required: true,
+                      message: '',
+                    },
+                  ]}
+                  name={item.name}
+                  //   hasFeedback
+                  label={
+                    <Typography
+                      name="Body 4/Medium"
+                      color={token?.colorPrimaryText}
+                    >
+                      {item.label}
+                    </Typography>
+                  }
+                >
+                  {item.type === 'password' ? (
+                    <OsInputPassword
+                      placeholder="Minimum 8 characters"
+                      suffix={
+                        <Image
+                          src={eyeIcon}
+                          alt="eyeIcon"
+                          width={24}
+                          height={24}
+                        />
+                      }
+                    />
+                  ) : (
+                    <OsInput
+                      placeholder={item.placeholder}
+                      suffix={
+                        <Image
+                          src={item.icon}
+                          alt={item.name}
+                          width={24}
+                          height={24}
+                        />
+                      }
+                    />
+                  )}
+                </Form.Item>
+              );
+            })}
+            {/* {username && (
               <Form.Item
                 rules={[
                   {
@@ -139,7 +200,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                   }
                 />
               </Form.Item>
-            )}
+            )} */}
 
             {rememberPassword && (
               <Space
@@ -175,14 +236,17 @@ const ContentSection: FC<AuthLayoutInterface> = ({
               </Space>
             )}
 
-            <Form.Item name="submit" style={{marginTop: '80px'}}>
-              <OsButton
+            <Form.Item style={{marginTop: '80px'}}>
+              <Button type="primary" htmlType="submit">
+                {buttonText}
+              </Button>
+              {/* <OsButton
                 buttontype={ButtonType.PRIMARY}
                 type="primary"
-                onClick={onClick}
+                htmlType="submit"
               >
                 {buttonText}
-              </OsButton>
+              </OsButton> */}
             </Form.Item>
 
             <Space>
@@ -207,7 +271,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                   name="Body 3/Regular"
                   color={token?.colorPrimaryText}
                 >
-                  Don’t have an account?
+                  Don't have an account?
                   <Typography
                     name="Body 3/Bold"
                     color={token?.colorLink}

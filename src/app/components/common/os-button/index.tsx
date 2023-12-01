@@ -11,10 +11,11 @@ export enum ButtonType {
 interface ButtonInterface extends ButtonProps {
   buttontype?: ButtonType;
   text?: string;
+  htmlType?: string;
 }
 
 const OsButton: FC<ButtonInterface> = (props) => (
-  <ButtonStyled buttontype={ButtonType} {...props} />
+  <ButtonStyled buttontype={ButtonType} {...props} htmlType={props?.htmlType} />
 );
 
 export default OsButton;
