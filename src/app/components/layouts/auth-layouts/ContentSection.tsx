@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/no-unstable-nested-components */
 import {Form} from 'antd';
 import Image from 'next/image';
