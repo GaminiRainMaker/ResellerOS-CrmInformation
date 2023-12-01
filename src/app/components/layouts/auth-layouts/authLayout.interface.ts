@@ -1,3 +1,5 @@
+import {FormInstance} from 'antd';
+
 export interface AuthLayoutInterface {
   heading: string;
   description: string;
@@ -7,4 +9,7 @@ export interface AuthLayoutInterface {
   alreadyAmember?: boolean;
   registerNow?: boolean;
   rememberPassword?: boolean;
+  form?: FormInstance;
+  onClick?: any;
+  buttonText: string;
 }

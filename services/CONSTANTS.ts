@@ -7,4 +7,9 @@ export const API = {
     INDEX: '/quoteLineItem',
     QUERY: '/quoteLineItem/query',
   },
+  USER: {
+    INDEX: '/user',
+    LOGIN: '/user/login',
+    QUERY: '/user/query',
+  },
 };

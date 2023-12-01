@@ -4,10 +4,11 @@ import logger from 'redux-logger';
 import thunk, {ThunkAction, ThunkDispatch} from 'redux-thunk';
 import quote from './slices/quote';
 import quoteLineItem from './slices/quotelineitem';
+import user from './slices/user';
 
 // Configure redux store
 const store = configureStore({
-  reducer: {quote, quoteLineItem},
+  reducer: {quote, quoteLineItem, user},
   middleware: [thunk, logger],
   devTools: true,
 });

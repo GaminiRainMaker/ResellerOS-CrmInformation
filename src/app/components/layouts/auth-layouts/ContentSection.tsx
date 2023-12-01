@@ -23,12 +23,15 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   alreadyAmember,
   registerNow,
   rememberPassword,
+  buttonText,
+  form,
+  onClick,
 }) => {
   const [token] = useThemeToken();
 
   return (
     <ContentSectionWrapper direction="vertical" size={72}>
-      <Image src={OSResellerLogo} alt="ddsdsdds" />
+      <Image src={OSResellerLogo} alt="OSResellerLogo" />
       <Space direction="vertical" size={72}>
         <Space
           size={48}
@@ -50,7 +53,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
             )}
           </Space>
 
-          <Form layout="vertical" requiredMark={false}>
+          <Form layout="vertical" requiredMark={false} onFinish={onClick}>
             {username && (
               <Form.Item
                 rules={[
@@ -173,8 +176,12 @@ const ContentSection: FC<AuthLayoutInterface> = ({
             )}
 
             <Form.Item name="submit" style={{marginTop: '80px'}}>
-              <OsButton buttontype={ButtonType.PRIMARY} type="primary">
-                Create Account
+              <OsButton
+                buttontype={ButtonType.PRIMARY}
+                type="primary"
+                onClick={onClick}
+              >
+                {buttonText}
               </OsButton>
             </Form.Item>
 

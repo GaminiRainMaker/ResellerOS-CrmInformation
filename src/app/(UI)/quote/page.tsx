@@ -18,7 +18,7 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(getQuote());
-    dispatch(getQuoteLineItem());
+    // dispatch(getQuoteLineItem());
   }, []);
 
   const columns = [
@@ -319,7 +319,7 @@ const Home = () => {
       <br />
       <br />
       <br />
-      <Typography name="Heading 1/Extra Bold" color={token?.colorPrimary}>
+      {/* <Typography name="Heading 1/Extra Bold" color={token?.colorPrimary}>
         Quote Line Item
       </Typography>
       <Table
@@ -327,7 +327,7 @@ const Home = () => {
         columns={quoteLineItemColumn}
         style={{overflow: 'auto', margin: '2rem'}}
         pagination={false}
-      />
+      /> */}
     </div>
   );
 };
