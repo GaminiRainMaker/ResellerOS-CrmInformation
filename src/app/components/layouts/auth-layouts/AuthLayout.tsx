@@ -37,6 +37,7 @@ const AuthLayout: FC<AuthLayoutInterface> = ({
             alignItems: 'center',
             flexDirection: 'column',
             minHeight: '100%',
+            background: token?.colorBgLayout,
           }}
         >
           <ContentSection

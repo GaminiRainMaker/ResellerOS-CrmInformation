@@ -2,16 +2,14 @@
 
 import AuthLayout from '@/app/components/layouts/auth-layouts/AuthLayout';
 import {useRouter} from 'next/navigation';
-import {createUser} from '../../../../redux/actions/user';
-import userIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/user.svg';
-import smsIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/sms.svg';
 import eyeIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
-import {useAppDispatch, useAppSelector} from '../../../../redux/hook';
+import smsIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/sms.svg';
+import userIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/user.svg';
+import {createUser} from '../../../../redux/actions/user';
+import {useAppDispatch} from '../../../../redux/hook';
 
 const SignUP = () => {
   const dispatch = useAppDispatch();
-
-  const {data} = useAppSelector((state) => state.user);
   const router = useRouter();
 
   const inputFields = [
@@ -38,38 +36,29 @@ const SignUP = () => {
     },
   ];
 
-  const onFinish = (e: any, formValues: any) => {
-    console.log(formValues, 'dfbhsdhfdsh');
-
-    // dispatch(
-    //   createUser({
-    //     user_name: 'gamini',
-    //     email: 'gamini@gmail.com',
-    //     password: 'check@123',
-    //   }),
-    // ).then(() => {
-    //   router.push('/login');
-    // });
+  const onFinish = (formValues: any) => {
+    if (formValues?.username && formValues?.password && formValues?.email) {
+      dispatch(
+        createUser({
+          user_name: formValues?.username,
+          email: formValues?.email,
+          password: formValues?.password,
+        }),
+      ).then(() => {
+        router.push('/login');
+      });
+    }
   };
 
   return (
-    <>
-      <div>
-        <AuthLayout
-          heading="Create Account"
-          description="Welcome to Reseller OS ! Create account and enjoy the selling experience."
-          buttonText="Create Account"
-          inputFields={inputFields}
-          // email
-          // password
-          // username
-          alreadyAmember
-          // form={form}
-          onClick={onFinish}
-        />
-      </div>
-      {/* <OsButton onClick={onFinish}>Submit</OsButton> */}
-    </>
+    <AuthLayout
+      heading="Create Account"
+      description="Welcome to Reseller OS ! Create account and enjoy the selling experience."
+      buttonText="Create Account"
+      inputFields={inputFields}
+      alreadyAmember
+      onClick={onFinish}
+    />
   );
 };
 

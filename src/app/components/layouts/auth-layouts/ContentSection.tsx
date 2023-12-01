@@ -1,25 +1,22 @@
+/* eslint-disable react/no-unstable-nested-components */
+import {Form} from 'antd';
 import Image from 'next/image';
 import {FC} from 'react';
-import {Button, Form} from 'antd';
+import OSResellerLogo from '../../../../../public/assets/static/ResellerOsText.svg';
+import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
+import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
 import {Space} from '../../common/Space';
 import useThemeToken from '../../common/hooks/useThemeToken';
 import OsButton, {ButtonType} from '../../common/os-button';
 import OsInput from '../../common/os-input';
 import OsInputPassword from '../../common/os-input/osInputPassword';
 import Typography from '../../common/typography';
-import {ContentSectionWrapper, CustomCheckbox} from './styled-components';
-import OSResellerLogo from '../../../../../public/assets/static/ResellerOsText.svg';
-import userIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/user.svg';
-import smsIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/sms.svg';
-import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
 import {AuthLayoutInterface} from './authLayout.interface';
+import {ContentSectionWrapper, CustomCheckbox} from './styled-components';
 
 const ContentSection: FC<AuthLayoutInterface> = ({
   heading,
   description,
-  email,
-  password,
-  username,
   alreadyAmember,
   registerNow,
   rememberPassword,
@@ -30,8 +27,6 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   const [token] = useThemeToken();
 
   const onSubmitForm = (values: any) => {
-    debugger;
-    console.log(values, 'dndjf');
     onClick(values);
   };
 
@@ -67,6 +62,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
             requiredMark={false}
           >
             {inputFields?.map((item: any) => {
+              console.log('item', item);
               return (
                 <Form.Item
                   key={item?.name}
@@ -77,7 +73,6 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                     },
                   ]}
                   name={item.name}
-                  //   hasFeedback
                   label={
                     <Typography
                       name="Body 4/Medium"
@@ -89,15 +84,26 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                 >
                   {item.type === 'password' ? (
                     <OsInputPassword
-                      placeholder="Minimum 8 characters"
-                      suffix={
-                        <Image
-                          src={eyeIcon}
-                          alt="eyeIcon"
-                          width={24}
-                          height={24}
-                        />
+                      iconRender={(visible) =>
+                        visible ? (
+                          <Image
+                            src={eyeIcon}
+                            alt="eyeIcon"
+                            width={24}
+                            height={24}
+                            style={{cursor: 'pointer'}}
+                          />
+                        ) : (
+                          <Image
+                            src={eyeSlashIcon}
+                            alt="eyeSlashIcon"
+                            width={24}
+                            height={24}
+                            style={{cursor: 'pointer'}}
+                          />
+                        )
                       }
+                      placeholder="Minimum 8 characters"
                     />
                   ) : (
                     <OsInput
@@ -108,6 +114,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                           alt={item.name}
                           width={24}
                           height={24}
+                          style={{cursor: 'pointer'}}
                         />
                       }
                     />
@@ -115,92 +122,6 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                 </Form.Item>
               );
             })}
-            {/* {username && (
-              <Form.Item
-                rules={[
-                  {
-                    required: true,
-                    message: '',
-                  },
-                ]}
-                name="username"
-                //   hasFeedback
-                label={
-                  <Typography
-                    name="Body 4/Medium"
-                    color={token?.colorPrimaryText}
-                  >
-                    Username
-                  </Typography>
-                }
-              >
-                <OsInput
-                  placeholder="Enter your username here!"
-                  suffix={
-                    <Image
-                      src={userIcon}
-                      alt="userIcon"
-                      width={24}
-                      height={24}
-                    />
-                  }
-                />
-              </Form.Item>
-            )}
-            {email && (
-              <Form.Item
-                rules={[
-                  {
-                    required: true,
-                    message: '',
-                  },
-                ]}
-                name="email"
-                //   hasFeedback
-                label={
-                  <Typography
-                    name="Body 4/Medium"
-                    color={token?.colorPrimaryText}
-                  >
-                    Email
-                  </Typography>
-                }
-              >
-                <OsInput
-                  placeholder="Enter your email here!"
-                  suffix={
-                    <Image src={smsIcon} alt="smsIcon" width={24} height={24} />
-                  }
-                />
-              </Form.Item>
-            )}
-            {password && (
-              <Form.Item
-                rules={[
-                  {
-                    required: true,
-                    message: '',
-                  },
-                ]}
-                name="password"
-                //   hasFeedback
-                label={
-                  <Typography
-                    name="Body 4/Medium"
-                    color={token?.colorPrimaryText}
-                  >
-                    Password
-                  </Typography>
-                }
-              >
-                <OsInputPassword
-                  placeholder="Minimum 8 characters"
-                  suffix={
-                    <Image src={eyeIcon} alt="eyeIcon" width={24} height={24} />
-                  }
-                />
-              </Form.Item>
-            )} */}
 
             {rememberPassword && (
               <Space
@@ -211,21 +132,11 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                   justifyContent: 'space-between',
                 }}
               >
-                {/* <Form.Item> */}
-                <CustomCheckbox
-                  // checked={isChecked}
-                  // onClick={(e) =>
-                  //   handleRememberUsername(
-                  //     (e?.target as HTMLInputElement)?.checked,
-                  //   )
-                  // }
-                  token={token}
-                >
+                <CustomCheckbox token={token}>
                   <Typography name="Body 3/Regular">
                     Remember Password
                   </Typography>
                 </CustomCheckbox>
-                {/* </Form.Item> */}
                 <Typography
                   name="Body 3/Bold"
                   cursor="pointer"
@@ -237,16 +148,13 @@ const ContentSection: FC<AuthLayoutInterface> = ({
             )}
 
             <Form.Item style={{marginTop: '80px'}}>
-              <Button type="primary" htmlType="submit">
-                {buttonText}
-              </Button>
-              {/* <OsButton
+              <OsButton
                 buttontype={ButtonType.PRIMARY}
                 type="primary"
                 htmlType="submit"
               >
                 {buttonText}
-              </OsButton> */}
+              </OsButton>
             </Form.Item>
 
             <Space>

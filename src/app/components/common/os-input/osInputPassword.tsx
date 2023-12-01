@@ -1,9 +1,9 @@
 import React from 'react';
 import {PasswordProps} from '../antd/Input';
-import {InputStyled} from './styled-components';
+import {InputPasswordStyled} from './styled-components';
 
 const OsInputPassword: React.FC<PasswordProps> = (props) => (
-  <InputStyled {...props} />
+  <InputPasswordStyled {...props} />
 );
 
 export default OsInputPassword;

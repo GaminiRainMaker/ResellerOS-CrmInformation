@@ -4,7 +4,7 @@ import {USERAPI} from '../../services/user';
 
 export const loginUser = createAsyncThunk(
   'user/loginUser',
-  async (data, thunkApi) => {
+  async (data: any, thunkApi) => {
     try {
       const res = await USERAPI.loginUser(data);
       return res.data;
