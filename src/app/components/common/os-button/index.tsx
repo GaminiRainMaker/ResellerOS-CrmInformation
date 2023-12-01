@@ -1,4 +1,4 @@
-import React, {FC, forwardRef} from 'react';
+import {FC} from 'react';
 import {ButtonProps} from '../antd/Button';
 import {ButtonStyled} from './styled-components';
 

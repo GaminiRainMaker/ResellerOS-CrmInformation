@@ -255,6 +255,11 @@ const Home = () => {
 
   const quoteLineItemColumn = [
     {
+      title: 'Quote Id',
+      dataIndex: 'qoute_id',
+      key: 'qoute_id',
+    },
+    {
       title: 'Line Number ',
       dataIndex: 'line_number',
       key: 'line_number',
@@ -291,8 +296,6 @@ const Home = () => {
     },
   ];
 
-  console.log('quoteLineItemData', quoteLineItemData);
-
   return (
     <div
       style={{
@@ -307,7 +310,7 @@ const Home = () => {
         Quote Data
       </Typography>
       <Table
-        dataSource={data?.data}
+        dataSource={data}
         columns={columns}
         style={{overflow: 'auto', margin: '2rem'}}
         pagination={false}
@@ -320,7 +323,7 @@ const Home = () => {
         Quote Line Item
       </Typography>
       <Table
-        dataSource={quoteLineItemData?.data}
+        dataSource={quoteLineItemData}
         columns={quoteLineItemColumn}
         style={{overflow: 'auto', margin: '2rem'}}
         pagination={false}

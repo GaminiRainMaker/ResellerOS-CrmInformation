@@ -4,7 +4,7 @@ const theme: ThemeConfig = {
   token: {
     fontFamily: "'DM Sans', sans-serif",
     colorPrimary: '#1c3557',
-    colorPrimaryText: '#0c1625',
+    colorPrimaryText: '#0D0D0D',
     colorPrimaryBg: '#b9c0cb',
     colorPrimaryBorder: '#1c3557',
     colorPrimaryHover: '#1c3557',
@@ -24,13 +24,13 @@ const theme: ThemeConfig = {
     colorWarningBorder: '#634d09',
     colorWarningHover: '#82650c',
     colorWarningActive: '#634d09',
+    colorLink: '#3DA5D9',
 
     // colorInfo: "#4A90E2",
     // colorInfoBg: "#DBE9F9",
     // colorInfoBorder: "#A4C7F0",
     // colorInfoHover: "#68A2E7",
     // colorInfoActive: "#254871",
-    // colorLink: "#0F6C6A",
     // colorLinkHover: "#378483",
     // colorLinkActive: "#083635",
     // colorText: "#2A2A2A",

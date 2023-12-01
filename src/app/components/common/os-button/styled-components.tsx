@@ -9,7 +9,6 @@ export const ButtonStyled = styled(Button)<{buttontype?: any}>`
   gap: var(--Corners, 8px);
   box-shadow: none;
   cursor: pointer;
-  height: 56px;
   padding: ${(props) => {
     if (props.buttontype === 'PRIMARY') {
       return '12px 24px';
@@ -19,7 +18,19 @@ export const ButtonStyled = styled(Button)<{buttontype?: any}>`
     }
     return '16px 32px';
   }};
+  height: ${(props) => {
+    if (props.buttontype === 'PRIMARY') {
+      return '48px';
+    }
+    if (props.buttontype === 'PRIMARY_SMALL') {
+      return '40px';
+    }
+    return '56px';
+  }};
   &.ant-btn:not(:disabled):focus-visible {
     outline: 4px solid var(--foundation-secondary-2-secondary-2200, #a6d6ee);
+  }
+  &.ant-btn-primary {
+    width: 100%;
   }
 `;
