@@ -12,9 +12,9 @@ export default function DashboardLayout({
 }) {
   return (
     <Layout>
-      <Header>
-        <CustomHeader />
-      </Header>
+      {/* <Header> */}
+      <CustomHeader />
+      {/* </Header> */}
       <Layout>
         <Sider>
           <SideBar />

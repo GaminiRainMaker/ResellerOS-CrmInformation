@@ -3,7 +3,6 @@
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import Typography from '@/app/components/common/typography';
 import {Menu, MenuProps, Space, Layout} from 'antd';
-import Icon from '@ant-design/icons';
 import Sider from 'antd/es/layout/Sider';
 import React, {useState} from 'react';
 import Image from 'next/image';
@@ -115,7 +114,7 @@ const SideBar = () => {
             style={{padding: '16px 24px'}}
             onClick={() => {
               setSelectedKey(2);
-              router?.push('/Quote');
+              router?.push('/QuoteAI');
             }}
             name="Button 1"
             color={token?.colorTextSecondary}
