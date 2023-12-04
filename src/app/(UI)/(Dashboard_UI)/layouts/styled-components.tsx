@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
 import {GlobalToken} from 'antd/es/theme/interface';
 import {Row} from 'antd';
-import {Space} from '../../../components/common/Space';
-import {Sider} from '../../../components/common/Sider';
+import {Space} from '../../../components/common/antd/Space';
+import {Sider} from '../../../components/common/antd/Sider';
 
 export const ContentSectionWrapper = styled(Space)`
   width: 458px;
@@ -17,7 +17,7 @@ export const ContentSectionWrapper = styled(Space)`
 `;
 export const CustomSider = styled(Sider)`
   display: inline-flex;
-  height: 912px;
+  // height: 912px;
   padding: 36px 0px 24px 0px;
   flex-direction: column;
   justify-content: space-between;

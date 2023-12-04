@@ -10,7 +10,7 @@ import useThemeToken from '../../common/hooks/useThemeToken';
 import Typography from '../../common/typography';
 import ContentSection from './ContentSection';
 import {AuthLayoutInterface} from './authLayout.interface';
-import {Space} from '../../common/Space';
+import {Space} from '../../common/antd/Space';
 
 const AuthLayout: FC<AuthLayoutInterface> = ({
   heading,
@@ -69,41 +69,78 @@ const AuthLayout: FC<AuthLayoutInterface> = ({
           justifyContent: 'center',
         }}
       >
-        <Image src={authBg} alt="authBg" />
-        <div style={{position: 'absolute', top: '10%', width: '689px'}}>
-          <Space direction="vertical" size={32}>
-            <Typography
-              name="Display 2/Extra Bold"
-              color={token?.colorBgLayout}
+        <div
+          style={{
+            background: token?.colorPrimary,
+            borderTopLeftRadius: '50px',
+            borderBottomLeftRadius: '50px',
+            height: '100vh',
+          }}
+        >
+          <div
+            style={{
+              height: '40vh',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '10px',
+            }}
+          >
+            <Space
+              direction="vertical"
+              size={32}
+              style={{padding: '50px', paddingLeft: '80px'}}
             >
-              A Next Generation Revenue
               <Typography
                 name="Display 2/Extra Bold"
-                color={token?.colorInfoActive}
+                color={token?.colorBgLayout}
               >
-                {' '}
-                Operating System for
-              </Typography>{' '}
-              IT Value Added
-              <Typography
-                name="Display 2/Extra Bold"
-                color={token?.colorInfoActive}
-              >
-                {' '}
-                Resellers
+                A Next Generation Revenue
+                <Typography
+                  name="Display 2/Extra Bold"
+                  color={token?.colorInfoActive}
+                >
+                  {' '}
+                  Operating System for
+                </Typography>{' '}
+                IT Value Added
+                <Typography
+                  name="Display 2/Extra Bold"
+                  color={token?.colorInfoActive}
+                >
+                  {' '}
+                  Resellers
+                </Typography>
               </Typography>
-            </Typography>
-            <Typography name="Body 2/Regular" color={token?.colorBgLayout}>
-              ResellerOS enables technology resellers to sell and service
-              customers faster than ever before, while protecting deals and
-              capturing more vendor incentives.
-            </Typography>
-          </Space>
-          <Image
-            src={loginAvatar}
-            alt="loginAvatar"
-            style={{position: 'absolute', top: '100%', right: '-15%'}}
-          />
+              <div style={{width: '610px'}}>
+                <Typography name="Body 2/Regular" color={token?.colorBgLayout}>
+                  ResellerOS enables technology resellers to sell and service
+                  customers faster than ever before, while protecting deals and
+                  capturing more vendor incentives.
+                </Typography>
+              </div>
+            </Space>
+          </div>
+          <div style={{height: '60vh'}}>
+            <div
+              style={{
+                position: 'relative',
+                height: '100%',
+              }}
+            >
+              <Image
+                src={loginAvatar}
+                alt="loginAvatar"
+                style={{
+                  position: 'absolute',
+                  bottom: '0px',
+                  left: '-10%',
+                  height: '100%',
+                  width: '100%',
+                }}
+              />
+            </div>
+          </div>
         </div>
       </Col>
     </Row>

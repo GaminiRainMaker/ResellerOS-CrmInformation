@@ -6,7 +6,7 @@ import {FC} from 'react';
 import OSResellerLogo from '../../../../../public/assets/static/ResellerOsText.svg';
 import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
 import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
-import {Space} from '../../common/Space';
+import {Space} from '../../common/antd/Space';
 import useThemeToken from '../../common/hooks/useThemeToken';
 import OsButton, {ButtonType} from '../../common/os-button';
 import OsInput from '../../common/os-input';

@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import {GlobalToken} from 'antd/es/theme/interface';
-import {Space} from '../../common/Space';
+import {Space} from '../../common/antd/Space';
 import {Checkbox} from '../../common/antd/Checkbox';
 
 export const ContentSectionWrapper = styled(Space)`

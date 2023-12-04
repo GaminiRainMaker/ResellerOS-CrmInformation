@@ -4,6 +4,7 @@ import {Table} from '@/app/components/common/antd/Table';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import Typography from '@/app/components/common/typography';
 import {useEffect} from 'react';
+import OsTable from '@/app/components/common/os-table';
 import {getQuote} from '../../../../redux/actions/quote';
 import {useAppDispatch, useAppSelector} from '../../../../redux/hook';
 import {getQuoteLineItem} from '../../../../redux/actions/quotelineitem';
@@ -322,7 +323,7 @@ const Home = () => {
       <Typography name="Heading 1/Extra Bold" color={token?.colorPrimary}>
         Quote Line Item
       </Typography>
-      <Table
+      <OsTable
         dataSource={quoteLineItemData}
         columns={quoteLineItemColumn}
         style={{overflow: 'auto', margin: '2rem'}}
