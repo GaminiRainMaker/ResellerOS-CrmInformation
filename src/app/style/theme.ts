@@ -26,6 +26,7 @@ const theme: ThemeConfig = {
     colorWarningActive: '#634d09',
     colorLink: '#3DA5D9',
     colorInfoActive: '#64B7E1',
+    colorTextSecondary: '#AEB6C3',
 
     // colorInfo: "#4A90E2",
     // colorInfoBg: "#DBE9F9",
