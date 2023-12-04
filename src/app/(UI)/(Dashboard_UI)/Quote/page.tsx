@@ -4,6 +4,6 @@ import React from 'react';
 
 // import {CustomDiv2} from '../layouts/styled-components';
 
-const Dashboard = () => <div>Dashboard</div>;
+const Quote = () => <div>Quote Content</div>;
 
-export default Dashboard;
+export default Quote;
