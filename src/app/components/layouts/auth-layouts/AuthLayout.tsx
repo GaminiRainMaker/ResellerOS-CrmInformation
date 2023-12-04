@@ -4,7 +4,7 @@ import {Content} from 'antd/es/layout/layout';
 import Image from 'next/image';
 import {FC} from 'react';
 import authBg from '../../../../../public/assets/static/authBg.svg';
-import loginAvatar from '../../../../../public/assets/static/loginAvatar.svg';
+import loginAvatar from '../../../../../public/assets/static/AvatarFullImg.svg';
 import {Col, Row} from '../../common/antd/Grid';
 import useThemeToken from '../../common/hooks/useThemeToken';
 import Typography from '../../common/typography';
@@ -28,7 +28,7 @@ const AuthLayout: FC<AuthLayoutInterface> = ({
 }) => {
   const [token] = useThemeToken();
   return (
-    <Row justify="center" style={{height: '100%'}}>
+    <Row justify="center" style={{height: '100%'}} gutter={[16, 16]}>
       <Col xxl={12} xl={12} lg={12} md={24} sm={24} xs={24}>
         <Content
           style={{
@@ -54,7 +54,6 @@ const AuthLayout: FC<AuthLayoutInterface> = ({
             onClick={onClick}
             inputFields={inputFields}
           />
-          {/* <Outlet /> */}
         </Content>
       </Col>
       <Col
@@ -103,7 +102,7 @@ const AuthLayout: FC<AuthLayoutInterface> = ({
           <Image
             src={loginAvatar}
             alt="loginAvatar"
-            style={{position: 'absolute', top: '100%', left: '10%'}}
+            style={{position: 'absolute', top: '100%', right: '-15%'}}
           />
         </div>
       </Col>

@@ -10,7 +10,7 @@ import {Space} from '../../common/Space';
 import useThemeToken from '../../common/hooks/useThemeToken';
 import OsButton, {ButtonType} from '../../common/os-button';
 import OsInput from '../../common/os-input';
-import OsInputPassword from '../../common/os-input/osInputPassword';
+import OsInputPassword from '../../common/os-input/InputPassword';
 import Typography from '../../common/typography';
 import {AuthLayoutInterface} from './authLayout.interface';
 import {ContentSectionWrapper, CustomCheckbox} from './styled-components';

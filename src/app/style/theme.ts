@@ -29,7 +29,7 @@ const theme: ThemeConfig = {
     colorTextSecondary: '#AEB6C3',
 
     // colorInfo: "#4A90E2",
-    // colorInfoBg: "#DBE9F9",
+    colorInfoBg: '#EDEFF2',
     // colorInfoBorder: "#A4C7F0",
     // colorInfoHover: "#68A2E7",
     // colorLinkHover: "#378483",

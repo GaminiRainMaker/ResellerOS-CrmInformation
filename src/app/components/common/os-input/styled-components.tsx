@@ -18,6 +18,26 @@ export const InputStyled = styled(Input)`
     outline: none;
   }
 `;
+export const SearchInputStyled = styled(Input)`
+  display: flex;
+  // width: 550px;
+  height: 48px;
+  // padding: 14px 16px;
+  align-items: center;
+  gap: 8px;
+  border-radius: 50px;
+  background: var(--foundation-n-pri-1-n-30, #edeff2);
+  &.ant-input-affix-wrapper > input.ant-input {
+    background: none;
+  }
+
+  // &.ant-input:focus-visible {
+  //   border-color: none;
+  //   box-shadow: none;
+  //   border: 4px solid var(--foundation-secondary-21-secondary-21200, #a6d6ee);
+  //   outline: none;
+  // }
+`;
 export const InputPasswordStyled = styled(InputNumberPassword)`
   display: flex;
   height: 48px;
