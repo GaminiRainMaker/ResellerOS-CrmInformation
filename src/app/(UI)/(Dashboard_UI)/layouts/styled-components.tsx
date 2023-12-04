@@ -39,3 +39,11 @@ export const CustomDiv = styled(Row)`
   gap: 16px;
   align-self: stretch;
 `;
+export const CustomDiv2 = styled(Row)`
+  display: inline-flex;
+  padding: 36px 0px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 36px;
+  color: red;
+`;
