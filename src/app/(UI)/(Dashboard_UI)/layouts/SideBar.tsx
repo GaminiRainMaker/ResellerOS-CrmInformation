@@ -36,7 +36,7 @@ const SideBar = () => {
         name="Button 1"
         color={token?.colorLink}
       >
-        Dashboard
+        <div> Dashboard</div>
       </Typography>,
       '1',
     ),
@@ -151,7 +151,7 @@ const SideBar = () => {
         <div className="demo-logo-vertical" />
         <Menu
           style={{
-            height: '100vh',
+            // height: '100%',
             width: '',
             // color:
             //   seleectedKey === 1

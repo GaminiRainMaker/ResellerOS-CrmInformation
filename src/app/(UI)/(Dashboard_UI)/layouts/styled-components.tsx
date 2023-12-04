@@ -17,7 +17,7 @@ export const ContentSectionWrapper = styled(Space)`
 `;
 export const CustomSider = styled(Sider)`
   display: inline-flex;
-  height: 912px;
+  //   height: 812px;
   padding: 36px 0px 24px 0px;
   flex-direction: column;
   justify-content: space-between;
