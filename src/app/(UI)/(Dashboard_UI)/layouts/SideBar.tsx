@@ -323,7 +323,7 @@ const SideBar = () => {
           <div className="demo-logo-vertical" />
           <Menu
             style={{
-              height: '100vh',
+              //   height: '100vh',
               width: '',
               // color:
               //   seleectedKey === 1

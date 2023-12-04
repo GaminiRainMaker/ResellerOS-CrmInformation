@@ -109,3 +109,7 @@ a {
 .ant-layout-sider-trigger {
   display: none;
 }
+
+.ant-layout-sider-dark {
+  background: white !important;
+}
