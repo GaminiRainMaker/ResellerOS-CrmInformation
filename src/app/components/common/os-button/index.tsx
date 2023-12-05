@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import Image from 'next/image';
 import {ButtonProps} from '../antd/Button';
 import {ButtonStyled} from './styled-components';
 
@@ -10,11 +10,33 @@ export enum ButtonType {
 
 interface ButtonInterface extends ButtonProps {
   buttontype?: ButtonType;
-  text?: string;
+  text: string;
+  clickHandler?: () => void;
+  disabled?: boolean;
+  btnStyle?: any;
+  icon?: any;
+  commonIcon?: any;
 }
 
-const OsButton: FC<ButtonInterface> = (props) => (
-  <ButtonStyled buttontype={ButtonType} {...props} />
+const OsButton: React.FC<ButtonInterface> = ({
+  text,
+  clickHandler,
+  disabled,
+  btnStyle,
+  icon,
+  commonIcon,
+}) => (
+  <ButtonStyled
+    // className={style[mainClassName]}
+    disabled={disabled}
+    onClick={clickHandler}
+    style={btnStyle}
+  >
+    {icon && <Image src={icon} alt="img" />}
+    {commonIcon && <Image src={commonIcon} alt="commonIcon" />}
+    {text}
+  </ButtonStyled>
+  // <ButtonStyled buttontype={ButtonType} {...props} />
 );
 
 export default OsButton;
