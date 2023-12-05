@@ -40,7 +40,9 @@ const Typography: FC<TypographyInterface> = ({
     </DynamicDiv>
   );
 };
-export default memo(
-  Typography,
-  (p, n) => p.children === n.children || p.name === n.name,
-);
+// export default memo(
+//   Typography,
+//   (p, n) => p.children === n.children || p.name === n.name,
+// );
+
+export default Typography;

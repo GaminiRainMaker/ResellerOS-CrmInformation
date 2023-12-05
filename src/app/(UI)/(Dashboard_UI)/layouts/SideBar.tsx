@@ -22,7 +22,7 @@ const SideBar = () => {
   const router = useRouter();
 
   const [collapsed, setCollapsed] = useState<boolean>(false);
-  const [seleectedKey, setSelectedKey] = useState<number>();
+  const [seleectedKey, setSelectedKey] = useState<number>(1);
   type MenuItem = Required<MenuProps>['items'][number];
   function getItem(
     label: React.ReactNode,
@@ -37,7 +37,7 @@ const SideBar = () => {
       label,
     } as MenuItem;
   }
-
+  console.log('seleectedKey', seleectedKey?.toString()?.includes('1'));
   const items: MenuItem[] = [
     getItem(
       <Typography
@@ -67,7 +67,8 @@ const SideBar = () => {
             style={{
               marginTop: '1px',
               color:
-                seleectedKey === 1
+                // eslint-disable-next-line eqeqeq
+                seleectedKey?.toString()?.includes('1')
                   ? token?.colorLink
                   : token?.colorTextSecondary,
             }}
@@ -102,7 +103,20 @@ const SideBar = () => {
             src={Coin}
             alt="eyeIcon"
           />
-          <div style={{marginTop: '1px'}}> Quote AI</div>
+          <div
+            style={{
+              marginTop: '1px',
+              color:
+                // eslint-disable-next-line eqeqeq
+                seleectedKey?.toString()?.includes('2') ||
+                seleectedKey?.toString()?.includes('3')
+                  ? token?.colorLink
+                  : token?.colorTextSecondary,
+            }}
+          >
+            {' '}
+            Quote AI
+          </div>
         </div>
       </Typography>,
 
@@ -134,7 +148,19 @@ const SideBar = () => {
                 src={Eclipse18}
                 alt="Eclipse18"
               />
-              <div style={{marginTop: '1px'}}> Generate Quote</div>
+              <div
+                style={{
+                  marginTop: '1px',
+                  color:
+                    // eslint-disable-next-line eqeqeq
+                    seleectedKey?.toString()?.includes('2')
+                      ? token?.colorPrimaryHover
+                      : token?.colorTextSecondary,
+                }}
+              >
+                {' '}
+                Generate Quote
+              </div>
             </div>
           </Typography>,
           '2',
@@ -162,7 +188,19 @@ const SideBar = () => {
                 src={Eclipse18}
                 alt="Eclipse18"
               />
-              <div style={{marginTop: '1px'}}> Quotes</div>
+              <div
+                style={{
+                  marginTop: '1px',
+                  color:
+                    // eslint-disable-next-line eqeqeq
+                    seleectedKey?.toString()?.includes('3')
+                      ? token?.colorPrimaryHover
+                      : token?.colorTextSecondary,
+                }}
+              >
+                {' '}
+                Quotes
+              </div>
             </div>
           </Typography>,
           '3',
@@ -193,7 +231,19 @@ const SideBar = () => {
             src={recipt}
             alt="recipt"
           />
-          <div style={{marginTop: '1px'}}> DealReg AI</div>
+          <div
+            style={{
+              marginTop: '1px',
+              color:
+                // eslint-disable-next-line eqeqeq
+                seleectedKey?.toString()?.includes('4')
+                  ? token?.colorLink
+                  : token?.colorTextSecondary,
+            }}
+          >
+            {' '}
+            DealReg AI
+          </div>
         </div>
       </Typography>,
       '4',
@@ -221,7 +271,19 @@ const SideBar = () => {
             src={Bag}
             alt="eyeIcon"
           />
-          <div style={{marginTop: '1px'}}> Order AI</div>
+          <div
+            style={{
+              marginTop: '1px',
+              color:
+                // eslint-disable-next-line eqeqeq
+                seleectedKey?.toString()?.includes('5')
+                  ? token?.colorLink
+                  : token?.colorTextSecondary,
+            }}
+          >
+            {' '}
+            Order AI
+          </div>
         </div>
       </Typography>,
       '5',
@@ -249,7 +311,19 @@ const SideBar = () => {
             src={People}
             alt="People"
           />
-          <div style={{marginTop: '1px'}}> Vendors</div>
+          <div
+            style={{
+              marginTop: '1px',
+              color:
+                // eslint-disable-next-line eqeqeq
+                seleectedKey?.toString()?.includes('6')
+                  ? token?.colorLink
+                  : token?.colorTextSecondary,
+            }}
+          >
+            {' '}
+            Vendors
+          </div>
         </div>
       </Typography>,
       '6',
@@ -277,7 +351,19 @@ const SideBar = () => {
             src={FlahCircle}
             alt="FlahCircle"
           />
-          <div style={{marginTop: '1px'}}> Renewals and Upgrades</div>
+          <div
+            style={{
+              marginTop: '1px',
+              color:
+                // eslint-disable-next-line eqeqeq
+                seleectedKey?.toString()?.includes('7')
+                  ? token?.colorLink
+                  : token?.colorTextSecondary,
+            }}
+          >
+            {' '}
+            Renewals and Upgrades
+          </div>
         </div>
       </Typography>,
       '7',
