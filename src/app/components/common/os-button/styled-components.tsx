@@ -9,6 +9,15 @@ export const ButtonStyled = styled(Button)<{buttontype?: any}>`
   gap: var(--Corners, 8px);
   box-shadow: none;
   cursor: pointer;
+  background: ${(props) => {
+    if (props.buttontype === 'PRIMARY') {
+      return 'red';
+    }
+    if (props.buttontype === 'PRIMARY_SMALL') {
+      return '10px 20px';
+    }
+    return '16px 32px';
+  }};
   padding: ${(props) => {
     if (props.buttontype === 'PRIMARY') {
       return '12px 24px';

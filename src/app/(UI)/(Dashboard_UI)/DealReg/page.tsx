@@ -12,10 +12,11 @@ import {
   PlusOutlined,
   FilePdfOutlined,
 } from '@ant-design/icons';
-import OsButton, {ButtonType} from '@/app/components/common/os-button';
+import {ButtonStyled} from '@/app/components/common/os-button/styled-components';
 import Typography from '@/app/components/common/typography';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import OsButton, {ButtonType} from '@/app/components/common/os-button';
 // import {CustomDiv2} from '../layouts/styled-components';
 const CustomTab = styled(Tabs)`
   .ant-tabs-ink-bar {
@@ -28,11 +29,23 @@ const CustomTab = styled(Tabs)`
     border-bottom: none;
   }
 `;
-
+const CustomSelect = styled(Select)`
+  &.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+    // eslint-disable-next-line prettier/prettier
+    border: 1px solid #a3a3a3;
+    width: 310px;
+    height: 48px;
+    border-radius: 15px;
+  }
+  .ant-select-selection-item {
+    color: #bfbfbf;
+  }
+`;
 const DealReg = () => {
   const [activeTab, setActiveTab] = useState<any>('1');
   const [token] = useThemeToken();
 
+  console.log('');
   return (
     <div>
       <Row
@@ -50,17 +63,26 @@ const DealReg = () => {
         <div
           style={{
             display: 'flex',
+            // justifyContent: 'space-evenly',
             width: '40%',
             gap: '8px',
           }}
         >
-          <OsButton text="Save as Draft" />
-          <OsButton
-            text="Add Quote"
+          <OsButton text="Save as Draft" type={ButtonType.PRIMARY} />
+          {/* <ButtonStyled>Save as Draft</ButtonStyled> */}
+          <ButtonStyled
+            style={{background: '#1c3557', color: 'white'}}
             icon={<PlusOutlined />}
-            
+          >
+            Add Quote
+          </ButtonStyled>
+          <ButtonStyled style={{background: '#1c3557', color: 'white'}}>
+            Mark as Complete
+          </ButtonStyled>
+          <ButtonStyled
+            icon={<FilePdfOutlined />}
+            style={{width: '48px', background: '#1c3557', color: 'white'}}
           />
-          <OsButton text="Mark as Complete" />
         </div>
       </Row>
       {/* <div>
@@ -88,7 +110,7 @@ const DealReg = () => {
               </Row>
               <Row>
                 <Col style={{marginLeft: '170px'}}>
-                  {/* <ButtonStyled
+                  <ButtonStyled
                     icon={<MoreOutlined />}
                     style={{
                       width: '48px',
@@ -96,7 +118,7 @@ const DealReg = () => {
                       color: 'white',
                       height: '40px',
                     }}
-                  /> */}
+                  />
                 </Col>
               </Row>
             </Col>
