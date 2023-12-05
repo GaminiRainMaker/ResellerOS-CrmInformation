@@ -1,6 +1,7 @@
 'use client';
 
 import {Layout} from 'antd';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import CustomHeader from './layouts/Header';
 import SideBar from './layouts/SideBar';
 
@@ -10,6 +11,7 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const [token] = useThemeToken();
   return (
     <Layout>
       {/* <Header> */}
@@ -20,7 +22,9 @@ export default function DashboardLayout({
           <SideBar />
         </Sider>
         <Layout>
-          <Content>{children}</Content>
+          <Content style={{background: token?.colorBgLayout}}>
+            {children}
+          </Content>
         </Layout>
       </Layout>
     </Layout>

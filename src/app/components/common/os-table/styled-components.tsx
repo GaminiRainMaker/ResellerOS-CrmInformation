@@ -24,7 +24,20 @@ export const CustomTable = styled(Table)<ITableProps>`
     background: ${(props) => props.token.colorInfoBg};
     border-bottom: 1px solid ${(props) => props.token.colorBgElevated};
   }
-  .ant-checkbox {
-    border: 1px solid ${(props) => props.token.colorInfoBorder};
+  .ant-pagination .ant-pagination-item-active {
+    background: ${(props) => props.token.colorPrimary};
+    a {
+      color: white;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+    }
   }
+  .ant-pagination .ant-pagination-item {
+    // background: ${(props) => props.token.colorInfoBg};
+  }
+
+  // .ant-checkbox {
+  //   border: 1px solid ${(props) => props.token.colorInfoBorder};
+  // }
 `;

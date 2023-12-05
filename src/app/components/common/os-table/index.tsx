@@ -1,6 +1,9 @@
+/* eslint-disable consistent-return */
 import React, {FC} from 'react';
+import {PaginationProps} from 'antd';
 import {CustomTable} from './styled-components';
 import useThemeToken from '../hooks/useThemeToken';
+import {Col, Row} from '../antd/Grid';
 
 const OsTable: FC<any> = ({
   scrollx = 1200,
@@ -10,17 +13,18 @@ const OsTable: FC<any> = ({
   ...rest
 }) => {
   const [token] = useThemeToken();
-  //   const itemRender: PaginationProps['itemRender'] = (
-  //     page,
-  //     type,
-  //     originalElement,
-  //   ) => {
-  //     if (type === 'jump-next' || type === 'jump-prev') return;
-  //     if (type === 'prev' || type === 'next') {
-  //       return <>{type === 'prev' ? 'Previous' : 'Next'}</>;
-  //     }
-  //     return originalElement;
-  //   };
+
+  const itemRender: PaginationProps['itemRender'] = (
+    page,
+    type,
+    originalElement,
+  ) => {
+    if (type === 'jump-next' || type === 'jump-prev') return;
+    if (type === 'prev' || type === 'next') {
+      return <>{type === 'prev' ? 'Previous' : 'Next'}</>;
+    }
+    return originalElement;
+  };
 
   return (
     <CustomTable
@@ -28,13 +32,14 @@ const OsTable: FC<any> = ({
       cursor={cursor}
       tableInModal={tableInModal}
       token={token}
+      bordered
       //   loading={{indicator: <Indicator />, spinning: rest.loading}}
       scroll={scrollx ? {x: scrollx as number} : undefined}
-      //   pagination={
-      //     paginationProps
-      //       ? {...rest.pagination, itemRender, showQuickJumper: false}
-      //       : false
-      //   }
+      pagination={
+        paginationProps
+          ? {...rest.pagination, itemRender, showQuickJumper: false}
+          : false
+      }
       paginationBorder={paginationProps}
     />
   );
