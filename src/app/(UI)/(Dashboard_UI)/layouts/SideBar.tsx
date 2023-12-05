@@ -7,16 +7,17 @@ import Sider from 'antd/es/layout/Sider';
 import React, {useState} from 'react';
 import Image from 'next/image';
 import {useRouter} from 'next/navigation';
-import {DocumentTextIcon} from '@heroicons/react/24/outline';
+import {
+  DocumentTextIcon,
+  ArrowsPointingOutIcon,
+  CogIcon,
+  CircleStackIcon,
+  ShoppingBagIcon,
+  UserGroupIcon,
+  EllipsisHorizontalCircleIcon,
+  ReceiptRefundIcon,
+} from '@heroicons/react/24/outline';
 import {CustomSider} from './styled-components';
-import Category from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/category-2.svg';
-import Coin from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/coin.svg';
-import recipt from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/receipt-1.svg';
-import Bag from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/bag-2.svg';
-import People from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/people.svg';
-import FlahCircle from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/flash-circle-1.svg';
-import ReciptItem from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/receipt-item.svg';
-import Eclipse18 from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/add-circle.svg';
 
 const SideBar = () => {
   const [token] = useThemeToken();
@@ -63,7 +64,7 @@ const SideBar = () => {
             shape="square"
             style={{background: 'none'}}
             icon={
-              <DocumentTextIcon
+              <ArrowsPointingOutIcon
                 color={
                   seleectedKey?.toString()?.includes('1')
                     ? token?.colorLink
@@ -109,11 +110,22 @@ const SideBar = () => {
             alignSelf: 'stretch',
           }}
         >
-          <Image
-            style={{paddingTop: '0px', marginRight: '3px'}}
-            src={Coin}
+          <Avatar
+            shape="square"
+            style={{background: 'none'}}
+            icon={
+              <CogIcon
+                color={
+                  seleectedKey?.toString()?.includes('2')
+                    ? token?.colorLink
+                    : token?.colorTextSecondary
+                }
+                width={24}
+              />
+            }
             alt="eyeIcon"
           />
+
           <div
             style={{
               marginTop: '1px',
@@ -154,10 +166,20 @@ const SideBar = () => {
                 alignSelf: 'stretch',
               }}
             >
-              <Image
-                style={{paddingTop: '0px', marginRight: '3px'}}
-                src={Eclipse18}
-                alt="Eclipse18"
+              <Avatar
+                shape="square"
+                style={{background: 'none'}}
+                icon={
+                  <CircleStackIcon
+                    color={
+                      seleectedKey?.toString()?.includes('2')
+                        ? token.colorPrimaryBorder
+                        : token?.colorTextSecondary
+                    }
+                    width={24}
+                  />
+                }
+                alt="eyeIcon"
               />
               <div
                 style={{
@@ -165,7 +187,7 @@ const SideBar = () => {
                   color:
                     // eslint-disable-next-line eqeqeq
                     seleectedKey?.toString()?.includes('2')
-                      ? token?.colorPrimaryHover
+                      ? token.colorPrimaryBorder
                       : token?.colorTextSecondary,
                 }}
               >
@@ -194,10 +216,20 @@ const SideBar = () => {
                 alignSelf: 'stretch',
               }}
             >
-              <Image
-                style={{paddingTop: '0px', marginRight: '3px'}}
-                src={Eclipse18}
-                alt="Eclipse18"
+              <Avatar
+                shape="square"
+                style={{background: 'none'}}
+                icon={
+                  <CircleStackIcon
+                    color={
+                      seleectedKey?.toString()?.includes('3')
+                        ? token.colorPrimaryBorder
+                        : token?.colorTextSecondary
+                    }
+                    width={24}
+                  />
+                }
+                alt="eyeIcon"
               />
               <div
                 style={{
@@ -205,7 +237,7 @@ const SideBar = () => {
                   color:
                     // eslint-disable-next-line eqeqeq
                     seleectedKey?.toString()?.includes('3')
-                      ? token?.colorPrimaryHover
+                      ? token.colorPrimaryBorder
                       : token?.colorTextSecondary,
                 }}
               >
@@ -237,10 +269,20 @@ const SideBar = () => {
             alignSelf: 'stretch',
           }}
         >
-          <Image
-            style={{paddingTop: '0px', marginRight: '3px'}}
-            src={recipt}
-            alt="recipt"
+          <Avatar
+            shape="square"
+            style={{background: 'none'}}
+            icon={
+              <DocumentTextIcon
+                color={
+                  seleectedKey?.toString()?.includes('4')
+                    ? token?.colorLink
+                    : token?.colorTextSecondary
+                }
+                width={24}
+              />
+            }
+            alt="eyeIcon"
           />
           <div
             style={{
@@ -277,9 +319,19 @@ const SideBar = () => {
             alignSelf: 'stretch',
           }}
         >
-          <Image
-            style={{paddingTop: '0px', marginRight: '3px'}}
-            src={Bag}
+          <Avatar
+            shape="square"
+            style={{background: 'none'}}
+            icon={
+              <ShoppingBagIcon
+                color={
+                  seleectedKey?.toString()?.includes('5')
+                    ? token?.colorLink
+                    : token?.colorTextSecondary
+                }
+                width={24}
+              />
+            }
             alt="eyeIcon"
           />
           <div
@@ -317,10 +369,20 @@ const SideBar = () => {
             alignSelf: 'stretch',
           }}
         >
-          <Image
-            style={{paddingTop: '0px', marginRight: '3px'}}
-            src={People}
-            alt="People"
+          <Avatar
+            shape="square"
+            style={{background: 'none'}}
+            icon={
+              <UserGroupIcon
+                color={
+                  seleectedKey?.toString()?.includes('6')
+                    ? token?.colorLink
+                    : token?.colorTextSecondary
+                }
+                width={24}
+              />
+            }
+            alt="eyeIcon"
           />
           <div
             style={{
@@ -357,10 +419,20 @@ const SideBar = () => {
             alignSelf: 'stretch',
           }}
         >
-          <Image
-            style={{paddingTop: '0px', marginRight: '3px'}}
-            src={FlahCircle}
-            alt="FlahCircle"
+          <Avatar
+            shape="square"
+            style={{background: 'none'}}
+            icon={
+              <EllipsisHorizontalCircleIcon
+                color={
+                  seleectedKey?.toString()?.includes('7')
+                    ? token?.colorLink
+                    : token?.colorTextSecondary
+                }
+                width={24}
+              />
+            }
+            alt="eyeIcon"
           />
           <div
             style={{
@@ -397,12 +469,32 @@ const SideBar = () => {
             alignSelf: 'stretch',
           }}
         >
-          <Image
-            style={{paddingTop: '0px', marginRight: '3px'}}
-            src={ReciptItem}
-            alt="ReciptItem"
+          <Avatar
+            shape="square"
+            style={{background: 'none'}}
+            icon={
+              <ReceiptRefundIcon
+                color={
+                  seleectedKey?.toString()?.includes('8')
+                    ? token?.colorLink
+                    : token?.colorTextSecondary
+                }
+                width={24}
+              />
+            }
+            alt="eyeIcon"
           />
-          <div style={{marginTop: '1px'}}> CRM information</div>
+          <div
+            style={{
+              marginTop: '1px',
+              color: seleectedKey?.toString()?.includes('8')
+                ? token?.colorLink
+                : token?.colorTextSecondary,
+            }}
+          >
+            {' '}
+            CRM information
+          </div>
         </div>
       </Typography>,
       '8',

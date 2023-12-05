@@ -2,7 +2,6 @@
 
 'use client';
 
-import styled from '@emotion/styled';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import type {ColumnsType} from 'antd/es/table';
@@ -15,15 +14,18 @@ import {
   DocumentTextIcon,
   ReceiptPercentIcon,
   TagIcon,
+  PlusIcon,
 } from '@heroicons/react/24/outline';
+
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import Typography from '@/app/components/common/typography';
 import OsButton, {ButtonType} from '@/app/components/common/os-button';
 import {ButtonStyled} from '@/app/components/common/os-button/styled-components';
-import {FilePdfOutlined, MoreOutlined, PlusOutlined} from '@ant-design/icons';
-import {Tabs} from 'antd';
+import {FilePdfOutlined} from '@ant-design/icons';
+import {Avatar} from 'antd';
+import OsTabs from '@/app/components/common/os-tabs';
 
 interface DataType {
   key: React.Key;
@@ -32,18 +34,6 @@ interface DataType {
   address: string;
 }
 
-const CustomTab = styled(Tabs)`
-  width: 100%;
-  .ant-tabs-ink-bar {
-    border-bottom: 2px solid #1c3557 !important;
-  }
-  .ant-tabs-top > .ant-tabs-nav {
-    margin: 9px 0 22px 0;
-  }
-  .ant-tabs-nav {
-    border-bottom: none;
-  }
-`;
 const columns: ColumnsType<DataType> = [
   {
     title: 'Name',
@@ -149,6 +139,29 @@ const QuoteAI: React.FC = () => {
     },
   ];
 
+  const TabPaneData = [
+    {
+      key: 1,
+      name: 'Input Details',
+    },
+    {
+      key: 2,
+      name: 'Profitability',
+    },
+    {
+      key: 3,
+      name: 'Rebates',
+    },
+    {
+      key: 4,
+      name: 'Validation',
+    },
+    {
+      key: 5,
+      name: 'Matrix',
+    },
+  ];
+  console.log('435435', setActiveTab);
   return (
     <Space size={24} direction="vertical" style={{width: '100%'}}>
       <Row
@@ -191,8 +204,12 @@ const QuoteAI: React.FC = () => {
             {/* <ButtonStyled>Save as Draft</ButtonStyled> */}
             <ButtonStyled
               style={{background: '#1c3557', color: 'white'}}
-              icon={<PlusOutlined />}
+              icon={<PlusIcon />}
             >
+              <Avatar
+                icon={<PlusIcon width={24} color="white" />}
+                style={{background: 'transparent'}}
+              />{' '}
               Add Quote
             </ButtonStyled>
             <ButtonStyled style={{background: '#1c3557', color: 'white'}}>
@@ -211,7 +228,7 @@ const QuoteAI: React.FC = () => {
         </Col>
       </Row>
       <Row style={{background: 'white', padding: '12px', borderRadius: '10px'}}>
-        <CustomTab
+        <OsTabs
           onChange={(e) => {
             setActiveTab(e);
           }}
@@ -224,58 +241,33 @@ const QuoteAI: React.FC = () => {
             </>
           }
         >
-          <TabPane
-            tab={
-              // eslint-disable-next-line eqeqeq
-              <Typography name="Body 4/Regular"> Input Details</Typography>
-            }
-            key="1"
-          >
-            <OsTable
-              rowSelection={rowSelection}
-              columns={columns}
-              dataSource={data}
-              scroll
-            />
-          </TabPane>
-          <TabPane
-            tab={
-              // eslint-disable-next-line eqeqeq
-              <Typography name="Body 4/Regular">Profitability</Typography>
-            }
-            key="2"
-          >
-            Profitability Content
-          </TabPane>
-          <TabPane
-            tab={
-              // eslint-disable-next-line eqeqeq
-              <Typography name="Body 4/Regular"> Rebates</Typography>
-            }
-            key="3"
-          >
-            Rebates Content
-          </TabPane>
-          <TabPane
-            tab={
-              // eslint-disable-next-line eqeqeq
-
-              <Typography name="Body 4/Regular"> Validation</Typography>
-            }
-            key="4"
-          >
-            Validation Content
-          </TabPane>
-          <TabPane
-            tab={
-              <Typography name="Body 4/Regular"> Matrix</Typography>
-              // eslint-disable-next-line eqeqeq
-            }
-            key="5"
-          >
-            Matrix Content
-          </TabPane>
-        </CustomTab>
+          {TabPaneData?.map((item, index) => (
+            <TabPane
+              tab={
+                // eslint-disable-next-line eqeqeq
+                <Typography
+                  name="Body 4/Regular"
+                  // eslint-disable-next-line eqeqeq
+                  color={
+                    // eslint-disable-next-line eqeqeq
+                    activeTab == item?.key ? token?.colorPrimary : '#666666'
+                  }
+                >
+                  {' '}
+                  {item?.name}
+                </Typography>
+              }
+              key={item?.key}
+            >
+              <OsTable
+                rowSelection={rowSelection}
+                columns={columns}
+                dataSource={data}
+                scroll
+              />
+            </TabPane>
+          ))}
+        </OsTabs>
       </Row>
     </Space>
   );
