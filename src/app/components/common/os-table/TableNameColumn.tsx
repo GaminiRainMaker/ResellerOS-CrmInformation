@@ -1,4 +1,7 @@
+'use client';
+
 import {FC} from 'react';
+import {TagIcon} from '@heroicons/react/24/outline';
 import {Avatar} from '../antd/Avatar';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
@@ -18,7 +21,7 @@ const TableNameColumn: FC<any> = ({
   tooltip = false,
   iconBg,
 }) => {
-  const imgUrl = '';
+  const imgUrl = logo && ``;
 
   const [token] = useThemeToken();
   return (

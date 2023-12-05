@@ -37,7 +37,7 @@ const theme: ThemeConfig = {
     // colorTextSecondary: "#767676",
     colorBgContainer: '#ffffff',
     colorBgElevated: '#8592A4',
-    colorBgLayout: '#ffffff',
+    colorBgLayout: '#F5F5F5',
     colorBorder: '#C7CDD5',
     // colorBorderSecondary: "#E3E5E5",
   },
