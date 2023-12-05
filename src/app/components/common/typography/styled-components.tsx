@@ -12,10 +12,10 @@ export const DynamicDiv = styled.div<{
   maxWidth?: number;
   cursor?: string;
 }>`
-  font-family: ${(props) => `${props.styles.fontFamily}`};
-  font-size: ${(props) => `${props.styles.fontSize}`};
-  line-height: ${(props) => `${props.styles.lineHeight}`};
-  font-weight: ${(props) => `${props.styles.fontWeight}`};
+  font-family: ${(props) => `${props.styles?.fontFamily}`};
+  font-size: ${(props) => `${props.styles?.fontSize}`};
+  line-height: ${(props) => `${props.styles?.lineHeight}`};
+  font-weight: ${(props) => `${props.styles?.fontWeight}`};
   color: ${(props) => props.color};
   cursor: ${(props) => props.cursor};
   text-align: ${(props) => props.align};
