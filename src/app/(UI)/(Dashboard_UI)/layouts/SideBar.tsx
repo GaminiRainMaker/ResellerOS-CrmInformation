@@ -2,11 +2,12 @@
 
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import Typography from '@/app/components/common/typography';
-import {Menu, MenuProps, Space, Layout} from 'antd';
+import {Menu, MenuProps, Space, Layout, Avatar} from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import React, {useState} from 'react';
 import Image from 'next/image';
 import {useRouter} from 'next/navigation';
+import {DocumentTextIcon} from '@heroicons/react/24/outline';
 import {CustomSider} from './styled-components';
 import Category from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/category-2.svg';
 import Coin from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/coin.svg';
@@ -58,9 +59,19 @@ const SideBar = () => {
             alignSelf: 'stretch',
           }}
         >
-          <Image
-            style={{paddingTop: '0px', marginRight: '3px'}}
-            src={Category}
+          <Avatar
+            shape="square"
+            style={{background: 'none'}}
+            icon={
+              <DocumentTextIcon
+                color={
+                  seleectedKey?.toString()?.includes('1')
+                    ? token?.colorLink
+                    : token?.colorTextSecondary
+                }
+                width={24}
+              />
+            }
             alt="eyeIcon"
           />
           <div

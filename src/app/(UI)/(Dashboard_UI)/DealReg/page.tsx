@@ -48,43 +48,6 @@ const DealReg = () => {
   console.log('');
   return (
     <div>
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          marginBottom: '20px',
-        }}
-      >
-        <div style={{marginTop: '10px'}}>
-          <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-            Generated Quote
-          </Typography>
-        </div>
-        <div
-          style={{
-            display: 'flex',
-            // justifyContent: 'space-evenly',
-            width: '40%',
-            gap: '8px',
-          }}
-        >
-          <OsButton text="Save as Draft" type={ButtonType.PRIMARY} />
-          {/* <ButtonStyled>Save as Draft</ButtonStyled> */}
-          <ButtonStyled
-            style={{background: '#1c3557', color: 'white'}}
-            icon={<PlusOutlined />}
-          >
-            Add Quote
-          </ButtonStyled>
-          <ButtonStyled style={{background: '#1c3557', color: 'white'}}>
-            Mark as Complete
-          </ButtonStyled>
-          <ButtonStyled
-            icon={<FilePdfOutlined />}
-            style={{width: '48px', background: '#1c3557', color: 'white'}}
-          />
-        </div>
-      </Row>
       {/* <div>
         <ButtonStyled icon={<MoreOutlined />} />
       </div> */}

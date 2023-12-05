@@ -2,9 +2,11 @@
 
 'use client';
 
+import styled from '@emotion/styled';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import type {ColumnsType} from 'antd/es/table';
+import TabPane from 'antd/es/tabs/TabPane';
 import React, {useState} from 'react';
 import {
   BanknotesIcon,
@@ -18,6 +20,10 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import Typography from '@/app/components/common/typography';
+import OsButton, {ButtonType} from '@/app/components/common/os-button';
+import {ButtonStyled} from '@/app/components/common/os-button/styled-components';
+import {FilePdfOutlined, MoreOutlined, PlusOutlined} from '@ant-design/icons';
+import {Tabs} from 'antd';
 
 interface DataType {
   key: React.Key;
@@ -26,6 +32,18 @@ interface DataType {
   address: string;
 }
 
+const CustomTab = styled(Tabs)`
+  width: 100%;
+  .ant-tabs-ink-bar {
+    border-bottom: 2px solid #1c3557 !important;
+  }
+  .ant-tabs-top > .ant-tabs-nav {
+    margin: 9px 0 22px 0;
+  }
+  .ant-tabs-nav {
+    border-bottom: none;
+  }
+`;
 const columns: ColumnsType<DataType> = [
   {
     title: 'Name',
@@ -73,6 +91,7 @@ for (let i = 0; i < 46; i++) {
 
 const QuoteAI: React.FC = () => {
   const [token] = useThemeToken();
+  const [activeTab, setActiveTab] = useState<any>('1');
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
@@ -153,20 +172,111 @@ const QuoteAI: React.FC = () => {
         ))}
       </Row>
 
-      <Row justify="space-between">
+      <Row justify="space-between" align="middle">
         <Col>
           <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
             Generated Quote
           </Typography>
         </Col>
+        <Col>
+          <div
+            style={{
+              display: 'flex',
+              // justifyContent: 'space-evenly',
+              width: '40%',
+              gap: '8px',
+            }}
+          >
+            <OsButton text="Save as Draft" type={ButtonType.PRIMARY} />
+            {/* <ButtonStyled>Save as Draft</ButtonStyled> */}
+            <ButtonStyled
+              style={{background: '#1c3557', color: 'white'}}
+              icon={<PlusOutlined />}
+            >
+              Add Quote
+            </ButtonStyled>
+            <ButtonStyled style={{background: '#1c3557', color: 'white'}}>
+              Mark as Complete
+            </ButtonStyled>
+            <ButtonStyled
+              icon={<FilePdfOutlined />}
+              style={{
+                width: '48px',
+                background: '#1c3557',
+                color: 'white',
+                padding: '20px',
+              }}
+            />
+          </div>
+        </Col>
       </Row>
+      <Row style={{background: 'white', padding: '12px', borderRadius: '10px'}}>
+        <CustomTab
+          onChange={(e) => {
+            setActiveTab(e);
+          }}
+          activeKey={activeTab}
+          tabBarExtraContent={
+            <>
+              <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
+                Select Grouping
+              </Typography>
+            </>
+          }
+        >
+          <TabPane
+            tab={
+              // eslint-disable-next-line eqeqeq
+              <Typography name="Body 4/Regular"> Input Details</Typography>
+            }
+            key="1"
+          >
+            <OsTable
+              rowSelection={rowSelection}
+              columns={columns}
+              dataSource={data}
+              scroll
+            />
+          </TabPane>
+          <TabPane
+            tab={
+              // eslint-disable-next-line eqeqeq
+              <Typography name="Body 4/Regular">Profitability</Typography>
+            }
+            key="2"
+          >
+            Profitability Content
+          </TabPane>
+          <TabPane
+            tab={
+              // eslint-disable-next-line eqeqeq
+              <Typography name="Body 4/Regular"> Rebates</Typography>
+            }
+            key="3"
+          >
+            Rebates Content
+          </TabPane>
+          <TabPane
+            tab={
+              // eslint-disable-next-line eqeqeq
 
-      <OsTable
-        rowSelection={rowSelection}
-        columns={columns}
-        dataSource={data}
-        scroll
-      />
+              <Typography name="Body 4/Regular"> Validation</Typography>
+            }
+            key="4"
+          >
+            Validation Content
+          </TabPane>
+          <TabPane
+            tab={
+              <Typography name="Body 4/Regular"> Matrix</Typography>
+              // eslint-disable-next-line eqeqeq
+            }
+            key="5"
+          >
+            Matrix Content
+          </TabPane>
+        </CustomTab>
+      </Row>
     </Space>
   );
 };
