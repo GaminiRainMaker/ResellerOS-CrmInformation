@@ -200,30 +200,15 @@ const QuoteAI: React.FC = () => {
               gap: '8px',
             }}
           >
-            <OsButton text="Save as Draft" type={ButtonType.PRIMARY} />
-            {/* <ButtonStyled>Save as Draft</ButtonStyled> */}
-            <ButtonStyled
-              style={{background: '#1c3557', color: 'white'}}
+            <OsButton text="Save as Draft" buttontype="" />
+            <OsButton
+              text="Add Quote"
+              buttontype="PRIMARY"
               icon={<PlusIcon />}
-            >
-              <Avatar
-                icon={<PlusIcon width={24} color="white" />}
-                style={{background: 'transparent'}}
-              />{' '}
-              Add Quote
-            </ButtonStyled>
-            <ButtonStyled style={{background: '#1c3557', color: 'white'}}>
-              Mark as Complete
-            </ButtonStyled>
-            <ButtonStyled
-              icon={<FilePdfOutlined />}
-              style={{
-                width: '48px',
-                background: '#1c3557',
-                color: 'white',
-                padding: '20px',
-              }}
             />
+            <OsButton text=" Mark as Complete" buttontype="PRIMARY" />
+
+            <OsButton buttontype="PRIMARY_ICON" icon={<FilePdfOutlined />} />
           </div>
         </Col>
       </Row>
