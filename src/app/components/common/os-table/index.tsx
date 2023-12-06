@@ -3,7 +3,6 @@ import React, {FC} from 'react';
 import {PaginationProps} from 'antd';
 import {CustomTable} from './styled-components';
 import useThemeToken from '../hooks/useThemeToken';
-import {Col, Row} from '../antd/Grid';
 
 const OsTable: FC<any> = ({
   scrollx = 1200,

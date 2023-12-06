@@ -4,28 +4,31 @@
 
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import type {ColumnsType} from 'antd/es/table';
-import TabPane from 'antd/es/tabs/TabPane';
-import React, {useState} from 'react';
+import Typography from '@/app/components/common/typography';
+import {FilePdfOutlined} from '@ant-design/icons';
 import {
   BanknotesIcon,
   CreditCardIcon,
   CurrencyDollarIcon,
   DocumentTextIcon,
+  PlusIcon,
   ReceiptPercentIcon,
   TagIcon,
-  PlusIcon,
 } from '@heroicons/react/24/outline';
 
-import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
-import Typography from '@/app/components/common/typography';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton, {ButtonType} from '@/app/components/common/os-button';
 import {ButtonStyled} from '@/app/components/common/os-button/styled-components';
-import {FilePdfOutlined} from '@ant-design/icons';
-import {Avatar} from 'antd';
+import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
+import {Avatar, Button} from 'antd';
+import {ColumnsType} from 'antd/es/table';
+import TabPane from 'antd/es/tabs/TabPane';
+import {useState} from 'react';
+import OsModal from '@/app/components/common/os-modal';
+import OsUpload from '@/app/components/common/os-upload';
 
 interface DataType {
   key: React.Key;
@@ -83,9 +86,9 @@ const QuoteAI: React.FC = () => {
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log('selectedRowKeys changed: ', newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
 
@@ -94,7 +97,7 @@ const QuoteAI: React.FC = () => {
     onChange: onSelectChange,
   };
 
-  const data123 = [
+  const analyticsData = [
     {
       key: 1,
       primary: '217',
@@ -161,115 +164,158 @@ const QuoteAI: React.FC = () => {
       name: 'Matrix',
     },
   ];
-  console.log('435435', setActiveTab);
-  return (
-    <Space size={24} direction="vertical" style={{width: '100%'}}>
-      <Row
-        justify="space-between"
-        style={{
-          padding: '36px 24px',
-          background: 'white',
-          borderRadius: '12px',
-        }}
-        gutter={[0, 16]}
-      >
-        {data123?.map((item) => (
-          <Col>
-            <TableNameColumn
-              primaryText={item?.primary}
-              secondaryText={item?.secondry}
-              fallbackIcon={item?.icon}
-              iconBg={item?.iconBg}
-            />
-          </Col>
-        ))}
-      </Row>
+  const selectData = [
+    {value: 'item 1', label: 'Item 1'},
+    {value: 'item 2', label: 'Item 2'},
+    {value: 'item 3', label: 'Item 3'},
+    {value: 'item 4', label: 'Item 4'},
+  ];
 
-      <Row justify="space-between" align="middle">
-        <Col>
-          <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-            Generated Quote
-          </Typography>
-        </Col>
-        <Col>
-          <div
-            style={{
-              display: 'flex',
-              // justifyContent: 'space-evenly',
-              width: '40%',
-              gap: '8px',
-            }}
-          >
-            <OsButton text="Save as Draft" type={ButtonType.PRIMARY} />
-            {/* <ButtonStyled>Save as Draft</ButtonStyled> */}
-            <ButtonStyled
-              style={{background: '#1c3557', color: 'white'}}
-              icon={<PlusIcon />}
-            >
-              <Avatar
-                icon={<PlusIcon width={24} color="white" />}
-                style={{background: 'transparent'}}
-              />{' '}
-              Add Quote
-            </ButtonStyled>
-            <ButtonStyled style={{background: '#1c3557', color: 'white'}}>
-              Mark as Complete
-            </ButtonStyled>
-            <ButtonStyled
-              icon={<FilePdfOutlined />}
-              style={{
-                width: '48px',
-                background: '#1c3557',
-                color: 'white',
-                padding: '20px',
-              }}
-            />
-          </div>
-        </Col>
-      </Row>
-      <Row style={{background: 'white', padding: '12px', borderRadius: '10px'}}>
-        <OsTabs
-          onChange={(e) => {
-            setActiveTab(e);
+  return (
+    <>
+      <Space size={24} direction="vertical" style={{width: '100%'}}>
+        <Row
+          justify="space-between"
+          style={{
+            padding: '36px 24px',
+            background: token?.colorBgContainer,
+            borderRadius: '12px',
           }}
-          activeKey={activeTab}
-          tabBarExtraContent={
-            <>
-              <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
-                Select Grouping
-              </Typography>
-            </>
-          }
+          gutter={[0, 16]}
         >
-          {TabPaneData?.map((item, index) => (
-            <TabPane
-              tab={
-                // eslint-disable-next-line eqeqeq
-                <Typography
-                  name="Body 4/Regular"
-                  // eslint-disable-next-line eqeqeq
-                  color={
-                    // eslint-disable-next-line eqeqeq
-                    activeTab == item?.key ? token?.colorPrimary : '#666666'
-                  }
-                >
-                  {' '}
-                  {item?.name}
-                </Typography>
-              }
-              key={item?.key}
-            >
-              <OsTable
-                rowSelection={rowSelection}
-                columns={columns}
-                dataSource={data}
-                scroll
+          {analyticsData?.map((item) => (
+            <Col>
+              <TableNameColumn
+                primaryText={item?.primary}
+                secondaryText={item?.secondry}
+                fallbackIcon={item?.icon}
+                iconBg={item?.iconBg}
               />
-            </TabPane>
+            </Col>
           ))}
-        </OsTabs>
-      </Row>
-    </Space>
+        </Row>
+
+        <Row justify="space-between" align="middle">
+          <Col>
+            <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
+              Generated Quote
+            </Typography>
+          </Col>
+          <Col>
+            <Button
+              onClick={() => {
+                setShowModal((p) => !p);
+              }}
+            >
+              Submit
+            </Button>
+            <div
+              style={{
+                display: 'flex',
+                // justifyContent: 'space-evenly',
+                width: '40%',
+                gap: '8px',
+              }}
+            >
+              <OsButton text="Save as Draft" buttontype={ButtonType.PRIMARY} />
+              {/* <ButtonStyled>Save as Draft</ButtonStyled> */}
+              <ButtonStyled
+                style={{background: '#1c3557', color: 'white'}}
+                icon={<PlusIcon />}
+              >
+                <Avatar
+                  icon={<PlusIcon width={24} color="white" />}
+                  style={{background: 'transparent'}}
+                />{' '}
+                Add Quote
+              </ButtonStyled>
+              <ButtonStyled style={{background: '#1c3557', color: 'white'}}>
+                Mark as Complete
+              </ButtonStyled>
+              <ButtonStyled
+                icon={<FilePdfOutlined />}
+                style={{
+                  width: '48px',
+                  background: '#1c3557',
+                  color: 'white',
+                  padding: '20px',
+                }}
+              />
+            </div>
+          </Col>
+        </Row>
+        <Row
+          style={{background: 'white', padding: '12px', borderRadius: '10px'}}
+        >
+          <OsTabs
+            onChange={(e) => {
+              setActiveTab(e);
+            }}
+            activeKey={activeTab}
+            tabBarExtraContent={
+              <Space direction="vertical" size={0}>
+                <Typography
+                  name="Body 4/Medium"
+                  color={token?.colorPrimaryText}
+                >
+                  Select Grouping
+                </Typography>
+                <Space size={12}>
+                  <CommonSelect
+                    style={{width: '319px'}}
+                    placeholder="Select Grouping here"
+                    options={selectData}
+                  />
+                  <ButtonStyled
+                    icon={<FilePdfOutlined />}
+                    style={{
+                      width: '48px',
+                      background: '#1c3557',
+                      color: 'white',
+                      padding: '20px',
+                    }}
+                  />
+                </Space>
+              </Space>
+            }
+          >
+            {TabPaneData?.map((item) => (
+              <TabPane
+                tab={
+                  <Typography
+                    name="Body 4/Regular"
+                    color={
+                      activeTab === item?.key ? token?.colorPrimary : '#666666'
+                    }
+                  >
+                    {item?.name}
+                  </Typography>
+                }
+                key={item?.key}
+              >
+                <OsTable
+                  rowSelection={rowSelection}
+                  columns={columns}
+                  dataSource={data}
+                  scroll
+                />
+              </TabPane>
+            ))}
+          </OsTabs>
+        </Row>
+      </Space>
+      <OsModal
+        title="All Participants"
+        subTitle="Participants"
+        body={<OsUpload />}
+        width={608}
+        primaryButtonText="Add Participants"
+        open={showModal}
+        // onOk={() => onAdd()}
+        onCancel={() => setShowModal((p) => !p)}
+        // afterClose={() => onCancel()}
+      />
+    </>
   );
 };
 

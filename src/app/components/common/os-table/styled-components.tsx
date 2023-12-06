@@ -22,7 +22,7 @@ export const CustomTable = styled(Table)<ITableProps>`
     color: ${(props) => props?.token?.colorPrimaryText};
     text-align: center;
     background: ${(props) => props.token.colorInfoBg};
-    border-bottom: 1px solid ${(props) => props.token.colorBgElevated};
+    border-bottom: 1px solid #8592a4;
   }
   .ant-pagination .ant-pagination-item-active {
     background: ${(props) => props.token.colorPrimary};
@@ -33,11 +33,7 @@ export const CustomTable = styled(Table)<ITableProps>`
       font-weight: 400;
     }
   }
-  .ant-pagination .ant-pagination-item {
-    // background: ${(props) => props.token.colorInfoBg};
-  }
-
-  // .ant-checkbox {
-  //   border: 1px solid ${(props) => props.token.colorInfoBorder};
+  // .ant-pagination .ant-pagination-item {
+  //   background: ${(props) => props.token.colorInfoBg};
   // }
 `;

@@ -36,10 +36,11 @@ const theme: ThemeConfig = {
     // colorText: "#2A2A2A",
     // colorTextSecondary: "#767676",
     colorBgContainer: '#ffffff',
-    colorBgElevated: '#8592A4',
-    colorBgLayout: '#F5F5F5',
+    colorBgElevated: '#ffffff',
+    colorBgLayout: '#ffffff',
     colorBorder: '#C7CDD5',
-    // colorBorderSecondary: "#E3E5E5",
+    colorBorderSecondary: '#EDEFF2',
+    colorSplit: '#EF697B',
   },
   components: {
     Button: {

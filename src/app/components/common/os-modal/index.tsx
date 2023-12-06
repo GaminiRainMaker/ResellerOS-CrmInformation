@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import {FC} from 'react';
+import {XCircleIcon} from '@heroicons/react/20/solid';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
 import {OSModalPropsInterface} from './os-modal.interface';
@@ -26,30 +28,25 @@ const OsModal: FC<OSModalPropsInterface> = ({
       styleFooter={styleFooter}
       title=""
       destroyOnClose
-      width={rest?.width ?? 600}
+      width={rest?.width ?? 500}
       open={open}
       onCancel={(e) => {
-        // onCancel && onCancel(e);
-        // afterClose && afterClose();
+        onCancel && onCancel(e);
       }}
-      onOk={(e) => {
-        // onOk && onOk(e);
-      }}
+      mask
+      closeIcon={<XCircleIcon width={28} color={token?.colorSplit} />}
+      onOk={() => {}}
       okText={
         <Typography
           cursor="pointer"
           name="Button 1"
-          //   color={token.colorBgContainer}
+          color={token.colorBgContainer}
         >
           {primaryButtonText}
         </Typography>
       }
       cancelText={
-        <Typography
-          cursor="pointer"
-          name="Button 1"
-          //   color={token.colorLink}
-        >
+        <Typography cursor="pointer" name="Button 1" color={token.colorLink}>
           {secondaryButtonText || 'Cancel'}
         </Typography>
       }
