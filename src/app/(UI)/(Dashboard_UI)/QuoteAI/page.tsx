@@ -19,74 +19,29 @@ import {
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import OsButton, {ButtonType} from '@/app/components/common/os-button';
-import {ButtonStyled} from '@/app/components/common/os-button/styled-components';
+import OsButton from '@/app/components/common/os-button';
+import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Avatar, Button} from 'antd';
 import {ColumnsType} from 'antd/es/table';
 import TabPane from 'antd/es/tabs/TabPane';
-import {useState} from 'react';
-import OsModal from '@/app/components/common/os-modal';
-import OsUpload from '@/app/components/common/os-upload';
-
-interface DataType {
-  key: React.Key;
-  name: string;
-  age: number;
-  address: string;
-}
-
-const columns: ColumnsType<DataType> = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-  },
-  {
-    title: 'Age',
-    dataIndex: 'age',
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-  },
-];
-
-const data: DataType[] = [];
-for (let i = 0; i < 46; i++) {
-  data.push({
-    key: i,
-    name: `Edward King ${i}`,
-    age: 32,
-    address: `London, Park Lane no. ${i}`,
-  });
-}
+import {useEffect, useState} from 'react';
+import UploadFile from './UploadFile';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {getQuote} from '../../../../../redux/actions/quote';
 
 const QuoteAI: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
+
+  const {data: quoteData} = useAppSelector((state) => state.quote);
+  useEffect(() => {
+    dispatch(getQuote());
+    // dispatch(getQuoteLineItem());
+  }, []);
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
@@ -146,6 +101,7 @@ const QuoteAI: React.FC = () => {
     {
       key: 1,
       name: 'Input Details',
+      // tableData: s
     },
     {
       key: 2,
@@ -164,11 +120,244 @@ const QuoteAI: React.FC = () => {
       name: 'Matrix',
     },
   ];
+
   const selectData = [
     {value: 'item 1', label: 'Item 1'},
     {value: 'item 2', label: 'Item 2'},
     {value: 'item 3', label: 'Item 3'},
     {value: 'item 4', label: 'Item 4'},
+  ];
+
+  const Quotecolumns = [
+    {
+      title: 'Cage Code',
+      dataIndex: 'cage_code',
+      key: 'cage_code',
+    },
+    {
+      title: 'Credit Cards',
+      dataIndex: 'credit_cards',
+      key: 'credit_cards',
+    },
+    {
+      title: 'Customer Address',
+      dataIndex: 'customer_address',
+      key: 'customer_address',
+    },
+    {
+      title: 'Customer City',
+      dataIndex: 'customer_city',
+      key: 'customer_city',
+    },
+    {
+      title: 'Customer Contact',
+      dataIndex: 'customer_contact',
+      key: 'customer_contact',
+    },
+    {
+      title: 'Customer Email',
+      dataIndex: 'customer_email',
+      key: 'customer_email',
+    },
+    {
+      title: 'Customer Name',
+      dataIndex: 'customer_name',
+      key: 'customer_name',
+    },
+    {
+      title: 'Customer Phone',
+      dataIndex: 'customer_phone',
+      key: 'customer_phone',
+    },
+    {
+      title: 'Customer State',
+      dataIndex: 'customer_state',
+      key: 'customer_state',
+    },
+    {
+      title: 'Total Price',
+      dataIndex: 'customer_street',
+      key: 'customer_street',
+    },
+    {
+      title: 'Customer Zip',
+      dataIndex: 'customer_zip',
+      key: 'customer_zip',
+    },
+
+    {
+      title: 'Deal Id',
+      dataIndex: 'deal_id',
+      key: 'deal_id',
+    },
+    {
+      title: 'Distributor Address',
+      dataIndex: 'distributor_address',
+      key: 'distributor_address',
+    },
+    {
+      title: 'Distributor City',
+      dataIndex: 'distributor_city',
+      key: 'distributor_city',
+    },
+    {
+      title: 'Distributor Contact',
+      dataIndex: 'distributor_contact',
+      key: 'distributor_contact',
+    },
+    {
+      title: 'Distributor Email',
+      dataIndex: 'distributor_email',
+      key: 'distributor_email',
+    },
+    {
+      title: 'Distributor Fax',
+      dataIndex: 'distributor_fax',
+      key: 'distributor_fax',
+    },
+
+    {
+      title: 'Distributor Name',
+      dataIndex: 'distributor_name',
+      key: 'distributor_name',
+    },
+    {
+      title: 'Distributor Phone',
+      dataIndex: 'distributor_phone',
+      key: 'distributor_phone',
+    },
+    {
+      title: 'Distributor State',
+      dataIndex: 'distributor_state',
+      key: 'distributor_state',
+    },
+    {
+      title: 'Distributor Street',
+      dataIndex: 'distributor_street',
+      key: 'distributor_street',
+    },
+    {
+      title: 'Distributor Zip',
+      dataIndex: 'distributor_zip',
+      key: 'distributor_zip',
+    },
+
+    {
+      title: 'Duns Number',
+      dataIndex: 'duns_number',
+      key: 'duns_number',
+    },
+    {
+      title: 'Expiration Date',
+      dataIndex: 'expiration_date',
+      key: 'expiration_date',
+    },
+    {
+      title: 'Fob Shipping',
+      dataIndex: 'fob_shipping',
+      key: 'fob_shipping',
+    },
+    {
+      title: 'Ftin',
+      dataIndex: 'ftin',
+      key: 'ftin',
+    },
+
+    {
+      title: 'Oem Name',
+      dataIndex: 'oem_name',
+      key: 'oem_name',
+    },
+    {
+      title: 'Payment Terms',
+      dataIndex: 'payment_terms',
+      key: 'payment_terms',
+    },
+    {
+      title: 'Quote Amount',
+      dataIndex: 'quote_amount',
+      key: 'quote_amount',
+    },
+    {
+      title: 'Quote Date',
+      dataIndex: 'quote_date',
+      key: 'quote_date',
+    },
+    {
+      title: 'Quote Number',
+      dataIndex: 'quote_number',
+      key: 'quote_number',
+    },
+    {
+      title: 'Remit To',
+      dataIndex: 'remit_to',
+      key: 'remit_to',
+    },
+    {
+      title: 'Reseller Address',
+      dataIndex: 'reseller_address',
+      key: 'reseller_address',
+    },
+    {
+      title: 'Reseller City',
+      dataIndex: 'reseller_city',
+      key: 'reseller_city',
+    },
+    {
+      title: 'Reseller Contact',
+      dataIndex: 'reseller_contact',
+      key: 'reseller_contact',
+    },
+    {
+      title: 'Reseller Email',
+      dataIndex: 'reseller_email',
+      key: 'reseller_email',
+    },
+    {
+      title: 'Reseller Name',
+      dataIndex: 'reseller_name',
+      key: 'reseller_name',
+    },
+    {
+      title: 'Reseller Phone',
+      dataIndex: 'reseller_phone',
+      key: 'reseller_phone',
+    },
+    {
+      title: 'Reseller State',
+      dataIndex: 'reseller_state',
+      key: 'reseller_state',
+    },
+    {
+      title: 'Reseller Street',
+      dataIndex: 'reseller_street',
+      key: 'reseller_street',
+    },
+    {
+      title: 'Reseller Zip',
+      dataIndex: 'reseller_zip',
+      key: 'reseller_zip',
+    },
+    {
+      title: 'Shipping',
+      dataIndex: 'shipping',
+      key: 'shipping',
+    },
+    {
+      title: 'Shipping Amount',
+      dataIndex: 'shipping_amount',
+      key: 'shipping_amount',
+    },
+    {
+      title: 'Subtotal',
+      dataIndex: 'subtotal',
+      key: 'subtotal',
+    },
+    {
+      title: 'UEI',
+      dataIndex: 'uei',
+      key: 'uei',
+    },
   ];
 
   return (
@@ -201,14 +390,6 @@ const QuoteAI: React.FC = () => {
               Generated Quote
             </Typography>
           </Col>
-        </Row>
-
-        <Row justify="space-between" align="middle">
-          <Col>
-            <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              Generated Quote
-            </Typography>
-          </Col>
           <Col>
             <div
               style={{
@@ -223,6 +404,7 @@ const QuoteAI: React.FC = () => {
                 text="Add Quote"
                 buttontype="PRIMARY"
                 icon={<PlusIcon />}
+                clickHandler={() => setShowModal((p) => !p)}
               />
               <OsButton text=" Mark as Complete" buttontype="PRIMARY" />
 
@@ -252,14 +434,9 @@ const QuoteAI: React.FC = () => {
                     placeholder="Select Grouping here"
                     options={selectData}
                   />
-                  <ButtonStyled
+                  <OsButton
+                    buttontype="PRIMARY_ICON"
                     icon={<FilePdfOutlined />}
-                    style={{
-                      width: '48px',
-                      background: '#1c3557',
-                      color: 'white',
-                      padding: '20px',
-                    }}
                   />
                 </Space>
               </Space>
@@ -281,8 +458,8 @@ const QuoteAI: React.FC = () => {
               >
                 <OsTable
                   rowSelection={rowSelection}
-                  columns={columns}
-                  dataSource={data}
+                  columns={Quotecolumns}
+                  dataSource={quoteData}
                   scroll
                 />
               </TabPane>
@@ -291,15 +468,14 @@ const QuoteAI: React.FC = () => {
         </Row>
       </Space>
       <OsModal
-        title="All Participants"
-        subTitle="Participants"
-        body={<OsUpload />}
+        body={<UploadFile />}
         width={608}
-        primaryButtonText="Add Participants"
+        primaryButtonText="Generate"
         open={showModal}
         // onOk={() => onAdd()}
         onCancel={() => setShowModal((p) => !p)}
         // afterClose={() => onCancel()}
+        secondaryButtonText="Save & Generate Individual Quotes"
       />
     </>
   );

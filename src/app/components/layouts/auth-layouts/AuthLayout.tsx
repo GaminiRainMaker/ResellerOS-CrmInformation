@@ -3,7 +3,6 @@
 import {Content} from 'antd/es/layout/layout';
 import Image from 'next/image';
 import {FC} from 'react';
-import authBg from '../../../../../public/assets/static/authBg.svg';
 import loginAvatar from '../../../../../public/assets/static/AvatarFullImg.svg';
 import {Col, Row} from '../../common/antd/Grid';
 import useThemeToken from '../../common/hooks/useThemeToken';

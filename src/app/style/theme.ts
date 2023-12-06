@@ -40,7 +40,8 @@ const theme: ThemeConfig = {
     colorBgLayout: '#ffffff',
     colorBorder: '#C7CDD5',
     colorBorderSecondary: '#EDEFF2',
-    colorSplit: '#EF697B',
+    // colorSplit: '#EF697B',
+    colorIcon: '#EF697B',
   },
   components: {
     Button: {

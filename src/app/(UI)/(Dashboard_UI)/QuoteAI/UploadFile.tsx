@@ -1,15 +1,13 @@
 'use client';
 
-import {message, Upload} from 'antd';
-import axios from 'axios';
-import {useRouter} from 'next/navigation';
 import {useState} from 'react';
-import {insertQuote} from '../../redux/actions/quote';
-import {useAppDispatch} from '../../redux/hook';
-import useThemeToken from './components/common/hooks/useThemeToken';
-import OsButton from './components/common/os-button';
-import Typography from './components/common/typography';
-import {insertQuoteLineItem} from '../../redux/actions/quotelineitem';
+
+import OsUpload from '@/app/components/common/os-upload';
+import {message} from 'antd';
+import axios from 'axios';
+import {insertQuote} from '../../../../../redux/actions/quote';
+import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
+import {useAppDispatch} from '../../../../../redux/hook';
 
 const convertFileToBase64 = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -31,10 +29,8 @@ interface FormattedData {
   };
 }
 
-export default function Home() {
-  const [token] = useThemeToken();
+const UploadFile = () => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
 
   // Define your Nanonets API key and endpoint
@@ -88,7 +84,7 @@ export default function Home() {
             }));
             dispatch(insertQuoteLineItem(lineitemData));
           }
-          router.push('/quote');
+          window?.location?.reload();
         });
       }
       setLoading(false);
@@ -110,41 +106,7 @@ export default function Home() {
     return false;
   };
 
-  return (
-    <main>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'column',
-          margin: '2rem',
-        }}
-      >
-        <Typography
-          as="div"
-          name="Display 1/Regular"
-          color={token?.colorPrimary}
-        >
-          Welcome to ResellerOS
-        </Typography>
-        <br />
-        <br />
-        <br />
-        <br />
-        <Upload
-          action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-          beforeUpload={beforeUpload}
-          showUploadList={false}
-          name="file"
-        >
-          <OsButton
-            loading={loading}
-            text="Upload File"
-            buttontype="PRIMARY"
-            htmlType="submit"
-          />
-        </Upload>
-      </div>
-    </main>
-  );
-}
+  return <OsUpload beforeUpload={beforeUpload} />;
+};
+
+export default UploadFile;

@@ -2,15 +2,17 @@ import Image from 'next/image';
 import {Avatar} from 'antd';
 import {ButtonProps} from '../antd/Button';
 import {ButtonStyled} from './styled-components';
+import Typography from '../typography';
 
 interface ButtonInterface extends ButtonProps {
-  buttontype: any;
+  buttontype: string;
   text?: string;
   clickHandler?: () => void;
   disabled?: boolean;
   btnStyle?: any;
   icon?: any;
   commonIcon?: any;
+  color?: string;
 }
 
 const OsButton: React.FC<ButtonInterface> = ({
@@ -22,6 +24,7 @@ const OsButton: React.FC<ButtonInterface> = ({
   type,
   buttontype = 'PRIMARY',
   commonIcon,
+  color,
 }) => {
   const buttonTypeTemp = {
     PRIMARY: 'PRIMARY',

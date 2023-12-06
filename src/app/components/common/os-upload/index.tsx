@@ -1,15 +1,12 @@
-import React from 'react';
-import {InboxOutlined} from '@ant-design/icons';
-import {message, Upload, UploadFile, UploadProps} from 'antd';
 import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
-import {OSUploadStyle} from './styled-components';
-import Typography from '../typography';
-import useThemeToken from '../hooks/useThemeToken';
-import {Col, Row} from '../antd/Grid';
-import {Space} from '../antd/Space';
+import {message} from 'antd';
+import React from 'react';
 import {Checkbox} from '../antd/Checkbox';
-
-const {Dragger} = Upload;
+import {Space} from '../antd/Space';
+import {UploadFile, UploadProps} from '../antd/Upload';
+import useThemeToken from '../hooks/useThemeToken';
+import Typography from '../typography';
+import {OSDraggerStyle, OSUploadStyle} from './styled-components';
 
 const props: UploadProps = {
   name: 'file',
@@ -51,37 +48,57 @@ const fileList: UploadFile[] = [
     name: 'zzz.png',
     status: 'error',
   },
+  {
+    uid: '-2',
+    name: 'zzz.png',
+    status: 'error',
+  },
+  {
+    uid: '-2',
+    name: 'zzz.png',
+    status: 'error',
+  },
+  {
+    uid: '-2',
+    name: 'zzz.png',
+    status: 'error',
+  },
 ];
-const OsUpload: React.FC = () => {
+
+const OsUpload: React.FC<any> = ({beforeUpload}) => {
   const [token] = useThemeToken();
+
   return (
     <Space size={24} direction="vertical" style={{width: '100%'}}>
       <Space size={8} direction="horizontal">
         <Checkbox />
         <Typography name="Body 3/Regular">Add in existing quote</Typography>
       </Space>
-      <OSUploadStyle {...props}>
-        <FolderArrowDownIcon width={24} color={token?.colorInfoBorder} />
 
-        <>
+      <OSDraggerStyle {...props} beforeUpload={beforeUpload}>
+        <FolderArrowDownIcon width={24} color={token?.colorInfoBorder} />
+        <Typography
+          name="Body 4/Medium"
+          color={token?.colorPrimaryText}
+          as="div"
+        >
           <Typography
             name="Body 4/Medium"
-            color={token?.colorPrimaryText}
-            as="div"
+            style={{textDecoration: 'underline', cursor: 'pointer'}}
+            color={token?.colorPrimary}
           >
-            or Drag and Drop
-          </Typography>
-          <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
-            XLS, PDF, DOC, PNG and JPG
-          </Typography>
-        </>
-      </OSUploadStyle>
-
-      <Upload
-        // action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+            Click to Upload
+          </Typography>{' '}
+          or Drag and Drop
+        </Typography>
+        <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
+          XLS, PDF, DOC, PNG and JPG
+        </Typography>
+      </OSDraggerStyle>
+      <OSUploadStyle
+        action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
         listType="picture"
         defaultFileList={[...fileList]}
-        className="upload-list-inline"
       />
     </Space>
   );

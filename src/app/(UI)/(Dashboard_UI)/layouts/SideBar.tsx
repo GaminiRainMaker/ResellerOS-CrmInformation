@@ -97,16 +97,7 @@ const SideBar = () => {
         name="Button 1"
         color={token?.colorTextSecondary}
       >
-        <div
-          style={{
-            display: 'flex',
-            padding: '16px 4px',
-            alignItems: 'flexStart',
-
-            gap: '16px',
-            alignSelf: 'stretch',
-          }}
-        >
+        <Space size={20}>
           <OsAvatar
             icon={
               <CogIcon
@@ -162,7 +153,7 @@ const SideBar = () => {
               />
             </div>
           </Typography>
-        </div>
+        </Space>
       </Typography>,
 
       'Quote AI',

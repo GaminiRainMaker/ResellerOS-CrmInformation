@@ -8,7 +8,7 @@ import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/out
 import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
 import {Space} from '../../common/antd/Space';
 import useThemeToken from '../../common/hooks/useThemeToken';
-import OsButton, {ButtonType} from '../../common/os-button';
+import OsButton from '../../common/os-button';
 import OsInput from '../../common/os-input';
 import OsInputPassword from '../../common/os-input/InputPassword';
 import Typography from '../../common/typography';
@@ -150,12 +150,10 @@ const ContentSection: FC<AuthLayoutInterface> = ({
 
             <Form.Item style={{marginTop: '80px'}}>
               <OsButton
-                buttontype={ButtonType.PRIMARY}
-                type="primary"
+                text={buttonText}
+                buttontype="PRIMARY"
                 htmlType="submit"
-              >
-                {buttonText}
-              </OsButton>
+              />
             </Form.Item>
 
             <Space>
