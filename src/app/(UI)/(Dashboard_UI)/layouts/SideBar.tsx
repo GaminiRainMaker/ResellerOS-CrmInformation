@@ -2,10 +2,8 @@
 
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import Typography from '@/app/components/common/typography';
-import {Menu, MenuProps, Space, Layout, Avatar} from 'antd';
-import Sider from 'antd/es/layout/Sider';
+import {Menu, MenuProps, Space, Layout} from 'antd';
 import React, {useState} from 'react';
-import Image from 'next/image';
 import {useRouter} from 'next/navigation';
 import {
   DocumentTextIcon,
@@ -16,7 +14,9 @@ import {
   UserGroupIcon,
   EllipsisHorizontalCircleIcon,
   ReceiptRefundIcon,
+  ArrowDownTrayIcon,
 } from '@heroicons/react/24/outline';
+import OsAvatar from '@/app/components/common/os-avatar';
 import {CustomSider} from './styled-components';
 
 const SideBar = () => {
@@ -48,21 +48,18 @@ const SideBar = () => {
           router?.push('/dashboard');
         }}
         name="Button 1"
-        // color={token?.colorLink}
       >
         <div
           style={{
             display: 'flex',
-            padding: '16px 24px',
+            padding: '16px 4px',
             alignItems: 'flexStart',
 
             gap: '16px',
             alignSelf: 'stretch',
           }}
         >
-          <Avatar
-            shape="square"
-            style={{background: 'none'}}
+          <OsAvatar
             icon={
               <ArrowsPointingOutIcon
                 color={
@@ -73,21 +70,21 @@ const SideBar = () => {
                 width={24}
               />
             }
-            alt="eyeIcon"
           />
-          <div
+          <Typography
+            name="Button 1"
             style={{
               marginTop: '1px',
-              color:
-                // eslint-disable-next-line eqeqeq
-                seleectedKey?.toString()?.includes('1')
-                  ? token?.colorLink
-                  : token?.colorTextSecondary,
             }}
+            color={
+              seleectedKey?.toString()?.includes('1')
+                ? token?.colorLink
+                : token?.colorTextSecondary
+            }
           >
             {' '}
             Dashboard
-          </div>
+          </Typography>
         </div>
       </Typography>,
       '1',
@@ -103,16 +100,14 @@ const SideBar = () => {
         <div
           style={{
             display: 'flex',
-            padding: '16px 24px',
+            padding: '16px 4px',
             alignItems: 'flexStart',
 
             gap: '16px',
             alignSelf: 'stretch',
           }}
         >
-          <Avatar
-            shape="square"
-            style={{background: 'none'}}
+          <OsAvatar
             icon={
               <CogIcon
                 color={
@@ -123,23 +118,50 @@ const SideBar = () => {
                 width={24}
               />
             }
-            alt="eyeIcon"
           />
 
-          <div
+          <Typography
+            name="Button 1"
             style={{
               marginTop: '1px',
-              color:
-                // eslint-disable-next-line eqeqeq
-                seleectedKey?.toString()?.includes('2') ||
-                seleectedKey?.toString()?.includes('3')
-                  ? token?.colorLink
-                  : token?.colorTextSecondary,
+              display: 'flex',
+              // width: '200px',
+              justifyContent: 'space-between',
             }}
           >
             {' '}
-            Quote AI
-          </div>
+            <Typography
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+                marginRight: '80px',
+              }}
+              color={
+                seleectedKey?.toString()?.includes('2') ||
+                seleectedKey?.toString()?.includes('3')
+                  ? token?.colorLink
+                  : token?.colorTextSecondary
+              }
+            >
+              Quote AI
+            </Typography>{' '}
+            <div>
+              {' '}
+              <OsAvatar
+                icon={
+                  <ArrowDownTrayIcon
+                    color={
+                      seleectedKey?.toString()?.includes('2') ||
+                      seleectedKey?.toString()?.includes('3')
+                        ? token?.colorLink
+                        : token?.colorTextSecondary
+                    }
+                    width={24}
+                  />
+                }
+              />
+            </div>
+          </Typography>
         </div>
       </Typography>,
 
@@ -159,16 +181,14 @@ const SideBar = () => {
             <div
               style={{
                 display: 'flex',
-                padding: '16px 24px',
+                padding: '16px 4px',
                 alignItems: 'flexStart',
 
                 gap: '16px',
                 alignSelf: 'stretch',
               }}
             >
-              <Avatar
-                shape="square"
-                style={{background: 'none'}}
+              <OsAvatar
                 icon={
                   <CircleStackIcon
                     color={
@@ -179,21 +199,21 @@ const SideBar = () => {
                     width={24}
                   />
                 }
-                alt="eyeIcon"
               />
-              <div
+              <Typography
+                name="Button 1"
                 style={{
                   marginTop: '1px',
-                  color:
-                    // eslint-disable-next-line eqeqeq
-                    seleectedKey?.toString()?.includes('2')
-                      ? token.colorPrimaryBorder
-                      : token?.colorTextSecondary,
                 }}
+                color={
+                  seleectedKey?.toString()?.includes('2')
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
               >
                 {' '}
                 Generate Quote
-              </div>
+              </Typography>
             </div>
           </Typography>,
           '2',
@@ -209,16 +229,14 @@ const SideBar = () => {
             <div
               style={{
                 display: 'flex',
-                padding: '16px 24px',
+                padding: '16px 4px',
                 alignItems: 'flexStart',
 
                 gap: '16px',
                 alignSelf: 'stretch',
               }}
             >
-              <Avatar
-                shape="square"
-                style={{background: 'none'}}
+              <OsAvatar
                 icon={
                   <CircleStackIcon
                     color={
@@ -229,7 +247,6 @@ const SideBar = () => {
                     width={24}
                   />
                 }
-                alt="eyeIcon"
               />
               <div
                 style={{
@@ -262,16 +279,14 @@ const SideBar = () => {
         <div
           style={{
             display: 'flex',
-            padding: '16px 24px',
+            padding: '16px 4px',
             alignItems: 'flexStart',
 
             gap: '16px',
             alignSelf: 'stretch',
           }}
         >
-          <Avatar
-            shape="square"
-            style={{background: 'none'}}
+          <OsAvatar
             icon={
               <DocumentTextIcon
                 color={
@@ -282,21 +297,22 @@ const SideBar = () => {
                 width={24}
               />
             }
-            alt="eyeIcon"
           />
-          <div
+
+          <Typography
+            name="Button 1"
             style={{
               marginTop: '1px',
-              color:
-                // eslint-disable-next-line eqeqeq
-                seleectedKey?.toString()?.includes('4')
-                  ? token?.colorLink
-                  : token?.colorTextSecondary,
             }}
+            color={
+              seleectedKey?.toString()?.includes('4')
+                ? token?.colorLink
+                : token?.colorTextSecondary
+            }
           >
             {' '}
             DealReg AI
-          </div>
+          </Typography>
         </div>
       </Typography>,
       '4',
@@ -312,16 +328,14 @@ const SideBar = () => {
         <div
           style={{
             display: 'flex',
-            padding: '16px 24px',
+            padding: '16px 4px',
             alignItems: 'flexStart',
 
             gap: '16px',
             alignSelf: 'stretch',
           }}
         >
-          <Avatar
-            shape="square"
-            style={{background: 'none'}}
+          <OsAvatar
             icon={
               <ShoppingBagIcon
                 color={
@@ -332,21 +346,22 @@ const SideBar = () => {
                 width={24}
               />
             }
-            alt="eyeIcon"
           />
-          <div
+
+          <Typography
+            name="Button 1"
             style={{
               marginTop: '1px',
-              color:
-                // eslint-disable-next-line eqeqeq
-                seleectedKey?.toString()?.includes('5')
-                  ? token?.colorLink
-                  : token?.colorTextSecondary,
             }}
+            color={
+              seleectedKey?.toString()?.includes('5')
+                ? token?.colorLink
+                : token?.colorTextSecondary
+            }
           >
             {' '}
             Order AI
-          </div>
+          </Typography>
         </div>
       </Typography>,
       '5',
@@ -362,16 +377,14 @@ const SideBar = () => {
         <div
           style={{
             display: 'flex',
-            padding: '16px 24px',
+            padding: '16px 4px',
             alignItems: 'flexStart',
 
             gap: '16px',
             alignSelf: 'stretch',
           }}
         >
-          <Avatar
-            shape="square"
-            style={{background: 'none'}}
+          <OsAvatar
             icon={
               <UserGroupIcon
                 color={
@@ -382,21 +395,21 @@ const SideBar = () => {
                 width={24}
               />
             }
-            alt="eyeIcon"
           />
-          <div
+          <Typography
+            name="Button 1"
             style={{
               marginTop: '1px',
-              color:
-                // eslint-disable-next-line eqeqeq
-                seleectedKey?.toString()?.includes('6')
-                  ? token?.colorLink
-                  : token?.colorTextSecondary,
             }}
+            color={
+              seleectedKey?.toString()?.includes('6')
+                ? token?.colorLink
+                : token?.colorTextSecondary
+            }
           >
             {' '}
             Vendors
-          </div>
+          </Typography>
         </div>
       </Typography>,
       '6',
@@ -412,16 +425,14 @@ const SideBar = () => {
         <div
           style={{
             display: 'flex',
-            padding: '16px 24px',
+            padding: '16px 4px',
             alignItems: 'flexStart',
 
             gap: '16px',
             alignSelf: 'stretch',
           }}
         >
-          <Avatar
-            shape="square"
-            style={{background: 'none'}}
+          <OsAvatar
             icon={
               <EllipsisHorizontalCircleIcon
                 color={
@@ -432,21 +443,21 @@ const SideBar = () => {
                 width={24}
               />
             }
-            alt="eyeIcon"
           />
-          <div
+          <Typography
+            name="Button 1"
             style={{
               marginTop: '1px',
-              color:
-                // eslint-disable-next-line eqeqeq
-                seleectedKey?.toString()?.includes('7')
-                  ? token?.colorLink
-                  : token?.colorTextSecondary,
             }}
+            color={
+              seleectedKey?.toString()?.includes('7')
+                ? token?.colorLink
+                : token?.colorTextSecondary
+            }
           >
             {' '}
             Renewals and Upgrades
-          </div>
+          </Typography>
         </div>
       </Typography>,
       '7',
@@ -459,19 +470,8 @@ const SideBar = () => {
         name="Button 1"
         color={token?.colorTextSecondary}
       >
-        <div
-          style={{
-            display: 'flex',
-            padding: '16px 24px',
-            alignItems: 'flexStart',
-
-            gap: '16px',
-            alignSelf: 'stretch',
-          }}
-        >
-          <Avatar
-            shape="square"
-            style={{background: 'none'}}
+        <div>
+          <OsAvatar
             icon={
               <ReceiptRefundIcon
                 color={
@@ -482,19 +482,21 @@ const SideBar = () => {
                 width={24}
               />
             }
-            alt="eyeIcon"
           />
-          <div
+          <Typography
+            name="Button 1"
             style={{
               marginTop: '1px',
-              color: seleectedKey?.toString()?.includes('8')
-                ? token?.colorLink
-                : token?.colorTextSecondary,
             }}
+            color={
+              seleectedKey?.toString()?.includes('8')
+                ? token?.colorLink
+                : token?.colorTextSecondary
+            }
           >
             {' '}
             CRM information
-          </div>
+          </Typography>
         </div>
       </Typography>,
       '8',
@@ -510,14 +512,6 @@ const SideBar = () => {
         >
           <div className="demo-logo-vertical" />
           <Menu
-            style={{
-              //   height: '100vh',
-              width: '',
-              // color:
-              //   seleectedKey === 1
-              //     ? 'var(--foundation-secondary-21-secondary-21500, #3DA5D9)'
-              //     : '',
-            }}
             theme="light"
             defaultSelectedKeys={['1']}
             mode="inline"

@@ -31,6 +31,9 @@ export const CustomSider = styled(Sider)`
   .ant-menu-light:not(.ant-menu-horizontal) .ant-menu-submenu-title:hover {
     background-color: transparent !important;
   }
+  .ant-menu-submenu-arrow {
+    display: none;
+  }
 `;
 export const CustomDiv = styled(Row)`
   display: flex;
@@ -46,4 +49,12 @@ export const CustomDiv2 = styled(Row)`
   align-items: flex-start;
   gap: 36px;
   color: red;
+`;
+export const CustomDiv3 = styled(Row)`
+  display: inline-flex;
+  padding: 16px 4px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  alignself: stretch;
 `;
