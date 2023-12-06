@@ -1,22 +1,22 @@
 'use client';
 
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import OsAvatar from '@/app/components/common/os-avatar';
 import Typography from '@/app/components/common/typography';
-import {Menu, MenuProps, Space, Layout} from 'antd';
-import React, {useState} from 'react';
-import {useRouter} from 'next/navigation';
 import {
-  DocumentTextIcon,
+  ArrowDownTrayIcon,
   ArrowsPointingOutIcon,
-  CogIcon,
   CircleStackIcon,
-  ShoppingBagIcon,
-  UserGroupIcon,
+  CogIcon,
+  DocumentTextIcon,
   EllipsisHorizontalCircleIcon,
   ReceiptRefundIcon,
-  ArrowDownTrayIcon,
+  ShoppingBagIcon,
+  UserGroupIcon,
 } from '@heroicons/react/24/outline';
-import OsAvatar from '@/app/components/common/os-avatar';
+import {Layout, Menu, MenuProps, Space} from 'antd';
+import {useRouter} from 'next/navigation';
+import React, {useState} from 'react';
 import {CustomSider} from './styled-components';
 
 const SideBar = () => {
@@ -39,7 +39,6 @@ const SideBar = () => {
       label,
     } as MenuItem;
   }
-  console.log('seleectedKey', seleectedKey?.toString()?.includes('1'));
   const items: MenuItem[] = [
     getItem(
       <Typography

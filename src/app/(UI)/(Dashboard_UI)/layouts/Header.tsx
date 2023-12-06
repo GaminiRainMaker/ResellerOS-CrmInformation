@@ -1,24 +1,21 @@
 'use client';
 
+import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import SearchInput from '@/app/components/common/os-input/SearchInput';
-import Image from 'next/image';
-import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import {MenuProps} from 'antd/es/menu';
 import Typography from '@/app/components/common/typography';
 import {Layout} from 'antd';
-import {Space} from '@/app/components/common/antd/Space';
-import {Dropdown} from '@/app/components/common/antd/DropDown';
-import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
+import {MenuProps} from 'antd/es/menu';
+import Image from 'next/image';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import HeadphoneImg from '../../../../../public/assets/static/headphoneIcon.svg';
-import NotificationImg from '../../../../../public/assets/static/notificationIcon.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
+import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
+import NotificationImg from '../../../../../public/assets/static/notificationIcon.svg';
 import UserIcon from '../../../../../public/assets/static/userIcon.svg';
 
 const CustomHeader = () => {
-  const [token] = useThemeToken();
-
   const items: MenuProps['items'] = [
     {
       key: '1',

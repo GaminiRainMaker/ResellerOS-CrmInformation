@@ -31,7 +31,7 @@ const props: UploadProps = {
 const fileList: UploadFile[] = [
   {
     uid: '0',
-    name: 'xxx.png',
+    name: '123.png',
     status: 'uploading',
     percent: 33,
   },
@@ -51,17 +51,17 @@ const fileList: UploadFile[] = [
   {
     uid: '-2',
     name: 'zzz.png',
-    status: 'error',
+    status: 'done',
   },
   {
     uid: '-2',
-    name: 'zzz.png',
-    status: 'error',
+    name: 'zzz.pdf',
+    status: 'done',
   },
   {
     uid: '-2',
-    name: 'zzz.png',
-    status: 'error',
+    name: 'zzz.doc',
+    status: 'done',
   },
 ];
 
@@ -95,6 +95,7 @@ const OsUpload: React.FC<any> = ({beforeUpload}) => {
           XLS, PDF, DOC, PNG and JPG
         </Typography>
       </OSDraggerStyle>
+
       <OSUploadStyle
         action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
         listType="picture"

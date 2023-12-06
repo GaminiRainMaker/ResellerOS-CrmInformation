@@ -1,13 +1,10 @@
 'use client';
 
-import {useState} from 'react';
+import {FC} from 'react';
 
 import OsUpload from '@/app/components/common/os-upload';
 import {message} from 'antd';
 import axios from 'axios';
-import {insertQuote} from '../../../../../redux/actions/quote';
-import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
-import {useAppDispatch} from '../../../../../redux/hook';
 
 const convertFileToBase64 = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -23,16 +20,7 @@ const convertFileToBase64 = (file: File): Promise<string> =>
     reader.readAsDataURL(file);
   });
 
-interface FormattedData {
-  [key: string]: {
-    [key: string]: string | undefined; // Define the inner object structure
-  };
-}
-
-const UploadFile = () => {
-  const dispatch = useAppDispatch();
-  const [loading, setLoading] = useState<boolean>(false);
-
+const UploadFile: FC<any> = ({setUploadFileData}) => {
   // Define your Nanonets API key and endpoint
   const API_KEY = '198c15fd-9680-11ed-82f6-7a0abc6e8cc8';
   const API_ENDPOINT =
@@ -41,9 +29,7 @@ const UploadFile = () => {
   const sendDataToNanonets = async (base64Data: string, file: File) => {
     const formData = new FormData();
     formData.append('file', file);
-    setLoading(false);
     try {
-      setLoading(true);
       const response = await axios.post(API_ENDPOINT, formData, {
         headers: {
           Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString(
@@ -57,39 +43,11 @@ const UploadFile = () => {
           console.log(`Upload Progress: ${progress.toFixed(2)}%`);
         },
       });
-
-      const arrayOfTableObjects =
-        response?.data?.result?.[0]?.prediction?.filter(
-          (item: any) => item.label === 'table',
-        );
-      const formattedData: FormattedData = {};
-      arrayOfTableObjects?.[0]?.cells.forEach((item: any) => {
-        const rowNum = item.row;
-        if (!formattedData[rowNum]) {
-          formattedData[rowNum] = {};
-        }
-        formattedData[rowNum][item.label?.toLowerCase()] = item.text;
-      });
-      const formattedArray = Object.values(formattedData);
-      const labelOcrMap: any = {};
-      response?.data?.result?.[0]?.prediction?.forEach((item: any) => {
-        labelOcrMap[item?.label?.toLowerCase()] = item?.ocr_text;
-      });
-      if (labelOcrMap) {
-        dispatch(insertQuote(labelOcrMap)).then((d) => {
-          if (d?.payload?.data?.id) {
-            const lineitemData = formattedArray?.map((item: any) => ({
-              ...item,
-              qoute_id: d?.payload?.data?.id,
-            }));
-            dispatch(insertQuoteLineItem(lineitemData));
-          }
-          window?.location?.reload();
-        });
+      if (response) {
+        setUploadFileData(response);
       }
-      setLoading(false);
+      return response;
     } catch (error) {
-      setLoading(false);
       console.error('Error sending image to Nanonets API:', error);
       throw error;
     }

@@ -23,12 +23,17 @@ import OsButton from '@/app/components/common/os-button';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import {ColumnsType} from 'antd/es/table';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useEffect, useState} from 'react';
-import UploadFile from './UploadFile';
+import {getQuote, insertQuote} from '../../../../../redux/actions/quote';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {getQuote} from '../../../../../redux/actions/quote';
+import UploadFile from './UploadFile';
+
+interface FormattedData {
+  [key: string]: {
+    [key: string]: string | undefined; // Define the inner object structure
+  };
+}
 
 const QuoteAI: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -36,6 +41,7 @@ const QuoteAI: React.FC = () => {
   const [activeTab, setActiveTab] = useState<any>('1');
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [uploadFileData, setUploadFileData] = useState<any>({});
 
   const {data: quoteData} = useAppSelector((state) => state.quote);
   useEffect(() => {
@@ -360,6 +366,44 @@ const QuoteAI: React.FC = () => {
     },
   ];
 
+  const addQuote = () => {
+    console.log('twtwertwtr', uploadFileData);
+    const arrayOfTableObjects =
+      uploadFileData?.data?.result?.[0]?.prediction?.filter(
+        (item: any) => item.label === 'table',
+      );
+    const formattedData: FormattedData = {};
+    arrayOfTableObjects?.[0]?.cells.forEach((item: any) => {
+      const rowNum = item.row;
+      if (!formattedData[rowNum]) {
+        formattedData[rowNum] = {};
+      }
+      formattedData[rowNum][item.label?.toLowerCase()] = item.text;
+    });
+    const formattedArray = Object.values(formattedData);
+    const labelOcrMap: any = {};
+    uploadFileData?.data?.result?.[0]?.prediction?.forEach((item: any) => {
+      labelOcrMap[item?.label?.toLowerCase()] = item?.ocr_text;
+    });
+    if (labelOcrMap) {
+      console.log(
+        'labelOcrMap',
+        labelOcrMap,
+        'arrayOfTableObjects',
+        arrayOfTableObjects,
+      );
+      dispatch(insertQuote(labelOcrMap)).then((d) => {
+        if (d?.payload?.data?.id) {
+          // const lineitemData = formattedArray?.map((item: any) => ({
+          //   ...item,
+          //   qoute_id: d?.payload?.data?.id,
+          // }));
+          // dispatch(insertQuoteLineItem(lineitemData));
+        }
+      });
+    }
+  };
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -413,7 +457,7 @@ const QuoteAI: React.FC = () => {
           </Col>
         </Row>
         <Row
-          style={{background: 'white', padding: '12px', borderRadius: '10px'}}
+          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
           <OsTabs
             onChange={(e) => {
@@ -421,25 +465,26 @@ const QuoteAI: React.FC = () => {
             }}
             activeKey={activeTab}
             tabBarExtraContent={
-              <Space direction="vertical" size={0}>
-                <Typography
-                  name="Body 4/Medium"
-                  color={token?.colorPrimaryText}
-                >
-                  Select Grouping
-                </Typography>
-                <Space size={12}>
-                  <CommonSelect
-                    style={{width: '319px'}}
-                    placeholder="Select Grouping here"
-                    options={selectData}
-                  />
-                  <OsButton
-                    buttontype="PRIMARY_ICON"
-                    icon={<FilePdfOutlined />}
-                  />
-                </Space>
-              </Space>
+              // <Space direction="vertical" size={0}>
+              //   <Typography
+              //     name="Body 4/Medium"
+              //     color={token?.colorPrimaryText}
+              //   >
+              //     Select Grouping
+              //   </Typography>
+              //   <Space size={12}>
+              //     <CommonSelect
+              //       style={{width: '319px'}}
+              //       placeholder="Select Grouping here"
+              //       options={selectData}
+              //     />
+              //     <OsButton
+              //       buttontype="PRIMARY_ICON"
+              //       icon={<FilePdfOutlined />}
+              //     />
+              //   </Space>
+              // </Space>
+              <>df</>
             }
           >
             {TabPaneData?.map((item) => (
@@ -468,13 +513,12 @@ const QuoteAI: React.FC = () => {
         </Row>
       </Space>
       <OsModal
-        body={<UploadFile />}
+        body={<UploadFile setUploadFileData={setUploadFileData} />}
         width={608}
         primaryButtonText="Generate"
         open={showModal}
-        // onOk={() => onAdd()}
+        onOk={() => addQuote()}
         onCancel={() => setShowModal((p) => !p)}
-        // afterClose={() => onCancel()}
         secondaryButtonText="Save & Generate Individual Quotes"
       />
     </>

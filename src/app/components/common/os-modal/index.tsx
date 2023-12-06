@@ -19,6 +19,7 @@ const OsModal: FC<OSModalPropsInterface> = ({
   return (
     <OSModalStyle
       {...rest}
+      // onCancel={closeAction}
       title=""
       destroyOnClose
       width={rest?.width ?? 500}
@@ -26,12 +27,25 @@ const OsModal: FC<OSModalPropsInterface> = ({
       onCancel={(e) => {
         onCancel && onCancel(e);
       }}
+      onOk={onOk}
       mask
       closeIcon={<XCircleIcon width={30} color={token?.colorIcon} />}
       footer={
         <Space size={12}>
-          <OsButton text={secondaryButtonText} buttontype="" />
-          <OsButton text={primaryButtonText} buttontype="PRIMARY" />
+          <OsButton
+            text={secondaryButtonText}
+            buttontype=""
+            clickHandler={() => {
+              onOk();
+            }}
+          />
+          <OsButton
+            text={primaryButtonText}
+            buttontype="PRIMARY"
+            clickHandler={() => {
+              onOk();
+            }}
+          />
         </Space>
       }
     >
