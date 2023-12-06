@@ -443,7 +443,7 @@ const QuoteAI: React.FC = () => {
                 gap: '8px',
               }}
             >
-              <OsButton text="Save as Draft" buttontype="" />
+              <OsButton text="Save as Draft" buttontype="SECONDARY" />
               <OsButton
                 text="Add Quote"
                 buttontype="PRIMARY"
