@@ -10,10 +10,24 @@ export const OSDraggerStyle = styled(Dragger)`
   }
 `;
 export const OSUploadStyle = styled(Upload)`
-  &.ant-upload-wrapper .ant-upload-list {
-    // display: block;
-    .ant-upload-list-item-container {
-      margin-right: 20px;
-    }
-  }
+  // &.ant-upload-wrapper .ant-upload-list {
+  //   display: flex;
+  //   .ant-upload-list-item-container {
+  //     margin-right: 20px;
+  //     background: red;
+  //   }
+  // }
+  // &.ant-upload-wrapper
+  //   .ant-upload-list.ant-upload-list-picture
+  //   .ant-upload-list-item {
+  //   background: #f8fafb;
+  //   display: flex;
+  //   width: 192px;
+  //   height: 164px;
+  //   padding: 24px;
+  //   flex-direction: column;
+  //   justify-content: center;
+  //   align-items: center;
+  //   gap: 12px;
+  // }
 `;

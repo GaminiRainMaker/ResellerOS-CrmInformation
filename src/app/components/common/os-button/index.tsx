@@ -1,8 +1,7 @@
-import Image from 'next/image';
 import {Avatar} from 'antd';
+import Image from 'next/image';
 import {ButtonProps} from '../antd/Button';
 import {ButtonStyled} from './styled-components';
-import Typography from '../typography';
 
 interface ButtonInterface extends ButtonProps {
   buttontype: string;
@@ -45,14 +44,23 @@ const OsButton: React.FC<ButtonInterface> = ({
       buttontype={buttonTypeTemp[buttontype]}
     >
       {icon && (
-        <Avatar icon={icon} shape="square" style={{background: 'none'}} />
+        <Avatar
+          icon={icon}
+          src={commonIcon}
+          shape="square"
+          style={{
+            background: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        />
       )}
-      {commonIcon && (
+      {/* {commonIcon && (
         <Image src={commonIcon} height={40} width={40} alt="commonIcon" />
-      )}
+      )} */}
       {text}
     </ButtonStyled>
-    // <ButtonStyled buttontype={ButtonType} {...props} />
   );
 };
 
