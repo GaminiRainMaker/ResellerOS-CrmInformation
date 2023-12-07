@@ -44,26 +44,26 @@ const fileList: UploadFile[] = [
     thumbUrl:
       'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
   },
-  {
-    uid: '-2',
-    name: 'zzz.png',
-    status: 'error',
-  },
-  {
-    uid: '-2',
-    name: 'zzz.png',
-    status: 'done',
-  },
-  {
-    uid: '-2',
-    name: 'zzz.pdf',
-    status: 'done',
-  },
-  {
-    uid: '-2',
-    name: 'zzz.doc',
-    status: 'done',
-  },
+  // {
+  //   uid: '-2',
+  //   name: 'zzz.png',
+  //   status: 'error',
+  // },
+  // {
+  //   uid: '-2',
+  //   name: 'zzz.png',
+  //   status: 'done',
+  // },
+  // {
+  //   uid: '-2',
+  //   name: 'zzz.pdf',
+  //   status: 'done',
+  // },
+  // {
+  //   uid: '-2',
+  //   name: 'zzz.doc',
+  //   status: 'done',
+  // },
 ];
 
 const OsUpload: React.FC<any> = ({beforeUpload}) => {
@@ -100,6 +100,13 @@ const OsUpload: React.FC<any> = ({beforeUpload}) => {
           XLS, PDF, DOC, PNG and JPG
         </Typography>
       </OSDraggerStyle>
+
+      <OSUploadStyle
+        action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+        listType="picture"
+        defaultFileList={[...fileList]}
+        className="upload-list-inline"
+      />
     </Space>
   );
 };

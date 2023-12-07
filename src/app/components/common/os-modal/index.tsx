@@ -34,7 +34,7 @@ const OsModal: FC<OSModalPropsInterface> = ({
         <Space size={12}>
           <OsButton
             text={secondaryButtonText}
-            buttontype=""
+            buttontype="SECONDARY"
             clickHandler={() => {
               onOk();
             }}

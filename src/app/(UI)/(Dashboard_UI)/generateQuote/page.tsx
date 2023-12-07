@@ -7,10 +7,12 @@ import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
 import {FilePdfOutlined} from '@ant-design/icons';
 import {
+  ArrowDownTrayIcon,
   BanknotesIcon,
   CreditCardIcon,
   CurrencyDollarIcon,
   DocumentTextIcon,
+  EllipsisVerticalIcon,
   PlusIcon,
   ReceiptPercentIcon,
   TagIcon,
@@ -367,7 +369,6 @@ const GenerateQuote: React.FC = () => {
   ];
 
   const addQuote = () => {
-    console.log('twtwertwtr', uploadFileData);
     const arrayOfTableObjects =
       uploadFileData?.data?.result?.[0]?.prediction?.filter(
         (item: any) => item.label === 'table',
@@ -386,12 +387,6 @@ const GenerateQuote: React.FC = () => {
       labelOcrMap[item?.label?.toLowerCase()] = item?.ocr_text;
     });
     if (labelOcrMap) {
-      console.log(
-        'labelOcrMap',
-        labelOcrMap,
-        'arrayOfTableObjects',
-        arrayOfTableObjects,
-      );
       dispatch(insertQuote(labelOcrMap)).then((d) => {
         if (d?.payload?.data?.id) {
           // const lineitemData = formattedArray?.map((item: any) => ({
@@ -452,7 +447,10 @@ const GenerateQuote: React.FC = () => {
               />
               <OsButton text=" Mark as Complete" buttontype="PRIMARY" />
 
-              <OsButton buttontype="PRIMARY_ICON" icon={<FilePdfOutlined />} />
+              <OsButton
+                buttontype="PRIMARY_ICON"
+                icon={<ArrowDownTrayIcon width={24} />}
+              />
             </div>
           </Col>
         </Row>
@@ -465,26 +463,25 @@ const GenerateQuote: React.FC = () => {
             }}
             activeKey={activeTab}
             tabBarExtraContent={
-              // <Space direction="vertical" size={0}>
-              //   <Typography
-              //     name="Body 4/Medium"
-              //     color={token?.colorPrimaryText}
-              //   >
-              //     Select Grouping
-              //   </Typography>
-              //   <Space size={12}>
-              //     <CommonSelect
-              //       style={{width: '319px'}}
-              //       placeholder="Select Grouping here"
-              //       options={selectData}
-              //     />
-              //     <OsButton
-              //       buttontype="PRIMARY_ICON"
-              //       icon={<FilePdfOutlined />}
-              //     />
-              //   </Space>
-              // </Space>
-              <>df</>
+              <Space direction="vertical" size={0}>
+                <Typography
+                  name="Body 4/Medium"
+                  color={token?.colorPrimaryText}
+                >
+                  Select Grouping
+                </Typography>
+                <Space size={12}>
+                  <CommonSelect
+                    style={{width: '319px'}}
+                    placeholder="Select Grouping here"
+                    options={selectData}
+                  />
+                  <OsButton
+                    buttontype="PRIMARY_ICON"
+                    icon={<EllipsisVerticalIcon width={24} />}
+                  />
+                </Space>
+              </Space>
             }
           >
             {TabPaneData?.map((item) => (
@@ -516,10 +513,10 @@ const GenerateQuote: React.FC = () => {
         body={<UploadFile setUploadFileData={setUploadFileData} />}
         width={608}
         primaryButtonText="Generate"
+        secondaryButtonText="Save & Generate Individual Quotes"
         open={showModal}
         onOk={() => addQuote()}
         onCancel={() => setShowModal((p) => !p)}
-        secondaryButtonText="Save & Generate Individual Quotes"
       />
     </>
   );
