@@ -163,7 +163,7 @@ const SideBar = () => {
             style={{padding: '16px 24px'}}
             onClick={() => {
               setSelectedKey(2);
-              router?.push('/QuoteAI');
+              router?.push('/generateQuote');
             }}
             name="Button 1"
             color={token?.colorTextSecondary}
@@ -212,6 +212,7 @@ const SideBar = () => {
           <Typography
             onClick={() => {
               setSelectedKey(3);
+              router?.push('/allQuote');
             }}
             name="Button 1"
             color={token?.colorTextSecondary}

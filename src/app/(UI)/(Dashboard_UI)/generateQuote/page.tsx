@@ -36,7 +36,7 @@ interface FormattedData {
   };
 }
 
-const QuoteAI: React.FC = () => {
+const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
@@ -532,4 +532,4 @@ const QuoteAI: React.FC = () => {
   );
 };
 
-export default QuoteAI;
+export default GenerateQuote;

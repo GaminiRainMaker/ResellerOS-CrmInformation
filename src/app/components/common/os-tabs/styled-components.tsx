@@ -5,6 +5,7 @@ import {Tabs} from '../antd/Tabs';
 export const TabsStyled = styled(Tabs)`
 
 width: 100%;
+margin-top:20px;
 .ant-tabs-ink-bar {
   border-bottom: 2px solid #1c3557 !important;
 }
@@ -13,4 +14,7 @@ width: 100%;
 }
 .ant-tabs-nav {
   border-bottom: none;
+  .ant-tabs-extra-content{
+    margin-top: -31px;
+  }
 `;
