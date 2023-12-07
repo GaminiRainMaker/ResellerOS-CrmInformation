@@ -20,11 +20,15 @@ const convertFileToBase64 = (file: File): Promise<string> =>
     reader.readAsDataURL(file);
   });
 
-const UploadFile: FC<any> = ({setUploadFileData}) => {
+const UploadFile: FC<any> = ({
+  setUploadFileData,
+  uploadFileData,
+  localUploadFileData,
+}) => {
   // Define your Nanonets API key and endpoint
   const API_KEY = '198c15fd-9680-11ed-82f6-7a0abc6e8cc8';
   const API_ENDPOINT =
-    'https://app.nanonets.com/api/v2/OCR/Model/91814dd8-75f6-44d7-aad3-776df449b59f/LabelFile/';
+    'https://app.nanonets.com/api/v2/OCR/Model/-75f6-44d7-aad3-776df449b59f/LabelFile/';
 
   const sendDataToNanonets = async (base64Data: string, file: File) => {
     const formData = new FormData();
@@ -37,11 +41,11 @@ const UploadFile: FC<any> = ({setUploadFileData}) => {
           )}`,
           'Content-Type': 'application/pdf',
         },
-        onUploadProgress: (progressEvent: any) => {
-          const {loaded, total} = progressEvent;
-          const progress = (loaded / total) * 100;
-          console.log(`Upload Progress: ${progress.toFixed(2)}%`);
-        },
+        // onUploadProgress: (progressEvent) => {
+        //   const {loaded, total} = progressEvent;
+        //   const progress = (loaded / total) * 100;
+        //   console.log(`Upload Progress: ${progress.toFixed(2)}%`);
+        // },
       });
       if (response) {
         setUploadFileData(response);
@@ -64,7 +68,13 @@ const UploadFile: FC<any> = ({setUploadFileData}) => {
     return false;
   };
 
-  return <OsUpload beforeUpload={beforeUpload} />;
+  return (
+    <OsUpload
+      beforeUpload={beforeUpload}
+      uploadFileData={uploadFileData}
+      localUploadFileData={localUploadFileData}
+    />
+  );
 };
 
 export default UploadFile;
