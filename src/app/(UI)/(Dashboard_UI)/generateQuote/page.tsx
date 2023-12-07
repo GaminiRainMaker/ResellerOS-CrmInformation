@@ -494,6 +494,15 @@ const GenerateQuote: React.FC = () => {
                     }
                   >
                     {item?.name}
+                    <div
+                      style={{
+                        // eslint-disable-next-line eqeqeq
+                        borderBottom:
+                          // eslint-disable-next-line eqeqeq
+                          activeTab == item?.key ? '2px solid #1C3557' : '',
+                        marginTop: '3px',
+                      }}
+                    />
                   </Typography>
                 }
                 key={item?.key}
