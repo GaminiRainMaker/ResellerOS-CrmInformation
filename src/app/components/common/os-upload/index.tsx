@@ -13,6 +13,7 @@ const props: UploadProps = {
   multiple: true,
   action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
   onChange(info) {
+    console.log('454543', info.file);
     const {status} = info.file;
     if (status !== 'uploading') {
       console.log(info.file, info.fileList);
@@ -75,7 +76,11 @@ const OsUpload: React.FC<any> = ({beforeUpload}) => {
         <Typography name="Body 3/Regular">Add in existing quote</Typography>
       </Space>
 
-      <OSDraggerStyle {...props} beforeUpload={beforeUpload}>
+      <OSDraggerStyle
+        {...props}
+        beforeUpload={beforeUpload}
+        defaultFileList={[...fileList]}
+      >
         <FolderArrowDownIcon width={24} color={token?.colorInfoBorder} />
         <Typography
           name="Body 4/Medium"
@@ -95,12 +100,6 @@ const OsUpload: React.FC<any> = ({beforeUpload}) => {
           XLS, PDF, DOC, PNG and JPG
         </Typography>
       </OSDraggerStyle>
-
-      <OSUploadStyle
-        action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-        listType="picture"
-        defaultFileList={[...fileList]}
-      />
     </Space>
   );
 };
