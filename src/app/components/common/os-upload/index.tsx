@@ -1,74 +1,63 @@
 import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
 import {message} from 'antd';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Checkbox} from '../antd/Checkbox';
 import {Space} from '../antd/Space';
-import {UploadFile, UploadProps} from '../antd/Upload';
+import {UploadProps} from '../antd/Upload';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
-import {OSDraggerStyle, OSUploadStyle} from './styled-components';
+import {OSDraggerStyle} from './styled-components';
+import UploadCard from './UploadCard';
 
-const props: UploadProps = {
-  name: 'file',
-  multiple: true,
-  action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
-  onChange(info) {
-    console.log('454543', info.file);
-    const {status} = info.file;
-    if (status !== 'uploading') {
-      console.log(info.file, info.fileList);
-    }
-    if (status === 'done') {
-      message.success(`${info.file.name} file uploaded successfully.`);
-    } else if (status === 'error') {
-      message.error(`${info.file.name} file upload failed.`);
-    }
-  },
-  onDrop(e) {
-    console.log('Dropped files', e.dataTransfer.files);
-  },
-};
-
-const fileList: UploadFile[] = [
-  {
-    uid: '0',
-    name: '123.png',
-    status: 'uploading',
-    percent: 33,
-  },
-  {
-    uid: '-1',
-    name: 'yyy.png',
-    status: 'done',
-    url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-    thumbUrl:
-      'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-  },
-  // {
-  //   uid: '-2',
-  //   name: 'zzz.png',
-  //   status: 'error',
-  // },
-  // {
-  //   uid: '-2',
-  //   name: 'zzz.png',
-  //   status: 'done',
-  // },
-  // {
-  //   uid: '-2',
-  //   name: 'zzz.pdf',
-  //   status: 'done',
-  // },
-  // {
-  //   uid: '-2',
-  //   name: 'zzz.doc',
-  //   status: 'done',
-  // },
-];
-
-const OsUpload: React.FC<any> = ({beforeUpload}) => {
+const OsUpload: React.FC<any> = ({
+  beforeUpload,
+  uploadFileData,
+  localUploadFileData,
+}) => {
   const [token] = useThemeToken();
+  const [fileList, setFileList] = useState([]);
 
+  useEffect(() => {
+    const newrrr: any = [...fileList];
+    if (uploadFileData && uploadFileData?.length > 0) {
+      newrrr?.push({nsss: uploadFileData?.data?.result?.[0]?.input});
+    }
+    setFileList(newrrr);
+  }, [uploadFileData]);
+
+  const props: UploadProps = {
+    name: 'file',
+    multiple: true,
+    action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
+    onChange(info) {
+      const files = [...info.fileList];
+
+      const {status} = info.file;
+      if (status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+      if (status === 'done') {
+        message.success(`${info.file.name} file uploaded successfully.`);
+      } else if (status === 'error') {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+
+      const names = files.map((file) => file?.name);
+      console.log('names', info.fileList[0]?.name);
+
+      setFileList(names as any);
+    },
+    onDrop(e) {
+      console.log('Dropped files', e.dataTransfer.files);
+    },
+  };
+
+  console.log(
+    'fileListfileList',
+    fileList,
+    'uploadFileData123',
+    localUploadFileData,
+  );
   return (
     <Space size={24} direction="vertical" style={{width: '100%'}}>
       <Space size={8} direction="horizontal">
@@ -79,7 +68,7 @@ const OsUpload: React.FC<any> = ({beforeUpload}) => {
       <OSDraggerStyle
         {...props}
         beforeUpload={beforeUpload}
-        defaultFileList={[...fileList]}
+        showUploadList={false}
       >
         <FolderArrowDownIcon width={24} color={token?.colorInfoBorder} />
         <Typography
@@ -100,13 +89,7 @@ const OsUpload: React.FC<any> = ({beforeUpload}) => {
           XLS, PDF, DOC, PNG and JPG
         </Typography>
       </OSDraggerStyle>
-
-      <OSUploadStyle
-        action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
-        listType="picture"
-        defaultFileList={[...fileList]}
-        className="upload-list-inline"
-      />
+      <UploadCard fileList={fileList} />
     </Space>
   );
 };

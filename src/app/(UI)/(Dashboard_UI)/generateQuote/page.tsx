@@ -5,7 +5,6 @@
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
-import {FilePdfOutlined} from '@ant-design/icons';
 import {
   ArrowDownTrayIcon,
   BanknotesIcon,
@@ -44,6 +43,7 @@ const GenerateQuote: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [uploadFileData, setUploadFileData] = useState<any>({});
+  const [localUploadFileData, setLocalUploadFileData] = useState<any>([]);
 
   const {data: quoteData} = useAppSelector((state) => state.quote);
   useEffect(() => {
@@ -386,6 +386,10 @@ const GenerateQuote: React.FC = () => {
     uploadFileData?.data?.result?.[0]?.prediction?.forEach((item: any) => {
       labelOcrMap[item?.label?.toLowerCase()] = item?.ocr_text;
     });
+    const Newrr: any = [...localUploadFileData];
+    Newrr?.push(labelOcrMap);
+    setLocalUploadFileData(Newrr);
+
     if (labelOcrMap) {
       dispatch(insertQuote(labelOcrMap)).then((d) => {
         if (d?.payload?.data?.id) {
@@ -519,8 +523,14 @@ const GenerateQuote: React.FC = () => {
         </Row>
       </Space>
       <OsModal
-        body={<UploadFile setUploadFileData={setUploadFileData} />}
-        width={608}
+        body={
+          <UploadFile
+            setUploadFileData={setUploadFileData}
+            uploadFileData={uploadFileData}
+            localUploadFileData={localUploadFileData}
+          />
+        }
+        width={900}
         primaryButtonText="Generate"
         secondaryButtonText="Save & Generate Individual Quotes"
         open={showModal}
