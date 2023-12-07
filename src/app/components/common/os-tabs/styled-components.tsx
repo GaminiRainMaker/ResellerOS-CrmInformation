@@ -14,6 +14,7 @@ margin-top:20px;
 }
 .ant-tabs-nav {
   border-bottom: none;
+  padding-bottom: 22px;
   .ant-tabs-extra-content{
     margin-top: -31px;
   }

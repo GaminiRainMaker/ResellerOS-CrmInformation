@@ -12,7 +12,7 @@ interface ITableProps {
 export const CustomTable = styled(Table)<ITableProps>`
   width: ${({tableInModal}) => (tableInModal ? '381px' : '')};
   margin: ${({tableInModal}) => (tableInModal ? '24px' : '')};
-
+  margin-top: -18px;
   .ant-table-thead > tr {
     height: 32px;
   }
