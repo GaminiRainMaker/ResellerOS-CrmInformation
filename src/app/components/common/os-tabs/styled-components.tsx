@@ -3,17 +3,11 @@ import styled from '@emotion/styled';
 import {Tabs} from '../antd/Tabs';
 
 export const TabsStyled = styled(Tabs)`
-
 width: 100%;
 margin-top:15px;
 &.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap {
   background-color: white;
   border-bottom: 1px solid none !important;
-
-  font-size: 14px;
-  padding: 0px 0px 0px 5px;
-  width: 100%;
-  
 }
 .ant-tabs-ink-bar {
   border-bottom: 2px solid white !important;
