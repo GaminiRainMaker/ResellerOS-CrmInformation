@@ -17,18 +17,27 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import CommonDatePicker from '@/app/components/common/os-date-picker';
-import OsTabs from '@/app/components/common/os-tabs';
-import TabPane from 'antd/es/tabs/TabPane';
-import {useState} from 'react';
-import OsTable from '@/app/components/common/os-table';
 import OsCollapse from '@/app/components/common/os-collapse';
+import CommonDatePicker from '@/app/components/common/os-date-picker';
+import OsTable from '@/app/components/common/os-table';
+import OsTabs from '@/app/components/common/os-tabs';
 import {CollapseProps} from 'antd';
+import TabPane from 'antd/es/tabs/TabPane';
+import {useEffect, useState} from 'react';
+import {getQuote} from '../../../../../redux/actions/quote';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 const AllQuote: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const {data: quoteData} = useAppSelector((state) => state.quote);
+
+  useEffect(() => {
+    dispatch(getQuote());
+    // dispatch(getQuoteLineItem());
+  }, []);
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
@@ -380,7 +389,9 @@ const AllQuote: React.FC = () => {
           </Col>
         </Row>
       ),
-      children: <OsTable columns={columns} dataSource={dataSource} scroll />,
+      children: (
+        <OsTable columns={Quotecolumns} dataSource={quoteData} scroll />
+      ),
     },
     {
       key: '2',
@@ -467,15 +478,12 @@ const AllQuote: React.FC = () => {
             <Space size={12} align="center">
               <Space direction="vertical" size={0}>
                 <Typography name="Body 4/Medium">From Date</Typography>
-
                 <CommonDatePicker placeholder="dd/mm/yyyy" />
               </Space>
               <Space direction="vertical" size={0}>
                 <Typography name="Body 4/Medium">To Date</Typography>
-
                 <CommonDatePicker placeholder="dd/mm/yyyy" />
               </Space>
-
               <Typography name="Button 1" color="#C6CDD5">
                 Reset
               </Typography>
