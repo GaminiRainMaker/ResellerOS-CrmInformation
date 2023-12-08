@@ -5,6 +5,7 @@ import {Avatar} from '../antd/Avatar';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
+import {AvatarStyled} from './styled-components';
 
 const TableNameColumn: FC<any> = ({
   logo,
@@ -29,20 +30,7 @@ const TableNameColumn: FC<any> = ({
       align="center"
       style={{width: '100%', marginLeft: `${avtarLeftMargin}px`}}
     >
-      <Avatar
-        className="irys-entity-avatar"
-        size="large"
-        style={{
-          background: iconBg,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: '48px',
-          width: '48px',
-        }}
-        src={imgUrl}
-        icon={fallbackIcon}
-      />
+      <AvatarStyled background={iconBg} src={imgUrl} icon={fallbackIcon} />
       <span style={{cursor}}>
         <Typography
           cursor={cursor}

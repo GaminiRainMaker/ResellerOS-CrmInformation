@@ -1,21 +1,22 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
-import {message} from 'antd';
 import React, {useEffect, useState} from 'react';
 import {Checkbox} from '../antd/Checkbox';
 import {Space} from '../antd/Space';
-import {UploadProps} from '../antd/Upload';
 import useThemeToken from '../hooks/useThemeToken';
+import EmptyContainer from '../os-empty-container';
 import Typography from '../typography';
-import {OSDraggerStyle} from './styled-components';
 import UploadCard from './UploadCard';
+import {OSDraggerStyle} from './styled-components';
 
 const OsUpload: React.FC<any> = ({
   beforeUpload,
   uploadFileData,
-  localUploadFileData,
+  setUploadFileData,
 }) => {
   const [token] = useThemeToken();
   const [fileList, setFileList] = useState([]);
+  // const {quote} = useAppSelector((state) => state.quote);
 
   useEffect(() => {
     const newrrr: any = [...fileList];
@@ -25,39 +26,6 @@ const OsUpload: React.FC<any> = ({
     setFileList(newrrr);
   }, [uploadFileData]);
 
-  const props: UploadProps = {
-    name: 'file',
-    multiple: true,
-    action: 'https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188',
-    onChange(info) {
-      const files = [...info.fileList];
-
-      const {status} = info.file;
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
-      }
-      if (status === 'done') {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-
-      const names = files.map((file) => file?.name);
-      console.log('names', info.fileList[0]?.name);
-
-      setFileList(names as any);
-    },
-    onDrop(e) {
-      console.log('Dropped files', e.dataTransfer.files);
-    },
-  };
-
-  console.log(
-    'fileListfileList',
-    fileList,
-    'uploadFileData123',
-    localUploadFileData,
-  );
   return (
     <Space size={24} direction="vertical" style={{width: '100%'}}>
       <Space size={8} direction="horizontal">
@@ -65,11 +33,7 @@ const OsUpload: React.FC<any> = ({
         <Typography name="Body 3/Regular">Add in existing quote</Typography>
       </Space>
 
-      <OSDraggerStyle
-        {...props}
-        beforeUpload={beforeUpload}
-        showUploadList={false}
-      >
+      <OSDraggerStyle beforeUpload={beforeUpload} showUploadList={false}>
         <FolderArrowDownIcon width={24} color={token?.colorInfoBorder} />
         <Typography
           name="Body 4/Medium"
@@ -89,7 +53,15 @@ const OsUpload: React.FC<any> = ({
           XLS, PDF, DOC, PNG and JPG
         </Typography>
       </OSDraggerStyle>
-      <UploadCard fileList={fileList} />
+
+      {uploadFileData && uploadFileData?.length > 0 ? (
+        <UploadCard
+          uploadFileData={uploadFileData}
+          setUploadFileData={setUploadFileData}
+        />
+      ) : (
+        <EmptyContainer title="No Data" subTitle="Please upload the file." />
+      )}
     </Space>
   );
 };

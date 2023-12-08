@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable import/no-extraneous-dependencies */
 
 'use client';
@@ -10,9 +11,9 @@ import {
   BanknotesIcon,
   CreditCardIcon,
   CurrencyDollarIcon,
-  DocumentTextIcon,
   EllipsisVerticalIcon,
   PlusIcon,
+  QueueListIcon,
   ReceiptPercentIcon,
   TagIcon,
 } from '@heroicons/react/24/outline';
@@ -42,10 +43,9 @@ const GenerateQuote: React.FC = () => {
   const [activeTab, setActiveTab] = useState<any>('1');
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [uploadFileData, setUploadFileData] = useState<any>({});
-  const [localUploadFileData, setLocalUploadFileData] = useState<any>([]);
-
+  const [uploadFileData, setUploadFileData] = useState<any>([]);
   const {data: quoteData} = useAppSelector((state) => state.quote);
+
   useEffect(() => {
     dispatch(getQuote());
     // dispatch(getQuoteLineItem());
@@ -65,7 +65,7 @@ const GenerateQuote: React.FC = () => {
       key: 1,
       primary: '217',
       secondry: 'Line Items',
-      icon: <DocumentTextIcon width={24} color={token?.colorInfo} />,
+      icon: <QueueListIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorPrimaryHover,
     },
     {
@@ -381,14 +381,21 @@ const GenerateQuote: React.FC = () => {
       }
       formattedData[rowNum][item.label?.toLowerCase()] = item.text;
     });
-    const formattedArray = Object.values(formattedData);
-    const labelOcrMap: any = {};
-    uploadFileData?.data?.result?.[0]?.prediction?.forEach((item: any) => {
-      labelOcrMap[item?.label?.toLowerCase()] = item?.ocr_text;
+
+    // const formattedArray = Object.values(formattedData);
+
+    const labelOcrMap: any = [];
+    uploadFileData?.map((uploadFileDataItem: any) => {
+      const tempLabelOcrMap: any = {};
+      <>
+        {uploadFileDataItem?.data?.result?.[0]?.prediction?.forEach(
+          (item: any) => {
+            tempLabelOcrMap[item?.label?.toLowerCase()] = item?.ocr_text;
+          },
+        )}
+      </>;
+      labelOcrMap.push(tempLabelOcrMap);
     });
-    const Newrr: any = [...localUploadFileData];
-    Newrr?.push(labelOcrMap);
-    setLocalUploadFileData(Newrr);
 
     if (labelOcrMap) {
       dispatch(insertQuote(labelOcrMap)).then((d) => {
@@ -518,7 +525,6 @@ const GenerateQuote: React.FC = () => {
           <UploadFile
             setUploadFileData={setUploadFileData}
             uploadFileData={uploadFileData}
-            localUploadFileData={localUploadFileData}
           />
         }
         width={900}

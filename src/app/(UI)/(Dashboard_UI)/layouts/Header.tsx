@@ -8,14 +8,17 @@ import Typography from '@/app/components/common/typography';
 import {Layout} from 'antd';
 import {MenuProps} from 'antd/es/menu';
 import Image from 'next/image';
+import {BellIcon, WrenchScrewdriverIcon} from '@heroicons/react/24/outline';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
-import HeadphoneImg from '../../../../../public/assets/static/headphoneIcon.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
 import NotificationImg from '../../../../../public/assets/static/notificationIcon.svg';
 import UserIcon from '../../../../../public/assets/static/userIcon.svg';
 
 const CustomHeader = () => {
+  const [token] = useThemeToken();
   const items: MenuProps['items'] = [
     {
       key: '1',
@@ -68,8 +71,19 @@ const CustomHeader = () => {
               alignItems: 'center',
             }}
           >
-            <Image src={HeadphoneImg} alt="HeadphoneImg" />
-            <Image src={NotificationImg} alt="NotificationImg" />
+            <AvatarStyled
+              background={token?.colorInfoBg}
+              icon={
+                <WrenchScrewdriverIcon
+                  width={24}
+                  color={token?.colorInfoBorder}
+                />
+              }
+            />
+            <AvatarStyled
+              background={token?.colorInfoBg}
+              icon={<BellIcon width={24} color={token?.colorInfoBorder} />}
+            />
             <Dropdown menu={{items}}>
               <a onClick={(e) => e.preventDefault()}>
                 <Space>

@@ -1,20 +1,21 @@
 'use client';
 
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsAvatar from '@/app/components/common/os-avatar';
 import Typography from '@/app/components/common/typography';
 import {
   ArrowDownTrayIcon,
-  ArrowsPointingOutIcon,
+  BoltIcon,
   CircleStackIcon,
-  CogIcon,
-  DocumentTextIcon,
-  EllipsisHorizontalCircleIcon,
-  ReceiptRefundIcon,
+  CurrencyDollarIcon,
+  ReceiptPercentIcon,
   ShoppingBagIcon,
+  Squares2X2Icon,
   UserGroupIcon,
+  UsersIcon,
 } from '@heroicons/react/24/outline';
-import {Layout, Menu, MenuProps, Space} from 'antd';
+import {Layout, Menu, MenuProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 import {CustomSider} from './styled-components';
@@ -48,19 +49,10 @@ const SideBar = () => {
         }}
         name="Button 1"
       >
-        <div
-          style={{
-            display: 'flex',
-            padding: '16px 4px',
-            alignItems: 'flexStart',
-
-            gap: '16px',
-            alignSelf: 'stretch',
-          }}
-        >
+        <Space size={12}>
           <OsAvatar
             icon={
-              <ArrowsPointingOutIcon
+              <Squares2X2Icon
                 color={
                   seleectedKey?.toString()?.includes('1')
                     ? token?.colorLink
@@ -81,10 +73,9 @@ const SideBar = () => {
                 : token?.colorTextSecondary
             }
           >
-            {' '}
             Dashboard
           </Typography>
-        </div>
+        </Space>
       </Typography>,
       '1',
     ),
@@ -96,10 +87,10 @@ const SideBar = () => {
         name="Button 1"
         color={token?.colorTextSecondary}
       >
-        <Space size={20}>
+        <Space size={12}>
           <OsAvatar
             icon={
-              <CogIcon
+              <CurrencyDollarIcon
                 color={
                   seleectedKey?.toString()?.includes('2')
                     ? token?.colorLink
@@ -159,101 +150,71 @@ const SideBar = () => {
       '',
       [
         getItem(
-          <Typography
-            style={{padding: '16px 24px'}}
+          <Space
+            size={12}
             onClick={() => {
               setSelectedKey(2);
               router?.push('/generateQuote');
             }}
-            name="Button 1"
-            color={token?.colorTextSecondary}
           >
-            <div
-              style={{
-                display: 'flex',
-                padding: '16px 4px',
-                alignItems: 'flexStart',
-
-                gap: '16px',
-                alignSelf: 'stretch',
-              }}
+            <OsAvatar
+              icon={
+                <CircleStackIcon
+                  color={
+                    seleectedKey?.toString()?.includes('2')
+                      ? token.colorPrimaryBorder
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              name="Button 1"
+              cursor="pointer"
+              color={
+                seleectedKey?.toString()?.includes('2')
+                  ? token.colorPrimaryBorder
+                  : token?.colorTextSecondary
+              }
             >
-              <OsAvatar
-                icon={
-                  <CircleStackIcon
-                    color={
-                      seleectedKey?.toString()?.includes('2')
-                        ? token.colorPrimaryBorder
-                        : token?.colorTextSecondary
-                    }
-                    width={24}
-                  />
-                }
-              />
-              <Typography
-                name="Button 1"
-                style={{
-                  marginTop: '1px',
-                }}
-                color={
-                  seleectedKey?.toString()?.includes('2')
-                    ? token.colorPrimaryBorder
-                    : token?.colorTextSecondary
-                }
-              >
-                {' '}
-                Generate Quote
-              </Typography>
-            </div>
-          </Typography>,
+              Generate Quote
+            </Typography>
+          </Space>,
           '2',
         ),
         getItem(
-          <Typography
+          <Space
+            size={12}
             onClick={() => {
               setSelectedKey(3);
               router?.push('/allQuote');
             }}
-            name="Button 1"
-            color={token?.colorTextSecondary}
           >
-            <div
-              style={{
-                display: 'flex',
-                padding: '16px 4px',
-                alignItems: 'flexStart',
-
-                gap: '16px',
-                alignSelf: 'stretch',
-              }}
-            >
-              <OsAvatar
-                icon={
-                  <CircleStackIcon
-                    color={
-                      seleectedKey?.toString()?.includes('3')
-                        ? token.colorPrimaryBorder
-                        : token?.colorTextSecondary
-                    }
-                    width={24}
-                  />
-                }
-              />
-              <div
-                style={{
-                  marginTop: '1px',
-                  color:
-                    // eslint-disable-next-line eqeqeq
+            <OsAvatar
+              icon={
+                <CircleStackIcon
+                  color={
                     seleectedKey?.toString()?.includes('3')
                       ? token.colorPrimaryBorder
-                      : token?.colorTextSecondary,
-                }}
-              >
-                {' '}
-                Quotes
-              </div>
-            </div>
-          </Typography>,
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              name="Button 1"
+              cursor="pointer"
+              color={
+                seleectedKey?.toString()?.includes('3')
+                  ? token.colorPrimaryBorder
+                  : token?.colorTextSecondary
+              }
+            >
+              Quotes
+            </Typography>
+          </Space>,
           '3',
         ),
       ],
@@ -267,19 +228,10 @@ const SideBar = () => {
         name="Button 1"
         color={token?.colorTextSecondary}
       >
-        <div
-          style={{
-            display: 'flex',
-            padding: '16px 4px',
-            alignItems: 'flexStart',
-
-            gap: '16px',
-            alignSelf: 'stretch',
-          }}
-        >
+        <Space size={12}>
           <OsAvatar
             icon={
-              <DocumentTextIcon
+              <ReceiptPercentIcon
                 color={
                   seleectedKey?.toString()?.includes('4')
                     ? token?.colorLink
@@ -304,7 +256,7 @@ const SideBar = () => {
             {' '}
             DealReg AI
           </Typography>
-        </div>
+        </Space>
       </Typography>,
       '4',
     ),
@@ -316,16 +268,7 @@ const SideBar = () => {
         name="Button 1"
         color={token?.colorTextSecondary}
       >
-        <div
-          style={{
-            display: 'flex',
-            padding: '16px 4px',
-            alignItems: 'flexStart',
-
-            gap: '16px',
-            alignSelf: 'stretch',
-          }}
-        >
+        <Space size={12}>
           <OsAvatar
             icon={
               <ShoppingBagIcon
@@ -353,7 +296,7 @@ const SideBar = () => {
             {' '}
             Order AI
           </Typography>
-        </div>
+        </Space>
       </Typography>,
       '5',
     ),
@@ -365,19 +308,10 @@ const SideBar = () => {
         name="Button 1"
         color={token?.colorTextSecondary}
       >
-        <div
-          style={{
-            display: 'flex',
-            padding: '16px 4px',
-            alignItems: 'flexStart',
-
-            gap: '16px',
-            alignSelf: 'stretch',
-          }}
-        >
+        <Space size={12}>
           <OsAvatar
             icon={
-              <UserGroupIcon
+              <UsersIcon
                 color={
                   seleectedKey?.toString()?.includes('6')
                     ? token?.colorLink
@@ -401,7 +335,7 @@ const SideBar = () => {
             {' '}
             Vendors
           </Typography>
-        </div>
+        </Space>
       </Typography>,
       '6',
     ),
@@ -413,19 +347,10 @@ const SideBar = () => {
         name="Button 1"
         color={token?.colorTextSecondary}
       >
-        <div
-          style={{
-            display: 'flex',
-            padding: '16px 4px',
-            alignItems: 'flexStart',
-
-            gap: '16px',
-            alignSelf: 'stretch',
-          }}
-        >
+        <Space size={12}>
           <OsAvatar
             icon={
-              <EllipsisHorizontalCircleIcon
+              <BoltIcon
                 color={
                   seleectedKey?.toString()?.includes('7')
                     ? token?.colorLink
@@ -449,7 +374,7 @@ const SideBar = () => {
             {' '}
             Renewals and Upgrades
           </Typography>
-        </div>
+        </Space>
       </Typography>,
       '7',
     ),
@@ -461,10 +386,10 @@ const SideBar = () => {
         name="Button 1"
         color={token?.colorTextSecondary}
       >
-        <div>
+        <Space size={12}>
           <OsAvatar
             icon={
-              <ReceiptRefundIcon
+              <UserGroupIcon
                 color={
                   seleectedKey?.toString()?.includes('8')
                     ? token?.colorLink
@@ -488,7 +413,7 @@ const SideBar = () => {
             {' '}
             CRM information
           </Typography>
-        </div>
+        </Space>
       </Typography>,
       '8',
     ),

@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import {GlobalToken} from 'antd/es/theme';
 import {Table} from '../antd/Table';
+import {Avatar} from '../antd/Avatar';
 
 interface ITableProps {
   token: GlobalToken;
@@ -12,7 +13,7 @@ interface ITableProps {
 export const CustomTable = styled(Table)<ITableProps>`
   width: ${({tableInModal}) => (tableInModal ? '381px' : '')};
   margin: ${({tableInModal}) => (tableInModal ? '24px' : '')};
-  margin-top: -18px;
+  // margin-top: -18px;
   .ant-table-thead > tr {
     height: 32px;
   }
@@ -36,4 +37,14 @@ export const CustomTable = styled(Table)<ITableProps>`
   // .ant-pagination .ant-pagination-item {
   //   background: ${(props) => props.token.colorInfoBg};
   // }
+`;
+
+export const AvatarStyled = styled(Avatar)<{background: string}>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  width: 48px;
+  background: ${(props) => `${props?.background}`};
+  cursor: pointer;
 `;

@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
 import {Upload} from 'antd';
+import {Avatar} from '../antd/Avatar';
+import {Col} from '../antd/Grid';
 
 const {Dragger} = Upload;
 
@@ -23,4 +25,26 @@ export const OSDraggerStyle = styled(Dragger)`
     border-radius: 12px;
   }
 `;
-export const OSUploadStyle = styled(Upload)``;
+export const UploadCardAvatarStyle = styled(Avatar)<{colorErrorBg?: string}>`
+  position: absolute;
+  top: 0%;
+  right: 0%;
+  cursor: pointer;
+  border-radius: 12px;
+  background: ${(props) => `${props?.colorErrorBg}`};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+export const UploadCardColStyle = styled(Col)<{}>`
+  display: flex;
+  width: 192px;
+  height: 164px;
+  padding: 24px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  background: #f8fafb;
+  position: relative;
+  text-align: center;
+`;

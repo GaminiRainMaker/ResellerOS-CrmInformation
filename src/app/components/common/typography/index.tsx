@@ -42,7 +42,8 @@ const Typography: FC<TypographyInterface> = ({
 };
 // export default memo(
 //   Typography,
-//   (p, n) => p.children === n.children || p.name === n.name,
+//   (p, n) =>
+//     p.children === n.children || p.name === n.name || p.color === n.color,
 // );
 
 export default Typography;
