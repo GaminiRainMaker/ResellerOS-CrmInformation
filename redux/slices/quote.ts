@@ -1,8 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {Quote} from '@/app/(UI)/quote/quote.interface';
-import {insertQuote, getQuoteById, getQuote} from '../actions/quote';
+import {getQuote, getQuoteById, insertQuote} from '../actions/quote';
 
 type QuoteState = {
   loading: boolean;
@@ -31,13 +30,10 @@ const quoteSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(
-        insertQuote.fulfilled,
-        (state, action: PayloadAction<Quote[]>) => {
-          state.loading = false;
-          state.data = action.payload;
-        },
-      )
+      .addCase(insertQuote.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.data = [action.payload];
+      })
       .addCase(insertQuote.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;

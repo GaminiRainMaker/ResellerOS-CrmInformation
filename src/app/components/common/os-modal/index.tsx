@@ -11,6 +11,7 @@ const OsModal: FC<OSModalPropsInterface> = ({
   body,
   primaryButtonText,
   secondaryButtonText,
+  loading,
   ...rest
 }) => {
   const {onCancel, afterClose, open, onOk} = rest;
@@ -40,6 +41,7 @@ const OsModal: FC<OSModalPropsInterface> = ({
             }}
           />
           <OsButton
+            loading={loading}
             text={primaryButtonText}
             buttontype="PRIMARY"
             clickHandler={() => {

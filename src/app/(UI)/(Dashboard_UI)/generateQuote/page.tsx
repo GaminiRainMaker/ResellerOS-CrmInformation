@@ -27,6 +27,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useEffect, useState} from 'react';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 import {getQuote, insertQuote} from '../../../../../redux/actions/quote';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from './UploadFile';
@@ -44,11 +45,10 @@ const GenerateQuote: React.FC = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
-  const {data: quoteData} = useAppSelector((state) => state.quote);
+  const {data: quoteData, loading} = useAppSelector((state) => state.quote);
 
   useEffect(() => {
     dispatch(getQuote());
-    // dispatch(getQuoteLineItem());
   }, []);
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
@@ -397,15 +397,18 @@ const GenerateQuote: React.FC = () => {
       labelOcrMap.push(tempLabelOcrMap);
     });
 
-    if (labelOcrMap) {
+    if (labelOcrMap && uploadFileData.length > 0) {
       dispatch(insertQuote(labelOcrMap)).then((d) => {
-        if (d?.payload?.data?.id) {
-          // const lineitemData = formattedArray?.map((item: any) => ({
-          //   ...item,
-          //   qoute_id: d?.payload?.data?.id,
-          // }));
-          // dispatch(insertQuoteLineItem(lineitemData));
-        }
+        setShowModal(false);
+        dispatch(getQuote());
+        setUploadFileData([]);
+        // if (d?.payload?.data?.id) {
+        // const lineitemData = formattedArray?.map((item: any) => ({
+        //   ...item,
+        //   qoute_id: d?.payload?.data?.id,
+        // }));
+        // dispatch(insertQuoteLineItem(lineitemData));
+        // }
       });
     }
   };
@@ -530,6 +533,7 @@ const GenerateQuote: React.FC = () => {
         </Row>
       </Space>
       <OsModal
+        loading={loading}
         body={
           <UploadFile
             setUploadFileData={setUploadFileData}
@@ -541,7 +545,10 @@ const GenerateQuote: React.FC = () => {
         secondaryButtonText="Save & Generate Individual Quotes"
         open={showModal}
         onOk={() => addQuote()}
-        onCancel={() => setShowModal((p) => !p)}
+        onCancel={() => {
+          setShowModal((p) => !p);
+          setUploadFileData([]);
+        }}
       />
     </>
   );

@@ -1,5 +1,4 @@
 import {Avatar} from 'antd';
-import Image from 'next/image';
 import {ButtonProps} from '../antd/Button';
 import {ButtonStyled} from './styled-components';
 
@@ -12,6 +11,7 @@ interface ButtonInterface extends ButtonProps {
   icon?: any;
   commonIcon?: any;
   color?: string;
+  loading?: any;
 }
 
 const OsButton: React.FC<ButtonInterface> = ({
@@ -24,6 +24,7 @@ const OsButton: React.FC<ButtonInterface> = ({
   buttontype = 'PRIMARY',
   commonIcon,
   color,
+  loading,
 }) => {
   const buttonTypeTemp = {
     PRIMARY: 'PRIMARY',
@@ -37,6 +38,7 @@ const OsButton: React.FC<ButtonInterface> = ({
 
   return (
     <ButtonStyled
+      loading={loading}
       // className={style[mainClassName]}
       disabled={disabled}
       onClick={clickHandler}

@@ -5,6 +5,7 @@ import {FC, useState} from 'react';
 import OsUpload from '@/app/components/common/os-upload';
 import {message} from 'antd';
 import axios from 'axios';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 
 const convertFileToBase64 = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -72,13 +73,15 @@ const UploadFile: FC<any> = ({setUploadFileData, uploadFileData}) => {
   };
 
   return (
-    <OsUpload
-      beforeUpload={beforeUpload}
-      uploadFileData={uploadFileData}
-      setUploadFileData={setUploadFileData}
-      setLoading={setLoading}
-      loading={loading}
-    />
+    <GlobalLoader loading={loading}>
+      <OsUpload
+        beforeUpload={beforeUpload}
+        uploadFileData={uploadFileData}
+        setUploadFileData={setUploadFileData}
+        setLoading={setLoading}
+        loading={loading}
+      />
+    </GlobalLoader>
   );
 };
 

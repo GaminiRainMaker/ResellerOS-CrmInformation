@@ -12,4 +12,5 @@ export interface OSModalPropsInterface extends ModalProps {
   primaryButtonText?: string;
   secondaryButtonText?: string;
   body?: React.ReactNode;
+  loading?: boolean;
 }
