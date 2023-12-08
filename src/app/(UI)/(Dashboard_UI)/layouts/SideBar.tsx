@@ -7,6 +7,7 @@ import Typography from '@/app/components/common/typography';
 import {
   ArrowDownTrayIcon,
   BoltIcon,
+  ChevronDownIcon,
   CircleStackIcon,
   CurrencyDollarIcon,
   ReceiptPercentIcon,
@@ -130,7 +131,7 @@ const SideBar = () => {
               {' '}
               <OsAvatar
                 icon={
-                  <ArrowDownTrayIcon
+                  <ChevronDownIcon
                     color={
                       seleectedKey?.toString()?.includes('2') ||
                       seleectedKey?.toString()?.includes('3')

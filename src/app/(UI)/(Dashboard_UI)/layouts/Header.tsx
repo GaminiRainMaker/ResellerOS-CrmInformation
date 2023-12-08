@@ -3,18 +3,17 @@
 import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import SearchInput from '@/app/components/common/os-input/SearchInput';
+import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
+import {BellIcon, WrenchScrewdriverIcon} from '@heroicons/react/24/outline';
 import {Layout} from 'antd';
 import {MenuProps} from 'antd/es/menu';
 import Image from 'next/image';
-import {BellIcon, WrenchScrewdriverIcon} from '@heroicons/react/24/outline';
-import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
-import NotificationImg from '../../../../../public/assets/static/notificationIcon.svg';
 import UserIcon from '../../../../../public/assets/static/userIcon.svg';
 
 const CustomHeader = () => {

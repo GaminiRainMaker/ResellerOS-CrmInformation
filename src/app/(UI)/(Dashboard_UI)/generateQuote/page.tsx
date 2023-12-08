@@ -8,8 +8,6 @@ import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
 import {
   ArrowDownTrayIcon,
-  BanknotesIcon,
-  CreditCardIcon,
   CurrencyDollarIcon,
   EllipsisVerticalIcon,
   PlusIcon,
@@ -26,8 +24,10 @@ import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
 import TabPane from 'antd/es/tabs/TabPane';
+import Image from 'next/image';
 import {useEffect, useState} from 'react';
-import GlobalLoader from '@/app/components/common/os-global-loader';
+import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
+import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {getQuote, insertQuote} from '../../../../../redux/actions/quote';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from './UploadFile';
@@ -86,7 +86,13 @@ const GenerateQuote: React.FC = () => {
       key: 4,
       primary: '$0.00',
       secondry: 'Total GP',
-      icon: <BanknotesIcon width={24} color={token?.colorError} />,
+      icon: (
+        <Image
+          src={MoneyRecive}
+          alt="MoneyRecive"
+          style={{cursor: 'pointer', height: '24px', width: '24px'}}
+        />
+      ),
       iconBg: token?.colorErrorBg,
     },
     {
@@ -100,7 +106,13 @@ const GenerateQuote: React.FC = () => {
       key: 6,
       primary: '$21,966.00',
       secondry: 'Rebate Total',
-      icon: <CreditCardIcon width={24} color={token?.colorLinkHover} />,
+      icon: (
+        <Image
+          src={MoneySend}
+          alt="MoneySend"
+          style={{cursor: 'pointer', height: '24px', width: '24px'}}
+        />
+      ),
       iconBg: token?.colorInfoHover,
     },
   ];

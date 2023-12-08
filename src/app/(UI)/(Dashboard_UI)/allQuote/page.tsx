@@ -6,8 +6,8 @@ import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
 import {
   CheckBadgeIcon,
+  ClipboardDocumentCheckIcon,
   ClockIcon,
-  DocumentCheckIcon,
   EllipsisVerticalIcon,
   QueueListIcon,
   TrashIcon,
@@ -289,7 +289,7 @@ const AllQuote: React.FC = () => {
     },
     {
       key: 2,
-      primary: '550',
+      primary: '650',
       secondry: 'Completed',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
@@ -297,22 +297,22 @@ const AllQuote: React.FC = () => {
     {
       key: 3,
       primary: '20',
-      secondry: 'Draft',
-      icon: <DocumentCheckIcon width={24} color={token?.colorLink} />,
+      secondry: 'Drafts',
+      icon: <ClipboardDocumentCheckIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
     {
       key: 4,
       primary: '05',
       secondry: 'Recents',
-      icon: <ClockIcon width={24} color={token?.colorError} />,
+      icon: <ClockIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
     },
     {
       key: 5,
       primary: '30',
       secondry: 'Deleted',
-      icon: <TrashIcon width={24} color={token?.colorWarning} />,
+      icon: <TrashIcon width={24} color={token?.colorError} />,
       iconBg: token?.colorErrorBg,
     },
   ];
