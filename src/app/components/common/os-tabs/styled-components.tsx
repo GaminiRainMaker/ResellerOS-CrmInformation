@@ -3,18 +3,21 @@ import styled from '@emotion/styled';
 import {Tabs} from '../antd/Tabs';
 
 export const TabsStyled = styled(Tabs)`
-
 width: 100%;
-margin-top:20px;
-.ant-tabs-ink-bar {
-  border-bottom: 2px solid #1c3557 !important;
+margin-top:15px;
+&.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap {
+  background-color: white;
+  border-bottom: 1px solid none !important;
 }
+.ant-tabs-ink-bar {
+  border-bottom: 2px solid white !important;
+}
+
 .ant-tabs-top > .ant-tabs-nav {
   margin: 9px 0 22px 0;
 }
 .ant-tabs-nav {
   border-bottom: none;
-  padding-bottom: 22px;
   .ant-tabs-extra-content{
     margin-top: -31px;
   }
