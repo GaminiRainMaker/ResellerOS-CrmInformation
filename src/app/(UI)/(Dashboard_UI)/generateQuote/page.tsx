@@ -189,7 +189,7 @@ const GenerateQuote: React.FC = () => {
       }
       setTimeout(() => {
         dispatch(getQuoteLineItem());
-      }, 2000);
+      }, 500);
     }
   };
 
@@ -762,15 +762,7 @@ const GenerateQuote: React.FC = () => {
                     loading={loading}
                     // rowSelection={rowSelection}
                     columns={QuoteLineItemcolumns}
-                    dataSource={
-                      (quoteLineItemData &&
-                        quoteLineItemData?.filter((item: any) => {
-                          if (item?.is_deleted == false) {
-                            return item;
-                          }
-                        })) ||
-                      []
-                    }
+                    dataSource={quoteLineItemData || []}
                     scroll
                   />
                 </TabPane>
