@@ -7,7 +7,7 @@ const theme: ThemeConfig = {
     colorPrimaryText: '#0D0D0D',
     colorPrimaryBg: '#E8EBEE',
     colorPrimaryBorder: '#1c3557',
-    colorPrimaryHover: '#E9F0F7',
+    colorPrimaryHover: '#14263E',
     colorPrimaryActive: '#31576f',
     colorError: '#EB445A',
     colorErrorBg: '#FDECEF',
@@ -42,6 +42,7 @@ const theme: ThemeConfig = {
     colorBorderSecondary: '#EDEFF2',
     // colorSplit: '#EF697B',
     colorIcon: '#EF697B',
+    colorInfoBgHover: '#E9F0F7',
   },
   components: {
     Button: {

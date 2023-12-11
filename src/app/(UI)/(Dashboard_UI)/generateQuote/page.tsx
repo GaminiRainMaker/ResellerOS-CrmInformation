@@ -18,33 +18,32 @@ import {
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
+import {Switch} from '@/app/components/common/antd/Switch';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
+import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import OsUpload from '@/app/components/common/os-upload';
 import {Divider} from 'antd';
+import Checkbox from 'antd/es/checkbox/Checkbox';
+import {TableRowSelection} from 'antd/es/table/interface';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
-import {useDebugValue, useEffect, useState} from 'react';
-import OsTooltip from '@/app/components/common/os-tooltip';
-import OsInput from '@/app/components/common/os-input';
-import {TableRowSelection} from 'antd/es/table/interface';
-import Checkbox from 'antd/es/checkbox/Checkbox';
+import {useEffect, useState} from 'react';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {
-  updateQuoteCompletedById,
-  updateQuoteDraftById,
   getAllQuotesWithCompletedAndDraft,
   insertQuote,
+  updateQuoteCompletedById,
+  updateQuoteDraftById,
 } from '../../../../../redux/actions/quote';
 import {
+  DeleteQuoteLineItemQuantityById,
   getQuoteLineItem,
   insertQuoteLineItem,
-  UpdateQuoteLineItemQuantityById,
-  DeleteQuoteLineItemQuantityById,
 } from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from './UploadFile';
@@ -59,9 +58,12 @@ const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
-  const [step, setStep] = useState<number>();
   // const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [step, setStep] = useState<number>(0);
+  const [inputData, setInputData] = useState<any>({});
+  const debouncedValue = useDebounceHook(inputData, 500);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const {data: quoteData, loading} = useAppSelector((state) => state.quote);
   const {data: quoteLineItemData} = useAppSelector(
@@ -69,11 +71,18 @@ const GenerateQuote: React.FC = () => {
   );
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [amountData, setAmountData] = useState<any>();
+
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     console.log('s4645645 ', newSelectedRowKeys);
     // setSelectedRowKeys(newSelectedRowKeys);
   };
   const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
+
+  // useEffect(() => {
+  //   console.log('debouncedValue', debouncedValue);
+  //   dispatch(updateQuoteCompletedById(debouncedValue));
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [debouncedValue]);
 
   useEffect(() => {
     let newObj: any = {};
@@ -162,6 +171,7 @@ const GenerateQuote: React.FC = () => {
     dispatch(getQuoteLineItem());
     dispatch(getAllQuotesWithCompletedAndDraft());
   }, []);
+
   const markAsComplete = () => {
     if (getAllItemsQuoteId) {
       for (let i = 0; i < getAllItemsQuoteId?.length; i++) {
@@ -171,6 +181,7 @@ const GenerateQuote: React.FC = () => {
     }
     setStep(0);
   };
+
   const SaveAsDraft = () => {
     if (getAllItemsQuoteId) {
       for (let i = 0; i < getAllItemsQuoteId?.length; i++) {
@@ -196,7 +207,7 @@ const GenerateQuote: React.FC = () => {
       primary: amountData?.Quantity,
       secondry: 'Line Items',
       icon: <QueueListIcon width={24} color={token?.colorInfo} />,
-      iconBg: token?.colorPrimaryHover,
+      iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
@@ -347,6 +358,7 @@ const GenerateQuote: React.FC = () => {
               style={{width: '100px'}}
               onChange={(e: any) => {
                 console.log('43543534', e.target.value);
+                setInputData({id: record?.id, quantity: e.target.value});
               }}
             />
           ),
@@ -492,8 +504,6 @@ const GenerateQuote: React.FC = () => {
 
     if (labelOcrMap && uploadFileData.length > 0) {
       dispatch(insertQuote(labelOcrMap)).then((d) => {
-        setShowModal(false);
-        setUploadFileData([]);
         d?.payload?.data?.map((item: any) => {
           if (item?.id) {
             const lineitemData = formattedArray?.map((item1: any) => ({
@@ -503,8 +513,16 @@ const GenerateQuote: React.FC = () => {
             dispatch(insertQuoteLineItem(lineitemData));
           }
         });
+        dispatch(getQuoteLineItem());
+        setStep(1);
+        setShowModal(false);
+        setUploadFileData([]);
       });
     }
+  };
+
+  const onToggleChange = (checked: boolean) => {
+    setShowToggleTable(checked);
   };
 
   return (
@@ -608,28 +626,28 @@ const GenerateQuote: React.FC = () => {
                   </Space>
                 </Col>
                 <Col span={12}>
-                  <OsUpload
-                    // beforeUpload={beforeUpload}
-                    uploadFileData={uploadFileData}
+                  <UploadFile
                     setUploadFileData={setUploadFileData}
-                    // setLoading={setLoading}
-                    loading={loading}
+                    uploadFileData={uploadFileData}
                   />
                 </Col>
                 <Divider />
               </Row>
-              <Space size={30} direction="horizontal">
+              <Space size={30} direction="horizontal" align="center">
                 <Typography name="Body 4/Medium">
                   Select Existing Quote?
                 </Typography>
+                <Switch size="default" onChange={onToggleChange} />
               </Space>
-              <OsTable
-                loading={loading}
-                rowSelection={{...rowSelection}}
-                columns={Quotecolumns}
-                dataSource={quoteData}
-                scroll
-              />
+              {showToggleTable && (
+                <OsTable
+                  loading={loading}
+                  rowSelection={{...rowSelection}}
+                  columns={Quotecolumns}
+                  dataSource={quoteData}
+                  scroll
+                />
+              )}
             </Space>
             <Row
               justify="end"
@@ -642,6 +660,7 @@ const GenerateQuote: React.FC = () => {
             >
               <Col>
                 <OsButton
+                  loading={loading}
                   text="Generate"
                   buttontype="PRIMARY"
                   clickHandler={() => addQuoteLineItem()}
