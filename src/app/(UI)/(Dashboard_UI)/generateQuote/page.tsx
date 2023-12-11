@@ -33,6 +33,7 @@ import Image from 'next/image';
 import {useEffect, useState} from 'react';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import {Dropdown} from '@/app/components/common/antd/DropDown';
+import {useRouter} from 'next/navigation';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {
@@ -79,6 +80,7 @@ const GenerateQuote: React.FC = () => {
     console.log('s4645645 ', newSelectedRowKeys);
     // setSelectedRowKeys(newSelectedRowKeys);
   };
+  const router = useRouter();
   const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
 
   useEffect(() => {
@@ -187,7 +189,7 @@ const GenerateQuote: React.FC = () => {
         dispatch(updateQuoteCompletedById(parseInt(IDS as string, 10)));
       }
     }
-    setStep(0);
+    router?.push('/allQuote');
   };
 
   const SaveAsDraft = () => {
@@ -197,7 +199,7 @@ const GenerateQuote: React.FC = () => {
         dispatch(updateQuoteDraftById(parseInt(IDS as string, 10)));
       }
     }
-    setStep(0);
+    router?.push('/allQuote');
   };
   const deleteLineItems = () => {
     if (selectTedRowIds) {
