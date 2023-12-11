@@ -25,7 +25,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
-import {useEffect, useState} from 'react';
+import {useDebugValue, useEffect, useState} from 'react';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {getQuote, insertQuote} from '../../../../../redux/actions/quote';
@@ -53,10 +53,53 @@ const GenerateQuote: React.FC = () => {
   const {data: quoteLineItemData} = useAppSelector(
     (state) => state.quoteLineItem,
   );
+  const [amountData, setAmountData] = useState<any>();
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
   };
+
+  useEffect(() => {
+    let newObj: any = {};
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    let adjustPrice: number = 0;
+    let lineAmount: number = 0;
+    let quantity: number = 0;
+    let listPrice: number = 0;
+
+    if (quoteLineItemData && quoteLineItemData?.length > 0) {
+      // eslint-disable-next-line no-unsafe-optional-chaining
+      quoteLineItemData?.map((item: any, index: any) => {
+        if (item?.adjusted_price) {
+          adjustPrice += parseFloat(
+            item?.adjusted_price
+              ?.slice(1, item?.adjusted_price?.length)
+              .replace(/,/g, ''),
+          );
+          lineAmount += parseFloat(
+            item?.line_amount
+              ?.slice(1, item?.line_amount?.length)
+              .replace(/,/g, ''),
+          );
+          listPrice += parseFloat(
+            item?.list_price
+              ?.slice(1, item?.list_price?.length)
+              .replace(/,/g, ''),
+          );
+          quantity += parseInt(item?.quantity, 10);
+        }
+      });
+    }
+    newObj = {
+      Quantity: quantity,
+      ListPirce: listPrice,
+      AdjustPrice: adjustPrice,
+      LineAmount: lineAmount,
+    };
+    setAmountData(newObj);
+  }, [quoteLineItemData]);
+
+  console.log('adjusted_price', amountData);
 
   const rowSelection = {
     selectedRowKeys,
@@ -71,21 +114,21 @@ const GenerateQuote: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: '217',
+      primary: amountData?.Quantity,
       secondry: 'Line Items',
       icon: <QueueListIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorPrimaryHover,
     },
     {
       key: 2,
-      primary: '$0.00',
+      primary: `$${amountData?.AdjustPrice}`,
       secondry: 'Quote Total',
       icon: <TagIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
     },
     {
       key: 3,
-      primary: '$734,308.14',
+      primary: `$${amountData?.LineAmount}`,
       secondry: 'Total Cost',
       icon: <CurrencyDollarIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
