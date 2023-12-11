@@ -185,9 +185,12 @@ const GenerateQuote: React.FC = () => {
       for (let i = 0; i < selectTedRowIds?.length; i++) {
         const IDS = selectTedRowIds[i];
         dispatch(DeleteQuoteLineItemQuantityById(parseInt(IDS as string, 10)));
+        setSelectedRowIds([]);
       }
+      setTimeout(() => {
+        dispatch(getQuoteLineItem());
+      }, 2000);
     }
-    dispatch(getQuoteLineItem());
   };
 
   const analyticsData = [
@@ -280,18 +283,38 @@ const GenerateQuote: React.FC = () => {
 
   const QuoteLineItemcolumns = [
     {
-      title: <Checkbox />,
+      title: <Checkbox checked={selectTedRowIds?.length > 0} />,
       dataIndex: 'line',
       key: 'line',
       width: 130,
       render(text: any, record: any) {
         return {
           props: {
-            style: {background: '#E8EBEE'},
+            style: {
+              background: selectTedRowIds?.includes(record?.id)
+                ? '#E8EBEE'
+                : ' ',
+            },
           },
           children: (
             <div style={{display: 'flex', justifyContent: 'center'}}>
-              <Checkbox />
+              <Checkbox
+                checked={selectTedRowIds?.includes(record?.id)}
+                onChange={(e: any) => {
+                  const newArrVlaue: any = [...selectTedRowIds];
+                  if (
+                    e.target.checked &&
+                    !selectTedRowIds?.includes(record?.id)
+                  ) {
+                    newArrVlaue?.push(record?.id);
+                  } else if (selectTedRowIds?.includes(record?.id)) {
+                    // newArrVlaue?.pop(record?.id);
+                    const index = newArrVlaue?.indexOf(record?.id);
+                    newArrVlaue?.splice(index, 1);
+                  }
+                  setSelectedRowIds(newArrVlaue);
+                }}
+              />
             </div>
           ),
         };
@@ -305,7 +328,11 @@ const GenerateQuote: React.FC = () => {
       render(text: any, record: any) {
         return {
           props: {
-            style: {background: '#E8EBEE'},
+            style: {
+              background: selectTedRowIds?.includes(record?.id)
+                ? '#E8EBEE'
+                : ' ',
+            },
           },
           children: (
             <Typography name="Body 4/Regular">{record?.line}</Typography>
@@ -321,7 +348,11 @@ const GenerateQuote: React.FC = () => {
       render(text: any, record: any) {
         return {
           props: {
-            style: {background: '#E8EBEE'},
+            style: {
+              background: selectTedRowIds?.includes(record?.id)
+                ? '#E8EBEE'
+                : ' ',
+            },
           },
           children: (
             <Typography name="Body 4/Regular">
@@ -339,10 +370,15 @@ const GenerateQuote: React.FC = () => {
       render(text: any, record: any) {
         return {
           props: {
-            style: {background: '#E8EBEE'},
+            style: {
+              background: selectTedRowIds?.includes(record?.id)
+                ? '#E8EBEE'
+                : ' ',
+            },
           },
           children: (
             <OsInput
+              disabled={!selectTedRowIds?.includes(record?.id)}
               defaultValue={record?.quantity}
               style={{width: '100px'}}
               onChange={(e: any) => {
@@ -361,7 +397,11 @@ const GenerateQuote: React.FC = () => {
       render(text: any, record: any) {
         return {
           props: {
-            style: {background: '#E8EBEE'},
+            style: {
+              background: selectTedRowIds?.includes(record?.id)
+                ? '#E8EBEE'
+                : ' ',
+            },
           },
           children: (
             <Typography name="Body 4/Regular">{record?.MSRP}</Typography>
@@ -377,7 +417,11 @@ const GenerateQuote: React.FC = () => {
       render(text: any, record: any) {
         return {
           props: {
-            style: {background: '#E8EBEE'},
+            style: {
+              background: selectTedRowIds?.includes(record?.id)
+                ? '#E8EBEE'
+                : ' ',
+            },
           },
           children: (
             <Typography name="Body 4/Regular">{record?.cost}</Typography>
@@ -393,7 +437,11 @@ const GenerateQuote: React.FC = () => {
       render(text: any, record: any) {
         return {
           props: {
-            style: {background: '#E8EBEE'},
+            style: {
+              background: selectTedRowIds?.includes(record?.id)
+                ? '#E8EBEE'
+                : ' ',
+            },
           },
           children: (
             <Typography name="Body 4/Regular">{record?.description}</Typography>
@@ -409,7 +457,11 @@ const GenerateQuote: React.FC = () => {
       render(text: any, record: any) {
         return {
           props: {
-            style: {background: '#E8EBEE'},
+            style: {
+              background: selectTedRowIds?.includes(record?.id)
+                ? '#E8EBEE'
+                : ' ',
+            },
           },
           children: (
             <Typography name="Body 4/Regular">
@@ -710,7 +762,15 @@ const GenerateQuote: React.FC = () => {
                     loading={loading}
                     // rowSelection={rowSelection}
                     columns={QuoteLineItemcolumns}
-                    dataSource={quoteLineItemData}
+                    dataSource={
+                      (quoteLineItemData &&
+                        quoteLineItemData?.filter((item: any) => {
+                          if (item?.is_deleted == false) {
+                            return item;
+                          }
+                        })) ||
+                      []
+                    }
                     scroll
                   />
                 </TabPane>
