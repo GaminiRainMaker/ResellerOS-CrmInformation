@@ -80,10 +80,14 @@ const GenerateQuote: React.FC = () => {
   const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
 
   useEffect(() => {
-    console.log('debouncedValue', debouncedValue);
     dispatch(UpdateQuoteLineItemQuantityById(debouncedValue));
+    setTimeout(() => {
+      dispatch(getQuoteLineItem());
+      setSelectedRowIds([]);
+    }, 500);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
+  console.log('debouncedValue', quoteLineItemData);
 
   useEffect(() => {
     let newObj: any = {};
@@ -391,7 +395,7 @@ const GenerateQuote: React.FC = () => {
           children: (
             <OsInput
               disabled={!selectTedRowIds?.includes(record?.id)}
-              defaultValue={record?.quantity}
+              value={record?.quantity}
               style={{width: '100px'}}
               onChange={(e: any) => {
                 console.log('43543534', e.target.value);
