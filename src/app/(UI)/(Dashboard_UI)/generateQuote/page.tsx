@@ -68,6 +68,7 @@ const GenerateQuote: React.FC = () => {
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const {data: quoteData, loading} = useAppSelector((state) => state.quote);
+  const [isEditable, setIsEditable] = useState<boolean>(false);
   const {data: quoteLineItemData} = useAppSelector(
     (state) => state.quoteLineItem,
   );
@@ -85,6 +86,7 @@ const GenerateQuote: React.FC = () => {
     setTimeout(() => {
       dispatch(getQuoteLineItem());
       setSelectedRowIds([]);
+      setIsEditable(false);
     }, 500);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
@@ -213,7 +215,7 @@ const GenerateQuote: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: amountData?.Quantity,
+      primary: quoteLineItemData?.length,
       secondry: 'Line Items',
       icon: <QueueListIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
@@ -395,7 +397,7 @@ const GenerateQuote: React.FC = () => {
           },
           children: (
             <OsInput
-              disabled={!selectTedRowIds?.includes(record?.id)}
+              disabled={!(selectTedRowIds?.includes(record?.id) && isEditable)}
               value={record?.quantity}
               style={{width: '100px'}}
               onChange={(e: any) => {
@@ -592,7 +594,11 @@ const GenerateQuote: React.FC = () => {
     },
     {
       key: '2',
-      label: <Typography name="Body 3/Regular">Edit Selected</Typography>,
+      label: (
+        <Typography name="Body 3/Regular" onClick={() => setIsEditable(true)}>
+          Edit Selected
+        </Typography>
+      ),
     },
     {
       key: '3',
