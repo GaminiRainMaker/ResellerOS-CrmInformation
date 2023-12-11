@@ -93,7 +93,8 @@ const SideBar = () => {
             icon={
               <CurrencyDollarIcon
                 color={
-                  seleectedKey?.toString()?.includes('2')
+                  seleectedKey?.toString()?.includes('2') ||
+                  seleectedKey?.toString()?.includes('3')
                     ? token?.colorLink
                     : token?.colorTextSecondary
                 }

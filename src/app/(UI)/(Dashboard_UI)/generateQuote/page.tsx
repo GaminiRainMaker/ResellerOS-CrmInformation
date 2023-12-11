@@ -28,7 +28,11 @@ import Image from 'next/image';
 import {useEffect, useState} from 'react';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
-import {getQuote, insertQuote} from '../../../../../redux/actions/quote';
+import {
+  insertQuote,
+  getAllGeneratedQuote,
+  getQuote,
+} from '../../../../../redux/actions/quote';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from './UploadFile';
 
@@ -48,7 +52,7 @@ const GenerateQuote: React.FC = () => {
   const {data: quoteData, loading} = useAppSelector((state) => state.quote);
 
   useEffect(() => {
-    dispatch(getQuote());
+    dispatch(getAllGeneratedQuote());
   }, []);
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
@@ -412,7 +416,7 @@ const GenerateQuote: React.FC = () => {
     if (labelOcrMap && uploadFileData.length > 0) {
       dispatch(insertQuote(labelOcrMap)).then((d) => {
         setShowModal(false);
-        dispatch(getQuote());
+        dispatch(getAllGeneratedQuote());
         setUploadFileData([]);
         // if (d?.payload?.data?.id) {
         // const lineitemData = formattedArray?.map((item: any) => ({
