@@ -37,3 +37,31 @@ export const getQuoteLineItemById = createAsyncThunk(
     }
   },
 );
+
+export const UpdateQuoteLineItemQuantityById = createAsyncThunk(
+  'quoteLineItem/UpdateQuoteLineItemQuantityById',
+  async (data: any, thunkApi) => {
+    const {id, quantity} = data;
+    try {
+      const res = await QUOTE_LINE_ITEM_API.updateQuoteLineItemQuantityById(
+        id,
+        quantity,
+      );
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+
+export const DeleteQuoteLineItemQuantityById = createAsyncThunk(
+  'quoteLineItem/DeleteQuoteLineItemQuantityById',
+  async (id: number, thunkApi) => {
+    try {
+      const res = await QUOTE_LINE_ITEM_API.deleteQuoteLineItemQuantityById(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

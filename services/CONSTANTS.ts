@@ -8,6 +8,9 @@ export const API = {
   QUOTE_LINE_ITEM: {
     INDEX: '/quoteLineItem',
     QUERY: '/quoteLineItem/query',
+    UpdateQuoteLineItemQuantityById:
+      '/quoteLineItem/updateQuantityOfQuoteLineItem',
+    DeleteQuoteLineItemQuantityById: '/quoteLineItem/deleteQuoteLineItems',
   },
   USER: {
     INDEX: '/user',

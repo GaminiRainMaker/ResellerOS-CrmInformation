@@ -2,6 +2,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
+  DeleteQuoteLineItemQuantityById,
+  UpdateQuoteLineItemQuantityById,
   getQuoteLineItem,
   getQuoteLineItemById,
   insertQuoteLineItem,
@@ -79,6 +81,42 @@ const quoteLineItemSlice = createSlice({
       )
       .addCase(
         getQuoteLineItemById.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(UpdateQuoteLineItemQuantityById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        UpdateQuoteLineItemQuantityById.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        UpdateQuoteLineItemQuantityById.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(DeleteQuoteLineItemQuantityById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        DeleteQuoteLineItemQuantityById.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        DeleteQuoteLineItemQuantityById.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

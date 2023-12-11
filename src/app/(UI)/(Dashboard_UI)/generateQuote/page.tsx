@@ -23,15 +23,18 @@ import OsButton from '@/app/components/common/os-button';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
+import OsUpload from '@/app/components/common/os-upload';
+import {Divider} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
-import {useDebugValue, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {
-  insertQuote,
   updateQuoteCompletedById,
   updateQuoteDraftById,
+  getAllQuotesWithCompletedAndDraft,
+  insertQuote,
 } from '../../../../../redux/actions/quote';
 import {
   getQuoteLineItem,
@@ -50,7 +53,7 @@ const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
-  const [step, setStep] = useState<number>(1);
+  const [step, setStep] = useState<number>(0);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
@@ -64,6 +67,7 @@ const GenerateQuote: React.FC = () => {
     setSelectedRowKeys(newSelectedRowKeys);
   };
   const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
+
   useEffect(() => {
     let newObj: any = {};
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -124,6 +128,7 @@ const GenerateQuote: React.FC = () => {
 
   useEffect(() => {
     dispatch(getQuoteLineItem());
+    dispatch(getAllQuotesWithCompletedAndDraft());
   }, []);
   const markAsComplete = () => {
     if (getAllItemsQuoteId) {
@@ -232,7 +237,7 @@ const GenerateQuote: React.FC = () => {
     {value: 'item 4', label: 'Item 4'},
   ];
 
-  const Quotecolumns = [
+  const QuoteLineItemcolumns = [
     {
       title: '#Line',
       dataIndex: 'line',
@@ -274,6 +279,45 @@ const GenerateQuote: React.FC = () => {
       dataIndex: 'productselect',
       key: 'productselect',
       width: 285,
+    },
+  ];
+
+  const Quotecolumns = [
+    // {
+    //   title: 'Quote',
+    //   dataIndex: 'quote',
+    //   key: 'quote',
+    //   width: 165,
+    // },
+    // {
+    //   title: 'Customer Address',
+    //   dataIndex: 'customer_address',
+    //   key: 'customer_address',
+    //   width: 165,
+    // },
+    {
+      title: 'Customer City',
+      dataIndex: 'customer_city',
+      key: 'customer_city',
+      width: 165,
+    },
+    {
+      title: 'Customer Contact',
+      dataIndex: 'customer_contact',
+      key: 'customer_contact',
+      width: 165,
+    },
+    {
+      title: 'Customer Email',
+      dataIndex: 'customer_email',
+      key: 'customer_email',
+      width: 165,
+    },
+    {
+      title: 'Customer Name',
+      dataIndex: 'customer_name',
+      key: 'customer_name',
+      width: 165,
     },
   ];
 
@@ -358,7 +402,14 @@ const GenerateQuote: React.FC = () => {
           </Col>
           <Col>
             {step === 0 ? (
-              <>ccccc</>
+              <>
+                <OsButton
+                  text="Add Vendor"
+                  buttontype="PRIMARY"
+                  icon={<PlusIcon />}
+                  // clickHandler={() => setShowModal((p) => !p)}
+                />
+              </>
             ) : (
               <Space size={8} direction="horizontal">
                 <OsButton
@@ -386,71 +437,146 @@ const GenerateQuote: React.FC = () => {
             )}
           </Col>
         </Row>
-
-        <Row
-          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
-        >
-          <OsTabs
-            onChange={(e) => {
-              setActiveTab(e);
-            }}
-            activeKey={activeTab}
-            tabBarExtraContent={
-              <Space direction="vertical" size={0}>
-                <Typography
-                  name="Body 4/Medium"
-                  color={token?.colorPrimaryText}
-                >
-                  Select Grouping
+        {step === 0 ? (
+          <Space direction="vertical" size={24} style={{width: '100%'}}>
+            <Space
+              direction="vertical"
+              size={24}
+              style={{
+                padding: '24px',
+                background: token?.colorBgContainer,
+                borderRadius: '12px',
+                width: '100%',
+              }}
+            >
+              <Row>
+                <Col span={7}>
+                  <Space direction="vertical" size={2}>
+                    <Typography
+                      name="Body 4/Medium"
+                      color={token?.colorPrimaryText}
+                    >
+                      Upload file to generate quote
+                    </Typography>
+                    <Typography
+                      name="Body 4/Regular"
+                      color={token?.colorPrimaryText}
+                    >
+                      Lorem ipsum dolor sit amet consectetur. Feugiat
+                      ullamcorper congue vestibulum enim purus vitae.{' '}
+                    </Typography>
+                  </Space>
+                </Col>
+                <Col span={12}>
+                  <OsUpload
+                    // beforeUpload={beforeUpload}
+                    uploadFileData={uploadFileData}
+                    setUploadFileData={setUploadFileData}
+                    // setLoading={setLoading}
+                    loading={loading}
+                  />
+                </Col>
+                <Divider />
+              </Row>
+              <Space size={30} direction="horizontal">
+                <Typography name="Body 4/Medium">
+                  Select Existing Quote?
                 </Typography>
-                <Space size={12}>
-                  <CommonSelect
-                    style={{width: '319px'}}
-                    placeholder="Select Grouping here"
-                    options={selectData}
-                  />
-                  <OsButton
-                    buttontype="PRIMARY_ICON"
-                    icon={<EllipsisVerticalIcon width={24} />}
-                  />
-                </Space>
               </Space>
-            }
-          >
-            {TabPaneData?.map((item) => (
-              <TabPane
-                tab={
-                  <Typography
-                    name="Body 4/Regular"
-                    color={
-                      activeTab === item?.key ? token?.colorPrimary : '#666666'
-                    }
-                  >
-                    {item?.name}
-                    <div
-                      style={{
-                        // eslint-disable-next-line eqeqeq
-                        borderBottom:
-                          // eslint-disable-next-line eqeqeq
-                          activeTab == item?.key ? '2px solid #1C3557' : '',
-                        marginTop: '3px',
-                      }}
-                    />
-                  </Typography>
-                }
-                key={item?.key}
-              >
-                <OsTable
-                  loading={loading}
-                  rowSelection={rowSelection}
-                  columns={Quotecolumns}
-                  dataSource={quoteLineItemData}
-                  scroll
+              <OsTable
+                loading={loading}
+                rowSelection={rowSelection}
+                columns={Quotecolumns}
+                dataSource={quoteData}
+                scroll
+              />
+            </Space>
+            <Row
+              justify="end"
+              style={{
+                padding: '24px',
+                background: token?.colorBgContainer,
+                borderRadius: '12px',
+                width: '100%',
+              }}
+            >
+              <Col>
+                <OsButton
+                  text="Generate"
+                  buttontype="PRIMARY"
+                  clickHandler={() => addQuoteLineItem()}
                 />
-              </TabPane>
-            ))}
-          </OsTabs>
-        </Row>
+              </Col>
+            </Row>
+          </Space>
+        ) : (
+          <Row
+            style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+          >
+            <OsTabs
+              onChange={(e) => {
+                setActiveTab(e);
+              }}
+              activeKey={activeTab}
+              tabBarExtraContent={
+                <Space direction="vertical" size={0}>
+                  <Typography
+                    name="Body 4/Medium"
+                    color={token?.colorPrimaryText}
+                  >
+                    Select Grouping
+                  </Typography>
+                  <Space size={12}>
+                    <CommonSelect
+                      style={{width: '319px'}}
+                      placeholder="Select Grouping here"
+                      options={selectData}
+                    />
+                    <OsButton
+                      buttontype="PRIMARY_ICON"
+                      icon={<EllipsisVerticalIcon width={24} />}
+                    />
+                  </Space>
+                </Space>
+              }
+            >
+              {TabPaneData?.map((item) => (
+                <TabPane
+                  tab={
+                    <Typography
+                      name="Body 4/Regular"
+                      color={
+                        activeTab === item?.key
+                          ? token?.colorPrimary
+                          : '#666666'
+                      }
+                    >
+                      {item?.name}
+                      <div
+                        style={{
+                          // eslint-disable-next-line eqeqeq
+                          borderBottom:
+                            // eslint-disable-next-line eqeqeq
+                            activeTab == item?.key ? '2px solid #1C3557' : '',
+                          marginTop: '3px',
+                        }}
+                      />
+                    </Typography>
+                  }
+                  key={item?.key}
+                >
+                  <OsTable
+                    loading={loading}
+                    rowSelection={rowSelection}
+                    columns={QuoteLineItemcolumns}
+                    dataSource={quoteLineItemData}
+                    scroll
+                  />
+                </TabPane>
+              ))}
+            </OsTabs>
+          </Row>
+        )}
       </Space>
       <OsModal
         loading={loading}
@@ -458,6 +584,7 @@ const GenerateQuote: React.FC = () => {
           <UploadFile
             setUploadFileData={setUploadFileData}
             uploadFileData={uploadFileData}
+            addInExistingQuote
           />
         }
         width={900}

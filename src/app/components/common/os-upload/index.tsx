@@ -1,18 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
 import React, {useEffect, useState} from 'react';
-import {Checkbox} from '../antd/Checkbox';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
-import EmptyContainer from '../os-empty-container';
 import Typography from '../typography';
 import UploadCard from './UploadCard';
 import {OSDraggerStyle} from './styled-components';
+import {Checkbox} from '../antd/Checkbox';
 
 const OsUpload: React.FC<any> = ({
   beforeUpload,
   uploadFileData,
   setUploadFileData,
+  addInExistingQuote,
 }) => {
   const [token] = useThemeToken();
   const [fileList, setFileList] = useState([]);
@@ -28,10 +28,12 @@ const OsUpload: React.FC<any> = ({
 
   return (
     <Space size={24} direction="vertical" style={{width: '100%'}}>
-      <Space size={8} direction="horizontal">
-        <Checkbox />
-        <Typography name="Body 3/Regular">Add in existing quote</Typography>
-      </Space>
+      {addInExistingQuote && (
+        <Space size={8} direction="horizontal">
+          <Checkbox />
+          <Typography name="Body 3/Regular">Add in existing quote</Typography>
+        </Space>
+      )}
 
       <OSDraggerStyle
         beforeUpload={beforeUpload}

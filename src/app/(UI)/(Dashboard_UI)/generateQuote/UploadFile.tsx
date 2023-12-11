@@ -21,7 +21,11 @@ const convertFileToBase64 = (file: File): Promise<string> =>
     reader.readAsDataURL(file);
   });
 
-const UploadFile: FC<any> = ({setUploadFileData, uploadFileData}) => {
+const UploadFile: FC<any> = ({
+  setUploadFileData,
+  uploadFileData,
+  addInExistingQuote,
+}) => {
   // const dispatch = useAppDispatch();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -80,6 +84,7 @@ const UploadFile: FC<any> = ({setUploadFileData, uploadFileData}) => {
         setUploadFileData={setUploadFileData}
         setLoading={setLoading}
         loading={loading}
+        addInExistingQuote={addInExistingQuote}
       />
     </GlobalLoader>
   );
