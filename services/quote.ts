@@ -10,6 +10,10 @@ export const QUOTEAPI = {
     post(API.QUOTE.QUERY, data) as Promise<AxiosResponse<[]>>,
   getById: (id: number) =>
     get(`${API.QUOTE.INDEX}/${id}`) as Promise<AxiosResponse<any>>,
+  updateQuoteDraftById: (id: number) =>
+    get(`${API.QUOTE.UpdateDraftByID}/${id}`) as Promise<AxiosResponse<any>>,
+  updateQuoteCompleteById: (id: number) =>
+    get(`${API.QUOTE.UpdateCompleteByID}/${id}`) as Promise<AxiosResponse<any>>,
 
   // put: (id: number, data: any) => put(API.QUOTE.INDEX + "/" + id, data),
   // delete: (id: number) => del(API.QUOTE.INDEX + "/" + id),

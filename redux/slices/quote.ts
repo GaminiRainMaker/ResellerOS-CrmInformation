@@ -1,7 +1,13 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {getQuote, getQuoteById, insertQuote} from '../actions/quote';
+import {
+  getAllQuotesWithCompletedAndDraft,
+  getQuoteById,
+  insertQuote,
+  updateQuoteCompletedById,
+  updateQuoteDraftById,
+} from '../actions/quote';
 
 type QuoteState = {
   loading: boolean;
@@ -38,18 +44,24 @@ const quoteSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      .addCase(getQuote.pending, (state) => {
+      .addCase(getAllQuotesWithCompletedAndDraft.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getQuote.fulfilled, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.data = action.payload;
-      })
-      .addCase(getQuote.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+      .addCase(
+        getAllQuotesWithCompletedAndDraft.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getAllQuotesWithCompletedAndDraft.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
       .addCase(getQuoteById.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -61,7 +73,43 @@ const quoteSlice = createSlice({
       .addCase(getQuoteById.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(updateQuoteDraftById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateQuoteDraftById.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        updateQuoteDraftById.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(updateQuoteCompletedById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateQuoteCompletedById.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        updateQuoteCompletedById.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      );
   },
 });
 

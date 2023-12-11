@@ -58,14 +58,10 @@ const OsUpload: React.FC<any> = ({
         </Typography>
       </OSDraggerStyle>
 
-      {uploadFileData && uploadFileData?.length > 0 ? (
-        <UploadCard
-          uploadFileData={uploadFileData}
-          setUploadFileData={setUploadFileData}
-        />
-      ) : (
-        <EmptyContainer title="No Data" subTitle="Please upload the file." />
-      )}
+      <UploadCard
+        uploadFileData={uploadFileData}
+        setUploadFileData={setUploadFileData}
+      />
     </Space>
   );
 };

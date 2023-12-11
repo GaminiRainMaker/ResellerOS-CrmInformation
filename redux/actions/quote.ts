@@ -2,8 +2,8 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {QUOTEAPI} from '../../services/quote';
 
-export const getQuote = createAsyncThunk(
-  'quote/all',
+export const getAllQuotesWithCompletedAndDraft = createAsyncThunk(
+  'quote/getAllQuotesWithCompletedAndDraft',
   async (data, thunkApi) => {
     try {
       const res = await QUOTEAPI.get();
@@ -30,6 +30,28 @@ export const getQuoteById = createAsyncThunk(
   async (id: number, thunkApi) => {
     try {
       const res = await QUOTEAPI.getById(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+export const updateQuoteDraftById = createAsyncThunk(
+  'quote/updateQuoteDraftById',
+  async (id: number, thunkApi) => {
+    try {
+      const res = await QUOTEAPI.updateQuoteDraftById(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+export const updateQuoteCompletedById = createAsyncThunk(
+  'quote/updateQuoteCompletedById',
+  async (id: number, thunkApi) => {
+    try {
+      const res = await QUOTEAPI.updateQuoteCompleteById(id);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

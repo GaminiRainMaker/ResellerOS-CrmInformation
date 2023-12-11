@@ -28,13 +28,13 @@ import Image from 'next/image';
 import {useDebugValue, useEffect, useState} from 'react';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
-import {getQuote, insertQuote} from '../../../../../redux/actions/quote';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import UploadFile from './UploadFile';
+import {insertQuote} from '../../../../../redux/actions/quote';
 import {
   getQuoteLineItem,
   insertQuoteLineItem,
 } from '../../../../../redux/actions/quotelineitem';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import UploadFile from './UploadFile';
 
 interface FormattedData {
   [key: string]: {
@@ -46,6 +46,7 @@ const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
+  const [step, setStep] = useState<number>(1);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
@@ -99,15 +100,12 @@ const GenerateQuote: React.FC = () => {
     setAmountData(newObj);
   }, [quoteLineItemData]);
 
-  console.log('adjusted_price', amountData);
-
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
   };
 
   useEffect(() => {
-    dispatch(getQuote());
     dispatch(getQuoteLineItem());
   }, []);
 
@@ -201,233 +199,46 @@ const GenerateQuote: React.FC = () => {
 
   const Quotecolumns = [
     {
-      title: 'Cage Code',
-      dataIndex: 'cage_code',
-      key: 'cage_code',
+      title: '#Line',
+      dataIndex: 'line',
+      key: 'line',
+      width: 130,
     },
     {
-      title: 'Credit Cards',
-      dataIndex: 'credit_cards',
-      key: 'credit_cards',
+      title: 'SKU',
+      dataIndex: 'product_code',
+      key: 'product_code',
+      width: 187,
     },
     {
-      title: 'Customer Address',
-      dataIndex: 'customer_address',
-      key: 'customer_address',
+      title: 'Quantity',
+      dataIndex: 'quantity',
+      key: 'quantity',
+      width: 187,
     },
     {
-      title: 'Customer City',
-      dataIndex: 'customer_city',
-      key: 'customer_city',
+      title: 'MSRP',
+      dataIndex: 'MSRP',
+      key: 'MSRP',
+      width: 187,
     },
     {
-      title: 'Customer Contact',
-      dataIndex: 'customer_contact',
-      key: 'customer_contact',
+      title: 'Cost',
+      dataIndex: 'cost',
+      key: 'cost',
+      width: 187,
     },
     {
-      title: 'Customer Email',
-      dataIndex: 'customer_email',
-      key: 'customer_email',
+      title: 'Product Description',
+      dataIndex: 'description',
+      key: 'description',
+      width: 365,
     },
     {
-      title: 'Customer Name',
-      dataIndex: 'customer_name',
-      key: 'customer_name',
-    },
-    {
-      title: 'Customer Phone',
-      dataIndex: 'customer_phone',
-      key: 'customer_phone',
-    },
-    {
-      title: 'Customer State',
-      dataIndex: 'customer_state',
-      key: 'customer_state',
-    },
-    {
-      title: 'Total Price',
-      dataIndex: 'customer_street',
-      key: 'customer_street',
-    },
-    {
-      title: 'Customer Zip',
-      dataIndex: 'customer_zip',
-      key: 'customer_zip',
-    },
-
-    {
-      title: 'Deal Id',
-      dataIndex: 'deal_id',
-      key: 'deal_id',
-    },
-    {
-      title: 'Distributor Address',
-      dataIndex: 'distributor_address',
-      key: 'distributor_address',
-    },
-    {
-      title: 'Distributor City',
-      dataIndex: 'distributor_city',
-      key: 'distributor_city',
-    },
-    {
-      title: 'Distributor Contact',
-      dataIndex: 'distributor_contact',
-      key: 'distributor_contact',
-    },
-    {
-      title: 'Distributor Email',
-      dataIndex: 'distributor_email',
-      key: 'distributor_email',
-    },
-    {
-      title: 'Distributor Fax',
-      dataIndex: 'distributor_fax',
-      key: 'distributor_fax',
-    },
-
-    {
-      title: 'Distributor Name',
-      dataIndex: 'distributor_name',
-      key: 'distributor_name',
-    },
-    {
-      title: 'Distributor Phone',
-      dataIndex: 'distributor_phone',
-      key: 'distributor_phone',
-    },
-    {
-      title: 'Distributor State',
-      dataIndex: 'distributor_state',
-      key: 'distributor_state',
-    },
-    {
-      title: 'Distributor Street',
-      dataIndex: 'distributor_street',
-      key: 'distributor_street',
-    },
-    {
-      title: 'Distributor Zip',
-      dataIndex: 'distributor_zip',
-      key: 'distributor_zip',
-    },
-
-    {
-      title: 'Duns Number',
-      dataIndex: 'duns_number',
-      key: 'duns_number',
-    },
-    {
-      title: 'Expiration Date',
-      dataIndex: 'expiration_date',
-      key: 'expiration_date',
-    },
-    {
-      title: 'Fob Shipping',
-      dataIndex: 'fob_shipping',
-      key: 'fob_shipping',
-    },
-    {
-      title: 'Ftin',
-      dataIndex: 'ftin',
-      key: 'ftin',
-    },
-
-    {
-      title: 'Oem Name',
-      dataIndex: 'oem_name',
-      key: 'oem_name',
-    },
-    {
-      title: 'Payment Terms',
-      dataIndex: 'payment_terms',
-      key: 'payment_terms',
-    },
-    {
-      title: 'Quote Amount',
-      dataIndex: 'quote_amount',
-      key: 'quote_amount',
-    },
-    {
-      title: 'Quote Date',
-      dataIndex: 'quote_date',
-      key: 'quote_date',
-    },
-    {
-      title: 'Quote Number',
-      dataIndex: 'quote_number',
-      key: 'quote_number',
-    },
-    {
-      title: 'Remit To',
-      dataIndex: 'remit_to',
-      key: 'remit_to',
-    },
-    {
-      title: 'Reseller Address',
-      dataIndex: 'reseller_address',
-      key: 'reseller_address',
-    },
-    {
-      title: 'Reseller City',
-      dataIndex: 'reseller_city',
-      key: 'reseller_city',
-    },
-    {
-      title: 'Reseller Contact',
-      dataIndex: 'reseller_contact',
-      key: 'reseller_contact',
-    },
-    {
-      title: 'Reseller Email',
-      dataIndex: 'reseller_email',
-      key: 'reseller_email',
-    },
-    {
-      title: 'Reseller Name',
-      dataIndex: 'reseller_name',
-      key: 'reseller_name',
-    },
-    {
-      title: 'Reseller Phone',
-      dataIndex: 'reseller_phone',
-      key: 'reseller_phone',
-    },
-    {
-      title: 'Reseller State',
-      dataIndex: 'reseller_state',
-      key: 'reseller_state',
-    },
-    {
-      title: 'Reseller Street',
-      dataIndex: 'reseller_street',
-      key: 'reseller_street',
-    },
-    {
-      title: 'Reseller Zip',
-      dataIndex: 'reseller_zip',
-      key: 'reseller_zip',
-    },
-    {
-      title: 'Shipping',
-      dataIndex: 'shipping',
-      key: 'shipping',
-    },
-    {
-      title: 'Shipping Amount',
-      dataIndex: 'shipping_amount',
-      key: 'shipping_amount',
-    },
-    {
-      title: 'Subtotal',
-      dataIndex: 'subtotal',
-      key: 'subtotal',
-    },
-    {
-      title: 'UEI',
-      dataIndex: 'uei',
-      key: 'uei',
+      title: 'Product Select',
+      dataIndex: 'productselect',
+      key: 'productselect',
+      width: 285,
     },
   ];
 
@@ -481,26 +292,28 @@ const GenerateQuote: React.FC = () => {
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <Row
-          justify="space-between"
-          style={{
-            padding: '36px 24px',
-            background: token?.colorBgContainer,
-            borderRadius: '12px',
-          }}
-          gutter={[0, 16]}
-        >
-          {analyticsData?.map((item) => (
-            <Col>
-              <TableNameColumn
-                primaryText={item?.primary}
-                secondaryText={item?.secondry}
-                fallbackIcon={item?.icon}
-                iconBg={item?.iconBg}
-              />
-            </Col>
-          ))}
-        </Row>
+        {step === 1 && (
+          <Row
+            justify="space-between"
+            style={{
+              padding: '36px 24px',
+              background: token?.colorBgContainer,
+              borderRadius: '12px',
+            }}
+            gutter={[0, 16]}
+          >
+            {analyticsData?.map((item) => (
+              <Col>
+                <TableNameColumn
+                  primaryText={item?.primary}
+                  secondaryText={item?.secondry}
+                  fallbackIcon={item?.icon}
+                  iconBg={item?.iconBg}
+                />
+              </Col>
+            ))}
+          </Row>
+        )}
 
         <Row justify="space-between" align="middle">
           <Col>
@@ -509,30 +322,28 @@ const GenerateQuote: React.FC = () => {
             </Typography>
           </Col>
           <Col>
-            <div
-              style={{
-                display: 'flex',
-                // justifyContent: 'space-evenly',
-                width: '40%',
-                gap: '8px',
-              }}
-            >
-              <OsButton text="Save as Draft" buttontype="SECONDARY" />
-              <OsButton
-                text="Add Quote"
-                buttontype="PRIMARY"
-                icon={<PlusIcon />}
-                clickHandler={() => setShowModal((p) => !p)}
-              />
-              <OsButton text=" Mark as Complete" buttontype="PRIMARY" />
+            {step === 0 ? (
+              <>ccccc</>
+            ) : (
+              <Space size={8} direction="horizontal">
+                <OsButton text="Save as Draft" buttontype="SECONDARY" />
+                <OsButton
+                  text="Add Quote"
+                  buttontype="PRIMARY"
+                  icon={<PlusIcon />}
+                  clickHandler={() => setShowModal((p) => !p)}
+                />
+                <OsButton text=" Mark as Complete" buttontype="PRIMARY" />
 
-              <OsButton
-                buttontype="PRIMARY_ICON"
-                icon={<ArrowDownTrayIcon width={24} />}
-              />
-            </div>
+                <OsButton
+                  buttontype="PRIMARY_ICON"
+                  icon={<ArrowDownTrayIcon width={24} />}
+                />
+              </Space>
+            )}
           </Col>
         </Row>
+
         <Row
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
