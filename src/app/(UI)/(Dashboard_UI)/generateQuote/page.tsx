@@ -28,7 +28,11 @@ import Image from 'next/image';
 import {useDebugValue, useEffect, useState} from 'react';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
-import {insertQuote} from '../../../../../redux/actions/quote';
+import {
+  insertQuote,
+  updateQuoteCompletedById,
+  updateQuoteDraftById,
+} from '../../../../../redux/actions/quote';
 import {
   getQuoteLineItem,
   insertQuoteLineItem,
@@ -55,11 +59,11 @@ const GenerateQuote: React.FC = () => {
     (state) => state.quoteLineItem,
   );
   const [amountData, setAmountData] = useState<any>();
-
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    console.log('selectedRowKeys changed: ', newSelectedRowKeys);
     setSelectedRowKeys(newSelectedRowKeys);
   };
-
+  const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
   useEffect(() => {
     let newObj: any = {};
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -100,14 +104,45 @@ const GenerateQuote: React.FC = () => {
     setAmountData(newObj);
   }, [quoteLineItemData]);
 
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
+  const rowSelection = (e: any) => {
+    // selectedRowKeys;
+    // onSelectChange;
+    console.log('selectedRowKe ', e);
   };
+
+  useEffect(() => {
+    const allIdsArray: [] = [];
+    if (quoteLineItemData && quoteLineItemData?.length > 0) {
+      quoteLineItemData?.map((item: string) => {
+        if (!allIdsArray?.includes(item?.Quote?.id)) {
+          allIdsArray?.push(parseInt(item?.Quote?.id));
+        }
+      });
+    }
+    setGetAllItemsQuoteId(allIdsArray);
+  }, [quoteLineItemData]);
 
   useEffect(() => {
     dispatch(getQuoteLineItem());
   }, []);
+  const markAsComplete = () => {
+    if (getAllItemsQuoteId) {
+      for (let i = 0; i < getAllItemsQuoteId?.length; i++) {
+        const IDS = getAllItemsQuoteId[i];
+        dispatch(updateQuoteCompletedById(parseInt(IDS as string, 10)));
+      }
+    }
+    dispatch(getQuoteLineItem());
+  };
+  const SaveAsDraft = () => {
+    if (getAllItemsQuoteId) {
+      for (let i = 0; i < getAllItemsQuoteId?.length; i++) {
+        const IDS = getAllItemsQuoteId[i];
+        dispatch(updateQuoteDraftById(parseInt(IDS as string, 10)));
+      }
+    }
+    dispatch(getQuoteLineItem());
+  };
 
   const analyticsData = [
     {
@@ -326,14 +361,22 @@ const GenerateQuote: React.FC = () => {
               <>ccccc</>
             ) : (
               <Space size={8} direction="horizontal">
-                <OsButton text="Save as Draft" buttontype="SECONDARY" />
+                <OsButton
+                  text="Save as Draft"
+                  buttontype="SECONDARY"
+                  clickHandler={SaveAsDraft}
+                />
                 <OsButton
                   text="Add Quote"
                   buttontype="PRIMARY"
                   icon={<PlusIcon />}
                   clickHandler={() => setShowModal((p) => !p)}
                 />
-                <OsButton text=" Mark as Complete" buttontype="PRIMARY" />
+                <OsButton
+                  text=" Mark as Complete"
+                  buttontype="PRIMARY"
+                  clickHandler={markAsComplete}
+                />
 
                 <OsButton
                   buttontype="PRIMARY_ICON"
