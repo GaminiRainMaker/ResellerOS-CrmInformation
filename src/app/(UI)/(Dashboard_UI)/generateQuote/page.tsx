@@ -27,7 +27,9 @@ import OsUpload from '@/app/components/common/os-upload';
 import {Divider} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
-import {useEffect, useState} from 'react';
+import {useDebugValue, useEffect, useState} from 'react';
+import OsTooltip from '@/app/components/common/os-tooltip';
+import OsInput from '@/app/components/common/os-input';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {
@@ -53,7 +55,7 @@ const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
-  const [step, setStep] = useState<number>(0);
+  const [step, setStep] = useState<number>(1);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
@@ -255,6 +257,15 @@ const GenerateQuote: React.FC = () => {
       dataIndex: 'quantity',
       key: 'quantity',
       width: 187,
+      render: (text: any, record: any) => (
+        <OsInput
+          defaultValue={record?.quantity}
+          style={{width: '100px'}}
+          onChange={(e: any) => {
+            console.log('43543534', e.target.value);
+          }}
+        />
+      ),
     },
     {
       title: 'MSRP',
