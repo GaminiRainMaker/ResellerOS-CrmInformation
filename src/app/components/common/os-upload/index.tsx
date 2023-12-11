@@ -33,7 +33,11 @@ const OsUpload: React.FC<any> = ({
         <Typography name="Body 3/Regular">Add in existing quote</Typography>
       </Space>
 
-      <OSDraggerStyle beforeUpload={beforeUpload} showUploadList={false}>
+      <OSDraggerStyle
+        beforeUpload={beforeUpload}
+        showUploadList={false}
+        multiple
+      >
         <FolderArrowDownIcon width={24} color={token?.colorInfoBorder} />
         <Typography
           name="Body 4/Medium"

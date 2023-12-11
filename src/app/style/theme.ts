@@ -5,7 +5,7 @@ const theme: ThemeConfig = {
     fontFamily: "'DM Sans', sans-serif",
     colorPrimary: '#1c3557',
     colorPrimaryText: '#0D0D0D',
-    colorPrimaryBg: '#b9c0cb',
+    colorPrimaryBg: '#E8EBEE',
     colorPrimaryBorder: '#1c3557',
     colorPrimaryHover: '#E9F0F7',
     colorPrimaryActive: '#31576f',

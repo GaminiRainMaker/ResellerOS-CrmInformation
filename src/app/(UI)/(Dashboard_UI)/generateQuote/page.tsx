@@ -534,6 +534,7 @@ const GenerateQuote: React.FC = () => {
                 key={item?.key}
               >
                 <OsTable
+                  loading={loading}
                   rowSelection={rowSelection}
                   columns={Quotecolumns}
                   dataSource={quoteData}

@@ -3,6 +3,7 @@ import React, {FC} from 'react';
 import {PaginationProps} from 'antd';
 import {CustomTable} from './styled-components';
 import useThemeToken from '../hooks/useThemeToken';
+import GlobalLoader from '../os-global-loader';
 
 const OsTable: FC<any> = ({
   scrollx = 1200,
@@ -32,7 +33,10 @@ const OsTable: FC<any> = ({
       tableInModal={tableInModal}
       token={token}
       bordered
-      //   loading={{indicator: <Indicator />, spinning: rest.loading}}
+      loading={{
+        indicator: <GlobalLoader loading={rest.loading} />,
+        spinning: rest.loading,
+      }}
       scroll={scrollx ? {x: scrollx as number} : undefined}
       pagination={
         paginationProps

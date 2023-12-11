@@ -37,6 +37,25 @@ export const CustomTable = styled(Table)<ITableProps>`
   // .ant-pagination .ant-pagination-item {
   //   background: ${(props) => props.token.colorInfoBg};
   // }
+
+  &.ant-table-wrapper
+    .ant-table-tbody
+    .ant-table-row.ant-table-row
+    > .ant-table-cell-row-hover {
+    background: #f6f7f8;
+    cursor: pointer;
+  }
+
+  &.ant-table-wrapper
+    .ant-table-tbody
+    .ant-table-row.ant-table-row-selected
+    > .ant-table-cell-row {
+    background: red;
+    cursor: pointer;
+  }
+  &.ant-table-wrapper .ant-table-tbody > tr > td {
+    padding: 12px;
+  }
 `;
 
 export const AvatarStyled = styled(Avatar)<{background: string}>`
