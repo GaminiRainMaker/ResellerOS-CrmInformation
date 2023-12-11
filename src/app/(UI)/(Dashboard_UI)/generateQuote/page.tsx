@@ -26,6 +26,8 @@ import OsTabs from '@/app/components/common/os-tabs';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
 import {useDebugValue, useEffect, useState} from 'react';
+import OsTooltip from '@/app/components/common/os-tooltip';
+import OsInput from '@/app/components/common/os-input';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {
@@ -250,6 +252,15 @@ const GenerateQuote: React.FC = () => {
       dataIndex: 'quantity',
       key: 'quantity',
       width: 187,
+      render: (text: any, record: any) => (
+        <OsInput
+          defaultValue={record?.quantity}
+          style={{width: '100px'}}
+          onChange={(e: any) => {
+            console.log('43543534', e.target.value);
+          }}
+        />
+      ),
     },
     {
       title: 'MSRP',
@@ -409,6 +420,7 @@ const GenerateQuote: React.FC = () => {
                     placeholder="Select Grouping here"
                     options={selectData}
                   />
+
                   <OsButton
                     buttontype="PRIMARY_ICON"
                     icon={<EllipsisVerticalIcon width={24} />}
