@@ -44,6 +44,7 @@ import {
   DeleteQuoteLineItemQuantityById,
   getQuoteLineItem,
   insertQuoteLineItem,
+  UpdateQuoteLineItemQuantityById,
 } from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from './UploadFile';
@@ -78,11 +79,11 @@ const GenerateQuote: React.FC = () => {
   };
   const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
 
-  // useEffect(() => {
-  //   console.log('debouncedValue', debouncedValue);
-  //   dispatch(updateQuoteCompletedById(debouncedValue));
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [debouncedValue]);
+  useEffect(() => {
+    console.log('debouncedValue', debouncedValue);
+    dispatch(UpdateQuoteLineItemQuantityById(debouncedValue));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedValue]);
 
   useEffect(() => {
     let newObj: any = {};

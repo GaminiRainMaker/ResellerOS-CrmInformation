@@ -41,13 +41,9 @@ export const getQuoteLineItemById = createAsyncThunk(
 export const UpdateQuoteLineItemQuantityById = createAsyncThunk(
   'quoteLineItem/UpdateQuoteLineItemQuantityById',
   async (data: any, thunkApi) => {
-    const {id, quantity} = data;
-    console.log('dfffff', id, quantity);
     try {
-      const res = await QUOTE_LINE_ITEM_API.updateQuoteLineItemQuantityById(
-        id,
-        quantity,
-      );
+      const res =
+        await QUOTE_LINE_ITEM_API.updateQuoteLineItemQuantityById(data);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);
