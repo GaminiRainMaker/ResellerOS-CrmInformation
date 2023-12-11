@@ -24,7 +24,7 @@ import OsTabs from '@/app/components/common/os-tabs';
 import {CollapseProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useEffect, useState} from 'react';
-import {getQuote} from '../../../../../redux/actions/quote';
+import {getAllQuotesWithCompletedAndDraft} from '../../../../../redux/actions/quote';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 const AllQuote: React.FC = () => {
@@ -35,7 +35,7 @@ const AllQuote: React.FC = () => {
   const {data: quoteData} = useAppSelector((state) => state.quote);
 
   useEffect(() => {
-    dispatch(getQuote());
+    dispatch(getAllQuotesWithCompletedAndDraft());
     // dispatch(getQuoteLineItem());
   }, []);
 
@@ -285,7 +285,7 @@ const AllQuote: React.FC = () => {
       primary: '1000',
       secondry: 'Total Quotes',
       icon: <QueueListIcon width={24} color={token?.colorInfo} />,
-      iconBg: token?.colorPrimaryHover,
+      iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,

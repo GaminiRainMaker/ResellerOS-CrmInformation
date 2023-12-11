@@ -42,6 +42,7 @@ export const UpdateQuoteLineItemQuantityById = createAsyncThunk(
   'quoteLineItem/UpdateQuoteLineItemQuantityById',
   async (data: any, thunkApi) => {
     const {id, quantity} = data;
+    console.log('dfffff', id, quantity);
     try {
       const res = await QUOTE_LINE_ITEM_API.updateQuoteLineItemQuantityById(
         id,

@@ -12,7 +12,7 @@ const OsStatusWrapper: FC<OsStatusWrapperProps> = ({value}) => {
   const [token] = useThemeToken();
   const Status: OsStatusType = {
     Recent: {
-      color: `${token?.colorPrimaryHover}`,
+      color: `${token?.colorInfoBgHover}`,
       textColor: `${token?.colorInfo}`,
       border: `${token?.colorInfo}`,
     },
