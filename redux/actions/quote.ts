@@ -13,17 +13,6 @@ export const getQuote = createAsyncThunk(
     }
   },
 );
-export const getAllGeneratedQuote = createAsyncThunk(
-  'quote/getAllGenertedQuote',
-  async (data, thunkApi) => {
-    try {
-      const res = await QUOTEAPI.getAllGeneratedQuote();
-      return res.data;
-    } catch (error: any) {
-      return thunkApi.rejectWithValue(error?.message);
-    }
-  },
-);
 export const insertQuote = createAsyncThunk(
   'quote/insertQuote',
   async (data: any, thunkApi) => {
