@@ -28,13 +28,13 @@ import Image from 'next/image';
 import {useEffect, useState} from 'react';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
-import {
-  insertQuote,
-  getAllGeneratedQuote,
-  getQuote,
-} from '../../../../../redux/actions/quote';
+import {getQuote, insertQuote} from '../../../../../redux/actions/quote';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from './UploadFile';
+import {
+  getQuoteLineItem,
+  insertQuoteLineItem,
+} from '../../../../../redux/actions/quotelineitem';
 
 interface FormattedData {
   [key: string]: {
@@ -50,10 +50,9 @@ const GenerateQuote: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const {data: quoteData, loading} = useAppSelector((state) => state.quote);
-
-  useEffect(() => {
-    dispatch(getAllGeneratedQuote());
-  }, []);
+  const {data: quoteLineItemData} = useAppSelector(
+    (state) => state.quoteLineItem,
+  );
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
     setSelectedRowKeys(newSelectedRowKeys);
@@ -63,6 +62,11 @@ const GenerateQuote: React.FC = () => {
     selectedRowKeys,
     onChange: onSelectChange,
   };
+
+  useEffect(() => {
+    dispatch(getQuote());
+    dispatch(getQuoteLineItem());
+  }, []);
 
   const analyticsData = [
     {
@@ -384,25 +388,26 @@ const GenerateQuote: React.FC = () => {
     },
   ];
 
-  const addQuote = () => {
-    const arrayOfTableObjects =
-      uploadFileData?.data?.result?.[0]?.prediction?.filter(
-        (item: any) => item.label === 'table',
-      );
-    const formattedData: FormattedData = {};
-    arrayOfTableObjects?.[0]?.cells.forEach((item: any) => {
-      const rowNum = item.row;
-      if (!formattedData[rowNum]) {
-        formattedData[rowNum] = {};
-      }
-      formattedData[rowNum][item.label?.toLowerCase()] = item.text;
-    });
-
-    // const formattedArray = Object.values(formattedData);
-
+  const addQuoteLineItem = () => {
     const labelOcrMap: any = [];
+    let formattedArray: any = [];
+    const formattedData: FormattedData = {};
+
     uploadFileData?.map((uploadFileDataItem: any) => {
       const tempLabelOcrMap: any = {};
+
+      const arrayOfTableObjects =
+        uploadFileDataItem?.data?.result?.[0]?.prediction?.filter(
+          (item: any) => item.label === 'table',
+        );
+      arrayOfTableObjects?.[0]?.cells.forEach((item: any) => {
+        const rowNum = item.row;
+        if (!formattedData[rowNum]) {
+          formattedData[rowNum] = {};
+        }
+        formattedData[rowNum][item.label?.toLowerCase()] = item.text;
+      });
+      formattedArray = Object.values(formattedData);
       <>
         {uploadFileDataItem?.data?.result?.[0]?.prediction?.forEach(
           (item: any) => {
@@ -416,15 +421,16 @@ const GenerateQuote: React.FC = () => {
     if (labelOcrMap && uploadFileData.length > 0) {
       dispatch(insertQuote(labelOcrMap)).then((d) => {
         setShowModal(false);
-        dispatch(getAllGeneratedQuote());
         setUploadFileData([]);
-        // if (d?.payload?.data?.id) {
-        // const lineitemData = formattedArray?.map((item: any) => ({
-        //   ...item,
-        //   qoute_id: d?.payload?.data?.id,
-        // }));
-        // dispatch(insertQuoteLineItem(lineitemData));
-        // }
+        d?.payload?.data?.map((item: any) => {
+          if (item?.id) {
+            const lineitemData = formattedArray?.map((item1: any) => ({
+              ...item1,
+              qoute_id: item?.id,
+            }));
+            dispatch(insertQuoteLineItem(lineitemData));
+          }
+        });
       });
     }
   };
@@ -541,7 +547,7 @@ const GenerateQuote: React.FC = () => {
                   loading={loading}
                   rowSelection={rowSelection}
                   columns={Quotecolumns}
-                  dataSource={quoteData}
+                  dataSource={quoteLineItemData}
                   scroll
                 />
               </TabPane>
@@ -561,7 +567,7 @@ const GenerateQuote: React.FC = () => {
         primaryButtonText="Generate"
         secondaryButtonText="Save & Generate Individual Quotes"
         open={showModal}
-        onOk={() => addQuote()}
+        onOk={() => addQuoteLineItem()}
         onCancel={() => {
           setShowModal((p) => !p);
           setUploadFileData([]);

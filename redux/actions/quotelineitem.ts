@@ -18,7 +18,6 @@ export const insertQuoteLineItem = createAsyncThunk(
   'quoteLineItem/insertQuote',
   async (data: any, thunkApi) => {
     try {
-      console.log('dfggggg', data);
       const res = await QUOTE_LINE_ITEM_API.post(data);
       return res.data;
     } catch (error: any) {
