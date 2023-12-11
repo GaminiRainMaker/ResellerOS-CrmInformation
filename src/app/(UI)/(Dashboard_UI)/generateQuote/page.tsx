@@ -30,6 +30,8 @@ import Image from 'next/image';
 import {useDebugValue, useEffect, useState} from 'react';
 import OsTooltip from '@/app/components/common/os-tooltip';
 import OsInput from '@/app/components/common/os-input';
+import {TableRowSelection} from 'antd/es/table/interface';
+import Checkbox from 'antd/es/checkbox/Checkbox';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {
@@ -41,6 +43,8 @@ import {
 import {
   getQuoteLineItem,
   insertQuoteLineItem,
+  UpdateQuoteLineItemQuantityById,
+  DeleteQuoteLineItemQuantityById,
 } from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from './UploadFile';
@@ -55,18 +59,19 @@ const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
-  const [step, setStep] = useState<number>(1);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [step, setStep] = useState<number>();
+  // const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const {data: quoteData, loading} = useAppSelector((state) => state.quote);
   const {data: quoteLineItemData} = useAppSelector(
     (state) => state.quoteLineItem,
   );
+  const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [amountData, setAmountData] = useState<any>();
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log('selectedRowKeys changed: ', newSelectedRowKeys);
-    setSelectedRowKeys(newSelectedRowKeys);
+    console.log('s4645645 ', newSelectedRowKeys);
+    // setSelectedRowKeys(newSelectedRowKeys);
   };
   const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
 
@@ -79,6 +84,7 @@ const GenerateQuote: React.FC = () => {
     let listPrice: number = 0;
 
     if (quoteLineItemData && quoteLineItemData?.length > 0) {
+      setStep(1);
       // eslint-disable-next-line no-unsafe-optional-chaining
       quoteLineItemData?.map((item: any, index: any) => {
         if (item?.adjusted_price) {
@@ -100,7 +106,10 @@ const GenerateQuote: React.FC = () => {
           quantity += parseInt(item?.quantity, 10);
         }
       });
+    } else {
+      setStep(0);
     }
+
     newObj = {
       Quantity: quantity,
       ListPirce: listPrice,
@@ -110,10 +119,31 @@ const GenerateQuote: React.FC = () => {
     setAmountData(newObj);
   }, [quoteLineItemData]);
 
-  const rowSelection = (e: any) => {
-    // selectedRowKeys;
-    // onSelectChange;
-    console.log('selectedRowKe ', e);
+  // const rowSelection = {
+  //   selectedRowKeys,
+  //   onchange: onSelectChange,
+  //   // console.log('selectedRowKe ', e);
+  // };
+  const rowSelection: TableRowSelection<any> = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(
+        `selectedRowKeys: ${selectedRowKeys}`,
+        'selectedRows: ',
+        selectedRows,
+      );
+    },
+    onSelect: (record, selected, selectedRows) => {
+      const newArr: any = [...selectTedRowIds];
+      if (selected) {
+        newArr?.push(record?.id);
+      } else {
+        newArr?.pop(record?.id);
+      }
+      setSelectedRowIds(newArr);
+    },
+    onSelectAll: (selected, selectedRows, changeRows) => {
+      console.log('hjgjvhjjh', selected, selectedRows, changeRows);
+    },
   };
 
   useEffect(() => {
@@ -139,13 +169,22 @@ const GenerateQuote: React.FC = () => {
         dispatch(updateQuoteCompletedById(parseInt(IDS as string, 10)));
       }
     }
-    dispatch(getQuoteLineItem());
+    setStep(0);
   };
   const SaveAsDraft = () => {
     if (getAllItemsQuoteId) {
       for (let i = 0; i < getAllItemsQuoteId?.length; i++) {
         const IDS = getAllItemsQuoteId[i];
         dispatch(updateQuoteDraftById(parseInt(IDS as string, 10)));
+      }
+    }
+    setStep(0);
+  };
+  const deleteLineItems = () => {
+    if (selectTedRowIds) {
+      for (let i = 0; i < selectTedRowIds?.length; i++) {
+        const IDS = selectTedRowIds[i];
+        dispatch(DeleteQuoteLineItemQuantityById(parseInt(IDS as string, 10)));
       }
     }
     dispatch(getQuoteLineItem());
@@ -241,55 +280,144 @@ const GenerateQuote: React.FC = () => {
 
   const QuoteLineItemcolumns = [
     {
+      title: <Checkbox />,
+      dataIndex: 'line',
+      key: 'line',
+      width: 130,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {background: '#E8EBEE'},
+          },
+          children: (
+            <div style={{display: 'flex', justifyContent: 'center'}}>
+              <Checkbox />
+            </div>
+          ),
+        };
+      },
+    },
+    {
       title: '#Line',
       dataIndex: 'line',
       key: 'line',
       width: 130,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {background: '#E8EBEE'},
+          },
+          children: (
+            <Typography name="Body 4/Regular">{record?.line}</Typography>
+          ),
+        };
+      },
     },
     {
       title: 'SKU',
       dataIndex: 'product_code',
       key: 'product_code',
       width: 187,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {background: '#E8EBEE'},
+          },
+          children: (
+            <Typography name="Body 4/Regular">
+              {record?.product_code}
+            </Typography>
+          ),
+        };
+      },
     },
     {
       title: 'Quantity',
       dataIndex: 'quantity',
       key: 'quantity',
       width: 187,
-      render: (text: any, record: any) => (
-        <OsInput
-          defaultValue={record?.quantity}
-          style={{width: '100px'}}
-          onChange={(e: any) => {
-            console.log('43543534', e.target.value);
-          }}
-        />
-      ),
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {background: '#E8EBEE'},
+          },
+          children: (
+            <OsInput
+              defaultValue={record?.quantity}
+              style={{width: '100px'}}
+              onChange={(e: any) => {
+                console.log('43543534', e.target.value);
+              }}
+            />
+          ),
+        };
+      },
     },
     {
       title: 'MSRP',
       dataIndex: 'MSRP',
       key: 'MSRP',
       width: 187,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {background: '#E8EBEE'},
+          },
+          children: (
+            <Typography name="Body 4/Regular">{record?.MSRP}</Typography>
+          ),
+        };
+      },
     },
     {
       title: 'Cost',
       dataIndex: 'cost',
       key: 'cost',
       width: 187,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {background: '#E8EBEE'},
+          },
+          children: (
+            <Typography name="Body 4/Regular">{record?.cost}</Typography>
+          ),
+        };
+      },
     },
     {
       title: 'Product Description',
       dataIndex: 'description',
       key: 'description',
       width: 365,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {background: '#E8EBEE'},
+          },
+          children: (
+            <Typography name="Body 4/Regular">{record?.description}</Typography>
+          ),
+        };
+      },
     },
     {
       title: 'Product Select',
       dataIndex: 'productselect',
       key: 'productselect',
       width: 285,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {background: '#E8EBEE'},
+          },
+          children: (
+            <Typography name="Body 4/Regular">
+              {record?.productselect}
+            </Typography>
+          ),
+        };
+      },
     },
   ];
 
@@ -395,6 +523,7 @@ const GenerateQuote: React.FC = () => {
             {analyticsData?.map((item) => (
               <Col>
                 <TableNameColumn
+                  style={{background: 'red'}}
                   primaryText={item?.primary}
                   secondaryText={item?.secondry}
                   fallbackIcon={item?.icon}
@@ -496,7 +625,7 @@ const GenerateQuote: React.FC = () => {
               </Space>
               <OsTable
                 loading={loading}
-                rowSelection={rowSelection}
+                rowSelection={{...rowSelection}}
                 columns={Quotecolumns}
                 dataSource={quoteData}
                 scroll
@@ -545,6 +674,7 @@ const GenerateQuote: React.FC = () => {
                     />
                     <OsButton
                       buttontype="PRIMARY_ICON"
+                      clickHandler={deleteLineItems}
                       icon={<EllipsisVerticalIcon width={24} />}
                     />
                   </Space>
@@ -578,7 +708,7 @@ const GenerateQuote: React.FC = () => {
                 >
                   <OsTable
                     loading={loading}
-                    rowSelection={rowSelection}
+                    // rowSelection={rowSelection}
                     columns={QuoteLineItemcolumns}
                     dataSource={quoteLineItemData}
                     scroll
