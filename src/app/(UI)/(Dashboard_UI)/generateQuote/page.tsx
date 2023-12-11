@@ -25,13 +25,14 @@ import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Divider} from 'antd';
+import {Button, Divider, MenuProps} from 'antd';
 import Checkbox from 'antd/es/checkbox/Checkbox';
 import {TableRowSelection} from 'antd/es/table/interface';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
 import {useEffect, useState} from 'react';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
+import {Dropdown} from '@/app/components/common/antd/DropDown';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {
@@ -578,6 +579,31 @@ const GenerateQuote: React.FC = () => {
     setShowToggleTable(checked);
   };
 
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <Typography name="Body 3/Regular">Bundle Configuration</Typography>
+      ),
+    },
+    {
+      key: '2',
+      label: <Typography name="Body 3/Regular">Edit Selected</Typography>,
+    },
+    {
+      key: '3',
+      label: (
+        <Typography
+          name="Body 3/Regular"
+          color={token?.colorError}
+          onClick={deleteLineItems}
+        >
+          Delete
+        </Typography>
+      ),
+    },
+  ];
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -744,11 +770,36 @@ const GenerateQuote: React.FC = () => {
                       placeholder="Select Grouping here"
                       options={selectData}
                     />
-                    <OsButton
-                      buttontype="PRIMARY_ICON"
-                      clickHandler={deleteLineItems}
-                      icon={<EllipsisVerticalIcon width={24} />}
-                    />
+                    {/* <Dropdown menu={{items}} placement="bottomRight">
+                      <p>dsfdf</p>
+                      <OsButton
+                        buttontype="PRIMARY_ICON"
+                        // clickHandler={deleteLineItems}
+                        icon={<EllipsisVerticalIcon width={24} />}
+                      />
+                    </Dropdown> */}
+                    <Dropdown
+                      trigger="click"
+                      menu={{items}}
+                      placement="bottomRight"
+                    >
+                      {/* <OsButton
+                        buttontype="PRIMARY_ICON"
+                        // clickHandler={deleteLineItems}
+                        icon={<EllipsisVerticalIcon width={24} />}
+                      /> */}
+                      <Button
+                        style={{
+                          background: '#14263E',
+                          height: '48px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          border: 'none',
+                        }}
+                      >
+                        <EllipsisVerticalIcon width={24} color="white" />
+                      </Button>
+                    </Dropdown>
                   </Space>
                 </Space>
               }
