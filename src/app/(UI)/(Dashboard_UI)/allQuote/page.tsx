@@ -136,7 +136,7 @@ const AllQuote: React.FC = () => {
     setShowModal(false);
     setUploadFileData([]);
   };
-
+  console.log('quoteData', quoteData?.length);
   const Quotecolumns = [
     {
       title: 'Name',
@@ -199,35 +199,35 @@ const AllQuote: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: '1000',
+      primary: <div>{quoteData?.length}</div>,
       secondry: 'Total Quotes',
       icon: <QueueListIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
-      primary: '650',
+      primary: <div>{completedQuote?.length}</div>,
       secondry: 'Completed',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
     },
     {
       key: 3,
-      primary: '20',
+      primary: <div>{draftedQuote?.length}</div>,
       secondry: 'Drafts',
       icon: <ClipboardDocumentCheckIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
     {
       key: 4,
-      primary: '05',
+      primary: <div>{recentQuote?.length}</div>,
       secondry: 'Recents',
       icon: <ClockIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
     },
     {
       key: 5,
-      primary: '30',
+      primary: '0',
       secondry: 'Deleted',
       icon: <TrashIcon width={24} color={token?.colorError} />,
       iconBg: token?.colorErrorBg,
