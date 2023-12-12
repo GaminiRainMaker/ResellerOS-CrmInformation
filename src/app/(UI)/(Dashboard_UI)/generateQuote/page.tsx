@@ -302,9 +302,25 @@ const GenerateQuote: React.FC = () => {
     {value: 'item 4', label: 'Item 4'},
   ];
 
+  console.log('435435', selectTedRowIds);
   const QuoteLineItemcolumns = [
     {
-      title: <Checkbox checked={selectTedRowIds?.length > 0} />,
+      title: (
+        <Checkbox
+          checked={selectTedRowIds?.length === quoteLineItemData?.length}
+          onChange={(e: any) => {
+            let newArrVlaue: any = [];
+            if (e.target.checked) {
+              quoteLineItemData?.map((item: any) => {
+                newArrVlaue?.push(item?.id);
+              });
+            } else {
+              newArrVlaue = [];
+            }
+            setSelectedRowIds(newArrVlaue);
+          }}
+        />
+      ),
       dataIndex: 'line',
       key: 'line',
       width: 130,
