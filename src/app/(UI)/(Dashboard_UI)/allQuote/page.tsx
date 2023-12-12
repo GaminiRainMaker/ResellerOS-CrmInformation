@@ -360,6 +360,15 @@ const AllQuote: React.FC = () => {
                 gap: '8px',
               }}
             >
+              {' '}
+              {activeTab == 2 && (
+                <OsButton
+                  text="Mark as Complete"
+                  buttontype="PRIMARY"
+                  // icon={<PlusIcon />}
+                  // clickHandler="markAsComplete"
+                />
+              )}
               <OsButton
                 text="Add Quote"
                 buttontype="PRIMARY"
