@@ -16,24 +16,22 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline';
 
+import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
-import {Switch} from '@/app/components/common/antd/Switch';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Button, Divider, MenuProps} from 'antd';
+import {Button, MenuProps} from 'antd';
 import Checkbox from 'antd/es/checkbox/Checkbox';
-import {TableRowSelection} from 'antd/es/table/interface';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
-import {useEffect, useState} from 'react';
-import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
-import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {useRouter} from 'next/navigation';
+import {useEffect, useState} from 'react';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {
@@ -44,9 +42,9 @@ import {
 } from '../../../../../redux/actions/quote';
 import {
   DeleteQuoteLineItemQuantityById,
+  UpdateQuoteLineItemQuantityById,
   getQuoteLineItem,
   insertQuoteLineItem,
-  UpdateQuoteLineItemQuantityById,
 } from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from './UploadFile';
@@ -99,7 +97,6 @@ const GenerateQuote: React.FC = () => {
     let listPrice: number = 0;
 
     if (quoteLineItemData && quoteLineItemData?.length > 0) {
-      setStep(1);
       // eslint-disable-next-line no-unsafe-optional-chaining
       quoteLineItemData?.map((item: any, index: any) => {
         if (item?.adjusted_price) {
@@ -121,8 +118,6 @@ const GenerateQuote: React.FC = () => {
           quantity += parseInt(item?.quantity, 10);
         }
       });
-    } else {
-      setStep(0);
     }
 
     newObj = {
@@ -148,7 +143,6 @@ const GenerateQuote: React.FC = () => {
 
   useEffect(() => {
     dispatch(getQuoteLineItem());
-    dispatch(getAllQuotesWithCompletedAndDraft());
   }, []);
 
   const markAsComplete = () => {
@@ -271,7 +265,6 @@ const GenerateQuote: React.FC = () => {
     {value: 'item 4', label: 'Item 4'},
   ];
 
-  console.log('435435', existingQuoteId);
   const QuoteLineItemcolumns = [
     {
       title: (
@@ -684,13 +677,8 @@ const GenerateQuote: React.FC = () => {
       dispatch(insertQuoteLineItem(lineitemData));
     }
     dispatch(getQuoteLineItem());
-    setStep(1);
     setShowModal(false);
     setUploadFileData([]);
-  };
-
-  const onToggleChange = (checked: boolean) => {
-    setShowToggleTable(checked);
   };
 
   const items: MenuProps['items'] = [
@@ -725,29 +713,27 @@ const GenerateQuote: React.FC = () => {
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
-        {step === 1 && (
-          <Row
-            justify="space-between"
-            style={{
-              padding: '36px 24px',
-              background: token?.colorBgContainer,
-              borderRadius: '12px',
-            }}
-            gutter={[0, 16]}
-          >
-            {analyticsData?.map((item) => (
-              <Col>
-                <TableNameColumn
-                  style={{background: 'red'}}
-                  primaryText={item?.primary}
-                  secondaryText={item?.secondry}
-                  fallbackIcon={item?.icon}
-                  iconBg={item?.iconBg}
-                />
-              </Col>
-            ))}
-          </Row>
-        )}
+        <Row
+          justify="space-between"
+          style={{
+            padding: '36px 24px',
+            background: token?.colorBgContainer,
+            borderRadius: '12px',
+          }}
+          gutter={[0, 16]}
+        >
+          {analyticsData?.map((item) => (
+            <Col>
+              <TableNameColumn
+                style={{background: 'red'}}
+                primaryText={item?.primary}
+                secondaryText={item?.secondry}
+                fallbackIcon={item?.icon}
+                iconBg={item?.iconBg}
+              />
+            </Col>
+          ))}
+        </Row>
 
         <Row justify="space-between" align="middle">
           <Col>
@@ -756,139 +742,54 @@ const GenerateQuote: React.FC = () => {
             </Typography>
           </Col>
           <Col>
-            {step === 0 ? (
-              <>
-                <OsButton
-                  text="Add Vendor"
-                  buttontype="PRIMARY"
-                  icon={<PlusIcon />}
-                  // clickHandler={() => setShowModal((p) => !p)}
-                />
-              </>
-            ) : (
-              <Space size={8} direction="horizontal">
-                <OsButton
-                  text="Save as Draft"
-                  buttontype="SECONDARY"
-                  clickHandler={SaveAsDraft}
-                />
-                <OsButton
-                  text="Add Quote"
-                  buttontype="PRIMARY"
-                  icon={<PlusIcon />}
-                  clickHandler={() => setShowModal((p) => !p)}
-                />
-                <OsButton
-                  text=" Mark as Complete"
-                  buttontype="PRIMARY"
-                  clickHandler={markAsComplete}
-                />
+            <Space size={8} direction="horizontal">
+              <OsButton
+                text="Save as Draft"
+                buttontype="SECONDARY"
+                clickHandler={SaveAsDraft}
+              />
+              <OsButton
+                text="Add Quote"
+                buttontype="PRIMARY"
+                icon={<PlusIcon />}
+                clickHandler={() => setShowModal((p) => !p)}
+              />
+              <OsButton
+                text=" Mark as Complete"
+                buttontype="PRIMARY"
+                clickHandler={markAsComplete}
+              />
 
-                <OsButton
-                  buttontype="PRIMARY_ICON"
-                  icon={<ArrowDownTrayIcon width={24} />}
-                />
-              </Space>
-            )}
+              <OsButton
+                buttontype="PRIMARY_ICON"
+                icon={<ArrowDownTrayIcon width={24} />}
+              />
+            </Space>
           </Col>
         </Row>
-        {step === 0 ? (
-          <Space direction="vertical" size={24} style={{width: '100%'}}>
-            <Space
-              direction="vertical"
-              size={24}
-              style={{
-                padding: '24px',
-                background: token?.colorBgContainer,
-                borderRadius: '12px',
-                width: '100%',
-              }}
-            >
-              <Row>
-                <Col span={7}>
-                  <Space direction="vertical" size={2}>
-                    <Typography
-                      name="Body 4/Medium"
-                      color={token?.colorPrimaryText}
-                    >
-                      Upload file to generate quote
-                    </Typography>
-                    <Typography
-                      name="Body 4/Regular"
-                      color={token?.colorPrimaryText}
-                    >
-                      Lorem ipsum dolor sit amet consectetur. Feugiat
-                      ullamcorper congue vestibulum enim purus vitae.{' '}
-                    </Typography>
-                  </Space>
-                </Col>
-                <Col span={12}>
-                  <UploadFile
-                    setUploadFileData={setUploadFileData}
-                    uploadFileData={uploadFileData}
-                  />
-                </Col>
-                <Divider />
-              </Row>
-              <Space size={30} direction="horizontal" align="center">
-                <Typography name="Body 4/Medium">
-                  Select Existing Quote?
+        <Row
+          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+        >
+          <OsTabs
+            onChange={(e) => {
+              setActiveTab(e);
+            }}
+            activeKey={activeTab}
+            tabBarExtraContent={
+              <Space direction="vertical" size={0}>
+                <Typography
+                  name="Body 4/Medium"
+                  color={token?.colorPrimaryText}
+                >
+                  Select Grouping
                 </Typography>
-                <Switch size="default" onChange={onToggleChange} />
-              </Space>
-              {showToggleTable && (
-                <OsTable
-                  loading={loading}
-                  // rowSelection={{...rowSelection}}
-                  columns={Quotecolumns}
-                  dataSource={quoteData}
-                  scroll
-                />
-              )}
-            </Space>
-            <Row
-              justify="end"
-              style={{
-                padding: '24px',
-                background: token?.colorBgContainer,
-                borderRadius: '12px',
-                width: '100%',
-              }}
-            >
-              <Col>
-                <OsButton
-                  loading={loading}
-                  text="Generate"
-                  buttontype="PRIMARY"
-                  clickHandler={() => addQuoteLineItem()}
-                />
-              </Col>
-            </Row>
-          </Space>
-        ) : (
-          <Row
-            style={{background: 'white', padding: '24px', borderRadius: '12px'}}
-          >
-            <OsTabs
-              onChange={(e) => {
-                setActiveTab(e);
-              }}
-              activeKey={activeTab}
-              tabBarExtraContent={
-                <Space direction="vertical" size={0}>
-                  <Typography
-                    name="Body 4/Medium"
-                    color={token?.colorPrimaryText}
-                  >
-                    Select Grouping
-                  </Typography>
-                  <Space size={12}>
-                    <CommonSelect
-                      style={{width: '319px'}}
-                      placeholder="Select Grouping here"
-                      options={selectData}
-                    />
-                    {/* <Dropdown menu={{items}} placement="bottomRight">
+                <Space size={12}>
+                  <CommonSelect
+                    style={{width: '319px'}}
+                    placeholder="Select Grouping here"
+                    options={selectData}
+                  />
+                  {/* <Dropdown menu={{items}} placement="bottomRight">
                       <p>dsfdf</p>
                       <OsButton
                         buttontype="PRIMARY_ICON"
@@ -896,69 +797,66 @@ const GenerateQuote: React.FC = () => {
                         icon={<EllipsisVerticalIcon width={24} />}
                       />
                     </Dropdown> */}
-                    <Dropdown
-                      trigger="click"
-                      menu={{items}}
-                      placement="bottomRight"
-                    >
-                      {/* <OsButton
+                  <Dropdown
+                    trigger="click"
+                    menu={{items}}
+                    placement="bottomRight"
+                  >
+                    {/* <OsButton
                         buttontype="PRIMARY_ICON"
                         // clickHandler={deleteLineItems}
                         icon={<EllipsisVerticalIcon width={24} />}
                       /> */}
-                      <Button
-                        style={{
-                          background: '#14263E',
-                          height: '48px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          border: 'none',
-                        }}
-                      >
-                        <EllipsisVerticalIcon width={24} color="white" />
-                      </Button>
-                    </Dropdown>
-                  </Space>
-                </Space>
-              }
-            >
-              {TabPaneData?.map((item) => (
-                <TabPane
-                  tab={
-                    <Typography
-                      name="Body 4/Regular"
-                      color={
-                        activeTab === item?.key
-                          ? token?.colorPrimary
-                          : '#666666'
-                      }
+                    <Button
+                      style={{
+                        background: '#14263E',
+                        height: '48px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        border: 'none',
+                      }}
                     >
-                      {item?.name}
-                      <div
-                        style={{
+                      <EllipsisVerticalIcon width={24} color="white" />
+                    </Button>
+                  </Dropdown>
+                </Space>
+              </Space>
+            }
+          >
+            {TabPaneData?.map((item) => (
+              <TabPane
+                tab={
+                  <Typography
+                    name="Body 4/Regular"
+                    color={
+                      activeTab === item?.key ? token?.colorPrimary : '#666666'
+                    }
+                  >
+                    {item?.name}
+                    <div
+                      style={{
+                        // eslint-disable-next-line eqeqeq
+                        borderBottom:
                           // eslint-disable-next-line eqeqeq
-                          borderBottom:
-                            // eslint-disable-next-line eqeqeq
-                            activeTab == item?.key ? '2px solid #1C3557' : '',
-                          marginTop: '3px',
-                        }}
-                      />
-                    </Typography>
-                  }
-                  key={item?.key}
-                >
-                  <OsTable
-                    loading={loading}
-                    // rowSelection={rowSelection}
-                    columns={QuoteLineItemcolumns}
-                    dataSource={quoteLineItemData || []}
-                    scroll
-                  />
-                </TabPane>
-              ))}
-            </OsTabs>
-          </Row>
-        )}
+                          activeTab == item?.key ? '2px solid #1C3557' : '',
+                        marginTop: '3px',
+                      }}
+                    />
+                  </Typography>
+                }
+                key={item?.key}
+              >
+                <OsTable
+                  loading={loading}
+                  // rowSelection={rowSelection}
+                  columns={QuoteLineItemcolumns}
+                  dataSource={quoteLineItemData || []}
+                  scroll
+                />
+              </TabPane>
+            ))}
+          </OsTabs>
+        </Row>
       </Space>
       <OsModal
         loading={loading}

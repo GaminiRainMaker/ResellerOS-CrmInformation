@@ -7,6 +7,7 @@ export const getAllQuotesWithCompletedAndDraft = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const res = await QUOTEAPI.get();
+      console.log('data', res.data);
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error?.message);

@@ -80,147 +80,44 @@ const SideBar = () => {
       </Typography>,
       '1',
     ),
+
     getItem(
-      <Typography
+      <Space
+        size={12}
         onClick={() => {
-          setSelectedKey(2);
+          setSelectedKey(3);
+          router?.push('/allQuote');
         }}
-        name="Button 1"
         color={token?.colorTextSecondary}
       >
-        <Space size={12}>
-          <OsAvatar
-            icon={
-              <CurrencyDollarIcon
-                color={
-                  seleectedKey?.toString()?.includes('2') ||
-                  seleectedKey?.toString()?.includes('3')
-                    ? token?.colorLink
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
-
-          <Typography
-            name="Button 1"
-            style={{
-              marginTop: '1px',
-              display: 'flex',
-              // width: '200px',
-              justifyContent: 'space-between',
-            }}
-          >
-            {' '}
-            <Typography
-              name="Button 1"
-              style={{
-                marginTop: '1px',
-                marginRight: '80px',
-              }}
+        <OsAvatar
+          icon={
+            <CurrencyDollarIcon
               color={
                 seleectedKey?.toString()?.includes('2') ||
                 seleectedKey?.toString()?.includes('3')
                   ? token?.colorLink
                   : token?.colorTextSecondary
               }
-            >
-              Quote AI
-            </Typography>{' '}
-            <div>
-              {' '}
-              <OsAvatar
-                icon={
-                  <ChevronDownIcon
-                    color={
-                      seleectedKey?.toString()?.includes('2') ||
-                      seleectedKey?.toString()?.includes('3')
-                        ? token?.colorLink
-                        : token?.colorTextSecondary
-                    }
-                    width={24}
-                  />
-                }
-              />
-            </div>
-          </Typography>
-        </Space>
-      </Typography>,
-
-      'Quote AI',
-      '',
-      [
-        getItem(
-          <Space
-            size={12}
-            onClick={() => {
-              setSelectedKey(2);
-              router?.push('/generateQuote');
-            }}
-          >
-            <OsAvatar
-              icon={
-                <CircleStackIcon
-                  color={
-                    seleectedKey?.toString()?.includes('2')
-                      ? token.colorPrimaryBorder
-                      : token?.colorTextSecondary
-                  }
-                  width={24}
-                />
-              }
+              width={24}
             />
-            <Typography
-              name="Button 1"
-              cursor="pointer"
-              color={
-                seleectedKey?.toString()?.includes('2')
-                  ? token.colorPrimaryBorder
-                  : token?.colorTextSecondary
-              }
-            >
-              Generate Quote
-            </Typography>
-          </Space>,
-          '2',
-        ),
-        getItem(
-          <Space
-            size={12}
-            onClick={() => {
-              setSelectedKey(3);
-              router?.push('/allQuote');
-            }}
-          >
-            <OsAvatar
-              icon={
-                <CircleStackIcon
-                  color={
-                    seleectedKey?.toString()?.includes('3')
-                      ? token.colorPrimaryBorder
-                      : token?.colorTextSecondary
-                  }
-                  width={24}
-                />
-              }
-            />
-            <Typography
-              name="Button 1"
-              cursor="pointer"
-              color={
-                seleectedKey?.toString()?.includes('3')
-                  ? token.colorPrimaryBorder
-                  : token?.colorTextSecondary
-              }
-            >
-              Quotes
-            </Typography>
-          </Space>,
-          '3',
-        ),
-      ],
+          }
+        />
+        <Typography
+          cursor="pointer"
+          name="Button 1"
+          color={
+            seleectedKey?.toString()?.includes('3')
+              ? token?.colorLink
+              : token?.colorTextSecondary
+          }
+        >
+          Quote AI
+        </Typography>
+      </Space>,
+      '4',
     ),
+
     getItem(
       <Typography
         onClick={() => {
