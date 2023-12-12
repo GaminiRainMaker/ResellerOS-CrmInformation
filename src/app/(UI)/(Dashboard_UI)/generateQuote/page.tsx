@@ -74,12 +74,9 @@ const GenerateQuote: React.FC = () => {
     (state) => state.quoteLineItem,
   );
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
+  const [existingQuoteId, setExistingQuoteId] = useState<number>();
   const [amountData, setAmountData] = useState<any>();
 
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    console.log('s4645645 ', newSelectedRowKeys);
-    // setSelectedRowKeys(newSelectedRowKeys);
-  };
   const router = useRouter();
   const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
 
@@ -92,7 +89,6 @@ const GenerateQuote: React.FC = () => {
     }, 500);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
-  console.log('debouncedValue', quoteLineItemData);
 
   useEffect(() => {
     let newObj: any = {};
@@ -137,33 +133,6 @@ const GenerateQuote: React.FC = () => {
     };
     setAmountData(newObj);
   }, [quoteLineItemData]);
-
-  // const rowSelection = {
-  //   selectedRowKeys,
-  //   onchange: onSelectChange,
-  //   // console.log('selectedRowKe ', e);
-  // };
-  const rowSelection: TableRowSelection<any> = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        'selectedRows: ',
-        selectedRows,
-      );
-    },
-    onSelect: (record, selected, selectedRows) => {
-      const newArr: any = [...selectTedRowIds];
-      if (selected) {
-        newArr?.push(record?.id);
-      } else {
-        newArr?.pop(record?.id);
-      }
-      setSelectedRowIds(newArr);
-    },
-    onSelectAll: (selected, selectedRows, changeRows) => {
-      console.log('hjgjvhjjh', selected, selectedRows, changeRows);
-    },
-  };
 
   useEffect(() => {
     const allIdsArray: [] = [];
@@ -302,7 +271,7 @@ const GenerateQuote: React.FC = () => {
     {value: 'item 4', label: 'Item 4'},
   ];
 
-  console.log('435435', selectTedRowIds);
+  console.log('435435', existingQuoteId);
   const QuoteLineItemcolumns = [
     {
       title: (
@@ -512,6 +481,53 @@ const GenerateQuote: React.FC = () => {
   ];
 
   const Quotecolumns = [
+    {
+      title: (
+        <Checkbox
+          checked={!!existingQuoteId}
+          onChange={(e: any) => {
+            let newArrVlaue: any = [];
+            if (e.target.checked) {
+              quoteLineItemData?.map((item: any) => {
+                newArrVlaue?.push(item?.id);
+              });
+            } else {
+              newArrVlaue = [];
+            }
+            setSelectedRowIds(newArrVlaue);
+          }}
+        />
+      ),
+      dataIndex: 'line',
+      key: 'line',
+      width: 130,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {
+              background:
+                existingQuoteId && record?.id === existingQuoteId
+                  ? '#E8EBEE'
+                  : ' ',
+            },
+          },
+          children: (
+            <div style={{display: 'flex', justifyContent: 'center'}}>
+              <Checkbox
+                checked={!!existingQuoteId && record?.id === existingQuoteId}
+                onChange={(e: any) => {
+                  if (e.target.checked) {
+                    setExistingQuoteId(record?.id);
+                  } else {
+                    setExistingQuoteId(undefined);
+                  }
+                }}
+              />
+            </div>
+          ),
+        };
+      },
+    },
     // {
     //   title: 'Quote',
     //   dataIndex: 'quote',
@@ -529,24 +545,92 @@ const GenerateQuote: React.FC = () => {
       dataIndex: 'customer_city',
       key: 'customer_city',
       width: 165,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {
+              background:
+                existingQuoteId && record?.id === existingQuoteId
+                  ? '#E8EBEE'
+                  : ' ',
+            },
+          },
+          children: (
+            <Typography name="Body 4/Regular">
+              {record?.customer_city}
+            </Typography>
+          ),
+        };
+      },
     },
     {
       title: 'Customer Contact',
       dataIndex: 'customer_contact',
       key: 'customer_contact',
       width: 165,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {
+              background:
+                existingQuoteId && record?.id === existingQuoteId
+                  ? '#E8EBEE'
+                  : ' ',
+            },
+          },
+          children: (
+            <Typography name="Body 4/Regular">
+              {record?.customer_contact}
+            </Typography>
+          ),
+        };
+      },
     },
     {
       title: 'Customer Email',
       dataIndex: 'customer_email',
       key: 'customer_email',
       width: 165,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {
+              background:
+                existingQuoteId && record?.id === existingQuoteId
+                  ? '#E8EBEE'
+                  : ' ',
+            },
+          },
+          children: (
+            <Typography name="Body 4/Regular">
+              {record?.customer_email}
+            </Typography>
+          ),
+        };
+      },
     },
     {
       title: 'Customer Name',
       dataIndex: 'customer_name',
       key: 'customer_name',
       width: 165,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {
+              background:
+                existingQuoteId && record?.id === existingQuoteId
+                  ? '#E8EBEE'
+                  : ' ',
+            },
+          },
+          children: (
+            <Typography name="Body 4/Regular">
+              {record?.customer_name}
+            </Typography>
+          ),
+        };
+      },
     },
   ];
 
@@ -580,7 +664,7 @@ const GenerateQuote: React.FC = () => {
       labelOcrMap.push(tempLabelOcrMap);
     });
 
-    if (labelOcrMap && uploadFileData.length > 0) {
+    if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
       dispatch(insertQuote(labelOcrMap)).then((d) => {
         d?.payload?.data?.map((item: any) => {
           if (item?.id) {
@@ -591,12 +675,18 @@ const GenerateQuote: React.FC = () => {
             dispatch(insertQuoteLineItem(lineitemData));
           }
         });
-        dispatch(getQuoteLineItem());
-        setStep(1);
-        setShowModal(false);
-        setUploadFileData([]);
       });
+    } else if (existingQuoteId) {
+      const lineitemData = formattedArray?.map((item1: any) => ({
+        ...item1,
+        qoute_id: existingQuoteId,
+      }));
+      dispatch(insertQuoteLineItem(lineitemData));
     }
+    dispatch(getQuoteLineItem());
+    setStep(1);
+    setShowModal(false);
+    setUploadFileData([]);
   };
 
   const onToggleChange = (checked: boolean) => {
@@ -749,7 +839,7 @@ const GenerateQuote: React.FC = () => {
               {showToggleTable && (
                 <OsTable
                   loading={loading}
-                  rowSelection={{...rowSelection}}
+                  // rowSelection={{...rowSelection}}
                   columns={Quotecolumns}
                   dataSource={quoteData}
                   scroll
