@@ -54,11 +54,34 @@ const AllQuote: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
+  const [completedQuote, setCompletedQuote] = useState<React.Key[]>([]);
+  const [draftedQuote, setDraftedQuote] = useState<React.Key[]>([]);
+  const [recentQuote, setRecentQuote] = useState<React.Key[]>([]);
 
   useEffect(() => {
     dispatch(getAllQuotesWithCompletedAndDraft());
   }, []);
 
+  useEffect(() => {
+    const Completed: any = [];
+    const Draft: any = [];
+    const Recent: any = [];
+
+    if (quoteData && quoteData?.length > 0) {
+      quoteData?.filter((item: any) => {
+        if (item?.is_completed) {
+          Completed?.push(item);
+        } else if (item?.is_drafted) {
+          Draft?.push(item);
+        } else if (!item?.iscompleted && !item?.is_completed) {
+          Recent?.push(item);
+        }
+      });
+    }
+    setCompletedQuote(Completed);
+    setDraftedQuote(Draft);
+    setRecentQuote(Recent);
+  }, [quoteData]);
   const addQuoteLineItem = () => {
     const labelOcrMap: any = [];
     let formattedArray: any = [];
@@ -115,6 +138,11 @@ const AllQuote: React.FC = () => {
   };
 
   const Quotecolumns = [
+    {
+      title: 'Name',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+    },
     {
       title: 'File Name',
       dataIndex: 'filename',
@@ -239,7 +267,7 @@ const AllQuote: React.FC = () => {
       children: (
         <OsTable
           columns={Quotecolumns}
-          dataSource={quoteData}
+          dataSource={draftedQuote}
           scroll
           loading={loading}
         />
@@ -258,7 +286,7 @@ const AllQuote: React.FC = () => {
       children: (
         <OsTable
           columns={Quotecolumns}
-          dataSource={quoteData}
+          dataSource={completedQuote}
           scroll
           loading={loading}
         />
@@ -275,10 +303,21 @@ const AllQuote: React.FC = () => {
         </div>
       ),
       children: (
-        <RecentSection
-          uploadFileData={uploadFileData}
-          setUploadFileData={setUploadFileData}
-        />
+        <>
+          {recentQuote?.length > 0 ? (
+            <OsTable
+              columns={Quotecolumns}
+              dataSource={completedQuote}
+              scroll
+              loading={loading}
+            />
+          ) : (
+            <RecentSection
+              uploadFileData={uploadFileData}
+              setUploadFileData={setUploadFileData}
+            />
+          )}
+        </>
       ),
     },
   ];
