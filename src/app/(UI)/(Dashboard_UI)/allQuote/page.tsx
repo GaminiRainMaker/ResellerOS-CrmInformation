@@ -17,11 +17,9 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import OsCollapse from '@/app/components/common/os-collapse';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import {CollapseProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useEffect, useState} from 'react';
 import {getAllQuotesWithCompletedAndDraft} from '../../../../../redux/actions/quote';
@@ -31,22 +29,11 @@ const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const {data: quoteData} = useAppSelector((state) => state.quote);
+  const {data: quoteData, loading} = useAppSelector((state) => state.quote);
 
   useEffect(() => {
     dispatch(getAllQuotesWithCompletedAndDraft());
-    // dispatch(getQuoteLineItem());
   }, []);
-
-  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-  };
 
   const Quotecolumns = [
     {
@@ -323,101 +310,6 @@ const AllQuote: React.FC = () => {
       name: 'All',
       // tableData: s
     },
-    {
-      key: 2,
-      name: 'Drafts',
-    },
-    {
-      key: 3,
-      name: 'Completed',
-    },
-    {
-      key: 4,
-      name: 'Recent',
-    },
-  ];
-
-  const dataSource = [
-    {
-      key: '1',
-      name: 'Mike',
-      age: 32,
-      address: '10 Downing Street',
-    },
-    {
-      key: '2',
-      name: 'John',
-      age: 42,
-      address: '10 Downing Street',
-    },
-  ];
-
-  const columns = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: 'Age',
-      dataIndex: 'age',
-      key: 'age',
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-    },
-  ];
-
-  const items: CollapseProps['items'] = [
-    {
-      key: '1',
-      label: (
-        <Row justify="space-between">
-          <Col span={6}>
-            <Typography name="Body 4/Medium">Hewlett</Typography>
-          </Col>
-          <Col span={6}>
-            <Typography name="Body 4/Medium">Lines: 9</Typography>
-          </Col>
-          <Col span={6}>
-            <Typography name="Body 4/Medium">MSRP: $5,511.00</Typography>
-          </Col>
-          <Col span={6}>
-            <Typography name="Body 4/Medium">Cost: $3,511.00</Typography>
-          </Col>
-        </Row>
-      ),
-      children: (
-        <OsTable columns={Quotecolumns} dataSource={quoteData} scroll />
-      ),
-    },
-    {
-      key: '2',
-      label: (
-        <Row justify="space-between">
-          <Col span={6}>
-            <Typography name="Body 4/Medium">Dell</Typography>
-          </Col>
-          <Col span={6}>
-            <Typography name="Body 4/Medium">Lines: 9</Typography>
-          </Col>
-          <Col span={6}>
-            <Typography name="Body 4/Medium">MSRP: $5,511.00</Typography>
-          </Col>
-          <Col span={6}>
-            <Typography name="Body 4/Medium">Cost: $3,511.00</Typography>
-          </Col>
-        </Row>
-      ),
-      children: <OsTable columns={columns} dataSource={dataSource} scroll />,
-    },
-    {
-      key: '3',
-      label: 'This is panel header 3',
-      children: <OsTable columns={columns} dataSource={dataSource} scroll />,
-    },
   ];
 
   return (
@@ -513,7 +405,12 @@ const AllQuote: React.FC = () => {
               }
               key={item?.key}
             >
-              <OsCollapse items={items} />
+              <OsTable
+                columns={Quotecolumns}
+                dataSource={quoteData}
+                scroll
+                loading={loading}
+              />
             </TabPane>
           ))}
         </OsTabs>
