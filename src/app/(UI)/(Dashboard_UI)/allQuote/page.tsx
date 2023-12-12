@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable array-callback-return */
 /* eslint-disable import/no-extraneous-dependencies */
 
@@ -53,7 +54,6 @@ const AllQuote: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
-  const [isGenerate, setIsGenerate] = useState<boolean>(false);
 
   useEffect(() => {
     dispatch(getAllQuotesWithCompletedAndDraft());
@@ -209,7 +209,14 @@ const AllQuote: React.FC = () => {
   const items: TabsProps['items'] = [
     {
       key: '1',
-      label: 'All',
+      label: (
+        <div>
+          <div>All</div>
+          <div
+            style={{borderBottom: activeTab == 1 ? '2px solid #1C3557' : ''}}
+          />
+        </div>
+      ),
       children: (
         <OsTable
           columns={Quotecolumns}
@@ -221,7 +228,14 @@ const AllQuote: React.FC = () => {
     },
     {
       key: '2',
-      label: 'Drafts',
+      label: (
+        <div>
+          <div>Drafts</div>
+          <div
+            style={{borderBottom: activeTab == 2 ? '2px solid #1C3557' : ''}}
+          />
+        </div>
+      ),
       children: (
         <OsTable
           columns={Quotecolumns}
@@ -233,7 +247,14 @@ const AllQuote: React.FC = () => {
     },
     {
       key: '3',
-      label: 'Completed',
+      label: (
+        <div>
+          <div>Completed</div>
+          <div
+            style={{borderBottom: activeTab == 3 ? '2px solid #1C3557' : ''}}
+          />
+        </div>
+      ),
       children: (
         <OsTable
           columns={Quotecolumns}
@@ -245,7 +266,14 @@ const AllQuote: React.FC = () => {
     },
     {
       key: '4',
-      label: 'Recent',
+      label: (
+        <div>
+          <div>Recent</div>
+          <div
+            style={{borderBottom: activeTab == 4 ? '2px solid #1C3557' : ''}}
+          />
+        </div>
+      ),
       children: (
         <RecentSection
           uploadFileData={uploadFileData}

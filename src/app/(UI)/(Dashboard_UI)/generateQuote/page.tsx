@@ -381,7 +381,6 @@ const GenerateQuote: React.FC = () => {
               value={record?.quantity}
               style={{width: '100px'}}
               onChange={(e: any) => {
-                console.log('43543534', e.target.value);
                 setInputData({id: record?.id, quantity: e.target.value});
               }}
             />
@@ -725,7 +724,6 @@ const GenerateQuote: React.FC = () => {
           {analyticsData?.map((item) => (
             <Col>
               <TableNameColumn
-                style={{background: 'red'}}
                 primaryText={item?.primary}
                 secondaryText={item?.secondry}
                 fallbackIcon={item?.icon}
