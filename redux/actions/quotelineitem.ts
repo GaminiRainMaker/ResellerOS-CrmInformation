@@ -62,3 +62,14 @@ export const DeleteQuoteLineItemQuantityById = createAsyncThunk(
     }
   },
 );
+export const getQuoteLineItemByQuoteId = createAsyncThunk(
+  'quoteLineItem/getQuoteLineItemByQuoteId/:id',
+  async (id: number, thunkApi) => {
+    try {
+      const res = await QUOTE_LINE_ITEM_API.getQuoteLineItemByQuoteId(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

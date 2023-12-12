@@ -183,7 +183,7 @@ const AllQuote: React.FC = () => {
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              router.push('/generateQuote');
+              router.push(`/generateQuote?id=${record?.id}`);
             }}
           />
           <TrashIcon

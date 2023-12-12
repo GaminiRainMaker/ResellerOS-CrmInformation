@@ -12,6 +12,7 @@ export const API = {
     UpdateQuoteLineItemQuantityById:
       '/quoteLineItem/updateQuantityOfQuoteLineItem',
     DeleteQuoteLineItemQuantityById: '/quoteLineItem/deleteQuoteLineItems',
+    GetQuoteLineItemByQuoteId: '/quoteLineItem/getQuoteLineItemByQuoteId',
   },
   USER: {
     INDEX: '/user',

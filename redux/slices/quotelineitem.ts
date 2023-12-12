@@ -6,6 +6,7 @@ import {
   UpdateQuoteLineItemQuantityById,
   getQuoteLineItem,
   getQuoteLineItemById,
+  getQuoteLineItemByQuoteId,
   insertQuoteLineItem,
 } from '../actions/quotelineitem';
 
@@ -14,12 +15,14 @@ type QuoteLineItemState = {
   error: string | null;
   data: any;
   quoteLineItem: any;
+  quoteLineItemByQuoteID: any;
 };
 const initialState: QuoteLineItemState = {
   loading: false,
   error: null,
   data: [],
   quoteLineItem: [],
+  quoteLineItemByQuoteID: [],
 };
 
 const quoteLineItemSlice = createSlice({
@@ -117,6 +120,24 @@ const quoteLineItemSlice = createSlice({
       )
       .addCase(
         DeleteQuoteLineItemQuantityById.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getQuoteLineItemByQuoteId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getQuoteLineItemByQuoteId.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.quoteLineItemByQuoteID = action.payload;
+        },
+      )
+      .addCase(
+        getQuoteLineItemByQuoteId.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

@@ -43,6 +43,7 @@ import {
   DeleteQuoteLineItemQuantityById,
   UpdateQuoteLineItemQuantityById,
   getQuoteLineItem,
+  getQuoteLineItemByQuoteId,
 } from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from './UploadFile';
@@ -66,9 +67,10 @@ const GenerateQuote: React.FC = () => {
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const {data: quoteData, loading} = useAppSelector((state) => state.quote);
   const [isEditable, setIsEditable] = useState<boolean>(false);
-  const {data: quoteLineItemData} = useAppSelector(
+  const {data: quoteLineItemData, quoteLineItemByQuoteID} = useAppSelector(
     (state) => state.quoteLineItem,
   );
+
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
   const [amountData, setAmountData] = useState<any>();
@@ -85,7 +87,13 @@ const GenerateQuote: React.FC = () => {
     }, 500);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
+  useEffect(() => {
+    const search = new URLSearchParams(window.location.search);
+    const id = search.get('id');
+    dispatch(getQuoteLineItemByQuoteId(id));
+  }, []);
 
+  console.log('quoteLineItemByQuoteID', quoteLineItemByQuoteID);
   useEffect(() => {
     let newObj: any = {};
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -257,61 +265,61 @@ const GenerateQuote: React.FC = () => {
     {value: 'item 3', label: 'Item 3'},
     {value: 'item 4', label: 'Item 4'},
   ];
-
+  console.log('quoteLineItemData', quoteLineItemData);
   const QuoteLineItemcolumns = [
-    {
-      title: (
-        <Checkbox
-          checked={selectTedRowIds?.length === quoteLineItemData?.length}
-          onChange={(e: any) => {
-            let newArrVlaue: any = [];
-            if (e.target.checked) {
-              quoteLineItemData?.map((item: any) => {
-                newArrVlaue?.push(item?.id);
-              });
-            } else {
-              newArrVlaue = [];
-            }
-            setSelectedRowIds(newArrVlaue);
-          }}
-        />
-      ),
-      dataIndex: 'line',
-      key: 'line',
-      width: 130,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background: selectTedRowIds?.includes(record?.id)
-                ? '#E8EBEE'
-                : ' ',
-            },
-          },
-          children: (
-            <div style={{display: 'flex', justifyContent: 'center'}}>
-              <Checkbox
-                checked={selectTedRowIds?.includes(record?.id)}
-                onChange={(e: any) => {
-                  const newArrVlaue: any = [...selectTedRowIds];
-                  if (
-                    e.target.checked &&
-                    !selectTedRowIds?.includes(record?.id)
-                  ) {
-                    newArrVlaue?.push(record?.id);
-                  } else if (selectTedRowIds?.includes(record?.id)) {
-                    // newArrVlaue?.pop(record?.id);
-                    const index = newArrVlaue?.indexOf(record?.id);
-                    newArrVlaue?.splice(index, 1);
-                  }
-                  setSelectedRowIds(newArrVlaue);
-                }}
-              />
-            </div>
-          ),
-        };
-      },
-    },
+    // {
+    //   title: (
+    //     <Checkbox
+    //       checked={selectTedRowIds?.length === quoteLineItemData?.length}
+    //       onChange={(e: any) => {
+    //         let newArrVlaue: any = [];
+    //         if (e.target.checked) {
+    //           quoteLineItemData?.map((item: any) => {
+    //             newArrVlaue?.push(item?.id);
+    //           });
+    //         } else {
+    //           newArrVlaue = [];
+    //         }
+    //         setSelectedRowIds(newArrVlaue);
+    //       }}
+    //     />
+    //   ),
+    //   dataIndex: 'line',
+    //   key: 'line',
+    //   width: 130,
+    //   render(text: any, record: any) {
+    //     return {
+    //       props: {
+    //         style: {
+    //           background: selectTedRowIds?.includes(record?.id)
+    //             ? '#E8EBEE'
+    //             : ' ',
+    //         },
+    //       },
+    //       children: (
+    //         <div style={{display: 'flex', justifyContent: 'center'}}>
+    //           <Checkbox
+    //             checked={selectTedRowIds?.includes(record?.id)}
+    //             onChange={(e: any) => {
+    //               const newArrVlaue: any = [...selectTedRowIds];
+    //               if (
+    //                 e.target.checked &&
+    //                 !selectTedRowIds?.includes(record?.id)
+    //               ) {
+    //                 newArrVlaue?.push(record?.id);
+    //               } else if (selectTedRowIds?.includes(record?.id)) {
+    //                 // newArrVlaue?.pop(record?.id);
+    //                 const index = newArrVlaue?.indexOf(record?.id);
+    //                 newArrVlaue?.splice(index, 1);
+    //               }
+    //               setSelectedRowIds(newArrVlaue);
+    //             }}
+    //           />
+    //         </div>
+    //       ),
+    //     };
+    //   },
+    // },
     {
       title: '#Line',
       dataIndex: 'line',
@@ -845,7 +853,7 @@ const GenerateQuote: React.FC = () => {
                   loading={loading}
                   // rowSelection={rowSelection}
                   columns={QuoteLineItemcolumns}
-                  dataSource={quoteLineItemData || []}
+                  dataSource={quoteLineItemByQuoteID || []}
                   scroll
                 />
               </TabPane>
