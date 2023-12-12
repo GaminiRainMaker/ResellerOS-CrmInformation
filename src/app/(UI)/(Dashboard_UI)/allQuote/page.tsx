@@ -54,11 +54,34 @@ const AllQuote: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
+  const [completedQuote, setCompletedQuote] = useState<React.Key[]>([]);
+  const [draftedQuote, setDraftedQuote] = useState<React.Key[]>([]);
+  const [recentQuote, setRecentQuote] = useState<React.Key[]>([]);
 
   useEffect(() => {
     dispatch(getAllQuotesWithCompletedAndDraft());
   }, []);
 
+  useEffect(() => {
+    const Completed: any = [];
+    const Draft: any = [];
+    const Recent: any = [];
+
+    if (quoteData && quoteData?.length > 0) {
+      quoteData?.filter((item: any) => {
+        if (item?.is_completed) {
+          Completed?.push(item);
+        } else if (item?.is_drafted) {
+          Draft?.push(item);
+        } else if (!item?.iscompleted && !item?.is_completed) {
+          Recent?.push(item);
+        }
+      });
+    }
+    setCompletedQuote(Completed);
+    setDraftedQuote(Draft);
+    setRecentQuote(Recent);
+  }, [quoteData]);
   const addQuoteLineItem = () => {
     const labelOcrMap: any = [];
     let formattedArray: any = [];
@@ -114,8 +137,13 @@ const AllQuote: React.FC = () => {
     setShowModal(false);
     setUploadFileData([]);
   };
-
+  console.log('quoteData', quoteData?.length);
   const Quotecolumns = [
+    {
+      title: 'Name',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+    },
     {
       title: 'File Name',
       dataIndex: 'filename',
@@ -172,35 +200,35 @@ const AllQuote: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: '1000',
+      primary: <div>{quoteData?.length}</div>,
       secondry: 'Total Quotes',
       icon: <QueueListIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
-      primary: '650',
+      primary: <div>{completedQuote?.length}</div>,
       secondry: 'Completed',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
     },
     {
       key: 3,
-      primary: '20',
+      primary: <div>{draftedQuote?.length}</div>,
       secondry: 'Drafts',
       icon: <ClipboardDocumentCheckIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
     {
       key: 4,
-      primary: '05',
+      primary: <div>{recentQuote?.length}</div>,
       secondry: 'Recents',
       icon: <ClockIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
     },
     {
       key: 5,
-      primary: '30',
+      primary: '0',
       secondry: 'Deleted',
       icon: <TrashIcon width={24} color={token?.colorError} />,
       iconBg: token?.colorErrorBg,
@@ -240,7 +268,7 @@ const AllQuote: React.FC = () => {
       children: (
         <OsTable
           columns={Quotecolumns}
-          dataSource={quoteData}
+          dataSource={draftedQuote}
           scroll
           loading={loading}
         />
@@ -259,7 +287,7 @@ const AllQuote: React.FC = () => {
       children: (
         <OsTable
           columns={Quotecolumns}
-          dataSource={quoteData}
+          dataSource={completedQuote}
           scroll
           loading={loading}
         />
@@ -276,11 +304,21 @@ const AllQuote: React.FC = () => {
         </div>
       ),
       children: (
-        <RecentSection
-          uploadFileData={uploadFileData}
-          setUploadFileData={setUploadFileData}
-          addQuoteLineItem={addQuoteLineItem}
-        />
+        <>
+          {recentQuote?.length > 0 ? (
+            <OsTable
+              columns={Quotecolumns}
+              dataSource={completedQuote}
+              scroll
+              loading={loading}
+            />
+          ) : (
+            <RecentSection
+              uploadFileData={uploadFileData}
+              setUploadFileData={setUploadFileData}
+            />
+          )}
+        </>
       ),
     },
   ];
@@ -323,6 +361,15 @@ const AllQuote: React.FC = () => {
                 gap: '8px',
               }}
             >
+              {' '}
+              {activeTab == 2 && (
+                <OsButton
+                  text="Mark as Complete"
+                  buttontype="PRIMARY"
+                  // icon={<PlusIcon />}
+                  // clickHandler="markAsComplete"
+                />
+              )}
               <OsButton
                 text="Add Quote"
                 buttontype="PRIMARY"
