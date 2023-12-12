@@ -35,6 +35,7 @@ import {useEffect, useState} from 'react';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {
+  updateQuoteByQuery,
   updateQuoteCompletedById,
   updateQuoteDraftById,
 } from '../../../../../redux/actions/quote';
@@ -142,21 +143,16 @@ const GenerateQuote: React.FC = () => {
     dispatch(getQuoteLineItem());
   }, []);
 
-  const markAsComplete = () => {
+  const commonUpdateCompleteAndDraftMethod = (queryItem: string) => {
     if (getAllItemsQuoteId) {
       for (let i = 0; i < getAllItemsQuoteId?.length; i++) {
         const IDS = getAllItemsQuoteId[i];
-        dispatch(updateQuoteCompletedById(parseInt(IDS as string, 10)));
-      }
-    }
-    router?.push('/allQuote');
-  };
-
-  const SaveAsDraft = () => {
-    if (getAllItemsQuoteId) {
-      for (let i = 0; i < getAllItemsQuoteId?.length; i++) {
-        const IDS = getAllItemsQuoteId[i];
-        dispatch(updateQuoteDraftById(parseInt(IDS as string, 10)));
+        // dispatch(updateQuoteDraftById(parseInt(IDS as string, 10)));
+        const data = {
+          id: IDS,
+          query: queryItem,
+        };
+        dispatch(updateQuoteByQuery(data));
       }
     }
     router?.push('/allQuote');
@@ -741,7 +737,9 @@ const GenerateQuote: React.FC = () => {
               <OsButton
                 text="Save as Draft"
                 buttontype="SECONDARY"
-                clickHandler={SaveAsDraft}
+                clickHandler={() => {
+                  commonUpdateCompleteAndDraftMethod('drafted');
+                }}
               />
               <OsButton
                 text="Add Quote"
@@ -752,7 +750,9 @@ const GenerateQuote: React.FC = () => {
               <OsButton
                 text=" Mark as Complete"
                 buttontype="PRIMARY"
-                clickHandler={markAsComplete}
+                clickHandler={() => {
+                  commonUpdateCompleteAndDraftMethod('completed');
+                }}
               />
 
               <OsButton

@@ -31,6 +31,7 @@ import {useEffect, useState} from 'react';
 import {
   getAllQuotesWithCompletedAndDraft,
   insertQuote,
+  updateQuoteByQuery,
 } from '../../../../../redux/actions/quote';
 import {
   getQuoteLineItem,
@@ -71,7 +72,7 @@ const AllQuote: React.FC = () => {
       quoteData?.filter((item: any) => {
         if (item?.is_completed) {
           Completed?.push(item);
-        } else if (item?.is_drafted) {
+        } else if (item?.is_drafted && !item?.is_completed) {
           Draft?.push(item);
         } else if (!item?.iscompleted && !item?.is_completed) {
           Recent?.push(item);
@@ -197,6 +198,22 @@ const AllQuote: React.FC = () => {
     },
   ];
 
+  const markAsComplete = () => {
+    // let data ={
+    //   id :
+    // }
+    if (draftedQuote && draftedQuote?.length > 0) {
+      for (let i = 0; i < draftedQuote?.length; i++) {
+        const itemss = draftedQuote[i];
+
+        const data = {
+          id: itemss?.id,
+          query: 'completed',
+        };
+        dispatch(updateQuoteByQuery(data));
+      }
+    }
+  };
   const analyticsData = [
     {
       key: 1,
@@ -367,7 +384,7 @@ const AllQuote: React.FC = () => {
                   text="Mark as Complete"
                   buttontype="PRIMARY"
                   // icon={<PlusIcon />}
-                  // clickHandler="markAsComplete"
+                  clickHandler={markAsComplete}
                 />
               )}
               <OsButton
@@ -387,10 +404,10 @@ const AllQuote: React.FC = () => {
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
           <OsTabs
-            // onChange={(e) => {
-            //   setActiveTab(e);
-            // }}
-            // activeKey={activeTab}
+            onChange={(e) => {
+              setActiveTab(e);
+            }}
+            activeKey={activeTab}
             tabBarExtraContent={
               <Space size={12} align="center">
                 <Space direction="vertical" size={0}>
