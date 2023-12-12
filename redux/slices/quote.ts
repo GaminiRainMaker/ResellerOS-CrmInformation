@@ -5,7 +5,7 @@ import {
   getAllQuotesWithCompletedAndDraft,
   getQuoteById,
   insertQuote,
-  updateQuoteCompletedById,
+  updateQuoteByQuery,
   updateQuoteDraftById,
 } from '../actions/quote';
 
@@ -92,19 +92,19 @@ const quoteSlice = createSlice({
           state.error = action.payload;
         },
       )
-      .addCase(updateQuoteCompletedById.pending, (state) => {
+      .addCase(updateQuoteByQuery.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        updateQuoteCompletedById.fulfilled,
+        updateQuoteByQuery.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.data = action.payload;
         },
       )
       .addCase(
-        updateQuoteCompletedById.rejected,
+        updateQuoteByQuery.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

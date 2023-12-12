@@ -22,21 +22,21 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
+import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import {TabsProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import OsModal from '@/app/components/common/os-modal';
 import {
   getAllQuotesWithCompletedAndDraft,
   insertQuote,
 } from '../../../../../redux/actions/quote';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {
   getQuoteLineItem,
   insertQuoteLineItem,
 } from '../../../../../redux/actions/quotelineitem';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from '../generateQuote/UploadFile';
 import RecentSection from './RecentSection';
 
@@ -97,6 +97,7 @@ const AllQuote: React.FC = () => {
               ...item1,
               qoute_id: item?.id,
             }));
+
             dispatch(insertQuoteLineItem(lineitemData));
           }
         });
@@ -108,8 +109,8 @@ const AllQuote: React.FC = () => {
       }));
       dispatch(insertQuoteLineItem(lineitemData));
     }
+    router.push('/generateQuote');
     dispatch(getQuoteLineItem());
-    // setStep(1);
     setShowModal(false);
     setUploadFileData([]);
   };
@@ -278,6 +279,7 @@ const AllQuote: React.FC = () => {
         <RecentSection
           uploadFileData={uploadFileData}
           setUploadFileData={setUploadFileData}
+          addQuoteLineItem={addQuoteLineItem}
         />
       ),
     },
@@ -338,10 +340,10 @@ const AllQuote: React.FC = () => {
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
           <OsTabs
-            onChange={(e) => {
-              setActiveTab(e);
-            }}
-            activeKey={activeTab}
+            // onChange={(e) => {
+            //   setActiveTab(e);
+            // }}
+            // activeKey={activeTab}
             tabBarExtraContent={
               <Space size={12} align="center">
                 <Space direction="vertical" size={0}>

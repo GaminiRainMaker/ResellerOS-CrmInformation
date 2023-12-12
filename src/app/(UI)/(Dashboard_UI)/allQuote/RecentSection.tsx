@@ -11,7 +11,11 @@ import {getAllQuotesWithCompletedAndDraft} from '../../../../../redux/actions/qu
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from '../generateQuote/UploadFile';
 
-const RecentSection: FC<any> = ({setUploadFileData, uploadFileData}) => {
+const RecentSection: FC<any> = ({
+  setUploadFileData,
+  uploadFileData,
+  addQuoteLineItem,
+}) => {
   const dispatch = useAppDispatch();
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
   const {data: quoteData, loading} = useAppSelector((state) => state.quote);
@@ -82,7 +86,7 @@ const RecentSection: FC<any> = ({setUploadFileData, uploadFileData}) => {
             loading={loading}
             text="Generate"
             buttontype="PRIMARY"
-            // clickHandler={() => addQuoteLineItem()}
+            clickHandler={() => addQuoteLineItem()}
           />
         </Col>
       </Row>

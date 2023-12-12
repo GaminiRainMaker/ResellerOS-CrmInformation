@@ -7,13 +7,13 @@ export const getAllQuotesWithCompletedAndDraft = createAsyncThunk(
   async (data, thunkApi) => {
     try {
       const res = await QUOTEAPI.get();
-      console.log('data', res.data);
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error?.message);
     }
   },
 );
+
 export const insertQuote = createAsyncThunk(
   'quote/insertQuote',
   async (data: any, thunkApi) => {
@@ -37,6 +37,7 @@ export const getQuoteById = createAsyncThunk(
     }
   },
 );
+
 export const updateQuoteDraftById = createAsyncThunk(
   'quote/updateQuoteDraftById',
   async (id: number, thunkApi) => {
@@ -48,11 +49,25 @@ export const updateQuoteDraftById = createAsyncThunk(
     }
   },
 );
-export const updateQuoteCompletedById = createAsyncThunk(
-  'quote/updateQuoteCompletedById',
+
+export const updateQuoteByQuery = createAsyncThunk(
+  'quote/updateQuoteByQuery',
+  async (data: any, thunkApi) => {
+    const {id, query} = data;
+    try {
+      const res = await QUOTEAPI.updateQuoteByQuery(id, query);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+
+export const updateQuoteWithNewlineItemAddByID = createAsyncThunk(
+  'quote/updateQuoteWithNewlineItemAdd',
   async (id: number, thunkApi) => {
     try {
-      const res = await QUOTEAPI.updateQuoteCompleteById(id);
+      const res = await QUOTEAPI.getById(id);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

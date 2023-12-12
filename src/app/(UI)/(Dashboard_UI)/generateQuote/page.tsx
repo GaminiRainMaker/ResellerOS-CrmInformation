@@ -35,8 +35,6 @@ import {useEffect, useState} from 'react';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {
-  getAllQuotesWithCompletedAndDraft,
-  insertQuote,
   updateQuoteCompletedById,
   updateQuoteDraftById,
 } from '../../../../../redux/actions/quote';
@@ -44,7 +42,6 @@ import {
   DeleteQuoteLineItemQuantityById,
   UpdateQuoteLineItemQuantityById,
   getQuoteLineItem,
-  insertQuoteLineItem,
 } from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from './UploadFile';
@@ -626,59 +623,59 @@ const GenerateQuote: React.FC = () => {
     },
   ];
 
-  const addQuoteLineItem = () => {
-    const labelOcrMap: any = [];
-    let formattedArray: any = [];
-    const formattedData: FormattedData = {};
+  // const addQuoteLineItem = () => {
+  //   const labelOcrMap: any = [];
+  //   let formattedArray: any = [];
+  //   const formattedData: FormattedData = {};
 
-    uploadFileData?.map((uploadFileDataItem: any) => {
-      const tempLabelOcrMap: any = {};
+  //   uploadFileData?.map((uploadFileDataItem: any) => {
+  //     const tempLabelOcrMap: any = {};
 
-      const arrayOfTableObjects =
-        uploadFileDataItem?.data?.result?.[0]?.prediction?.filter(
-          (item: any) => item.label === 'table',
-        );
-      arrayOfTableObjects?.[0]?.cells.forEach((item: any) => {
-        const rowNum = item.row;
-        if (!formattedData[rowNum]) {
-          formattedData[rowNum] = {};
-        }
-        formattedData[rowNum][item.label?.toLowerCase()] = item.text;
-      });
-      formattedArray = Object.values(formattedData);
-      <>
-        {uploadFileDataItem?.data?.result?.[0]?.prediction?.forEach(
-          (item: any) => {
-            tempLabelOcrMap[item?.label?.toLowerCase()] = item?.ocr_text;
-          },
-        )}
-      </>;
-      labelOcrMap.push(tempLabelOcrMap);
-    });
+  //     const arrayOfTableObjects =
+  //       uploadFileDataItem?.data?.result?.[0]?.prediction?.filter(
+  //         (item: any) => item.label === 'table',
+  //       );
+  //     arrayOfTableObjects?.[0]?.cells.forEach((item: any) => {
+  //       const rowNum = item.row;
+  //       if (!formattedData[rowNum]) {
+  //         formattedData[rowNum] = {};
+  //       }
+  //       formattedData[rowNum][item.label?.toLowerCase()] = item.text;
+  //     });
+  //     formattedArray = Object.values(formattedData);
+  //     <>
+  //       {uploadFileDataItem?.data?.result?.[0]?.prediction?.forEach(
+  //         (item: any) => {
+  //           tempLabelOcrMap[item?.label?.toLowerCase()] = item?.ocr_text;
+  //         },
+  //       )}
+  //     </>;
+  //     labelOcrMap.push(tempLabelOcrMap);
+  //   });
 
-    if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
-      dispatch(insertQuote(labelOcrMap)).then((d) => {
-        d?.payload?.data?.map((item: any) => {
-          if (item?.id) {
-            const lineitemData = formattedArray?.map((item1: any) => ({
-              ...item1,
-              qoute_id: item?.id,
-            }));
-            dispatch(insertQuoteLineItem(lineitemData));
-          }
-        });
-      });
-    } else if (existingQuoteId) {
-      const lineitemData = formattedArray?.map((item1: any) => ({
-        ...item1,
-        qoute_id: existingQuoteId,
-      }));
-      dispatch(insertQuoteLineItem(lineitemData));
-    }
-    dispatch(getQuoteLineItem());
-    setShowModal(false);
-    setUploadFileData([]);
-  };
+  //   if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
+  //     dispatch(insertQuote(labelOcrMap)).then((d) => {
+  //       d?.payload?.data?.map((item: any) => {
+  //         if (item?.id) {
+  //           const lineitemData = formattedArray?.map((item1: any) => ({
+  //             ...item1,
+  //             qoute_id: item?.id,
+  //           }));
+  //           dispatch(insertQuoteLineItem(lineitemData));
+  //         }
+  //       });
+  //     });
+  //   } else if (existingQuoteId) {
+  //     const lineitemData = formattedArray?.map((item1: any) => ({
+  //       ...item1,
+  //       qoute_id: existingQuoteId,
+  //     }));
+  //     dispatch(insertQuoteLineItem(lineitemData));
+  //   }
+  //   dispatch(getQuoteLineItem());
+  //   setShowModal(false);
+  //   setUploadFileData([]);
+  // };
 
   const items: MenuProps['items'] = [
     {
@@ -869,7 +866,7 @@ const GenerateQuote: React.FC = () => {
         primaryButtonText="Generate"
         secondaryButtonText="Save & Generate Individual Quotes"
         open={showModal}
-        onOk={() => addQuoteLineItem()}
+        // onOk={() => addQuoteLineItem()}
         onCancel={() => {
           setShowModal((p) => !p);
           setUploadFileData([]);
