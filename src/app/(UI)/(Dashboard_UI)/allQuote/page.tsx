@@ -122,35 +122,43 @@ const AllQuote: React.FC = () => {
 
     const newrrLineItems: any = [];
     if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
-      const response = await dispatch(insertQuote(labelOcrMap));
-      for (let j = 0; j < response?.payload?.data.length; j++) {
-        const item = response?.payload?.data[j];
-        if (item?.id) {
-          for (let i = 0; i < formattedArray?.length; i++) {
-            const items = formattedArray[i];
-            const insertedProduct = await dispatch(insertProduct(items));
-            if (insertedProduct?.payload?.data?.id) {
-              const obj1: any = {
-                quote_id: item?.id,
-                product_id: insertedProduct?.payload?.data?.id,
-              };
-              newrrLineItems?.push(obj1);
+      await dispatch(insertQuote(labelOcrMap)).then((d) => {
+        d?.payload?.data?.map(async (item: any) => {
+          // const newrrLineItems: any = [];
+          if (item?.id) {
+            for (let i = 0; i < formattedArray?.length; i++) {
+              const items = formattedArray[i];
+              await dispatch(insertProduct(items)).then(
+                (insertedProduct: any) => {
+                  console.log('fffffffff', insertedProduct?.payload);
+                  if (insertedProduct?.payload?.id) {
+                    const obj1: any = {
+                      quote_id: item?.id,
+                      product_id: insertedProduct?.payload?.id,
+                    };
+                    console.log('object', obj1);
+                    newrrLineItems?.push(obj1);
+                  }
+                },
+              );
             }
           }
-        }
-      }
+        });
+      });
     } else if (existingQuoteId) {
       await dispatch(updateQuoteWithNewlineItemAddByID(existingQuoteId));
       for (let i = 0; i < formattedArray?.length; i++) {
         const items = formattedArray[i];
-        const insertedProduct = await dispatch(insertProduct(items));
-        if (insertedProduct?.payload?.data?.id) {
-          const obj1: any = {
-            quote_id: existingQuoteId,
-            product_id: insertedProduct?.payload?.data?.id,
-          };
-          newrrLineItems?.push(obj1);
-        }
+        await dispatch(insertProduct(items)).then((insertedProduct: any) => {
+          console.log('fffffffff', insertedProduct?.payload);
+          if (insertedProduct?.payload?.id) {
+            const obj1: any = {
+              quote_id: existingQuoteId,
+              product_id: insertedProduct?.payload?.id,
+            };
+            newrrLineItems?.push(obj1);
+          }
+        });
       }
     }
 
@@ -307,15 +315,15 @@ const AllQuote: React.FC = () => {
 
   const markAsComplete = () => {
     if (activeQuotes && activeQuotes?.length > 0) {
-      for (let i = 0; i < activeQuotes?.length; i++) {
-        const itemss = activeQuotes[i];
-
-        const data = {
-          id: itemss?.id,
-          query: 'completed',
-        };
-        dispatch(updateQuoteByQuery(data));
-      }
+      const IdsArr: any = [];
+      activeQuotes?.map((item: any) => {
+        IdsArr?.push(item?.id);
+      });
+      const data = {
+        ids: IdsArr,
+        query: 'completed',
+      };
+      dispatch(updateQuoteByQuery(data));
     }
   };
 
@@ -337,23 +345,23 @@ const AllQuote: React.FC = () => {
       key: '4',
       children: (
         <>
-          {/* {recentQuote?.length > 0 ? (
+          {activeQuotes?.length > 0 ? (
             <OsTable
               columns={Quotecolumns}
               dataSource={activeQuotes}
               scroll
               loading={loading}
             />
-          ) : ( */}
-          <RecentSection
-            uploadFileData={uploadFileData}
-            setUploadFileData={setUploadFileData}
-            Quotecolumns={Quotecolumns}
-            addQuoteLineItem={addQuoteLineItem}
-            setShowToggleTable={setShowToggleTable}
-            showToggleTable={showToggleTable}
-          />
-          {/* )} */}
+          ) : (
+            <RecentSection
+              uploadFileData={uploadFileData}
+              setUploadFileData={setUploadFileData}
+              Quotecolumns={Quotecolumns}
+              addQuoteLineItem={addQuoteLineItem}
+              setShowToggleTable={setShowToggleTable}
+              showToggleTable={showToggleTable}
+            />
+          )}
         </>
       ),
     },

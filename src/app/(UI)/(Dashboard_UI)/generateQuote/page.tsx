@@ -143,15 +143,11 @@ const GenerateQuote: React.FC = () => {
 
   const commonUpdateCompleteAndDraftMethod = (queryItem: string) => {
     if (getAllItemsQuoteId) {
-      for (let i = 0; i < getAllItemsQuoteId?.length; i++) {
-        const IDS = getAllItemsQuoteId[i];
-        // dispatch(updateQuoteDraftById(parseInt(IDS as string, 10)));
-        const data = {
-          id: IDS,
-          query: queryItem,
-        };
-        dispatch(updateQuoteByQuery(data));
-      }
+      const data = {
+        ids: getAllItemsQuoteId,
+        query: queryItem,
+      };
+      dispatch(updateQuoteByQuery(data));
     }
     router?.push('/allQuote');
   };
