@@ -264,7 +264,13 @@ const AllQuote: React.FC = () => {
             },
           },
           children: (
-            <Typography name="Body 4/Regular">{record?.Status}</Typography>
+            <Typography name="Body 4/Regular">
+              {record?.is_completed
+                ? 'Completed'
+                : record?.is_drafted
+                ? 'Drafted'
+                : 'Recents'}
+            </Typography>
           ),
         };
       },
