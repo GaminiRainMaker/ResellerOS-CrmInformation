@@ -34,6 +34,7 @@ import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import OsModal from '@/app/components/common/os-modal';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {updateQuoteByQuery} from '../../../../../redux/actions/quote';
@@ -45,6 +46,7 @@ import {
 } from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
+import BundleSection from './bundleSection';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -653,6 +655,16 @@ const GenerateQuote: React.FC = () => {
       >
         <DrawerContent setOpen={setOpen} />
       </OsDrawer>
+
+      <OsModal
+        loading={loading}
+        body={<BundleSection />}
+        width={700}
+        open={showBundleModal}
+        onCancel={() => {
+          setShowBundleModal((p) => !p);
+        }}
+      />
     </>
   );
 };
