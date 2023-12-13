@@ -20,10 +20,14 @@ import CommonDatePicker from '@/app/components/common/os-date-picker';
 import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import {TabsProps} from 'antd';
+import {Button, MenuProps, TabsProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import {insertProduct} from '../../../../../redux/actions/product';
+import {Dropdown} from '@/app/components/common/antd/DropDown';
+import {
+  getProductByPartNo,
+  insertProduct,
+} from '../../../../../redux/actions/product';
 import {
   getAllQuotesWithCompletedAndDraft,
   insertQuote,
@@ -48,6 +52,7 @@ const AllQuote: React.FC = () => {
   const {data: quotes, loading} = useAppSelector((state) => state.quote);
   const router = useRouter();
   const [showModal, setShowModal] = useState<boolean>(false);
+
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
   const [quoteData, setQuoteData] = useState<React.Key[]>([]);
@@ -362,6 +367,15 @@ const AllQuote: React.FC = () => {
     },
   ];
 
+  const dropDownItemss: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <Typography name="Body 3/Regular">Bundle Configuration</Typography>
+      ),
+    },
+  ];
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -394,10 +408,28 @@ const AllQuote: React.FC = () => {
                 icon={<PlusIcon />}
                 clickHandler={() => setShowModal((p) => !p)}
               />
-              <OsButton
-                buttontype="PRIMARY_ICON"
-                icon={<EllipsisVerticalIcon />}
-              />
+              <Dropdown
+                trigger="click"
+                menu={{items: dropDownItemss}}
+                placement="bottomRight"
+              >
+                {/* <OsButton
+                        buttontype="PRIMARY_ICON"
+                        // clickHandler={deleteLineItems}
+                        icon={<EllipsisVerticalIcon width={24} />}
+                      /> */}
+                <Button
+                  style={{
+                    background: '#14263E',
+                    height: '48px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    border: 'none',
+                  }}
+                >
+                  <EllipsisVerticalIcon width={24} color="white" />
+                </Button>
+              </Dropdown>
             </div>
           </Col>
         </Row>

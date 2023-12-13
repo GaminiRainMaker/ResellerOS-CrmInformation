@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable array-callback-return */
 /* eslint-disable import/no-extraneous-dependencies */
@@ -31,6 +32,7 @@ import Image from 'next/image';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import OsDrawer from '@/app/components/common/os-drawer';
+import OsModal from '@/app/components/common/os-modal';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {updateQuoteByQuery} from '../../../../../redux/actions/quote';
@@ -53,6 +55,7 @@ const GenerateQuote: React.FC = () => {
   const [activeTab, setActiveTab] = useState<any>('1');
   const [inputData, setInputData] = useState<any>({});
   const debouncedValue = useDebounceHook(inputData, 500);
+
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const {
     data: quoteLineItemData,
@@ -63,6 +66,7 @@ const GenerateQuote: React.FC = () => {
   const [amountData, setAmountData] = useState<any>();
   const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
   const [open, setOpen] = useState(false);
+  const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
 
   useEffect(() => {
     dispatch(UpdateQuoteLineItemQuantityById(debouncedValue));
@@ -463,7 +467,12 @@ const GenerateQuote: React.FC = () => {
     {
       key: '1',
       label: (
-        <Typography name="Body 3/Regular">Bundle Configuration</Typography>
+        <Typography
+          name="Body 3/Regular"
+          onClick={() => setShowBundleModal((p) => !p)}
+        >
+          Bundle Configuration
+        </Typography>
       ),
     },
     {
