@@ -3,12 +3,11 @@ import {Space} from '@/app/components/common/antd/Space';
 import {Switch} from '@/app/components/common/antd/Switch';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
+import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {Divider} from 'antd';
-import {FC, useState} from 'react';
-import OsTable from '@/app/components/common/os-table';
-import {getAllQuotesWithCompletedAndDraft} from '../../../../../redux/actions/quote';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {FC} from 'react';
+import {useAppSelector} from '../../../../../redux/hook';
 import UploadFile from '../generateQuote/UploadFile';
 
 const RecentSection: FC<any> = ({
@@ -19,9 +18,7 @@ const RecentSection: FC<any> = ({
   setShowToggleTable,
   showToggleTable,
 }) => {
-  const dispatch = useAppDispatch();
   const {data: quoteData, loading} = useAppSelector((state) => state.quote);
-
   const [token] = useThemeToken();
 
   const onToggleChange = (checked: boolean) => {

@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-await-in-loop */
 /* eslint-disable @typescript-eslint/no-loop-func */
 /* eslint-disable eqeqeq */
 /* eslint-disable array-callback-return */
@@ -8,6 +11,7 @@
 import Typography from '@/app/components/common/typography';
 import {EllipsisVerticalIcon, PlusIcon} from '@heroicons/react/24/outline';
 
+import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -19,11 +23,7 @@ import OsTabs from '@/app/components/common/os-tabs';
 import {TabsProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import {Checkbox} from '@/app/components/common/antd/Checkbox';
-import {
-  getProductByPartNo,
-  insertProduct,
-} from '../../../../../redux/actions/product';
+import {insertProduct} from '../../../../../redux/actions/product';
 import {
   getAllQuotesWithCompletedAndDraft,
   insertQuote,
@@ -91,10 +91,8 @@ const AllQuote: React.FC = () => {
     const labelOcrMap: any = [];
     let formattedArray: any = [];
     const formattedData: FormattedData = {};
-    let quote_id = existingQuoteId ? existingQuoteId : '';
     uploadFileData?.map((uploadFileDataItem: any) => {
       const tempLabelOcrMap: any = {};
-
       const arrayOfTableObjects =
         uploadFileDataItem?.data?.result?.[0]?.prediction?.filter(
           (item: any) => item.label === 'table',
@@ -117,33 +115,24 @@ const AllQuote: React.FC = () => {
       labelOcrMap.push(tempLabelOcrMap);
     });
 
+    const newrrLineItems: any = [];
     if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
       dispatch(insertQuote(labelOcrMap)).then((d) => {
         d?.payload?.data?.map(async (item: any) => {
-          const newrrLineItems: any = [];
+          // const newrrLineItems: any = [];
           if (item?.id) {
             for (let i = 0; i < formattedArray?.length; i++) {
               const items = formattedArray[i];
-              await dispatch(getProductByPartNo(items?.product_code)).then(
-                async (productData: any) => {
-                  if (productData?.payload?.id) {
-                    const obj123: any = {
+              await dispatch(insertProduct(items)).then(
+                (insertedProduct: any) => {
+                  console.log('fffffffff', insertedProduct?.payload);
+                  if (insertedProduct?.payload?.id) {
+                    const obj1: any = {
                       quote_id: item?.id,
-                      product_id: productData?.payload?.id,
+                      product_id: insertedProduct?.payload?.id,
                     };
-                    newrrLineItems?.push(obj123);
-                  } else {
-                    await dispatch(insertProduct(items)).then(
-                      (insertedProduct: any) => {
-                        if (insertedProduct?.payload?.data?.id) {
-                          const obj1: any = {
-                            quote_id: item?.id,
-                            product_id: insertedProduct?.payload?.data?.id,
-                          };
-                          newrrLineItems?.push(obj1);
-                        }
-                      },
-                    );
+                    console.log('object', obj1);
+                    newrrLineItems?.push(obj1);
                   }
                 },
               );
@@ -155,32 +144,18 @@ const AllQuote: React.FC = () => {
       dispatch(updateQuoteWithNewlineItemAddByID(existingQuoteId));
       for (let i = 0; i < formattedArray?.length; i++) {
         const items = formattedArray[i];
-        await dispatch(getProductByPartNo(items?.product_code)).then(
-          async (productData: any) => {
-            if (productData?.payload?.id) {
-              const obj123: any = {
-                quote_id,
-                product_id: productData?.payload?.id,
-              };
-              newrrLineItems?.push(obj123);
-            } else {
-              await dispatch(insertProduct(items)).then(
-                (insertedProduct: any) => {
-                  if (insertedProduct?.payload?.data?.id) {
-                    const obj1: any = {
-                      quote_id,
-                      product_id: insertedProduct?.payload?.data?.id,
-                    };
-                    newrrLineItems?.push(obj1);
-                  }
-                },
-              );
-            }
-          },
-        );
+        await dispatch(insertProduct(items)).then((insertedProduct: any) => {
+          console.log('fffffffff', insertedProduct?.payload);
+          if (insertedProduct?.payload?.id) {
+            const obj1: any = {
+              quote_id: existingQuoteId,
+              product_id: insertedProduct?.payload?.id,
+            };
+            newrrLineItems?.push(obj1);
+          }
+        });
       }
     }
-    const newrrLineItems: any = [];
 
     console.log('newrrLineItems', newrrLineItems);
     if (newrrLineItems && newrrLineItems.length > 0) {
@@ -350,15 +325,19 @@ const AllQuote: React.FC = () => {
   const tabItems: TabsProps['items'] = [
     {
       label: 'All',
+      key: '1',
     },
     {
       label: 'Drafts',
+      key: '2',
     },
     {
       label: 'Completed',
+      key: '3',
     },
     {
       label: 'Recent',
+      key: '4',
       children: (
         <>
           {/* {recentQuote?.length > 0 ? (
@@ -445,31 +424,29 @@ const AllQuote: React.FC = () => {
                 </Typography>
               </Space>
             }
-            items={tabItems.map((tabItem: any, index: number) => {
-              return {
-                key: `${index + 1}`,
-                label: (
-                  <div>
-                    <div>{tabItem?.label}</div>
-                    <div
-                      style={{
-                        borderBottom:
-                          activeTab == index + 1 ? '2px solid #1C3557' : '',
-                      }}
-                    />
-                  </div>
-                ),
-                children: (
-                  <OsTable
-                    columns={Quotecolumns}
-                    dataSource={activeQuotes}
-                    scroll
-                    loading={loading}
+            items={tabItems.map((tabItem: any, index: number) => ({
+              key: `${index + 1}`,
+              label: (
+                <div>
+                  <div>{tabItem?.label}</div>
+                  <div
+                    style={{
+                      borderBottom:
+                        activeTab == index + 1 ? '2px solid #1C3557' : '',
+                    }}
                   />
-                ),
-                ...tabItem,
-              };
-            })}
+                </div>
+              ),
+              children: (
+                <OsTable
+                  columns={Quotecolumns}
+                  dataSource={activeQuotes}
+                  scroll
+                  loading={loading}
+                />
+              ),
+              ...tabItem,
+            }))}
           />
         </Row>
       </Space>

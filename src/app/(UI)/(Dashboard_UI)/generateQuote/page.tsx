@@ -30,6 +30,7 @@ import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import OsDrawer from '@/app/components/common/os-drawer';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {updateQuoteByQuery} from '../../../../../redux/actions/quote';
@@ -40,6 +41,7 @@ import {
   getQuoteLineItemByQuoteId,
 } from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import DrawerContent from './DrawerContent';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -60,6 +62,7 @@ const GenerateQuote: React.FC = () => {
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [amountData, setAmountData] = useState<any>();
   const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     dispatch(UpdateQuoteLineItemQuantityById(debouncedValue));
@@ -485,6 +488,14 @@ const GenerateQuote: React.FC = () => {
     },
   ];
 
+  const showDrawer = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -524,7 +535,11 @@ const GenerateQuote: React.FC = () => {
                   commonUpdateCompleteAndDraftMethod('drafted');
                 }}
               />
-              <OsButton text="Edit Header" buttontype="PRIMARY" />
+              <OsButton
+                text="Edit Header"
+                buttontype="PRIMARY"
+                clickHandler={showDrawer}
+              />
               <OsButton
                 text=" Mark as Complete"
                 buttontype="PRIMARY"
@@ -562,24 +577,12 @@ const GenerateQuote: React.FC = () => {
                     placeholder="Select Grouping here"
                     options={selectData}
                   />
-                  {/* <Dropdown menu={{items}} placement="bottomRight">
-                      <p>dsfdf</p>
-                      <OsButton
-                        buttontype="PRIMARY_ICON"
-                        // clickHandler={deleteLineItems}
-                        icon={<EllipsisVerticalIcon width={24} />}
-                      />
-                    </Dropdown> */}
+
                   <Dropdown
                     trigger="click"
                     menu={{items}}
                     placement="bottomRight"
                   >
-                    {/* <OsButton
-                        buttontype="PRIMARY_ICON"
-                        // clickHandler={deleteLineItems}
-                        icon={<EllipsisVerticalIcon width={24} />}
-                      /> */}
                     <Button
                       style={{
                         background: '#14263E',
@@ -631,6 +634,15 @@ const GenerateQuote: React.FC = () => {
           </OsTabs>
         </Row>
       </Space>
+      <OsDrawer
+        title={<Typography name="Body 1/Regular">Quote Settings</Typography>}
+        placement="right"
+        onClose={onClose}
+        open={open}
+        width={450}
+      >
+        <DrawerContent />
+      </OsDrawer>
     </>
   );
 };

@@ -53,9 +53,8 @@ export const updateQuoteDraftById = createAsyncThunk(
 export const updateQuoteByQuery = createAsyncThunk(
   'quote/updateQuoteByQuery',
   async (data: any, thunkApi) => {
-    const {id, query} = data;
     try {
-      const res = await QUOTEAPI.updateQuoteByQuery(id, query);
+      const res = await QUOTEAPI.updateQuoteByQuery(data);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

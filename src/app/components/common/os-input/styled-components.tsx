@@ -10,7 +10,7 @@ export const InputStyled = styled(Input)`
   align-self: stretch;
   border-radius: 12px;
   border: 1px solid var(--foundation-neutrals-black-n-70, #a3a3a3);
-  width: 458px;
+  // width: 458px;
   &.ant-input:focus-visible {
     border-color: none;
     box-shadow: none;
