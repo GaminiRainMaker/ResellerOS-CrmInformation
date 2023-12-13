@@ -73,3 +73,15 @@ export const getQuoteLineItemByQuoteId = createAsyncThunk(
     }
   },
 );
+export const updateQuoteLineItemForBundleId = createAsyncThunk(
+  'quoteLineItem/getQuoteLineItemForBundleId',
+  async (data: any, thunkApi) => {
+    console.log('43543534', data);
+    try {
+      const res = await QUOTE_LINE_ITEM_API.patch(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

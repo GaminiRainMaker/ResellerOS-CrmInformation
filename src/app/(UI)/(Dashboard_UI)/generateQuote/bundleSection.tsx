@@ -9,6 +9,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsInput from '@/app/components/common/os-input';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {getAllBundle, insertBundle} from '../../../../../redux/actions/bundle';
+import {updateQuoteLineItemForBundleId} from '../../../../../redux/actions/quotelineitem';
 
 const BundleSection: FC<any> = () => {
   const dispatch = useAppDispatch();
@@ -17,16 +18,34 @@ const BundleSection: FC<any> = () => {
   const [token] = useThemeToken();
   const [bundleValue, setBundleValue] = useState<any>();
   const [bundleOptions, setBundleOptions] = useState<React.Key[]>([]);
+  const [existingBundleId, setExistingBundleId] = useState<any>();
 
   const onChange = (e: RadioChangeEvent) => {
     setRadioValue(e.target.value);
   };
   const commonAddCreateBundle = async () => {
-    await dispatch(insertBundle(bundleValue));
-
+    if (existingBundleId) {
+      const data = {
+        Ids: [1, 2, 3],
+        bundle_id: existingBundleId,
+      };
+      dispatch(updateQuoteLineItemForBundleId(data));
+    } else {
+      await dispatch(insertBundle(bundleValue)).then((e) => {
+        if (e) {
+          const data = {
+            Ids: [1, 2, 3],
+            bundle_id: e?.payload?.data?.id,
+          };
+          dispatch(updateQuoteLineItemForBundleId(data));
+        }
+      });
+    }
     dispatch(getAllBundle(''));
     setRadioValue(1);
   };
+
+  console.log('bundleDatabundleData', bundleData);
   useEffect(() => {
     dispatch(getAllBundle(''));
   }, []);
@@ -68,6 +87,9 @@ const BundleSection: FC<any> = () => {
             style={{width: '100%', marginTop: '-156px'}}
             placeholder="Select Bundle"
             options={bundleOptions}
+            onChange={(e) => {
+              setExistingBundleId(e);
+            }}
           />
         </>
       ) : (

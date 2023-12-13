@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {AxiosResponse} from 'axios';
 import {API} from './CONSTANTS';
-import {get, post} from './index';
+import {get, post, patch} from './index';
 
 export const QUOTE_LINE_ITEM_API = {
   get: () => get(API.QUOTE_LINE_ITEM.INDEX) as Promise<AxiosResponse<[]>>,
@@ -22,6 +22,9 @@ export const QUOTE_LINE_ITEM_API = {
     get(`${API.QUOTE_LINE_ITEM.GetQuoteLineItemByQuoteId}/${id}`) as Promise<
       AxiosResponse<any>
     >,
+  patch: (data: any) =>
+    patch(API.QUOTE_LINE_ITEM.INDEX, data) as Promise<AxiosResponse<[]>>,
+
   // put: (id: number, data: any) => put(API.QUOTE_LINE_ITEM.INDEX + "/" + id, data),
   // delete: (id: number) => del(API.QUOTE_LINE_ITEM.INDEX + "/" + id),
 };

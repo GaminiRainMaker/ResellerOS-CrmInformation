@@ -8,6 +8,7 @@ import {
   getQuoteLineItemById,
   getQuoteLineItemByQuoteId,
   insertQuoteLineItem,
+  updateQuoteLineItemForBundleId,
 } from '../actions/quotelineitem';
 
 type QuoteLineItemState = {
@@ -138,6 +139,24 @@ const quoteLineItemSlice = createSlice({
       )
       .addCase(
         getQuoteLineItemByQuoteId.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(updateQuoteLineItemForBundleId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateQuoteLineItemForBundleId.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.quoteLineItemByQuoteID = action.payload;
+        },
+      )
+      .addCase(
+        updateQuoteLineItemForBundleId.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
