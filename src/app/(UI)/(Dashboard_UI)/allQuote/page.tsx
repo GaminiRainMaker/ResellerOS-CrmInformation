@@ -174,61 +174,61 @@ const AllQuote: React.FC = () => {
   };
 
   const Quotecolumns = [
-    {
-      title: (
-        <Checkbox
-        // checked={selectTedRowIds?.length === quoteLineItemData?.length}
-        // onChange={(e: any) => {
-        //   let newArrVlaue: any = [];
-        //   if (e.target.checked) {
-        //     quoteLineItemData?.map((item: any) => {
-        //       newArrVlaue?.push(item?.id);
-        //     });
-        //   } else {
-        //     newArrVlaue = [];
-        //   }
-        //   setSelectedRowIds(newArrVlaue);
-        // }}
-        />
-      ),
-      dataIndex: 'Name',
-      key: 'filename',
-      width: 130,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background: selectTedRowIds?.includes(record?.id)
-                ? '#E8EBEE'
-                : ' ',
-            },
-          },
-          children: (
-            <div style={{display: 'flex', justifyContent: 'center'}}>
-              <Checkbox
-                checked={selectTedRowIds?.includes(record?.id)}
-                onChange={(e: any) => {
-                  const newArrVlaue: any = showToggleTable
-                    ? []
-                    : [...selectTedRowIds];
-                  if (
-                    e.target.checked &&
-                    !selectTedRowIds?.includes(record?.id)
-                  ) {
-                    newArrVlaue?.push(record?.id);
-                  } else if (selectTedRowIds?.includes(record?.id)) {
-                    // newArrVlaue?.pop(record?.id);
-                    const index = newArrVlaue?.indexOf(record?.id);
-                    newArrVlaue?.splice(index, 1);
-                  }
-                  setSelectedRowIds(newArrVlaue);
-                }}
-              />
-            </div>
-          ),
-        };
-      },
-    },
+    // {
+    //   title: (
+    //     <Checkbox
+    //     // checked={selectTedRowIds?.length === quoteLineItemData?.length}
+    //     // onChange={(e: any) => {
+    //     //   let newArrVlaue: any = [];
+    //     //   if (e.target.checked) {
+    //     //     quoteLineItemData?.map((item: any) => {
+    //     //       newArrVlaue?.push(item?.id);
+    //     //     });
+    //     //   } else {
+    //     //     newArrVlaue = [];
+    //     //   }
+    //     //   setSelectedRowIds(newArrVlaue);
+    //     // }}
+    //     />
+    //   ),
+    //   dataIndex: 'Name',
+    //   key: 'filename',
+    //   width: 130,
+    //   render(text: any, record: any) {
+    //     return {
+    //       props: {
+    //         style: {
+    //           background: selectTedRowIds?.includes(record?.id)
+    //             ? '#E8EBEE'
+    //             : ' ',
+    //         },
+    //       },
+    //       children: (
+    //         <div style={{display: 'flex', justifyContent: 'center'}}>
+    //           <Checkbox
+    //             checked={selectTedRowIds?.includes(record?.id)}
+    //             onChange={(e: any) => {
+    //               const newArrVlaue: any = showToggleTable
+    //                 ? []
+    //                 : [...selectTedRowIds];
+    //               if (
+    //                 e.target.checked &&
+    //                 !selectTedRowIds?.includes(record?.id)
+    //               ) {
+    //                 newArrVlaue?.push(record?.id);
+    //               } else if (selectTedRowIds?.includes(record?.id)) {
+    //                 // newArrVlaue?.pop(record?.id);
+    //                 const index = newArrVlaue?.indexOf(record?.id);
+    //                 newArrVlaue?.splice(index, 1);
+    //               }
+    //               setSelectedRowIds(newArrVlaue);
+    //             }}
+    //           />
+    //         </div>
+    //       ),
+    //     };
+    //   },
+    // },
     {
       title: 'Name',
       dataIndex: 'name',
