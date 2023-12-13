@@ -18,9 +18,9 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline';
 
-import {Dropdown} from '@/app/components/common/antd/DropDown';
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Dropdown } from '@/app/components/common/antd/DropDown';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
@@ -29,20 +29,20 @@ import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Breadcrumb, Button, MenuProps} from 'antd';
+import { Breadcrumb, Button, MenuProps } from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
-import {updateQuoteByQuery} from '../../../../../redux/actions/quote';
+import { updateQuoteByQuery } from '../../../../../redux/actions/quote';
 import {
   DeleteQuoteLineItemQuantityById,
   UpdateQuoteLineItemQuantityById,
   getQuoteLineItemByQuoteId,
 } from '../../../../../redux/actions/quotelineitem';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
 import BundleSection from './bundleSection';
 
@@ -58,11 +58,9 @@ const GenerateQuote: React.FC = () => {
   const debouncedValue = useDebounceHook(inputData, 500);
 
   const [isEditable, setIsEditable] = useState<boolean>(false);
-  const {
-    data: quoteLineItemData,
-    quoteLineItemByQuoteID,
-    loading,
-  } = useAppSelector((state) => state.quoteLineItem);
+  const {quoteLineItemByQuoteID, loading} = useAppSelector(
+    (state) => state.quoteLineItem,
+  );
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [amountData, setAmountData] = useState<any>();
   const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
@@ -98,9 +96,9 @@ const GenerateQuote: React.FC = () => {
     let quantity: number = 0;
     let listPrice: number = 0;
 
-    if (quoteLineItemData && quoteLineItemData?.length > 0) {
+    if (quoteLineItemByQuoteID && quoteLineItemByQuoteID?.length > 0) {
       // eslint-disable-next-line no-unsafe-optional-chaining
-      quoteLineItemData?.map((item: any, index: any) => {
+      quoteLineItemByQuoteID?.map((item: any, index: any) => {
         if (item?.adjusted_price) {
           adjustPrice += parseFloat(
             item?.adjusted_price
@@ -129,19 +127,19 @@ const GenerateQuote: React.FC = () => {
       LineAmount: lineAmount,
     };
     setAmountData(newObj);
-  }, [quoteLineItemData]);
+  }, [quoteLineItemByQuoteID]);
 
   useEffect(() => {
     const allIdsArray: [] = [];
-    if (quoteLineItemData && quoteLineItemData?.length > 0) {
-      quoteLineItemData?.map((item: string) => {
+    if (quoteLineItemByQuoteID && quoteLineItemByQuoteID?.length > 0) {
+      quoteLineItemByQuoteID?.map((item: string) => {
         if (!allIdsArray?.includes(item?.Quote?.id)) {
           allIdsArray?.push(parseInt(item?.Quote?.id));
         }
       });
     }
     setGetAllItemsQuoteId(allIdsArray);
-  }, [quoteLineItemData]);
+  }, [quoteLineItemByQuoteID]);
 
   const commonUpdateCompleteAndDraftMethod = (queryItem: string) => {
     if (getQuoteLineItemId) {
@@ -167,7 +165,7 @@ const GenerateQuote: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: quoteLineItemData?.length,
+      primary: quoteLineItemByQuoteID?.length,
       secondry: 'Line Items',
       icon: <QueueListIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
@@ -552,7 +550,7 @@ const GenerateQuote: React.FC = () => {
                   loading={loading}
                   // rowSelection={rowSelection}
                   columns={QuoteLineItemcolumns}
-                  dataSource={(showTableDataa && quoteLineItemData) || []}
+                  dataSource={(showTableDataa && quoteLineItemByQuoteID) || []}
                   scroll
                   rowSelection={rowSelection}
                 />
