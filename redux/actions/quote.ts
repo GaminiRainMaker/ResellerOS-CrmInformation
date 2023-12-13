@@ -54,7 +54,6 @@ export const updateQuoteByQuery = createAsyncThunk(
   'quote/updateQuoteByQuery',
   async (data: any, thunkApi) => {
     const {id, query} = data;
-    console.log('datadatadata', data);
     try {
       const res = await QUOTEAPI.updateQuoteByQuery(id, query);
       return res.data;

@@ -5,18 +5,8 @@
 
 'use client';
 
-import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
-import {
-  CheckBadgeIcon,
-  ClipboardDocumentCheckIcon,
-  ClockIcon,
-  EllipsisVerticalIcon,
-  EyeIcon,
-  PlusIcon,
-  QueueListIcon,
-  TrashIcon,
-} from '@heroicons/react/24/outline';
+import {EllipsisVerticalIcon, PlusIcon} from '@heroicons/react/24/outline';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
@@ -44,6 +34,7 @@ import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from '../generateQuote/UploadFile';
 import RecentSection from './RecentSection';
+import QuoteAnalytics from './analytics';
 
 interface FormattedData {
   [key: string]: {
@@ -54,48 +45,53 @@ const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
-  const {data: quoteData, loading} = useAppSelector((state) => state.quote);
+  const {data: quotes, loading} = useAppSelector((state) => state.quote);
   const router = useRouter();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
-  const [completedQuote, setCompletedQuote] = useState<React.Key[]>([]);
-  const [draftedQuote, setDraftedQuote] = useState<React.Key[]>([]);
-  const [recentQuote, setRecentQuote] = useState<React.Key[]>([]);
+  const [quoteData, setQuoteData] = useState<React.Key[]>([]);
+  const [deletedQuote, setDeletedQuote] = useState<React.Key[]>([]);
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
+  const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
 
   useEffect(() => {
     dispatch(getAllQuotesWithCompletedAndDraft());
   }, []);
 
   useEffect(() => {
-    const Completed: any = [];
-    const Draft: any = [];
-    const Recent: any = [];
-
-    if (quoteData && quoteData?.length > 0) {
-      quoteData?.filter((item: any) => {
-        if (item?.is_completed) {
-          Completed?.push(item);
-        } else if (item?.is_drafted && !item?.is_completed) {
-          Draft?.push(item);
-        } else if (!item?.iscompleted && !item?.is_drafted) {
-          Recent?.push(item);
-        }
-      });
+    if (quotes && quotes?.length > 0) {
+      const deleted = quotes?.filter((item: any) => item?.is_deleted);
+      const notDeleted = quotes?.filter((item: any) => !item?.is_deleted);
+      setQuoteData(notDeleted);
+      setDeletedQuote(deleted);
     }
-    setCompletedQuote(Completed);
-    setDraftedQuote(Draft);
-    setRecentQuote(Recent);
-  }, [quoteData]);
+  }, [quotes]);
 
-  const addQuoteLineItem = () => {
+  useEffect(() => {
+    if (activeTab && quoteData.length > 0) {
+      const quoteItems =
+        activeTab === '2'
+          ? quoteData?.filter((item: any) => item?.is_drafted)
+          : activeTab === '3'
+          ? quoteData?.filter((item: any) => item?.is_completed)
+          : activeTab == '1'
+          ? quoteData
+          : quoteData?.filter(
+              (item: any) => !item?.is_completed && !item?.is_drafted,
+            );
+
+      setActiveQuotes(quoteItems);
+    }
+  }, [activeTab, quoteData]);
+
+  const addQuoteLineItem = async () => {
     // setExistingQuoteId()
     const labelOcrMap: any = [];
     let formattedArray: any = [];
     const formattedData: FormattedData = {};
-
+    let quote_id = existingQuoteId ? existingQuoteId : '';
     uploadFileData?.map((uploadFileDataItem: any) => {
       const tempLabelOcrMap: any = {};
 
@@ -123,13 +119,13 @@ const AllQuote: React.FC = () => {
 
     if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
       dispatch(insertQuote(labelOcrMap)).then((d) => {
-        d?.payload?.data?.map((item: any) => {
+        d?.payload?.data?.map(async (item: any) => {
           const newrrLineItems: any = [];
           if (item?.id) {
             for (let i = 0; i < formattedArray?.length; i++) {
               const items = formattedArray[i];
-              dispatch(getProductByPartNo(items?.product_code)).then(
-                (productData) => {
+              await dispatch(getProductByPartNo(items?.product_code)).then(
+                async (productData: any) => {
                   if (productData?.payload?.id) {
                     const obj123: any = {
                       quote_id: item?.id,
@@ -137,60 +133,61 @@ const AllQuote: React.FC = () => {
                     };
                     newrrLineItems?.push(obj123);
                   } else {
-                    dispatch(insertProduct(items)).then((insertedProduct) => {
-                      if (insertedProduct?.payload?.data?.id) {
-                        const obj1: any = {
-                          quote_id: item?.id,
-                          product_id: insertedProduct?.payload?.data?.id,
-                        };
-                        newrrLineItems?.push(obj1);
-                      }
-                    });
+                    await dispatch(insertProduct(items)).then(
+                      (insertedProduct: any) => {
+                        if (insertedProduct?.payload?.data?.id) {
+                          const obj1: any = {
+                            quote_id: item?.id,
+                            product_id: insertedProduct?.payload?.data?.id,
+                          };
+                          newrrLineItems?.push(obj1);
+                        }
+                      },
+                    );
                   }
                 },
               );
-              console.log('newrrLineItems', newrrLineItems);
-              if (newrrLineItems && newrrLineItems.length > 0) {
-                console.log('newrrLineItems=====', newrrLineItems);
-                dispatch(insertQuoteLineItem(newrrLineItems));
-              }
             }
           }
         });
       });
     } else if (existingQuoteId) {
       dispatch(updateQuoteWithNewlineItemAddByID(existingQuoteId));
-      const newrrLineItems: any = [];
       for (let i = 0; i < formattedArray?.length; i++) {
         const items = formattedArray[i];
-        dispatch(getProductByPartNo(items?.product_code)).then(
-          (productData) => {
+        await dispatch(getProductByPartNo(items?.product_code)).then(
+          async (productData: any) => {
             if (productData?.payload?.id) {
               const obj123: any = {
-                quote_id: existingQuoteId,
+                quote_id,
                 product_id: productData?.payload?.id,
               };
               newrrLineItems?.push(obj123);
             } else {
-              dispatch(insertProduct(items)).then((insertedProduct) => {
-                if (insertedProduct?.payload?.data?.id) {
-                  const obj1: any = {
-                    quote_id: existingQuoteId,
-                    product_id: insertedProduct?.payload?.data?.id,
-                  };
-                  newrrLineItems?.push(obj1);
-                }
-              });
+              await dispatch(insertProduct(items)).then(
+                (insertedProduct: any) => {
+                  if (insertedProduct?.payload?.data?.id) {
+                    const obj1: any = {
+                      quote_id,
+                      product_id: insertedProduct?.payload?.data?.id,
+                    };
+                    newrrLineItems?.push(obj1);
+                  }
+                },
+              );
             }
           },
         );
-        console.log('newrrLineItems', newrrLineItems);
-        if (newrrLineItems && newrrLineItems.length > 0) {
-          console.log('newrrLineItems=====', newrrLineItems);
-          dispatch(insertQuoteLineItem(newrrLineItems));
-        }
       }
     }
+    const newrrLineItems: any = [];
+
+    console.log('newrrLineItems', newrrLineItems);
+    if (newrrLineItems && newrrLineItems.length > 0) {
+      console.log('newrrLineItems=====', newrrLineItems);
+      dispatch(insertQuoteLineItem(newrrLineItems));
+    }
+
     // router.push('/generateQuote');
     setShowModal(false);
     setUploadFileData([]);
@@ -337,12 +334,9 @@ const AllQuote: React.FC = () => {
   ];
 
   const markAsComplete = () => {
-    // let data ={
-    //   id :
-    // }
-    if (draftedQuote && draftedQuote?.length > 0) {
-      for (let i = 0; i < draftedQuote?.length; i++) {
-        const itemss = draftedQuote[i];
+    if (activeQuotes && activeQuotes?.length > 0) {
+      for (let i = 0; i < activeQuotes?.length; i++) {
+        const itemss = activeQuotes[i];
 
         const data = {
           id: itemss?.id,
@@ -352,118 +346,25 @@ const AllQuote: React.FC = () => {
       }
     }
   };
-  const analyticsData = [
-    {
-      key: 1,
-      primary: <div>{quoteData?.length}</div>,
-      secondry: 'Total Quotes',
-      icon: <QueueListIcon width={24} color={token?.colorInfo} />,
-      iconBg: token?.colorInfoBgHover,
-    },
-    {
-      key: 2,
-      primary: <div>{completedQuote?.length}</div>,
-      secondry: 'Completed',
-      icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
-      iconBg: token?.colorSuccessBg,
-    },
-    {
-      key: 3,
-      primary: <div>{draftedQuote?.length}</div>,
-      secondry: 'Drafts',
-      icon: <ClipboardDocumentCheckIcon width={24} color={token?.colorLink} />,
-      iconBg: token?.colorLinkActive,
-    },
-    {
-      key: 4,
-      primary: <div>{recentQuote?.length}</div>,
-      secondry: 'Recents',
-      icon: <ClockIcon width={24} color={token?.colorWarning} />,
-      iconBg: token?.colorWarningBg,
-    },
-    {
-      key: 5,
-      primary: '0',
-      secondry: 'Deleted',
-      icon: <TrashIcon width={24} color={token?.colorError} />,
-      iconBg: token?.colorErrorBg,
-    },
-  ];
 
-  const items: TabsProps['items'] = [
+  const tabItems: TabsProps['items'] = [
     {
-      key: '1',
-      label: (
-        <div>
-          <div>All</div>
-          <div
-            style={{borderBottom: activeTab == 1 ? '2px solid #1C3557' : ''}}
-          />
-        </div>
-      ),
-      children: (
-        <OsTable
-          columns={Quotecolumns}
-          dataSource={quoteData}
-          scroll
-          loading={loading}
-        />
-      ),
+      label: 'All',
     },
     {
-      key: '2',
-      label: (
-        <div>
-          <div>Drafts</div>
-          <div
-            style={{borderBottom: activeTab == 2 ? '2px solid #1C3557' : ''}}
-          />
-        </div>
-      ),
-      children: (
-        <OsTable
-          columns={Quotecolumns}
-          dataSource={draftedQuote}
-          scroll
-          loading={loading}
-        />
-      ),
+      label: 'Drafts',
     },
     {
-      key: '3',
-      label: (
-        <div>
-          <div>Completed</div>
-          <div
-            style={{borderBottom: activeTab == 3 ? '2px solid #1C3557' : ''}}
-          />
-        </div>
-      ),
-      children: (
-        <OsTable
-          columns={Quotecolumns}
-          dataSource={completedQuote}
-          scroll
-          loading={loading}
-        />
-      ),
+      label: 'Completed',
     },
     {
-      key: '4',
-      label: (
-        <div>
-          <div>Recent</div>
-          <div
-            style={{borderBottom: activeTab == 4 ? '2px solid #1C3557' : ''}}
-          />
-        </div>
-      ),
+      label: 'Recent',
       children: (
         <>
           {/* {recentQuote?.length > 0 ? (
             <OsTable
               columns={Quotecolumns}
-              dataSource={recentQuote}
+              dataSource={activeQuotes}
               scroll
               loading={loading}
             />
@@ -485,27 +386,7 @@ const AllQuote: React.FC = () => {
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <Row
-          justify="space-between"
-          style={{
-            padding: '36px 24px',
-            background: token?.colorBgContainer,
-            borderRadius: '12px',
-          }}
-          gutter={[0, 16]}
-        >
-          {analyticsData?.map((item) => (
-            <Col>
-              <TableNameColumn
-                primaryText={item?.primary}
-                secondaryText={item?.secondry}
-                fallbackIcon={item?.icon}
-                iconBg={item?.iconBg}
-              />
-            </Col>
-          ))}
-        </Row>
-
+        <QuoteAnalytics quoteData={quoteData} deletedQuote={deletedQuote} />
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
@@ -520,7 +401,6 @@ const AllQuote: React.FC = () => {
                 gap: '8px',
               }}
             >
-              {' '}
               {activeTab == 2 && (
                 <OsButton
                   text="Mark as Complete"
@@ -565,7 +445,31 @@ const AllQuote: React.FC = () => {
                 </Typography>
               </Space>
             }
-            items={items}
+            items={tabItems.map((tabItem: any, index: number) => {
+              return {
+                key: `${index + 1}`,
+                label: (
+                  <div>
+                    <div>{tabItem?.label}</div>
+                    <div
+                      style={{
+                        borderBottom:
+                          activeTab == index + 1 ? '2px solid #1C3557' : '',
+                      }}
+                    />
+                  </div>
+                ),
+                children: (
+                  <OsTable
+                    columns={Quotecolumns}
+                    dataSource={activeQuotes}
+                    scroll
+                    loading={loading}
+                  />
+                ),
+                ...tabItem,
+              };
+            })}
           />
         </Row>
       </Space>
