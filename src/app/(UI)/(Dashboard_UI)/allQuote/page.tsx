@@ -116,44 +116,38 @@ const AllQuote: React.FC = () => {
     });
 
     const newrrLineItems: any = [];
+    debugger;
     if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
-      await dispatch(insertQuote(labelOcrMap)).then((d) => {
-        d?.payload?.data?.map(async (item: any) => {
-          // const newrrLineItems: any = [];
-          if (item?.id) {
-            for (let i = 0; i < formattedArray?.length; i++) {
-              const items = formattedArray[i];
-              await dispatch(insertProduct(items)).then(
-                (insertedProduct: any) => {
-                  console.log('fffffffff', insertedProduct?.payload);
-                  if (insertedProduct?.payload?.id) {
-                    const obj1: any = {
-                      quote_id: item?.id,
-                      product_id: insertedProduct?.payload?.id,
-                    };
-                    console.log('object', obj1);
-                    newrrLineItems?.push(obj1);
-                  }
-                },
-              );
+      debugger;
+      const response = await dispatch(insertQuote(labelOcrMap));
+      for (let j = 0; j < response?.payload?.data.length; j++) {
+        const item = response?.payload?.data[j];
+        if (item?.id) {
+          for (let i = 0; i < formattedArray?.length; i++) {
+            const items = formattedArray[i];
+            const insertedProduct = await dispatch(insertProduct(items));
+            if (insertedProduct?.payload?.data?.id) {
+              const obj1: any = {
+                quote_id: item?.id,
+                product_id: insertedProduct?.payload?.data?.id,
+              };
+              newrrLineItems?.push(obj1);
             }
           }
-        });
-      });
+        }
+      }
     } else if (existingQuoteId) {
       await dispatch(updateQuoteWithNewlineItemAddByID(existingQuoteId));
       for (let i = 0; i < formattedArray?.length; i++) {
         const items = formattedArray[i];
-        await dispatch(insertProduct(items)).then((insertedProduct: any) => {
-          console.log('fffffffff', insertedProduct?.payload);
-          if (insertedProduct?.payload?.id) {
-            const obj1: any = {
-              quote_id: existingQuoteId,
-              product_id: insertedProduct?.payload?.id,
-            };
-            newrrLineItems?.push(obj1);
-          }
-        });
+        const insertedProduct = await dispatch(insertProduct(items));
+        if (insertedProduct?.payload?.data?.id) {
+          const obj1: any = {
+            quote_id: existingQuoteId,
+            product_id: insertedProduct?.payload?.data?.id,
+          };
+          newrrLineItems?.push(obj1);
+        }
       }
     }
 
