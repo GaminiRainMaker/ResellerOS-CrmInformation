@@ -24,4 +24,7 @@ export const API = {
     GetProductByPartNo: '/product/getProductByPartNo',
     QUERY: '/product/query',
   },
+  BUNDLE: {
+    INDEX: '/bundle',
+  },
 };

@@ -1,29 +1,44 @@
 /* eslint-disable eqeqeq */
-import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
-import {Switch} from '@/app/components/common/antd/Switch';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import Typography from '@/app/components/common/typography';
-import {Divider, Radio, RadioChangeEvent} from 'antd';
-import {FC, useState} from 'react';
-import {Checkbox} from '@/app/components/common/antd/Checkbox';
+import {Radio, RadioChangeEvent} from 'antd';
+import {FC, useEffect, useState} from 'react';
 import CommonSelect from '@/app/components/common/os-select';
 import OsInput from '@/app/components/common/os-input';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {getAllBundle, insertBundle} from '../../../../../redux/actions/bundle';
 
 const BundleSection: FC<any> = () => {
   const dispatch = useAppDispatch();
-  const {data: quoteData, loading} = useAppSelector((state) => state.quote);
+  const {data: bundleData} = useAppSelector((state) => state.bundle);
   const [radioValue, setRadioValue] = useState(1);
   const [token] = useThemeToken();
   const [bundleValue, setBundleValue] = useState<any>();
+  const [bundleOptions, setBundleOptions] = useState<React.Key[]>([]);
 
   const onChange = (e: RadioChangeEvent) => {
-    console.log('radio checked', e.target.value);
     setRadioValue(e.target.value);
   };
-  console.log('valuevalue', radioValue);
+  const commonAddCreateBundle = async () => {
+    await dispatch(insertBundle(bundleValue));
+
+    dispatch(getAllBundle(''));
+    setRadioValue(1);
+  };
+  useEffect(() => {
+    dispatch(getAllBundle(''));
+  }, []);
+  useEffect(() => {
+    const bundleArray: any = [];
+    if (bundleData) {
+      bundleData?.map(
+        (item: any) => bundleArray?.push({label: item?.name, value: item?.id}),
+      );
+    }
+    setBundleOptions(bundleArray);
+  }, [bundleData]);
   return (
     <Space
       direction="vertical"
@@ -52,6 +67,7 @@ const BundleSection: FC<any> = () => {
           <CommonSelect
             style={{width: '100%', marginTop: '-156px'}}
             placeholder="Select Bundle"
+            options={bundleOptions}
           />
         </>
       ) : (
@@ -69,7 +85,9 @@ const BundleSection: FC<any> = () => {
               <Typography name="Body 3/Regular">Name of Bundle</Typography>
               <OsInput
                 style={{width: '235px', marginTop: '5px'}}
-                onChange={() => {}}
+                onChange={(e: any) => {
+                  setBundleValue({...bundleValue, name: e.target.value});
+                }}
               />
             </div>
             <div style={{marginLeft: '20px'}}>
@@ -77,6 +95,9 @@ const BundleSection: FC<any> = () => {
               <OsInput
                 style={{width: '235px', marginTop: '5px'}}
                 type="number"
+                onChange={(e: any) => {
+                  setBundleValue({...bundleValue, quantity: e.target.value});
+                }}
               />
             </div>
           </Space>
@@ -86,7 +107,12 @@ const BundleSection: FC<any> = () => {
               (optional)
             </span>
           </Typography>
-          <OsInput style={{width: '98%', marginTop: '-16px'}} />
+          <OsInput
+            style={{width: '98%', marginTop: '-16px'}}
+            onChange={(e: any) => {
+              setBundleValue({...bundleValue, description: e.target.value});
+            }}
+          />
         </>
       )}
       <div
@@ -95,9 +121,7 @@ const BundleSection: FC<any> = () => {
         <OsButton
           text={radioValue == 1 ? 'Add' : 'Create'}
           buttontype="PRIMARY"
-          //   clickHandler={() => {
-
-          //   }}
+          clickHandler={commonAddCreateBundle}
         />
       </div>
     </Space>
