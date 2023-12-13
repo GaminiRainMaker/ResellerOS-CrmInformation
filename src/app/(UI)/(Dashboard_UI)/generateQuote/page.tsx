@@ -23,16 +23,15 @@ import {Space} from '@/app/components/common/antd/Space';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
+import OsDrawer from '@/app/components/common/os-drawer';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Button, MenuProps} from 'antd';
+import {Button, Form, MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import OsDrawer from '@/app/components/common/os-drawer';
-import OsModal from '@/app/components/common/os-modal';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {updateQuoteByQuery} from '../../../../../redux/actions/quote';
@@ -44,10 +43,10 @@ import {
 } from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
-import BundleSection from './bundleSection';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
+  const [form] = Form.useForm();
   const [token] = useThemeToken();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -70,12 +69,14 @@ const GenerateQuote: React.FC = () => {
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
 
   useEffect(() => {
-    dispatch(UpdateQuoteLineItemQuantityById(debouncedValue));
-    setTimeout(() => {
-      dispatch(getQuoteLineItem());
-      setSelectedRowIds([]);
-      setIsEditable(false);
-    }, 500);
+    if (debouncedValue && debouncedValue?.length > 0) {
+      dispatch(UpdateQuoteLineItemQuantityById(debouncedValue));
+      setTimeout(() => {
+        dispatch(getQuoteLineItem());
+        setSelectedRowIds([]);
+        setIsEditable(false);
+      }, 500);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
 
@@ -136,10 +137,6 @@ const GenerateQuote: React.FC = () => {
     }
     setGetAllItemsQuoteId(allIdsArray);
   }, [quoteLineItemData]);
-
-  useEffect(() => {
-    dispatch(getQuoteLineItem());
-  }, []);
 
   const commonUpdateCompleteAndDraftMethod = (queryItem: string) => {
     if (getAllItemsQuoteId) {
@@ -451,9 +448,11 @@ const GenerateQuote: React.FC = () => {
             },
           },
           children: (
-            <Typography name="Body 4/Regular">
-              {record?.productselect}
-            </Typography>
+            <CommonSelect
+              style={{width: '319px'}}
+              placeholder="Product"
+              options={selectData}
+            />
           ),
         };
       },
@@ -646,22 +645,18 @@ const GenerateQuote: React.FC = () => {
         onClose={onClose}
         open={open}
         width={450}
+        // footer={
+        //   <div style={{textAlign: 'right'}}>
+        //     <OsButton
+        //       text="Update Changes"
+        //       buttontype="PRIMARY"
+        //       clickHandler={() => form.submit()}
+        //     />
+        //   </div>
+        // }
       >
-        <DrawerContent />
+        <DrawerContent setOpen={setOpen} />
       </OsDrawer>
-
-      <OsModal
-        loading={loading}
-        body={<BundleSection />}
-        width={600}
-        // primaryButtonText={radioValue == 1 ? 'Add' : 'Create'}
-        open={showBundleModal}
-        // onOk={}
-        footer={false}
-        onCancel={() => {
-          setShowBundleModal((p) => !p);
-        }}
-      />
     </>
   );
 };

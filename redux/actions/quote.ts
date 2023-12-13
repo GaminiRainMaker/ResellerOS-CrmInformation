@@ -73,3 +73,15 @@ export const updateQuoteWithNewlineItemAddByID = createAsyncThunk(
     }
   },
 );
+
+export const updateQuoteById = createAsyncThunk(
+  'quote/updateQuoteById',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await QUOTEAPI.patch(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

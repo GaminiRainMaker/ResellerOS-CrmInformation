@@ -5,6 +5,7 @@ import {
   getAllQuotesWithCompletedAndDraft,
   getQuoteById,
   insertQuote,
+  updateQuoteById,
   updateQuoteByQuery,
   updateQuoteDraftById,
   updateQuoteWithNewlineItemAddByID,
@@ -124,6 +125,24 @@ const quoteSlice = createSlice({
       )
       .addCase(
         updateQuoteWithNewlineItemAddByID.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(updateQuoteById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateQuoteById.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        updateQuoteById.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

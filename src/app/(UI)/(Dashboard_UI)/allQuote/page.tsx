@@ -9,9 +9,15 @@
 'use client';
 
 import Typography from '@/app/components/common/typography';
-import {EllipsisVerticalIcon, PlusIcon} from '@heroicons/react/24/outline';
+import {
+  EllipsisVerticalIcon,
+  EyeIcon,
+  PlusIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
 
 import {Checkbox} from '@/app/components/common/antd/Checkbox';
+import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -23,11 +29,7 @@ import OsTabs from '@/app/components/common/os-tabs';
 import {Button, MenuProps, TabsProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import {Dropdown} from '@/app/components/common/antd/DropDown';
-import {
-  getProductByPartNo,
-  insertProduct,
-} from '../../../../../redux/actions/product';
+import {insertProduct} from '../../../../../redux/actions/product';
 import {
   getAllQuotesWithCompletedAndDraft,
   insertQuote,
@@ -122,53 +124,51 @@ const AllQuote: React.FC = () => {
 
     const newrrLineItems: any = [];
     if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
-      await dispatch(insertQuote(labelOcrMap)).then((d) => {
-        d?.payload?.data?.map(async (item: any) => {
-          // const newrrLineItems: any = [];
-          if (item?.id) {
-            for (let i = 0; i < formattedArray?.length; i++) {
-              const items = formattedArray[i];
-              await dispatch(insertProduct(items)).then(
-                (insertedProduct: any) => {
-                  console.log('fffffffff', insertedProduct?.payload);
-                  if (insertedProduct?.payload?.id) {
-                    const obj1: any = {
-                      quote_id: item?.id,
-                      product_id: insertedProduct?.payload?.id,
-                    };
-                    console.log('object', obj1);
-                    newrrLineItems?.push(obj1);
-                  }
-                },
-              );
+      const response = await dispatch(insertQuote(labelOcrMap));
+      for (let j = 0; j < response?.payload?.data.length; j++) {
+        const item = response?.payload?.data[j];
+        if (item?.id) {
+          for (let i = 0; i < formattedArray?.length; i++) {
+            const items = formattedArray[i];
+            const insertedProduct = await dispatch(insertProduct(items));
+            if (insertedProduct?.payload?.id) {
+              const obj1: any = {
+                quote_id: item?.id,
+                product_id: insertedProduct?.payload?.id,
+                product_code: insertedProduct?.payload?.product_code,
+                line_amount: insertedProduct?.payload?.line_amount,
+                list_price: insertedProduct?.payload?.list_price,
+                description: insertedProduct?.payload?.description,
+              };
+              newrrLineItems?.push(obj1);
             }
           }
-        });
-      });
+        }
+      }
     } else if (existingQuoteId) {
       await dispatch(updateQuoteWithNewlineItemAddByID(existingQuoteId));
       for (let i = 0; i < formattedArray?.length; i++) {
         const items = formattedArray[i];
-        await dispatch(insertProduct(items)).then((insertedProduct: any) => {
-          console.log('fffffffff', insertedProduct?.payload);
-          if (insertedProduct?.payload?.id) {
-            const obj1: any = {
-              quote_id: existingQuoteId,
-              product_id: insertedProduct?.payload?.id,
-            };
-            newrrLineItems?.push(obj1);
-          }
-        });
+        const insertedProduct = await dispatch(insertProduct(items));
+        if (insertedProduct?.payload?.id) {
+          const obj1: any = {
+            quote_id: existingQuoteId,
+            product_id: insertedProduct?.payload?.id,
+            product_code: insertedProduct?.payload?.product_code,
+            line_amount: insertedProduct?.payload?.line_amount,
+            list_price: insertedProduct?.payload?.list_price,
+            description: insertedProduct?.payload?.description,
+          };
+          newrrLineItems?.push(obj1);
+        }
       }
     }
 
-    console.log('newrrLineItems', newrrLineItems);
     if (newrrLineItems && newrrLineItems.length > 0) {
-      console.log('newrrLineItems=====', newrrLineItems);
       dispatch(insertQuoteLineItem(newrrLineItems));
     }
 
-    // router.push('/generateQuote');
+    dispatch(getAllQuotesWithCompletedAndDraft());
     setShowModal(false);
     setUploadFileData([]);
   };
@@ -310,6 +310,32 @@ const AllQuote: React.FC = () => {
           ),
         };
       },
+    },
+    {
+      title: ' ',
+      dataIndex: 'actions',
+      key: 'actions',
+      width: 94,
+      render: (text: string, record: any) => (
+        <Space size={18}>
+          <EyeIcon
+            height={24}
+            width={24}
+            color={token.colorInfoBorder}
+            style={{cursor: 'pointer'}}
+            onClick={() => {
+              router.push(`/generateQuote?id=${record?.id}`);
+            }}
+          />
+          <TrashIcon
+            height={24}
+            width={24}
+            color={token.colorError}
+            style={{cursor: 'pointer'}}
+            onClick={() => {}}
+          />
+        </Space>
+      ),
     },
   ];
 
