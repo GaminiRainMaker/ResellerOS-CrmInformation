@@ -117,7 +117,7 @@ const AllQuote: React.FC = () => {
 
     const newrrLineItems: any = [];
     if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
-      dispatch(insertQuote(labelOcrMap)).then((d) => {
+      await dispatch(insertQuote(labelOcrMap)).then((d) => {
         d?.payload?.data?.map(async (item: any) => {
           // const newrrLineItems: any = [];
           if (item?.id) {
@@ -141,7 +141,7 @@ const AllQuote: React.FC = () => {
         });
       });
     } else if (existingQuoteId) {
-      dispatch(updateQuoteWithNewlineItemAddByID(existingQuoteId));
+      await dispatch(updateQuoteWithNewlineItemAddByID(existingQuoteId));
       for (let i = 0; i < formattedArray?.length; i++) {
         const items = formattedArray[i];
         await dispatch(insertProduct(items)).then((insertedProduct: any) => {
