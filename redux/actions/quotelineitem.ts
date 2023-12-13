@@ -53,9 +53,10 @@ export const UpdateQuoteLineItemQuantityById = createAsyncThunk(
 
 export const DeleteQuoteLineItemQuantityById = createAsyncThunk(
   'quoteLineItem/DeleteQuoteLineItemQuantityById',
-  async (id: number, thunkApi) => {
+  async (data: any, thunkApi) => {
     try {
-      const res = await QUOTE_LINE_ITEM_API.deleteQuoteLineItemQuantityById(id);
+      const res =
+        await QUOTE_LINE_ITEM_API.deleteQuoteLineItemQuantityById(data);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

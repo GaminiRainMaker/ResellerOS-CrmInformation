@@ -83,7 +83,6 @@ const GenerateQuote: React.FC = () => {
     // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
-
   useEffect(() => {
     if (getQuoteLineItemId)
       dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
@@ -155,11 +154,8 @@ const GenerateQuote: React.FC = () => {
 
   const deleteLineItems = () => {
     if (selectTedRowIds) {
-      for (let i = 0; i < selectTedRowIds?.length; i++) {
-        const IDS = selectTedRowIds[i];
-        dispatch(DeleteQuoteLineItemQuantityById(parseInt(IDS as string, 10)));
-        setSelectedRowIds([]);
-      }
+      dispatch(DeleteQuoteLineItemQuantityById(selectTedRowIds));
+      setSelectedRowIds([]);
       setTimeout(() => {
         dispatch(getQuoteLineItem());
       }, 500);
@@ -260,42 +256,12 @@ const GenerateQuote: React.FC = () => {
       dataIndex: 'line',
       key: 'line',
       width: 130,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background: selectTedRowIds?.includes(record?.id)
-                ? '#E8EBEE'
-                : ' ',
-            },
-          },
-          children: (
-            <Typography name="Body 4/Regular">{record?.line}</Typography>
-          ),
-        };
-      },
     },
     {
       title: 'SKU',
       dataIndex: 'product_code',
       key: 'product_code',
       width: 187,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background: selectTedRowIds?.includes(record?.id)
-                ? '#E8EBEE'
-                : ' ',
-            },
-          },
-          children: (
-            <Typography name="Body 4/Regular">
-              {record?.product_code}
-            </Typography>
-          ),
-        };
-      },
     },
     {
       title: 'List Price',
@@ -313,7 +279,7 @@ const GenerateQuote: React.FC = () => {
           },
           children: (
             <OsInput
-              disabled={!(selectTedRowIds?.includes(record?.id) && isEditable)}
+              disabled={!selectTedRowIds?.includes(record?.id) && isEditable}
               value={record?.list_price}
               style={{width: '100px'}}
               onChange={(e: any) => {
@@ -329,60 +295,18 @@ const GenerateQuote: React.FC = () => {
       dataIndex: 'MSRP',
       key: 'MSRP',
       width: 187,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background: selectTedRowIds?.includes(record?.id)
-                ? '#E8EBEE'
-                : ' ',
-            },
-          },
-          children: (
-            <Typography name="Body 4/Regular">{record?.MSRP}</Typography>
-          ),
-        };
-      },
     },
     {
       title: 'Cost',
       dataIndex: 'cost',
       key: 'cost',
       width: 187,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background: selectTedRowIds?.includes(record?.id)
-                ? '#E8EBEE'
-                : ' ',
-            },
-          },
-          children: (
-            <Typography name="Body 4/Regular">{record?.cost}</Typography>
-          ),
-        };
-      },
     },
     {
       title: 'Product Description',
       dataIndex: 'description',
       key: 'description',
       width: 365,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background: selectTedRowIds?.includes(record?.id)
-                ? '#E8EBEE'
-                : ' ',
-            },
-          },
-          children: (
-            <Typography name="Body 4/Regular">{record?.description}</Typography>
-          ),
-        };
-      },
     },
     {
       title: 'Product Select',
@@ -488,6 +412,7 @@ const GenerateQuote: React.FC = () => {
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
       setSelectedRowKeys(selectedRowKeys);
+      setSelectedRowIds(selectedRowKeys);
       console.log(
         `selectedRowKeys: ${selectedRowKeys}`,
         'selectedRows: ',

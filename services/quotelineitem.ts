@@ -14,10 +14,10 @@ export const QUOTE_LINE_ITEM_API = {
     post(API.QUOTE_LINE_ITEM.UpdateQuoteLineItemQuantityById, data) as Promise<
       AxiosResponse<any>
     >,
-  deleteQuoteLineItemQuantityById: (id: number) =>
-    get(
-      `${API.QUOTE_LINE_ITEM.DeleteQuoteLineItemQuantityById}/${id}`,
-    ) as Promise<AxiosResponse<any>>,
+  deleteQuoteLineItemQuantityById: (data: any) =>
+    post(API.QUOTE_LINE_ITEM.DeleteQuoteLineItemQuantityById, data) as Promise<
+      AxiosResponse<any>
+    >,
   getQuoteLineItemByQuoteId: (id: number) =>
     get(`${API.QUOTE_LINE_ITEM.GetQuoteLineItemByQuoteId}/${id}`) as Promise<
       AxiosResponse<any>
