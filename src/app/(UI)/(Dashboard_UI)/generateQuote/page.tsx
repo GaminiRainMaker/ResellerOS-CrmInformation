@@ -44,6 +44,7 @@ import {
 } from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
+import BundleSection from './bundleSection';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -652,6 +653,19 @@ const GenerateQuote: React.FC = () => {
       >
         <DrawerContent />
       </OsDrawer>
+
+      <OsModal
+        loading={loading}
+        body={<BundleSection />}
+        width={600}
+        // primaryButtonText={radioValue == 1 ? 'Add' : 'Create'}
+        open={showBundleModal}
+        // onOk={}
+        footer={false}
+        onCancel={() => {
+          setShowBundleModal((p) => !p);
+        }}
+      />
     </>
   );
 };
