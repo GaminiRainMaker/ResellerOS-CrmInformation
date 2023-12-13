@@ -5,7 +5,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {Divider} from 'antd';
+import {Divider, Radio} from 'antd';
 import {FC} from 'react';
 import {useAppSelector} from '../../../../../redux/hook';
 import UploadFile from '../generateQuote/UploadFile';
@@ -17,6 +17,7 @@ const RecentSection: FC<any> = ({
   Quotecolumns,
   setShowToggleTable,
   showToggleTable,
+  rowSelection,
 }) => {
   const {data: quoteData, loading} = useAppSelector((state) => state.quote);
   const [token] = useThemeToken();
@@ -63,7 +64,8 @@ const RecentSection: FC<any> = ({
         {showToggleTable && (
           <OsTable
             loading={loading}
-            // rowSelection={{...rowSelection}}
+            rowSelection={rowSelection}
+            type1="Radio"
             columns={Quotecolumns}
             dataSource={quoteData}
             scroll
