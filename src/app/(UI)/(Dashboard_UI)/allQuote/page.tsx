@@ -121,9 +121,7 @@ const AllQuote: React.FC = () => {
     });
 
     const newrrLineItems: any = [];
-    debugger;
     if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
-      debugger;
       const response = await dispatch(insertQuote(labelOcrMap));
       for (let j = 0; j < response?.payload?.data.length; j++) {
         const item = response?.payload?.data[j];
