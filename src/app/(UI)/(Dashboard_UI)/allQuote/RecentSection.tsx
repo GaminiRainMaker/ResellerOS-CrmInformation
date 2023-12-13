@@ -15,6 +15,7 @@ const RecentSection: FC<any> = ({
   setUploadFileData,
   uploadFileData,
   addQuoteLineItem,
+  Quotecolumns,
 }) => {
   const dispatch = useAppDispatch();
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
@@ -66,7 +67,7 @@ const RecentSection: FC<any> = ({
           <OsTable
             loading={loading}
             // rowSelection={{...rowSelection}}
-            // columns={Quotecolumns}
+            columns={Quotecolumns}
             dataSource={quoteData}
             scroll
           />

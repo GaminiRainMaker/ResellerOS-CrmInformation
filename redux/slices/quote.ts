@@ -7,6 +7,7 @@ import {
   insertQuote,
   updateQuoteByQuery,
   updateQuoteDraftById,
+  updateQuoteWithNewlineItemAddByID,
 } from '../actions/quote';
 
 type QuoteState = {
@@ -105,6 +106,24 @@ const quoteSlice = createSlice({
       )
       .addCase(
         updateQuoteByQuery.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(updateQuoteWithNewlineItemAddByID.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateQuoteWithNewlineItemAddByID.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        updateQuoteWithNewlineItemAddByID.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

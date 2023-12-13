@@ -28,7 +28,7 @@ export const getAllProduct = createAsyncThunk(
 
 export const getProductByPartNo = createAsyncThunk(
   'product/getProductByPartNo',
-  async (part_no: number, thunkApi) => {
+  async (part_no: any, thunkApi) => {
     try {
       const res = await PRODUCT_API.getProductByPartNo(part_no);
       return res.data;

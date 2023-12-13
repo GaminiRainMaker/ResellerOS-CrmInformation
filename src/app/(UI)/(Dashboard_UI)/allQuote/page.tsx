@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-loop-func */
 /* eslint-disable eqeqeq */
 /* eslint-disable array-callback-return */
 /* eslint-disable import/no-extraneous-dependencies */
@@ -28,15 +29,18 @@ import OsTabs from '@/app/components/common/os-tabs';
 import {TabsProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import {Checkbox} from '@/app/components/common/antd/Checkbox';
+import {
+  getProductByPartNo,
+  insertProduct,
+} from '../../../../../redux/actions/product';
 import {
   getAllQuotesWithCompletedAndDraft,
   insertQuote,
   updateQuoteByQuery,
+  updateQuoteWithNewlineItemAddByID,
 } from '../../../../../redux/actions/quote';
-import {
-  getQuoteLineItem,
-  insertQuoteLineItem,
-} from '../../../../../redux/actions/quotelineitem';
+import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from '../generateQuote/UploadFile';
 import RecentSection from './RecentSection';
@@ -74,7 +78,7 @@ const AllQuote: React.FC = () => {
           Completed?.push(item);
         } else if (item?.is_drafted && !item?.is_completed) {
           Draft?.push(item);
-        } else if (!item?.iscompleted && !item?.is_completed) {
+        } else if (!item?.iscompleted && !item?.is_drafted) {
           Recent?.push(item);
         }
       });
@@ -83,7 +87,9 @@ const AllQuote: React.FC = () => {
     setDraftedQuote(Draft);
     setRecentQuote(Recent);
   }, [quoteData]);
+
   const addQuoteLineItem = () => {
+    // setExistingQuoteId()
     const labelOcrMap: any = [];
     let formattedArray: any = [];
     const formattedData: FormattedData = {};
@@ -116,29 +122,78 @@ const AllQuote: React.FC = () => {
     if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
       dispatch(insertQuote(labelOcrMap)).then((d) => {
         d?.payload?.data?.map((item: any) => {
+          const newrrLineItems: any = [];
           if (item?.id) {
-            const lineitemData = formattedArray?.map((item1: any) => ({
-              ...item1,
-              qoute_id: item?.id,
-            }));
-
-            dispatch(insertQuoteLineItem(lineitemData));
+            for (let i = 0; i < formattedArray?.length; i++) {
+              const items = formattedArray[i];
+              dispatch(getProductByPartNo(items?.product_code)).then(
+                (productData) => {
+                  if (productData?.payload?.id) {
+                    const obj123: any = {
+                      quote_id: item?.id,
+                      product_id: productData?.payload?.id,
+                    };
+                    newrrLineItems?.push(obj123);
+                  } else {
+                    dispatch(insertProduct(items)).then((insertedProduct) => {
+                      if (insertedProduct?.payload?.data?.id) {
+                        const obj1: any = {
+                          quote_id: item?.id,
+                          product_id: insertedProduct?.payload?.data?.id,
+                        };
+                        newrrLineItems?.push(obj1);
+                      }
+                    });
+                  }
+                },
+              );
+              console.log('newrrLineItems', newrrLineItems);
+              if (newrrLineItems && newrrLineItems.length > 0) {
+                console.log('newrrLineItems=====', newrrLineItems);
+                dispatch(insertQuoteLineItem(newrrLineItems));
+              }
+            }
           }
         });
       });
     } else if (existingQuoteId) {
-      const lineitemData = formattedArray?.map((item1: any) => ({
-        ...item1,
-        qoute_id: existingQuoteId,
-      }));
-      dispatch(insertQuoteLineItem(lineitemData));
+      dispatch(updateQuoteWithNewlineItemAddByID(existingQuoteId));
+      const newrrLineItems: any = [];
+      for (let i = 0; i < formattedArray?.length; i++) {
+        const items = formattedArray[i];
+        dispatch(getProductByPartNo(items?.product_code)).then(
+          (productData) => {
+            if (productData?.payload?.id) {
+              const obj123: any = {
+                quote_id: existingQuoteId,
+                product_id: productData?.payload?.id,
+              };
+              newrrLineItems?.push(obj123);
+            } else {
+              dispatch(insertProduct(items)).then((insertedProduct) => {
+                if (insertedProduct?.payload?.data?.id) {
+                  const obj1: any = {
+                    quote_id: existingQuoteId,
+                    product_id: insertedProduct?.payload?.data?.id,
+                  };
+                  newrrLineItems?.push(obj1);
+                }
+              });
+            }
+          },
+        );
+        console.log('newrrLineItems', newrrLineItems);
+        if (newrrLineItems && newrrLineItems.length > 0) {
+          console.log('newrrLineItems=====', newrrLineItems);
+          dispatch(insertQuoteLineItem(newrrLineItems));
+        }
+      }
     }
-    router.push('/generateQuote');
-    dispatch(getQuoteLineItem());
+    // router.push('/generateQuote');
     setShowModal(false);
     setUploadFileData([]);
   };
-  console.log('quoteData', quoteData?.length);
+
   const Quotecolumns = [
     {
       title: 'Name',
@@ -322,19 +377,21 @@ const AllQuote: React.FC = () => {
       ),
       children: (
         <>
-          {recentQuote?.length > 0 ? (
+          {/* {recentQuote?.length > 0 ? (
             <OsTable
               columns={Quotecolumns}
-              dataSource={completedQuote}
+              dataSource={recentQuote}
               scroll
               loading={loading}
             />
-          ) : (
-            <RecentSection
-              uploadFileData={uploadFileData}
-              setUploadFileData={setUploadFileData}
-            />
-          )}
+          ) : ( */}
+          <RecentSection
+            uploadFileData={uploadFileData}
+            setUploadFileData={setUploadFileData}
+            Quotecolumns={Quotecolumns}
+            addQuoteLineItem={addQuoteLineItem}
+          />
+          {/* )} */}
         </>
       ),
     },

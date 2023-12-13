@@ -10,7 +10,7 @@ export const PRODUCT_API = {
     post(API.PRODUCT.QUERY, data) as Promise<AxiosResponse<[]>>,
   getById: (id: number) =>
     get(`${API.PRODUCT.INDEX}/${id}`) as Promise<AxiosResponse<any>>,
-  getProductByPartNo: (part_no: number) =>
+  getProductByPartNo: (part_no: any) =>
     get(`${API.PRODUCT.GetProductByPartNo}/${part_no}`) as Promise<
       AxiosResponse<any>
     >,

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable array-callback-return */
 /* eslint-disable import/no-extraneous-dependencies */
 
@@ -10,7 +11,6 @@ import {
   ArrowDownTrayIcon,
   CurrencyDollarIcon,
   EllipsisVerticalIcon,
-  PlusIcon,
   QueueListIcon,
   ReceiptPercentIcon,
   TagIcon,
@@ -23,22 +23,16 @@ import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
-import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
 import {Button, MenuProps} from 'antd';
-import Checkbox from 'antd/es/checkbox/Checkbox';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
-import {useRouter} from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
-import {
-  updateQuoteByQuery,
-  updateQuoteCompletedById,
-  updateQuoteDraftById,
-} from '../../../../../redux/actions/quote';
+import {updateQuoteByQuery} from '../../../../../redux/actions/quote';
 import {
   DeleteQuoteLineItemQuantityById,
   UpdateQuoteLineItemQuantityById,
@@ -46,36 +40,25 @@ import {
   getQuoteLineItemByQuoteId,
 } from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import UploadFile from './UploadFile';
-
-interface FormattedData {
-  [key: string]: {
-    [key: string]: string | undefined; // Define the inner object structure
-  };
-}
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const getQuoteLineItemId = searchParams.get('id');
+
   const [activeTab, setActiveTab] = useState<any>('1');
-  // const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [step, setStep] = useState<number>(0);
   const [inputData, setInputData] = useState<any>({});
   const debouncedValue = useDebounceHook(inputData, 500);
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
-  const [uploadFileData, setUploadFileData] = useState<any>([]);
-  const {data: quoteData, loading} = useAppSelector((state) => state.quote);
   const [isEditable, setIsEditable] = useState<boolean>(false);
-  const {data: quoteLineItemData, quoteLineItemByQuoteID} = useAppSelector(
-    (state) => state.quoteLineItem,
-  );
-
+  const {
+    data: quoteLineItemData,
+    quoteLineItemByQuoteID,
+    loading,
+  } = useAppSelector((state) => state.quoteLineItem);
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
-  const [existingQuoteId, setExistingQuoteId] = useState<number>();
   const [amountData, setAmountData] = useState<any>();
-
-  const router = useRouter();
   const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
 
   useEffect(() => {
@@ -87,13 +70,13 @@ const GenerateQuote: React.FC = () => {
     }, 500);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
-  useEffect(() => {
-    const search = new URLSearchParams(window.location.search);
-    const id = search.get('id');
-    dispatch(getQuoteLineItemByQuoteId(id));
-  }, []);
 
-  console.log('quoteLineItemByQuoteID', quoteLineItemByQuoteID);
+  useEffect(() => {
+    if (getQuoteLineItemId)
+      dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
+  }, [getQuoteLineItemId]);
+
+
   useEffect(() => {
     let newObj: any = {};
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -165,6 +148,7 @@ const GenerateQuote: React.FC = () => {
     }
     router?.push('/allQuote');
   };
+
   const deleteLineItems = () => {
     if (selectTedRowIds) {
       for (let i = 0; i < selectTedRowIds?.length; i++) {
@@ -265,7 +249,7 @@ const GenerateQuote: React.FC = () => {
     {value: 'item 3', label: 'Item 3'},
     {value: 'item 4', label: 'Item 4'},
   ];
-  console.log('quoteLineItemData', quoteLineItemData);
+
   const QuoteLineItemcolumns = [
     // {
     //   title: (
@@ -473,214 +457,6 @@ const GenerateQuote: React.FC = () => {
     },
   ];
 
-  const Quotecolumns = [
-    {
-      title: (
-        <Checkbox
-          checked={!!existingQuoteId}
-          onChange={(e: any) => {
-            let newArrVlaue: any = [];
-            if (e.target.checked) {
-              quoteLineItemData?.map((item: any) => {
-                newArrVlaue?.push(item?.id);
-              });
-            } else {
-              newArrVlaue = [];
-            }
-            setSelectedRowIds(newArrVlaue);
-          }}
-        />
-      ),
-      dataIndex: 'line',
-      key: 'line',
-      width: 130,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background:
-                existingQuoteId && record?.id === existingQuoteId
-                  ? '#E8EBEE'
-                  : ' ',
-            },
-          },
-          children: (
-            <div style={{display: 'flex', justifyContent: 'center'}}>
-              <Checkbox
-                checked={!!existingQuoteId && record?.id === existingQuoteId}
-                onChange={(e: any) => {
-                  if (e.target.checked) {
-                    setExistingQuoteId(record?.id);
-                  } else {
-                    setExistingQuoteId(undefined);
-                  }
-                }}
-              />
-            </div>
-          ),
-        };
-      },
-    },
-    // {
-    //   title: 'Quote',
-    //   dataIndex: 'quote',
-    //   key: 'quote',
-    //   width: 165,
-    // },
-    // {
-    //   title: 'Customer Address',
-    //   dataIndex: 'customer_address',
-    //   key: 'customer_address',
-    //   width: 165,
-    // },
-    {
-      title: 'Customer City',
-      dataIndex: 'customer_city',
-      key: 'customer_city',
-      width: 165,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background:
-                existingQuoteId && record?.id === existingQuoteId
-                  ? '#E8EBEE'
-                  : ' ',
-            },
-          },
-          children: (
-            <Typography name="Body 4/Regular">
-              {record?.customer_city}
-            </Typography>
-          ),
-        };
-      },
-    },
-    {
-      title: 'Customer Contact',
-      dataIndex: 'customer_contact',
-      key: 'customer_contact',
-      width: 165,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background:
-                existingQuoteId && record?.id === existingQuoteId
-                  ? '#E8EBEE'
-                  : ' ',
-            },
-          },
-          children: (
-            <Typography name="Body 4/Regular">
-              {record?.customer_contact}
-            </Typography>
-          ),
-        };
-      },
-    },
-    {
-      title: 'Customer Email',
-      dataIndex: 'customer_email',
-      key: 'customer_email',
-      width: 165,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background:
-                existingQuoteId && record?.id === existingQuoteId
-                  ? '#E8EBEE'
-                  : ' ',
-            },
-          },
-          children: (
-            <Typography name="Body 4/Regular">
-              {record?.customer_email}
-            </Typography>
-          ),
-        };
-      },
-    },
-    {
-      title: 'Customer Name',
-      dataIndex: 'customer_name',
-      key: 'customer_name',
-      width: 165,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background:
-                existingQuoteId && record?.id === existingQuoteId
-                  ? '#E8EBEE'
-                  : ' ',
-            },
-          },
-          children: (
-            <Typography name="Body 4/Regular">
-              {record?.customer_name}
-            </Typography>
-          ),
-        };
-      },
-    },
-  ];
-
-  // const addQuoteLineItem = () => {
-  //   const labelOcrMap: any = [];
-  //   let formattedArray: any = [];
-  //   const formattedData: FormattedData = {};
-
-  //   uploadFileData?.map((uploadFileDataItem: any) => {
-  //     const tempLabelOcrMap: any = {};
-
-  //     const arrayOfTableObjects =
-  //       uploadFileDataItem?.data?.result?.[0]?.prediction?.filter(
-  //         (item: any) => item.label === 'table',
-  //       );
-  //     arrayOfTableObjects?.[0]?.cells.forEach((item: any) => {
-  //       const rowNum = item.row;
-  //       if (!formattedData[rowNum]) {
-  //         formattedData[rowNum] = {};
-  //       }
-  //       formattedData[rowNum][item.label?.toLowerCase()] = item.text;
-  //     });
-  //     formattedArray = Object.values(formattedData);
-  //     <>
-  //       {uploadFileDataItem?.data?.result?.[0]?.prediction?.forEach(
-  //         (item: any) => {
-  //           tempLabelOcrMap[item?.label?.toLowerCase()] = item?.ocr_text;
-  //         },
-  //       )}
-  //     </>;
-  //     labelOcrMap.push(tempLabelOcrMap);
-  //   });
-
-  //   if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
-  //     dispatch(insertQuote(labelOcrMap)).then((d) => {
-  //       d?.payload?.data?.map((item: any) => {
-  //         if (item?.id) {
-  //           const lineitemData = formattedArray?.map((item1: any) => ({
-  //             ...item1,
-  //             qoute_id: item?.id,
-  //           }));
-  //           dispatch(insertQuoteLineItem(lineitemData));
-  //         }
-  //       });
-  //     });
-  //   } else if (existingQuoteId) {
-  //     const lineitemData = formattedArray?.map((item1: any) => ({
-  //       ...item1,
-  //       qoute_id: existingQuoteId,
-  //     }));
-  //     dispatch(insertQuoteLineItem(lineitemData));
-  //   }
-  //   dispatch(getQuoteLineItem());
-  //   setShowModal(false);
-  //   setUploadFileData([]);
-  // };
-
   const items: MenuProps['items'] = [
     {
       key: '1',
@@ -749,12 +525,7 @@ const GenerateQuote: React.FC = () => {
                   commonUpdateCompleteAndDraftMethod('drafted');
                 }}
               />
-              <OsButton
-                text="Add Quote"
-                buttontype="PRIMARY"
-                icon={<PlusIcon />}
-                clickHandler={() => setShowModal((p) => !p)}
-              />
+              <OsButton text="Edit Header" buttontype="PRIMARY" />
               <OsButton
                 text=" Mark as Complete"
                 buttontype="PRIMARY"
@@ -861,25 +632,6 @@ const GenerateQuote: React.FC = () => {
           </OsTabs>
         </Row>
       </Space>
-      <OsModal
-        loading={loading}
-        body={
-          <UploadFile
-            setUploadFileData={setUploadFileData}
-            uploadFileData={uploadFileData}
-            addInExistingQuote
-          />
-        }
-        width={900}
-        primaryButtonText="Generate"
-        secondaryButtonText="Save & Generate Individual Quotes"
-        open={showModal}
-        // onOk={() => addQuoteLineItem()}
-        onCancel={() => {
-          setShowModal((p) => !p);
-          setUploadFileData([]);
-        }}
-      />
     </>
   );
 };

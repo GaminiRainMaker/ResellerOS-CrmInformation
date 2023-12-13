@@ -21,7 +21,7 @@ export const API = {
   },
   PRODUCT: {
     INDEX: '/product',
-    GetProductByPartNo: '/product/getProductByPartNo/',
+    GetProductByPartNo: '/product/getProductByPartNo',
     QUERY: '/product/query',
   },
 };
