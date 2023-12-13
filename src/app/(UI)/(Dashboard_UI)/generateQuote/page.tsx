@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable eqeqeq */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable array-callback-return */
@@ -28,7 +29,7 @@ import OsDrawer from '@/app/components/common/os-drawer';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Button, MenuProps} from 'antd';
+import {Breadcrumb, Button, MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
 import {useRouter, useSearchParams} from 'next/navigation';
@@ -67,6 +68,7 @@ const GenerateQuote: React.FC = () => {
   const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
   const [open, setOpen] = useState(false);
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   useEffect(() => {
     // if (debouncedValue && debouncedValue?.length > 0) {
@@ -251,60 +253,6 @@ const GenerateQuote: React.FC = () => {
   ];
 
   const QuoteLineItemcolumns = [
-    {
-      title: (
-        <Checkbox
-          checked={selectTedRowIds?.length === quoteLineItemData?.length}
-          onChange={(e: any) => {
-            let newArrVlaue: any = [];
-            if (e.target.checked) {
-              quoteLineItemData?.map((item: any) => {
-                newArrVlaue?.push(item?.id);
-              });
-            } else {
-              newArrVlaue = [];
-            }
-            setSelectedRowIds(newArrVlaue);
-          }}
-        />
-      ),
-      dataIndex: 'line',
-      key: 'line',
-      width: 130,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background: selectTedRowIds?.includes(record?.id)
-                ? '#E8EBEE'
-                : ' ',
-            },
-          },
-          children: (
-            <div style={{display: 'flex', justifyContent: 'center'}}>
-              <Checkbox
-                checked={selectTedRowIds?.includes(record?.id)}
-                onChange={(e: any) => {
-                  const newArrVlaue: any = [...selectTedRowIds];
-                  if (
-                    e.target.checked &&
-                    !selectTedRowIds?.includes(record?.id)
-                  ) {
-                    newArrVlaue?.push(record?.id);
-                  } else if (selectTedRowIds?.includes(record?.id)) {
-                    // newArrVlaue?.pop(record?.id);
-                    const index = newArrVlaue?.indexOf(record?.id);
-                    newArrVlaue?.splice(index, 1);
-                  }
-                  setSelectedRowIds(newArrVlaue);
-                }}
-              />
-            </div>
-          ),
-        };
-      },
-    },
-
     {
       title: '#Line',
       dataIndex: 'line',
@@ -502,6 +450,54 @@ const GenerateQuote: React.FC = () => {
     setOpen(false);
   };
 
+  const menuItems = [
+    {
+      key: '1',
+      title: (
+        <Typography
+          name="Heading 3/Medium"
+          color={token?.colorPrimaryText}
+          cursor="pointer"
+          onClick={() => {
+            router?.push('/allQuote');
+          }}
+        >
+          All Quotes
+        </Typography>
+      ),
+    },
+    {
+      key: '2',
+      title: (
+        <Typography
+          name="Heading 3/Medium"
+          cursor="pointer"
+          color={token?.colorPrimaryText}
+          onClick={() => {
+            router?.push(`/generateQuote?id=${getQuoteLineItemId}`);
+          }}
+        >
+          Generate Quotes
+        </Typography>
+      ),
+    },
+  ];
+
+  const rowSelection = {
+    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
+      setSelectedRowKeys(selectedRowKeys);
+      console.log(
+        `selectedRowKeys: ${selectedRowKeys}`,
+        'selectedRows: ',
+        selectedRows,
+      );
+    },
+    getCheckboxProps: (record: DataType) => ({
+      disabled: record.name === 'Disabled User', // Column configuration not to be checked
+      name: record.name,
+    }),
+  };
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -528,9 +524,7 @@ const GenerateQuote: React.FC = () => {
 
         <Row justify="space-between" align="middle">
           <Col>
-            <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              Generated Quote
-            </Typography>
+            <Breadcrumb separator=">" items={menuItems} />
           </Col>
           <Col>
             <Space size={8} direction="horizontal">
@@ -634,6 +628,7 @@ const GenerateQuote: React.FC = () => {
                   columns={QuoteLineItemcolumns}
                   dataSource={quoteLineItemByQuoteID || []}
                   scroll
+                  rowSelection={rowSelection}
                 />
               </TabPane>
             ))}

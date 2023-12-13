@@ -52,7 +52,7 @@ const DrawerContent: FC<any> = ({setOpen}) => {
     console.log('object', values);
     setDrawerData((prev) => ({...prev, formData: values}));
     // dispatch(updateQuoteById());
-    dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
+    // dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
     setOpen(false);
   };
   return (
@@ -80,15 +80,10 @@ const DrawerContent: FC<any> = ({setOpen}) => {
           <Form
             layout="vertical"
             name="wrap"
-            // labelCol={{flex: '110px'}}
-            // labelAlign="left"
-            // labelWrap
             wrapperCol={{flex: 1}}
-            // colon={false}
             onFinish={onSubmit}
             form={form}
             initialValues={drawerData?.formData}
-            // style={{maxWidth: 600}}
           >
             <Form.Item label="File Name" name="file_name">
               <OsInput />

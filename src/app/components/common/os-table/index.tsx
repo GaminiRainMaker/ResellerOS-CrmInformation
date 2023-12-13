@@ -1,19 +1,19 @@
 /* eslint-disable consistent-return */
-import React, {FC, useState} from 'react';
 import {PaginationProps} from 'antd';
-import {CustomTable} from './styled-components';
+import {FC} from 'react';
 import useThemeToken from '../hooks/useThemeToken';
 import GlobalLoader from '../os-global-loader';
+import {CustomTable} from './styled-components';
 
 const OsTable: FC<any> = ({
   scrollx = 1200,
   paginationProps = true,
   tableInModal,
+  rowSelection,
   cursor = 'default',
   ...rest
 }) => {
   const [token] = useThemeToken();
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const itemRender: PaginationProps['itemRender'] = (
     page,
     type,
@@ -26,20 +26,6 @@ const OsTable: FC<any> = ({
     return originalElement;
   };
 
-  const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
-      setSelectedRowKeys(selectedRowKeys);
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        'selectedRows: ',
-        selectedRows,
-      );
-    },
-    getCheckboxProps: (record: DataType) => ({
-      disabled: record.name === 'Disabled User', // Column configuration not to be checked
-      name: record.name,
-    }),
-  };
   return (
     <CustomTable
       {...rest}
