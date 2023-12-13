@@ -62,6 +62,8 @@ const AllQuote: React.FC = () => {
   const [completedQuote, setCompletedQuote] = useState<React.Key[]>([]);
   const [draftedQuote, setDraftedQuote] = useState<React.Key[]>([]);
   const [recentQuote, setRecentQuote] = useState<React.Key[]>([]);
+  const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
+  const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
 
   useEffect(() => {
     dispatch(getAllQuotesWithCompletedAndDraft());
@@ -196,60 +198,141 @@ const AllQuote: React.FC = () => {
 
   const Quotecolumns = [
     {
-      title: 'Name',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-    },
-    {
-      title: 'File Name',
-      dataIndex: 'filename',
+      title: (
+        <Checkbox
+        // checked={selectTedRowIds?.length === quoteLineItemData?.length}
+        // onChange={(e: any) => {
+        //   let newArrVlaue: any = [];
+        //   if (e.target.checked) {
+        //     quoteLineItemData?.map((item: any) => {
+        //       newArrVlaue?.push(item?.id);
+        //     });
+        //   } else {
+        //     newArrVlaue = [];
+        //   }
+        //   setSelectedRowIds(newArrVlaue);
+        // }}
+        />
+      ),
+      dataIndex: 'Name',
       key: 'filename',
+      width: 130,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {
+              background: selectTedRowIds?.includes(record?.id)
+                ? '#E8EBEE'
+                : ' ',
+            },
+          },
+          children: (
+            <div style={{display: 'flex', justifyContent: 'center'}}>
+              <Checkbox
+                checked={selectTedRowIds?.includes(record?.id)}
+                onChange={(e: any) => {
+                  const newArrVlaue: any = showToggleTable
+                    ? []
+                    : [...selectTedRowIds];
+                  if (
+                    e.target.checked &&
+                    !selectTedRowIds?.includes(record?.id)
+                  ) {
+                    newArrVlaue?.push(record?.id);
+                  } else if (selectTedRowIds?.includes(record?.id)) {
+                    // newArrVlaue?.pop(record?.id);
+                    const index = newArrVlaue?.indexOf(record?.id);
+                    newArrVlaue?.splice(index, 1);
+                  }
+                  setSelectedRowIds(newArrVlaue);
+                }}
+              />
+            </div>
+          ),
+        };
+      },
     },
     {
-      title: 'Generated Date',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'line',
+      width: 130,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {
+              background: selectTedRowIds?.includes(record?.id)
+                ? '#E8EBEE'
+                : ' ',
+            },
+          },
+          children: (
+            <Typography name="Body 4/Regular">{record?.createdAt}</Typography>
+          ),
+        };
+      },
     },
     {
       title: 'Opportunity',
-      dataIndex: 'opportunity',
-      key: 'opportunity',
+      dataIndex: 'Opportunity',
+      key: 'Opportunity',
+      width: 187,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {
+              background: selectTedRowIds?.includes(record?.id)
+                ? '#E8EBEE'
+                : ' ',
+            },
+          },
+          children: (
+            <Typography name="Body 4/Regular">{record?.Opportunity}</Typography>
+          ),
+        };
+      },
     },
     {
-      title: 'Customer',
+      title: 'Customer Name',
       dataIndex: 'customer_name',
       key: 'customer_name',
+      width: 187,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {
+              background: selectTedRowIds?.includes(record?.id)
+                ? '#E8EBEE'
+                : ' ',
+            },
+          },
+          children: (
+            <Typography name="Body 4/Regular">
+              {record?.customer_name}
+            </Typography>
+          ),
+        };
+      },
     },
     {
       title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-    },
-    {
-      title: ' ',
-      dataIndex: 'actions',
-      key: 'actions',
-      width: 94,
-      render: (text: string, record: any) => (
-        <Space size={18}>
-          <EyeIcon
-            height={24}
-            width={24}
-            color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              router.push(`/generateQuote?id=${record?.id}`);
-            }}
-          />
-          <TrashIcon
-            height={24}
-            width={24}
-            color={token.colorError}
-            style={{cursor: 'pointer'}}
-            onClick={() => {}}
-          />
-        </Space>
-      ),
+      dataIndex: 'Status',
+      key: 'Status',
+      width: 187,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {
+              background: selectTedRowIds?.includes(record?.id)
+                ? '#E8EBEE'
+                : ' ',
+            },
+          },
+          children: (
+            <Typography name="Body 4/Regular">{record?.Status}</Typography>
+          ),
+        };
+      },
     },
   ];
 
@@ -377,21 +460,23 @@ const AllQuote: React.FC = () => {
       ),
       children: (
         <>
-          {recentQuote?.length > 0 ? (
+          {/* {recentQuote?.length > 0 ? (
             <OsTable
               columns={Quotecolumns}
               dataSource={recentQuote}
               scroll
               loading={loading}
             />
-          ) : (
-            <RecentSection
-              uploadFileData={uploadFileData}
-              setUploadFileData={setUploadFileData}
-              Quotecolumns={Quotecolumns}
-              addQuoteLineItem={addQuoteLineItem}
-            />
-          )}
+          ) : ( */}
+          <RecentSection
+            uploadFileData={uploadFileData}
+            setUploadFileData={setUploadFileData}
+            Quotecolumns={Quotecolumns}
+            addQuoteLineItem={addQuoteLineItem}
+            setShowToggleTable={setShowToggleTable}
+            showToggleTable={showToggleTable}
+          />
+          {/* )} */}
         </>
       ),
     },

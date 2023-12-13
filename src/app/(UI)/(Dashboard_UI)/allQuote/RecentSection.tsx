@@ -16,9 +16,10 @@ const RecentSection: FC<any> = ({
   uploadFileData,
   addQuoteLineItem,
   Quotecolumns,
+  setShowToggleTable,
+  showToggleTable,
 }) => {
   const dispatch = useAppDispatch();
-  const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
   const {data: quoteData, loading} = useAppSelector((state) => state.quote);
 
   const [token] = useThemeToken();
