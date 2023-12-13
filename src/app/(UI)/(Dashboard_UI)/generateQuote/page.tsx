@@ -583,15 +583,17 @@ const GenerateQuote: React.FC = () => {
         <DrawerContent setOpen={setOpen} />
       </OsDrawer>
 
-      <OsModal
-        loading={loading}
-        body={<BundleSection />}
-        width={700}
-        open={showBundleModal}
-        onCancel={() => {
-          setShowBundleModal((p) => !p);
-        }}
-      />
+      {selectTedRowIds?.length > 0 && (
+        <OsModal
+          loading={loading}
+          body={<BundleSection selectTedRowIds={selectTedRowIds} />}
+          width={700}
+          open={showBundleModal}
+          onCancel={() => {
+            setShowBundleModal((p) => !p);
+          }}
+        />
+      )}
     </>
   );
 };
