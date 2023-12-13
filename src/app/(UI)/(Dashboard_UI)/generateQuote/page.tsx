@@ -17,6 +17,7 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline';
 
+import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
@@ -27,7 +28,7 @@ import OsDrawer from '@/app/components/common/os-drawer';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Button, Form, MenuProps} from 'antd';
+import {Button, MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
 import {useRouter, useSearchParams} from 'next/navigation';
@@ -46,7 +47,6 @@ import DrawerContent from './DrawerContent';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
-  const [form] = Form.useForm();
   const [token] = useThemeToken();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -69,14 +69,14 @@ const GenerateQuote: React.FC = () => {
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
 
   useEffect(() => {
-    if (debouncedValue && debouncedValue?.length > 0) {
-      dispatch(UpdateQuoteLineItemQuantityById(debouncedValue));
-      setTimeout(() => {
-        dispatch(getQuoteLineItem());
-        setSelectedRowIds([]);
-        setIsEditable(false);
-      }, 500);
-    }
+    // if (debouncedValue && debouncedValue?.length > 0) {
+    dispatch(UpdateQuoteLineItemQuantityById(debouncedValue));
+    setTimeout(() => {
+      dispatch(getQuoteLineItem());
+      setSelectedRowIds([]);
+      setIsEditable(false);
+    }, 500);
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue]);
 
@@ -139,9 +139,9 @@ const GenerateQuote: React.FC = () => {
   }, [quoteLineItemData]);
 
   const commonUpdateCompleteAndDraftMethod = (queryItem: string) => {
-    if (getAllItemsQuoteId) {
+    if (getQuoteLineItemId) {
       const data = {
-        ids: getAllItemsQuoteId,
+        ids: getQuoteLineItemId,
         query: queryItem,
       };
       dispatch(updateQuoteByQuery(data));
@@ -251,59 +251,60 @@ const GenerateQuote: React.FC = () => {
   ];
 
   const QuoteLineItemcolumns = [
-    // {
-    //   title: (
-    //     <Checkbox
-    //       checked={selectTedRowIds?.length === quoteLineItemData?.length}
-    //       onChange={(e: any) => {
-    //         let newArrVlaue: any = [];
-    //         if (e.target.checked) {
-    //           quoteLineItemData?.map((item: any) => {
-    //             newArrVlaue?.push(item?.id);
-    //           });
-    //         } else {
-    //           newArrVlaue = [];
-    //         }
-    //         setSelectedRowIds(newArrVlaue);
-    //       }}
-    //     />
-    //   ),
-    //   dataIndex: 'line',
-    //   key: 'line',
-    //   width: 130,
-    //   render(text: any, record: any) {
-    //     return {
-    //       props: {
-    //         style: {
-    //           background: selectTedRowIds?.includes(record?.id)
-    //             ? '#E8EBEE'
-    //             : ' ',
-    //         },
-    //       },
-    //       children: (
-    //         <div style={{display: 'flex', justifyContent: 'center'}}>
-    //           <Checkbox
-    //             checked={selectTedRowIds?.includes(record?.id)}
-    //             onChange={(e: any) => {
-    //               const newArrVlaue: any = [...selectTedRowIds];
-    //               if (
-    //                 e.target.checked &&
-    //                 !selectTedRowIds?.includes(record?.id)
-    //               ) {
-    //                 newArrVlaue?.push(record?.id);
-    //               } else if (selectTedRowIds?.includes(record?.id)) {
-    //                 // newArrVlaue?.pop(record?.id);
-    //                 const index = newArrVlaue?.indexOf(record?.id);
-    //                 newArrVlaue?.splice(index, 1);
-    //               }
-    //               setSelectedRowIds(newArrVlaue);
-    //             }}
-    //           />
-    //         </div>
-    //       ),
-    //     };
-    //   },
-    // },
+    {
+      title: (
+        <Checkbox
+          checked={selectTedRowIds?.length === quoteLineItemData?.length}
+          onChange={(e: any) => {
+            let newArrVlaue: any = [];
+            if (e.target.checked) {
+              quoteLineItemData?.map((item: any) => {
+                newArrVlaue?.push(item?.id);
+              });
+            } else {
+              newArrVlaue = [];
+            }
+            setSelectedRowIds(newArrVlaue);
+          }}
+        />
+      ),
+      dataIndex: 'line',
+      key: 'line',
+      width: 130,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {
+              background: selectTedRowIds?.includes(record?.id)
+                ? '#E8EBEE'
+                : ' ',
+            },
+          },
+          children: (
+            <div style={{display: 'flex', justifyContent: 'center'}}>
+              <Checkbox
+                checked={selectTedRowIds?.includes(record?.id)}
+                onChange={(e: any) => {
+                  const newArrVlaue: any = [...selectTedRowIds];
+                  if (
+                    e.target.checked &&
+                    !selectTedRowIds?.includes(record?.id)
+                  ) {
+                    newArrVlaue?.push(record?.id);
+                  } else if (selectTedRowIds?.includes(record?.id)) {
+                    // newArrVlaue?.pop(record?.id);
+                    const index = newArrVlaue?.indexOf(record?.id);
+                    newArrVlaue?.splice(index, 1);
+                  }
+                  setSelectedRowIds(newArrVlaue);
+                }}
+              />
+            </div>
+          ),
+        };
+      },
+    },
+
     {
       title: '#Line',
       dataIndex: 'line',
@@ -347,9 +348,9 @@ const GenerateQuote: React.FC = () => {
       },
     },
     {
-      title: 'Quantity',
-      dataIndex: 'quantity',
-      key: 'quantity',
+      title: 'List Price',
+      dataIndex: 'list_price',
+      key: 'list_price',
       width: 187,
       render(text: any, record: any) {
         return {
@@ -363,10 +364,10 @@ const GenerateQuote: React.FC = () => {
           children: (
             <OsInput
               disabled={!(selectTedRowIds?.includes(record?.id) && isEditable)}
-              value={record?.quantity}
+              value={record?.list_price}
               style={{width: '100px'}}
               onChange={(e: any) => {
-                setInputData({id: record?.id, quantity: e.target.value});
+                setInputData({id: record?.id, list_price: e.target.value});
               }}
             />
           ),

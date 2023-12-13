@@ -339,7 +339,7 @@ const AllQuote: React.FC = () => {
     },
   ];
 
-  const markAsComplete = () => {
+  const markAsComplete = async () => {
     if (activeQuotes && activeQuotes?.length > 0) {
       const IdsArr: any = [];
       activeQuotes?.map((item: any) => {
@@ -349,7 +349,9 @@ const AllQuote: React.FC = () => {
         ids: IdsArr,
         query: 'completed',
       };
-      dispatch(updateQuoteByQuery(data));
+      await dispatch(updateQuoteByQuery(data));
+      dispatch(getAllQuotesWithCompletedAndDraft());
+      setActiveTab('3');
     }
   };
 
