@@ -279,7 +279,9 @@ const GenerateQuote: React.FC = () => {
           },
           children: (
             <OsInput
-              disabled={!selectTedRowIds?.includes(record?.id) && isEditable}
+              disabled={
+                isEditable ? !selectTedRowIds?.includes(record?.id) : true
+              }
               value={record?.list_price}
               style={{width: '100px'}}
               onChange={(e: any) => {
