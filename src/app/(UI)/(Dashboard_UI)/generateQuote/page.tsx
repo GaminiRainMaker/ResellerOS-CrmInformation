@@ -71,12 +71,16 @@ const GenerateQuote: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [showTableDataa, setShowTableDataa] = useState<boolean>(true);
 
   useEffect(() => {
     // if (debouncedValue && debouncedValue?.length > 0) {
+    setShowTableDataa(false);
     dispatch(UpdateQuoteLineItemQuantityById(debouncedValue));
+
     setTimeout(() => {
       dispatch(getQuoteLineItem());
+      setShowTableDataa(true);
       setSelectedRowIds([]);
       setIsEditable(false);
     }, 500);
@@ -282,7 +286,7 @@ const GenerateQuote: React.FC = () => {
               disabled={
                 isEditable ? !selectTedRowIds?.includes(record?.id) : true
               }
-              value={record?.list_price}
+              defaultValue={record?.list_price}
               style={{width: '100px'}}
               onChange={(e: any) => {
                 setInputData({id: record?.id, list_price: e.target.value});
@@ -555,7 +559,7 @@ const GenerateQuote: React.FC = () => {
                   loading={loading}
                   // rowSelection={rowSelection}
                   columns={QuoteLineItemcolumns}
-                  dataSource={quoteLineItemByQuoteID || []}
+                  dataSource={(showTableDataa && quoteLineItemData) || []}
                   scroll
                   rowSelection={rowSelection}
                 />
