@@ -33,21 +33,25 @@ const OsModal: FC<OSModalPropsInterface> = ({
       closeIcon={<XCircleIcon width={30} color={token?.colorIcon} />}
       footer={
         <Space size={12}>
-          <OsButton
-            text={secondaryButtonText}
-            buttontype="SECONDARY"
-            clickHandler={() => {
-              onOk();
-            }}
-          />
-          <OsButton
-            loading={loading}
-            text={primaryButtonText}
-            buttontype="PRIMARY"
-            clickHandler={() => {
-              onOk();
-            }}
-          />
+          {secondaryButtonText && (
+            <OsButton
+              text={secondaryButtonText}
+              buttontype="SECONDARY"
+              clickHandler={() => {
+                onOk();
+              }}
+            />
+          )}
+          {primaryButtonText && (
+            <OsButton
+              loading={loading}
+              text={primaryButtonText}
+              buttontype="PRIMARY"
+              clickHandler={() => {
+                onOk();
+              }}
+            />
+          )}
         </Space>
       }
     >
