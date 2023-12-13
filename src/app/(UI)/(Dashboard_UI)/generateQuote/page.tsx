@@ -76,7 +76,6 @@ const GenerateQuote: React.FC = () => {
       dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
   }, [getQuoteLineItemId]);
 
-
   useEffect(() => {
     let newObj: any = {};
     // eslint-disable-next-line @typescript-eslint/naming-convention

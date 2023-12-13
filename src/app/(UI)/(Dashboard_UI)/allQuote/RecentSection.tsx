@@ -24,7 +24,6 @@ const RecentSection: FC<any> = ({
   const [token] = useThemeToken();
 
   const onToggleChange = (checked: boolean) => {
-    if (checked) dispatch(getAllQuotesWithCompletedAndDraft());
     setShowToggleTable(checked);
   };
   return (
