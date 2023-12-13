@@ -1,5 +1,5 @@
 /* eslint-disable consistent-return */
-import React, {FC} from 'react';
+import React, {FC, useState} from 'react';
 import {PaginationProps} from 'antd';
 import {CustomTable} from './styled-components';
 import useThemeToken from '../hooks/useThemeToken';
@@ -13,7 +13,7 @@ const OsTable: FC<any> = ({
   ...rest
 }) => {
   const [token] = useThemeToken();
-
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const itemRender: PaginationProps['itemRender'] = (
     page,
     type,
@@ -26,12 +26,32 @@ const OsTable: FC<any> = ({
     return originalElement;
   };
 
+  const rowSelection = {
+    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
+      setSelectedRowKeys(selectedRowKeys);
+      console.log(
+        `selectedRowKeys: ${selectedRowKeys}`,
+        'selectedRows: ',
+        selectedRows,
+      );
+    },
+    getCheckboxProps: (record: DataType) => ({
+      disabled: record.name === 'Disabled User', // Column configuration not to be checked
+      name: record.name,
+    }),
+  };
   return (
     <CustomTable
       {...rest}
       cursor={cursor}
+      selectedRowsKeys={[]}
       tableInModal={tableInModal}
       token={token}
+      rowKey={(record: any) => record.id}
+      rowSelection={{
+        type: 'checkbox',
+        ...rowSelection,
+      }}
       bordered
       loading={{
         indicator: <GlobalLoader loading={rest.loading} />,
