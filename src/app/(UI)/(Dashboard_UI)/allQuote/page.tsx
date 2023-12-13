@@ -377,21 +377,21 @@ const AllQuote: React.FC = () => {
       ),
       children: (
         <>
-          {/* {recentQuote?.length > 0 ? (
+          {recentQuote?.length > 0 ? (
             <OsTable
               columns={Quotecolumns}
               dataSource={recentQuote}
               scroll
               loading={loading}
             />
-          ) : ( */}
-          <RecentSection
-            uploadFileData={uploadFileData}
-            setUploadFileData={setUploadFileData}
-            Quotecolumns={Quotecolumns}
-            addQuoteLineItem={addQuoteLineItem}
-          />
-          {/* )} */}
+          ) : (
+            <RecentSection
+              uploadFileData={uploadFileData}
+              setUploadFileData={setUploadFileData}
+              Quotecolumns={Quotecolumns}
+              addQuoteLineItem={addQuoteLineItem}
+            />
+          )}
         </>
       ),
     },
