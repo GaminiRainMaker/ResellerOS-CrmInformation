@@ -6,10 +6,11 @@ import quote from './slices/quote';
 import quoteLineItem from './slices/quotelineitem';
 import user from './slices/user';
 import product from './slices/product';
+import bundle from './slices/bundle';
 
 // Configure redux store
 const store = configureStore({
-  reducer: {quote, quoteLineItem, user, product},
+  reducer: {quote, quoteLineItem, user, product, bundle},
   middleware: [thunk, logger],
   devTools: true,
 });
