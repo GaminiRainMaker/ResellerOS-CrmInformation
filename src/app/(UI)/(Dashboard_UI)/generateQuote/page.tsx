@@ -586,7 +586,12 @@ const GenerateQuote: React.FC = () => {
       {selectTedRowIds?.length > 0 && (
         <OsModal
           loading={loading}
-          body={<BundleSection selectTedRowIds={selectTedRowIds} />}
+          body={
+            <BundleSection
+              selectTedRowIds={selectTedRowIds}
+              setShowBundleModal={setShowBundleModal}
+            />
+          }
           width={700}
           open={showBundleModal}
           onCancel={() => {

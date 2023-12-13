@@ -11,7 +11,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {getAllBundle, insertBundle} from '../../../../../redux/actions/bundle';
 import {updateQuoteLineItemForBundleId} from '../../../../../redux/actions/quotelineitem';
 
-const BundleSection: FC<any> = ({selectTedRowIds}) => {
+const BundleSection: FC<any> = ({selectTedRowIds, setShowBundleModal}) => {
   const dispatch = useAppDispatch();
   const {data: bundleData} = useAppSelector((state) => state.bundle);
   const [radioValue, setRadioValue] = useState(1);
@@ -43,6 +43,7 @@ const BundleSection: FC<any> = ({selectTedRowIds}) => {
     }
     dispatch(getAllBundle(''));
     setRadioValue(1);
+    setShowBundleModal(false);
   };
 
   console.log('bundleDatabundleData', bundleData);
