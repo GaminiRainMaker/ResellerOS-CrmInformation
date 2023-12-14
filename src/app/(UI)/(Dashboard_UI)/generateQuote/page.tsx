@@ -475,48 +475,6 @@ const GenerateQuote: React.FC = () => {
   }, [quoteLineItemByQuoteID]);
   console.log('quoteLineItemByQuoteID', quoteLineItemByQuoteID);
 
-  console.log('quoteLineItemData', quoteLineItemData);
-  useEffect(() => {
-    let isExist: any;
-    const bundleData: any = [];
-    if (quoteLineItemData && quoteLineItemData?.length > 0) {
-      isExist = quoteLineItemData?.find((item) => item?.Bundle);
-    }
-    if (isExist) {
-      quoteLineItemData?.map((lineItem) => {
-        let bundleObj: any;
-        console.log(
-          '345435345',
-          bundleObj?.bundleId,
-          lineItem?.Bundle?.id,
-          lineItem,
-        );
-        if (bundleObj?.bundleId == lineItem?.Bundle?.id) {
-          console.log('4545435', bundleObj);
-          bundleObj = {
-            name: bundleObj.name,
-            description: bundleObj.description,
-            quantity: bundleObj.quantity,
-            quoteLieItem: [...bundleObj.quoteLieItem, ...lineItem],
-            bundleId: lineItem?.Bundle.id,
-            id: lineItem.id,
-          };
-        } else {
-          bundleObj = {
-            name: lineItem?.Bundle.name,
-            description: lineItem?.Bundle.description,
-            quantity: lineItem?.Bundle.quantity,
-            quoteLieItem: [lineItem],
-            bundleId: lineItem?.Bundle?.id,
-            id: lineItem.id,
-          };
-          console.log('345435435554', bundleObj);
-          bundleData?.push(bundleObj);
-        }
-      });
-    }
-  }, [quoteLineItemData]);
-
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
