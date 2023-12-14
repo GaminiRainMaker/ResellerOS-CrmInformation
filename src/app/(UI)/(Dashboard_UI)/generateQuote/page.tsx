@@ -20,35 +20,35 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline';
 
-import {Dropdown} from '@/app/components/common/antd/DropDown';
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Dropdown } from '@/app/components/common/antd/DropDown';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
+import OsCollapse from '@/app/components/common/os-collapse';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Breadcrumb, Button, MenuProps, TabsProps} from 'antd';
+import { Breadcrumb, Button, MenuProps } from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import OsCollapse from '@/app/components/common/os-collapse';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
-import {updateProductFamily} from '../../../../../redux/actions/product';
-import {updateQuoteByQuery} from '../../../../../redux/actions/quote';
+import { getAllBundle } from '../../../../../redux/actions/bundle';
+import { updateProductFamily } from '../../../../../redux/actions/product';
+import { updateQuoteByQuery } from '../../../../../redux/actions/quote';
 import {
   DeleteQuoteLineItemQuantityById,
   getQuoteLineItemByQuoteId,
 } from '../../../../../redux/actions/quotelineitem';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
 import BundleSection from './bundleSection';
-import {getAllBundle} from '../../../../../redux/actions/bundle';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -75,41 +75,6 @@ const GenerateQuote: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState<String>();
   const {data: bundleData} = useAppSelector((state) => state.bundle);
   const [unassigned, setUnassigned] = useState<any>();
-  const [bundleArr, setBundleArr] = useState<any>();
-  const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] = useState<
-    Array<any>
-  >(quoteLineItemByQuoteID ?? []);
-
-  useEffect(() => {
-    const bundleFilterData: any = [];
-    const Unassigned: any = [];
-    bundleData?.map((item: any) => {
-      const newInnerBundle: any = [];
-      const newInnerUnassigned: any = [];
-      item?.Quote?.QuoteLineItems?.filter((itemQu) => {
-        if (itemQu?.bundle_id == item?.id) {
-          newInnerBundle?.push(itemQu);
-        } else if (!itemQu?.bundle_id) {
-          newInnerUnassigned?.push(itemQu);
-        }
-      });
-      const obj = {
-        name: item?.name,
-        description: item?.description,
-        quantity: item?.quantity,
-        quoteLineItem: newInnerBundle,
-        id: item?.id,
-      };
-      bundleFilterData?.push(obj);
-      const obj2 = {
-        name: 'Unassigned',
-        quoteLineItem: newInnerUnassigned,
-      };
-      Unassigned?.push(obj2);
-    });
-    setUnassigned(Unassigned);
-    setBundleArr(bundleFilterData);
-  }, [bundleData]);
 
   // useEffect(() => {
   //   // if (debouncedValue && debouncedValue?.length > 0) {
@@ -617,7 +582,7 @@ const GenerateQuote: React.FC = () => {
         <Row
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
-            <OsTabs
+          <OsTabs
             onChange={(e) => {
               setActiveTab(e);
             }}
