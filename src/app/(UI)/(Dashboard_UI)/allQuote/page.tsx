@@ -31,6 +31,7 @@ import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {insertProduct} from '../../../../../redux/actions/product';
 import {
+  deleteQuoteById,
   getAllQuotesWithCompletedAndDraft,
   insertQuote,
   updateQuoteByQuery,
@@ -264,7 +265,13 @@ const AllQuote: React.FC = () => {
             },
           },
           children: (
-            <Typography name="Body 4/Regular">{record?.Status}</Typography>
+            <Typography name="Body 4/Regular">
+              {record?.is_completed
+                ? 'Completed'
+                : record?.is_drafted
+                ? 'Drafted'
+                : 'Recents'}
+            </Typography>
           ),
         };
       },
@@ -290,7 +297,7 @@ const AllQuote: React.FC = () => {
             width={24}
             color={token.colorError}
             style={{cursor: 'pointer'}}
-            onClick={() => {}}
+            onClick={() => deleteQuote(record?.id)}
           />
         </Space>
       ),
@@ -312,7 +319,11 @@ const AllQuote: React.FC = () => {
       setActiveTab('3');
     }
   };
-
+  const deleteQuote = async (id: number) => {
+    if (id) {
+      await dispatch(deleteQuoteById(id));
+    }
+  };
   const tabItems: TabsProps['items'] = [
     {
       label: 'All',

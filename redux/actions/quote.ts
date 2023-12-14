@@ -61,7 +61,17 @@ export const updateQuoteByQuery = createAsyncThunk(
     }
   },
 );
-
+export const deleteQuoteById = createAsyncThunk(
+  'quote/delete/id',
+  async (id: any, thunkApi) => {
+    try {
+      const res = await await QUOTEAPI.deleteById(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
 export const updateQuoteWithNewlineItemAddByID = createAsyncThunk(
   'quote/updateQuoteWithNewlineItemAdd',
   async (id: number, thunkApi) => {

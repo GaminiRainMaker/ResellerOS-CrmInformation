@@ -45,6 +45,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
 import BundleSection from './bundleSection';
+import {updateProductFamily} from '../../../../../redux/actions/product';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -58,11 +59,9 @@ const GenerateQuote: React.FC = () => {
   const debouncedValue = useDebounceHook(inputData, 500);
 
   const [isEditable, setIsEditable] = useState<boolean>(false);
-  const {
-    data: quoteLineItemData,
-    quoteLineItemByQuoteID,
-    loading,
-  } = useAppSelector((state) => state.quoteLineItem);
+  const {quoteLineItemByQuoteID, loading} = useAppSelector(
+    (state) => state.quoteLineItem,
+  );
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [amountData, setAmountData] = useState<any>();
   const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
@@ -98,9 +97,9 @@ const GenerateQuote: React.FC = () => {
     let quantity: number = 0;
     let listPrice: number = 0;
 
-    if (quoteLineItemData && quoteLineItemData?.length > 0) {
+    if (quoteLineItemByQuoteID && quoteLineItemByQuoteID?.length > 0) {
       // eslint-disable-next-line no-unsafe-optional-chaining
-      quoteLineItemData?.map((item: any, index: any) => {
+      quoteLineItemByQuoteID?.map((item: any, index: any) => {
         if (item?.adjusted_price) {
           adjustPrice += parseFloat(
             item?.adjusted_price
@@ -129,19 +128,19 @@ const GenerateQuote: React.FC = () => {
       LineAmount: lineAmount,
     };
     setAmountData(newObj);
-  }, [quoteLineItemData]);
+  }, [quoteLineItemByQuoteID]);
 
   useEffect(() => {
     const allIdsArray: [] = [];
-    if (quoteLineItemData && quoteLineItemData?.length > 0) {
-      quoteLineItemData?.map((item: string) => {
+    if (quoteLineItemByQuoteID && quoteLineItemByQuoteID?.length > 0) {
+      quoteLineItemByQuoteID?.map((item: string) => {
         if (!allIdsArray?.includes(item?.Quote?.id)) {
           allIdsArray?.push(parseInt(item?.Quote?.id));
         }
       });
     }
     setGetAllItemsQuoteId(allIdsArray);
-  }, [quoteLineItemData]);
+  }, [quoteLineItemByQuoteID]);
 
   const commonUpdateCompleteAndDraftMethod = (queryItem: string) => {
     if (getQuoteLineItemId) {
@@ -167,7 +166,7 @@ const GenerateQuote: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: quoteLineItemData?.length,
+      primary: quoteLineItemByQuoteID?.length,
       secondry: 'Line Items',
       icon: <QueueListIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
@@ -246,10 +245,16 @@ const GenerateQuote: React.FC = () => {
   ];
 
   const selectData = [
-    {value: 'item 1', label: 'Item 1'},
-    {value: 'item 2', label: 'Item 2'},
-    {value: 'item 3', label: 'Item 3'},
-    {value: 'item 4', label: 'Item 4'},
+    {value: 'Product Family', label: 'Product Family'},
+    {value: 'Pricing Method', label: 'Pricing Method'},
+    {value: 'Vendor/Disti', label: 'Vendor/Disti'},
+    {value: 'OEM', label: 'OEM'},
+  ];
+  const selectDataForProduct = [
+    {value: 'Professional Services', label: 'Professional Services'},
+    {value: 'Subscriptions', label: 'Subscriptions'},
+    {value: 'Products', label: 'Products'},
+    {value: 'Maintenance', label: 'Maintenance'},
   ];
 
   const QuoteLineItemcolumns = [
@@ -328,9 +333,14 @@ const GenerateQuote: React.FC = () => {
           },
           children: (
             <CommonSelect
-              style={{width: '319px'}}
-              placeholder="Product"
-              options={selectData}
+              style={{width: '200px'}}
+              placeholder="Select"
+              value={record?.Product?.product_family}
+              options={selectDataForProduct}
+              onChange={(e) => {
+                const data = {id: record?.Product?.id, product_family: e};
+                dispatch(updateProductFamily(data));
+              }}
             />
           ),
         };
@@ -423,6 +433,47 @@ const GenerateQuote: React.FC = () => {
       name: record.name,
     }),
   };
+  console.log('quoteLineItemData', quoteLineItemByQuoteID);
+  useEffect(() => {
+    let isExist: any;
+    const bundleData: any = [];
+    const UnAssigned: any = [];
+    if (quoteLineItemByQuoteID && quoteLineItemByQuoteID?.length > 0) {
+      isExist = quoteLineItemByQuoteID?.find((item) => item?.Bundle);
+    }
+
+    if (isExist) {
+      quoteLineItemByQuoteID?.map((lineItem) => {
+        let bundleObj: any;
+        // console.log('345435345', bundleObj, lineItem?.Bundle?.id, lineItem);
+        if (lineItem?.Bundle) {
+          if (bundleObj) {
+            bundleObj = {
+              name: bundleObj.name,
+              description: bundleObj.description,
+              quantity: bundleObj.quantity,
+              quoteLieItem: [...bundleObj.quoteLieItem, ...lineItem],
+              bundleId: lineItem?.Bundle.id,
+              id: lineItem.id,
+            };
+          } else {
+            bundleObj = {
+              name: lineItem?.Bundle?.name,
+              description: lineItem?.Bundle?.description,
+              quantity: lineItem?.Bundle?.quantity,
+              quoteLieItem: [lineItem],
+              bundleId: lineItem?.Bundle?.id,
+              id: lineItem?.id,
+            };
+            bundleData?.push(bundleObj);
+          }
+        } else {
+          UnAssigned?.push(lineItem);
+        }
+      });
+    }
+  }, [quoteLineItemByQuoteID]);
+  console.log('quoteLineItemByQuoteID', quoteLineItemByQuoteID);
 
   console.log('quoteLineItemData', quoteLineItemData);
   useEffect(() => {
@@ -594,7 +645,7 @@ const GenerateQuote: React.FC = () => {
                   loading={loading}
                   // rowSelection={rowSelection}
                   columns={QuoteLineItemcolumns}
-                  dataSource={(showTableDataa && quoteLineItemData) || []}
+                  dataSource={(showTableDataa && quoteLineItemByQuoteID) || []}
                   scroll
                   rowSelection={rowSelection}
                 />

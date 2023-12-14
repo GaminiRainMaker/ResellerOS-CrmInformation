@@ -5,6 +5,7 @@ import {
   insertProduct,
   getAllProduct,
   getProductByPartNo,
+  updateProductFamily,
 } from '../actions/product';
 
 type ProductState = {
@@ -67,6 +68,24 @@ const productSlice = createSlice({
       )
       .addCase(
         getProductByPartNo.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(updateProductFamily.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateProductFamily.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        updateProductFamily.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
