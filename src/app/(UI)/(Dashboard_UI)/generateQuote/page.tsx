@@ -29,7 +29,7 @@ import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Breadcrumb, Button, MenuProps} from 'antd';
+import {Breadcrumb, Button, CollapseProps, MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
 import {useRouter, useSearchParams} from 'next/navigation';
@@ -436,6 +436,72 @@ const GenerateQuote: React.FC = () => {
     }),
   };
 
+  const collapseItems: CollapseProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <Space size={300}>
+          <Typography name="Body 4/Medium">hlo</Typography>
+          <Typography name="Body 4/Medium">Lines:</Typography>
+          <Typography name="Body 4/Medium">MSRP:</Typography>
+          <Typography name="Body 4/Medium">Cost:</Typography>
+        </Space>
+      ),
+      children: (
+        <OsTable
+          loading={loading}
+          // rowSelection={rowSelection}
+          columns={QuoteLineItemcolumns}
+          dataSource={(showTableDataa && quoteLineItemByQuoteID) || []}
+          scroll
+          rowSelection={rowSelection}
+        />
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <Space size={300}>
+          <Typography name="Body 4/Medium">hlo</Typography>
+          <Typography name="Body 4/Medium">Lines:</Typography>
+          <Typography name="Body 4/Medium">MSRP:</Typography>
+          <Typography name="Body 4/Medium">Cost:</Typography>
+        </Space>
+      ),
+      children: (
+        <OsTable
+          loading={loading}
+          // rowSelection={rowSelection}
+          columns={QuoteLineItemcolumns}
+          dataSource={(showTableDataa && quoteLineItemByQuoteID) || []}
+          scroll
+          rowSelection={rowSelection}
+        />
+      ),
+    },
+    {
+      key: '3',
+      label: (
+        <Space size={300}>
+          <Typography name="Body 4/Medium">hlo</Typography>
+          <Typography name="Body 4/Medium">Lines:</Typography>
+          <Typography name="Body 4/Medium">MSRP:</Typography>
+          <Typography name="Body 4/Medium">Cost:</Typography>
+        </Space>
+      ),
+      children: (
+        <OsTable
+          loading={loading}
+          // rowSelection={rowSelection}
+          columns={QuoteLineItemcolumns}
+          dataSource={(showTableDataa && quoteLineItemByQuoteID) || []}
+          scroll
+          rowSelection={rowSelection}
+        />
+      ),
+    },
+  ];
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -563,14 +629,7 @@ const GenerateQuote: React.FC = () => {
                 }
                 key={item?.key}
               >
-                <OsTable
-                  loading={loading}
-                  // rowSelection={rowSelection}
-                  columns={QuoteLineItemcolumns}
-                  dataSource={(showTableDataa && quoteLineItemByQuoteID) || []}
-                  scroll
-                  rowSelection={rowSelection}
-                />
+                <OsCollapse items={collapseItems} />
               </TabPane>
             ))}
           </OsTabs>
