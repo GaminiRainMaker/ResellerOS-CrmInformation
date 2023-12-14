@@ -37,3 +37,14 @@ export const getProductByPartNo = createAsyncThunk(
     }
   },
 );
+export const updateProductFamily = createAsyncThunk(
+  'product',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PRODUCT_API.patch(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

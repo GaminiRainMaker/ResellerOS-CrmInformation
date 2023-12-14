@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {AxiosResponse} from 'axios';
 import {API} from './CONSTANTS';
-import {get, post} from './index';
+import {get, post, patch} from './index';
 
 export const PRODUCT_API = {
   get: () => get(API.PRODUCT.INDEX) as Promise<AxiosResponse<[]>>,
@@ -14,4 +14,6 @@ export const PRODUCT_API = {
     get(`${API.PRODUCT.GetProductByPartNo}/${part_no}`) as Promise<
       AxiosResponse<any>
     >,
+  patch: (data: any) =>
+    patch(API.PRODUCT.INDEX, data) as Promise<AxiosResponse<any>>,
 };

@@ -18,9 +18,9 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline';
 
-import { Dropdown } from '@/app/components/common/antd/DropDown';
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Dropdown} from '@/app/components/common/antd/DropDown';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
@@ -29,22 +29,23 @@ import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import { Breadcrumb, Button, MenuProps } from 'antd';
+import {Breadcrumb, Button, MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {useEffect, useState} from 'react';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
-import { updateQuoteByQuery } from '../../../../../redux/actions/quote';
+import {updateQuoteByQuery} from '../../../../../redux/actions/quote';
 import {
   DeleteQuoteLineItemQuantityById,
   UpdateQuoteLineItemQuantityById,
   getQuoteLineItemByQuoteId,
 } from '../../../../../redux/actions/quotelineitem';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
 import BundleSection from './bundleSection';
+import {updateProductFamily} from '../../../../../redux/actions/product';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -244,10 +245,16 @@ const GenerateQuote: React.FC = () => {
   ];
 
   const selectData = [
-    {value: 'item 1', label: 'Item 1'},
-    {value: 'item 2', label: 'Item 2'},
-    {value: 'item 3', label: 'Item 3'},
-    {value: 'item 4', label: 'Item 4'},
+    {value: 'Product Family', label: 'Product Family'},
+    {value: 'Pricing Method', label: 'Pricing Method'},
+    {value: 'Vendor/Disti', label: 'Vendor/Disti'},
+    {value: 'OEM', label: 'OEM'},
+  ];
+  const selectDataForProduct = [
+    {value: 'Professional Services', label: 'Professional Services'},
+    {value: 'Subscriptions', label: 'Subscriptions'},
+    {value: 'Products', label: 'Products'},
+    {value: 'Maintenance', label: 'Maintenance'},
   ];
 
   const QuoteLineItemcolumns = [
@@ -326,9 +333,14 @@ const GenerateQuote: React.FC = () => {
           },
           children: (
             <CommonSelect
-              style={{width: '319px'}}
-              placeholder="Product"
-              options={selectData}
+              style={{width: '200px'}}
+              placeholder="Select"
+              value={record?.Product?.product_family}
+              options={selectDataForProduct}
+              onChange={(e) => {
+                const data = {id: record?.Product?.id, product_family: e};
+                dispatch(updateProductFamily(data));
+              }}
             />
           ),
         };
@@ -421,6 +433,47 @@ const GenerateQuote: React.FC = () => {
       name: record.name,
     }),
   };
+  console.log('quoteLineItemData', quoteLineItemByQuoteID);
+  useEffect(() => {
+    let isExist: any;
+    const bundleData: any = [];
+    const UnAssigned: any = [];
+    if (quoteLineItemByQuoteID && quoteLineItemByQuoteID?.length > 0) {
+      isExist = quoteLineItemByQuoteID?.find((item) => item?.Bundle);
+    }
+
+    if (isExist) {
+      quoteLineItemByQuoteID?.map((lineItem) => {
+        let bundleObj: any;
+        // console.log('345435345', bundleObj, lineItem?.Bundle?.id, lineItem);
+        if (lineItem?.Bundle) {
+          if (bundleObj) {
+            bundleObj = {
+              name: bundleObj.name,
+              description: bundleObj.description,
+              quantity: bundleObj.quantity,
+              quoteLieItem: [...bundleObj.quoteLieItem, ...lineItem],
+              bundleId: lineItem?.Bundle.id,
+              id: lineItem.id,
+            };
+          } else {
+            bundleObj = {
+              name: lineItem?.Bundle?.name,
+              description: lineItem?.Bundle?.description,
+              quantity: lineItem?.Bundle?.quantity,
+              quoteLieItem: [lineItem],
+              bundleId: lineItem?.Bundle?.id,
+              id: lineItem?.id,
+            };
+            bundleData?.push(bundleObj);
+          }
+        } else {
+          UnAssigned?.push(lineItem);
+        }
+      });
+    }
+  }, [quoteLineItemByQuoteID]);
+  console.log('quoteLineItemByQuoteID', quoteLineItemByQuoteID);
 
   return (
     <>
