@@ -95,3 +95,15 @@ export const updateQuoteById = createAsyncThunk(
     }
   },
 );
+
+export const getQuotesByDateFilter = createAsyncThunk(
+  'quote/getQuotesByDateFilter',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await QUOTEAPI.getQuotesByDateFilter(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

@@ -20,6 +20,8 @@ export const QUOTEAPI = {
     patch(API.QUOTE.INDEX, data) as Promise<AxiosResponse<any>>,
   deleteById: (id: number) =>
     get(`${API.QUOTE.DeleteById}/${id}`) as Promise<AxiosResponse<any>>,
+  getQuotesByDateFilter: (data: any) =>
+    post(API.QUOTE.GetQuotesByDateFilter, data) as Promise<AxiosResponse<any>>,
 
   // put: (id: number, data: any) => put(API.QUOTE.INDEX + "/" + id, data),
   // delete: (id: number) => del(API.QUOTE.INDEX + "/" + id),

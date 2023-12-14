@@ -11,8 +11,10 @@ import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
 import {
   ArrowDownTrayIcon,
+  ChevronRightIcon,
   CurrencyDollarIcon,
   EllipsisVerticalIcon,
+  PlusIcon,
   QueueListIcon,
   ReceiptPercentIcon,
   TagIcon,
@@ -29,23 +31,21 @@ import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Breadcrumb, Button, MenuProps} from 'antd';
-import TabPane from 'antd/es/tabs/TabPane';
+import {Breadcrumb, Button, MenuProps, TabsProps} from 'antd';
 import Image from 'next/image';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
+import {updateProductFamily} from '../../../../../redux/actions/product';
 import {updateQuoteByQuery} from '../../../../../redux/actions/quote';
 import {
   DeleteQuoteLineItemQuantityById,
-  UpdateQuoteLineItemQuantityById,
   getQuoteLineItemByQuoteId,
 } from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
 import BundleSection from './bundleSection';
-import {updateProductFamily} from '../../../../../redux/actions/product';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -68,22 +68,23 @@ const GenerateQuote: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [showTableDataa, setShowTableDataa] = useState<boolean>(true);
+  const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] = useState<
+    Array<any>
+  >(quoteLineItemByQuoteID ?? []);
 
-  useEffect(() => {
-    // if (debouncedValue && debouncedValue?.length > 0) {
-    setShowTableDataa(false);
-    dispatch(UpdateQuoteLineItemQuantityById(debouncedValue));
+  // useEffect(() => {
+  //   // if (debouncedValue && debouncedValue?.length > 0) {
+  //   dispatch(UpdateQuoteLineItemQuantityById(debouncedValue));
 
-    setTimeout(() => {
-      setShowTableDataa(true);
-      dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
-      setSelectedRowIds([]);
-      setIsEditable(false);
-    }, 500);
-    // }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedValue]);
+  //   setTimeout(() => {
+  //     dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
+  //     setSelectedRowIds([]);
+  //     setIsEditable(false);
+  //   }, 500);
+  //   // }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [debouncedValue]);
+
   useEffect(() => {
     if (getQuoteLineItemId)
       dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
@@ -142,8 +143,49 @@ const GenerateQuote: React.FC = () => {
     setGetAllItemsQuoteId(allIdsArray);
   }, [quoteLineItemByQuoteID]);
 
+  useEffect(() => {
+    let isExist: any;
+    const bundleData: any = [];
+    const UnAssigned: any = [];
+    if (quoteLineItemByQuoteID && quoteLineItemByQuoteID?.length > 0) {
+      isExist = quoteLineItemByQuoteID?.find((item: any) => item?.Bundle);
+    }
+
+    if (isExist) {
+      quoteLineItemByQuoteID?.map((lineItem: any) => {
+        let bundleObj: any;
+        // console.log('345435345', bundleObj, lineItem?.Bundle?.id, lineItem);
+        if (lineItem?.Bundle) {
+          if (bundleObj) {
+            bundleObj = {
+              name: bundleObj.name,
+              description: bundleObj.description,
+              quantity: bundleObj.quantity,
+              quoteLieItem: [...bundleObj.quoteLieItem, ...lineItem],
+              bundleId: lineItem?.Bundle.id,
+              id: lineItem.id,
+            };
+          } else {
+            bundleObj = {
+              name: lineItem?.Bundle?.name,
+              description: lineItem?.Bundle?.description,
+              quantity: lineItem?.Bundle?.quantity,
+              quoteLieItem: [lineItem],
+              bundleId: lineItem?.Bundle?.id,
+              id: lineItem?.id,
+            };
+            bundleData?.push(bundleObj);
+          }
+        } else {
+          UnAssigned?.push(lineItem);
+        }
+      });
+    }
+  }, [quoteLineItemByQuoteID]);
+
   const commonUpdateCompleteAndDraftMethod = (queryItem: string) => {
     if (getQuoteLineItemId) {
+      console.log('object');
       const data = {
         ids: getQuoteLineItemId,
         query: queryItem,
@@ -220,36 +262,13 @@ const GenerateQuote: React.FC = () => {
     },
   ];
 
-  const TabPaneData = [
-    {
-      key: 1,
-      name: 'Input Details',
-      // tableData: s
-    },
-    {
-      key: 2,
-      name: 'Profitability',
-    },
-    {
-      key: 3,
-      name: 'Rebates',
-    },
-    {
-      key: 4,
-      name: 'Validation',
-    },
-    {
-      key: 5,
-      name: 'Matrix',
-    },
-  ];
-
   const selectData = [
     {value: 'Product Family', label: 'Product Family'},
     {value: 'Pricing Method', label: 'Pricing Method'},
     {value: 'Vendor/Disti', label: 'Vendor/Disti'},
     {value: 'OEM', label: 'OEM'},
   ];
+
   const selectDataForProduct = [
     {value: 'Professional Services', label: 'Professional Services'},
     {value: 'Subscriptions', label: 'Subscriptions'},
@@ -260,8 +279,27 @@ const GenerateQuote: React.FC = () => {
   const QuoteLineItemcolumns = [
     {
       title: '#Line',
-      dataIndex: 'line',
-      key: 'line',
+      dataIndex: 'line_number',
+      key: 'line_number',
+      render: (text: string, record: any) => (
+        <OsInput
+          disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
+          style={{
+            height: '36px',
+          }}
+          value={text}
+          onChange={(v) => {
+            setQuoteLineItemByQuoteData((prev) =>
+              prev.map((prevItem) => {
+                if (prevItem.id === record?.id) {
+                  return {...prevItem, line_number: v.target.value};
+                }
+                return prevItem;
+              }),
+            );
+          }}
+        />
+      ),
       width: 130,
     },
     {
@@ -271,44 +309,40 @@ const GenerateQuote: React.FC = () => {
       width: 187,
     },
     {
-      title: 'List Price',
-      dataIndex: 'list_price',
-      key: 'list_price',
+      title: 'Qty',
+      dataIndex: 'quantity',
+      key: 'quantity',
+      render: (text: string, record: any) => (
+        <OsInput
+          style={{
+            height: '36px',
+          }}
+          disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
+          value={text}
+          onChange={(v) => {
+            setQuoteLineItemByQuoteData((prev) =>
+              prev.map((prevItem) => {
+                if (prevItem.id === record?.id) {
+                  return {...prevItem, quantity: v.target.value};
+                }
+                return prevItem;
+              }),
+            );
+          }}
+        />
+      ),
       width: 187,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background: selectTedRowIds?.includes(record?.id)
-                ? '#E8EBEE'
-                : ' ',
-            },
-          },
-          children: (
-            <OsInput
-              disabled={
-                isEditable ? !selectTedRowIds?.includes(record?.id) : true
-              }
-              defaultValue={record?.list_price}
-              style={{width: '100px'}}
-              onChange={(e: any) => {
-                setInputData({id: record?.id, list_price: e.target.value});
-              }}
-            />
-          ),
-        };
-      },
     },
     {
       title: 'MSRP',
-      dataIndex: 'MSRP',
-      key: 'MSRP',
+      dataIndex: 'adjusted_price',
+      key: 'adjusted_price',
       width: 187,
     },
     {
       title: 'Cost',
-      dataIndex: 'cost',
-      key: 'cost',
+      dataIndex: 'list_price',
+      key: 'list_price',
       width: 187,
     },
     {
@@ -318,9 +352,9 @@ const GenerateQuote: React.FC = () => {
       width: 365,
     },
     {
-      title: 'Product Select',
-      dataIndex: 'productselect',
-      key: 'productselect',
+      title: 'Product Family',
+      dataIndex: 'product_family',
+      key: 'product_family',
       width: 285,
       render(text: any, record: any) {
         return {
@@ -433,47 +467,30 @@ const GenerateQuote: React.FC = () => {
       name: record.name,
     }),
   };
-  console.log('quoteLineItemData', quoteLineItemByQuoteID);
-  useEffect(() => {
-    let isExist: any;
-    const bundleData: any = [];
-    const UnAssigned: any = [];
-    if (quoteLineItemByQuoteID && quoteLineItemByQuoteID?.length > 0) {
-      isExist = quoteLineItemByQuoteID?.find((item) => item?.Bundle);
-    }
 
-    if (isExist) {
-      quoteLineItemByQuoteID?.map((lineItem) => {
-        let bundleObj: any;
-        // console.log('345435345', bundleObj, lineItem?.Bundle?.id, lineItem);
-        if (lineItem?.Bundle) {
-          if (bundleObj) {
-            bundleObj = {
-              name: bundleObj.name,
-              description: bundleObj.description,
-              quantity: bundleObj.quantity,
-              quoteLieItem: [...bundleObj.quoteLieItem, ...lineItem],
-              bundleId: lineItem?.Bundle.id,
-              id: lineItem.id,
-            };
-          } else {
-            bundleObj = {
-              name: lineItem?.Bundle?.name,
-              description: lineItem?.Bundle?.description,
-              quantity: lineItem?.Bundle?.quantity,
-              quoteLieItem: [lineItem],
-              bundleId: lineItem?.Bundle?.id,
-              id: lineItem?.id,
-            };
-            bundleData?.push(bundleObj);
-          }
-        } else {
-          UnAssigned?.push(lineItem);
-        }
-      });
-    }
-  }, [quoteLineItemByQuoteID]);
-  console.log('quoteLineItemByQuoteID', quoteLineItemByQuoteID);
+  const tabItems: TabsProps['items'] = [
+    {
+      key: '1',
+      label: 'Input Details',
+      // children: Profitability(quoteLineItemByQuoteID),
+    },
+    {
+      key: '2',
+      label: 'Profitability',
+    },
+    {
+      key: '3',
+      label: 'Rebates',
+    },
+    {
+      key: '4',
+      label: 'Validation',
+    },
+    {
+      key: '5',
+      label: 'Matrix',
+    },
+  ];
 
   return (
     <>
@@ -501,21 +518,38 @@ const GenerateQuote: React.FC = () => {
 
         <Row justify="space-between" align="middle">
           <Col>
-            <Breadcrumb separator=">" items={menuItems} />
+            <Breadcrumb
+              separator={
+                <Typography
+                  name="Heading 3/Medium"
+                  cursor="pointer"
+                  color={token?.colorPrimaryText}
+                >
+                  <ChevronRightIcon width={24} />
+                </Typography>
+              }
+              items={menuItems}
+            />
           </Col>
           <Col>
             <Space size={8} direction="horizontal">
               <OsButton
-                text="Save as Draft"
+                text="Edit Quote Header"
+                buttontype="SECONDARY"
+                clickHandler={showDrawer}
+              />
+              <OsButton
+                text="Save"
                 buttontype="SECONDARY"
                 clickHandler={() => {
                   commonUpdateCompleteAndDraftMethod('drafted');
                 }}
               />
               <OsButton
-                text="Edit Header"
+                text="Add Quote"
                 buttontype="PRIMARY"
-                clickHandler={showDrawer}
+                icon={<PlusIcon />}
+                // clickHandler={() => setShowModal((p) => !p)}
               />
               <OsButton
                 text=" Mark as Complete"
@@ -575,41 +609,33 @@ const GenerateQuote: React.FC = () => {
                 </Space>
               </Space>
             }
-          >
-            {TabPaneData?.map((item) => (
-              <TabPane
-                tab={
-                  <Typography
-                    name="Body 4/Regular"
-                    color={
-                      activeTab === item?.key ? token?.colorPrimary : '#666666'
-                    }
-                  >
-                    {item?.name}
-                    <div
-                      style={{
+            items={tabItems.map((tabItem: any, index: number) => ({
+              key: `${index + 1}`,
+              label: (
+                <div>
+                  <div>{tabItem?.label}</div>
+                  <div
+                    style={{
+                      // eslint-disable-next-line eqeqeq
+                      borderBottom:
                         // eslint-disable-next-line eqeqeq
-                        borderBottom:
-                          // eslint-disable-next-line eqeqeq
-                          activeTab == item?.key ? '2px solid #1C3557' : '',
-                        marginTop: '3px',
-                      }}
-                    />
-                  </Typography>
-                }
-                key={item?.key}
-              >
+                        activeTab == tabItem?.key ? '2px solid #1C3557' : '',
+                      // marginTop: '3px',
+                    }}
+                  />
+                </div>
+              ),
+              children: (
                 <OsTable
                   loading={loading}
-                  // rowSelection={rowSelection}
                   columns={QuoteLineItemcolumns}
-                  dataSource={(showTableDataa && quoteLineItemByQuoteID) || []}
+                  dataSource={quoteLineItemByQuoteData ?? []}
                   scroll
                   rowSelection={rowSelection}
                 />
-              </TabPane>
-            ))}
-          </OsTabs>
+              ),
+            }))}
+          />
         </Row>
       </Space>
       <OsDrawer
@@ -618,15 +644,6 @@ const GenerateQuote: React.FC = () => {
         onClose={onClose}
         open={open}
         width={450}
-        // footer={
-        //   <div style={{textAlign: 'right'}}>
-        //     <OsButton
-        //       text="Update Changes"
-        //       buttontype="PRIMARY"
-        //       clickHandler={() => form.submit()}
-        //     />
-        //   </div>
-        // }
       >
         <DrawerContent setOpen={setOpen} />
       </OsDrawer>

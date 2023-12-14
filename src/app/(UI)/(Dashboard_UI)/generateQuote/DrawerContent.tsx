@@ -4,6 +4,7 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
+import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
@@ -39,7 +40,7 @@ const DrawerContent: FC<any> = ({setOpen}) => {
     status: quoteLineItemByQuoteID?.[0]?.Quote?.is_completed
       ? 'Completed'
       : quoteLineItemByQuoteID?.[0]?.Quote?.is_drafted
-      ? 'Drafts'
+      ? 'In Progress'
       : 'Recent',
     formData: {
       file_name: quoteLineItemByQuoteID?.[0]?.Quote?.file_name ?? '',
@@ -93,11 +94,23 @@ const DrawerContent: FC<any> = ({setOpen}) => {
             </Form.Item>
 
             <Form.Item label="Opportunity" name="opportunity">
-              <OsInput />
+              {/* <OsInput /> */}
+
+              <CommonSelect
+                style={{width: '100%'}}
+                placeholder="Select Opportunity"
+                // options={bundleOptions}
+                onChange={(e) => {}}
+              />
             </Form.Item>
 
             <Form.Item label="Customer" name="customer_name">
-              <OsInput />
+              <CommonSelect
+                style={{width: '100%'}}
+                placeholder="Select Customer"
+                // options={bundleOptions}
+                onChange={(e) => {}}
+              />
             </Form.Item>
 
             <Form.Item label=" ">

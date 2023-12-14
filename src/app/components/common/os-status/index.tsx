@@ -16,7 +16,7 @@ const OsStatusWrapper: FC<OsStatusWrapperProps> = ({value}) => {
       textColor: `${token?.colorInfo}`,
       border: `${token?.colorInfo}`,
     },
-    Drafts: {
+    'In Progress': {
       color: `${token?.colorWarningBg}`,
       textColor: `${token?.colorWarning}`,
       border: `${token?.colorWarning}`,

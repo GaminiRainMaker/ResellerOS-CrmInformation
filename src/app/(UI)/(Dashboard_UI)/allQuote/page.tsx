@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-nested-ternary */
@@ -19,11 +21,13 @@ import {
 
 import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
+import {PopConfirm} from '@/app/components/common/antd/PopConfirm';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import OsModal from '@/app/components/common/os-modal';
+import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import {Button, MenuProps, TabsProps} from 'antd';
@@ -33,6 +37,7 @@ import {insertProduct} from '../../../../../redux/actions/product';
 import {
   deleteQuoteById,
   getAllQuotesWithCompletedAndDraft,
+  getQuotesByDateFilter,
   insertQuote,
   updateQuoteByQuery,
   updateQuoteWithNewlineItemAddByID,
@@ -64,10 +69,22 @@ const AllQuote: React.FC = () => {
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
   const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [fromDate, setFromDate] = useState<any>([]);
+  const [toDate, setToDate] = useState<any>([]);
 
   useEffect(() => {
     dispatch(getAllQuotesWithCompletedAndDraft());
   }, []);
+
+  useEffect(() => {
+    if (fromDate && toDate) {
+      const obj = {
+        beforeDays: fromDate,
+        afterDays: toDate,
+      };
+      dispatch(getQuotesByDateFilter(obj));
+    }
+  }, [fromDate && toDate]);
 
   useEffect(() => {
     if (quotes && quotes?.length > 0) {
@@ -80,17 +97,17 @@ const AllQuote: React.FC = () => {
 
   useEffect(() => {
     if (activeTab && quoteData.length > 0) {
+      console.log('quoteData', quoteData);
       const quoteItems =
-        activeTab === '2'
+        activeTab === '3'
           ? quoteData?.filter((item: any) => item?.is_drafted)
-          : activeTab === '3'
+          : activeTab === '4'
           ? quoteData?.filter((item: any) => item?.is_completed)
           : activeTab == '1'
           ? quoteData
           : quoteData?.filter(
               (item: any) => !item?.is_completed && !item?.is_drafted,
             );
-
       setActiveQuotes(quoteItems);
     }
   }, [activeTab, quoteData]);
@@ -134,7 +151,6 @@ const AllQuote: React.FC = () => {
       </>;
       labelOcrMap.push(tempLabelOcrMap);
     });
-
     const newrrLineItems: any = [];
     if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
       const response = await dispatch(insertQuote(labelOcrMap));
@@ -152,6 +168,9 @@ const AllQuote: React.FC = () => {
                 line_amount: insertedProduct?.payload?.line_amount,
                 list_price: insertedProduct?.payload?.list_price,
                 description: insertedProduct?.payload?.description,
+                quantity: insertedProduct?.payload?.quantity,
+                adjusted_price: insertedProduct?.payload?.adjusted_price,
+                line_number: insertedProduct?.payload?.line_number,
               };
               newrrLineItems?.push(obj1);
             }
@@ -159,7 +178,6 @@ const AllQuote: React.FC = () => {
         }
       }
     } else if (existingQuoteId) {
-      console.log('existingQuoteId', existingQuoteId);
       await dispatch(updateQuoteWithNewlineItemAddByID(existingQuoteId));
       for (let i = 0; i < formattedArray?.length; i++) {
         const items = formattedArray[i];
@@ -172,6 +190,9 @@ const AllQuote: React.FC = () => {
             line_amount: insertedProduct?.payload?.line_amount,
             list_price: insertedProduct?.payload?.list_price,
             description: insertedProduct?.payload?.description,
+            quantity: insertedProduct?.payload?.quantity,
+            adjusted_price: insertedProduct?.payload?.adjusted_price,
+            line_number: insertedProduct?.payload?.line_number,
           };
           newrrLineItems?.push(obj1);
         }
@@ -187,93 +208,52 @@ const AllQuote: React.FC = () => {
     setUploadFileData([]);
   };
 
+  const deleteQuote = async (id: number) => {
+    if (id) {
+      await dispatch(deleteQuoteById(id));
+    }
+  };
+
   const Quotecolumns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'line',
+      title: 'File Name',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       width: 130,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background: selectTedRowIds?.includes(record?.id)
-                ? '#E8EBEE'
-                : ' ',
-            },
-          },
-          children: (
-            <Typography name="Body 4/Regular">{record?.createdAt}</Typography>
-          ),
-        };
-      },
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
     },
     {
       title: 'Opportunity',
-      dataIndex: 'Opportunity',
-      key: 'Opportunity',
+      dataIndex: 'opportunity',
+      key: 'opportunity',
       width: 187,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background: selectTedRowIds?.includes(record?.id)
-                ? '#E8EBEE'
-                : ' ',
-            },
-          },
-          children: (
-            <Typography name="Body 4/Regular">{record?.Opportunity}</Typography>
-          ),
-        };
-      },
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
     },
     {
       title: 'Customer Name',
       dataIndex: 'customer_name',
       key: 'customer_name',
       width: 187,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background: selectTedRowIds?.includes(record?.id)
-                ? '#E8EBEE'
-                : ' ',
-            },
-          },
-          children: (
-            <Typography name="Body 4/Regular">
-              {record?.customer_name}
-            </Typography>
-          ),
-        };
-      },
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
     },
     {
       title: 'Status',
-      dataIndex: 'Status',
-      key: 'Status',
+      dataIndex: 'status',
+      key: 'status',
       width: 187,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background: selectTedRowIds?.includes(record?.id)
-                ? '#E8EBEE'
-                : ' ',
-            },
-          },
-          children: (
-            <Typography name="Body 4/Regular">
-              {record?.is_completed
-                ? 'Completed'
-                : record?.is_drafted
-                ? 'Drafted'
-                : 'Recents'}
-            </Typography>
-          ),
-        };
+      render: (text: string, record: any) => {
+        const statusValue = record.is_completed
+          ? 'Completed'
+          : record?.is_drafted
+          ? 'In Progress'
+          : 'Recent';
+        return <OsStatusWrapper value={statusValue} />;
       },
     },
     {
@@ -292,13 +272,21 @@ const AllQuote: React.FC = () => {
               router.push(`/generateQuote?id=${record?.id}`);
             }}
           />
-          <TrashIcon
-            height={24}
-            width={24}
-            color={token.colorError}
-            style={{cursor: 'pointer'}}
-            onClick={() => deleteQuote(record?.id)}
-          />
+          <PopConfirm
+            placement="top"
+            title={record?.customer_name}
+            description="Are you sure to delete this Quote?"
+            onConfirm={() => deleteQuote(record?.id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <TrashIcon
+              height={24}
+              width={24}
+              color={token.colorError}
+              style={{cursor: 'pointer'}}
+            />
+          </PopConfirm>
         </Space>
       ),
     },
@@ -316,14 +304,10 @@ const AllQuote: React.FC = () => {
       };
       await dispatch(updateQuoteByQuery(data));
       dispatch(getAllQuotesWithCompletedAndDraft());
-      setActiveTab('3');
+      setActiveTab('4');
     }
   };
-  const deleteQuote = async (id: number) => {
-    if (id) {
-      await dispatch(deleteQuoteById(id));
-    }
-  };
+
   const tabItems: TabsProps['items'] = [
     {
       label: 'All',
@@ -332,14 +316,6 @@ const AllQuote: React.FC = () => {
     {
       label: 'Drafts',
       key: '2',
-    },
-    {
-      label: 'Completed',
-      key: '3',
-    },
-    {
-      label: 'Recent',
-      key: '4',
       children: (
         <>
           {activeQuotes?.length > 0 ? (
@@ -362,6 +338,15 @@ const AllQuote: React.FC = () => {
           )}
         </>
       ),
+    },
+
+    {
+      label: 'In Progress',
+      key: '3',
+    },
+    {
+      label: 'Completed',
+      key: '4',
     },
   ];
 
@@ -392,7 +377,7 @@ const AllQuote: React.FC = () => {
                 gap: '8px',
               }}
             >
-              {activeTab == 2 && (
+              {activeTab == 3 && (
                 <OsButton
                   text="Mark as Complete"
                   buttontype="PRIMARY"
@@ -443,11 +428,23 @@ const AllQuote: React.FC = () => {
               <Space size={12} align="center">
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">From Date</Typography>
-                  <CommonDatePicker placeholder="dd/mm/yyyy" />
+                  <CommonDatePicker
+                    placeholder="dd/mm/yyyy"
+                    onChange={(v) => {
+                      setFromDate(v);
+                      console.log('setFromDate', v);
+                    }}
+                  />
                 </Space>
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">To Date</Typography>
-                  <CommonDatePicker placeholder="dd/mm/yyyy" />
+                  <CommonDatePicker
+                    placeholder="dd/mm/yyyy"
+                    onChange={(v) => {
+                      setToDate(v);
+                      console.log('setToDate', v);
+                    }}
+                  />
                 </Space>
                 <Typography name="Button 1" color="#C6CDD5">
                   Reset
@@ -461,8 +458,11 @@ const AllQuote: React.FC = () => {
                   <div>{tabItem?.label}</div>
                   <div
                     style={{
+                      // eslint-disable-next-line eqeqeq
                       borderBottom:
-                        activeTab == index + 1 ? '2px solid #1C3557' : '',
+                        // eslint-disable-next-line eqeqeq
+                        activeTab == tabItem?.key ? '2px solid #1C3557' : '',
+                      // marginTop: '3px',
                     }}
                   />
                 </div>

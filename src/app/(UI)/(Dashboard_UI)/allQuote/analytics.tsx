@@ -35,7 +35,7 @@ const QuoteAnalytics = (props: any) => {
     {
       key: 3,
       primary: <div>{draftedQuote?.length}</div>,
-      secondry: 'Drafts',
+      secondry: 'In Progress',
       icon: <ClipboardDocumentCheckIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
