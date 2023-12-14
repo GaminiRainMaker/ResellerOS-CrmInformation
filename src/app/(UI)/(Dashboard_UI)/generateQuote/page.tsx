@@ -69,6 +69,7 @@ const GenerateQuote: React.FC = () => {
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [showTableDataa, setShowTableDataa] = useState<boolean>(true);
+  const [selectedFilter, setSelectedFilter] = useState<String>();
 
   useEffect(() => {
     // if (debouncedValue && debouncedValue?.length > 0) {
@@ -433,47 +434,6 @@ const GenerateQuote: React.FC = () => {
       name: record.name,
     }),
   };
-  console.log('quoteLineItemData', quoteLineItemByQuoteID);
-  useEffect(() => {
-    let isExist: any;
-    const bundleData: any = [];
-    const UnAssigned: any = [];
-    if (quoteLineItemByQuoteID && quoteLineItemByQuoteID?.length > 0) {
-      isExist = quoteLineItemByQuoteID?.find((item) => item?.Bundle);
-    }
-
-    if (isExist) {
-      quoteLineItemByQuoteID?.map((lineItem) => {
-        let bundleObj: any;
-        // console.log('345435345', bundleObj, lineItem?.Bundle?.id, lineItem);
-        if (lineItem?.Bundle) {
-          if (bundleObj) {
-            bundleObj = {
-              name: bundleObj.name,
-              description: bundleObj.description,
-              quantity: bundleObj.quantity,
-              quoteLieItem: [...bundleObj.quoteLieItem, ...lineItem],
-              bundleId: lineItem?.Bundle.id,
-              id: lineItem.id,
-            };
-          } else {
-            bundleObj = {
-              name: lineItem?.Bundle?.name,
-              description: lineItem?.Bundle?.description,
-              quantity: lineItem?.Bundle?.quantity,
-              quoteLieItem: [lineItem],
-              bundleId: lineItem?.Bundle?.id,
-              id: lineItem?.id,
-            };
-            bundleData?.push(bundleObj);
-          }
-        } else {
-          UnAssigned?.push(lineItem);
-        }
-      });
-    }
-  }, [quoteLineItemByQuoteID]);
-  console.log('quoteLineItemByQuoteID', quoteLineItemByQuoteID);
 
   return (
     <>
@@ -553,6 +513,9 @@ const GenerateQuote: React.FC = () => {
                     style={{width: '319px'}}
                     placeholder="Select Grouping here"
                     options={selectData}
+                    onChange={(e) => {
+                      setSelectedFilter(e);
+                    }}
                   />
 
                   <Dropdown
