@@ -171,7 +171,7 @@ const quoteLineItemSlice = createSlice({
         getQuoteLineItemByQuoteIdandBundleIdNull.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.quoteLineItemByQuoteID = [action.payload];
+          state.data = [action.payload];
         },
       )
       .addCase(

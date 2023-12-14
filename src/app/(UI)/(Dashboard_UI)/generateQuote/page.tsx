@@ -20,9 +20,9 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline';
 
-import { Dropdown } from '@/app/components/common/antd/DropDown';
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Dropdown} from '@/app/components/common/antd/DropDown';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
@@ -32,21 +32,22 @@ import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import { Breadcrumb, Button, MenuProps } from 'antd';
+import {Breadcrumb, Button, MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {use, useEffect, useState} from 'react';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
-import { getAllBundle } from '../../../../../redux/actions/bundle';
-import { updateProductFamily } from '../../../../../redux/actions/product';
-import { updateQuoteByQuery } from '../../../../../redux/actions/quote';
+import {getAllBundle} from '../../../../../redux/actions/bundle';
+import {updateProductFamily} from '../../../../../redux/actions/product';
+import {updateQuoteByQuery} from '../../../../../redux/actions/quote';
 import {
   DeleteQuoteLineItemQuantityById,
   getQuoteLineItemByQuoteId,
+  getQuoteLineItemByQuoteIdandBundleIdNull,
 } from '../../../../../redux/actions/quotelineitem';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
 import BundleSection from './bundleSection';
 
@@ -62,9 +63,11 @@ const GenerateQuote: React.FC = () => {
   const debouncedValue = useDebounceHook(inputData, 500);
 
   const [isEditable, setIsEditable] = useState<boolean>(false);
-  const {quoteLineItemByQuoteID, loading} = useAppSelector(
-    (state) => state.quoteLineItem,
-  );
+  const {
+    quoteLineItemByQuoteID,
+    data: dataNullForBundle,
+    loading,
+  } = useAppSelector((state) => state.quoteLineItem);
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [amountData, setAmountData] = useState<any>();
   const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
@@ -74,24 +77,13 @@ const GenerateQuote: React.FC = () => {
   const [showTableDataa, setShowTableDataa] = useState<boolean>(true);
   const [selectedFilter, setSelectedFilter] = useState<String>();
   const {data: bundleData} = useAppSelector((state) => state.bundle);
-  const [unassigned, setUnassigned] = useState<any>();
-
-  // useEffect(() => {
-  //   // if (debouncedValue && debouncedValue?.length > 0) {
-  //   dispatch(UpdateQuoteLineItemQuantityById(debouncedValue));
-
-  //   setTimeout(() => {
-  //     dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
-  //     setSelectedRowIds([]);
-  //     setIsEditable(false);
-  //   }, 500);
-  //   // }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [debouncedValue]);
 
   useEffect(() => {
     if (getQuoteLineItemId)
       dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
+    dispatch(
+      getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteLineItemId)),
+    );
   }, [getQuoteLineItemId]);
   useEffect(() => {
     dispatch(getAllBundle(getQuoteLineItemId));
@@ -504,7 +496,6 @@ const GenerateQuote: React.FC = () => {
       name: 'Matrix',
     },
   ];
-  console.log('bundleDatabundleData', bundleData);
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -709,7 +700,7 @@ const GenerateQuote: React.FC = () => {
                                 }}
                               >
                                 <Typography name="Body 4/Medium">
-                                  {unassigned?.[0]?.name}
+                                  Unassigned
                                 </Typography>
                               </Space>
                             </>
@@ -719,11 +710,7 @@ const GenerateQuote: React.FC = () => {
                               loading={loading}
                               // rowSelection={rowSelection}
                               columns={QuoteLineItemcolumns}
-                              dataSource={
-                                (showTableDataa &&
-                                  unassigned?.[0]?.quoteLineItem) ||
-                                []
-                              }
+                              dataSource={dataNullForBundle?.[0] || []}
                               scroll
                               rowSelection={rowSelection}
                             />
