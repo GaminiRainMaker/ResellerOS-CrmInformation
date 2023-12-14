@@ -10,8 +10,8 @@ import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useState} from 'react';
 import {updateQuoteById} from '../../../../../redux/actions/quote';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {getQuoteLineItemByQuoteId} from '../../../../../redux/actions/quotelineitem';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 interface FormDataProps {
   file_name: string;
@@ -49,10 +49,13 @@ const DrawerContent: FC<any> = ({setOpen}) => {
   });
 
   const onSubmit = (values: FormDataProps) => {
-    console.log('object', values);
     setDrawerData((prev) => ({...prev, formData: values}));
-    // dispatch(updateQuoteById());
-    // dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
+    const obj = {
+      id: Number(getQuoteLineItemId),
+      ...values,
+    };
+    dispatch(updateQuoteById(obj));
+    dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
     setOpen(false);
   };
   return (

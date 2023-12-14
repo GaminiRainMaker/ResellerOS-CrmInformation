@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-await-in-loop */
@@ -16,7 +17,6 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 
-import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
@@ -62,6 +62,7 @@ const AllQuote: React.FC = () => {
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
   const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   useEffect(() => {
     dispatch(getAllQuotesWithCompletedAndDraft());
@@ -93,8 +94,19 @@ const AllQuote: React.FC = () => {
     }
   }, [activeTab, quoteData]);
 
+  const rowSelection = {
+    onChange: (selectedRowKeys: any) => {
+      setSelectedRowKeys(selectedRowKeys);
+      setSelectedRowIds(selectedRowKeys);
+      setExistingQuoteId(Number(selectedRowKeys));
+    },
+    getCheckboxProps: (record: any) => ({
+      disabled: record.name === 'Disabled User',
+      name: record.name,
+    }),
+  };
+
   const addQuoteLineItem = async () => {
-    // setExistingQuoteId()
     const labelOcrMap: any = [];
     let formattedArray: any = [];
     const formattedData: FormattedData = {};
@@ -146,6 +158,7 @@ const AllQuote: React.FC = () => {
         }
       }
     } else if (existingQuoteId) {
+      console.log('existingQuoteId', existingQuoteId);
       await dispatch(updateQuoteWithNewlineItemAddByID(existingQuoteId));
       for (let i = 0; i < formattedArray?.length; i++) {
         const items = formattedArray[i];
@@ -174,61 +187,6 @@ const AllQuote: React.FC = () => {
   };
 
   const Quotecolumns = [
-    // {
-    //   title: (
-    //     <Checkbox
-    //     // checked={selectTedRowIds?.length === quoteLineItemData?.length}
-    //     // onChange={(e: any) => {
-    //     //   let newArrVlaue: any = [];
-    //     //   if (e.target.checked) {
-    //     //     quoteLineItemData?.map((item: any) => {
-    //     //       newArrVlaue?.push(item?.id);
-    //     //     });
-    //     //   } else {
-    //     //     newArrVlaue = [];
-    //     //   }
-    //     //   setSelectedRowIds(newArrVlaue);
-    //     // }}
-    //     />
-    //   ),
-    //   dataIndex: 'Name',
-    //   key: 'filename',
-    //   width: 130,
-    //   render(text: any, record: any) {
-    //     return {
-    //       props: {
-    //         style: {
-    //           background: selectTedRowIds?.includes(record?.id)
-    //             ? '#E8EBEE'
-    //             : ' ',
-    //         },
-    //       },
-    //       children: (
-    //         <div style={{display: 'flex', justifyContent: 'center'}}>
-    //           <Checkbox
-    //             checked={selectTedRowIds?.includes(record?.id)}
-    //             onChange={(e: any) => {
-    //               const newArrVlaue: any = showToggleTable
-    //                 ? []
-    //                 : [...selectTedRowIds];
-    //               if (
-    //                 e.target.checked &&
-    //                 !selectTedRowIds?.includes(record?.id)
-    //               ) {
-    //                 newArrVlaue?.push(record?.id);
-    //               } else if (selectTedRowIds?.includes(record?.id)) {
-    //                 // newArrVlaue?.pop(record?.id);
-    //                 const index = newArrVlaue?.indexOf(record?.id);
-    //                 newArrVlaue?.splice(index, 1);
-    //               }
-    //               setSelectedRowIds(newArrVlaue);
-    //             }}
-    //           />
-    //         </div>
-    //       ),
-    //     };
-    //   },
-    // },
     {
       title: 'Name',
       dataIndex: 'name',
@@ -388,6 +346,7 @@ const AllQuote: React.FC = () => {
               addQuoteLineItem={addQuoteLineItem}
               setShowToggleTable={setShowToggleTable}
               showToggleTable={showToggleTable}
+              rowSelection={rowSelection}
             />
           )}
         </>

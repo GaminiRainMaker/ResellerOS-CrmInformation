@@ -18,7 +18,6 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline';
 
-import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
@@ -27,6 +26,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsInput from '@/app/components/common/os-input';
+import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
 import {Breadcrumb, Button, MenuProps} from 'antd';
@@ -34,14 +34,12 @@ import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import OsModal from '@/app/components/common/os-modal';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {updateQuoteByQuery} from '../../../../../redux/actions/quote';
 import {
   DeleteQuoteLineItemQuantityById,
   UpdateQuoteLineItemQuantityById,
-  getQuoteLineItem,
   getQuoteLineItemByQuoteId,
 } from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -79,8 +77,8 @@ const GenerateQuote: React.FC = () => {
     dispatch(UpdateQuoteLineItemQuantityById(debouncedValue));
 
     setTimeout(() => {
-      dispatch(getQuoteLineItem());
       setShowTableDataa(true);
+      dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
       setSelectedRowIds([]);
       setIsEditable(false);
     }, 500);
@@ -161,7 +159,7 @@ const GenerateQuote: React.FC = () => {
       dispatch(DeleteQuoteLineItemQuantityById(selectTedRowIds));
       setSelectedRowIds([]);
       setTimeout(() => {
-        dispatch(getQuoteLineItem());
+        dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
       }, 500);
     }
   };
@@ -416,16 +414,11 @@ const GenerateQuote: React.FC = () => {
   ];
 
   const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[], selectedRows: DataType[]) => {
+    onChange: (selectedRowKeys: React.Key[]) => {
       setSelectedRowKeys(selectedRowKeys);
       setSelectedRowIds(selectedRowKeys);
-      console.log(
-        `selectedRowKeys: ${selectedRowKeys}`,
-        'selectedRows: ',
-        selectedRows,
-      );
     },
-    getCheckboxProps: (record: DataType) => ({
+    getCheckboxProps: (record: any) => ({
       disabled: record.name === 'Disabled User', // Column configuration not to be checked
       name: record.name,
     }),
