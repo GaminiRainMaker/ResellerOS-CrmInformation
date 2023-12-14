@@ -4,7 +4,7 @@ import {CollapseProps} from '../antd/Collapse';
 import useThemeToken from '../hooks/useThemeToken';
 import {OsCollapseStyle} from './styled-components';
 
-const OsCollapse: FC<CollapseProps> = ({items}) => {
+const OsCollapse: FC<CollapseProps> = ({items}, props) => {
   const [token] = useThemeToken();
 
   return (
@@ -12,6 +12,7 @@ const OsCollapse: FC<CollapseProps> = ({items}) => {
       expandIconPosition="start"
       items={items}
       ghost
+      {...props}
       //   expandIcon={() => (
       //     <ChevronDownIcon width={18} style={{color: token.colorLink}} />
       //   )}

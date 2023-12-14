@@ -7,11 +7,14 @@ import {Radio, RadioChangeEvent} from 'antd';
 import {FC, useEffect, useState} from 'react';
 import CommonSelect from '@/app/components/common/os-select';
 import OsInput from '@/app/components/common/os-input';
+import {useSearchParams} from 'next/navigation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {getAllBundle, insertBundle} from '../../../../../redux/actions/bundle';
 import {updateQuoteLineItemForBundleId} from '../../../../../redux/actions/quotelineitem';
 
 const BundleSection: FC<any> = ({selectTedRowIds, setShowBundleModal}) => {
+  const searchParams = useSearchParams();
+  const getQuoteLineItemId = searchParams.get('id');
   const dispatch = useAppDispatch();
   const {data: bundleData} = useAppSelector((state) => state.bundle);
   const [radioValue, setRadioValue] = useState(1);
@@ -41,14 +44,13 @@ const BundleSection: FC<any> = ({selectTedRowIds, setShowBundleModal}) => {
         }
       });
     }
-    dispatch(getAllBundle(''));
+    dispatch(getAllBundle(getQuoteLineItemId));
     setRadioValue(1);
     setShowBundleModal(false);
   };
 
-  console.log('bundleDatabundleData', bundleData);
   useEffect(() => {
-    dispatch(getAllBundle(''));
+    dispatch(getAllBundle(getQuoteLineItemId));
   }, []);
   useEffect(() => {
     const bundleArray: any = [];
@@ -109,7 +111,11 @@ const BundleSection: FC<any> = ({selectTedRowIds, setShowBundleModal}) => {
               <OsInput
                 style={{width: '235px', marginTop: '5px'}}
                 onChange={(e: any) => {
-                  setBundleValue({...bundleValue, name: e.target.value});
+                  setBundleValue({
+                    ...bundleValue,
+                    name: e.target.value,
+                    quote_id: getQuoteLineItemId,
+                  });
                 }}
               />
             </div>
