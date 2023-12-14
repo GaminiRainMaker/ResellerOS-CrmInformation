@@ -74,38 +74,6 @@ const GenerateQuote: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState<String>();
   const {data: bundleData} = useAppSelector((state) => state.bundle);
   const [unassigned, setUnassigned] = useState<any>();
-  const [bundleArr, setBundleArr] = useState<any>();
-
-  useEffect(() => {
-    const bundleFilterData: any = [];
-    const Unassigned: any = [];
-    bundleData?.map((item: any) => {
-      const newInnerBundle: any = [];
-      const newInnerUnassigned: any = [];
-      item?.Quote?.QuoteLineItems?.filter((itemQu) => {
-        if (itemQu?.bundle_id == item?.id) {
-          newInnerBundle?.push(itemQu);
-        } else if (!itemQu?.bundle_id) {
-          newInnerUnassigned?.push(itemQu);
-        }
-      });
-      const obj = {
-        name: item?.name,
-        description: item?.description,
-        quantity: item?.quantity,
-        quoteLineItem: newInnerBundle,
-        id: item?.id,
-      };
-      bundleFilterData?.push(obj);
-      const obj2 = {
-        name: 'Unassigned',
-        quoteLineItem: newInnerUnassigned,
-      };
-      Unassigned?.push(obj2);
-    });
-    setUnassigned(Unassigned);
-    setBundleArr(bundleFilterData);
-  }, [bundleData]);
 
   useEffect(() => {
     // if (debouncedValue && debouncedValue?.length > 0) {
@@ -602,7 +570,7 @@ const GenerateQuote: React.FC = () => {
                 {bundleData && bundleData?.length > 0 ? (
                   <>
                     {' '}
-                    {bundleArr?.map((item: any, index: any) => (
+                    {bundleData?.map((item: any, index: any) => (
                       <OsCollapse
                         items={[
                           {
@@ -619,7 +587,7 @@ const GenerateQuote: React.FC = () => {
                                     {item?.name}
                                   </Typography>
                                   <Typography name="Body 4/Medium">
-                                    Lines:{item?.quoteLineItem?.length}
+                                    Lines:{item?.quoteLineItems?.length}
                                   </Typography>
                                   <Typography name="Body 4/Medium">
                                     Desc: {item?.description}
@@ -636,7 +604,7 @@ const GenerateQuote: React.FC = () => {
                                 // rowSelection={rowSelection}
                                 columns={QuoteLineItemcolumns}
                                 dataSource={
-                                  (showTableDataa && item?.quoteLineItem) || []
+                                  (showTableDataa && item?.QuoteLineItems) || []
                                 }
                                 scroll
                                 rowSelection={rowSelection}
