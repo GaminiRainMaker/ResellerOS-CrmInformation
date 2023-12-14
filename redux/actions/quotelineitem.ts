@@ -86,3 +86,16 @@ export const updateQuoteLineItemForBundleId = createAsyncThunk(
     }
   },
 );
+
+export const getQuoteLineItemByQuoteIdandBundleIdNull = createAsyncThunk(
+  'quoteLineItem/getQuoteLineItemByQuoteIdandBundleIdNull',
+  async (id: number, thunkApi) => {
+    try {
+      const res =
+        await QUOTE_LINE_ITEM_API.getQuoteLineItemByQuoteIdandBundleIdNull(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

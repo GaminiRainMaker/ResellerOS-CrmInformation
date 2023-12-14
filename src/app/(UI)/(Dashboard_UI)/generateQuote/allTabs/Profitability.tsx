@@ -42,12 +42,6 @@ const Profitability = ({quoteLineItemByQuoteID}: any) => {
       width: 187,
     },
     {
-      title: 'MSRP',
-      dataIndex: 'adjusted_price',
-      key: 'adjusted_price',
-      width: 187,
-    },
-    {
       title: 'Cost',
       dataIndex: 'list_price',
       key: 'list_price',
@@ -59,14 +53,50 @@ const Profitability = ({quoteLineItemByQuoteID}: any) => {
       key: 'description',
       width: 365,
     },
+    {
+      title: 'Product Description',
+      dataIndex: 'description',
+      key: 'description',
+      width: 365,
+    },
+    {
+      title: 'Product Description',
+      dataIndex: 'description',
+      key: 'description',
+      width: 365,
+    },
+    {
+      title: 'Product Description',
+      dataIndex: 'description',
+      key: 'description',
+      width: 365,
+    },
+    {
+      title: 'Product Description',
+      dataIndex: 'description',
+      key: 'description',
+      width: 365,
+    },
+    {
+      title: 'Product Description',
+      dataIndex: 'description',
+      key: 'description',
+      width: 365,
+    },
+    {
+      title: 'Product Description',
+      dataIndex: 'description',
+      key: 'description',
+      width: 365,
+    },
   ];
   return (
     <OsTable
       //   loading={loading}
-      columns={QuoteLineItemcolumns}
-      //   dataSource={quoteLineItemByQuoteData}
+      // rowSelection={rowSelection}
+      //   columns={QuoteLineItemcolumns}
+      //   dataSource={quoteLineItemByQuoteID || []}
       scroll
-      //   rowSelection={rowSelection}
     />
   );
 };

@@ -508,30 +508,38 @@ const GenerateQuote: React.FC = () => {
     }),
   };
 
-  const tabItems: TabsProps['items'] = [
+  const TabPaneData = [
     {
-      key: '1',
-      label: 'Input Details',
-      // children: Profitability(quoteLineItemByQuoteID),
+      key: 1,
+      name: 'Input Details',
+      children: (
+        <OsTable
+          loading={loading}
+          rowSelection={rowSelection}
+          columns={QuoteLineItemcolumns}
+          dataSource={quoteLineItemByQuoteID || []}
+          scroll
+        />
+      ),
     },
     {
-      key: '2',
-      label: 'Profitability',
+      key: 2,
+      name: 'Profitability',
     },
     {
-      key: '3',
-      label: 'Rebates',
+      key: 3,
+      name: 'Rebates',
     },
     {
-      key: '4',
-      label: 'Validation',
+      key: 4,
+      name: 'Validation',
     },
     {
-      key: '5',
-      label: 'Matrix',
+      key: 5,
+      name: 'Matrix',
     },
   ];
-
+  console.log('bundleDatabundleData', bundleData);
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -609,7 +617,7 @@ const GenerateQuote: React.FC = () => {
         <Row
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
-          <OsTabs
+            <OsTabs
             onChange={(e) => {
               setActiveTab(e);
             }}
@@ -653,102 +661,129 @@ const GenerateQuote: React.FC = () => {
               </Space>
             }
           >
-            {bundleData && bundleData?.length > 0 ? (
-              <>
-                {' '}
-                {bundleArr?.map((item: any, index: any) => (
-                  <OsCollapse
-                    items={[
-                      {
-                        key: '1',
-                        label: (
-                          <>
-                            <Space
-                              style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                              }}
-                            >
-                              <Typography name="Body 4/Medium">
-                                {item?.name}
-                              </Typography>
-                              <Typography name="Body 4/Medium">
-                                Lines:{item?.quoteLineItem?.length}
-                              </Typography>
-                              <Typography name="Body 4/Medium">
-                                Desc: {item?.description}
-                              </Typography>
-                              <Typography name="Body 4/Medium">
-                                Quantity: {item?.quantity}
-                              </Typography>
-                            </Space>
-                          </>
-                        ),
-                        children: (
-                          <OsTable
-                            loading={loading}
-                            // rowSelection={rowSelection}
-                            columns={QuoteLineItemcolumns}
-                            dataSource={
-                              (showTableDataa && item?.quoteLineItem) || []
-                            }
-                            scroll
-                            rowSelection={rowSelection}
-                          />
-                        ),
-                      },
-                    ]}
-                  />
-                ))}{' '}
-                <OsCollapse
-                  items={[
-                    {
-                      key: '1',
-                      label: (
-                        <>
-                          <Space
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'start',
-                            }}
-                          >
-                            <Typography name="Body 4/Medium">
-                              {unassigned?.[0]?.name}
-                            </Typography>
-                          </Space>
-                        </>
-                      ),
-                      children: (
-                        <OsTable
-                          loading={loading}
-                          // rowSelection={rowSelection}
-                          columns={QuoteLineItemcolumns}
-                          dataSource={
-                            (showTableDataa &&
-                              unassigned?.[0]?.quoteLineItem) ||
-                            []
-                          }
-                          scroll
-                          rowSelection={rowSelection}
-                        />
-                      ),
-                    },
-                  ]}
-                />{' '}
-              </>
-            ) : (
-              <>
-                {' '}
-                <OsTable
-                  loading={loading}
-                  // rowSelection={rowSelection}
-                  columns={QuoteLineItemcolumns}
-                  dataSource={(showTableDataa && quoteLineItemByQuoteID) || []}
-                  scroll
-                  rowSelection={rowSelection}
-                />
-              </>
-            )}
+            {TabPaneData?.map((item) => (
+              <TabPane
+                tab={
+                  <Typography
+                    name="Body 4/Regular"
+                    color={
+                      activeTab === item?.key ? token?.colorPrimary : '#666666'
+                    }
+                  >
+                    {item?.name}
+                    <div
+                      style={{
+                        // eslint-disable-next-line eqeqeq
+                        borderBottom:
+                          // eslint-disable-next-line eqeqeq
+                          activeTab == item?.key ? '2px solid #1C3557' : '',
+                        marginTop: '3px',
+                      }}
+                    />
+                  </Typography>
+                }
+                key={item?.key}
+              >
+                {bundleData && bundleData?.length > 0 ? (
+                  <>
+                    {' '}
+                    {bundleData?.map((item: any, index: any) => (
+                      <OsCollapse
+                        items={[
+                          {
+                            key: '1',
+                            label: (
+                              <>
+                                <Space
+                                  style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                  }}
+                                >
+                                  <Typography name="Body 4/Medium">
+                                    {item?.name}
+                                  </Typography>
+                                  <Typography name="Body 4/Medium">
+                                    Lines:{item?.quoteLineItems?.length}
+                                  </Typography>
+                                  <Typography name="Body 4/Medium">
+                                    Desc: {item?.description}
+                                  </Typography>
+                                  <Typography name="Body 4/Medium">
+                                    Quantity: {item?.quantity}
+                                  </Typography>
+                                </Space>
+                              </>
+                            ),
+                            children: (
+                              <OsTable
+                                loading={loading}
+                                // rowSelection={rowSelection}
+                                columns={QuoteLineItemcolumns}
+                                dataSource={
+                                  (showTableDataa && item?.QuoteLineItems) || []
+                                }
+                                scroll
+                                rowSelection={rowSelection}
+                              />
+                            ),
+                          },
+                        ]}
+                      />
+                    ))}{' '}
+                    <OsCollapse
+                      items={[
+                        {
+                          key: '1',
+                          label: (
+                            <>
+                              <Space
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'start',
+                                }}
+                              >
+                                <Typography name="Body 4/Medium">
+                                  {unassigned?.[0]?.name}
+                                </Typography>
+                              </Space>
+                            </>
+                          ),
+                          children: (
+                            <OsTable
+                              loading={loading}
+                              // rowSelection={rowSelection}
+                              columns={QuoteLineItemcolumns}
+                              dataSource={
+                                (showTableDataa &&
+                                  unassigned?.[0]?.quoteLineItem) ||
+                                []
+                              }
+                              scroll
+                              rowSelection={rowSelection}
+                            />
+                          ),
+                        },
+                      ]}
+                    />{' '}
+                  </>
+                ) : (
+                  <>
+                    {' '}
+                    <OsTable
+                      loading={loading}
+                      // rowSelection={rowSelection}
+                      columns={QuoteLineItemcolumns}
+                      dataSource={
+                        (showTableDataa && quoteLineItemByQuoteID) || []
+                      }
+                      scroll
+                      rowSelection={rowSelection}
+                    />
+                  </>
+                )}
+              </TabPane>
+            ))}
           </OsTabs>
         </Row>
       </Space>

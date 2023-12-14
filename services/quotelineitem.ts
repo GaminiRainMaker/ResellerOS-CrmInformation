@@ -24,6 +24,10 @@ export const QUOTE_LINE_ITEM_API = {
     >,
   patch: (data: any) =>
     patch(API.QUOTE_LINE_ITEM.INDEX, data) as Promise<AxiosResponse<[]>>,
+  getQuoteLineItemByQuoteIdandBundleIdNull: (id: number) =>
+    get(
+      `${API.QUOTE_LINE_ITEM.GetQuoteLineItemByQuoteIdandBundleIdNull}/${id}`,
+    ) as Promise<AxiosResponse<[]>>,
 
   // put: (id: number, data: any) => put(API.QUOTE_LINE_ITEM.INDEX + "/" + id, data),
   // delete: (id: number) => del(API.QUOTE_LINE_ITEM.INDEX + "/" + id),
