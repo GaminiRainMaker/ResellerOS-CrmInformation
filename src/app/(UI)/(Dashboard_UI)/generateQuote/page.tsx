@@ -32,9 +32,11 @@ import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
 import {Breadcrumb, Button, MenuProps, TabsProps} from 'antd';
+import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import OsCollapse from '@/app/components/common/os-collapse';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {updateProductFamily} from '../../../../../redux/actions/product';
@@ -46,6 +48,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
 import BundleSection from './bundleSection';
+import {getAllBundle} from '../../../../../redux/actions/bundle';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -68,9 +71,45 @@ const GenerateQuote: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const [showTableDataa, setShowTableDataa] = useState<boolean>(true);
+  const [selectedFilter, setSelectedFilter] = useState<String>();
+  const {data: bundleData} = useAppSelector((state) => state.bundle);
+  const [unassigned, setUnassigned] = useState<any>();
+  const [bundleArr, setBundleArr] = useState<any>();
   const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] = useState<
     Array<any>
   >(quoteLineItemByQuoteID ?? []);
+
+  useEffect(() => {
+    const bundleFilterData: any = [];
+    const Unassigned: any = [];
+    bundleData?.map((item: any) => {
+      const newInnerBundle: any = [];
+      const newInnerUnassigned: any = [];
+      item?.Quote?.QuoteLineItems?.filter((itemQu) => {
+        if (itemQu?.bundle_id == item?.id) {
+          newInnerBundle?.push(itemQu);
+        } else if (!itemQu?.bundle_id) {
+          newInnerUnassigned?.push(itemQu);
+        }
+      });
+      const obj = {
+        name: item?.name,
+        description: item?.description,
+        quantity: item?.quantity,
+        quoteLineItem: newInnerBundle,
+        id: item?.id,
+      };
+      bundleFilterData?.push(obj);
+      const obj2 = {
+        name: 'Unassigned',
+        quoteLineItem: newInnerUnassigned,
+      };
+      Unassigned?.push(obj2);
+    });
+    setUnassigned(Unassigned);
+    setBundleArr(bundleFilterData);
+  }, [bundleData]);
 
   // useEffect(() => {
   //   // if (debouncedValue && debouncedValue?.length > 0) {
@@ -89,6 +128,9 @@ const GenerateQuote: React.FC = () => {
     if (getQuoteLineItemId)
       dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
   }, [getQuoteLineItemId]);
+  useEffect(() => {
+    dispatch(getAllBundle(getQuoteLineItemId));
+  }, []);
 
   useEffect(() => {
     let newObj: any = {};
@@ -204,7 +246,6 @@ const GenerateQuote: React.FC = () => {
       }, 500);
     }
   };
-
   const analyticsData = [
     {
       key: 1,
@@ -275,7 +316,6 @@ const GenerateQuote: React.FC = () => {
     {value: 'Products', label: 'Products'},
     {value: 'Maintenance', label: 'Maintenance'},
   ];
-
   const QuoteLineItemcolumns = [
     {
       title: '#Line',
@@ -372,7 +412,7 @@ const GenerateQuote: React.FC = () => {
               value={record?.Product?.product_family}
               options={selectDataForProduct}
               onChange={(e) => {
-                const data = {id: record?.Product?.id, product_family: e};
+                const data = {id: record?.product_id, product_family: e};
                 dispatch(updateProductFamily(data));
               }}
             />
@@ -587,6 +627,9 @@ const GenerateQuote: React.FC = () => {
                     style={{width: '319px'}}
                     placeholder="Select Grouping here"
                     options={selectData}
+                    onChange={(e) => {
+                      setSelectedFilter(e);
+                    }}
                   />
 
                   <Dropdown
@@ -609,33 +652,104 @@ const GenerateQuote: React.FC = () => {
                 </Space>
               </Space>
             }
-            items={tabItems.map((tabItem: any, index: number) => ({
-              key: `${index + 1}`,
-              label: (
-                <div>
-                  <div>{tabItem?.label}</div>
-                  <div
-                    style={{
-                      // eslint-disable-next-line eqeqeq
-                      borderBottom:
-                        // eslint-disable-next-line eqeqeq
-                        activeTab == tabItem?.key ? '2px solid #1C3557' : '',
-                      // marginTop: '3px',
-                    }}
+          >
+            {bundleData && bundleData?.length > 0 ? (
+              <>
+                {' '}
+                {bundleArr?.map((item: any, index: any) => (
+                  <OsCollapse
+                    items={[
+                      {
+                        key: '1',
+                        label: (
+                          <>
+                            <Space
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                              }}
+                            >
+                              <Typography name="Body 4/Medium">
+                                {item?.name}
+                              </Typography>
+                              <Typography name="Body 4/Medium">
+                                Lines:{item?.quoteLineItem?.length}
+                              </Typography>
+                              <Typography name="Body 4/Medium">
+                                Desc: {item?.description}
+                              </Typography>
+                              <Typography name="Body 4/Medium">
+                                Quantity: {item?.quantity}
+                              </Typography>
+                            </Space>
+                          </>
+                        ),
+                        children: (
+                          <OsTable
+                            loading={loading}
+                            // rowSelection={rowSelection}
+                            columns={QuoteLineItemcolumns}
+                            dataSource={
+                              (showTableDataa && item?.quoteLineItem) || []
+                            }
+                            scroll
+                            rowSelection={rowSelection}
+                          />
+                        ),
+                      },
+                    ]}
                   />
-                </div>
-              ),
-              children: (
+                ))}{' '}
+                <OsCollapse
+                  items={[
+                    {
+                      key: '1',
+                      label: (
+                        <>
+                          <Space
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'start',
+                            }}
+                          >
+                            <Typography name="Body 4/Medium">
+                              {unassigned?.[0]?.name}
+                            </Typography>
+                          </Space>
+                        </>
+                      ),
+                      children: (
+                        <OsTable
+                          loading={loading}
+                          // rowSelection={rowSelection}
+                          columns={QuoteLineItemcolumns}
+                          dataSource={
+                            (showTableDataa &&
+                              unassigned?.[0]?.quoteLineItem) ||
+                            []
+                          }
+                          scroll
+                          rowSelection={rowSelection}
+                        />
+                      ),
+                    },
+                  ]}
+                />{' '}
+              </>
+            ) : (
+              <>
+                {' '}
                 <OsTable
                   loading={loading}
+                  // rowSelection={rowSelection}
                   columns={QuoteLineItemcolumns}
-                  dataSource={quoteLineItemByQuoteData ?? []}
+                  dataSource={(showTableDataa && quoteLineItemByQuoteID) || []}
                   scroll
                   rowSelection={rowSelection}
                 />
-              ),
-            }))}
-          />
+              </>
+            )}
+          </OsTabs>
         </Row>
       </Space>
       <OsDrawer
