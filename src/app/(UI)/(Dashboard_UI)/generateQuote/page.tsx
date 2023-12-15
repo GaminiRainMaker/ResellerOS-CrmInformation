@@ -114,7 +114,7 @@ const GenerateQuote: React.FC = () => {
             item?.Product?.product_family == 'Professional Services',
         );
         maintenanceArr = dataNullForBundle?.[0]?.filter(
-          (item: any) => item?.Product?.product_family == 'Maintenances',
+          (item: any) => item?.Product?.product_family == 'Maintenance',
         );
         subscriptionArr = dataNullForBundle?.[0]?.filter(
           (item: any) => item?.Product?.product_family == 'Subscriptions',
@@ -809,36 +809,43 @@ const GenerateQuote: React.FC = () => {
                           ))}
                         </>
                       ) : (
-                        <OsCollapse
-                          items={[
-                            {
-                              key: '2',
-                              label: (
-                                <>
-                                  <Space
-                                    style={{
-                                      display: 'flex',
-                                      justifyContent: 'start',
-                                    }}
-                                  >
-                                    <Typography name="Body 4/Medium">
-                                      Unassigned
-                                    </Typography>
-                                  </Space>
-                                </>
-                              ),
-                              children: (
-                                <OsTable
-                                  loading={loading}
-                                  columns={QuoteLineItemcolumns}
-                                  dataSource={dataNullForBundle?.[0] || []}
-                                  scroll
-                                  rowSelection={rowSelection}
-                                />
-                              ),
-                            },
-                          ]}
-                        />
+                        <>
+                          {dataNullForBundle?.[0]?.length > 0 &&
+                            dataNullForBundle?.[0] && (
+                              <OsCollapse
+                                items={[
+                                  {
+                                    key: '2',
+                                    label: (
+                                      <>
+                                        <Space
+                                          style={{
+                                            display: 'flex',
+                                            justifyContent: 'start',
+                                          }}
+                                        >
+                                          <Typography name="Body 4/Medium">
+                                            Unassigned
+                                          </Typography>
+                                        </Space>
+                                      </>
+                                    ),
+                                    children: (
+                                      <OsTable
+                                        loading={loading}
+                                        columns={QuoteLineItemcolumns}
+                                        dataSource={
+                                          dataNullForBundle?.[0] || []
+                                        }
+                                        scroll
+                                        rowSelection={rowSelection}
+                                      />
+                                    ),
+                                  },
+                                ]}
+                              />
+                            )}
+                        </>
                       )}{' '}
                     </>
                   ) : (
