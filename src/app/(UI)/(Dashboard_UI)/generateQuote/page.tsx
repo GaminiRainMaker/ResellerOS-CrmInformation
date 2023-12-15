@@ -89,9 +89,12 @@ const GenerateQuote: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState<String>();
   const {data: bundleData} = useAppSelector((state) => state.bundle);
   const [familyFilter, setFamilyFilter] = useState<any>([]);
-  const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] = useState<any>(
-    quoteLineItemByQuoteID,
-  );
+  const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] =
+    useState<any>();
+
+  useEffect(() => {
+    setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);
+  }, [quoteLineItemByQuoteID]);
 
   useEffect(() => {
     if (selectedFilter == 'Product Family') {
@@ -262,14 +265,13 @@ const GenerateQuote: React.FC = () => {
   }, [quoteLineItemByQuoteID]);
 
   const commonUpdateCompleteAndDraftMethod = (queryItem: string) => {
-    // if (getQuoteID) {
-    //   const data = {
-    //     ids: getQuoteID,
-    //     query: queryItem,
-    //   };
-    //   dispatch(updateQuoteByQuery(data));
-    // }
-
+    if (getQuoteID) {
+      const data = {
+        ids: getQuoteID,
+        query: queryItem,
+      };
+      dispatch(updateQuoteByQuery(data));
+    }
     quoteLineItemByQuoteData?.map((prev: any) => {
       if (selectTedRowIds?.includes(prev?.id)) {
         const obj = {
@@ -281,6 +283,17 @@ const GenerateQuote: React.FC = () => {
     });
     router?.push('/allQuote');
   };
+  // const saveUpdate = (queryItem: string) => {
+  //   quoteLineItemByQuoteData?.map((prev: any) => {
+  //     if (selectTedRowIds?.includes(prev?.id)) {
+  //       const obj = {
+  //         id: prev?.id,
+  //         quantity: prev?.quantity,
+  //       };
+  //       return dispatch(UpdateQuoteLineItemQuantityById(obj));
+  //     }
+  //   });
+  // };
 
   const deleteLineItems = () => {
     if (selectTedRowIds) {
@@ -442,7 +455,7 @@ const GenerateQuote: React.FC = () => {
             <CommonSelect
               style={{width: '200px'}}
               placeholder="Select"
-              value={record?.Product?.product_family}
+              defaultValue={record?.Product?.product_family}
               options={selectDataForProduct}
               onChange={(e) => {
                 const data = {id: record?.product_id, product_family: e};
@@ -817,7 +830,6 @@ const GenerateQuote: React.FC = () => {
                               children: (
                                 <OsTable
                                   loading={loading}
-                                  // rowSelection={rowSelection}
                                   columns={QuoteLineItemcolumns}
                                   dataSource={dataNullForBundle?.[0] || []}
                                   scroll
