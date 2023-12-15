@@ -118,7 +118,7 @@ const AllQuote: React.FC = () => {
             );
       setActiveQuotes(quoteItems);
     }
-  }, [quoteDataBYApi, activeTab, quoteData]);
+  }, [filteredData, activeTab, quoteData]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: any) => {

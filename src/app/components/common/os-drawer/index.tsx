@@ -8,7 +8,6 @@ const OsDrawer: React.FC<DrawerProps> = (props) => (
       header: {
         display: 'flex',
         flexDirection: 'row-reverse',
-        background: 'cyan',
       },
     }}
     {...props}

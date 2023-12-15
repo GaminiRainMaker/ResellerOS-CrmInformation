@@ -1,6 +1,9 @@
+/* eslint-disable consistent-return */
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
+import {dummyData, pricingMethod} from '@/app/utils/CONSTANTS';
+import {calculateProfitabilityData} from '@/app/utils/base';
 import {FC} from 'react';
 
 const Profitability: FC = () => {
@@ -59,7 +62,11 @@ const Profitability: FC = () => {
       key: 'pricing_method',
       width: 160,
       render: (text: string) => (
-        <CommonSelect style={{width: '200px'}} placeholder="Select" />
+        <CommonSelect
+          style={{width: '200px'}}
+          placeholder="Select"
+          options={pricingMethod}
+        />
       ),
     },
     {
@@ -102,12 +109,16 @@ const Profitability: FC = () => {
       width: 131,
     },
   ];
+
+  // Example usage:
+  const result = calculateProfitabilityData(3, 'cost_dollar', 20, 10, 20);
+
   return (
     <OsTable
       loading={false}
       // rowSelection={rowSelection}
       columns={ProfitabilityQuoteLineItemcolumns}
-      //   dataSource={quoteLineItemByQuoteID || []}
+      dataSource={dummyData}
       scroll
     />
   );

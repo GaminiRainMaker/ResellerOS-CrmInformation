@@ -84,6 +84,9 @@ const GenerateQuote: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState<String>();
   const {data: bundleData} = useAppSelector((state) => state.bundle);
   const [familyFilter, setFamilyFilter] = useState<any>([]);
+  const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] = useState<any>(
+    quoteLineItemByQuoteID,
+  );
 
   useEffect(() => {
     if (selectedFilter == 'Product Family') {
@@ -695,7 +698,7 @@ const GenerateQuote: React.FC = () => {
                 }
                 key={item?.key}
               >
-                {bundleData && bundleData?.length > 0 ? (
+                {/* {bundleData && bundleData?.length > 0 ? (
                   <>
                     {' '}
                     {bundleData?.map((item: any, index: any) => (
@@ -826,7 +829,8 @@ const GenerateQuote: React.FC = () => {
                       rowSelection={rowSelection}
                     />
                   </>
-                )}
+                )} */}
+                {item?.children}
               </TabPane>
             ))}
           </OsTabs>
