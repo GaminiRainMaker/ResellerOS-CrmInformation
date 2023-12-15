@@ -32,11 +32,13 @@ import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Breadcrumb, Button, MenuProps} from 'antd';
+import {Button, MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {use, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
+import {selectData, selectDataForProduct} from '@/app/utils/CONSTANTS';
+import {Breadcrumb} from '@/app/components/common/antd/BreadCrumb';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {getAllBundle} from '../../../../../redux/actions/bundle';
@@ -50,6 +52,10 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
 import BundleSection from './bundleSection';
+import Profitability from './allTabs/Profitability';
+import InputDetails from './allTabs/InputDetails';
+import Rebates from './allTabs/Rebates';
+import Validation from './allTabs/Validation';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -73,7 +79,7 @@ const GenerateQuote: React.FC = () => {
   const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
   const [open, setOpen] = useState(false);
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
   const [showTableDataa, setShowTableDataa] = useState<boolean>(true);
   const [selectedFilter, setSelectedFilter] = useState<String>();
   const {data: bundleData} = useAppSelector((state) => state.bundle);
@@ -85,6 +91,7 @@ const GenerateQuote: React.FC = () => {
       getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteLineItemId)),
     );
   }, [getQuoteLineItemId]);
+
   useEffect(() => {
     dispatch(getAllBundle(getQuoteLineItemId));
   }, []);
@@ -184,7 +191,6 @@ const GenerateQuote: React.FC = () => {
 
   const commonUpdateCompleteAndDraftMethod = (queryItem: string) => {
     if (getQuoteLineItemId) {
-      console.log('object');
       const data = {
         ids: getQuoteLineItemId,
         query: queryItem,
@@ -203,6 +209,7 @@ const GenerateQuote: React.FC = () => {
       }, 500);
     }
   };
+
   const analyticsData = [
     {
       key: 1,
@@ -260,19 +267,6 @@ const GenerateQuote: React.FC = () => {
     },
   ];
 
-  const selectData = [
-    {value: 'Product Family', label: 'Product Family'},
-    {value: 'Pricing Method', label: 'Pricing Method'},
-    {value: 'Vendor/Disti', label: 'Vendor/Disti'},
-    {value: 'OEM', label: 'OEM'},
-  ];
-
-  const selectDataForProduct = [
-    {value: 'Professional Services', label: 'Professional Services'},
-    {value: 'Subscriptions', label: 'Subscriptions'},
-    {value: 'Products', label: 'Products'},
-    {value: 'Maintenance', label: 'Maintenance'},
-  ];
   const QuoteLineItemcolumns = [
     {
       title: '#Line',
@@ -426,8 +420,8 @@ const GenerateQuote: React.FC = () => {
       key: '1',
       title: (
         <Typography
-          name="Heading 3/Medium"
-          color={token?.colorPrimaryText}
+          name="Body 2/Medium"
+          color={token?.colorInfoBorder}
           cursor="pointer"
           onClick={() => {
             router?.push('/allQuote');
@@ -448,7 +442,7 @@ const GenerateQuote: React.FC = () => {
             router?.push(`/generateQuote?id=${getQuoteLineItemId}`);
           }}
         >
-          Generate Quotes
+          {quoteLineItemByQuoteID?.[0]?.Quote?.createdAt ?? ''}
         </Typography>
       ),
     },
@@ -456,7 +450,7 @@ const GenerateQuote: React.FC = () => {
 
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[]) => {
-      setSelectedRowKeys(selectedRowKeys);
+      // setSelectedRowKeys(selectedRowKeys);
       setSelectedRowIds(selectedRowKeys);
     },
     getCheckboxProps: (record: any) => ({
@@ -469,33 +463,29 @@ const GenerateQuote: React.FC = () => {
     {
       key: 1,
       name: 'Input Details',
-      children: (
-        <OsTable
-          loading={loading}
-          rowSelection={rowSelection}
-          columns={QuoteLineItemcolumns}
-          dataSource={quoteLineItemByQuoteID || []}
-          scroll
-        />
-      ),
+      children: <InputDetails isEditable={isEditable} />,
     },
     {
       key: 2,
       name: 'Profitability',
+      children: <Profitability />,
     },
     {
       key: 3,
       name: 'Rebates',
+      children: <Rebates />,
     },
     {
       key: 4,
       name: 'Validation',
+      children: <Validation />,
     },
     {
       key: 5,
       name: 'Matrix',
     },
   ];
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -524,13 +514,11 @@ const GenerateQuote: React.FC = () => {
           <Col>
             <Breadcrumb
               separator={
-                <Typography
-                  name="Heading 3/Medium"
-                  cursor="pointer"
-                  color={token?.colorPrimaryText}
-                >
-                  <ChevronRightIcon width={24} />
-                </Typography>
+                <ChevronRightIcon
+                  width={24}
+                  height={24}
+                  color={token?.colorInfoBorder}
+                />
               }
               items={menuItems}
             />

@@ -57,7 +57,11 @@ const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
-  const {data: quotes, loading} = useAppSelector((state) => state.quote);
+  const {
+    data: quoteDataBYApi,
+    loading,
+    filteredByDate: filteredData,
+  } = useAppSelector((state) => state.quote);
   const router = useRouter();
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -67,6 +71,7 @@ const AllQuote: React.FC = () => {
   const [deletedQuote, setDeletedQuote] = useState<React.Key[]>([]);
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
+  const [showTableData, setTableData] = useState<boolean>(false);
   const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [fromDate, setFromDate] = useState<any>([]);
@@ -82,22 +87,25 @@ const AllQuote: React.FC = () => {
         beforeDays: fromDate,
         afterDays: toDate,
       };
+      setTableData(true);
       dispatch(getQuotesByDateFilter(obj));
     }
   }, [fromDate && toDate]);
 
+  console.log('filteredData', filteredData, quoteDataBYApi);
+
   useEffect(() => {
-    if (quotes && quotes?.length > 0) {
-      const deleted = quotes?.filter((item: any) => item?.is_deleted);
-      const notDeleted = quotes?.filter((item: any) => !item?.is_deleted);
+    const quoteFinalData = showTableData ? filteredData : quoteDataBYApi;
+    if (filteredData && filteredData?.length > 0) {
+      const deleted = filteredData?.filter((item: any) => item?.is_deleted);
+      const notDeleted = filteredData?.filter((item: any) => !item?.is_deleted);
       setQuoteData(notDeleted);
       setDeletedQuote(deleted);
     }
-  }, [quotes]);
+  }, [filteredData]);
 
   useEffect(() => {
     if (activeTab && quoteData.length > 0) {
-      console.log('quoteData', quoteData);
       const quoteItems =
         activeTab === '3'
           ? quoteData?.filter((item: any) => item?.is_drafted)
@@ -110,7 +118,7 @@ const AllQuote: React.FC = () => {
             );
       setActiveQuotes(quoteItems);
     }
-  }, [activeTab, quoteData]);
+  }, [quoteDataBYApi, activeTab, quoteData]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: any) => {
@@ -432,7 +440,6 @@ const AllQuote: React.FC = () => {
                     placeholder="dd/mm/yyyy"
                     onChange={(v) => {
                       setFromDate(v);
-                      console.log('setFromDate', v);
                     }}
                   />
                 </Space>
@@ -442,7 +449,6 @@ const AllQuote: React.FC = () => {
                     placeholder="dd/mm/yyyy"
                     onChange={(v) => {
                       setToDate(v);
-                      console.log('setToDate', v);
                     }}
                   />
                 </Space>

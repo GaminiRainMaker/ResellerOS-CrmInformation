@@ -11,7 +11,7 @@ const OsTable: FC<any> = ({
   tableInModal,
   rowSelection,
   cursor = 'default',
-  type1 = 'checkbox',
+  tableSelectionType = 'checkbox',
   ...rest
 }) => {
   const [token] = useThemeToken();
@@ -36,7 +36,7 @@ const OsTable: FC<any> = ({
       token={token}
       rowKey={(record: any) => record.id}
       rowSelection={{
-        type: type1,
+        type: tableSelectionType,
         ...rowSelection,
       }}
       bordered

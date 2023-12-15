@@ -65,7 +65,7 @@ const RecentSection: FC<any> = ({
           <OsTable
             loading={loading}
             rowSelection={rowSelection}
-            type1="Radio"
+            tableSelectionType="radio"
             columns={Quotecolumns}
             dataSource={quoteData}
             scroll

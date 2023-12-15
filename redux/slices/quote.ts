@@ -17,12 +17,14 @@ type QuoteState = {
   error: string | null;
   data: any;
   quote: any;
+  filteredByDate: any;
 };
 const initialState: QuoteState = {
   loading: false,
   error: null,
   data: [],
   quote: [],
+  filteredByDate: [],
 };
 
 const quoteSlice = createSlice({
@@ -157,7 +159,7 @@ const quoteSlice = createSlice({
         getQuotesByDateFilter.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.filteredByDate = action.payload;
         },
       )
       .addCase(
