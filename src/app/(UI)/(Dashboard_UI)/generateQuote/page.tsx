@@ -105,7 +105,7 @@ const GenerateQuote: React.FC = () => {
       let subscriptionArr: any = [];
       let unassignedArr: any = [];
 
-      if (dataNullForBundle) {
+      if (dataNullForBundle?.[0] && dataNullForBundle?.[0]?.length > 0) {
         productsArr = dataNullForBundle?.[0]?.filter(
           (item: any) => item?.Product?.product_family == 'Products',
         );
