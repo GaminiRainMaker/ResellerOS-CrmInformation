@@ -698,139 +698,143 @@ const GenerateQuote: React.FC = () => {
                 }
                 key={item?.key}
               >
-                {/* {bundleData && bundleData?.length > 0 ? (
-                  <>
-                    {' '}
-                    {bundleData?.map((item: any, index: any) => (
-                      <OsCollapse
-                        items={[
-                          {
-                            key: '1',
-                            label: (
-                              <>
-                                <Space
-                                  style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                  }}
-                                >
-                                  <Typography name="Body 4/Medium">
-                                    {item?.name}
-                                  </Typography>
-                                  <Typography name="Body 4/Medium">
-                                    Lines:{item?.quoteLineItems?.length}
-                                  </Typography>
-                                  <Typography name="Body 4/Medium">
-                                    Desc: {item?.description}
-                                  </Typography>
-                                  <Typography name="Body 4/Medium">
-                                    Quantity: {item?.quantity}
-                                  </Typography>
-                                </Space>
-                              </>
-                            ),
-                            children: (
-                              <OsTable
-                                loading={loading}
-                                // rowSelection={rowSelection}
-                                columns={QuoteLineItemcolumns}
-                                dataSource={
-                                  (showTableDataa && item?.QuoteLineItems) || []
-                                }
-                                scroll
-                                rowSelection={rowSelection}
-                              />
-                            ),
-                          },
-                        ]}
+                {activeTab === '1' ? (
+                  bundleData && bundleData?.length > 0 ? (
+                    <>
+                      {' '}
+                      {bundleData?.map((item: any, index: any) => (
+                        <OsCollapse
+                          items={[
+                            {
+                              key: '1',
+                              label: (
+                                <>
+                                  <Space
+                                    style={{
+                                      display: 'flex',
+                                      justifyContent: 'space-between',
+                                    }}
+                                  >
+                                    <Typography name="Body 4/Medium">
+                                      {item?.name}
+                                    </Typography>
+                                    <Typography name="Body 4/Medium">
+                                      Lines:{item?.quoteLineItems?.length}
+                                    </Typography>
+                                    <Typography name="Body 4/Medium">
+                                      Desc: {item?.description}
+                                    </Typography>
+                                    <Typography name="Body 4/Medium">
+                                      Quantity: {item?.quantity}
+                                    </Typography>
+                                  </Space>
+                                </>
+                              ),
+                              children: (
+                                <OsTable
+                                  loading={loading}
+                                  // rowSelection={rowSelection}
+                                  columns={QuoteLineItemcolumns}
+                                  dataSource={
+                                    (showTableDataa && item?.QuoteLineItems) ||
+                                    []
+                                  }
+                                  scroll
+                                  rowSelection={rowSelection}
+                                />
+                              ),
+                            },
+                          ]}
+                        />
+                      ))}{' '}
+                      {selectedFilter ? (
+                        <>
+                          {familyFilter?.map((item: any, index: any) => (
+                            <OsCollapse
+                              items={[
+                                {
+                                  key: index,
+                                  label: (
+                                    <>
+                                      <Space
+                                        style={{
+                                          display: 'flex',
+                                          justifyContent: 'start',
+                                        }}
+                                      >
+                                        <Typography name="Body 4/Medium">
+                                          {item?.name}
+                                        </Typography>
+                                      </Space>
+                                    </>
+                                  ),
+                                  children: (
+                                    <OsTable
+                                      loading={loading}
+                                      // rowSelection={rowSelection}
+                                      columns={QuoteLineItemcolumns}
+                                      dataSource={item?.QuoteLineItem || []}
+                                      scroll
+                                      rowSelection={rowSelection}
+                                    />
+                                  ),
+                                },
+                              ]}
+                            />
+                          ))}
+                        </>
+                      ) : (
+                        <OsCollapse
+                          items={[
+                            {
+                              key: '2',
+                              label: (
+                                <>
+                                  <Space
+                                    style={{
+                                      display: 'flex',
+                                      justifyContent: 'start',
+                                    }}
+                                  >
+                                    <Typography name="Body 4/Medium">
+                                      Unassigned
+                                    </Typography>
+                                  </Space>
+                                </>
+                              ),
+                              children: (
+                                <OsTable
+                                  loading={loading}
+                                  // rowSelection={rowSelection}
+                                  columns={QuoteLineItemcolumns}
+                                  dataSource={dataNullForBundle?.[0] || []}
+                                  scroll
+                                  rowSelection={rowSelection}
+                                />
+                              ),
+                            },
+                          ]}
+                        />
+                      )}{' '}
+                    </>
+                  ) : (
+                    <>
+                      {' '}
+                      <OsTable
+                        loading={loading}
+                        // rowSelection={rowSelection}
+                        columns={QuoteLineItemcolumns}
+                        dataSource={
+                          (showTableDataa && quoteLineItemByQuoteID) || []
+                        }
+                        scroll
+                        rowSelection={rowSelection}
                       />
-                    ))}{' '}
-                    {selectedFilter ? (
-                      <>
-                        {familyFilter?.map((item: any, index: any) => (
-                          <OsCollapse
-                            items={[
-                              {
-                                key: index,
-                                label: (
-                                  <>
-                                    <Space
-                                      style={{
-                                        display: 'flex',
-                                        justifyContent: 'start',
-                                      }}
-                                    >
-                                      <Typography name="Body 4/Medium">
-                                        {item?.name}
-                                      </Typography>
-                                    </Space>
-                                  </>
-                                ),
-                                children: (
-                                  <OsTable
-                                    loading={loading}
-                                    // rowSelection={rowSelection}
-                                    columns={QuoteLineItemcolumns}
-                                    dataSource={item?.QuoteLineItem || []}
-                                    scroll
-                                    rowSelection={rowSelection}
-                                  />
-                                ),
-                              },
-                            ]}
-                          />
-                        ))}
-                      </>
-                    ) : (
-                      <OsCollapse
-                        items={[
-                          {
-                            key: '2',
-                            label: (
-                              <>
-                                <Space
-                                  style={{
-                                    display: 'flex',
-                                    justifyContent: 'start',
-                                  }}
-                                >
-                                  <Typography name="Body 4/Medium">
-                                    Unassigned
-                                  </Typography>
-                                </Space>
-                              </>
-                            ),
-                            children: (
-                              <OsTable
-                                loading={loading}
-                                // rowSelection={rowSelection}
-                                columns={QuoteLineItemcolumns}
-                                dataSource={dataNullForBundle?.[0] || []}
-                                scroll
-                                rowSelection={rowSelection}
-                              />
-                            ),
-                          },
-                        ]}
-                      />
-                    )}{' '}
-                  </>
+                    </>
+                  )
                 ) : (
-                  <>
-                    {' '}
-                    <OsTable
-                      loading={loading}
-                      // rowSelection={rowSelection}
-                      columns={QuoteLineItemcolumns}
-                      dataSource={
-                        (showTableDataa && quoteLineItemByQuoteID) || []
-                      }
-                      scroll
-                      rowSelection={rowSelection}
-                    />
-                  </>
-                )} */}
-                {item?.children}
+                  item?.children
+                )}
               </TabPane>
             ))}
           </OsTabs>
