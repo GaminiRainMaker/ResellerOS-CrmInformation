@@ -1,22 +1,45 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
-import {dummyData, pricingMethod} from '@/app/utils/CONSTANTS';
+import {pricingMethod} from '@/app/utils/CONSTANTS';
 import {calculateProfitabilityData} from '@/app/utils/base';
-import {FC} from 'react';
+import {Button} from 'antd';
+import {useSearchParams} from 'next/navigation';
+import {FC, useEffect, useState} from 'react';
+import Typography from '@/app/components/common/typography';
+import {getQuoteLineItemByQuoteId} from '../../../../../../redux/actions/quotelineitem';
+import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 
-const Profitability: FC = () => {
+const Profitability: FC<any> = ({isEditable}) => {
+  const searchParams = useSearchParams();
+  const getQuoteLineItemId = searchParams.get('id');
+  const dispatch = useAppDispatch();
+  const {quoteLineItemByQuoteID} = useAppSelector(
+    (state) => state.quoteLineItem,
+  );
+  const [profitabilityData, setProfitabilityData] = useState<any>(
+    quoteLineItemByQuoteID,
+  );
+  const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
+
+  useEffect(() => {
+    if (getQuoteLineItemId)
+      dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
+  }, [getQuoteLineItemId]);
+
   const ProfitabilityQuoteLineItemcolumns = [
     {
       title: '#Line',
       dataIndex: 'line_number',
       key: 'line_number',
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <OsInput
           style={{
             height: '36px',
           }}
+          disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
           value={text}
           onChange={(v) => {}}
         />
@@ -33,13 +56,24 @@ const Profitability: FC = () => {
       title: 'Qty',
       dataIndex: 'quantity',
       key: 'quantity',
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <OsInput
           style={{
             height: '36px',
           }}
+          disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
           value={text}
-          onChange={(v) => {}}
+          onChange={(v) => {
+            // setCalculationData((prev) => ({...prev, Qty: v.target.value}));
+            setProfitabilityData((prev: any) =>
+              prev.map((prevItem: any) => {
+                if (prevItem.id === record?.id) {
+                  return {...prevItem, quantity: v.target.value};
+                }
+                return prevItem;
+              }),
+            );
+          }}
         />
       ),
       width: 120,
@@ -48,6 +82,26 @@ const Profitability: FC = () => {
       title: 'Cost',
       dataIndex: 'list_price',
       key: 'list_price',
+      render: (text: string, record: any) => (
+        <OsInput
+          style={{
+            height: '36px',
+          }}
+          value={text}
+          disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
+          onChange={(v) => {
+            // setCalculationData((prev) => ({...prev, Cost: v.target.value}));
+            setProfitabilityData((prev: any) =>
+              prev.map((prevItem: any) => {
+                if (prevItem.id === record?.id) {
+                  return {...prevItem, list_price: v.target.value};
+                }
+                return prevItem;
+              }),
+            );
+          }}
+        />
+      ),
       width: 115,
     },
     {
@@ -61,26 +115,49 @@ const Profitability: FC = () => {
       dataIndex: 'pricing_method',
       key: 'pricing_method',
       width: 160,
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <CommonSelect
           style={{width: '200px'}}
           placeholder="Select"
+          onChange={(v) => {
+            // setCalculationData((prev) => ({...prev, PriceMethod: v}));
+            setProfitabilityData((prev: any) =>
+              prev.map((prevItem: any) => {
+                if (prevItem.id === record?.id) {
+                  return {...prevItem, pricing_method: v};
+                }
+                return prevItem;
+              }),
+            );
+          }}
           options={pricingMethod}
+          disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
         />
       ),
     },
     {
       title: 'Amount',
-      dataIndex: 'amount',
-      key: 'amount',
+      dataIndex: 'line_amount',
+      key: 'line_amount',
       width: 121,
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <OsInput
           style={{
             height: '36px',
           }}
+          disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
           value={text}
-          onChange={(v) => {}}
+          onChange={(v) => {
+            // setCalculationData((prev) => ({...prev, Amount: v.target.value}));
+            setProfitabilityData((prev: any) =>
+              prev.map((prevItem: any) => {
+                if (prevItem.id === record?.id) {
+                  return {...prevItem, line_amount: v.target.value};
+                }
+                return prevItem;
+              }),
+            );
+          }}
         />
       ),
     },
@@ -106,21 +183,59 @@ const Profitability: FC = () => {
       title: 'Gross Profit %',
       dataIndex: 'gross_profit_percentage',
       key: 'gross_profit_percentage',
-      width: 131,
+      width: 200,
+      render: (text: string) => (
+        <Typography name="Body 4/Medium">
+          {text}
+          {text ? ' %' : ''}
+        </Typography>
+      ),
     },
   ];
 
-  // Example usage:
-  const result = calculateProfitabilityData(3, 'cost_dollar', 20, 10, 20);
+  const rowSelection = {
+    onChange: (selectedRowKeys: React.Key[]) => {
+      setSelectedRowIds(selectedRowKeys);
+    },
+  };
 
   return (
-    <OsTable
-      loading={false}
-      // rowSelection={rowSelection}
-      columns={ProfitabilityQuoteLineItemcolumns}
-      dataSource={dummyData}
-      scroll
-    />
+    <>
+      <Button
+        onClick={() => {
+          setProfitabilityData((prev: any) =>
+            prev.map((prevItem: any) => {
+              if (selectTedRowIds?.includes(prevItem?.id)) {
+                const result: any = calculateProfitabilityData(
+                  Number(prevItem?.quantity),
+                  prevItem?.pricing_method,
+                  Number(prevItem?.line_amount),
+                  Number(prevItem?.list_price),
+                  20,
+                );
+                return {
+                  ...prevItem,
+                  unit_price: result.unitPrice,
+                  exit_price: result.exitPrice,
+                  gross_profit: result.grossProfit,
+                  gross_profit_percentage: result.grossProfitPercentage,
+                };
+              }
+              return prevItem;
+            }),
+          );
+        }}
+      >
+        Result
+      </Button>
+      <OsTable
+        loading={false}
+        rowSelection={{...rowSelection}}
+        columns={ProfitabilityQuoteLineItemcolumns}
+        dataSource={profitabilityData}
+        scroll
+      />
+    </>
   );
 };
 

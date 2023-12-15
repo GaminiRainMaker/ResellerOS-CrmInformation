@@ -70,22 +70,19 @@ const AllQuote: React.FC = () => {
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
   const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [fromDate, setFromDate] = useState<any>([]);
-  const [toDate, setToDate] = useState<any>([]);
+  const [fromDate, setFromDate] = useState<string>('');
+  const [toDate, setToDate] = useState<string>('');
 
   useEffect(() => {
-    dispatch(getQuotesByDateFilter({}));
-  }, []);
-
-  useEffect(() => {
-    if (fromDate && toDate) {
-      const obj = {
-        beforeDays: fromDate,
-        afterDays: toDate,
+    let obj = {};
+    if (toDate && fromDate) {
+      obj = {
+        beforeDays: toDate,
+        afterDays: fromDate,
       };
-      dispatch(getQuotesByDateFilter(obj));
     }
-  }, [fromDate && toDate]);
+    dispatch(getQuotesByDateFilter(obj));
+  }, [fromDate, toDate]);
 
   useEffect(() => {
     if (filteredData && filteredData?.length > 0) {
@@ -93,8 +90,13 @@ const AllQuote: React.FC = () => {
       const notDeleted = filteredData?.filter((item: any) => !item?.is_deleted);
       setQuoteData(notDeleted);
       setDeletedQuote(deleted);
+    } else {
+      setQuoteData([]);
+      setDeletedQuote([]);
     }
   }, [filteredData]);
+
+  console.log('filteredData', filteredData);
 
   useEffect(() => {
     if (activeTab && quoteData.length > 0) {
@@ -109,8 +111,10 @@ const AllQuote: React.FC = () => {
               (item: any) => !item?.is_completed && !item?.is_drafted,
             );
       setActiveQuotes(quoteItems);
+    } else {
+      setActiveQuotes([]);
     }
-  }, [filteredData, activeTab, quoteData]);
+  }, [activeTab, quoteData]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: any) => {

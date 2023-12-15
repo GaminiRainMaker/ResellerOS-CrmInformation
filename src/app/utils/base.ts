@@ -1,39 +1,49 @@
 export const calculateProfitabilityData = (
-  Qty: any,
-  PriceMethod: any,
-  Amount: any,
-  Cost: any,
-  MSRP: any,
+  Qty: number,
+  PriceMethod: string,
+  Amount: number,
+  Cost: number,
+  MSRP: number,
 ) => {
   let unitPrice = 0;
-  let extPrice = 0;
+  let exitPrice = 0;
   let grossProfit = 0;
   let grossProfitPercentage = 0;
 
   if (PriceMethod === 'cost_dollar') {
     unitPrice = Cost + Amount;
-    extPrice = Qty * unitPrice;
+    exitPrice = Qty * unitPrice;
     grossProfit = unitPrice * Qty - Cost * Qty;
-    grossProfitPercentage = (grossProfit / extPrice) * 100;
+    grossProfitPercentage = (grossProfit / exitPrice) * 100;
   } else if (PriceMethod === 'cost_percentage') {
     unitPrice = Cost + (Amount / 100) * Cost;
-    extPrice = Qty * unitPrice;
+    exitPrice = Qty * unitPrice;
     grossProfit = unitPrice * Qty - Cost * Qty;
-    grossProfitPercentage = (grossProfit / extPrice) * 100;
+    grossProfitPercentage = (grossProfit / exitPrice) * 100;
   } else if (PriceMethod === 'list_percentage') {
     unitPrice = MSRP - (Amount / 100) * MSRP;
-    extPrice = Qty * unitPrice;
+    exitPrice = Qty * unitPrice;
     grossProfit = unitPrice * Qty - Cost * Qty;
-    grossProfitPercentage = (grossProfit / extPrice) * 100;
+    grossProfitPercentage = (grossProfit / exitPrice) * 100;
   } else if (PriceMethod === 'list_dollar') {
     unitPrice = MSRP + Amount;
-    extPrice = Qty * unitPrice;
+    exitPrice = Qty * unitPrice;
     grossProfit = unitPrice * Qty - Cost * Qty;
-    grossProfitPercentage = (grossProfit / extPrice) * 100;
+    grossProfitPercentage = (grossProfit / exitPrice) * 100;
+  } else if (PriceMethod === 'manual') {
+    unitPrice = Amount;
+    exitPrice = Qty * unitPrice;
+    grossProfit = unitPrice * Qty - Cost * Qty;
+    grossProfitPercentage = (grossProfit / exitPrice) * 100;
+  } else if (PriceMethod === 'gp') {
+    unitPrice = Cost / (1 - Amount / 100);
+    exitPrice = Qty * unitPrice;
+    grossProfit = unitPrice * Qty - Cost * Qty;
+    grossProfitPercentage = (grossProfit / exitPrice) * 100;
   }
   return {
     unitPrice,
-    extPrice,
+    exitPrice,
     grossProfit,
     grossProfitPercentage,
   };

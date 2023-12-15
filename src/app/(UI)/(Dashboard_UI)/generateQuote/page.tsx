@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-shadow */
@@ -22,10 +23,10 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline';
 
-import { Breadcrumb } from '@/app/components/common/antd/BreadCrumb';
-import { Dropdown } from '@/app/components/common/antd/DropDown';
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Breadcrumb} from '@/app/components/common/antd/BreadCrumb';
+import {Dropdown} from '@/app/components/common/antd/DropDown';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
@@ -35,23 +36,24 @@ import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import { selectData, selectDataForProduct } from '@/app/utils/CONSTANTS';
-import { Button, MenuProps } from 'antd';
+import {selectData, selectDataForProduct} from '@/app/utils/CONSTANTS';
+import {Button, MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {useEffect, useState} from 'react';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
-import { getAllBundle } from '../../../../../redux/actions/bundle';
-import { updateProductFamily } from '../../../../../redux/actions/product';
-import { updateQuoteByQuery } from '../../../../../redux/actions/quote';
+import {getAllBundle} from '../../../../../redux/actions/bundle';
+import {updateProductFamily} from '../../../../../redux/actions/product';
+import {updateQuoteByQuery} from '../../../../../redux/actions/quote';
 import {
   DeleteQuoteLineItemQuantityById,
   getQuoteLineItemByQuoteId,
   getQuoteLineItemByQuoteIdandBundleIdNull,
+  UpdateQuoteLineItemQuantityById,
 } from '../../../../../redux/actions/quotelineitem';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
 import InputDetails from './allTabs/InputDetails';
 import Profitability from './allTabs/Profitability';
@@ -64,7 +66,7 @@ const GenerateQuote: React.FC = () => {
   const [token] = useThemeToken();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const getQuoteLineItemId = searchParams.get('id');
+  const getQuoteID = searchParams.get('id');
 
   const [activeTab, setActiveTab] = useState<any>('1');
   const [inputData, setInputData] = useState<any>({});
@@ -77,6 +79,7 @@ const GenerateQuote: React.FC = () => {
     loading,
   } = useAppSelector((state) => state.quoteLineItem);
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<any>();
   const [amountData, setAmountData] = useState<any>();
   const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
   const [open, setOpen] = useState(false);
@@ -157,15 +160,12 @@ const GenerateQuote: React.FC = () => {
   }, [selectedFilter]);
 
   useEffect(() => {
-    if (getQuoteLineItemId)
-      dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
-    dispatch(
-      getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteLineItemId)),
-    );
-  }, [getQuoteLineItemId]);
+    if (getQuoteID) dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID)));
+    dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
+  }, [getQuoteID]);
 
   useEffect(() => {
-    dispatch(getAllBundle(getQuoteLineItemId));
+    dispatch(getAllBundle(getQuoteID));
   }, []);
 
   useEffect(() => {
@@ -262,13 +262,23 @@ const GenerateQuote: React.FC = () => {
   }, [quoteLineItemByQuoteID]);
 
   const commonUpdateCompleteAndDraftMethod = (queryItem: string) => {
-    if (getQuoteLineItemId) {
-      const data = {
-        ids: getQuoteLineItemId,
-        query: queryItem,
-      };
-      dispatch(updateQuoteByQuery(data));
-    }
+    // if (getQuoteID) {
+    //   const data = {
+    //     ids: getQuoteID,
+    //     query: queryItem,
+    //   };
+    //   dispatch(updateQuoteByQuery(data));
+    // }
+
+    quoteLineItemByQuoteData?.map((prev: any) => {
+      if (selectTedRowIds?.includes(prev?.id)) {
+        const obj = {
+          id: prev?.id,
+          quantity: prev?.quantity,
+        };
+        return dispatch(UpdateQuoteLineItemQuantityById(obj));
+      }
+    });
     router?.push('/allQuote');
   };
 
@@ -277,7 +287,7 @@ const GenerateQuote: React.FC = () => {
       dispatch(DeleteQuoteLineItemQuantityById(selectTedRowIds));
       setSelectedRowIds([]);
       setTimeout(() => {
-        dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
+        dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID)));
       }, 500);
     }
   };
@@ -352,8 +362,8 @@ const GenerateQuote: React.FC = () => {
           }}
           value={text}
           onChange={(v) => {
-            setQuoteLineItemByQuoteData((prev) =>
-              prev.map((prevItem) => {
+            setQuoteLineItemByQuoteData((prev: any) =>
+              prev.map((prevItem: any) => {
                 if (prevItem.id === record?.id) {
                   return {...prevItem, line_number: v.target.value};
                 }
@@ -383,8 +393,8 @@ const GenerateQuote: React.FC = () => {
           disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
           value={text}
           onChange={(v) => {
-            setQuoteLineItemByQuoteData((prev) =>
-              prev.map((prevItem) => {
+            setQuoteLineItemByQuoteData((prev: any) =>
+              prev.map((prevItem: any) => {
                 if (prevItem.id === record?.id) {
                   return {...prevItem, quantity: v.target.value};
                 }
@@ -511,7 +521,7 @@ const GenerateQuote: React.FC = () => {
           cursor="pointer"
           color={token?.colorPrimaryText}
           onClick={() => {
-            router?.push(`/generateQuote?id=${getQuoteLineItemId}`);
+            router?.push(`/generateQuote?id=${getQuoteID}`);
           }}
         >
           {quoteLineItemByQuoteID?.[0]?.Quote?.createdAt ?? ''}
@@ -521,8 +531,8 @@ const GenerateQuote: React.FC = () => {
   ];
 
   const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[]) => {
-      // setSelectedRowKeys(selectedRowKeys);
+    onChange: (selectedRowKeys: React.Key[], data: any) => {
+      setSelectedRowKeys(data);
       setSelectedRowIds(selectedRowKeys);
     },
     getCheckboxProps: (record: any) => ({
@@ -540,7 +550,7 @@ const GenerateQuote: React.FC = () => {
     {
       key: 2,
       name: 'Profitability',
-      children: <Profitability />,
+      children: <Profitability isEditable={isEditable} />,
     },
     {
       key: 3,
@@ -824,10 +834,9 @@ const GenerateQuote: React.FC = () => {
                       {' '}
                       <OsTable
                         loading={loading}
-                        // rowSelection={rowSelection}
                         columns={QuoteLineItemcolumns}
                         dataSource={
-                          (showTableDataa && quoteLineItemByQuoteID) || []
+                          (showTableDataa && quoteLineItemByQuoteData) || []
                         }
                         scroll
                         rowSelection={rowSelection}
