@@ -36,7 +36,6 @@ import {useEffect, useState} from 'react';
 import {insertProduct} from '../../../../../redux/actions/product';
 import {
   deleteQuoteById,
-  getAllQuotesWithCompletedAndDraft,
   getQuotesByDateFilter,
   insertQuote,
   updateQuoteByQuery,
@@ -57,11 +56,9 @@ const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
-  const {
-    data: quoteDataBYApi,
-    loading,
-    filteredByDate: filteredData,
-  } = useAppSelector((state) => state.quote);
+  const {loading, filteredByDate: filteredData} = useAppSelector(
+    (state) => state.quote,
+  );
   const router = useRouter();
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -71,14 +68,13 @@ const AllQuote: React.FC = () => {
   const [deletedQuote, setDeletedQuote] = useState<React.Key[]>([]);
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
-  const [showTableData, setTableData] = useState<boolean>(false);
   const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [fromDate, setFromDate] = useState<any>([]);
   const [toDate, setToDate] = useState<any>([]);
 
   useEffect(() => {
-    dispatch(getAllQuotesWithCompletedAndDraft());
+    dispatch(getQuotesByDateFilter({}));
   }, []);
 
   useEffect(() => {
@@ -87,15 +83,11 @@ const AllQuote: React.FC = () => {
         beforeDays: fromDate,
         afterDays: toDate,
       };
-      setTableData(true);
       dispatch(getQuotesByDateFilter(obj));
     }
   }, [fromDate && toDate]);
 
-  console.log('filteredData', filteredData, quoteDataBYApi);
-
   useEffect(() => {
-    const quoteFinalData = showTableData ? filteredData : quoteDataBYApi;
     if (filteredData && filteredData?.length > 0) {
       const deleted = filteredData?.filter((item: any) => item?.is_deleted);
       const notDeleted = filteredData?.filter((item: any) => !item?.is_deleted);
@@ -211,7 +203,7 @@ const AllQuote: React.FC = () => {
       dispatch(insertQuoteLineItem(newrrLineItems));
     }
 
-    dispatch(getAllQuotesWithCompletedAndDraft());
+    dispatch(getQuotesByDateFilter({}));
     setShowModal(false);
     setUploadFileData([]);
   };
@@ -311,7 +303,7 @@ const AllQuote: React.FC = () => {
         query: 'completed',
       };
       await dispatch(updateQuoteByQuery(data));
-      dispatch(getAllQuotesWithCompletedAndDraft());
+      dispatch(getQuotesByDateFilter({}));
       setActiveTab('4');
     }
   };
@@ -475,6 +467,7 @@ const AllQuote: React.FC = () => {
               ),
               children: (
                 <OsTable
+                  key={tabItem?.key}
                   columns={Quotecolumns}
                   dataSource={activeQuotes}
                   scroll
