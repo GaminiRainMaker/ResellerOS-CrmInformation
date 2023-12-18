@@ -99,7 +99,6 @@ const GenerateQuote: React.FC = () => {
   useEffect(() => {
     setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);
   }, [quoteLineItemByQuoteID]);
-
   useEffect(() => {
     if (selectedFilter == 'Product Family') {
       const finalFamilyArr: any = [];
@@ -383,13 +382,18 @@ const GenerateQuote: React.FC = () => {
       title: '#Line',
       dataIndex: 'line_number',
       key: 'line_number',
-      render: (text: string, record: any) => (
+      render: (text: any, record: any) => (
         <OsInput
           disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
           style={{
             height: '36px',
           }}
-          value={text}
+          placeholder={text}
+          value={
+            !selectTedRowIds?.includes(record?.id)
+              ? text * (record?.Bundle?.quantity ? record?.Bundle?.quantity : 1)
+              : quoteLineItemByQuoteData?.line_number
+          }
           onChange={(v) => {
             setQuoteLineItemByQuoteData((prev: any) =>
               prev.map((prevItem: any) => {
@@ -420,9 +424,18 @@ const GenerateQuote: React.FC = () => {
             height: '36px',
           }}
           disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
+          // value={
+          //   // eslint-disable-next-line no-unsafe-optional-chaining
+          //   text *
+          //   (!isEditable && record?.Bundle?.quantity
+          //     ? record?.Bundle?.quantity
+          //     : 1)
+          // }
+          placeholder={text}
           value={
-            // eslint-disable-next-line no-unsafe-optional-chaining
-            text * (record?.Bundle?.quantity ? record?.Bundle?.quantity : 1)
+            !selectTedRowIds?.includes(record?.id)
+              ? text * (record?.Bundle?.quantity ? record?.Bundle?.quantity : 1)
+              : quoteLineItemByQuoteData?.quantity
           }
           onChange={(v) => {
             setQuoteLineItemByQuoteData((prev: any) =>
@@ -444,7 +457,6 @@ const GenerateQuote: React.FC = () => {
       key: 'adjusted_price',
       width: 187,
       render: (text: any, record: any) => {
-        console.log('4434445', text);
         let doubleVal: any;
 
         return <>{record?.Bundle?.quantity ? record?.Bundle?.quantity : 1}</>;
@@ -455,6 +467,19 @@ const GenerateQuote: React.FC = () => {
       dataIndex: 'list_price',
       key: 'list_price',
       width: 187,
+      render: (text: any, record: any) => {
+        const totalAddedPrice = record?.Product?.list_price
+          ?.slice(1, record?.Product?.list_price?.length)
+          .replace(',', '');
+        // eslint-disable-next-line no-unsafe-optional-chaining
+        const ExactPriceForOne = totalAddedPrice / record?.Product?.quantity;
+        let bundleQuantity: any = 1;
+        bundleQuantity = record?.Bundle ? record?.Bundle?.quantity : 1;
+        const totalQuantity = record?.quantity * bundleQuantity;
+        const TotalPrice = totalQuantity * ExactPriceForOne;
+
+        return <>${TotalPrice}</>;
+      },
     },
     {
       title: 'Product Description',
@@ -889,16 +914,51 @@ const GenerateQuote: React.FC = () => {
                     </>
                   ) : (
                     <>
-                      {' '}
-                      <OsTable
-                        loading={loading}
-                        columns={QuoteLineItemcolumns}
-                        dataSource={
-                          (showTableDataa && quoteLineItemByQuoteData) || []
-                        }
-                        scroll
-                        rowSelection={rowSelection}
-                      />
+                      {selectedFilter ? (
+                        <>
+                          {' '}
+                          {familyFilter?.map((item: any, index: any) => (
+                            <OsCollapse
+                              items={[
+                                {
+                                  key: index,
+                                  label: (
+                                    <>
+                                      <Space
+                                        style={{
+                                          display: 'flex',
+                                          justifyContent: 'start',
+                                        }}
+                                      >
+                                        <p>{item?.name}</p>
+                                      </Space>
+                                    </>
+                                  ),
+                                  children: (
+                                    <OsTable
+                                      loading={loading}
+                                      columns={QuoteLineItemcolumns}
+                                      dataSource={item?.QuoteLineItem || []}
+                                      scroll
+                                      rowSelection={rowSelection}
+                                    />
+                                  ),
+                                },
+                              ]}
+                            />
+                          ))}
+                        </>
+                      ) : (
+                        <OsTable
+                          loading={loading}
+                          columns={QuoteLineItemcolumns}
+                          dataSource={
+                            (showTableDataa && quoteLineItemByQuoteData) || []
+                          }
+                          scroll
+                          rowSelection={rowSelection}
+                        />
+                      )}{' '}
                     </>
                   )
                 ) : (
