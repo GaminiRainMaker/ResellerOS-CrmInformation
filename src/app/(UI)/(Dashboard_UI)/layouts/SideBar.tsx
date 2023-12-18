@@ -5,7 +5,6 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsAvatar from '@/app/components/common/os-avatar';
 import Typography from '@/app/components/common/typography';
 import {
-  ArrowDownTrayIcon,
   BoltIcon,
   ChevronDownIcon,
   CircleStackIcon,
@@ -13,12 +12,12 @@ import {
   ReceiptPercentIcon,
   ShoppingBagIcon,
   Squares2X2Icon,
-  UserGroupIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
 import {Layout, Menu, MenuProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import React, {useState} from 'react';
+import {LifebuoyIcon} from '@heroicons/react/20/solid';
 import {CustomSider} from './styled-components';
 
 const SideBar = () => {
@@ -80,12 +79,11 @@ const SideBar = () => {
       </Typography>,
       '1',
     ),
-
     getItem(
       <Space
         size={12}
         onClick={() => {
-          setSelectedKey(3);
+          setSelectedKey(2);
           router?.push('/allQuote');
         }}
         color={token?.colorTextSecondary}
@@ -94,8 +92,7 @@ const SideBar = () => {
           icon={
             <CurrencyDollarIcon
               color={
-                seleectedKey?.toString()?.includes('2') ||
-                seleectedKey?.toString()?.includes('3')
+                seleectedKey?.toString()?.includes('2')
                   ? token?.colorLink
                   : token?.colorTextSecondary
               }
@@ -107,7 +104,7 @@ const SideBar = () => {
           cursor="pointer"
           name="Button 1"
           color={
-            seleectedKey?.toString()?.includes('3')
+            seleectedKey?.toString()?.includes('2')
               ? token?.colorLink
               : token?.colorTextSecondary
           }
@@ -115,13 +112,12 @@ const SideBar = () => {
           Quote AI
         </Typography>
       </Space>,
-      '4',
+      '2',
     ),
-
     getItem(
       <Typography
         onClick={() => {
-          setSelectedKey(4);
+          setSelectedKey(3);
           router?.push('/DealReg');
         }}
         name="Button 1"
@@ -131,6 +127,46 @@ const SideBar = () => {
           <OsAvatar
             icon={
               <ReceiptPercentIcon
+                color={
+                  seleectedKey?.toString()?.includes('3')
+                    ? token?.colorLink
+                    : token?.colorTextSecondary
+                }
+                width={24}
+              />
+            }
+          />
+
+          <Typography
+            name="Button 1"
+            style={{
+              marginTop: '1px',
+            }}
+            color={
+              seleectedKey?.toString()?.includes('3')
+                ? token?.colorLink
+                : token?.colorTextSecondary
+            }
+          >
+            {' '}
+            DealReg AI
+          </Typography>
+        </Space>
+      </Typography>,
+      '3',
+    ),
+    getItem(
+      <Typography
+        onClick={() => {
+          setSelectedKey(4);
+        }}
+        name="Button 1"
+        color={token?.colorTextSecondary}
+      >
+        <Space size={12}>
+          <OsAvatar
+            icon={
+              <ShoppingBagIcon
                 color={
                   seleectedKey?.toString()?.includes('4')
                     ? token?.colorLink
@@ -153,7 +189,7 @@ const SideBar = () => {
             }
           >
             {' '}
-            DealReg AI
+            Order AI
           </Typography>
         </Space>
       </Typography>,
@@ -170,7 +206,7 @@ const SideBar = () => {
         <Space size={12}>
           <OsAvatar
             icon={
-              <ShoppingBagIcon
+              <UsersIcon
                 color={
                   seleectedKey?.toString()?.includes('5')
                     ? token?.colorLink
@@ -180,7 +216,6 @@ const SideBar = () => {
               />
             }
           />
-
           <Typography
             name="Button 1"
             style={{
@@ -193,7 +228,7 @@ const SideBar = () => {
             }
           >
             {' '}
-            Order AI
+            Vendors
           </Typography>
         </Space>
       </Typography>,
@@ -210,7 +245,7 @@ const SideBar = () => {
         <Space size={12}>
           <OsAvatar
             icon={
-              <UsersIcon
+              <BoltIcon
                 color={
                   seleectedKey?.toString()?.includes('6')
                     ? token?.colorLink
@@ -232,7 +267,7 @@ const SideBar = () => {
             }
           >
             {' '}
-            Vendors
+            Renewals and Upgrades
           </Typography>
         </Space>
       </Typography>,
@@ -249,9 +284,12 @@ const SideBar = () => {
         <Space size={12}>
           <OsAvatar
             icon={
-              <BoltIcon
+              <CurrencyDollarIcon
                 color={
-                  seleectedKey?.toString()?.includes('7')
+                  seleectedKey?.toString()?.includes('7') ||
+                  seleectedKey?.toString()?.includes('8') ||
+                  seleectedKey?.toString()?.includes('0') ||
+                  seleectedKey?.toString()?.includes('9')
                     ? token?.colorLink
                     : token?.colorTextSecondary
                 }
@@ -259,62 +297,165 @@ const SideBar = () => {
               />
             }
           />
+
           <Typography
             name="Button 1"
             style={{
               marginTop: '1px',
+              display: 'flex',
+              // width: '200px',
+              justifyContent: 'space-between',
             }}
-            color={
-              seleectedKey?.toString()?.includes('7')
-                ? token?.colorLink
-                : token?.colorTextSecondary
-            }
           >
             {' '}
-            Renewals and Upgrades
-          </Typography>
-        </Space>
-      </Typography>,
-      '7',
-    ),
-    getItem(
-      <Typography
-        onClick={() => {
-          setSelectedKey(8);
-        }}
-        name="Button 1"
-        color={token?.colorTextSecondary}
-      >
-        <Space size={12}>
-          <OsAvatar
-            icon={
-              <UserGroupIcon
-                color={
-                  seleectedKey?.toString()?.includes('8')
-                    ? token?.colorLink
-                    : token?.colorTextSecondary
+            <Typography
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+                marginRight: '80px',
+              }}
+              color={
+                seleectedKey?.toString()?.includes('7') ||
+                seleectedKey?.toString()?.includes('8') ||
+                seleectedKey?.toString()?.includes('0') ||
+                seleectedKey?.toString()?.includes('9')
+                  ? token?.colorLink
+                  : token?.colorTextSecondary
+              }
+            >
+              CRM information
+            </Typography>{' '}
+            <div>
+              {' '}
+              <OsAvatar
+                icon={
+                  <ChevronDownIcon
+                    color={
+                      seleectedKey?.toString()?.includes('7') ||
+                      seleectedKey?.toString()?.includes('8') ||
+                      seleectedKey?.toString()?.includes('0') ||
+                      seleectedKey?.toString()?.includes('9')
+                        ? token?.colorLink
+                        : token?.colorTextSecondary
+                    }
+                    width={24}
+                  />
                 }
-                width={24}
               />
-            }
-          />
-          <Typography
-            name="Button 1"
-            style={{
-              marginTop: '1px',
-            }}
-            color={
-              seleectedKey?.toString()?.includes('8')
-                ? token?.colorLink
-                : token?.colorTextSecondary
-            }
-          >
-            {' '}
-            CRM information
+            </div>
           </Typography>
         </Space>
       </Typography>,
-      '8',
+
+      'CRM information',
+      '',
+      [
+        getItem(
+          <Space
+            size={12}
+            onClick={() => {
+              setSelectedKey(8);
+              // router?.push('/generateQuote');
+            }}
+          >
+            <OsAvatar
+              icon={
+                <LifebuoyIcon
+                  color={
+                    seleectedKey?.toString()?.includes('8')
+                      ? token.colorPrimaryBorder
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              name="Button 1"
+              cursor="pointer"
+              color={
+                seleectedKey?.toString()?.includes('8')
+                  ? token.colorPrimaryBorder
+                  : token?.colorTextSecondary
+              }
+            >
+              Accounts
+            </Typography>
+          </Space>,
+          '8',
+        ),
+        getItem(
+          <Space
+            size={12}
+            onClick={() => {
+              setSelectedKey(9);
+              // router?.push('/allQuote');
+            }}
+            color={token?.colorTextSecondary}
+          >
+            <OsAvatar
+              icon={
+                <LifebuoyIcon
+                  color={
+                    seleectedKey?.toString()?.includes('9')
+                      ? token.colorPrimaryBorder
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              color={
+                seleectedKey?.toString()?.includes('9')
+                  ? token.colorPrimaryBorder
+                  : token?.colorTextSecondary
+              }
+            >
+              Contacts
+            </Typography>
+          </Space>,
+          '9',
+        ),
+
+        getItem(
+          <Space
+            size={12}
+            onClick={() => {
+              setSelectedKey(0);
+              // router?.push('/allQuote');
+            }}
+            color={token?.colorTextSecondary}
+          >
+            <OsAvatar
+              icon={
+                <LifebuoyIcon
+                  color={
+                    seleectedKey?.toString() === '0'
+                      ? token.colorPrimaryBorder
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              color={
+                seleectedKey?.toString() === '0'
+                  ? token.colorPrimaryBorder
+                  : token?.colorTextSecondary
+              }
+            >
+              Opportunity
+            </Typography>
+          </Space>,
+          '0',
+        ),
+      ],
     ),
   ];
   return (

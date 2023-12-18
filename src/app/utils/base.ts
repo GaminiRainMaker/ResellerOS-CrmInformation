@@ -49,10 +49,14 @@ export const calculateProfitabilityData = (
   };
 };
 
-const useRemoveDollarAndCommahook = (value: any) => {
+export const useRemoveDollarAndCommahook = (value: any) => {
   const cleanedD = value?.replace(/\$|,/g, '');
   const numberD = parseFloat(cleanedD);
   return numberD;
 };
 
-export default useRemoveDollarAndCommahook;
+export const rebateAmount = (
+  cost: number,
+  quantity: number,
+  percentagePayout: number,
+) => cost * quantity * (percentagePayout / 100);

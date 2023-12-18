@@ -46,6 +46,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from '../generateQuote/UploadFile';
 import RecentSection from './RecentSection';
 import QuoteAnalytics from './analytics';
+import {insertProfitability} from '../../../../../redux/actions/profitability';
 
 interface FormattedData {
   [key: string]: {
@@ -208,6 +209,7 @@ const AllQuote: React.FC = () => {
 
     if (newrrLineItems && newrrLineItems.length > 0) {
       dispatch(insertQuoteLineItem(newrrLineItems));
+      dispatch(insertProfitability(newrrLineItems));
     }
 
     dispatch(getQuotesByDateFilter({}));
