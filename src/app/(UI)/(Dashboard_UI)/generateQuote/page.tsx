@@ -83,6 +83,73 @@ const GenerateQuote: React.FC = () => {
   const [showTableDataa, setShowTableDataa] = useState<boolean>(true);
   const [selectedFilter, setSelectedFilter] = useState<String>();
   const {data: bundleData} = useAppSelector((state) => state.bundle);
+  const [familyFilter, setFamilyFilter] = useState<any>([]);
+
+  useEffect(() => {
+    if (selectedFilter == 'Product Family') {
+      const finalFamilyArr: any = [];
+      let productsArr: any = [];
+      let professionalServiceArr: any = [];
+      let maintenanceArr: any = [];
+      let subscriptionArr: any = [];
+      let unassignedArr: any = [];
+
+      if (dataNullForBundle) {
+        productsArr = dataNullForBundle?.[0]?.filter(
+          (item: any) => item?.Product?.product_family == 'Products',
+        );
+        professionalServiceArr = dataNullForBundle?.[0]?.filter(
+          (item: any) =>
+            item?.Product?.product_family == 'Professional Services',
+        );
+        maintenanceArr = dataNullForBundle?.[0]?.filter(
+          (item: any) => item?.Product?.product_family == 'Maintenances',
+        );
+        subscriptionArr = dataNullForBundle?.[0]?.filter(
+          (item: any) => item?.Product?.product_family == 'Subscriptions',
+        );
+        unassignedArr = dataNullForBundle?.[0]?.filter(
+          (item: any) => item?.Product?.product_family == null,
+        );
+      }
+      if (productsArr && productsArr?.length > 0) {
+        const obj: any = {
+          name: 'Products',
+          QuoteLineItem: productsArr,
+        };
+        finalFamilyArr?.push(obj);
+      }
+      if (professionalServiceArr && professionalServiceArr?.length > 0) {
+        const obj: any = {
+          name: 'Professional Services',
+          QuoteLineItem: professionalServiceArr,
+        };
+        finalFamilyArr?.push(obj);
+      }
+      if (maintenanceArr && maintenanceArr?.length > 0) {
+        const obj: any = {
+          name: 'Maintenances',
+          QuoteLineItem: maintenanceArr,
+        };
+        finalFamilyArr?.push(obj);
+      }
+      if (unassignedArr && subscriptionArr?.length > 0) {
+        const obj: any = {
+          name: 'Subscriptions',
+          QuoteLineItem: subscriptionArr,
+        };
+        finalFamilyArr?.push(obj);
+      }
+      if (unassignedArr && unassignedArr?.length > 0) {
+        const obj: any = {
+          name: 'Unassigned',
+          QuoteLineItem: unassignedArr,
+        };
+        finalFamilyArr?.push(obj);
+      }
+      setFamilyFilter(finalFamilyArr);
+    }
+  }, [selectedFilter]);
 
   useEffect(() => {
     if (getQuoteLineItemId)
@@ -675,37 +742,75 @@ const GenerateQuote: React.FC = () => {
                         ]}
                       />
                     ))}{' '}
-                    <OsCollapse
-                      items={[
-                        {
-                          key: '1',
-                          label: (
-                            <>
-                              <Space
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'start',
-                                }}
-                              >
-                                <Typography name="Body 4/Medium">
-                                  Unassigned
-                                </Typography>
-                              </Space>
-                            </>
-                          ),
-                          children: (
-                            <OsTable
-                              loading={loading}
-                              // rowSelection={rowSelection}
-                              columns={QuoteLineItemcolumns}
-                              dataSource={dataNullForBundle?.[0] || []}
-                              scroll
-                              rowSelection={rowSelection}
-                            />
-                          ),
-                        },
-                      ]}
-                    />{' '}
+                    {selectedFilter ? (
+                      <>
+                        {familyFilter?.map((item: any, index: any) => (
+                          <OsCollapse
+                            items={[
+                              {
+                                key: index,
+                                label: (
+                                  <>
+                                    <Space
+                                      style={{
+                                        display: 'flex',
+                                        justifyContent: 'start',
+                                      }}
+                                    >
+                                      <Typography name="Body 4/Medium">
+                                        {item?.name}
+                                      </Typography>
+                                    </Space>
+                                  </>
+                                ),
+                                children: (
+                                  <OsTable
+                                    loading={loading}
+                                    // rowSelection={rowSelection}
+                                    columns={QuoteLineItemcolumns}
+                                    dataSource={item?.QuoteLineItem || []}
+                                    scroll
+                                    rowSelection={rowSelection}
+                                  />
+                                ),
+                              },
+                            ]}
+                          />
+                        ))}
+                      </>
+                    ) : (
+                      <OsCollapse
+                        items={[
+                          {
+                            key: '2',
+                            label: (
+                              <>
+                                <Space
+                                  style={{
+                                    display: 'flex',
+                                    justifyContent: 'start',
+                                  }}
+                                >
+                                  <Typography name="Body 4/Medium">
+                                    Unassigned
+                                  </Typography>
+                                </Space>
+                              </>
+                            ),
+                            children: (
+                              <OsTable
+                                loading={loading}
+                                // rowSelection={rowSelection}
+                                columns={QuoteLineItemcolumns}
+                                dataSource={dataNullForBundle?.[0] || []}
+                                scroll
+                                rowSelection={rowSelection}
+                              />
+                            ),
+                          },
+                        ]}
+                      />
+                    )}{' '}
                   </>
                 ) : (
                   <>
