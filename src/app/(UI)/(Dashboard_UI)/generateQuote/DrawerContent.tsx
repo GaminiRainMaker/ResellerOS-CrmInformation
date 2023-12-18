@@ -41,7 +41,7 @@ const DrawerContent: FC<any> = ({setOpen}) => {
       ? 'Completed'
       : quoteLineItemByQuoteID?.[0]?.Quote?.is_drafted
       ? 'In Progress'
-      : 'Recent',
+      : 'Drafts',
     formData: {
       file_name: quoteLineItemByQuoteID?.[0]?.Quote?.file_name ?? '',
       opportunity: quoteLineItemByQuoteID?.[0]?.Quote?.opportunity ?? '',

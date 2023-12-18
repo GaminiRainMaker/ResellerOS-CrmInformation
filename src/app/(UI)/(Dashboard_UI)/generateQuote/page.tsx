@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable consistent-return */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -21,11 +22,13 @@ import {
   QueueListIcon,
   ReceiptPercentIcon,
   TagIcon,
+  TrashIcon,
 } from '@heroicons/react/24/outline';
 
 import {Breadcrumb} from '@/app/components/common/antd/BreadCrumb';
 import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
+import {PopConfirm} from '@/app/components/common/antd/PopConfirm';
 import {Space} from '@/app/components/common/antd/Space';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -49,9 +52,9 @@ import {updateProductFamily} from '../../../../../redux/actions/product';
 import {updateQuoteByQuery} from '../../../../../redux/actions/quote';
 import {
   DeleteQuoteLineItemQuantityById,
+  UpdateQuoteLineItemQuantityById,
   getQuoteLineItemByQuoteId,
   getQuoteLineItemByQuoteIdandBundleIdNull,
-  UpdateQuoteLineItemQuantityById,
 } from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
@@ -305,6 +308,12 @@ const GenerateQuote: React.FC = () => {
     }
   };
 
+  const deleteQuote = async (id: number) => {
+    if (id) {
+      // await dispatch(deleteQuoteById(id));
+    }
+  };
+
   const analyticsData = [
     {
       key: 1,
@@ -465,6 +474,31 @@ const GenerateQuote: React.FC = () => {
           ),
         };
       },
+    },
+    {
+      title: ' ',
+      dataIndex: 'actions',
+      key: 'actions',
+      width: 94,
+      render: (text: string, record: any) => (
+        <Space size={18}>
+          <PopConfirm
+            placement="top"
+            title=""
+            description="Are you sure to delete this Quote Line Item?"
+            onConfirm={() => deleteQuote(record?.id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <TrashIcon
+              height={24}
+              width={24}
+              color={token.colorError}
+              style={{cursor: 'pointer'}}
+            />
+          </PopConfirm>
+        </Space>
+      ),
     },
   ];
 
@@ -680,9 +714,9 @@ const GenerateQuote: React.FC = () => {
                   />
 
                   <Dropdown
-                    trigger="click"
                     menu={{items}}
                     placement="bottomRight"
+                    trigger={['click']}
                   >
                     <Button
                       style={{
@@ -740,18 +774,10 @@ const GenerateQuote: React.FC = () => {
                                       justifyContent: 'space-between',
                                     }}
                                   >
-                                    <Typography name="Body 4/Medium">
-                                      {item?.name}
-                                    </Typography>
-                                    <Typography name="Body 4/Medium">
-                                      Lines:{item?.quoteLineItems?.length}
-                                    </Typography>
-                                    <Typography name="Body 4/Medium">
-                                      Desc: {item?.description}
-                                    </Typography>
-                                    <Typography name="Body 4/Medium">
-                                      Quantity: {item?.quantity}
-                                    </Typography>
+                                    <p>{item?.name}</p>
+                                    <p>Lines:{item?.quoteLineItems?.length}</p>
+                                    <p>Desc: {item?.description}</p>
+                                    <p>Quantity: {item?.quantity}</p>
                                   </Space>
                                 </>
                               ),
@@ -787,16 +813,13 @@ const GenerateQuote: React.FC = () => {
                                           justifyContent: 'start',
                                         }}
                                       >
-                                        <Typography name="Body 4/Medium">
-                                          {item?.name}
-                                        </Typography>
+                                        <p>{item?.name}</p>
                                       </Space>
                                     </>
                                   ),
                                   children: (
                                     <OsTable
                                       loading={loading}
-                                      // rowSelection={rowSelection}
                                       columns={QuoteLineItemcolumns}
                                       dataSource={item?.QuoteLineItem || []}
                                       scroll
@@ -824,9 +847,7 @@ const GenerateQuote: React.FC = () => {
                                             justifyContent: 'start',
                                           }}
                                         >
-                                          <Typography name="Body 4/Medium">
-                                            Unassigned
-                                          </Typography>
+                                          <p>Unassigned</p>
                                         </Space>
                                       </>
                                     ),

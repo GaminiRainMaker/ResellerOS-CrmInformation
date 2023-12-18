@@ -70,8 +70,8 @@ const AllQuote: React.FC = () => {
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
   const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
-  const [fromDate, setFromDate] = useState<string>('');
-  const [toDate, setToDate] = useState<string>('');
+  const [fromDate, setFromDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
 
   useEffect(() => {
     let obj = {};
@@ -83,6 +83,11 @@ const AllQuote: React.FC = () => {
     }
     dispatch(getQuotesByDateFilter(obj));
   }, [fromDate, toDate]);
+
+  const handleReset = () => {
+    setFromDate(null);
+    setToDate(null);
+  };
 
   useEffect(() => {
     if (filteredData && filteredData?.length > 0) {
@@ -256,7 +261,7 @@ const AllQuote: React.FC = () => {
           ? 'Completed'
           : record?.is_drafted
           ? 'In Progress'
-          : 'Recent';
+          : 'Drafts';
         return <OsStatusWrapper value={statusValue} />;
       },
     },
@@ -433,6 +438,7 @@ const AllQuote: React.FC = () => {
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">From Date</Typography>
                   <CommonDatePicker
+                    value={fromDate}
                     placeholder="dd/mm/yyyy"
                     onChange={(v) => {
                       setFromDate(v);
@@ -442,13 +448,19 @@ const AllQuote: React.FC = () => {
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">To Date</Typography>
                   <CommonDatePicker
+                    value={toDate}
                     placeholder="dd/mm/yyyy"
                     onChange={(v) => {
                       setToDate(v);
                     }}
                   />
                 </Space>
-                <Typography name="Button 1" color="#C6CDD5">
+                <Typography
+                  cursor="pointer"
+                  name="Button 1"
+                  color="#C6CDD5"
+                  onClick={handleReset}
+                >
                   Reset
                 </Typography>
               </Space>

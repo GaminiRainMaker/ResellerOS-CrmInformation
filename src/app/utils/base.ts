@@ -48,3 +48,11 @@ export const calculateProfitabilityData = (
     grossProfitPercentage,
   };
 };
+
+const useRemoveDollarAndCommahook = (value: any) => {
+  const cleanedD = value?.replace(/\$|,/g, '');
+  const numberD = parseFloat(cleanedD);
+  return numberD;
+};
+
+export default useRemoveDollarAndCommahook;

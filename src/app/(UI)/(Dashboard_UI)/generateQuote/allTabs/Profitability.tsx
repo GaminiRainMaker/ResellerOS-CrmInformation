@@ -1,10 +1,13 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import {pricingMethod} from '@/app/utils/CONSTANTS';
-import {calculateProfitabilityData} from '@/app/utils/base';
+import useRemoveDollarAndCommahook, {
+  calculateProfitabilityData,
+} from '@/app/utils/base';
 import {Button} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
@@ -129,6 +132,28 @@ const Profitability: FC<any> = ({isEditable}) => {
                 return prevItem;
               }),
             );
+
+            setProfitabilityData((prev: any) =>
+              prev.map((prevItem: any) => {
+                if (selectTedRowIds?.includes(prevItem?.id)) {
+                  const result: any = calculateProfitabilityData(
+                    useRemoveDollarAndCommahook(prevItem?.quantity),
+                    prevItem?.pricing_method,
+                    useRemoveDollarAndCommahook(prevItem?.line_amount),
+                    useRemoveDollarAndCommahook(prevItem?.list_price),
+                    20,
+                  );
+                  return {
+                    ...prevItem,
+                    unit_price: result.unitPrice,
+                    exit_price: result.exitPrice,
+                    gross_profit: result.grossProfit,
+                    gross_profit_percentage: result.grossProfitPercentage,
+                  };
+                }
+                return prevItem;
+              }),
+            );
           }}
           options={pricingMethod}
           disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
@@ -200,42 +225,13 @@ const Profitability: FC<any> = ({isEditable}) => {
   };
 
   return (
-    <>
-      <Button
-        onClick={() => {
-          setProfitabilityData((prev: any) =>
-            prev.map((prevItem: any) => {
-              if (selectTedRowIds?.includes(prevItem?.id)) {
-                const result: any = calculateProfitabilityData(
-                  Number(prevItem?.quantity),
-                  prevItem?.pricing_method,
-                  Number(prevItem?.line_amount),
-                  Number(prevItem?.list_price),
-                  20,
-                );
-                return {
-                  ...prevItem,
-                  unit_price: result.unitPrice,
-                  exit_price: result.exitPrice,
-                  gross_profit: result.grossProfit,
-                  gross_profit_percentage: result.grossProfitPercentage,
-                };
-              }
-              return prevItem;
-            }),
-          );
-        }}
-      >
-        Result
-      </Button>
-      <OsTable
-        loading={false}
-        rowSelection={{...rowSelection}}
-        columns={ProfitabilityQuoteLineItemcolumns}
-        dataSource={profitabilityData}
-        scroll
-      />
-    </>
+    <OsTable
+      loading={false}
+      rowSelection={{...rowSelection}}
+      columns={ProfitabilityQuoteLineItemcolumns}
+      dataSource={profitabilityData}
+      scroll
+    />
   );
 };
 
