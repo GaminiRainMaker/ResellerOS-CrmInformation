@@ -396,7 +396,7 @@ const AllQuote: React.FC = () => {
                 clickHandler={() => setShowModal((p) => !p)}
               />
               <Dropdown
-                trigger="click"
+                // trigger="click"
                 menu={{items: dropDownItemss}}
                 placement="bottomRight"
               >
