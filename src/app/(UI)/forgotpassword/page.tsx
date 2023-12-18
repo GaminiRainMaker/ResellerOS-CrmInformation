@@ -3,8 +3,6 @@ import React from 'react';
 import smsIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/sms.svg';
 
 const ForgotPasword = () => {
-  console.log('dsff');
-
   const inputFields = [
     {
       name: 'email',

@@ -238,7 +238,6 @@ const GenerateQuote: React.FC = () => {
     if (isExist) {
       quoteLineItemByQuoteID?.map((lineItem: any) => {
         let bundleObj: any;
-        // console.log('345435345', bundleObj, lineItem?.Bundle?.id, lineItem);
         if (lineItem?.Bundle) {
           if (bundleObj) {
             bundleObj = {

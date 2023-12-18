@@ -24,7 +24,6 @@ const RecentSection: FC<any> = ({
   );
   const [token] = useThemeToken();
 
-  console.log('quoteData', filteredData);
 
   const onToggleChange = (checked: boolean) => {
     setShowToggleTable(checked);

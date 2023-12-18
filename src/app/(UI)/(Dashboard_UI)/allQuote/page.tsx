@@ -101,8 +101,6 @@ const AllQuote: React.FC = () => {
     }
   }, [filteredData]);
 
-  console.log('filteredData', filteredData);
-
   useEffect(() => {
     if (activeTab && quoteData.length > 0) {
       const quoteItems =
