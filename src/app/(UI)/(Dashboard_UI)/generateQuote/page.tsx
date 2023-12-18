@@ -55,6 +55,7 @@ import {
   UpdateQuoteLineItemQuantityById,
   getQuoteLineItemByQuoteId,
   getQuoteLineItemByQuoteIdandBundleIdNull,
+  updateQuoteLineItemForBundleId,
 } from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
@@ -310,7 +311,13 @@ const GenerateQuote: React.FC = () => {
 
   const deleteQuote = async (id: number) => {
     if (id) {
-      // await dispatch(deleteQuoteById(id));
+      const data = {
+        Ids: [id],
+        bundle_id: null,
+      };
+      await dispatch(updateQuoteLineItemForBundleId(data));
+      dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
+      dispatch(getAllBundle(getQuoteID));
     }
   };
 
@@ -407,13 +414,16 @@ const GenerateQuote: React.FC = () => {
       title: 'Qty',
       dataIndex: 'quantity',
       key: 'quantity',
-      render: (text: string, record: any) => (
+      render: (text: any, record: any) => (
         <OsInput
           style={{
             height: '36px',
           }}
           disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
-          value={text}
+          value={
+            // eslint-disable-next-line no-unsafe-optional-chaining
+            text * (record?.Bundle?.quantity ? record?.Bundle?.quantity : 1)
+          }
           onChange={(v) => {
             setQuoteLineItemByQuoteData((prev: any) =>
               prev.map((prevItem: any) => {
@@ -433,6 +443,12 @@ const GenerateQuote: React.FC = () => {
       dataIndex: 'adjusted_price',
       key: 'adjusted_price',
       width: 187,
+      render: (text: any, record: any) => {
+        console.log('4434445', text);
+        let doubleVal: any;
+
+        return <>{record?.Bundle?.quantity ? record?.Bundle?.quantity : 1}</>;
+      },
     },
     {
       title: 'Cost',
@@ -486,7 +502,9 @@ const GenerateQuote: React.FC = () => {
             placement="top"
             title=""
             description="Are you sure to delete this Quote Line Item?"
-            onConfirm={() => deleteQuote(record?.id)}
+            onConfirm={() => {
+              deleteQuote(record?.id);
+            }}
             okText="Yes"
             cancelText="No"
           >
@@ -775,7 +793,7 @@ const GenerateQuote: React.FC = () => {
                                     }}
                                   >
                                     <p>{item?.name}</p>
-                                    <p>Lines:{item?.quoteLineItems?.length}</p>
+                                    <p>Lines:{item?.QuoteLineItems?.length}</p>
                                     <p>Desc: {item?.description}</p>
                                     <p>Quantity: {item?.quantity}</p>
                                   </Space>
