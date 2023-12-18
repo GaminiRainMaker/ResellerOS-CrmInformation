@@ -355,7 +355,7 @@ const SideBar = () => {
             size={12}
             onClick={() => {
               setSelectedKey(8);
-              // router?.push('/generateQuote');
+              router?.push('/crmInAccount');
             }}
           >
             <OsAvatar
@@ -389,7 +389,7 @@ const SideBar = () => {
             size={12}
             onClick={() => {
               setSelectedKey(9);
-              // router?.push('/allQuote');
+              router?.push('/crmContact');
             }}
             color={token?.colorTextSecondary}
           >
