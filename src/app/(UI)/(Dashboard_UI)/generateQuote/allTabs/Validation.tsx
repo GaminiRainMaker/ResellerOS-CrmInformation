@@ -1,10 +1,21 @@
+/* eslint-disable consistent-return */
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
+import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import {dummyData, pricingMethod} from '@/app/utils/CONSTANTS';
+import {
+  CheckCircleIcon,
+  ClipboardDocumentCheckIcon,
+  ExclamationCircleIcon,
+  XCircleIcon,
+} from '@heroicons/react/24/outline';
 import {FC} from 'react';
 
 const Validation: FC = () => {
+  const [token] = useThemeToken();
+
   const ValidationQuoteLineItemcolumns = [
     {
       title: '#Line',
@@ -84,6 +95,38 @@ const Validation: FC = () => {
       dataIndex: 'contract_status',
       key: 'contract_status',
       width: 135,
+      render: (text: string, record: any) => {
+        if (record?.status === 'success') {
+          return (
+            <TableNameColumn
+              fallbackIcon={
+                <CheckCircleIcon width={24} color={token?.colorSuccess} />
+              }
+              iconBg={token?.colorSuccessBg}
+            />
+          );
+        }
+        if (record?.status === 'reject') {
+          return (
+            <TableNameColumn
+              fallbackIcon={
+                <XCircleIcon width={24} color={token?.colorError} />
+              }
+              iconBg={token?.colorErrorBg}
+            />
+          );
+        }
+        if (record?.status === 'warning') {
+          return (
+            <TableNameColumn
+              fallbackIcon={
+                <ExclamationCircleIcon width={24} color={token?.colorWarning} />
+              }
+              iconBg={token?.colorWarningBg}
+            />
+          );
+        }
+      },
     },
   ];
   return (

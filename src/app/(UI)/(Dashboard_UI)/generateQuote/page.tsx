@@ -45,6 +45,7 @@ import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {getAllBundle} from '../../../../../redux/actions/bundle';
@@ -656,6 +657,9 @@ const GenerateQuote: React.FC = () => {
     {
       key: 5,
       name: 'Matrics',
+      children: (
+        <EmptyContainer title="Please Select Grouping to view Matrics" />
+      ),
     },
   ];
 

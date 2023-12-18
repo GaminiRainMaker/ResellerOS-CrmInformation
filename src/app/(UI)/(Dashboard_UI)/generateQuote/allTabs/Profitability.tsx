@@ -126,6 +126,7 @@ const Profitability: FC<any> = () => {
         <CommonSelect
           style={{width: '200px'}}
           placeholder="Select"
+          defaultValue={text}
           onChange={(v) => {
             setProfitabilityData((prev: any) =>
               prev.map((prevItem: any) => {
