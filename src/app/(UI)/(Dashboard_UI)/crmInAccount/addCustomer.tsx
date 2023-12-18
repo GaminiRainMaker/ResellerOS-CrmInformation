@@ -45,7 +45,7 @@ const AddCustomer: React.FC = () => {
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
   const router = useRouter();
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [formValue, setFormValue] = useState<boolean>(false);
 
   const tabItems: TabsProps['items'] = [
     {
@@ -188,7 +188,11 @@ const AddCustomer: React.FC = () => {
             </Col>
           ))}
         </Row>
-        <AddCustomerInputVale activeTab={activeTab} />
+        <AddCustomerInputVale
+          activeTab={activeTab}
+          setFormValue={setFormValue}
+          formValue={formValue}
+        />
       </Space>
     </>
   );
