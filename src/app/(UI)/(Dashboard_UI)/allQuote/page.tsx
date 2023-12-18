@@ -440,7 +440,7 @@ const AllQuote: React.FC = () => {
                   <CommonDatePicker
                     value={fromDate}
                     placeholder="dd/mm/yyyy"
-                    onChange={(v) => {
+                    onChange={(v: any) => {
                       setFromDate(v);
                     }}
                   />
@@ -450,7 +450,7 @@ const AllQuote: React.FC = () => {
                   <CommonDatePicker
                     value={toDate}
                     placeholder="dd/mm/yyyy"
-                    onChange={(v) => {
+                    onChange={(v: any) => {
                       setToDate(v);
                     }}
                   />

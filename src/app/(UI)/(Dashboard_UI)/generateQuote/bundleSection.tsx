@@ -20,7 +20,7 @@ const BundleSection: FC<any> = ({selectTedRowIds, setShowBundleModal}) => {
   const [radioValue, setRadioValue] = useState(1);
   const [token] = useThemeToken();
   const [bundleValue, setBundleValue] = useState<any>();
-  const [bundleOptions, setBundleOptions] = useState<React.Key[]>([]);
+  const [bundleOptions, setBundleOptions] = useState<any>([]);
   const [existingBundleId, setExistingBundleId] = useState<any>();
 
   const onChange = (e: RadioChangeEvent) => {
