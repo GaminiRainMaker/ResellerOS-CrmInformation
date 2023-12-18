@@ -28,6 +28,10 @@ export const API = {
     GetProductByPartNo: '/product/getProductByPartNo',
     QUERY: '/product/query',
   },
+  PROFITABALITY: {
+    INDEX: '/profitability',
+    QUERY: '/profitability/query',
+  },
   BUNDLE: {
     INDEX: '/bundle',
   },

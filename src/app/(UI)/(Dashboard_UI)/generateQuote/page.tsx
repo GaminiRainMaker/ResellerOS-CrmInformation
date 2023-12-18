@@ -64,6 +64,7 @@ import Profitability from './allTabs/Profitability';
 import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
 import BundleSection from './bundleSection';
+import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -168,6 +169,7 @@ const GenerateQuote: React.FC = () => {
   useEffect(() => {
     if (getQuoteID) dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID)));
     dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
+    dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
   }, [getQuoteID]);
 
   useEffect(() => {
@@ -653,7 +655,7 @@ const GenerateQuote: React.FC = () => {
     },
     {
       key: 5,
-      name: 'Matrix',
+      name: 'Matrics',
     },
   ];
 
