@@ -8,10 +8,21 @@ import user from './slices/user';
 import product from './slices/product';
 import bundle from './slices/bundle';
 import profitability from './slices/profitability';
+import rebateQuoteLineItem from './slices/rebateQuoteLineItem';
+import rebate from './slices/rebate';
 
 // Configure redux store
 const store = configureStore({
-  reducer: {quote, quoteLineItem, user, product, bundle, profitability},
+  reducer: {
+    quote,
+    quoteLineItem,
+    user,
+    product,
+    bundle,
+    profitability,
+    rebateQuoteLineItem,
+    rebate,
+  },
   middleware: [thunk, logger],
   devTools: true,
 });

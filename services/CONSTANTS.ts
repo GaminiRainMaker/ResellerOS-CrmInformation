@@ -35,4 +35,13 @@ export const API = {
   BUNDLE: {
     INDEX: '/bundle',
   },
+  REBATE_QUOTE_LINE_ITEM: {
+    INDEX: '/rebatesQuoteLineItem',
+    QUERY: '/rebatesQuoteLineItem/query',
+  },
+  REBATE: {
+    INDEX: '/rebates',
+    QUERY: '/rebates/query',
+    GetRebatesByProductCode: '/rebates/getRebatesByProductCode',
+  },
 };

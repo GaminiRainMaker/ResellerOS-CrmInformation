@@ -66,6 +66,7 @@ import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
 import BundleSection from './bundleSection';
 import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
+import Metrics from './allTabs/Metrics';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -656,10 +657,11 @@ const GenerateQuote: React.FC = () => {
     },
     {
       key: 5,
-      name: 'Matrics',
-      children: (
-        <EmptyContainer title="Please Select Grouping to view Matrics" />
-      ),
+      name: 'Metrics',
+      children: <Metrics />,
+      // children: (
+      //   <EmptyContainer title="Please Select Grouping to view Matrics" />
+      // ),
     },
   ];
 

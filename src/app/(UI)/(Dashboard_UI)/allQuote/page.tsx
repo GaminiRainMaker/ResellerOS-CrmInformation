@@ -47,6 +47,8 @@ import UploadFile from '../generateQuote/UploadFile';
 import RecentSection from './RecentSection';
 import QuoteAnalytics from './analytics';
 import {insertProfitability} from '../../../../../redux/actions/profitability';
+import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
+import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
 
 interface FormattedData {
   [key: string]: {
@@ -160,6 +162,7 @@ const AllQuote: React.FC = () => {
       labelOcrMap.push(tempLabelOcrMap);
     });
     const newrrLineItems: any = [];
+    const rebateDataArray: any = [];
     if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
       const response = await dispatch(insertQuote(labelOcrMap));
       for (let j = 0; j < response?.payload?.data.length; j++) {
@@ -180,6 +183,17 @@ const AllQuote: React.FC = () => {
                 adjusted_price: insertedProduct?.payload?.adjusted_price,
                 line_number: insertedProduct?.payload?.line_number,
               };
+              const RebatesByProductCodData = await dispatch(
+                getRebatesByProductCode(insertedProduct?.payload?.product_code),
+              );
+              if (RebatesByProductCodData?.payload?.id) {
+                rebateDataArray?.push({
+                  ...obj1,
+                  rebate_id: RebatesByProductCodData?.payload?.id,
+                  percentage_payout:
+                    RebatesByProductCodData?.payload?.percentage_payout,
+                });
+              }
               newrrLineItems?.push(obj1);
             }
           }
@@ -205,6 +219,11 @@ const AllQuote: React.FC = () => {
           newrrLineItems?.push(obj1);
         }
       }
+    }
+
+    if (rebateDataArray && rebateDataArray.length > 0) {
+      console.log('rebateDataArray', rebateDataArray);
+      // dispatch(insertRebateQuoteLineItem(rebateDataArray));
     }
 
     if (newrrLineItems && newrrLineItems.length > 0) {

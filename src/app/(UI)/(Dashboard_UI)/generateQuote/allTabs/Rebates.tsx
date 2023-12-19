@@ -1,21 +1,21 @@
 import OsInput from '@/app/components/common/os-input';
 import OsTable from '@/app/components/common/os-table';
-import {FC, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
+import Typography from '@/app/components/common/typography';
 import {rebateTableData} from '@/app/utils/CONSTANTS';
 import {rebateAmount, useRemoveDollarAndCommahook} from '@/app/utils/base';
-import {useSearchParams} from 'next/navigation';
 import {Button} from 'antd';
-import Typography from '@/app/components/common/typography';
+import {useSearchParams} from 'next/navigation';
+import {getProfitabilityByQuoteId} from '../../../../../../redux/actions/profitability';
 import {getQuoteLineItemByQuoteId} from '../../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
-import {getProfitabilityByQuoteId} from '../../../../../../redux/actions/profitability';
 
-const Rebates: FC<any> = () => {
+const Rebates = () => {
   const searchParams = useSearchParams();
   const getQuoteLineItemId = searchParams.get('id');
   const dispatch = useAppDispatch();
@@ -30,6 +30,7 @@ const Rebates: FC<any> = () => {
   const pidToPayoutMap = new Map(
     rebateTableData.map((item) => [item.pid, item.percentage_payout]),
   );
+
   useEffect(() => {
     if (getQuoteLineItemId) {
       dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
@@ -202,8 +203,8 @@ const Rebates: FC<any> = () => {
     },
     {
       title: 'Rebate %',
-      dataIndex: 'percentage_payout',
-      key: 'percentage_payout',
+      dataIndex: 'rebate_percentage',
+      key: 'rebate_percentage',
       width: 130,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
@@ -212,6 +213,8 @@ const Rebates: FC<any> = () => {
       ),
     },
   ];
+
+  // console.log('quoteLineItemByQuoteID', quoteLineItemByQuoteID);
 
   // const rowSelection = {
   //   onChange: (selectedRowKeys: React.Key[]) => {

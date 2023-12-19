@@ -1,16 +1,5 @@
-export type FontFamily = 'DM Sans' | 'sans-serif' | "'DM Sans', sans-serif";
-export type LetterSpacing =
-  | '-0.22px'
-  | '-0.3px'
-  | '0'
-  | '0.1px'
-  | '0.2px'
-  | '0.22px'
-  | '0.3px'
-  | '0.4px'
-  | '0.5px'
-  | '0.6px'
-  | '1px';
+export type FontFamily = '__Plus_Jakarta_Sans_d21556';
+
 export type FontSize =
   | '12px'
   | '14px'
@@ -82,7 +71,6 @@ export interface TypographyMapping {
   fontFamily: FontFamily;
   fontSize: FontSize;
   lineHeight: Lineheight;
-  // letterSpacing: LetterSpacing;
   fontWeight: 400 | 500 | 600 | 700 | 800;
 }
 
