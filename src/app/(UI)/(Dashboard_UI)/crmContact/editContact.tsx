@@ -13,15 +13,8 @@
 
 import Typography from '@/app/components/common/typography';
 import {
-  EllipsisVerticalIcon,
-  PlusIcon,
-  TrashIcon,
-  PencilSquareIcon,
   CheckBadgeIcon,
-  ClipboardDocumentCheckIcon,
-  ClockIcon,
-  UserGroupIcon,
-  PhoneIcon,
+  EllipsisVerticalIcon,
 } from '@heroicons/react/24/outline';
 
 import {Dropdown} from '@/app/components/common/antd/DropDown';
@@ -33,13 +26,16 @@ import OsButton from '@/app/components/common/os-button';
 import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Button, MenuProps, TabsProps} from 'antd';
+import {Button, Checkbox, MenuProps, TabsProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsInput from '@/app/components/common/os-input';
-import {SearchOutlined} from '@ant-design/icons';
 import {useState} from 'react';
 import CommonSelect from '@/app/components/common/os-select';
+import OsAvatar from '@/app/components/common/os-avatar';
+import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
+import {CheckCircleOutlined, MailOutlined} from '@ant-design/icons';
+import {CheckCircleIcon} from '@heroicons/react/24/solid';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from '../generateQuote/UploadFile';
 
@@ -48,6 +44,49 @@ const EditContactModal: React.FC = () => {
   const [token] = useThemeToken();
   const [editContact, setEditContact] = useState<boolean>(false);
   const router = useRouter();
+
+  const Quotecolumns = [
+    {
+      primary: 'Billie John',
+      secondary: 'Sr. Project Manager',
+      fallIconText: 'BJ',
+      iconBg: '#1EB159',
+      mailText: 'billiejohn@info.com',
+      secondCol: <CheckCircleOutlined style={{color: '#1EB159'}} />,
+    },
+    {
+      primary: 'Steve Smith',
+      secondary: 'Content Writer',
+      fallIconText: 'SS',
+      iconBg: '#2364AA',
+      mailText: 'stevesmith@info.com',
+      secondCol: '',
+    },
+    {
+      primary: 'Kim Blake',
+      secondary: 'Graphic Designer',
+      fallIconText: 'KB',
+      iconBg: '#EB445A',
+      mailText: 'kimblake@info.com',
+      secondCol: '',
+    },
+    {
+      primary: 'Marie Watson',
+      secondary: 'Developer',
+      fallIconText: 'MW',
+      iconBg: '#ECB816',
+      mailText: 'mariewatson@info.com',
+      secondCol: '',
+    },
+    {
+      primary: 'Bryan Roller',
+      secondary: 'Sr. Developer',
+      fallIconText: 'BR',
+      iconBg: '#457B9D',
+      mailText: 'bryanroller@info.com',
+      secondCol: '',
+    },
+  ];
 
   return (
     <>
@@ -78,6 +117,63 @@ const EditContactModal: React.FC = () => {
               />
             )}
           </Col>
+        </Row>
+        <Row style={{display: 'flex'}}>
+          {Quotecolumns?.map((item: any, index: number) => (
+            <Col key={index}>
+              <Row
+                style={{
+                  background: '#F6F7F8',
+                  padding: '12px',
+                  borderRadius: '12px',
+                  width: '333px',
+                  margin: '12px',
+                }}
+                justify="space-between"
+              >
+                <Col>
+                  <Space direction="vertical" size={12}>
+                    <TableNameColumn
+                      primaryText={
+                        <Typography name="Body 3/Regular">
+                          {item?.primary}
+                        </Typography>
+                      }
+                      secondaryText={
+                        <Typography name="Body 4/Regular">
+                          {item?.secondary}
+                        </Typography>
+                      }
+                      fallbackIcon={item?.fallIconText}
+                      iconBg={item?.iconBg}
+                    />
+                    <Typography name="Body 4/Regular">
+                      {' '}
+                      <MailOutlined size={24} style={{marginRight: '5px'}} />
+                      {item?.mailText}
+                    </Typography>
+                  </Space>
+                </Col>
+                <Col>
+                  {' '}
+                  <Row justify="center" align="middle" style={{height: '100%'}}>
+                    {editContact ? (
+                      <Checkbox />
+                    ) : (
+                      <>
+                        {item?.secondCol && (
+                          <AvatarStyled
+                            background="none"
+                            icon={item?.secondCol}
+                          />
+                        )}
+                      </>
+                    )}
+                  </Row>
+                </Col>
+              </Row>
+            </Col>
+          ))}
         </Row>
       </Space>
     </>

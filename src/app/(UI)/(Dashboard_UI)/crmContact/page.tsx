@@ -321,7 +321,7 @@ const CrmAccount: React.FC = () => {
       <OsModal
         // loading={loading}
         body={<EditContactModal />}
-        width={800}
+        width={1200}
         open={showModal}
         // onOk={() => addQuoteLineItem()}
         onCancel={() => {
