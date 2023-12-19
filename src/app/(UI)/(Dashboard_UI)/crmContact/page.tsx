@@ -42,6 +42,7 @@ import {useState} from 'react';
 import CommonSelect from '@/app/components/common/os-select';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from '../generateQuote/UploadFile';
+import EditContactModal from './editContact';
 
 const CrmAccount: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -319,7 +320,7 @@ const CrmAccount: React.FC = () => {
 
       <OsModal
         // loading={loading}
-        // body={<AddCustomer />}
+        body={<EditContactModal />}
         width={800}
         open={showModal}
         // onOk={() => addQuoteLineItem()}
