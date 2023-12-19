@@ -53,6 +53,7 @@ const EditContactModal: React.FC = () => {
       iconBg: '#1EB159',
       mailText: 'billiejohn@info.com',
       secondCol: <CheckCircleOutlined style={{color: '#1EB159'}} />,
+      key: '1',
     },
     {
       primary: 'Steve Smith',
@@ -61,6 +62,7 @@ const EditContactModal: React.FC = () => {
       iconBg: '#2364AA',
       mailText: 'stevesmith@info.com',
       secondCol: '',
+      key: '2',
     },
     {
       primary: 'Kim Blake',
@@ -69,6 +71,7 @@ const EditContactModal: React.FC = () => {
       iconBg: '#EB445A',
       mailText: 'kimblake@info.com',
       secondCol: '',
+      key: '3',
     },
     {
       primary: 'Marie Watson',
@@ -77,6 +80,7 @@ const EditContactModal: React.FC = () => {
       iconBg: '#ECB816',
       mailText: 'mariewatson@info.com',
       secondCol: '',
+      key: '4',
     },
     {
       primary: 'Bryan Roller',
@@ -85,6 +89,7 @@ const EditContactModal: React.FC = () => {
       iconBg: '#457B9D',
       mailText: 'bryanroller@info.com',
       secondCol: '',
+      key: '5',
     },
   ];
 
@@ -118,16 +123,16 @@ const EditContactModal: React.FC = () => {
             )}
           </Col>
         </Row>
-        <Row style={{display: 'flex'}}>
+        <Row style={{display: 'flex', marginTop: '10px'}}>
           {Quotecolumns?.map((item: any, index: number) => (
-            <Col key={index}>
+            <Col key={item?.key}>
               <Row
                 style={{
                   background: '#F6F7F8',
                   padding: '12px',
                   borderRadius: '12px',
                   width: '333px',
-                  margin: '12px',
+                  margin: '5px',
                 }}
                 justify="space-between"
               >
