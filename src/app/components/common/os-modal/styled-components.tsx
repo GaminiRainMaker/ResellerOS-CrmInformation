@@ -16,4 +16,8 @@ export const OSModalStyle = styled(Modal)<{styleFooter?: boolean}>`
   &.ant-modal .ant-modal-close-x {
     display: unset;
   }
+  .ant-modal-content {
+    padding: 0px;
+  }
+  border-radius: 10px;
 `;

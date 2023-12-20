@@ -6,7 +6,7 @@ import GlobalLoader from '../os-global-loader';
 import {CustomTable} from './styled-components';
 
 const OsTable: FC<any> = ({
-  scrollx = 1200,
+  scrollx = 1000,
   paginationProps = true,
   tableInModal,
   rowSelection,

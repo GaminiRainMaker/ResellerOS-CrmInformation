@@ -19,8 +19,11 @@ const RecentSection: FC<any> = ({
   showToggleTable,
   rowSelection,
 }) => {
-  const {data: quoteData, loading} = useAppSelector((state) => state.quote);
+  const {filteredByDate: filteredData, loading} = useAppSelector(
+    (state) => state.quote,
+  );
   const [token] = useThemeToken();
+
 
   const onToggleChange = (checked: boolean) => {
     setShowToggleTable(checked);
@@ -67,7 +70,7 @@ const RecentSection: FC<any> = ({
             rowSelection={rowSelection}
             tableSelectionType="radio"
             columns={Quotecolumns}
-            dataSource={quoteData}
+            dataSource={filteredData}
             scroll
           />
         )}

@@ -14,6 +14,7 @@ export const OsCollapseStyle = styled(Collapse)`
   .ant-collapse-item-active {
     .ant-collapse-header {
         background-color: #457B9D; 
+        color: white;
   }
   .ant-collapse-content-box {
     padding: 0px ;

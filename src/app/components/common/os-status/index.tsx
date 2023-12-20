@@ -11,7 +11,7 @@ import useThemeToken from '../hooks/useThemeToken';
 const OsStatusWrapper: FC<OsStatusWrapperProps> = ({value}) => {
   const [token] = useThemeToken();
   const Status: OsStatusType = {
-    Recent: {
+    Drafts: {
       color: `${token?.colorInfoBgHover}`,
       textColor: `${token?.colorInfo}`,
       border: `${token?.colorInfo}`,

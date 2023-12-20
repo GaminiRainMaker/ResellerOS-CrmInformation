@@ -1,6 +1,7 @@
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
+import {dummyData, pricingMethod} from '@/app/utils/CONSTANTS';
 import {FC} from 'react';
 
 const Validation: FC = () => {
@@ -38,7 +39,11 @@ const Validation: FC = () => {
       key: 'pricing_method',
       width: 208,
       render: (text: string) => (
-        <CommonSelect style={{width: '200px'}} placeholder="Select" />
+        <CommonSelect
+          style={{width: '200px'}}
+          placeholder="Select"
+          options={pricingMethod}
+        />
       ),
     },
     {
@@ -86,7 +91,7 @@ const Validation: FC = () => {
       loading={false}
       // rowSelection={rowSelection}
       columns={ValidationQuoteLineItemcolumns}
-      //   dataSource={quoteLineItemByQuoteID || []}
+      dataSource={dummyData}
       scroll
     />
   );

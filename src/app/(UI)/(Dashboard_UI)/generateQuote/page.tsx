@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable consistent-return */
+/* eslint-disable no-nested-ternary */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable eqeqeq */
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -18,10 +22,13 @@ import {
   QueueListIcon,
   ReceiptPercentIcon,
   TagIcon,
+  TrashIcon,
 } from '@heroicons/react/24/outline';
 
+import {Breadcrumb} from '@/app/components/common/antd/BreadCrumb';
 import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
+import {PopConfirm} from '@/app/components/common/antd/PopConfirm';
 import {Space} from '@/app/components/common/antd/Space';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -32,13 +39,12 @@ import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
+import {selectData, selectDataForProduct} from '@/app/utils/CONSTANTS';
 import {Button, MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import {selectData, selectDataForProduct} from '@/app/utils/CONSTANTS';
-import {Breadcrumb} from '@/app/components/common/antd/BreadCrumb';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {getAllBundle} from '../../../../../redux/actions/bundle';
@@ -46,23 +52,26 @@ import {updateProductFamily} from '../../../../../redux/actions/product';
 import {updateQuoteByQuery} from '../../../../../redux/actions/quote';
 import {
   DeleteQuoteLineItemQuantityById,
+  UpdateQuoteLineItemQuantityById,
   getQuoteLineItemByQuoteId,
   getQuoteLineItemByQuoteIdandBundleIdNull,
+  updateQuoteLineItemForBundleId,
 } from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
-import BundleSection from './bundleSection';
-import Profitability from './allTabs/Profitability';
 import InputDetails from './allTabs/InputDetails';
+import Profitability from './allTabs/Profitability';
 import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
+import BundleSection from './bundleSection';
+import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const getQuoteLineItemId = searchParams.get('id');
+  const getQuoteID = searchParams.get('id');
 
   const [activeTab, setActiveTab] = useState<any>('1');
   const [inputData, setInputData] = useState<any>({});
@@ -75,6 +84,7 @@ const GenerateQuote: React.FC = () => {
     loading,
   } = useAppSelector((state) => state.quoteLineItem);
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<any>();
   const [amountData, setAmountData] = useState<any>();
   const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
   const [open, setOpen] = useState(false);
@@ -84,7 +94,12 @@ const GenerateQuote: React.FC = () => {
   const [selectedFilter, setSelectedFilter] = useState<String>();
   const {data: bundleData} = useAppSelector((state) => state.bundle);
   const [familyFilter, setFamilyFilter] = useState<any>([]);
+  const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] =
+    useState<any>();
 
+  useEffect(() => {
+    setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);
+  }, [quoteLineItemByQuoteID]);
   useEffect(() => {
     if (selectedFilter == 'Product Family') {
       const finalFamilyArr: any = [];
@@ -94,7 +109,7 @@ const GenerateQuote: React.FC = () => {
       let subscriptionArr: any = [];
       let unassignedArr: any = [];
 
-      if (dataNullForBundle) {
+      if (dataNullForBundle?.[0] && dataNullForBundle?.[0]?.length > 0) {
         productsArr = dataNullForBundle?.[0]?.filter(
           (item: any) => item?.Product?.product_family == 'Products',
         );
@@ -103,7 +118,7 @@ const GenerateQuote: React.FC = () => {
             item?.Product?.product_family == 'Professional Services',
         );
         maintenanceArr = dataNullForBundle?.[0]?.filter(
-          (item: any) => item?.Product?.product_family == 'Maintenances',
+          (item: any) => item?.Product?.product_family == 'Maintenance',
         );
         subscriptionArr = dataNullForBundle?.[0]?.filter(
           (item: any) => item?.Product?.product_family == 'Subscriptions',
@@ -152,15 +167,13 @@ const GenerateQuote: React.FC = () => {
   }, [selectedFilter]);
 
   useEffect(() => {
-    if (getQuoteLineItemId)
-      dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
-    dispatch(
-      getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteLineItemId)),
-    );
-  }, [getQuoteLineItemId]);
+    if (getQuoteID) dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID)));
+    dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
+    dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+  }, [getQuoteID]);
 
   useEffect(() => {
-    dispatch(getAllBundle(getQuoteLineItemId));
+    dispatch(getAllBundle(getQuoteID));
   }, []);
 
   useEffect(() => {
@@ -205,7 +218,7 @@ const GenerateQuote: React.FC = () => {
   }, [quoteLineItemByQuoteID]);
 
   useEffect(() => {
-    const allIdsArray: [] = [];
+    const allIdsArray: any = [];
     if (quoteLineItemByQuoteID && quoteLineItemByQuoteID?.length > 0) {
       quoteLineItemByQuoteID?.map((item: string) => {
         if (!allIdsArray?.includes(item?.Quote?.id)) {
@@ -227,7 +240,6 @@ const GenerateQuote: React.FC = () => {
     if (isExist) {
       quoteLineItemByQuoteID?.map((lineItem: any) => {
         let bundleObj: any;
-        // console.log('345435345', bundleObj, lineItem?.Bundle?.id, lineItem);
         if (lineItem?.Bundle) {
           if (bundleObj) {
             bundleObj = {
@@ -257,23 +269,55 @@ const GenerateQuote: React.FC = () => {
   }, [quoteLineItemByQuoteID]);
 
   const commonUpdateCompleteAndDraftMethod = (queryItem: string) => {
-    if (getQuoteLineItemId) {
+    if (getQuoteID) {
       const data = {
-        ids: getQuoteLineItemId,
+        ids: getQuoteID,
         query: queryItem,
       };
       dispatch(updateQuoteByQuery(data));
     }
+    quoteLineItemByQuoteData?.map((prev: any) => {
+      if (selectTedRowIds?.includes(prev?.id)) {
+        const obj = {
+          id: prev?.id,
+          quantity: prev?.quantity,
+        };
+        return dispatch(UpdateQuoteLineItemQuantityById(obj));
+      }
+    });
     router?.push('/allQuote');
   };
+  // const saveUpdate = (queryItem: string) => {
+  //   quoteLineItemByQuoteData?.map((prev: any) => {
+  //     if (selectTedRowIds?.includes(prev?.id)) {
+  //       const obj = {
+  //         id: prev?.id,
+  //         quantity: prev?.quantity,
+  //       };
+  //       return dispatch(UpdateQuoteLineItemQuantityById(obj));
+  //     }
+  //   });
+  // };
 
   const deleteLineItems = () => {
     if (selectTedRowIds) {
       dispatch(DeleteQuoteLineItemQuantityById(selectTedRowIds));
       setSelectedRowIds([]);
       setTimeout(() => {
-        dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
+        dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID)));
       }, 500);
+    }
+  };
+
+  const deleteQuote = async (id: number) => {
+    if (id) {
+      const data = {
+        Ids: [id],
+        bundle_id: null,
+      };
+      await dispatch(updateQuoteLineItemForBundleId(data));
+      dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
+      dispatch(getAllBundle(getQuoteID));
     }
   };
 
@@ -339,16 +383,21 @@ const GenerateQuote: React.FC = () => {
       title: '#Line',
       dataIndex: 'line_number',
       key: 'line_number',
-      render: (text: string, record: any) => (
+      render: (text: any, record: any) => (
         <OsInput
           disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
           style={{
             height: '36px',
           }}
-          value={text}
+          placeholder={text}
+          value={
+            !selectTedRowIds?.includes(record?.id)
+              ? text * (record?.Bundle?.quantity ? record?.Bundle?.quantity : 1)
+              : quoteLineItemByQuoteData?.line_number
+          }
           onChange={(v) => {
-            setQuoteLineItemByQuoteData((prev) =>
-              prev.map((prevItem) => {
+            setQuoteLineItemByQuoteData((prev: any) =>
+              prev.map((prevItem: any) => {
                 if (prevItem.id === record?.id) {
                   return {...prevItem, line_number: v.target.value};
                 }
@@ -370,16 +419,28 @@ const GenerateQuote: React.FC = () => {
       title: 'Qty',
       dataIndex: 'quantity',
       key: 'quantity',
-      render: (text: string, record: any) => (
+      render: (text: any, record: any) => (
         <OsInput
           style={{
             height: '36px',
           }}
           disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
-          value={text}
+          // value={
+          //   // eslint-disable-next-line no-unsafe-optional-chaining
+          //   text *
+          //   (!isEditable && record?.Bundle?.quantity
+          //     ? record?.Bundle?.quantity
+          //     : 1)
+          // }
+          placeholder={text}
+          value={
+            !selectTedRowIds?.includes(record?.id)
+              ? text * (record?.Bundle?.quantity ? record?.Bundle?.quantity : 1)
+              : quoteLineItemByQuoteData?.quantity
+          }
           onChange={(v) => {
-            setQuoteLineItemByQuoteData((prev) =>
-              prev.map((prevItem) => {
+            setQuoteLineItemByQuoteData((prev: any) =>
+              prev.map((prevItem: any) => {
                 if (prevItem.id === record?.id) {
                   return {...prevItem, quantity: v.target.value};
                 }
@@ -396,12 +457,30 @@ const GenerateQuote: React.FC = () => {
       dataIndex: 'adjusted_price',
       key: 'adjusted_price',
       width: 187,
+      render: (text: any, record: any) => {
+        let doubleVal: any;
+
+        return <>{record?.Bundle?.quantity ? record?.Bundle?.quantity : 1}</>;
+      },
     },
     {
       title: 'Cost',
       dataIndex: 'list_price',
       key: 'list_price',
       width: 187,
+      render: (text: any, record: any) => {
+        const totalAddedPrice = record?.Product?.list_price
+          ?.slice(1, record?.Product?.list_price?.length)
+          .replace(',', '');
+        // eslint-disable-next-line no-unsafe-optional-chaining
+        const ExactPriceForOne = totalAddedPrice / record?.Product?.quantity;
+        let bundleQuantity: any = 1;
+        bundleQuantity = record?.Bundle ? record?.Bundle?.quantity : 1;
+        const totalQuantity = record?.quantity * bundleQuantity;
+        const TotalPrice = totalQuantity * ExactPriceForOne;
+
+        return <>${TotalPrice}</>;
+      },
     },
     {
       title: 'Product Description',
@@ -427,7 +506,7 @@ const GenerateQuote: React.FC = () => {
             <CommonSelect
               style={{width: '200px'}}
               placeholder="Select"
-              value={record?.Product?.product_family}
+              defaultValue={record?.Product?.product_family}
               options={selectDataForProduct}
               onChange={(e) => {
                 const data = {id: record?.product_id, product_family: e};
@@ -437,6 +516,33 @@ const GenerateQuote: React.FC = () => {
           ),
         };
       },
+    },
+    {
+      title: ' ',
+      dataIndex: 'actions',
+      key: 'actions',
+      width: 94,
+      render: (text: string, record: any) => (
+        <Space size={18}>
+          <PopConfirm
+            placement="top"
+            title=""
+            description="Are you sure to delete this Quote Line Item?"
+            onConfirm={() => {
+              deleteQuote(record?.id);
+            }}
+            okText="Yes"
+            cancelText="No"
+          >
+            <TrashIcon
+              height={24}
+              width={24}
+              color={token.colorError}
+              style={{cursor: 'pointer'}}
+            />
+          </PopConfirm>
+        </Space>
+      ),
     },
   ];
 
@@ -506,7 +612,7 @@ const GenerateQuote: React.FC = () => {
           cursor="pointer"
           color={token?.colorPrimaryText}
           onClick={() => {
-            router?.push(`/generateQuote?id=${getQuoteLineItemId}`);
+            router?.push(`/generateQuote?id=${getQuoteID}`);
           }}
         >
           {quoteLineItemByQuoteID?.[0]?.Quote?.createdAt ?? ''}
@@ -516,8 +622,8 @@ const GenerateQuote: React.FC = () => {
   ];
 
   const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[]) => {
-      // setSelectedRowKeys(selectedRowKeys);
+    onChange: (selectedRowKeys: React.Key[], data: any) => {
+      setSelectedRowKeys(data);
       setSelectedRowIds(selectedRowKeys);
     },
     getCheckboxProps: (record: any) => ({
@@ -535,7 +641,7 @@ const GenerateQuote: React.FC = () => {
     {
       key: 2,
       name: 'Profitability',
-      children: <Profitability />,
+      children: <Profitability isEditable={isEditable} />,
     },
     {
       key: 3,
@@ -549,7 +655,7 @@ const GenerateQuote: React.FC = () => {
     },
     {
       key: 5,
-      name: 'Matrix',
+      name: 'Matrics',
     },
   ];
 
@@ -652,9 +758,9 @@ const GenerateQuote: React.FC = () => {
                   />
 
                   <Dropdown
-                    trigger="click"
                     menu={{items}}
                     placement="bottomRight"
+                    trigger={['click']}
                   >
                     <Button
                       style={{
@@ -695,137 +801,169 @@ const GenerateQuote: React.FC = () => {
                 }
                 key={item?.key}
               >
-                {bundleData && bundleData?.length > 0 ? (
-                  <>
-                    {' '}
-                    {bundleData?.map((item: any, index: any) => (
-                      <OsCollapse
-                        items={[
-                          {
-                            key: '1',
-                            label: (
-                              <>
-                                <Space
-                                  style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                  }}
-                                >
-                                  <Typography name="Body 4/Medium">
-                                    {item?.name}
-                                  </Typography>
-                                  <Typography name="Body 4/Medium">
-                                    Lines:{item?.quoteLineItems?.length}
-                                  </Typography>
-                                  <Typography name="Body 4/Medium">
-                                    Desc: {item?.description}
-                                  </Typography>
-                                  <Typography name="Body 4/Medium">
-                                    Quantity: {item?.quantity}
-                                  </Typography>
-                                </Space>
-                              </>
-                            ),
-                            children: (
-                              <OsTable
-                                loading={loading}
-                                // rowSelection={rowSelection}
-                                columns={QuoteLineItemcolumns}
-                                dataSource={
-                                  (showTableDataa && item?.QuoteLineItems) || []
-                                }
-                                scroll
-                                rowSelection={rowSelection}
+                {activeTab === '1' ? (
+                  bundleData && bundleData?.length > 0 ? (
+                    <>
+                      {' '}
+                      {bundleData?.map((item: any, index: any) => (
+                        <OsCollapse
+                          items={[
+                            {
+                              key: '1',
+                              label: (
+                                <>
+                                  <Space
+                                    style={{
+                                      display: 'flex',
+                                      justifyContent: 'space-between',
+                                    }}
+                                  >
+                                    <p>{item?.name}</p>
+                                    <p>Lines:{item?.QuoteLineItems?.length}</p>
+                                    <p>Desc: {item?.description}</p>
+                                    <p>Quantity: {item?.quantity}</p>
+                                  </Space>
+                                </>
+                              ),
+                              children: (
+                                <OsTable
+                                  loading={loading}
+                                  // rowSelection={rowSelection}
+                                  columns={QuoteLineItemcolumns}
+                                  dataSource={
+                                    (showTableDataa && item?.QuoteLineItems) ||
+                                    []
+                                  }
+                                  scroll
+                                  rowSelection={rowSelection}
+                                />
+                              ),
+                            },
+                          ]}
+                        />
+                      ))}{' '}
+                      {selectedFilter ? (
+                        <>
+                          {familyFilter?.map((item: any, index: any) => (
+                            <OsCollapse
+                              items={[
+                                {
+                                  key: index,
+                                  label: (
+                                    <>
+                                      <Space
+                                        style={{
+                                          display: 'flex',
+                                          justifyContent: 'start',
+                                        }}
+                                      >
+                                        <p>{item?.name}</p>
+                                      </Space>
+                                    </>
+                                  ),
+                                  children: (
+                                    <OsTable
+                                      loading={loading}
+                                      columns={QuoteLineItemcolumns}
+                                      dataSource={item?.QuoteLineItem || []}
+                                      scroll
+                                      rowSelection={rowSelection}
+                                    />
+                                  ),
+                                },
+                              ]}
+                            />
+                          ))}
+                        </>
+                      ) : (
+                        <>
+                          {dataNullForBundle?.[0]?.length > 0 &&
+                            dataNullForBundle?.[0] && (
+                              <OsCollapse
+                                items={[
+                                  {
+                                    key: '2',
+                                    label: (
+                                      <>
+                                        <Space
+                                          style={{
+                                            display: 'flex',
+                                            justifyContent: 'start',
+                                          }}
+                                        >
+                                          <p>Unassigned</p>
+                                        </Space>
+                                      </>
+                                    ),
+                                    children: (
+                                      <OsTable
+                                        loading={loading}
+                                        columns={QuoteLineItemcolumns}
+                                        dataSource={
+                                          dataNullForBundle?.[0] || []
+                                        }
+                                        scroll
+                                        rowSelection={rowSelection}
+                                      />
+                                    ),
+                                  },
+                                ]}
                               />
-                            ),
-                          },
-                        ]}
-                      />
-                    ))}{' '}
-                    {selectedFilter ? (
-                      <>
-                        {familyFilter?.map((item: any, index: any) => (
-                          <OsCollapse
-                            items={[
-                              {
-                                key: index,
-                                label: (
-                                  <>
-                                    <Space
-                                      style={{
-                                        display: 'flex',
-                                        justifyContent: 'start',
-                                      }}
-                                    >
-                                      <Typography name="Body 4/Medium">
-                                        {item?.name}
-                                      </Typography>
-                                    </Space>
-                                  </>
-                                ),
-                                children: (
-                                  <OsTable
-                                    loading={loading}
-                                    // rowSelection={rowSelection}
-                                    columns={QuoteLineItemcolumns}
-                                    dataSource={item?.QuoteLineItem || []}
-                                    scroll
-                                    rowSelection={rowSelection}
-                                  />
-                                ),
-                              },
-                            ]}
-                          />
-                        ))}
-                      </>
-                    ) : (
-                      <OsCollapse
-                        items={[
-                          {
-                            key: '2',
-                            label: (
-                              <>
-                                <Space
-                                  style={{
-                                    display: 'flex',
-                                    justifyContent: 'start',
-                                  }}
-                                >
-                                  <Typography name="Body 4/Medium">
-                                    Unassigned
-                                  </Typography>
-                                </Space>
-                              </>
-                            ),
-                            children: (
-                              <OsTable
-                                loading={loading}
-                                // rowSelection={rowSelection}
-                                columns={QuoteLineItemcolumns}
-                                dataSource={dataNullForBundle?.[0] || []}
-                                scroll
-                                rowSelection={rowSelection}
-                              />
-                            ),
-                          },
-                        ]}
-                      />
-                    )}{' '}
-                  </>
+                            )}
+                        </>
+                      )}{' '}
+                    </>
+                  ) : (
+                    <>
+                      {selectedFilter ? (
+                        <>
+                          {' '}
+                          {familyFilter?.map((item: any, index: any) => (
+                            <OsCollapse
+                              items={[
+                                {
+                                  key: index,
+                                  label: (
+                                    <>
+                                      <Space
+                                        style={{
+                                          display: 'flex',
+                                          justifyContent: 'start',
+                                        }}
+                                      >
+                                        <p>{item?.name}</p>
+                                      </Space>
+                                    </>
+                                  ),
+                                  children: (
+                                    <OsTable
+                                      loading={loading}
+                                      columns={QuoteLineItemcolumns}
+                                      dataSource={item?.QuoteLineItem || []}
+                                      scroll
+                                      rowSelection={rowSelection}
+                                    />
+                                  ),
+                                },
+                              ]}
+                            />
+                          ))}
+                        </>
+                      ) : (
+                        <OsTable
+                          loading={loading}
+                          columns={QuoteLineItemcolumns}
+                          dataSource={
+                            (showTableDataa && quoteLineItemByQuoteData) || []
+                          }
+                          scroll
+                          rowSelection={rowSelection}
+                        />
+                      )}{' '}
+                    </>
+                  )
                 ) : (
-                  <>
-                    {' '}
-                    <OsTable
-                      loading={loading}
-                      // rowSelection={rowSelection}
-                      columns={QuoteLineItemcolumns}
-                      dataSource={
-                        (showTableDataa && quoteLineItemByQuoteID) || []
-                      }
-                      scroll
-                      rowSelection={rowSelection}
-                    />
-                  </>
+                  item?.children
                 )}
               </TabPane>
             ))}

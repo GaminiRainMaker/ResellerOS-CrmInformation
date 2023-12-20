@@ -49,7 +49,6 @@ const UploadFile: FC<any> = ({
         // onUploadProgress: (progressEvent) => {
         //   const {loaded, total} = progressEvent;
         //   const progress = (loaded / total) * 100;
-        //   console.log(`Upload Progress: ${progress.toFixed(2)}%`);
         // },
       });
       if (response) {

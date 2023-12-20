@@ -13,7 +13,6 @@ interface ITableProps {
 export const CustomTable = styled(Table)<ITableProps>`
   width: ${({tableInModal}) => (tableInModal ? '381px' : '')};
   margin: ${({tableInModal}) => (tableInModal ? '24px' : '')};
-  // margin-top: -18px;
   .ant-table-thead > tr {
     height: 32px;
   }
@@ -24,6 +23,9 @@ export const CustomTable = styled(Table)<ITableProps>`
     text-align: center;
     background: ${(props) => props.token.colorInfoBg};
     border-bottom: 1px solid #8592a4;
+  }
+  .ant-table-cell {
+    text-align: center;
   }
   .ant-pagination .ant-pagination-item-active {
     background: ${(props) => props.token.colorPrimary};

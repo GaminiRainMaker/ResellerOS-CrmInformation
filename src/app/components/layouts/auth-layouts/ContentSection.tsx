@@ -63,7 +63,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
             requiredMark={false}
           >
             {inputFields?.map((item: any) => {
-              console.log('item', item);
+              console.log('item');
               return (
                 <Form.Item
                   key={item?.name}
