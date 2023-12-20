@@ -56,4 +56,10 @@ export const API = {
     INDEX: '/contractProduct',
     QUERY: '/contractProduct/query',
   },
+  CUSTOMER: {
+    INDEX: '/customer',
+  },
+  ADDRESS: {
+    INDEX: '/address',
+  },
 };

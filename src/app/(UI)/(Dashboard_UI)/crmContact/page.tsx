@@ -40,6 +40,7 @@ import {useState} from 'react';
 import CommonSelect from '@/app/components/common/os-select';
 import {useAppDispatch} from '../../../../../redux/hook';
 import EditContactModal from './editContact';
+import AddContact from './addContact';
 
 const CrmAccount: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -47,6 +48,8 @@ const CrmAccount: React.FC = () => {
   const [activeTab, setActiveTab] = useState<any>('1');
   const router = useRouter();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showModalEdit, setShowModalEdit] = useState<boolean>(false);
+  const [formValue, setFormValue] = useState<any>();
 
   const analyticsData = [
     {
@@ -181,7 +184,18 @@ const CrmAccount: React.FC = () => {
       label: <Typography name="Body 3/Regular">Select All</Typography>,
     },
     {
-      key: '1',
+      key: '2',
+      label: (
+        <Typography
+          onClick={() => setShowModalEdit((p) => !p)}
+          name="Body 3/Regular"
+        >
+          Edit
+        </Typography>
+      ),
+    },
+    {
+      key: '3',
       label: (
         <Typography name="Body 3/Regular" color="#EB445A">
           Delete Selected
@@ -339,6 +353,16 @@ const CrmAccount: React.FC = () => {
         // loading={loading}
         body={<EditContactModal />}
         width={1110}
+        open={showModalEdit}
+        // onOk={() => addQuoteLineItem()}
+        onCancel={() => {
+          setShowModalEdit((p) => !p);
+        }}
+      />
+      <OsModal
+        // loading={loading}
+        body={<AddContact setFormValue={setFormValue} formValue={formValue} />}
+        width={600}
         open={showModal}
         // onOk={() => addQuoteLineItem()}
         onCancel={() => {

@@ -37,6 +37,7 @@ import {useState} from 'react';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import OsAvatar from '@/app/components/common/os-avatar';
 import {ArrowUpCircleIcon} from '@heroicons/react/20/solid';
+import OsButton from '@/app/components/common/os-button';
 import {useAppDispatch} from '../../../../../redux/hook';
 import AddCustomerInputVale from './addCustomerInput';
 
@@ -45,7 +46,7 @@ const AddCustomer: React.FC = () => {
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
   const router = useRouter();
-  const [formValue, setFormValue] = useState<boolean>(false);
+  const [formValue, setFormValue] = useState<any>();
   const [customerValue, setCustomerValue] = useState<any>();
 
   const tabItems: TabsProps['items'] = [
@@ -206,6 +207,16 @@ const AddCustomer: React.FC = () => {
           setFormValue={setFormValue}
           formValue={formValue}
         />
+        <Row
+          style={{
+            marginTop: '20px',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'end',
+          }}
+        >
+          <OsButton buttontype="PRIMARY" text="Add" />
+        </Row>
       </Space>
     </>
   );
