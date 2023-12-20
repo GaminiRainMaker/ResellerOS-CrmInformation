@@ -33,15 +33,12 @@ import OsButton from '@/app/components/common/os-button';
 import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Button, MenuProps, TabsProps} from 'antd';
+import {Button, MenuProps, TabsProps, Upload} from 'antd';
 import {useRouter} from 'next/navigation';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import OsInput from '@/app/components/common/os-input';
-import {SearchOutlined} from '@ant-design/icons';
 import {useState} from 'react';
 import CommonSelect from '@/app/components/common/os-select';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import UploadFile from '../generateQuote/UploadFile';
+import {useAppDispatch} from '../../../../../redux/hook';
 import EditContactModal from './editContact';
 
 const CrmAccount: React.FC = () => {
@@ -192,7 +189,9 @@ const CrmAccount: React.FC = () => {
       ),
     },
   ];
-
+  const handleFileChange = (file: any) => {
+    console.log('43543545', file);
+  };
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -216,10 +215,28 @@ const CrmAccount: React.FC = () => {
             </Col>
           ))}
         </Row>
+
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              Contact
+              Contact{' '}
+              {/* <div>
+                <Upload
+                  onChange={(e: any) => {
+                    console.log('435435435', e.fileList[0]?.originFileObj);
+                    Papa.parse(e.fileList[0]?.originFileObj, {
+                      header: true,
+                      skipEmptyLines: true,
+                      complete(results: any) {
+                        console.log(results.data);
+                      },
+                    });
+                  }}
+                  accept=".txt, .csv"
+                >
+                  CSV
+                </Upload>
+              </div> */}
             </Typography>
           </Col>
           <Col>

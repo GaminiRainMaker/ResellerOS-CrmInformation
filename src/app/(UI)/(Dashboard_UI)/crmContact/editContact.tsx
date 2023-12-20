@@ -26,7 +26,7 @@ import OsButton from '@/app/components/common/os-button';
 import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Button, Checkbox, MenuProps, TabsProps} from 'antd';
+import {Button, Checkbox, MenuProps, TabsProps, Upload} from 'antd';
 import {useRouter} from 'next/navigation';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsInput from '@/app/components/common/os-input';
