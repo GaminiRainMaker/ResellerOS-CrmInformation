@@ -13,7 +13,7 @@ import {totalRevenue, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import React, {FC, useEffect, useState} from 'react';
 
 const Matrix: FC<any> = (familyFilter: any) => {
-  console.log('555555555', familyFilter?.selectedFilter);
+  console.log('familyFilter', familyFilter?.selectedFilter);
 
   const [sectionData, setSectionData] = useState<
     {
@@ -67,7 +67,6 @@ const Matrix: FC<any> = (familyFilter: any) => {
   };
 
   useEffect(() => {
-
     if (familyFilter.familyFilter.length > 0) {
       const tempArrRevenue: {
         id: number | string;
@@ -141,7 +140,11 @@ const Matrix: FC<any> = (familyFilter: any) => {
         >
           <Space direction="vertical">
             <Typography name="Body 1/Regular">{item.name}</Typography>
-            <Typography name="Body 3/Regular">{item.filterOption}</Typography>
+            <Typography name="Body 3/Regular">
+              {familyFilter?.selectedFilter
+                ? `(${familyFilter?.selectedFilter})`
+                : '--'}
+            </Typography>
           </Space>
 
           <OsPieChart data={item.pieData} />
