@@ -45,6 +45,7 @@ import TabPane from 'antd/es/tabs/TabPane';
 import Image from 'next/image';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {getAllBundle} from '../../../../../redux/actions/bundle';
@@ -65,6 +66,8 @@ import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
 import BundleSection from './bundleSection';
 import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
+import Metrics from './allTabs/Metrics';
+import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -93,6 +96,9 @@ const GenerateQuote: React.FC = () => {
   const [showTableDataa, setShowTableDataa] = useState<boolean>(true);
   const [selectedFilter, setSelectedFilter] = useState<String>();
   const {data: bundleData} = useAppSelector((state) => state.bundle);
+  const {data: ProfitabilityData} = useAppSelector(
+    (state) => state.profitability,
+  );
   const [familyFilter, setFamilyFilter] = useState<any>([]);
   const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] =
     useState<any>();
@@ -170,6 +176,7 @@ const GenerateQuote: React.FC = () => {
     if (getQuoteID) dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID)));
     dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
     dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+    dispatch(getRebateQuoteLineItemByQuoteId(Number(getQuoteID)));
   }, [getQuoteID]);
 
   useEffect(() => {
@@ -358,7 +365,7 @@ const GenerateQuote: React.FC = () => {
     },
     {
       key: 5,
-      primary: '0%',
+      primary: `$${amountData?.LineAmount}`,
       secondry: 'Total GP%',
       icon: <ReceiptPercentIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
@@ -655,7 +662,11 @@ const GenerateQuote: React.FC = () => {
     },
     {
       key: 5,
-      name: 'Matrics',
+      name: 'Metrics',
+      children: <Metrics />,
+      // children: (
+      //   <EmptyContainer title="Please Select Grouping to view Matrics" />
+      // ),
     },
   ];
 

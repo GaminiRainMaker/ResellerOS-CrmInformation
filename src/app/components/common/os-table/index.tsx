@@ -34,7 +34,7 @@ const OsTable: FC<any> = ({
       selectedRowsKeys={[]}
       tableInModal={tableInModal}
       token={token}
-      rowKey={(record: any) => record.id}
+      rowKey={(record: any) => record?.id}
       rowSelection={{
         type: tableSelectionType,
         ...rowSelection,

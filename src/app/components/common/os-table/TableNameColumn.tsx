@@ -28,7 +28,12 @@ const TableNameColumn: FC<any> = ({
     <Space
       size={12}
       align="center"
-      style={{width: '100%', marginLeft: `${avtarLeftMargin}px`}}
+      style={{
+        width: '100%',
+        marginLeft: `${avtarLeftMargin}px`,
+        display: 'flex',
+        justifyContent: 'center',
+      }}
     >
       <AvatarStyled background={iconBg} src={imgUrl} icon={fallbackIcon} />
       <span style={{cursor}}>

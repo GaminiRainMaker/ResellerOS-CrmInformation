@@ -1,4 +1,4 @@
 export interface EmptyContainerInterface {
   title: string;
-  subTitle: string;
+  subTitle?: string;
 }

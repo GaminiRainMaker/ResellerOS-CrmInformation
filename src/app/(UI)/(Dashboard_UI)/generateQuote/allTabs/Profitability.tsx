@@ -7,18 +7,18 @@ import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import { pricingMethod } from '@/app/utils/CONSTANTS';
+import {pricingMethod} from '@/app/utils/CONSTANTS';
 import {
   calculateProfitabilityData,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
-import { useSearchParams } from 'next/navigation';
-import { FC, useEffect, useState } from 'react';
+import {useSearchParams} from 'next/navigation';
+import {FC, useEffect, useState} from 'react';
 import {
   getProfitabilityByQuoteId,
   updateProfitabilityById,
 } from '../../../../../../redux/actions/profitability';
-import { useAppDispatch, useAppSelector } from '../../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 
 const Profitability: FC<any> = () => {
   const searchParams = useSearchParams();
@@ -126,6 +126,7 @@ const Profitability: FC<any> = () => {
         <CommonSelect
           style={{width: '200px'}}
           placeholder="Select"
+          defaultValue={text}
           onChange={(v) => {
             setProfitabilityData((prev: any) =>
               prev.map((prevItem: any) => {

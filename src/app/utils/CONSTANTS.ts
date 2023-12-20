@@ -39,6 +39,7 @@ export const dummyData = [
     createdAt: '2023-12-14T17:32:49.051Z',
     updatedAt: '2023-12-14T17:32:49.051Z',
     Bundle: null,
+    status: 'success',
   },
   {
     id: 8,
@@ -57,6 +58,7 @@ export const dummyData = [
     createdAt: '2023-12-14T17:32:49.051Z',
     updatedAt: '2023-12-14T17:32:49.051Z',
     Bundle: null,
+    status: 'reject',
   },
   {
     id: 9,
@@ -75,6 +77,7 @@ export const dummyData = [
     createdAt: '2023-12-14T17:32:49.051Z',
     updatedAt: '2023-12-14T17:32:49.051Z',
     Bundle: null,
+    status: 'warning',
   },
   {
     id: 13,
@@ -93,6 +96,7 @@ export const dummyData = [
     createdAt: '2023-12-14T17:40:08.092Z',
     updatedAt: '2023-12-14T17:40:08.092Z',
     Bundle: null,
+    status: 'success',
   },
   {
     id: 14,
@@ -111,6 +115,7 @@ export const dummyData = [
     createdAt: '2023-12-14T17:40:08.092Z',
     updatedAt: '2023-12-14T17:40:08.092Z',
     Bundle: null,
+    status: 'success',
   },
   {
     id: 15,
@@ -129,6 +134,7 @@ export const dummyData = [
     createdAt: '2023-12-14T17:40:08.092Z',
     updatedAt: '2023-12-14T17:40:08.092Z',
     Bundle: null,
+    status: 'reject',
   },
 ];
 
