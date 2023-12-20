@@ -46,6 +46,7 @@ const AddCustomer: React.FC = () => {
   const [activeTab, setActiveTab] = useState<any>('1');
   const router = useRouter();
   const [formValue, setFormValue] = useState<boolean>(false);
+  const [customerValue, setCustomerValue] = useState<any>();
 
   const tabItems: TabsProps['items'] = [
     {
@@ -146,13 +147,25 @@ const AddCustomer: React.FC = () => {
             <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
               Legal Name
             </Typography>
-            <OsInput placeholder="Legal name" />
+            <OsInput
+              placeholder="Legal name"
+              value={customerValue?.name}
+              onChange={(e: any) => {
+                setCustomerValue({...customerValue, name: e.target.value});
+              }}
+            />
           </Col>
           <Col>
             <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
               Default Currency
             </Typography>
-            <OsInput placeholder="Default Currency" />
+            <OsInput
+              placeholder="Default Currency"
+              value={customerValue?.currency}
+              onChange={(e: any) => {
+                setCustomerValue({...customerValue, currency: e.target.value});
+              }}
+            />
           </Col>
         </Row>
       </Space>

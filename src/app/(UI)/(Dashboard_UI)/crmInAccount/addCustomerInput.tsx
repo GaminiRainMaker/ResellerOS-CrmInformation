@@ -41,11 +41,11 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
             <Typography name="Body 4/Regular">Address Line</Typography>
             <OsInput
               placeholder="Address Line"
-              value={formValue?.ship_address_line}
+              value={formValue?.shiping_address_line}
               onChange={(e) => {
                 setFormValue({
                   ...formValue,
-                  ship_address_line: e.target.value,
+                  shiping_address_line: e.target.value,
                 });
               }}
             />
@@ -58,11 +58,11 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
               <Typography name="Body 4/Regular">City</Typography>
               <OsInput
                 placeholder="City"
-                value={formValue?.ship_city}
+                value={formValue?.shiping_city}
                 onChange={(e) => {
                   setFormValue({
                     ...formValue,
-                    ship_city: e.target.value,
+                    shiping_city: e.target.value,
                   });
                 }}
               />
@@ -71,11 +71,11 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
               <Typography name="Body 4/Regular">State</Typography>
               <OsInput
                 placeholder="State"
-                value={formValue?.ship_state}
+                value={formValue?.shiping_state}
                 onChange={(e) => {
                   setFormValue({
                     ...formValue,
-                    ship_state: e.target.value,
+                    shiping_state: e.target.value,
                   });
                 }}
               />
@@ -89,11 +89,11 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
               <Typography name="Body 4/Regular">Pin Code</Typography>
               <OsInput
                 placeholder="pin code"
-                value={formValue?.ship_pin}
+                value={formValue?.shiping_pin_code}
                 onChange={(e) => {
                   setFormValue({
                     ...formValue,
-                    ship_pin: e.target.value,
+                    shiping_pin_code: e.target.value,
                   });
                 }}
               />
@@ -102,11 +102,11 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
               <Typography name="Body 4/Regular">Country</Typography>
               <OsInput
                 placeholder="Country"
-                value={formValue?.ship_country}
+                value={formValue?.shiping_country}
                 onChange={(e) => {
                   setFormValue({
                     ...formValue,
-                    ship_country: e.target.value,
+                    shiping_country: e.target.value,
                   });
                 }}
               />
@@ -123,21 +123,21 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
                 if (e.target.checked) {
                   setFormValue({
                     ...formValue,
-                    bill_address_line: formValue?.ship_address_line,
-                    bill_city: formValue?.ship_city,
-                    bill_state: formValue?.ship_state,
-                    bill_pin: formValue?.ship_pin,
-                    bill_country: formValue?.ship_country,
+                    billing_address_line: formValue?.shiping_address_line,
+                    billing_city: formValue?.shiping_city,
+                    billing_state: formValue?.shiping_state,
+                    billing_pin_code: formValue?.shiping_pin_code,
+                    billing_country: formValue?.shiping_country,
                     bill_preVale: true,
                   });
                 } else {
                   setFormValue({
                     ...formValue,
-                    bill_address_line: '',
-                    bill_city: '',
-                    bill_state: '',
-                    bill_pin: '',
-                    bill_country: '',
+                    billing_address_line: '',
+                    billing_city: '',
+                    billing_state: '',
+                    billing_pin_code: '',
+                    billing_country: '',
                     bill_preVale: false,
                   });
                 }
@@ -151,11 +151,11 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
             <Typography name="Body 4/Regular">Address Line</Typography>
             <OsInput
               placeholder="Address Line"
-              value={formValue?.bill_address_line}
+              value={formValue?.billing_address_line}
               onChange={(e) => {
                 setFormValue({
                   ...formValue,
-                  bill_address_line: e.target.value,
+                  billing_address_line: e.target.value,
                 });
               }}
             />
@@ -168,11 +168,11 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
               <Typography name="Body 4/Regular">City</Typography>
               <OsInput
                 placeholder="City"
-                value={formValue?.bill_city}
+                value={formValue?.billing_city}
                 onChange={(e) => {
                   setFormValue({
                     ...formValue,
-                    bill_city: e.target.value,
+                    billing_city: e.target.value,
                   });
                 }}
               />
@@ -181,11 +181,11 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
               <Typography name="Body 4/Regular">State</Typography>
               <OsInput
                 placeholder="State"
-                value={formValue?.bill_state}
+                value={formValue?.billing_state}
                 onChange={(e) => {
                   setFormValue({
                     ...formValue,
-                    bill_state: e.target.value,
+                    billing_state: e.target.value,
                   });
                 }}
               />
@@ -199,11 +199,11 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
               <Typography name="Body 4/Regular">Pin Code</Typography>
               <OsInput
                 placeholder="pin code"
-                value={formValue?.bill_pin}
+                value={formValue?.billing_pin_code}
                 onChange={(e) => {
                   setFormValue({
                     ...formValue,
-                    bill_pin: e.target.value,
+                    billing_pin_code: e.target.value,
                   });
                 }}
               />
@@ -212,11 +212,11 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
               <Typography name="Body 4/Regular">Country</Typography>
               <OsInput
                 placeholder="Country"
-                value={formValue?.bill_country}
+                value={formValue?.billing_country}
                 onChange={(e) => {
                   setFormValue({
                     ...formValue,
-                    bill_country: e.target.value,
+                    billing_country: e.target.value,
                   });
                 }}
               />
@@ -231,20 +231,56 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
           >
             <Col style={{width: '47%'}}>
               <Typography name="Body 4/Regular">First Name</Typography>
-              <OsInput placeholder="First Name" />
+              <OsInput
+                placeholder="First Name"
+                value={formValue?.billing_first_name}
+                onChange={(e) => {
+                  setFormValue({
+                    ...formValue,
+                    billing_first_name: e.target.value,
+                  });
+                }}
+              />
             </Col>
             <Col style={{width: '47%'}}>
               <Typography name="Body 4/Regular">Last Name</Typography>
-              <OsInput placeholder="Last Name" />
+              <OsInput
+                placeholder="Last Name"
+                value={formValue?.billing_last_name}
+                onChange={(e) => {
+                  setFormValue({
+                    ...formValue,
+                    billing_last_name: e.target.value,
+                  });
+                }}
+              />
             </Col>
           </Row>
           <Row style={{marginTop: '20px', width: '100%'}}>
             <Typography name="Body 4/Regular">Role</Typography>
-            <OsInput placeholder="Role" />
+            <OsInput
+              placeholder="Role"
+              value={formValue?.billing_role}
+              onChange={(e) => {
+                setFormValue({
+                  ...formValue,
+                  billing_role: e.target.value,
+                });
+              }}
+            />
           </Row>
           <Row style={{marginTop: '20px', width: '100%'}}>
             <Typography name="Body 4/Regular">Email</Typography>
-            <OsInput placeholder="Email" />
+            <OsInput
+              placeholder="Email"
+              value={formValue?.billing_email}
+              onChange={(e) => {
+                setFormValue({
+                  ...formValue,
+                  billing_email: e.target.value,
+                });
+              }}
+            />
           </Row>
         </Row>
       )}
