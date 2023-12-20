@@ -14,11 +14,11 @@ export const insertValidation = createAsyncThunk(
   },
 );
 
-export const getAllValidation = createAsyncThunk(
-  'validation/getAllValidation',
-  async (data, thunkApi) => {
+export const getAllValidationByQuoteId = createAsyncThunk(
+  'validation/getAllValidationByQuoteId',
+  async (id: number, thunkApi) => {
     try {
-      const res = await VALIDATION_API.get();
+      const res = await VALIDATION_API.getById(id);
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error?.message);

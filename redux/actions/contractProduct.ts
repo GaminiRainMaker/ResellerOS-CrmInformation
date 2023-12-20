@@ -26,11 +26,14 @@ export const getAllContractProduct = createAsyncThunk(
   },
 );
 
-export const updateContractProductById = createAsyncThunk(
-  'contractProduct/updateContractProductById',
-  async (data: any, thunkApi) => {
+export const getContractProductByProductCode = createAsyncThunk(
+  'contractProduct/getContractProductByProductCode',
+  async (product_code: string, thunkApi) => {
     try {
-      const res = await CONTRACT_PRODUCT_API.patch(data);
+      const res =
+        await CONTRACT_PRODUCT_API.getContractProductByProductCode(
+          product_code,
+        );
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

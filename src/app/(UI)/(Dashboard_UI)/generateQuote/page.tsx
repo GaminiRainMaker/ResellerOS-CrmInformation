@@ -71,6 +71,7 @@ import BundleSection from './bundleSection';
 import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
 import Metrics from './allTabs/Metrics';
 import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
+import { getAllValidationByQuoteId } from '../../../../../redux/actions/validation';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -201,6 +202,7 @@ const GenerateQuote: React.FC = () => {
     dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
     dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
     dispatch(getRebateQuoteLineItemByQuoteId(Number(getQuoteID)));
+    dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
   }, [getQuoteID]);
 
   useEffect(() => {

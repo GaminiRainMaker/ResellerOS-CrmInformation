@@ -4,7 +4,7 @@ import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
   getAllContractProduct,
   insertContractProduct,
-  updateContractProductById,
+  getContractProductByProductCode,
 } from '../actions/contractProduct';
 
 type ContractProductState = {
@@ -66,19 +66,19 @@ const contractProductSlice = createSlice({
           state.error = action.payload;
         },
       )
-      .addCase(updateContractProductById.pending, (state) => {
+      .addCase(getContractProductByProductCode.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        updateContractProductById.fulfilled,
+        getContractProductByProductCode.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.data = action.payload;
         },
       )
       .addCase(
-        updateContractProductById.rejected,
+        getContractProductByProductCode.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

@@ -11,16 +11,15 @@ import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHo
 import Typography from '@/app/components/common/typography';
 import {rebateAmount, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
-import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
-import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {updateRebateQuoteLineItemById} from '../../../../../../redux/actions/rebateQuoteLineitem';
+import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 
 const Rebates = () => {
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
-  const {data: RebateData} = useAppSelector(
+  const {data: RebateData, loading} = useAppSelector(
     (state) => state.rebateQuoteLineItem,
   );
   const [rebateData, setRebateData] = useState<any>(RebateData);
@@ -42,7 +41,12 @@ const Rebates = () => {
             prevItem?.quantity,
             prevItem?.percentage_payout,
           );
-          return {...prevItem, list_price, rebate_amount: rebateAmountValue};
+          return {
+            ...prevItem,
+            list_price,
+            rebate_amount: rebateAmountValue,
+            rowId: recordId,
+          };
         }
         return prevItem;
       });
@@ -51,7 +55,20 @@ const Rebates = () => {
   };
 
   useEffect(() => {
-    debouncedApiCall(rebateData);
+    rebateData.map((rebateDataItem: any) => {
+      if (rebateDataItem?.rowId === rebateDataItem?.id) {
+        const obj = {
+          id: rebateDataItem?.id,
+          line_number: rebateDataItem?.line_number,
+          list_price: rebateDataItem?.list_price,
+          pricing_method: rebateDataItem?.pricing_method,
+          line_amount: rebateDataItem?.line_amount,
+          exit_price: rebateDataItem?.exit_price,
+          rebate_amount: rebateDataItem?.rebate_amount,
+        };
+        debouncedApiCall(obj);
+      }
+    });
   }, [JSON.stringify(rebateData)]);
 
   const RebatesQuoteLineItemcolumns = [
@@ -191,7 +208,7 @@ const Rebates = () => {
 
   return (
     <OsTable
-      loading={false}
+      loading={loading}
       // rowSelection={{...rowSelection}}
       columns={RebatesQuoteLineItemcolumns}
       dataSource={rebateData}
