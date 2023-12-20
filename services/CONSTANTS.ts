@@ -44,4 +44,16 @@ export const API = {
     QUERY: '/rebates/query',
     GetRebatesByProductCode: '/rebates/getRebatesByProductCode',
   },
+  VALIDATION: {
+    INDEX: '/validation',
+    QUERY: '/validation/query',
+  },
+  CONTRACT: {
+    INDEX: '/contract',
+    QUERY: '/contract/query',
+  },
+  CONTRACT_PRODUCT: {
+    INDEX: '/contractProduct',
+    QUERY: '/contractProduct/query',
+  },
 };

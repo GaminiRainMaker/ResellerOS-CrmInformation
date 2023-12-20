@@ -10,6 +10,9 @@ import bundle from './slices/bundle';
 import profitability from './slices/profitability';
 import rebateQuoteLineItem from './slices/rebateQuoteLineItem';
 import rebate from './slices/rebate';
+import contract from './slices/contract';
+import validation from './slices/validation';
+import contractProduct from './slices/contractProduct';
 
 // Configure redux store
 const store = configureStore({
@@ -22,6 +25,9 @@ const store = configureStore({
     profitability,
     rebateQuoteLineItem,
     rebate,
+    contract,
+    contractProduct,
+    validation,
   },
   middleware: [thunk, logger],
   devTools: true,
