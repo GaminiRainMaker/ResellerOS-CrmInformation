@@ -1,7 +1,11 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {insertBundle, getAllBundle} from '../actions/bundle';
+import {
+  insertBundle,
+  getAllBundle,
+  updateBundleQuantity,
+} from '../actions/bundle';
 
 type ProductState = {
   loading: boolean;
@@ -49,7 +53,25 @@ const productSlice = createSlice({
       .addCase(getAllBundle.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(updateBundleQuantity.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateBundleQuantity.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        updateBundleQuantity.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      );
   },
 });
 

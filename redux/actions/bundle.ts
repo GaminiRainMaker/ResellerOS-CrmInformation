@@ -25,3 +25,14 @@ export const getAllBundle = createAsyncThunk(
     }
   },
 );
+export const updateBundleQuantity = createAsyncThunk(
+  'bundle/updateQuanityForBundle',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await BUNDLE_API.patch(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

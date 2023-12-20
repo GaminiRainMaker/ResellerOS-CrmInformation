@@ -48,7 +48,10 @@ import {useEffect, useState} from 'react';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
-import {getAllBundle} from '../../../../../redux/actions/bundle';
+import {
+  getAllBundle,
+  updateBundleQuantity,
+} from '../../../../../redux/actions/bundle';
 import {updateProductFamily} from '../../../../../redux/actions/product';
 import {updateQuoteByQuery} from '../../../../../redux/actions/quote';
 import {
@@ -96,6 +99,7 @@ const GenerateQuote: React.FC = () => {
   const [showTableDataa, setShowTableDataa] = useState<boolean>(true);
   const [selectedFilter, setSelectedFilter] = useState<String>();
   const {data: bundleData} = useAppSelector((state) => state.bundle);
+  const [totalGrossValue, setTotalGrossValue] = useState<any>();
   const {data: ProfitabilityData} = useAppSelector(
     (state) => state.profitability,
   );
@@ -106,6 +110,26 @@ const GenerateQuote: React.FC = () => {
   useEffect(() => {
     setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);
   }, [quoteLineItemByQuoteID]);
+  useEffect(() => {
+    let grossProfit: any = 0;
+    let grossProfitPercentage: any = 0;
+    ProfitabilityData?.map((item: any) => {
+      if (item?.gross_profit) {
+        grossProfit += item?.gross_profit ? item?.gross_profit : 0;
+      }
+      if (item?.gross_profit_percentage) {
+        grossProfitPercentage += item?.gross_profit_percentage
+          ? item?.gross_profit_percentage
+          : 0;
+      }
+    });
+
+    setTotalGrossValue({
+      GrossProfit: grossProfit?.toString()?.slice(0, 5),
+      GrossProfitPercentage: grossProfitPercentage?.toString()?.slice(0, 5),
+    });
+  }, [ProfitabilityData]);
+
   useEffect(() => {
     if (selectedFilter == 'Product Family') {
       const finalFamilyArr: any = [];
@@ -352,7 +376,7 @@ const GenerateQuote: React.FC = () => {
     },
     {
       key: 4,
-      primary: '$0.00',
+      primary: totalGrossValue?.GrossProfit,
       secondry: 'Total GP',
       icon: (
         <Image
@@ -365,7 +389,7 @@ const GenerateQuote: React.FC = () => {
     },
     {
       key: 5,
-      primary: `$${amountData?.LineAmount}`,
+      primary: `${totalGrossValue?.GrossProfitPercentage}%`,
       secondry: 'Total GP%',
       icon: <ReceiptPercentIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
@@ -639,6 +663,11 @@ const GenerateQuote: React.FC = () => {
     }),
   };
 
+  const updateBundleQuantityData = async (data: any) => {
+    await dispatch(updateBundleQuantity(data));
+    dispatch(getAllBundle(getQuoteID));
+  };
+
   const TabPaneData = [
     {
       key: 1,
@@ -832,7 +861,20 @@ const GenerateQuote: React.FC = () => {
                                     <p>{item?.name}</p>
                                     <p>Lines:{item?.QuoteLineItems?.length}</p>
                                     <p>Desc: {item?.description}</p>
-                                    <p>Quantity: {item?.quantity}</p>
+                                    <p>
+                                      Quantity:
+                                      <OsInput
+                                        defaultValue={item?.quantity}
+                                        style={{width: '60px'}}
+                                        onChange={(e: any) => {
+                                          const data = {
+                                            id: item?.id,
+                                            quantity: e.target.value,
+                                          };
+                                          updateBundleQuantityData(data);
+                                        }}
+                                      />
+                                    </p>
                                   </Space>
                                 </>
                               ),
