@@ -2,7 +2,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
-  getAllValidation,
+  getAllValidationByQuoteId,
   insertValidation,
   updateValidationById,
 } from '../actions/validation';
@@ -48,19 +48,19 @@ const validationSlice = createSlice({
           state.error = action.payload;
         },
       )
-      .addCase(getAllValidation.pending, (state) => {
+      .addCase(getAllValidationByQuoteId.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        getAllValidation.fulfilled,
+        getAllValidationByQuoteId.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.data = action.payload;
         },
       )
       .addCase(
-        getAllValidation.rejected,
+        getAllValidationByQuoteId.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

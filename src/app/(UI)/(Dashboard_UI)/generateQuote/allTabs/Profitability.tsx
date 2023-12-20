@@ -34,7 +34,6 @@ const Profitability: FC<any> = () => {
   );
   // const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
 
-  console.log('profitabilityDataByQuoteId', profitabilityDataByQuoteId);
 
   useEffect(() => {
     if (getQuoteLineItemId)

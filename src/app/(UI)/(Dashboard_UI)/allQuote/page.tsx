@@ -49,6 +49,8 @@ import QuoteAnalytics from './analytics';
 import {insertProfitability} from '../../../../../redux/actions/profitability';
 import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
 import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
+import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
+import {insertValidation} from '../../../../../redux/actions/validation';
 
 interface FormattedData {
   [key: string]: {
@@ -163,6 +165,7 @@ const AllQuote: React.FC = () => {
     });
     const newrrLineItems: any = [];
     const rebateDataArray: any = [];
+    const contractProductArray: any = [];
     if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
       const response = await dispatch(insertQuote(labelOcrMap));
       for (let j = 0; j < response?.payload?.data.length; j++) {
@@ -194,6 +197,19 @@ const AllQuote: React.FC = () => {
                     RebatesByProductCodData?.payload?.percentage_payout,
                 });
               }
+              const contractProductByProductCode = await dispatch(
+                getContractProductByProductCode(
+                  insertedProduct?.payload?.product_code,
+                ),
+              );
+              if (contractProductByProductCode?.payload?.id) {
+                contractProductArray?.push({
+                  ...obj1,
+                  contract_product_id:
+                    contractProductByProductCode?.payload?.id,
+                });
+              }
+
               newrrLineItems?.push(obj1);
             }
           }
@@ -227,12 +243,26 @@ const AllQuote: React.FC = () => {
                 RebatesByProductCodData?.payload?.percentage_payout,
             });
           }
+          const contractProductByProductCode = await dispatch(
+            getContractProductByProductCode(
+              insertedProduct?.payload?.product_code,
+            ),
+          );
+          if (contractProductByProductCode?.payload?.id) {
+            contractProductArray?.push({
+              ...obj1,
+              contract_product_id: contractProductByProductCode?.payload?.id,
+            });
+          }
           newrrLineItems?.push(obj1);
         }
       }
     }
     if (rebateDataArray && rebateDataArray.length > 0) {
       dispatch(insertRebateQuoteLineItem(rebateDataArray));
+    }
+    if (contractProductArray && contractProductArray.length > 0) {
+      dispatch(insertValidation(contractProductArray));
     }
     if (newrrLineItems && newrrLineItems.length > 0) {
       dispatch(insertQuoteLineItem(newrrLineItems));
