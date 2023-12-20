@@ -13,6 +13,8 @@ import rebate from './slices/rebate';
 import contract from './slices/contract';
 import validation from './slices/validation';
 import contractProduct from './slices/contractProduct';
+import address from './slices/address';
+import customer from './slices/customer';
 
 // Configure redux store
 const store = configureStore({
@@ -28,6 +30,8 @@ const store = configureStore({
     contract,
     contractProduct,
     validation,
+    address,
+    customer,
   },
   middleware: [thunk, logger],
   devTools: true,

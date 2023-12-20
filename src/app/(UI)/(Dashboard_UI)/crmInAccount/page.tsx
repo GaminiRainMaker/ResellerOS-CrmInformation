@@ -38,10 +38,11 @@ import {useRouter} from 'next/navigation';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsInput from '@/app/components/common/os-input';
 import {SearchOutlined} from '@ant-design/icons';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from '../generateQuote/UploadFile';
 import AddCustomer from './addCustomer';
+import {getAllAddress} from '../../../../../redux/actions/address';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -49,7 +50,11 @@ const CrmInformation: React.FC = () => {
   const [activeTab, setActiveTab] = useState<any>('1');
   const router = useRouter();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const {data: dataAddress, loading} = useAppSelector((state) => state.address);
 
+  useEffect(() => {
+    dispatch(getAllAddress(''));
+  }, []);
   const analyticsData = [
     {
       key: 1,
@@ -93,35 +98,48 @@ const CrmInformation: React.FC = () => {
       dataIndex: 'Name',
       key: 'Name',
       width: 130,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (record: any, text: string) => (
+        <Typography name="Body 4/Regular">
+          {text?.Customer?.name ?? '--'}
+        </Typography>
       ),
     },
     {
-      title: 'Role',
-      dataIndex: 'Role',
-      key: 'Role',
+      title: 'Shipping Address',
+      dataIndex: 'shiping_address_line',
+      key: 'shiping_address_line',
       width: 187,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
     {
-      title: 'Email',
-      dataIndex: 'Email',
-      key: 'Email',
+      title: 'Billing Address',
+      dataIndex: 'billing_address_line',
+      key: 'billing_address_line',
       width: 187,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
     {
-      title: 'Customer Account',
-      dataIndex: 'Account',
-      key: 'Account',
+      title: 'Billing Contact',
+      dataIndex: 'billing_state',
+      key: 'billing_state',
       width: 187,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: 'Currency',
+      dataIndex: 'Currency',
+      key: 'Currency',
+      width: 187,
+      render: (record: any, text: any) => (
+        <Typography name="Body 4/Regular">
+          {text?.Customer?.currency ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -297,7 +315,7 @@ const CrmInformation: React.FC = () => {
                 <OsTable
                   key={tabItem?.key}
                   columns={Quotecolumns}
-                  dataSource={[]}
+                  dataSource={dataAddress}
                   scroll
                   loading={false}
                 />
@@ -310,7 +328,7 @@ const CrmInformation: React.FC = () => {
 
       <OsModal
         // loading={loading}
-        body={<AddCustomer />}
+        body={<AddCustomer setShowModal={setShowModal} />}
         width={800}
         open={showModal}
         // onOk={() => addQuoteLineItem()}

@@ -33,21 +33,49 @@ import OsTabs from '@/app/components/common/os-tabs';
 import {Checkbox, Divider, TabsProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import OsInput from '@/app/components/common/os-input';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import OsAvatar from '@/app/components/common/os-avatar';
 import {ArrowUpCircleIcon} from '@heroicons/react/20/solid';
 import OsButton from '@/app/components/common/os-button';
 import {useAppDispatch} from '../../../../../redux/hook';
 import AddCustomerInputVale from './addCustomerInput';
+import {insertCustomer} from '../../../../../redux/actions/customer';
+import {
+  getAllAddress,
+  insertAddAddress,
+} from '../../../../../redux/actions/address';
 
-const AddCustomer: React.FC = () => {
+const AddCustomer: React.FC = ({setShowModal}: any) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
   const router = useRouter();
   const [formValue, setFormValue] = useState<any>();
   const [customerValue, setCustomerValue] = useState<any>();
+
+  const addCustomerAndAddress = async () => {
+    try {
+      // if (!customerValue) {
+      //   return null;
+      // }
+      dispatch(insertCustomer(customerValue)).then((data) => {
+        console.log('444444444', data?.payload?.id);
+        const newAddressObj: any = {
+          ...formValue,
+          customer_id: data?.payload?.id,
+        };
+
+        if (newAddressObj) {
+          dispatch(insertAddAddress(newAddressObj));
+          dispatch(getAllAddress);
+        }
+      });
+      setShowModal((p) => !p);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const tabItems: TabsProps['items'] = [
     {
@@ -215,7 +243,11 @@ const AddCustomer: React.FC = () => {
             justifyContent: 'end',
           }}
         >
-          <OsButton buttontype="PRIMARY" text="Add" />
+          <OsButton
+            buttontype="PRIMARY"
+            clickHandler={addCustomerAndAddress}
+            text="Add"
+          />
         </Row>
       </Space>
     </>
