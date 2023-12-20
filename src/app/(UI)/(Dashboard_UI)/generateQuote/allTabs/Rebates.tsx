@@ -1,8 +1,9 @@
 /* eslint-disable array-callback-return */
 import OsInput from '@/app/components/common/os-input';
 import OsTable from '@/app/components/common/os-table';
-import {useEffect, useState} from 'react';
-
+import {useCallback, useEffect, useState} from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import _debounce from 'lodash/debounce';
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
@@ -12,6 +13,7 @@ import {rebateAmount, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+import {updateRebateQuoteLineItemById} from '../../../../../../redux/actions/rebateQuoteLineitem';
 
 const Rebates = () => {
   const searchParams = useSearchParams();
@@ -22,17 +24,14 @@ const Rebates = () => {
     (state) => state.rebateQuoteLineItem,
   );
   const [rebateData, setRebateData] = useState<any>(RebateData);
-
-  const debouncedApiCall = (updatedData: any) => {
-    console.log('updatedData', updatedData);
-    // dispatch(updateRebateQuoteLineItemById(updatedData));
+  const updateRebateQuoteLineItemData = (updatedData: any) => {
+    dispatch(updateRebateQuoteLineItemById(updatedData));
   };
 
-  // const debouncedApiCall = useDebounceHook((updatedData: any) => {
-  //   console.log('updatedData', updatedData);
-  //   // dispatch(updateRebateQuoteLineItemById(updatedData));
-  // }, 2000);
-
+  const debouncedApiCall = useCallback(
+    _debounce(updateRebateQuoteLineItemData, 500),
+    [],
+  );
   const handleInputChange = (recordId: number, list_price: string) => {
     let tempRebateData: any = [];
     setRebateData((prev: any) => {
