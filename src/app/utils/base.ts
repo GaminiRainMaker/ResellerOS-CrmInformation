@@ -60,3 +60,6 @@ export const rebateAmount = (
   quantity: number,
   percentagePayout: number,
 ) => cost * quantity * (percentagePayout / 100);
+
+export const totalRevenue = (list_amount: number, quantity: number) =>
+  list_amount * quantity;

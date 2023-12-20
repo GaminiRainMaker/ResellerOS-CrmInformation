@@ -7,13 +7,11 @@ import {useEffect, useState} from 'react';
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
-import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import Typography from '@/app/components/common/typography';
 import {rebateAmount, useRemoveDollarAndCommahook} from '@/app/utils/base';
-import {Button} from 'antd';
 import {useSearchParams} from 'next/navigation';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
-import {updateRebateQuoteLineItemById} from '../../../../../../redux/actions/rebateQuoteLineitem';
 
 const Rebates = () => {
   const searchParams = useSearchParams();
@@ -30,12 +28,16 @@ const Rebates = () => {
     // dispatch(updateRebateQuoteLineItemById(updatedData));
   };
 
+  // const debouncedApiCall = useDebounceHook((updatedData: any) => {
+  //   console.log('updatedData', updatedData);
+  //   // dispatch(updateRebateQuoteLineItemById(updatedData));
+  // }, 2000);
+
   const handleInputChange = (recordId: number, list_price: string) => {
     let tempRebateData: any = [];
     setRebateData((prev: any) => {
       tempRebateData = prev.map((prevItem: any) => {
         if (prevItem.id === recordId) {
-          console.log('YESSS', tempRebateData);
           const rebateAmountValue: any = rebateAmount(
             useRemoveDollarAndCommahook(list_price),
             prevItem?.quantity,
@@ -109,24 +111,7 @@ const Rebates = () => {
             height: '36px',
           }}
           value={text}
-          // onChange={(v) => {
-          //   setRebateData((prev: any) =>
-          //     prev.map((prevItem: any) => {
-          //       if (prevItem.id === record?.id) {
-          //         return {...prevItem, list_price: v.target.value};
-          //       }
-          //       return prevItem;
-          //     }),
-          //   );
-          // }}
           onChange={(e) => {
-            // setRebateData((prev: any) =>
-            //   prev.map((prevItem: any) =>
-            //     prevItem?.id === record?.id
-            //       ? {...prevItem, list_price: e.target.value}
-            //       : prevItem,
-            //   ),
-            // );
             handleInputChange(record?.id, e.target.value);
           }}
         />
@@ -206,22 +191,13 @@ const Rebates = () => {
   ];
 
   return (
-    <>
-      {/* <Button
-        onClick={() => {
-          onClick();
-        }}
-      >
-        Save
-      </Button> */}
-      <OsTable
-        loading={false}
-        // rowSelection={{...rowSelection}}
-        columns={RebatesQuoteLineItemcolumns}
-        dataSource={rebateData}
-        scroll
-      />
-    </>
+    <OsTable
+      loading={false}
+      // rowSelection={{...rowSelection}}
+      columns={RebatesQuoteLineItemcolumns}
+      dataSource={rebateData}
+      scroll
+    />
   );
 };
 

@@ -692,7 +692,9 @@ const GenerateQuote: React.FC = () => {
     {
       key: 5,
       name: 'Metrics',
-      children: <Metrics />,
+      children: (
+        <Metrics familyFilter={familyFilter} selectedFilter={selectedFilter} />
+      ),
       // children: (
       //   <EmptyContainer title="Please Select Grouping to view Matrics" />
       // ),
@@ -834,7 +836,7 @@ const GenerateQuote: React.FC = () => {
                         borderBottom:
                           // eslint-disable-next-line eqeqeq
                           activeTab == item?.key ? '2px solid #1C3557' : '',
-                        marginTop: '3px',
+                        // marginTop: '3px',
                       }}
                     />
                   </Typography>
