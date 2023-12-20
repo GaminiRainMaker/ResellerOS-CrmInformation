@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import OsInput from '@/app/components/common/os-input';
 import OsTable from '@/app/components/common/os-table';
 import {useEffect, useState} from 'react';
@@ -6,71 +7,51 @@ import {useEffect, useState} from 'react';
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import Typography from '@/app/components/common/typography';
-import {rebateTableData} from '@/app/utils/CONSTANTS';
 import {rebateAmount, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {Button} from 'antd';
 import {useSearchParams} from 'next/navigation';
-import {getProfitabilityByQuoteId} from '../../../../../../redux/actions/profitability';
-import {getQuoteLineItemByQuoteId} from '../../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+import {updateRebateQuoteLineItemById} from '../../../../../../redux/actions/rebateQuoteLineitem';
 
 const Rebates = () => {
   const searchParams = useSearchParams();
-  const getQuoteLineItemId = searchParams.get('id');
+  const getQuoteID = searchParams.get('id');
   const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
-
-  const {quoteLineItemByQuoteID} = useAppSelector(
-    (state) => state.quoteLineItem,
+  const {data: RebateData} = useAppSelector(
+    (state) => state.rebateQuoteLineItem,
   );
-  // const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
-  const [rebateData, setRebateData] = useState<any>([]);
+  const [rebateData, setRebateData] = useState<any>(RebateData);
 
-  const pidToPayoutMap = new Map(
-    rebateTableData.map((item) => [item.pid, item.percentage_payout]),
-  );
+  const debouncedApiCall = (updatedData: any) => {
+    console.log('updatedData', updatedData);
+    // dispatch(updateRebateQuoteLineItemById(updatedData));
+  };
+
+  const handleInputChange = (recordId: number, list_price: string) => {
+    let tempRebateData: any = [];
+    setRebateData((prev: any) => {
+      tempRebateData = prev.map((prevItem: any) => {
+        if (prevItem.id === recordId) {
+          console.log('YESSS', tempRebateData);
+          const rebateAmountValue: any = rebateAmount(
+            useRemoveDollarAndCommahook(list_price),
+            prevItem?.quantity,
+            prevItem?.percentage_payout,
+          );
+          return {...prevItem, list_price, rebate_amount: rebateAmountValue};
+        }
+        return prevItem;
+      });
+      return tempRebateData;
+    });
+  };
 
   useEffect(() => {
-    if (getQuoteLineItemId) {
-      dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
-      dispatch(getProfitabilityByQuoteId(Number(getQuoteLineItemId)));
-    }
-    const filteredDataWithPayout = quoteLineItemByQuoteID
-      .map((item: any) => ({
-        ...item,
-        percentage_payout:
-          pidToPayoutMap.get(item.product_code) ||
-          pidToPayoutMap.get(item.product_id.toString()) ||
-          null,
-      }))
-      .filter((item: any) => item.percentage_payout !== null);
-
-    // const tempDataWithPayout = filteredDataWithPayout.map(
-    //   (filteredDataWithPayoutItem: any) => {
-    //     const result: any = rebateAmount(
-    //       useRemoveDollarAndCommahook(filteredDataWithPayoutItem?.list_price),
-    //       filteredDataWithPayoutItem?.quantity,
-    //       filteredDataWithPayoutItem?.percentage_payout,
-    //     );
-    //     return {...filteredDataWithPayoutItem, rebate_amount: result};
-    //   },
-    // );
-
-    setRebateData(filteredDataWithPayout);
-  }, [getQuoteLineItemId]);
-
-  const onClick = () => {
-    const tempDataWithPayout = rebateData.map((rebateDataItem: any) => {
-      const result: any = rebateAmount(
-        useRemoveDollarAndCommahook(rebateDataItem?.list_price),
-        rebateDataItem?.quantity,
-        rebateDataItem?.percentage_payout,
-      );
-      return {...rebateDataItem, rebate_amount: result};
-    });
-    setRebateData(tempDataWithPayout);
-  };
+    debouncedApiCall(rebateData);
+  }, [JSON.stringify(rebateData)]);
 
   const RebatesQuoteLineItemcolumns = [
     {
@@ -107,8 +88,8 @@ const Rebates = () => {
           onChange={(v) => {
             setRebateData((prev: any) =>
               prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {...prevItem, quantity: v.target.value};
+                if (prevItem?.id === record?.id) {
+                  return {...prevItem, quantity: v?.target?.value};
                 }
                 return prevItem;
               }),
@@ -128,15 +109,25 @@ const Rebates = () => {
             height: '36px',
           }}
           value={text}
-          onChange={(v) => {
-            setRebateData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {...prevItem, list_price: v.target.value};
-                }
-                return prevItem;
-              }),
-            );
+          // onChange={(v) => {
+          //   setRebateData((prev: any) =>
+          //     prev.map((prevItem: any) => {
+          //       if (prevItem.id === record?.id) {
+          //         return {...prevItem, list_price: v.target.value};
+          //       }
+          //       return prevItem;
+          //     }),
+          //   );
+          // }}
+          onChange={(e) => {
+            // setRebateData((prev: any) =>
+            //   prev.map((prevItem: any) =>
+            //     prevItem?.id === record?.id
+            //       ? {...prevItem, list_price: e.target.value}
+            //       : prevItem,
+            //   ),
+            // );
+            handleInputChange(record?.id, e.target.value);
           }}
         />
       ),
@@ -214,23 +205,15 @@ const Rebates = () => {
     },
   ];
 
-  // console.log('quoteLineItemByQuoteID', quoteLineItemByQuoteID);
-
-  // const rowSelection = {
-  //   onChange: (selectedRowKeys: React.Key[]) => {
-  //     setSelectedRowIds(selectedRowKeys);
-  //   },
-  // };
-
   return (
     <>
-      <Button
+      {/* <Button
         onClick={() => {
           onClick();
         }}
       >
         Save
-      </Button>
+      </Button> */}
       <OsTable
         loading={false}
         // rowSelection={{...rowSelection}}

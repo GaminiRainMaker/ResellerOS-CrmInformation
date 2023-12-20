@@ -4,6 +4,14 @@ import OsPieChart from '@/app/components/common/os-piechart';
 import Typography from '@/app/components/common/typography';
 import React from 'react';
 
+const data = [
+  {name: 'Unassigned', value: 400},
+  {name: 'Professional Services', value: 300},
+  {name: 'Subscriptions', value: 300},
+  {name: 'Pricing method', value: 200},
+];
+const COLORS = ['#2364AA', '#6C97C6', '#9AB8D8', '#BBCFE5'];
+
 const Matrix = () => {
   console.log('object');
   return (
@@ -22,7 +30,7 @@ const Matrix = () => {
           <Typography name="Body 3/Regular">(Product Family)</Typography>
         </Space>
 
-        <OsPieChart />
+        <OsPieChart data={data} COLORS={COLORS} />
       </Col>
       <Col
         style={{
@@ -38,7 +46,7 @@ const Matrix = () => {
           <Typography name="Body 3/Regular">(Product Family)</Typography>
         </Space>
 
-        <OsPieChart />
+        <OsPieChart data={data} COLORS={COLORS} />
       </Col>
     </Row>
   );

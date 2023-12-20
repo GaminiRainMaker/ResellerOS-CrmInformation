@@ -216,16 +216,24 @@ const AllQuote: React.FC = () => {
             adjusted_price: insertedProduct?.payload?.adjusted_price,
             line_number: insertedProduct?.payload?.line_number,
           };
+          const RebatesByProductCodData = await dispatch(
+            getRebatesByProductCode(insertedProduct?.payload?.product_code),
+          );
+          if (RebatesByProductCodData?.payload?.id) {
+            rebateDataArray?.push({
+              ...obj1,
+              rebate_id: RebatesByProductCodData?.payload?.id,
+              percentage_payout:
+                RebatesByProductCodData?.payload?.percentage_payout,
+            });
+          }
           newrrLineItems?.push(obj1);
         }
       }
     }
-
     if (rebateDataArray && rebateDataArray.length > 0) {
-      console.log('rebateDataArray', rebateDataArray);
-      // dispatch(insertRebateQuoteLineItem(rebateDataArray));
+      dispatch(insertRebateQuoteLineItem(rebateDataArray));
     }
-
     if (newrrLineItems && newrrLineItems.length > 0) {
       dispatch(insertQuoteLineItem(newrrLineItems));
       dispatch(insertProfitability(newrrLineItems));

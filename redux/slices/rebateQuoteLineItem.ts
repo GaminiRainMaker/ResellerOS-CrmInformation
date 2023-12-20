@@ -11,13 +11,13 @@ type RebateQuoteLineItemState = {
   loading: boolean;
   error: string | null;
   data: any;
-  rebateQuoteLineItem: any;
+  rebateQuoteLine: any;
 };
 const initialState: RebateQuoteLineItemState = {
   loading: false,
   error: null,
   data: [],
-  rebateQuoteLineItem: [],
+  rebateQuoteLine: [],
 };
 
 const rebateQuoteLineItemSlice = createSlice({
@@ -25,7 +25,7 @@ const rebateQuoteLineItemSlice = createSlice({
   initialState,
   reducers: {
     setRebateQuoteLineItem: (state, action) => {
-      state.rebateQuoteLineItem = action.payload;
+      state.rebateQuoteLine = [...state.data];
     },
   },
   extraReducers(builder) {
