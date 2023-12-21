@@ -25,3 +25,36 @@ export const getAllCustomer = createAsyncThunk(
     }
   },
 );
+export const getAllDeletedCustomer = createAsyncThunk(
+  'customer/getAllDeletedCustomer',
+  async (id: any, thunkApi) => {
+    try {
+      const res = await CUSTOMER_API.getAllDeleted();
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+export const deleteCustomers = createAsyncThunk(
+  'customer/deleteCustomers',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await CUSTOMER_API.patch(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+export const updateCustomer = createAsyncThunk(
+  'customer/updateCustomer',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await CUSTOMER_API.updateCustomerDetails(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

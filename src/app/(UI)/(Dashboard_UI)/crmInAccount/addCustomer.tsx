@@ -38,104 +38,36 @@ import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import OsAvatar from '@/app/components/common/os-avatar';
 import {ArrowUpCircleIcon} from '@heroicons/react/20/solid';
 import OsButton from '@/app/components/common/os-button';
+import OsDrawer from '@/app/components/common/os-drawer';
 import {useAppDispatch} from '../../../../../redux/hook';
 import AddCustomerInputVale from './addCustomerInput';
-import {insertCustomer} from '../../../../../redux/actions/customer';
+import {
+  getAllCustomer,
+  insertCustomer,
+} from '../../../../../redux/actions/customer';
 import {
   getAllAddress,
   insertAddAddress,
 } from '../../../../../redux/actions/address';
+import {insertbillingContact} from '../../../../../redux/actions/billingContact';
 
-const AddCustomer: React.FC = ({setShowModal}: any) => {
+interface AddCustomertInterface {
+  setShowModal: any;
+  setOpen: any;
+  open: any;
+}
+
+const AddCustomer: React.FC<AddCustomertInterface> = ({
+  setShowModal,
+  setOpen,
+  open,
+}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const [activeTab, setActiveTab] = useState<any>('1');
+
   const router = useRouter();
   const [formValue, setFormValue] = useState<any>();
   const [customerValue, setCustomerValue] = useState<any>();
-
-  const addCustomerAndAddress = async () => {
-    try {
-      // if (!customerValue) {
-      //   return null;
-      // }
-      dispatch(insertCustomer(customerValue)).then((data) => {
-        console.log('444444444', data?.payload?.id);
-        const newAddressObj: any = {
-          ...formValue,
-          customer_id: data?.payload?.id,
-        };
-
-        if (newAddressObj) {
-          dispatch(insertAddAddress(newAddressObj));
-          dispatch(getAllAddress);
-        }
-      });
-      setShowModal((p) => !p);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const tabItems: TabsProps['items'] = [
-    {
-      label: (
-        <div>
-          <Typography
-            name="Body 4/Regular"
-            color={activeTab == 1 ? '#1C3557' : '#666666'}
-          >
-            Shipping Address
-          </Typography>
-          <div
-            style={{
-              border: activeTab == 1 ? '1px solid #1C3557' : '',
-              marginTop: '10px',
-            }}
-          />
-        </div>
-      ),
-      key: '1',
-    },
-    {
-      label: (
-        <div>
-          <Typography
-            name="Body 4/Regular"
-            color={activeTab == 2 ? '#1C3557' : '#666666'}
-          >
-            Billing Address
-          </Typography>
-          <div
-            style={{
-              border: activeTab == 2 ? '1px solid #1C3557' : '',
-              marginTop: '10px',
-            }}
-          />
-        </div>
-      ),
-      key: '2',
-    },
-    {
-      label: (
-        <div>
-          <Typography
-            name="Body 4/Regular"
-            color={activeTab == 3 ? '#1C3557' : '#666666'}
-          >
-            Billing Contact
-          </Typography>
-          <div
-            style={{
-              marginTop: '10px',
-              border: activeTab == 3 ? '1px solid #1C3557' : '',
-            }}
-          />
-        </div>
-      ),
-      key: '3',
-    },
-  ];
 
   return (
     <>
@@ -156,99 +88,19 @@ const AddCustomer: React.FC = ({setShowModal}: any) => {
           Add Customer
         </Typography>
       </Row>
-      <Space
-        size={0}
-        direction="vertical"
-        style={{width: '100%', padding: '24px 60px 20px 60px'}}
-      >
-        <Row justify="space-between" align="middle">
-          <Col>
-            <OsAvatar
-              icon={
-                <ArrowUpCircleIcon
-                  color={token?.colorTextSecondary}
-                  width={34}
-                />
-              }
-            />
-          </Col>
-          <Col>
-            <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
-              Legal Name
-            </Typography>
-            <OsInput
-              placeholder="Legal name"
-              value={customerValue?.name}
-              onChange={(e: any) => {
-                setCustomerValue({...customerValue, name: e.target.value});
-              }}
-            />
-          </Col>
-          <Col>
-            <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
-              Default Currency
-            </Typography>
-            <OsInput
-              placeholder="Default Currency"
-              value={customerValue?.currency}
-              onChange={(e: any) => {
-                setCustomerValue({...customerValue, currency: e.target.value});
-              }}
-            />
-          </Col>
-        </Row>
-      </Space>
 
-      <div
-        style={{
-          border: ' 1px solid #C7CDD5',
-          marginLeft: '40px',
-          marginRight: '40px',
-          width: '90%',
-          marginTop: '10px',
-          marginBottom: '10px',
-        }}
-      />
       <Space
         size={0}
         direction="vertical"
         style={{width: '100%', padding: '24px 40px 20px 40px'}}
       >
-        <Row justify="space-between" align="middle">
-          {tabItems?.map((item: any) => (
-            <Col style={{width: '30%'}}>
-              <Typography
-                onClick={() => {
-                  setActiveTab(item?.key);
-                }}
-                name="Heading 3/Medium"
-                color={token?.colorPrimaryText}
-                align="center"
-              >
-                {item?.label}
-              </Typography>
-            </Col>
-          ))}
-        </Row>
         <AddCustomerInputVale
-          activeTab={activeTab}
+          setShowModal={setShowModal}
           setFormValue={setFormValue}
           formValue={formValue}
+          setCustomerValue={setCustomerValue}
+          customerValue={customerValue}
         />
-        <Row
-          style={{
-            marginTop: '20px',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'end',
-          }}
-        >
-          <OsButton
-            buttontype="PRIMARY"
-            clickHandler={addCustomerAndAddress}
-            text="Add"
-          />
-        </Row>
       </Space>
     </>
   );

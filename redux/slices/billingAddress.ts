@@ -2,12 +2,10 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
-  deleteCustomers,
-  getAllCustomer,
-  getAllDeletedCustomer,
-  insertCustomer,
-  updateCustomer,
-} from '../actions/customer';
+  insertbillingContact,
+  getAllbillingContact,
+  updateBillingContact,
+} from '../actions/billingContact';
 
 type ProductState = {
   loading: boolean;
@@ -32,87 +30,60 @@ const productSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(insertCustomer.pending, (state) => {
+      .addCase(insertbillingContact.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        insertCustomer.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.data = [action.payload];
-        },
-      )
-      .addCase(insertCustomer.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      .addCase(getAllCustomer.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        getAllCustomer.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.data = action.payload;
-        },
-      )
-      .addCase(getAllCustomer.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      .addCase(getAllDeletedCustomer.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        getAllDeletedCustomer.fulfilled,
+        insertbillingContact.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.data = [action.payload];
         },
       )
       .addCase(
-        getAllDeletedCustomer.rejected,
+        insertbillingContact.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
         },
       )
-      .addCase(deleteCustomers.pending, (state) => {
+      .addCase(getAllbillingContact.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        deleteCustomers.fulfilled,
+        getAllbillingContact.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.data = action.payload;
         },
       )
       .addCase(
-        deleteCustomers.rejected,
+        getAllbillingContact.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
         },
       )
-      .addCase(updateCustomer.pending, (state) => {
+      .addCase(updateBillingContact.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        updateCustomer.fulfilled,
+        updateBillingContact.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = [action.payload];
+          state.data = action.payload;
         },
       )
-      .addCase(updateCustomer.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
+      .addCase(
+        updateBillingContact.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      );
   },
 });
 

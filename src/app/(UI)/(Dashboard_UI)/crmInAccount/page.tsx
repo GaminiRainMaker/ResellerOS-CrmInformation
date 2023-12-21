@@ -39,54 +39,112 @@ import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsInput from '@/app/components/common/os-input';
 import {SearchOutlined} from '@ant-design/icons';
 import {useEffect, useState} from 'react';
+import OsDrawer from '@/app/components/common/os-drawer';
+import {record} from 'aws-amplify/analytics';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from '../generateQuote/UploadFile';
 import AddCustomer from './addCustomer';
-import {getAllAddress} from '../../../../../redux/actions/address';
+import {
+  getAllAddress,
+  updateAddress,
+} from '../../../../../redux/actions/address';
+import {
+  deleteCustomers,
+  getAllCustomer,
+  updateCustomer,
+} from '../../../../../redux/actions/customer';
+import AddCustomerInputVale from './addCustomerInput';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
   const router = useRouter();
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const {data: dataAddress, loading} = useAppSelector((state) => state.address);
+  const [formValue, setFormValue] = useState<any>();
+  const [customerValue, setCustomerValue] = useState<any>();
 
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const {data: dataAddress, loading} = useAppSelector(
+    (state) => state.customer,
+  );
+  const [tableData, setTableData] = useState<any>();
+  const [open, setOpen] = useState(false);
+  const [deleteIds, setDeleteIds] = useState<any>();
+  const [showModalDelete, setShowModalDelete] = useState<Boolean>(false);
   useEffect(() => {
-    dispatch(getAllAddress(''));
+    dispatch(getAllCustomer(''));
   }, []);
+  useEffect(() => {
+    setTableData(dataAddress);
+  }, [dataAddress]);
+  useEffect(() => {
+    dispatch(getAllCustomer(''));
+  }, [!open]);
+
+  const updateCustomerDetails = async () => {
+    await dispatch(updateAddress(formValue));
+    await dispatch(updateCustomer(customerValue));
+    setOpen((p) => !p);
+    dispatch(getAllCustomer(''));
+  };
+
+  const deleteSelectedIds = async () => {
+    const data = {Ids: deleteIds};
+    await dispatch(deleteCustomers(data));
+    dispatch(getAllCustomer(''));
+    setDeleteIds([]);
+    setShowModalDelete(false);
+  };
+  const editCustomerFileds = (record: any) => {
+    setCustomerValue(record);
+    setFormValue({
+      ...record,
+      billing_address_line: record?.Addresses?.[0]?.billing_address_line,
+      billing_city: record?.Addresses?.[0]?.billing_city,
+      billing_state: record?.Addresses?.[0]?.billing_state,
+      billing_pin_code: record?.Addresses?.[0]?.billing_pin_code,
+      billing_country: record?.Addresses?.[0]?.billing_country,
+      shiping_address_line: record?.Addresses?.[0]?.shiping_address_line,
+      shiping_city: record?.Addresses?.[0]?.shiping_city,
+      shiping_state: record?.Addresses?.[0]?.shiping_state,
+      shiping_pin_code: record?.Addresses?.[0]?.shiping_pin_code,
+      shiping_country: record?.Addresses?.[0]?.shiping_country,
+      shipping_id: record?.Addresses?.[0]?.id,
+    });
+  };
+
   const analyticsData = [
     {
       key: 1,
-      primary: <div>00</div>,
+      primary: <div>{dataAddress?.length}</div>,
       secondry: 'Customers',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
-      primary: <div>00</div>,
+      primary: <div>{dataAddress?.length}</div>,
       secondry: 'Opportunities',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
     },
     {
       key: 3,
-      primary: <div>00</div>,
+      primary: <div>{dataAddress?.length}</div>,
       secondry: 'Contacts',
       icon: <PhoneIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
     {
       key: 4,
-      primary: <div>00</div>,
+      primary: <div>{dataAddress?.length}</div>,
       secondry: 'Recents',
       icon: <ClockIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
     },
     {
       key: 5,
-      primary: <div>00</div>,
+      primary: <div>{dataAddress?.length}</div>,
       secondry: 'Deleted',
       icon: <TrashIcon width={24} color={token?.colorError} />,
       iconBg: token?.colorErrorBg,
@@ -95,13 +153,11 @@ const CrmInformation: React.FC = () => {
   const Quotecolumns = [
     {
       title: 'Conatct Name',
-      dataIndex: 'Name',
-      key: 'Name',
+      dataIndex: 'name',
+      key: 'name',
       width: 130,
-      render: (record: any, text: string) => (
-        <Typography name="Body 4/Regular">
-          {text?.Customer?.name ?? '--'}
-        </Typography>
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
     {
@@ -109,8 +165,10 @@ const CrmInformation: React.FC = () => {
       dataIndex: 'shiping_address_line',
       key: 'shiping_address_line',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (text: any, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.Addresses?.[0]?.shiping_address_line ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -118,28 +176,30 @@ const CrmInformation: React.FC = () => {
       dataIndex: 'billing_address_line',
       key: 'billing_address_line',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (text: any, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.Addresses?.[0]?.billing_address_line ?? '--'}
+        </Typography>
       ),
     },
     {
       title: 'Billing Contact',
-      dataIndex: 'billing_state',
-      key: 'billing_state',
+      dataIndex: 'name',
+      key: 'name',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (text: any, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.BillingContacts?.[0]?.billing_first_name ?? '--'}
+        </Typography>
       ),
     },
     {
       title: 'Currency',
-      dataIndex: 'Currency',
-      key: 'Currency',
+      dataIndex: 'currency',
+      key: 'currency',
       width: 187,
-      render: (record: any, text: any) => (
-        <Typography name="Body 4/Regular">
-          {text?.Customer?.currency ?? '--'}
-        </Typography>
+      render: (text: any) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
     {
@@ -154,26 +214,47 @@ const CrmInformation: React.FC = () => {
             width={24}
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
+            onClick={() => {
+              setOpen((p) => !p);
+              editCustomerFileds(record);
+            }}
           />
-          <PopConfirm
+          {/* <PopConfirm
             placement="top"
             title={record?.customer_name}
             description="Are you sure to delete this Contact?"
             okText="Yes"
             cancelText="No"
-          >
-            <TrashIcon
-              height={24}
-              width={24}
-              color={token.colorError}
-              style={{cursor: 'pointer'}}
-            />
-          </PopConfirm>
+          > */}
+          <TrashIcon
+            height={24}
+            width={24}
+            color={token.colorError}
+            style={{cursor: 'pointer'}}
+            onClick={() => {
+              setDeleteIds([record?.id]);
+              setShowModalDelete(true);
+            }}
+          />
+          {/* </PopConfirm> */}
         </Space>
       ),
     },
   ];
 
+  const rowSelection = {
+    onChange: (selectedRowKeys: any) => {
+      console.log('rowSelection', selectedRowKeys);
+      setDeleteIds(selectedRowKeys);
+      // setSelectedRowKeys(selectedRowKeys);
+      // setSelectedRowIds(selectedRowKeys);
+      // setExistingQuoteId(Number(selectedRowKeys));
+    },
+    getCheckboxProps: (record: any) => ({
+      disabled: record.name === 'Disabled User',
+      name: record.name,
+    }),
+  };
   const tabItems: TabsProps['items'] = [
     {
       label: (
@@ -194,7 +275,11 @@ const CrmInformation: React.FC = () => {
     {
       key: '1',
       label: (
-        <Typography name="Body 3/Regular" color="#EB445A">
+        <Typography
+          name="Body 3/Regular"
+          color="#EB445A"
+          onClick={deleteSelectedIds}
+        >
           Delete Selected
         </Typography>
       ),
@@ -315,7 +400,8 @@ const CrmInformation: React.FC = () => {
                 <OsTable
                   key={tabItem?.key}
                   columns={Quotecolumns}
-                  dataSource={dataAddress}
+                  dataSource={tableData}
+                  rowSelection={rowSelection}
                   scroll
                   loading={false}
                 />
@@ -328,7 +414,13 @@ const CrmInformation: React.FC = () => {
 
       <OsModal
         // loading={loading}
-        body={<AddCustomer setShowModal={setShowModal} />}
+        body={
+          <AddCustomer
+            setShowModal={setShowModal}
+            open={open}
+            setOpen={setOpen}
+          />
+        }
         width={800}
         open={showModal}
         // onOk={() => addQuoteLineItem()}
@@ -336,6 +428,70 @@ const CrmInformation: React.FC = () => {
           setShowModal((p) => !p);
         }}
       />
+
+      <OsModal
+        // loading={loading}
+        body={
+          <Row style={{width: '100%', padding: '15px'}}>
+            <Space style={{width: '100%'}} direction="vertical" align="center">
+              <Typography name="Heading 3/Medium">Delete Account</Typography>
+              <Typography name="Body 3/Regular">
+                Are you sure you want to delete the selected accounts?
+              </Typography>
+              <Space size={12}>
+                <OsButton
+                  text={`Don't Delete`}
+                  buttontype="SECONDARY"
+                  clickHandler={() => {
+                    setDeleteIds([]);
+                    setShowModalDelete(false);
+                  }}
+                />
+                <OsButton
+                  text="Yes, Delete"
+                  buttontype="PRIMARY"
+                  clickHandler={deleteSelectedIds}
+                />
+              </Space>
+            </Space>
+          </Row>
+        }
+        width={600}
+        open={showModalDelete}
+        // onOk={() => addQuoteLineItem()}
+        onCancel={() => {
+          setShowModalDelete((p) => !p);
+        }}
+      />
+
+      <OsDrawer
+        title={<Typography name="Body 1/Regular">Customer Details</Typography>}
+        placement="right"
+        onClose={() => setOpen((p) => !p)}
+        open={open}
+        width={450}
+        footer={
+          <Row style={{width: '100%', float: 'right'}}>
+            {' '}
+            <OsButton
+              style={{width: '300px'}}
+              buttontype="PRIMARY"
+              text="UPDATE"
+              clickHandler={updateCustomerDetails}
+            />
+          </Row>
+        }
+      >
+        <AddCustomerInputVale
+          drawer="drawer"
+          setShowModal=""
+          setFormValue={setFormValue}
+          formValue={formValue}
+          setCustomerValue={setCustomerValue}
+          customerValue={customerValue}
+          setOpen={setOpen}
+        />
+      </OsDrawer>
     </>
   );
 };
