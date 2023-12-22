@@ -6,9 +6,10 @@ const useAbbreviationHook = (value: number) => {
   );
   const abbreviate = (num: number) => {
     const roundedValue = Math.round(num * 10) / 10;
-    return new Intl.NumberFormat('en', {maximumFractionDigits: 1}).format(
-      roundedValue,
-    );
+    return new Intl.NumberFormat('en', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(roundedValue);
   };
 
   useEffect(() => {
