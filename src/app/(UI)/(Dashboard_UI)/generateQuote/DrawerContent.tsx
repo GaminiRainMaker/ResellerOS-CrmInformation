@@ -66,11 +66,7 @@ const DrawerContent: FC<any> = ({setOpen}) => {
           <Typography name="Body 4/Medium" as="div">
             Quote Generate Date
           </Typography>
-          {/* <Typography name="Body 2/Regular">12/11/2023</Typography> */}
-          <Typography name="Body 2/Regular">
-            {' '}
-            {drawerData?.createdAt}
-          </Typography>
+          <Typography name="Body 2/Regular">{drawerData?.createdAt}</Typography>
         </Col>
         <Col>
           <Typography name="Body 4/Medium" as="div">
@@ -94,13 +90,13 @@ const DrawerContent: FC<any> = ({setOpen}) => {
             </Form.Item>
 
             <Form.Item label="Opportunity" name="opportunity">
-              {/* <OsInput /> */}
-
               <CommonSelect
                 style={{width: '100%'}}
                 placeholder="Select Opportunity"
                 // options={bundleOptions}
-                onChange={(e) => {}}
+                onChange={(e) => {
+                  console.log('object', e);
+                }}
               />
             </Form.Item>
 
@@ -108,6 +104,15 @@ const DrawerContent: FC<any> = ({setOpen}) => {
               <CommonSelect
                 style={{width: '100%'}}
                 placeholder="Select Customer"
+                // options={bundleOptions}
+                onChange={(e) => {}}
+              />
+            </Form.Item>
+
+            <Form.Item label="Billing Contact" name="billing_contact">
+              <CommonSelect
+                style={{width: '100%'}}
+                placeholder="Billing Contact"
                 // options={bundleOptions}
                 onChange={(e) => {}}
               />

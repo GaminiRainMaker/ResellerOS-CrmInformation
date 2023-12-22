@@ -25,7 +25,7 @@ const rebateQuoteLineItemSlice = createSlice({
   initialState,
   reducers: {
     setRebateQuoteLineItem: (state, action) => {
-      state.rebateQuoteLine = [...state.data];
+      state.rebateQuoteLine = action.payload;
     },
   },
   extraReducers(builder) {

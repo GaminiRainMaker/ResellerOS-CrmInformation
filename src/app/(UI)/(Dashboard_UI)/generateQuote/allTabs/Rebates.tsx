@@ -13,10 +13,10 @@ import {rebateAmount, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
 import {updateRebateQuoteLineItemById} from '../../../../../../redux/actions/rebateQuoteLineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+import {setRebate} from '../../../../../../redux/slices/rebate';
+import {setRebateQuoteLineItem} from '../../../../../../redux/slices/rebateQuoteLineItem';
 
 const Rebates = () => {
-  const searchParams = useSearchParams();
-  const getQuoteID = searchParams.get('id');
   const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
   const {data: RebateData, loading} = useAppSelector(
@@ -31,45 +31,41 @@ const Rebates = () => {
     _debounce(updateRebateQuoteLineItemData, 500),
     [],
   );
-  const handleInputChange = (recordId: number, list_price: string) => {
-    let tempRebateData: any = [];
-    setRebateData((prev: any) => {
-      tempRebateData = prev.map((prevItem: any) => {
-        if (prevItem.id === recordId) {
-          const rebateAmountValue: any = rebateAmount(
-            useRemoveDollarAndCommahook(list_price),
-            prevItem?.quantity,
-            prevItem?.percentage_payout,
-          );
-          return {
-            ...prevItem,
-            list_price,
-            rebate_amount: rebateAmountValue,
-            rowId: recordId,
-          };
-        }
-        return prevItem;
-      });
-      return tempRebateData;
-    });
-  };
-
   useEffect(() => {
-    rebateData.map((rebateDataItem: any) => {
-      if (rebateDataItem?.rowId === rebateDataItem?.id) {
+    setTimeout(() => {
+      dispatch(setRebate(rebateData));
+    }, 500);
+  }, [rebateData]);
+
+  const handleInputChange = (recordId: number, list_price: string) => {
+    rebateData.map((prevItem: any) => {
+      if (recordId === prevItem?.id) {
+        const rebateAmountValue: any = rebateAmount(
+          useRemoveDollarAndCommahook(list_price),
+          prevItem?.quantity,
+          prevItem?.percentage_payout,
+        );
         const obj = {
-          id: rebateDataItem?.id,
-          line_number: rebateDataItem?.line_number,
-          list_price: rebateDataItem?.list_price,
-          pricing_method: rebateDataItem?.pricing_method,
-          line_amount: rebateDataItem?.line_amount,
-          exit_price: rebateDataItem?.exit_price,
-          rebate_amount: rebateDataItem?.rebate_amount,
+          id: prevItem?.id,
+          line_number: prevItem?.line_number,
+          quantity: prevItem?.quantity,
+          list_price,
+          percentage_payout: prevItem?.percentage_payout,
+          line_amount: prevItem?.line_amount,
+          unit_price: prevItem?.unit_price,
+          exit_price: prevItem?.exit_price,
+          rebate_amount: rebateAmountValue,
+          rebate_percentage: prevItem?.percentage_payout,
+          rowId: recordId,
         };
         debouncedApiCall(obj);
       }
     });
-  }, [JSON.stringify(rebateData)]);
+  };
+
+  useEffect(() => {
+    dispatch(setRebateQuoteLineItem(rebateData));
+  }, [JSON.stringify(RebateData)]);
 
   const RebatesQuoteLineItemcolumns = [
     {
@@ -128,6 +124,15 @@ const Rebates = () => {
           }}
           value={text}
           onChange={(e) => {
+            setRebateData((prev: any) =>
+              prev.map((prevItem: any) => {
+                if (prevItem?.id === record?.id) {
+                  return {...prevItem, list_price: e?.target?.value};
+                }
+                return prevItem;
+              }),
+            );
+
             handleInputChange(record?.id, e.target.value);
           }}
         />
@@ -209,7 +214,6 @@ const Rebates = () => {
   return (
     <OsTable
       loading={loading}
-      // rowSelection={{...rowSelection}}
       columns={RebatesQuoteLineItemcolumns}
       dataSource={rebateData}
       scroll

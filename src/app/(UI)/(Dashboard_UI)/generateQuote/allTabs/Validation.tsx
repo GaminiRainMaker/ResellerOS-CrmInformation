@@ -84,13 +84,6 @@ const Validation: FC = () => {
             setValidationDataData((prev: any) =>
               prev.map((prevItem: any) => {
                 if (record?.id === prevItem?.id) {
-                  console.log(
-                    'prevItem',
-                    prevItem?.quantity,
-                    prevItem?.pricing_method,
-                    prevItem?.line_amount,
-                    prevItem?.list_price,
-                  );
                   const rowId = record?.id;
                   const result: any = calculateProfitabilityData(
                     useRemoveDollarAndCommahook(prevItem?.quantity),
@@ -171,8 +164,8 @@ const Validation: FC = () => {
       dataIndex: 'contract_status',
       key: 'contract_status',
       width: 135,
-      render: (text: string, record: any) => {
-        if (record?.status === 'success') {
+      render: (text: string) => {
+        if (text === 'success') {
           return (
             <TableNameColumn
               fallbackIcon={
@@ -182,7 +175,7 @@ const Validation: FC = () => {
             />
           );
         }
-        if (record?.status === 'reject') {
+        if (text === 'reject') {
           return (
             <TableNameColumn
               fallbackIcon={
@@ -192,7 +185,7 @@ const Validation: FC = () => {
             />
           );
         }
-        if (record?.status === 'warning') {
+        if (text === 'warning') {
           return (
             <TableNameColumn
               fallbackIcon={

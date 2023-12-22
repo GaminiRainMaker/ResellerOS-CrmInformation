@@ -1,31 +1,25 @@
 /* eslint-disable @typescript-eslint/indent */
-/* eslint-disable consistent-return */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable eqeqeq */
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable radix */
+/* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable no-nested-ternary */
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prettier/prettier */
 
 'use client';
 
 import OsTable from '@/app/components/common/os-table';
-import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
 import {
   ArrowDownTrayIcon,
-  ChevronRightIcon,
-  CurrencyDollarIcon,
   EllipsisVerticalIcon,
   PlusIcon,
-  QueueListIcon,
-  ReceiptPercentIcon,
-  TagIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
 
-import {Breadcrumb} from '@/app/components/common/antd/BreadCrumb';
 import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {PopConfirm} from '@/app/components/common/antd/PopConfirm';
@@ -42,17 +36,14 @@ import OsTabs from '@/app/components/common/os-tabs';
 import {selectData, selectDataForProduct} from '@/app/utils/CONSTANTS';
 import {Button, MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
-import Image from 'next/image';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import EmptyContainer from '@/app/components/common/os-empty-container';
-import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
-import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {
   getAllBundle,
   updateBundleQuantity,
 } from '../../../../../redux/actions/bundle';
 import {updateProductFamily} from '../../../../../redux/actions/product';
+import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
 import {updateQuoteByQuery} from '../../../../../redux/actions/quote';
 import {
   DeleteQuoteLineItemQuantityById,
@@ -61,17 +52,17 @@ import {
   getQuoteLineItemByQuoteIdandBundleIdNull,
   updateQuoteLineItemForBundleId,
 } from '../../../../../redux/actions/quotelineitem';
+import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
+import {getAllValidationByQuoteId} from '../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
 import InputDetails from './allTabs/InputDetails';
+import Metrics from './allTabs/Metrics';
 import Profitability from './allTabs/Profitability';
 import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
+import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
-import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
-import Metrics from './allTabs/Metrics';
-import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
-import { getAllValidationByQuoteId } from '../../../../../redux/actions/validation';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -79,11 +70,7 @@ const GenerateQuote: React.FC = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
-
   const [activeTab, setActiveTab] = useState<any>('1');
-  const [inputData, setInputData] = useState<any>({});
-  const debouncedValue = useDebounceHook(inputData, 500);
-
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const {
     quoteLineItemByQuoteID,
@@ -100,10 +87,6 @@ const GenerateQuote: React.FC = () => {
   const [showTableDataa, setShowTableDataa] = useState<boolean>(true);
   const [selectedFilter, setSelectedFilter] = useState<String>();
   const {data: bundleData} = useAppSelector((state) => state.bundle);
-  const [totalGrossValue, setTotalGrossValue] = useState<any>();
-  const {data: ProfitabilityData} = useAppSelector(
-    (state) => state.profitability,
-  );
   const [familyFilter, setFamilyFilter] = useState<any>([]);
   const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] =
     useState<any>();
@@ -111,28 +94,9 @@ const GenerateQuote: React.FC = () => {
   useEffect(() => {
     setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);
   }, [quoteLineItemByQuoteID]);
-  useEffect(() => {
-    let grossProfit: any = 0;
-    let grossProfitPercentage: any = 0;
-    ProfitabilityData?.map((item: any) => {
-      if (item?.gross_profit) {
-        grossProfit += item?.gross_profit ? item?.gross_profit : 0;
-      }
-      if (item?.gross_profit_percentage) {
-        grossProfitPercentage += item?.gross_profit_percentage
-          ? item?.gross_profit_percentage
-          : 0;
-      }
-    });
-
-    setTotalGrossValue({
-      GrossProfit: grossProfit?.toString()?.slice(0, 5),
-      GrossProfitPercentage: grossProfitPercentage?.toString()?.slice(0, 5),
-    });
-  }, [ProfitabilityData]);
 
   useEffect(() => {
-    if (selectedFilter == 'Product Family') {
+    if (selectedFilter === 'Product Family') {
       const finalFamilyArr: any = [];
       let productsArr: any = [];
       let professionalServiceArr: any = [];
@@ -142,17 +106,17 @@ const GenerateQuote: React.FC = () => {
 
       if (dataNullForBundle?.[0] && dataNullForBundle?.[0]?.length > 0) {
         productsArr = dataNullForBundle?.[0]?.filter(
-          (item: any) => item?.Product?.product_family == 'Products',
+          (item: any) => item?.Product?.product_family === 'Products',
         );
         professionalServiceArr = dataNullForBundle?.[0]?.filter(
           (item: any) =>
-            item?.Product?.product_family == 'Professional Services',
+            item?.Product?.product_family === 'Professional Services',
         );
         maintenanceArr = dataNullForBundle?.[0]?.filter(
-          (item: any) => item?.Product?.product_family == 'Maintenance',
+          (item: any) => item?.Product?.product_family === 'Maintenance',
         );
         subscriptionArr = dataNullForBundle?.[0]?.filter(
-          (item: any) => item?.Product?.product_family == 'Subscriptions',
+          (item: any) => item?.Product?.product_family === 'Subscriptions',
         );
         unassignedArr = dataNullForBundle?.[0]?.filter(
           (item: any) => item?.Product?.product_family == null,
@@ -353,63 +317,6 @@ const GenerateQuote: React.FC = () => {
       dispatch(getAllBundle(getQuoteID));
     }
   };
-
-  const analyticsData = [
-    {
-      key: 1,
-      primary: quoteLineItemByQuoteID?.length,
-      secondry: 'Line Items',
-      icon: <QueueListIcon width={24} color={token?.colorInfo} />,
-      iconBg: token?.colorInfoBgHover,
-    },
-    {
-      key: 2,
-      primary: `$${amountData?.AdjustPrice}`,
-      secondry: 'Quote Total',
-      icon: <TagIcon width={24} color={token?.colorSuccess} />,
-      iconBg: token?.colorSuccessBg,
-    },
-    {
-      key: 3,
-      primary: `$${amountData?.LineAmount}`,
-      secondry: 'Total Cost',
-      icon: <CurrencyDollarIcon width={24} color={token?.colorLink} />,
-      iconBg: token?.colorLinkActive,
-    },
-    {
-      key: 4,
-      primary: totalGrossValue?.GrossProfit,
-      secondry: 'Total GP',
-      icon: (
-        <Image
-          src={MoneyRecive}
-          alt="MoneyRecive"
-          style={{cursor: 'pointer', height: '24px', width: '24px'}}
-        />
-      ),
-      iconBg: token?.colorErrorBg,
-    },
-    {
-      key: 5,
-      primary: `${totalGrossValue?.GrossProfitPercentage}%`,
-      secondry: 'Total GP%',
-      icon: <ReceiptPercentIcon width={24} color={token?.colorWarning} />,
-      iconBg: token?.colorWarningBg,
-    },
-    {
-      key: 6,
-      primary: '$21,966.00',
-      secondry: 'Rebate Total',
-      icon: (
-        <Image
-          src={MoneySend}
-          alt="MoneySend"
-          style={{cursor: 'pointer', height: '24px', width: '24px'}}
-        />
-      ),
-      iconBg: token?.colorInfoHover,
-    },
-  ];
 
   const QuoteLineItemcolumns = [
     {
@@ -621,39 +528,6 @@ const GenerateQuote: React.FC = () => {
     setOpen(false);
   };
 
-  const menuItems = [
-    {
-      key: '1',
-      title: (
-        <Typography
-          name="Body 2/Medium"
-          color={token?.colorInfoBorder}
-          cursor="pointer"
-          onClick={() => {
-            router?.push('/allQuote');
-          }}
-        >
-          All Quotes
-        </Typography>
-      ),
-    },
-    {
-      key: '2',
-      title: (
-        <Typography
-          name="Heading 3/Medium"
-          cursor="pointer"
-          color={token?.colorPrimaryText}
-          onClick={() => {
-            router?.push(`/generateQuote?id=${getQuoteID}`);
-          }}
-        >
-          {quoteLineItemByQuoteID?.[0]?.Quote?.createdAt ?? ''}
-        </Typography>
-      ),
-    },
-  ];
-
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[], data: any) => {
       setSelectedRowKeys(data);
@@ -703,33 +577,50 @@ const GenerateQuote: React.FC = () => {
     },
   ];
 
+  const menuItems: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <Typography
+          name="Body 2/Medium"
+          color={token?.colorInfoBorder}
+          cursor="pointer"
+          onClick={() => {
+            router?.push('/allQuote');
+          }}
+        >
+          All Quotes
+        </Typography>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <Typography
+          name="Heading 3/Medium"
+          cursor="pointer"
+          color={token?.colorPrimaryText}
+          onClick={() => {
+            router?.push(`/generateQuote?id=${getQuoteID}`);
+          }}
+        >
+          {quoteLineItemByQuoteID?.[0]?.Quote?.createdAt ?? ''}
+        </Typography>
+      ),
+    },
+  ];
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <Row
-          justify="space-between"
-          style={{
-            padding: '36px 24px',
-            background: token?.colorBgContainer,
-            borderRadius: '12px',
-          }}
-          gutter={[0, 16]}
-        >
-          {analyticsData?.map((item) => (
-            <Col>
-              <TableNameColumn
-                primaryText={item?.primary}
-                secondaryText={item?.secondry}
-                fallbackIcon={item?.icon}
-                iconBg={item?.iconBg}
-              />
-            </Col>
-          ))}
-        </Row>
+        <GenerateQuoteAnalytics
+          quoteLineItemByQuoteID={quoteLineItemByQuoteID}
+          amountData={amountData}
+        />
 
         <Row justify="space-between" align="middle">
           <Col>
-            <Breadcrumb
+            {/* <OsBreadCrumb
               separator={
                 <ChevronRightIcon
                   width={24}
@@ -737,8 +628,9 @@ const GenerateQuote: React.FC = () => {
                   color={token?.colorInfoBorder}
                 />
               }
-              items={menuItems}
-            />
+              // items={menuItems}
+              // menu={{'items': menuItems}}
+            /> */}
           </Col>
           <Col>
             <Space size={8} direction="horizontal">

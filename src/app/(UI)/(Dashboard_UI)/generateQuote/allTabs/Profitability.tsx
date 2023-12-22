@@ -12,33 +12,62 @@ import {
   calculateProfitabilityData,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
-import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
-import {
-  getProfitabilityByQuoteId,
-  updateProfitabilityById,
-} from '../../../../../../redux/actions/profitability';
+import {updateProfitabilityById} from '../../../../../../redux/actions/profitability';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+import {setProfitability} from '../../../../../../redux/slices/profitability';
 
 const Profitability: FC<any> = () => {
-  const searchParams = useSearchParams();
-  const getQuoteLineItemId = searchParams.get('id');
   const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
+  const [pricingMethodData, setPricingMethodData] = useState<any>();
 
-  const {data: profitabilityDataByQuoteId} = useAppSelector(
+  const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
     (state) => state.profitability,
   );
   const [profitabilityData, setProfitabilityData] = useState<any>(
     profitabilityDataByQuoteId,
   );
-  // const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
 
-
-  useEffect(() => {
-    if (getQuoteLineItemId)
-      dispatch(getProfitabilityByQuoteId(Number(getQuoteLineItemId)));
-  }, [getQuoteLineItemId]);
+  const updateAmountValue = (value: any, rowId: number) => {
+    const val = useRemoveDollarAndCommahook(value);
+    if (
+      pricingMethodData?.method === 'cost_percentage' &&
+      pricingMethodData?.rowId === rowId
+    ) {
+      return `% ${String(val)}`;
+    }
+    if (
+      pricingMethodData?.method === 'cost_dollar' &&
+      pricingMethodData?.rowId === rowId
+    ) {
+      return `$ ${String(val)}`;
+    }
+    if (
+      pricingMethodData?.method === 'list_percentage' &&
+      pricingMethodData?.rowId === rowId
+    ) {
+      return `% ${String(val)}`;
+    }
+    if (
+      pricingMethodData?.method === 'list_dollar' &&
+      pricingMethodData?.rowId === rowId
+    ) {
+      return `$ ${String(val)}`;
+    }
+    if (
+      pricingMethodData?.method === 'manual' &&
+      pricingMethodData?.rowId === rowId
+    ) {
+      return `$ ${String(val)}`;
+    }
+    if (
+      pricingMethodData?.method === 'gp' &&
+      pricingMethodData?.rowId === rowId
+    ) {
+      return `% ${String(val)}`;
+    }
+  };
 
   const ProfitabilityQuoteLineItemcolumns = [
     {
@@ -130,6 +159,10 @@ const Profitability: FC<any> = () => {
             setProfitabilityData((prev: any) =>
               prev.map((prevItem: any) => {
                 if (prevItem.id === record?.id) {
+                  setPricingMethodData({
+                    method: v,
+                    rowId: record?.id,
+                  });
                   return {...prevItem, pricing_method: v};
                 }
                 return prevItem;
@@ -174,10 +207,8 @@ const Profitability: FC<any> = () => {
           style={{
             height: '36px',
           }}
-          // disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
-          value={text}
+          value={updateAmountValue(text, record?.id)}
           onChange={(v) => {
-            // setCalculationData((prev) => ({...prev, Amount: v.target.value}));
             setProfitabilityData((prev: any) =>
               prev.map((prevItem: any) => {
                 if (prevItem.id === record?.id) {
@@ -236,12 +267,6 @@ const Profitability: FC<any> = () => {
     },
   ];
 
-  // const rowSelection = {
-  //   onChange: (selectedRowKeys: React.Key[]) => {
-  //     setSelectedRowIds(selectedRowKeys);
-  //   },
-  // };
-
   useEffect(() => {
     profitabilityData.map((profitabilityDataItem: any) => {
       if (profitabilityDataItem?.rowId === profitabilityDataItem?.id) {
@@ -261,12 +286,12 @@ const Profitability: FC<any> = () => {
         dispatch(updateProfitabilityById({...obj}));
       }
     });
+    dispatch(setProfitability(profitabilityData));
   }, [profitabilityData]);
 
   return (
     <OsTable
-      loading={false}
-      // rowSelection={{...rowSelection}}
+      loading={loading}
       columns={ProfitabilityQuoteLineItemcolumns}
       dataSource={profitabilityData}
       scroll
