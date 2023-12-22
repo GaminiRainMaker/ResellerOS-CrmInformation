@@ -1,7 +1,11 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {insertAddAddress, getAllAddress} from '../actions/address';
+import {
+  insertAddAddress,
+  getAllAddress,
+  updateAddress,
+} from '../actions/address';
 
 type ProductState = {
   loading: boolean;
@@ -53,6 +57,18 @@ const productSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(getAllAddress.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateAddress.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateAddress.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(updateAddress.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       });
