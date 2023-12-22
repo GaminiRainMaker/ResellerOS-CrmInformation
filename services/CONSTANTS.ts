@@ -58,8 +58,13 @@ export const API = {
   },
   CUSTOMER: {
     INDEX: '/customer',
+    QUERY: '/customer/updateCustomer',
   },
   ADDRESS: {
     INDEX: '/address',
+  },
+  BILLINGADDRESS: {
+    INDEX: '/billingContact',
+    QUERY: '/billingContact/deleteBillingContact',
   },
 };

@@ -21,67 +21,95 @@ import {Space} from '@/app/components/common/antd/Space';
 import CommonSelect from '@/app/components/common/os-select';
 import OsButton from '@/app/components/common/os-button';
 import {useAppDispatch} from '../../../../../redux/hook';
+import {insertbillingContact} from '../../../../../redux/actions/billingContact';
 
 interface CustomerAccountInterface {
   formValue: any;
   setFormValue: any;
+  setShowModal: any;
+  tableData: any;
+  drawer?: any;
 }
 
 const AddContact: React.FC<CustomerAccountInterface> = ({
   formValue,
   setFormValue,
+  setShowModal,
+  tableData,
+  drawer,
 }) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
+  const addNewContact = async () => {
+    dispatch(insertbillingContact(formValue));
+    setShowModal((p) => !p);
+  };
 
   return (
     <>
-      <Row
-        justify="space-between"
-        style={{
-          padding: '24px 40px 20px 40px',
-          backgroundColor: '#F0F4F7',
-          borderRadius: '10px 0px 10px 0px',
-        }}
-        gutter={[0, 0]}
-      >
-        <Typography
-          name="Body 1/Regular"
-          align="left"
-          color={token?.colorLinkHover}
+      {!drawer && (
+        <Row
+          justify="space-between"
+          style={{
+            padding: '24px 40px 20px 40px',
+            backgroundColor: '#F0F4F7',
+            borderRadius: '10px 0px 10px 0px',
+          }}
+          gutter={[0, 0]}
         >
-          Add Contact
-        </Typography>
-      </Row>
+          <Typography
+            name="Body 1/Regular"
+            align="left"
+            color={token?.colorLinkHover}
+          >
+            Add Contact
+          </Typography>
+        </Row>
+      )}
+
       <Space
         size={0}
         direction="vertical"
-        style={{width: '100%', padding: '24px 40px 20px 40px'}}
+        style={{
+          width: '100%',
+          padding: drawer ? '20px' : '24px 40px 20px 40px',
+          borderRadius: drawer ? '12px' : '',
+          background: drawer ? '#F6F7F8' : '',
+        }}
       >
-        <Row style={{marginTop: '0px', width: '100%'}}>
-          <Typography name="Body 4/Regular">Select Customer Account</Typography>
-          <CommonSelect
-            placeholder="Select Customer Account"
-            style={{width: '100%', marginTop: '5px'}}
-            value={formValue?.billing_email}
-            onChange={(e) => {
-              setFormValue({
-                ...formValue,
-                billing_email: e.target.value,
-              });
-            }}
-          />
-        </Row>
-        <div
-          style={{
-            border: ' 1px solid #C7CDD5',
-            // marginLeft: '10px',
-            // marginRight: '10px',
-            width: '100%',
-            marginTop: '20px',
-            marginBottom: '10px',
-          }}
-        />
+        {!drawer && (
+          <>
+            {' '}
+            <Row style={{marginTop: '0px', width: '100%'}}>
+              <Typography name="Body 4/Regular">
+                Select Customer Account
+              </Typography>
+              <CommonSelect
+                placeholder="Select Customer Account"
+                style={{width: '100%', marginTop: '5px'}}
+                value={formValue?.customer_id}
+                options={tableData}
+                onChange={(e) => {
+                  setFormValue({
+                    ...formValue,
+                    customer_id: e,
+                  });
+                }}
+              />
+            </Row>
+            <div
+              style={{
+                border: ' 1px solid #C7CDD5',
+                // marginLeft: '10px',
+                // marginRight: '10px',
+                width: '100%',
+                marginTop: '20px',
+                marginBottom: '10px',
+              }}
+            />
+          </>
+        )}
+
         <Row>
           <Row
             style={{marginTop: '20px', width: '100%'}}
@@ -149,7 +177,13 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
             justifyContent: 'end',
           }}
         >
-          <OsButton buttontype="PRIMARY" text="Add" />
+          {!drawer && (
+            <OsButton
+              buttontype="PRIMARY"
+              clickHandler={addNewContact}
+              text="Add"
+            />
+          )}
         </Row>
       </Space>
     </>

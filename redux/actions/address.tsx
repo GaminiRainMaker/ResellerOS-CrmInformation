@@ -25,3 +25,14 @@ export const getAllAddress = createAsyncThunk(
     }
   },
 );
+export const updateAddress = createAsyncThunk(
+  'billingContact/updateAddress',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await ADDRESS_API.patch(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
