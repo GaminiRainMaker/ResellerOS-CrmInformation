@@ -9,10 +9,11 @@ import OsStatusWrapper from '@/app/components/common/os-status';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
-import {FC, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {updateQuoteById} from '../../../../../redux/actions/quote';
 import {getQuoteLineItemByQuoteId} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {getAllCustomer} from '../../../../../redux/actions/customer';
 
 interface FormDataProps {
   file_name: string;
@@ -24,7 +25,7 @@ const DrawerContent: FC<any> = ({setOpen}) => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const getQuoteLineItemId = searchParams.get('id');
-
+  const {data: dataAddress} = useAppSelector((state) => state.customer);
   const {quoteLineItemByQuoteID} = useAppSelector(
     (state) => state.quoteLineItem,
   );
@@ -49,12 +50,58 @@ const DrawerContent: FC<any> = ({setOpen}) => {
     },
   });
 
+  const [customerOptionsData, setCustomerOptionData] = useState<any>();
+  const [billingOptionsData, setBillingOptionData] = useState<any>();
+
+  // BillingContacts
+  useEffect(() => {
+    const billingOptions: any = [];
+    const customerOptions: any = [];
+    const AllBillingContact: any = [];
+    const AllCustomer: any = [];
+    if (dataAddress) {
+      dataAddress?.map((item: any) => {
+        AllCustomer?.push(item);
+        if (item?.BillingContacts) {
+          item?.BillingContacts?.map((itemss: any) => {
+            AllBillingContact?.push(itemss);
+          });
+        }
+      });
+    }
+
+    const isLiveAndBilling = AllBillingContact?.filter(
+      (item: any) => !item?.is_deleted && item?.billing,
+    );
+    const isLiveCustomer = AllCustomer?.filter(
+      (item: any) => !item?.is_deleted,
+    );
+    isLiveAndBilling?.map((item: any) => {
+      billingOptions?.push({
+        label: `${item?.billing_first_name}${item?.billing_last_name}`,
+        value: item?.id,
+      });
+    });
+    isLiveCustomer?.map((item: any) => {
+      customerOptions?.push({
+        label: item?.name,
+        value: item?.id,
+      });
+    });
+    setCustomerOptionData(customerOptions);
+    setBillingOptionData(billingOptions);
+  }, [dataAddress]);
+  useEffect(() => {
+    dispatch(getAllCustomer(''));
+  }, []);
+
   const onSubmit = (values: FormDataProps) => {
     setDrawerData((prev) => ({...prev, formData: values}));
     const obj = {
       id: Number(getQuoteLineItemId),
       ...values,
     };
+    console.log('weetree', values);
     dispatch(updateQuoteById(obj));
     dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
     setOpen(false);
@@ -104,7 +151,7 @@ const DrawerContent: FC<any> = ({setOpen}) => {
               <CommonSelect
                 style={{width: '100%'}}
                 placeholder="Select Customer"
-                // options={bundleOptions}
+                options={customerOptionsData}
                 onChange={(e) => {}}
               />
             </Form.Item>
@@ -113,7 +160,7 @@ const DrawerContent: FC<any> = ({setOpen}) => {
               <CommonSelect
                 style={{width: '100%'}}
                 placeholder="Billing Contact"
-                // options={bundleOptions}
+                options={billingOptionsData}
                 onChange={(e) => {}}
               />
             </Form.Item>
