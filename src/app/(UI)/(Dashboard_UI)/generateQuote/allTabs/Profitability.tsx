@@ -20,7 +20,6 @@ import {setProfitability} from '../../../../../../redux/slices/profitability';
 const Profitability: FC<any> = () => {
   const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
-  const [pricingMethodData, setPricingMethodData] = useState<any>();
 
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
     (state) => state.profitability,
@@ -29,44 +28,16 @@ const Profitability: FC<any> = () => {
     profitabilityDataByQuoteId,
   );
 
-  const updateAmountValue = (value: any, rowId: number) => {
+  const updateAmountValue = (value: any, pricingMethods: string) => {
     const val = useRemoveDollarAndCommahook(value);
     if (
-      pricingMethodData?.method === 'cost_percentage' &&
-      pricingMethodData?.rowId === rowId
+      pricingMethods === 'cost_percentage' ||
+      pricingMethods === 'list_percentage' ||
+      pricingMethods === 'gp'
     ) {
       return `% ${String(val)}`;
     }
-    if (
-      pricingMethodData?.method === 'cost_dollar' &&
-      pricingMethodData?.rowId === rowId
-    ) {
-      return `$ ${String(val)}`;
-    }
-    if (
-      pricingMethodData?.method === 'list_percentage' &&
-      pricingMethodData?.rowId === rowId
-    ) {
-      return `% ${String(val)}`;
-    }
-    if (
-      pricingMethodData?.method === 'list_dollar' &&
-      pricingMethodData?.rowId === rowId
-    ) {
-      return `$ ${String(val)}`;
-    }
-    if (
-      pricingMethodData?.method === 'manual' &&
-      pricingMethodData?.rowId === rowId
-    ) {
-      return `$ ${String(val)}`;
-    }
-    if (
-      pricingMethodData?.method === 'gp' &&
-      pricingMethodData?.rowId === rowId
-    ) {
-      return `% ${String(val)}`;
-    }
+    return `$ ${String(val)}`;
   };
 
   const ProfitabilityQuoteLineItemcolumns = [
@@ -159,10 +130,6 @@ const Profitability: FC<any> = () => {
             setProfitabilityData((prev: any) =>
               prev.map((prevItem: any) => {
                 if (prevItem.id === record?.id) {
-                  setPricingMethodData({
-                    method: v,
-                    rowId: record?.id,
-                  });
                   return {...prevItem, pricing_method: v};
                 }
                 return prevItem;
@@ -207,7 +174,7 @@ const Profitability: FC<any> = () => {
           style={{
             height: '36px',
           }}
-          value={updateAmountValue(text, record?.id)}
+          value={updateAmountValue(text, record?.pricing_method)}
           onChange={(v) => {
             setProfitabilityData((prev: any) =>
               prev.map((prevItem: any) => {
