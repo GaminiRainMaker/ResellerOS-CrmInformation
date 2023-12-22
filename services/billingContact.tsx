@@ -9,4 +9,6 @@ export const BILLINGADDRESS_API = {
   get: () => get(`${API.BILLINGADDRESS.INDEX}`) as Promise<AxiosResponse<any>>,
   patch: (data: any) =>
     patch(API.BILLINGADDRESS.INDEX, data) as Promise<AxiosResponse<any>>,
+  delete: (data: any) =>
+    post(API.BILLINGADDRESS.QUERY, data) as Promise<AxiosResponse<any>>,
 };

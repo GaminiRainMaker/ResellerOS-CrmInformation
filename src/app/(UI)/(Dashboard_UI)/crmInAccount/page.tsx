@@ -71,11 +71,15 @@ const CrmInformation: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<Boolean>(false);
+  const [deletedData, setDeletedData] = useState<any>();
   useEffect(() => {
     dispatch(getAllCustomer(''));
   }, []);
   useEffect(() => {
-    setTableData(dataAddress);
+    const deleted = dataAddress?.filter((item: any) => item?.is_deleted);
+    const onLive = dataAddress?.filter((item: any) => !item?.is_deleted);
+    setDeletedData(deleted);
+    setTableData(onLive);
   }, [dataAddress]);
   useEffect(() => {
     dispatch(getAllCustomer(''));
@@ -85,13 +89,17 @@ const CrmInformation: React.FC = () => {
     await dispatch(updateAddress(formValue));
     await dispatch(updateCustomer(customerValue));
     setOpen((p) => !p);
-    dispatch(getAllCustomer(''));
+    setTimeout(() => {
+      dispatch(getAllCustomer(''));
+    }, 1000);
   };
 
   const deleteSelectedIds = async () => {
     const data = {Ids: deleteIds};
     await dispatch(deleteCustomers(data));
-    dispatch(getAllCustomer(''));
+    setTimeout(() => {
+      dispatch(getAllCustomer(''));
+    }, 1000);
     setDeleteIds([]);
     setShowModalDelete(false);
   };
@@ -116,35 +124,35 @@ const CrmInformation: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{dataAddress?.length}</div>,
+      primary: <div>{tableData?.length}</div>,
       secondry: 'Customers',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
-      primary: <div>{dataAddress?.length}</div>,
+      primary: <div>{tableData?.length}</div>,
       secondry: 'Opportunities',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
     },
     {
       key: 3,
-      primary: <div>{dataAddress?.length}</div>,
+      primary: <div>{tableData?.length}</div>,
       secondry: 'Contacts',
       icon: <PhoneIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
     {
       key: 4,
-      primary: <div>{dataAddress?.length}</div>,
+      primary: <div>{tableData?.length}</div>,
       secondry: 'Recents',
       icon: <ClockIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
     },
     {
       key: 5,
-      primary: <div>{dataAddress?.length}</div>,
+      primary: <div>{deletedData?.length}</div>,
       secondry: 'Deleted',
       icon: <TrashIcon width={24} color={token?.colorError} />,
       iconBg: token?.colorErrorBg,
@@ -246,9 +254,6 @@ const CrmInformation: React.FC = () => {
     onChange: (selectedRowKeys: any) => {
       console.log('rowSelection', selectedRowKeys);
       setDeleteIds(selectedRowKeys);
-      // setSelectedRowKeys(selectedRowKeys);
-      // setSelectedRowIds(selectedRowKeys);
-      // setExistingQuoteId(Number(selectedRowKeys));
     },
     getCheckboxProps: (record: any) => ({
       disabled: record.name === 'Disabled User',
@@ -474,7 +479,7 @@ const CrmInformation: React.FC = () => {
           <Row style={{width: '100%', float: 'right'}}>
             {' '}
             <OsButton
-              style={{width: '300px'}}
+              btnStyle={{width: '100%'}}
               buttontype="PRIMARY"
               text="UPDATE"
               clickHandler={updateCustomerDetails}

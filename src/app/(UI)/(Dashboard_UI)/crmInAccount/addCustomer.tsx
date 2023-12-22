@@ -41,15 +41,6 @@ import OsButton from '@/app/components/common/os-button';
 import OsDrawer from '@/app/components/common/os-drawer';
 import {useAppDispatch} from '../../../../../redux/hook';
 import AddCustomerInputVale from './addCustomerInput';
-import {
-  getAllCustomer,
-  insertCustomer,
-} from '../../../../../redux/actions/customer';
-import {
-  getAllAddress,
-  insertAddAddress,
-} from '../../../../../redux/actions/address';
-import {insertbillingContact} from '../../../../../redux/actions/billingContact';
 
 interface AddCustomertInterface {
   setShowModal: any;

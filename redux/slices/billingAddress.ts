@@ -5,6 +5,7 @@ import {
   insertbillingContact,
   getAllbillingContact,
   updateBillingContact,
+  deleteBillingContact,
 } from '../actions/billingContact';
 
 type ProductState = {
@@ -79,6 +80,24 @@ const productSlice = createSlice({
       )
       .addCase(
         updateBillingContact.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(deleteBillingContact.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        deleteBillingContact.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        deleteBillingContact.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

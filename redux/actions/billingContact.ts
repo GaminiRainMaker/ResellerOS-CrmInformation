@@ -36,3 +36,15 @@ export const updateBillingContact = createAsyncThunk(
     }
   },
 );
+
+export const deleteBillingContact = createAsyncThunk(
+  'billingContact/deleteBillingContact',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await BILLINGADDRESS_API.delete(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
