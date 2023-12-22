@@ -11,4 +11,6 @@ export const BILLINGADDRESS_API = {
     patch(API.BILLINGADDRESS.INDEX, data) as Promise<AxiosResponse<any>>,
   delete: (data: any) =>
     post(API.BILLINGADDRESS.QUERY, data) as Promise<AxiosResponse<any>>,
+  search: (data: any) =>
+    post(API.BILLINGADDRESS.SEARCH, data) as Promise<AxiosResponse<any>>,
 };

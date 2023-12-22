@@ -510,6 +510,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
                         setFormValue({
                           ...formValue,
                           billing_email: e.target.value,
+                          billing: true,
                         });
                       }}
                     />
@@ -624,6 +625,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
                     billing_first_name: '',
                     billing_role: '',
                     customer_id: formValue?.id,
+                    billing: true,
                   });
                 }}
               >
@@ -646,8 +648,13 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
           >
             <OsButton
               buttontype="PRIMARY"
-              clickHandler={addCustomerAndAddress}
-              text="Add"
+              clickHandler={() => {
+                // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+                activeTab == 3
+                  ? addCustomerAndAddress()
+                  : setActiveTab(+activeTab + 1);
+              }}
+              text={activeTab == 3 ? 'Add' : 'Next'}
             />
           </Row>
         )}

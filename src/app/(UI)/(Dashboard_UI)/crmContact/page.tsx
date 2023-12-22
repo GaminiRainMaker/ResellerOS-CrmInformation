@@ -49,6 +49,7 @@ import {
 import {
   deleteBillingContact,
   getAllbillingContact,
+  getBillingContactBySearch,
   updateBillingContact,
 } from '../../../../../redux/actions/billingContact';
 
@@ -72,6 +73,11 @@ const CrmAccount: React.FC = () => {
   const [billingDataTable, setBillingDataTable] = useState<any>();
 
   const [deletedData, setDeletedData] = useState<any>();
+  const [searchValue, setSearchValue] = useState<any>();
+
+  const searchBillingContacts = async () => {
+    dispatch(getBillingContactBySearch(searchValue));
+  };
   useEffect(() => {
     const deletedAll = billingData?.filter((item: any) => item?.is_deleted);
     const onLive = billingData?.filter((item: any) => !item?.is_deleted);
@@ -98,7 +104,8 @@ const CrmAccount: React.FC = () => {
   useEffect(() => {
     const optionValues: any = [];
     if (dataAddress) {
-      dataAddress?.map((item: any) => {
+      const liveOn = dataAddress?.filter((item: any) => !item?.is_deleted);
+      liveOn?.map((item: any) => {
         optionValues?.push({label: item?.name, value: item?.id});
       });
     }
@@ -420,10 +427,15 @@ const CrmAccount: React.FC = () => {
                   <CommonSelect
                     style={{width: '180px'}}
                     placeholder="Search Here"
-                    // options={bundleOptions}
+                    options={tableData}
                   />
                 </Space>
-                <Typography cursor="pointer" name="Button 1" color="#C6CDD5">
+                <Typography
+                  cursor="pointer"
+                  name="Button 1"
+                  color="#C6CDD5"
+                  onClick={searchBillingContacts}
+                >
                   Apply
                 </Typography>
               </Space>

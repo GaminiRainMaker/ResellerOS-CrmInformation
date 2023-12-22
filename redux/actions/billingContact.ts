@@ -48,3 +48,14 @@ export const deleteBillingContact = createAsyncThunk(
     }
   },
 );
+export const getBillingContactBySearch = createAsyncThunk(
+  'billingContact/getBillingContactBySearch',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await BILLINGADDRESS_API.search(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

@@ -82,8 +82,10 @@ const CrmInformation: React.FC = () => {
     setTableData(onLive);
   }, [dataAddress]);
   useEffect(() => {
-    dispatch(getAllCustomer(''));
-  }, [!open]);
+    setTimeout(() => {
+      dispatch(getAllCustomer(''));
+    }, 1000);
+  }, [!open, showModal]);
 
   const updateCustomerDetails = async () => {
     await dispatch(updateAddress(formValue));

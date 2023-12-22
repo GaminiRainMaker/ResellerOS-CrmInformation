@@ -6,6 +6,7 @@ import {
   getAllbillingContact,
   updateBillingContact,
   deleteBillingContact,
+  getBillingContactBySearch,
 } from '../actions/billingContact';
 
 type ProductState = {
@@ -98,6 +99,24 @@ const productSlice = createSlice({
       )
       .addCase(
         deleteBillingContact.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getBillingContactBySearch.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getBillingContactBySearch.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getBillingContactBySearch.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

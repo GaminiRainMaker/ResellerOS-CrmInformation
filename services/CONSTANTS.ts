@@ -66,5 +66,6 @@ export const API = {
   BILLINGADDRESS: {
     INDEX: '/billingContact',
     QUERY: '/billingContact/deleteBillingContact',
+    SEARCH: '/billingContact/getBillingContactBySearch',
   },
 };
