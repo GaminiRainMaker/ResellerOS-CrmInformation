@@ -12,4 +12,5 @@ export const CUSTOMER_API = {
     patch(API.CUSTOMER.INDEX, data) as Promise<AxiosResponse<any>>,
   getAllDeleted: () =>
     get(`${API.CUSTOMER.INDEX}`) as Promise<AxiosResponse<any>>,
+  seacrh: (data: any) => post(API.CUSTOMER.SEARCH, data),
 };

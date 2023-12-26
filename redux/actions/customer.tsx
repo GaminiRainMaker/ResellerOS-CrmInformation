@@ -58,3 +58,14 @@ export const updateCustomer = createAsyncThunk(
     }
   },
 );
+export const searchCustomer = createAsyncThunk(
+  'customer/getCustomerBySearch',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await CUSTOMER_API.seacrh(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

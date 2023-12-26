@@ -39,6 +39,7 @@ import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import {useEffect, useState} from 'react';
 import CommonSelect from '@/app/components/common/os-select';
 import OsDrawer from '@/app/components/common/os-drawer';
+import OsInput from '@/app/components/common/os-input';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import EditContactModal from './editContact';
 import AddContact from './addContact';
@@ -73,12 +74,13 @@ const CrmAccount: React.FC = () => {
   const [billingDataTable, setBillingDataTable] = useState<any>();
 
   const [deletedData, setDeletedData] = useState<any>();
-  const [searchValue, setSearchValue] = useState<any>();
+  const [billingFilterSeach, setBillingFilterSearch] = useState<any>();
 
   const searchBillingContacts = async () => {
-    dispatch(getBillingContactBySearch(searchValue));
+    dispatch(getBillingContactBySearch(billingFilterSeach));
   };
   useEffect(() => {
+    
     const deletedAll = billingData?.filter((item: any) => item?.is_deleted);
     const onLive = billingData?.filter((item: any) => !item?.is_deleted);
     setTableDataforBillContact(onLive);
@@ -416,10 +418,16 @@ const CrmAccount: React.FC = () => {
               <Space size={12} align="center">
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Contact Name</Typography>
-                  <CommonSelect
+                  <OsInput
                     style={{width: '180px'}}
                     placeholder="Search Here"
                     // options={bundleOptions}
+                    onChange={(e) => {
+                      setBillingFilterSearch({
+                        ...billingFilterSeach,
+                        name: e.target.value,
+                      });
+                    }}
                   />
                 </Space>
                 <Space direction="vertical" size={0}>
@@ -428,6 +436,12 @@ const CrmAccount: React.FC = () => {
                     style={{width: '180px'}}
                     placeholder="Search Here"
                     options={tableData}
+                    onChange={(e) => {
+                      setBillingFilterSearch({
+                        ...billingFilterSeach,
+                        customer_id: e,
+                      });
+                    }}
                   />
                 </Space>
                 <Typography

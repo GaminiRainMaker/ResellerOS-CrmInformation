@@ -51,6 +51,7 @@ import {
 import {
   deleteCustomers,
   getAllCustomer,
+  searchCustomer,
   updateCustomer,
 } from '../../../../../redux/actions/customer';
 import AddCustomerInputVale from './addCustomerInput';
@@ -72,15 +73,19 @@ const CrmInformation: React.FC = () => {
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<Boolean>(false);
   const [deletedData, setDeletedData] = useState<any>();
+  const [searchCustomerData, setSearchCustomerData] = useState<any>();
+
   useEffect(() => {
     dispatch(getAllCustomer(''));
   }, []);
   useEffect(() => {
-    const deleted = dataAddress?.filter((item: any) => item?.is_deleted);
-    const onLive = dataAddress?.filter((item: any) => !item?.is_deleted);
+    const CustomerDataaa = searchCustomerData ? dataAddress?.[0] : dataAddress;
+    const deleted = CustomerDataaa?.filter((item: any) => item?.is_deleted);
+    const onLive = CustomerDataaa?.filter((item: any) => !item?.is_deleted);
     setDeletedData(deleted);
     setTableData(onLive);
   }, [dataAddress]);
+
   useEffect(() => {
     setTimeout(() => {
       dispatch(getAllCustomer(''));
@@ -104,6 +109,10 @@ const CrmInformation: React.FC = () => {
     }, 1000);
     setDeleteIds([]);
     setShowModalDelete(false);
+  };
+
+  const searchFilterForCustomer = async () => {
+    dispatch(searchCustomer(searchCustomerData));
   };
   const editCustomerFileds = (record: any) => {
     setCustomerValue(record);
@@ -371,6 +380,12 @@ const CrmInformation: React.FC = () => {
                   <OsInput
                     style={{width: '200px'}}
                     placeholder="Search here"
+                    onChange={(e) => {
+                      setSearchCustomerData({
+                        ...searchCustomerData,
+                        name: e.target.value,
+                      });
+                    }}
                     prefix={<SearchOutlined style={{color: '#949494'}} />}
                   />
                 </Space>
@@ -379,10 +394,21 @@ const CrmInformation: React.FC = () => {
                   <OsInput
                     style={{width: '200px'}}
                     placeholder="Search here"
+                    onChange={(e) => {
+                      setSearchCustomerData({
+                        ...searchCustomerData,
+                        currency: e.target.value,
+                      });
+                    }}
                     prefix={<SearchOutlined style={{color: '#949494'}} />}
                   />
                 </Space>
-                <Typography cursor="pointer" name="Button 1" color="#C6CDD5">
+                <Typography
+                  cursor="pointer"
+                  name="Button 1"
+                  color="#C6CDD5"
+                  onClick={searchFilterForCustomer}
+                >
                   Apply
                 </Typography>
               </Space>

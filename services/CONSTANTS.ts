@@ -59,6 +59,7 @@ export const API = {
   CUSTOMER: {
     INDEX: '/customer',
     QUERY: '/customer/updateCustomer',
+    SEARCH: '/customer/search',
   },
   ADDRESS: {
     INDEX: '/address',
