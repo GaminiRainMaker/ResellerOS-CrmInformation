@@ -425,7 +425,7 @@ const SideBar = () => {
             size={12}
             onClick={() => {
               setSelectedKey(0);
-              // router?.push('/allQuote');
+              router?.push('/crmOpportunity');
             }}
             color={token?.colorTextSecondary}
           >

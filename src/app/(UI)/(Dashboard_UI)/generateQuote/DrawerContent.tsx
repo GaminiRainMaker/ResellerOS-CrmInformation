@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-nested-ternary */
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -30,6 +31,7 @@ const DrawerContent: FC<any> = ({setOpen}) => {
     (state) => state.quoteLineItem,
   );
   const [form] = Form.useForm();
+  const [customerValue, setCustomerValue] = useState<number>(0);
   const [drawerData, setDrawerData] = useState<{
     id: number | string;
     createdAt: string;
@@ -55,44 +57,43 @@ const DrawerContent: FC<any> = ({setOpen}) => {
 
   // BillingContacts
   useEffect(() => {
-    const billingOptions: any = [];
     const customerOptions: any = [];
-    const AllBillingContact: any = [];
-    const AllCustomer: any = [];
+    const updatedAllBillingContact: any = [];
+    const updatedAllCustomer: any = [];
+
     if (dataAddress) {
-      dataAddress?.map((item: any) => {
-        AllCustomer?.push(item);
-        if (item?.BillingContacts) {
-          item?.BillingContacts?.map((itemss: any) => {
-            AllBillingContact?.push(itemss);
-          });
+      dataAddress.forEach((item: any) => {
+        updatedAllCustomer.push(item);
+        if (item.BillingContacts) {
+          if (item.id === customerValue) {
+            item.BillingContacts.forEach((itemss: any) => {
+              updatedAllBillingContact.push({
+                label: `${itemss.billing_first_name} ${itemss.billing_last_name}`,
+                value: itemss.id,
+              });
+            });
+          }
         }
       });
     }
 
-    const isLiveAndBilling = AllBillingContact?.filter(
-      (item: any) => !item?.is_deleted && item?.billing,
+    const isLiveCustomer = updatedAllCustomer.filter(
+      (item: any) => !item.is_deleted,
     );
-    const isLiveCustomer = AllCustomer?.filter(
-      (item: any) => !item?.is_deleted,
-    );
-    isLiveAndBilling?.map((item: any) => {
-      billingOptions?.push({
-        label: `${item?.billing_first_name}${item?.billing_last_name}`,
-        value: item?.id,
+
+    isLiveCustomer.forEach((item: any) => {
+      customerOptions.push({
+        label: item.name ?? '--',
+        value: item.id,
       });
     });
-    isLiveCustomer?.map((item: any) => {
-      customerOptions?.push({
-        label: item?.name,
-        value: item?.id,
-      });
-    });
+
     setCustomerOptionData(customerOptions);
-    setBillingOptionData(billingOptions);
-  }, [dataAddress]);
+    setBillingOptionData(updatedAllBillingContact);
+  }, [dataAddress, customerValue]);
+
   useEffect(() => {
-    dispatch(getAllCustomer(''));
+    dispatch(getAllCustomer({}));
   }, []);
 
   const onSubmit = (values: FormDataProps) => {
@@ -101,11 +102,11 @@ const DrawerContent: FC<any> = ({setOpen}) => {
       id: Number(getQuoteLineItemId),
       ...values,
     };
-    console.log('weetree', values);
     dispatch(updateQuoteById(obj));
     dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
     setOpen(false);
   };
+
   return (
     <Space size={24} style={{width: '100%'}} direction="vertical">
       <Row justify="space-between">
@@ -141,9 +142,6 @@ const DrawerContent: FC<any> = ({setOpen}) => {
                 style={{width: '100%'}}
                 placeholder="Select Opportunity"
                 // options={bundleOptions}
-                onChange={(e) => {
-                  console.log('object', e);
-                }}
               />
             </Form.Item>
 
@@ -152,14 +150,17 @@ const DrawerContent: FC<any> = ({setOpen}) => {
                 style={{width: '100%'}}
                 placeholder="Select Customer"
                 options={customerOptionsData}
-                onChange={(e) => {}}
+                onChange={(e) => {
+                  console.log('dfasdasfdsd', e);
+                  setCustomerValue(e);
+                }}
               />
             </Form.Item>
 
-            <Form.Item label="Billing Contact" name="billing_contact">
+            <Form.Item label="Contact Assign" name="billing_contact">
               <CommonSelect
                 style={{width: '100%'}}
-                placeholder="Billing Contact"
+                placeholder="Contact Assign"
                 options={billingOptionsData}
                 onChange={(e) => {}}
               />

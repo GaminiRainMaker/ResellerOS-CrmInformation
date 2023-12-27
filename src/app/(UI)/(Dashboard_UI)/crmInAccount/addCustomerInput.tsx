@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable @typescript-eslint/no-shadow */
@@ -15,21 +16,21 @@ import Typography from '@/app/components/common/typography';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import OsInput from '@/app/components/common/os-input';
-import {Checkbox, Space, TabsProps} from 'antd';
-import {ArrowUpCircleIcon, PencilSquareIcon} from '@heroicons/react/24/outline';
 import OsAvatar from '@/app/components/common/os-avatar';
-import {useState} from 'react';
 import OsButton from '@/app/components/common/os-button';
+import OsInput from '@/app/components/common/os-input';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import {MailOutlined} from '@ant-design/icons';
-import {useAppDispatch} from '../../../../../redux/hook';
-import {insertCustomer} from '../../../../../redux/actions/customer';
+import {ArrowUpCircleIcon, PencilSquareIcon} from '@heroicons/react/24/outline';
+import {Checkbox, Space, TabsProps} from 'antd';
+import {useState} from 'react';
 import {insertAddAddress} from '../../../../../redux/actions/address';
 import {
   insertbillingContact,
   updateBillingContact,
 } from '../../../../../redux/actions/billingContact';
+import {insertCustomer} from '../../../../../redux/actions/customer';
+import {useAppDispatch} from '../../../../../redux/hook';
 
 interface CustomerAccountInterface {
   formValue: any;
@@ -74,7 +75,8 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
           dispatch(insertbillingContact(newAddressObj));
         }
       });
-      setShowModal((p) => !p);
+      setShowModal((p: boolean) => !p);
+      setEditBillingAddress(false);
     } catch (error) {
       console.log(error);
     }
@@ -87,6 +89,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
 
       setShowModal((p) => !p);
       setOpen((p) => !p);
+      setEditBillingAddress(false);
     } catch (error) {
       console.log(error);
     }
@@ -98,10 +101,12 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
 
       setShowModal((p) => !p);
       setOpen((p) => !p);
+      setEditBillingAddress(false);
     } catch (error) {
       console.log(error);
     }
   };
+
   const tabItems: TabsProps['items'] = [
     {
       label: (
@@ -148,7 +153,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
             name="Body 4/Regular"
             color={activeTab == 3 ? '#1C3557' : '#666666'}
           >
-            Billing Contact
+            Contact
           </Typography>
           <div
             style={{
@@ -510,7 +515,6 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
                         setFormValue({
                           ...formValue,
                           billing_email: e.target.value,
-                          billing: true,
                         });
                       }}
                     />
@@ -542,6 +546,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
                 {formValue?.BillingContacts?.map((item: any, index: number) => (
                   <Col key={item?.key}>
                     <Row
+                      key={`${index}`}
                       style={{
                         background: '#F6F7F8',
                         padding: '12px',
@@ -625,7 +630,6 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
                     billing_first_name: '',
                     billing_role: '',
                     customer_id: formValue?.id,
-                    billing: true,
                   });
                 }}
               >

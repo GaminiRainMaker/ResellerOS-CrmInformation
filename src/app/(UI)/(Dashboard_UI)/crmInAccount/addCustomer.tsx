@@ -11,34 +11,12 @@
 
 'use client';
 
-import Typography from '@/app/components/common/typography';
-import {
-  EllipsisVerticalIcon,
-  PlusIcon,
-  TrashIcon,
-  PencilSquareIcon,
-  CheckBadgeIcon,
-  ClipboardDocumentCheckIcon,
-  ClockIcon,
-  UserGroupIcon,
-  PhoneIcon,
-  ChatBubbleLeftEllipsisIcon,
-  ShoppingBagIcon,
-  CurrencyDollarIcon,
-} from '@heroicons/react/24/outline';
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import OsTabs from '@/app/components/common/os-tabs';
-import {Checkbox, Divider, TabsProps} from 'antd';
+import Typography from '@/app/components/common/typography';
 import {useRouter} from 'next/navigation';
-import OsInput from '@/app/components/common/os-input';
-import {useEffect, useState} from 'react';
-import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
-import OsAvatar from '@/app/components/common/os-avatar';
-import {ArrowUpCircleIcon} from '@heroicons/react/20/solid';
-import OsButton from '@/app/components/common/os-button';
-import OsDrawer from '@/app/components/common/os-drawer';
+import {useState} from 'react';
 import {useAppDispatch} from '../../../../../redux/hook';
 import AddCustomerInputVale from './addCustomerInput';
 

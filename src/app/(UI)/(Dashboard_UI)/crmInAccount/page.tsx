@@ -13,54 +13,45 @@
 
 import Typography from '@/app/components/common/typography';
 import {
+  CheckBadgeIcon,
+  ClockIcon,
   EllipsisVerticalIcon,
+  PencilSquareIcon,
+  PhoneIcon,
   PlusIcon,
   TrashIcon,
-  PencilSquareIcon,
-  CheckBadgeIcon,
-  ClipboardDocumentCheckIcon,
-  ClockIcon,
   UserGroupIcon,
-  PhoneIcon,
 } from '@heroicons/react/24/outline';
 
 import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
-import {PopConfirm} from '@/app/components/common/antd/PopConfirm';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
+import OsDrawer from '@/app/components/common/os-drawer';
+import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
-import OsTabs from '@/app/components/common/os-tabs';
-import {Button, MenuProps, TabsProps} from 'antd';
-import {useRouter} from 'next/navigation';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import OsInput from '@/app/components/common/os-input';
+import OsTabs from '@/app/components/common/os-tabs';
 import {SearchOutlined} from '@ant-design/icons';
+import {Button, MenuProps, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
-import OsDrawer from '@/app/components/common/os-drawer';
-import {record} from 'aws-amplify/analytics';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import UploadFile from '../generateQuote/UploadFile';
-import AddCustomer from './addCustomer';
-import {
-  getAllAddress,
-  updateAddress,
-} from '../../../../../redux/actions/address';
+import {updateAddress} from '../../../../../redux/actions/address';
 import {
   deleteCustomers,
   getAllCustomer,
   searchCustomer,
   updateCustomer,
 } from '../../../../../redux/actions/customer';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import AddCustomer from './addCustomer';
 import AddCustomerInputVale from './addCustomerInput';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
-  const router = useRouter();
   const [formValue, setFormValue] = useState<any>();
   const [customerValue, setCustomerValue] = useState<any>();
 
@@ -68,7 +59,7 @@ const CrmInformation: React.FC = () => {
   const {data: dataAddress, loading} = useAppSelector(
     (state) => state.customer,
   );
-  const [tableData, setTableData] = useState<any>();
+  const {data: billingData} = useAppSelector((state) => state.billingContact);
   const [open, setOpen] = useState(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<Boolean>(false);
@@ -76,15 +67,20 @@ const CrmInformation: React.FC = () => {
   const [searchCustomerData, setSearchCustomerData] = useState<any>();
 
   useEffect(() => {
-    dispatch(getAllCustomer(''));
-  }, []);
+    const deletedAll = billingData?.filter((item: any) => item?.is_deleted);
+    // const onLive = billingData?.filter((item: any) => !item?.is_deleted);
+    // setTableDataforBillContact(onLive);
+    // const bilingOnly = onLive?.filter((item: any) => item?.billing);
+    // const deletedBill = bilingOnly?.filter((item: any) => item?.is_deleted);
+
+    // setBillingDataTable(bilingOnly);
+    const setDeleted = deletedAll;
+    setDeletedData(setDeleted);
+  }, [billingData, activeTab]);
+
   useEffect(() => {
-    const CustomerDataaa = searchCustomerData ? dataAddress?.[0] : dataAddress;
-    const deleted = CustomerDataaa?.filter((item: any) => item?.is_deleted);
-    const onLive = CustomerDataaa?.filter((item: any) => !item?.is_deleted);
-    setDeletedData(deleted);
-    setTableData(onLive);
-  }, [dataAddress]);
+    dispatch(getAllCustomer({}));
+  }, []);
 
   useEffect(() => {
     setTimeout(() => {
@@ -114,6 +110,7 @@ const CrmInformation: React.FC = () => {
   const searchFilterForCustomer = async () => {
     dispatch(searchCustomer(searchCustomerData));
   };
+
   const editCustomerFileds = (record: any) => {
     setCustomerValue(record);
     setFormValue({
@@ -135,28 +132,28 @@ const CrmInformation: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{tableData?.length}</div>,
+      primary: <div>{dataAddress.length}</div>,
       secondry: 'Customers',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
-      primary: <div>{tableData?.length}</div>,
+      primary: <div>{0}</div>,
       secondry: 'Opportunities',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
     },
     {
       key: 3,
-      primary: <div>{tableData?.length}</div>,
+      primary: <div>{billingData.length}</div>,
       secondry: 'Contacts',
       icon: <PhoneIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
     {
       key: 4,
-      primary: <div>{tableData?.length}</div>,
+      primary: <div>--</div>,
       secondry: 'Recents',
       icon: <ClockIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
@@ -169,9 +166,10 @@ const CrmInformation: React.FC = () => {
       iconBg: token?.colorErrorBg,
     },
   ];
-  const Quotecolumns = [
+
+  const AccountColumns = [
     {
-      title: 'Conatct Name',
+      title: 'Contact Name',
       dataIndex: 'name',
       key: 'name',
       width: 130,
@@ -202,7 +200,7 @@ const CrmInformation: React.FC = () => {
       ),
     },
     {
-      title: 'Billing Contact',
+      title: 'Contact',
       dataIndex: 'name',
       key: 'name',
       width: 187,
@@ -271,12 +269,13 @@ const CrmInformation: React.FC = () => {
       name: record.name,
     }),
   };
+
   const tabItems: TabsProps['items'] = [
     {
       label: (
         <div>
           <div>All</div>
-          <div style={{border: activeTab == 1 ? '1px solid #1C3557' : ''}} />
+          {/* <div style={{border: activeTab == 1 ? '1px solid #1C3557' : ''}} /> */}
         </div>
       ),
       key: '1',
@@ -432,11 +431,11 @@ const CrmInformation: React.FC = () => {
               children: (
                 <OsTable
                   key={tabItem?.key}
-                  columns={Quotecolumns}
-                  dataSource={tableData}
+                  columns={AccountColumns}
+                  dataSource={dataAddress}
                   rowSelection={rowSelection}
                   scroll
-                  loading={false}
+                  loading={loading}
                 />
               ),
               ...tabItem,

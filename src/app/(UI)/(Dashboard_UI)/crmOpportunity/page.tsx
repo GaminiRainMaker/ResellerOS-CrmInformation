@@ -13,154 +13,141 @@
 
 import Typography from '@/app/components/common/typography';
 import {
+  CheckBadgeIcon,
+  ClockIcon,
   EllipsisVerticalIcon,
+  PhoneIcon,
   PlusIcon,
   TrashIcon,
-  PencilSquareIcon,
-  CheckBadgeIcon,
-  ClipboardDocumentCheckIcon,
-  ClockIcon,
   UserGroupIcon,
-  PhoneIcon,
 } from '@heroicons/react/24/outline';
 
 import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
-import {PopConfirm} from '@/app/components/common/antd/PopConfirm';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import OsModal from '@/app/components/common/os-modal';
-import OsTable from '@/app/components/common/os-table';
-import OsTabs from '@/app/components/common/os-tabs';
-import {Button, MenuProps, TabsProps, Upload} from 'antd';
-import {useRouter} from 'next/navigation';
-import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import {useEffect, useState} from 'react';
-import CommonSelect from '@/app/components/common/os-select';
-import OsDrawer from '@/app/components/common/os-drawer';
 import OsInput from '@/app/components/common/os-input';
+import OsModal from '@/app/components/common/os-modal';
+import CommonSelect from '@/app/components/common/os-select';
+import OsTable from '@/app/components/common/os-table';
+import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
+import OsTabs from '@/app/components/common/os-tabs';
+import {Button, MenuProps, TabsProps} from 'antd';
+import {useRouter} from 'next/navigation';
+import {useEffect, useState} from 'react';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import EditContactModal from './editContact';
-import AddContact from './addContact';
+// import AddCustomer from './addCustomer';
+import {updateAddress} from '../../../../../redux/actions/address';
 import {
   deleteCustomers,
   getAllCustomer,
+  searchCustomer,
+  updateCustomer,
 } from '../../../../../redux/actions/customer';
-import {
-  deleteBillingContact,
-  getAllbillingContact,
-  getBillingContactBySearch,
-  updateBillingContact,
-} from '../../../../../redux/actions/billingContact';
+import AddOpportunity from './AddOpportunity';
+// import AddCustomerInputVale from './addCustomerInput';
 
-const CrmAccount: React.FC = () => {
+const CrmOpportunity: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [showModalEdit, setShowModalEdit] = useState<boolean>(false);
   const [formValue, setFormValue] = useState<any>();
-  const [deleteIds, setDeleteIds] = useState<any>();
-  const [showModalDelete, setShowModalDelete] = useState<Boolean>(false);
-  const [open, setOpen] = useState(false);
-  const {data: dataAddress} = useAppSelector((state) => state.customer);
-  const {data: billingData, loading} = useAppSelector(
-    (state) => state.billingContact,
+  const [customerValue, setCustomerValue] = useState<any>();
+
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const {data: dataAddress, loading} = useAppSelector(
+    (state) => state.customer,
   );
   const [tableData, setTableData] = useState<any>();
-
+  const [open, setOpen] = useState<boolean>(false);
+  const [deleteIds, setDeleteIds] = useState<any>();
+  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deletedData, setDeletedData] = useState<any>();
-  const [billingFilterSeach, setBillingFilterSearch] = useState<any>();
-
-  const searchBillingContacts = async () => {
-    dispatch(getBillingContactBySearch(billingFilterSeach));
-  };
-
-  useEffect(() => {
-    const deletedAll = billingData?.filter((item: any) => item?.is_deleted);
-    // const onLive = billingData?.filter((item: any) => !item?.is_deleted);
-    // setTableDataforBillContact(onLive);
-    // const bilingOnly = onLive?.filter((item: any) => item?.billing);
-    // const deletedBill = bilingOnly?.filter((item: any) => item?.is_deleted);
-
-    // setBillingDataTable(bilingOnly);
-    const setDeleted = deletedAll;
-    setDeletedData(setDeleted);
-  }, [billingData, activeTab]);
+  const [searchCustomerData, setSearchCustomerData] = useState<any>();
 
   useEffect(() => {
     dispatch(getAllCustomer(''));
-    dispatch(getAllbillingContact(''));
   }, []);
+  useEffect(() => {
+    const CustomerDataaa = searchCustomerData ? dataAddress?.[0] : dataAddress;
+    const deleted = CustomerDataaa?.filter((item: any) => item?.is_deleted);
+    const onLive = CustomerDataaa?.filter((item: any) => !item?.is_deleted);
+    setDeletedData(deleted);
+    setTableData(onLive);
+  }, [dataAddress]);
+
   useEffect(() => {
     setTimeout(() => {
       dispatch(getAllCustomer(''));
-      dispatch(getAllbillingContact(''));
     }, 1000);
-  }, [showModal]);
+  }, [!open, showModal]);
 
-  useEffect(() => {
-    const optionValues: any = [];
-    if (dataAddress) {
-      const liveOn = dataAddress?.filter((item: any) => !item?.is_deleted);
-      liveOn?.map((item: any) => {
-        optionValues?.push({label: item?.name, value: item?.id});
-      });
-    }
-    setTableData(optionValues);
-  }, [dataAddress]);
-
-  const updatebillDetails = async () => {
-    dispatch(updateBillingContact(formValue));
+  const updateCustomerDetails = async () => {
+    await dispatch(updateAddress(formValue));
+    await dispatch(updateCustomer(customerValue));
     setOpen((p) => !p);
     setTimeout(() => {
       dispatch(getAllCustomer(''));
-      dispatch(getAllbillingContact(''));
     }, 1000);
   };
 
   const deleteSelectedIds = async () => {
     const data = {Ids: deleteIds};
-    await dispatch(deleteBillingContact(data));
-    setDeleteIds([]);
-    setShowModalDelete(false);
+    await dispatch(deleteCustomers(data));
     setTimeout(() => {
       dispatch(getAllCustomer(''));
-      dispatch(getAllbillingContact(''));
     }, 1000);
+    setDeleteIds([]);
+    setShowModalDelete(false);
   };
-  const rowSelection = {
-    onChange: (selectedRowKeys: any) => {
-      setDeleteIds(selectedRowKeys);
-    },
+
+  const searchFilterForCustomer = async () => {
+    dispatch(searchCustomer(searchCustomerData));
+  };
+  const editCustomerFileds = (record: any) => {
+    setCustomerValue(record);
+    setFormValue({
+      ...record,
+      billing_address_line: record?.Addresses?.[0]?.billing_address_line,
+      billing_city: record?.Addresses?.[0]?.billing_city,
+      billing_state: record?.Addresses?.[0]?.billing_state,
+      billing_pin_code: record?.Addresses?.[0]?.billing_pin_code,
+      billing_country: record?.Addresses?.[0]?.billing_country,
+      shiping_address_line: record?.Addresses?.[0]?.shiping_address_line,
+      shiping_city: record?.Addresses?.[0]?.shiping_city,
+      shiping_state: record?.Addresses?.[0]?.shiping_state,
+      shiping_pin_code: record?.Addresses?.[0]?.shiping_pin_code,
+      shiping_country: record?.Addresses?.[0]?.shiping_country,
+      shipping_id: record?.Addresses?.[0]?.id,
+    });
   };
 
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{dataAddress.length}</div>,
+      primary: <div>{tableData?.length}</div>,
       secondry: 'Customers',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
-      primary: <div>{0}</div>,
+      primary: <div>{tableData?.length}</div>,
       secondry: 'Opportunities',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
     },
     {
       key: 3,
-      primary: <div>{billingData.length}</div>,
+      primary: <div>{tableData?.length}</div>,
       secondry: 'Contacts',
       icon: <PhoneIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
     {
       key: 4,
-      primary: <div>--</div>,
+      primary: <div>{tableData?.length}</div>,
       secondry: 'Recents',
       icon: <ClockIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
@@ -173,97 +160,80 @@ const CrmAccount: React.FC = () => {
       iconBg: token?.colorErrorBg,
     },
   ];
-  const ContactColumns = [
+  const Opportunitycolumns = [
     {
-      title: 'Contact Name',
-      dataIndex: 'billing_first_name',
-      key: 'billing_first_name',
+      title: 'Opportunity',
+      dataIndex: 'opportunity',
+      key: 'opportunity',
       width: 130,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
     {
-      title: 'Role',
-      dataIndex: 'billing_role',
-      key: 'billing_role',
-      width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: 'Email',
-      dataIndex: 'billing_email',
-      key: 'billing_email',
-      width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
       title: 'Customer Account',
-      dataIndex: 'Account',
-      key: 'Account',
+      dataIndex: 'customer_account',
+      key: 'customer_account',
       width: 187,
-      render: (text: string, record: any) => (
+      render: (text: any, record: any) => (
         <Typography name="Body 4/Regular">
-          {record?.Customer?.name ?? '--'}
+          {record?.Addresses?.[0]?.shiping_address_line ?? '--'}
         </Typography>
       ),
     },
     {
-      title: ' ',
-      dataIndex: 'actions',
-      key: 'actions',
-      width: 94,
-      render: (text: string, record: any) => (
-        <Space size={18}>
-          <PencilSquareIcon
-            height={24}
-            width={24}
-            color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              setOpen(true);
-              setFormValue(record);
-            }}
-          />
-
-          <TrashIcon
-            height={24}
-            width={24}
-            color={token.colorError}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              setDeleteIds([record?.id]);
-              setShowModalDelete(true);
-            }}
-          />
-        </Space>
+      title: 'Amount',
+      dataIndex: 'amount',
+      key: 'amount',
+      width: 187,
+      render: (text: any, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.Addresses?.[0]?.billing_address_line ?? '--'}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Total Related Quotes',
+      dataIndex: 'total_related_quotes',
+      key: 'total_related_quotes',
+      width: 187,
+      render: (text: any, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.BillingContacts?.[0]?.billing_first_name ?? '--'}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Stage',
+      dataIndex: 'stage',
+      key: 'stage',
+      width: 187,
+      render: (text: any) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
   ];
 
+  const rowSelection = {
+    onChange: (selectedRowKeys: any) => {
+      console.log('rowSelection', selectedRowKeys);
+      setDeleteIds(selectedRowKeys);
+    },
+    getCheckboxProps: (record: any) => ({
+      disabled: record.name === 'Disabled User',
+      name: record.name,
+    }),
+  };
   const tabItems: TabsProps['items'] = [
     {
       label: (
         <div>
           <div>All</div>
-          {/* <div style={{border: activeTab == 1 ? '1px solid #1C3557' : ''}} /> */}
+          <div style={{border: activeTab == 1 ? '1px solid #1C3557' : ''}} />
         </div>
       ),
       key: '1',
     },
-    // {
-    //   label: (
-    //     <div>
-    //       <div>Billing Contacts</div>
-    //       {/* <div style={{border: activeTab == 2 ? '1px solid #1C3557' : ''}} /> */}
-    //     </div>
-    //   ),
-    //   key: '2',
-    // },
   ];
 
   const dropDownItemss: MenuProps['items'] = [
@@ -272,23 +242,12 @@ const CrmAccount: React.FC = () => {
       label: <Typography name="Body 3/Regular">Select All</Typography>,
     },
     {
-      key: '2',
-      label: (
-        <Typography
-          onClick={() => setShowModalEdit((p) => !p)}
-          name="Body 3/Regular"
-        >
-          Edit
-        </Typography>
-      ),
-    },
-    {
-      key: '3',
+      key: '1',
       label: (
         <Typography
           name="Body 3/Regular"
           color="#EB445A"
-          onClick={() => setShowModalDelete(true)}
+          onClick={deleteSelectedIds}
         >
           Delete Selected
         </Typography>
@@ -319,28 +278,10 @@ const CrmAccount: React.FC = () => {
             </Col>
           ))}
         </Row>
-
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              Contact{' '}
-              {/* <div>
-                <Upload
-                  onChange={(e: any) => {
-                    console.log('435435435', e.fileList[0]?.originFileObj);
-                    Papa.parse(e.fileList[0]?.originFileObj, {
-                      header: true,
-                      skipEmptyLines: true,
-                      complete(results: any) {
-                        console.log(results.data);
-                      },
-                    });
-                  }}
-                  accept=".txt, .csv"
-                >
-                  CSV
-                </Upload>
-              </div> */}
+              Opportunities
             </Typography>
           </Col>
           <Col>
@@ -352,7 +293,7 @@ const CrmAccount: React.FC = () => {
               }}
             >
               <OsButton
-                text="Add Contact"
+                text="Add Opportunity"
                 buttontype="PRIMARY"
                 icon={<PlusIcon />}
                 clickHandler={() => setShowModal((p) => !p)}
@@ -388,16 +329,16 @@ const CrmAccount: React.FC = () => {
             tabBarExtraContent={
               <Space size={12} align="center">
                 <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Contact Name</Typography>
-                  <OsInput
+                  <Typography name="Body 4/Medium">Opportunity</Typography>
+                  <CommonSelect
                     style={{width: '180px'}}
                     placeholder="Search Here"
-                    // options={bundleOptions}
+                    options={tableData}
                     onChange={(e) => {
-                      setBillingFilterSearch({
-                        ...billingFilterSeach,
-                        name: e.target.value,
-                      });
+                      //   setBillingFilterSearch({
+                      //     ...billingFilterSeach,
+                      //     customer_id: e,
+                      //   });
                     }}
                   />
                 </Space>
@@ -408,10 +349,10 @@ const CrmAccount: React.FC = () => {
                     placeholder="Search Here"
                     options={tableData}
                     onChange={(e) => {
-                      setBillingFilterSearch({
-                        ...billingFilterSeach,
-                        customer_id: e,
-                      });
+                      //   setBillingFilterSearch({
+                      //     ...billingFilterSeach,
+                      //     customer_id: e,
+                      //   });
                     }}
                   />
                 </Space>
@@ -419,7 +360,7 @@ const CrmAccount: React.FC = () => {
                   cursor="pointer"
                   name="Button 1"
                   color="#C6CDD5"
-                  onClick={searchBillingContacts}
+                  //   onClick={searchBillingContacts}
                 >
                   Apply
                 </Typography>
@@ -427,15 +368,28 @@ const CrmAccount: React.FC = () => {
             }
             items={tabItems.map((tabItem: any, index: number) => ({
               key: `${index + 1}`,
-              label: <div>{tabItem?.label}</div>,
+              label: (
+                <div>
+                  <div>{tabItem?.label}</div>
+                  <div
+                    style={{
+                      // eslint-disable-next-line eqeqeq
+                      borderBottom:
+                        // eslint-disable-next-line eqeqeq
+                        activeTab == tabItem?.key ? '2px solid #1C3557' : '',
+                      // marginTop: '3px',
+                    }}
+                  />
+                </div>
+              ),
               children: (
                 <OsTable
                   key={tabItem?.key}
-                  columns={ContactColumns}
-                  dataSource={billingData}
+                  columns={Opportunitycolumns}
+                  dataSource={tableData}
                   rowSelection={rowSelection}
                   scroll
-                  loading={loading}
+                  loading={false}
                 />
               ),
               ...tabItem,
@@ -446,25 +400,17 @@ const CrmAccount: React.FC = () => {
 
       <OsModal
         // loading={loading}
-        body={<EditContactModal />}
-        width={1110}
-        open={showModalEdit}
-        // onOk={() => addQuoteLineItem()}
-        onCancel={() => {
-          setShowModalEdit((p) => !p);
-        }}
-      />
-      <OsModal
-        // loading={loading}
         body={
-          <AddContact
-            setFormValue={setFormValue}
-            formValue={formValue}
+          <AddOpportunity
             setShowModal={setShowModal}
-            tableData={tableData}
+            open={open}
+            setOpen={setOpen}
+            formValue={undefined}
+            setFormValue={undefined}
+            tableData={undefined}
           />
         }
-        width={600}
+        width={800}
         open={showModal}
         // onOk={() => addQuoteLineItem()}
         onCancel={() => {
@@ -507,7 +453,7 @@ const CrmAccount: React.FC = () => {
         }}
       />
 
-      <OsDrawer
+      {/* <OsDrawer
         title={<Typography name="Body 1/Regular">Customer Details</Typography>}
         placement="right"
         onClose={() => setOpen((p) => !p)}
@@ -519,22 +465,24 @@ const CrmAccount: React.FC = () => {
             <OsButton
               btnStyle={{width: '100%'}}
               buttontype="PRIMARY"
-              text="UPDATE CHANGES"
-              clickHandler={updatebillDetails}
+              text="UPDATE"
+              clickHandler={updateCustomerDetails}
             />
           </Row>
         }
       >
-        <AddContact
+        <AddCustomerInputVale
+          drawer="drawer"
+          setShowModal=""
           setFormValue={setFormValue}
           formValue={formValue}
-          setShowModal={setShowModal}
-          tableData={tableData}
-          drawer="drawer"
+          setCustomerValue={setCustomerValue}
+          customerValue={customerValue}
+          setOpen={setOpen}
         />
-      </OsDrawer>
+      </OsDrawer> */}
     </>
   );
 };
 
-export default CrmAccount;
+export default CrmOpportunity;
