@@ -60,12 +60,21 @@ export const CustomTable = styled(Table)<ITableProps>`
   }
 `;
 
-export const AvatarStyled = styled(Avatar)<{background: string}>`
+export const AvatarStyled = styled(Avatar)<{background?: string}>`
   display: flex;
   align-items: center;
   justify-content: center;
   height: 48px;
   width: 48px;
+  background: ${(props) => `${props?.background}`};
+  cursor: pointer;
+`;
+export const DetailAnalyticAvatarStyled = styled(Avatar)<{background?: string}>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 72px;
+  width: 72px;
   background: ${(props) => `${props?.background}`};
   cursor: pointer;
 `;

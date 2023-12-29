@@ -60,6 +60,7 @@ export const API = {
     INDEX: '/customer',
     QUERY: '/customer/updateCustomer',
     SEARCH: '/customer/search',
+    QUERYCUSTOMER: '/customer/query',
   },
   ADDRESS: {
     INDEX: '/address',
@@ -68,5 +69,6 @@ export const API = {
     INDEX: '/billingContact',
     QUERY: '/billingContact/deleteBillingContact',
     SEARCH: '/billingContact/getBillingContactBySearch',
+    QUERYCONTACT: '/billingContact/query',
   },
 };

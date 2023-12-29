@@ -13,46 +13,48 @@
 
 import Typography from '@/app/components/common/typography';
 import {
+  CheckBadgeIcon,
+  ClockIcon,
   EllipsisVerticalIcon,
+  PencilSquareIcon,
+  PhoneIcon,
   PlusIcon,
   TrashIcon,
-  PencilSquareIcon,
-  CheckBadgeIcon,
-  ClipboardDocumentCheckIcon,
-  ClockIcon,
   UserGroupIcon,
-  PhoneIcon,
 } from '@heroicons/react/24/outline';
 
 import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
-import {PopConfirm} from '@/app/components/common/antd/PopConfirm';
 import {Space} from '@/app/components/common/antd/Space';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import OsModal from '@/app/components/common/os-modal';
-import OsTable from '@/app/components/common/os-table';
-import OsTabs from '@/app/components/common/os-tabs';
-import {Button, MenuProps, TabsProps, Upload} from 'antd';
-import {useRouter} from 'next/navigation';
-import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import {useEffect, useState} from 'react';
-import CommonSelect from '@/app/components/common/os-select';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsInput from '@/app/components/common/os-input';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import EditContactModal from './editContact';
-import AddContact from './addContact';
-import {
-  deleteCustomers,
-  getAllCustomer,
-} from '../../../../../redux/actions/customer';
+import OsModal from '@/app/components/common/os-modal';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import CommonSelect from '@/app/components/common/os-select';
+import OsTable from '@/app/components/common/os-table';
+import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
+import OsTabs from '@/app/components/common/os-tabs';
+import {Button, MenuProps, TabsProps} from 'antd';
+import {useEffect, useState} from 'react';
 import {
   deleteBillingContact,
   getAllbillingContact,
   getBillingContactBySearch,
+  queryContact,
   updateBillingContact,
 } from '../../../../../redux/actions/billingContact';
+import {getAllCustomer} from '../../../../../redux/actions/customer';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import AddContact from './addContact';
+import EditContactModal from './editContact';
+
+const queryParams: any = {
+  search: '',
+  customer_id: 0,
+};
 
 const CrmAccount: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -62,23 +64,38 @@ const CrmAccount: React.FC = () => {
   const [showModalEdit, setShowModalEdit] = useState<boolean>(false);
   const [formValue, setFormValue] = useState<any>();
   const [deleteIds, setDeleteIds] = useState<any>();
-  const [showModalDelete, setShowModalDelete] = useState<Boolean>(false);
+  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
   const {data: dataAddress} = useAppSelector((state) => state.customer);
-  const {data: billingData, loading} = useAppSelector(
+  const {loading, filteredData} = useAppSelector(
     (state) => state.billingContact,
   );
   const [tableData, setTableData] = useState<any>();
 
   const [deletedData, setDeletedData] = useState<any>();
   const [billingFilterSeach, setBillingFilterSearch] = useState<any>();
+  const [query, setQuery] = useState('');
+  const searchQuery = useDebounceHook(query, 2000);
+  const [selectedValue, setSelectedValue] = useState<any>({
+    customer_id: 0,
+  });
+
+  useEffect(() => {
+    dispatch(
+      queryContact({
+        ...queryParams,
+        search: searchQuery,
+        customer_id: selectedValue.pageSize as number,
+      }),
+    );
+  }, [searchQuery]);
 
   const searchBillingContacts = async () => {
     dispatch(getBillingContactBySearch(billingFilterSeach));
   };
 
   useEffect(() => {
-    const deletedAll = billingData?.filter((item: any) => item?.is_deleted);
+    const deletedAll = filteredData?.filter((item: any) => item?.is_deleted);
     // const onLive = billingData?.filter((item: any) => !item?.is_deleted);
     // setTableDataforBillContact(onLive);
     // const bilingOnly = onLive?.filter((item: any) => item?.billing);
@@ -87,7 +104,7 @@ const CrmAccount: React.FC = () => {
     // setBillingDataTable(bilingOnly);
     const setDeleted = deletedAll;
     setDeletedData(setDeleted);
-  }, [billingData, activeTab]);
+  }, [filteredData, activeTab]);
 
   useEffect(() => {
     dispatch(getAllCustomer(''));
@@ -153,7 +170,7 @@ const CrmAccount: React.FC = () => {
     },
     {
       key: 3,
-      primary: <div>{billingData.length}</div>,
+      primary: <div>{filteredData.length}</div>,
       secondry: 'Contacts',
       icon: <PhoneIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
@@ -398,6 +415,7 @@ const CrmAccount: React.FC = () => {
                         ...billingFilterSeach,
                         name: e.target.value,
                       });
+                      setQuery(e.target.value);
                     }}
                   />
                 </Space>
@@ -412,6 +430,7 @@ const CrmAccount: React.FC = () => {
                         ...billingFilterSeach,
                         customer_id: e,
                       });
+                      setSelectedValue(e);
                     }}
                   />
                 </Space>
@@ -432,7 +451,7 @@ const CrmAccount: React.FC = () => {
                 <OsTable
                   key={tabItem?.key}
                   columns={ContactColumns}
-                  dataSource={billingData}
+                  dataSource={filteredData}
                   rowSelection={rowSelection}
                   scroll
                   loading={loading}
@@ -472,39 +491,13 @@ const CrmAccount: React.FC = () => {
         }}
       />
 
-      <OsModal
-        // loading={loading}
-        body={
-          <Row style={{width: '100%', padding: '15px'}}>
-            <Space style={{width: '100%'}} direction="vertical" align="center">
-              <Typography name="Heading 3/Medium">Delete Account</Typography>
-              <Typography name="Body 3/Regular">
-                Are you sure you want to delete the selected accounts?
-              </Typography>
-              <Space size={12}>
-                <OsButton
-                  text={`Don't Delete`}
-                  buttontype="SECONDARY"
-                  clickHandler={() => {
-                    setDeleteIds([]);
-                    setShowModalDelete(false);
-                  }}
-                />
-                <OsButton
-                  text="Yes, Delete"
-                  buttontype="PRIMARY"
-                  clickHandler={deleteSelectedIds}
-                />
-              </Space>
-            </Space>
-          </Row>
-        }
-        width={600}
-        open={showModalDelete}
-        // onOk={() => addQuoteLineItem()}
-        onCancel={() => {
-          setShowModalDelete((p) => !p);
-        }}
+      <DeleteModal
+        setShowModalDelete={setShowModalDelete}
+        setDeleteIds={setDeleteIds}
+        showModalDelete={showModalDelete}
+        deleteSelectedIds={deleteSelectedIds}
+        description="Are you sure you want to delete this contact?"
+        heading="Delete Contact"
       />
 
       <OsDrawer

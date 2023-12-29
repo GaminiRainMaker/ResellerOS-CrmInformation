@@ -15,9 +15,7 @@ import {Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import Typography from '@/app/components/common/typography';
-import {useRouter} from 'next/navigation';
 import {useState} from 'react';
-import {useAppDispatch} from '../../../../../redux/hook';
 import AddCustomerInputVale from './addCustomerInput';
 
 interface AddCustomertInterface {
@@ -31,10 +29,8 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
   setOpen,
   open,
 }) => {
-  const dispatch = useAppDispatch();
   const [token] = useThemeToken();
 
-  const router = useRouter();
   const [formValue, setFormValue] = useState<any>();
   const [customerValue, setCustomerValue] = useState<any>();
 

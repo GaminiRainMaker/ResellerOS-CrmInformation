@@ -7,25 +7,26 @@ import {
   updateBundleQuantity,
 } from '../actions/bundle';
 
-type ProductState = {
+type BundleState = {
   loading: boolean;
   error: string | null;
   data: any;
-  product: any;
+  bundle: any;
 };
-const initialState: ProductState = {
+
+const initialState: BundleState = {
   loading: false,
   error: null,
   data: [],
-  product: [],
+  bundle: [],
 };
 
-const productSlice = createSlice({
-  name: 'product',
+const bundleSlice = createSlice({
+  name: 'bundle',
   initialState,
   reducers: {
-    setProduct: (state, action) => {
-      state.product = action.payload;
+    setBundle: (state, action) => {
+      state.bundle = action.payload;
     },
   },
   extraReducers(builder) {
@@ -75,5 +76,5 @@ const productSlice = createSlice({
   },
 });
 
-export const {setProduct} = productSlice.actions;
-export default productSlice?.reducer;
+export const {setBundle} = bundleSlice.actions;
+export default bundleSlice?.reducer;

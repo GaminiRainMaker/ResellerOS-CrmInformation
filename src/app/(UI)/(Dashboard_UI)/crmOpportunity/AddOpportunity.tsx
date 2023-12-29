@@ -46,7 +46,7 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
   const [token] = useThemeToken();
   const addNewContact = async () => {
     dispatch(insertbillingContact(formValue));
-    setShowModal((p) => !p);
+    setShowModal((p: boolean) => !p);
   };
 
   return (

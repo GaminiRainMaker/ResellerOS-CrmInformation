@@ -11,10 +11,10 @@ import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {updateQuoteById} from '../../../../../redux/actions/quote';
 import {getQuoteLineItemByQuoteId} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {getAllCustomer} from '../../../../../redux/actions/customer';
 
 interface FormDataProps {
   file_name: string;
@@ -151,7 +151,6 @@ const DrawerContent: FC<any> = ({setOpen}) => {
                 placeholder="Select Customer"
                 options={customerOptionsData}
                 onChange={(e) => {
-                  console.log('dfasdasfdsd', e);
                   setCustomerValue(e);
                 }}
               />

@@ -13,4 +13,6 @@ export const CUSTOMER_API = {
   getAllDeleted: () =>
     get(`${API.CUSTOMER.INDEX}`) as Promise<AxiosResponse<any>>,
   seacrh: (data: any) => post(API.CUSTOMER.SEARCH, data),
+  query: (data: any) =>
+    post(API.CUSTOMER.QUERYCUSTOMER, data) as Promise<AxiosResponse<[]>>,
 };

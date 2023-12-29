@@ -6,6 +6,7 @@ import {
   getAllCustomer,
   getAllDeletedCustomer,
   insertCustomer,
+  queryCustomer,
   searchCustomer,
   updateCustomer,
 } from '../actions/customer';
@@ -15,12 +16,14 @@ type ProductState = {
   error: string | null;
   data: any;
   product: any;
+  filteredData: any;
 };
 const initialState: ProductState = {
   loading: false,
   error: null,
   data: [],
   product: [],
+  filteredData: [],
 };
 
 const productSlice = createSlice({
@@ -126,6 +129,18 @@ const productSlice = createSlice({
         },
       )
       .addCase(searchCustomer.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(queryCustomer.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(queryCustomer.fulfilled, (state, action) => {
+        state.loading = false;
+        state.filteredData = action.payload;
+      })
+      .addCase(queryCustomer.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       });

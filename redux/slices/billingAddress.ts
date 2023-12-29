@@ -7,27 +7,30 @@ import {
   updateBillingContact,
   deleteBillingContact,
   getBillingContactBySearch,
+  queryContact,
 } from '../actions/billingContact';
 
-type ProductState = {
+type BillingContactState = {
   loading: boolean;
   error: string | null;
   data: any;
-  product: any;
+  billingContact: any;
+  filteredData: any;
 };
-const initialState: ProductState = {
+const initialState: BillingContactState = {
   loading: false,
   error: null,
   data: [],
-  product: [],
+  billingContact: [],
+  filteredData: [],
 };
 
-const productSlice = createSlice({
-  name: 'product',
+const billingContactSlice = createSlice({
+  name: 'billingcontact',
   initialState,
   reducers: {
-    setProduct: (state, action) => {
-      state.product = action.payload;
+    setBillingcontact: (state, action) => {
+      state.billingContact = action.payload;
     },
   },
   extraReducers(builder) {
@@ -121,9 +124,21 @@ const productSlice = createSlice({
           state.loading = false;
           state.error = action.payload;
         },
-      );
+      )
+      .addCase(queryContact.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(queryContact.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.filteredData = action.payload;
+      })
+      .addCase(queryContact.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 
-export const {setProduct} = productSlice.actions;
-export default productSlice?.reducer;
+export const {setBillingcontact} = billingContactSlice.actions;
+export default billingContactSlice?.reducer;

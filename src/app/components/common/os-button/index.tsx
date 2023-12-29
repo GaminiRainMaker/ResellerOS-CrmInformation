@@ -26,7 +26,7 @@ const OsButton: React.FC<ButtonInterface> = ({
   color,
   loading,
 }) => {
-  const buttonTypeTemp = {
+  const buttonTypeTemp: Record<string, string> = {
     PRIMARY: 'PRIMARY',
     PRIMARY_LARGE: 'PRIMARY_LARGE',
     PRIMARY_SMALL: 'PRIMARY_SMALL',

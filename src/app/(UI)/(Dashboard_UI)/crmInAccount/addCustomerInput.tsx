@@ -16,14 +16,16 @@ import Typography from '@/app/components/common/typography';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import OsAvatar from '@/app/components/common/os-avatar';
 import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import {MailOutlined} from '@ant-design/icons';
-import {ArrowUpCircleIcon, PencilSquareIcon} from '@heroicons/react/24/outline';
+import {PencilSquareIcon} from '@heroicons/react/24/outline';
 import {Checkbox, Space, TabsProps} from 'antd';
+import Image from 'next/image';
 import {useState} from 'react';
+import {OsContactCard} from '@/app/components/common/os-card/OsContactCard';
+import uploadGallery from '../../../../../public/assets/static/uploadGallery.svg';
 import {insertAddAddress} from '../../../../../redux/actions/address';
 import {
   insertbillingContact,
@@ -87,8 +89,8 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
       dispatch(updateBillingContact(formValue));
       setEditBillingAddress(false);
 
-      setShowModal((p) => !p);
-      setOpen((p) => !p);
+      setShowModal((p: boolean) => !p);
+      setOpen((p: boolean) => !p);
       setEditBillingAddress(false);
     } catch (error) {
       console.log(error);
@@ -99,8 +101,8 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
       dispatch(insertbillingContact(formValue));
       setNewAdd(false);
 
-      setShowModal((p) => !p);
-      setOpen((p) => !p);
+      setShowModal((p: boolean) => !p);
+      setOpen((p: boolean) => !p);
       setEditBillingAddress(false);
     } catch (error) {
       console.log(error);
@@ -194,13 +196,10 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
                 />
               </>
             ) : (
-              <OsAvatar
-                icon={
-                  <ArrowUpCircleIcon
-                    color={token?.colorTextSecondary}
-                    width={34}
-                  />
-                }
+              <Image
+                src={uploadGallery}
+                alt="uploadGallery"
+                style={{cursor: 'pointer'}}
               />
             )}
           </Col>
@@ -617,6 +616,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
                   </Col>
                 ))}
               </Row>
+              // <OsContactCard data={formValue?.BillingContacts} />
             )}
             {drawer && (
               <Row

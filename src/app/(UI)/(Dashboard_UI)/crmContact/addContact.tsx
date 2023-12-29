@@ -41,7 +41,7 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
   const [token] = useThemeToken();
   const addNewContact = async () => {
     dispatch(insertbillingContact(formValue));
-    setShowModal((p) => !p);
+    setShowModal((p: boolean) => !p);
   };
 
   return (

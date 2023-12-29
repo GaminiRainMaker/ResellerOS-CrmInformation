@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/indent */
 import styled from '@emotion/styled';
 import {Modal} from '../antd/Modal';
 
-export const OSModalStyle = styled(Modal)<{styleFooter?: boolean}>`
+export const OSModalStyle = styled(Modal)<{
+  styleFooter?: boolean;
+  bodyPadding?: number;
+}>`
   .ant-modal-close {
     :hover {
       background-color: transparent;
@@ -17,7 +21,8 @@ export const OSModalStyle = styled(Modal)<{styleFooter?: boolean}>`
     display: unset;
   }
   .ant-modal-content {
-    padding: 0px;
+    padding: ${(props) =>
+      props.bodyPadding ? `${props.bodyPadding}px` : '0px'};
   }
   border-radius: 10px;
 `;

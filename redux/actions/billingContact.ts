@@ -48,6 +48,7 @@ export const deleteBillingContact = createAsyncThunk(
     }
   },
 );
+
 export const getBillingContactBySearch = createAsyncThunk(
   'billingContact/getBillingContactBySearch',
   async (data: any, thunkApi) => {
@@ -56,6 +57,22 @@ export const getBillingContactBySearch = createAsyncThunk(
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+
+export const queryContact = createAsyncThunk(
+  'billingContact/query',
+  async (query: string, thunkApi) => {
+    try {
+      const obj = {
+        search: query,
+        // customer_id,
+      };
+      const res = await BILLINGADDRESS_API.query(obj);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
     }
   },
 );

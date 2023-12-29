@@ -13,4 +13,6 @@ export const BILLINGADDRESS_API = {
     post(API.BILLINGADDRESS.QUERY, data) as Promise<AxiosResponse<any>>,
   search: (data: any) =>
     post(API.BILLINGADDRESS.SEARCH, data) as Promise<AxiosResponse<any>>,
+  query: (data: any) =>
+    post(API.BILLINGADDRESS.QUERYCONTACT, data) as Promise<AxiosResponse<[]>>,
 };

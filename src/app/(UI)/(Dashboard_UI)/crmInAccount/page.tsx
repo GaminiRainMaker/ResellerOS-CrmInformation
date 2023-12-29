@@ -37,10 +37,13 @@ import OsTabs from '@/app/components/common/os-tabs';
 import {SearchOutlined} from '@ant-design/icons';
 import {Button, MenuProps, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import {updateAddress} from '../../../../../redux/actions/address';
 import {
   deleteCustomers,
   getAllCustomer,
+  queryCustomer,
   searchCustomer,
   updateCustomer,
 } from '../../../../../redux/actions/customer';
@@ -56,15 +59,23 @@ const CrmInformation: React.FC = () => {
   const [customerValue, setCustomerValue] = useState<any>();
 
   const [showModal, setShowModal] = useState<boolean>(false);
-  const {data: dataAddress, loading} = useAppSelector(
-    (state) => state.customer,
-  );
+  const {
+    data: dataAddress,
+    loading,
+    filteredData,
+  } = useAppSelector((state) => state.customer);
   const {data: billingData} = useAppSelector((state) => state.billingContact);
   const [open, setOpen] = useState(false);
   const [deleteIds, setDeleteIds] = useState<any>();
-  const [showModalDelete, setShowModalDelete] = useState<Boolean>(false);
+  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deletedData, setDeletedData] = useState<any>();
   const [searchCustomerData, setSearchCustomerData] = useState<any>();
+  const [query, setQuery] = useState('');
+  const searchQuery = useDebounceHook(query, 2000);
+
+  useEffect(() => {
+    dispatch(queryCustomer(searchQuery));
+  }, [searchQuery]);
 
   useEffect(() => {
     const deletedAll = billingData?.filter((item: any) => item?.is_deleted);
@@ -132,7 +143,7 @@ const CrmInformation: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{dataAddress.length}</div>,
+      primary: <div>{filteredData.length}</div>,
       secondry: 'Customers',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
@@ -169,7 +180,7 @@ const CrmInformation: React.FC = () => {
 
   const AccountColumns = [
     {
-      title: 'Contact Name',
+      title: 'Customer Name',
       dataIndex: 'name',
       key: 'name',
       width: 130,
@@ -384,6 +395,7 @@ const CrmInformation: React.FC = () => {
                         ...searchCustomerData,
                         name: e.target.value,
                       });
+                      setQuery(e.target.value);
                     }}
                     prefix={<SearchOutlined style={{color: '#949494'}} />}
                   />
@@ -432,7 +444,7 @@ const CrmInformation: React.FC = () => {
                 <OsTable
                   key={tabItem?.key}
                   columns={AccountColumns}
-                  dataSource={dataAddress}
+                  dataSource={filteredData}
                   rowSelection={rowSelection}
                   scroll
                   loading={loading}
@@ -461,39 +473,13 @@ const CrmInformation: React.FC = () => {
         }}
       />
 
-      <OsModal
-        // loading={loading}
-        body={
-          <Row style={{width: '100%', padding: '15px'}}>
-            <Space style={{width: '100%'}} direction="vertical" align="center">
-              <Typography name="Heading 3/Medium">Delete Account</Typography>
-              <Typography name="Body 3/Regular">
-                Are you sure you want to delete the selected accounts?
-              </Typography>
-              <Space size={12}>
-                <OsButton
-                  text={`Don't Delete`}
-                  buttontype="SECONDARY"
-                  clickHandler={() => {
-                    setDeleteIds([]);
-                    setShowModalDelete(false);
-                  }}
-                />
-                <OsButton
-                  text="Yes, Delete"
-                  buttontype="PRIMARY"
-                  clickHandler={deleteSelectedIds}
-                />
-              </Space>
-            </Space>
-          </Row>
-        }
-        width={600}
-        open={showModalDelete}
-        // onOk={() => addQuoteLineItem()}
-        onCancel={() => {
-          setShowModalDelete((p) => !p);
-        }}
+      <DeleteModal
+        setShowModalDelete={setShowModalDelete}
+        setDeleteIds={setDeleteIds}
+        showModalDelete={showModalDelete}
+        deleteSelectedIds={deleteSelectedIds}
+        heading="Delete Account"
+        description="Are you sure you want to delete this account?"
       />
 
       <OsDrawer

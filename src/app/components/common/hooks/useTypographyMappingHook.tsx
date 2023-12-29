@@ -206,9 +206,9 @@ const useTypographyMappingHook: UseTypographyMappingHook = () => {
     'Body 4/Bold': {
       name: 'Body 4/Bold',
       fontFamily: '__Plus_Jakarta_Sans_d21556',
-      fontSize: '60px',
+      fontSize: '16px',
       fontWeight: 700,
-      lineHeight: '72px',
+      lineHeight: '20px',
     },
     'Caption Bold': {
       name: 'Caption Bold',

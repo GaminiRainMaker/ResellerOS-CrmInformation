@@ -1,7 +1,6 @@
 'use client';
 
 import {FC} from 'react';
-import {Avatar} from '../antd/Avatar';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';

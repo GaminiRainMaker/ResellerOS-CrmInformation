@@ -6,12 +6,16 @@ import useThemeToken from '../hooks/useThemeToken';
 import OsButton from '../os-button';
 import {OSModalPropsInterface} from './os-modal.interface';
 import {OSModalStyle} from './styled-components';
+import Typography from '../typography';
 
 const OsModal: FC<OSModalPropsInterface> = ({
   body,
   primaryButtonText,
   secondaryButtonText,
   loading,
+  bodyPadding,
+  title,
+  titleTypography = 'Heading 3/Medium',
   ...rest
 }) => {
   const {onCancel, afterClose, open, onOk} = rest;
@@ -19,9 +23,10 @@ const OsModal: FC<OSModalPropsInterface> = ({
 
   return (
     <OSModalStyle
+      bodyPadding={bodyPadding}
       {...rest}
       // onCancel={closeAction}
-      title=""
+      title={<Typography name={titleTypography}>{title}</Typography>}
       destroyOnClose
       width={rest?.width ?? 500}
       open={open}

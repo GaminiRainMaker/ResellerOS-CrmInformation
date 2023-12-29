@@ -69,3 +69,18 @@ export const searchCustomer = createAsyncThunk(
     }
   },
 );
+
+export const queryCustomer = createAsyncThunk(
+  'customer/query',
+  async (query: string, thunkApi) => {
+    try {
+      const obj = {
+        search: query,
+      };
+      const res = await CUSTOMER_API.query(obj);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
