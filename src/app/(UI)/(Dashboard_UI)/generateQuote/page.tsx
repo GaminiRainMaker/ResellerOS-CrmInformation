@@ -218,7 +218,7 @@ const GenerateQuote: React.FC = () => {
   useEffect(() => {
     const allIdsArray: any = [];
     if (quoteLineItemByQuoteID && quoteLineItemByQuoteID?.length > 0) {
-      quoteLineItemByQuoteID?.map((item: string) => {
+      quoteLineItemByQuoteID?.map((item: any) => {
         if (!allIdsArray?.includes(item?.Quote?.id)) {
           allIdsArray?.push(parseInt(item?.Quote?.id));
         }

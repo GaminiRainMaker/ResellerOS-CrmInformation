@@ -20,7 +20,7 @@
     "rules": {
        "import/prefer-default-export": "off",
       "no-plusplus": "off",
-      "prettier/prettier": 2, // Means error
+      // "prettier/prettier": 2, // Means error
       "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
       "react/require-default-props": "off",

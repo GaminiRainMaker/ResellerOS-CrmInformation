@@ -51,10 +51,10 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddContact from './addContact';
 import EditContactModal from './editContact';
 
-const queryParams: any = {
-  search: '',
-  customer_id: 0,
-};
+// const queryParams: any = {
+//   search: '',
+//   customer_id: null,
+// };
 
 const CrmAccount: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -76,18 +76,12 @@ const CrmAccount: React.FC = () => {
   const [billingFilterSeach, setBillingFilterSearch] = useState<any>();
   const [query, setQuery] = useState('');
   const searchQuery = useDebounceHook(query, 2000);
-  const [selectedValue, setSelectedValue] = useState<any>({
-    customer_id: 0,
-  });
+  // const [selectedValue, setSelectedValue] = useState<any>({
+  //   customer_id: null,
+  // });
 
   useEffect(() => {
-    dispatch(
-      queryContact({
-        ...queryParams,
-        search: searchQuery,
-        customer_id: selectedValue.pageSize as number,
-      }),
-    );
+    dispatch(queryContact(searchQuery));
   }, [searchQuery]);
 
   const searchBillingContacts = async () => {
@@ -430,7 +424,7 @@ const CrmAccount: React.FC = () => {
                         ...billingFilterSeach,
                         customer_id: e,
                       });
-                      setSelectedValue(e);
+                      // setSelectedValue(e);
                     }}
                   />
                 </Space>

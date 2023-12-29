@@ -43,7 +43,10 @@ const OsModal: FC<OSModalPropsInterface> = ({
               text={secondaryButtonText}
               buttontype="SECONDARY"
               clickHandler={() => {
-                onOk();
+                if (onOk) {
+                  const mockEvent = {} as React.MouseEvent<HTMLButtonElement>;
+                  onOk(mockEvent); // Pass a mock event or any required argument
+                }
               }}
             />
           )}
@@ -53,7 +56,10 @@ const OsModal: FC<OSModalPropsInterface> = ({
               text={primaryButtonText}
               buttontype="PRIMARY"
               clickHandler={() => {
-                onOk();
+                if (onOk) {
+                  const mockEvent = {} as React.MouseEvent<HTMLButtonElement>;
+                  onOk(mockEvent); // Pass a mock event or any required argument
+                }
               }}
             />
           )}
