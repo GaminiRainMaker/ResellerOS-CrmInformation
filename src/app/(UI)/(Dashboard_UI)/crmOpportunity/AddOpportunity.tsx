@@ -144,14 +144,16 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
           </Row>
         </Space>
 
-        <Row justify="end">
-          <OsButton
-            disabled={!formValue}
-            buttontype={formValue ? 'PRIMARY' : 'PRIMARY_DISABLED'}
-            clickHandler={addOpportunity}
-            text="Add"
-          />
-        </Row>
+        {!drawer && (
+          <Row justify="end">
+            <OsButton
+              disabled={!formValue}
+              buttontype={formValue ? 'PRIMARY' : 'PRIMARY_DISABLED'}
+              clickHandler={addOpportunity}
+              text="Add"
+            />{' '}
+          </Row>
+        )}
       </Space>
     </>
   );

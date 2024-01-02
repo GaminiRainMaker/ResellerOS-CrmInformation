@@ -9,7 +9,10 @@ export const OPPORTUNITY_API = {
   get: () => get(`${API.OPPORTUNITY.INDEX}`) as Promise<AxiosResponse<any>>,
   patch: (data: any) =>
     patch(API.OPPORTUNITY.INDEX, data) as Promise<AxiosResponse<any>>,
-  delete: (id: any) => del(`${API.OPPORTUNITY.INDEX}/${id}`),
+  delete: (data: any) =>
+    post(API.OPPORTUNITY.DELETE, data) as Promise<AxiosResponse<any>>,
   getById: (id: any) =>
     get(`${API.OPPORTUNITY.QUERY}/${id}`) as Promise<AxiosResponse<any>>,
+  getdeleted: () =>
+    del(`${API.OPPORTUNITY.INDEX}`) as Promise<AxiosResponse<any>>,
 };

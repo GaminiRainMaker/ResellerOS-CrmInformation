@@ -15,7 +15,7 @@ export const insertOpportunity = createAsyncThunk(
 );
 
 export const getAllOpportunity = createAsyncThunk(
-  'opportunity',
+  'opportunity/getAllOpportunity',
   async (data, thunkApi) => {
     try {
       const res = await OPPORTUNITY_API.get();
@@ -27,7 +27,7 @@ export const getAllOpportunity = createAsyncThunk(
 );
 
 export const getOpportunityById = createAsyncThunk(
-  'opportunity',
+  'opportunity/getOpportunityById',
   async (id: any, thunkApi) => {
     try {
       const res = await OPPORTUNITY_API.getById(id);
@@ -38,7 +38,7 @@ export const getOpportunityById = createAsyncThunk(
   },
 );
 export const updateOpportunity = createAsyncThunk(
-  'opportunity',
+  'opportunity/updateOpportunity',
   async (data: any, thunkApi) => {
     try {
       const res = await OPPORTUNITY_API.patch(data);
@@ -49,10 +49,21 @@ export const updateOpportunity = createAsyncThunk(
   },
 );
 export const deleteOpportunity = createAsyncThunk(
-  'opportunity',
-  async (id: any, thunkApi) => {
+  'opportunity/deleteOpportunity',
+  async (Ids: any, thunkApi) => {
     try {
-      const res = await OPPORTUNITY_API.delete(id);
+      const res = await OPPORTUNITY_API.delete(Ids);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+export const getdeleteOpportunity = createAsyncThunk(
+  'opportunity/getdeleteOpportunity',
+  async (Ids: any, thunkApi) => {
+    try {
+      const res = await OPPORTUNITY_API.getdeleted();
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);
