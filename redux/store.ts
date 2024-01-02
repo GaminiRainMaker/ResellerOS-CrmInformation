@@ -16,6 +16,7 @@ import contractProduct from './slices/contractProduct';
 import address from './slices/address';
 import customer from './slices/customer';
 import billingContact from './slices/billingAddress';
+// import Opportunity from './slices/opportunity';
 
 // Configure redux store
 const store = configureStore({
@@ -34,6 +35,7 @@ const store = configureStore({
     address,
     customer,
     billingContact,
+    // Opportunity,
   },
   middleware: [thunk, logger],
   devTools: true,

@@ -8,6 +8,11 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
+import {useEffect, useState} from 'react';
+import {useSearchParams} from 'next/navigation';
+import {insertOpportunity} from '../../../../../redux/actions/opportunity';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {getAllCustomer} from '../../../../../redux/actions/customer';
 
 interface AddOpportunityInterface {
   formValue: any;
@@ -25,12 +30,28 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
   drawer,
 }) => {
   const [token] = useThemeToken();
+  const dispatch = useAppDispatch();
+  const {data: customerData} = useAppSelector((state) => state.customer);
+  const [customerOptions, setCustomerOptions] = useState<any>();
 
   const addOpportunity = async () => {
-    // dispatch(insertbillingContact(formValue));
+    dispatch(insertOpportunity(formValue));
     setShowModal((p: boolean) => !p);
+    setFormValue('');
   };
-
+  useEffect(() => {
+    const customerDataArray: any = [];
+    if (customerData?.length > 0) {
+      // eslint-disable-next-line array-callback-return
+      customerData?.map((item: any) => {
+        customerDataArray?.push({label: item?.name, value: item?.id});
+      });
+    }
+    setCustomerOptions(customerDataArray);
+  }, [customerData]);
+  useEffect(() => {
+    dispatch(getAllCustomer(''));
+  }, []);
   return (
     <>
       {!drawer && (
@@ -58,7 +79,7 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
         direction="vertical"
         style={{
           width: '100%',
-          padding: drawer ? '0px' :'40px',
+          padding: drawer ? '0px' : '40px',
         }}
       >
         <Row>
@@ -67,7 +88,7 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
             placeholder="Select Customer Account"
             style={{width: '100%', marginTop: '5px'}}
             value={formValue?.customer_id}
-            options={tableData}
+            options={customerOptions}
             onChange={(e) => {
               setFormValue({
                 ...formValue,
@@ -84,11 +105,11 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
             <Typography name="Body 4/Regular">Opportunity Title</Typography>
             <OsInput
               placeholder="Opportunity Title"
-              value={formValue?.billing_role}
+              value={formValue?.title}
               onChange={(e) => {
                 setFormValue({
                   ...formValue,
-                  billing_role: e.target.value,
+                  title: e.target.value,
                 });
               }}
             />
@@ -98,11 +119,11 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
               <Typography name="Body 4/Regular">Amount</Typography>
               <OsInput
                 placeholder="$ 00.00"
-                value={formValue?.billing_first_name}
+                value={formValue?.amount}
                 onChange={(e) => {
                   setFormValue({
                     ...formValue,
-                    billing_first_name: e.target.value,
+                    amount: e.target.value,
                   });
                 }}
               />
@@ -111,11 +132,11 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
               <Typography name="Body 4/Regular">Stages</Typography>
               <OsInput
                 placeholder="Select Stage"
-                value={formValue?.billing_last_name}
+                value={formValue?.stages}
                 onChange={(e) => {
                   setFormValue({
                     ...formValue,
-                    billing_last_name: e.target.value,
+                    stages: e.target.value,
                   });
                 }}
               />
@@ -125,8 +146,8 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
 
         <Row justify="end">
           <OsButton
-            disabled
-            buttontype="PRIMARY_DISABLED"
+            disabled={!formValue}
+            buttontype={formValue ? 'PRIMARY' : 'PRIMARY_DISABLED'}
             clickHandler={addOpportunity}
             text="Add"
           />

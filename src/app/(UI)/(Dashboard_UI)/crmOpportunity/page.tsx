@@ -29,14 +29,15 @@ import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
 import {StageValue, opportunityDummyData} from '@/app/utils/CONSTANTS';
 import {Button, MenuProps, TabsProps} from 'antd';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import CommonStageSelect from '@/app/components/common/os-stage-select';
 import {
   deleteCustomers,
   getAllCustomer,
 } from '../../../../../redux/actions/customer';
-import {useAppDispatch} from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddOpportunity from './AddOpportunity';
+import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
 
 const CrmOpportunity: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -49,6 +50,7 @@ const CrmOpportunity: React.FC = () => {
 
   const [deletedData, setDeletedData] = useState<any>();
   const [open, setOpen] = useState(false);
+  // const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
   const [formValue, setFormValue] = useState<any>();
 
   const deleteSelectedIds = async () => {
@@ -61,6 +63,9 @@ const CrmOpportunity: React.FC = () => {
     setShowModalDelete(false);
   };
 
+  useEffect(() => {
+    dispatch(getAllOpportunity());
+  }, []);
   const analyticsData = [
     {
       key: 1,

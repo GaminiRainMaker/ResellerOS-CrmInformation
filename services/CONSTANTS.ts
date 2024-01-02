@@ -71,4 +71,8 @@ export const API = {
     SEARCH: '/billingContact/getBillingContactBySearch',
     QUERYCONTACT: '/billingContact/query',
   },
+  OPPORTUNITY: {
+    INDEX: '/opportunity',
+    QUERY: '/opportunity/getOpportunityById',
+  },
 };
