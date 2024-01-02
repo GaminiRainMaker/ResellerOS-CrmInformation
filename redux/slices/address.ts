@@ -7,25 +7,25 @@ import {
   updateAddress,
 } from '../actions/address';
 
-type ProductState = {
+type AddressState = {
   loading: boolean;
   error: string | null;
   data: any;
-  product: any;
+  address: any;
 };
-const initialState: ProductState = {
+const initialState: AddressState = {
   loading: false,
   error: null,
   data: [],
-  product: [],
+  address: [],
 };
 
-const productSlice = createSlice({
-  name: 'product',
+const addressSlice = createSlice({
+  name: 'address',
   initialState,
   reducers: {
-    setProduct: (state, action) => {
-      state.product = action.payload;
+    setAddress: (state, action) => {
+      state.address = action.payload;
     },
   },
   extraReducers(builder) {
@@ -75,5 +75,5 @@ const productSlice = createSlice({
   },
 });
 
-export const {setProduct} = productSlice.actions;
-export default productSlice?.reducer;
+export const {setAddress} = addressSlice.actions;
+export default addressSlice?.reducer;

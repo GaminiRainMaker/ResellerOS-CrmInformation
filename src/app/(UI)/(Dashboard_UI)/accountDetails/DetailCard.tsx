@@ -94,6 +94,7 @@ const DetailCard = () => {
             flexDirection: 'column',
             width: '100%',
             alignItems: 'center',
+            paddingBottom: '45px',
           }}
         >
           <Space direction="vertical" align="center" size={16}>
@@ -123,7 +124,7 @@ const DetailCard = () => {
             </Typography>
           </Space>
 
-          <Space size={15} style={{paddingTop: '25px'}}>
+          <Space size={15} style={{paddingTop: '35px'}}>
             {data?.map((item: any) => (
               <AvatarStyled
                 key={item?.key}
@@ -133,7 +134,13 @@ const DetailCard = () => {
             ))}
           </Space>
 
-          <Divider style={{border: '1px solid #C7CDD5', width: '100%'}} />
+          <Divider
+            style={{
+              border: '1px solid #C7CDD5',
+              margin: '40px 0px',
+              width: '100%',
+            }}
+          />
 
           <Row gutter={[16, 16]}>
             <Col span={12}>
@@ -163,7 +170,13 @@ const DetailCard = () => {
               </Space>
             </Col>
           </Row>
-          <Divider style={{border: '1px solid #C7CDD5', width: '100%'}} />
+          <Divider
+            style={{
+              border: '1px solid #C7CDD5',
+              margin: '40px 0px',
+              width: '100%',
+            }}
+          />
 
           <Row gutter={[16, 16]}>
             <Col span={24}>

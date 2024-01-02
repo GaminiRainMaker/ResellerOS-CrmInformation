@@ -1,3 +1,6 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable @typescript-eslint/indent */
+
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -8,8 +11,16 @@ import {OsCard} from '@/app/components/common/os-card';
 import OsTable from '@/app/components/common/os-table';
 import DetailAnalyticCard from '@/app/components/common/os-table/DetailAnalyticCard';
 import Typography from '@/app/components/common/typography';
-import {CheckCircleIcon, TagIcon} from '@heroicons/react/24/outline';
+import {
+  CheckCircleIcon,
+  EyeIcon,
+  PencilSquareIcon,
+  TagIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
 import {Space} from 'antd';
+import OsStatusWrapper from '@/app/components/common/os-status';
+import {opportunityDummyData, quoteDummyData} from '@/app/utils/CONSTANTS';
 import DetailCard from './DetailCard';
 
 const AccountDetails = () => {
@@ -72,6 +83,162 @@ const AccountDetails = () => {
     },
   ];
 
+  const Quotecolumns = [
+    {
+      title: 'File Name',
+      dataIndex: 'name',
+      key: 'name',
+      width: 130,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: 'Generated Date',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      width: 130,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: 'Opportunity',
+      dataIndex: 'opportunity',
+      key: 'opportunity',
+      width: 187,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: 'Customer',
+      dataIndex: 'customer_name',
+      key: 'customer_name',
+      width: 187,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      width: 187,
+      render: (text: string, record: any) => (
+        <OsStatusWrapper value={record.status} />
+      ),
+    },
+    {
+      title: ' ',
+      dataIndex: 'actions',
+      key: 'actions',
+      width: 94,
+      render: (text: string, record: any) => (
+        <Space size={18}>
+          <PencilSquareIcon
+            height={24}
+            width={24}
+            color={token.colorInfoBorder}
+            style={{cursor: 'pointer'}}
+            onClick={() => {
+              // router.push(`/generateQuote?id=${record?.id}`);
+            }}
+          />
+          <EyeIcon
+            height={24}
+            width={24}
+            color={token.colorInfoBorder}
+            style={{cursor: 'pointer'}}
+            onClick={() => {
+              // router.push(`/generateQuote?id=${record?.id}`);
+            }}
+          />
+          <TrashIcon
+            height={24}
+            width={24}
+            color={token.colorError}
+            style={{cursor: 'pointer'}}
+          />
+        </Space>
+      ),
+    },
+  ];
+
+  const OpportunityColumns = [
+    {
+      title: 'Opportunity',
+      dataIndex: 'opportunity',
+      key: 'opportunity',
+      width: 187,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: 'Customer Account',
+      dataIndex: 'customer_name',
+      key: 'customer_name',
+      width: 187,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'amount',
+      key: 'amount',
+      width: 130,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: 'Stage',
+      dataIndex: 'stage',
+      key: 'stage',
+      width: 130,
+      render: (text: string) => <OsStatusWrapper value="" />,
+    },
+    {
+      title: 'Quotes / Forms',
+      dataIndex: 'quotesForms',
+      key: 'quotesForms',
+      width: 130,
+      render: (text: string) => (
+        <Typography color={token?.colorLink} name="Body 4/Bold">
+          View All
+        </Typography>
+      ),
+    },
+
+    {
+      title: ' ',
+      dataIndex: 'actions',
+      key: 'actions',
+      width: 94,
+      render: (text: string, record: any) => (
+        <Space size={18}>
+          <PencilSquareIcon
+            height={24}
+            width={24}
+            color={token.colorInfoBorder}
+            style={{cursor: 'pointer'}}
+            onClick={() => {
+              // router.push(`/generateQuote?id=${record?.id}`);
+            }}
+          />
+          <TrashIcon
+            height={24}
+            width={24}
+            color={token.colorError}
+            style={{cursor: 'pointer'}}
+          />
+        </Space>
+      ),
+    },
+  ];
+
   return (
     <>
       <OsBreadCrumb items={menuItems} />
@@ -109,7 +276,12 @@ const AccountDetails = () => {
             </Row>
 
             <OsCard>
-              <OsTable loading={false} />
+              <OsTable
+                loading={false}
+                columns={Quotecolumns}
+                dataSource={quoteDummyData}
+                scroll
+              />
             </OsCard>
 
             <Row justify="space-between">
@@ -126,7 +298,11 @@ const AccountDetails = () => {
             </Row>
 
             <OsCard>
-              <OsTable loading={false} />
+              <OsTable
+                loading={false}
+                columns={OpportunityColumns}
+                dataSource={opportunityDummyData}
+              />
             </OsCard>
           </Space>
         </Col>

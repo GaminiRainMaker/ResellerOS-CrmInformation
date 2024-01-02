@@ -21,7 +21,7 @@ export const pricingMethod = [
   {value: 'gp', label: 'GP'},
 ];
 
-export const dummyData = [
+export const quoteDummyData = [
   {
     id: 7,
     is_deleted: false,
@@ -39,7 +39,10 @@ export const dummyData = [
     createdAt: '2023-12-14T17:32:49.051Z',
     updatedAt: '2023-12-14T17:32:49.051Z',
     Bundle: null,
-    status: 'success',
+    status: 'Reject',
+    name: 'IT Tech sample quote',
+    opportunity: 'Precision 7920 Rack XC...',
+    customer_name: 'Impres Technologies',
   },
   {
     id: 8,
@@ -58,7 +61,10 @@ export const dummyData = [
     createdAt: '2023-12-14T17:32:49.051Z',
     updatedAt: '2023-12-14T17:32:49.051Z',
     Bundle: null,
-    status: 'reject',
+    status: 'Drafts',
+    name: 'IT Tech sample quote',
+    opportunity: 'Precision 7920 Rack XC...',
+    customer_name: 'Impres Technologies',
   },
   {
     id: 9,
@@ -77,64 +83,37 @@ export const dummyData = [
     createdAt: '2023-12-14T17:32:49.051Z',
     updatedAt: '2023-12-14T17:32:49.051Z',
     Bundle: null,
-    status: 'warning',
+    status: 'Completed',
+    name: 'IT Tech sample quote',
+    opportunity: 'Precision 7920 Rack XC...',
+    customer_name: 'Impres Technologies',
+  },
+];
+
+export const opportunityDummyData = [
+  {
+    id: 1,
+    stage: 'Negotiate',
+    name: 'IT Tech sample quote',
+    opportunity: 'Blue Halo- Guided Support',
+    customer_name: 'Impres Technologies',
+    amount: '$ 931,521.00',
   },
   {
-    id: 13,
-    is_deleted: false,
-    quote_id: 2,
-    product_id: 1,
-    bundle_id: null,
-    line_number: '1',
-    adjusted_price: '$21,114.59',
-    product_code: '422-BRSI',
-    line_amount: '$42,229.18',
-    list_price: '$31,302.32',
-    description:
-      'PowerTower PT549 Server\nDell Federal Systems L.P. c/o Dell USA L.P.\n422-BRSR',
-    quantity: '2',
-    createdAt: '2023-12-14T17:40:08.092Z',
-    updatedAt: '2023-12-14T17:40:08.092Z',
-    Bundle: null,
-    status: 'success',
+    id: 2,
+    stage: 'Commit',
+    name: 'IT Tech sample quote',
+    opportunity: 'ClearShark-Reseller OS',
+    customer_name: 'ABC Organization',
+    amount: '$ 931,521.00',
   },
   {
-    id: 14,
-    is_deleted: false,
-    quote_id: 2,
-    product_id: 2,
-    bundle_id: null,
-    line_number: '2',
-    adjusted_price: '$0.00',
-    product_code: '796-5228',
-    line_amount: '$0.00',
-    list_price: '$0.00',
-    description:
-      'Dell Hardware Limited Warranty Plus On-Site\nService\nDell Federal Systems L.P. c/o Dell USA L.P. -\n796-5225',
-    quantity: '2',
-    createdAt: '2023-12-14T17:40:08.092Z',
-    updatedAt: '2023-12-14T17:40:08.092Z',
-    Bundle: null,
-    status: 'success',
-  },
-  {
-    id: 15,
-    is_deleted: false,
-    quote_id: 2,
-    product_id: 3,
-    bundle_id: null,
-    line_number: '3',
-    adjusted_price: '$0.00',
-    product_code: '796-6299',
-    line_amount: '$0.00',
-    list_price: '$0.00',
-    description:
-      'ProSupport: Next Business Day On-Site Service\nAfter Problem Diagnosis, 3 Years\nDell Federal Systems L.P. c/o Dell USA L.P.\n796-6291',
-    quantity: '2',
-    createdAt: '2023-12-14T17:40:08.092Z',
-    updatedAt: '2023-12-14T17:40:08.092Z',
-    Bundle: null,
-    status: 'reject',
+    id: 3,
+    stage: 'Qualify',
+    name: 'IT Tech sample quote',
+    opportunity: 'Edge Solutions-TBD',
+    customer_name: 'XYZ Techs',
+    amount: '$ 931,521.00',
   },
 ];
 
@@ -149,4 +128,12 @@ export const rebateTableData = [
     percentage_payout: 5,
     pid: '796-5228',
   },
+];
+
+export const StageValue = [
+  {value: 'Commit', label: 'Commit'},
+  {value: 'Negotiate', label: 'Negotiate'},
+  {value: 'Develop', label: 'Develop'},
+  {value: 'Qualify', label: 'Qualify'},
+  {value: 'Prove', label: 'Prove'},
 ];

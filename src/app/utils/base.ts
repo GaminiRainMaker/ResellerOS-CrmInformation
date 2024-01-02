@@ -1,3 +1,4 @@
+/* eslint-disable implicit-arrow-linebreak */
 export const calculateProfitabilityData = (
   Qty: number,
   PriceMethod: string,

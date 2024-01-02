@@ -1,13 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable @typescript-eslint/indent */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-await-in-loop */
-/* eslint-disable @typescript-eslint/no-loop-func */
-/* eslint-disable eqeqeq */
-/* eslint-disable array-callback-return */
-/* eslint-disable import/no-extraneous-dependencies */
 
 'use client';
 
@@ -16,6 +7,7 @@ import {
   CheckBadgeIcon,
   ClockIcon,
   EllipsisVerticalIcon,
+  PencilSquareIcon,
   PhoneIcon,
   PlusIcon,
   TrashIcon,
@@ -27,70 +19,37 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import OsInput from '@/app/components/common/os-input';
+import OsDrawer from '@/app/components/common/os-drawer';
 import OsModal from '@/app/components/common/os-modal';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
+import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
+import {StageValue, opportunityDummyData} from '@/app/utils/CONSTANTS';
 import {Button, MenuProps, TabsProps} from 'antd';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-// import AddCustomer from './addCustomer';
-import {updateAddress} from '../../../../../redux/actions/address';
+import {useState} from 'react';
+import CommonStageSelect from '@/app/components/common/os-stage-select';
 import {
   deleteCustomers,
   getAllCustomer,
-  searchCustomer,
-  updateCustomer,
 } from '../../../../../redux/actions/customer';
+import {useAppDispatch} from '../../../../../redux/hook';
 import AddOpportunity from './AddOpportunity';
-// import AddCustomerInputVale from './addCustomerInput';
 
 const CrmOpportunity: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
-  const [formValue, setFormValue] = useState<any>();
-  const [customerValue, setCustomerValue] = useState<any>();
-
   const [showModal, setShowModal] = useState<boolean>(false);
-  const {data: dataAddress, loading} = useAppSelector(
-    (state) => state.customer,
-  );
   const [tableData, setTableData] = useState<any>();
-  const [open, setOpen] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+
   const [deletedData, setDeletedData] = useState<any>();
-  const [searchCustomerData, setSearchCustomerData] = useState<any>();
-
-  useEffect(() => {
-    dispatch(getAllCustomer(''));
-  }, []);
-  useEffect(() => {
-    const CustomerDataaa = searchCustomerData ? dataAddress?.[0] : dataAddress;
-    const deleted = CustomerDataaa?.filter((item: any) => item?.is_deleted);
-    const onLive = CustomerDataaa?.filter((item: any) => !item?.is_deleted);
-    setDeletedData(deleted);
-    setTableData(onLive);
-  }, [dataAddress]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      dispatch(getAllCustomer(''));
-    }, 1000);
-  }, [!open, showModal]);
-
-  const updateCustomerDetails = async () => {
-    await dispatch(updateAddress(formValue));
-    await dispatch(updateCustomer(customerValue));
-    setOpen((p) => !p);
-    setTimeout(() => {
-      dispatch(getAllCustomer(''));
-    }, 1000);
-  };
+  const [open, setOpen] = useState(false);
+  const [formValue, setFormValue] = useState<any>();
 
   const deleteSelectedIds = async () => {
     const data = {Ids: deleteIds};
@@ -100,27 +59,6 @@ const CrmOpportunity: React.FC = () => {
     }, 1000);
     setDeleteIds([]);
     setShowModalDelete(false);
-  };
-
-  const searchFilterForCustomer = async () => {
-    dispatch(searchCustomer(searchCustomerData));
-  };
-  const editCustomerFileds = (record: any) => {
-    setCustomerValue(record);
-    setFormValue({
-      ...record,
-      billing_address_line: record?.Addresses?.[0]?.billing_address_line,
-      billing_city: record?.Addresses?.[0]?.billing_city,
-      billing_state: record?.Addresses?.[0]?.billing_state,
-      billing_pin_code: record?.Addresses?.[0]?.billing_pin_code,
-      billing_country: record?.Addresses?.[0]?.billing_country,
-      shiping_address_line: record?.Addresses?.[0]?.shiping_address_line,
-      shiping_city: record?.Addresses?.[0]?.shiping_city,
-      shiping_state: record?.Addresses?.[0]?.shiping_state,
-      shiping_pin_code: record?.Addresses?.[0]?.shiping_pin_code,
-      shiping_country: record?.Addresses?.[0]?.shiping_country,
-      shipping_id: record?.Addresses?.[0]?.id,
-    });
   };
 
   const analyticsData = [
@@ -160,63 +98,89 @@ const CrmOpportunity: React.FC = () => {
       iconBg: token?.colorErrorBg,
     },
   ];
-  const Opportunitycolumns = [
+  const OpportunityColumns = [
     {
       title: 'Opportunity',
       dataIndex: 'opportunity',
       key: 'opportunity',
-      width: 130,
+      width: 187,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+        <Typography name="Body 4/Regular">{text ?? '-d-'}</Typography>
       ),
     },
     {
       title: 'Customer Account',
-      dataIndex: 'customer_account',
-      key: 'customer_account',
+      dataIndex: 'customer_name',
+      key: 'customer_name',
       width: 187,
-      render: (text: any, record: any) => (
-        <Typography name="Body 4/Regular">
-          {record?.Addresses?.[0]?.shiping_address_line ?? '--'}
-        </Typography>
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
     {
       title: 'Amount',
       dataIndex: 'amount',
       key: 'amount',
-      width: 187,
-      render: (text: any, record: any) => (
-        <Typography name="Body 4/Regular">
-          {record?.Addresses?.[0]?.billing_address_line ?? '--'}
-        </Typography>
-      ),
-    },
-    {
-      title: 'Total Related Quotes',
-      dataIndex: 'total_related_quotes',
-      key: 'total_related_quotes',
-      width: 187,
-      render: (text: any, record: any) => (
-        <Typography name="Body 4/Regular">
-          {record?.BillingContacts?.[0]?.billing_first_name ?? '--'}
-        </Typography>
+      width: 130,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
     {
       title: 'Stage',
       dataIndex: 'stage',
       key: 'stage',
-      width: 187,
-      render: (text: any) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      width: 130,
+      render: (text: string, record: any) => (
+        <CommonStageSelect
+          options={StageValue}
+          currentStage={record?.stage}
+          value={record?.stage}
+        />
+      ),
+    },
+    {
+      title: 'Quotes / Forms',
+      dataIndex: 'quotesForms',
+      key: 'quotesForms',
+      width: 130,
+      render: (text: string) => (
+        <Typography color={token?.colorLink} name="Body 4/Bold">
+          View All
+        </Typography>
+      ),
+    },
+
+    {
+      title: ' ',
+      dataIndex: 'actions',
+      key: 'actions',
+      width: 94,
+      render: (text: string, record: any) => (
+        <Space size={18}>
+          <PencilSquareIcon
+            height={24}
+            width={24}
+            color={token.colorInfoBorder}
+            style={{cursor: 'pointer'}}
+            onClick={() => {
+              setOpen(true);
+              setFormValue(record);
+            }}
+          />
+          <TrashIcon
+            height={24}
+            width={24}
+            color={token.colorError}
+            style={{cursor: 'pointer'}}
+          />
+        </Space>
       ),
     },
   ];
 
   const rowSelection = {
     onChange: (selectedRowKeys: any) => {
-      console.log('rowSelection', selectedRowKeys);
       setDeleteIds(selectedRowKeys);
     },
     getCheckboxProps: (record: any) => ({
@@ -224,15 +188,70 @@ const CrmOpportunity: React.FC = () => {
       name: record.name,
     }),
   };
+
   const tabItems: TabsProps['items'] = [
     {
       label: (
         <div>
           <div>All</div>
-          <div style={{border: activeTab == 1 ? '1px solid #1C3557' : ''}} />
+          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
         </div>
       ),
+      children: (
+        <OsTable
+          columns={OpportunityColumns}
+          dataSource={opportunityDummyData}
+          rowSelection={rowSelection}
+          scroll
+          loading={false}
+        />
+      ),
       key: '1',
+    },
+    {
+      label: (
+        <div>
+          <div>Commit</div>
+          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
+        </div>
+      ),
+      key: '2',
+    },
+    {
+      label: (
+        <div>
+          <div>Develop</div>
+          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
+        </div>
+      ),
+      key: '3',
+    },
+    {
+      label: (
+        <div>
+          <div>Negotiate</div>
+          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
+        </div>
+      ),
+      key: '4',
+    },
+    {
+      label: (
+        <div>
+          <div>Qualify</div>
+          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
+        </div>
+      ),
+      key: '5',
+    },
+    {
+      label: (
+        <div>
+          <div>Prove</div>
+          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
+        </div>
+      ),
+      key: '6',
     },
   ];
 
@@ -382,16 +401,6 @@ const CrmOpportunity: React.FC = () => {
                   />
                 </div>
               ),
-              children: (
-                <OsTable
-                  key={tabItem?.key}
-                  columns={Opportunitycolumns}
-                  dataSource={tableData}
-                  rowSelection={rowSelection}
-                  scroll
-                  loading={false}
-                />
-              ),
               ...tabItem,
             }))}
           />
@@ -402,15 +411,13 @@ const CrmOpportunity: React.FC = () => {
         // loading={loading}
         body={
           <AddOpportunity
+            setFormValue={setFormValue}
+            formValue={formValue}
             setShowModal={setShowModal}
-            open={open}
-            setOpen={setOpen}
-            formValue={undefined}
-            setFormValue={undefined}
-            tableData={undefined}
+            tableData={tableData}
           />
         }
-        width={800}
+        width={600}
         open={showModal}
         // onOk={() => addQuoteLineItem()}
         onCancel={() => {
@@ -418,43 +425,19 @@ const CrmOpportunity: React.FC = () => {
         }}
       />
 
-      <OsModal
-        // loading={loading}
-        body={
-          <Row style={{width: '100%', padding: '15px'}}>
-            <Space style={{width: '100%'}} direction="vertical" align="center">
-              <Typography name="Heading 3/Medium">Delete Account</Typography>
-              <Typography name="Body 3/Regular">
-                Are you sure you want to delete the selected accounts?
-              </Typography>
-              <Space size={12}>
-                <OsButton
-                  text={`Don't Delete`}
-                  buttontype="SECONDARY"
-                  clickHandler={() => {
-                    setDeleteIds([]);
-                    setShowModalDelete(false);
-                  }}
-                />
-                <OsButton
-                  text="Yes, Delete"
-                  buttontype="PRIMARY"
-                  clickHandler={deleteSelectedIds}
-                />
-              </Space>
-            </Space>
-          </Row>
-        }
-        width={600}
-        open={showModalDelete}
-        // onOk={() => addQuoteLineItem()}
-        onCancel={() => {
-          setShowModalDelete((p) => !p);
-        }}
+      <DeleteModal
+        setShowModalDelete={setShowModalDelete}
+        setDeleteIds={setDeleteIds}
+        showModalDelete={showModalDelete}
+        deleteSelectedIds={deleteSelectedIds}
+        description="Are you sure you want to delete this contact?"
+        heading="Delete Contact"
       />
 
-      {/* <OsDrawer
-        title={<Typography name="Body 1/Regular">Customer Details</Typography>}
+      <OsDrawer
+        title={
+          <Typography name="Body 1/Regular">Opportunity Details</Typography>
+        }
         placement="right"
         onClose={() => setOpen((p) => !p)}
         open={open}
@@ -465,22 +448,20 @@ const CrmOpportunity: React.FC = () => {
             <OsButton
               btnStyle={{width: '100%'}}
               buttontype="PRIMARY"
-              text="UPDATE"
-              clickHandler={updateCustomerDetails}
+              text="UPDATE CHANGES"
+              // clickHandler={updatebillDetails}
             />
           </Row>
         }
       >
-        <AddCustomerInputVale
-          drawer="drawer"
-          setShowModal=""
+        <AddOpportunity
           setFormValue={setFormValue}
           formValue={formValue}
-          setCustomerValue={setCustomerValue}
-          customerValue={customerValue}
-          setOpen={setOpen}
+          setShowModal={setShowModal}
+          tableData={tableData}
+          drawer="drawer"
         />
-      </OsDrawer> */}
+      </OsDrawer>
     </>
   );
 };

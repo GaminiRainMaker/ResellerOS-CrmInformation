@@ -1,13 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable @typescript-eslint/indent */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-await-in-loop */
-/* eslint-disable @typescript-eslint/no-loop-func */
-/* eslint-disable eqeqeq */
 /* eslint-disable array-callback-return */
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable react-hooks/exhaustive-deps */
 
 'use client';
 
@@ -41,7 +33,6 @@ import {Button, MenuProps, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
 import {
   deleteBillingContact,
-  getAllbillingContact,
   getBillingContactBySearch,
   queryContact,
   updateBillingContact,
@@ -76,9 +67,6 @@ const CrmAccount: React.FC = () => {
   const [billingFilterSeach, setBillingFilterSearch] = useState<any>();
   const [query, setQuery] = useState('');
   const searchQuery = useDebounceHook(query, 2000);
-  // const [selectedValue, setSelectedValue] = useState<any>({
-  //   customer_id: null,
-  // });
 
   useEffect(() => {
     dispatch(queryContact(searchQuery));
@@ -101,15 +89,11 @@ const CrmAccount: React.FC = () => {
   }, [filteredData, activeTab]);
 
   useEffect(() => {
-    dispatch(getAllCustomer(''));
-    dispatch(getAllbillingContact(''));
-  }, []);
-  useEffect(() => {
     setTimeout(() => {
       dispatch(getAllCustomer(''));
-      dispatch(getAllbillingContact(''));
+      dispatch(queryContact(''));
     }, 1000);
-  }, [showModal]);
+  }, [showModal, open]);
 
   useEffect(() => {
     const optionValues: any = [];
@@ -127,7 +111,7 @@ const CrmAccount: React.FC = () => {
     setOpen((p) => !p);
     setTimeout(() => {
       dispatch(getAllCustomer(''));
-      dispatch(getAllbillingContact(''));
+      dispatch(queryContact(''));
     }, 1000);
   };
 
@@ -138,9 +122,10 @@ const CrmAccount: React.FC = () => {
     setShowModalDelete(false);
     setTimeout(() => {
       dispatch(getAllCustomer(''));
-      dispatch(getAllbillingContact(''));
+      dispatch(queryContact(''));
     }, 1000);
   };
+
   const rowSelection = {
     onChange: (selectedRowKeys: any) => {
       setDeleteIds(selectedRowKeys);
@@ -184,6 +169,7 @@ const CrmAccount: React.FC = () => {
       iconBg: token?.colorErrorBg,
     },
   ];
+
   const ContactColumns = [
     {
       title: 'Contact Name',
@@ -261,7 +247,7 @@ const CrmAccount: React.FC = () => {
       label: (
         <div>
           <div>All</div>
-          {/* <div style={{border: activeTab == 1 ? '1px solid #1C3557' : ''}} /> */}
+          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
         </div>
       ),
       key: '1',
@@ -495,7 +481,7 @@ const CrmAccount: React.FC = () => {
       />
 
       <OsDrawer
-        title={<Typography name="Body 1/Regular">Customer Details</Typography>}
+        title={<Typography name="Body 1/Regular">Contact Details</Typography>}
         placement="right"
         onClose={() => setOpen((p) => !p)}
         open={open}

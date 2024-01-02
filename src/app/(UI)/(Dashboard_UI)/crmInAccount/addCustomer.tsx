@@ -1,14 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable @typescript-eslint/indent */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-await-in-loop */
-/* eslint-disable @typescript-eslint/no-loop-func */
-/* eslint-disable eqeqeq */
-/* eslint-disable array-callback-return */
-/* eslint-disable import/no-extraneous-dependencies */
-
 'use client';
 
 import {Row} from '@/app/components/common/antd/Grid';
@@ -24,11 +13,7 @@ interface AddCustomertInterface {
   open: any;
 }
 
-const AddCustomer: React.FC<AddCustomertInterface> = ({
-  setShowModal,
-  setOpen,
-  open,
-}) => {
+const AddCustomer: React.FC<AddCustomertInterface> = ({setShowModal}) => {
   const [token] = useThemeToken();
 
   const [formValue, setFormValue] = useState<any>();

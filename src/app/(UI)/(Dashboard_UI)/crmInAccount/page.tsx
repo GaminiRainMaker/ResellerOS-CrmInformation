@@ -1,13 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable @typescript-eslint/indent */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-await-in-loop */
-/* eslint-disable @typescript-eslint/no-loop-func */
-/* eslint-disable eqeqeq */
-/* eslint-disable array-callback-return */
-/* eslint-disable import/no-extraneous-dependencies */
 
 'use client';
 
@@ -39,7 +30,7 @@ import {Button, MenuProps, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
-import {updateAddress} from '../../../../../redux/actions/address';
+import {getAllAddress, updateAddress} from '../../../../../redux/actions/address';
 import {
   deleteCustomers,
   getAllCustomer,
@@ -59,11 +50,7 @@ const CrmInformation: React.FC = () => {
   const [customerValue, setCustomerValue] = useState<any>();
 
   const [showModal, setShowModal] = useState<boolean>(false);
-  const {
-    data: dataAddress,
-    loading,
-    filteredData,
-  } = useAppSelector((state) => state.customer);
+  const {loading, filteredData} = useAppSelector((state) => state.customer);
   const {data: billingData} = useAppSelector((state) => state.billingContact);
   const [open, setOpen] = useState(false);
   const [deleteIds, setDeleteIds] = useState<any>();
@@ -89,13 +76,11 @@ const CrmInformation: React.FC = () => {
     setDeletedData(setDeleted);
   }, [billingData, activeTab]);
 
-  useEffect(() => {
-    dispatch(getAllCustomer({}));
-  }, []);
 
   useEffect(() => {
     setTimeout(() => {
-      dispatch(getAllCustomer(''));
+      dispatch(queryCustomer(''));
+      // dispatch(getAllAddress(''));
     }, 1000);
   }, [!open, showModal]);
 
@@ -104,7 +89,7 @@ const CrmInformation: React.FC = () => {
     await dispatch(updateCustomer(customerValue));
     setOpen((p) => !p);
     setTimeout(() => {
-      dispatch(getAllCustomer(''));
+      dispatch(queryCustomer(''));
     }, 1000);
   };
 
@@ -112,7 +97,7 @@ const CrmInformation: React.FC = () => {
     const data = {Ids: deleteIds};
     await dispatch(deleteCustomers(data));
     setTimeout(() => {
-      dispatch(getAllCustomer(''));
+      dispatch(queryCustomer(''));
     }, 1000);
     setDeleteIds([]);
     setShowModalDelete(false);
@@ -272,7 +257,6 @@ const CrmInformation: React.FC = () => {
 
   const rowSelection = {
     onChange: (selectedRowKeys: any) => {
-      console.log('rowSelection', selectedRowKeys);
       setDeleteIds(selectedRowKeys);
     },
     getCheckboxProps: (record: any) => ({

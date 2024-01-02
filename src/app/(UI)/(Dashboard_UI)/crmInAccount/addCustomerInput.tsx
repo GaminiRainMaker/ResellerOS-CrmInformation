@@ -88,7 +88,6 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
     try {
       dispatch(updateBillingContact(formValue));
       setEditBillingAddress(false);
-
       setShowModal((p: boolean) => !p);
       setOpen((p: boolean) => !p);
       setEditBillingAddress(false);
