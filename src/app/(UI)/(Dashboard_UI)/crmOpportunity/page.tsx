@@ -23,19 +23,18 @@ import OsDrawer from '@/app/components/common/os-drawer';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
-import OsStatusWrapper from '@/app/components/common/os-status';
+import CommonStageSelect from '@/app/components/common/os-stage-select';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
 import {StageValue, opportunityDummyData} from '@/app/utils/CONSTANTS';
 import {Button, MenuProps, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
-import CommonStageSelect from '@/app/components/common/os-stage-select';
 import {
   deleteCustomers,
   getAllCustomer,
 } from '../../../../../redux/actions/customer';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {useAppDispatch} from '../../../../../redux/hook';
 import AddOpportunity from './AddOpportunity';
 import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
 
@@ -136,12 +135,8 @@ const CrmOpportunity: React.FC = () => {
       dataIndex: 'stage',
       key: 'stage',
       width: 130,
-      render: (text: string, record: any) => (
-        <CommonStageSelect
-          options={StageValue}
-          currentStage={record?.stage}
-          value={record?.stage}
-        />
+      render: (text: string) => (
+        <CommonStageSelect options={StageValue} currentStage={text} />
       ),
     },
     {

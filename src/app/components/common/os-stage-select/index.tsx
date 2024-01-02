@@ -1,10 +1,10 @@
-import {FC} from 'react';
-import {ChevronDownIcon} from '@heroicons/react/24/outline';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { FC, useState } from 'react';
 import useThemeToken from '../hooks/useThemeToken';
-import {OsStageType, OsStageWrapperProps} from './os-stage-interface';
-import {StageSelectStyle} from './styled-components';
+import { OsStageType } from './os-stage-interface';
+import { StageSelectStyle } from './styled-components';
 
-interface CommonStageSelectProps extends OsStageWrapperProps {
+interface CommonStageSelectProps  {
   currentStage: keyof OsStageType;
   options?: any;
 }
@@ -14,6 +14,8 @@ const CommonStageSelect: FC<CommonStageSelectProps> = ({
   ...rest
 }) => {
   const [token] = useThemeToken();
+  const [value, setValue] = useState<string>(currentStage as string)
+
   const Stage: OsStageType = {
     Commit: {
       color: `${token?.colorInfoBgHover}`,
@@ -26,14 +28,14 @@ const CommonStageSelect: FC<CommonStageSelectProps> = ({
       border: `${token?.colorWarning}`,
     },
     Develop: {
+      color: `${token?.colorInfoHover}`,
+      textColor: `${token?.colorLinkHover}`,
+      border: `${token?.colorLinkHover}`,
+    },
+    Qualify: {
       color: `${token?.colorSuccessBg}`,
       textColor: `${token?.colorSuccess}`,
       border: `${token?.colorSuccess}`,
-    },
-    Qualify: {
-      color: `${token?.colorErrorBg}`,
-      textColor: `${token?.colorError}`,
-      border: `${token?.colorError}`,
     },
     Prove: {
       color: `${token?.colorErrorBg}`,
@@ -41,18 +43,27 @@ const CommonStageSelect: FC<CommonStageSelectProps> = ({
       border: `${token?.colorError}`,
     },
   };
-
-  const selectedStage = Stage[currentStage];
+  
+  const handleChange = (values: string) => {
+    setValue(values)
+  };
+  const selectedStage = Stage[value];
 
   return (
     <StageSelectStyle
+      onChange={handleChange}
       {...rest}
+      defaultValue={currentStage}
       backgroundColor={selectedStage?.color}
       color={selectedStage?.textColor}
       borderColor={selectedStage?.border}
-    >
-      <ChevronDownIcon width={24} color={selectedStage?.textColor} />
-    </StageSelectStyle>
+      suffixIcon={
+        <ChevronDownIcon width={20} 
+          color={selectedStage?.textColor}
+        />
+      }
+    />
+    
   );
 };
 
