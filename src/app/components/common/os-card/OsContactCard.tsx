@@ -17,62 +17,59 @@ export const OsContactCard: React.FC<any> = ({
   const [token] = useThemeToken();
   return (
     <Row gutter={[16, 16]}>
-      {data?.map((item: any, index: number) => {
-        console.log('ddsdssd', item);
-        return (
-          <Col>
-            <OsContactCardStyle key={`${index}`}>
-              <Row justify="space-between" align="middle">
-                <Col>
-                  <Space direction="vertical" size={8}>
-                    <TableNameColumn
-                      primaryText={
-                        <Typography name="Body 3/Regular">
-                          {item?.billing_first_name ?? item?.name}{' '}
-                          {item?.billing_last_name ?? item?.last_name}
-                        </Typography>
-                      }
-                      secondaryText={
-                        <Typography name="Body 4/Regular">
-                          {item?.billing_role ?? item?.role}
-                        </Typography>
-                      }
-                      fallbackIcon={`${
-                        item?.billing_first_name ??
-                        item?.name?.toString()?.charAt(0)?.toUpperCase()
-                      }${
-                        item?.billing_last_name ??
-                        item?.last_name?.toString()?.charAt(0)?.toUpperCase()
-                      }`}
-                      iconBg={item?.iconBg}
-                    />
-                    <Space size={8} align="center">
-                      <EnvelopeIcon
-                        width={24}
-                        color={token?.colorInfoBorder}
-                        style={{marginTop: '5px'}}
-                      />
-                      <Typography name="Body 4/Regular" as="span">
-                        {item?.billing_email ?? item?.email}
+      {data?.map((item: any, index: number) => (
+        <Col>
+          <OsContactCardStyle key={`${index}`}>
+            <Row justify="space-between" align="middle">
+              <Col>
+                <Space direction="vertical" size={8}>
+                  <TableNameColumn
+                    primaryText={
+                      <Typography name="Body 3/Regular">
+                        {item?.billing_first_name ?? item?.name}{' '}
+                        {item?.billing_last_name ?? item?.last_name}
                       </Typography>
-                    </Space>
-                  </Space>
-                </Col>
-                {PencilSquareIconVisible && (
-                  <Col>
-                    <PencilSquareIcon
-                      onClick={onClick}
+                    }
+                    secondaryText={
+                      <Typography name="Body 4/Regular">
+                        {item?.billing_role ?? item?.role}
+                      </Typography>
+                    }
+                    fallbackIcon={`${
+                      item?.billing_first_name ??
+                      item?.name?.toString()?.charAt(0)?.toUpperCase()
+                    }${
+                      item?.billing_last_name ??
+                      item?.last_name?.toString()?.charAt(0)?.toUpperCase()
+                    }`}
+                    iconBg={item?.iconBg}
+                  />
+                  <Space size={8} align="center">
+                    <EnvelopeIcon
                       width={24}
                       color={token?.colorInfoBorder}
-                      style={{cursor: 'pointer'}}
+                      style={{marginTop: '5px'}}
                     />
-                  </Col>
-                )}
-              </Row>
-            </OsContactCardStyle>
-          </Col>
-        );
-      })}
+                    <Typography name="Body 4/Regular" as="span">
+                      {item?.billing_email ?? item?.email}
+                    </Typography>
+                  </Space>
+                </Space>
+              </Col>
+              {PencilSquareIconVisible && (
+                <Col>
+                  <PencilSquareIcon
+                    onClick={onClick}
+                    width={24}
+                    color={token?.colorInfoBorder}
+                    style={{cursor: 'pointer'}}
+                  />
+                </Col>
+              )}
+            </Row>
+          </OsContactCardStyle>
+        </Col>
+      ))}
     </Row>
   );
 };

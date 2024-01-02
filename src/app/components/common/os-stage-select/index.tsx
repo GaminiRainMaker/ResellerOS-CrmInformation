@@ -1,20 +1,24 @@
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { FC, useState } from 'react';
+import {ChevronDownIcon} from '@heroicons/react/24/outline';
+import {FC, useState} from 'react';
 import useThemeToken from '../hooks/useThemeToken';
-import { OsStageType } from './os-stage-interface';
-import { StageSelectStyle } from './styled-components';
+import {OsStageType} from './os-stage-interface';
+import {StageSelectStyle} from './styled-components';
 
-interface CommonStageSelectProps  {
+interface CommonStageSelectProps {
   currentStage: keyof OsStageType;
+  onChange?: any;
   options?: any;
+  style?: any;
 }
 
 const CommonStageSelect: FC<CommonStageSelectProps> = ({
   currentStage,
+  onChange,
+  style,
   ...rest
 }) => {
   const [token] = useThemeToken();
-  const [value, setValue] = useState<string>(currentStage as string)
+  const [value, setValue] = useState<string>(currentStage as string);
 
   const Stage: OsStageType = {
     Commit: {
@@ -43,27 +47,25 @@ const CommonStageSelect: FC<CommonStageSelectProps> = ({
       border: `${token?.colorError}`,
     },
   };
-  
+
   const handleChange = (values: string) => {
-    setValue(values)
+    setValue(values);
   };
   const selectedStage = Stage[value];
 
   return (
     <StageSelectStyle
-      onChange={handleChange}
+      onChange={onChange}
       {...rest}
+      style={style}
       defaultValue={currentStage}
       backgroundColor={selectedStage?.color}
       color={selectedStage?.textColor}
       borderColor={selectedStage?.border}
       suffixIcon={
-        <ChevronDownIcon width={20} 
-          color={selectedStage?.textColor}
-        />
+        <ChevronDownIcon width={20} color={selectedStage?.textColor} />
       }
     />
-    
   );
 };
 

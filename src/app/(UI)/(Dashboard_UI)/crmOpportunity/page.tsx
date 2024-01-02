@@ -153,10 +153,19 @@ const CrmOpportunity: React.FC = () => {
       dataIndex: 'stages',
       key: 'stages',
       width: 130,
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <CommonStageSelect
           options={StageValue}
           // value={text}
+          onChange={(e: any) => {
+            console.log('345435', e);
+            const dataa = {id: record?.id, stages: e};
+            dispatch(updateOpportunity(dataa));
+            setTimeout(() => {
+              dispatch(getAllOpportunity());
+              // dispatch(getdeleteOpportunity(''));
+            }, 1000);
+          }}
           currentStage={text}
         />
       ),

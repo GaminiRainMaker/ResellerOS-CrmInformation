@@ -10,6 +10,8 @@ import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import {useEffect, useState} from 'react';
 import {useSearchParams} from 'next/navigation';
+import CommonStageSelect from '@/app/components/common/os-stage-select';
+import {StageValue} from '@/app/utils/CONSTANTS';
 import {insertOpportunity} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
@@ -130,13 +132,17 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
             </Col>
             <Col span={12}>
               <Typography name="Body 4/Regular">Stages</Typography>
-              <OsInput
-                placeholder="Select Stage"
-                value={formValue?.stages}
-                onChange={(e) => {
+              <CommonStageSelect
+                style={{width: '100%', marginTop: '10px'}}
+                options={StageValue}
+                // value={text}
+
+                currentStage={formValue?.stages}
+                onChange={(e: any) => {
+                  console.log('43543543', e);
                   setFormValue({
                     ...formValue,
-                    stages: e.target.value,
+                    stages: e,
                   });
                 }}
               />

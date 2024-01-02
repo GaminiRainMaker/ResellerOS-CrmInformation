@@ -30,7 +30,10 @@ import {Button, MenuProps, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
-import {getAllAddress, updateAddress} from '../../../../../redux/actions/address';
+import {
+  getAllAddress,
+  updateAddress,
+} from '../../../../../redux/actions/address';
 import {
   deleteCustomers,
   getAllCustomer,
@@ -75,7 +78,6 @@ const CrmInformation: React.FC = () => {
     const setDeleted = deletedAll;
     setDeletedData(setDeleted);
   }, [billingData, activeTab]);
-
 
   useEffect(() => {
     setTimeout(() => {
@@ -169,8 +171,15 @@ const CrmInformation: React.FC = () => {
       dataIndex: 'name',
       key: 'name',
       width: 130,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (text: string, record: any) => (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => {
+            window.open(`/accountDetails?id=${record?.id}`);
+          }}
+        >
+          {text ?? '--'}
+        </Typography>
       ),
     },
     {
