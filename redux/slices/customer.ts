@@ -151,7 +151,7 @@ const productSlice = createSlice({
       })
       .addCase(getCustomerBYId.fulfilled, (state, action) => {
         state.loading = false;
-        state.filteredData = action.payload;
+        state.data = action.payload;
       })
       .addCase(
         getCustomerBYId.rejected,

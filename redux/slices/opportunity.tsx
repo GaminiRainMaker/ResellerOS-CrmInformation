@@ -8,6 +8,7 @@ import {
   updateOpportunity,
   deleteOpportunity,
   getdeleteOpportunity,
+  queryOpportunity,
 } from '../actions/opportunity';
 
 type OpportunityState = {
@@ -138,6 +139,24 @@ const opportunitySlice = createSlice({
       )
       .addCase(
         getdeleteOpportunity.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(queryOpportunity.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        queryOpportunity.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = [action.payload];
+        },
+      )
+      .addCase(
+        queryOpportunity.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
