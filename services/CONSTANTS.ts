@@ -61,6 +61,7 @@ export const API = {
     QUERY: '/customer/updateCustomer',
     SEARCH: '/customer/search',
     QUERYCUSTOMER: '/customer/query',
+    GETBYID: '/customer/getAllCustomerById',
   },
   ADDRESS: {
     INDEX: '/address',

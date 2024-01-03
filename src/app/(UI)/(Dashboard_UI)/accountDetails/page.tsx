@@ -20,16 +20,33 @@ import {
 } from '@heroicons/react/24/outline';
 import {Space} from 'antd';
 import OsStatusWrapper from '@/app/components/common/os-status';
-import {opportunityDummyData, quoteDummyData} from '@/app/utils/CONSTANTS';
+import {
+  StageValue,
+  opportunityDummyData,
+  quoteDummyData,
+} from '@/app/utils/CONSTANTS';
+import {useEffect} from 'react';
+import CommonStageSelect from '@/app/components/common/os-stage-select';
+import {useSearchParams} from 'next/navigation';
 import DetailCard from './DetailCard';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {getCustomerBYId} from '../../../../../redux/actions/customer';
 
 const AccountDetails = () => {
   const [token] = useThemeToken();
+  const {loading, filteredData} = useAppSelector((state) => state.customer);
+  const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
+  const getCustomerID = searchParams.get('id');
 
+  useEffect(() => {
+    dispatch(getCustomerBYId(getCustomerID));
+  }, []);
+  console.log('54354535', filteredData);
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{21}</div>,
+      primary: <div>{filteredData?.Opportunities?.length}</div>,
       secondry: 'Total Opportunities',
       icon: <CheckCircleIcon width={36} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
@@ -168,8 +185,8 @@ const AccountDetails = () => {
   const OpportunityColumns = [
     {
       title: 'Opportunity',
-      dataIndex: 'opportunity',
-      key: 'opportunity',
+      dataIndex: 'title',
+      key: 'title',
       width: 187,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -181,7 +198,9 @@ const AccountDetails = () => {
       key: 'customer_name',
       width: 187,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+        <Typography name="Body 4/Regular">
+          {filteredData?.name ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -195,10 +214,16 @@ const AccountDetails = () => {
     },
     {
       title: 'Stage',
-      dataIndex: 'stage',
-      key: 'stage',
+      dataIndex: 'stages',
+      key: 'stages',
       width: 130,
-      render: (text: string) => <OsStatusWrapper value="" />,
+      render: (text: string, record: any) => (
+        <CommonStageSelect
+          options={StageValue}
+          // value={text}
+          currentStage={text}
+        />
+      ),
     },
     {
       title: 'Quotes / Forms',
@@ -301,7 +326,7 @@ const AccountDetails = () => {
               <OsTable
                 loading={false}
                 columns={OpportunityColumns}
-                dataSource={opportunityDummyData}
+                dataSource={filteredData?.Opportunities}
               />
             </OsCard>
           </Space>

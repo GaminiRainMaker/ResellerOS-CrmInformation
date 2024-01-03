@@ -5,6 +5,7 @@ import {
   deleteCustomers,
   getAllCustomer,
   getAllDeletedCustomer,
+  getCustomerBYId,
   insertCustomer,
   queryCustomer,
   searchCustomer,
@@ -143,7 +144,22 @@ const productSlice = createSlice({
       .addCase(queryCustomer.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(getCustomerBYId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCustomerBYId.fulfilled, (state, action) => {
+        state.loading = false;
+        state.filteredData = action.payload;
+      })
+      .addCase(
+        getCustomerBYId.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      );
   },
 });
 
