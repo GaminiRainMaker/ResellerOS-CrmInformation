@@ -420,20 +420,7 @@ const CrmInformation: React.FC = () => {
             }
             items={tabItems.map((tabItem: any, index: number) => ({
               key: `${index + 1}`,
-              label: (
-                <div>
-                  <div>{tabItem?.label}</div>
-                  <div
-                    style={{
-                      // eslint-disable-next-line eqeqeq
-                      borderBottom:
-                        // eslint-disable-next-line eqeqeq
-                        activeTab == tabItem?.key ? '2px solid #1C3557' : '',
-                      // marginTop: '3px',
-                    }}
-                  />
-                </div>
-              ),
+              label: (tabItem?.label),
               children: (
                 <OsTable
                   key={tabItem?.key}

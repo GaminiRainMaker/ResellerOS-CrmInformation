@@ -54,6 +54,8 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
   useEffect(() => {
     dispatch(getAllCustomer(''));
   }, []);
+  console.log('formValue', formValue?.stages);
+
   return (
     <>
       {!drawer && (
@@ -135,11 +137,8 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
               <CommonStageSelect
                 style={{width: '100%', marginTop: '10px'}}
                 options={StageValue}
-                // value={text}
-
                 currentStage={formValue?.stages}
                 onChange={(e: any) => {
-                  console.log('43543543', e);
                   setFormValue({
                     ...formValue,
                     stages: e,

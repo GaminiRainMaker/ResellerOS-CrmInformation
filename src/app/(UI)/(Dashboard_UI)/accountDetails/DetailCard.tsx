@@ -59,7 +59,9 @@ const contactCardData2 = [
 
 const DetailCard = () => {
   const [token] = useThemeToken();
-  const {loading, filteredData} = useAppSelector((state) => state.customer);
+  const {loading, data: customerData} = useAppSelector(
+    (state) => state.customer,
+  );
   const [showAllContactModal, setShowAllContactModal] =
     useState<boolean>(false);
 
@@ -79,10 +81,10 @@ const DetailCard = () => {
 
   const contactCardData = [
     {
-      name: filteredData?.BillingContacts?.[0]?.billing_first_name,
-      last_name: filteredData?.BillingContacts?.[0]?.last_name,
-      email: filteredData?.BillingContacts?.[0]?.billing_email,
-      role: filteredData?.BillingContacts?.[0]?.billing_role,
+      name: customerData?.BillingContacts?.[0]?.billing_first_name,
+      last_name: customerData?.BillingContacts?.[0]?.billing_last_name,
+      email: customerData?.BillingContacts?.[0]?.billing_email,
+      role: customerData?.BillingContacts?.[0]?.billing_role,
       iconBg: '#1EB159',
     },
   ];
@@ -114,14 +116,14 @@ const DetailCard = () => {
               </Typography>
             </Avatar>
             <Typography name="Heading 3/Medium" style={{textAlign: 'center'}}>
-              {filteredData?.name ?? '--'}
+              {customerData?.name ?? '--'}
               <Typography
                 name="Body 4/Bold"
                 style={{textAlign: 'center'}}
                 as="div"
                 color={token?.colorInfo}
               >
-                ID {filteredData?.id ?? '--'}
+                ID {customerData?.id ?? '--'}
               </Typography>
             </Typography>
           </Space>
@@ -151,7 +153,7 @@ const DetailCard = () => {
                   ID
                 </Typography>
                 <Typography name="Body 3/Regular">
-                  {filteredData?.id ?? '--'}
+                  {customerData?.id ?? '--'}
                 </Typography>
               </Space>
             </Col>
@@ -161,7 +163,7 @@ const DetailCard = () => {
                   Default Currency
                 </Typography>
                 <Typography name="Body 3/Regular">
-                  {filteredData?.currency ?? '--'}
+                  {customerData?.currency ?? '--'}
                 </Typography>
               </Space>
             </Col>
@@ -171,7 +173,7 @@ const DetailCard = () => {
                   Legal name
                 </Typography>
                 <Typography name="Body 3/Regular">
-                  {filteredData?.name ?? '--'}
+                  {customerData?.name ?? '--'}
                 </Typography>
               </Space>
             </Col>
@@ -191,11 +193,11 @@ const DetailCard = () => {
                   Shipping Address
                 </Typography>
                 <Typography name="Body 3/Regular">
-                  {filteredData?.Addresses?.[0]?.shiping_address_line},{' '}
-                  {filteredData?.Addresses?.[0]?.shiping_city},{' '}
-                  {filteredData?.Addresses?.[0]?.shiping_state},{' '}
-                  {filteredData?.Addresses?.[0]?.shiping_pin_code},{' '}
-                  {filteredData?.Addresses?.[0]?.shiping_country}
+                  {customerData?.Addresses?.[0]?.shiping_address_line},{' '}
+                  {customerData?.Addresses?.[0]?.shiping_city},{' '}
+                  {customerData?.Addresses?.[0]?.shiping_state},{' '}
+                  {customerData?.Addresses?.[0]?.shiping_pin_code},{' '}
+                  {customerData?.Addresses?.[0]?.shiping_country}
                 </Typography>
               </Space>
             </Col>
@@ -205,11 +207,11 @@ const DetailCard = () => {
                   Billing Address
                 </Typography>
                 <Typography name="Body 3/Regular">
-                  {filteredData?.Addresses?.[0]?.billing_address_line},{' '}
-                  {filteredData?.Addresses?.[0]?.billing_city},{' '}
-                  {filteredData?.Addresses?.[0]?.billing_state},{' '}
-                  {filteredData?.Addresses?.[0]?.billing_pin_code},{' '}
-                  {filteredData?.Addresses?.[0]?.billing_country}
+                  {customerData?.Addresses?.[0]?.billing_address_line},{' '}
+                  {customerData?.Addresses?.[0]?.billing_city},{' '}
+                  {customerData?.Addresses?.[0]?.billing_state},{' '}
+                  {customerData?.Addresses?.[0]?.billing_pin_code},{' '}
+                  {customerData?.Addresses?.[0]?.billing_country}
                 </Typography>
               </Space>
             </Col>
@@ -250,7 +252,7 @@ const DetailCard = () => {
         }}
         bodyPadding={40}
         title="All Contacts"
-        body={<OsContactCard data={filteredData?.BillingContacts} />}
+        body={<OsContactCard data={customerData?.BillingContacts} />}
       />
     </>
   );
