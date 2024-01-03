@@ -56,7 +56,9 @@ const CrmOpportunity: React.FC = () => {
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deletedData, setDeletedData] = useState<any>();
   const [open, setOpen] = useState(false);
-  const {data: opportunityData, loading} = useAppSelector((state) => state.Opportunity);
+  const {data: opportunityData, loading} = useAppSelector(
+    (state) => state.Opportunity,
+  );
   const [searchCustomerData, setSearchCustomerData] = useState<any>();
   const [formValue, setFormValue] = useState<any>();
   const [opportunityValueData, setOpportunityValueData] = useState<any>();
@@ -85,6 +87,12 @@ const CrmOpportunity: React.FC = () => {
     dispatch(getAllOpportunity());
     // dispatch(getdeleteOpportunity(''));
   }, []);
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(getAllOpportunity());
+    }, 1000);
+    // dispatch(getdeleteOpportunity(''));
+  }, [!showModal]);
   useEffect(() => {
     setOpportunityValueData(opportunityData);
   }, [opportunityData]);
@@ -414,7 +422,7 @@ const CrmOpportunity: React.FC = () => {
             }
             items={tabItems.map((tabItem: any, index: number) => ({
               key: `${index + 1}`,
-              label: (tabItem?.label),
+              label: tabItem?.label,
               ...tabItem,
             }))}
           />
