@@ -35,7 +35,7 @@ import {getCustomerBYId} from '../../../../../redux/actions/customer';
 
 const AccountDetails = () => {
   const [token] = useThemeToken();
-  const {loading, data: filteredData} = useAppSelector(
+  const {loading, data: customerData} = useAppSelector(
     (state) => state.customer,
   );
   const dispatch = useAppDispatch();
@@ -46,11 +46,11 @@ const AccountDetails = () => {
     dispatch(getCustomerBYId(getCustomerID));
   }, [getCustomerID]);
 
-  console.log('filteredData', filteredData);
+  console.log('customerData', customerData);
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{filteredData?.Opportunities?.length}</div>,
+      primary: <div>{customerData?.Opportunities?.length}</div>,
       secondry: 'Total Opportunities',
       icon: <CheckCircleIcon width={36} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
@@ -203,7 +203,7 @@ const AccountDetails = () => {
       width: 187,
       render: (text: string) => (
         <Typography name="Body 4/Regular">
-          {filteredData?.name ?? '--'}
+          {customerData?.name ?? '--'}
         </Typography>
       ),
     },
@@ -330,7 +330,7 @@ const AccountDetails = () => {
               <OsTable
                 loading={false}
                 columns={OpportunityColumns}
-                dataSource={filteredData?.Opportunities}
+                dataSource={customerData?.Opportunities}
               />
             </OsCard>
           </Space>
