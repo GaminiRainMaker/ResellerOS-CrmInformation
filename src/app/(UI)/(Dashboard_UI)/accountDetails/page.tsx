@@ -35,7 +35,9 @@ import {getCustomerBYId} from '../../../../../redux/actions/customer';
 
 const AccountDetails = () => {
   const [token] = useThemeToken();
-  const {loading, filteredData} = useAppSelector((state) => state.customer);
+  const {loading, data: filteredData} = useAppSelector(
+    (state) => state.customer,
+  );
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const getCustomerID = searchParams.get('id');
@@ -44,6 +46,7 @@ const AccountDetails = () => {
     dispatch(getCustomerBYId(getCustomerID));
   }, [getCustomerID]);
 
+  console.log('filteredData', filteredData);
   const analyticsData = [
     {
       key: 1,

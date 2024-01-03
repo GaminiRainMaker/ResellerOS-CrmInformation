@@ -17,6 +17,7 @@ type OpportunityState = {
   data: any;
   product: any;
   filteredData: any;
+  deletedCount?: any;
 };
 const initialState: OpportunityState = {
   loading: false,
@@ -24,6 +25,7 @@ const initialState: OpportunityState = {
   data: [],
   product: [],
   filteredData: [],
+  deletedCount: null,
 };
 
 const opportunitySlice = createSlice({
@@ -134,7 +136,7 @@ const opportunitySlice = createSlice({
         getdeleteOpportunity.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = [action.payload];
+          state.deletedCount = action.payload;
         },
       )
       .addCase(

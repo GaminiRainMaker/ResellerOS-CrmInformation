@@ -56,9 +56,11 @@ const CrmOpportunity: React.FC = () => {
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deletedData, setDeletedData] = useState<any>();
   const [open, setOpen] = useState(false);
-  const {data: opportunityData, loading} = useAppSelector(
-    (state) => state.Opportunity,
-  );
+  const {
+    data: opportunityData,
+    loading,
+    deletedCount: countDeletedOpp,
+  } = useAppSelector((state) => state.Opportunity);
   const [searchCustomerData, setSearchCustomerData] = useState<any>();
   const [formValue, setFormValue] = useState<any>();
   const [opportunityValueData, setOpportunityValueData] = useState<any>();
@@ -72,12 +74,13 @@ const CrmOpportunity: React.FC = () => {
     await dispatch(deleteOpportunity(data));
     setTimeout(() => {
       dispatch(getAllOpportunity());
-      // dispatch(getdeleteOpportunity(''));
+      dispatch(getdeleteOpportunity(''));
     }, 1000);
     setDeleteIds([]);
     setShowModalDelete(false);
   };
 
+  console.log('countDeletedOpp', countDeletedOpp);
   const updateOpportunityData = async () => {
     await dispatch(updateOpportunity(formValue));
     dispatch(getAllOpportunity());
@@ -85,13 +88,13 @@ const CrmOpportunity: React.FC = () => {
   };
   useEffect(() => {
     dispatch(getAllOpportunity());
-    // dispatch(getdeleteOpportunity(''));
+    dispatch(getdeleteOpportunity(''));
   }, []);
   useEffect(() => {
     setTimeout(() => {
       dispatch(getAllOpportunity());
     }, 1000);
-    // dispatch(getdeleteOpportunity(''));
+    dispatch(getdeleteOpportunity(''));
   }, [!showModal]);
   useEffect(() => {
     setOpportunityValueData(opportunityData);
@@ -127,7 +130,7 @@ const CrmOpportunity: React.FC = () => {
     },
     {
       key: 5,
-      primary: <div>{opportunityData?.length}</div>,
+      primary: <div>{countDeletedOpp || 0}</div>,
       secondry: 'Deleted',
       icon: <TrashIcon width={24} color={token?.colorError} />,
       iconBg: token?.colorErrorBg,
@@ -177,7 +180,7 @@ const CrmOpportunity: React.FC = () => {
             dispatch(updateOpportunity(dataa));
             setTimeout(() => {
               dispatch(getAllOpportunity());
-              // dispatch(getdeleteOpportunity(''));
+              dispatch(getdeleteOpportunity(''));
             }, 1000);
           }}
           currentStage={text}
