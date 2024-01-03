@@ -75,6 +75,7 @@ export const API = {
   OPPORTUNITY: {
     INDEX: '/opportunity',
     QUERY: '/opportunity/getOpportunityById',
-    DELETE:'/opportunity/deleteOpportunityById'
+    DELETE: '/opportunity/deleteOpportunityById',
+    QUERYOPPORTUNITY: '/opportunity/query',
   },
 };

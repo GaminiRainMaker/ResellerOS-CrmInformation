@@ -15,4 +15,6 @@ export const OPPORTUNITY_API = {
     get(`${API.OPPORTUNITY.QUERY}/${id}`) as Promise<AxiosResponse<any>>,
   getdeleted: () =>
     del(`${API.OPPORTUNITY.INDEX}`) as Promise<AxiosResponse<any>>,
+  query: (data: any) =>
+    post(API.OPPORTUNITY.QUERYOPPORTUNITY, data) as Promise<AxiosResponse<[]>>,
 };

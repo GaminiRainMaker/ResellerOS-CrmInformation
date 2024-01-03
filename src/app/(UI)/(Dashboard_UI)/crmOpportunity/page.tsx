@@ -30,6 +30,8 @@ import OsTabs from '@/app/components/common/os-tabs';
 import {StageValue, opportunityDummyData} from '@/app/utils/CONSTANTS';
 import {Button, MenuProps, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
+import OsInput from '@/app/components/common/os-input';
+import {SearchOutlined} from '@ant-design/icons';
 import {
   deleteCustomers,
   getAllCustomer,
@@ -40,6 +42,7 @@ import {
   deleteOpportunity,
   getAllOpportunity,
   getdeleteOpportunity,
+  queryOpportunity,
   updateOpportunity,
 } from '../../../../../redux/actions/opportunity';
 
@@ -51,12 +54,16 @@ const CrmOpportunity: React.FC = () => {
   const [tableData, setTableData] = useState<any>();
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
-
   const [deletedData, setDeletedData] = useState<any>();
   const [open, setOpen] = useState(false);
   const {data: opportunityData, loading} = useAppSelector((state) => state.Opportunity);
+  const [searchCustomerData, setSearchCustomerData] = useState<any>();
   const [formValue, setFormValue] = useState<any>();
   const [opportunityValueData, setOpportunityValueData] = useState<any>();
+
+  const searchOpportunity = async () => {
+    dispatch(queryOpportunity(searchCustomerData));
+  };
 
   const deleteSelectedIds = async () => {
     const data = {Ids: deleteIds};
@@ -175,7 +182,11 @@ const CrmOpportunity: React.FC = () => {
       key: 'quotesForms',
       width: 130,
       render: () => (
-        <Typography color={token?.colorLink} name="Body 4/Bold" cursor='pointer'>
+        <Typography
+          color={token?.colorLink}
+          name="Body 4/Bold"
+          cursor="pointer"
+        >
           View All
         </Typography>
       ),
@@ -224,7 +235,7 @@ const CrmOpportunity: React.FC = () => {
 
   const tabItems: TabsProps['items'] = [
     {
-      label: (<Typography name='Body 4/Regular' >All</Typography>),
+      label: <Typography name="Body 4/Regular">All</Typography>,
       children: (
         <OsTable
           columns={OpportunityColumns}
@@ -237,24 +248,23 @@ const CrmOpportunity: React.FC = () => {
       key: '1',
     },
     {
-      label: (<Typography name='Body 4/Regular' >Commit</Typography>),
+      label: <Typography name="Body 4/Regular">Commit</Typography>,
       key: '2',
     },
     {
-      label: (<Typography name='Body 4/Regular' >Develop</Typography>),
+      label: <Typography name="Body 4/Regular">Develop</Typography>,
       key: '3',
     },
     {
-      label: (<Typography name='Body 4/Regular' >Negotiate</Typography> 
-      ),
+      label: <Typography name="Body 4/Regular">Negotiate</Typography>,
       key: '4',
     },
     {
-      label: (<Typography name='Body 4/Regular' >Qualify</Typography>),
+      label: <Typography name="Body 4/Regular">Qualify</Typography>,
       key: '5',
     },
     {
-      label: (<Typography name='Body 4/Regular' >Prove</Typography>),
+      label: <Typography name="Body 4/Regular">Prove</Typography>,
       key: '6',
     },
   ];
@@ -355,40 +365,49 @@ const CrmOpportunity: React.FC = () => {
               <Space size={12} align="center">
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Opportunity</Typography>
-                  <CommonSelect
-                    style={{width: '180px'}}
-                    placeholder="Search Here"
-                    options={tableData}
+                  <OsInput
+                    style={{width: '200px'}}
+                    placeholder="Search here"
                     onChange={(e) => {
-                      //   setBillingFilterSearch({
-                      //     ...billingFilterSeach,
-                      //     customer_id: e,
-                      //   });
+                      setSearchCustomerData({
+                        ...searchCustomerData,
+                        title: e.target.value,
+                      });
+                      // setQuery(e.target.value);
                     }}
+                    prefix={<SearchOutlined style={{color: '#949494'}} />}
                   />
                 </Space>
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Customer Account</Typography>
-                  <CommonSelect
-                    style={{width: '180px'}}
-                    placeholder="Search Here"
-                    options={tableData}
+                  <OsInput
+                    style={{width: '200px'}}
+                    placeholder="Search here"
                     onChange={(e) => {
-                      //   setBillingFilterSearch({
-                      //     ...billingFilterSeach,
-                      //     customer_id: e,
-                      //   });
+                      setSearchCustomerData({
+                        ...searchCustomerData,
+                        name: e.target.value,
+                      });
                     }}
+                    prefix={<SearchOutlined style={{color: '#949494'}} />}
                   />
                 </Space>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',marginTop: '20px' }}>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: '20px',
+                    cursor: 'pointer',
+                  }}
+                >
                   <Typography
                     cursor="pointer"
                     name="Button 1"
                     color="#C6CDD5"
-                  // onClick={searchBillingContacts}
+                    onClick={searchOpportunity}
                   >
-                   Apply
+                    Apply
                   </Typography>
                 </div>
               </Space>

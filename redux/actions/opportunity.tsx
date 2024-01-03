@@ -70,3 +70,17 @@ export const getdeleteOpportunity = createAsyncThunk(
     }
   },
 );
+export const queryOpportunity = createAsyncThunk(
+  'opportunity/query',
+  async (query: string, thunkApi) => {
+    try {
+      const obj = {
+        title: query,
+      };
+      const res = await OPPORTUNITY_API.query(query);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
