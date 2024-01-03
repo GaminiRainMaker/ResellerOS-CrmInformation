@@ -18,7 +18,7 @@ export const OsContactCard: React.FC<any> = ({
   return (
     <Row gutter={[16, 16]}>
       {data?.map((item: any, index: number) => (
-        <Col>
+        <Col key={item?.id}>
           <OsContactCardStyle key={`${index}`}>
             <Row justify="space-between" align="middle">
               <Col>
@@ -36,14 +36,21 @@ export const OsContactCard: React.FC<any> = ({
                       </Typography>
                     }
                     fallbackIcon={`${
-                      item?.billing_first_name ??
+                      item?.billing_first_name
+                        ?.toString()
+                        ?.charAt(0)
+                        ?.toUpperCase() ??
                       item?.name?.toString()?.charAt(0)?.toUpperCase()
                     }${
-                      item?.billing_last_name ??
+                      item?.billing_last_name
+                        ?.toString()
+                        ?.charAt(0)
+                        ?.toUpperCase() ??
                       item?.last_name?.toString()?.charAt(0)?.toUpperCase()
                     }`}
-                    iconBg={item?.iconBg}
+                    iconBg="#1EB159"
                   />
+
                   <Space size={8} align="center">
                     <EnvelopeIcon
                       width={24}

@@ -44,7 +44,6 @@ const AccountDetails = () => {
     dispatch(getCustomerBYId(getCustomerID));
   }, [getCustomerID]);
 
-
   const analyticsData = [
     {
       key: 1,

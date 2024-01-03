@@ -409,7 +409,7 @@ const CrmInformation: React.FC = () => {
                   />
                 </Space>
                 <Typography
-                  cursor="pointer"
+                  cursor="pointer"   
                   name="Button 1"
                   color="#C6CDD5"
                   onClick={searchFilterForCustomer}

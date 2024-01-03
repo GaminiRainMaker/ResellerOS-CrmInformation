@@ -60,7 +60,6 @@ const contactCardData2 = [
 const DetailCard = () => {
   const [token] = useThemeToken();
   const {loading, filteredData} = useAppSelector((state) => state.customer);
-
   const [showAllContactModal, setShowAllContactModal] =
     useState<boolean>(false);
 
@@ -251,7 +250,7 @@ const DetailCard = () => {
         }}
         bodyPadding={40}
         title="All Contacts"
-        body={<OsContactCard data={contactCardData2} />}
+        body={<OsContactCard data={filteredData?.BillingContacts} />}
       />
     </>
   );
