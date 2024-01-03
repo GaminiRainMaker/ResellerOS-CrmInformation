@@ -17,13 +17,13 @@ import {Cell, Legend, Pie, PieChart, Tooltip} from 'recharts';
 const OsPieChart: FC<any> = ({data}: any) => (
   <div>
     <PieChart
-      width={750}
+      width={680}
       height={230}
       //  onMouseEnter={this.onPieEnter}
     >
       <Pie
         data={data}
-        cx={210}
+        cx={200}
         cy={120}
         innerRadius={50}
         outerRadius={75}

@@ -4,21 +4,20 @@ import {Tabs} from '../antd/Tabs';
 
 export const TabsStyled = styled(Tabs)`
   width: 100%;
-  margin-top: 15px;
+  margin-top: 24px;
   &.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap {
     background-color: white;
-    border-bottom: 1px solid none !important;
+    height: 30px;
+    border-bottom: none !important;
   }
-  .ant-tabs-ink-bar {
-    border-bottom: 2px solid white !important;
-  }
-
   .ant-tabs-top > .ant-tabs-nav {
     margin: 9px 0 22px 0;
+    // border-bottom: none !important;
   }
   .ant-tabs-nav {
     border-bottom: none;
     .ant-tabs-extra-content{
       margin-top: -31px;
     }
+  }
 `;

@@ -376,11 +376,11 @@ const AllQuote: React.FC = () => {
 
   const tabItems: TabsProps['items'] = [
     {
-      label: 'All',
+      label: <Typography name="Body 4/Medium" >All</Typography>,
       key: '1',
     },
     {
-      label: 'Drafts',
+      label:  <Typography name="Body 4/Medium" >Drafts</Typography>,
       key: '2',
       children: (
         <>
@@ -407,11 +407,11 @@ const AllQuote: React.FC = () => {
     },
 
     {
-      label: 'In Progress',
+      label: <Typography name="Body 4/Medium" >In Progress</Typography>,
       key: '3',
     },
     {
-      label: 'Completed',
+      label:  <Typography name="Body 4/Medium" >Completed</Typography>,
       key: '4',
     },
   ];
@@ -512,14 +512,16 @@ const AllQuote: React.FC = () => {
                     }}
                   />
                 </Space>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',marginTop: '20px' }}>
                 <Typography
                   cursor="pointer"
                   name="Button 1"
-                  color="#C6CDD5"
+                  color={token?.colorLink}
                   onClick={handleReset}
                 >
                   Reset
                 </Typography>
+                </div>
               </Space>
             }
             items={tabItems.map((tabItem: any, index: number) => ({

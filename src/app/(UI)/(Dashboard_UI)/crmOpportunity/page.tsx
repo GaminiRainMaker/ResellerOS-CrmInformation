@@ -175,13 +175,12 @@ const CrmOpportunity: React.FC = () => {
       dataIndex: 'quotesForms',
       key: 'quotesForms',
       width: 130,
-      render: (text: string) => (
-        <Typography color={token?.colorLink} name="Body 4/Bold">
+      render: () => (
+        <Typography color={token?.colorLink} name="Body 4/Bold" cursor='pointer'>
           View All
         </Typography>
       ),
     },
-
     {
       title: ' ',
       dataIndex: 'actions',
@@ -226,12 +225,7 @@ const CrmOpportunity: React.FC = () => {
 
   const tabItems: TabsProps['items'] = [
     {
-      label: (
-        <div>
-          <div>All</div>
-          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
-        </div>
-      ),
+      label: (<Typography name='Body 4/Regular' >All</Typography>),
       children: (
         <OsTable
           columns={OpportunityColumns}
@@ -244,48 +238,24 @@ const CrmOpportunity: React.FC = () => {
       key: '1',
     },
     {
-      label: (
-        <div>
-          <div>Commit</div>
-          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
-        </div>
-      ),
+      label: (<Typography name='Body 4/Regular' >Commit</Typography>),
       key: '2',
     },
     {
-      label: (
-        <div>
-          <div>Develop</div>
-          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
-        </div>
-      ),
+      label: (<Typography name='Body 4/Regular' >Develop</Typography>),
       key: '3',
     },
     {
-      label: (
-        <div>
-          <div>Negotiate</div>
-          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
-        </div>
+      label: (<Typography name='Body 4/Regular' >Negotiate</Typography> 
       ),
       key: '4',
     },
     {
-      label: (
-        <div>
-          <div>Qualify</div>
-          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
-        </div>
-      ),
+      label: (<Typography name='Body 4/Regular' >Qualify</Typography>),
       key: '5',
     },
     {
-      label: (
-        <div>
-          <div>Prove</div>
-          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
-        </div>
-      ),
+      label: (<Typography name='Body 4/Regular' >Prove</Typography>),
       key: '6',
     },
   ];
@@ -412,14 +382,16 @@ const CrmOpportunity: React.FC = () => {
                     }}
                   />
                 </Space>
-                <Typography
-                  cursor="pointer"
-                  name="Button 1"
-                  color="#C6CDD5"
-                  //   onClick={searchBillingContacts}
-                >
-                  Apply
-                </Typography>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',marginTop: '20px' }}>
+                  <Typography
+                    cursor="pointer"
+                    name="Button 1"
+                    color="#C6CDD5"
+                  // onClick={searchBillingContacts}
+                  >
+                   Apply
+                  </Typography>
+                </div>
               </Space>
             }
             items={tabItems.map((tabItem: any, index: number) => ({

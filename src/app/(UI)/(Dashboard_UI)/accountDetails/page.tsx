@@ -247,7 +247,7 @@ const AccountDetails = () => {
         <Col>
           <DetailCard />
         </Col>
-        <Col span={18}>
+        <Col span={17}>
           <Space direction="vertical" size={24} style={{width: '100%'}}>
             <Row gutter={[16, 16]} justify="center">
               {analyticsData?.map((item: any) => (
