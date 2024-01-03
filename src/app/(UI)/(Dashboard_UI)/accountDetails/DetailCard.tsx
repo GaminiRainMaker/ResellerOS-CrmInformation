@@ -84,7 +84,7 @@ const DetailCard = () => {
       iconBg: token?.colorErrorBg,
     },
   ];
-
+  console.log('object');
   return (
     <>
       <DetailCardStyle>
