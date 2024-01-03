@@ -39,6 +39,12 @@ export const CustomTable = styled(Table)<ITableProps>`
   // .ant-pagination .ant-pagination-item {
   //   background: ${(props) => props.token.colorInfoBg};
   // }
+  .ant-table-cell .ant-table-cell-roe-hover:hover {
+    background: green;
+    span {
+      color: green;
+    }
+  }
 
   &.ant-table-wrapper
     .ant-table-tbody
@@ -46,6 +52,9 @@ export const CustomTable = styled(Table)<ITableProps>`
     > .ant-table-cell-row-hover {
     background: #f6f7f8;
     cursor: pointer;
+    // span {
+    //   color: red;
+    // }
   }
 
   &.ant-table-wrapper

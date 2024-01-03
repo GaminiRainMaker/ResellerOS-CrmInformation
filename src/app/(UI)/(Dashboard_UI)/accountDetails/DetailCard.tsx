@@ -12,16 +12,7 @@ import {OsContactCard} from '@/app/components/common/os-card/OsContactCard';
 import OsModal from '@/app/components/common/os-modal';
 import {useState} from 'react';
 import {DetailCardStyle} from './styled-components';
-
-const contactCardData = [
-  {
-    name: 'Billie',
-    last_name: 'John',
-    role: 'Sr. Project Manager',
-    email: 'billiejohn@info.com',
-    iconBg: '#1EB159',
-  },
-];
+import {useAppSelector} from '../../../../../redux/hook';
 
 const contactCardData2 = [
   {
@@ -68,6 +59,8 @@ const contactCardData2 = [
 
 const DetailCard = () => {
   const [token] = useThemeToken();
+  const {loading, filteredData} = useAppSelector((state) => state.customer);
+
   const [showAllContactModal, setShowAllContactModal] =
     useState<boolean>(false);
 
@@ -82,6 +75,16 @@ const DetailCard = () => {
 
       icon: <TrashIcon width={24} color={token?.colorError} />,
       iconBg: token?.colorErrorBg,
+    },
+  ];
+
+  const contactCardData = [
+    {
+      name: filteredData?.BillingContacts?.[0]?.billing_first_name,
+      last_name: filteredData?.BillingContacts?.[0]?.last_name,
+      email: filteredData?.BillingContacts?.[0]?.billing_email,
+      role: filteredData?.BillingContacts?.[0]?.billing_role,
+      iconBg: '#1EB159',
     },
   ];
 
@@ -111,15 +114,15 @@ const DetailCard = () => {
                 IT
               </Typography>
             </Avatar>
-            <Typography name="Heading 3/Medium">
-              Impres Technologies
+            <Typography name="Heading 3/Medium" style={{textAlign: 'center'}}>
+              {filteredData?.name ?? '--'}
               <Typography
                 name="Body 4/Bold"
                 style={{textAlign: 'center'}}
                 as="div"
                 color={token?.colorInfo}
               >
-                ID 59afd544
+                ID {filteredData?.id ?? '--'}
               </Typography>
             </Typography>
           </Space>
@@ -142,13 +145,15 @@ const DetailCard = () => {
             }}
           />
 
-          <Row gutter={[16, 16]}>
+          <Row gutter={[16, 16]} style={{width: '100%'}}>
             <Col span={12}>
               <Space direction="vertical">
                 <Typography name="Body 4/Medium" color={token?.colorLinkHover}>
                   ID
                 </Typography>
-                <Typography name="Body 3/Regular">59afd544</Typography>
+                <Typography name="Body 3/Regular">
+                  {filteredData?.id ?? '--'}
+                </Typography>
               </Space>
             </Col>
             <Col span={12}>
@@ -156,7 +161,9 @@ const DetailCard = () => {
                 <Typography name="Body 4/Medium" color={token?.colorLinkHover}>
                   Default Currency
                 </Typography>
-                <Typography name="Body 3/Regular">USD</Typography>
+                <Typography name="Body 3/Regular">
+                  {filteredData?.currency ?? '--'}
+                </Typography>
               </Space>
             </Col>
             <Col span={12}>
@@ -165,7 +172,7 @@ const DetailCard = () => {
                   Legal name
                 </Typography>
                 <Typography name="Body 3/Regular">
-                  Impres Technologies
+                  {filteredData?.name ?? '--'}
                 </Typography>
               </Space>
             </Col>
@@ -185,7 +192,11 @@ const DetailCard = () => {
                   Shipping Address
                 </Typography>
                 <Typography name="Body 3/Regular">
-                  19 Washington Square N, New York, NY 10011, USA
+                  {filteredData?.Addresses?.[0]?.shiping_address_line},{' '}
+                  {filteredData?.Addresses?.[0]?.shiping_city},{' '}
+                  {filteredData?.Addresses?.[0]?.shiping_state},{' '}
+                  {filteredData?.Addresses?.[0]?.shiping_pin_code},{' '}
+                  {filteredData?.Addresses?.[0]?.shiping_country}
                 </Typography>
               </Space>
             </Col>
@@ -195,7 +206,11 @@ const DetailCard = () => {
                   Billing Address
                 </Typography>
                 <Typography name="Body 3/Regular">
-                  19 Washington Square N, New York, NY 10011, USA
+                  {filteredData?.Addresses?.[0]?.billing_address_line},{' '}
+                  {filteredData?.Addresses?.[0]?.billing_city},{' '}
+                  {filteredData?.Addresses?.[0]?.billing_state},{' '}
+                  {filteredData?.Addresses?.[0]?.billing_pin_code},{' '}
+                  {filteredData?.Addresses?.[0]?.billing_country}
                 </Typography>
               </Space>
             </Col>

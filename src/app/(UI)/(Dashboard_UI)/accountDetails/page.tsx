@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable @typescript-eslint/indent */
 
@@ -41,8 +42,9 @@ const AccountDetails = () => {
 
   useEffect(() => {
     dispatch(getCustomerBYId(getCustomerID));
-  }, []);
-  console.log('54354535', filteredData);
+  }, [getCustomerID]);
+
+
   const analyticsData = [
     {
       key: 1,

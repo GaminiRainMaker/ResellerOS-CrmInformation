@@ -85,6 +85,7 @@ export interface TypographyInterface {
   color?: string;
   as?: string;
   ellipsis?: boolean;
+  hoverOnText?: boolean;
   align?: TextAlign;
   onClick?: React.MouseEventHandler<Element> | undefined;
   style?: React.CSSProperties;

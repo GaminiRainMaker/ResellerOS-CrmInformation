@@ -177,6 +177,7 @@ const CrmInformation: React.FC = () => {
           onClick={() => {
             window.open(`/accountDetails?id=${record?.id}`);
           }}
+          hoverOnText
         >
           {text ?? '--'}
         </Typography>
