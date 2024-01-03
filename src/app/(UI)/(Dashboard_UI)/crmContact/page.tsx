@@ -426,7 +426,7 @@ const CrmAccount: React.FC = () => {
             }
             items={tabItems.map((tabItem: any, index: number) => ({
               key: `${index + 1}`,
-              label: <div>{tabItem?.label}</div>,
+              label: tabItem?.label,
               children: (
                 <OsTable
                   key={tabItem?.key}

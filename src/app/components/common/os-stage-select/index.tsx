@@ -62,6 +62,7 @@ const CommonStageSelect: FC<CommonStageSelectProps> = ({
       backgroundColor={selectedStage?.color}
       color={selectedStage?.textColor}
       borderColor={selectedStage?.border}
+      placeholder="Select Stage"
       suffixIcon={
         <ChevronDownIcon width={20} color={selectedStage?.textColor} />
       }

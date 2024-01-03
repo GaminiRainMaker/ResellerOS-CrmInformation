@@ -54,11 +54,10 @@ const CrmOpportunity: React.FC = () => {
   const [tableData, setTableData] = useState<any>();
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
-
   const [deletedData, setDeletedData] = useState<any>();
   const [open, setOpen] = useState(false);
+  const {data: opportunityData, loading} = useAppSelector((state) => state.Opportunity);
   const [searchCustomerData, setSearchCustomerData] = useState<any>();
-  const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
   const [formValue, setFormValue] = useState<any>();
   const [opportunityValueData, setOpportunityValueData] = useState<any>();
 
@@ -166,7 +165,6 @@ const CrmOpportunity: React.FC = () => {
           options={StageValue}
           // value={text}
           onChange={(e: any) => {
-            console.log('345435', e);
             const dataa = {id: record?.id, stages: e};
             dispatch(updateOpportunity(dataa));
             setTimeout(() => {
@@ -244,7 +242,7 @@ const CrmOpportunity: React.FC = () => {
           dataSource={opportunityValueData}
           rowSelection={rowSelection}
           scroll
-          loading={false}
+          loading={loading}
         />
       ),
       key: '1',
@@ -416,20 +414,7 @@ const CrmOpportunity: React.FC = () => {
             }
             items={tabItems.map((tabItem: any, index: number) => ({
               key: `${index + 1}`,
-              label: (
-                <div>
-                  <div>{tabItem?.label}</div>
-                  <div
-                    style={{
-                      // eslint-disable-next-line eqeqeq
-                      borderBottom:
-                        // eslint-disable-next-line eqeqeq
-                        activeTab == tabItem?.key ? '2px solid #1C3557' : '',
-                      // marginTop: '3px',
-                    }}
-                  />
-                </div>
-              ),
+              label: (tabItem?.label),
               ...tabItem,
             }))}
           />
