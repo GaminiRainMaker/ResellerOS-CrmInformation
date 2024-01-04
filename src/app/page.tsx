@@ -1,14 +1,20 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
 
 'use client';
 
 import React, {useEffect, useRef, useState} from 'react';
-import PSPDFKit from 'pspdfkit';
+// import PSPDFKit from 'pspdfkit';
+import dynamic from 'next/dynamic';
 import {CloudDownloadOutlined} from '@ant-design/icons';
 import Typography from './components/common/typography';
 import useThemeToken from './components/common/hooks/useThemeToken';
 import {Upload, UploadProps} from './components/common/antd/Upload';
 import {Button} from './components/common/antd/Button';
+
+// const PSPDFKit = dynamic(() => import('pspdfkit'), {
+//   ssr: false,
+// });
 
 export default function Home() {
   const [token] = useThemeToken();
@@ -47,11 +53,12 @@ export default function Home() {
 
   useEffect(() => {
     const container = containerRef.current;
-    (async function () {
+    const initPspdfKit = async () => {
+      const PSPDFKit = await import('pspdfkit');
       if (PSPDFKit) {
-        PSPDFKit.unload(container);
+        PSPDFKit?.unload(container);
       }
-      const newInstance = await PSPDFKit.load({
+      const newInstance = await PSPDFKit?.load({
         container,
         document: 'test.pdf',
         toolbarItems: [
@@ -79,15 +86,17 @@ export default function Home() {
 
       if (newInstance) {
         // the "previewRedactionMode" flag will toggle between mark and redacted
-        newInstance.setViewState((vs) => vs.set('previewRedactionMode', true));
+        newInstance.setViewState((vs: any) =>
+          vs.set('previewRedactionMode', true),
+        );
       }
-    })();
-
-    return () => {
-      if (PSPDFKit) {
-        PSPDFKit.unload(container);
-      }
+      return () => {
+        if (PSPDFKit) {
+          PSPDFKit.unload(container);
+        }
+      };
     };
+    initPspdfKit();
   }, [base64Data]);
 
   // const clearAnnotations = async () => {
@@ -168,7 +177,7 @@ export default function Home() {
             onChange={(e) => setSearchPatternData(e.target.value)}
           />
 
-          <button
+          {/* <button
             onClick={async () => {
               const matches = await instance.createRedactionsBySearch(
                 searchPatternData,
@@ -183,7 +192,7 @@ export default function Home() {
             }}
           >
             Search Data
-          </button>
+          </button> */}
 
           <br />
           {/* <button onClick={clearAnnotations}>Clear</button> */}
