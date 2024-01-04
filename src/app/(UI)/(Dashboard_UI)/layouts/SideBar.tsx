@@ -1,13 +1,16 @@
+/* eslint-disable eqeqeq */
+
 'use client';
 
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsAvatar from '@/app/components/common/os-avatar';
 import Typography from '@/app/components/common/typography';
+import {LifebuoyIcon} from '@heroicons/react/20/solid';
 import {
+  AdjustmentsHorizontalIcon,
   BoltIcon,
   ChevronDownIcon,
-  CircleStackIcon,
   CurrencyDollarIcon,
   ReceiptPercentIcon,
   ShoppingBagIcon,
@@ -17,7 +20,6 @@ import {
 import {Layout, Menu, MenuProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import React, {useState} from 'react';
-import {LifebuoyIcon} from '@heroicons/react/20/solid';
 import {CustomSider} from './styled-components';
 
 const SideBar = () => {
@@ -54,7 +56,7 @@ const SideBar = () => {
             icon={
               <Squares2X2Icon
                 color={
-                  seleectedKey?.toString()?.includes('1')
+                  seleectedKey == 1
                     ? token?.colorLink
                     : token?.colorTextSecondary
                 }
@@ -68,9 +70,7 @@ const SideBar = () => {
               marginTop: '1px',
             }}
             color={
-              seleectedKey?.toString()?.includes('1')
-                ? token?.colorLink
-                : token?.colorTextSecondary
+              seleectedKey == 1 ? token?.colorLink : token?.colorTextSecondary
             }
           >
             Dashboard
@@ -456,6 +456,41 @@ const SideBar = () => {
           '0',
         ),
       ],
+    ),
+    getItem(
+      <Space
+        size={12}
+        onClick={() => {
+          setSelectedKey(11);
+          router?.push('/admin');
+        }}
+        color={token?.colorTextSecondary}
+      >
+        <OsAvatar
+          icon={
+            <AdjustmentsHorizontalIcon
+              color={
+                seleectedKey?.toString()?.includes('11')
+                  ? token?.colorLink
+                  : token?.colorTextSecondary
+              }
+              width={24}
+            />
+          }
+        />
+        <Typography
+          cursor="pointer"
+          name="Button 1"
+          color={
+            seleectedKey?.toString()?.includes('11')
+              ? token?.colorLink
+              : token?.colorTextSecondary
+          }
+        >
+          Admin
+        </Typography>
+      </Space>,
+      '11',
     ),
   ];
   return (
