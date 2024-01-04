@@ -46,7 +46,6 @@ const AccountDetails = () => {
     dispatch(getCustomerBYId(getCustomerID));
   }, [getCustomerID]);
 
-  console.log('customerData', customerData);
   const analyticsData = [
     {
       key: 1,
