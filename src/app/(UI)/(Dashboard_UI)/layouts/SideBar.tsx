@@ -312,7 +312,7 @@ const SideBar = () => {
               name="Button 1"
               style={{
                 marginTop: '1px',
-                marginRight: '80px',
+                marginRight: '60px',
               }}
               color={
                 seleectedKey?.toString()?.includes('7') ||
