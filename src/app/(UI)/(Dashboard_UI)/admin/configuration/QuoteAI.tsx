@@ -10,51 +10,6 @@ import {Row, Space, TabsProps} from 'antd';
 import {useState} from 'react';
 
 const QuoteAI = () => {
-  const tabs = [
-    {
-      key: 1,
-      title: 'Configuration',
-      childitem: [
-        {key: 1, name: 'Quote AI'},
-        {key: 2, name: 'DealReg AI'},
-      ],
-    },
-    {
-      key: 2,
-      title: 'Subscription Management',
-      childitem: [
-        {key: 3, name: 'Subscriptions'},
-        {key: 4, name: 'Invoices'},
-      ],
-    },
-    {
-      key: 3,
-      title: 'Users',
-      childitem: [
-        {key: 5, name: 'All users'},
-        {key: 6, name: 'Roles and Permissions'},
-      ],
-    },
-    {
-      key: 4,
-      title: 'Integration',
-      childitem: [
-        {key: 7, name: 'Subscriptions'},
-        {key: 8, name: 'CRM accounts'},
-      ],
-    },
-    {
-      key: 5,
-      title: 'Account',
-      childitem: [
-        {key: 9, name: 'Profiles'},
-        {key: 10, name: 'Settings'},
-      ],
-    },
-  ];
-
-  // return <CustomTabs tabs={tabs} />;
-
   const [activeTab, setActiveTab] = useState<any>('1');
 
   const tabItems: TabsProps['items'] = [
@@ -97,7 +52,7 @@ const QuoteAI = () => {
     },
   ];
   return (
-    <Space size={24} direction="vertical" style={{width: '86%'}}>
+    <Space size={24} direction="vertical" style={{width: '100%'}}>
       <Row
         style={{
           background: 'transparent',
@@ -106,7 +61,7 @@ const QuoteAI = () => {
         }}
       >
         <OsTabs
-          style={{background: 'transparent', width: '90%'}}
+          style={{background: 'transparent'}}
           onChange={(e) => {
             setActiveTab(e);
           }}
@@ -120,7 +75,7 @@ const QuoteAI = () => {
                   size={24}
                   direction="vertical"
                   style={{
-                    width: '89%',
+                    width: '100%',
                     background: 'white',
                     padding: '24px',
                     borderRadius: '12px',
@@ -144,7 +99,7 @@ const QuoteAI = () => {
                             size={24}
                             direction="vertical"
                             style={{
-                              width: '89%',
+                              width: '100%',
                               background: 'white',
                               padding: '24px',
                               paddingTop: '10px',
@@ -176,7 +131,7 @@ const QuoteAI = () => {
                   size={24}
                   direction="vertical"
                   style={{
-                    width: '89%',
+                    width: '100%',
                     background: 'white',
                     padding: '24px',
                     borderRadius: '12px',
@@ -219,7 +174,7 @@ const QuoteAI = () => {
                             </Typography>
                             <OsInput
                               placeholder="Write here!"
-                              style={{width: '89%', marginTop: '-10px'}}
+                              style={{width: '100%', marginTop: '-10px'}}
                             />
                           </Space>
                         ),
