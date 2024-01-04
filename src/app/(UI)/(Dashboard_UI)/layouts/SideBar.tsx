@@ -6,10 +6,11 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsAvatar from '@/app/components/common/os-avatar';
 import Typography from '@/app/components/common/typography';
+import {LifebuoyIcon} from '@heroicons/react/20/solid';
 import {
+  AdjustmentsHorizontalIcon,
   BoltIcon,
   ChevronDownIcon,
-  CircleStackIcon,
   CurrencyDollarIcon,
   ReceiptPercentIcon,
   ShoppingBagIcon,
@@ -19,7 +20,6 @@ import {
 import {Layout, Menu, MenuProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import React, {useState} from 'react';
-import {LifebuoyIcon} from '@heroicons/react/20/solid';
 import {CustomSider} from './styled-components';
 
 const SideBar = () => {
@@ -468,7 +468,7 @@ const SideBar = () => {
       >
         <OsAvatar
           icon={
-            <CurrencyDollarIcon
+            <AdjustmentsHorizontalIcon
               color={
                 seleectedKey?.toString()?.includes('11')
                   ? token?.colorLink
