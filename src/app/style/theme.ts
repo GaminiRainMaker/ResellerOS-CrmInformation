@@ -43,6 +43,7 @@ const theme: ThemeConfig = {
     // colorSplit: '#EF697B',
     colorIcon: '#EF697B',
     colorInfoBgHover: '#E9F0F7',
+    colorTextDisabled: '#6C97C6',
   },
   components: {
     Button: {
