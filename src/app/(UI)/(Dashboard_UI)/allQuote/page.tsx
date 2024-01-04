@@ -71,10 +71,8 @@ const AllQuote: React.FC = () => {
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
   const [quoteData, setQuoteData] = useState<React.Key[]>([]);
   const [deletedQuote, setDeletedQuote] = useState<React.Key[]>([]);
-  const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
   const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
 
@@ -126,8 +124,6 @@ const AllQuote: React.FC = () => {
 
   const rowSelection = {
     onChange: (selectedRowKeys: any) => {
-      setSelectedRowKeys(selectedRowKeys);
-      setSelectedRowIds(selectedRowKeys);
       setExistingQuoteId(Number(selectedRowKeys));
     },
     getCheckboxProps: (record: any) => ({
@@ -376,11 +372,11 @@ const AllQuote: React.FC = () => {
 
   const tabItems: TabsProps['items'] = [
     {
-      label: <Typography name="Body 4/Medium" >All</Typography>,
+      label: <Typography name="Body 4/Medium">All</Typography>,
       key: '1',
     },
     {
-      label:  <Typography name="Body 4/Medium" >Drafts</Typography>,
+      label: <Typography name="Body 4/Medium">Drafts</Typography>,
       key: '2',
       children: (
         <>
@@ -407,11 +403,11 @@ const AllQuote: React.FC = () => {
     },
 
     {
-      label: <Typography name="Body 4/Medium" >In Progress</Typography>,
+      label: <Typography name="Body 4/Medium">In Progress</Typography>,
       key: '3',
     },
     {
-      label:  <Typography name="Body 4/Medium" >Completed</Typography>,
+      label: <Typography name="Body 4/Medium">Completed</Typography>,
       key: '4',
     },
   ];
@@ -512,15 +508,22 @@ const AllQuote: React.FC = () => {
                     }}
                   />
                 </Space>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',marginTop: '20px' }}>
-                <Typography
-                  cursor="pointer"
-                  name="Button 1"
-                  color={token?.colorLink}
-                  onClick={handleReset}
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: '20px',
+                  }}
                 >
-                  Reset
-                </Typography>
+                  <Typography
+                    cursor="pointer"
+                    name="Button 1"
+                    color={token?.colorLink}
+                    onClick={handleReset}
+                  >
+                    Reset
+                  </Typography>
                 </div>
               </Space>
             }

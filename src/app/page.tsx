@@ -27,7 +27,6 @@ export default function Home() {
     for (let i = 0; i < binaryString.length; i++) {
       bytes[i] = binaryString.charCodeAt(i);
     }
-    console.log(bytes.buffer);
     return bytes.buffer;
   };
 
@@ -124,9 +123,8 @@ export default function Home() {
   const beforeUpload = (file: File) => {
     convertFileToBase64(file)
       .then((base64String) => {
-        const urlsBuffer = base64ToArrayBuffer(base64String);
-        setBase64Data(base64String);
-        console.log('base64String', urlsBuffer);
+        // const urlsBuffer = base64ToArrayBuffer(base64String);
+        // setBase64Data(base64String);
         // sendDataToNanonets(base64String, file);
       })
       .catch((error) => {
