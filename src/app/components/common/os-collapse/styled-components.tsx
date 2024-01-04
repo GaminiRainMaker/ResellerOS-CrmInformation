@@ -20,3 +20,22 @@ export const OsCollapseStyle = styled(Collapse)`
     padding: 0px ;
   }
 `;
+export const OsCollapseStyleForAdmin = styled(Collapse)`
+  &.ant-collapse > .ant-collapse-item {
+    margin-bottom: 16px;
+    .ant-collapse-header {
+      padding: 12px;
+    }
+  }
+  .ant-collapse-header {
+      background-color: white;
+  }
+  .ant-collapse-item-active {
+    .ant-collapse-header {
+        background-color: white; 
+        color: black;
+  }
+  .ant-collapse-content-box {
+    padding: 0px ;
+  }
+`;

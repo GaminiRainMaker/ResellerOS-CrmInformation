@@ -2,14 +2,14 @@
 import {FC} from 'react';
 import {CollapseProps} from '../antd/Collapse';
 import useThemeToken from '../hooks/useThemeToken';
-import {OsCollapseStyle, OsCollapseStyleForAdmin} from './styled-components';
+import {OsCollapseStyleForAdmin} from './styled-components';
 
-const OsCollapse: FC<CollapseProps> = ({items}, props) => {
+const OsCollapseAdmin: FC<CollapseProps> = ({items}, props) => {
   const [token] = useThemeToken();
 
   return (
-    <OsCollapseStyle
-      expandIconPosition="start"
+    <OsCollapseStyleForAdmin
+      expandIconPosition="end"
       items={items}
       ghost
       {...props}
@@ -20,4 +20,4 @@ const OsCollapse: FC<CollapseProps> = ({items}, props) => {
   );
 };
 
-export default OsCollapse;
+export default OsCollapseAdmin;
