@@ -97,7 +97,7 @@ const QuoteAI = () => {
     },
   ];
   return (
-    <Space size={24} direction="vertical" style={{width: '100%'}}>
+    <Space size={24} direction="vertical" style={{width: '86%'}}>
       <Row
         style={{
           background: 'transparent',
@@ -106,34 +106,21 @@ const QuoteAI = () => {
         }}
       >
         <OsTabs
-          style={{background: 'transparent'}}
+          style={{background: 'transparent', width: '90%'}}
           onChange={(e) => {
             setActiveTab(e);
           }}
           activeKey={activeTab}
           items={tabItems.map((tabItem: any, index: number) => ({
             key: `${index + 1}`,
-            label: (
-              <div>
-                <div>{tabItem?.label}</div>
-                <div
-                  style={{
-                    // eslint-disable-next-line eqeqeq
-                    borderBottom:
-                      // eslint-disable-next-line eqeqeq
-                      activeTab == tabItem?.key ? '2px solid #1C3557' : '',
-                    // marginTop: '3px',
-                  }}
-                />
-              </div>
-            ),
+            label: tabItem?.label,
             children: (
               <Row>
                 <Space
                   size={24}
                   direction="vertical"
                   style={{
-                    width: '100%',
+                    width: '89%',
                     background: 'white',
                     padding: '24px',
                     borderRadius: '12px',
@@ -157,7 +144,7 @@ const QuoteAI = () => {
                             size={24}
                             direction="vertical"
                             style={{
-                              width: '100%',
+                              width: '89%',
                               background: 'white',
                               padding: '24px',
                               paddingTop: '10px',
@@ -189,7 +176,7 @@ const QuoteAI = () => {
                   size={24}
                   direction="vertical"
                   style={{
-                    width: '100%',
+                    width: '89%',
                     background: 'white',
                     padding: '24px',
                     borderRadius: '12px',
@@ -232,7 +219,7 @@ const QuoteAI = () => {
                             </Typography>
                             <OsInput
                               placeholder="Write here!"
-                              style={{width: '100%', marginTop: '-10px'}}
+                              style={{width: '89%', marginTop: '-10px'}}
                             />
                           </Space>
                         ),
