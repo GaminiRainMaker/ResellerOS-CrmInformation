@@ -51,53 +51,53 @@ export default function Home() {
       reader.readAsDataURL(file);
     });
 
-  useEffect(() => {
-    const container = containerRef.current;
-    const initPspdfKit = async () => {
-      const PSPDFKit = await import('pspdfkit');
-      if (PSPDFKit) {
-        PSPDFKit?.unload(container);
-      }
-      const newInstance = await PSPDFKit?.load({
-        container,
-        document: 'test.pdf',
-        toolbarItems: [
-          {type: 'redact-rectangle'},
-          {type: 'redact-text-highlighter'},
-        ],
-        baseUrl: `${window.location.protocol}//${window.location.host}/`,
-      });
-      setInstance(newInstance);
+  // useEffect(() => {
+  //   const container = containerRef.current;
+  //   const initPspdfKit = async () => {
+  //     const PSPDFKit = await import('pspdfkit');
+  //     if (PSPDFKit) {
+  //       PSPDFKit?.unload(container);
+  //     }
+  //     const newInstance = await PSPDFKit?.load({
+  //       container,
+  //       document: 'test.pdf',
+  //       toolbarItems: [
+  //         {type: 'redact-rectangle'},
+  //         {type: 'redact-text-highlighter'},
+  //       ],
+  //       baseUrl: `${window.location.protocol}//${window.location.host}/`,
+  //     });
+  //     setInstance(newInstance);
 
-      searchItems.map(async (searchPattern) => {
-        // This method will automatically create new redaction annotations
-        const matches = await newInstance.createRedactionsBySearch(
-          searchPattern,
-          {
-            searchType: PSPDFKit.SearchType.REGEX,
-            // searchInAnnotations: searchInAnn,
-          },
-        );
+  //     searchItems.map(async (searchPattern) => {
+  //       // This method will automatically create new redaction annotations
+  //       const matches = await newInstance.createRedactionsBySearch(
+  //         searchPattern,
+  //         {
+  //           searchType: PSPDFKit.SearchType.REGEX,
+  //           // searchInAnnotations: searchInAnn,
+  //         },
+  //       );
 
-        if (!matches || !matches.size) {
-          return window.alert('No matches were found');
-        }
-      });
+  //       if (!matches || !matches.size) {
+  //         return window.alert('No matches were found');
+  //       }
+  //     });
 
-      if (newInstance) {
-        // the "previewRedactionMode" flag will toggle between mark and redacted
-        newInstance.setViewState((vs: any) =>
-          vs.set('previewRedactionMode', true),
-        );
-      }
-      return () => {
-        if (PSPDFKit) {
-          PSPDFKit.unload(container);
-        }
-      };
-    };
-    initPspdfKit();
-  }, [base64Data]);
+  //     if (newInstance) {
+  //       // the "previewRedactionMode" flag will toggle between mark and redacted
+  //       newInstance.setViewState((vs: any) =>
+  //         vs.set('previewRedactionMode', true),
+  //       );
+  //     }
+  //     return () => {
+  //       if (PSPDFKit) {
+  //         PSPDFKit.unload(container);
+  //       }
+  //     };
+  //   };
+  //   initPspdfKit();
+  // }, [base64Data]);
 
   // const clearAnnotations = async () => {
   //   for (let i = 0; i < instance.totalPageCount; i++) {
