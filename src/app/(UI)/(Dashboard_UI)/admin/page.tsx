@@ -9,7 +9,7 @@ import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {Row, Space, TabsProps} from 'antd';
+import {Col, Row, Space, TabsProps} from 'antd';
 import {useState} from 'react';
 
 const AdminPage = () => {
