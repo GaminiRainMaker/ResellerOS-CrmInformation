@@ -61,6 +61,7 @@ export const API = {
     QUERY: '/customer/updateCustomer',
     SEARCH: '/customer/search',
     QUERYCUSTOMER: '/customer/query',
+    GETBYID: '/customer/getAllCustomerById',
   },
   ADDRESS: {
     INDEX: '/address',
@@ -70,5 +71,11 @@ export const API = {
     QUERY: '/billingContact/deleteBillingContact',
     SEARCH: '/billingContact/getBillingContactBySearch',
     QUERYCONTACT: '/billingContact/query',
+  },
+  OPPORTUNITY: {
+    INDEX: '/opportunity',
+    QUERY: '/opportunity/getOpportunityById',
+    DELETE: '/opportunity/deleteOpportunityById',
+    QUERYOPPORTUNITY: '/opportunity/query',
   },
 };

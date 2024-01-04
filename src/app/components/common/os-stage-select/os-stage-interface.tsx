@@ -1,6 +1,3 @@
-export interface OsStageWrapperProps {
-  value: string;
-}
 export type StageProp = {
   color?: string;
   textColor?: string;

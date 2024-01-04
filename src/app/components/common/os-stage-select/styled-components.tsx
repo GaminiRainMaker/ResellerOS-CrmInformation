@@ -8,6 +8,7 @@ export const StageSelectStyle = styled(Select)<{
   borderColor?: string;
 }>`
   width: fit-content;
+  min-width: 95px;
   .ant-select-selector {
     display: flex;
     padding: 4px 16px;
@@ -15,16 +16,10 @@ export const StageSelectStyle = styled(Select)<{
     align-items: center;
     gap: 4px;
     border-radius: 50px;
-    color: ${(props) => (props.color ? props.color : 'red')};
-    background: ${(props) =>
-      props.backgroundColor ? props.backgroundColor : 'red'};
+    color: ${(props) => (props.color ? props.color : '')};
   }
-  &.ant-select-single {
-    border-radius: 50px;
-
-    background: ${(props) =>
-      props.backgroundColor ? props.backgroundColor : 'red'};
-    border: ${(props) =>
-      props.borderColor ? `1px solid ${props.borderColor}` : '1px solid black'};
-  }
+  &.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+  border: ${(props) => (props.borderColor ? `1px solid ${props.borderColor}` : '')};
+  background: ${(props) =>  props.backgroundColor ? props.backgroundColor : ''};
+}
 `;

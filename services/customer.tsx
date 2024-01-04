@@ -15,4 +15,6 @@ export const CUSTOMER_API = {
   seacrh: (data: any) => post(API.CUSTOMER.SEARCH, data),
   query: (data: any) =>
     post(API.CUSTOMER.QUERYCUSTOMER, data) as Promise<AxiosResponse<[]>>,
+  getCsutomerById: (id: any) =>
+    get(`${API.CUSTOMER.GETBYID}/${id}`) as Promise<AxiosResponse<any>>,
 };

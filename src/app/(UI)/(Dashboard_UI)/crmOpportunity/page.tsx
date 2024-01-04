@@ -23,20 +23,28 @@ import OsDrawer from '@/app/components/common/os-drawer';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
-import OsStatusWrapper from '@/app/components/common/os-status';
+import CommonStageSelect from '@/app/components/common/os-stage-select';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
 import {StageValue, opportunityDummyData} from '@/app/utils/CONSTANTS';
 import {Button, MenuProps, TabsProps} from 'antd';
-import {useState} from 'react';
-import CommonStageSelect from '@/app/components/common/os-stage-select';
+import {useEffect, useState} from 'react';
+import OsInput from '@/app/components/common/os-input';
+import {SearchOutlined} from '@ant-design/icons';
 import {
   deleteCustomers,
   getAllCustomer,
 } from '../../../../../redux/actions/customer';
-import {useAppDispatch} from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddOpportunity from './AddOpportunity';
+import {
+  deleteOpportunity,
+  getAllOpportunity,
+  getdeleteOpportunity,
+  queryOpportunity,
+  updateOpportunity,
+} from '../../../../../redux/actions/opportunity';
 
 const CrmOpportunity: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -46,53 +54,83 @@ const CrmOpportunity: React.FC = () => {
   const [tableData, setTableData] = useState<any>();
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
-
   const [deletedData, setDeletedData] = useState<any>();
   const [open, setOpen] = useState(false);
+  const {
+    data: opportunityData,
+    loading,
+    deletedCount: countDeletedOpp,
+  } = useAppSelector((state) => state.Opportunity);
+  const [searchCustomerData, setSearchCustomerData] = useState<any>();
   const [formValue, setFormValue] = useState<any>();
+  const [opportunityValueData, setOpportunityValueData] = useState<any>();
+
+  const searchOpportunity = async () => {
+    dispatch(queryOpportunity(searchCustomerData));
+  };
 
   const deleteSelectedIds = async () => {
     const data = {Ids: deleteIds};
-    await dispatch(deleteCustomers(data));
+    await dispatch(deleteOpportunity(data));
     setTimeout(() => {
-      dispatch(getAllCustomer(''));
+      dispatch(getAllOpportunity());
+      dispatch(getdeleteOpportunity(''));
     }, 1000);
     setDeleteIds([]);
     setShowModalDelete(false);
   };
 
+  console.log('countDeletedOpp', countDeletedOpp);
+  const updateOpportunityData = async () => {
+    await dispatch(updateOpportunity(formValue));
+    dispatch(getAllOpportunity());
+    setOpen(false);
+  };
+  useEffect(() => {
+    dispatch(getAllOpportunity());
+    dispatch(getdeleteOpportunity(''));
+  }, []);
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(getAllOpportunity());
+    }, 1000);
+    dispatch(getdeleteOpportunity(''));
+  }, [!showModal]);
+  useEffect(() => {
+    setOpportunityValueData(opportunityData);
+  }, [opportunityData]);
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{tableData?.length}</div>,
+      primary: <div>{opportunityData?.length}</div>,
       secondry: 'Customers',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
-      primary: <div>{tableData?.length}</div>,
+      primary: <div>{opportunityData?.length}</div>,
       secondry: 'Opportunities',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
     },
     {
       key: 3,
-      primary: <div>{tableData?.length}</div>,
+      primary: <div>{opportunityData?.length}</div>,
       secondry: 'Contacts',
       icon: <PhoneIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
     {
       key: 4,
-      primary: <div>{tableData?.length}</div>,
+      primary: <div>{opportunityData?.length}</div>,
       secondry: 'Recents',
       icon: <ClockIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
     },
     {
       key: 5,
-      primary: <div>{deletedData?.length}</div>,
+      primary: <div>{countDeletedOpp || 0}</div>,
       secondry: 'Deleted',
       icon: <TrashIcon width={24} color={token?.colorError} />,
       iconBg: token?.colorErrorBg,
@@ -101,8 +139,8 @@ const CrmOpportunity: React.FC = () => {
   const OpportunityColumns = [
     {
       title: 'Opportunity',
-      dataIndex: 'opportunity',
-      key: 'opportunity',
+      dataIndex: 'title',
+      key: 'title',
       width: 187,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '-d-'}</Typography>
@@ -113,8 +151,10 @@ const CrmOpportunity: React.FC = () => {
       dataIndex: 'customer_name',
       key: 'customer_name',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (record: any, text: any) => (
+        <Typography name="Body 4/Regular">
+          {text?.Customer?.name ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -128,14 +168,22 @@ const CrmOpportunity: React.FC = () => {
     },
     {
       title: 'Stage',
-      dataIndex: 'stage',
-      key: 'stage',
+      dataIndex: 'stages',
+      key: 'stages',
       width: 130,
       render: (text: string, record: any) => (
         <CommonStageSelect
           options={StageValue}
-          currentStage={record?.stage}
-          value={record?.stage}
+          // value={text}
+          onChange={(e: any) => {
+            const dataa = {id: record?.id, stages: e};
+            dispatch(updateOpportunity(dataa));
+            setTimeout(() => {
+              dispatch(getAllOpportunity());
+              dispatch(getdeleteOpportunity(''));
+            }, 1000);
+          }}
+          currentStage={text}
         />
       ),
     },
@@ -144,13 +192,16 @@ const CrmOpportunity: React.FC = () => {
       dataIndex: 'quotesForms',
       key: 'quotesForms',
       width: 130,
-      render: (text: string) => (
-        <Typography color={token?.colorLink} name="Body 4/Bold">
+      render: () => (
+        <Typography
+          color={token?.colorLink}
+          name="Body 4/Bold"
+          cursor="pointer"
+        >
           View All
         </Typography>
       ),
     },
-
     {
       title: ' ',
       dataIndex: 'actions',
@@ -173,6 +224,10 @@ const CrmOpportunity: React.FC = () => {
             width={24}
             color={token.colorError}
             style={{cursor: 'pointer'}}
+            onClick={() => {
+              setDeleteIds([record?.id]);
+              setShowModalDelete(true);
+            }}
           />
         </Space>
       ),
@@ -191,66 +246,36 @@ const CrmOpportunity: React.FC = () => {
 
   const tabItems: TabsProps['items'] = [
     {
-      label: (
-        <div>
-          <div>All</div>
-          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
-        </div>
-      ),
+      label: <Typography name="Body 4/Regular">All</Typography>,
       children: (
         <OsTable
           columns={OpportunityColumns}
-          dataSource={opportunityDummyData}
+          dataSource={opportunityValueData}
           rowSelection={rowSelection}
           scroll
-          loading={false}
+          loading={loading}
         />
       ),
       key: '1',
     },
     {
-      label: (
-        <div>
-          <div>Commit</div>
-          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
-        </div>
-      ),
+      label: <Typography name="Body 4/Regular">Commit</Typography>,
       key: '2',
     },
     {
-      label: (
-        <div>
-          <div>Develop</div>
-          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
-        </div>
-      ),
+      label: <Typography name="Body 4/Regular">Develop</Typography>,
       key: '3',
     },
     {
-      label: (
-        <div>
-          <div>Negotiate</div>
-          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
-        </div>
-      ),
+      label: <Typography name="Body 4/Regular">Negotiate</Typography>,
       key: '4',
     },
     {
-      label: (
-        <div>
-          <div>Qualify</div>
-          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
-        </div>
-      ),
+      label: <Typography name="Body 4/Regular">Qualify</Typography>,
       key: '5',
     },
     {
-      label: (
-        <div>
-          <div>Prove</div>
-          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
-        </div>
-      ),
+      label: <Typography name="Body 4/Regular">Prove</Typography>,
       key: '6',
     },
   ];
@@ -266,7 +291,9 @@ const CrmOpportunity: React.FC = () => {
         <Typography
           name="Body 3/Regular"
           color="#EB445A"
-          onClick={deleteSelectedIds}
+          onClick={() => {
+            setShowModalDelete(true);
+          }}
         >
           Delete Selected
         </Typography>
@@ -349,58 +376,56 @@ const CrmOpportunity: React.FC = () => {
               <Space size={12} align="center">
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Opportunity</Typography>
-                  <CommonSelect
-                    style={{width: '180px'}}
-                    placeholder="Search Here"
-                    options={tableData}
+                  <OsInput
+                    style={{width: '200px'}}
+                    placeholder="Search here"
                     onChange={(e) => {
-                      //   setBillingFilterSearch({
-                      //     ...billingFilterSeach,
-                      //     customer_id: e,
-                      //   });
+                      setSearchCustomerData({
+                        ...searchCustomerData,
+                        title: e.target.value,
+                      });
+                      // setQuery(e.target.value);
                     }}
+                    prefix={<SearchOutlined style={{color: '#949494'}} />}
                   />
                 </Space>
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Customer Account</Typography>
-                  <CommonSelect
-                    style={{width: '180px'}}
-                    placeholder="Search Here"
-                    options={tableData}
+                  <OsInput
+                    style={{width: '200px'}}
+                    placeholder="Search here"
                     onChange={(e) => {
-                      //   setBillingFilterSearch({
-                      //     ...billingFilterSeach,
-                      //     customer_id: e,
-                      //   });
+                      setSearchCustomerData({
+                        ...searchCustomerData,
+                        name: e.target.value,
+                      });
                     }}
+                    prefix={<SearchOutlined style={{color: '#949494'}} />}
                   />
                 </Space>
-                <Typography
-                  cursor="pointer"
-                  name="Button 1"
-                  color="#C6CDD5"
-                  //   onClick={searchBillingContacts}
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: '20px',
+                    cursor: 'pointer',
+                  }}
                 >
-                  Apply
-                </Typography>
+                  <Typography
+                    cursor="pointer"
+                    name="Button 1"
+                    color="#C6CDD5"
+                    onClick={searchOpportunity}
+                  >
+                    Apply
+                  </Typography>
+                </div>
               </Space>
             }
             items={tabItems.map((tabItem: any, index: number) => ({
               key: `${index + 1}`,
-              label: (
-                <div>
-                  <div>{tabItem?.label}</div>
-                  <div
-                    style={{
-                      // eslint-disable-next-line eqeqeq
-                      borderBottom:
-                        // eslint-disable-next-line eqeqeq
-                        activeTab == tabItem?.key ? '2px solid #1C3557' : '',
-                      // marginTop: '3px',
-                    }}
-                  />
-                </div>
-              ),
+              label: tabItem?.label,
               ...tabItem,
             }))}
           />
@@ -449,7 +474,7 @@ const CrmOpportunity: React.FC = () => {
               btnStyle={{width: '100%'}}
               buttontype="PRIMARY"
               text="UPDATE CHANGES"
-              // clickHandler={updatebillDetails}
+              clickHandler={updateOpportunityData}
             />
           </Row>
         }

@@ -84,3 +84,14 @@ export const queryCustomer = createAsyncThunk(
     }
   },
 );
+export const getCustomerBYId = createAsyncThunk(
+  'customer/getAllCustomerById',
+  async (id: any, thunkApi) => {
+    try {
+      const res = await CUSTOMER_API.getCsutomerById(id);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

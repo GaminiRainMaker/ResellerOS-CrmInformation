@@ -67,6 +67,7 @@ const DeleteModal: FC<any> = ({
       // onOk={() => addQuoteLineItem()}
       onCancel={() => {
         setShowModalDelete((p: boolean) => !p);
+        // deleteSelectedIds();
       }}
     />
   );

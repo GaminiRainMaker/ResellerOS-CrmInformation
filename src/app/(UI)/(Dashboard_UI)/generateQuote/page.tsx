@@ -38,6 +38,7 @@ import {Button, MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import {
   getAllBundle,
   updateBundleQuantity,
@@ -578,10 +579,10 @@ const GenerateQuote: React.FC = () => {
     },
   ];
 
-  const menuItems: MenuProps['items'] = [
+  const menuItems = [
     {
       key: '1',
-      label: (
+      title: (
         <Typography
           name="Body 2/Medium"
           color={token?.colorInfoBorder}
@@ -596,7 +597,7 @@ const GenerateQuote: React.FC = () => {
     },
     {
       key: '2',
-      label: (
+      title: (
         <Typography
           name="Heading 3/Medium"
           cursor="pointer"
@@ -621,17 +622,7 @@ const GenerateQuote: React.FC = () => {
 
         <Row justify="space-between" align="middle">
           <Col>
-            {/* <OsBreadCrumb
-              separator={
-                <ChevronRightIcon
-                  width={24}
-                  height={24}
-                  color={token?.colorInfoBorder}
-                />
-              }
-              // items={menuItems}
-              // menu={{'items': menuItems}}
-            /> */}
+          <OsBreadCrumb items={menuItems} />
           </Col>
           <Col>
             <Space size={8} direction="horizontal">
@@ -719,21 +710,8 @@ const GenerateQuote: React.FC = () => {
               <TabPane
                 tab={
                   <Typography
-                    name="Body 4/Regular"
-                    color={
-                      activeTab === item?.key ? token?.colorPrimary : '#666666'
-                    }
-                  >
+                    name="Body 4/Regular">
                     {item?.name}
-                    <div
-                      style={{
-                        // eslint-disable-next-line eqeqeq
-                        borderBottom:
-                          // eslint-disable-next-line eqeqeq
-                          activeTab == item?.key ? '2px solid #1C3557' : '',
-                        // marginTop: '3px',
-                      }}
-                    />
                   </Typography>
                 }
                 key={item?.key}

@@ -8,6 +8,7 @@ export const DynamicDiv = styled.div<{
   ellipsis?: boolean;
   align?: TextAlign;
   lineClamp?: boolean;
+  hoverOnText?: boolean;
   lines?: number;
   maxWidth?: number;
   cursor?: string;
@@ -33,6 +34,11 @@ export const DynamicDiv = styled.div<{
       text-overflow: ellipsis;
       max-width: ${props.maxWidth}px;
   `}
+
+  &:hover {
+    color: ${(props) => (props.hoverOnText ? '#2364AA' : 'none')};
+    cursor: ${(props) => (props.hoverOnText ? 'pointer' : 'unset')};;
+  }
 `;
 
 export default DynamicDiv;
