@@ -11,6 +11,7 @@ import Typography from '@/app/components/common/typography';
 import {dummyData} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Row, Space} from 'antd';
+import {TabContainerStyle} from './styled-components';
 
 const FieldDisplayConfiguration = () => {
   const [token] = useThemeToken();
@@ -79,95 +80,110 @@ const FieldDisplayConfiguration = () => {
   ];
 
   return (
-    <Row>
-      <Space
-        size={36}
-        direction="vertical"
-        style={{
-          width: '100%',
-          background: 'white',
-          borderRadius: '12px',
-          padding: '24px',
-        }}
-      >
-        <OsCollapseAdmin
-          items={[
-            {
-              key: '1',
-              label: <Typography name="Body 2/Medium">Select Tab </Typography>,
-              children: (
-                <Space
-                  size={24}
-                  direction="vertical"
-                  style={{
-                    width: '100%',
-                    background: 'white',
-                    borderRadius: '12px',
-                  }}
-                >
+    <TabContainerStyle>
+      <Row>
+        <Space
+          size={36}
+          direction="vertical"
+          style={{
+            width: '100%',
+            background: 'white',
+            borderRadius: '12px',
+            padding: '24px',
+          }}
+        >
+          <OsCollapseAdmin
+            items={[
+              {
+                key: '1',
+                label: (
+                  <Typography name="Body 2/Medium">Select Tab </Typography>
+                ),
+                children: (
                   <Space
-                    size={4}
+                    size={24}
                     direction="vertical"
                     style={{
                       width: '100%',
+                      background: 'white',
+                      borderRadius: '12px',
                     }}
                   >
-                    <Typography name="Body 4/Medium">Select Tab</Typography>
-                    <CommonSelect
-                      placeholder="Select"
-                      style={{width: '100%'}}
-                    />
+                    <Space
+                      size={4}
+                      direction="vertical"
+                      style={{
+                        width: '100%',
+                      }}
+                    >
+                      <Typography name="Body 4/Medium">Select Tab</Typography>
+                      <CommonSelect
+                        placeholder="Select"
+                        style={{width: '100%'}}
+                      />
+                    </Space>
                   </Space>
-                </Space>
-              ),
-            },
-          ]}
-        />
-      </Space>
+                ),
+              },
+            ]}
+          />
+        </Space>
 
-      <Space
-        size={24}
-        direction="vertical"
+        <Space
+          size={24}
+          direction="vertical"
+          style={{
+            width: '100%',
+            background: 'white',
+            padding: '24px',
+            borderRadius: '12px',
+            marginTop: '30px',
+          }}
+        >
+          <OsCollapseAdmin
+            items={[
+              {
+                key: '1',
+                label: (
+                  <Typography name="Body 2/Medium">Selected Fields</Typography>
+                ),
+                children: (
+                  <Space size={24} direction="vertical" style={{width: '100%'}}>
+                    <OsTable
+                      loading={false}
+                      // rowSelection={rowSelection}
+                      tableSelectionType="checkbox"
+                      columns={FieldDisplayConfigurationFields}
+                      dataSource={dummyData}
+                      scroll
+                    />
+                    <div style={{width: 'max-content', float: 'right'}}>
+                      <OsButton
+                        text="Add Field"
+                        buttontype="PRIMARY"
+                        icon={<PlusIcon width={24} />}
+                        clickHandler={() => {}}
+                      />
+                    </div>
+                  </Space>
+                ),
+              },
+            ]}
+          />
+        </Space>
+      </Row>
+      <footer
         style={{
-          width: '100%',
-          background: 'white',
-          padding: '24px',
-          borderRadius: '12px',
-          marginTop: '30px',
+          width: 'max-content',
+          float: 'right',
+          position: 'absolute',
+          bottom: '0%',
+          right: '0%',
         }}
       >
-        <OsCollapseAdmin
-          items={[
-            {
-              key: '1',
-              label: (
-                <Typography name="Body 2/Medium">Selected Fields</Typography>
-              ),
-              children: (
-                <Space size={24} direction="vertical" style={{width: '100%'}}>
-                  <OsTable
-                    loading={false}
-                    // rowSelection={rowSelection}
-                    tableSelectionType="checkbox"
-                    columns={FieldDisplayConfigurationFields}
-                    dataSource={dummyData}
-                    scroll
-                  />
-                  <div style={{width: 'max-content', float: 'right'}}>
-                    <OsButton
-                      text="Add Field"
-                      buttontype="PRIMARY"
-                      icon={<PlusIcon width={24} />}
-                      clickHandler={() => {}}
-                    />
-                  </div>
-                </Space>
-              ),
-            },
-          ]}
-        />
-      </Space>
-    </Row>
+        <OsButton text="Save" buttontype="PRIMARY" clickHandler={() => {}} />
+      </footer>
+    </TabContainerStyle>
   );
 };
 export default FieldDisplayConfiguration;

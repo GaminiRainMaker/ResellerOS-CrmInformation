@@ -1,15 +1,16 @@
 'use client';
 
-import { Switch } from '@/app/components/common/antd/Switch';
+import {Switch} from '@/app/components/common/antd/Switch';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import { dummyData } from '@/app/utils/CONSTANTS';
-import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { Row, Space } from 'antd';
+import {dummyData} from '@/app/utils/CONSTANTS';
+import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {Row, Space} from 'antd';
+import {TabContainerStyle} from './styled-components';
 
 const SyncQuoteField = () => {
   const [token] = useThemeToken();
@@ -78,61 +79,60 @@ const SyncQuoteField = () => {
   ];
 
   return (
-    <Row>
-      <Space
-        size={24}
-        direction="vertical"
-        style={{
-          width: '100%',
-          background: 'white',
-          padding: '24px',
-          borderRadius: '12px',
-        }}
-      >
-        <OsCollapseAdmin
-          items={[
-            {
-              key: '1',
-              label: <Typography name="Body 2/Medium">Sync Quote</Typography>,
-              children: (
-                <Space size={24} direction="vertical" style={{width: '100%'}}>
-                  <OsTable
-                    loading={false}
-                    // rowSelection={rowSelection}
-                    tableSelectionType="checkbox"
-                    columns={SyncQuoteFields}
-                    dataSource={dummyData}
-                    scroll
-                  />
-                  <div style={{width: 'max-content', float: 'right'}}>
-                    <OsButton
-                      text="Add Field"
-                      buttontype="PRIMARY"
-                      icon={<PlusIcon width={24} />}
-                      clickHandler={() => {}}
-                    />
-                  </div>
-                </Space>
-              ),
-            },
-          ]}
-        />
-      </Space>
-      {/* <footer
+    <TabContainerStyle>
+      <Row>
+        <Space
+          size={24}
+          direction="vertical"
           style={{
-            width: 'max-content',
-            float: 'right',
-            position: 'absolute',
-            bottom: '0%',
+            width: '100%',
+            background: 'white',
+            padding: '24px',
+            borderRadius: '12px',
           }}
         >
-          <OsButton
-            text="Add Field"
-            buttontype="PRIMARY"
-            clickHandler={() => {}}
+          <OsCollapseAdmin
+            items={[
+              {
+                key: '1',
+                label: <Typography name="Body 2/Medium">Sync Quote</Typography>,
+                children: (
+                  <Space size={24} direction="vertical" style={{width: '100%'}}>
+                    <OsTable
+                      loading={false}
+                      // rowSelection={rowSelection}
+                      tableSelectionType="checkbox"
+                      columns={SyncQuoteFields}
+                      dataSource={dummyData}
+                      scroll
+                    />
+                    <div style={{width: 'max-content', float: 'right'}}>
+                      <OsButton
+                        text="Add Field"
+                        buttontype="PRIMARY"
+                        icon={<PlusIcon width={24} />}
+                        clickHandler={() => {}}
+                      />
+                    </div>
+                  </Space>
+                ),
+              },
+            ]}
           />
-        </footer> */}
-    </Row>
+        </Space>
+      </Row>
+      <footer
+        style={{
+          width: 'max-content',
+          float: 'right',
+          position: 'absolute',
+          bottom: '0%',
+          right: '0%',
+        }}
+      >
+        <OsButton text="Save" buttontype="PRIMARY" clickHandler={() => {}} />
+      </footer>
+    </TabContainerStyle>
   );
 };
 export default SyncQuoteField;

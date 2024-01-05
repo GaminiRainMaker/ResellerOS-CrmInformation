@@ -1,6 +1,5 @@
 'use client';
 
-import {Col} from '@/app/components/common/antd/Grid';
 import {Switch} from '@/app/components/common/antd/Switch';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
@@ -11,6 +10,7 @@ import Typography from '@/app/components/common/typography';
 import {dummyData} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Row, Space} from 'antd';
+import {TabContainerStyle} from './styled-components';
 
 const SyncQuoteLineItemField = () => {
   const [token] = useThemeToken();
@@ -79,65 +79,64 @@ const SyncQuoteLineItemField = () => {
   ];
 
   return (
-    <Row>
-      <Space
-        size={24}
-        direction="vertical"
-        style={{
-          width: '100%',
-          background: 'white',
-          padding: '24px',
-          borderRadius: '12px',
-        }}
-      >
-        <OsCollapseAdmin
-          items={[
-            {
-              key: '1',
-              label: (
-                <Typography name="Body 2/Medium">
-                  Sync Quote Line Item
-                </Typography>
-              ),
-              children: (
-                <Space size={24} direction="vertical" style={{width: '100%'}}>
-                  <OsTable
-                    loading={false}
-                    // rowSelection={rowSelection}
-                    tableSelectionType="checkbox"
-                    columns={SyncQuoteLineItemFields}
-                    dataSource={dummyData}
-                    scroll
-                  />
-                  <div style={{width: 'max-content', float: 'right'}}>
-                    <OsButton
-                      text="Add Field"
-                      buttontype="PRIMARY"
-                      icon={<PlusIcon width={24} />}
-                      clickHandler={() => {}}
-                    />
-                  </div>
-                </Space>
-              ),
-            },
-          ]}
-        />
-      </Space>
-      {/* <footer
+    <TabContainerStyle>
+      <Row>
+        <Space
+          size={24}
+          direction="vertical"
           style={{
-            width: 'max-content',
-            float: 'right',
-            position: 'absolute',
-            bottom: '0%',
+            width: '100%',
+            background: 'white',
+            padding: '24px',
+            borderRadius: '12px',
           }}
         >
-          <OsButton
-            text="Add Field"
-            buttontype="PRIMARY"
-            clickHandler={() => {}}
+          <OsCollapseAdmin
+            items={[
+              {
+                key: '1',
+                label: (
+                  <Typography name="Body 2/Medium">
+                    Sync Quote Line Item
+                  </Typography>
+                ),
+                children: (
+                  <Space size={24} direction="vertical" style={{width: '100%'}}>
+                    <OsTable
+                      loading={false}
+                      // rowSelection={rowSelection}
+                      tableSelectionType="checkbox"
+                      columns={SyncQuoteLineItemFields}
+                      dataSource={dummyData}
+                      scroll
+                    />
+                    <div style={{width: 'max-content', float: 'right'}}>
+                      <OsButton
+                        text="Add Field"
+                        buttontype="PRIMARY"
+                        icon={<PlusIcon width={24} />}
+                        clickHandler={() => {}}
+                      />
+                    </div>
+                  </Space>
+                ),
+              },
+            ]}
           />
-        </footer> */}
-    </Row>
+        </Space>
+      </Row>
+      <footer
+        style={{
+          width: 'max-content',
+          float: 'right',
+          position: 'absolute',
+          bottom: '0%',
+          right: '0%',
+        }}
+      >
+        <OsButton text="Save" buttontype="PRIMARY" clickHandler={() => {}} />
+      </footer>
+    </TabContainerStyle>
   );
 };
 export default SyncQuoteLineItemField;
