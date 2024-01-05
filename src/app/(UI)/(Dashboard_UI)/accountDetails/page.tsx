@@ -23,7 +23,6 @@ import {Space} from 'antd';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import {
   StageValue,
-  opportunityDummyData,
   quoteDummyData,
 } from '@/app/utils/CONSTANTS';
 import {useEffect} from 'react';

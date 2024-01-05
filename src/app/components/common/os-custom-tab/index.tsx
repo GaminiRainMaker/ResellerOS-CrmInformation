@@ -1,7 +1,8 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable arrow-body-style */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+import QuoteAI from '@/app/(UI)/(Dashboard_UI)/admin/configuration/quoteAI/index';
 import {FC, useState} from 'react';
-import QuoteAI from '@/app/(UI)/(Dashboard_UI)/admin/configuration/QuoteAI';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
@@ -60,7 +61,13 @@ const CustomTabs: FC<Tabinterface> = (tabs) => {
           })}
         </div>
       </CustomTabStyle>
-      {activekeysall === 1 ? <QuoteAI /> : <div>No Data</div>}
+      {activekeysall === 1 ? (
+        <QuoteAI />
+      ) : activekeysall === 2 ? (
+        <>No Data</>
+      ) : (
+        <>No Data</>
+      )}
     </div>
   );
 };

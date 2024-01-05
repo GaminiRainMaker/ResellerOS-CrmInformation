@@ -90,50 +90,39 @@ export const quoteDummyData = [
   },
 ];
 
-export const opportunityDummyData = [
-  {
-    id: 1,
-    stage: 'Negotiate',
-    name: 'IT Tech sample quote',
-    opportunity: 'Blue Halo- Guided Support',
-    customer_name: 'Impres Technologies',
-    amount: '$ 931,521.00',
-  },
-  {
-    id: 2,
-    stage: 'Commit',
-    name: 'IT Tech sample quote',
-    opportunity: 'ClearShark-Reseller OS',
-    customer_name: 'ABC Organization',
-    amount: '$ 931,521.00',
-  },
-  {
-    id: 3,
-    stage: 'Qualify',
-    name: 'IT Tech sample quote',
-    opportunity: 'Edge Solutions-TBD',
-    customer_name: 'XYZ Techs',
-    amount: '$ 931,521.00',
-  },
-];
-
-export const rebateTableData = [
-  {
-    id: 1,
-    percentage_payout: 3,
-    pid: '422-BRSI',
-  },
-  {
-    id: 2,
-    percentage_payout: 5,
-    pid: '796-5228',
-  },
-];
-
 export const StageValue = [
   {value: 'Commit', label: 'Commit'},
   {value: 'Negotiate', label: 'Negotiate'},
   {value: 'Develop', label: 'Develop'},
   {value: 'Qualify', label: 'Qualify'},
   {value: 'Prove', label: 'Prove'},
+];
+
+export const dummyData = [
+  {
+    id: 1,
+    opportunity: 'Precision 7920 Rack XC...',
+    customer_name: 'Impres Technologies',
+  },
+  {
+    id: 2,
+    opportunity: 'Precision 7920 Rack XC...',
+    customer_name: 'Impres Technologies',
+  },
+  {
+    id: 3,
+    opportunity: 'Precision 7920 Rack XC...',
+    customer_name: 'Impres Technologies',
+  },
+  {
+    id: 4,
+    opportunity: 'Precision 7920 Rack XC...',
+    customer_name: 'Impres Technologies',
+  },
+  {
+    id: 5,
+    opportunity: 'Precision 7920 Rack XC...',
+    customer_name: 'Impres Technologies',
+  },
+  
 ];

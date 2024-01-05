@@ -21,21 +21,10 @@ export const OsCollapseStyle = styled(Collapse)`
   }
 `;
 export const OsCollapseStyleForAdmin = styled(Collapse)`
-  &.ant-collapse > .ant-collapse-item {
-    margin-bottom: 16px;
-    .ant-collapse-header {
-      padding: 12px;
-    }
+  &.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+    padding: 0px;
   }
-  .ant-collapse-header {
-      background-color: white;
-  }
-  .ant-collapse-item-active {
-    .ant-collapse-header {
-        background-color: white; 
-        color: black;
-  }
-  .ant-collapse-content-box {
-    padding: 0px ;
+  &.ant-collapse .ant-collapse-content>.ant-collapse-content-box{
+    padding: 16px 0px;
   }
 `;
