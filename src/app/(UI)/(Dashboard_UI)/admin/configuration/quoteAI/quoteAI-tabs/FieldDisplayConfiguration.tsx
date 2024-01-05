@@ -11,9 +11,39 @@ import Typography from '@/app/components/common/typography';
 import {dummyData} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Row, Space} from 'antd';
+import {useEffect, useState} from 'react';
+import {useSearchParams} from 'next/navigation';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../../../../../redux/hook';
+import {getAllTableColumn} from '../../../../../../../../redux/actions/tableColumn';
 
 const FieldDisplayConfiguration = () => {
   const [token] = useThemeToken();
+  const dispatch = useAppDispatch();
+  const {data: tableColumnData, loading} = useAppSelector(
+    (state) => state.tableColumn,
+  );
+  const [selectedTable, setSelectedTable] = useState<String>();
+  const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
+
+  const [updateColumn, setUpdateColumn] = useState<any>();
+  useEffect(() => {
+    dispatch(getAllTableColumn(''));
+  }, []);
+
+  useEffect(() => {
+    let filteredArray: any = [];
+    if (tableColumnData && selectedTable) {
+      filteredArray = tableColumnData?.filter(
+        (item: any) => item?.table_name?.includes(selectedTable),
+      );
+    }
+
+    setTableColumnDataShow(filteredArray);
+  }, [selectedTable]);
+  console.log('43535', updateColumn);
 
   const FieldDisplayConfigurationFields = [
     {
@@ -24,38 +54,58 @@ const FieldDisplayConfiguration = () => {
     },
     {
       title: 'Field Name',
-      dataIndex: 'name',
-      key: 'name',
-      render: (text: string) => (
-        <CommonSelect
-          style={{width: '100%', height: '36px'}}
-          placeholder="Select"
-          defaultValue={text}
-          onChange={(v) => {}}
-          options={[]}
+      dataIndex: 'field_name',
+      key: 'field_name',
+      // render: (text: string) => (
+      //   <CommonSelect
+      //     style={{width: '100%', height: '36px'}}
+      //     placeholder="Select"
+      //     defaultValue={text}
+      //     onChange={(v) => {}}
+      //     options={[]}
+      //   />
+      // ),
+      width: 313,
+    },
+    {
+      title: 'Required',
+      dataIndex: 'is_required',
+      key: 'is_required',
+      render: (text: any, record: any) => (
+        <Checkbox
+          defaultChecked={text}
+          onChange={(e) => {
+            if (e.target?.checked) {
+              setUpdateColumn({
+                ...updateColumn,
+                is_required: true,
+                id: record?.id,
+              });
+            } else {
+              setUpdateColumn({
+                ...updateColumn,
+                is_required: false,
+              });
+            }
+          }}
         />
       ),
       width: 313,
     },
     {
-      title: 'Required',
-      dataIndex: 'required',
-      key: 'required',
-      render: (text: string) => <Checkbox />,
-      width: 313,
-    },
-    {
       title: 'Editable',
-      dataIndex: 'editable',
-      key: 'editable',
-      render: (text: string) => <Checkbox />,
+      dataIndex: 'is_editable',
+      key: 'is_editable',
+      render: (text: any) => <Checkbox defaultChecked={text} />,
       width: 313,
     },
     {
       title: 'Active',
-      dataIndex: 'active',
-      key: 'active',
-      render: (text: string) => <Switch size="default" onChange={() => {}} />,
+      dataIndex: 'is_active',
+      key: 'is_active',
+      render: (text: any) => (
+        <Switch defaultChecked={text} size="default" onChange={() => {}} />
+      ),
       width: 77,
     },
     {
@@ -115,6 +165,27 @@ const FieldDisplayConfiguration = () => {
                     <Typography name="Body 4/Medium">Select Tab</Typography>
                     <CommonSelect
                       placeholder="Select"
+                      options={[
+                        {
+                          label: 'Input Details',
+                          value: 'Input Details',
+                        },
+                        {
+                          label: 'Profitability',
+                          value: 'Profitability',
+                        },
+                        {
+                          label: 'Rebates',
+                          value: 'Rebates',
+                        },
+                        {
+                          label: 'Validation',
+                          value: 'Validation',
+                        },
+                      ]}
+                      onChange={(e) => {
+                        setSelectedTable(e);
+                      }}
                       style={{width: '100%'}}
                     />
                   </Space>
@@ -150,7 +221,7 @@ const FieldDisplayConfiguration = () => {
                     // rowSelection={rowSelection}
                     tableSelectionType="checkbox"
                     columns={FieldDisplayConfigurationFields}
-                    dataSource={dummyData}
+                    dataSource={tableColumnDataShow}
                     scroll
                   />
                   <div style={{width: 'max-content', float: 'right'}}>

@@ -3,7 +3,7 @@
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {Row, Space, TabsProps} from 'antd';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import QuoteProcess from './quoteAI-tabs/QuoteProcess';
 import ConverSationProcess from './quoteAI-tabs/ConversationProcess';
 import SyncQuoteLineItemField from './quoteAI-tabs/SyncQuoteLineItemFields';
@@ -56,7 +56,7 @@ const QuoteAI = () => {
         </Typography>
       ),
       key: '6',
-      children: <FieldDisplayConfiguration/>,
+      children: <FieldDisplayConfiguration />,
     },
   ];
   return (

@@ -17,6 +17,7 @@ import address from './slices/address';
 import customer from './slices/customer';
 import billingContact from './slices/billingAddress';
 import Opportunity from './slices/opportunity';
+import tableColumn from './slices/tabelColumn';
 
 // Configure redux store
 const store = configureStore({
@@ -36,6 +37,7 @@ const store = configureStore({
     customer,
     billingContact,
     Opportunity,
+    tableColumn,
   },
   middleware: [thunk, logger],
   devTools: true,

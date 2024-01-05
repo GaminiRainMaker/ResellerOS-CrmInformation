@@ -78,4 +78,7 @@ export const API = {
     DELETE: '/opportunity/deleteOpportunityById',
     QUERYOPPORTUNITY: '/opportunity/query',
   },
+  TABLECOLUMN: {
+    INDEX: '/TableColumn',
+  },
 };
