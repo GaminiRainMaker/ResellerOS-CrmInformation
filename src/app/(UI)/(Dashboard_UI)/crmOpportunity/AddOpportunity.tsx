@@ -1,20 +1,19 @@
 'use client';
 
-import Typography from '@/app/components/common/typography';
-import {Divider} from '@/app/components/common/antd/Divider';
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Divider } from '@/app/components/common/antd/Divider';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
-import {useEffect, useState} from 'react';
-import {useSearchParams} from 'next/navigation';
 import CommonStageSelect from '@/app/components/common/os-stage-select';
-import {StageValue} from '@/app/utils/CONSTANTS';
-import {insertOpportunity} from '../../../../../redux/actions/opportunity';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {getAllCustomer} from '../../../../../redux/actions/customer';
+import Typography from '@/app/components/common/typography';
+import { StageValue } from '@/app/utils/CONSTANTS';
+import { useEffect, useState } from 'react';
+import { getAllCustomer } from '../../../../../redux/actions/customer';
+import { insertOpportunity } from '../../../../../redux/actions/opportunity';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 
 interface AddOpportunityInterface {
   formValue: any;
@@ -28,7 +27,6 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
   formValue,
   setFormValue,
   setShowModal,
-  tableData,
   drawer,
 }) => {
   const [token] = useThemeToken();

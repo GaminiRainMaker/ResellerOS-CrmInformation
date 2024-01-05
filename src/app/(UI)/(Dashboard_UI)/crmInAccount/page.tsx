@@ -242,13 +242,6 @@ const CrmInformation: React.FC = () => {
               editCustomerFileds(record);
             }}
           />
-          {/* <PopConfirm
-            placement="top"
-            title={record?.customer_name}
-            description="Are you sure to delete this Contact?"
-            okText="Yes"
-            cancelText="No"
-          > */}
           <TrashIcon
             height={24}
             width={24}
@@ -259,7 +252,6 @@ const CrmInformation: React.FC = () => {
               setShowModalDelete(true);
             }}
           />
-          {/* </PopConfirm> */}
         </Space>
       ),
     },

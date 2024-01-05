@@ -20,3 +20,11 @@ export const OsCollapseStyle = styled(Collapse)`
     padding: 0px ;
   }
 `;
+export const OsCollapseStyleForAdmin = styled(Collapse)`
+  &.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+    padding: 0px;
+  }
+  &.ant-collapse .ant-collapse-content>.ant-collapse-content-box{
+    padding: 16px 0px;
+  }
+`;

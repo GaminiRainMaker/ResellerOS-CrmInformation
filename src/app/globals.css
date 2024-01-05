@@ -118,3 +118,10 @@ a {
   border-inline-end: none;
   margin-top: 26px;
 }
+
+
+.ant-collapse-item-active {
+  .ant-collapse-header .viewIcon {
+    transform: rotate(180deg);
+  }
+}

@@ -12,6 +12,7 @@ const OsTable: FC<any> = ({
   rowSelection,
   cursor = 'default',
   tableSelectionType = 'checkbox',
+  loading = false,
   ...rest
 }) => {
   const [token] = useThemeToken();
@@ -41,8 +42,8 @@ const OsTable: FC<any> = ({
       }}
       bordered
       loading={{
-        indicator: <GlobalLoader loading={rest.loading} />,
-        spinning: rest.loading,
+        indicator: <GlobalLoader loading={loading} />,
+        spinning: loading,
       }}
       scroll={scrollx ? {x: scrollx as number} : undefined}
       pagination={

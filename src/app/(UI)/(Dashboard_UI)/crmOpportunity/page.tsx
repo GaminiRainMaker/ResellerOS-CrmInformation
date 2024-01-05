@@ -20,24 +20,17 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsDrawer from '@/app/components/common/os-drawer';
+import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
-import CommonSelect from '@/app/components/common/os-select';
 import CommonStageSelect from '@/app/components/common/os-stage-select';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
-import {StageValue, opportunityDummyData} from '@/app/utils/CONSTANTS';
+import {StageValue} from '@/app/utils/CONSTANTS';
+import {SearchOutlined} from '@ant-design/icons';
 import {Button, MenuProps, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
-import OsInput from '@/app/components/common/os-input';
-import {SearchOutlined} from '@ant-design/icons';
-import {
-  deleteCustomers,
-  getAllCustomer,
-} from '../../../../../redux/actions/customer';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import AddOpportunity from './AddOpportunity';
 import {
   deleteOpportunity,
   getAllOpportunity,
@@ -45,6 +38,8 @@ import {
   queryOpportunity,
   updateOpportunity,
 } from '../../../../../redux/actions/opportunity';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import AddOpportunity from './AddOpportunity';
 
 const CrmOpportunity: React.FC = () => {
   const dispatch = useAppDispatch();
