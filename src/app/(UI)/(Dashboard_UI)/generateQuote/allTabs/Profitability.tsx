@@ -39,7 +39,6 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
     }
     return `$ ${String(val)}`;
   };
-
   const ProfitabilityQuoteLineItemcolumns = [
     {
       title: '#Line',
@@ -234,16 +233,11 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
     },
   ];
 
-  const [profitTableCol, setProfitTableCol] = useState<any>(
-    ProfitabilityQuoteLineItemcolumns,
-  );
-  const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>(
-    ProfitabilityQuoteLineItemcolumns,
-  );
+  const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>();
 
   useEffect(() => {
     const newArr: any = [];
-    profitTableCol?.map((itemCol: any) => {
+    ProfitabilityQuoteLineItemcolumns?.map((itemCol: any) => {
       tableColumnDataShow?.filter((item: any) => {
         if (item?.field_name?.includes(itemCol?.title)) {
           newArr?.push(itemCol);
@@ -255,7 +249,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
     });
     // actions
     setFinalProfitTableCol(newArr);
-  }, [profitTableCol, tableColumnDataShow]);
+  }, [ProfitabilityQuoteLineItemcolumns, tableColumnDataShow]);
 
   useEffect(() => {
     profitabilityData.map((profitabilityDataItem: any) => {
