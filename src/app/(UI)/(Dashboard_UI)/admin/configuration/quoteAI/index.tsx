@@ -3,13 +3,13 @@
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {Row, Space, TabsProps} from 'antd';
-import {useEffect, useState} from 'react';
-import QuoteProcess from './quoteAI-tabs/QuoteProcess';
-import ConverSationProcess from './quoteAI-tabs/ConversationProcess';
-import SyncQuoteLineItemField from './quoteAI-tabs/SyncQuoteLineItemFields';
-import SyncQuoteField from './quoteAI-tabs/SyncQuoteFields';
+import {useState} from 'react';
 import ContractValidationConfiguration from './quoteAI-tabs/ContractValidationConfiguration';
+import ConverSationProcess from './quoteAI-tabs/ConversationProcess';
 import FieldDisplayConfiguration from './quoteAI-tabs/FieldDisplayConfiguration';
+import QuoteProcess from './quoteAI-tabs/QuoteProcess';
+import SyncQuoteField from './quoteAI-tabs/SyncQuoteFields';
+import SyncQuoteLineItemField from './quoteAI-tabs/SyncQuoteLineItemFields';
 
 const QuoteAI = () => {
   const [activeTab, setActiveTab] = useState<any>('1');

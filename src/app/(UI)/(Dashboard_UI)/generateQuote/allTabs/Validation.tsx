@@ -20,6 +20,7 @@ import {
   XCircleIcon,
 } from '@heroicons/react/24/outline';
 import {FC, useEffect, useState} from 'react';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 import {updateValidationById} from '../../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 
@@ -33,6 +34,16 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
   const [validationDataData, setValidationDataData] =
     useState<any>(ValidationData);
 
+  const renderEditableInput = (field: string) => {
+    const editableField = tableColumnDataShow.find(
+      (item: any) => item.field_name === field,
+    );
+    if (editableField?.is_editable) {
+      return false;
+    }
+    return true;
+  };
+
   const ValidationQuoteLineItemcolumns = [
     {
       title: '#Line',
@@ -40,6 +51,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       key: 'line_number',
       render: (text: string) => (
         <OsInput
+          disabled={renderEditableInput('Line')}
           style={{
             height: '36px',
           }}
@@ -68,6 +80,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       width: 208,
       render: (text: string, record: any) => (
         <CommonSelect
+          disabled={renderEditableInput('Pricing Method')}
           style={{width: '200px'}}
           placeholder="Select"
           defaultValue={text}
@@ -114,6 +127,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       width: 130,
       render: (text: string, record: any) => (
         <OsInput
+          disabled={renderEditableInput('Amount')}
           style={{
             height: '36px',
           }}
@@ -199,6 +213,20 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
     },
   ];
 
+  const [finalValidationTableCol, setFinalValidationTableCol] = useState<any>();
+
+  useEffect(() => {
+    const newArr: any = [];
+    ValidationQuoteLineItemcolumns?.map((itemCol: any) => {
+      tableColumnDataShow?.filter((item: any) => {
+        if (item?.field_name?.includes(itemCol?.title)) {
+          newArr?.push(itemCol);
+        }
+      });
+    });
+    setFinalValidationTableCol(newArr);
+  }, [tableColumnDataShow]);
+
   useEffect(() => {
     validationDataData.map((validationDataItem: any) => {
       if (validationDataItem?.rowId === validationDataItem?.id) {
@@ -217,12 +245,18 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
   }, [validationDataData]);
 
   return (
-    <OsTable
-      loading={loading}
-      columns={ValidationQuoteLineItemcolumns}
-      dataSource={validationDataData}
-      scroll
-    />
+    <>
+      {finalValidationTableCol && finalValidationTableCol?.length > 0 ? (
+        <OsTable
+          loading={loading}
+          columns={finalValidationTableCol}
+          dataSource={validationDataData}
+          scroll
+        />
+      ) : (
+        <EmptyContainer title="There Is No Columns" />
+      )}
+    </>
   );
 };
 

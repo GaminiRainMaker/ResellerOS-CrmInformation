@@ -218,7 +218,9 @@ const FieldDisplayConfiguration = () => {
                       tableSelectionType="checkbox"
                       columns={FieldDisplayConfigurationFields}
                       dataSource={tableColumnDataShow}
-                      scroll
+                      pageSize={{
+                        pageSize: 3
+                      }}
                     />
                     <div style={{width: 'max-content', float: 'right'}}>
                       <OsButton

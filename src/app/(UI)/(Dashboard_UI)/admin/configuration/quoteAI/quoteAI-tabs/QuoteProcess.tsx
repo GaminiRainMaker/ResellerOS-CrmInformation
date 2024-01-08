@@ -137,18 +137,6 @@ const QuoteProcess = () => {
                         Show Validation Tab
                       </Typography>
                     </Space>
-                    <Space
-                      size={4}
-                      direction="vertical"
-                      style={{
-                        width: '100%',
-                      }}
-                    >
-                      <Typography name="Body 4/Medium">
-                        Quote AI screen min width
-                      </Typography>
-                      <OsInput placeholder="Write here!" />
-                    </Space>
                   </Space>
                 ),
               },

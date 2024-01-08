@@ -27,7 +27,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
   const [profitabilityData, setProfitabilityData] = useState<any>(
     profitabilityDataByQuoteId,
   );
-  // console.log('tableColumnDataShow', tableColumnDataShow);
+
   const updateAmountValue = (value: any, pricingMethods: string) => {
     const val = useRemoveDollarAndCommahook(value);
     if (
@@ -39,6 +39,17 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
     }
     return `$ ${String(val)}`;
   };
+
+  const renderEditableInput = (field: string) => {
+    const editableField = tableColumnDataShow.find(
+      (item: any) => item.field_name === field,
+    );
+    if (editableField?.is_editable) {
+      return false;
+    }
+    return true;
+  };
+
   const ProfitabilityQuoteLineItemcolumns = [
     {
       title: '#Line',
@@ -46,6 +57,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       key: 'line_number',
       render: (text: string) => (
         <OsInput
+          disabled={renderEditableInput('Line')}
           style={{
             height: '36px',
           }}
@@ -67,6 +79,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       key: 'quantity',
       render: (text: string, record: any) => (
         <OsInput
+          disabled={renderEditableInput('Qty')}
           style={{
             height: '36px',
           }}
@@ -94,6 +107,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
           style={{
             height: '36px',
           }}
+          disabled={renderEditableInput('Cost')}
           value={text}
           onChange={(v) => {
             setProfitabilityData((prev: any) =>
@@ -122,6 +136,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       width: 160,
       render: (text: string, record: any) => (
         <CommonSelect
+          disabled={renderEditableInput('Pricing Method')}
           style={{width: '200px'}}
           placeholder="Select"
           defaultValue={text}
@@ -170,6 +185,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       width: 121,
       render: (text: string, record: any) => (
         <OsInput
+          disabled={renderEditableInput('Amount')}
           style={{
             height: '36px',
           }}

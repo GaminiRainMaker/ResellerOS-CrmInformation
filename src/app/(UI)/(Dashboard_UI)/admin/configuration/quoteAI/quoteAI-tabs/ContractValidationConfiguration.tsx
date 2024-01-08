@@ -8,7 +8,11 @@ import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {dummyData} from '@/app/utils/CONSTANTS';
+import {
+  ContractStatusOptions,
+  dummyData,
+  pricingMethod,
+} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Row, Space} from 'antd';
 import {TabContainerStyle} from './styled-components';
@@ -48,7 +52,7 @@ const ContractValidationConfiguration = () => {
           placeholder="Select"
           defaultValue={text}
           onChange={(v) => {}}
-          options={[]}
+          options={pricingMethod}
         />
       ),
       width: 313,
@@ -139,7 +143,11 @@ const ContractValidationConfiguration = () => {
               }}
             >
               <Typography name="Body 4/Medium">Contract Status</Typography>
-              <CommonSelect placeholder="Select" style={{width: '100%'}} />
+              <CommonSelect
+                placeholder="Select"
+                style={{width: '100%'}}
+                options={ContractStatusOptions}
+              />
             </Space>
           </Space>
         </Space>
@@ -168,6 +176,9 @@ const ContractValidationConfiguration = () => {
                       columns={ContractConfigurationFields}
                       dataSource={dummyData}
                       scroll
+                      pageSize={{
+                        pageSize: 3,
+                      }}
                     />
                     <div style={{width: 'max-content', float: 'right'}}>
                       <OsButton

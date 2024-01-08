@@ -8,9 +8,9 @@ import _debounce from 'lodash/debounce';
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 import Typography from '@/app/components/common/typography';
 import {rebateAmount, useRemoveDollarAndCommahook} from '@/app/utils/base';
-import {useSearchParams} from 'next/navigation';
 import {updateRebateQuoteLineItemById} from '../../../../../../redux/actions/rebateQuoteLineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setRebate} from '../../../../../../redux/slices/rebate';
@@ -19,6 +19,7 @@ import {setRebateQuoteLineItem} from '../../../../../../redux/slices/rebateQuote
 const Rebates: FC<any> = ({tableColumnDataShow}) => {
   const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
+
   const {data: RebateData, loading} = useAppSelector(
     (state) => state.rebateQuoteLineItem,
   );
@@ -31,6 +32,7 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
     _debounce(updateRebateQuoteLineItemData, 500),
     [],
   );
+
   useEffect(() => {
     setTimeout(() => {
       dispatch(setRebate(rebateData));
@@ -67,6 +69,16 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
     dispatch(setRebateQuoteLineItem(rebateData));
   }, [JSON.stringify(RebateData)]);
 
+  const renderEditableInput = (field: string) => {
+    const editableField = tableColumnDataShow.find(
+      (item: any) => item.field_name === field,
+    );
+    if (editableField?.is_editable) {
+      return false;
+    }
+    return true;
+  };
+
   const RebatesQuoteLineItemcolumns = [
     {
       title: '#Line',
@@ -74,6 +86,7 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
       key: 'line_number',
       render: (text: string) => (
         <OsInput
+          disabled={renderEditableInput('Line')}
           style={{
             height: '36px',
           }}
@@ -95,6 +108,7 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
       key: 'quantity',
       render: (text: string, record: any) => (
         <OsInput
+          disabled={renderEditableInput('Qty')}
           style={{
             height: '36px',
           }}
@@ -119,6 +133,7 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
       key: 'list_price',
       render: (text: string, record: any) => (
         <OsInput
+          disabled={renderEditableInput('Cost')}
           style={{
             height: '36px',
           }}
@@ -152,6 +167,7 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
       width: 121,
       render: (text: string, record: any) => (
         <OsInput
+          disabled={renderEditableInput('Amount')}
           style={{
             height: '36px',
           }}
@@ -211,13 +227,33 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
     },
   ];
 
+  const [finaRebateTableCol, setFinaRebateTableCol] = useState<any>();
+
+  useEffect(() => {
+    const newArr: any = [];
+    RebatesQuoteLineItemcolumns?.map((itemCol: any) => {
+      tableColumnDataShow?.filter((item: any) => {
+        if (item?.field_name?.includes(itemCol?.title)) {
+          newArr?.push(itemCol);
+        }
+      });
+    });
+    setFinaRebateTableCol(newArr);
+  }, [tableColumnDataShow]);
+
   return (
-    <OsTable
-      loading={loading}
-      columns={RebatesQuoteLineItemcolumns}
-      dataSource={rebateData}
-      scroll
-    />
+    <>
+      {finaRebateTableCol && finaRebateTableCol?.length > 0 ? (
+        <OsTable
+          loading={loading}
+          columns={finaRebateTableCol}
+          dataSource={rebateData}
+          scroll
+        />
+      ) : (
+        <EmptyContainer title="There Is No Columns" />
+      )}
+    </>
   );
 };
 

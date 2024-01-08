@@ -101,9 +101,11 @@ const GenerateQuote: React.FC = () => {
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
 
   const [tableColumnInput, setTableColumnInput] = useState<any>();
+
   useEffect(() => {
     dispatch(getAllTableColumn(''));
   }, []);
+
 
   useEffect(() => {
     let tabsname: any;
@@ -129,6 +131,7 @@ const GenerateQuote: React.FC = () => {
     );
     setTableColumnDataShow(filterRequired);
   }, [activeTab, tableColumnData]);
+
   useEffect(() => {
     const newArr: any = [];
     tableColumnInput?.map((itemCol: any) => {

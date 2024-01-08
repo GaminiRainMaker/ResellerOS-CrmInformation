@@ -8,6 +8,7 @@ import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
+import {ContractConfigurationColumn} from '@/app/utils/CONSTANTS';
 import {TabContainerStyle} from './styled-components';
 
 const ConverSationProcess = () => {
@@ -45,6 +46,7 @@ const ConverSationProcess = () => {
                     <Typography name="Body 4/Medium">Attach Doc to </Typography>
                     <CommonSelect
                       placeholder="Select"
+                      options={ContractConfigurationColumn}
                       style={{width: '100%'}}
                     />
                   </Space>

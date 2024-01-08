@@ -48,7 +48,7 @@ const OsTable: FC<any> = ({
       scroll={scrollx ? {x: scrollx as number} : undefined}
       pagination={
         paginationProps
-          ? {...rest.pagination, itemRender, showQuickJumper: false}
+          ? {...rest.pagination, ...rest?.pageSize, itemRender, showQuickJumper: false}
           : false
       }
       paginationBorder={paginationProps}
