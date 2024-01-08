@@ -11,17 +11,14 @@ import Typography from '@/app/components/common/typography';
 import {dummyData} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Row, Space} from 'antd';
-<<<<<<< HEAD
 import {useEffect, useState} from 'react';
 import {useSearchParams} from 'next/navigation';
 import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../../../../redux/hook';
-import {getAllTableColumn} from '../../../../../../../../redux/actions/tableColumn';
-=======
 import {TabContainerStyle} from './styled-components';
->>>>>>> master
+import {getAllTableColumn} from '../../../../../../../../redux/actions/tableColumn';
 
 const FieldDisplayConfiguration = () => {
   const [token] = useThemeToken();
@@ -247,44 +244,9 @@ const FieldDisplayConfiguration = () => {
           right: '0%',
         }}
       >
-<<<<<<< HEAD
-        <OsCollapseAdmin
-          items={[
-            {
-              key: '1',
-              label: (
-                <Typography name="Body 2/Medium">Selected Fields</Typography>
-              ),
-              children: (
-                <Space size={24} direction="vertical" style={{width: '100%'}}>
-                  <OsTable
-                    loading={false}
-                    // rowSelection={rowSelection}
-                    tableSelectionType="checkbox"
-                    columns={FieldDisplayConfigurationFields}
-                    dataSource={tableColumnDataShow}
-                    scroll
-                  />
-                  <div style={{width: 'max-content', float: 'right'}}>
-                    <OsButton
-                      text="Add Field"
-                      buttontype="PRIMARY"
-                      icon={<PlusIcon width={24} />}
-                      clickHandler={() => {}}
-                    />
-                  </div>
-                </Space>
-              ),
-            },
-          ]}
-        />
-      </Space>
-    </Row>
-=======
         <OsButton text="Save" buttontype="PRIMARY" clickHandler={() => {}} />
       </footer>
     </TabContainerStyle>
->>>>>>> master
   );
 };
 export default FieldDisplayConfiguration;
