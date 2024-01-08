@@ -23,7 +23,7 @@ const FieldDisplayConfiguration = () => {
   const dispatch = useAppDispatch();
   const {data: tableColumnData} = useAppSelector((state) => state.tableColumn);
   const [selectedTable, setSelectedTable] = useState<String>();
-  const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
+  const [tableColumnDataShow, setTableColumnDataShow] = useState<any>();
 
   const [updateColumn, setUpdateColumn] = useState<any>();
 
@@ -41,15 +41,17 @@ const FieldDisplayConfiguration = () => {
 
     setTableColumnDataShow(filteredArray);
   }, [selectedTable]);
-
-  console.log('tableColumnData', tableColumnData, updateColumn);
-
   const FieldDisplayConfigurationFields = [
     {
       title: 'S No.',
       dataIndex: 'id',
       key: 'id',
       width: 50,
+      render: (text: any, record: any) => {
+        // eslint-disable-next-line no-unsafe-optional-chaining
+        const sno =record?.id -tableColumnDataShow?.[tableColumnDataShow?.length - tableColumnDataShow?.length]?.id +1;
+        return <>{sno}</>;
+      },
     },
     {
       title: 'Field Name',

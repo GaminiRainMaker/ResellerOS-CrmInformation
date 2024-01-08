@@ -27,7 +27,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
   const [profitabilityData, setProfitabilityData] = useState<any>(
     profitabilityDataByQuoteId,
   );
-
+  // console.log('tableColumnDataShow', tableColumnDataShow);
   const updateAmountValue = (value: any, pricingMethods: string) => {
     const val = useRemoveDollarAndCommahook(value);
     if (
@@ -249,7 +249,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
     });
     // actions
     setFinalProfitTableCol(newArr);
-  }, [ProfitabilityQuoteLineItemcolumns, tableColumnDataShow]);
+  }, [tableColumnDataShow]);
 
   useEffect(() => {
     profitabilityData.map((profitabilityDataItem: any) => {
