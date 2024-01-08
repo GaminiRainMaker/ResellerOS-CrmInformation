@@ -23,7 +23,7 @@ import {FC, useEffect, useState} from 'react';
 import {updateValidationById} from '../../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 
-const Validation: FC = () => {
+const Validation: FC<any> = ({tableColumnDataShow}) => {
   const {abbreviate} = useAbbreviationHook(0);
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();

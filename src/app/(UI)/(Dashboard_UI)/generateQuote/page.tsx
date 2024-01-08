@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable radix */
@@ -65,6 +66,7 @@ import Validation from './allTabs/Validation';
 import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
+import {getAllTableColumn} from '../../../../../redux/actions/tableColumn';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -92,6 +94,56 @@ const GenerateQuote: React.FC = () => {
   const [familyFilter, setFamilyFilter] = useState<any>([]);
   const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] =
     useState<any>();
+  const {data: tableColumnData} = useAppSelector((state) => state.tableColumn);
+
+  const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
+
+  const [finalInputColumn, setFinalInputColumn] = useState<any>();
+
+  const [tableColumnInput, setTableColumnInput] = useState<any>();
+  useEffect(() => {
+    dispatch(getAllTableColumn(''));
+  }, []);
+
+  useEffect(() => {
+    let tabsname: any;
+    if (activeTab == '1') {
+      tabsname = 'Input Details';
+    } else if (activeTab == '2') {
+      tabsname = 'Profitability';
+    } else if (activeTab == '3') {
+      tabsname = 'Rebates';
+    } else if (activeTab == '4') {
+      tabsname = 'Validation';
+    } else {
+      tabsname = 'Input Details';
+    }
+    let filteredArray: any = [];
+    if (tableColumnData && activeTab) {
+      filteredArray = tableColumnData?.filter(
+        (item: any) => item?.table_name?.includes(tabsname),
+      );
+    }
+    const filterRequired = filteredArray?.filter(
+      (item: any) => item?.is_required,
+    );
+    setTableColumnDataShow(filterRequired);
+  }, [activeTab, tableColumnData]);
+  useEffect(() => {
+    const newArr: any = [];
+    tableColumnInput?.map((itemCol: any) => {
+      tableColumnDataShow?.filter((item: any) => {
+        if (
+          item?.field_name?.includes(itemCol?.title) ||
+          (itemCol?.title == ' ' && itemCol?.dataIndex == 'action')
+        ) {
+          newArr?.push(itemCol);
+        }
+      });
+    });
+    // actions
+    setFinalInputColumn(newArr);
+  }, [tableColumnInput, tableColumnDataShow]);
 
   useEffect(() => {
     setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);
@@ -487,6 +539,9 @@ const GenerateQuote: React.FC = () => {
       ),
     },
   ];
+  useEffect(() => {
+    setTableColumnInput(QuoteLineItemcolumns);
+  }, []);
 
   const items: MenuProps['items'] = [
     {
@@ -555,17 +610,22 @@ const GenerateQuote: React.FC = () => {
     {
       key: 2,
       name: 'Profitability',
-      children: <Profitability isEditable={isEditable} />,
+      children: (
+        <Profitability
+          isEditable={isEditable}
+          tableColumnDataShow={tableColumnDataShow}
+        />
+      ),
     },
     {
       key: 3,
       name: 'Rebates',
-      children: <Rebates />,
+      children: <Rebates tableColumnDataShow={tableColumnDataShow} />,
     },
     {
       key: 4,
       name: 'Validation',
-      children: <Validation />,
+      children: <Validation tableColumnDataShow={tableColumnDataShow} />,
     },
     {
       key: 5,
@@ -622,7 +682,7 @@ const GenerateQuote: React.FC = () => {
 
         <Row justify="space-between" align="middle">
           <Col>
-          <OsBreadCrumb items={menuItems} />
+            <OsBreadCrumb items={menuItems} />
           </Col>
           <Col>
             <Space size={8} direction="horizontal">
@@ -709,10 +769,7 @@ const GenerateQuote: React.FC = () => {
             {TabPaneData?.map((item) => (
               <TabPane
                 tab={
-                  <Typography
-                    name="Body 4/Regular">
-                    {item?.name}
-                  </Typography>
+                  <Typography name="Body 4/Regular">{item?.name}</Typography>
                 }
                 key={item?.key}
               >
@@ -757,7 +814,7 @@ const GenerateQuote: React.FC = () => {
                                 <OsTable
                                   loading={loading}
                                   // rowSelection={rowSelection}
-                                  columns={QuoteLineItemcolumns}
+                                  columns={finalInputColumn}
                                   dataSource={
                                     (showTableDataa && item?.QuoteLineItems) ||
                                     []
@@ -792,7 +849,7 @@ const GenerateQuote: React.FC = () => {
                                   children: (
                                     <OsTable
                                       loading={loading}
-                                      columns={QuoteLineItemcolumns}
+                                      columns={finalInputColumn}
                                       dataSource={item?.QuoteLineItem || []}
                                       scroll
                                       rowSelection={rowSelection}
@@ -826,7 +883,7 @@ const GenerateQuote: React.FC = () => {
                                     children: (
                                       <OsTable
                                         loading={loading}
-                                        columns={QuoteLineItemcolumns}
+                                        columns={finalInputColumn}
                                         dataSource={
                                           dataNullForBundle?.[0] || []
                                         }
@@ -866,7 +923,7 @@ const GenerateQuote: React.FC = () => {
                                   children: (
                                     <OsTable
                                       loading={loading}
-                                      columns={QuoteLineItemcolumns}
+                                      columns={finalInputColumn}
                                       dataSource={item?.QuoteLineItem || []}
                                       scroll
                                       rowSelection={rowSelection}
@@ -880,7 +937,7 @@ const GenerateQuote: React.FC = () => {
                       ) : (
                         <OsTable
                           loading={loading}
-                          columns={QuoteLineItemcolumns}
+                          columns={finalInputColumn}
                           dataSource={
                             (showTableDataa && quoteLineItemByQuoteData) || []
                           }
