@@ -8,28 +8,25 @@ import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {dummyData} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Row, Space} from 'antd';
 import {useEffect, useState} from 'react';
-import {useSearchParams} from 'next/navigation';
+import {getAllTableColumn} from '../../../../../../../../redux/actions/tableColumn';
 import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../../../../redux/hook';
 import {TabContainerStyle} from './styled-components';
-import {getAllTableColumn} from '../../../../../../../../redux/actions/tableColumn';
 
 const FieldDisplayConfiguration = () => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const {data: tableColumnData, loading} = useAppSelector(
-    (state) => state.tableColumn,
-  );
+  const {data: tableColumnData} = useAppSelector((state) => state.tableColumn);
   const [selectedTable, setSelectedTable] = useState<String>();
   const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
 
   const [updateColumn, setUpdateColumn] = useState<any>();
+
   useEffect(() => {
     dispatch(getAllTableColumn(''));
   }, []);
@@ -44,7 +41,8 @@ const FieldDisplayConfiguration = () => {
 
     setTableColumnDataShow(filteredArray);
   }, [selectedTable]);
-  console.log('43535', updateColumn);
+
+  console.log('tableColumnData', tableColumnData, updateColumn);
 
   const FieldDisplayConfigurationFields = [
     {
@@ -217,7 +215,7 @@ const FieldDisplayConfiguration = () => {
                       // rowSelection={rowSelection}
                       tableSelectionType="checkbox"
                       columns={FieldDisplayConfigurationFields}
-                      dataSource={dummyData}
+                      dataSource={tableColumnDataShow}
                       scroll
                     />
                     <div style={{width: 'max-content', float: 'right'}}>
