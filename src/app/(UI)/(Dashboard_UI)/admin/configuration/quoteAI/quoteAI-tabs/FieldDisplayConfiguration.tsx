@@ -11,7 +11,10 @@ import Typography from '@/app/components/common/typography';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Row, Space} from 'antd';
 import {useEffect, useState} from 'react';
-import {getAllTableColumn} from '../../../../../../../../redux/actions/tableColumn';
+import {
+  getAllTableColumn,
+  updateTableColumnById,
+} from '../../../../../../../../redux/actions/tableColumn';
 import {
   useAppDispatch,
   useAppSelector,
@@ -31,6 +34,16 @@ const FieldDisplayConfiguration = () => {
     dispatch(getAllTableColumn(''));
   }, []);
 
+  const updateTableColumnValues = async () => {
+    for (let i = 0; i < updateColumn?.length; i++) {
+      const dataItems = updateColumn[i];
+      dispatch(updateTableColumnById(dataItems));
+    }
+    setTimeout(() => {
+      dispatch(getAllTableColumn(''));
+    }, 1000);
+  };
+
   useEffect(() => {
     let filteredArray: any = [];
     if (tableColumnData && selectedTable) {
@@ -41,6 +54,39 @@ const FieldDisplayConfiguration = () => {
 
     setTableColumnDataShow(filteredArray);
   }, [selectedTable]);
+
+  const commonMethodForChecks = (ids: any, names: any, valuess: any) => {
+    const previousArray = updateColumn?.length > 0 ? [...updateColumn] : [];
+    if (previousArray?.length > 0) {
+      const indexOfCurrentId = previousArray?.findIndex(
+        (item: any) => item?.id === ids,
+      );
+      if (indexOfCurrentId === -1) {
+        const newObj: any = {
+          id: ids,
+          [names]: valuess,
+        };
+        previousArray?.push(newObj);
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        // previousArray?.[indexOfCurrentId]?.names = valuess;
+        let newObj = previousArray[indexOfCurrentId];
+        newObj = {
+          ...newObj,
+          [names]: valuess,
+        };
+        previousArray?.splice(indexOfCurrentId, 1);
+        previousArray?.push(newObj);
+      }
+    } else {
+      const newObj: any = {
+        id: ids,
+        [names]: valuess,
+      };
+      previousArray?.push(newObj);
+    }
+    setUpdateColumn(previousArray);
+  };
   const FieldDisplayConfigurationFields = [
     {
       title: 'S No.',
@@ -49,7 +95,15 @@ const FieldDisplayConfiguration = () => {
       width: 50,
       render: (text: any, record: any) => {
         // eslint-disable-next-line no-unsafe-optional-chaining
-        const sno =record?.id -tableColumnDataShow?.[tableColumnDataShow?.length - tableColumnDataShow?.length]?.id +1;
+        const sno =
+          // eslint-disable-next-line no-unsafe-optional-chaining
+          record?.id -
+          // eslint-disable-next-line no-unsafe-optional-chaining
+          tableColumnDataShow?.[
+            // eslint-disable-next-line no-unsafe-optional-chaining
+            tableColumnDataShow?.length - tableColumnDataShow?.length
+          ]?.id +
+          1;
         return <>{sno}</>;
       },
     },
@@ -57,15 +111,6 @@ const FieldDisplayConfiguration = () => {
       title: 'Field Name',
       dataIndex: 'field_name',
       key: 'field_name',
-      // render: (text: string) => (
-      //   <CommonSelect
-      //     style={{width: '100%', height: '36px'}}
-      //     placeholder="Select"
-      //     defaultValue={text}
-      //     onChange={(v) => {}}
-      //     options={[]}
-      //   />
-      // ),
       width: 313,
     },
     {
@@ -76,18 +121,7 @@ const FieldDisplayConfiguration = () => {
         <Checkbox
           defaultChecked={text}
           onChange={(e) => {
-            if (e.target?.checked) {
-              setUpdateColumn({
-                ...updateColumn,
-                is_required: true,
-                id: record?.id,
-              });
-            } else {
-              setUpdateColumn({
-                ...updateColumn,
-                is_required: false,
-              });
-            }
+            commonMethodForChecks(record?.id, 'is_required', e.target?.checked);
           }}
         />
       ),
@@ -97,15 +131,28 @@ const FieldDisplayConfiguration = () => {
       title: 'Editable',
       dataIndex: 'is_editable',
       key: 'is_editable',
-      render: (text: any) => <Checkbox defaultChecked={text} />,
+      render: (text: any, record: any) => (
+        <Checkbox
+          defaultChecked={text}
+          onChange={(e) => {
+            commonMethodForChecks(record?.id, 'is_editable', e.target?.checked);
+          }}
+        />
+      ),
       width: 313,
     },
     {
       title: 'Active',
       dataIndex: 'is_active',
       key: 'is_active',
-      render: (text: any) => (
-        <Switch defaultChecked={text} size="default" onChange={() => {}} />
+      render: (text: any, record: any) => (
+        <Switch
+          defaultChecked={text}
+          size="default"
+          onChange={(e) => {
+            commonMethodForChecks(record?.id, 'is_active', e);
+          }}
+        />
       ),
       width: 77,
     },
@@ -244,7 +291,11 @@ const FieldDisplayConfiguration = () => {
           right: '0%',
         }}
       >
-        <OsButton text="Save" buttontype="PRIMARY" clickHandler={() => {}} />
+        <OsButton
+          text="Save"
+          buttontype="PRIMARY"
+          clickHandler={updateTableColumnValues}
+        />
       </footer>
     </TabContainerStyle>
   );
