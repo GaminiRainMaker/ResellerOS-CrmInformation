@@ -17,7 +17,7 @@ import {updateProfitabilityById} from '../../../../../../redux/actions/profitabi
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
 
-const Profitability: FC<any> = () => {
+const Profitability: FC<any> = ({tableColumnDataShow}) => {
   const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
 
@@ -234,6 +234,29 @@ const Profitability: FC<any> = () => {
     },
   ];
 
+  const [profitTableCol, setProfitTableCol] = useState<any>(
+    ProfitabilityQuoteLineItemcolumns,
+  );
+  const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>(
+    ProfitabilityQuoteLineItemcolumns,
+  );
+
+  useEffect(() => {
+    const newArr: any = [];
+    profitTableCol?.map((itemCol: any) => {
+      tableColumnDataShow?.filter((item: any) => {
+        if (item?.field_name?.includes(itemCol?.title)) {
+          newArr?.push(itemCol);
+        }
+      });
+      if (itemCol?.dataIndex?.includes('actions')) {
+        newArr?.push(itemCol);
+      }
+    });
+    // actions
+    setFinalProfitTableCol(newArr);
+  }, [profitTableCol, tableColumnDataShow]);
+
   useEffect(() => {
     profitabilityData.map((profitabilityDataItem: any) => {
       if (profitabilityDataItem?.rowId === profitabilityDataItem?.id) {
@@ -259,7 +282,7 @@ const Profitability: FC<any> = () => {
   return (
     <OsTable
       loading={loading}
-      columns={ProfitabilityQuoteLineItemcolumns}
+      columns={finalProfitTableCol}
       dataSource={profitabilityData}
       scroll
     />

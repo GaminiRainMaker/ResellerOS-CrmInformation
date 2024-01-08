@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 import OsInput from '@/app/components/common/os-input';
 import OsTable from '@/app/components/common/os-table';
-import {useCallback, useEffect, useState} from 'react';
+import {FC, useCallback, useEffect, useState} from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import _debounce from 'lodash/debounce';
 /* eslint-disable react-hooks/rules-of-hooks */
@@ -16,7 +16,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setRebate} from '../../../../../../redux/slices/rebate';
 import {setRebateQuoteLineItem} from '../../../../../../redux/slices/rebateQuoteLineItem';
 
-const Rebates = () => {
+const Rebates: FC<any> = ({tableColumnDataShow}) => {
   const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
   const {data: RebateData, loading} = useAppSelector(
