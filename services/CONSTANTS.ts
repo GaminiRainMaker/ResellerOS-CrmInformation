@@ -81,4 +81,10 @@ export const API = {
   TABLECOLUMN: {
     INDEX: '/TableColumn',
   },
+  GENERALSETTING: {
+    INDEX: '/GeneralSetting',
+  },
+  CONTRACTSETTING_API: {
+    INDEX: '/ContractSetting',
+  },
 };

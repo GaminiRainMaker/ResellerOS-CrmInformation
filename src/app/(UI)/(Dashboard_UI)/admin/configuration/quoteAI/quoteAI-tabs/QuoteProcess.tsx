@@ -16,10 +16,35 @@ import {
   quoteLineItemColumn,
 } from '@/app/utils/CONSTANTS';
 import {TabContainerStyle} from './styled-components';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../../../../../redux/hook';
+import {
+  getAllContractSetting,
+  insertUpdateContractSetting,
+} from '../../../../../../../../redux/actions/contractSetting';
 
 const QuoteProcess = () => {
   const [tableName, setTableName] = useState<string>('');
   const [fieldNameOption, setFieldNameOption] = useState<any>();
+
+  const [contractSetting, setContractSetting] = useState<any>();
+  const dispatch = useAppDispatch();
+  const {data: contractSettingData} = useAppSelector(
+    (state) => state.contractSetting,
+  );
+
+  const updateContractSetting = async () => {
+    await dispatch(insertUpdateContractSetting(contractSetting));
+    dispatch(getAllContractSetting(''));
+  };
+  useEffect(() => {
+    setContractSetting(contractSettingData);
+  }, [contractSettingData]);
+  useEffect(() => {
+    dispatch(getAllContractSetting(''));
+  }, []);
 
   useEffect(() => {
     if (tableName === 'quote') {
@@ -73,9 +98,13 @@ const QuoteProcess = () => {
                       <CommonSelect
                         placeholder="Select"
                         style={{width: '100%'}}
+                        value={contractSetting?.object_name}
                         options={ContractConfigurationColumn}
                         onChange={(e) => {
-                          setTableName(e);
+                          setContractSetting({
+                            ...contractSetting,
+                            object_name: e,
+                          });
                         }}
                       />
                     </Space>
@@ -132,7 +161,22 @@ const QuoteProcess = () => {
                     }}
                   >
                     <Space size={8}>
-                      <Checkbox />
+                      <Checkbox
+                        checked={contractSetting?.show_validation_tab}
+                        onChange={(e) => {
+                          if (e?.target?.checked) {
+                            setContractSetting({
+                              ...contractSetting,
+                              show_validation_tab: true,
+                            });
+                          } else {
+                            setContractSetting({
+                              ...contractSetting,
+                              show_validation_tab: false,
+                            });
+                          }
+                        }}
+                      />
                       <Typography name="Body 4/Medium">
                         Show Validation Tab
                       </Typography>
@@ -153,7 +197,11 @@ const QuoteProcess = () => {
           right: '0%',
         }}
       >
-        <OsButton text="Save" buttontype="PRIMARY" clickHandler={() => {}} />
+        <OsButton
+          text="Save"
+          buttontype="PRIMARY"
+          clickHandler={updateContractSetting}
+        />
       </footer>
     </TabContainerStyle>
   );

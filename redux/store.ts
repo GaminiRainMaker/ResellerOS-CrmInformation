@@ -18,6 +18,8 @@ import customer from './slices/customer';
 import billingContact from './slices/billingAddress';
 import Opportunity from './slices/opportunity';
 import tableColumn from './slices/tabelColumn';
+import gereralSetting from './slices/gereralSetting';
+import contractSetting from './slices/contractSetting';
 
 // Configure redux store
 const store = configureStore({
@@ -38,6 +40,8 @@ const store = configureStore({
     billingContact,
     Opportunity,
     tableColumn,
+    gereralSetting,
+    contractSetting,
   },
   middleware: [thunk, logger],
   devTools: true,

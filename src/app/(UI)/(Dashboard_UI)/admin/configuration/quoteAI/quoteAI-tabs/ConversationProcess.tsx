@@ -9,9 +9,35 @@ import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {ContractConfigurationColumn} from '@/app/utils/CONSTANTS';
+import {useEffect, useState} from 'react';
 import {TabContainerStyle} from './styled-components';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../../../../../redux/hook';
+import {
+  getAllGeneralSetting,
+  insertUpdateGeneralSetting,
+} from '../../../../../../../../redux/actions/generalSetting';
 
 const ConverSationProcess = () => {
+  const [attachDocType, setAttachDocType] = useState<any>();
+  const dispatch = useAppDispatch();
+  const {data: generalSettingData} = useAppSelector(
+    (state) => state.gereralSetting,
+  );
+
+  const updateGeneralSetting = async () => {
+    await dispatch(insertUpdateGeneralSetting(attachDocType));
+    dispatch(getAllGeneralSetting(''));
+  };
+  useEffect(() => {
+    setAttachDocType(generalSettingData);
+  }, [generalSettingData]);
+  useEffect(() => {
+    dispatch(getAllGeneralSetting(''));
+  }, []);
+
   console.log('sdsadfs');
   return (
     <TabContainerStyle>
@@ -47,6 +73,13 @@ const ConverSationProcess = () => {
                     <CommonSelect
                       placeholder="Select"
                       options={ContractConfigurationColumn}
+                      value={attachDocType?.attach_doc_type}
+                      onChange={(e) => {
+                        setAttachDocType({
+                          ...attachDocType,
+                          attach_doc_type: e,
+                        });
+                      }}
                       style={{width: '100%'}}
                     />
                   </Space>
@@ -169,7 +202,11 @@ const ConverSationProcess = () => {
           right: '0%',
         }}
       >
-        <OsButton text="Save" buttontype="PRIMARY" clickHandler={() => {}} />
+        <OsButton
+          text="Save"
+          buttontype="PRIMARY"
+          clickHandler={updateGeneralSetting}
+        />
       </footer>
     </TabContainerStyle>
   );
