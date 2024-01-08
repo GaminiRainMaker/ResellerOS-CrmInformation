@@ -5,32 +5,31 @@ import {Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
-import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {useEffect, useState} from 'react';
 import {
   ContractConfigurationColumn,
   opportunityColumn,
   quoteColumns,
   quoteLineItemColumn,
 } from '@/app/utils/CONSTANTS';
-import {TabContainerStyle} from './styled-components';
-import {
-  useAppDispatch,
-  useAppSelector,
-} from '../../../../../../../../redux/hook';
+import {useEffect, useState} from 'react';
 import {
   getAllContractSetting,
   insertUpdateContractSetting,
 } from '../../../../../../../../redux/actions/contractSetting';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../../../../../redux/hook';
+import {TabContainerStyle} from './styled-components';
 
 const QuoteProcess = () => {
   const [fieldNameOption, setFieldNameOption] = useState<any>();
 
   const [contractSetting, setContractSetting] = useState<any>();
   const dispatch = useAppDispatch();
-  const {data: contractSettingData} = useAppSelector(
+  const {data: contractSettingData, loading} = useAppSelector(
     (state) => state.contractSetting,
   );
 
@@ -207,6 +206,7 @@ const QuoteProcess = () => {
           text="Save"
           buttontype="PRIMARY"
           clickHandler={updateContractSetting}
+          loading={loading}
         />
       </footer>
     </TabContainerStyle>
