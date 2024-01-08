@@ -26,7 +26,6 @@ import {
 } from '../../../../../../../../redux/actions/contractSetting';
 
 const QuoteProcess = () => {
-  const [tableName, setTableName] = useState<string>('');
   const [fieldNameOption, setFieldNameOption] = useState<any>();
 
   const [contractSetting, setContractSetting] = useState<any>();
@@ -47,14 +46,14 @@ const QuoteProcess = () => {
   }, []);
 
   useEffect(() => {
-    if (tableName === 'quote') {
+    if (contractSetting?.object_name === 'quote') {
       setFieldNameOption(quoteColumns);
-    } else if (tableName === 'quote_line_item') {
+    } else if (contractSetting?.object_name === 'quote_line_item') {
       setFieldNameOption(quoteLineItemColumn);
-    } else if (tableName === 'opportunity') {
+    } else if (contractSetting?.object_name === 'opportunity') {
       setFieldNameOption(opportunityColumn);
     }
-  }, [tableName]);
+  }, [contractSetting?.object_name]);
   return (
     <TabContainerStyle>
       <Row>
@@ -122,6 +121,13 @@ const QuoteProcess = () => {
                         placeholder="Select"
                         style={{width: '100%'}}
                         options={fieldNameOption}
+                        value={contractSetting?.matching_filed}
+                        onChange={(e) => {
+                          setContractSetting({
+                            ...contractSetting,
+                            matching_filed: e,
+                          });
+                        }}
                       />
                     </Space>
                   </Space>
