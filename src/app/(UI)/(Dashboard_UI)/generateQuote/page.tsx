@@ -106,7 +106,6 @@ const GenerateQuote: React.FC = () => {
     dispatch(getAllTableColumn(''));
   }, []);
 
-
   useEffect(() => {
     let tabsname: any;
     if (activeTab == '1') {
@@ -136,12 +135,12 @@ const GenerateQuote: React.FC = () => {
     const newArr: any = [];
     tableColumnInput?.map((itemCol: any) => {
       tableColumnDataShow?.filter((item: any) => {
-        if (
-          item?.field_name?.includes(itemCol?.title) ||
-          (itemCol?.title == ' ' && itemCol?.dataIndex == 'action')
-        ) {
+        if (item?.field_name?.includes(itemCol?.title)) {
           newArr?.push(itemCol);
         }
+        // else if (itemCol?.dataIndex == 'action') {
+        //   newArr?.push(itemCol);
+        // }
       });
     });
     // actions
@@ -514,33 +513,33 @@ const GenerateQuote: React.FC = () => {
         };
       },
     },
-    {
-      title: ' ',
-      dataIndex: 'actions',
-      key: 'actions',
-      width: 94,
-      render: (text: string, record: any) => (
-        <Space size={18}>
-          <PopConfirm
-            placement="top"
-            title=""
-            description="Are you sure to delete this Quote Line Item?"
-            onConfirm={() => {
-              deleteQuote(record?.id);
-            }}
-            okText="Yes"
-            cancelText="No"
-          >
-            <TrashIcon
-              height={24}
-              width={24}
-              color={token.colorError}
-              style={{cursor: 'pointer'}}
-            />
-          </PopConfirm>
-        </Space>
-      ),
-    },
+    // {
+    //   title: ' ',
+    //   dataIndex: 'actions',
+    //   key: 'actions',
+    //   width: 94,
+    //   render: (text: string, record: any) => (
+    //     <Space size={18}>
+    //       <PopConfirm
+    //         placement="top"
+    //         title=""
+    //         description="Are you sure to delete this Quote Line Item?"
+    //         onConfirm={() => {
+    //           deleteQuote(record?.id);
+    //         }}
+    //         okText="Yes"
+    //         cancelText="No"
+    //       >
+    //         <TrashIcon
+    //           height={24}
+    //           width={24}
+    //           color={token.colorError}
+    //           style={{cursor: 'pointer'}}
+    //         />
+    //       </PopConfirm>
+    //     </Space>
+    //   ),
+    // },
   ];
   useEffect(() => {
     setTableColumnInput(QuoteLineItemcolumns);
