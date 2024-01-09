@@ -100,11 +100,189 @@ const GenerateQuote: React.FC = () => {
 
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
 
-  const [tableColumnInput, setTableColumnInput] = useState<any>();
-
   useEffect(() => {
     dispatch(getAllTableColumn(''));
   }, []);
+
+  const deleteQuote = async (id: number) => {
+    if (id) {
+      const data = {
+        Ids: [id],
+        bundle_id: null,
+      };
+      await dispatch(updateQuoteLineItemForBundleId(data));
+      dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
+      dispatch(getAllBundle(getQuoteID));
+    }
+  };
+
+  const QuoteLineItemcolumns = [
+    {
+      title: '#Line',
+      dataIndex: 'line_number',
+      key: 'line_number',
+      render: (text: any, record: any) => (
+        <OsInput
+          disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
+          style={{
+            height: '36px',
+          }}
+          placeholder={text}
+          value={
+            !selectTedRowIds?.includes(record?.id)
+              ? text * (record?.Bundle?.quantity ? record?.Bundle?.quantity : 1)
+              : quoteLineItemByQuoteData?.line_number
+          }
+          onChange={(v) => {
+            setQuoteLineItemByQuoteData((prev: any) =>
+              prev.map((prevItem: any) => {
+                if (prevItem.id === record?.id) {
+                  return {...prevItem, line_number: v.target.value};
+                }
+                return prevItem;
+              }),
+            );
+          }}
+        />
+      ),
+      width: 130,
+    },
+    {
+      title: 'SKU',
+      dataIndex: 'product_code',
+      key: 'product_code',
+      width: 187,
+    },
+    {
+      title: 'Qty',
+      dataIndex: 'quantity',
+      key: 'quantity',
+      render: (text: any, record: any) => (
+        <OsInput
+          style={{
+            height: '36px',
+          }}
+          disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
+          // value={
+          //   // eslint-disable-next-line no-unsafe-optional-chaining
+          //   text *
+          //   (!isEditable && record?.Bundle?.quantity
+          //     ? record?.Bundle?.quantity
+          //     : 1)
+          // }
+          placeholder={text}
+          value={
+            !selectTedRowIds?.includes(record?.id)
+              ? text * (record?.Bundle?.quantity ? record?.Bundle?.quantity : 1)
+              : quoteLineItemByQuoteData?.quantity
+          }
+          onChange={(v) => {
+            setQuoteLineItemByQuoteData((prev: any) =>
+              prev.map((prevItem: any) => {
+                if (prevItem.id === record?.id) {
+                  return {...prevItem, quantity: v.target.value};
+                }
+                return prevItem;
+              }),
+            );
+          }}
+        />
+      ),
+      width: 187,
+    },
+    {
+      title: 'MSRP',
+      dataIndex: 'adjusted_price',
+      key: 'adjusted_price',
+      width: 187,
+      render: (text: any, record: any) => {
+        let doubleVal: any;
+
+        return <>{record?.Bundle?.quantity ? record?.Bundle?.quantity : 1}</>;
+      },
+    },
+    {
+      title: 'Cost',
+      dataIndex: 'list_price',
+      key: 'list_price',
+      width: 187,
+      render: (text: any, record: any) => {
+        const totalAddedPrice = record?.Product?.list_price
+          ?.slice(1, record?.Product?.list_price?.length)
+          .replace(',', '');
+        // eslint-disable-next-line no-unsafe-optional-chaining
+        const ExactPriceForOne = totalAddedPrice / record?.Product?.quantity;
+        let bundleQuantity: any = 1;
+        bundleQuantity = record?.Bundle ? record?.Bundle?.quantity : 1;
+        const totalQuantity = record?.quantity * bundleQuantity;
+        const TotalPrice = totalQuantity * ExactPriceForOne;
+
+        return <>${TotalPrice}</>;
+      },
+    },
+    {
+      title: 'Product Description',
+      dataIndex: 'description',
+      key: 'description',
+      width: 365,
+    },
+    {
+      title: 'Product Family',
+      dataIndex: 'product_family',
+      key: 'product_family',
+      width: 285,
+      render(text: any, record: any) {
+        return {
+          props: {
+            style: {
+              background: selectTedRowIds?.includes(record?.id)
+                ? '#E8EBEE'
+                : ' ',
+            },
+          },
+          children: (
+            <CommonSelect
+              style={{width: '200px'}}
+              placeholder="Select"
+              defaultValue={record?.Product?.product_family}
+              options={selectDataForProduct}
+              onChange={(e) => {
+                const data = {id: record?.product_id, product_family: e};
+                dispatch(updateProductFamily(data));
+              }}
+            />
+          ),
+        };
+      },
+    },
+    {
+      title: ' ',
+      dataIndex: 'actions',
+      key: 'actions',
+      width: 94,
+      render: (text: string, record: any) => (
+        <Space size={18}>
+          <PopConfirm
+            placement="top"
+            title=""
+            description="Are you sure to delete this Quote Line Item?"
+            onConfirm={() => {
+              deleteQuote(record?.id);
+            }}
+            okText="Yes"
+            cancelText="No"
+          >
+            <TrashIcon
+              height={24}
+              width={24}
+              color={token.colorError}
+              style={{cursor: 'pointer'}}
+            />
+          </PopConfirm>
+        </Space>
+      ),
+    },
+  ];
 
   useEffect(() => {
     let tabsname: any;
@@ -133,7 +311,7 @@ const GenerateQuote: React.FC = () => {
 
   useEffect(() => {
     const newArr: any = [];
-    tableColumnInput?.map((itemCol: any) => {
+    QuoteLineItemcolumns?.map((itemCol: any) => {
       tableColumnDataShow?.filter((item: any) => {
         if (item?.field_name?.includes(itemCol?.title)) {
           newArr?.push(itemCol);
@@ -144,8 +322,9 @@ const GenerateQuote: React.FC = () => {
       });
     });
     // actions
+    const finalArr = newArr?.splice(newArr?.length - 1, 1);
     setFinalInputColumn(newArr);
-  }, [tableColumnInput, tableColumnDataShow]);
+  }, [tableColumnDataShow]);
 
   useEffect(() => {
     setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);
@@ -361,189 +540,6 @@ const GenerateQuote: React.FC = () => {
       }, 500);
     }
   };
-
-  const deleteQuote = async (id: number) => {
-    if (id) {
-      const data = {
-        Ids: [id],
-        bundle_id: null,
-      };
-      await dispatch(updateQuoteLineItemForBundleId(data));
-      dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
-      dispatch(getAllBundle(getQuoteID));
-    }
-  };
-
-  const QuoteLineItemcolumns = [
-    {
-      title: '#Line',
-      dataIndex: 'line_number',
-      key: 'line_number',
-      render: (text: any, record: any) => (
-        <OsInput
-          disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
-          style={{
-            height: '36px',
-          }}
-          placeholder={text}
-          value={
-            !selectTedRowIds?.includes(record?.id)
-              ? text * (record?.Bundle?.quantity ? record?.Bundle?.quantity : 1)
-              : quoteLineItemByQuoteData?.line_number
-          }
-          onChange={(v) => {
-            setQuoteLineItemByQuoteData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {...prevItem, line_number: v.target.value};
-                }
-                return prevItem;
-              }),
-            );
-          }}
-        />
-      ),
-      width: 130,
-    },
-    {
-      title: 'SKU',
-      dataIndex: 'product_code',
-      key: 'product_code',
-      width: 187,
-    },
-    {
-      title: 'Qty',
-      dataIndex: 'quantity',
-      key: 'quantity',
-      render: (text: any, record: any) => (
-        <OsInput
-          style={{
-            height: '36px',
-          }}
-          disabled={isEditable ? !selectTedRowIds?.includes(record?.id) : true}
-          // value={
-          //   // eslint-disable-next-line no-unsafe-optional-chaining
-          //   text *
-          //   (!isEditable && record?.Bundle?.quantity
-          //     ? record?.Bundle?.quantity
-          //     : 1)
-          // }
-          placeholder={text}
-          value={
-            !selectTedRowIds?.includes(record?.id)
-              ? text * (record?.Bundle?.quantity ? record?.Bundle?.quantity : 1)
-              : quoteLineItemByQuoteData?.quantity
-          }
-          onChange={(v) => {
-            setQuoteLineItemByQuoteData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {...prevItem, quantity: v.target.value};
-                }
-                return prevItem;
-              }),
-            );
-          }}
-        />
-      ),
-      width: 187,
-    },
-    {
-      title: 'MSRP',
-      dataIndex: 'adjusted_price',
-      key: 'adjusted_price',
-      width: 187,
-      render: (text: any, record: any) => {
-        let doubleVal: any;
-
-        return <>{record?.Bundle?.quantity ? record?.Bundle?.quantity : 1}</>;
-      },
-    },
-    {
-      title: 'Cost',
-      dataIndex: 'list_price',
-      key: 'list_price',
-      width: 187,
-      render: (text: any, record: any) => {
-        const totalAddedPrice = record?.Product?.list_price
-          ?.slice(1, record?.Product?.list_price?.length)
-          .replace(',', '');
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        const ExactPriceForOne = totalAddedPrice / record?.Product?.quantity;
-        let bundleQuantity: any = 1;
-        bundleQuantity = record?.Bundle ? record?.Bundle?.quantity : 1;
-        const totalQuantity = record?.quantity * bundleQuantity;
-        const TotalPrice = totalQuantity * ExactPriceForOne;
-
-        return <>${TotalPrice}</>;
-      },
-    },
-    {
-      title: 'Product Description',
-      dataIndex: 'description',
-      key: 'description',
-      width: 365,
-    },
-    {
-      title: 'Product Family',
-      dataIndex: 'product_family',
-      key: 'product_family',
-      width: 285,
-      render(text: any, record: any) {
-        return {
-          props: {
-            style: {
-              background: selectTedRowIds?.includes(record?.id)
-                ? '#E8EBEE'
-                : ' ',
-            },
-          },
-          children: (
-            <CommonSelect
-              style={{width: '200px'}}
-              placeholder="Select"
-              defaultValue={record?.Product?.product_family}
-              options={selectDataForProduct}
-              onChange={(e) => {
-                const data = {id: record?.product_id, product_family: e};
-                dispatch(updateProductFamily(data));
-              }}
-            />
-          ),
-        };
-      },
-    },
-    // {
-    //   title: ' ',
-    //   dataIndex: 'actions',
-    //   key: 'actions',
-    //   width: 94,
-    //   render: (text: string, record: any) => (
-    //     <Space size={18}>
-    //       <PopConfirm
-    //         placement="top"
-    //         title=""
-    //         description="Are you sure to delete this Quote Line Item?"
-    //         onConfirm={() => {
-    //           deleteQuote(record?.id);
-    //         }}
-    //         okText="Yes"
-    //         cancelText="No"
-    //       >
-    //         <TrashIcon
-    //           height={24}
-    //           width={24}
-    //           color={token.colorError}
-    //           style={{cursor: 'pointer'}}
-    //         />
-    //       </PopConfirm>
-    //     </Space>
-    //   ),
-    // },
-  ];
-  useEffect(() => {
-    setTableColumnInput(QuoteLineItemcolumns);
-  }, []);
 
   const items: MenuProps['items'] = [
     {
