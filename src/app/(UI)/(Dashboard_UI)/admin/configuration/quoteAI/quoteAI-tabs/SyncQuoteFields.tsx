@@ -7,13 +7,168 @@ import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {dummyData} from '@/app/utils/CONSTANTS';
+import {
+  dummyData,
+  opportunityOptions,
+  quoteAndOpportunityLineItemOptions,
+  quoteOptions,
+} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Row, Space} from 'antd';
+import {useEffect, useState} from 'react';
 import {TabContainerStyle} from './styled-components';
+import {
+  deleteSyncTableRow,
+  getAllSyncTable,
+  insertUpdateSyncTable,
+} from '../../../../../../../../redux/actions/syncTable';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../../../../../redux/hook';
 
 const SyncQuoteField = () => {
   const [token] = useThemeToken();
+
+  const dispatch = useAppDispatch();
+  const {data: syncTableData, loading} = useAppSelector(
+    (state) => state.syncTable,
+  );
+
+  const [updatedColumnforQuoteSync, setUpdatedColumnforQuoteSync] =
+    useState<any>();
+  const [quoteFilteredOption, setQuoteOptions] = useState<any>();
+  const [opportunityFilteredOption, setOpportunityOIptions] = useState<any>();
+
+  useEffect(() => {
+    const quoteLine: any = [];
+    const opportunity: any = [];
+
+    // eslint-disable-next-line array-callback-return
+    updatedColumnforQuoteSync?.map((item: any) => {
+      if (
+        item?.reciver_table_col !== undefined &&
+        item?.sender_table_col !== undefined
+      ) {
+        opportunity?.push(item?.reciver_table_col);
+        quoteLine?.push(item?.sender_table_col);
+      }
+    });
+    const quoteFiltered = quoteOptions?.filter(
+      (item) => !quoteLine.includes(item?.value),
+    );
+    const opportunityFiltered = opportunityOptions?.filter(
+      (item) => !opportunity.includes(item?.value),
+    );
+
+    setOpportunityOIptions(opportunityFiltered);
+    setQuoteOptions(quoteFiltered);
+  }, [updatedColumnforQuoteSync]);
+
+  const deleteRowSync = (id: any) => {
+    dispatch(deleteSyncTableRow(id));
+    setTimeout(() => {
+      dispatch(getAllSyncTable('Quote'));
+    }, 1000);
+  };
+
+  useEffect(() => {
+    dispatch(getAllSyncTable('Quote'));
+  }, []);
+  useEffect(() => {
+    setUpdatedColumnforQuoteSync(syncTableData);
+  }, [syncTableData]);
+
+  const updateTableColumnValues = async () => {
+    for (let i = 0; i < updatedColumnforQuoteSync?.length; i++) {
+      const dataItems = updatedColumnforQuoteSync[i];
+      dispatch(insertUpdateSyncTable(dataItems));
+    }
+    setTimeout(() => {
+      dispatch(getAllSyncTable('Quote'));
+    }, 1000);
+  };
+  const commonMethodForChecks = (
+    ids: any,
+    names: any,
+    valuess: any,
+    keys: any,
+  ) => {
+    const previousArray =
+      updatedColumnforQuoteSync?.length > 0
+        ? [...updatedColumnforQuoteSync]
+        : [];
+    if (previousArray?.length > 0) {
+      let indexOfCurrentId: any;
+      if (ids) {
+        indexOfCurrentId = previousArray?.findIndex(
+          (item: any) => item?.id === ids,
+        );
+      } else {
+        indexOfCurrentId = previousArray?.findIndex(
+          (item: any) => item?.key === keys,
+        );
+      }
+
+      if (indexOfCurrentId === -1) {
+        let newObj: any;
+        if (ids) {
+          newObj = {
+            id: ids,
+            [names]: valuess,
+          };
+        } else {
+          newObj = {
+            key: keys,
+            [names]: valuess,
+          };
+        }
+        previousArray?.push(newObj);
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        // previousArray?.[indexOfCurrentId]?.names = valuess;
+        let newObj = previousArray[indexOfCurrentId];
+        newObj = {
+          ...newObj,
+          [names]: valuess,
+        };
+        previousArray[indexOfCurrentId] = newObj;
+      }
+    } else {
+      let newObj: any;
+      if (ids) {
+        newObj = {
+          id: ids,
+          [names]: valuess,
+        };
+      } else {
+        newObj = {
+          key: keys,
+          [names]: valuess,
+        };
+      }
+      previousArray?.push(newObj);
+    }
+    setUpdatedColumnforQuoteSync(previousArray);
+  };
+
+  const addNewRow = () => {
+    const newArr =
+      updatedColumnforQuoteSync?.length > 0
+        ? [...updatedColumnforQuoteSync]
+        : [];
+    newArr?.push({
+      // eslint-disable-next-line no-unsafe-optional-chaining
+      key:
+        updatedColumnforQuoteSync?.length > 0
+          ? // eslint-disable-next-line no-unsafe-optional-chaining, @typescript-eslint/indent
+            updatedColumnforQuoteSync?.length + 1
+          : 0,
+      sender_table_name: 'Quote',
+      reciver_table_name: 'Opportunity',
+    });
+    setUpdatedColumnforQuoteSync(newArr);
+  };
   const SyncQuoteFields = [
     {
       title: 'S No.',
@@ -21,41 +176,95 @@ const SyncQuoteField = () => {
       key: 'id',
       width: 50,
     },
+    // sender_table_name : DataTypes.STRING,
+    // reciver_table_name : DataTypes.STRING,
+    // sender_table_col : DataTypes.STRING,
+    // reciver_table_col : DataTypes.STRING,
     {
-      title: 'Quote',
-      dataIndex: 'quote',
-      key: 'quote',
-      render: (text: string) => (
+      title: 'Quote Line Item Fields',
+      dataIndex: 'product_code',
+      key: 'product_code',
+      render: (text: string, record: any) => (
         <CommonSelect
           style={{width: '100%', height: '36px'}}
           placeholder="Select"
-          defaultValue={text}
-          onChange={(v) => {}}
-          options={[]}
+          value={record?.sender_table_col}
+          onChange={(e) => {
+            if (record?.id) {
+              commonMethodForChecks(record?.id, 'sender_table_col', e, '');
+            } else {
+              commonMethodForChecks(
+                '',
+                // eslint-disable-next-line no-unsafe-optional-chaining
+
+                'sender_table_col',
+                e,
+                record?.key,
+              );
+            }
+          }}
+          options={record?.id ? quoteOptions : quoteFilteredOption}
         />
       ),
       width: 470,
     },
     {
-      title: 'Opportunity',
-      dataIndex: 'opportunity',
-      key: 'opportunity',
-      render: (text: string) => (
+      title: 'Opportunity  Line Item Fields',
+      dataIndex: 'quantity',
+      key: 'quantity',
+      render: (text: string, record: any) => (
         <CommonSelect
           style={{width: '100%', height: '36px'}}
           placeholder="Select"
           defaultValue={text}
-          onChange={(v) => {}}
-          options={[]}
+          value={record?.reciver_table_col}
+          onChange={(e) => {
+            if (record?.id) {
+              commonMethodForChecks(
+                record?.id,
+                'reciver_table_col',
+                e,
+                record?.key,
+              );
+            } else {
+              commonMethodForChecks(
+                // eslint-disable-next-line no-unsafe-optional-chaining
+                '',
+                'reciver_table_col',
+                e,
+                record?.key,
+              );
+            }
+          }}
+          options={record?.id ? opportunityOptions : opportunityFilteredOption}
         />
       ),
       width: 470,
     },
     {
       title: 'Active',
-      dataIndex: 'active',
-      key: 'active',
-      render: (text: string) => <Switch size="default" onChange={() => {}} />,
+      dataIndex: 'adjusted_price',
+      key: 'adjusted_price',
+      render: (text: string, record: any) => (
+        <Switch
+          size="default"
+          defaultChecked={record?.is_required}
+          onChange={(e) => {
+            console.log('534534', e);
+            if (record?.id) {
+              commonMethodForChecks(record?.id, 'is_required', e, record?.key);
+            } else {
+              commonMethodForChecks(
+                // eslint-disable-next-line no-unsafe-optional-chaining
+                '',
+                'is_required',
+                e,
+                record?.key,
+              );
+            }
+          }}
+        />
+      ),
       width: 77,
     },
     {
@@ -70,8 +279,7 @@ const SyncQuoteField = () => {
           color={token.colorError}
           style={{cursor: 'pointer'}}
           onClick={() => {
-            // setDeleteIds([record?.id]);
-            // setShowModalDelete(true);
+            deleteRowSync(record?.id);
           }}
         />
       ),
@@ -103,7 +311,7 @@ const SyncQuoteField = () => {
                       // rowSelection={rowSelection}
                       tableSelectionType="checkbox"
                       columns={SyncQuoteFields}
-                      dataSource={dummyData}
+                      dataSource={updatedColumnforQuoteSync}
                       scroll
                     />
                     <div style={{width: 'max-content', float: 'right'}}>
@@ -111,7 +319,7 @@ const SyncQuoteField = () => {
                         text="Add Field"
                         buttontype="PRIMARY"
                         icon={<PlusIcon width={24} />}
-                        clickHandler={() => {}}
+                        clickHandler={addNewRow}
                       />
                     </div>
                   </Space>
@@ -130,7 +338,11 @@ const SyncQuoteField = () => {
           right: '0%',
         }}
       >
-        <OsButton text="Save" buttontype="PRIMARY" clickHandler={() => {}} />
+        <OsButton
+          text="Save"
+          buttontype="PRIMARY"
+          clickHandler={updateTableColumnValues}
+        />
       </footer>
     </TabContainerStyle>
   );

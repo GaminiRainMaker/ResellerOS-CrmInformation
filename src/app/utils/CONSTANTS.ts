@@ -172,3 +172,29 @@ export const ContractStatusOptions = [
   {value: 'green', label: 'Green'},
   {value: 'yellow', label: 'Yellow'},
 ];
+
+export const quoteAndOpportunityLineItemOptions = [
+  {value: 'line_number', label: 'Line Number'},
+  {value: 'adjusted_price', label: 'Adjustet Price'},
+  {value: 'product_code', label: 'Product Code'},
+  {value: 'line_amount', label: 'Line Amount'},
+  {value: 'list_price', label: 'List Price'},
+  {value: 'description', label: 'Description'},
+  {value: 'quantity', label: 'Quantity'},
+];
+
+export const quoteOptions = [
+  {value: 'credit_cards', label: 'Credit Cards'},
+  {value: 'customer_address', label: 'Customer Address'},
+  {value: 'customer_city', label: 'Customer City'},
+  {value: 'customer_contact', label: 'Customer Contact'},
+  {value: 'customer_email', label: 'Customer Email'},
+  {value: 'customer_name', label: 'Customer Name'},
+  {value: 'customer_phone', label: 'Customer Phone'},
+  {value: 'customer_state', label: 'Customer State'},
+];
+export const opportunityOptions = [
+  {value: 'title', label: 'Title'},
+  {value: 'amount', label: 'Amount'},
+  {value: 'stages', label: 'Stages'},
+];
