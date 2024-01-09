@@ -67,6 +67,7 @@ import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {getAllTableColumn} from '../../../../../redux/actions/tableColumn';
+import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -96,12 +97,17 @@ const GenerateQuote: React.FC = () => {
     useState<any>();
   const {data: tableColumnData} = useAppSelector((state) => state.tableColumn);
 
+  const {data: contractSettingData} = useAppSelector(
+    (state) => state.contractSetting,
+  );
+
   const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
 
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
 
   useEffect(() => {
     dispatch(getAllTableColumn(''));
+    dispatch(getAllContractSetting(''));
   }, []);
 
   const deleteQuote = async (id: number) => {
@@ -519,6 +525,7 @@ const GenerateQuote: React.FC = () => {
     });
     router?.push('/allQuote');
   };
+
   // const saveUpdate = (queryItem: string) => {
   //   quoteLineItemByQuoteData?.map((prev: any) => {
   //     if (selectTedRowIds?.includes(prev?.id)) {
@@ -620,7 +627,7 @@ const GenerateQuote: React.FC = () => {
       name: 'Rebates',
       children: <Rebates tableColumnDataShow={tableColumnDataShow} />,
     },
-    {
+    contractSettingData?.show_validation_tab && {
       key: 4,
       name: 'Validation',
       children: <Validation tableColumnDataShow={tableColumnDataShow} />,
@@ -631,11 +638,8 @@ const GenerateQuote: React.FC = () => {
       children: (
         <Metrics familyFilter={familyFilter} selectedFilter={selectedFilter} />
       ),
-      // children: (
-      //   <EmptyContainer title="Please Select Grouping to view Matrics" />
-      // ),
     },
-  ];
+  ].filter(Boolean);
 
   const menuItems = [
     {
@@ -764,7 +768,7 @@ const GenerateQuote: React.FC = () => {
               </Space>
             }
           >
-            {TabPaneData?.map((item) => (
+            {TabPaneData?.map((item: any) => (
               <TabPane
                 tab={
                   <Typography name="Body 4/Regular">{item?.name}</Typography>

@@ -24,7 +24,9 @@ import {TabContainerStyle} from './styled-components';
 const FieldDisplayConfiguration = () => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const {data: tableColumnData} = useAppSelector((state) => state.tableColumn);
+  const {data: tableColumnData, loading} = useAppSelector(
+    (state) => state.tableColumn,
+  );
   const [selectedTable, setSelectedTable] = useState<String>();
   const [tableColumnDataShow, setTableColumnDataShow] = useState<any>();
 
@@ -261,12 +263,11 @@ const FieldDisplayConfiguration = () => {
                   <Space size={24} direction="vertical" style={{width: '100%'}}>
                     <OsTable
                       loading={false}
-                      // rowSelection={rowSelection}
                       tableSelectionType="checkbox"
                       columns={FieldDisplayConfigurationFields}
                       dataSource={tableColumnDataShow}
                       pageSize={{
-                        pageSize: 3
+                        pageSize: 3,
                       }}
                     />
                     <div style={{width: 'max-content', float: 'right'}}>
@@ -297,6 +298,7 @@ const FieldDisplayConfiguration = () => {
           text="Save"
           buttontype="PRIMARY"
           clickHandler={updateTableColumnValues}
+          loading={loading}
         />
       </footer>
     </TabContainerStyle>
