@@ -171,7 +171,6 @@ const DrawerContent: FC<any> = ({setOpen}) => {
                 ...(opportunityDataItem?.pdf_url || []),
                 ...opportunityDataItemPDfUrl.flat(),
               ],
-              // pdf_url: opportunityDataItemPDfUrl,
             };
           }
         }

@@ -177,7 +177,7 @@ const SyncQuoteField = () => {
     // sender_table_col : DataTypes.STRING,
     // reciver_table_col : DataTypes.STRING,
     {
-      title: 'Quote Line Item Fields',
+      title: 'Quote',
       dataIndex: 'product_code',
       key: 'product_code',
       render: (text: string, record: any) => (
@@ -205,7 +205,7 @@ const SyncQuoteField = () => {
       width: 470,
     },
     {
-      title: 'Opportunity  Line Item Fields',
+      title: 'Opportunity',
       dataIndex: 'quantity',
       key: 'quantity',
       render: (text: string, record: any) => (
