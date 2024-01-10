@@ -16,9 +16,13 @@ import {
   getAllOpportunity,
   updateOpportunity,
 } from '../../../../../redux/actions/opportunity';
-import {updateQuoteById} from '../../../../../redux/actions/quote';
+import {
+  getQuoteById,
+  updateQuoteById,
+} from '../../../../../redux/actions/quote';
 import {getQuoteLineItemByQuoteId} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
 
 interface FormDataProps {
   file_name: string;
@@ -42,6 +46,7 @@ const DrawerContent: FC<any> = ({setOpen}) => {
 
   const [form] = Form.useForm();
   const [customerValue, setCustomerValue] = useState<number>(0);
+  const [quoteData, setQuoteData] = useState<any>();
   const [drawerData, setDrawerData] = useState<{
     id: number | string;
     createdAt: string;
@@ -64,8 +69,11 @@ const DrawerContent: FC<any> = ({setOpen}) => {
 
   const [customerOptionsData, setCustomerOptionData] = useState<any>();
   const [billingOptionsData, setBillingOptionData] = useState<any>();
+  const {data: syncTableData} = useAppSelector((state) => state.syncTable);
+  const [opportunityObject, setOpportunityObject] = useState<any>();
 
   // BillingContacts
+
   useEffect(() => {
     const customerOptions: any = [];
     const updatedAllBillingContact: any = [];
@@ -110,7 +118,37 @@ const DrawerContent: FC<any> = ({setOpen}) => {
   useEffect(() => {
     dispatch(getAllCustomer({}));
     dispatch(getAllOpportunity());
+    dispatch(getQuoteById(Number(getQuoteLineItemId))).then((payload) => {
+      setQuoteData(payload?.payload?.data);
+    });
+    dispatch(getAllSyncTable('Quote'));
   }, []);
+
+  useEffect(() => {
+    const newRequiredArray: any = [];
+    syncTableData?.map((item: any) => {
+      if (item?.is_required) {
+        newRequiredArray?.push({
+          sender: item?.sender_table_col,
+          reciver: item?.reciver_table_col,
+        });
+      }
+    });
+
+    const newArrayForOpporQuoteLineItem: any = [];
+    newRequiredArray?.map((itemsRe: any) => {
+      newArrayForOpporQuoteLineItem?.push({
+        key: itemsRe?.reciver,
+        value: quoteData?.[itemsRe?.sender],
+      });
+    });
+
+    const singleObjects = newArrayForOpporQuoteLineItem.reduce(
+      (obj: any, item: any) => Object.assign(obj, {[item.key]: item.value}),
+      {},
+    );
+    setOpportunityObject(singleObjects);
+  }, [syncTableData, quoteData]);
 
   const onSubmit = (values: FormDataProps) => {
     if (generalSettingData?.attach_doc_type === 'opportunity') {
@@ -123,6 +161,7 @@ const DrawerContent: FC<any> = ({setOpen}) => {
             quoteById?.pdf_url,
           );
           OpportunityValue = {
+            ...opportunityObject,
             id: opportunityDataItem?.id,
             pdf_url: opportunityDataItemPDfUrl,
           };
@@ -146,7 +185,7 @@ const DrawerContent: FC<any> = ({setOpen}) => {
       <Row justify="space-between">
         <Col>
           <Typography name="Body 4/Medium" as="div">
-            Quote Generate Date
+            3
           </Typography>
           <Typography name="Body 2/Regular">{drawerData?.createdAt}</Typography>
         </Col>

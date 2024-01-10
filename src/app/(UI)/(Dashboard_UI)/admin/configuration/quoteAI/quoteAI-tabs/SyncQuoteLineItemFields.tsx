@@ -169,10 +169,6 @@ const SyncQuoteLineItemField = () => {
       key: 'id',
       width: 50,
     },
-    // sender_table_name : DataTypes.STRING,
-    // reciver_table_name : DataTypes.STRING,
-    // sender_table_col : DataTypes.STRING,
-    // reciver_table_col : DataTypes.STRING,
     {
       title: 'Quote Line Item Fields',
       dataIndex: 'product_code',
@@ -196,11 +192,7 @@ const SyncQuoteLineItemField = () => {
               );
             }
           }}
-          options={
-            record?.id
-              ? quoteAndOpportunityLineItemOptions
-              : opportunityLineItemFilteredOption
-          }
+          options={opportunityLineItemFilteredOption}
         />
       ),
       width: 470,
@@ -233,11 +225,7 @@ const SyncQuoteLineItemField = () => {
               );
             }
           }}
-          options={
-            record?.id
-              ? quoteAndOpportunityLineItemOptions
-              : quoteLineItemFilteredOption
-          }
+          options={quoteLineItemFilteredOption}
         />
       ),
       width: 470,

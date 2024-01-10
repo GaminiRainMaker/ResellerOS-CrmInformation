@@ -102,7 +102,7 @@ const GenerateQuote: React.FC = () => {
   const {data: contractSettingData} = useAppSelector(
     (state) => state.contractSetting,
   );
- 
+
   const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
 
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
