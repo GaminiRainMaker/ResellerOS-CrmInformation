@@ -29,8 +29,9 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Button, MenuProps, TabsProps} from 'antd';
+import {Button, MenuProps, TabsProps, Upload} from 'antd';
 import {useEffect, useState} from 'react';
+import {getBase64, uploadImage} from '@/app/utils/upload';
 import {
   deleteBillingContact,
   getBillingContactBySearch,
@@ -41,6 +42,7 @@ import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddContact from './addContact';
 import EditContactModal from './editContact';
+import {uploadToAws} from '../../../../../redux/actions/upload';
 
 // const queryParams: any = {
 //   search: '',
@@ -292,6 +294,19 @@ const CrmAccount: React.FC = () => {
       ),
     },
   ];
+  // const uploadImageTOBackend = async (newFileList: any) => {
+  //   const data = await getBase64(newFileList);
+  //   const mediaType = newFileList?.type.split('/')[0];
+  //   // const loaction = await uploadImage(data, mediaType, newFileList);
+
+  //   dispatch(
+  //     uploadToAws({
+  //       document: data,
+  //     }),
+  //   ).then((payload: any) => {
+  //     console.log('435435435', payload?.payload?.data?.Location);
+  //   });
+  // };
 
   return (
     <>
@@ -321,23 +336,23 @@ const CrmAccount: React.FC = () => {
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
               Contact{' '}
-              {/* <div>
-                <Upload
+              <div>
+                {/* <Upload
                   onChange={(e: any) => {
-                    console.log('435435435', e.fileList[0]?.originFileObj);
-                    Papa.parse(e.fileList[0]?.originFileObj, {
-                      header: true,
-                      skipEmptyLines: true,
-                      complete(results: any) {
-                        console.log(results.data);
-                      },
-                    });
+                    uploadImageTOBackend(e.fileList[0]?.originFileObj);
+                    // Papa.parse(e.fileList[0]?.originFileObj, {
+                    //   header: true,
+                    //   skipEmptyLines: true,
+                    //   complete(results: any) {
+                    //     console.log(results.data);
+                    //   },
+                    // });
                   }}
-                  accept=".txt, .csv"
+                  // accept=".txt, .csv"
                 >
                   CSV
-                </Upload>
-              </div> */}
+                </Upload> */}
+              </div>
             </Typography>
           </Col>
           <Col>

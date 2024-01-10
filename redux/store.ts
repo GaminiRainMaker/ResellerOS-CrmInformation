@@ -20,6 +20,7 @@ import Opportunity from './slices/opportunity';
 import tableColumn from './slices/tabelColumn';
 import gereralSetting from './slices/gereralSetting';
 import contractSetting from './slices/contractSetting';
+import syncTable from './slices/syncTable';
 
 // Configure redux store
 const store = configureStore({
@@ -42,6 +43,7 @@ const store = configureStore({
     tableColumn,
     gereralSetting,
     contractSetting,
+    syncTable,
   },
   middleware: [thunk, logger],
   devTools: true,

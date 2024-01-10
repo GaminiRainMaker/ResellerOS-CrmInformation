@@ -88,4 +88,10 @@ export const API = {
   CONTRACTSETTING_API: {
     INDEX: '/ContractSetting',
   },
+  SYNCTABLE: {
+    INDEX: '/syncTable',
+  },
+  UPLOADAWS: {
+    INDEX: '/upload/uploadDocument',
+  },
 };
