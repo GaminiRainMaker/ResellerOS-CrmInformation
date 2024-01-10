@@ -7,16 +7,10 @@ import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {
-  dummyData,
-  opportunityOptions,
-  quoteAndOpportunityLineItemOptions,
-  quoteOptions,
-} from '@/app/utils/CONSTANTS';
+import {opportunityOptions, quoteOptions} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Row, Space} from 'antd';
 import {useEffect, useState} from 'react';
-import {TabContainerStyle} from './styled-components';
 import {
   deleteSyncTableRow,
   getAllSyncTable,
@@ -26,6 +20,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../../../../redux/hook';
+import {TabContainerStyle} from './styled-components';
 
 const SyncQuoteField = () => {
   const [token] = useThemeToken();
@@ -75,6 +70,7 @@ const SyncQuoteField = () => {
   useEffect(() => {
     dispatch(getAllSyncTable('Quote'));
   }, []);
+
   useEffect(() => {
     setUpdatedColumnforQuoteSync(syncTableData);
   }, [syncTableData]);
@@ -342,6 +338,7 @@ const SyncQuoteField = () => {
           text="Save"
           buttontype="PRIMARY"
           clickHandler={updateTableColumnValues}
+          loading={loading}
         />
       </footer>
     </TabContainerStyle>

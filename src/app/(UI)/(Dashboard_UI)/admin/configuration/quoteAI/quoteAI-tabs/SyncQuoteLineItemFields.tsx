@@ -7,10 +7,7 @@ import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {
-  
-  quoteAndOpportunityLineItemOptions,
-} from '@/app/utils/CONSTANTS';
+import {quoteAndOpportunityLineItemOptions} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Row, Space} from 'antd';
 import {useEffect, useState} from 'react';
@@ -29,7 +26,7 @@ const SyncQuoteLineItemField = () => {
   const [token] = useThemeToken();
 
   const dispatch = useAppDispatch();
-  const {data: syncTableData} = useAppSelector(
+  const {data: syncTableData, loading} = useAppSelector(
     (state) => state.syncTable,
   );
 
@@ -334,6 +331,7 @@ const SyncQuoteLineItemField = () => {
           text="Save"
           buttontype="PRIMARY"
           clickHandler={updateTableColumnValues}
+          loading={loading}
         />
       </footer>
     </TabContainerStyle>
