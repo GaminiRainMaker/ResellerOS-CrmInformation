@@ -1,24 +1,29 @@
 'use client';
 
-import {Col} from '@/app/components/common/antd/Grid';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import {Switch} from '@/app/components/common/antd/Switch';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
+import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {
   ContractStatusOptions,
+  LogicOptions,
+  OperatorsOptions,
   dummyData,
-  pricingMethod,
 } from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {Row, Space} from 'antd';
+import {useState} from 'react';
 import {TabContainerStyle} from './styled-components';
 
 const ContractValidationConfiguration = () => {
   const [token] = useThemeToken();
+  const [isSelectStatus, setIsSelectStatus] = useState<boolean>(false);
+  const [isSelectLogic, setIsSelectLogic] = useState<boolean>(false);
 
   const ContractConfigurationFields = [
     {
@@ -52,7 +57,7 @@ const ContractValidationConfiguration = () => {
           placeholder="Select"
           defaultValue={text}
           onChange={(v) => {}}
-          options={pricingMethod}
+          options={OperatorsOptions}
         />
       ),
       width: 313,
@@ -147,8 +152,45 @@ const ContractValidationConfiguration = () => {
                 placeholder="Select"
                 style={{width: '100%'}}
                 options={ContractStatusOptions}
+                onChange={(e) => {
+                  setIsSelectStatus(true);
+                  setIsSelectLogic(false);
+                }}
               />
             </Space>
+            {isSelectStatus && (
+              <Space
+                size={4}
+                direction="vertical"
+                style={{
+                  width: '100%',
+                }}
+              >
+                <Typography name="Body 4/Medium">Logic</Typography>
+                <CommonSelect
+                  placeholder="Select"
+                  style={{width: '100%'}}
+                  options={LogicOptions}
+                  onChange={(e) => {
+                    if (e === 'custom_logic') setIsSelectLogic(true);
+                    else setIsSelectLogic(false);
+                  }}
+                />
+              </Space>
+            )}
+
+            {isSelectLogic && (
+              <Space
+                size={4}
+                direction="vertical"
+                style={{
+                  width: '100%',
+                }}
+              >
+                <Typography name="Body 4/Medium">Custom</Typography>
+                <OsInput placeholder="Select" style={{width: '100%'}} />
+              </Space>
+            )}
           </Space>
         </Space>
         <Space
@@ -171,7 +213,6 @@ const ContractValidationConfiguration = () => {
                   <Space size={24} direction="vertical" style={{width: '100%'}}>
                     <OsTable
                       loading={false}
-                      // rowSelection={rowSelection}
                       tableSelectionType="checkbox"
                       columns={ContractConfigurationFields}
                       dataSource={dummyData}

@@ -27,10 +27,10 @@ export const insertQuote = createAsyncThunk(
 );
 
 export const getQuoteById = createAsyncThunk(
-  'quote/id',
+  'quote/getQuoteById',
   async (id: number, thunkApi) => {
     try {
-      const res = await QUOTEAPI.getById(id);
+      const res = await QUOTEAPI.getQuoteByID(id);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

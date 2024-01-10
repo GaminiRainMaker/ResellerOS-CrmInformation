@@ -172,3 +172,18 @@ export const ContractStatusOptions = [
   {value: 'green', label: 'Green'},
   {value: 'yellow', label: 'Yellow'},
 ];
+
+
+export const LogicOptions = [
+  {value: 'AND', label: 'AND'},
+  {value: 'OR', label: 'OR'},
+  {value: 'custom_logic', label: 'Custom Logic'},
+];
+export const OperatorsOptions = [
+  {value: '=', label: '='},
+  {value: '!=', label: '!='},
+  {value: '<', label: '<'},
+  {value: '>', label: '>'},
+  {value: '<=', label: '<='},
+  {value: '=>', label: '=>'},
+];

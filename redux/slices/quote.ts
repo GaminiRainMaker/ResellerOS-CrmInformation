@@ -18,12 +18,14 @@ type QuoteState = {
   data: any;
   quote: any;
   filteredByDate: any;
+  quoteById: any;
 };
 const initialState: QuoteState = {
   loading: false,
   error: null,
   data: [],
   quote: [],
+  quoteById: {},
   filteredByDate: [],
 };
 
@@ -73,7 +75,7 @@ const quoteSlice = createSlice({
       })
       .addCase(getQuoteById.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.data = action.payload;
+        state.quoteById = action.payload;
       })
       .addCase(getQuoteById.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;

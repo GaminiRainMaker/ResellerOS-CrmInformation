@@ -75,7 +75,6 @@ const CrmOpportunity: React.FC = () => {
     setShowModalDelete(false);
   };
 
-  console.log('countDeletedOpp', countDeletedOpp);
   const updateOpportunityData = async () => {
     await dispatch(updateOpportunity(formValue));
     dispatch(getAllOpportunity());
