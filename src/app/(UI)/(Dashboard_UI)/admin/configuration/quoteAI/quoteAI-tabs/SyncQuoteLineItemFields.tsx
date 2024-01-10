@@ -8,7 +8,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {
-  dummyData,
+  
   quoteAndOpportunityLineItemOptions,
 } from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
@@ -29,7 +29,7 @@ const SyncQuoteLineItemField = () => {
   const [token] = useThemeToken();
 
   const dispatch = useAppDispatch();
-  const {data: syncTableData, loading} = useAppSelector(
+  const {data: syncTableData} = useAppSelector(
     (state) => state.syncTable,
   );
 
@@ -239,7 +239,6 @@ const SyncQuoteLineItemField = () => {
           size="default"
           defaultChecked={record?.is_required}
           onChange={(e) => {
-            console.log('534534', e);
             if (record?.id) {
               commonMethodForChecks(record?.id, 'is_required', e, record?.key);
             } else {

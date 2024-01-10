@@ -241,7 +241,6 @@ console.log("opportunityObject",opportunityObject)
                 style={{width: '100%'}}
                 placeholder="Contact Assign"
                 options={billingOptionsData}
-                onChange={(e) => {}}
               />
             </Form.Item>
 
