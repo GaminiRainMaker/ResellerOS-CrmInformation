@@ -22,6 +22,7 @@ import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import {Button, MenuProps, TabsProps} from 'antd';
 import {useState} from 'react';
+import OsDropdown from '@/app/components/common/os-dropdown';
 import {useAppSelector} from '../../../../../redux/hook';
 import DealRegAnalytics from './dealRegAnalytics';
 
@@ -53,7 +54,7 @@ const DealReg: React.FC = () => {
       title: 'Registration Forms',
       dataIndex: 'registration_form',
       key: 'registration_form',
-      width: 130,
+      width: 266,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -210,118 +211,101 @@ const DealReg: React.FC = () => {
   ];
 
   return (
-    <>
-      <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <DealRegAnalytics />
-        <Row justify="space-between" align="middle">
-          <Col>
-            <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              All Registered Forms
-            </Typography>
-          </Col>
-          <Col>
-            <div
-              style={{
-                display: 'flex',
-                width: '40%',
-                gap: '8px',
-              }}
-            >
-              <OsButton
-                text="New Registration Form"
-                buttontype="PRIMARY"
-                icon={<PlusIcon />}
-                clickHandler={() => setShowModal((p) => !p)}
-              />
-              <Dropdown menu={{items: dropDownItemss}} placement="bottomRight">
-                <Button
-                  style={{
-                    background: '#14263E',
-                    height: '48px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    border: 'none',
+    <Space size={24} direction="vertical" style={{width: '100%'}}>
+      <DealRegAnalytics />
+      <Row justify="space-between" align="middle">
+        <Col>
+          <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
+            All Registered Forms
+          </Typography>
+        </Col>
+        <Col style={{display: 'flex', alignItems: 'center'}}>
+          <Space size={12} style={{height: '48px'}}>
+            <OsButton
+              text="New Registration Form"
+              buttontype="PRIMARY"
+              icon={<PlusIcon />}
+              clickHandler={() => setShowModal((p) => !p)}
+            />
+
+            <OsDropdown menu={{items: dropDownItemss}} />
+          </Space>
+        </Col>
+      </Row>
+      <Row style={{background: 'white', padding: '24px', borderRadius: '12px'}}>
+        <OsTabs
+          onChange={(e) => {
+            setActiveTab(e);
+          }}
+          activeKey={activeTab}
+          tabBarExtraContent={
+            <Space size={12} align="center">
+              <Space direction="vertical" size={0}>
+                <Typography name="Body 4/Medium">Registration Form</Typography>
+                <OsInput
+                  style={{width: '180px'}}
+                  placeholder="Search Here"
+                  // options={bundleOptions}
+                  onChange={(e) => {
+                    setBillingFilterSearch({
+                      ...billingFilterSeach,
+                      name: e.target.value,
+                    });
+                    setQuery(e.target.value);
                   }}
-                >
-                  <EllipsisVerticalIcon width={24} color="white" />
-                </Button>
-              </Dropdown>
-            </div>
-          </Col>
-        </Row>
-        <Row
-          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
-        >
-          <OsTabs
-            onChange={(e) => {
-              setActiveTab(e);
-            }}
-            activeKey={activeTab}
-            tabBarExtraContent={
-              <Space size={12} align="center">
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">
-                    Registration Form
-                  </Typography>
-                  <OsInput
-                    style={{width: '180px'}}
-                    placeholder="Search Here"
-                    // options={bundleOptions}
-                    onChange={(e) => {
-                      setBillingFilterSearch({
-                        ...billingFilterSeach,
-                        name: e.target.value,
-                      });
-                      setQuery(e.target.value);
-                    }}
-                  />
-                </Space>
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Customer Account</Typography>
-                  <CommonSelect
-                    style={{width: '180px'}}
-                    placeholder="Search Here"
-                    options={tableData}
-                    onChange={(e) => {
-                      setBillingFilterSearch({
-                        ...billingFilterSeach,
-                        customer_id: e,
-                      });
-                      // setSelectedValue(e);
-                    }}
-                  />
-                </Space>
-                <div style={{display: 'flex', alignItems: 'center', marginTop: '15px'}}>
-                  <Typography
-                    cursor="pointer"
-                    name="Button 1"
-                    color="#C6CDD5"
-                    //   onClick={searchBillingContacts}
-                  >
-                    Apply
-                  </Typography>
-                </div>
-              </Space>
-            }
-            items={tabItems.map((tabItem: any, index: number) => ({
-              key: `${index + 1}`,
-              label: tabItem?.label,
-              children: (
-                <OsTable
-                  key={tabItem?.key}
-                  columns={DealRegColumns}
-                  dataSource={filteredData}
-                  rowSelection={rowSelection}
-                  scroll
-                  loading={loading}
                 />
-              ),
-              ...tabItem,
-            }))}
-          />
-        </Row>
-      </Space>
-    </>
+              </Space>
+              <Space direction="vertical" size={0}>
+                <Typography name="Body 4/Medium">Customer Account</Typography>
+                <CommonSelect
+                  style={{width: '180px'}}
+                  placeholder="Search Here"
+                  options={tableData}
+                  onChange={(e) => {
+                    setBillingFilterSearch({
+                      ...billingFilterSeach,
+                      customer_id: e,
+                    });
+                    // setSelectedValue(e);
+                  }}
+                />
+              </Space>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginTop: '15px',
+                }}
+              >
+                <Typography
+                  cursor="pointer"
+                  name="Button 1"
+                  color="#C6CDD5"
+                  //   onClick={searchBillingContacts}
+                >
+                  Apply
+                </Typography>
+              </div>
+            </Space>
+          }
+          items={tabItems.map((tabItem: any, index: number) => ({
+            key: `${index + 1}`,
+            label: tabItem?.label,
+            children: (
+              <OsTable
+                key={tabItem?.key}
+                columns={DealRegColumns}
+                dataSource={filteredData}
+                rowSelection={rowSelection}
+                scroll
+                loading={loading}
+              />
+            ),
+            ...tabItem,
+          }))}
+        />
+      </Row>
+    </Space>
   );
 };
 
