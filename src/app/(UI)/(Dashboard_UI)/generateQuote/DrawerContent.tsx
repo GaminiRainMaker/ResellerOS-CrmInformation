@@ -151,69 +151,36 @@ const DrawerContent: FC<any> = ({setOpen}) => {
   }, [syncTableData, quoteData]);
 
   const onSubmit = async (values: FormDataProps) => {
-    // if (
-    //   generalSettingData?.attach_doc_type === 'opportunity' ||
-    //   syncTableData?.length > 0
-    // ) {
-    //   const opportunityDataItemPDfUrl: any = [];
-    //   let OpportunityValue: any = {};
-    //   opportunityData?.map((opportunityDataItem: any) => {
-    //     if (opportunityDataItem?.id === values?.opportunity_id) {
-    //       opportunityDataItemPDfUrl.push(
-    //         opportunityDataItem?.pdf_url,
-    //         quoteById?.pdf_url,
-    //       );
-    //       // if (generalSettingData?.attach_doc_type === 'opportunity') {
-    //       //   OpportunityValue = {
-    //       //     // ...opportunityObject,
-    //       //     id: opportunityDataItem?.id,
-    //       //     pdf_url: opportunityDataItemPDfUrl,
-    //       //   };
-    //       // }
-    //     }
-    //   });
-    //   if (generalSettingData?.attach_doc_type === 'opportunity') {
-    //     dispatch(updateOpportunity(OpportunityValue));
-    //   } else {
-    //     dispatch(updateOpportunity(opportunityObject));
-    //   }
-    // }
-
-    // if (generalSettingData?.attach_doc_type === 'opportunity') {
-    //   const opportunityDataItemPDfUrl: any = [];
-    //   let OpportunityValue: any = {};
-    //   opportunityData?.map((opportunityDataItem: any) => {
-    //     if (opportunityDataItem?.id === values?.opportunity_id) {
-    //       opportunityDataItemPDfUrl.push(quoteById?.pdf_url);
-    //       OpportunityValue = {
-    //         ...opportunityDataItem,
-    //         // eslint-disable-next-line no-unsafe-optional-chaining
-    //         pdf_url: (opportunityDataItem?.pdf_url).concat(
-    //           opportunityDataItemPDfUrl,
-    //         ),
-    //       };
-    //     }
-    //   });
-    //   dispatch(updateOpportunity(OpportunityValue));
-    // }
-
-    if (generalSettingData?.attach_doc_type === 'opportunity') {
+    if (
+      generalSettingData?.attach_doc_type === 'opportunity' ||
+      syncTableData?.length > 0
+    ) {
       const opportunityDataItemPDfUrl: any = [];
       let OpportunityValue: any = {};
-
       opportunityData?.map((opportunityDataItem: any) => {
         if (opportunityDataItem?.id === values?.opportunity_id) {
-          opportunityDataItemPDfUrl.push(quoteById?.pdf_url);
-          OpportunityValue = {
-            ...opportunityDataItem,
-            pdf_url: [
-              ...(opportunityDataItem?.pdf_url || []), 
-              ...opportunityDataItemPDfUrl.flat(),
-            ],
-          };
+          opportunityDataItemPDfUrl.push(
+            opportunityDataItem?.pdf_url,
+            quoteById?.pdf_url,
+          );
+          if (generalSettingData?.attach_doc_type === 'opportunity') {
+            OpportunityValue = {
+              ...opportunityObject,
+              id: opportunityDataItem?.id,
+              pdf_url: [
+                ...(opportunityDataItem?.pdf_url || []),
+                ...opportunityDataItemPDfUrl.flat(),
+              ],
+              // pdf_url: opportunityDataItemPDfUrl,
+            };
+          }
         }
       });
-      await dispatch(updateOpportunity(OpportunityValue));
+      if (generalSettingData?.attach_doc_type === 'opportunity') {
+        dispatch(updateOpportunity(OpportunityValue));
+      } else {
+        dispatch(updateOpportunity(opportunityObject));
+      }
     }
 
     setDrawerData((prev) => ({...prev, formData: values}));
