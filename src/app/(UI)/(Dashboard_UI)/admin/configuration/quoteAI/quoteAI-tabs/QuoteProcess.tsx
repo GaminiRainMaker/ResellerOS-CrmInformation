@@ -37,9 +37,13 @@ const QuoteProcess = () => {
     await dispatch(insertUpdateContractSetting(contractSetting));
     dispatch(getAllContractSetting(''));
   };
+
+
   useEffect(() => {
     setContractSetting(contractSettingData);
   }, [contractSettingData]);
+
+
   useEffect(() => {
     dispatch(getAllContractSetting(''));
   }, []);
@@ -53,6 +57,8 @@ const QuoteProcess = () => {
       setFieldNameOption(opportunityColumn);
     }
   }, [contractSetting?.object_name]);
+
+  
   return (
     <TabContainerStyle>
       <Row>

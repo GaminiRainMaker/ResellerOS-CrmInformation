@@ -53,10 +53,11 @@ import {getContractProductByProductCode} from '../../../../../redux/actions/cont
 import {insertValidation} from '../../../../../redux/actions/validation';
 import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
+import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 
 interface FormattedData {
   [key: string]: {
-    [key: string]: string | undefined; // Define the inner object structure
+    [key: string]: string | undefined;
   };
 }
 const AllQuote: React.FC = () => {
@@ -68,7 +69,6 @@ const AllQuote: React.FC = () => {
   );
   const router = useRouter();
   const [showModal, setShowModal] = useState<boolean>(false);
-
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
   const [quoteData, setQuoteData] = useState<React.Key[]>([]);
@@ -77,6 +77,13 @@ const AllQuote: React.FC = () => {
   const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
+  const {data: generalSettingData} = useAppSelector(
+    (state) => state.gereralSetting,
+  );
+
+  useEffect(() => {
+    dispatch(getAllGeneralSetting(''));
+  }, []);
 
   const {data: syncTableData} = useAppSelector((state) => state.syncTable);
 
@@ -165,7 +172,10 @@ const AllQuote: React.FC = () => {
           },
         )}
       </>;
-      labelOcrMap.push(tempLabelOcrMap);
+      labelOcrMap?.push({
+        ...tempLabelOcrMap,
+        pdf_url: uploadFileDataItem?.pdf_url,
+      });
     });
     const newrrLineItems: any = [];
     const rebateDataArray: any = [];
@@ -189,6 +199,10 @@ const AllQuote: React.FC = () => {
                 quantity: insertedProduct?.payload?.quantity,
                 adjusted_price: insertedProduct?.payload?.adjusted_price,
                 line_number: insertedProduct?.payload?.line_number,
+                pdf_url:
+                  generalSettingData?.attach_doc_type === 'quote_line_item'
+                    ? item?.pdf_url
+                    : null,
               };
               const RebatesByProductCodData = await dispatch(
                 getRebatesByProductCode(insertedProduct?.payload?.product_code),

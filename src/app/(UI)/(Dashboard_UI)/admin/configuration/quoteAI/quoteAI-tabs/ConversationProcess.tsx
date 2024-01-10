@@ -23,7 +23,7 @@ import {
 const ConverSationProcess = () => {
   const [attachDocType, setAttachDocType] = useState<any>();
   const dispatch = useAppDispatch();
-  const {data: generalSettingData} = useAppSelector(
+  const {data: generalSettingData, loading} = useAppSelector(
     (state) => state.gereralSetting,
   );
 
@@ -38,7 +38,6 @@ const ConverSationProcess = () => {
     dispatch(getAllGeneralSetting(''));
   }, []);
 
-  console.log('sdsadfs');
   return (
     <TabContainerStyle>
       <Row>
@@ -205,6 +204,7 @@ const ConverSationProcess = () => {
         <OsButton
           text="Save"
           buttontype="PRIMARY"
+          loading={loading}
           clickHandler={updateGeneralSetting}
         />
       </footer>

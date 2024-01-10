@@ -1,9 +1,11 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable consistent-return */
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
@@ -20,7 +22,6 @@ import {
   XCircleIcon,
 } from '@heroicons/react/24/outline';
 import {FC, useEffect, useState} from 'react';
-import EmptyContainer from '@/app/components/common/os-empty-container';
 import {updateValidationById} from '../../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 
@@ -31,8 +32,33 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
   const {data: ValidationData, loading} = useAppSelector(
     (state) => state.validation,
   );
+  const {data: ContractSettingData} = useAppSelector(
+    (state) => state.contractSetting,
+  );
+  const {quoteById} = useAppSelector((state) => state.quote);
   const [validationDataData, setValidationDataData] =
     useState<any>(ValidationData);
+
+  const contractStatusCheck = (record: any) => {
+    const matchingField = ContractSettingData.matching_filed;
+
+    const value =
+      ContractSettingData.object_name === 'quote'
+        ? quoteById?.[matchingField]
+        : ContractSettingData.object_name === 'opportunity'
+          ? quoteById?.Opportunity?.[matchingField]
+          : ContractSettingData.object_name === 'quote_line_item'
+            ? record?.[matchingField]
+            : null;
+
+    if (value) {
+      const result = record?.product_code === value ? 'success' : 'reject';
+      return result;
+    }
+    if (!value) {
+      return 'reject';
+    }
+  };
 
   const renderEditableInput = (field: string) => {
     const editableField = tableColumnDataShow.find(
@@ -178,37 +204,33 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       dataIndex: 'contract_status',
       key: 'contract_status',
       width: 135,
-      render: (text: string) => {
-        if (text === 'success') {
-          return (
+      render(text: string, record: any) {
+        const status = contractStatusCheck(record);
+        return {
+          children: (
             <TableNameColumn
               fallbackIcon={
-                <CheckCircleIcon width={24} color={token?.colorSuccess} />
+                status === 'success' ? (
+                  <CheckCircleIcon width={24} color={token?.colorSuccess} />
+                ) : status === 'reject' ? (
+                  <XCircleIcon width={24} color={token?.colorError} />
+                ) : (
+                  <ExclamationCircleIcon
+                    width={24}
+                    color={token?.colorWarning}
+                  />
+                )
               }
-              iconBg={token?.colorSuccessBg}
-            />
-          );
-        }
-        if (text === 'reject') {
-          return (
-            <TableNameColumn
-              fallbackIcon={
-                <XCircleIcon width={24} color={token?.colorError} />
+              iconBg={
+                status === 'success'
+                  ? token?.colorSuccessBg
+                  : status === 'reject'
+                    ? token?.colorErrorBg
+                    : token?.colorWarningBg
               }
-              iconBg={token?.colorErrorBg}
             />
-          );
-        }
-        if (text === 'warning') {
-          return (
-            <TableNameColumn
-              fallbackIcon={
-                <ExclamationCircleIcon width={24} color={token?.colorWarning} />
-              }
-              iconBg={token?.colorWarningBg}
-            />
-          );
-        }
+          ),
+        };
       },
     },
   ];

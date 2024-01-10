@@ -173,6 +173,19 @@ export const ContractStatusOptions = [
   {value: 'yellow', label: 'Yellow'},
 ];
 
+export const LogicOptions = [
+  {value: 'AND', label: 'AND'},
+  {value: 'OR', label: 'OR'},
+  {value: 'custom_logic', label: 'Custom Logic'},
+];
+export const OperatorsOptions = [
+  {value: '=', label: '='},
+  {value: '!=', label: '!='},
+  {value: '<', label: '<'},
+  {value: '>', label: '>'},
+  {value: '<=', label: '<='},
+  {value: '=>', label: '=>'},
+];
 export const quoteAndOpportunityLineItemOptions = [
   {value: 'line_number', label: 'Line Number'},
   {value: 'adjusted_price', label: 'Adjustet Price'},

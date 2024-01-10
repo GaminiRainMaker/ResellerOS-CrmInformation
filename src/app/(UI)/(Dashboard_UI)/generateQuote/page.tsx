@@ -23,10 +23,9 @@ import {
 
 import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
-import {PopConfirm} from '@/app/components/common/antd/PopConfirm';
 import {Space} from '@/app/components/common/antd/Space';
-import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapse from '@/app/components/common/os-collapse';
 import OsDrawer from '@/app/components/common/os-drawer';
@@ -39,14 +38,18 @@ import {Button, MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
+import {PopConfirm} from '@/app/components/common/antd/PopConfirm';
 import {
   getAllBundle,
   updateBundleQuantity,
 } from '../../../../../redux/actions/bundle';
+import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {updateProductFamily} from '../../../../../redux/actions/product';
 import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
-import {updateQuoteByQuery} from '../../../../../redux/actions/quote';
+import {
+  getQuoteById,
+  updateQuoteByQuery,
+} from '../../../../../redux/actions/quote';
 import {
   DeleteQuoteLineItemQuantityById,
   UpdateQuoteLineItemQuantityById,
@@ -55,6 +58,7 @@ import {
   updateQuoteLineItemForBundleId,
 } from '../../../../../redux/actions/quotelineitem';
 import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
+import {getAllTableColumn} from '../../../../../redux/actions/tableColumn';
 import {getAllValidationByQuoteId} from '../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
@@ -65,9 +69,7 @@ import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
 import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
-import {getAllCustomer} from '../../../../../redux/actions/customer';
-import {getAllTableColumn} from '../../../../../redux/actions/tableColumn';
-import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
+import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -100,7 +102,7 @@ const GenerateQuote: React.FC = () => {
   const {data: contractSettingData} = useAppSelector(
     (state) => state.contractSetting,
   );
-
+ 
   const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
 
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
@@ -315,6 +317,16 @@ const GenerateQuote: React.FC = () => {
     setTableColumnDataShow(filterRequired);
   }, [activeTab, tableColumnData]);
 
+  // const renderEditableInput = (field: string) => {
+  //   const editableField = tableColumnDataShow.find(
+  //     (item: any) => item.field_name === field,
+  //   );
+  //   if (editableField?.is_editable) {
+  //     return false;
+  //   }
+  //   return true;
+  // };
+
   useEffect(() => {
     const newArr: any = [];
     QuoteLineItemcolumns?.map((itemCol: any) => {
@@ -408,6 +420,8 @@ const GenerateQuote: React.FC = () => {
     dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
     dispatch(getRebateQuoteLineItemByQuoteId(Number(getQuoteID)));
     dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
+    dispatch(getQuoteById(Number(getQuoteID)));
+    dispatch(getAllGeneralSetting(''));
   }, [getQuoteID]);
 
   useEffect(() => {

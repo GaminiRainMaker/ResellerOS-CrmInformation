@@ -7,6 +7,7 @@ export const API = {
     UpdateQuoteByQuery: '/quote/updateQuoteByQuery',
     DeleteById: '/quote/deleteQuote',
     GetQuotesByDateFilter: '/quote/getQuotesByDateFilter',
+    GetQuoteByID: '/quote/getQuoteById',
   },
   QUOTE_LINE_ITEM: {
     INDEX: '/quoteLineItem',

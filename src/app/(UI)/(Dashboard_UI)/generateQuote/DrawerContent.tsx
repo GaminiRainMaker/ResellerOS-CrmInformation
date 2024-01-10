@@ -12,14 +12,18 @@ import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
+import {
+  getAllOpportunity,
+  updateOpportunity,
+} from '../../../../../redux/actions/opportunity';
 import {updateQuoteById} from '../../../../../redux/actions/quote';
 import {getQuoteLineItemByQuoteId} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 interface FormDataProps {
   file_name: string;
-  opportunity: string;
-  customer_name: string;
+  opportunity_id: number;
+  customer_id: number;
 }
 
 const DrawerContent: FC<any> = ({setOpen}) => {
@@ -30,6 +34,12 @@ const DrawerContent: FC<any> = ({setOpen}) => {
   const {quoteLineItemByQuoteID} = useAppSelector(
     (state) => state.quoteLineItem,
   );
+  const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
+  const {data: generalSettingData} = useAppSelector(
+    (state) => state.gereralSetting,
+  );
+  const {quoteById} = useAppSelector((state) => state.quote);
+
   const [form] = Form.useForm();
   const [customerValue, setCustomerValue] = useState<number>(0);
   const [drawerData, setDrawerData] = useState<{
@@ -43,12 +53,12 @@ const DrawerContent: FC<any> = ({setOpen}) => {
     status: quoteLineItemByQuoteID?.[0]?.Quote?.is_completed
       ? 'Completed'
       : quoteLineItemByQuoteID?.[0]?.Quote?.is_drafted
-      ? 'In Progress'
-      : 'Drafts',
+        ? 'In Progress'
+        : 'Drafts',
     formData: {
       file_name: quoteLineItemByQuoteID?.[0]?.Quote?.file_name ?? '',
-      opportunity: quoteLineItemByQuoteID?.[0]?.Quote?.opportunity ?? '',
-      customer_name: quoteLineItemByQuoteID?.[0]?.Quote?.customer_name ?? '',
+      opportunity_id: quoteLineItemByQuoteID?.[0]?.Quote?.opportunity_id ?? 0,
+      customer_id: quoteLineItemByQuoteID?.[0]?.Quote?.customer_id ?? 0,
     },
   });
 
@@ -92,11 +102,35 @@ const DrawerContent: FC<any> = ({setOpen}) => {
     setBillingOptionData(updatedAllBillingContact);
   }, [dataAddress, customerValue]);
 
+  const opportunityOptions = opportunityData.map((opportunity: any) => ({
+    value: opportunity.id,
+    label: opportunity.title,
+  }));
+
   useEffect(() => {
     dispatch(getAllCustomer({}));
+    dispatch(getAllOpportunity());
   }, []);
 
   const onSubmit = (values: FormDataProps) => {
+    if (generalSettingData?.attach_doc_type === 'opportunity') {
+      const opportunityDataItemPDfUrl: any = [];
+      let OpportunityValue: any = {};
+      opportunityData?.map((opportunityDataItem: any) => {
+        if (opportunityDataItem?.id === values?.opportunity_id) {
+          opportunityDataItemPDfUrl.push(
+            opportunityDataItem?.pdf_url,
+            quoteById?.pdf_url,
+          );
+          OpportunityValue = {
+            id: opportunityDataItem?.id,
+            pdf_url: opportunityDataItemPDfUrl,
+          };
+        }
+      });
+      dispatch(updateOpportunity(OpportunityValue));
+    }
+
     setDrawerData((prev) => ({...prev, formData: values}));
     const obj = {
       id: Number(getQuoteLineItemId),
@@ -137,15 +171,16 @@ const DrawerContent: FC<any> = ({setOpen}) => {
               <OsInput />
             </Form.Item>
 
-            <Form.Item label="Opportunity" name="opportunity">
+            <Form.Item label="Opportunity" name="opportunity_id">
               <CommonSelect
                 style={{width: '100%'}}
                 placeholder="Select Opportunity"
-                // options={bundleOptions}
+                options={opportunityOptions}
+                // value={}
               />
             </Form.Item>
 
-            <Form.Item label="Customer" name="customer_name">
+            <Form.Item label="Customer" name="customer_id">
               <CommonSelect
                 style={{width: '100%'}}
                 placeholder="Select Customer"
