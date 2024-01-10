@@ -51,6 +51,8 @@ import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
 import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {insertValidation} from '../../../../../redux/actions/validation';
+import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
+import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 
 interface FormattedData {
   [key: string]: {
@@ -75,6 +77,12 @@ const AllQuote: React.FC = () => {
   const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
+
+  const {data: syncTableData} = useAppSelector((state) => state.syncTable);
+
+  useEffect(() => {
+    dispatch(getAllSyncTable('QuoteLineItem'));
+  }, []);
 
   useEffect(() => {
     let obj = {};
@@ -110,12 +118,12 @@ const AllQuote: React.FC = () => {
         activeTab === '3'
           ? quoteData?.filter((item: any) => item?.is_drafted)
           : activeTab === '4'
-          ? quoteData?.filter((item: any) => item?.is_completed)
-          : activeTab == '1'
-          ? quoteData
-          : quoteData?.filter(
-              (item: any) => !item?.is_completed && !item?.is_drafted,
-            );
+            ? quoteData?.filter((item: any) => item?.is_completed)
+            : activeTab == '1'
+              ? quoteData
+              : quoteData?.filter(
+                  (item: any) => !item?.is_completed && !item?.is_drafted,
+                );
       setActiveQuotes(quoteItems);
     } else {
       setActiveQuotes([]);
@@ -260,9 +268,53 @@ const AllQuote: React.FC = () => {
     if (contractProductArray && contractProductArray.length > 0) {
       dispatch(insertValidation(contractProductArray));
     }
+    const finalOpportunityArray: any = [];
+    if (newrrLineItems && syncTableData?.length > 0) {
+      const newRequiredArray: any = [];
+      syncTableData?.map((item: any) => {
+        if (item?.is_required) {
+          newRequiredArray?.push({
+            sender: item?.sender_table_col,
+            reciver: item?.reciver_table_col,
+          });
+        }
+      });
+      const newArrayForOpporQuoteLineItem: any = [];
+      for (let i = 0; i < newrrLineItems?.length; i++) {
+        const itemsss: any = newrrLineItems[i];
+        newRequiredArray?.map((itemsRe: any) => {
+          newArrayForOpporQuoteLineItem?.push({
+            key: itemsRe?.reciver,
+            value: itemsss?.[itemsRe?.sender],
+          });
+        });
+      }
+
+      const resultArrForAllArr: any = [];
+      const checkValue = syncTableData?.length;
+
+      newArrayForOpporQuoteLineItem.forEach((item: any, index: number) => {
+        if (index % checkValue === 0) {
+          resultArrForAllArr.push(
+            newArrayForOpporQuoteLineItem.slice(index, index + checkValue),
+          );
+        }
+      });
+
+      resultArrForAllArr?.map((itemss: any) => {
+        const singleObjects = itemss.reduce(
+          (obj: any, item: any) => Object.assign(obj, {[item.key]: item.value}),
+          {},
+        );
+        finalOpportunityArray?.push(singleObjects);
+      });
+    }
     if (newrrLineItems && newrrLineItems.length > 0) {
       dispatch(insertQuoteLineItem(newrrLineItems));
       dispatch(insertProfitability(newrrLineItems));
+    }
+    if (finalOpportunityArray && syncTableData?.length > 0) {
+      dispatch(insertOpportunityLineItem(finalOpportunityArray));
     }
 
     dispatch(getQuotesByDateFilter({}));
@@ -313,8 +365,8 @@ const AllQuote: React.FC = () => {
         const statusValue = record.is_completed
           ? 'Completed'
           : record?.is_drafted
-          ? 'In Progress'
-          : 'Drafts';
+            ? 'In Progress'
+            : 'Drafts';
         return <OsStatusWrapper value={statusValue} />;
       },
     },

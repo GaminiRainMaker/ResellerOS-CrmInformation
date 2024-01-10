@@ -93,4 +93,7 @@ export const API = {
   UPLOADAWS: {
     INDEX: '/upload/uploadDocument',
   },
+  OPPORLINEITEM: {
+    INDEX: '/opportunityLineItem',
+  },
 };
