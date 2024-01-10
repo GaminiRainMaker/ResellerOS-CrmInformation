@@ -119,7 +119,7 @@ const DrawerContent: FC<any> = ({setOpen}) => {
     dispatch(getAllCustomer({}));
     dispatch(getAllOpportunity());
     dispatch(getQuoteById(Number(getQuoteLineItemId))).then((payload) => {
-      setQuoteData(payload?.payload?.data);
+      setQuoteData(payload?.payload);
     });
     dispatch(getAllSyncTable('Quote'));
   }, []);
@@ -149,16 +149,13 @@ const DrawerContent: FC<any> = ({setOpen}) => {
     );
     setOpportunityObject(singleObjects);
   }, [syncTableData, quoteData]);
-console.log("opportunityObject",opportunityObject)
   const onSubmit = (values: FormDataProps) => {
-
     if (
       generalSettingData?.attach_doc_type === 'opportunity' ||
       syncTableData?.length > 0
     ) {
       const opportunityDataItemPDfUrl: any = [];
-      let OpportunityValue: any =
-        opportunityObject?.length > 0 ? {...opportunityObject} : {};
+      let OpportunityValue: any = {};
       opportunityData?.map((opportunityDataItem: any) => {
         if (opportunityDataItem?.id === values?.opportunity_id) {
           opportunityDataItemPDfUrl.push(
@@ -167,13 +164,18 @@ console.log("opportunityObject",opportunityObject)
           );
           if (generalSettingData?.attach_doc_type === 'opportunity') {
             OpportunityValue = {
+              ...opportunityObject,
               id: opportunityDataItem?.id,
               pdf_url: opportunityDataItemPDfUrl,
             };
           }
         }
       });
-      dispatch(updateOpportunity(OpportunityValue));
+      if (generalSettingData?.attach_doc_type === 'opportunity') {
+        dispatch(updateOpportunity(OpportunityValue));
+      } else {
+        dispatch(updateOpportunity(opportunityObject));
+      }
     }
 
     setDrawerData((prev) => ({...prev, formData: values}));
