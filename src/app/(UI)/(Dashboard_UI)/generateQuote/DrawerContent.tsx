@@ -12,7 +12,10 @@ import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
-import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
+import {
+  getAllOpportunity,
+  updateOpportunity,
+} from '../../../../../redux/actions/opportunity';
 import {updateQuoteById} from '../../../../../redux/actions/quote';
 import {getQuoteLineItemByQuoteId} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -32,6 +35,11 @@ const DrawerContent: FC<any> = ({setOpen}) => {
     (state) => state.quoteLineItem,
   );
   const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
+  const {data: generalSettingData} = useAppSelector(
+    (state) => state.gereralSetting,
+  );
+  const {quoteById} = useAppSelector((state) => state.quote);
+
   const [form] = Form.useForm();
   const [customerValue, setCustomerValue] = useState<number>(0);
   const [drawerData, setDrawerData] = useState<{
@@ -105,6 +113,24 @@ const DrawerContent: FC<any> = ({setOpen}) => {
   }, []);
 
   const onSubmit = (values: FormDataProps) => {
+    if (generalSettingData?.attach_doc_type === 'opportunity') {
+      const opportunityDataItemPDfUrl: any = [];
+      let OpportunityValue: any = {};
+      opportunityData?.map((opportunityDataItem: any) => {
+        if (opportunityDataItem?.id === values?.opportunity_id) {
+          opportunityDataItemPDfUrl.push(
+            opportunityDataItem?.pdf_url,
+            quoteById?.pdf_url,
+          );
+          OpportunityValue = {
+            id: opportunityDataItem?.id,
+            pdf_url: opportunityDataItemPDfUrl,
+          };
+        }
+      });
+      dispatch(updateOpportunity(OpportunityValue));
+    }
+
     setDrawerData((prev) => ({...prev, formData: values}));
     const obj = {
       id: Number(getQuoteLineItemId),

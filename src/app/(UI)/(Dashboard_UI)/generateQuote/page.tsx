@@ -69,6 +69,7 @@ import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
 import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
+import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -101,7 +102,7 @@ const GenerateQuote: React.FC = () => {
   const {data: contractSettingData} = useAppSelector(
     (state) => state.contractSetting,
   );
-
+ 
   const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
 
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
@@ -420,6 +421,7 @@ const GenerateQuote: React.FC = () => {
     dispatch(getRebateQuoteLineItemByQuoteId(Number(getQuoteID)));
     dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
     dispatch(getQuoteById(Number(getQuoteID)));
+    dispatch(getAllGeneralSetting(''));
   }, [getQuoteID]);
 
   useEffect(() => {

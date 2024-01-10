@@ -51,10 +51,11 @@ import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
 import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {insertValidation} from '../../../../../redux/actions/validation';
+import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 
 interface FormattedData {
   [key: string]: {
-    [key: string]: string | undefined; // Define the inner object structure
+    [key: string]: string | undefined;
   };
 }
 const AllQuote: React.FC = () => {
@@ -66,7 +67,6 @@ const AllQuote: React.FC = () => {
   );
   const router = useRouter();
   const [showModal, setShowModal] = useState<boolean>(false);
-
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
   const [quoteData, setQuoteData] = useState<React.Key[]>([]);
@@ -75,6 +75,13 @@ const AllQuote: React.FC = () => {
   const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
+  const {data: generalSettingData} = useAppSelector(
+    (state) => state.gereralSetting,
+  );
+
+  useEffect(() => {
+    dispatch(getAllGeneralSetting(''));
+  }, []);
 
   useEffect(() => {
     let obj = {};
@@ -110,12 +117,12 @@ const AllQuote: React.FC = () => {
         activeTab === '3'
           ? quoteData?.filter((item: any) => item?.is_drafted)
           : activeTab === '4'
-          ? quoteData?.filter((item: any) => item?.is_completed)
-          : activeTab == '1'
-          ? quoteData
-          : quoteData?.filter(
-              (item: any) => !item?.is_completed && !item?.is_drafted,
-            );
+            ? quoteData?.filter((item: any) => item?.is_completed)
+            : activeTab == '1'
+              ? quoteData
+              : quoteData?.filter(
+                  (item: any) => !item?.is_completed && !item?.is_drafted,
+                );
       setActiveQuotes(quoteItems);
     } else {
       setActiveQuotes([]);
@@ -157,7 +164,10 @@ const AllQuote: React.FC = () => {
           },
         )}
       </>;
-      labelOcrMap.push(tempLabelOcrMap);
+      labelOcrMap?.push({
+        ...tempLabelOcrMap,
+        pdf_url: uploadFileDataItem?.pdf_url,
+      });
     });
     const newrrLineItems: any = [];
     const rebateDataArray: any = [];
@@ -181,6 +191,7 @@ const AllQuote: React.FC = () => {
                 quantity: insertedProduct?.payload?.quantity,
                 adjusted_price: insertedProduct?.payload?.adjusted_price,
                 line_number: insertedProduct?.payload?.line_number,
+                pdf_url: generalSettingData?.attach_doc_type === 'quote_line_item' ? item?.pdf_url : null,
               };
               const RebatesByProductCodData = await dispatch(
                 getRebatesByProductCode(insertedProduct?.payload?.product_code),
@@ -313,8 +324,8 @@ const AllQuote: React.FC = () => {
         const statusValue = record.is_completed
           ? 'Completed'
           : record?.is_drafted
-          ? 'In Progress'
-          : 'Drafts';
+            ? 'In Progress'
+            : 'Drafts';
         return <OsStatusWrapper value={statusValue} />;
       },
     },

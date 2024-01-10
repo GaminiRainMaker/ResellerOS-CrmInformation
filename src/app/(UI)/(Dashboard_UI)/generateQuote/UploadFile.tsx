@@ -6,6 +6,9 @@ import OsUpload from '@/app/components/common/os-upload';
 import {message} from 'antd';
 import axios from 'axios';
 import GlobalLoader from '@/app/components/common/os-global-loader';
+import {getBase64} from '@/app/utils/upload';
+import {useAppDispatch} from '../../../../../redux/hook';
+import {uploadToAws} from '../../../../../redux/actions/upload';
 
 const convertFileToBase64 = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -28,6 +31,7 @@ const UploadFile: FC<any> = ({
 }) => {
   // const dispatch = useAppDispatch();
   const [loading, setLoading] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
 
   // Define your Nanonets API key and endpoint
   const API_KEY = '198c15fd-9680-11ed-82f6-7a0abc6e8cc8';
@@ -46,14 +50,16 @@ const UploadFile: FC<any> = ({
           )}`,
           'Content-Type': 'application/pdf',
         },
-        // onUploadProgress: (progressEvent) => {
-        //   const {loaded, total} = progressEvent;
-        //   const progress = (loaded / total) * 100;
-        // },
       });
+
       if (response) {
-        // dispatch(setQuote((filedData: any) => [...filedData, response]));
-        setUploadFileData((filedData: any) => [...filedData, response]);
+        dispatch(uploadToAws({document: base64Data})).then((payload: any) => {
+          const pdfUrl = payload?.payload?.data?.Location;
+          setUploadFileData((filedData: any) => [
+            ...filedData,
+            {...response, pdf_url: pdfUrl},
+          ]);
+        });
       }
       setLoading(false);
       return response;
