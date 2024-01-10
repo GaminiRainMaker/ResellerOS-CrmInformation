@@ -149,22 +149,28 @@ const DrawerContent: FC<any> = ({setOpen}) => {
     );
     setOpportunityObject(singleObjects);
   }, [syncTableData, quoteData]);
-
+console.log("opportunityObject",opportunityObject)
   const onSubmit = (values: FormDataProps) => {
-    if (generalSettingData?.attach_doc_type === 'opportunity') {
+
+    if (
+      generalSettingData?.attach_doc_type === 'opportunity' ||
+      syncTableData?.length > 0
+    ) {
       const opportunityDataItemPDfUrl: any = [];
-      let OpportunityValue: any = {};
+      let OpportunityValue: any =
+        opportunityObject?.length > 0 ? {...opportunityObject} : {};
       opportunityData?.map((opportunityDataItem: any) => {
         if (opportunityDataItem?.id === values?.opportunity_id) {
           opportunityDataItemPDfUrl.push(
             opportunityDataItem?.pdf_url,
             quoteById?.pdf_url,
           );
-          OpportunityValue = {
-            ...opportunityObject,
-            id: opportunityDataItem?.id,
-            pdf_url: opportunityDataItemPDfUrl,
-          };
+          if (generalSettingData?.attach_doc_type === 'opportunity') {
+            OpportunityValue = {
+              id: opportunityDataItem?.id,
+              pdf_url: opportunityDataItemPDfUrl,
+            };
+          }
         }
       });
       dispatch(updateOpportunity(OpportunityValue));
