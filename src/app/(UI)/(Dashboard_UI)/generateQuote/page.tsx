@@ -18,6 +18,7 @@ import {
   ArrowDownTrayIcon,
   EllipsisVerticalIcon,
   PlusIcon,
+  TrashIcon,
 } from '@heroicons/react/24/outline';
 
 import {Dropdown} from '@/app/components/common/antd/DropDown';
@@ -37,6 +38,7 @@ import {Button, MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import {PopConfirm} from '@/app/components/common/antd/PopConfirm';
 import {
   getAllBundle,
   updateBundleQuantity,
