@@ -15,7 +15,8 @@ const Typography: FC<TypographyInterface> = ({
   maxWidth,
   onClick,
   style,
-  hoverOnText
+  hoverOnText,
+  className,
 }) => {
   const {typographyMap} = useTypographyMappingHook(name);
 
@@ -37,6 +38,7 @@ const Typography: FC<TypographyInterface> = ({
       color={color ?? token.colorText}
       as={DynamicTag}
       hoverOnText={hoverOnText}
+      className={className}
     >
       {children}
     </DynamicDiv>

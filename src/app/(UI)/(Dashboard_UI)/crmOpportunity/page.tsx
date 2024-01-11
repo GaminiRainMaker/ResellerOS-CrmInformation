@@ -132,7 +132,11 @@ const CrmOpportunity: React.FC = () => {
   ];
   const OpportunityColumns = [
     {
-      title: 'Opportunity',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Opportunity{' '}
+        </Typography>
+      ),
       dataIndex: 'title',
       key: 'title',
       width: 187,
@@ -141,7 +145,11 @@ const CrmOpportunity: React.FC = () => {
       ),
     },
     {
-      title: 'Customer Account',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Customer Account{' '}
+        </Typography>
+      ),
       dataIndex: 'customer_name',
       key: 'customer_name',
       width: 187,
@@ -152,7 +160,11 @@ const CrmOpportunity: React.FC = () => {
       ),
     },
     {
-      title: 'Amount',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Amount{' '}
+        </Typography>
+      ),
       dataIndex: 'amount',
       key: 'amount',
       width: 130,
@@ -161,7 +173,11 @@ const CrmOpportunity: React.FC = () => {
       ),
     },
     {
-      title: 'Stage',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Stage{' '}
+        </Typography>
+      ),
       dataIndex: 'stages',
       key: 'stages',
       width: 130,
@@ -182,7 +198,11 @@ const CrmOpportunity: React.FC = () => {
       ),
     },
     {
-      title: 'Quotes / Forms',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Quotes / Forms
+        </Typography>
+      ),
       dataIndex: 'quotesForms',
       key: 'quotesForms',
       width: 130,

@@ -174,7 +174,11 @@ const CrmAccount: React.FC = () => {
 
   const ContactColumns = [
     {
-      title: 'Contact Name',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Contact Name
+        </Typography>
+      ),
       dataIndex: 'billing_first_name',
       key: 'billing_first_name',
       width: 130,
@@ -183,7 +187,11 @@ const CrmAccount: React.FC = () => {
       ),
     },
     {
-      title: 'Role',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Role
+        </Typography>
+      ),
       dataIndex: 'billing_role',
       key: 'billing_role',
       width: 187,
@@ -192,7 +200,11 @@ const CrmAccount: React.FC = () => {
       ),
     },
     {
-      title: 'Email',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Email
+        </Typography>
+      ),
       dataIndex: 'billing_email',
       key: 'billing_email',
       width: 187,
@@ -201,7 +213,11 @@ const CrmAccount: React.FC = () => {
       ),
     },
     {
-      title: 'Customer Account',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Customer Account
+        </Typography>
+      ),
       dataIndex: 'Account',
       key: 'Account',
       width: 187,

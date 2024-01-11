@@ -167,7 +167,7 @@ const CrmInformation: React.FC = () => {
 
   const AccountColumns = [
     {
-      title: 'Customer Name',
+      title: <Typography name='Body 4/Medium'  className="dragHandler">Customer Name</Typography>,
       dataIndex: 'name',
       key: 'name',
       width: 130,
@@ -184,7 +184,7 @@ const CrmInformation: React.FC = () => {
       ),
     },
     {
-      title: 'Shipping Address',
+      title: <Typography name='Body 4/Medium'  className="dragHandler">Shipping Address</Typography>,
       dataIndex: 'shiping_address_line',
       key: 'shiping_address_line',
       width: 187,
@@ -195,7 +195,7 @@ const CrmInformation: React.FC = () => {
       ),
     },
     {
-      title: 'Billing Address',
+      title: <Typography name='Body 4/Medium'  className="dragHandler">Billing Address</Typography>,
       dataIndex: 'billing_address_line',
       key: 'billing_address_line',
       width: 187,
@@ -206,7 +206,7 @@ const CrmInformation: React.FC = () => {
       ),
     },
     {
-      title: 'Contact',
+      title: <Typography name='Body 4/Medium' className="dragHandler">Contact</Typography>,
       dataIndex: 'name',
       key: 'name',
       width: 187,
@@ -217,7 +217,7 @@ const CrmInformation: React.FC = () => {
       ),
     },
     {
-      title: 'Currency',
+      title: <Typography name='Body 4/Medium' className="dragHandler">Currency</Typography>,
       dataIndex: 'currency',
       key: 'currency',
       width: 187,
@@ -226,7 +226,7 @@ const CrmInformation: React.FC = () => {
       ),
     },
     {
-      title: ' ',
+      title: <Typography name='Body 4/Medium' className="dragHandler"> </Typography>, 
       dataIndex: 'actions',
       key: 'actions',
       width: 94,
@@ -401,7 +401,7 @@ const CrmInformation: React.FC = () => {
                   />
                 </Space>
                 <Typography
-                  cursor="pointer"   
+                  cursor="pointer"
                   name="Button 1"
                   color="#C6CDD5"
                   onClick={searchFilterForCustomer}
@@ -412,7 +412,7 @@ const CrmInformation: React.FC = () => {
             }
             items={tabItems.map((tabItem: any, index: number) => ({
               key: `${index + 1}`,
-              label: (tabItem?.label),
+              label: tabItem?.label,
               children: (
                 <OsTable
                   key={tabItem?.key}

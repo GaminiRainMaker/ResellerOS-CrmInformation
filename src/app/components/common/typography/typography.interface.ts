@@ -91,4 +91,5 @@ export interface TypographyInterface {
   style?: React.CSSProperties;
   maxWidth?: number;
   cursor?: string;
+  className?: string;
 }
