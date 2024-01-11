@@ -124,6 +124,20 @@ const ConverSationProcess = () => {
                         </Typography>
                       </Space>
                     </Space>
+                    <Space size={24}>
+                      <Space>
+                        <Checkbox />
+                        <Typography name="Body 4/Medium">
+                          Include Another Vendor/Disti Field
+                        </Typography>
+                      </Space>
+                      <Space>
+                        <Checkbox />
+                        <Typography name="Body 4/Medium">
+                          Check Case for Vendor/Disti Field
+                        </Typography>
+                      </Space>
+                    </Space>
                   </Space>
                 ),
               },
