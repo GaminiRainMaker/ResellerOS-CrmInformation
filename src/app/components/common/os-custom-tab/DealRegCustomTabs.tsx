@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable no-nested-ternary */
 import {FC, useState} from 'react';
 import DealRegDetailForm from '@/app/(UI)/(Dashboard_UI)/dealRegDetail/DealRegDetailForm';
@@ -49,6 +50,16 @@ const DealRegCustomTabs: FC<TabInterface> = (tabs) => {
                       ? token.colorTextDisabled
                       : token?.colorBorderSecondary
                   }
+                  format={(percent) => (
+                    <span
+                      style={{
+                        color:
+                          activekeysall === itemtab?.key
+                            ? token.colorBgContainer
+                            : token?.colorTextDisabled,
+                      }}
+                    >{`${percent}%`}</span>
+                  )}
                 />
 
                 <Typography
