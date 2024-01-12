@@ -6,7 +6,6 @@ import OsUpload from '@/app/components/common/os-upload';
 import {message} from 'antd';
 import axios from 'axios';
 import GlobalLoader from '@/app/components/common/os-global-loader';
-import {getBase64} from '@/app/utils/upload';
 import {useAppDispatch} from '../../../../../redux/hook';
 import {uploadToAws} from '../../../../../redux/actions/upload';
 
@@ -65,7 +64,6 @@ const UploadFile: FC<any> = ({
       return response;
     } catch (error) {
       setLoading(false);
-      console.error('Error sending image to Nanonets API:', error);
       throw error;
     }
   };

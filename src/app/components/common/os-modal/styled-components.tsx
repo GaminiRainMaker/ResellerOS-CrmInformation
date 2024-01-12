@@ -24,5 +24,6 @@ export const OSModalStyle = styled(Modal)<{
     padding: ${(props) =>
       props.bodyPadding ? `${props.bodyPadding}px` : '0px'};
   }
+
   border-radius: 10px;
 `;

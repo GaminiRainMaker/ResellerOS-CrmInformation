@@ -101,7 +101,7 @@ const OsTable: FC<any> = ({
     },
   };
 
-  const updatedColumns: any = columns.map((col: any, index: any) => ({
+  const updatedColumns: any = columns?.map((col: any, index: any) => ({
     ...col,
     onHeaderCell: (column: any) => ({
       width: column.width,
