@@ -11,6 +11,7 @@ import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHo
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import Typography from '@/app/components/common/typography';
 import {rebateAmount, useRemoveDollarAndCommahook} from '@/app/utils/base';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {updateRebateQuoteLineItemById} from '../../../../../../redux/actions/rebateQuoteLineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setRebate} from '../../../../../../redux/slices/rebate';
@@ -244,7 +245,7 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
   return (
     <>
       {finaRebateTableCol && finaRebateTableCol?.length > 0 ? (
-        <OsTable
+        <OsTableWithOutDrag
           loading={loading}
           columns={finaRebateTableCol}
           dataSource={rebateData}

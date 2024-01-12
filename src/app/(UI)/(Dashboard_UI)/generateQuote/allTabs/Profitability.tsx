@@ -13,6 +13,7 @@ import {
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
 import {FC, useEffect, useState} from 'react';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {updateProfitabilityById} from '../../../../../../redux/actions/profitability';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
@@ -267,8 +268,6 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
     setFinalProfitTableCol(newArr);
   }, [tableColumnDataShow]);
 
-  console.log('finalProfitTableCol', finalProfitTableCol);
-
   useEffect(() => {
     profitabilityData.map((profitabilityDataItem: any) => {
       if (profitabilityDataItem?.rowId === profitabilityDataItem?.id) {
@@ -292,7 +291,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
   }, [profitabilityData]);
 
   return (
-    <OsTable
+    <OsTableWithOutDrag
       loading={loading}
       columns={finalProfitTableCol}
       dataSource={profitabilityData}

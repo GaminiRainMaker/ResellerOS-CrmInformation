@@ -39,6 +39,7 @@ import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {PopConfirm} from '@/app/components/common/antd/PopConfirm';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {
   getAllBundle,
   updateBundleQuantity,
@@ -827,7 +828,7 @@ const GenerateQuote: React.FC = () => {
                                 </>
                               ),
                               children: (
-                                <OsTable
+                                <OsTableWithOutDrag
                                   loading={loading}
                                   // rowSelection={rowSelection}
                                   columns={finalInputColumn}
@@ -863,7 +864,7 @@ const GenerateQuote: React.FC = () => {
                                     </>
                                   ),
                                   children: (
-                                    <OsTable
+                                    <OsTableWithOutDrag
                                       loading={loading}
                                       columns={finalInputColumn}
                                       dataSource={item?.QuoteLineItem || []}
@@ -897,7 +898,7 @@ const GenerateQuote: React.FC = () => {
                                       </>
                                     ),
                                     children: (
-                                      <OsTable
+                                      <OsTableWithOutDrag
                                         loading={loading}
                                         columns={finalInputColumn}
                                         dataSource={
@@ -937,7 +938,7 @@ const GenerateQuote: React.FC = () => {
                                     </>
                                   ),
                                   children: (
-                                    <OsTable
+                                    <OsTableWithOutDrag
                                       loading={loading}
                                       columns={finalInputColumn}
                                       dataSource={item?.QuoteLineItem || []}
@@ -951,7 +952,7 @@ const GenerateQuote: React.FC = () => {
                           ))}
                         </>
                       ) : (
-                        <OsTable
+                        <OsTableWithOutDrag
                           loading={loading}
                           columns={finalInputColumn}
                           dataSource={

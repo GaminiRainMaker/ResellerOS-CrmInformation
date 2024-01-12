@@ -22,6 +22,7 @@ import {
   XCircleIcon,
 } from '@heroicons/react/24/outline';
 import {FC, useEffect, useState} from 'react';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {updateValidationById} from '../../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 
@@ -311,7 +312,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
   return (
     <>
       {finalValidationTableCol && finalValidationTableCol?.length > 0 ? (
-        <OsTable
+        <OsTableWithOutDrag
           loading={loading}
           columns={finalValidationTableCol}
           dataSource={validationDataData}
