@@ -5,6 +5,7 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
+import DealRegCustomTabs from '@/app/components/common/os-custom-tab/DealRegCustomTabs';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import Typography from '@/app/components/common/typography';
 import {ArrowDownTrayIcon, PlusIcon} from '@heroicons/react/24/outline';
@@ -14,6 +15,24 @@ import {useRouter} from 'next/navigation';
 const DealRegDetail = () => {
   const [token] = useThemeToken();
   const router = useRouter();
+
+  const tabs = [
+    {
+      key: 1,
+      title: 'Cisco',
+      progressbarPercentage: 20,
+    },
+    {
+      key: 2,
+      title: 'Dell',
+      progressbarPercentage: 50,
+    },
+    {
+      key: 3,
+      title: 'Amazon',
+      progressbarPercentage: 80,
+    },
+  ];
 
   const menuItems = [
     {
@@ -93,6 +112,7 @@ const DealRegDetail = () => {
           </Space>
         </Col>
       </Row>
+      <DealRegCustomTabs tabs={tabs} />
     </div>
   );
 };

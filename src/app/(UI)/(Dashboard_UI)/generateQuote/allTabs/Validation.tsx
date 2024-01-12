@@ -39,6 +39,8 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
   const [validationDataData, setValidationDataData] =
     useState<any>(ValidationData);
 
+  console.log('tableColumnDataShow', tableColumnDataShow);
+
   const contractStatusCheck = (record: any) => {
     const matchingField = ContractSettingData.matching_filed;
 

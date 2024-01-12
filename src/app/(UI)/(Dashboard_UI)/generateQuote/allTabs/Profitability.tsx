@@ -267,6 +267,8 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
     setFinalProfitTableCol(newArr);
   }, [tableColumnDataShow]);
 
+  console.log('finalProfitTableCol', finalProfitTableCol);
+
   useEffect(() => {
     profitabilityData.map((profitabilityDataItem: any) => {
       if (profitabilityDataItem?.rowId === profitabilityDataItem?.id) {

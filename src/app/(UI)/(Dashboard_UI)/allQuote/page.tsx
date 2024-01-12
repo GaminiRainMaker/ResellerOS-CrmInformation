@@ -344,7 +344,11 @@ const AllQuote: React.FC = () => {
 
   const Quotecolumns = [
     {
-      title: 'File Name',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          File Name
+        </Typography>
+      ),
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 130,
@@ -353,7 +357,11 @@ const AllQuote: React.FC = () => {
       ),
     },
     {
-      title: 'Opportunity',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Opportunity
+        </Typography>
+      ),
       dataIndex: 'opportunity',
       key: 'opportunity',
       width: 187,
@@ -362,7 +370,11 @@ const AllQuote: React.FC = () => {
       ),
     },
     {
-      title: 'Customer Name',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Customer Name
+        </Typography>
+      ),
       dataIndex: 'customer_name',
       key: 'customer_name',
       width: 187,
@@ -371,7 +383,11 @@ const AllQuote: React.FC = () => {
       ),
     },
     {
-      title: 'Status',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Status
+        </Typography>
+      ),
       dataIndex: 'status',
       key: 'status',
       width: 187,

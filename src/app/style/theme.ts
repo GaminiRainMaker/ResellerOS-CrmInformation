@@ -39,7 +39,7 @@ const theme: ThemeConfig = {
     colorBgElevated: '#ffffff',
     colorBgLayout: '#ffffff',
     colorBorder: '#C7CDD5',
-    colorBorderSecondary: '#EDEFF2',
+    colorBorderSecondary: '#BBCFE5',
     // colorSplit: '#EF697B',
     colorIcon: '#EF697B',
     colorInfoBgHover: '#E9F0F7',

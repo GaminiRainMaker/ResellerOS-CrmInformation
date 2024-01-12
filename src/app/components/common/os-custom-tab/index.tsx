@@ -7,12 +7,9 @@ import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
 import {CustomTabStyle} from './styled-components';
+import {TabInterface} from './tabs.interface';
 
-interface Tabinterface {
-  tabs: any;
-}
-
-const CustomTabs: FC<Tabinterface> = (tabs) => {
+const CustomTabs: FC<TabInterface> = (tabs) => {
   const [activekeysall, setActivekeysall] = useState<number>(1);
   const [token] = useThemeToken();
 
