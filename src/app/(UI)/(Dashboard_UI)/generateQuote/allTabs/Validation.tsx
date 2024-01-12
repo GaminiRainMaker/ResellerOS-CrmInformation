@@ -39,8 +39,6 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
   const [validationDataData, setValidationDataData] =
     useState<any>(ValidationData);
 
-  console.log('tableColumnDataShow', tableColumnDataShow);
-
   const contractStatusCheck = (record: any) => {
     const matchingField = ContractSettingData.matching_filed;
 
@@ -74,7 +72,11 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
 
   const ValidationQuoteLineItemcolumns = [
     {
-      title: '#Line',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          #Line
+        </Typography>
+      ),
       dataIndex: 'line_number',
       key: 'line_number',
       render: (text: string) => (
@@ -90,19 +92,31 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       width: 111,
     },
     {
-      title: 'SKU',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          SKU
+        </Typography>
+      ),
       dataIndex: 'product_code',
       key: 'product_code',
       width: 130,
     },
     {
-      title: 'Product Description',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Product Description
+        </Typography>
+      ),
       dataIndex: 'description',
       key: 'description',
       width: 353,
     },
     {
-      title: 'Pricing Method',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Pricing Method
+        </Typography>
+      ),
       dataIndex: 'pricing_method',
       key: 'pricing_method',
       width: 208,
@@ -149,7 +163,11 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       ),
     },
     {
-      title: 'Amount',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Amount
+        </Typography>
+      ),
       dataIndex: 'line_amount',
       key: 'line_amount',
       width: 130,
@@ -174,7 +192,11 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       ),
     },
     {
-      title: 'Unit Price',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Unit Price
+        </Typography>
+      ),
       dataIndex: 'unit_price',
       key: 'unit_price',
       width: 152,
@@ -185,7 +207,11 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       ),
     },
     {
-      title: 'Exit Price',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Exit Price
+        </Typography>
+      ),
       dataIndex: 'exit_price',
       key: 'exit_price',
       width: 152,
@@ -196,13 +222,21 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       ),
     },
     {
-      title: 'Contract Price',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Contract Price
+        </Typography>
+      ),
       dataIndex: 'contract_price',
       key: 'contract_price',
       width: 135,
     },
     {
-      title: 'Contract Status',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Contract Status
+        </Typography>
+      ),
       dataIndex: 'contract_status',
       key: 'contract_status',
       width: 135,
@@ -243,13 +277,19 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
     const newArr: any = [];
     ValidationQuoteLineItemcolumns?.map((itemCol: any) => {
       tableColumnDataShow?.filter((item: any) => {
-        if (item?.field_name?.includes(itemCol?.title)) {
+        if (item?.field_name?.includes(itemCol?.title?.props?.children)) {
           newArr?.push(itemCol);
         }
       });
     });
     setFinalValidationTableCol(newArr);
   }, [tableColumnDataShow]);
+
+  console.log(
+    'tableColumnDhjataggShoegh',
+    tableColumnDataShow,
+    finalValidationTableCol,
+  );
 
   useEffect(() => {
     validationDataData.map((validationDataItem: any) => {

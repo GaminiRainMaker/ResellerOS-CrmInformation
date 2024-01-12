@@ -161,13 +161,21 @@ const SyncQuoteLineItemField = () => {
   };
   const SyncQuoteLineItemFields = [
     {
-      title: 'S No.',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          S No.
+        </Typography>
+      ),
       dataIndex: 'id',
       key: 'id',
       width: 50,
     },
     {
-      title: 'Quote Line Item Fields',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Quote Line Item Fields
+        </Typography>
+      ),
       dataIndex: 'product_code',
       key: 'product_code',
       render: (text: string, record: any) => (
@@ -195,7 +203,11 @@ const SyncQuoteLineItemField = () => {
       width: 470,
     },
     {
-      title: 'Opportunity  Line Item Fields',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Opportunity Line Item Fields
+        </Typography>
+      ),
       dataIndex: 'quantity',
       key: 'quantity',
       render: (text: string, record: any) => (
@@ -228,7 +240,11 @@ const SyncQuoteLineItemField = () => {
       width: 470,
     },
     {
-      title: 'Active',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Active{' '}
+        </Typography>
+      ),
       dataIndex: 'adjusted_price',
       key: 'adjusted_price',
       render: (text: string, record: any) => (

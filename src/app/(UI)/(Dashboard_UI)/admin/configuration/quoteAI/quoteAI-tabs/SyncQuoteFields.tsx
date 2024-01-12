@@ -167,17 +167,21 @@ const SyncQuoteField = () => {
   };
   const SyncQuoteFields = [
     {
-      title: 'S No.',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          S No.
+        </Typography>
+      ),
       dataIndex: 'id',
       key: 'id',
       width: 50,
     },
-    // sender_table_name : DataTypes.STRING,
-    // reciver_table_name : DataTypes.STRING,
-    // sender_table_col : DataTypes.STRING,
-    // reciver_table_col : DataTypes.STRING,
     {
-      title: 'Quote',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Quote
+        </Typography>
+      ),
       dataIndex: 'product_code',
       key: 'product_code',
       render: (text: string, record: any) => (
@@ -205,7 +209,11 @@ const SyncQuoteField = () => {
       width: 470,
     },
     {
-      title: 'Opportunity',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Opportunity
+        </Typography>
+      ),
       dataIndex: 'quantity',
       key: 'quantity',
       render: (text: string, record: any) => (
@@ -238,7 +246,11 @@ const SyncQuoteField = () => {
       width: 470,
     },
     {
-      title: 'Active',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Active
+        </Typography>
+      ),
       dataIndex: 'adjusted_price',
       key: 'adjusted_price',
       render: (text: string, record: any) => (
@@ -246,7 +258,6 @@ const SyncQuoteField = () => {
           size="default"
           defaultChecked={record?.is_required}
           onChange={(e) => {
-            console.log('534534', e);
             if (record?.id) {
               commonMethodForChecks(record?.id, 'is_required', e, record?.key);
             } else {

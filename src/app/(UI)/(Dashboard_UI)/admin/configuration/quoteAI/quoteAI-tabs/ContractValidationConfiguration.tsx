@@ -27,13 +27,21 @@ const ContractValidationConfiguration = () => {
 
   const ContractConfigurationFields = [
     {
-      title: 'S No.',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          S No.
+        </Typography>
+      ),
       dataIndex: 'id',
       key: 'id',
       width: 50,
     },
     {
-      title: 'Field Name',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Field Name
+        </Typography>
+      ),
       dataIndex: 'name',
       key: 'name',
       render: (text: string) => (
@@ -48,7 +56,11 @@ const ContractValidationConfiguration = () => {
       width: 313,
     },
     {
-      title: 'Operator',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Operator
+        </Typography>
+      ),
       dataIndex: 'Operator',
       key: 'Operator',
       render: (text: string) => (
@@ -63,7 +75,11 @@ const ContractValidationConfiguration = () => {
       width: 313,
     },
     {
-      title: 'Value',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Value
+        </Typography>
+      ),
       dataIndex: 'value',
       key: 'value',
       render: (text: string) => (
@@ -78,7 +94,11 @@ const ContractValidationConfiguration = () => {
       width: 313,
     },
     {
-      title: 'Active',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Active
+        </Typography>
+      ),
       dataIndex: 'active',
       key: 'active',
       render: (text: string) => <Switch size="default" onChange={() => {}} />,

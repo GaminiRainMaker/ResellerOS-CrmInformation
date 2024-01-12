@@ -21,10 +21,7 @@ import {
 } from '@heroicons/react/24/outline';
 import {Space} from 'antd';
 import OsStatusWrapper from '@/app/components/common/os-status';
-import {
-  StageValue,
-  quoteDummyData,
-} from '@/app/utils/CONSTANTS';
+import {StageValue, quoteDummyData} from '@/app/utils/CONSTANTS';
 import {useEffect} from 'react';
 import CommonStageSelect from '@/app/components/common/os-stage-select';
 import {useSearchParams} from 'next/navigation';
@@ -104,7 +101,11 @@ const AccountDetails = () => {
 
   const Quotecolumns = [
     {
-      title: 'File Name',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          File Name
+        </Typography>
+      ),
       dataIndex: 'name',
       key: 'name',
       width: 130,
@@ -113,7 +114,11 @@ const AccountDetails = () => {
       ),
     },
     {
-      title: 'Generated Date',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Generated Date
+        </Typography>
+      ),
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 130,
@@ -122,7 +127,11 @@ const AccountDetails = () => {
       ),
     },
     {
-      title: 'Opportunity',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Opportunity
+        </Typography>
+      ),
       dataIndex: 'opportunity',
       key: 'opportunity',
       width: 187,
@@ -131,7 +140,11 @@ const AccountDetails = () => {
       ),
     },
     {
-      title: 'Customer',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Customer
+        </Typography>
+      ),
       dataIndex: 'customer_name',
       key: 'customer_name',
       width: 187,
@@ -140,7 +153,11 @@ const AccountDetails = () => {
       ),
     },
     {
-      title: 'Status',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Status
+        </Typography>
+      ),
       dataIndex: 'status',
       key: 'status',
       width: 187,
@@ -186,7 +203,11 @@ const AccountDetails = () => {
 
   const OpportunityColumns = [
     {
-      title: 'Opportunity',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Opportunity
+        </Typography>
+      ),
       dataIndex: 'title',
       key: 'title',
       width: 187,
@@ -195,7 +216,11 @@ const AccountDetails = () => {
       ),
     },
     {
-      title: 'Customer Account',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Customer Account
+        </Typography>
+      ),
       dataIndex: 'customer_name',
       key: 'customer_name',
       width: 187,
@@ -206,7 +231,11 @@ const AccountDetails = () => {
       ),
     },
     {
-      title: 'Amount',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Amount
+        </Typography>
+      ),
       dataIndex: 'amount',
       key: 'amount',
       width: 130,
@@ -215,7 +244,11 @@ const AccountDetails = () => {
       ),
     },
     {
-      title: 'Stage',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Stage
+        </Typography>
+      ),
       dataIndex: 'stages',
       key: 'stages',
       width: 130,
@@ -228,7 +261,11 @@ const AccountDetails = () => {
       ),
     },
     {
-      title: 'Quotes / Forms',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Quotes / Forms
+        </Typography>
+      ),
       dataIndex: 'quotesForms',
       key: 'quotesForms',
       width: 130,

@@ -1,3 +1,5 @@
+/* eslint-disable no-unsafe-optional-chaining */
+
 'use client';
 
 import {Checkbox} from '@/app/components/common/antd/Checkbox';
@@ -91,18 +93,18 @@ const FieldDisplayConfiguration = () => {
   };
   const FieldDisplayConfigurationFields = [
     {
-      title: 'S No.',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          S No.
+        </Typography>
+      ),
       dataIndex: 'id',
       key: 'id',
       width: 50,
       render: (text: any, record: any) => {
-        // eslint-disable-next-line no-unsafe-optional-chaining
         const sno =
-          // eslint-disable-next-line no-unsafe-optional-chaining
           record?.id -
-          // eslint-disable-next-line no-unsafe-optional-chaining
           tableColumnDataShow?.[
-            // eslint-disable-next-line no-unsafe-optional-chaining
             tableColumnDataShow?.length - tableColumnDataShow?.length
           ]?.id +
           1;
@@ -110,13 +112,21 @@ const FieldDisplayConfiguration = () => {
       },
     },
     {
-      title: 'Field Name',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Field Name
+        </Typography>
+      ),
       dataIndex: 'field_name',
       key: 'field_name',
       width: 313,
     },
     {
-      title: 'Required',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Required
+        </Typography>
+      ),
       dataIndex: 'is_required',
       key: 'is_required',
       render: (text: any, record: any) => (
@@ -130,7 +140,11 @@ const FieldDisplayConfiguration = () => {
       width: 313,
     },
     {
-      title: 'Editable',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Editable
+        </Typography>
+      ),
       dataIndex: 'is_editable',
       key: 'is_editable',
       render: (text: any, record: any) => (
@@ -144,7 +158,11 @@ const FieldDisplayConfiguration = () => {
       width: 313,
     },
     {
-      title: 'Active',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Active
+        </Typography>
+      ),
       dataIndex: 'is_active',
       key: 'is_active',
       render: (text: any, record: any) => (

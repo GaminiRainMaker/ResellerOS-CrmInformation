@@ -29,9 +29,8 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Button, MenuProps, TabsProps, Upload} from 'antd';
+import {Button, MenuProps, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
-import {getBase64, uploadImage} from '@/app/utils/upload';
 import {
   deleteBillingContact,
   getBillingContactBySearch,
@@ -42,12 +41,6 @@ import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddContact from './addContact';
 import EditContactModal from './editContact';
-import {uploadToAws} from '../../../../../redux/actions/upload';
-
-// const queryParams: any = {
-//   search: '',
-//   customer_id: null,
-// };
 
 const CrmAccount: React.FC = () => {
   const dispatch = useAppDispatch();

@@ -5,24 +5,22 @@
 
 import Typography from '@/app/components/common/typography';
 import {
-  EllipsisVerticalIcon,
   PencilSquareIcon,
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
 
-import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
+import OsDropdown from '@/app/components/common/os-dropdown';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Button, MenuProps, TabsProps} from 'antd';
+import {MenuProps, TabsProps} from 'antd';
 import {useState} from 'react';
-import OsDropdown from '@/app/components/common/os-dropdown';
 import {useAppSelector} from '../../../../../redux/hook';
 import DealRegAnalytics from './dealRegAnalytics';
 
@@ -51,7 +49,11 @@ const DealReg: React.FC = () => {
 
   const DealRegColumns = [
     {
-      title: 'Registration Forms',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Registration Forms
+        </Typography>
+      ),
       dataIndex: 'registration_form',
       key: 'registration_form',
       width: 266,
@@ -60,7 +62,11 @@ const DealReg: React.FC = () => {
       ),
     },
     {
-      title: 'Generated Date',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Generated Date
+        </Typography>
+      ),
       dataIndex: 'generate_date',
       key: 'generate_date',
       width: 187,
@@ -69,7 +75,11 @@ const DealReg: React.FC = () => {
       ),
     },
     {
-      title: 'Opportunity',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Opportunity
+        </Typography>
+      ),
       dataIndex: 'opportunity',
       key: 'opportunity',
       width: 187,
@@ -78,7 +88,11 @@ const DealReg: React.FC = () => {
       ),
     },
     {
-      title: 'Customer Account',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Customer Account
+        </Typography>
+      ),
       dataIndex: 'account',
       key: 'account',
       width: 187,
@@ -89,7 +103,11 @@ const DealReg: React.FC = () => {
       ),
     },
     {
-      title: 'Partner',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Partner
+        </Typography>
+      ),
       dataIndex: 'partner',
       key: 'partner',
       width: 187,
@@ -100,7 +118,11 @@ const DealReg: React.FC = () => {
       ),
     },
     {
-      title: 'Partner Program',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Partner Program
+        </Typography>
+      ),
       dataIndex: 'partner_program',
       key: 'partner_program',
       width: 187,
@@ -111,7 +133,11 @@ const DealReg: React.FC = () => {
       ),
     },
     {
-      title: 'Status',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Status
+        </Typography>
+      ),
       dataIndex: 'status',
       key: 'status',
       width: 187,
