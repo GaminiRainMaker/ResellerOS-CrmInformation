@@ -18,7 +18,7 @@ const OsModal: FC<OSModalPropsInterface> = ({
   titleTypography = 'Heading 3/Medium',
   ...rest
 }) => {
-  const {onCancel, afterClose, open, onOk} = rest;
+  const {onCancel, open, onOk} = rest;
   const [token] = useThemeToken();
 
   return (

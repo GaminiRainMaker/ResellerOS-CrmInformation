@@ -641,6 +641,7 @@ const AllQuote: React.FC = () => {
       </Space>
 
       <OsModal
+        bodyPadding={22}
         loading={loading}
         body={
           <UploadFile
