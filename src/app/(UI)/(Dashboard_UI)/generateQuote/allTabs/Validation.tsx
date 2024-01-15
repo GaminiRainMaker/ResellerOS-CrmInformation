@@ -286,12 +286,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
     setFinalValidationTableCol(newArr);
   }, [tableColumnDataShow]);
 
-  console.log(
-    'tableColumnDhjataggShoegh',
-    tableColumnDataShow,
-    finalValidationTableCol,
-  );
-
+  
   useEffect(() => {
     validationDataData.map((validationDataItem: any) => {
       if (validationDataItem?.rowId === validationDataItem?.id) {

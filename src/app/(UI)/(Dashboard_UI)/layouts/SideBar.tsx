@@ -118,7 +118,7 @@ const SideBar = () => {
       <Typography
         onClick={() => {
           setSelectedKey(3);
-          router?.push('/DealReg');
+          router?.push('/dealReg');
         }}
         name="Button 1"
         color={token?.colorTextSecondary}
@@ -199,6 +199,7 @@ const SideBar = () => {
       <Typography
         onClick={() => {
           setSelectedKey(5);
+          router?.push('/partners');
         }}
         name="Button 1"
         color={token?.colorTextSecondary}
@@ -227,8 +228,7 @@ const SideBar = () => {
                 : token?.colorTextSecondary
             }
           >
-            {' '}
-            Vendors
+            Partners
           </Typography>
         </Space>
       </Typography>,

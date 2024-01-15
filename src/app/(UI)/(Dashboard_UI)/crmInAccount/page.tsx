@@ -6,7 +6,6 @@ import Typography from '@/app/components/common/typography';
 import {
   CheckBadgeIcon,
   ClockIcon,
-  EllipsisVerticalIcon,
   PencilSquareIcon,
   PhoneIcon,
   PlusIcon,
@@ -14,29 +13,25 @@ import {
   UserGroupIcon,
 } from '@heroicons/react/24/outline';
 
-import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsDrawer from '@/app/components/common/os-drawer';
+import OsDropdown from '@/app/components/common/os-dropdown';
 import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
 import {SearchOutlined} from '@ant-design/icons';
-import {Button, MenuProps, TabsProps} from 'antd';
+import {MenuProps, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
-import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
-import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
-import {
-  getAllAddress,
-  updateAddress,
-} from '../../../../../redux/actions/address';
+import {updateAddress} from '../../../../../redux/actions/address';
 import {
   deleteCustomers,
-  getAllCustomer,
   queryCustomer,
   searchCustomer,
   updateCustomer,
@@ -167,7 +162,11 @@ const CrmInformation: React.FC = () => {
 
   const AccountColumns = [
     {
-      title: <Typography name='Body 4/Medium'  className="dragHandler">Customer Name</Typography>,
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Customer Name
+        </Typography>
+      ),
       dataIndex: 'name',
       key: 'name',
       width: 130,
@@ -184,7 +183,11 @@ const CrmInformation: React.FC = () => {
       ),
     },
     {
-      title: <Typography name='Body 4/Medium'  className="dragHandler">Shipping Address</Typography>,
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Shipping Address
+        </Typography>
+      ),
       dataIndex: 'shiping_address_line',
       key: 'shiping_address_line',
       width: 187,
@@ -195,7 +198,11 @@ const CrmInformation: React.FC = () => {
       ),
     },
     {
-      title: <Typography name='Body 4/Medium'  className="dragHandler">Billing Address</Typography>,
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Billing Address
+        </Typography>
+      ),
       dataIndex: 'billing_address_line',
       key: 'billing_address_line',
       width: 187,
@@ -206,7 +213,11 @@ const CrmInformation: React.FC = () => {
       ),
     },
     {
-      title: <Typography name='Body 4/Medium' className="dragHandler">Contact</Typography>,
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Contact
+        </Typography>
+      ),
       dataIndex: 'name',
       key: 'name',
       width: 187,
@@ -217,7 +228,11 @@ const CrmInformation: React.FC = () => {
       ),
     },
     {
-      title: <Typography name='Body 4/Medium' className="dragHandler">Currency</Typography>,
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Currency
+        </Typography>
+      ),
       dataIndex: 'currency',
       key: 'currency',
       width: 187,
@@ -226,7 +241,11 @@ const CrmInformation: React.FC = () => {
       ),
     },
     {
-      title: <Typography name='Body 4/Medium' className="dragHandler"> </Typography>, 
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          {' '}
+        </Typography>
+      ),
       dataIndex: 'actions',
       key: 'actions',
       width: 94,
@@ -341,23 +360,9 @@ const CrmInformation: React.FC = () => {
                 icon={<PlusIcon />}
                 clickHandler={() => setShowModal((p) => !p)}
               />
-              <Dropdown
-                // trigger="click"
-                menu={{items: dropDownItemss}}
-                placement="bottomRight"
-              >
-                <Button
-                  style={{
-                    background: '#14263E',
-                    height: '48px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    border: 'none',
-                  }}
-                >
-                  <EllipsisVerticalIcon width={24} color="white" />
-                </Button>
-              </Dropdown>
+              <Space>
+                <OsDropdown menu={{items: dropDownItemss}} />
+              </Space>
             </div>
           </Col>
         </Row>

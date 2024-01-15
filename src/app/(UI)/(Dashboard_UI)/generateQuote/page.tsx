@@ -12,39 +12,38 @@
 
 'use client';
 
-import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {
   ArrowDownTrayIcon,
-  EllipsisVerticalIcon,
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
 
-import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
+import {PopConfirm} from '@/app/components/common/antd/PopConfirm';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapse from '@/app/components/common/os-collapse';
 import OsDrawer from '@/app/components/common/os-drawer';
+import OsDropdown from '@/app/components/common/os-dropdown';
 import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import OsTabs from '@/app/components/common/os-tabs';
 import {selectData, selectDataForProduct} from '@/app/utils/CONSTANTS';
-import {Button, MenuProps} from 'antd';
+import {MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import {PopConfirm} from '@/app/components/common/antd/PopConfirm';
-import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {
   getAllBundle,
   updateBundleQuantity,
 } from '../../../../../redux/actions/bundle';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
+import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {updateProductFamily} from '../../../../../redux/actions/product';
 import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
 import {
@@ -65,12 +64,11 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
 import InputDetails from './allTabs/InputDetails';
 import Metrics from './allTabs/Metrics';
-import Profitability from './allTabs/Profitability';
 import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
 import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
-import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
+import Profitability from './allTabs/Profitability';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -99,13 +97,10 @@ const GenerateQuote: React.FC = () => {
   const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] =
     useState<any>();
   const {data: tableColumnData} = useAppSelector((state) => state.tableColumn);
-
   const {data: contractSettingData} = useAppSelector(
     (state) => state.contractSetting,
   );
-
   const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
-
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
 
   useEffect(() => {
@@ -315,6 +310,7 @@ const GenerateQuote: React.FC = () => {
     const filterRequired = filteredArray?.filter(
       (item: any) => item?.is_required,
     );
+    console.log('filteredArray', filteredArray, filterRequired);
     setTableColumnDataShow(filterRequired);
   }, [activeTab, tableColumnData]);
 
@@ -630,12 +626,7 @@ const GenerateQuote: React.FC = () => {
     {
       key: 2,
       name: 'Profitability',
-      children: (
-        <Profitability
-          isEditable={isEditable}
-          tableColumnDataShow={tableColumnDataShow}
-        />
-      ),
+      children: <Profitability tableColumnDataShow={tableColumnDataShow} />,
     },
     {
       key: 3,
@@ -761,24 +752,9 @@ const GenerateQuote: React.FC = () => {
                       setSelectedFilter(e);
                     }}
                   />
-
-                  <Dropdown
-                    menu={{items}}
-                    placement="bottomRight"
-                    trigger={['click']}
-                  >
-                    <Button
-                      style={{
-                        background: '#14263E',
-                        height: '48px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        border: 'none',
-                      }}
-                    >
-                      <EllipsisVerticalIcon width={24} color="white" />
-                    </Button>
-                  </Dropdown>
+                  <Space>
+                    <OsDropdown menu={{items}} />
+                  </Space>
                 </Space>
               </Space>
             }

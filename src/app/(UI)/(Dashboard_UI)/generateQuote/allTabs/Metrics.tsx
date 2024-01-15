@@ -13,8 +13,6 @@ import {totalRevenue, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import React, {FC, useEffect, useState} from 'react';
 
 const Matrix: FC<any> = (familyFilter: any) => {
-  console.log('familyFilter', familyFilter?.selectedFilter);
-
   const [sectionData, setSectionData] = useState<
     {
       id: number | string;
@@ -128,27 +126,29 @@ const Matrix: FC<any> = (familyFilter: any) => {
   }, [familyFilter]);
 
   return (
-    <Row gutter={[12, 12]} justify="space-between">
+    <Row gutter={[24, 24]} justify="space-between">
       {sectionData.map((item) => (
-        <Col
+        <div
           style={{
-            padding: '24px',
+            padding: '12px',
             background: '#f6f7f8',
             borderRadius: '12px',
           }}
           key={item.id}
         >
-          <Space direction="vertical">
-            <Typography name="Body 1/Regular">{item.name}</Typography>
-            <Typography name="Body 3/Regular">
-              {familyFilter?.selectedFilter
-                ? `(${familyFilter?.selectedFilter})`
-                : '--'}
-            </Typography>
-          </Space>
+          <Col>
+            <Space direction="vertical">
+              <Typography name="Body 1/Regular">{item.name}</Typography>
+              <Typography name="Body 3/Regular">
+                {familyFilter?.selectedFilter
+                  ? `(${familyFilter?.selectedFilter})`
+                  : '--'}
+              </Typography>
+            </Space>
 
-          <OsPieChart data={item.pieData} />
-        </Col>
+            <OsPieChart data={item.pieData} />
+          </Col>
+        </div>
       ))}
     </Row>
   );

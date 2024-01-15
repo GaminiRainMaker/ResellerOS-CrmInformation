@@ -67,6 +67,10 @@ export const CustomTable = styled(Table)<ITableProps>`
   &.ant-table-wrapper .ant-table-tbody > tr > td {
     padding: 12px;
   }
+
+  .ant-table-expanded-row-fixed {
+    padding: 0px;
+  }
 `;
 
 export const AvatarStyled = styled(Avatar)<{background?: string}>`

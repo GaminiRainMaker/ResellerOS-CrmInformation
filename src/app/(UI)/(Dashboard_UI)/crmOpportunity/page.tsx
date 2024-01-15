@@ -6,7 +6,6 @@ import Typography from '@/app/components/common/typography';
 import {
   CheckBadgeIcon,
   ClockIcon,
-  EllipsisVerticalIcon,
   PencilSquareIcon,
   PhoneIcon,
   PlusIcon,
@@ -14,12 +13,12 @@ import {
   UserGroupIcon,
 } from '@heroicons/react/24/outline';
 
-import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsDrawer from '@/app/components/common/os-drawer';
+import OsDropdown from '@/app/components/common/os-dropdown';
 import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
@@ -29,8 +28,9 @@ import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
 import {StageValue} from '@/app/utils/CONSTANTS';
 import {SearchOutlined} from '@ant-design/icons';
-import {Button, MenuProps, TabsProps} from 'antd';
+import {MenuProps, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 import {
   deleteOpportunity,
   getAllOpportunity,
@@ -258,6 +258,16 @@ const CrmOpportunity: React.FC = () => {
     }),
   };
 
+  const locale = {
+    emptyText: (
+      <EmptyContainer
+        title="No Files"
+        actionButton="Add Opportunity"
+        onClick={() => setShowModal((p) => !p)}
+      />
+    ),
+  };
+
   const tabItems: TabsProps['items'] = [
     {
       label: <Typography name="Body 4/Regular">All</Typography>,
@@ -267,6 +277,7 @@ const CrmOpportunity: React.FC = () => {
           dataSource={opportunityValueData}
           rowSelection={rowSelection}
           scroll
+          locale={locale}
           loading={loading}
         />
       ),
@@ -358,23 +369,9 @@ const CrmOpportunity: React.FC = () => {
                 icon={<PlusIcon />}
                 clickHandler={() => setShowModal((p) => !p)}
               />
-              <Dropdown
-                // trigger="click"
-                menu={{items: dropDownItemss}}
-                placement="bottomRight"
-              >
-                <Button
-                  style={{
-                    background: '#14263E',
-                    height: '48px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    border: 'none',
-                  }}
-                >
-                  <EllipsisVerticalIcon width={24} color="white" />
-                </Button>
-              </Dropdown>
+              <Space>
+                <OsDropdown menu={{items: dropDownItemss}} />
+              </Space>
             </div>
           </Col>
         </Row>

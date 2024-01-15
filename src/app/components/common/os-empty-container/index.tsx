@@ -1,12 +1,19 @@
 import {FC} from 'react';
 import Image from 'next/image';
+import {PlusIcon} from '@heroicons/react/24/outline';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
 import {EmptyContainerInterface} from './os-empty-container';
 import EmptyDataIcon from '../../../../../public/assets/static/emptyDataIcon.svg';
+import OsButton from '../os-button';
 
-const EmptyContainer: FC<EmptyContainerInterface> = ({title, subTitle}) => {
+const EmptyContainer: FC<EmptyContainerInterface> = ({
+  title,
+  subTitle,
+  actionButton,
+  onClick,
+}) => {
   const [token] = useThemeToken();
   return (
     <Space
@@ -18,7 +25,6 @@ const EmptyContainer: FC<EmptyContainerInterface> = ({title, subTitle}) => {
         justifyContent: 'center',
         background: '#F6F7F8',
         padding: '24px',
-        borderRadius: '12px',
       }}
     >
       <Image
@@ -31,6 +37,14 @@ const EmptyContainer: FC<EmptyContainerInterface> = ({title, subTitle}) => {
         <Typography name="Body 4/Regular" color={token?.colorTextSecondary}>
           {subTitle}
         </Typography>
+      )}
+      {actionButton && (
+        <OsButton
+          text={actionButton}
+          buttontype="PRIMARY"
+          icon={<PlusIcon />}
+          clickHandler={() => onClick}
+        />
       )}
     </Space>
   );

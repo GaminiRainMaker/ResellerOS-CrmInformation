@@ -17,7 +17,7 @@ import {Cell, Legend, Pie, PieChart, Tooltip} from 'recharts';
 const OsPieChart: FC<any> = ({data}: any) => (
   <div>
     <PieChart
-      width={680}
+      width={650}
       height={230}
       //  onMouseEnter={this.onPieEnter}
     >

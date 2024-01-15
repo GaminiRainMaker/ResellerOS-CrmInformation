@@ -12,28 +12,27 @@
 'use client';
 
 import Typography from '@/app/components/common/typography';
-import {
-  EllipsisVerticalIcon,
-  EyeIcon,
-  PlusIcon,
-  TrashIcon,
-} from '@heroicons/react/24/outline';
+import {EyeIcon, PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 
-import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {PopConfirm} from '@/app/components/common/antd/PopConfirm';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
+import OsDropdown from '@/app/components/common/os-dropdown';
 import OsModal from '@/app/components/common/os-modal';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Button, MenuProps, TabsProps} from 'antd';
+import {MenuProps, TabsProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
+import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
+import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {insertProduct} from '../../../../../redux/actions/product';
+import {insertProfitability} from '../../../../../redux/actions/profitability';
 import {
   deleteQuoteById,
   getQuotesByDateFilter,
@@ -42,18 +41,14 @@ import {
   updateQuoteWithNewlineItemAddByID,
 } from '../../../../../redux/actions/quote';
 import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
+import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
+import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
+import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
+import {insertValidation} from '../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from '../generateQuote/UploadFile';
 import RecentSection from './RecentSection';
 import QuoteAnalytics from './analytics';
-import {insertProfitability} from '../../../../../redux/actions/profitability';
-import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
-import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
-import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
-import {insertValidation} from '../../../../../redux/actions/validation';
-import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
-import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
-import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 
 interface FormattedData {
   [key: string]: {
@@ -525,7 +520,6 @@ const AllQuote: React.FC = () => {
                 <OsButton
                   text="Mark as Complete"
                   buttontype="PRIMARY"
-                  // icon={<PlusIcon />}
                   clickHandler={markAsComplete}
                 />
               )}
@@ -535,28 +529,10 @@ const AllQuote: React.FC = () => {
                 icon={<PlusIcon />}
                 clickHandler={() => setShowModal((p) => !p)}
               />
-              <Dropdown
-                // trigger="click"
-                menu={{items: dropDownItemss}}
-                placement="bottomRight"
-              >
-                {/* <OsButton
-                        buttontype="PRIMARY_ICON"
-                        // clickHandler={deleteLineItems}
-                        icon={<EllipsisVerticalIcon width={24} />}
-                      /> */}
-                <Button
-                  style={{
-                    background: '#14263E',
-                    height: '48px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    border: 'none',
-                  }}
-                >
-                  <EllipsisVerticalIcon width={24} color="white" />
-                </Button>
-              </Dropdown>
+
+              <Space>
+                <OsDropdown menu={{items: dropDownItemss}} />
+              </Space>
             </div>
           </Col>
         </Row>

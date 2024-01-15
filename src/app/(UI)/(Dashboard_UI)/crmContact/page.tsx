@@ -7,7 +7,6 @@ import Typography from '@/app/components/common/typography';
 import {
   CheckBadgeIcon,
   ClockIcon,
-  EllipsisVerticalIcon,
   PencilSquareIcon,
   PhoneIcon,
   PlusIcon,
@@ -15,13 +14,13 @@ import {
   UserGroupIcon,
 } from '@heroicons/react/24/outline';
 
-import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsDrawer from '@/app/components/common/os-drawer';
+import OsDropdown from '@/app/components/common/os-dropdown';
 import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
@@ -29,7 +28,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Button, MenuProps, TabsProps} from 'antd';
+import {MenuProps, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
 import {
   deleteBillingContact,
@@ -263,15 +262,6 @@ const CrmAccount: React.FC = () => {
       ),
       key: '1',
     },
-    // {
-    //   label: (
-    //     <div>
-    //       <div>Billing Contacts</div>
-    //       {/* <div style={{border: activeTab == 2 ? '1px solid #1C3557' : ''}} /> */}
-    //     </div>
-    //   ),
-    //   key: '2',
-    // },
   ];
 
   const dropDownItemss: MenuProps['items'] = [
@@ -378,23 +368,9 @@ const CrmAccount: React.FC = () => {
                 icon={<PlusIcon />}
                 clickHandler={() => setShowModal((p) => !p)}
               />
-              <Dropdown
-                // trigger="click"
-                menu={{items: dropDownItemss}}
-                placement="bottomRight"
-              >
-                <Button
-                  style={{
-                    background: '#14263E',
-                    height: '48px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    border: 'none',
-                  }}
-                >
-                  <EllipsisVerticalIcon width={24} color="white" />
-                </Button>
-              </Dropdown>
+              <Space>
+                <OsDropdown menu={{items: dropDownItemss}} />
+              </Space>
             </div>
           </Col>
         </Row>
