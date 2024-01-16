@@ -1,16 +1,17 @@
 import {Space} from '@/app/components/common/antd/Space';
-import React from 'react';
+import React, {useState} from 'react';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import Typography from '@/app/components/common/typography';
 import CommonSelect from '@/app/components/common/os-select';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import {PlusIcon} from '@heroicons/react/24/outline';
+import {partnerOptions, partnerProgramOptions} from '@/app/utils/CONSTANTS';
 import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
 
 const AddRegistrationForm = () => {
   const [token] = useThemeToken();
-
+const [dealRegForm, setDealRegForm] = useState([{}])
   const RegisteredPartnersItem = [
     {
       key: '1',
@@ -33,7 +34,11 @@ const AddRegistrationForm = () => {
                 }}
               >
                 <Typography name="Body 4/Medium">Partner</Typography>
-                <CommonSelect placeholder="Select" style={{width: '100%'}} />
+                <CommonSelect
+                  placeholder="Select"
+                  options={partnerOptions}
+                  style={{width: '100%'}}
+                />
               </Space>
             </Col>
             <Col sm={24} md={12}>
@@ -45,7 +50,11 @@ const AddRegistrationForm = () => {
                 }}
               >
                 <Typography name="Body 4/Medium">Partner Programm</Typography>
-                <CommonSelect placeholder="Select" style={{width: '100%'}} />
+                <CommonSelect
+                  placeholder="Select"
+                  options={partnerProgramOptions}
+                  style={{width: '100%'}}
+                />
               </Space>
             </Col>
           </Row>
@@ -137,6 +146,7 @@ const AddRegistrationForm = () => {
       ),
     },
   ];
+
   return (
     <Space style={{width: '100%'}} direction="vertical" size={0}>
       <CollapseSpaceStyle size={24} direction="vertical">

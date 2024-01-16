@@ -137,11 +137,13 @@ export const opportunityColumn = [
   {value: 'stages', label: 'Stages'},
   {value: 'pdf_url', label: 'PDF'},
 ];
+
 export const quoteLineItemColumn = [
   {value: 'product_code', label: 'Product Code'},
   {value: 'description', label: 'Description'},
   {value: 'pdf_url', label: 'PDF'},
 ];
+
 export const quoteColumns = [
   {value: 'cage_code', label: 'Stages'},
   {value: 'customer_address', label: 'Customer Address'},
@@ -178,6 +180,7 @@ export const LogicOptions = [
   {value: 'OR', label: 'OR'},
   {value: 'custom_logic', label: 'Custom Logic'},
 ];
+
 export const OperatorsOptions = [
   {value: '=', label: '='},
   {value: '!=', label: '!='},
@@ -186,6 +189,7 @@ export const OperatorsOptions = [
   {value: '<=', label: '<='},
   {value: '=>', label: '=>'},
 ];
+
 export const quoteAndOpportunityLineItemOptions = [
   {value: 'line_number', label: 'Line Number'},
   {value: 'adjusted_price', label: 'Adjustet Price'},
@@ -206,8 +210,18 @@ export const quoteOptions = [
   {value: 'customer_phone', label: 'Customer Phone'},
   {value: 'customer_state', label: 'Customer State'},
 ];
+
 export const opportunityOptions = [
   {value: 'title', label: 'Title'},
   {value: 'amount', label: 'Amount'},
   {value: 'stages', label: 'Stages'},
+];
+export const partnerOptions = [
+  {value: 'cisco', label: 'CISCO'},
+  {value: 'dell', label: 'DELL'},
+  {value: 'amazon', label: 'AMAZON'},
+];
+export const partnerProgramOptions = [
+  {value: 'cisco_hardware', label: 'CISCO HARDWARE'},
+  {value: 'cisco_glass', label: 'CISCO GLASS'},
 ];

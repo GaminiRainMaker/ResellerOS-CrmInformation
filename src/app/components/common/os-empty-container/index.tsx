@@ -5,7 +5,7 @@ import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
 import {EmptyContainerInterface} from './os-empty-container';
-import EmptyDataIcon from '../../../../../public/assets/static/emptyDataIcon.svg';
+import EmptyDataIcon from '../../../../../public/assets/static/EmptyContainerIcon.svg';
 import OsButton from '../os-button';
 
 const EmptyContainer: FC<EmptyContainerInterface> = ({
