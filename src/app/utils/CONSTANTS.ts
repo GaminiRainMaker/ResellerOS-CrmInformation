@@ -217,11 +217,21 @@ export const opportunityOptions = [
   {value: 'stages', label: 'Stages'},
 ];
 export const partnerOptions = [
-  {value: 'cisco', label: 'CISCO'},
-  {value: 'dell', label: 'DELL'},
-  {value: 'amazon', label: 'AMAZON'},
+  {value: 1, label: 'CISCO'},
+  {value: 2, label: 'DELL'},
+  {value: 3, label: 'AMAZON'},
 ];
-export const partnerProgramOptions = [
-  {value: 'cisco_hardware', label: 'CISCO HARDWARE'},
-  {value: 'cisco_glass', label: 'CISCO GLASS'},
+export const CiscoPartnerProgramOptions = [
+  {value: 8, label: 'CISCO HARDWARE'},
+  {value: 9, label: 'CISCO GLASS'},
+];
+
+export const DellPartnerProgramOptions = [
+  {value: 20, label: 'DELL HARDWARE'},
+  {value: 21, label: 'DELL GLASS'},
+];
+
+export const AmazonPartnerProgramOptions = [
+  {value: 30, label: 'AMAZON HARDWARE'},
+  {value: 31, label: 'AMAZON GLASS'},
 ];

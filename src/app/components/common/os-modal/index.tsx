@@ -16,6 +16,7 @@ const OsModal: FC<OSModalPropsInterface> = ({
   bodyPadding,
   title,
   titleTypography = 'Heading 3/Medium',
+  footer = true,
   ...rest
 }) => {
   const {onCancel, open, onOk} = rest;
@@ -37,33 +38,35 @@ const OsModal: FC<OSModalPropsInterface> = ({
       mask
       closeIcon={<XCircleIcon width={30} color={token?.colorIcon} />}
       footer={
-        <Space size={12}>
-          {secondaryButtonText && (
-            <OsButton
-              text={secondaryButtonText}
-              buttontype="SECONDARY"
-              clickHandler={() => {
-                if (onOk) {
-                  const mockEvent = {} as React.MouseEvent<HTMLButtonElement>;
-                  onOk(mockEvent); // Pass a mock event or any required argument
-                }
-              }}
-            />
-          )}
-          {primaryButtonText && (
-            <OsButton
-              loading={loading}
-              text={primaryButtonText}
-              buttontype="PRIMARY"
-              clickHandler={() => {
-                if (onOk) {
-                  const mockEvent = {} as React.MouseEvent<HTMLButtonElement>;
-                  onOk(mockEvent); // Pass a mock event or any required argument
-                }
-              }}
-            />
-          )}
-        </Space>
+        footer && (
+          <Space size={12}>
+            {secondaryButtonText && (
+              <OsButton
+                text={secondaryButtonText}
+                buttontype="SECONDARY"
+                clickHandler={() => {
+                  if (onOk) {
+                    const mockEvent = {} as React.MouseEvent<HTMLButtonElement>;
+                    onOk(mockEvent); // Pass a mock event or any required argument
+                  }
+                }}
+              />
+            )}
+            {primaryButtonText && (
+              <OsButton
+                loading={loading}
+                text={primaryButtonText}
+                buttontype="PRIMARY"
+                clickHandler={() => {
+                  if (onOk) {
+                    const mockEvent = {} as React.MouseEvent<HTMLButtonElement>;
+                    onOk(mockEvent); // Pass a mock event or any required argument
+                  }
+                }}
+              />
+            )}
+          </Space>
+        )
       }
     >
       {body}

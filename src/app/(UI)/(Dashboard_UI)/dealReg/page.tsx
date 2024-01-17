@@ -352,12 +352,12 @@ const DealReg: React.FC = () => {
         loading={loading}
         body={<AddRegistrationForm />}
         width={583}
-        primaryButtonText="Next"
         open={showModal}
         onOk={() => {}}
         onCancel={() => {
           setShowModal((p) => !p);
         }}
+        footer={false}
       />
     </>
   );

@@ -97,4 +97,8 @@ export const API = {
   OPPORLINEITEM: {
     INDEX: '/opportunityLineItem',
   },
+  DEALREG: {
+    INDEX: '/dealReg',
+    QUERY: '/dealReg/query',
+  },
 };
