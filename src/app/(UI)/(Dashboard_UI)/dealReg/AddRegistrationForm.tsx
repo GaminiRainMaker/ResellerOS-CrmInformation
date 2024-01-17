@@ -1,3 +1,4 @@
+/* eslint-disable no-lone-blocks */
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -34,7 +35,7 @@ const AddRegistrationForm = () => {
       id: 1,
       partnername: 'Partner',
       partner_id: '',
-      partnerOptions: partnerOptions,
+      partnerOptions,
       partnerProgramName: 'Partner Program',
       partner_program_id: '',
       partnerProgramOptions: [],
@@ -47,9 +48,11 @@ const AddRegistrationForm = () => {
   const getProgramOptions = (value: number) => {
     if (value === 1) {
       return CiscoPartnerProgramOptions;
-    } else if (value === 2) {
+    }
+    if (value === 2) {
       return DellPartnerProgramOptions;
-    } else if (value === 3) {
+    }
+    if (value === 3) {
       return AmazonPartnerProgramOptions;
     }
   };
@@ -153,7 +156,7 @@ const AddRegistrationForm = () => {
                       id: dealRegFormData.length + 1,
                       partnername: 'Partner',
                       partner_id: '',
-                      partnerOptions: partnerOptions,
+                      partnerOptions,
                       partnerProgramName: 'Partner Program',
                       partner_program_id: '',
                       partnerProgramOptions: [],
@@ -283,13 +286,13 @@ const AddRegistrationForm = () => {
     if (toggle) {
       {
         dealRegFormData?.map((dealRegFormDataItem) => {
-          let obj = {
-            id: dealRegFormDataItem?.id,
-            contact_id: dealRegFormDataItem?.contact_id,
-            customer_id: dealRegFormDataItem?.customer_id,
-            opportunity_id: dealRegFormDataItem?.opportunity_id,
-            partner_id: dealRegFormDataItem?.partner_id,
-            partner_program_id: dealRegFormDataItem?.partner_program_id,
+          const obj = {
+            // id: dealRegFormDataItem?.id,
+            contact_id: dealRegFormDataItem?.contact_id ?  dealRegFormDataItem?.contact_id : null ,
+            customer_id: dealRegFormDataItem?.customer_id ? dealRegFormDataItem?.customer_id : null,
+            opportunity_id: dealRegFormDataItem?.opportunity_id ? dealRegFormDataItem?.opportunity_id : null,
+            partner_id: dealRegFormDataItem?.partner_id ?  dealRegFormDataItem?.partner_id : null,
+            partner_program_id: dealRegFormDataItem?.partner_program_id ? dealRegFormDataItem?.partner_program_id : null,
           };
           newarr.push(obj);
         });
@@ -330,12 +333,10 @@ const AddRegistrationForm = () => {
               onChange={(value) => {
                 setCustomerValue(value);
                 setDealRegFormData((prevData) =>
-                  prevData.map((item) => {
-                    return {
-                      ...item,
-                      customer_id: value,
-                    };
-                  }),
+                  prevData.map((item) => ({
+                    ...item,
+                    customer_id: value,
+                  })),
                 );
               }}
             />
@@ -355,12 +356,10 @@ const AddRegistrationForm = () => {
               options={billingOptionsData}
               onChange={(value) => {
                 setDealRegFormData((prevData) =>
-                  prevData.map((item) => {
-                    return {
-                      ...item,
-                      contact_id: value,
-                    };
-                  }),
+                  prevData.map((item) => ({
+                    ...item,
+                    contact_id: value,
+                  })),
                 );
               }}
             />
@@ -380,12 +379,10 @@ const AddRegistrationForm = () => {
               options={opportunityOptions}
               onChange={(value) => {
                 setDealRegFormData((prevData) =>
-                  prevData.map((item) => {
-                    return {
-                      ...item,
-                      opportunity_id: value,
-                    };
-                  }),
+                  prevData.map((item) => ({
+                    ...item,
+                    opportunity_id: value,
+                  })),
                 );
               }}
             />
@@ -393,7 +390,7 @@ const AddRegistrationForm = () => {
         </Space>
       )}
 
-      <Row justify={'end'} style={{marginTop: toggle ? '25px' : ''}}>
+      <Row justify="end" style={{marginTop: toggle ? '25px' : ''}}>
         <OsButton
           text={!toggle ? 'Next' : 'Create Form'}
           buttontype="PRIMARY"
