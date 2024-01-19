@@ -13,11 +13,11 @@ import {
 } from './styled-components';
 
 const DealRegCustomTabs: FC<any> = (tabs) => {
-  const [activeKey, setActiveKey] = useState<number>(0);
+  const [activeKey, setActiveKey] = useState<string>('0');
   const [token] = useThemeToken();
   const [tabItems, setTabItems] = useState([]);
 
-  const handleTabChange = (key: number) => {
+  const handleTabChange = (key: string) => {
     setActiveKey(key);
   };
 
@@ -26,7 +26,7 @@ const DealRegCustomTabs: FC<any> = (tabs) => {
   useEffect(() => {
     const tempItems: any = [];
     if (tabs?.data) {
-      tabs?.data?.forEach((element: any, index: number) => {
+      tabs?.data?.forEach((element: any, index: string) => {
         tempItems.push({
           key: index,
           label: (
