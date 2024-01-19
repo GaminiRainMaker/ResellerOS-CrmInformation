@@ -1,12 +1,72 @@
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
+import CommonDatePicker from '@/app/components/common/os-date-picker';
+import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import OsInput from '@/app/components/common/os-input';
+import {partnerOptions} from '@/app/utils/CONSTANTS';
+import {formatDate, getProgramOptions} from '@/app/utils/base';
+import {FC, useState} from 'react';
+import {useAppSelector} from '../../../../../../redux/hook';
 import {CollapseSpaceStyle} from './styled-components';
 
-const CommonFields = () => {
+const CommonFields: FC<any> = (data) => {
+  const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
+  const {data: dataAddress} = useAppSelector((state) => state.customer);
+  const [partnerProgramOptions, setPartnerProgramOptions] = useState<any>();
+
+  const [commonFieldData, setCommonFieldData] = useState<{
+    responseDetail: {
+      status: '';
+      date_submitted: '';
+      expiration_date: '';
+      partner_deal_id: '';
+      partner_approval_id: '';
+    };
+    accountInformation: {
+      customer_account: '';
+      account_contact: '';
+      industry: '';
+      account_website: '';
+    };
+    addressInformation: {
+      customer_account: '';
+      account_contact: '';
+      industry: '';
+      account_website: '';
+    };
+    opportunityInformation: {
+      customer_account: '';
+      account_contact: '';
+      industry: '';
+      account_website: '';
+    };
+  }>();
+
+  const handleOpportunityInformationChange = (field: string, value: any) => {
+    console.log('Dataaa123', field, value);
+    setCommonFieldData((prevData: any) => ({
+      ...prevData,
+      opportunityInformation: {
+        ...prevData?.opportunityInformation,
+        [field]: value,
+      },
+    }));
+  };
+
+  console.log('commonFieldData', commonFieldData);
+
+  const opportunityOptions = opportunityData.map((opportunity: any) => ({
+    value: opportunity.id,
+    label: opportunity.title,
+  }));
+
+  const customerOptions = dataAddress.map((customer: any) => ({
+    value: customer.id,
+    label: customer.name,
+  }));
+
   const ResponseDetailItem = [
     {
       key: '1',
@@ -71,7 +131,7 @@ const CommonFields = () => {
               >
                 <Typography name="Body 4/Medium">Partner Deal ID</Typography>
                 <CommonSelect
-                  placeholder="dd/mm/yyyy"
+                  placeholder="MM/DD/YYYY"
                   style={{width: '100%'}}
                 />
               </Space>
@@ -299,7 +359,16 @@ const CommonFields = () => {
                 }}
               >
                 <Typography name="Body 4/Medium">Partner Account</Typography>
-                <CommonSelect placeholder="Cisco" style={{width: '100%'}} />
+                <CommonSelect
+                  placeholder="Cisco"
+                  style={{width: '100%'}}
+                  defaultValue={data?.data?.title}
+                  onChange={(value) => {
+                    handleOpportunityInformationChange('partner_id', value);
+                    setPartnerProgramOptions(getProgramOptions(value));
+                  }}
+                  options={partnerOptions}
+                />
               </Space>
             </Col>
             <Col sm={24} md={12}>
@@ -314,6 +383,13 @@ const CommonFields = () => {
                 <CommonSelect
                   placeholder="Cisco Hardware"
                   style={{width: '100%'}}
+                  onChange={(value) =>
+                    handleOpportunityInformationChange(
+                      'partner_program_id',
+                      value,
+                    )
+                  }
+                  options={partnerProgramOptions}
                 />
               </Space>
             </Col>
@@ -332,6 +408,11 @@ const CommonFields = () => {
                 <CommonSelect
                   placeholder="Blue hive- tech world"
                   style={{width: '100%'}}
+                  defaultValue={data?.data?.Opportunity?.title}
+                  options={opportunityOptions}
+                  onChange={(value) =>
+                    handleOpportunityInformationChange('opportunity', value)
+                  }
                 />
               </Space>
             </Col>
@@ -346,9 +427,15 @@ const CommonFields = () => {
                 <Typography name="Body 4/Medium">
                   Opportunity Description
                 </Typography>
-                <CommonSelect
+                <OsInput
                   placeholder="Write text here!"
                   style={{width: '100%'}}
+                  onChange={(e) =>
+                    handleOpportunityInformationChange(
+                      'opportunity_description',
+                      e?.target?.value,
+                    )
+                  }
                 />
               </Space>
             </Col>
@@ -367,6 +454,7 @@ const CommonFields = () => {
                 <CommonSelect
                   placeholder="$ 000-000-0000"
                   style={{width: '100%'}}
+                  value={data?.data?.Opportunity?.amount}
                 />
               </Space>
             </Col>
@@ -379,7 +467,16 @@ const CommonFields = () => {
                 }}
               >
                 <Typography name="Body 4/Medium">Probability</Typography>
-                <CommonSelect placeholder="0.00%" style={{width: '100%'}} />
+                <OsInput
+                  placeholder="0.00%"
+                  style={{width: '100%'}}
+                  onChange={(e) =>
+                    handleOpportunityInformationChange(
+                      'probability',
+                      e?.target?.value,
+                    )
+                  }
+                />
               </Space>
             </Col>
           </Row>
@@ -396,9 +493,14 @@ const CommonFields = () => {
                 <Typography name="Body 4/Medium">
                   Estimated Close Date
                 </Typography>
-                <CommonSelect
-                  placeholder="dd/mm/yyyy"
-                  style={{width: '100%'}}
+                <CommonDatePicker
+                  // value={data?.data?.createdAt}
+                  // onChange={(value) =>
+                  //   handleOpportunityInformationChange(
+                  //     'estimated_close_date',
+                  //     value,
+                  //   )
+                  // }
                 />
               </Space>
             </Col>
@@ -413,7 +515,14 @@ const CommonFields = () => {
                 <Typography name="Body 4/Medium">
                   New or Existing Customer
                 </Typography>
-                <CommonSelect placeholder="Select" style={{width: '100%'}} />
+                <CommonSelect
+                  placeholder="Select"
+                  style={{width: '100%'}}
+                  options={customerOptions}
+                  onChange={(value) =>
+                    handleOpportunityInformationChange('customer_id', value)
+                  }
+                />
               </Space>
             </Col>
           </Row>

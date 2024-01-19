@@ -17,6 +17,7 @@ const OsModal: FC<OSModalPropsInterface> = ({
   title,
   titleTypography = 'Heading 3/Medium',
   footer = true,
+  footerPadding,
   ...rest
 }) => {
   const {onCancel, open, onOk} = rest;
@@ -39,7 +40,10 @@ const OsModal: FC<OSModalPropsInterface> = ({
       closeIcon={<XCircleIcon width={30} color={token?.colorIcon} />}
       footer={
         footer && (
-          <Space size={12}>
+          <Space
+            size={12}
+            style={{padding: footerPadding ? `${footerPadding}px` : '0px'}}
+          >
             {secondaryButtonText && (
               <OsButton
                 text={secondaryButtonText}

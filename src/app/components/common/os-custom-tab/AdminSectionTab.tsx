@@ -1,15 +1,16 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable arrow-body-style */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import QuoteAI from '@/app/(UI)/(Dashboard_UI)/admin/configuration/quoteAI/index';
 import {FC, useState} from 'react';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
 import {CustomTabStyle} from './styled-components';
-import {TabInterface} from './tabs.interface';
+// import {TabInterface} from './tabs.interface';
+import Configuration from '../../../(UI)/(Dashboard_UI)/admin/quote-AI/configuration';
+import Products from '../os-add-products';
 
-const CustomTabs: FC<TabInterface> = (tabs) => {
+const AdminCustomTabs: FC<any> = (tabs) => {
   const [activekeysall, setActivekeysall] = useState<number>(1);
   const [token] = useThemeToken();
 
@@ -58,15 +59,24 @@ const CustomTabs: FC<TabInterface> = (tabs) => {
           })}
         </div>
       </CustomTabStyle>
-      {activekeysall === 1 ? (
-        <QuoteAI />
-      ) : activekeysall === 2 ? (
-        <>No Data</>
-      ) : (
-        <>No Data</>
-      )}
+      <div
+        style={{
+          width: '100%',
+          background: 'transparent',
+          padding: '24px',
+          borderRadius: '12px',
+        }}
+      >
+        {activekeysall === 1 ? (
+          <Configuration />
+        ) : activekeysall === 2 ? (
+          <Products />
+        ) : (
+          <>No Data</>
+        )}
+      </div>
     </div>
   );
 };
 
-export default CustomTabs;
+export default AdminCustomTabs;

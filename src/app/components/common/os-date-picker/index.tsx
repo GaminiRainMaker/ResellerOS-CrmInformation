@@ -1,10 +1,19 @@
-import {ChevronDownIcon} from '@heroicons/react/24/outline';
 import {FC} from 'react';
-import {osDatePickerProps} from './os-date-picker.interface';
+import {DatePickerProps} from '../antd/DatePicker';
 import {StyledDatePicker} from './styled-components';
+import {CalendarDaysIcon} from '@heroicons/react/24/outline';
 import useThemeToken from '../hooks/useThemeToken';
-
-const CommonDatePicker: FC<osDatePickerProps> = (props: any) => (
-  <StyledDatePicker {...props} />
-);
+const CommonDatePicker: FC<DatePickerProps> = (props) => {
+  const [token] = useThemeToken();
+  return (
+    <StyledDatePicker
+      {...props}
+      suffixIcon={
+        <CalendarDaysIcon width={24} color={token?.colorInfoBorder} />
+      }
+      format="MM/DD/YYYY"
+      placeholder="MM/DD/YYYY"
+    />
+  );
+};
 export default CommonDatePicker;

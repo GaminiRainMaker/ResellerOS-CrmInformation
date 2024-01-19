@@ -14,6 +14,10 @@ const CommonSelect: FC<OsSelectProps> = ({suffixIcon, children, ...rest}) => {
           <ChevronDownIcon width={24} color={token?.colorInfoBorder} />
         )
       }
+      dropdownStyle={{
+        border: `1px solid ${token?.colorBorder}`,
+        borderRadius: '12px',
+      }}
     >
       {children}
     </SelectStyled>

@@ -48,3 +48,27 @@ export const updateProductFamily = createAsyncThunk(
     }
   },
 );
+
+export const deleteProduct = createAsyncThunk(
+  'product/deleteProduct',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PRODUCT_API.deleteById(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+
+export const updateProductById = createAsyncThunk(
+  'product/updateProductById',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PRODUCT_API.updateProductById(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

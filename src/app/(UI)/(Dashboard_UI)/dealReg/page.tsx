@@ -20,25 +20,28 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import {MenuProps, TabsProps} from 'antd';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import OsModal from '@/app/components/common/os-modal';
 import EmptyContainer from '@/app/components/common/os-empty-container';
-import {useAppSelector} from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DealRegAnalytics from './dealRegAnalytics';
 import AddRegistrationForm from './AddRegistrationForm';
+import {getAllDealReg} from '../../../../../redux/actions/dealReg';
 
 const DealReg: React.FC = () => {
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
+  const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showModalEdit, setShowModalEdit] = useState<boolean>(false);
   const [formValue, setFormValue] = useState<any>();
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
-  const {loading, filteredData} = useAppSelector(
-    (state) => state.billingContact,
+  const {data: DealRegData, loading: dealLoading} = useAppSelector(
+    (state) => state.dealReg,
   );
+
   const [tableData, setTableData] = useState<any>();
 
   const [billingFilterSeach, setBillingFilterSearch] = useState<any>();
@@ -57,8 +60,8 @@ const DealReg: React.FC = () => {
           Registration Forms
         </Typography>
       ),
-      dataIndex: 'registration_form',
-      key: 'registration_form',
+      dataIndex: 'title',
+      key: 'title',
       width: 266,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -70,8 +73,8 @@ const DealReg: React.FC = () => {
           Generated Date
         </Typography>
       ),
-      dataIndex: 'generate_date',
-      key: 'generate_date',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       width: 187,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -86,8 +89,10 @@ const DealReg: React.FC = () => {
       dataIndex: 'opportunity',
       key: 'opportunity',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.Opportunity?.title ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -131,7 +136,7 @@ const DealReg: React.FC = () => {
       width: 187,
       render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
-          {record?.Customer?.name ?? '--'}
+          { '--'}
         </Typography>
       ),
     },
@@ -146,7 +151,7 @@ const DealReg: React.FC = () => {
       width: 187,
       render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
-          {record?.Customer?.name ?? '--'}
+          {'--'}
         </Typography>
       ),
     },
@@ -200,10 +205,10 @@ const DealReg: React.FC = () => {
       children: (
         <OsTable
           columns={DealRegColumns}
-          dataSource={filteredData}
+          dataSource={DealRegData}
           rowSelection={rowSelection}
           scroll
-          loading={loading}
+          loading={dealLoading}
           locale={locale}
         />
       ),
@@ -258,6 +263,10 @@ const DealReg: React.FC = () => {
       ),
     },
   ];
+
+  useEffect(() => {
+    dispatch(getAllDealReg());
+  }, []);
 
   return (
     <>
@@ -349,7 +358,6 @@ const DealReg: React.FC = () => {
 
       <OsModal
         bodyPadding={22}
-        loading={loading}
         body={<AddRegistrationForm />}
         width={583}
         open={showModal}

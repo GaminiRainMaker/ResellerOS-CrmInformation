@@ -9,8 +9,8 @@ import AddCustomerInputVale from './addCustomerInput';
 
 interface AddCustomertInterface {
   setShowModal: any;
-  setOpen: any;
-  open: any;
+  setOpen?: any;
+  open?: any;
 }
 
 const AddCustomer: React.FC<AddCustomertInterface> = ({setShowModal}) => {

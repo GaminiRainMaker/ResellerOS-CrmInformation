@@ -19,16 +19,23 @@ import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
 import {insertDealReg} from '../../../../../redux/actions/dealReg';
+import {useRouter} from 'next/navigation';
+import OsModal from '@/app/components/common/os-modal';
+import AddCustomer from '../crmInAccount/addCustomer';
+import {getProgramOptions} from '@/app/utils/base';
 
 const AddRegistrationForm = () => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const {data: dataAddress} = useAppSelector((state) => state.customer);
   const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
+  const {loading} = useAppSelector((state) => state.dealReg);
 
   const [toggle, setToggle] = useState(false);
   const [customerValue, setCustomerValue] = useState<number>(0);
   const [billingOptionsData, setBillingOptionData] = useState<any>();
+  const [showCustomerModal, setShowCustomerModal] = useState<boolean>(false);
 
   const [dealRegFormData, setDealRegFormData] = useState([
     {
@@ -42,20 +49,9 @@ const AddRegistrationForm = () => {
       customer_id: '',
       contact_id: '',
       opportunity_id: '',
+      title: '',
     },
   ]);
-
-  const getProgramOptions = (value: number) => {
-    if (value === 1) {
-      return CiscoPartnerProgramOptions;
-    }
-    if (value === 2) {
-      return DellPartnerProgramOptions;
-    }
-    if (value === 3) {
-      return AmazonPartnerProgramOptions;
-    }
-  };
 
   const RegisteredPartnersItem = [
     {
@@ -163,6 +159,7 @@ const AddRegistrationForm = () => {
                       customer_id: '',
                       contact_id: '',
                       opportunity_id: '',
+                      title: '',
                     },
                   ];
                   setDealRegFormData([...dealRegFormData, ...tempData]);
@@ -254,12 +251,20 @@ const AddRegistrationForm = () => {
 
   const customerOptions = dataAddress.map((dataAddressItem: any) => ({
     value: dataAddressItem.id,
-    label: dataAddressItem.name,
+    label: (
+      <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+        {dataAddressItem.name}
+      </Typography>
+    ),
   }));
 
   const opportunityOptions = opportunityData.map((opportunity: any) => ({
     value: opportunity.id,
-    label: opportunity.title,
+    label: (
+      <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+        {opportunity.title}
+      </Typography>
+    ),
   }));
 
   useEffect(() => {
@@ -286,18 +291,41 @@ const AddRegistrationForm = () => {
     if (toggle) {
       {
         dealRegFormData?.map((dealRegFormDataItem) => {
+          let temp =
+            String(dealRegFormDataItem?.partner_id) === '1'
+              ? 'CISCO'
+              : String(dealRegFormDataItem?.partner_id) === '2'
+                ? 'DELL'
+                : String(dealRegFormDataItem?.partner_id) === '3'
+                  ? 'AMAZON'
+                  : null;
+
           const obj = {
-            // id: dealRegFormDataItem?.id,
-            contact_id: dealRegFormDataItem?.contact_id ?  dealRegFormDataItem?.contact_id : null ,
-            customer_id: dealRegFormDataItem?.customer_id ? dealRegFormDataItem?.customer_id : null,
-            opportunity_id: dealRegFormDataItem?.opportunity_id ? dealRegFormDataItem?.opportunity_id : null,
-            partner_id: dealRegFormDataItem?.partner_id ?  dealRegFormDataItem?.partner_id : null,
-            partner_program_id: dealRegFormDataItem?.partner_program_id ? dealRegFormDataItem?.partner_program_id : null,
+            contact_id: dealRegFormDataItem?.contact_id
+              ? dealRegFormDataItem?.contact_id
+              : null,
+            customer_id: dealRegFormDataItem?.customer_id
+              ? dealRegFormDataItem?.customer_id
+              : null,
+            opportunity_id: dealRegFormDataItem?.opportunity_id
+              ? dealRegFormDataItem?.opportunity_id
+              : null,
+            partner_id: dealRegFormDataItem?.partner_id
+              ? dealRegFormDataItem?.partner_id
+              : null,
+            partner_program_id: dealRegFormDataItem?.partner_program_id
+              ? dealRegFormDataItem?.partner_program_id
+              : null,
+            title: temp,
           };
           newarr.push(obj);
         });
       }
-      dispatch(insertDealReg(newarr));
+      dispatch(insertDealReg(newarr)).then((d) => {
+        if (d) {
+          router.push(`/dealRegDetail`);
+        }
+      });
     }
   };
 
@@ -339,6 +367,28 @@ const AddRegistrationForm = () => {
                   })),
                 );
               }}
+              dropdownRender={(menu) => (
+                <>
+                  <Space
+                    style={{cursor: 'pointer'}}
+                    size={8}
+                    onClick={() => setShowCustomerModal(true)}
+                  >
+                    <PlusIcon
+                      width={24}
+                      color={token?.colorInfoBorder}
+                      style={{marginTop: '5px'}}
+                    />
+                    <Typography
+                      color={token?.colorPrimaryText}
+                      name="Body 3/Regular"
+                    >
+                      Add Customer Account
+                    </Typography>
+                  </Space>
+                  {menu}
+                </>
+              )}
             />
           </Space>
 
@@ -392,6 +442,7 @@ const AddRegistrationForm = () => {
 
       <Row justify="end" style={{marginTop: toggle ? '25px' : ''}}>
         <OsButton
+          loading={loading}
           text={!toggle ? 'Next' : 'Create Form'}
           buttontype="PRIMARY"
           clickHandler={() => {
@@ -400,6 +451,14 @@ const AddRegistrationForm = () => {
           }}
         />
       </Row>
+      <OsModal
+        body={<AddCustomer setShowModal={setShowCustomerModal} />}
+        width={800}
+        open={showCustomerModal}
+        onCancel={() => {
+          setShowCustomerModal((p) => !p);
+        }}
+      />
     </>
   );
 };

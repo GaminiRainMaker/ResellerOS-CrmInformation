@@ -1,39 +1,39 @@
 'use client';
 
-import CustomTabs from '@/app/components/common/os-custom-tab';
+import CustomTabs from '@/app/components/common/os-custom-tab/AdminSectionTab';
 
 const AdminPage = () => {
   const tabs = [
     {
       key: 1,
-      title: 'Configuration',
+      title: 'Quote AI',
       childitem: [
-        {key: 1, name: 'Quote AI'},
-        {key: 2, name: 'DealReg AI'},
+        {key: 1, name: 'Configuration'},
+        {key: 2, name: 'Add Products'},
       ],
     },
     {
       key: 2,
-      title: 'Subscription Management',
+      title: 'DealReg AI',
       childitem: [
-        {key: 3, name: 'Subscriptions'},
-        {key: 4, name: 'Invoices'},
+        {key: 3, name: 'Standard Attributes'},
+        {key: 4, name: 'Common Fields'},
       ],
     },
     {
       key: 3,
-      title: 'Users',
+      title: 'Subscription Management',
       childitem: [
-        {key: 5, name: 'All users'},
-        {key: 6, name: 'Roles and Permissions'},
+        {key: 5, name: 'Subscriptions'},
+        {key: 6, name: 'Invoices'},
       ],
     },
     {
       key: 4,
-      title: 'Integration',
+      title: 'Users',
       childitem: [
-        {key: 7, name: 'Subscriptions'},
-        {key: 8, name: 'CRM accounts'},
+        {key: 7, name: 'All users'},
+        {key: 8, name: 'Roles and Permissions'},
       ],
     },
     {

@@ -5,36 +5,27 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
-import DealRegCustomTabs from '@/app/components/common/os-custom-tab/DealRegCustomTabs';
+import DealRegCustomTabs from '@/app/components/common/os-custom-tab/DealRegCustomTab';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import Typography from '@/app/components/common/typography';
 import {ArrowDownTrayIcon, PlusIcon} from '@heroicons/react/24/outline';
 import {MenuProps} from 'antd';
 import {useRouter} from 'next/navigation';
+import {useEffect} from 'react';
+import {getAllDealReg} from '../../../../../redux/actions/dealReg';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 const DealRegDetail = () => {
   const [token] = useThemeToken();
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const {data: DealRegData} = useAppSelector((state) => state.dealReg);
 
-  const tabs = [
-    {
-      key: 1,
-      title: 'Cisco',
-      progressbarPercentage: 20,
-    },
-    {
-      key: 2,
-      title: 'Dell',
-      progressbarPercentage: 50,
-    },
-    {
-      key: 3,
-      title: 'Amazon',
-      progressbarPercentage: 80,
-    },
-  ];
+  useEffect(() => {
+    dispatch(getAllDealReg());
+  }, []);
 
-  const menuItems = [
+  const OsBreadCrumbItems = [
     {
       key: '1',
       title: (
@@ -82,7 +73,7 @@ const DealRegDetail = () => {
     <div>
       <Row justify="space-between" align="middle">
         <Col>
-          <OsBreadCrumb items={menuItems} />
+          <OsBreadCrumb items={OsBreadCrumbItems} />
         </Col>
         <Col>
           <Space size={8}>
@@ -112,7 +103,7 @@ const DealRegDetail = () => {
           </Space>
         </Col>
       </Row>
-      <DealRegCustomTabs tabs={tabs} />
+      <DealRegCustomTabs data={DealRegData} />
     </div>
   );
 };

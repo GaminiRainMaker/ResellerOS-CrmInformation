@@ -5,9 +5,14 @@ import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import Typography from '@/app/components/common/typography';
 import CommonFields from './CommonField';
 import UniqueFields from './UniqueField';
+import {FC, useEffect} from 'react';
+import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+import {getAllOpportunity} from '../../../../../../redux/actions/opportunity';
+import {getAllCustomer} from '../../../../../../redux/actions/customer';
 
-const DealRegDetailForm = () => {
+const DealRegDetailForm: FC<any> = (data) => {
   const [token] = useThemeToken();
+  const dispatch = useAppDispatch();
 
   const CommonFieldsItems = [
     {
@@ -17,7 +22,7 @@ const DealRegDetailForm = () => {
           Common Fields
         </Typography>
       ),
-      children: <CommonFields />,
+      children: <CommonFields data={data?.data} />,
     },
   ];
 
@@ -32,6 +37,11 @@ const DealRegDetailForm = () => {
       children: <UniqueFields />,
     },
   ];
+
+  useEffect(() => {
+    dispatch(getAllOpportunity());
+    dispatch(getAllCustomer({}));
+  }, []);
 
   return (
     <Row>

@@ -550,7 +550,7 @@ const AllQuote: React.FC = () => {
                   <Typography name="Body 4/Medium">From Date</Typography>
                   <CommonDatePicker
                     value={fromDate}
-                    placeholder="dd/mm/yyyy"
+                    placeholder="MM/DD/YYYY"
                     onChange={(v: any) => {
                       setFromDate(v);
                     }}
@@ -560,7 +560,7 @@ const AllQuote: React.FC = () => {
                   <Typography name="Body 4/Medium">To Date</Typography>
                   <CommonDatePicker
                     value={toDate}
-                    placeholder="dd/mm/yyyy"
+                    placeholder="MM/DD/YYYY"
                     onChange={(v: any) => {
                       setToDate(v);
                     }}

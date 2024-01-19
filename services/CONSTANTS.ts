@@ -28,6 +28,8 @@ export const API = {
     INDEX: '/product',
     GetProductByPartNo: '/product/getProductByPartNo',
     QUERY: '/product/query',
+    DeleteById: '/product/deleteById',
+    UpdateProductById: '/product/updateProductById',
   },
   PROFITABALITY: {
     INDEX: '/profitability',

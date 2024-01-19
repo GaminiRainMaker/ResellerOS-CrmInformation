@@ -16,4 +16,8 @@ export const PRODUCT_API = {
     >,
   patch: (data: any) =>
     patch(API.PRODUCT.INDEX, data) as Promise<AxiosResponse<any>>,
+  deleteById: (data: any) =>
+    patch(API.PRODUCT.DeleteById, data) as Promise<AxiosResponse<any>>,
+  updateProductById: (data: any) =>
+    patch(API.PRODUCT.UpdateProductById, data) as Promise<AxiosResponse<any>>,
 };

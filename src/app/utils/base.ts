@@ -1,4 +1,11 @@
 /* eslint-disable implicit-arrow-linebreak */
+import moment from 'moment';
+import {
+  AmazonPartnerProgramOptions,
+  CiscoPartnerProgramOptions,
+  DellPartnerProgramOptions,
+} from './CONSTANTS';
+
 export const calculateProfitabilityData = (
   Qty: number,
   PriceMethod: string,
@@ -64,3 +71,25 @@ export const rebateAmount = (
 
 export const totalRevenue = (list_amount: number, quantity: number) =>
   list_amount * quantity;
+
+export const formatDate = (date: Date, format = 'MM/DD/YYYY') => {
+  return new Date(moment(date).format(format));
+};
+
+export const calculateDaysDifference = (startDate: string, endDate: string) => {
+  const startMoment = moment(startDate);
+  const endMoment = moment(endDate);
+  return endMoment.diff(startMoment, 'days');
+};
+
+export const getProgramOptions = (value: number) => {
+  if (value === 1) {
+    return CiscoPartnerProgramOptions;
+  }
+  if (value === 2) {
+    return DellPartnerProgramOptions;
+  }
+  if (value === 3) {
+    return AmazonPartnerProgramOptions;
+  }
+};

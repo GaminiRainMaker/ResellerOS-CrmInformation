@@ -1,6 +1,4 @@
-import React, {FC} from 'react';
-import D, {DatePickerProps, DatePickerType} from 'antd/es/date-picker';
-
-export const DatePicker: FC<DatePickerProps> = React.memo((props) => (
-  <D {...props} />
-));
+import {FC} from 'react';
+import D, {DatePickerProps} from 'antd/es/date-picker';
+export const DatePicker: FC<DatePickerProps> = (props) => <D {...props} />;
+export type {DatePickerProps};

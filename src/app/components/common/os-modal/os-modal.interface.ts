@@ -15,4 +15,5 @@ export interface OSModalPropsInterface extends ModalProps {
   loading?: boolean;
   bodyPadding?: number;
   footer?: boolean;
+  footerPadding?: number;
 }

@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import {DatePicker} from '../antd/DatePicker';
 
 export const StyledDatePicker = styled(DatePicker)`
+  width: 100% !important;
   &.ant-picker {
     border-radius: 12px;
     height: 48px;

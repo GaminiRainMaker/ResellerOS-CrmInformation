@@ -435,7 +435,6 @@ const CrmInformation: React.FC = () => {
       </Space>
 
       <OsModal
-        // loading={loading}
         body={
           <AddCustomer
             setShowModal={setShowModal}
@@ -445,7 +444,6 @@ const CrmInformation: React.FC = () => {
         }
         width={800}
         open={showModal}
-        // onOk={() => addQuoteLineItem()}
         onCancel={() => {
           setShowModal((p) => !p);
         }}

@@ -5,15 +5,13 @@
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {Row, Space, TabsProps} from 'antd';
-import {useEffect, useState} from 'react';
-import ContractValidationConfiguration from './quoteAI-tabs/ContractValidationConfiguration';
-import ConverSationProcess from './quoteAI-tabs/ConversationProcess';
-import FieldDisplayConfiguration from './quoteAI-tabs/FieldDisplayConfiguration';
-import QuoteProcess from './quoteAI-tabs/QuoteProcess';
-import SyncQuoteField from './quoteAI-tabs/SyncQuoteFields';
-import SyncQuoteLineItemField from './quoteAI-tabs/SyncQuoteLineItemFields';
-import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
-import {getAllSyncTable} from '../../../../../../../redux/actions/syncTable';
+import {useState} from 'react';
+import ContractValidationConfiguration from './configuration-tabs/ContractValidationConfiguration';
+import ConverSationProcess from './configuration-tabs/ConversationProcess';
+import FieldDisplayConfiguration from './configuration-tabs/FieldDisplayConfiguration';
+import QuoteProcess from './configuration-tabs/QuoteProcess';
+import SyncQuoteField from './configuration-tabs/SyncQuoteFields';
+import SyncQuoteLineItemField from './configuration-tabs/SyncQuoteLineItemFields';
 
 const QuoteAI = () => {
   const [activeTab, setActiveTab] = useState<any>('1');
@@ -65,13 +63,7 @@ const QuoteAI = () => {
   ];
   return (
     <Space size={24} direction="vertical" style={{width: '100%'}}>
-      <Row
-        style={{
-          background: 'transparent',
-          padding: '24px',
-          borderRadius: '12px',
-        }}
-      >
+      <Row>
         <OsTabs
           style={{background: 'transparent'}}
           onChange={(e) => {
