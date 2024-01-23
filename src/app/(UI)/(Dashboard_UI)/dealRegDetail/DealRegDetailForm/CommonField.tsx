@@ -3,54 +3,47 @@ import {Space} from '@/app/components/common/antd/Space';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import OsInput from '@/app/components/common/os-input';
+import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {partnerOptions} from '@/app/utils/CONSTANTS';
-import {getProgramOptions} from '@/app/utils/base';
+import {formatDate, getProgramOptions} from '@/app/utils/base';
+import {Button} from 'antd';
 import {FC, useState} from 'react';
-import {useAppSelector} from '../../../../../../redux/hook';
+import {
+  getAllDealReg,
+  updateDealRegById,
+} from '../../../../../../redux/actions/dealReg';
+import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {CollapseSpaceStyle} from './styled-components';
 
 const CommonFields: FC<any> = (data) => {
+  const dispatch = useAppDispatch();
   const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
   const {data: dataAddress} = useAppSelector((state) => state.customer);
+  const {dealReg} = useAppSelector((state) => state.dealReg);
+
   const [partnerProgramOptions, setPartnerProgramOptions] = useState<any>();
 
   const [commonFieldData, setCommonFieldData] = useState<{
-    responseDetail: {
-      status: '';
-      date_submitted: '';
-      expiration_date: '';
-      partner_deal_id: '';
-      partner_approval_id: '';
-    };
-    accountInformation: {
-      customer_account: '';
-      account_contact: '';
-      industry: '';
-      account_website: '';
-    };
-    addressInformation: {
-      customer_account: '';
-      account_contact: '';
-      industry: '';
-      account_website: '';
-    };
-    opportunityInformation: {
-      customer_account: '';
-      account_contact: '';
-      industry: '';
-      account_website: '';
-    };
+    status: '';
+    date_submitted: '';
+    expiration_date: '';
+    partner_deal_id: '';
+    partner_approval_id: '';
+    customer_account: '';
+    account_contact: '';
+    industry: '';
+    account_website: '';
+    opportunity_description: '';
+    opportunity_id: 0;
   }>();
 
-  const handleOpportunityInformationChange = (field: string, value: any) => {
+  const handleDealRegInformationChange = (field: string, value: any) => {
     setCommonFieldData((prevData: any) => ({
       ...prevData,
-      opportunityInformation: {
-        ...prevData?.opportunityInformation,
-        [field]: value,
-      },
+      id: dealReg?.id,
+      [field]: value,
     }));
   };
 
@@ -180,9 +173,9 @@ const CommonFields: FC<any> = (data) => {
                 <CommonSelect
                   placeholder="Cisco"
                   style={{width: '100%'}}
-                  defaultValue={data?.data?.title}
+                  defaultValue={data?.data?.partner_id}
                   onChange={(value) => {
-                    handleOpportunityInformationChange('partner_id', value);
+                    handleDealRegInformationChange('partner_id', value);
                     setPartnerProgramOptions(getProgramOptions(value));
                   }}
                   options={partnerOptions}
@@ -200,12 +193,10 @@ const CommonFields: FC<any> = (data) => {
                 <Typography name="Body 4/Medium">Partner Programm</Typography>
                 <CommonSelect
                   placeholder="Cisco Hardware"
+                  defaultValue={data?.data?.partner_program_id}
                   style={{width: '100%'}}
                   onChange={(value) =>
-                    handleOpportunityInformationChange(
-                      'partner_program_id',
-                      value,
-                    )
+                    handleDealRegInformationChange('partner_program_id', value)
                   }
                   options={partnerProgramOptions}
                 />
@@ -229,7 +220,7 @@ const CommonFields: FC<any> = (data) => {
                   defaultValue={data?.data?.Opportunity?.title}
                   options={opportunityOptions}
                   onChange={(value) =>
-                    handleOpportunityInformationChange('opportunity', value)
+                    handleDealRegInformationChange('opportunity_id', value)
                   }
                 />
               </Space>
@@ -248,8 +239,9 @@ const CommonFields: FC<any> = (data) => {
                 <OsInput
                   placeholder="Write text here!"
                   style={{width: '100%'}}
+                  defaultValue={data?.data?.opportunity_description}
                   onChange={(e) =>
-                    handleOpportunityInformationChange(
+                    handleDealRegInformationChange(
                       'opportunity_description',
                       e?.target?.value,
                     )
@@ -285,14 +277,16 @@ const CommonFields: FC<any> = (data) => {
                 }}
               >
                 <Typography name="Body 4/Medium">Probability</Typography>
-                <OsInput
+                <OsInputNumber
                   placeholder="0.00%"
                   style={{width: '100%'}}
-                  onChange={(e) =>
-                    handleOpportunityInformationChange(
-                      'probability',
-                      e?.target?.value,
-                    )
+                  min={0}
+                  max={100}
+                  defaultValue={data?.data?.probability}
+                  formatter={(value) => `${value}%`}
+                  parser={(value) => value!.replace('%', '')}
+                  onChange={(value) =>
+                    handleDealRegInformationChange('probability', value)
                   }
                 />
               </Space>
@@ -312,13 +306,13 @@ const CommonFields: FC<any> = (data) => {
                   Estimated Close Date
                 </Typography>
                 <CommonDatePicker
-                // value={data?.data?.createdAt}
-                // onChange={(value) =>
-                //   handleOpportunityInformationChange(
-                //     'estimated_close_date',
-                //     value,
-                //   )
-                // }
+                  // value={data?.data?.estimated_close_date}
+                  onChange={(value: any) =>
+                    handleDealRegInformationChange(
+                      'estimated_close_date',
+                      formatDate(value),
+                    )
+                  }
                 />
               </Space>
             </Col>
@@ -338,7 +332,7 @@ const CommonFields: FC<any> = (data) => {
                   style={{width: '100%'}}
                   options={customerOptions}
                   onChange={(value) =>
-                    handleOpportunityInformationChange('customer_id', value)
+                    handleDealRegInformationChange('customer_id', value)
                   }
                 />
               </Space>
@@ -349,8 +343,17 @@ const CommonFields: FC<any> = (data) => {
     },
   ];
 
+  const updateDealRegDataById = async () => {
+    dispatch(updateDealRegById(commonFieldData)).then(() => {
+      dispatch(getAllDealReg());
+    });
+  };
+
   return (
     <Row>
+      <div>
+        <Button onClick={() => updateDealRegDataById()}>Save</Button>
+      </div>
       <CollapseSpaceStyle size={24} direction="vertical">
         <OsCollapseAdmin items={ResponseDetailItem} />
       </CollapseSpaceStyle>

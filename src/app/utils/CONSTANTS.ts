@@ -280,3 +280,18 @@ export const PartnerData = [
     status: 'Completed',
   },
 ];
+
+export const dealRegStatusOptions = [
+  {value: 'In Progress', label: 'In Progress'},
+  {value: 'New', label: 'New'},
+  {value: 'Submitted', label: 'Submitted'},
+  {value: 'Approved', label: 'Approved'},
+  {value: 'Rejected', label: 'Rejected'},
+  {value: 'Cancelled', label: 'Cancelled'},
+  {value: 'Expired', label: 'Expired'},
+  {value: 'Closed Lost', label: 'Closed Lost'},
+  {value: 'Closed Won', label: 'Closed Won'},
+  {value: 'Approved - Ext Submitted', label: 'Approved - Ext Submitted'},
+  {value: 'Ext Approved', label: 'Ext Approved'},
+  {value: 'Vendor Received - Held', label: 'Vendor Received - Held'},
+];

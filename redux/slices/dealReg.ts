@@ -1,7 +1,12 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {getAllDealReg, getDealRegById, insertDealReg} from '../actions/dealReg';
+import {
+  getAllDealReg,
+  getDealRegById,
+  insertDealReg,
+  updateDealRegById,
+} from '../actions/dealReg';
 
 type DealRegState = {
   loading: boolean;
@@ -64,7 +69,25 @@ const dealRegSlice = createSlice({
       .addCase(getAllDealReg.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(updateDealRegById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateDealRegById.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        updateDealRegById.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      );
   },
 });
 

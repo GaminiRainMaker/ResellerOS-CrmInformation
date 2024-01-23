@@ -10,7 +10,6 @@ import {
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-import {Form} from 'antd';
 import {useEffect, useState} from 'react';
 import {
   deleteProduct,
@@ -23,6 +22,7 @@ import OsDrawer from '../os-drawer';
 import OsModal from '../os-modal';
 import DeleteModal from '../os-modal/DeleteModal';
 import AddProducts from './AddProducts';
+import {Form} from 'antd';
 
 const AddProduct = () => {
   const dispatch = useAppDispatch();

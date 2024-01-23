@@ -51,6 +51,61 @@ const CommonStageSelect: FC<CommonStageSelectProps> = ({
       textColor: `${token?.colorError}`,
       border: `${token?.colorError}`,
     },
+    New: {
+      color: `${token?.colorInfoBgHover}`,
+      textColor: `${token?.colorInfo}`,
+      border: `${token?.colorInfo}`,
+    },
+    Submitted: {
+      color: `${token?.colorWarningBg}`,
+      textColor: `${token?.colorWarning}`,
+      border: `${token?.colorWarning}`,
+    },
+    Approved: {
+      color: `${token?.colorSuccessBg}`,
+      textColor: `${token?.colorSuccess}`,
+      border: `${token?.colorSuccess}`,
+    },
+    Rejected: {
+      color: `${token?.colorErrorBg}`,
+      textColor: `${token?.colorError}`,
+      border: `${token?.colorError}`,
+    },
+    Cancelled: {
+      color: `${token?.colorErrorBg}`,
+      textColor: `${token?.colorError}`,
+      border: `${token?.colorError}`,
+    },
+    Expired: {
+      color: `${token?.colorErrorBg}`,
+      textColor: `${token?.colorError}`,
+      border: `${token?.colorError}`,
+    },
+    'Closed Lost': {
+      color: `${token?.colorErrorBg}`,
+      textColor: `${token?.colorError}`,
+      border: `${token?.colorError}`,
+    },
+    'Closed Won': {
+      color: `${token?.colorSuccessBg}`,
+      textColor: `${token?.colorSuccess}`,
+      border: `${token?.colorSuccess}`,
+    },
+    'Approved - Ext Submitted': {
+      color: `${token?.colorWarningBg}`,
+      textColor: `${token?.colorWarning}`,
+      border: `${token?.colorWarning}`,
+    },
+    'Ext Approved': {
+      color: `${token?.colorSuccessBg}`,
+      textColor: `${token?.colorSuccess}`,
+      border: `${token?.colorSuccess}`,
+    },
+    'Vendor Received - Held': {
+      color: `${token?.colorInfoBgHover}`,
+      textColor: `${token?.colorInfo}`,
+      border: `${token?.colorInfo}`,
+    },
   };
 
   const handleChange = (values: string) => {

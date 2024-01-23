@@ -13,15 +13,20 @@ import {MenuProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import OsDrawer from '@/app/components/common/os-drawer';
-import {getAllDealReg} from '../../../../../redux/actions/dealReg';
+import {
+  getAllDealReg,
+  updateDealRegById,
+} from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
+import Form from 'antd/es/form';
 
 const DealRegDetail = () => {
+  const [form] = Form.useForm();
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const {data: DealRegData} = useAppSelector((state) => state.dealReg);
+  const {data: DealRegData, dealReg} = useAppSelector((state) => state.dealReg);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -76,6 +81,18 @@ const DealRegDetail = () => {
     },
   ];
 
+  const onFinish = () => {
+    const dealRegNewData = form.getFieldsValue();
+    let dealRegNewDataObj = {
+      ...dealRegNewData,
+      id: dealReg?.id,
+    };
+    dispatch(updateDealRegById(dealRegNewDataObj)).then((d) => {
+      dispatch(getAllDealReg());
+      setOpen(false);
+    });
+  };
+
   return (
     <div>
       <Row justify="space-between" align="middle">
@@ -111,7 +128,6 @@ const DealRegDetail = () => {
         </Col>
       </Row>
       <DealRegCustomTabs data={DealRegData} />
-
       <OsDrawer
         title={<Typography name="Body 1/Regular">Form Settings</Typography>}
         placement="right"
@@ -124,14 +140,12 @@ const DealRegDetail = () => {
               btnStyle={{width: '100%'}}
               buttontype="PRIMARY"
               text="UPDATE CHANGES"
-              clickHandler={() => {
-                setOpen((p) => !p);
-              }}
+              clickHandler={() => form.submit()}
             />
           </Row>
         }
       >
-        <DealDrawerContent />
+        <DealDrawerContent form={form} onFinish={onFinish} />
       </OsDrawer>
     </div>
   );

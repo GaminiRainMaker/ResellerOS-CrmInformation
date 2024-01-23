@@ -1,6 +1,3 @@
-/* eslint-disable array-callback-return */
-/* eslint-disable @typescript-eslint/indent */
-/* eslint-disable no-nested-ternary */
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -8,95 +5,17 @@ import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import CommonStageSelect from '@/app/components/common/os-stage-select';
 import Typography from '@/app/components/common/typography';
+import {dealRegStatusOptions} from '@/app/utils/CONSTANTS';
 import {Form} from 'antd';
 import {FC, useEffect, useState} from 'react';
-import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+import {useAppSelector} from '../../../../../../redux/hook';
 
-interface FormDataProps {
-  customer_id: number;
-  account_contact_id: number;
-  street_1: string;
-  street_2: string;
-  city: string;
-  state: string;
-  country: string;
-  zip_code: string;
-}
-
-const DealDrawerContent: FC<any> = ({setOpen}) => {
+const DealDrawerContent: FC<any> = ({form, onFinish}) => {
   const [token] = useThemeToken();
-  const dispatch = useAppDispatch();
   const {dealReg} = useAppSelector((state) => state.dealReg);
   const {data: dataAddress} = useAppSelector((state) => state.customer);
-  const [form] = Form.useForm();
   const [customerValue, setCustomerValue] = useState<number>(0);
   const [billingOptionsData, setBillingOptionData] = useState<any>();
-
-  const [drawerData, setDrawerData] = useState<{
-    id: number | string;
-    createdAt: string;
-    status: string;
-    formData: FormDataProps;
-  }>({
-    id: dealReg?.id,
-    createdAt: '12/11/2023',
-    status: 'In Progress',
-    formData: {
-      customer_id: dealReg?.Customer?.id ?? 0,
-      account_contact_id: dealReg?.BillingContact?.id ?? 0,
-      street_1: dealReg?.Customer?.Addresses?.[0]?.billing_address_line ?? '',
-      street_2: dealReg?.Customer?.Addresses?.[0]?.billing_address_line ?? '',
-      city: dealReg?.Customer?.Addresses?.[0]?.billing_city ?? '',
-      state: dealReg?.Customer?.Addresses?.[0]?.billing_state ?? '',
-      country: dealReg?.Customer?.Addresses?.[0]?.billing_country ?? '',
-      zip_code: dealReg?.Customer?.Addresses?.[0]?.billing_pin_code ?? '',
-    },
-  });
-
-  console.log('drawerData', drawerData);
-
-  //   const onSubmit = async (values: FormDataProps) => {
-  //     if (
-  //       generalSettingData?.attach_doc_type === 'opportunity' ||
-  //       syncTableData?.length > 0
-  //     ) {
-  //       const opportunityDataItemPDfUrl: any = [];
-  //       let OpportunityValue: any = {};
-  //       opportunityData?.map((opportunityDataItem: any) => {
-  //         if (opportunityDataItem?.id === values?.opportunity_id) {
-  //           opportunityDataItemPDfUrl.push(
-  //             opportunityDataItem?.pdf_url,
-  //             quoteById?.pdf_url,
-  //           );
-  //           if (generalSettingData?.attach_doc_type === 'opportunity') {
-  //             OpportunityValue = {
-  //               ...opportunityObject,
-  //               id: opportunityDataItem?.id,
-  //               pdf_url: [
-  //                 ...(opportunityDataItem?.pdf_url || []),
-  //                 ...opportunityDataItemPDfUrl.flat(),
-  //               ],
-  //             };
-  //           }
-  //         }
-  //       });
-  //       if (generalSettingData?.attach_doc_type === 'opportunity') {
-  //         dispatch(updateOpportunity(OpportunityValue));
-  //       } else {
-  //         dispatch(updateOpportunity(opportunityObject));
-  //       }
-  //     }
-
-  //     setDrawerData((prev) => ({...prev, formData: values}));
-  //     const obj = {
-  //       id: Number(getQuoteLineItemId),
-  //       ...values,
-  //     };
-  //     dispatch(updateQuoteById(obj));
-  //     dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
-  //     setOpen(false);
-  //   };
-
   const customerOptions = dataAddress.map((dataAddressItem: any) => ({
     value: dataAddressItem.id,
     label: (
@@ -105,6 +24,7 @@ const DealDrawerContent: FC<any> = ({setOpen}) => {
       </Typography>
     ),
   }));
+  const [dealRegStatus, setDealRegStatus] = useState<string>('');
 
   useEffect(() => {
     const updatedAllBillingContact: any = [];
@@ -125,36 +45,54 @@ const DealDrawerContent: FC<any> = ({setOpen}) => {
     setBillingOptionData(updatedAllBillingContact);
   }, [dataAddress, customerValue]);
 
-  return (
-    <Space size={24} style={{width: '100%'}} direction="vertical">
-      <Row justify="space-between">
-        <Col>
-          <Typography name="Body 4/Medium" as="div">
-            Form Generate Date
-          </Typography>
-          <Typography name="Body 2/Regular">12/11/2023</Typography>
-        </Col>
-        <Col>
-          <Typography name="Body 4/Medium" as="div">
-            Status
-          </Typography>
-          <CommonStageSelect currentStage="In Progress" />
-        </Col>
-      </Row>
+  useEffect(() => {
+    form.resetFields();
+  }, [dealReg]);
 
-      <Typography name="Body 2/Medium" color={token?.colorInfo}>
-        Account Information
-      </Typography>
-      <Form
-        layout="vertical"
-        requiredMark={false}
-        form={form}
-        // onFinish={onFinish}
-        initialValues={drawerData?.formData}
-      >
+  return (
+    <Form
+      layout="vertical"
+      requiredMark={false}
+      form={form}
+      onFinish={onFinish}
+      initialValues={dealReg}
+    >
+      <Space size={24} style={{width: '100%'}} direction="vertical">
+        <Row justify="space-between">
+          <Col>
+            <Typography name="Body 4/Medium" as="div">
+              Form Generate Date
+            </Typography>
+            <Typography name="Body 2/Regular">12/11/2023</Typography>
+          </Col>
+          <Col>
+            <Form.Item
+              label={<Typography name="Body 4/Medium">Status</Typography>}
+              name="status"
+            >
+              <CommonStageSelect
+                currentStage={dealRegStatus}
+                onChange={(value: string) => {
+                  setDealRegStatus(value);
+                }}
+                options={dealRegStatusOptions}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Typography name="Body 2/Medium" color={token?.colorInfo}>
+          Account Information
+        </Typography>
+
         <Row>
           <Col sm={24}>
-            <Form.Item label="Customer Account" name="customer_id">
+            <Form.Item
+              label={
+                <Typography name="Body 4/Medium">Customer Account</Typography>
+              }
+              name="customer_id"
+            >
               <CommonSelect
                 placeholder="Impres Technologies"
                 style={{width: '100%'}}
@@ -166,7 +104,12 @@ const DealDrawerContent: FC<any> = ({setOpen}) => {
             </Form.Item>
           </Col>
           <Col sm={24}>
-            <Form.Item label="Account Contact" name="account_contact_id">
+            <Form.Item
+              label={
+                <Typography name="Body 4/Medium">Account Contact</Typography>
+              }
+              name="contact_id"
+            >
               <CommonSelect
                 placeholder="Emma Watson"
                 style={{width: '100%'}}
@@ -175,13 +118,21 @@ const DealDrawerContent: FC<any> = ({setOpen}) => {
             </Form.Item>
           </Col>
           <Col sm={24}>
-            <Form.Item label="Industry" name="industry">
+            <Form.Item
+              label={<Typography name="Body 4/Medium">Industry</Typography>}
+              name="industry_id"
+            >
               <CommonSelect placeholder="IT Services" style={{width: '100%'}} />
             </Form.Item>
           </Col>
           <Col sm={24}>
-            <Form.Item label="Account Website" name="account_website">
-              <CommonSelect
+            <Form.Item
+              label={
+                <Typography name="Body 4/Medium">Account Website</Typography>
+              }
+              name="website_url"
+            >
+              <OsInput
                 placeholder="www.imprestech.com"
                 style={{width: '100%'}}
               />
@@ -195,7 +146,10 @@ const DealDrawerContent: FC<any> = ({setOpen}) => {
 
         <Row justify="space-between" gutter={[16, 0]}>
           <Col sm={24}>
-            <Form.Item label="Street 1" name="street_1">
+            <Form.Item
+              label={<Typography name="Body 4/Medium">Street 1</Typography>}
+              name="street_1"
+            >
               <OsInput
                 placeholder="19 Washington Square N"
                 style={{width: '100%'}}
@@ -203,33 +157,48 @@ const DealDrawerContent: FC<any> = ({setOpen}) => {
             </Form.Item>
           </Col>
           <Col sm={24}>
-            <Form.Item label="Street 2" name="street_2">
+            <Form.Item
+              label={<Typography name="Body 4/Medium">Street 2</Typography>}
+              name="street_2"
+            >
               <OsInput placeholder="Select" style={{width: '100%'}} />
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
-            <Form.Item label="City" name="city">
+            <Form.Item
+              label={<Typography name="Body 4/Medium">City</Typography>}
+              name="city"
+            >
               <OsInput placeholder="New York" style={{width: '100%'}} />
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
-            <Form.Item label="State" name="state">
+            <Form.Item
+              label={<Typography name="Body 4/Medium">State</Typography>}
+              name="state"
+            >
               <OsInput placeholder="New York" style={{width: '100%'}} />
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
-            <Form.Item label="Country" name="country">
+            <Form.Item
+              label={<Typography name="Body 4/Medium">Country</Typography>}
+              name="country"
+            >
               <OsInput placeholder="USA" style={{width: '100%'}} />
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
-            <Form.Item label="Zip Code" name="zip_code">
+            <Form.Item
+              label={<Typography name="Body 4/Medium">Zip Code</Typography>}
+              name="zip_code"
+            >
               <OsInput placeholder="10011" style={{width: '100%'}} />
             </Form.Item>
           </Col>
         </Row>
-      </Form>
-    </Space>
+      </Space>
+    </Form>
   );
 };
 
