@@ -40,6 +40,7 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
     }, 500);
   }, [rebateData]);
 
+  
   const handleInputChange = (recordId: number, list_price: string) => {
     rebateData.map((prevItem: any) => {
       if (recordId === prevItem?.id) {

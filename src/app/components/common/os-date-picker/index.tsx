@@ -1,8 +1,9 @@
 import {FC} from 'react';
+import {CalendarDaysIcon} from '@heroicons/react/24/outline';
 import {DatePickerProps} from '../antd/DatePicker';
 import {StyledDatePicker} from './styled-components';
-import {CalendarDaysIcon} from '@heroicons/react/24/outline';
 import useThemeToken from '../hooks/useThemeToken';
+
 const CommonDatePicker: FC<DatePickerProps> = (props) => {
   const [token] = useThemeToken();
   return (

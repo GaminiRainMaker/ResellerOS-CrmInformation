@@ -177,7 +177,7 @@ const AllQuote: React.FC = () => {
     const contractProductArray: any = [];
     if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
       const response = await dispatch(insertQuote(labelOcrMap));
-      for (let j = 0; j < response?.payload?.data.length; j++) {
+      for (let j = 0; j < response?.payload?.data?.length; j++) {
         const item = response?.payload?.data[j];
         if (item?.id) {
           for (let i = 0; i < formattedArray?.length; i++) {

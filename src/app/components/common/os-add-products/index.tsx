@@ -178,7 +178,7 @@ const AddProduct = () => {
         setShowAddProductModal(false);
       });
     } else if (addProductType === 'update') {
-      let obj = {
+      const obj: any = {
         id: productData?.id,
         ...productNewData,
       };
@@ -272,7 +272,7 @@ const AddProduct = () => {
         }
       >
         <AddProducts
-          isDrawer={true}
+          isDrawer
           productData={productData}
           onFinish={onFinish}
           form={form}

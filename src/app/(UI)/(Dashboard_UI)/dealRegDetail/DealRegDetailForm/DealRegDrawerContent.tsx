@@ -138,7 +138,7 @@ const DealDrawerContent: FC<any> = ({setOpen}) => {
           <Typography name="Body 4/Medium" as="div">
             Status
           </Typography>
-          <CommonStageSelect currentStage={'In Progress'} />
+          <CommonStageSelect currentStage="In Progress" />
         </Col>
       </Row>
 

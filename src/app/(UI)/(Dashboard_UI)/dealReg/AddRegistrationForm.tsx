@@ -1,3 +1,6 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable no-nested-ternary */
+/* eslint-disable array-callback-return */
 /* eslint-disable no-lone-blocks */
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
@@ -14,15 +17,15 @@ import {
 } from '@/app/utils/CONSTANTS';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {useEffect, useState} from 'react';
+import {useRouter} from 'next/navigation';
+import OsModal from '@/app/components/common/os-modal';
+import {getProgramOptions} from '@/app/utils/base';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
 import {insertDealReg} from '../../../../../redux/actions/dealReg';
-import {useRouter} from 'next/navigation';
-import OsModal from '@/app/components/common/os-modal';
 import AddCustomer from '../crmInAccount/addCustomer';
-import {getProgramOptions} from '@/app/utils/base';
 
 const AddRegistrationForm = () => {
   const [token] = useThemeToken();
@@ -291,6 +294,7 @@ const AddRegistrationForm = () => {
     if (toggle) {
       {
         dealRegFormData?.map((dealRegFormDataItem) => {
+          // eslint-disable-next-line prefer-const
           let temp =
             String(dealRegFormDataItem?.partner_id) === '1'
               ? 'CISCO'

@@ -135,9 +135,7 @@ const DealReg: React.FC = () => {
       key: 'partner_program',
       width: 187,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
-          { '--'}
-        </Typography>
+        <Typography name="Body 4/Regular">--</Typography>
       ),
     },
     {
@@ -150,9 +148,7 @@ const DealReg: React.FC = () => {
       key: 'status',
       width: 187,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
-          {'--'}
-        </Typography>
+        <Typography name="Body 4/Regular">--</Typography>
       ),
     },
     {
