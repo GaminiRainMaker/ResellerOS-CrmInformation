@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -162,9 +164,7 @@ const PartnerDetails = () => {
       dataIndex: 'status',
       key: 'status',
       width: 231,
-      render: (text: string, record: any) => {
-        return <OsStatusWrapper value={text} />;
-      },
+      render: (text: string, record: any) => <OsStatusWrapper value={text} />,
     },
     {
       title: 'Template',
@@ -247,7 +247,7 @@ const PartnerDetails = () => {
           : record?.is_drafted
             ? 'In Progress'
             : 'Drafts';
-        return <OsStatusWrapper value={'Completed'} />;
+        return <OsStatusWrapper value="Completed" />;
       },
     },
     {

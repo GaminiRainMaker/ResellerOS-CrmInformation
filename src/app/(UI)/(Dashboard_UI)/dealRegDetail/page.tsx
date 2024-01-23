@@ -12,9 +12,9 @@ import {ArrowDownTrayIcon, PlusIcon} from '@heroicons/react/24/outline';
 import {MenuProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import OsDrawer from '@/app/components/common/os-drawer';
 import {getAllDealReg} from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import OsDrawer from '@/app/components/common/os-drawer';
 import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
 
 const DealRegDetail = () => {

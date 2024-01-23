@@ -1,4 +1,6 @@
+/* eslint-disable consistent-return */
 /* eslint-disable implicit-arrow-linebreak */
+// eslint-disable-next-line import/no-extraneous-dependencies
 import moment from 'moment';
 import {
   AmazonPartnerProgramOptions,
@@ -72,9 +74,7 @@ export const rebateAmount = (
 export const totalRevenue = (list_amount: number, quantity: number) =>
   list_amount * quantity;
 
-export const formatDate = (date: Date, format = 'MM/DD/YYYY') => {
-  return new Date(moment(date).format(format));
-};
+export const formatDate = (date: Date, format = 'MM/DD/YYYY') => new Date(moment(date).format(format));
 
 export const calculateDaysDifference = (startDate: string, endDate: string) => {
   const startMoment = moment(startDate);

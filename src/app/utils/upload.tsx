@@ -1,6 +1,6 @@
 import {RcFile} from 'antd/es/upload';
 import {Upload as Uploader} from '@aws-sdk/lib-storage';
-import {S3Client, S3} from '@aws-sdk/client-s3';
+import {S3Client} from '@aws-sdk/client-s3';
 import {UPLOAD_API} from '../../../services/upload';
 
 const getBase64 = async (file: RcFile): Promise<string> =>
