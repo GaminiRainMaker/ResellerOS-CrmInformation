@@ -11,8 +11,11 @@ import {
   CustmDealRegTab,
   DealRegCustomTabHeaderStyle,
 } from './styled-components';
+import {useAppDispatch} from '../../../../../redux/hook';
+import {setDealReg} from '../../../../../redux/slices/dealReg';
 
 const DealRegCustomTabs: FC<any> = (tabs) => {
+  const dispatch = useAppDispatch();
   const [activeKey, setActiveKey] = useState<string>('0');
   const [token] = useThemeToken();
   const [tabItems, setTabItems] = useState([]);
@@ -20,8 +23,6 @@ const DealRegCustomTabs: FC<any> = (tabs) => {
   const handleTabChange = (key: string) => {
     setActiveKey(key);
   };
-
-  console.log('tabs', tabs?.data);
 
   useEffect(() => {
     const tempItems: any = [];
@@ -44,6 +45,10 @@ const DealRegCustomTabs: FC<any> = (tabs) => {
                   background:
                     activeKey === index ? token.colorInfo : token.colorInfoBg,
                 }}
+                onClick={() =>
+                  // console.log("elementelement",element)
+                  dispatch(setDealReg(element))
+                }
               >
                 <Space size={10}>
                   <OsProgress

@@ -11,15 +11,18 @@ import Typography from '@/app/components/common/typography';
 import {ArrowDownTrayIcon, PlusIcon} from '@heroicons/react/24/outline';
 import {MenuProps} from 'antd';
 import {useRouter} from 'next/navigation';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {getAllDealReg} from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import OsDrawer from '@/app/components/common/os-drawer';
+import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
 
 const DealRegDetail = () => {
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const {data: DealRegData} = useAppSelector((state) => state.dealReg);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     dispatch(getAllDealReg());
@@ -61,11 +64,15 @@ const DealRegDetail = () => {
   const dropDownItemss: MenuProps['items'] = [
     {
       key: '1',
-      label: <Typography name="Body 3/Regular">Select All</Typography>,
+      label: (
+        <Typography onClick={() => setOpen(true)} name="Body 3/Regular">
+          Edit Quote Header
+        </Typography>
+      ),
     },
     {
       key: '2',
-      label: <Typography name="Body 3/Regular">Edit Selected</Typography>,
+      label: <Typography name="Body 3/Regular">Mark as Complete</Typography>,
     },
   ];
 
@@ -104,6 +111,28 @@ const DealRegDetail = () => {
         </Col>
       </Row>
       <DealRegCustomTabs data={DealRegData} />
+
+      <OsDrawer
+        title={<Typography name="Body 1/Regular">Form Settings</Typography>}
+        placement="right"
+        onClose={() => setOpen((p) => !p)}
+        open={open}
+        width={450}
+        footer={
+          <Row style={{width: '100%', float: 'right'}}>
+            <OsButton
+              btnStyle={{width: '100%'}}
+              buttontype="PRIMARY"
+              text="UPDATE CHANGES"
+              clickHandler={() => {
+                setOpen((p) => !p);
+              }}
+            />
+          </Row>
+        }
+      >
+        <DealDrawerContent />
+      </OsDrawer>
     </div>
   );
 };

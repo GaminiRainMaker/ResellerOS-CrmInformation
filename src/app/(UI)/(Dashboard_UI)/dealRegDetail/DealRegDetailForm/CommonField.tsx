@@ -6,7 +6,7 @@ import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {partnerOptions} from '@/app/utils/CONSTANTS';
-import {formatDate, getProgramOptions} from '@/app/utils/base';
+import {getProgramOptions} from '@/app/utils/base';
 import {FC, useState} from 'react';
 import {useAppSelector} from '../../../../../../redux/hook';
 import {CollapseSpaceStyle} from './styled-components';
@@ -45,7 +45,6 @@ const CommonFields: FC<any> = (data) => {
   }>();
 
   const handleOpportunityInformationChange = (field: string, value: any) => {
-    console.log('Dataaa123', field, value);
     setCommonFieldData((prevData: any) => ({
       ...prevData,
       opportunityInformation: {
@@ -54,8 +53,6 @@ const CommonFields: FC<any> = (data) => {
       },
     }));
   };
-
-  console.log('commonFieldData', commonFieldData);
 
   const opportunityOptions = opportunityData.map((opportunity: any) => ({
     value: opportunity.id,
@@ -148,185 +145,6 @@ const CommonFields: FC<any> = (data) => {
                   Partner Approval ID
                 </Typography>
                 <CommonSelect placeholder="Select" style={{width: '100%'}} />
-              </Space>
-            </Col>
-          </Row>
-        </Space>
-      ),
-    },
-  ];
-
-  const AccountInformationItem = [
-    {
-      key: '1',
-      label: <Typography name="Body 2/Medium">Account Information</Typography>,
-      children: (
-        <Space
-          size={36}
-          direction="vertical"
-          style={{
-            width: '100%',
-          }}
-        >
-          <Row justify="space-between" gutter={[24, 24]}>
-            <Col sm={24} md={12}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">Customer Account</Typography>
-                <CommonSelect
-                  placeholder="Impres Technologies"
-                  style={{width: '100%'}}
-                />
-              </Space>
-            </Col>
-            <Col sm={24} md={12}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">Account Contact</Typography>
-                <CommonSelect
-                  placeholder="Emma Watson"
-                  style={{width: '100%'}}
-                />
-              </Space>
-            </Col>
-          </Row>
-
-          <Row justify="space-between" gutter={[24, 24]}>
-            <Col sm={24} md={12}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">Industry</Typography>
-                <CommonSelect
-                  placeholder="IT Services"
-                  style={{width: '100%'}}
-                />
-              </Space>
-            </Col>
-            <Col sm={24} md={12}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">Account Website</Typography>
-                <CommonSelect
-                  placeholder="www.imprestech.com"
-                  style={{width: '100%'}}
-                />
-              </Space>
-            </Col>
-          </Row>
-        </Space>
-      ),
-    },
-  ];
-
-  const AddressInformationItem = [
-    {
-      key: '1',
-      label: <Typography name="Body 2/Medium">Address Information</Typography>,
-      children: (
-        <Space
-          size={36}
-          direction="vertical"
-          style={{
-            width: '100%',
-          }}
-        >
-          <Row justify="space-between" gutter={[24, 24]}>
-            <Col sm={24} md={12}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">Street 1</Typography>
-                <OsInput
-                  placeholder="19 Washington Square N"
-                  style={{width: '100%'}}
-                />
-              </Space>
-            </Col>
-            <Col sm={24} md={12}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">Street 2</Typography>
-                <OsInput placeholder="Select" style={{width: '100%'}} />
-              </Space>
-            </Col>
-          </Row>
-
-          <Row justify="space-between" gutter={[24, 24]}>
-            <Col xs={24} sm={12} md={6}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">City</Typography>
-                <CommonSelect placeholder="New York" style={{width: '100%'}} />
-              </Space>
-            </Col>
-            <Col xs={24} sm={12} md={6}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">State</Typography>
-                <CommonSelect placeholder="NY" style={{width: '100%'}} />
-              </Space>
-            </Col>
-            <Col xs={24} sm={12} md={6}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">Country</Typography>
-                <CommonSelect placeholder="USA" style={{width: '100%'}} />
-              </Space>
-            </Col>
-            <Col xs={24} sm={12} md={6}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">Zip Code</Typography>
-                <OsInput placeholder="10011" style={{width: '100%'}} />
               </Space>
             </Col>
           </Row>
@@ -494,13 +312,13 @@ const CommonFields: FC<any> = (data) => {
                   Estimated Close Date
                 </Typography>
                 <CommonDatePicker
-                  // value={data?.data?.createdAt}
-                  // onChange={(value) =>
-                  //   handleOpportunityInformationChange(
-                  //     'estimated_close_date',
-                  //     value,
-                  //   )
-                  // }
+                // value={data?.data?.createdAt}
+                // onChange={(value) =>
+                //   handleOpportunityInformationChange(
+                //     'estimated_close_date',
+                //     value,
+                //   )
+                // }
                 />
               </Space>
             </Col>
@@ -535,26 +353,6 @@ const CommonFields: FC<any> = (data) => {
     <Row>
       <CollapseSpaceStyle size={24} direction="vertical">
         <OsCollapseAdmin items={ResponseDetailItem} />
-      </CollapseSpaceStyle>
-
-      <CollapseSpaceStyle
-        size={24}
-        direction="vertical"
-        style={{
-          marginTop: '30px',
-        }}
-      >
-        <OsCollapseAdmin items={AccountInformationItem} />
-      </CollapseSpaceStyle>
-
-      <CollapseSpaceStyle
-        size={24}
-        direction="vertical"
-        style={{
-          marginTop: '30px',
-        }}
-      >
-        <OsCollapseAdmin items={AddressInformationItem} />
       </CollapseSpaceStyle>
 
       <CollapseSpaceStyle

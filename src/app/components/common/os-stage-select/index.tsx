@@ -46,6 +46,11 @@ const CommonStageSelect: FC<CommonStageSelectProps> = ({
       textColor: `${token?.colorError}`,
       border: `${token?.colorError}`,
     },
+    'In Progress': {
+      color: `${token?.colorErrorBg}`,
+      textColor: `${token?.colorError}`,
+      border: `${token?.colorError}`,
+    },
   };
 
   const handleChange = (values: string) => {

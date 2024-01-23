@@ -55,13 +55,15 @@ const DetailAnalyticCard: FC<any> = ({
           </Typography>
         </span>
       </Col>
-      <Col>
-        <DetailAnalyticAvatarStyled
-          background={iconBg}
-          src={imgUrl}
-          icon={fallbackIcon}
-        />
-      </Col>
+      {iconBg && (
+        <Col>
+          <DetailAnalyticAvatarStyled
+            background={iconBg}
+            src={imgUrl}
+            icon={fallbackIcon}
+          />
+        </Col>
+      )}
     </Row>
   );
 };

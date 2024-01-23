@@ -216,11 +216,13 @@ export const opportunityOptions = [
   {value: 'amount', label: 'Amount'},
   {value: 'stages', label: 'Stages'},
 ];
+
 export const partnerOptions = [
   {value: 1, label: 'CISCO'},
   {value: 2, label: 'DELL'},
   {value: 3, label: 'AMAZON'},
 ];
+
 export const CiscoPartnerProgramOptions = [
   {value: 8, label: 'CISCO HARDWARE'},
   {value: 9, label: 'CISCO GLASS'},
@@ -234,4 +236,47 @@ export const DellPartnerProgramOptions = [
 export const AmazonPartnerProgramOptions = [
   {value: 30, label: 'AMAZON HARDWARE'},
   {value: 31, label: 'AMAZON GLASS'},
+];
+
+export const PartnerData = [
+  {
+    id: 1,
+    partner_program: 'Cisco- Hardware',
+    generated_date: '12/11/2023',
+    opportunity: 'Precision 7920 Rack XCTO Base TAA',
+    customer: 'Impres Technologies',
+    status: 'In Progress',
+  },
+  {
+    id: 2,
+    partner_program: 'Enterprise Switching',
+    generated_date: '12/11/2023',
+    opportunity: 'Precision 7920 Rack XCTO Base TAA',
+    customer: 'Impres Technologies',
+    status: 'Drafts',
+  },
+  {
+    id: 3,
+    partner_program: 'Cisco Security',
+    generated_date: '12/11/2023',
+    opportunity: 'Precision 7920 Rack XCTO Base TAA',
+    customer: 'Impres Technologies',
+    status: 'Drafts',
+  },
+  {
+    id: 4,
+    partner_program: 'Cisco Data Centre',
+    generated_date: '12/11/2023',
+    opportunity: 'Precision 7920 Rack XCTO Base TAA',
+    customer: 'Impres Technologies',
+    status: 'Completed',
+  },
+  {
+    id: 5,
+    partner_program: 'Cisco IoT',
+    generated_date: '12/11/2023',
+    opportunity: 'Precision 7920 Rack XCTO Base TAA',
+    customer: 'Impres Technologies',
+    status: 'Completed',
+  },
 ];

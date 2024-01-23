@@ -12,11 +12,14 @@ import {
 
 const DealRegAnalytics = (props: any) => {
   const [token] = useThemeToken();
+  console.log('props', props?.data);
 
   const analyticsData = [
     {
       key: 1,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
+      primary: (
+        <Typography name="Heading 3/Medium">{props?.data?.length}</Typography>
+      ),
       secondry: 'Total Forms',
       icon: <QueueListIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,

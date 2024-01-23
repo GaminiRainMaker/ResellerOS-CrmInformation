@@ -13,7 +13,7 @@ const initialState: DealRegState = {
   loading: false,
   error: null,
   data: [],
-  dealReg: [],
+  dealReg: {},
 };
 
 const dealRegSlice = createSlice({
