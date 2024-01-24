@@ -13,12 +13,14 @@ type DealRegState = {
   error: string | null;
   data: any;
   dealReg: any;
+  dealRegUpdateData: any;
 };
 const initialState: DealRegState = {
   loading: false,
   error: null,
   data: [],
   dealReg: {},
+  dealRegUpdateData: {},
 };
 
 const dealRegSlice = createSlice({
@@ -27,6 +29,9 @@ const dealRegSlice = createSlice({
   reducers: {
     setDealReg: (state, action) => {
       state.dealReg = action.payload;
+    },
+    setDealRegUpdateData: (state, action) => {
+      state.dealRegUpdateData = action.payload;
     },
   },
   extraReducers(builder) {
@@ -91,5 +96,5 @@ const dealRegSlice = createSlice({
   },
 });
 
-export const {setDealReg} = dealRegSlice.actions;
+export const {setDealReg, setDealRegUpdateData} = dealRegSlice.actions;
 export default dealRegSlice?.reducer;

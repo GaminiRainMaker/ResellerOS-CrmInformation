@@ -22,6 +22,7 @@ import gereralSetting from './slices/gereralSetting';
 import contractSetting from './slices/contractSetting';
 import syncTable from './slices/syncTable';
 import dealReg from './slices/dealReg';
+import dealRegAddress from './slices/dealRegAddress';
 
 // Configure redux store
 const store = configureStore({
@@ -46,6 +47,7 @@ const store = configureStore({
     contractSetting,
     syncTable,
     dealReg,
+    dealRegAddress,
   },
   middleware: [thunk, logger],
   devTools: true,

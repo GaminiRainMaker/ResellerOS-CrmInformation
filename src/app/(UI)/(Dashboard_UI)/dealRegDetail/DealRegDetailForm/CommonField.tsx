@@ -9,13 +9,14 @@ import Typography from '@/app/components/common/typography';
 import {partnerOptions} from '@/app/utils/CONSTANTS';
 import {formatDate, getProgramOptions} from '@/app/utils/base';
 import {Button} from 'antd';
-import {FC, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {
   getAllDealReg,
   updateDealRegById,
 } from '../../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {CollapseSpaceStyle} from './styled-components';
+import {setDealRegUpdateData} from '../../../../../../redux/slices/dealReg';
 
 const CommonFields: FC<any> = (data) => {
   const dispatch = useAppDispatch();
@@ -343,17 +344,12 @@ const CommonFields: FC<any> = (data) => {
     },
   ];
 
-  const updateDealRegDataById = async () => {
-    dispatch(updateDealRegById(commonFieldData)).then(() => {
-      dispatch(getAllDealReg());
-    });
-  };
+  useEffect(() => {
+    dispatch(setDealRegUpdateData(commonFieldData));
+  }, [commonFieldData]);
 
   return (
     <Row>
-      <div>
-        <Button onClick={() => updateDealRegDataById()}>Save</Button>
-      </div>
       <CollapseSpaceStyle size={24} direction="vertical">
         <OsCollapseAdmin items={ResponseDetailItem} />
       </CollapseSpaceStyle>

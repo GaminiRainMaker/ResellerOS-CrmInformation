@@ -93,8 +93,13 @@ a {
 .ant-layout-content {
   padding: 25px;
 }
+
 .ant-layout {
   flex: none;
+}
+
+.ant-layout .ant-layout-sider-light {
+  min-height: 89.5vh;
 }
 
 .ant-menu-light.ant-menu-root.ant-menu-inline {

@@ -7,25 +7,21 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
+import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {
-  AmazonPartnerProgramOptions,
-  CiscoPartnerProgramOptions,
-  DellPartnerProgramOptions,
-  partnerOptions,
-} from '@/app/utils/CONSTANTS';
-import {PlusIcon} from '@heroicons/react/24/outline';
-import {useEffect, useState} from 'react';
-import {useRouter} from 'next/navigation';
-import OsModal from '@/app/components/common/os-modal';
+import {partnerOptions} from '@/app/utils/CONSTANTS';
 import {getProgramOptions} from '@/app/utils/base';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import {useRouter} from 'next/navigation';
+import {useEffect, useState} from 'react';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import AddCustomer from '../crmInAccount/addCustomer';
 import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
 import {insertDealReg} from '../../../../../redux/actions/dealReg';
-import AddCustomer from '../crmInAccount/addCustomer';
+import {insertDealRegAddress} from '../../../../../redux/actions/dealRegAddress';
 
 const AddRegistrationForm = () => {
   const [token] = useThemeToken();
@@ -39,6 +35,7 @@ const AddRegistrationForm = () => {
   const [customerValue, setCustomerValue] = useState<number>(0);
   const [billingOptionsData, setBillingOptionData] = useState<any>();
   const [showCustomerModal, setShowCustomerModal] = useState<boolean>(false);
+  const [updatedDealRegData, setUpdatedDealRegData] = useState<any>();
 
   const [dealRegFormData, setDealRegFormData] = useState([
     {
@@ -53,6 +50,12 @@ const AddRegistrationForm = () => {
       contact_id: '',
       opportunity_id: '',
       title: '',
+      street_1: '',
+      street_2: '',
+      city: '',
+      state: '',
+      country: '',
+      zip_code: '',
     },
   ]);
 
@@ -163,6 +166,12 @@ const AddRegistrationForm = () => {
                       contact_id: '',
                       opportunity_id: '',
                       title: '',
+                      street_1: '',
+                      street_2: '',
+                      city: '',
+                      state: '',
+                      country: '',
+                      zip_code: '',
                     },
                   ];
                   setDealRegFormData([...dealRegFormData, ...tempData]);
@@ -289,49 +298,83 @@ const AddRegistrationForm = () => {
     setBillingOptionData(updatedAllBillingContact);
   }, [dataAddress, customerValue]);
 
+  useEffect(() => {
+    const customerWithAddresses = dataAddress?.find(
+      (customer: any) => customer?.id === customerValue,
+    );
+    const addresses = customerWithAddresses?.Addresses;
+    const {
+      billing_address_line,
+      billing_city,
+      billing_country,
+      billing_pin_code,
+      billing_state,
+    } = addresses?.[0] ?? {};
+    setDealRegFormData((prevData) =>
+      prevData.map((item) => ({
+        ...item,
+        street_1: billing_address_line,
+        street_2: billing_address_line,
+        city: billing_city,
+        state: billing_state,
+        country: billing_country,
+        zip_code: billing_pin_code,
+      })),
+    );
+  }, [customerValue]);
+
   const insertDealRegData = () => {
     const newarr: any = [];
     if (toggle) {
-      {
-        dealRegFormData?.map((dealRegFormDataItem) => {
-          // eslint-disable-next-line prefer-const
-          let temp =
+      dealRegFormData?.forEach(async (dealRegFormDataItem) => {
+        const obj = {
+          contact_id: dealRegFormDataItem?.contact_id || null,
+          customer_id: dealRegFormDataItem?.customer_id || null,
+          opportunity_id: dealRegFormDataItem?.opportunity_id || null,
+          partner_id: dealRegFormDataItem?.partner_id || null,
+          partner_program_id: dealRegFormDataItem?.partner_program_id || null,
+          street_1: dealRegFormDataItem?.street_1 || null,
+          street_2: dealRegFormDataItem?.street_2 || null,
+          city: dealRegFormDataItem?.city || null,
+          state: dealRegFormDataItem?.state || null,
+          country: dealRegFormDataItem?.country || null,
+          zip_code: dealRegFormDataItem?.zip_code || null,
+          title:
             String(dealRegFormDataItem?.partner_id) === '1'
               ? 'CISCO'
               : String(dealRegFormDataItem?.partner_id) === '2'
                 ? 'DELL'
                 : String(dealRegFormDataItem?.partner_id) === '3'
                   ? 'AMAZON'
-                  : null;
-
-          const obj = {
-            contact_id: dealRegFormDataItem?.contact_id
-              ? dealRegFormDataItem?.contact_id
-              : null,
-            customer_id: dealRegFormDataItem?.customer_id
-              ? dealRegFormDataItem?.customer_id
-              : null,
-            opportunity_id: dealRegFormDataItem?.opportunity_id
-              ? dealRegFormDataItem?.opportunity_id
-              : null,
-            partner_id: dealRegFormDataItem?.partner_id
-              ? dealRegFormDataItem?.partner_id
-              : null,
-            partner_program_id: dealRegFormDataItem?.partner_program_id
-              ? dealRegFormDataItem?.partner_program_id
-              : null,
-            title: temp,
-          };
-          newarr.push(obj);
-        });
-      }
-      dispatch(insertDealReg(newarr)).then((d) => {
-        if (d) {
-          router.push(`/dealRegDetail`);
-        }
+                  : null,
+        };
+        newarr.push(obj);
       });
+      setUpdatedDealRegData(newarr);
     }
   };
+  
+  useEffect(() => {
+    dispatch(insertDealReg(updatedDealRegData)).then((d: any) => {
+      if (d?.payload) {
+        console.log('DataItem', d?.payload);
+        d?.payload?.map(async (DataItem: any) => {
+          console.log('payloadpayload', DataItem);
+          if (DataItem?.id) {
+            let obj12 = {
+              dealRegId: DataItem?.id,
+              ...updatedDealRegData[0],
+            };
+            await dispatch(insertDealRegAddress(obj12)).then((d) => {
+              if (d) {
+                router.push(`/dealRegDetail`);
+              }
+            });
+          }
+        });
+      }
+    });
+  }, [updatedDealRegData]);
 
   return (
     <>

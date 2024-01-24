@@ -6,27 +6,33 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
 import DealRegCustomTabs from '@/app/components/common/os-custom-tab/DealRegCustomTab';
+import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import Typography from '@/app/components/common/typography';
 import {ArrowDownTrayIcon, PlusIcon} from '@heroicons/react/24/outline';
 import {MenuProps} from 'antd';
+import Form from 'antd/es/form';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import OsDrawer from '@/app/components/common/os-drawer';
 import {
   getAllDealReg,
   updateDealRegById,
 } from '../../../../../redux/actions/dealReg';
+import {updateDealRegAddressById} from '../../../../../redux/actions/dealRegAddress';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
-import Form from 'antd/es/form';
+import { setDealRegUpdateData } from '../../../../../redux/slices/dealReg';
 
 const DealRegDetail = () => {
   const [form] = Form.useForm();
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const {data: DealRegData, dealReg} = useAppSelector((state) => state.dealReg);
+  const {
+    data: DealRegData,
+    dealReg,
+    dealRegUpdateData,
+  } = useAppSelector((state) => state.dealReg);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -81,16 +87,20 @@ const DealRegDetail = () => {
     },
   ];
 
-  const onFinish = () => {
+  const onFinish = async () => {
     const dealRegNewData = form.getFieldsValue();
-    let dealRegNewDataObj = {
-      ...dealRegNewData,
-      id: dealReg?.id,
-    };
-    dispatch(updateDealRegById(dealRegNewDataObj)).then((d) => {
+    try {
+      await Promise.all([
+        dispatch(updateDealRegById({...dealRegNewData, id: dealReg?.id})),
+        dispatch(
+          updateDealRegAddressById({...dealRegNewData, dealRegId: dealReg?.id}),
+        ),
+      ]);
       dispatch(getAllDealReg());
       setOpen(false);
-    });
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   return (
@@ -104,7 +114,11 @@ const DealRegDetail = () => {
             <OsButton
               text="Save"
               buttontype="SECONDARY"
-              clickHandler={() => {}}
+              clickHandler={() => {
+                dispatch(updateDealRegById(dealRegUpdateData)).then(() => {
+                  dispatch(getAllDealReg());
+                });
+              }}
             />
             <OsButton
               text="Download"
