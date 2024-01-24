@@ -90,28 +90,12 @@ a {
   }
 }
 
-.ant-layout-header {
-  background-color: white;
-  padding: 0px;
   height: 100px;
-}
-
-.ant-layout {
-  background-color: white;
-}
-
 .ant-layout-content {
-  background-color: white;
-  margin-left: 140px;
   padding: 25px;
 }
-
-.ant-layout-sider-trigger {
-  display: none;
-}
-
-.ant-layout-sider-dark {
-  background: white !important;
+.ant-layout {
+  flex: none;
 }
 
 .ant-menu-light.ant-menu-root.ant-menu-inline {

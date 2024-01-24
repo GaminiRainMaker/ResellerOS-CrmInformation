@@ -10,17 +10,17 @@ import {LifebuoyIcon} from '@heroicons/react/20/solid';
 import {
   AdjustmentsHorizontalIcon,
   BoltIcon,
-  ChevronDownIcon,
   CurrencyDollarIcon,
   ReceiptPercentIcon,
   ShoppingBagIcon,
   Squares2X2Icon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
-import {Layout, Menu, MenuProps} from 'antd';
+import {Layout, MenuProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import React, {useState} from 'react';
-import {CustomSider} from './styled-components';
+import {LayoutMenuStyle} from './styled-components';
+const {Sider} = Layout;
 
 const SideBar = () => {
   const [token] = useThemeToken();
@@ -29,6 +29,7 @@ const SideBar = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [seleectedKey, setSelectedKey] = useState<number>(1);
   type MenuItem = Required<MenuProps>['items'][number];
+
   function getItem(
     label: React.ReactNode,
     key: React.Key,
@@ -42,6 +43,7 @@ const SideBar = () => {
       label,
     } as MenuItem;
   }
+
   const items: MenuItem[] = [
     getItem(
       <Typography
@@ -297,52 +299,22 @@ const SideBar = () => {
               />
             }
           />
-
           <Typography
             name="Button 1"
             style={{
               marginTop: '1px',
-              display: 'flex',
-              // width: '200px',
-              justifyContent: 'space-between',
+              marginRight: '60px',
             }}
+            color={
+              seleectedKey?.toString()?.includes('7') ||
+              seleectedKey?.toString()?.includes('8') ||
+              seleectedKey?.toString()?.includes('0') ||
+              seleectedKey?.toString()?.includes('9')
+                ? token?.colorLink
+                : token?.colorTextSecondary
+            }
           >
-            {' '}
-            <Typography
-              name="Button 1"
-              style={{
-                marginTop: '1px',
-                marginRight: '60px',
-              }}
-              color={
-                seleectedKey?.toString()?.includes('7') ||
-                seleectedKey?.toString()?.includes('8') ||
-                seleectedKey?.toString()?.includes('0') ||
-                seleectedKey?.toString()?.includes('9')
-                  ? token?.colorLink
-                  : token?.colorTextSecondary
-              }
-            >
-              CRM information
-            </Typography>{' '}
-            <div>
-              {' '}
-              <OsAvatar
-                icon={
-                  <ChevronDownIcon
-                    color={
-                      seleectedKey?.toString()?.includes('7') ||
-                      seleectedKey?.toString()?.includes('8') ||
-                      seleectedKey?.toString()?.includes('0') ||
-                      seleectedKey?.toString()?.includes('9')
-                        ? token?.colorLink
-                        : token?.colorTextSecondary
-                    }
-                    width={24}
-                  />
-                }
-              />
-            </div>
+            CRM information
           </Typography>
         </Space>
       </Typography>,
@@ -493,24 +465,22 @@ const SideBar = () => {
       '11',
     ),
   ];
+
   return (
-    <Layout>
-      <div>
-        <CustomSider
-          collapsible
-          collapsed={collapsed}
-          onCollapse={(value) => setCollapsed(value)}
-        >
-          <div className="demo-logo-vertical" />
-          <Menu
-            theme="light"
-            defaultSelectedKeys={['1']}
-            mode="inline"
-            items={items}
-          />
-        </CustomSider>
-      </div>
-    </Layout>
+    <Sider
+      width={316}
+      collapsible
+      collapsed={collapsed}
+      onCollapse={(value) => setCollapsed(value)}
+      theme={'light'}
+    >
+      <LayoutMenuStyle
+        theme="light"
+        defaultSelectedKeys={['1']}
+        mode="inline"
+        items={items}
+      />
+    </Sider>
   );
 };
 

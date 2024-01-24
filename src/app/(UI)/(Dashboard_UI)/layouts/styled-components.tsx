@@ -1,8 +1,7 @@
 import styled from '@emotion/styled';
-import {GlobalToken} from 'antd/es/theme/interface';
 import {Row} from 'antd';
 import {Space} from '../../../components/common/antd/Space';
-import {Sider} from '../../../components/common/antd/Sider';
+import {Menu} from 'antd';
 
 export const ContentSectionWrapper = styled(Space)`
   width: 458px;
@@ -13,26 +12,6 @@ export const ContentSectionWrapper = styled(Space)`
 
   .ant-form-vertical .ant-form-item-label {
     padding: 0px 0px 4px 0px;
-  }
-`;
-export const CustomSider = styled(Sider)`
-  display: inline-flex;
-  height: 592px;
-  padding: 0px 0px 24px 0px;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-shrink: 0;
-
-  .ant-menu-light .ant-menu-item-selected {
-    background-color: transparent !important;
-  }
-
-  .ant-menu-light:not(.ant-menu-horizontal) .ant-menu-submenu-title:hover {
-    background-color: transparent !important;
-  }
-  .ant-menu-submenu-arrow {
-    display: none;
   }
 `;
 export const CustomDiv = styled(Row)`
@@ -57,4 +36,9 @@ export const CustomDiv3 = styled(Row)`
   align-items: flex-start;
   gap: 16px;
   alignself: stretch;
+`;
+export const LayoutMenuStyle = styled(Menu)`
+  &.ant-menu-light .ant-menu-item-selected {
+    background: none;
+  }
 `;
