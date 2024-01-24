@@ -1,29 +1,22 @@
 'use client';
 
 import {Layout} from 'antd';
+import React from 'react';
 import CustomHeader from './layouts/Header';
 import SideBar from './layouts/SideBar';
-
-const {Content, Sider} = Layout;
-
+const {Content} = Layout;
 export default function DashboardLayout({
-  children, // will be a page or nested layout
+  children,
 }: {
   children: React.ReactNode;
 }) {
   return (
     <>
-      <Layout>
-        {/* <Header> */}
+      <Layout style={{minHeight: '95vh'}}>
         <CustomHeader />
-        {/* </Header> */}
         <Layout>
-          <Sider>
-            <SideBar />
-          </Sider>
-          <Layout>
-            <Content style={{background: '#F5F5F5'}}>{children}</Content>
-          </Layout>
+          <SideBar />
+          <Content>{children}</Content>
         </Layout>
       </Layout>
     </>
