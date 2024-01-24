@@ -75,7 +75,6 @@ const DealRegDetail = () => {
       label: <Typography name="Body 3/Regular">Mark as Complete</Typography>,
     },
   ];
-
   return (
     <div>
       <Row justify="space-between" align="middle">

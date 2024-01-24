@@ -4,6 +4,7 @@ import {Layout} from 'antd';
 import React from 'react';
 import CustomHeader from './layouts/Header';
 import SideBar from './layouts/SideBar';
+
 const {Content} = Layout;
 export default function DashboardLayout({
   children,

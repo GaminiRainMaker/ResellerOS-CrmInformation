@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
-import {Row} from 'antd';
+import {Row, Menu} from 'antd';
 import {Space} from '../../../components/common/antd/Space';
-import {Menu} from 'antd';
 
 export const ContentSectionWrapper = styled(Space)`
   width: 458px;

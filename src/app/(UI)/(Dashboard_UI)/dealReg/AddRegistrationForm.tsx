@@ -10,9 +10,6 @@ import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {
-  AmazonPartnerProgramOptions,
-  CiscoPartnerProgramOptions,
-  DellPartnerProgramOptions,
   partnerOptions,
 } from '@/app/utils/CONSTANTS';
 import {PlusIcon} from '@heroicons/react/24/outline';
@@ -122,7 +119,6 @@ const AddRegistrationForm = () => {
                     options={dealRegFormDataItem?.partnerProgramOptions}
                     style={{width: '100%'}}
                     onChange={(value) => {
-                      console.log('Value', value);
                       setDealRegFormData((prev) =>
                         prev.map((prevItem) => {
                           if (prevItem.id === dealRegFormDataItem.id) {
