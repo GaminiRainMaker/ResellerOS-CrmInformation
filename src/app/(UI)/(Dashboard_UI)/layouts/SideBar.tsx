@@ -20,6 +20,7 @@ import {Layout, MenuProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 import {LayoutMenuStyle} from './styled-components';
+
 const {Sider} = Layout;
 
 const SideBar = () => {
@@ -472,7 +473,7 @@ const SideBar = () => {
       collapsible
       collapsed={collapsed}
       onCollapse={(value) => setCollapsed(value)}
-      theme={'light'}
+      theme="light"
     >
       <LayoutMenuStyle
         theme="light"

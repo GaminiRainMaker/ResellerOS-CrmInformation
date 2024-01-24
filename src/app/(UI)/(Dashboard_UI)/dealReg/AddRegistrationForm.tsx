@@ -10,11 +10,14 @@ import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {partnerOptions} from '@/app/utils/CONSTANTS';
-import {getProgramOptions} from '@/app/utils/base';
+
+import {
+  partnerOptions,
+} from '@/app/utils/CONSTANTS';
 import {PlusIcon} from '@heroicons/react/24/outline';
-import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import {getProgramOptions} from '@/app/utils/base';
+import {useRouter} from 'next/navigation';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -125,7 +128,6 @@ const AddRegistrationForm = () => {
                     options={dealRegFormDataItem?.partnerProgramOptions}
                     style={{width: '100%'}}
                     onChange={(value) => {
-                      console.log('Value', value);
                       setDealRegFormData((prev) =>
                         prev.map((prevItem) => {
                           if (prevItem.id === dealRegFormDataItem.id) {
