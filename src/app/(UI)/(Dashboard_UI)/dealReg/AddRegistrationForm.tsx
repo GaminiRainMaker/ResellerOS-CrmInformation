@@ -353,31 +353,48 @@ const AddRegistrationForm = () => {
         newarr.push(obj);
       });
       setUpdatedDealRegData(newarr);
+
+      dispatch(insertDealReg(newarr)).then((d: any) => {
+        if (d?.payload) {
+          d?.payload?.map(async (DataItem: any) => {
+            if (DataItem?.id) {
+              const obj12 = {
+                dealRegId: DataItem?.id,
+                ...newarr[0],
+              };
+              // eslint-disable-next-line @typescript-eslint/no-shadow
+              await dispatch(insertDealRegAddress(obj12)).then((d: any) => {
+                if (d) {
+                  router.push(`/dealRegDetail`);
+                }
+              });
+            }
+          });
+        }
+      });
     }
   };
 
-  useEffect(() => {
-    dispatch(insertDealReg(updatedDealRegData)).then((d: any) => {
-      if (d?.payload) {
-        console.log('DataItem', d?.payload);
-        d?.payload?.map(async (DataItem: any) => {
-          console.log('payloadpayload', DataItem);
-          if (DataItem?.id) {
-            const obj12 = {
-              dealRegId: DataItem?.id,
-              ...updatedDealRegData[0],
-            };
-            // eslint-disable-next-line @typescript-eslint/no-shadow
-            await dispatch(insertDealRegAddress(obj12)).then((d: any) => {
-              if (d) {
-                router.push(`/dealRegDetail`);
-              }
-            });
-          }
-        });
-      }
-    });
-  }, [updatedDealRegData]);
+  // useEffect(() => {
+  //   dispatch(insertDealReg(updatedDealRegData)).then((d: any) => {
+  //     if (d?.payload) {
+  //       d?.payload?.map(async (DataItem: any) => {
+  //         if (DataItem?.id) {
+  //           const obj12 = {
+  //             dealRegId: DataItem?.id,
+  //             ...updatedDealRegData[0],
+  //           };
+  //           // eslint-disable-next-line @typescript-eslint/no-shadow
+  //           await dispatch(insertDealRegAddress(obj12)).then((d: any) => {
+  //             if (d) {
+  //               router.push(`/dealRegDetail`);
+  //             }
+  //           });
+  //         }
+  //       });
+  //     }
+  //   });
+  // }, [updatedDealRegData]);
 
   return (
     <>

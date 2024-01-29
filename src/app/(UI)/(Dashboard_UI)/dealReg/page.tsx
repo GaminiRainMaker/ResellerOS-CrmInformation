@@ -5,11 +5,7 @@
 'use client';
 
 import Typography from '@/app/components/common/typography';
-import {
-  PencilSquareIcon,
-  PlusIcon,
-  TrashIcon,
-} from '@heroicons/react/24/outline';
+import {PlusIcon} from '@heroicons/react/24/outline';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
@@ -21,6 +17,7 @@ import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
+import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import {MenuProps, TabsProps} from 'antd';
@@ -29,7 +26,6 @@ import {getAllDealReg} from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddRegistrationForm from './AddRegistrationForm';
 import DealRegAnalytics from './dealRegAnalytics';
-import OsStatusWrapper from '@/app/components/common/os-status';
 
 interface SeparatedData {
   [opportunityId: number]: {
@@ -45,10 +41,8 @@ const DealReg: React.FC = () => {
   const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showModalEdit, setShowModalEdit] = useState<boolean>(false);
-  const [formValue, setFormValue] = useState<any>();
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
-  const [open, setOpen] = useState(false);
   const {data: DealRegData, loading: dealLoading} = useAppSelector(
     (state) => state.dealReg,
   );
@@ -156,37 +150,6 @@ const DealReg: React.FC = () => {
       key: 'status',
       width: 187,
       render: (text: string, record: any) => <OsStatusWrapper value={text} />,
-    },
-    {
-      title: ' ',
-      dataIndex: 'actions',
-      key: 'actions',
-      width: 94,
-      render: (text: string, record: any) => (
-        <Space size={18}>
-          <PencilSquareIcon
-            height={24}
-            width={24}
-            color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              setOpen(true);
-              setFormValue(record);
-            }}
-          />
-
-          <TrashIcon
-            height={24}
-            width={24}
-            color={token.colorError}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              setDeleteIds([record?.id]);
-              setShowModalDelete(true);
-            }}
-          />
-        </Space>
-      ),
     },
   ];
 
