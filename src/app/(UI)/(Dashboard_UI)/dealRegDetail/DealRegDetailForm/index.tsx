@@ -4,6 +4,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import Typography from '@/app/components/common/typography';
 import {FC, useEffect} from 'react';
+// eslint-disable-next-line import/no-named-as-default
 import CommonFields from './CommonField';
 import UniqueFields from './UniqueField';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
