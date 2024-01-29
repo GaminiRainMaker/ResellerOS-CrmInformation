@@ -34,7 +34,6 @@ const CommonFields: FC<any> = (data) => {
     opportunity_description: '';
     opportunity_id: 0;
   }>();
-  console.log('  data?.selectedUserId', data?.selectedUserId);
   const handleDealRegInformationChange = (field: string, value: any) => {
     setCommonFieldData((prevData: any) => ({
       ...prevData,
@@ -100,7 +99,15 @@ const CommonFields: FC<any> = (data) => {
                 }}
               >
                 <Typography name="Body 4/Medium">Date Submitted </Typography>
-                <CommonSelect placeholder="0.00%" style={{width: '100%'}} />
+                <CommonDatePicker
+                  // value={data?.data?.date_submitted}
+                  onChange={(value: any) =>
+                    handleDealRegInformationChange(
+                      'date_submitted',
+                      formatDate(value),
+                    )
+                  }
+                />
               </Space>
             </Col>
             <Col sm={24} md={12}>
@@ -112,9 +119,14 @@ const CommonFields: FC<any> = (data) => {
                 }}
               >
                 <Typography name="Body 4/Medium">Expiration Date</Typography>
-                <CommonSelect
-                  placeholder="$ 000-000-0000"
-                  style={{width: '100%'}}
+                <CommonDatePicker
+                  // value={data?.data?.expiration_date}
+                  onChange={(value: any) =>
+                    handleDealRegInformationChange(
+                      'expiration_date',
+                      formatDate(value),
+                    )
+                  }
                 />
               </Space>
             </Col>
