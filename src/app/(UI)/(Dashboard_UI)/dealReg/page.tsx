@@ -96,7 +96,7 @@ const DealReg: React.FC = () => {
       key: 'type',
       width: 187,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">{'Registered'}</Typography>
+        <Typography name="Body 4/Regular">Registered</Typography>
       ),
     },
     {
