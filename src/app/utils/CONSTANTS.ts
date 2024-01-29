@@ -218,24 +218,24 @@ export const opportunityOptions = [
 ];
 
 export const partnerOptions = [
-  {value: 1, label: 'CISCO'},
-  {value: 2, label: 'DELL'},
-  {value: 3, label: 'AMAZON'},
+  {value: 'CISCO', label: 'CISCO'},
+  {value: 'DELL', label: 'DELL'},
+  {value: 'AMAZON', label: 'AMAZON'},
 ];
 
 export const CiscoPartnerProgramOptions = [
-  {value: 8, label: 'CISCO HARDWARE'},
-  {value: 9, label: 'CISCO GLASS'},
+  {value: 'CISCO HARDWARE', label: 'CISCO HARDWARE'},
+  {value: 'CISCO GLASS', label: 'CISCO GLASS'},
 ];
 
 export const DellPartnerProgramOptions = [
-  {value: 20, label: 'DELL HARDWARE'},
-  {value: 21, label: 'DELL GLASS'},
+  {value: 'DELL HARDWARE', label: 'DELL HARDWARE'},
+  {value: 'DELL GLASS', label: 'DELL GLASS'},
 ];
 
 export const AmazonPartnerProgramOptions = [
-  {value: 30, label: 'AMAZON HARDWARE'},
-  {value: 31, label: 'AMAZON GLASS'},
+  {value: 'AMAZON HARDWARE', label: 'AMAZON HARDWARE'},
+  {value: 'AMAZON GLASS', label: 'AMAZON GLASS'},
 ];
 
 export const PartnerData = [

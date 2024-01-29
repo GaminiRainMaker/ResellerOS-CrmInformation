@@ -29,6 +29,15 @@ import {getAllDealReg} from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddRegistrationForm from './AddRegistrationForm';
 import DealRegAnalytics from './dealRegAnalytics';
+import OsStatusWrapper from '@/app/components/common/os-status';
+
+interface SeparatedData {
+  [opportunityId: number]: {
+    opportunity_id: number;
+    data: any[];
+    title: string;
+  };
+}
 
 const DealReg: React.FC = () => {
   const [token] = useThemeToken();
@@ -86,16 +95,14 @@ const DealReg: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Opportunity
+          Type
         </Typography>
       ),
-      dataIndex: 'opportunity',
-      key: 'opportunity',
+      dataIndex: 'type',
+      key: 'type',
       width: 187,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
-          {record?.Opportunity?.title ?? '--'}
-        </Typography>
+        <Typography name="Body 4/Regular">{'Registered'}</Typography>
       ),
     },
     {
@@ -119,13 +126,11 @@ const DealReg: React.FC = () => {
           Partner
         </Typography>
       ),
-      dataIndex: 'partner',
-      key: 'partner',
+      dataIndex: 'partner_id',
+      key: 'partner_id',
       width: 187,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
-          {record?.Customer?.name ?? '--'}
-        </Typography>
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
     {
@@ -134,11 +139,11 @@ const DealReg: React.FC = () => {
           Partner Program
         </Typography>
       ),
-      dataIndex: 'partner_program',
-      key: 'partner_program',
+      dataIndex: 'partner_program_id',
+      key: 'partner_program_id',
       width: 187,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">--</Typography>
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
     {
@@ -150,9 +155,7 @@ const DealReg: React.FC = () => {
       dataIndex: 'status',
       key: 'status',
       width: 187,
-      render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">--</Typography>
-      ),
+      render: (text: string, record: any) => <OsStatusWrapper value={text} />,
     },
     {
       title: ' ',
@@ -197,20 +200,15 @@ const DealReg: React.FC = () => {
     ),
   };
 
-  interface SeparatedData {
-    [opportunityId: number]: {
-      opportunity_id: number;
-      data: any[];
-    };
-  }
-
   useEffect(() => {
     const separatedData: SeparatedData = {};
     DealRegData?.forEach((item: any) => {
       const opportunityId = item.opportunity_id;
+      const opportunityTitle = item.Opportunity?.title;
       if (!separatedData[opportunityId]) {
         separatedData[opportunityId] = {
           opportunity_id: opportunityId,
+          title: opportunityTitle,
           data: [],
         };
       }
@@ -225,7 +223,6 @@ const DealReg: React.FC = () => {
       key: '1',
       children: (
         <>
-          {' '}
           {finalDealRegData?.map((itemDeal: any) => (
             <OsCollapse
               items={[
@@ -239,7 +236,7 @@ const DealReg: React.FC = () => {
                           justifyContent: 'start',
                         }}
                       >
-                        <p>{itemDeal?.opportunity_id}</p>
+                        <p>{itemDeal?.title}</p>
                       </Space>
                     </>
                   ),

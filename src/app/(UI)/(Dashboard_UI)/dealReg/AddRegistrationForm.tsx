@@ -348,14 +348,7 @@ const AddRegistrationForm = () => {
           state: dealRegFormDataItem?.state || null,
           country: dealRegFormDataItem?.country || null,
           zip_code: dealRegFormDataItem?.zip_code || null,
-          title:
-            String(dealRegFormDataItem?.partner_id) === '1'
-              ? 'CISCO'
-              : String(dealRegFormDataItem?.partner_id) === '2'
-                ? 'DELL'
-                : String(dealRegFormDataItem?.partner_id) === '3'
-                  ? 'AMAZON'
-                  : null,
+          title: dealRegFormDataItem?.partner_id || null,
         };
         newarr.push(obj);
       });

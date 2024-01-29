@@ -74,7 +74,8 @@ export const rebateAmount = (
 export const totalRevenue = (list_amount: number, quantity: number) =>
   list_amount * quantity;
 
-export const formatDate = (date: Date, format = 'MM/DD/YYYY') => new Date(moment(date).format(format));
+export const formatDate = (date: Date, format = 'MM/DD/YYYY') =>
+  new Date(moment(date).format(format));
 
 export const calculateDaysDifference = (startDate: string, endDate: string) => {
   const startMoment = moment(startDate);
@@ -82,14 +83,14 @@ export const calculateDaysDifference = (startDate: string, endDate: string) => {
   return endMoment.diff(startMoment, 'days');
 };
 
-export const getProgramOptions = (value: number) => {
-  if (value === 1) {
+export const getProgramOptions = (value: string) => {
+  if (value === 'CISCO') {
     return CiscoPartnerProgramOptions;
   }
-  if (value === 2) {
+  if (value === 'DELL') {
     return DellPartnerProgramOptions;
   }
-  if (value === 3) {
+  if (value === 'AMAZON') {
     return AmazonPartnerProgramOptions;
   }
 };

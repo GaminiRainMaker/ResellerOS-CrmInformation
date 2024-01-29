@@ -8,15 +8,10 @@ import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {partnerOptions} from '@/app/utils/CONSTANTS';
 import {formatDate, getProgramOptions} from '@/app/utils/base';
-import {Button} from 'antd';
 import {FC, useEffect, useState} from 'react';
-import {
-  getAllDealReg,
-  updateDealRegById,
-} from '../../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
-import {CollapseSpaceStyle} from './styled-components';
 import {setDealRegUpdateData} from '../../../../../../redux/slices/dealReg';
+import {CollapseSpaceStyle} from './styled-components';
 
 const CommonFields: FC<any> = (data) => {
   const dispatch = useAppDispatch();
@@ -135,9 +130,15 @@ const CommonFields: FC<any> = (data) => {
                 }}
               >
                 <Typography name="Body 4/Medium">Partner Deal ID</Typography>
-                <CommonSelect
-                  placeholder="MM/DD/YYYY"
-                  style={{width: '100%'}}
+                <OsInput
+                  placeholder="Enter ID"
+                  defaultValue={data?.data?.partner_deal_id}
+                  onChange={(e) =>
+                    handleDealRegInformationChange(
+                      'partner_deal_id',
+                      e?.target?.value,
+                    )
+                  }
                 />
               </Space>
             </Col>
@@ -152,7 +153,16 @@ const CommonFields: FC<any> = (data) => {
                 <Typography name="Body 4/Medium">
                   Partner Approval ID
                 </Typography>
-                <CommonSelect placeholder="Select" style={{width: '100%'}} />
+                <OsInput
+                  placeholder="Enter ID"
+                  defaultValue={data?.data?.partner_approval_id}
+                  onChange={(e) =>
+                    handleDealRegInformationChange(
+                      'partner_approval_id',
+                      e?.target?.value,
+                    )
+                  }
+                />
               </Space>
             </Col>
           </Row>

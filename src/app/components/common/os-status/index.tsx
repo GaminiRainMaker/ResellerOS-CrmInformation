@@ -26,7 +26,7 @@ const OsStatusWrapper: FC<OsStatusWrapperProps> = ({value}) => {
       textColor: `${token?.colorSuccess}`,
       border: `${token?.colorSuccess}`,
     },
-    'Reject': {
+    Reject: {
       color: `${token?.colorErrorBg}`,
       textColor: `${token?.colorError}`,
       border: `${token?.colorError}`,
@@ -34,13 +34,19 @@ const OsStatusWrapper: FC<OsStatusWrapperProps> = ({value}) => {
   };
   const finalValue: StatusProp = Status[value as keyof OsStatusType];
   return (
-    <CustomTag
-      color={finalValue?.color}
-      textcolor={finalValue?.textColor}
-      border={finalValue?.border}
-    >
-      {value}
-    </CustomTag>
+    <>
+      {value ? (
+        <CustomTag
+          color={finalValue?.color}
+          textcolor={finalValue?.textColor}
+          border={finalValue?.border}
+        >
+          {value}
+        </CustomTag>
+      ) : (
+        '--'
+      )}
+    </>
   );
 };
 

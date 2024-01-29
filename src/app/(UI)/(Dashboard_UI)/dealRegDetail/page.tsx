@@ -24,7 +24,6 @@ import {
 } from '../../../../../redux/actions/dealRegAddress';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
-import {setDealRegUpdateData} from '../../../../../redux/slices/dealReg';
 
 const DealRegDetail = () => {
   const [form] = Form.useForm();
@@ -52,7 +51,7 @@ const DealRegDetail = () => {
           color={token?.colorInfoBorder}
           cursor="pointer"
           onClick={() => {
-            router?.push('/DealReg');
+            router?.push('/dealReg');
           }}
         >
           All Forms
