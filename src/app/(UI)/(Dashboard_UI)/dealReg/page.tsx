@@ -23,6 +23,8 @@ import {MenuProps, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
 import OsModal from '@/app/components/common/os-modal';
 import EmptyContainer from '@/app/components/common/os-empty-container';
+import OsCollapse from '@/app/components/common/os-collapse';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DealRegAnalytics from './dealRegAnalytics';
 import AddRegistrationForm from './AddRegistrationForm';
@@ -193,20 +195,186 @@ const DealReg: React.FC = () => {
       />
     ),
   };
+  const dealRegData = [
+    {
+      name: 'oippp1',
+      data: [
+        {
+          id: 1,
+          is_deleted: false,
+          customer_id: 11,
+          contact_id: 151,
+          opportunity_id: 1,
+          partner_id: 1,
+          partner_program_id: 9,
+          title: 'CISCO',
+          status: 'Rejected',
+          opportunity_description: 'Working',
+          opportunity_value: null,
+          probability: '99',
+          estimated_close_date: null,
+          website_url: 'www.google.com677',
+          industry_id: null,
+          partner_deal_id: 456,
+          partner_approval_id: 87,
+          createdAt: '2024-01-29T08:09:13.491Z',
+          updatedAt: '2024-01-29T09:47:17.379Z',
+        },
+        {
+          id: 3,
+          is_deleted: false,
+          customer_id: 11,
+          contact_id: 151,
+          opportunity_id: 1,
+          partner_id: 1,
+          partner_program_id: 9,
+          title: 'CISCO',
+          status: 'Rejected',
+          opportunity_description: 'Working',
+          opportunity_value: null,
+          probability: '99',
+          estimated_close_date: null,
+          website_url: 'www.google.com677',
+          industry_id: null,
+          partner_deal_id: 456,
+          partner_approval_id: 87,
+          createdAt: '2024-01-29T08:09:13.491Z',
+          updatedAt: '2024-01-29T09:47:17.379Z',
+        },
+        {
+          id: 4,
+          is_deleted: false,
+          customer_id: 11,
+          contact_id: 151,
+          opportunity_id: 1,
+          partner_id: 1,
+          partner_program_id: 9,
+          title: 'CISCO',
+          status: 'Rejected',
+          opportunity_description: 'Working',
+          opportunity_value: null,
+          probability: '99',
+          estimated_close_date: null,
+          website_url: 'www.google.com677',
+          industry_id: null,
+          partner_deal_id: 456,
+          partner_approval_id: 87,
+          createdAt: '2024-01-29T08:09:13.491Z',
+          updatedAt: '2024-01-29T09:47:17.379Z',
+        },
+      ],
+    },
+    {
+      name: 'oippp1',
+      data: [
+        {
+          id: 1,
+          is_deleted: false,
+          customer_id: 11,
+          contact_id: 151,
+          opportunity_id: 1,
+          partner_id: 1,
+          partner_program_id: 9,
+          title: 'CISCO',
+          status: 'Rejected',
+          opportunity_description: 'Working',
+          opportunity_value: null,
+          probability: '99',
+          estimated_close_date: null,
+          website_url: 'www.google.com677',
+          industry_id: null,
+          partner_deal_id: 456,
+          partner_approval_id: 87,
+          createdAt: '2024-01-29T08:09:13.491Z',
+          updatedAt: '2024-01-29T09:47:17.379Z',
+        },
+        {
+          id: 3,
+          is_deleted: false,
+          customer_id: 11,
+          contact_id: 151,
+          opportunity_id: 1,
+          partner_id: 1,
+          partner_program_id: 9,
+          title: 'CISCO',
+          status: 'Rejected',
+          opportunity_description: 'Working',
+          opportunity_value: null,
+          probability: '99',
+          estimated_close_date: null,
+          website_url: 'www.google.com677',
+          industry_id: null,
+          partner_deal_id: 456,
+          partner_approval_id: 87,
+          createdAt: '2024-01-29T08:09:13.491Z',
+          updatedAt: '2024-01-29T09:47:17.379Z',
+        },
+        {
+          id: 4,
+          is_deleted: false,
+          customer_id: 11,
+          contact_id: 151,
+          opportunity_id: 1,
+          partner_id: 1,
+          partner_program_id: 9,
+          title: 'CISCO',
+          status: 'Rejected',
+          opportunity_description: 'Working',
+          opportunity_value: null,
+          probability: '99',
+          estimated_close_date: null,
+          website_url: 'www.google.com677',
+          industry_id: null,
+          partner_deal_id: 456,
+          partner_approval_id: 87,
+          createdAt: '2024-01-29T08:09:13.491Z',
+          updatedAt: '2024-01-29T09:47:17.379Z',
+        },
+      ],
+    },
+  ];
+
+  console.log('DealRegData', dealRegData);
 
   const tabItems: TabsProps['items'] = [
     {
       label: <Typography name="Body 4/Regular">All</Typography>,
       key: '1',
       children: (
-        <OsTable
-          columns={DealRegColumns}
-          dataSource={DealRegData}
-          rowSelection={rowSelection}
-          scroll
-          loading={dealLoading}
-          locale={locale}
-        />
+        <>
+          {' '}
+          {dealRegData?.map((itemDeal: any) => (
+            <OsCollapse
+              items={[
+                {
+                  key: '2',
+                  label: (
+                    <>
+                      <Space
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'start',
+                        }}
+                      >
+                        <p>{itemDeal?.name}</p>
+                      </Space>
+                    </>
+                  ),
+                  children: (
+                    <OsTable
+                      columns={DealRegColumns}
+                      dataSource={itemDeal?.data}
+                      rowSelection={rowSelection}
+                      scroll
+                      loading={dealLoading}
+                      locale={locale}
+                    />
+                  ),
+                },
+              ]}
+            />
+          ))}
+        </>
       ),
     },
     {

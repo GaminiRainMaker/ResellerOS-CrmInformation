@@ -13,7 +13,6 @@ import {getAllCustomer} from '../../../../../../redux/actions/customer';
 const DealRegDetailForm: FC<any> = (data) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-
   const CommonFieldsItems = [
     {
       key: '1',
@@ -22,7 +21,9 @@ const DealRegDetailForm: FC<any> = (data) => {
           Common Fields
         </Typography>
       ),
-      children: <CommonFields data={data?.data} />,
+      children: (
+        <CommonFields data={data?.data} selectedUserId={data?.selectedUserId} />
+      ),
     },
   ];
 

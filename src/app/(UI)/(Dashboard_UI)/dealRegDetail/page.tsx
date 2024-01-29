@@ -23,6 +23,7 @@ const DealRegDetail = () => {
   const dispatch = useAppDispatch();
   const {data: DealRegData} = useAppSelector((state) => state.dealReg);
   const [open, setOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<any>();
 
   useEffect(() => {
     dispatch(getAllDealReg());
@@ -110,7 +111,7 @@ const DealRegDetail = () => {
           </Space>
         </Col>
       </Row>
-      <DealRegCustomTabs data={DealRegData} />
+      <DealRegCustomTabs tabs={DealRegData} selectedUserId={selectedUserId} />
 
       <OsDrawer
         title={<Typography name="Body 1/Regular">Form Settings</Typography>}
@@ -131,7 +132,7 @@ const DealRegDetail = () => {
           </Row>
         }
       >
-        <DealDrawerContent />
+        <DealDrawerContent setSelectedUserId={setSelectedUserId} />
       </OsDrawer>
     </div>
   );

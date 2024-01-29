@@ -23,7 +23,7 @@ interface FormDataProps {
   zip_code: string;
 }
 
-const DealDrawerContent: FC<any> = ({setOpen}) => {
+const DealDrawerContent: FC<any> = ({setSelectedUserId}) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {dealReg} = useAppSelector((state) => state.dealReg);
@@ -160,6 +160,7 @@ const DealDrawerContent: FC<any> = ({setOpen}) => {
                 style={{width: '100%'}}
                 onChange={(value) => {
                   setCustomerValue(value);
+                  setSelectedUserId(value);
                 }}
                 options={customerOptions}
               />
