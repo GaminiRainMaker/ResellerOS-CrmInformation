@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default */
 /* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 
@@ -23,6 +24,8 @@ import {MenuProps, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
 import OsModal from '@/app/components/common/os-modal';
 import EmptyContainer from '@/app/components/common/os-empty-container';
+import OsCollapse from '@/app/components/common/os-collapse';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DealRegAnalytics from './dealRegAnalytics';
 import AddRegistrationForm from './AddRegistrationForm';
@@ -337,14 +340,40 @@ const DealReg: React.FC = () => {
       label: <Typography name="Body 4/Regular">All</Typography>,
       key: '1',
       children: (
-        <OsTable
-          columns={DealRegColumns}
-          dataSource={DealRegData}
-          rowSelection={rowSelection}
-          scroll
-          loading={dealLoading}
-          locale={locale}
-        />
+        <>
+          {' '}
+          {dealRegData?.map((itemDeal: any) => (
+            <OsCollapse
+              items={[
+                {
+                  key: '2',
+                  label: (
+                    <>
+                      <Space
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'start',
+                        }}
+                      >
+                        <p>{itemDeal?.name}</p>
+                      </Space>
+                    </>
+                  ),
+                  children: (
+                    <OsTable
+                      columns={DealRegColumns}
+                      dataSource={itemDeal?.data}
+                      rowSelection={rowSelection}
+                      scroll
+                      loading={dealLoading}
+                      locale={locale}
+                    />
+                  ),
+                },
+              ]}
+            />
+          ))}
+        </>
       ),
     },
     {

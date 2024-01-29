@@ -16,6 +16,7 @@ const DealDrawerContent: FC<any> = ({form, onFinish}) => {
   const {data: dataAddress} = useAppSelector((state) => state.customer);
   const [customerValue, setCustomerValue] = useState<number>(0);
   const [billingOptionsData, setBillingOptionData] = useState<any>();
+  const [selectedUserId, setSelectedUserId] = useState<any>();
   const customerOptions = dataAddress.map((dataAddressItem: any) => ({
     value: dataAddressItem.id,
     label: (
@@ -98,6 +99,7 @@ const DealDrawerContent: FC<any> = ({form, onFinish}) => {
                 style={{width: '100%'}}
                 onChange={(value) => {
                   setCustomerValue(value);
+                  setSelectedUserId(value);
                 }}
                 options={customerOptions}
               />

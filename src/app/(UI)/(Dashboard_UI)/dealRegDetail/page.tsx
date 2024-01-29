@@ -21,7 +21,7 @@ import {
 import {updateDealRegAddressById} from '../../../../../redux/actions/dealRegAddress';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
-import { setDealRegUpdateData } from '../../../../../redux/slices/dealReg';
+import {setDealRegUpdateData} from '../../../../../redux/slices/dealReg';
 
 const DealRegDetail = () => {
   const [form] = Form.useForm();
@@ -34,6 +34,7 @@ const DealRegDetail = () => {
     dealRegUpdateData,
   } = useAppSelector((state) => state.dealReg);
   const [open, setOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState<any>();
 
   useEffect(() => {
     dispatch(getAllDealReg());
@@ -141,7 +142,8 @@ const DealRegDetail = () => {
           </Space>
         </Col>
       </Row>
-      <DealRegCustomTabs data={DealRegData} />
+      <DealRegCustomTabs tabs={DealRegData} selectedUserId={selectedUserId} />
+
       <OsDrawer
         title={<Typography name="Body 1/Regular">Form Settings</Typography>}
         placement="right"
@@ -159,7 +161,11 @@ const DealRegDetail = () => {
           </Row>
         }
       >
-        <DealDrawerContent form={form} onFinish={onFinish} />
+        <DealDrawerContent
+          setSelectedUserId={setSelectedUserId}
+          form={form}
+          onFinish={onFinish}
+        />
       </OsDrawer>
     </div>
   );

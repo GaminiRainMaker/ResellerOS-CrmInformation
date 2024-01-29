@@ -11,9 +11,7 @@ import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 
-import {
-  partnerOptions,
-} from '@/app/utils/CONSTANTS';
+import {partnerOptions} from '@/app/utils/CONSTANTS';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {useEffect, useState} from 'react';
 import {getProgramOptions} from '@/app/utils/base';
@@ -39,6 +37,7 @@ const AddRegistrationForm = () => {
   const [billingOptionsData, setBillingOptionData] = useState<any>();
   const [showCustomerModal, setShowCustomerModal] = useState<boolean>(false);
   const [updatedDealRegData, setUpdatedDealRegData] = useState<any>();
+  const [opportunityFilterOption, setOpportunityFilterOption] = useState<any>();
 
   const [dealRegFormData, setDealRegFormData] = useState([
     {
@@ -272,14 +271,21 @@ const AddRegistrationForm = () => {
     ),
   }));
 
-  const opportunityOptions = opportunityData.map((opportunity: any) => ({
-    value: opportunity.id,
-    label: (
-      <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-        {opportunity.title}
-      </Typography>
-    ),
-  }));
+  useEffect(() => {
+    const filterUsers = opportunityData?.filter((item: any) =>
+      item?.customer_id?.toString()?.includes(customerValue),
+    );
+    const opportunityOptions = filterUsers.map((opportunity: any) => ({
+      value: opportunity.id,
+      label: (
+        <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+          {opportunity.title}
+        </Typography>
+      ),
+    }));
+
+    setOpportunityFilterOption(opportunityOptions);
+  }, [customerValue]);
 
   useEffect(() => {
     const updatedAllBillingContact: any = [];
@@ -355,7 +361,7 @@ const AddRegistrationForm = () => {
       setUpdatedDealRegData(newarr);
     }
   };
-  
+
   useEffect(() => {
     dispatch(insertDealReg(updatedDealRegData)).then((d: any) => {
       if (d?.payload) {
@@ -363,7 +369,7 @@ const AddRegistrationForm = () => {
         d?.payload?.map(async (DataItem: any) => {
           console.log('payloadpayload', DataItem);
           if (DataItem?.id) {
-            let obj12 = {
+            const obj12 = {
               dealRegId: DataItem?.id,
               ...updatedDealRegData[0],
             };
@@ -475,7 +481,7 @@ const AddRegistrationForm = () => {
             <CommonSelect
               placeholder="Select"
               style={{width: '100%'}}
-              options={opportunityOptions}
+              options={opportunityFilterOption}
               onChange={(value) => {
                 setDealRegFormData((prevData) =>
                   prevData.map((item) => ({

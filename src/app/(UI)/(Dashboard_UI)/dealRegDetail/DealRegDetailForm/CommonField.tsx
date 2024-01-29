@@ -47,11 +47,25 @@ const CommonFields: FC<any> = (data) => {
       [field]: value,
     }));
   };
-
-  const opportunityOptions = opportunityData.map((opportunity: any) => ({
-    value: opportunity.id,
-    label: opportunity.title,
-  }));
+  const [filteredOppOptions, setFilteredOppOptions] = useState<any>();
+  useEffect(() => {
+    let opportunityOptions: any;
+    if (data?.selectedUserId) {
+      const filteredData = opportunityData?.filter((item: any) =>
+        item?.customer_id?.toString()?.includes(data?.selectedUserId),
+      );
+      opportunityOptions = filteredData.map((opportunity: any) => ({
+        value: opportunity.id,
+        label: opportunity.title,
+      }));
+    } else {
+      opportunityOptions = opportunityData.map((customer: any) => ({
+        value: customer.id,
+        label: customer.name,
+      }));
+    }
+    setFilteredOppOptions(opportunityOptions);
+  }, [data?.selectedUserId, data]);
 
   const customerOptions = dataAddress.map((customer: any) => ({
     value: customer.id,
@@ -218,8 +232,10 @@ const CommonFields: FC<any> = (data) => {
                 <CommonSelect
                   placeholder="Blue hive- tech world"
                   style={{width: '100%'}}
-                  defaultValue={data?.data?.Opportunity?.title}
-                  options={opportunityOptions}
+                  defaultValue={
+                    data?.selectedUserId ? null : data?.data?.Opportunity?.title
+                  }
+                  options={filteredOppOptions}
                   onChange={(value) =>
                     handleDealRegInformationChange('opportunity_id', value)
                   }

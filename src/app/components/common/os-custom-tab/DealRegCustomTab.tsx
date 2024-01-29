@@ -14,7 +14,14 @@ import {
 import {useAppDispatch} from '../../../../../redux/hook';
 import {setDealReg} from '../../../../../redux/slices/dealReg';
 
-const DealRegCustomTabs: FC<any> = (tabs) => {
+interface DealRegCustomTabsInterface {
+  tabs: any;
+  selectedUserId: any;
+}
+const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
+  tabs,
+  selectedUserId,
+}) => {
   const dispatch = useAppDispatch();
   const [activeKey, setActiveKey] = useState<string>('0');
   const [token] = useThemeToken();
@@ -26,8 +33,8 @@ const DealRegCustomTabs: FC<any> = (tabs) => {
 
   useEffect(() => {
     const tempItems: any = [];
-    if (tabs?.data) {
-      tabs?.data?.forEach((element: any, index: string) => {
+    if (tabs) {
+      tabs?.forEach((element: any, index: string) => {
         tempItems.push({
           key: index,
           label: (
@@ -94,14 +101,17 @@ const DealRegCustomTabs: FC<any> = (tabs) => {
           ),
           children: (
             <div key={element.id}>
-              <DealRegDetailForm data={element} />
+              <DealRegDetailForm
+                data={element}
+                selectedUserId={selectedUserId}
+              />
             </div>
           ),
         });
       });
     }
     setTabItems(tempItems);
-  }, [tabs?.data, activeKey]);
+  }, [tabs, activeKey, selectedUserId]);
 
   return (
     <CustmDealRegTab
