@@ -31,6 +31,8 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
     setActiveKey(key);
   };
 
+  console.log('4354353', selectedUserId);
+
   useEffect(() => {
     const tempItems: any = [];
     if (tabs) {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable array-callback-return */
@@ -373,7 +374,8 @@ const AddRegistrationForm = () => {
               dealRegId: DataItem?.id,
               ...updatedDealRegData[0],
             };
-            await dispatch(insertDealRegAddress(obj12)).then((d) => {
+            // eslint-disable-next-line @typescript-eslint/no-shadow
+            await dispatch(insertDealRegAddress(obj12)).then((d: any) => {
               if (d) {
                 router.push(`/dealRegDetail`);
               }

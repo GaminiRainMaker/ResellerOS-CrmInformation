@@ -11,6 +11,7 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import {useEffect, useState} from 'react';
+import {Form} from 'antd';
 import {
   deleteProduct,
   getAllProduct,
@@ -22,7 +23,6 @@ import OsDrawer from '../os-drawer';
 import OsModal from '../os-modal';
 import DeleteModal from '../os-modal/DeleteModal';
 import AddProducts from './AddProducts';
-import {Form} from 'antd';
 
 const AddProduct = () => {
   const dispatch = useAppDispatch();
