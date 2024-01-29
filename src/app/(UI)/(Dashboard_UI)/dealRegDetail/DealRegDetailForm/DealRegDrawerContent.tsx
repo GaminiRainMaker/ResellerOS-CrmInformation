@@ -10,7 +10,8 @@ import {Form} from 'antd';
 import {FC, useEffect, useState} from 'react';
 import {getDealRegAddressById} from '../../../../../../redux/actions/dealRegAddress';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
-const DealDrawerContent: FC<any> = ({form, onFinish}) => {
+
+const DealDrawerContent: FC<any> = ({form, onFinish, setSelectedUserId}) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {dealReg} = useAppSelector((state) => state.dealReg);
@@ -21,7 +22,6 @@ const DealDrawerContent: FC<any> = ({form, onFinish}) => {
 
   const [customerValue, setCustomerValue] = useState<number>(0);
   const [billingOptionsData, setBillingOptionData] = useState<any>();
-  const [selectedUserId, setSelectedUserId] = useState<any>();
   const customerOptions = dataAddress.map((dataAddressItem: any) => ({
     value: dataAddressItem.id,
     label: (

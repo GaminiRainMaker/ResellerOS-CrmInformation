@@ -39,7 +39,7 @@ const CommonFields: FC<any> = (data) => {
     opportunity_description: '';
     opportunity_id: 0;
   }>();
-
+  console.log('  data?.selectedUserId', data?.selectedUserId);
   const handleDealRegInformationChange = (field: string, value: any) => {
     setCommonFieldData((prevData: any) => ({
       ...prevData,
