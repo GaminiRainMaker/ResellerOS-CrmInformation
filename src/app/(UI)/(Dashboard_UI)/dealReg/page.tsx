@@ -15,21 +15,20 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
+import OsCollapse from '@/app/components/common/os-collapse';
 import OsDropdown from '@/app/components/common/os-dropdown';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
+import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import {MenuProps, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
-import OsModal from '@/app/components/common/os-modal';
-import EmptyContainer from '@/app/components/common/os-empty-container';
-import OsCollapse from '@/app/components/common/os-collapse';
-import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import DealRegAnalytics from './dealRegAnalytics';
-import AddRegistrationForm from './AddRegistrationForm';
 import {getAllDealReg} from '../../../../../redux/actions/dealReg';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import AddRegistrationForm from './AddRegistrationForm';
+import DealRegAnalytics from './dealRegAnalytics';
 
 const DealReg: React.FC = () => {
   const [token] = useThemeToken();
@@ -48,6 +47,7 @@ const DealReg: React.FC = () => {
   const [tableData, setTableData] = useState<any>();
 
   const [billingFilterSeach, setBillingFilterSearch] = useState<any>();
+  const [finalDealRegData, setFinalDealRegData] = useState<any>();
   const [query, setQuery] = useState('');
 
   const rowSelection = {
@@ -196,144 +196,28 @@ const DealReg: React.FC = () => {
       />
     ),
   };
-  const dealRegData = [
-    {
-      name: 'oippp1',
-      data: [
-        {
-          id: 1,
-          is_deleted: false,
-          customer_id: 11,
-          contact_id: 151,
-          opportunity_id: 1,
-          partner_id: 1,
-          partner_program_id: 9,
-          title: 'CISCO',
-          status: 'Rejected',
-          opportunity_description: 'Working',
-          opportunity_value: null,
-          probability: '99',
-          estimated_close_date: null,
-          website_url: 'www.google.com677',
-          industry_id: null,
-          partner_deal_id: 456,
-          partner_approval_id: 87,
-          createdAt: '2024-01-29T08:09:13.491Z',
-          updatedAt: '2024-01-29T09:47:17.379Z',
-        },
-        {
-          id: 3,
-          is_deleted: false,
-          customer_id: 11,
-          contact_id: 151,
-          opportunity_id: 1,
-          partner_id: 1,
-          partner_program_id: 9,
-          title: 'CISCO',
-          status: 'Rejected',
-          opportunity_description: 'Working',
-          opportunity_value: null,
-          probability: '99',
-          estimated_close_date: null,
-          website_url: 'www.google.com677',
-          industry_id: null,
-          partner_deal_id: 456,
-          partner_approval_id: 87,
-          createdAt: '2024-01-29T08:09:13.491Z',
-          updatedAt: '2024-01-29T09:47:17.379Z',
-        },
-        {
-          id: 4,
-          is_deleted: false,
-          customer_id: 11,
-          contact_id: 151,
-          opportunity_id: 1,
-          partner_id: 1,
-          partner_program_id: 9,
-          title: 'CISCO',
-          status: 'Rejected',
-          opportunity_description: 'Working',
-          opportunity_value: null,
-          probability: '99',
-          estimated_close_date: null,
-          website_url: 'www.google.com677',
-          industry_id: null,
-          partner_deal_id: 456,
-          partner_approval_id: 87,
-          createdAt: '2024-01-29T08:09:13.491Z',
-          updatedAt: '2024-01-29T09:47:17.379Z',
-        },
-      ],
-    },
-    {
-      name: 'oippp1',
-      data: [
-        {
-          id: 1,
-          is_deleted: false,
-          customer_id: 11,
-          contact_id: 151,
-          opportunity_id: 1,
-          partner_id: 1,
-          partner_program_id: 9,
-          title: 'CISCO',
-          status: 'Rejected',
-          opportunity_description: 'Working',
-          opportunity_value: null,
-          probability: '99',
-          estimated_close_date: null,
-          website_url: 'www.google.com677',
-          industry_id: null,
-          partner_deal_id: 456,
-          partner_approval_id: 87,
-          createdAt: '2024-01-29T08:09:13.491Z',
-          updatedAt: '2024-01-29T09:47:17.379Z',
-        },
-        {
-          id: 3,
-          is_deleted: false,
-          customer_id: 11,
-          contact_id: 151,
-          opportunity_id: 1,
-          partner_id: 1,
-          partner_program_id: 9,
-          title: 'CISCO',
-          status: 'Rejected',
-          opportunity_description: 'Working',
-          opportunity_value: null,
-          probability: '99',
-          estimated_close_date: null,
-          website_url: 'www.google.com677',
-          industry_id: null,
-          partner_deal_id: 456,
-          partner_approval_id: 87,
-          createdAt: '2024-01-29T08:09:13.491Z',
-          updatedAt: '2024-01-29T09:47:17.379Z',
-        },
-        {
-          id: 4,
-          is_deleted: false,
-          customer_id: 11,
-          contact_id: 151,
-          opportunity_id: 1,
-          partner_id: 1,
-          partner_program_id: 9,
-          title: 'CISCO',
-          status: 'Rejected',
-          opportunity_description: 'Working',
-          opportunity_value: null,
-          probability: '99',
-          estimated_close_date: null,
-          website_url: 'www.google.com677',
-          industry_id: null,
-          partner_deal_id: 456,
-          partner_approval_id: 87,
-          createdAt: '2024-01-29T08:09:13.491Z',
-          updatedAt: '2024-01-29T09:47:17.379Z',
-        },
-      ],
-    },
-  ];
+
+  interface SeparatedData {
+    [opportunityId: number]: {
+      opportunity_id: number;
+      data: any[];
+    };
+  }
+
+  useEffect(() => {
+    const separatedData: SeparatedData = {};
+    DealRegData?.forEach((item: any) => {
+      const opportunityId = item.opportunity_id;
+      if (!separatedData[opportunityId]) {
+        separatedData[opportunityId] = {
+          opportunity_id: opportunityId,
+          data: [],
+        };
+      }
+      separatedData[opportunityId]?.data.push(item);
+    });
+    setFinalDealRegData(Object.values(separatedData));
+  }, [DealRegData]);
 
   const tabItems: TabsProps['items'] = [
     {
@@ -342,7 +226,7 @@ const DealReg: React.FC = () => {
       children: (
         <>
           {' '}
-          {dealRegData?.map((itemDeal: any) => (
+          {finalDealRegData?.map((itemDeal: any) => (
             <OsCollapse
               items={[
                 {
@@ -355,7 +239,7 @@ const DealReg: React.FC = () => {
                           justifyContent: 'start',
                         }}
                       >
-                        <p>{itemDeal?.name}</p>
+                        <p>{itemDeal?.opportunity_id}</p>
                       </Space>
                     </>
                   ),

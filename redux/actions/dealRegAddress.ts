@@ -25,3 +25,15 @@ export const updateDealRegAddressById = createAsyncThunk(
     }
   },
 );
+
+export const getDealRegAddressById = createAsyncThunk(
+  'dealRegAddress/getDealRegAddressById',
+  async (id: number, thunkApi) => {
+    try {
+      const res = await DEALREG_ADDRESS_API.getById(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

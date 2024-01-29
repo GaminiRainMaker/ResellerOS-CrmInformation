@@ -18,7 +18,10 @@ import {
   getAllDealReg,
   updateDealRegById,
 } from '../../../../../redux/actions/dealReg';
-import {updateDealRegAddressById} from '../../../../../redux/actions/dealRegAddress';
+import {
+  getDealRegAddressById,
+  updateDealRegAddressById,
+} from '../../../../../redux/actions/dealRegAddress';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
 import {setDealRegUpdateData} from '../../../../../redux/slices/dealReg';
@@ -98,6 +101,7 @@ const DealRegDetail = () => {
         ),
       ]);
       dispatch(getAllDealReg());
+      dispatch(getDealRegAddressById(dealReg?.id));
       setOpen(false);
     } catch (error) {
       console.error('Error:', error);

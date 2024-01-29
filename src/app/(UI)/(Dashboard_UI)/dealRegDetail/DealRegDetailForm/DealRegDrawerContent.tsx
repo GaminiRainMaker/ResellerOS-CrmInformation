@@ -8,12 +8,17 @@ import Typography from '@/app/components/common/typography';
 import {dealRegStatusOptions} from '@/app/utils/CONSTANTS';
 import {Form} from 'antd';
 import {FC, useEffect, useState} from 'react';
-import {useAppSelector} from '../../../../../../redux/hook';
-
+import {getDealRegAddressById} from '../../../../../../redux/actions/dealRegAddress';
+import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 const DealDrawerContent: FC<any> = ({form, onFinish}) => {
   const [token] = useThemeToken();
+  const dispatch = useAppDispatch();
   const {dealReg} = useAppSelector((state) => state.dealReg);
   const {data: dataAddress} = useAppSelector((state) => state.customer);
+  const {data: dealRegAddressData} = useAppSelector(
+    (state) => state.dealRegAddress,
+  );
+
   const [customerValue, setCustomerValue] = useState<number>(0);
   const [billingOptionsData, setBillingOptionData] = useState<any>();
   const [selectedUserId, setSelectedUserId] = useState<any>();
@@ -48,7 +53,15 @@ const DealDrawerContent: FC<any> = ({form, onFinish}) => {
 
   useEffect(() => {
     form.resetFields();
-  }, [dealReg]);
+  }, [dealReg, dealRegAddressData]);
+
+  useEffect(() => {
+    if (dealReg?.id) {
+      dispatch(getDealRegAddressById(dealReg?.id));
+    }
+  }, [dealReg?.id]);
+
+  console.log('dealRegAddressData', dealRegAddressData);
 
   return (
     <Form
@@ -56,7 +69,7 @@ const DealDrawerContent: FC<any> = ({form, onFinish}) => {
       requiredMark={false}
       form={form}
       onFinish={onFinish}
-      initialValues={dealReg}
+      initialValues={{...dealReg, ...dealRegAddressData}}
     >
       <Space size={24} style={{width: '100%'}} direction="vertical">
         <Row justify="space-between">
