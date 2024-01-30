@@ -2,13 +2,14 @@
 /* eslint-disable arrow-body-style */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import {FC, useState} from 'react';
+import Configuration from '../../../(UI)/(Dashboard_UI)/admin/quote-AI/configuration';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
+import Products from '../os-add-products';
+import Users from '../os-add-users';
+
 import Typography from '../typography';
 import {CustomTabStyle} from './styled-components';
-// import {TabInterface} from './tabs.interface';
-import Configuration from '../../../(UI)/(Dashboard_UI)/admin/quote-AI/configuration';
-import Products from '../os-add-products';
 
 const AdminCustomTabs: FC<any> = (tabs) => {
   const [activekeysall, setActivekeysall] = useState<number>(1);
@@ -71,6 +72,8 @@ const AdminCustomTabs: FC<any> = (tabs) => {
           <Configuration />
         ) : activekeysall === 2 ? (
           <Products />
+        ) : activekeysall === 7 ? (
+          <Users />
         ) : (
           <>No Data</>
         )}

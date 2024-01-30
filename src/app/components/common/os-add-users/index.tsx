@@ -15,26 +15,22 @@ import {useEffect, useState} from 'react';
 import {
   deleteProduct,
   getAllProduct,
-  insertProduct,
-  updateProductById,
 } from '../../../../../redux/actions/product';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsDrawer from '../os-drawer';
 import OsModal from '../os-modal';
 import DeleteModal from '../os-modal/DeleteModal';
-import AddProducts from './AddProducts';
+import AddUsers from './AddUser';
 
-const AddProduct = () => {
+const AddUser = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const [showAddProductModal, setShowAddProductModal] =
-    useState<boolean>(false);
+  const [showAddUserModal, setShowAddUserModal] = useState<boolean>(false);
   const {data: ProductData, loading} = useAppSelector((state) => state.product);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
-  const [addProductType, setAddProductType] = useState<string>('');
   const [open, setOpen] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
-  const [productData, setProductData] = useState<any>();
+  const [userData, setUserData] = useState<any>();
   const [form] = Form.useForm();
 
   const dropDownItemss = [
@@ -66,15 +62,15 @@ const AddProduct = () => {
     setShowModalDelete(false);
   };
 
-  const ProductColumns = [
+  const UserColumns = [
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Product name
+          Name
         </Typography>
       ),
-      dataIndex: 'product_code',
-      key: 'product_code',
+      dataIndex: 'name',
+      key: 'name',
       width: 173,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -83,11 +79,11 @@ const AddProduct = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Product Code
+          Email
         </Typography>
       ),
-      dataIndex: 'product_code',
-      key: 'product_code',
+      dataIndex: 'email',
+      key: 'email',
       width: 173,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -96,38 +92,15 @@ const AddProduct = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          List Price
+          Is Admin
         </Typography>
       ),
-      dataIndex: 'list_price',
-      key: 'list_price',
+      dataIndex: 'is_admin',
+      key: 'is_admin',
       width: 173,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Product Family
-        </Typography>
-      ),
-      dataIndex: 'product_family',
-      key: 'product_family',
-      width: 173,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Product Description
-        </Typography>
-      ),
-      dataIndex: 'description',
-      key: 'description',
-      width: 370,
     },
     {
       title: (
@@ -146,9 +119,8 @@ const AddProduct = () => {
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              setAddProductType('update');
               setOpen(true);
-              setProductData(record);
+              setUserData(record);
             }}
           />
           <TrashIcon
@@ -171,22 +143,23 @@ const AddProduct = () => {
   }, []);
 
   const onFinish = () => {
-    const productNewData = form.getFieldsValue();
-    if (addProductType === 'insert') {
-      dispatch(insertProduct(productNewData)).then(() => {
-        dispatch(getAllProduct());
-        setShowAddProductModal(false);
-      });
-    } else if (addProductType === 'update') {
-      const obj: any = {
-        id: productData?.id,
-        ...productNewData,
-      };
-      dispatch(updateProductById(obj)).then(() => {
-        dispatch(getAllProduct());
-        setOpen(false);
-      });
-    }
+    const userNewData = form.getFieldsValue();
+    console.log('userNewData', userNewData);
+    // if (addProductType === 'insert') {
+    //   dispatch(insertProduct(userNewData)).then(() => {
+    //     dispatch(getAllProduct());
+    //     setShowAddUserModal(false);
+    //   });
+    // } else if (addProductType === 'update') {
+    //   const obj: any = {
+    //     id: userData?.id,
+    //     ...userNewData,
+    //   };
+    //   dispatch(updateProductById(obj)).then(() => {
+    //     dispatch(getAllProduct());
+    //     setOpen(false);
+    //   });
+    // }
   };
 
   return (
@@ -195,7 +168,7 @@ const AddProduct = () => {
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              All Products
+              All Users
             </Typography>
           </Col>
           <Col>
@@ -207,12 +180,11 @@ const AddProduct = () => {
               }}
             >
               <OsButton
-                text="Add New Product"
+                text="Add New User"
                 buttontype="PRIMARY"
                 icon={<PlusIcon />}
                 clickHandler={() => {
-                  setAddProductType('insert');
-                  setShowAddProductModal((p) => !p);
+                  setShowAddUserModal((p) => !p);
                 }}
               />
               <Space>
@@ -223,9 +195,8 @@ const AddProduct = () => {
         </Row>
 
         <OsTable
-          columns={ProductColumns}
+          columns={UserColumns}
           dataSource={ProductData}
-          // rowSelection={rowSelection}
           scroll
           loading={loading}
         />
@@ -236,16 +207,16 @@ const AddProduct = () => {
         setDeleteIds={setDeleteIds}
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteSelectedIds}
-        heading="Delete Product"
-        description="Are you sure you want to delete this product?"
+        heading="Delete User"
+        description="Are you sure you want to delete this user?"
       />
 
       <OsModal
-        body={<AddProducts form={form} />}
+        body={<AddUsers form={form} />}
         width={696}
-        open={showAddProductModal}
+        open={showAddUserModal}
         onCancel={() => {
-          setShowAddProductModal((p) => !p);
+          setShowAddUserModal((p) => !p);
         }}
         onOk={onFinish}
         primaryButtonText="ADD"
@@ -253,7 +224,7 @@ const AddProduct = () => {
       />
 
       <OsDrawer
-        title={<Typography name="Body 1/Regular">Add New Product</Typography>}
+        title={<Typography name="Body 1/Regular">Update User</Typography>}
         placement="right"
         onClose={() => {
           setOpen(false);
@@ -271,9 +242,9 @@ const AddProduct = () => {
           </Row>
         }
       >
-        <AddProducts
+        <AddUsers
           isDrawer
-          productData={productData}
+          userData={userData}
           onFinish={onFinish}
           form={form}
         />
@@ -282,4 +253,4 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default AddUser;
