@@ -1,4 +1,8 @@
 export const API = {
+  AUTH: {
+    INDEX: '/auth',
+    VERIFY: '/auth/verify',
+  },
   QUOTE: {
     INDEX: '/quote',
     QUERY: '/quote/query',
