@@ -28,7 +28,7 @@ const AddUser = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [showAddUserModal, setShowAddUserModal] = useState<boolean>(false);
-  const {data: ProductData, loading} = useAppSelector((state) => state.product);
+  const {data, loading} = useAppSelector((state) => state.user);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
@@ -59,7 +59,7 @@ const AddUser = () => {
     const data = {id: deleteIds};
     // await dispatch(deleteProduct(data));
     // setTimeout(() => {
-    //   dispatch(getUserByOrganization('gamini@rainmaker.com'));
+    //   dispatch(getUserByOrganization('forcebolt'));
     // }, 1000);
     // setDeleteIds([]);
     // setShowModalDelete(false);
@@ -72,8 +72,8 @@ const AddUser = () => {
           Name
         </Typography>
       ),
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'user_name',
+      key: 'user_name',
       width: 173,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -143,15 +143,14 @@ const AddUser = () => {
   ];
 
   useEffect(() => {
-    dispatch(getUserByOrganization('gamini@rainmaker.com'));
+    dispatch(getUserByOrganization('forcebolt'));
   }, []);
 
   const onFinish = () => {
     const userNewData = form.getFieldsValue();
-    console.log('userNewData', userNewData);
     if (addUserType === 'insert') {
       dispatch(createUser(userNewData)).then(() => {
-        dispatch(getUserByOrganization('gamini@rainmaker.com'));
+        dispatch(getUserByOrganization('forcebolt'));
         setShowAddUserModal(false);
       });
     } else if (addUserType === 'update') {
@@ -160,7 +159,7 @@ const AddUser = () => {
         ...userNewData,
       };
       dispatch(updateUserById(obj)).then(() => {
-        dispatch(getUserByOrganization('gamini@rainmaker.com'));
+        dispatch(getUserByOrganization('forcebolt'));
         setOpen(false);
       });
     }
@@ -201,7 +200,7 @@ const AddUser = () => {
 
         <OsTable
           columns={UserColumns}
-          dataSource={ProductData}
+          dataSource={data}
           scroll
           loading={loading}
         />

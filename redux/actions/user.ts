@@ -43,7 +43,7 @@ export const getUserByOrganization = createAsyncThunk(
   async (organization: string, thunkApi) => {
     console.log('organization', organization);
     try {
-      const res = await USERAPI.query(organization);
+      const res = await USERAPI.get();
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);
