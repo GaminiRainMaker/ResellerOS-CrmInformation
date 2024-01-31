@@ -49,7 +49,7 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: API.AUTHENTICATION.LOG_IN,
+    signIn: API.AUTH.VERIFY,
   },
 };
 
