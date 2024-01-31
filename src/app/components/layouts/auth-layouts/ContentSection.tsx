@@ -55,7 +55,10 @@ const ContentSection: FC<AuthLayoutInterface> = ({
         });
         Cookies.set('id', payload.payload.id);
         Cookies.set('token', payload.payload.token);
-
+        Cookies.set('organization', payload.payload.organization);
+        Cookies.set('Admin', payload.payload.admin);
+        console.log('4364543543', payload.payload);
+        // return;
         router.push('/crmInAccount');
       });
     } else if (

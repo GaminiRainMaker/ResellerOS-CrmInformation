@@ -13,6 +13,8 @@
 
 import Typography from '@/app/components/common/typography';
 import {EyeIcon, PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import Cookies from 'js-cookie';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {PopConfirm} from '@/app/components/common/antd/PopConfirm';
@@ -497,6 +499,13 @@ const AllQuote: React.FC = () => {
       ),
     },
   ];
+
+  console.log(
+    '435436543643',
+    Cookies.get('organization'),
+    Cookies.get('token'),
+    Cookies.get('Admin'),
+  );
 
   return (
     <>
