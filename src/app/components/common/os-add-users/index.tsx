@@ -12,10 +12,12 @@ import {
 } from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useEffect, useState} from 'react';
+import {deleteProduct} from '../../../../../redux/actions/product';
 import {
-  deleteProduct,
-  getAllProduct,
-} from '../../../../../redux/actions/product';
+  createUser,
+  getUserByOrganization,
+  updateUserById,
+} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsDrawer from '../os-drawer';
 import OsModal from '../os-modal';
@@ -32,6 +34,7 @@ const AddUser = () => {
   const [deleteIds, setDeleteIds] = useState<any>();
   const [userData, setUserData] = useState<any>();
   const [form] = Form.useForm();
+  const [addUserType, setAddUserType] = useState<string>('');
 
   const dropDownItemss = [
     {
@@ -54,12 +57,12 @@ const AddUser = () => {
 
   const deleteSelectedIds = async () => {
     const data = {id: deleteIds};
-    await dispatch(deleteProduct(data));
-    setTimeout(() => {
-      dispatch(getAllProduct());
-    }, 1000);
-    setDeleteIds([]);
-    setShowModalDelete(false);
+    // await dispatch(deleteProduct(data));
+    // setTimeout(() => {
+    //   dispatch(getUserByOrganization('gamini@rainmaker.com'));
+    // }, 1000);
+    // setDeleteIds([]);
+    // setShowModalDelete(false);
   };
 
   const UserColumns = [
@@ -120,6 +123,7 @@ const AddUser = () => {
             style={{cursor: 'pointer'}}
             onClick={() => {
               setOpen(true);
+              setAddUserType('update');
               setUserData(record);
             }}
           />
@@ -139,27 +143,27 @@ const AddUser = () => {
   ];
 
   useEffect(() => {
-    dispatch(getAllProduct());
+    dispatch(getUserByOrganization('gamini@rainmaker.com'));
   }, []);
 
   const onFinish = () => {
     const userNewData = form.getFieldsValue();
     console.log('userNewData', userNewData);
-    // if (addProductType === 'insert') {
-    //   dispatch(insertProduct(userNewData)).then(() => {
-    //     dispatch(getAllProduct());
-    //     setShowAddUserModal(false);
-    //   });
-    // } else if (addProductType === 'update') {
-    //   const obj: any = {
-    //     id: userData?.id,
-    //     ...userNewData,
-    //   };
-    //   dispatch(updateProductById(obj)).then(() => {
-    //     dispatch(getAllProduct());
-    //     setOpen(false);
-    //   });
-    // }
+    if (addUserType === 'insert') {
+      dispatch(createUser(userNewData)).then(() => {
+        dispatch(getUserByOrganization('gamini@rainmaker.com'));
+        setShowAddUserModal(false);
+      });
+    } else if (addUserType === 'update') {
+      const obj: any = {
+        id: userData?.id,
+        ...userNewData,
+      };
+      dispatch(updateUserById(obj)).then(() => {
+        dispatch(getUserByOrganization('gamini@rainmaker.com'));
+        setOpen(false);
+      });
+    }
   };
 
   return (
@@ -184,6 +188,7 @@ const AddUser = () => {
                 buttontype="PRIMARY"
                 icon={<PlusIcon />}
                 clickHandler={() => {
+                  setAddUserType('insert');
                   setShowAddUserModal((p) => !p);
                 }}
               />

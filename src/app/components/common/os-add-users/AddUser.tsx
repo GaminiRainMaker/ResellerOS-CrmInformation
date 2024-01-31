@@ -54,7 +54,7 @@ const AddUser: FC<OsAdduser> = ({
         >
           <Row gutter={[16, 16]}>
             <Col sm={24} md={12}>
-              <Form.Item label="Name" name="name">
+              <Form.Item label="Name" name="user_name">
                 <OsInput placeholder="Enter Name" />
               </Form.Item>
             </Col>

@@ -27,6 +27,8 @@ export const API = {
     INDEX: '/user',
     LOGIN: '/user/login',
     QUERY: '/user/query',
+    UpdateUserById: '/user/updateUserById',
+    AddUser: '/user/addUser',
   },
   PRODUCT: {
     INDEX: '/product',

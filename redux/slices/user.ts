@@ -1,7 +1,12 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {createUser, loginUser} from '../actions/user';
+import {
+  createUser,
+  loginUser,
+  updateUserById,
+  getUserByOrganization,
+} from '../actions/user';
 
 type UserState = {
   loading: boolean;
@@ -49,7 +54,40 @@ const userSlice = createSlice({
       .addCase(loginUser.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(updateUserById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateUserById.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(updateUserById.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getUserByOrganization.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getUserByOrganization.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getUserByOrganization.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      );
   },
 });
 
