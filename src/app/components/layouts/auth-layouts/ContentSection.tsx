@@ -41,6 +41,32 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   // };
 
   const onSubmitForm = (formValues: any, type: any) => {
+    // formValues?.email
+    const validateEmail = (email: any) =>
+      String(email)
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+        );
+    if (!validateEmail(formValues?.email)) {
+      return;
+    }
+
+    const stringIn = formValues?.email.split('@');
+    const newcheck = stringIn[1].split('.');
+    const checkss = [
+      'gmail',
+      'yahoo',
+      'yahoo',
+      'hotmail',
+      'aol',
+      'live',
+      'outlook',
+    ];
+    const organizationValue = newcheck[0];
+    if (checkss.includes(newcheck[0])) {
+      return;
+    }
     if (type == 'Log In') {
       dispatch(
         verifyAuth({
@@ -57,7 +83,6 @@ const ContentSection: FC<AuthLayoutInterface> = ({
         Cookies.set('token', payload.payload.token);
         Cookies.set('organization', payload.payload.organization);
         Cookies.set('Admin', payload.payload.admin);
-        console.log('4364543543', payload.payload);
         // return;
         router.push('/crmInAccount');
       });
@@ -71,7 +96,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           user_name: formValues?.username,
           email: formValues?.email,
           password: formValues?.password,
-          organization: 'forcebolt',
+          organization: organizationValue,
         }),
       ).then(() => {
         router.push('/login');

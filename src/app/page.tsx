@@ -7,6 +7,7 @@ import React, {useEffect, useRef, useState} from 'react';
 // import PSPDFKit from 'pspdfkit';
 import dynamic from 'next/dynamic';
 import {CloudDownloadOutlined} from '@ant-design/icons';
+import {useRouter} from 'next/navigation';
 import Typography from './components/common/typography';
 import useThemeToken from './components/common/hooks/useThemeToken';
 import {Upload, UploadProps} from './components/common/antd/Upload';
@@ -22,7 +23,7 @@ export default function Home() {
   const [searchPatternData, setSearchPatternData] = useState<any>('');
   const containerRef = useRef<any>(null);
   const [base64Data, setBase64Data] = useState<string>('');
-
+  const router = useRouter();
   const searchPhoneRegex = '\\(\\d{3}\\) \\d{3}-\\d{4}';
   const searchEmailRegex = '([a-zA-Z0-9.]+@[a-zA-Z0-9]+.[a-zA-Z0-9.]+)';
   const searchItems = [searchPhoneRegex, searchEmailRegex];
@@ -141,9 +142,13 @@ export default function Home() {
       });
     return false;
   };
+  useEffect(() => {
+    router?.push('/login');
+  }, []);
 
   return (
-    <main>
+    <>
+      {/* <main>
       <div
         style={{
           display: 'flex',
@@ -192,11 +197,12 @@ export default function Home() {
             Search Data
           </button> */}
 
-          <br />
-          {/* <button onClick={clearAnnotations}>Clear</button> */}
-        </section>
-        <div ref={containerRef} style={{height: '100vh'}} />
-      </div>
-    </main>
+      <br />
+      {/* <button onClick={clearAnnotations}>Clear</button> */}
+      {/* </section> */}
+      {/* //     <div ref={containerRef} style={{height: '100vh'}} />
+    //   </div> */}
+      {/* // </main> */}
+    </>
   );
 }
