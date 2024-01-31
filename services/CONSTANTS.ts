@@ -27,6 +27,8 @@ export const API = {
     INDEX: '/user',
     LOGIN: '/user/login',
     QUERY: '/user/query',
+    UpdateUserById: '/user/updateUserById',
+    AddUser: '/user/addUser',
   },
   PRODUCT: {
     INDEX: '/product',
@@ -112,3 +114,7 @@ export const API = {
     QUERY: '/dealRegAddress/query',
   },
 };
+
+// export const sessionMaxAge = process.env.NEXT_PUBLIC_SESSION_MAX_AGE;
+export const sessionMaxAge = 424225255252;
+export const tokenMaxAge = process.env.NEXT_PUBLIC_TOKEN_MAX_AGE;

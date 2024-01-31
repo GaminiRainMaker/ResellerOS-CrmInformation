@@ -11,31 +11,31 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import {Form} from 'antd';
+import Cookies from 'js-cookie';
 import {useEffect, useState} from 'react';
+import {deleteProduct} from '../../../../../redux/actions/product';
 import {
-  deleteProduct,
-  getAllProduct,
-  insertProduct,
-  updateProductById,
-} from '../../../../../redux/actions/product';
+  createUser,
+  getUserByOrganization,
+  updateUserById,
+} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsDrawer from '../os-drawer';
 import OsModal from '../os-modal';
 import DeleteModal from '../os-modal/DeleteModal';
-import AddProducts from './AddProducts';
+import AddUsers from './AddUser';
 
-const AddProduct = () => {
+const AddUser = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const [showAddProductModal, setShowAddProductModal] =
-    useState<boolean>(false);
-  const {data: ProductData, loading} = useAppSelector((state) => state.product);
+  const [showAddUserModal, setShowAddUserModal] = useState<boolean>(false);
+  const {data, loading} = useAppSelector((state) => state.user);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
-  const [addProductType, setAddProductType] = useState<string>('');
   const [open, setOpen] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
-  const [productData, setProductData] = useState<any>();
+  const [userData, setUserData] = useState<any>();
   const [form] = Form.useForm();
+  const [addUserType, setAddUserType] = useState<string>('');
 
   const dropDownItemss = [
     {
@@ -58,23 +58,23 @@ const AddProduct = () => {
 
   const deleteSelectedIds = async () => {
     const data = {id: deleteIds};
-    await dispatch(deleteProduct(data));
-    setTimeout(() => {
-      dispatch(getAllProduct());
-    }, 1000);
-    setDeleteIds([]);
-    setShowModalDelete(false);
+    // await dispatch(deleteProduct(data));
+    // setTimeout(() => {
+    //   dispatch(getUserByOrganization('forcebolt'));
+    // }, 1000);
+    // setDeleteIds([]);
+    // setShowModalDelete(false);
   };
 
-  const ProductColumns = [
+  const UserColumns = [
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Product name
+          Name
         </Typography>
       ),
-      dataIndex: 'product_code',
-      key: 'product_code',
+      dataIndex: 'user_name',
+      key: 'user_name',
       width: 173,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -83,11 +83,11 @@ const AddProduct = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Product Code
+          Email
         </Typography>
       ),
-      dataIndex: 'product_code',
-      key: 'product_code',
+      dataIndex: 'email',
+      key: 'email',
       width: 173,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -96,38 +96,15 @@ const AddProduct = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          List Price
+          Is Admin
         </Typography>
       ),
-      dataIndex: 'list_price',
-      key: 'list_price',
+      dataIndex: 'is_admin',
+      key: 'is_admin',
       width: 173,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Product Family
-        </Typography>
-      ),
-      dataIndex: 'product_family',
-      key: 'product_family',
-      width: 173,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Product Description
-        </Typography>
-      ),
-      dataIndex: 'description',
-      key: 'description',
-      width: 370,
     },
     {
       title: (
@@ -146,9 +123,9 @@ const AddProduct = () => {
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              setAddProductType('update');
               setOpen(true);
-              setProductData(record);
+              setAddUserType('update');
+              setUserData(record);
             }}
           />
           <TrashIcon
@@ -167,35 +144,35 @@ const AddProduct = () => {
   ];
 
   useEffect(() => {
-    dispatch(getAllProduct());
+    dispatch(getUserByOrganization('forcebolt'));
   }, []);
 
   const onFinish = () => {
-    const productNewData = form.getFieldsValue();
-    if (addProductType === 'insert') {
-      dispatch(insertProduct(productNewData)).then(() => {
-        dispatch(getAllProduct());
-        setShowAddProductModal(false);
+    const userNewData = form.getFieldsValue();
+    if (addUserType === 'insert') {
+      dispatch(createUser(userNewData)).then(() => {
+        dispatch(getUserByOrganization('forcebolt'));
+        setShowAddUserModal(false);
       });
-    } else if (addProductType === 'update') {
+    } else if (addUserType === 'update') {
       const obj: any = {
-        id: productData?.id,
-        ...productNewData,
+        id: userData?.id,
+        ...userNewData,
       };
-      dispatch(updateProductById(obj)).then(() => {
-        dispatch(getAllProduct());
+      dispatch(updateUserById(obj)).then(() => {
+        dispatch(getUserByOrganization('forcebolt'));
         setOpen(false);
       });
     }
   };
-
+  console.log('4354354343543', Cookies.get('token'));
   return (
     <>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              All Products
+              All Users
             </Typography>
           </Col>
           <Col>
@@ -207,12 +184,12 @@ const AddProduct = () => {
               }}
             >
               <OsButton
-                text="Add New Product"
+                text="Add New User"
                 buttontype="PRIMARY"
                 icon={<PlusIcon />}
                 clickHandler={() => {
-                  setAddProductType('insert');
-                  setShowAddProductModal((p) => !p);
+                  setAddUserType('insert');
+                  setShowAddUserModal((p) => !p);
                 }}
               />
               <Space>
@@ -223,9 +200,8 @@ const AddProduct = () => {
         </Row>
 
         <OsTable
-          columns={ProductColumns}
-          dataSource={ProductData}
-          // rowSelection={rowSelection}
+          columns={UserColumns}
+          dataSource={data}
           scroll
           loading={loading}
         />
@@ -236,16 +212,16 @@ const AddProduct = () => {
         setDeleteIds={setDeleteIds}
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteSelectedIds}
-        heading="Delete Product"
-        description="Are you sure you want to delete this product?"
+        heading="Delete User"
+        description="Are you sure you want to delete this user?"
       />
 
       <OsModal
-        body={<AddProducts form={form} />}
+        body={<AddUsers form={form} />}
         width={696}
-        open={showAddProductModal}
+        open={showAddUserModal}
         onCancel={() => {
-          setShowAddProductModal((p) => !p);
+          setShowAddUserModal((p) => !p);
         }}
         onOk={onFinish}
         primaryButtonText="ADD"
@@ -253,7 +229,7 @@ const AddProduct = () => {
       />
 
       <OsDrawer
-        title={<Typography name="Body 1/Regular">Add New Product</Typography>}
+        title={<Typography name="Body 1/Regular">Update User</Typography>}
         placement="right"
         onClose={() => {
           setOpen(false);
@@ -271,9 +247,9 @@ const AddProduct = () => {
           </Row>
         }
       >
-        <AddProducts
+        <AddUsers
           isDrawer
-          productData={productData}
+          userData={userData}
           onFinish={onFinish}
           form={form}
         />
@@ -282,4 +258,4 @@ const AddProduct = () => {
   );
 };
 
-export default AddProduct;
+export default AddUser;

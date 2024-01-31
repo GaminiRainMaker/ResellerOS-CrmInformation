@@ -15,13 +15,38 @@ export const loginUser = createAsyncThunk(
 );
 
 export const createUser = createAsyncThunk(
-  'user/createUser',
+  'user/addUser',
   async (data: any, thunkApi) => {
     try {
-      const res = await USERAPI.post(data);
+      const res = await USERAPI.addUser(data);
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);
+
+export const updateUserById = createAsyncThunk(
+  'user/updateUserById',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await USERAPI.updateUserById(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+
+export const getUserByOrganization = createAsyncThunk(
+  'user/getUserByOrganization',
+  async (organization: string, thunkApi) => {
+    console.log('organization', organization);
+    try {
+      const res = await USERAPI.get();
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
     }
   },
 );
