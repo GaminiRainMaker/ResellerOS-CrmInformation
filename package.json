@@ -31,6 +31,7 @@
     "axios": "^1.6.1",
     "fs": "^0.0.1-security",
     "jwt-decode": "^3.1.2",
+    "js-cookie": "^3.0.5",
     "lodash.throttle": "^4.1.1",
     "moment": "^2.30.1",
     "next": "14.0.1",
@@ -49,6 +50,7 @@
   "devDependencies": {
     "@aws-amplify/backend": "^0.5.5",
     "@aws-amplify/backend-cli": "^0.9.1",
+    "@types/js-cookie": "^3.0.6",
     "@types/lodash": "^4.14.198",
     "@types/node": "^20",
     "@types/react": "^18",

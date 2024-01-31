@@ -52,7 +52,6 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
   useEffect(() => {
     dispatch(getAllCustomer(''));
   }, []);
-  console.log('formValue', formValue?.stages);
 
   return (
     <>

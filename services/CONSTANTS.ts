@@ -1,7 +1,7 @@
 export const API = {
-  AUTHENTICATION: {
-    REFRESH: '/quote',
-    LOG_IN: '/login',
+  AUTH: {
+    INDEX: '/auth',
+    VERIFY: '/auth/verify',
   },
   QUOTE: {
     INDEX: '/quote',

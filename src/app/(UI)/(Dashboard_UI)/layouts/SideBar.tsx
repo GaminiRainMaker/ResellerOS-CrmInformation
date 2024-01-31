@@ -3,6 +3,8 @@
 'use client';
 
 import {Space} from '@/app/components/common/antd/Space';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import Cookies from 'js-cookie';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsAvatar from '@/app/components/common/os-avatar';
 import Typography from '@/app/components/common/typography';
@@ -30,6 +32,8 @@ const SideBar = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [seleectedKey, setSelectedKey] = useState<number>(1);
   type MenuItem = Required<MenuProps>['items'][number];
+
+  const isAdmin = Cookies.get('Admin');
 
   function getItem(
     label: React.ReactNode,
@@ -431,38 +435,45 @@ const SideBar = () => {
       ],
     ),
     getItem(
-      <Space
-        size={12}
-        onClick={() => {
-          setSelectedKey(11);
-          router?.push('/admin');
-        }}
-        color={token?.colorTextSecondary}
-      >
-        <OsAvatar
-          icon={
-            <AdjustmentsHorizontalIcon
+      <>
+        {isAdmin?.toString()?.includes('true') ? (
+          <Space
+            size={12}
+            onClick={() => {
+              setSelectedKey(11);
+              router?.push('/admin');
+            }}
+            color={token?.colorTextSecondary}
+          >
+            <OsAvatar
+              icon={
+                <AdjustmentsHorizontalIcon
+                  color={
+                    seleectedKey?.toString()?.includes('11')
+                      ? token?.colorLink
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+
+            <Typography
+              cursor="pointer"
+              name="Button 1"
               color={
                 seleectedKey?.toString()?.includes('11')
                   ? token?.colorLink
                   : token?.colorTextSecondary
               }
-              width={24}
-            />
-          }
-        />
-        <Typography
-          cursor="pointer"
-          name="Button 1"
-          color={
-            seleectedKey?.toString()?.includes('11')
-              ? token?.colorLink
-              : token?.colorTextSecondary
-          }
-        >
-          Admin
-        </Typography>
-      </Space>,
+            >
+              Admin
+            </Typography>
+          </Space>
+        ) : (
+          ''
+        )}
+      </>,
       '11',
     ),
   ];

@@ -1,8 +1,12 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/no-unstable-nested-components */
 import {Form} from 'antd';
 import Image from 'next/image';
-import {FC} from 'react';
+import {FC, useState} from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import Cookies from 'js-cookie';
+import {useRouter, useSearchParams} from 'next/navigation';
 import OSResellerLogo from '../../../../../public/assets/static/ResellerOsText.svg';
 import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
 import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
@@ -14,6 +18,8 @@ import OsInputPassword from '../../common/os-input/InputPassword';
 import Typography from '../../common/typography';
 import {AuthLayoutInterface} from './authLayout.interface';
 import {ContentSectionWrapper, CustomCheckbox} from './styled-components';
+import {useAppDispatch} from '../../../../../redux/hook';
+import {signUpAuth, verifyAuth} from '../../../../../redux/actions/auth';
 
 const ContentSection: FC<AuthLayoutInterface> = ({
   heading,
@@ -26,9 +32,51 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   inputFields,
 }) => {
   const [token] = useThemeToken();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
 
-  const onSubmitForm = (values: any) => {
-    onClick(values);
+  const [signUpData, setSignUpData] = useState<any>();
+  // const onSubmitForm = (values: any) => {
+  //   onClick(values);
+  // };
+
+  const onSubmitForm = (formValues: any, type: any) => {
+    if (type == 'Log In') {
+      dispatch(
+        verifyAuth({
+          email: formValues?.email,
+          password: formValues?.password,
+        }),
+      ).then((payload) => {
+        Cookies.set('access_token', payload.payload.token, {
+          expires: 0.8,
+          secure: true,
+          sameSite: 'strict',
+        });
+        Cookies.set('id', payload.payload.id);
+        Cookies.set('token', payload.payload.token);
+        Cookies.set('organization', payload.payload.organization);
+        Cookies.set('Admin', payload.payload.admin);
+        console.log('4364543543', payload.payload);
+        // return;
+        router.push('/crmInAccount');
+      });
+    } else if (
+      formValues?.username &&
+      formValues?.password &&
+      formValues?.email
+    ) {
+      dispatch(
+        signUpAuth({
+          user_name: formValues?.username,
+          email: formValues?.email,
+          password: formValues?.password,
+          organization: 'forcebolt',
+        }),
+      ).then(() => {
+        router.push('/login');
+      });
+    }
   };
 
   return (
@@ -58,7 +106,9 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           <Form
             layout="vertical"
             name="authForm"
-            onFinish={onSubmitForm}
+            onFinish={() => {
+              onSubmitForm(signUpData, '');
+            }}
             autoComplete="off"
             requiredMark={false}
           >
@@ -85,6 +135,12 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                 >
                   {item.type === 'password' ? (
                     <OsInputPassword
+                      onChange={(e) => {
+                        setSignUpData({
+                          ...signUpData,
+                          [item.name]: e.target.value,
+                        });
+                      }}
                       iconRender={(visible) =>
                         visible ? (
                           <Image
@@ -109,6 +165,12 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                   ) : (
                     <OsInput
                       placeholder={item.placeholder}
+                      onChange={(e) => {
+                        setSignUpData({
+                          ...signUpData,
+                          [item.name]: e.target.value,
+                        });
+                      }}
                       suffix={
                         <Image
                           src={item.icon}
@@ -150,9 +212,13 @@ const ContentSection: FC<AuthLayoutInterface> = ({
 
             <Form.Item style={{marginTop: '80px'}}>
               <OsButton
+                style={{marginTop: '80px'}}
                 text={buttonText}
                 buttontype="PRIMARY"
                 htmlType="submit"
+                clickHandler={() => {
+                  onSubmitForm(signUpData, buttonText);
+                }}
               />
             </Form.Item>
 
@@ -165,8 +231,10 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                   Already a member?
                   <Typography
                     name="Body 3/Bold"
+                    onClick={() => router?.push('/login')}
                     color={token?.colorLink}
                     cursor="pointer"
+                    style={{cursor: 'pointer'}}
                   >
                     {' '}
                     Login
@@ -183,6 +251,8 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                     name="Body 3/Bold"
                     color={token?.colorLink}
                     cursor="pointer"
+                    style={{cursor: 'pointer'}}
+                    onClick={() => router?.push('/signUp')}
                   >
                     {' '}
                     Register Now

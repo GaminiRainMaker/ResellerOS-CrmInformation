@@ -19,6 +19,7 @@ const DealDrawerContent: FC<any> = ({form, onFinish, setSelectedUserId}) => {
   const {data: dealRegAddressData} = useAppSelector(
     (state) => state.dealRegAddress,
   );
+  const [dealRegStatus, setDealRegStatus] = useState<string>('');
 
   const [customerValue, setCustomerValue] = useState<number>(0);
   const [billingOptionsData, setBillingOptionData] = useState<any>();
@@ -30,7 +31,6 @@ const DealDrawerContent: FC<any> = ({form, onFinish, setSelectedUserId}) => {
       </Typography>
     ),
   }));
-  const [dealRegStatus, setDealRegStatus] = useState<string>('');
 
   useEffect(() => {
     const updatedAllBillingContact: any = [];
@@ -60,8 +60,6 @@ const DealDrawerContent: FC<any> = ({form, onFinish, setSelectedUserId}) => {
       dispatch(getDealRegAddressById(dealReg?.id));
     }
   }, [dealReg?.id]);
-
-  console.log('dealRegAddressData', dealRegAddressData);
 
   return (
     <Form
