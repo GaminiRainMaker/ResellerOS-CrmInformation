@@ -11,6 +11,7 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import {Form} from 'antd';
+import Cookies from 'js-cookie';
 import {useEffect, useState} from 'react';
 import {deleteProduct} from '../../../../../redux/actions/product';
 import {
@@ -165,7 +166,7 @@ const AddUser = () => {
       });
     }
   };
-
+  console.log('4354354343543', Cookies.get('token'));
   return (
     <>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
