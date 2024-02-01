@@ -50,3 +50,14 @@ export const getUserByOrganization = createAsyncThunk(
     }
   },
 );
+export const getUserByTokenAccess = createAsyncThunk(
+  'user/getUserByToken',
+  async (organization: string, thunkApi) => {
+    try {
+      const res = await USERAPI.getByToken();
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {Action, AnyAction, configureStore} from '@reduxjs/toolkit';
-
+import logger from 'redux-logger';
 import thunk, {ThunkAction, ThunkDispatch} from 'redux-thunk';
 import quote from './slices/quote';
 import quoteLineItem from './slices/quotelineitem';
@@ -25,8 +25,6 @@ import dealReg from './slices/dealReg';
 import dealRegAddress from './slices/dealRegAddress';
 
 // Configure redux store
-const logger = require('redux-logger');
-
 const store = configureStore({
   reducer: {
     quote,
@@ -51,7 +49,7 @@ const store = configureStore({
     dealReg,
     dealRegAddress,
   },
-  middleware: [thunk, logger],
+  middleware: [thunk],
   devTools: true,
 });
 

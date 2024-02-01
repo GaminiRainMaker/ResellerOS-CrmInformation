@@ -50,6 +50,7 @@ const CrmInformation: React.FC = () => {
   const [customerValue, setCustomerValue] = useState<any>();
 
   const [showModal, setShowModal] = useState<boolean>(false);
+  const {user: userData, userInfor} = useAppSelector((state) => state.user);
   const {loading, filteredData} = useAppSelector((state) => state.customer);
   const {data: billingData} = useAppSelector((state) => state.billingContact);
   const [open, setOpen] = useState(false);
@@ -75,7 +76,6 @@ const CrmInformation: React.FC = () => {
     const setDeleted = deletedAll;
     setDeletedData(setDeleted);
   }, [billingData, activeTab]);
-
   useEffect(() => {
     setTimeout(() => {
       dispatch(queryCustomer(''));

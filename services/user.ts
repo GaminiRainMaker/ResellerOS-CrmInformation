@@ -5,6 +5,7 @@ import {get, patch, post} from './index';
 
 export const USERAPI = {
   get: () => get(API.USER.INDEX) as Promise<AxiosResponse<[]>>,
+  getByToken: () => get(API.USER.TOKEN) as Promise<AxiosResponse<[]>>,
   post: (data: any) => post(API.USER.INDEX, data),
   loginUser: (data: any) => post(API.USER.LOGIN, data),
   query: (data: any) =>
@@ -14,5 +15,5 @@ export const USERAPI = {
   updateUserById: (data: any) =>
     patch(API.USER.UpdateUserById, data) as Promise<AxiosResponse<any>>,
   addUser: (data: any) =>
-  post(API.USER.AddUser, data) as Promise<AxiosResponse<any>>,
+    post(API.USER.AddUser, data) as Promise<AxiosResponse<any>>,
 };
