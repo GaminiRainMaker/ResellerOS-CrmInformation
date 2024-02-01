@@ -20,6 +20,7 @@ import {AuthLayoutInterface} from './authLayout.interface';
 import {ContentSectionWrapper, CustomCheckbox} from './styled-components';
 import {useAppDispatch} from '../../../../../redux/hook';
 import {signUpAuth, verifyAuth} from '../../../../../redux/actions/auth';
+import {setUser} from '../../../../../redux/slices/user';
 
 const ContentSection: FC<AuthLayoutInterface> = ({
   heading,
@@ -78,6 +79,11 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           expires: 0.8,
           secure: true,
           sameSite: 'strict',
+        });
+        setUser({
+          id: payload.payload.id,
+          organization: payload.payload.organization,
+          Admin: payload.payload.admin,
         });
         Cookies.set('id', payload.payload.id);
         Cookies.set('token', payload.payload.token);

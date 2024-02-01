@@ -2,9 +2,10 @@ import type {Metadata} from 'next';
 import './globals.css';
 import ConfigProvider from 'antd/es/config-provider';
 import {Plus_Jakarta_Sans} from 'next/font/google';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import {getServerSession} from 'next-auth/next';
 import theme from './style/theme';
 import Providers from './Provider';
-import {getServerSession} from 'next-auth/next';
 import {authOptions} from './api/auth/[...nextauth]/route';
 import ClientSessionProvider from './provider/ClientSessionProvider';
 

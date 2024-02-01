@@ -57,7 +57,7 @@ const AddUser = () => {
   ];
 
   const deleteSelectedIds = async () => {
-    const data = {id: deleteIds};
+    // const data = {id: deleteIds};
     // await dispatch(deleteProduct(data));
     // setTimeout(() => {
     //   dispatch(getUserByOrganization('forcebolt'));
