@@ -3,7 +3,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import {Form} from 'antd';
 import Image from 'next/image';
-import {FC, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Cookies from 'js-cookie';
 import {useRouter, useSearchParams} from 'next/navigation';
@@ -20,6 +20,8 @@ import {AuthLayoutInterface} from './authLayout.interface';
 import {ContentSectionWrapper, CustomCheckbox} from './styled-components';
 import {useAppDispatch} from '../../../../../redux/hook';
 import {signUpAuth, verifyAuth} from '../../../../../redux/actions/auth';
+import {setUserInformation} from '../../../../../redux/slices/user';
+import {getUserByOrganization} from '../../../../../redux/actions/user';
 
 const ContentSection: FC<AuthLayoutInterface> = ({
   heading,
@@ -40,6 +42,26 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   //   onClick(values);
   // };
 
+  useEffect(() => {
+    const tokendata: any = Cookies.get('token');
+    if (tokendata) {
+      dispatch(getUserByOrganization('')).then((payload: any) => {
+        if (payload?.type?.split('/')?.[2]?.toString()?.includes('fulfilled')) {
+          const dataaa: any = payload?.payload?.[0];
+          dispatch(
+            setUserInformation({
+              user_name: dataaa?.user_name,
+              email: dataaa?.email,
+              organization: dataaa?.organization,
+              Admin: dataaa?.is_admin,
+            }),
+          );
+          router.push('/crmInAccount');
+        }
+      });
+    }
+  }, []);
+  const tokendata: any = Cookies.get('token');
   const onSubmitForm = (formValues: any, type: any) => {
     // formValues?.email
     const validateEmail = (email: any) =>
@@ -79,10 +101,15 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           secure: true,
           sameSite: 'strict',
         });
-        Cookies.set('id', payload.payload.id);
+        dispatch(
+          setUserInformation({
+            id: payload.payload.id,
+            organization: payload.payload.organization,
+            Admin: payload.payload.admin,
+          }),
+        );
         Cookies.set('token', payload.payload.token);
-        Cookies.set('organization', payload.payload.organization);
-        Cookies.set('Admin', payload.payload.admin);
+
         // return;
         router.push('/crmInAccount');
       });

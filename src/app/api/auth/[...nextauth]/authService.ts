@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable import/no-extraneous-dependencies */
 import jwt_decode from 'jwt-decode';
 import {JWT} from 'next-auth/jwt';
 import {API} from '../../../../../services/CONSTANTS';
@@ -25,17 +27,17 @@ export async function authenticateUser(
 
   const requestOptions = {
     method: 'POST',
-    headers: headers,
+    headers,
     body: requestBody,
     redirect: 'follow' as RequestRedirect,
   };
 
   try {
     const serverURL = process.env.NEXT_PUBLIC_SERVER_URI;
-    const loginURL = API.AUTHENTICATION.LOG_IN;
-    const response = await fetch(`${serverURL}/${loginURL}`, requestOptions);
+    // const loginURL = API.AUTHENTICATION.LOG_IN;
+    // const response = await fetch(`${serverURL}/${loginURL}`, requestOptions);
+    let response: any;
     const result = await response.json();
-
     if (result.success && result.code === 201) {
       const decoded: DecodedToken = jwt_decode(result.data.access_token);
 
@@ -63,14 +65,14 @@ export async function refreshAccessToken(token: JWT) {
 
   const requestOptions = {
     method: 'POST',
-    headers: headers,
+    headers,
     redirect: 'follow' as RequestRedirect,
   };
 
   try {
     const serverURL = process.env.NEXT_PUBLIC_SERVER_URI;
-    const refreshURL = API.AUTHENTICATION.REFRESH;
-
+    // const refreshURL = API.AUTHENTICATION.REFRESH;
+    let refreshURL: any;
     const response = await fetch(`${serverURL}/${refreshURL}`, requestOptions);
     const refreshedTokens = await response.json();
 

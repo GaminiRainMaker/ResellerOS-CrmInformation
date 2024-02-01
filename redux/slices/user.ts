@@ -6,6 +6,7 @@ import {
   loginUser,
   updateUserById,
   getUserByOrganization,
+  getUserByTokenAccess,
 } from '../actions/user';
 
 type UserState = {
@@ -13,12 +14,14 @@ type UserState = {
   error: string | null;
   data: any;
   user: any;
+  userInfor: any;
 };
 const initialState: UserState = {
   loading: false,
   error: null,
   data: [],
   user: [],
+  userInfor: [],
 };
 
 const userSlice = createSlice({
@@ -27,6 +30,9 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload;
+    },
+    setUserInformation: (state, action) => {
+      state.userInfor = action.payload;
     },
   },
   extraReducers(builder) {
@@ -87,9 +93,27 @@ const userSlice = createSlice({
           state.loading = false;
           state.error = action.payload;
         },
+      )
+      .addCase(getUserByTokenAccess.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getUserByTokenAccess.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getUserByTokenAccess.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
       );
   },
 });
 
-export const {setUser} = userSlice.actions;
+export const {setUser, setUserInformation} = userSlice.actions;
 export default userSlice?.reducer;

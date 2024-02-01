@@ -4,7 +4,6 @@
 
 import {Space} from '@/app/components/common/antd/Space';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import Cookies from 'js-cookie';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsAvatar from '@/app/components/common/os-avatar';
 import Typography from '@/app/components/common/typography';
@@ -22,6 +21,7 @@ import {Layout, MenuProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import React, {useState} from 'react';
 import {LayoutMenuStyle} from './styled-components';
+import {useAppSelector} from '../../../../../redux/hook';
 
 const {Sider} = Layout;
 
@@ -31,9 +31,8 @@ const SideBar = () => {
 
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [seleectedKey, setSelectedKey] = useState<number>(1);
+  const {userInfor} = useAppSelector((state) => state.user);
   type MenuItem = Required<MenuProps>['items'][number];
-
-  const isAdmin = Cookies.get('Admin');
 
   function getItem(
     label: React.ReactNode,
@@ -49,6 +48,7 @@ const SideBar = () => {
     } as MenuItem;
   }
 
+  const isAdmin = userInfor?.Admin;
   const items: MenuItem[] = [
     getItem(
       <Typography

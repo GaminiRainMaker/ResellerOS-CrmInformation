@@ -14,6 +14,7 @@ import {
 } from '@heroicons/react/24/outline';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Cookies from 'js-cookie';
+
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
@@ -49,6 +50,7 @@ const CrmInformation: React.FC = () => {
   const [customerValue, setCustomerValue] = useState<any>();
 
   const [showModal, setShowModal] = useState<boolean>(false);
+  const {user: userData, userInfor} = useAppSelector((state) => state.user);
   const {loading, filteredData} = useAppSelector((state) => state.customer);
   const {data: billingData} = useAppSelector((state) => state.billingContact);
   const [open, setOpen] = useState(false);
@@ -74,7 +76,6 @@ const CrmInformation: React.FC = () => {
     const setDeleted = deletedAll;
     setDeletedData(setDeleted);
   }, [billingData, activeTab]);
-
   useEffect(() => {
     setTimeout(() => {
       dispatch(queryCustomer(''));

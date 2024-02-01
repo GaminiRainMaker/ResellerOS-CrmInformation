@@ -49,7 +49,7 @@ const store = configureStore({
     dealReg,
     dealRegAddress,
   },
-  middleware: [thunk, logger],
+  middleware: [thunk],
   devTools: true,
 });
 

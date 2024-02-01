@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable import/no-extraneous-dependencies */
 import NextAuth, {NextAuthOptions} from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import {Credentials} from './types';
@@ -18,16 +20,16 @@ export const authOptions: NextAuthOptions = {
         if (data?.success) {
           console.log('Logged in', data);
           return data;
-        } else {
-          console.log('Failed to login', data);
-          console.log('env', process.env);
-          throw new Error(JSON.stringify(data));
         }
+        console.log('Failed to login', data);
+        console.log('env', process.env);
+        throw new Error(JSON.stringify(data));
       },
     }),
   ],
   session: {
     strategy: 'jwt',
+    // eslint-disable-next-line radix
     maxAge: parseInt(process.env.SESSION_MAX_AGE ?? '') || sessionMaxAge,
   },
   callbacks: {

@@ -29,6 +29,7 @@ export const API = {
     QUERY: '/user/query',
     UpdateUserById: '/user/updateUserById',
     AddUser: '/user/addUser',
+    TOKEN: '/user/getUserByToken',
   },
   PRODUCT: {
     INDEX: '/product',
