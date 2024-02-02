@@ -11,14 +11,12 @@ import Typography from '../typography';
 const DailogModal: FC<any> = ({
   showDailogModal,
   setShowDailogModal,
-  deleteSelectedIds,
   heading,
   description,
 }) => {
   const [token] = useThemeToken();
   return (
     <OsModal
-      // loading={loading}
       body={
         <Row style={{width: '100%', padding: '15px'}}>
           <Space
@@ -55,8 +53,7 @@ const DailogModal: FC<any> = ({
               <OsButton
                 text="Send Again"
                 buttontype="PRIMARY"
-                // clickHandler={deleteSelectedIds}
-                clickHandler={setShowDailogModal(false)}
+                // clickHandler={setShowDailogModal(false)}
               />
             </Space>
           </Space>
@@ -65,7 +62,7 @@ const DailogModal: FC<any> = ({
       width={600}
       open={showDailogModal}
       onCancel={() => {
-        setShowDailogModal((p: boolean) => !p);
+        setShowDailogModal(false);
       }}
     />
   );

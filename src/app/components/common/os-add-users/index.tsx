@@ -12,7 +12,6 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import {Form} from 'antd';
-import Cookies from 'js-cookie';
 import {useEffect, useState} from 'react';
 import {
   createUser,
@@ -58,7 +57,6 @@ const AddUser = () => {
       ),
     },
   ];
-
   const deleteSelectedIds = async () => {
     // const data = {id: deleteIds};
     // await dispatch(deleteProduct(data));
@@ -66,7 +64,6 @@ const AddUser = () => {
     //   dispatch(getUserByOrganization(userInformation?.organization));
     // }, 1000);
     // setDeleteIds([]);
-    // setShowDailogModal(false);
   };
   const UserColumns = [
     {
@@ -144,7 +141,7 @@ const AddUser = () => {
       key: 'status',
       width: 173,
       render: (text: string, record: any) => (
-        <OsStatusWrapper value={'Invite Sent'} />
+        <OsStatusWrapper value={text ?? 'Invite Sent'} />
       ),
     },
     {
@@ -176,7 +173,6 @@ const AddUser = () => {
             style={{cursor: 'pointer'}}
             onClick={() => {
               setDeleteIds([record?.id]);
-              setShowDailogModal(true);
             }}
           />
         </Space>
@@ -212,7 +208,7 @@ const AddUser = () => {
     }
     dispatch(getUserByOrganization(userInformation?.organization));
   };
-  console.log('4354354343543', Cookies.get('token'));
+
   return (
     <>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
@@ -254,15 +250,6 @@ const AddUser = () => {
         />
       </Space>
 
-      <DailogModal
-        setShowDailogModal={setShowDailogModal}
-        setDeleteIds={setDeleteIds}
-        showDailogModal={showDailogModal}
-        deleteSelectedIds={deleteSelectedIds}
-        heading="Invite Sent"
-        description="Invite has been sent on email with auto-generated password"
-      />
-
       <OsModal
         body={<AddUsers form={form} />}
         width={696}
@@ -273,6 +260,13 @@ const AddUser = () => {
         onOk={onFinish}
         primaryButtonText="Save & Send Invite"
         footerPadding={24}
+      />
+
+      <DailogModal
+        setShowDailogModal={setShowDailogModal}
+        showDailogModal={showDailogModal}
+        heading="Invite Sent"
+        description="Invite has been sent on email with auto-generated password"
       />
 
       <OsDrawer

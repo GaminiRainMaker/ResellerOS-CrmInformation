@@ -5,20 +5,19 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsDropdown from '@/app/components/common/os-dropdown';
-import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {Form} from 'antd';
 import {useEffect, useState} from 'react';
-import {getUserByOrganization} from '../../../../../../../redux/actions/user';
+import {
+  getUserByOrganization,
+  updateUserById,
+} from '../../../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
 
 const RolesAndPermission = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const [showAddUserModal, setShowAddUserModal] = useState<boolean>(false);
   const {data, loading} = useAppSelector((state) => state.user);
-  const [form] = Form.useForm();
   const {userInformation} = useAppSelector((state) => state.user);
   const [userRules, setUserRules] = useState<any>(data);
 
@@ -40,16 +39,6 @@ const RolesAndPermission = () => {
       ),
     },
   ];
-
-  //   const deleteSelectedIds = async () => {
-  //     // const data = {id: deleteIds};
-  //     // await dispatch(deleteProduct(data));
-  //     // setTimeout(() => {
-  //     //   dispatch(getUserByOrganization('forcebolt'));
-  //     // }, 1000);
-  //     // setDeleteIds([]);
-  //     // setShowModalDelete(false);
-  //   };
 
   const RolesAndPermissionsColumns = [
     {
@@ -188,22 +177,13 @@ const RolesAndPermission = () => {
   }, []);
 
   const onFinish = () => {
-    const userNewData = form.getFieldsValue();
-    // if (addUserType === 'insert') {
-    //   dispatch(createUser(userNewData)).then(() => {
-    //     dispatch(getUserByOrganization('forcebolt'));
-    //     setShowAddUserModal(false);
-    //   });
-    // } else if (addUserType === 'update') {
-    //   const obj: any = {
-    //     id: userData?.id,
-    //     ...userNewData,
-    //   };
-    //   dispatch(updateUserById(obj)).then(() => {
-    //     dispatch(getUserByOrganization('forcebolt'));
-    //     setOpen(false);
-    //   });
-    // }
+    for (let i = 0; i < userRules.length; i++) {
+      let items = userRules[i];
+      dispatch(updateUserById(items)).then(() => {});
+    }
+    setTimeout(() => {
+      dispatch(getUserByOrganization(userInformation?.organization));
+    }, 1000);
   };
 
   const rowSelection = {
@@ -211,10 +191,6 @@ const RolesAndPermission = () => {
       console.log('selectedRowKeys', selectedRowKeys, record);
       //   setExistingQuoteId(Number(selectedRowKeys));
     },
-    getCheckboxProps: (record: any) => ({
-      disabled: record.name === 'Disabled User',
-      name: record.name,
-    }),
   };
 
   return (
@@ -234,15 +210,11 @@ const RolesAndPermission = () => {
                 gap: '8px',
               }}
             >
-              <OsButton
-                text="CANCEL"
-                buttontype="SECONDARY"
-                // clickHandler={}
-              />
+              <OsButton text="CANCEL" buttontype="SECONDARY" />
               <OsButton
                 text="SAVE"
                 buttontype="PRIMARY"
-                // clickHandler={}
+                clickHandler={onFinish}
               />
               <Space>
                 <OsDropdown menu={{items: dropDownItemss}} />
@@ -259,18 +231,6 @@ const RolesAndPermission = () => {
           rowSelection={rowSelection}
         />
       </Space>
-
-      <OsModal
-        body={<></>}
-        width={696}
-        open={showAddUserModal}
-        onCancel={() => {
-          setShowAddUserModal((p) => !p);
-        }}
-        onOk={onFinish}
-        primaryButtonText="ADD"
-        footerPadding={24}
-      />
     </>
   );
 };
