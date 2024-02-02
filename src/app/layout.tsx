@@ -27,9 +27,9 @@ export default async function RootLayout({
     <ConfigProvider theme={theme}>
       <html lang="en">
         <body className={inter.className}>
-          <ClientSessionProvider session={session}>
-            <Providers>{children}</Providers>
-          </ClientSessionProvider>
+          {/* <ClientSessionProvider session={session}> */}
+          <Providers>{children}</Providers>
+          {/* </ClientSessionProvider> */}
         </body>
       </html>
     </ConfigProvider>
