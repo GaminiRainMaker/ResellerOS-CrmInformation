@@ -81,7 +81,7 @@ const AddUser: FC<OsAdduser> = ({
           </Row>
 
           <Row gutter={[16, 16]}>
-            <Col sm={24} md={12}>
+            <Col sm={24} md={isDrawer ? 24 :12}>
               <Form.Item label="Contact No." name="phone_number">
                 <ContactInput
                   name="contact_number"
@@ -93,7 +93,7 @@ const AddUser: FC<OsAdduser> = ({
                 />
               </Form.Item>
             </Col>
-            <Col sm={24} md={12}>
+            <Col sm={24} md={isDrawer ? 24 :12}>
               <Form.Item label="Job Title" name="job_title">
                 <OsInput placeholder="Enter Job Title" />
               </Form.Item>
