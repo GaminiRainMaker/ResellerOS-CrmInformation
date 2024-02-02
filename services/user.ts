@@ -16,4 +16,6 @@ export const USERAPI = {
     patch(API.USER.UpdateUserById, data) as Promise<AxiosResponse<any>>,
   addUser: (data: any) =>
     post(API.USER.AddUser, data) as Promise<AxiosResponse<any>>,
+  deleteById: (data: any) =>
+    patch(API.USER.DeleteById, data) as Promise<AxiosResponse<any>>,
 };

@@ -234,6 +234,7 @@ const AddProduct = () => {
       </Space>
 
       <DeleteModal
+        loading={loading}
         setShowModalDelete={setShowModalDelete}
         setDeleteIds={setDeleteIds}
         showModalDelete={showModalDelete}

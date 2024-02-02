@@ -7,6 +7,7 @@ import {
   updateUserById,
   getUserByOrganization,
   getUserByTokenAccess,
+  deleteUser,
 } from '../actions/user';
 
 type UserState = {
@@ -111,7 +112,19 @@ const userSlice = createSlice({
           state.loading = false;
           state.error = action.payload;
         },
-      );
+      )
+      .addCase(deleteUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteUser.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(deleteUser.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 

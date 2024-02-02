@@ -81,7 +81,7 @@ const ContactInput: React.FunctionComponent<InputProps> = ({
         </div>
       )}
       <OsPhoneInputStyle
-        onChange={(val) => {
+        onChange={(val: any) => {
           onChange(val as string);
         }}
         limitMaxLength

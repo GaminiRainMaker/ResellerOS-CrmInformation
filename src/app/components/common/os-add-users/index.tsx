@@ -15,12 +15,14 @@ import {Form} from 'antd';
 import {useEffect, useState} from 'react';
 import {
   createUser,
+  deleteUser,
   getUserByOrganization,
   updateUserById,
 } from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsDrawer from '../os-drawer';
 import OsModal from '../os-modal';
+import DeleteModal from '../os-modal/DeleteModal';
 import DailogModal from '../os-modal/DialogModal';
 import OsStatusWrapper from '../os-status';
 import AddUsers from './AddUser';
@@ -38,6 +40,7 @@ const AddUser = () => {
   const [userData, setUserData] = useState<any>();
   const [form] = Form.useForm();
   const [addUserType, setAddUserType] = useState<string>('');
+  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
 
   const dropDownItemss = [
     {
@@ -58,12 +61,13 @@ const AddUser = () => {
     },
   ];
   const deleteSelectedIds = async () => {
-    // const data = {id: deleteIds};
-    // await dispatch(deleteProduct(data));
-    // setTimeout(() => {
-    //   dispatch(getUserByOrganization(userInformation?.organization));
-    // }, 1000);
-    // setDeleteIds([]);
+    const data = {id: deleteIds};
+    await dispatch(deleteUser(data));
+    setTimeout(() => {
+      dispatch(getUserByOrganization(userInformation?.organization));
+    }, 1000);
+    setDeleteIds([]);
+    setShowModalDelete(false);
   };
   const UserColumns = [
     {
@@ -173,6 +177,7 @@ const AddUser = () => {
             style={{cursor: 'pointer'}}
             onClick={() => {
               setDeleteIds([record?.id]);
+              setShowModalDelete(true);
             }}
           />
         </Space>
@@ -188,7 +193,7 @@ const AddUser = () => {
     const userNewData = form.getFieldsValue();
     let userDataobj = {
       ...userNewData,
-      organization: userInformation?.organization,
+      organization: localStorage.getItem('organization'),
     };
     if (userNewData) {
       if (addUserType === 'insert') {
@@ -206,7 +211,9 @@ const AddUser = () => {
         });
       }
     }
-    dispatch(getUserByOrganization(userInformation?.organization));
+    setTimeout(() => {
+      dispatch(getUserByOrganization(userInformation?.organization));
+    }, 1000);
   };
 
   return (
@@ -251,6 +258,7 @@ const AddUser = () => {
       </Space>
 
       <OsModal
+        loading={loading}
         body={<AddUsers form={form} />}
         width={696}
         open={showAddUserModal}
@@ -267,6 +275,15 @@ const AddUser = () => {
         showDailogModal={showDailogModal}
         heading="Invite Sent"
         description="Invite has been sent on email with auto-generated password"
+      />
+      <DeleteModal
+        loading={loading}
+        setShowModalDelete={setShowModalDelete}
+        setDeleteIds={setDeleteIds}
+        showModalDelete={showModalDelete}
+        deleteSelectedIds={deleteSelectedIds}
+        heading="Delete User"
+        description="Are you sure you want to delete this user?"
       />
 
       <OsDrawer
