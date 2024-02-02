@@ -1,10 +1,12 @@
+'use client';
+
 import {Col, Form, Row, Space} from 'antd';
-import {FC, useEffect} from 'react';
-import {Switch} from '../antd/Switch';
+import {FC, useEffect, useState} from 'react';
 import useThemeToken from '../hooks/useThemeToken';
 import OsInput from '../os-input';
 import Typography from '../typography';
 import {OsAdduser} from './add-users.interface';
+import ContactInput from '../os-contact';
 
 const AddUser: FC<OsAdduser> = ({
   isDrawer = false,
@@ -13,6 +15,7 @@ const AddUser: FC<OsAdduser> = ({
   form,
 }) => {
   const [token] = useThemeToken();
+  const [contactValue, setContactValue] = useState<any>();
 
   useEffect(() => {
     form.resetFields();
@@ -35,7 +38,7 @@ const AddUser: FC<OsAdduser> = ({
             align="left"
             color={token?.colorLinkHover}
           >
-            Add New User
+            New User
           </Typography>
         </Row>
       )}
@@ -54,8 +57,20 @@ const AddUser: FC<OsAdduser> = ({
         >
           <Row gutter={[16, 16]}>
             <Col sm={24} md={12}>
-              <Form.Item label="Name" name="user_name">
-                <OsInput placeholder="Enter Name" />
+              <Form.Item label="First Name" name="first_name">
+                <OsInput placeholder="Enter First Name" />
+              </Form.Item>
+            </Col>
+            <Col sm={24} md={12}>
+              <Form.Item label="Last Name" name="last_name">
+                <OsInput placeholder="Enter Last Name" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={[16, 16]}>
+            <Col sm={24} md={12}>
+              <Form.Item label="User Name" name="user_name">
+                <OsInput placeholder="Enter User Name" />
               </Form.Item>
             </Col>
             <Col sm={24} md={12}>
@@ -64,12 +79,26 @@ const AddUser: FC<OsAdduser> = ({
               </Form.Item>
             </Col>
           </Row>
-          <Space size={30} direction="horizontal" align="center">
-            <Typography name="Body 4/Medium">Is Admin?</Typography>
-            <Form.Item label="" name="is_admin">
-              <Switch size="default" />
-            </Form.Item>
-          </Space>
+
+          <Row gutter={[16, 16]}>
+            <Col sm={24} md={12}>
+              <Form.Item label="Contact No." name="phone_number">
+                <ContactInput
+                  name="contact_number"
+                  id="contact_number"
+                  value={contactValue}
+                  onChange={(value) => {
+                    setContactValue(value);
+                  }}
+                />
+              </Form.Item>
+            </Col>
+            <Col sm={24} md={12}>
+              <Form.Item label="Job Title" name="job_title">
+                <OsInput placeholder="Enter Job Title" />
+              </Form.Item>
+            </Col>
+          </Row>
         </Form>
       </Space>
     </>

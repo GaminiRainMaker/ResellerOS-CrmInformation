@@ -1,3 +1,4 @@
+'use client';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -13,7 +14,6 @@ import {
 import {Form} from 'antd';
 import Cookies from 'js-cookie';
 import {useEffect, useState} from 'react';
-import {deleteProduct} from '../../../../../redux/actions/product';
 import {
   createUser,
   getUserByOrganization,
@@ -22,15 +22,18 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsDrawer from '../os-drawer';
 import OsModal from '../os-modal';
-import DeleteModal from '../os-modal/DeleteModal';
+import DailogModal from '../os-modal/DialogModal';
+import OsStatusWrapper from '../os-status';
 import AddUsers from './AddUser';
 
 const AddUser = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [showAddUserModal, setShowAddUserModal] = useState<boolean>(false);
-  const {data, loading} = useAppSelector((state) => state.user);
-  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+  const {data, loading, userInformation} = useAppSelector(
+    (state) => state.user,
+  );
+  const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [userData, setUserData] = useState<any>();
@@ -60,12 +63,11 @@ const AddUser = () => {
     // const data = {id: deleteIds};
     // await dispatch(deleteProduct(data));
     // setTimeout(() => {
-    //   dispatch(getUserByOrganization('forcebolt'));
+    //   dispatch(getUserByOrganization(userInformation?.organization));
     // }, 1000);
     // setDeleteIds([]);
-    // setShowModalDelete(false);
+    // setShowDailogModal(false);
   };
-
   const UserColumns = [
     {
       title: (
@@ -75,6 +77,32 @@ const AddUser = () => {
       ),
       dataIndex: 'user_name',
       key: 'user_name',
+      width: 173,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Contact No.
+        </Typography>
+      ),
+      dataIndex: 'phone_number',
+      key: 'phone_number',
+      width: 173,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Job Title
+        </Typography>
+      ),
+      dataIndex: 'job_title',
+      key: 'job_title',
       width: 173,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -96,14 +124,27 @@ const AddUser = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Is Admin
+          One Time Password
         </Typography>
       ),
-      dataIndex: 'is_admin',
-      key: 'is_admin',
+      dataIndex: 'one_time_password',
+      key: 'one_time_password',
       width: 173,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Status
+        </Typography>
+      ),
+      dataIndex: 'status',
+      key: 'status',
+      width: 173,
+      render: (text: string, record: any) => (
+        <OsStatusWrapper value={'Invite Sent'} />
       ),
     },
     {
@@ -135,7 +176,7 @@ const AddUser = () => {
             style={{cursor: 'pointer'}}
             onClick={() => {
               setDeleteIds([record?.id]);
-              setShowModalDelete(true);
+              setShowDailogModal(true);
             }}
           />
         </Space>
@@ -144,26 +185,32 @@ const AddUser = () => {
   ];
 
   useEffect(() => {
-    dispatch(getUserByOrganization('forcebolt'));
+    dispatch(getUserByOrganization(userInformation?.organization));
   }, []);
 
   const onFinish = () => {
     const userNewData = form.getFieldsValue();
-    if (addUserType === 'insert') {
-      dispatch(createUser(userNewData)).then(() => {
-        dispatch(getUserByOrganization('forcebolt'));
-        setShowAddUserModal(false);
-      });
-    } else if (addUserType === 'update') {
-      const obj: any = {
-        id: userData?.id,
-        ...userNewData,
-      };
-      dispatch(updateUserById(obj)).then(() => {
-        dispatch(getUserByOrganization('forcebolt'));
-        setOpen(false);
-      });
+    let userDataobj = {
+      ...userNewData,
+      organization: userInformation?.organization,
+    };
+    if (userNewData) {
+      if (addUserType === 'insert') {
+        dispatch(createUser(userDataobj)).then(() => {
+          setShowAddUserModal(false);
+          setShowDailogModal(true);
+        });
+      } else if (addUserType === 'update') {
+        const obj: any = {
+          id: userData?.id,
+          ...userDataobj,
+        };
+        dispatch(updateUserById(obj)).then(() => {
+          setOpen(false);
+        });
+      }
     }
+    dispatch(getUserByOrganization(userInformation?.organization));
   };
   console.log('4354354343543', Cookies.get('token'));
   return (
@@ -207,13 +254,13 @@ const AddUser = () => {
         />
       </Space>
 
-      <DeleteModal
-        setShowModalDelete={setShowModalDelete}
+      <DailogModal
+        setShowDailogModal={setShowDailogModal}
         setDeleteIds={setDeleteIds}
-        showModalDelete={showModalDelete}
+        showDailogModal={showDailogModal}
         deleteSelectedIds={deleteSelectedIds}
-        heading="Delete User"
-        description="Are you sure you want to delete this user?"
+        heading="Invite Sent"
+        description="Invite has been sent on email with auto-generated password"
       />
 
       <OsModal
@@ -224,7 +271,7 @@ const AddUser = () => {
           setShowAddUserModal((p) => !p);
         }}
         onOk={onFinish}
-        primaryButtonText="ADD"
+        primaryButtonText="Save & Send Invite"
         footerPadding={24}
       />
 

@@ -1,3 +1,5 @@
+'use client';
+
 import {Col, Form, Row, Space} from 'antd';
 import {FC, useEffect} from 'react';
 import useThemeToken from '../hooks/useThemeToken';
@@ -54,16 +56,12 @@ const AddProducts: FC<OsAddProductInterface> = ({
           <Row gutter={[16, 16]}>
             <Col sm={24} md={12}>
               <Form.Item label="Product Name" name="product_code1">
-                <OsInput
-                  placeholder="Write here!"
-                />
+                <OsInput placeholder="Write here!" />
               </Form.Item>
             </Col>
             <Col sm={24} md={12}>
               <Form.Item label="Product Family" name="product_family">
-                <OsInput
-                  placeholder="Write here!"
-                />
+                <OsInput placeholder="Write here!" />
               </Form.Item>
             </Col>
           </Row>
@@ -71,16 +69,12 @@ const AddProducts: FC<OsAddProductInterface> = ({
           <Row gutter={[16, 16]}>
             <Col sm={24} md={12}>
               <Form.Item label="Product Code" name="product_code">
-                <OsInput
-                  placeholder="Write here!"
-                />
+                <OsInput placeholder="Write here!" />
               </Form.Item>
             </Col>
             <Col sm={24} md={12}>
               <Form.Item label="List Price" name="list_price">
-                <OsInput
-                  placeholder="$ 000-000-0000"
-                />
+                <OsInput placeholder="$ 000-000-0000" />
               </Form.Item>
             </Col>
           </Row>
@@ -88,9 +82,7 @@ const AddProducts: FC<OsAddProductInterface> = ({
           <Row gutter={[16, 16]}>
             <Col span={24}>
               <Form.Item label="Product Description" name="description">
-                <OsInput
-                  placeholder="Write here!"
-                />
+                <OsInput placeholder="Write here!" />
               </Form.Item>
             </Col>
           </Row>

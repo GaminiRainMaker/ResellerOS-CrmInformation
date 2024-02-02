@@ -14,14 +14,14 @@ type UserState = {
   error: string | null;
   data: any;
   user: any;
-  userInfor: any;
+  userInformation: any;
 };
 const initialState: UserState = {
   loading: false,
   error: null,
   data: [],
   user: [],
-  userInfor: [],
+  userInformation: [],
 };
 
 const userSlice = createSlice({
@@ -32,7 +32,7 @@ const userSlice = createSlice({
       state.user = action.payload;
     },
     setUserInformation: (state, action) => {
-      state.userInfor = action.payload;
+      state.userInformation = action.payload;
     },
   },
   extraReducers(builder) {
@@ -84,7 +84,7 @@ const userSlice = createSlice({
         getUserByOrganization.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.data = [...action.payload];
         },
       )
       .addCase(
