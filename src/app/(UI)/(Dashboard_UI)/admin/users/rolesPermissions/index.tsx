@@ -1,4 +1,5 @@
 'use client';
+
 import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
@@ -178,7 +179,7 @@ const RolesAndPermission = () => {
 
   const onFinish = () => {
     for (let i = 0; i < userRules.length; i++) {
-      let items = userRules[i];
+      const items = userRules[i];
       dispatch(updateUserById(items)).then(() => {});
     }
     setTimeout(() => {

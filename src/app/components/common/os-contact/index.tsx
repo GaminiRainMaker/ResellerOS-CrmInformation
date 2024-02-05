@@ -106,7 +106,7 @@ const ContactInput: React.FunctionComponent<InputProps> = ({
             <Image
               height={20}
               width={20}
-              src={'ErrorDanger'}
+              src="ErrorDanger"
               alt=""
               onClick={onClickIcon}
             />

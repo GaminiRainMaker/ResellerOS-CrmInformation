@@ -2,6 +2,7 @@
 /* eslint-disable arrow-body-style */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import {FC, useState} from 'react';
+import RolesAndPermission from '@/app/(UI)/(Dashboard_UI)/admin/users/rolesPermissions';
 import Configuration from '../../../(UI)/(Dashboard_UI)/admin/quote-AI/configuration';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
@@ -10,7 +11,6 @@ import Users from '../os-add-users';
 
 import Typography from '../typography';
 import {CustomTabStyle} from './styled-components';
-import RolesAndPermission from '@/app/(UI)/(Dashboard_UI)/admin/users/rolesPermissions';
 
 const AdminCustomTabs: FC<any> = (tabs) => {
   const [activekeysall, setActivekeysall] = useState<number>(1);

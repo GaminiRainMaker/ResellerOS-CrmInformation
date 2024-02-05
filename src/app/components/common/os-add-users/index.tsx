@@ -1,4 +1,5 @@
 'use client';
+
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -13,6 +14,7 @@ import {
 } from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useEffect, useState} from 'react';
+import {AnyAaaaRecord} from 'dns';
 import {
   createUser,
   deleteUser,
@@ -61,8 +63,8 @@ const AddUser = () => {
     },
   ];
   const deleteSelectedIds = async () => {
-    const data = {id: deleteIds};
-    await dispatch(deleteUser(data));
+    const dataa = {id: deleteIds};
+    await dispatch(deleteUser(dataa));
     setTimeout(() => {
       dispatch(getUserByOrganization(userInformation?.organization));
     }, 1000);
@@ -191,7 +193,7 @@ const AddUser = () => {
 
   const onFinish = () => {
     const userNewData = form.getFieldsValue();
-    let userDataobj = {
+    const userDataobj: any = {
       ...userNewData,
       organization: localStorage.getItem('organization'),
     };
