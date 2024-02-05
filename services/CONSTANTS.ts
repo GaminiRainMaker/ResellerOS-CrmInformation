@@ -30,6 +30,7 @@ export const API = {
     UpdateUserById: '/user/updateUserById',
     AddUser: '/user/addUser',
     TOKEN: '/user/getUserByToken',
+    DeleteById: '/user/deleteById',
   },
   PRODUCT: {
     INDEX: '/product',

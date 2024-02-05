@@ -10,6 +10,7 @@ import Users from '../os-add-users';
 
 import Typography from '../typography';
 import {CustomTabStyle} from './styled-components';
+import RolesAndPermission from '@/app/(UI)/(Dashboard_UI)/admin/users/rolesPermissions';
 
 const AdminCustomTabs: FC<any> = (tabs) => {
   const [activekeysall, setActivekeysall] = useState<number>(1);
@@ -74,6 +75,8 @@ const AdminCustomTabs: FC<any> = (tabs) => {
           <Products />
         ) : activekeysall === 7 ? (
           <Users />
+        ) : activekeysall === 8 ? (
+          <RolesAndPermission />
         ) : (
           <>No Data</>
         )}

@@ -61,3 +61,15 @@ export const getUserByTokenAccess = createAsyncThunk(
     }
   },
 );
+
+export const deleteUser = createAsyncThunk(
+  'user/deleteUser',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await USERAPI.deleteById(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
