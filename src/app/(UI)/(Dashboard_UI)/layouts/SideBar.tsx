@@ -2,12 +2,12 @@
 
 'use client';
 
-import {Space} from '@/app/components/common/antd/Space';
+import { Space } from '@/app/components/common/antd/Space';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsAvatar from '@/app/components/common/os-avatar';
 import Typography from '@/app/components/common/typography';
-import {LifebuoyIcon} from '@heroicons/react/20/solid';
+import { ChevronRightIcon, LifebuoyIcon } from '@heroicons/react/20/solid';
 import {
   AdjustmentsHorizontalIcon,
   BoltIcon,
@@ -15,13 +15,14 @@ import {
   ReceiptPercentIcon,
   ShoppingBagIcon,
   Squares2X2Icon,
+  UserGroupIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
-import {Layout, MenuProps} from 'antd';
-import {useRouter} from 'next/navigation';
-import React, {useState} from 'react';
-import {LayoutMenuStyle} from './styled-components';
-import {useAppSelector} from '../../../../../redux/hook';
+import { Layout, MenuProps } from 'antd';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import { useAppSelector } from '../../../../../redux/hook';
+import { LayoutMenuStyle } from './styled-components';
 
 const {Sider} = Layout;
 
@@ -49,6 +50,7 @@ const SideBar = () => {
   }
 
   const isAdmin = userInformation?.Admin;
+
   const items: MenuItem[] = [
     getItem(
       <Typography
@@ -64,7 +66,7 @@ const SideBar = () => {
               <Squares2X2Icon
                 color={
                   seleectedKey == 1
-                    ? token?.colorLink
+                    ? token?.colorPrimary
                     : token?.colorTextSecondary
                 }
                 width={24}
@@ -77,7 +79,9 @@ const SideBar = () => {
               marginTop: '1px',
             }}
             color={
-              seleectedKey == 1 ? token?.colorLink : token?.colorTextSecondary
+              seleectedKey == 1
+                ? token?.colorPrimary
+                : token?.colorTextSecondary
             }
           >
             Dashboard
@@ -100,7 +104,7 @@ const SideBar = () => {
             <CurrencyDollarIcon
               color={
                 seleectedKey?.toString()?.includes('2')
-                  ? token?.colorLink
+                  ? token?.colorPrimary
                   : token?.colorTextSecondary
               }
               width={24}
@@ -112,7 +116,7 @@ const SideBar = () => {
           name="Button 1"
           color={
             seleectedKey?.toString()?.includes('2')
-              ? token?.colorLink
+              ? token?.colorPrimary
               : token?.colorTextSecondary
           }
         >
@@ -136,7 +140,7 @@ const SideBar = () => {
               <ReceiptPercentIcon
                 color={
                   seleectedKey?.toString()?.includes('3')
-                    ? token?.colorLink
+                    ? token?.colorPrimary
                     : token?.colorTextSecondary
                 }
                 width={24}
@@ -151,7 +155,7 @@ const SideBar = () => {
             }}
             color={
               seleectedKey?.toString()?.includes('3')
-                ? token?.colorLink
+                ? token?.colorPrimary
                 : token?.colorTextSecondary
             }
           >
@@ -176,7 +180,7 @@ const SideBar = () => {
               <ShoppingBagIcon
                 color={
                   seleectedKey?.toString()?.includes('4')
-                    ? token?.colorLink
+                    ? token?.colorPrimary
                     : token?.colorTextSecondary
                 }
                 width={24}
@@ -191,12 +195,12 @@ const SideBar = () => {
             }}
             color={
               seleectedKey?.toString()?.includes('4')
-                ? token?.colorLink
+                ? token?.colorPrimary
                 : token?.colorTextSecondary
             }
           >
             {' '}
-            Order AI
+            Orders AI
           </Typography>
         </Space>
       </Typography>,
@@ -217,7 +221,7 @@ const SideBar = () => {
               <UsersIcon
                 color={
                   seleectedKey?.toString()?.includes('5')
-                    ? token?.colorLink
+                    ? token?.colorPrimary
                     : token?.colorTextSecondary
                 }
                 width={24}
@@ -231,11 +235,11 @@ const SideBar = () => {
             }}
             color={
               seleectedKey?.toString()?.includes('5')
-                ? token?.colorLink
+                ? token?.colorPrimary
                 : token?.colorTextSecondary
             }
           >
-            Partners
+            Vendors
           </Typography>
         </Space>
       </Typography>,
@@ -255,7 +259,7 @@ const SideBar = () => {
               <BoltIcon
                 color={
                   seleectedKey?.toString()?.includes('6')
-                    ? token?.colorLink
+                    ? token?.colorPrimary
                     : token?.colorTextSecondary
                 }
                 width={24}
@@ -269,7 +273,7 @@ const SideBar = () => {
             }}
             color={
               seleectedKey?.toString()?.includes('6')
-                ? token?.colorLink
+                ? token?.colorPrimary
                 : token?.colorTextSecondary
             }
           >
@@ -291,13 +295,13 @@ const SideBar = () => {
         <Space size={12}>
           <OsAvatar
             icon={
-              <CurrencyDollarIcon
+              <UserGroupIcon
                 color={
                   seleectedKey?.toString()?.includes('7') ||
                   seleectedKey?.toString()?.includes('8') ||
                   seleectedKey?.toString()?.includes('0') ||
                   seleectedKey?.toString()?.includes('9')
-                    ? token?.colorLink
+                    ? token?.colorPrimary
                     : token?.colorTextSecondary
                 }
                 width={24}
@@ -315,7 +319,7 @@ const SideBar = () => {
               seleectedKey?.toString()?.includes('8') ||
               seleectedKey?.toString()?.includes('0') ||
               seleectedKey?.toString()?.includes('9')
-                ? token?.colorLink
+                ? token?.colorPrimary
                 : token?.colorTextSecondary
             }
           >
@@ -323,7 +327,6 @@ const SideBar = () => {
           </Typography>
         </Space>
       </Typography>,
-
       'CRM information',
       '',
       [
@@ -396,7 +399,6 @@ const SideBar = () => {
           </Space>,
           '9',
         ),
-
         getItem(
           <Space
             size={12}
@@ -450,7 +452,7 @@ const SideBar = () => {
                 <AdjustmentsHorizontalIcon
                   color={
                     seleectedKey?.toString()?.includes('11')
-                      ? token?.colorLink
+                      ? token?.colorPrimary
                       : token?.colorTextSecondary
                   }
                   width={24}
@@ -463,7 +465,7 @@ const SideBar = () => {
               name="Button 1"
               color={
                 seleectedKey?.toString()?.includes('11')
-                  ? token?.colorLink
+                  ? token?.colorPrimary
                   : token?.colorTextSecondary
               }
             >
@@ -491,6 +493,21 @@ const SideBar = () => {
         defaultSelectedKeys={['1']}
         mode="inline"
         items={items}
+        expandIcon={
+          <ChevronRightIcon
+            className="sideBarMenuIcon"
+            style={{
+              width: '24px',
+              color:
+                seleectedKey?.toString()?.includes('7') ||
+                seleectedKey?.toString()?.includes('8') ||
+                seleectedKey?.toString()?.includes('0') ||
+                seleectedKey?.toString()?.includes('9')
+                  ? token?.colorPrimary
+                  : token?.colorTextSecondary,
+            }}
+          />
+        }
       />
     </Sider>
   );
