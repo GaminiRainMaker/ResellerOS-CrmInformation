@@ -18,8 +18,8 @@ export const QUOTEAPI = {
     post(API.QUOTE.UpdateQuoteByQuery, data) as Promise<AxiosResponse<any>>,
   patch: (data: any) =>
     patch(API.QUOTE.INDEX, data) as Promise<AxiosResponse<any>>,
-  deleteById: (id: number) =>
-    get(`${API.QUOTE.DeleteById}/${id}`) as Promise<AxiosResponse<any>>,
+  deleteById: (data: any) =>
+    patch(API.QUOTE.DeleteById, data) as Promise<AxiosResponse<any>>,
   getQuotesByDateFilter: (data: any) =>
     post(API.QUOTE.GetQuotesByDateFilter, data) as Promise<AxiosResponse<any>>,
   getQuoteByID: (id: number) =>

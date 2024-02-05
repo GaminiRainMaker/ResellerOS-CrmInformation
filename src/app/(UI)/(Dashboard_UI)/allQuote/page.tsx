@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable @typescript-eslint/no-shadow */
@@ -14,16 +15,15 @@
 import Typography from '@/app/components/common/typography';
 import {EyeIcon, PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import Cookies from 'js-cookie';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
-import {PopConfirm} from '@/app/components/common/antd/PopConfirm';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import OsModal from '@/app/components/common/os-modal';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
@@ -74,6 +74,9 @@ const AllQuote: React.FC = () => {
   const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
+  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+  const [deleteIds, setDeleteIds] = useState<any>();
+
   const {data: generalSettingData} = useAppSelector(
     (state) => state.gereralSetting,
   );
@@ -137,6 +140,7 @@ const AllQuote: React.FC = () => {
   const rowSelection = {
     onChange: (selectedRowKeys: any) => {
       setExistingQuoteId(Number(selectedRowKeys));
+      setDeleteIds(selectedRowKeys);
     },
     getCheckboxProps: (record: any) => ({
       disabled: record.name === 'Disabled User',
@@ -333,10 +337,14 @@ const AllQuote: React.FC = () => {
     setUploadFileData([]);
   };
 
-  const deleteQuote = async (id: number) => {
-    if (id) {
-      await dispatch(deleteQuoteById(id));
-    }
+  const deleteQuote = async () => {
+    const data = {Ids: deleteIds};
+    await dispatch(deleteQuoteById(data));
+    setTimeout(() => {
+      dispatch(getQuotesByDateFilter({}));
+    }, 1000);
+    setDeleteIds([]);
+    setShowModalDelete(false);
   };
 
   const Quotecolumns = [
@@ -413,21 +421,16 @@ const AllQuote: React.FC = () => {
               router.push(`/generateQuote?id=${record?.id}`);
             }}
           />
-          <PopConfirm
-            placement="top"
-            title={record?.customer_name}
-            description="Are you sure to delete this Quote?"
-            onConfirm={() => deleteQuote(record?.id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <TrashIcon
-              height={24}
-              width={24}
-              color={token.colorError}
-              style={{cursor: 'pointer'}}
-            />
-          </PopConfirm>
+          <TrashIcon
+            height={24}
+            width={24}
+            color={token.colorError}
+            style={{cursor: 'pointer'}}
+            onClick={() => {
+              setDeleteIds([record?.id]);
+              setShowModalDelete(true);
+            }}
+          />
         </Space>
       ),
     },
@@ -499,13 +502,6 @@ const AllQuote: React.FC = () => {
       ),
     },
   ];
-
-  console.log(
-    '435436543643',
-    Cookies.get('organization'),
-    Cookies.get('token'),
-    Cookies.get('Admin'),
-  );
 
   return (
     <>
@@ -644,6 +640,16 @@ const AllQuote: React.FC = () => {
           setShowModal((p) => !p);
           setUploadFileData([]);
         }}
+      />
+
+      <DeleteModal
+        loading={loading}
+        setShowModalDelete={setShowModalDelete}
+        setDeleteIds={setDeleteIds}
+        showModalDelete={showModalDelete}
+        deleteSelectedIds={deleteQuote}
+        heading="Delete Quote"
+        description="Are you sure to delete this Quote?"
       />
     </>
   );

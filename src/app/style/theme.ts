@@ -3,7 +3,7 @@ import {ThemeConfig} from 'antd/es/config-provider/context';
 const theme: ThemeConfig = {
   token: {
     fontFamily: '__Plus_Jakarta_Sans_d21556',
-    colorPrimary: '#1c3557',
+    colorPrimary: '#1C3557',
     colorPrimaryText: '#0D0D0D',
     colorPrimaryBg: '#E8EBEE',
     colorPrimaryBorder: '#1c3557',
