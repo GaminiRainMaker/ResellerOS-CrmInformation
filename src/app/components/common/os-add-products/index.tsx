@@ -1,3 +1,5 @@
+'use client';
+
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -232,6 +234,7 @@ const AddProduct = () => {
       </Space>
 
       <DeleteModal
+        loading={loading}
         setShowModalDelete={setShowModalDelete}
         setDeleteIds={setDeleteIds}
         showModalDelete={showModalDelete}

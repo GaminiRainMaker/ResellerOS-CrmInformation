@@ -1,12 +1,12 @@
 import {FC} from 'react';
 
-import {CustomTag} from './styled-components';
+import useThemeToken from '../hooks/useThemeToken';
 import {
   OsStatusType,
   OsStatusWrapperProps,
   StatusProp,
 } from './os-status-interface';
-import useThemeToken from '../hooks/useThemeToken';
+import {CustomTag} from './styled-components';
 
 const OsStatusWrapper: FC<OsStatusWrapperProps> = ({value}) => {
   const [token] = useThemeToken();
@@ -30,6 +30,16 @@ const OsStatusWrapper: FC<OsStatusWrapperProps> = ({value}) => {
       color: `${token?.colorErrorBg}`,
       textColor: `${token?.colorError}`,
       border: `${token?.colorError}`,
+    },
+    'Invite Sent': {
+      color: `${token?.colorWarningBg}`,
+      textColor: `${token?.colorWarning}`,
+      border: `${token?.colorWarning}`,
+    },
+    Accepted: {
+      color: `${token?.colorSuccessBg}`,
+      textColor: `${token?.colorSuccess}`,
+      border: `${token?.colorSuccess}`,
     },
   };
   const finalValue: StatusProp = Status[value as keyof OsStatusType];

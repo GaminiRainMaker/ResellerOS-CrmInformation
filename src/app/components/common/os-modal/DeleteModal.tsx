@@ -15,6 +15,7 @@ const DeleteModal: FC<any> = ({
   setDeleteIds,
   heading,
   description,
+  loading,
 }) => {
   const [token] = useThemeToken();
   return (
@@ -54,6 +55,7 @@ const DeleteModal: FC<any> = ({
                 }}
               />
               <OsButton
+                loading={loading}
                 text="Yes, Delete"
                 buttontype="PRIMARY"
                 clickHandler={deleteSelectedIds}

@@ -1,3 +1,4 @@
+'use client';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -11,11 +12,10 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import {Form} from 'antd';
-import Cookies from 'js-cookie';
 import {useEffect, useState} from 'react';
-import {deleteProduct} from '../../../../../redux/actions/product';
 import {
   createUser,
+  deleteUser,
   getUserByOrganization,
   updateUserById,
 } from '../../../../../redux/actions/user';
@@ -23,19 +23,24 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsDrawer from '../os-drawer';
 import OsModal from '../os-modal';
 import DeleteModal from '../os-modal/DeleteModal';
+import DailogModal from '../os-modal/DialogModal';
+import OsStatusWrapper from '../os-status';
 import AddUsers from './AddUser';
 
 const AddUser = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [showAddUserModal, setShowAddUserModal] = useState<boolean>(false);
-  const {data, loading} = useAppSelector((state) => state.user);
-  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+  const {data, loading, userInformation} = useAppSelector(
+    (state) => state.user,
+  );
+  const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [userData, setUserData] = useState<any>();
   const [form] = Form.useForm();
   const [addUserType, setAddUserType] = useState<string>('');
+  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
 
   const dropDownItemss = [
     {
@@ -55,17 +60,15 @@ const AddUser = () => {
       ),
     },
   ];
-
   const deleteSelectedIds = async () => {
-    // const data = {id: deleteIds};
-    // await dispatch(deleteProduct(data));
-    // setTimeout(() => {
-    //   dispatch(getUserByOrganization('forcebolt'));
-    // }, 1000);
-    // setDeleteIds([]);
-    // setShowModalDelete(false);
+    const data = {id: deleteIds};
+    await dispatch(deleteUser(data));
+    setTimeout(() => {
+      dispatch(getUserByOrganization(userInformation?.organization));
+    }, 1000);
+    setDeleteIds([]);
+    setShowModalDelete(false);
   };
-
   const UserColumns = [
     {
       title: (
@@ -75,6 +78,32 @@ const AddUser = () => {
       ),
       dataIndex: 'user_name',
       key: 'user_name',
+      width: 173,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Contact No.
+        </Typography>
+      ),
+      dataIndex: 'phone_number',
+      key: 'phone_number',
+      width: 173,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Job Title
+        </Typography>
+      ),
+      dataIndex: 'job_title',
+      key: 'job_title',
       width: 173,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -96,14 +125,27 @@ const AddUser = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Is Admin
+          One Time Password
         </Typography>
       ),
-      dataIndex: 'is_admin',
-      key: 'is_admin',
+      dataIndex: 'one_time_password',
+      key: 'one_time_password',
       width: 173,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Status
+        </Typography>
+      ),
+      dataIndex: 'status',
+      key: 'status',
+      width: 173,
+      render: (text: string, record: any) => (
+        <OsStatusWrapper value={text ?? 'Invite Sent'} />
       ),
     },
     {
@@ -144,28 +186,36 @@ const AddUser = () => {
   ];
 
   useEffect(() => {
-    dispatch(getUserByOrganization('forcebolt'));
+    dispatch(getUserByOrganization(userInformation?.organization));
   }, []);
 
   const onFinish = () => {
     const userNewData = form.getFieldsValue();
-    if (addUserType === 'insert') {
-      dispatch(createUser(userNewData)).then(() => {
-        dispatch(getUserByOrganization('forcebolt'));
-        setShowAddUserModal(false);
-      });
-    } else if (addUserType === 'update') {
-      const obj: any = {
-        id: userData?.id,
-        ...userNewData,
-      };
-      dispatch(updateUserById(obj)).then(() => {
-        dispatch(getUserByOrganization('forcebolt'));
-        setOpen(false);
-      });
+    let userDataobj = {
+      ...userNewData,
+      organization: localStorage.getItem('organization'),
+    };
+    if (userNewData) {
+      if (addUserType === 'insert') {
+        dispatch(createUser(userDataobj)).then(() => {
+          setShowAddUserModal(false);
+          setShowDailogModal(true);
+        });
+      } else if (addUserType === 'update') {
+        const obj: any = {
+          id: userData?.id,
+          ...userDataobj,
+        };
+        dispatch(updateUserById(obj)).then(() => {
+          setOpen(false);
+        });
+      }
     }
+    setTimeout(() => {
+      dispatch(getUserByOrganization(userInformation?.organization));
+    }, 1000);
   };
-  console.log('4354354343543', Cookies.get('token'));
+
   return (
     <>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
@@ -207,16 +257,8 @@ const AddUser = () => {
         />
       </Space>
 
-      <DeleteModal
-        setShowModalDelete={setShowModalDelete}
-        setDeleteIds={setDeleteIds}
-        showModalDelete={showModalDelete}
-        deleteSelectedIds={deleteSelectedIds}
-        heading="Delete User"
-        description="Are you sure you want to delete this user?"
-      />
-
       <OsModal
+        loading={loading}
         body={<AddUsers form={form} />}
         width={696}
         open={showAddUserModal}
@@ -224,8 +266,24 @@ const AddUser = () => {
           setShowAddUserModal((p) => !p);
         }}
         onOk={onFinish}
-        primaryButtonText="ADD"
+        primaryButtonText="Save & Send Invite"
         footerPadding={24}
+      />
+
+      <DailogModal
+        setShowDailogModal={setShowDailogModal}
+        showDailogModal={showDailogModal}
+        heading="Invite Sent"
+        description="Invite has been sent on email with auto-generated password"
+      />
+      <DeleteModal
+        loading={loading}
+        setShowModalDelete={setShowModalDelete}
+        setDeleteIds={setDeleteIds}
+        showModalDelete={showModalDelete}
+        deleteSelectedIds={deleteSelectedIds}
+        heading="Delete User"
+        description="Are you sure you want to delete this user?"
       />
 
       <OsDrawer

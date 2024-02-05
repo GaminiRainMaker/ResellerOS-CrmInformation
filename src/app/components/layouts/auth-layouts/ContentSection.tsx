@@ -102,7 +102,6 @@ const ContentSection: FC<AuthLayoutInterface> = ({
 
           return;
         }
-
         Cookies.set('access_token', payload.payload.token, {
           expires: 0.8,
           secure: true,
@@ -115,8 +114,10 @@ const ContentSection: FC<AuthLayoutInterface> = ({
             Admin: payload.payload.admin,
           }),
         );
+        localStorage.setItem('id', payload.payload.id);
+        localStorage.setItem('organization', payload.payload.organization);
+        localStorage.setItem('Admin', payload.payload.admin);
         Cookies.set('token', payload.payload.token);
-
         // return;
         router.push('/crmInAccount');
       });

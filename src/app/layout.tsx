@@ -6,8 +6,6 @@ import {Plus_Jakarta_Sans} from 'next/font/google';
 import {getServerSession} from 'next-auth/next';
 import theme from './style/theme';
 import Providers from './Provider';
-import {authOptions} from './api/auth/[...nextauth]/route';
-import ClientSessionProvider from './provider/ClientSessionProvider';
 
 const inter = Plus_Jakarta_Sans({subsets: ['latin']});
 
@@ -21,15 +19,12 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
 
   return (
     <ConfigProvider theme={theme}>
       <html lang="en">
         <body className={inter.className}>
-          <ClientSessionProvider session={session}>
-            <Providers>{children}</Providers>
-          </ClientSessionProvider>
+          <Providers>{children}</Providers>
         </body>
       </html>
     </ConfigProvider>

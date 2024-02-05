@@ -7,6 +7,7 @@ import {
   updateUserById,
   getUserByOrganization,
   getUserByTokenAccess,
+  deleteUser,
 } from '../actions/user';
 
 type UserState = {
@@ -14,14 +15,14 @@ type UserState = {
   error: string | null;
   data: any;
   user: any;
-  userInfor: any;
+  userInformation: any;
 };
 const initialState: UserState = {
   loading: false,
   error: null,
   data: [],
   user: [],
-  userInfor: [],
+  userInformation: [],
 };
 
 const userSlice = createSlice({
@@ -32,7 +33,7 @@ const userSlice = createSlice({
       state.user = action.payload;
     },
     setUserInformation: (state, action) => {
-      state.userInfor = action.payload;
+      state.userInformation = action.payload;
     },
   },
   extraReducers(builder) {
@@ -43,7 +44,7 @@ const userSlice = createSlice({
       })
       .addCase(createUser.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.data = action.payload;
+        state.data = [action.payload];
       })
       .addCase(createUser.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
@@ -111,7 +112,19 @@ const userSlice = createSlice({
           state.loading = false;
           state.error = action.payload;
         },
-      );
+      )
+      .addCase(deleteUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteUser.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(deleteUser.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 

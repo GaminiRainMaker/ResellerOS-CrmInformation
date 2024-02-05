@@ -31,7 +31,7 @@ const SideBar = () => {
 
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [seleectedKey, setSelectedKey] = useState<number>(1);
-  const {userInfor} = useAppSelector((state) => state.user);
+  const {userInformation} = useAppSelector((state) => state.user);
   type MenuItem = Required<MenuProps>['items'][number];
 
   function getItem(
@@ -48,7 +48,7 @@ const SideBar = () => {
     } as MenuItem;
   }
 
-  const isAdmin = userInfor?.Admin;
+  const isAdmin = userInformation?.Admin;
   const items: MenuItem[] = [
     getItem(
       <Typography
