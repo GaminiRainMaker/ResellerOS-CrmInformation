@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import React from 'react';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import 'react-phone-number-input/style.css';
 import {OsContactStyle, OsPhoneInputStyle} from './styled-components';
 

@@ -108,6 +108,13 @@ const GenerateQuote: React.FC = () => {
     dispatch(getAllContractSetting(''));
   }, []);
 
+  console.log(
+    '4353454',
+    // showTableDataa && quoteLineItemByQuoteData,
+    showTableDataa,
+    quoteLineItemByQuoteData,
+    quoteLineItemByQuoteID,
+  );
   const deleteQuote = async (id: number) => {
     if (id) {
       const data = {
@@ -303,8 +310,8 @@ const GenerateQuote: React.FC = () => {
     }
     let filteredArray: any = [];
     if (tableColumnData && activeTab) {
-      filteredArray = tableColumnData?.filter(
-        (item: any) => item?.table_name?.includes(tabsname),
+      filteredArray = tableColumnData?.filter((item: any) =>
+        item?.table_name?.includes(tabsname),
       );
     }
     const filterRequired = filteredArray?.filter(
