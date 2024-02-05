@@ -98,12 +98,10 @@ const ContentSection: FC<AuthLayoutInterface> = ({
       });
       return;
     }
-    const validatePassword = (email: any) =>
-      String(email)
-        .toLowerCase()
-        .match(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{8,15}$/,
-        );
+    const validatePassword = (pass: any) =>
+      String(pass).match(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{8,15}$/,
+      );
     validatePassword(formValues?.password);
     if (!validatePassword(formValues?.password)) {
       notification?.open({
