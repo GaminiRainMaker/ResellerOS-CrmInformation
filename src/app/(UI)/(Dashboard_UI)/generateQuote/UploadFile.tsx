@@ -2,12 +2,12 @@
 
 import {FC, useState} from 'react';
 
+import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsUpload from '@/app/components/common/os-upload';
 import {message} from 'antd';
 import axios from 'axios';
-import GlobalLoader from '@/app/components/common/os-global-loader';
-import {useAppDispatch} from '../../../../../redux/hook';
 import {uploadToAws} from '../../../../../redux/actions/upload';
+import {useAppDispatch} from '../../../../../redux/hook';
 
 const convertFileToBase64 = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -27,8 +27,9 @@ const UploadFile: FC<any> = ({
   setUploadFileData,
   uploadFileData,
   addInExistingQuote,
+  addQuoteLineItem,
+  form,
 }) => {
-  // const dispatch = useAppDispatch();
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
@@ -88,6 +89,8 @@ const UploadFile: FC<any> = ({
         setLoading={setLoading}
         loading={loading}
         addInExistingQuote={addInExistingQuote}
+        addQuoteLineItem={addQuoteLineItem}
+        form={form}
       />
     </GlobalLoader>
   );
