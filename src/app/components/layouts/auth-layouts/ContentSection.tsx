@@ -103,10 +103,9 @@ const ContentSection: FC<AuthLayoutInterface> = ({
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{8,15}$/,
       );
     validatePassword(formValues?.password);
-    if (!validatePassword(formValues?.password)) {
+    if (formValues?.password.length < 8) {
       notification?.open({
-        message:
-          'Password must be more than 8 digits and includes special characters ',
+        message: 'Password must be more than 8 digits',
         type: 'info',
       });
       return;

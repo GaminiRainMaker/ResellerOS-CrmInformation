@@ -5,7 +5,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {Divider, Form} from 'antd';
+import {Divider} from 'antd';
 import {FC} from 'react';
 import {useAppSelector} from '../../../../../redux/hook';
 import UploadFile from '../generateQuote/UploadFile';
@@ -18,8 +18,8 @@ const RecentSection: FC<any> = ({
   setShowToggleTable,
   showToggleTable,
   rowSelection,
+  form,
 }) => {
-  const [form] = Form.useForm();
   const {filteredByDate: filteredData, loading} = useAppSelector(
     (state) => state.quote,
   );
