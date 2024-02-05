@@ -21,7 +21,7 @@ import {ContentSectionWrapper, CustomCheckbox} from './styled-components';
 import {useAppDispatch} from '../../../../../redux/hook';
 import {signUpAuth, verifyAuth} from '../../../../../redux/actions/auth';
 import {setUserInformation} from '../../../../../redux/slices/user';
-import {getUserByOrganization} from '../../../../../redux/actions/user';
+import {getUserByTokenAccess} from '../../../../../redux/actions/user';
 
 const ContentSection: FC<AuthLayoutInterface> = ({
   heading,
@@ -45,9 +45,10 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   useEffect(() => {
     const tokendata: any = Cookies.get('token');
     if (tokendata) {
-      dispatch(getUserByOrganization('')).then((payload: any) => {
+      dispatch(getUserByTokenAccess('')).then((payload: any) => {
         if (payload?.type?.split('/')?.[2]?.toString()?.includes('fulfilled')) {
-          const dataaa: any = payload?.payload?.[0];
+          const dataaa: any = payload?.payload;
+
           dispatch(
             setUserInformation({
               user_name: dataaa?.user_name,
@@ -96,6 +97,12 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           password: formValues?.password,
         }),
       ).then((payload) => {
+        if (payload?.type?.split('/')?.[2]?.toString() === 'rejected') {
+          window?.alert('InValid Credentials ! Please try again.');
+
+          return;
+        }
+
         Cookies.set('access_token', payload.payload.token, {
           expires: 0.8,
           secure: true,
