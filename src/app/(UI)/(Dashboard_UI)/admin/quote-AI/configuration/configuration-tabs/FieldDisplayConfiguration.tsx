@@ -51,14 +51,13 @@ const FieldDisplayConfiguration = () => {
   useEffect(() => {
     let filteredArray: any = [];
     if (tableColumnData && selectedTable) {
-      filteredArray = tableColumnData?.filter(
-        (item: any) => item?.table_name?.includes(selectedTable),
+      filteredArray = tableColumnData?.filter((item: any) =>
+        item?.table_name?.includes(selectedTable),
       );
     }
 
     setTableColumnDataShow(filteredArray);
   }, [selectedTable]);
-
   const commonMethodForChecks = (ids: any, names: any, valuess: any) => {
     const previousArray = updateColumn?.length > 0 ? [...updateColumn] : [];
     if (previousArray?.length > 0) {

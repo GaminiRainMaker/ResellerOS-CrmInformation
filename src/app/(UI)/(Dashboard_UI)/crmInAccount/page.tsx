@@ -66,19 +66,12 @@ const CrmInformation: React.FC = () => {
 
   useEffect(() => {
     const deletedAll = billingData?.filter((item: any) => item?.is_deleted);
-    // const onLive = billingData?.filter((item: any) => !item?.is_deleted);
-    // setTableDataforBillContact(onLive);
-    // const bilingOnly = onLive?.filter((item: any) => item?.billing);
-    // const deletedBill = bilingOnly?.filter((item: any) => item?.is_deleted);
-
-    // setBillingDataTable(bilingOnly);
     const setDeleted = deletedAll;
     setDeletedData(setDeleted);
   }, [billingData, activeTab]);
   useEffect(() => {
     setTimeout(() => {
       dispatch(queryCustomer(''));
-      // dispatch(getAllAddress(''));
     }, 1000);
   }, [!open, showModal]);
 
@@ -91,6 +84,7 @@ const CrmInformation: React.FC = () => {
     }, 1000);
   };
   const tokens = Cookies.get('token');
+
   const deleteSelectedIds = async () => {
     const data = {Ids: deleteIds};
     await dispatch(deleteCustomers(data));

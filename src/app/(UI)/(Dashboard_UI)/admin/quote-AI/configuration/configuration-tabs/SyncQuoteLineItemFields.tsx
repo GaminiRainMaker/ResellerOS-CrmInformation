@@ -88,17 +88,9 @@ const SyncQuoteLineItemField = () => {
       dispatch(getAllSyncTable('QuoteLineItem'));
     }, 1000);
   };
-  const [newState, setNewState] = useState<any>();
 
-  useEffect(() => {
-    console.log('34534324', updateColumn);
-    setNewState(updateColumn);
-  }, [updateColumn]);
-  console.log('435er', updateColumn, newState);
+  console.log('43er', updateColumn);
 
-  const newnsdjsks = () => {
-    console.log('3332333', updateColumn, newState);
-  };
   const commonMethodForChecks = (
     ids: any,
     names: any,
@@ -107,7 +99,7 @@ const SyncQuoteLineItemField = () => {
   ) => {
     const previousArray: any =
       updateColumn?.length > 0 ? [...updateColumn] : [];
-    console.log('435435435', newState, updateColumn);
+    console.log('4311', updateColumn);
     return;
     if (previousArray?.length > 0) {
       let indexOfCurrentId: any;
@@ -199,7 +191,6 @@ const SyncQuoteLineItemField = () => {
           placeholder="Select"
           value={record?.sender_table_col}
           onChange={(e) => {
-            newnsdjsks();
             if (record?.id) {
               commonMethodForChecks(record?.id, 'sender_table_col', e, '');
             } else {
