@@ -29,14 +29,15 @@ const SyncQuoteLineItemField = () => {
   const {data: syncTableData, loading} = useAppSelector(
     (state) => state.syncTable,
   );
+  const [selectedData, setSelectedData] = useState<any>({});
 
-  const [updateColumn, setUpdateColumn] = useState<any>();
+  const [updateColumn, setUpdateColumn] = useState<any>([]);
   const [quoteLineItemFilteredOption, setQuoteLineItemFilteredOption] =
-    useState<any>();
+    useState<any>([]);
   const [
     opportunityLineItemFilteredOption,
     setOpportunityeLineItemFilteredOption,
-  ] = useState<any>();
+  ] = useState<any>([]);
 
   useEffect(() => {
     const quoteLine: any = [];
@@ -79,6 +80,20 @@ const SyncQuoteLineItemField = () => {
     setUpdateColumn(syncTableData);
   }, [syncTableData]);
 
+  useEffect(() => {
+    if (selectedData && Object.keys(selectedData).length > 0) {
+      let arr = [...updateColumn];
+      const index = arr.findIndex((item) => item.key == selectedData.key);
+      if (index > -1) {
+        arr[index] = selectedData;
+      }
+      setUpdateColumn(arr);
+    }
+    return () => {
+      setSelectedData({});
+    };
+  });
+
   const updateTableColumnValues = async () => {
     for (let i = 0; i < updateColumn?.length; i++) {
       const dataItems = updateColumn[i];
@@ -88,79 +103,75 @@ const SyncQuoteLineItemField = () => {
       dispatch(getAllSyncTable('QuoteLineItem'));
     }, 1000);
   };
-  const [newState, setNewState] = useState<any>();
 
-  useEffect(() => {
-    console.log('34534324', updateColumn);
-    setNewState(updateColumn);
-  }, [updateColumn]);
-  console.log('435er', updateColumn, newState);
+  // const commonMethodForChecks = (
+  //   ids: any,
+  //   names: any,
+  //   valuess: any,
+  //   keys: any,
+  // ) => {
+  //   const previousArray: any =
+  //     updateColumn?.length > 0 ? [...updateColumn] : [];
+  //   console.log('435435435', newState, updateColumn);
+  //   return;
+  //   if (previousArray?.length > 0) {
+  //     let indexOfCurrentId: any;
+  //     if (ids) {
+  //       indexOfCurrentId = previousArray?.findIndex(
+  //         (item: any) => item?.id === ids,
+  //       );
+  //     } else {
+  //       indexOfCurrentId = previousArray?.findIndex(
+  //         (item: any) => item?.key === keys,
+  //       );
+  //     }
 
-  const newnsdjsks = () => {
-    console.log('3332333', updateColumn, newState);
-  };
-  const commonMethodForChecks = (
-    ids: any,
-    names: any,
-    valuess: any,
-    keys: any,
-  ) => {
-    const previousArray: any =
-      updateColumn?.length > 0 ? [...updateColumn] : [];
-    console.log('435435435', newState, updateColumn);
-    return;
-    if (previousArray?.length > 0) {
-      let indexOfCurrentId: any;
-      if (ids) {
-        indexOfCurrentId = previousArray?.findIndex(
-          (item: any) => item?.id === ids,
-        );
-      } else {
-        indexOfCurrentId = previousArray?.findIndex(
-          (item: any) => item?.key === keys,
-        );
-      }
+  //     if (indexOfCurrentId === -1) {
+  //       let newObj: any;
+  //       if (ids) {
+  //         newObj = {
+  //           id: ids,
+  //           [names]: valuess,
+  //         };
+  //       } else {
+  //         newObj = {
+  //           key: keys,
+  //           [names]: valuess,
+  //         };
+  //       }
+  //       previousArray?.push(newObj);
+  //     } else {
+  //       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+  //       // previousArray?.[indexOfCurrentId]?.names = valuess;
+  //       let newObj = previousArray[indexOfCurrentId];
+  //       newObj = {
+  //         ...newObj,
+  //         [names]: valuess,
+  //       };
+  //       previousArray[indexOfCurrentId] = newObj;
+  //     }
+  //   } else {
+  //     let newObj: any;
+  //     if (ids) {
+  //       newObj = {
+  //         id: ids,
+  //         [names]: valuess,
+  //       };
+  //     } else {
+  //       newObj = {
+  //         key: keys,
+  //         [names]: valuess,
+  //       };
+  //     }
+  //     previousArray?.push(newObj);
+  //   }
+  //   setUpdateColumn(previousArray);
+  // };
 
-      if (indexOfCurrentId === -1) {
-        let newObj: any;
-        if (ids) {
-          newObj = {
-            id: ids,
-            [names]: valuess,
-          };
-        } else {
-          newObj = {
-            key: keys,
-            [names]: valuess,
-          };
-        }
-        previousArray?.push(newObj);
-      } else {
-        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-        // previousArray?.[indexOfCurrentId]?.names = valuess;
-        let newObj = previousArray[indexOfCurrentId];
-        newObj = {
-          ...newObj,
-          [names]: valuess,
-        };
-        previousArray[indexOfCurrentId] = newObj;
-      }
-    } else {
-      let newObj: any;
-      if (ids) {
-        newObj = {
-          id: ids,
-          [names]: valuess,
-        };
-      } else {
-        newObj = {
-          key: keys,
-          [names]: valuess,
-        };
-      }
-      previousArray?.push(newObj);
-    }
-    setUpdateColumn(previousArray);
+  const onDataChange = (record: any, name: any, value: any) => {
+    let obj = {...record};
+    obj[name] = value;
+    setSelectedData(obj);
   };
 
   const addNewRow = () => {
@@ -170,6 +181,9 @@ const SyncQuoteLineItemField = () => {
       key: updateColumn?.length > 0 ? updateColumn?.length + 1 : 0,
       sender_table_name: 'QuoteLineItem',
       reciver_table_name: 'OpportunityLineItem',
+      sender_table_col: '',
+      reciver_table_col: '',
+      is_required: false,
     });
     setUpdateColumn(newArr);
   };
@@ -191,27 +205,15 @@ const SyncQuoteLineItemField = () => {
           Quote Line Item Fields
         </Typography>
       ),
-      dataIndex: 'product_code',
-      key: 'product_code',
+      dataIndex: 'sender_table_col',
+      key: 'sender_table_col',
       render: (text: string, record: any) => (
         <CommonSelect
           style={{width: '100%', height: '36px'}}
           placeholder="Select"
           value={record?.sender_table_col}
           onChange={(e) => {
-            newnsdjsks();
-            if (record?.id) {
-              commonMethodForChecks(record?.id, 'sender_table_col', e, '');
-            } else {
-              commonMethodForChecks(
-                '',
-                // eslint-disable-next-line no-unsafe-optional-chaining
-
-                'sender_table_col',
-                e,
-                record?.key,
-              );
-            }
+            onDataChange(record, 'sender_table_col', e);
           }}
           options={opportunityLineItemFilteredOption}
         />
@@ -224,8 +226,8 @@ const SyncQuoteLineItemField = () => {
           Opportunity Line Item Fields
         </Typography>
       ),
-      dataIndex: 'quantity',
-      key: 'quantity',
+      dataIndex: 'reciver_table_col',
+      key: 'reciver_table_col',
       render: (text: string, record: any) => (
         <CommonSelect
           style={{width: '100%', height: '36px'}}
@@ -233,22 +235,7 @@ const SyncQuoteLineItemField = () => {
           defaultValue={text}
           value={record?.reciver_table_col}
           onChange={(e) => {
-            if (record?.id) {
-              commonMethodForChecks(
-                record?.id,
-                'reciver_table_col',
-                e,
-                record?.key,
-              );
-            } else {
-              commonMethodForChecks(
-                // eslint-disable-next-line no-unsafe-optional-chaining
-                '',
-                'reciver_table_col',
-                e,
-                record?.key,
-              );
-            }
+            onDataChange(record, 'reciver_table_col', e);
           }}
           options={quoteLineItemFilteredOption}
         />
@@ -261,24 +248,14 @@ const SyncQuoteLineItemField = () => {
           Active{' '}
         </Typography>
       ),
-      dataIndex: 'adjusted_price',
-      key: 'adjusted_price',
+      dataIndex: 'is_required',
+      key: 'is_required',
       render: (text: string, record: any) => (
         <Switch
           size="default"
           defaultChecked={record?.is_required}
           onChange={(e) => {
-            if (record?.id) {
-              commonMethodForChecks(record?.id, 'is_required', e, record?.key);
-            } else {
-              commonMethodForChecks(
-                // eslint-disable-next-line no-unsafe-optional-chaining
-                '',
-                'is_required',
-                e,
-                record?.key,
-              );
-            }
+            onDataChange(record, 'is_required', e);
           }}
         />
       ),
