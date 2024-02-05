@@ -207,17 +207,19 @@ const SyncQuoteLineItemField = () => {
       ),
       dataIndex: 'sender_table_col',
       key: 'sender_table_col',
-      render: (text: string, record: any) => (
-        <CommonSelect
-          style={{width: '100%', height: '36px'}}
-          placeholder="Select"
-          value={record?.sender_table_col}
-          onChange={(e) => {
-            onDataChange(record, 'sender_table_col', e);
-          }}
-          options={opportunityLineItemFilteredOption}
-        />
-      ),
+      render: (text: string, record: any) => {
+        return (
+          <CommonSelect
+            style={{width: '100%', height: '36px'}}
+            placeholder="Select"
+            value={record?.sender_table_col}
+            onChange={(e) => {
+              onDataChange(record, 'sender_table_col', e);
+            }}
+            options={opportunityLineItemFilteredOption}
+          />
+        );
+      },
       width: 470,
     },
     {
@@ -228,18 +230,20 @@ const SyncQuoteLineItemField = () => {
       ),
       dataIndex: 'reciver_table_col',
       key: 'reciver_table_col',
-      render: (text: string, record: any) => (
-        <CommonSelect
-          style={{width: '100%', height: '36px'}}
-          placeholder="Select"
-          defaultValue={text}
-          value={record?.reciver_table_col}
-          onChange={(e) => {
-            onDataChange(record, 'reciver_table_col', e);
-          }}
-          options={quoteLineItemFilteredOption}
-        />
-      ),
+      render: (text: string, record: any) => {
+        return (
+          <CommonSelect
+            style={{width: '100%', height: '36px'}}
+            placeholder="Select"
+            defaultValue={text}
+            value={record?.reciver_table_col}
+            onChange={(e) => {
+              onDataChange(record, 'reciver_table_col', e);
+            }}
+            options={quoteLineItemFilteredOption}
+          />
+        );
+      },
       width: 470,
     },
     {
@@ -250,15 +254,17 @@ const SyncQuoteLineItemField = () => {
       ),
       dataIndex: 'is_required',
       key: 'is_required',
-      render: (text: string, record: any) => (
-        <Switch
-          size="default"
-          defaultChecked={record?.is_required}
-          onChange={(e) => {
-            onDataChange(record, 'is_required', e);
-          }}
-        />
-      ),
+      render: (text: string, record: any) => {
+        return (
+          <Switch
+            size="default"
+            checked={record?.is_required}
+            onChange={(e) => {
+              onDataChange(record, 'is_required', e);
+            }}
+          />
+        );
+      },
       width: 77,
     },
     {

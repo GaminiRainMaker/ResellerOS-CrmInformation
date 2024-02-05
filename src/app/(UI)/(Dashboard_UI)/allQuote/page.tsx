@@ -22,12 +22,13 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import OsDropdown from '@/app/components/common/os-dropdown';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import {MenuProps, TabsProps} from 'antd';
+import {Form, MenuProps, TabsProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
@@ -76,10 +77,10 @@ const AllQuote: React.FC = () => {
   const [toDate, setToDate] = useState(null);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
-
   const {data: generalSettingData} = useAppSelector(
     (state) => state.gereralSetting,
   );
+  const [form] = Form.useForm();
 
   useEffect(() => {
     dispatch(getAllGeneralSetting(''));
@@ -148,7 +149,10 @@ const AllQuote: React.FC = () => {
     }),
   };
 
-  const addQuoteLineItem = async () => {
+  const addQuoteLineItem = async (
+    customerId?: string,
+    opportunityId?: string,
+  ) => {
     const labelOcrMap: any = [];
     let formattedArray: any = [];
     const formattedData: FormattedData = {};
@@ -176,6 +180,9 @@ const AllQuote: React.FC = () => {
       labelOcrMap?.push({
         ...tempLabelOcrMap,
         pdf_url: uploadFileDataItem?.pdf_url,
+        customer_id: customerId,
+        opportunity_id: opportunityId,
+        organization: localStorage.getItem('organization'),
       });
     });
     const newrrLineItems: any = [];
@@ -370,8 +377,10 @@ const AllQuote: React.FC = () => {
       dataIndex: 'opportunity',
       key: 'opportunity',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.Opportunity?.title ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -383,8 +392,10 @@ const AllQuote: React.FC = () => {
       dataIndex: 'customer_name',
       key: 'customer_name',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.Customer?.name ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -451,6 +462,14 @@ const AllQuote: React.FC = () => {
       setActiveTab('4');
     }
   };
+  const locale = {
+    emptyText: (
+      <EmptyContainer
+        title="No Files"
+        onClick={() => setShowModal((p) => !p)}
+      />
+    ),
+  };
 
   const tabItems: TabsProps['items'] = [
     {
@@ -468,6 +487,7 @@ const AllQuote: React.FC = () => {
               dataSource={activeQuotes}
               scroll
               loading={loading}
+              locale={locale}
             />
           ) : (
             <RecentSection
@@ -478,6 +498,7 @@ const AllQuote: React.FC = () => {
               setShowToggleTable={setShowToggleTable}
               showToggleTable={showToggleTable}
               rowSelection={rowSelection}
+              form={form}
             />
           )}
         </>
@@ -613,6 +634,7 @@ const AllQuote: React.FC = () => {
                   dataSource={activeQuotes}
                   scroll
                   loading={loading}
+                  locale={locale}
                 />
               ),
               ...tabItem,
@@ -629,13 +651,15 @@ const AllQuote: React.FC = () => {
             setUploadFileData={setUploadFileData}
             uploadFileData={uploadFileData}
             addInExistingQuote
+            addQuoteLineItem={addQuoteLineItem}
+            form={form}
           />
         }
         width={900}
         primaryButtonText="Generate"
         secondaryButtonText="Save & Generate Individual Quotes"
         open={showModal}
-        onOk={() => addQuoteLineItem()}
+        onOk={() => form.submit()}
         onCancel={() => {
           setShowModal((p) => !p);
           setUploadFileData([]);

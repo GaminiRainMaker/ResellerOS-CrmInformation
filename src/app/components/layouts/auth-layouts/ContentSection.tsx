@@ -1,7 +1,7 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/no-unstable-nested-components */
-import {Form} from 'antd';
+import {Form, notification} from 'antd';
 import Image from 'next/image';
 import {FC, useEffect, useState} from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -72,6 +72,10 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         );
     if (!validateEmail(formValues?.email)) {
+      notification?.open({
+        message: 'Please enter vaild organization email',
+        type: 'error',
+      });
       return;
     }
 
@@ -88,8 +92,25 @@ const ContentSection: FC<AuthLayoutInterface> = ({
     ];
     const organizationValue = newcheck[0];
     if (checkss.includes(newcheck[0])) {
+      notification?.open({
+        message: 'Please enter vaild organization email',
+        type: 'error',
+      });
       return;
     }
+    const validatePassword = (pass: any) =>
+      String(pass).match(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{8,15}$/,
+      );
+    validatePassword(formValues?.password);
+    if (formValues?.password.length < 8) {
+      notification?.open({
+        message: 'Password must be more than 8 digits',
+        type: 'info',
+      });
+      return;
+    }
+
     if (type == 'Log In') {
       dispatch(
         verifyAuth({
@@ -98,7 +119,10 @@ const ContentSection: FC<AuthLayoutInterface> = ({
         }),
       ).then((payload) => {
         if (payload?.type?.split('/')?.[2]?.toString() === 'rejected') {
-          window?.alert('InValid Credentials ! Please try again.');
+          notification?.open({
+            message: 'Invaild credentials! Please try again',
+            type: 'error',
+          });
 
           return;
         }
@@ -133,8 +157,15 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           password: formValues?.password,
           organization: organizationValue,
         }),
-      ).then(() => {
-        router.push('/login');
+      ).then((payload) => {
+        if (payload?.type?.split('/')?.[1]?.toString() === 'rejected') {
+          notification?.open({
+            message: 'Something went wrong! Please try again',
+            type: 'error',
+          });
+        } else {
+          router.push('/login');
+        }
       });
     }
   };
