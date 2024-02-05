@@ -5,7 +5,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {Divider, Radio} from 'antd';
+import {Divider, Form} from 'antd';
 import {FC} from 'react';
 import {useAppSelector} from '../../../../../redux/hook';
 import UploadFile from '../generateQuote/UploadFile';
@@ -19,12 +19,11 @@ const RecentSection: FC<any> = ({
   showToggleTable,
   rowSelection,
 }) => {
+  const [form] = Form.useForm();
   const {filteredByDate: filteredData, loading} = useAppSelector(
     (state) => state.quote,
   );
   const [token] = useThemeToken();
-
-
   const onToggleChange = (checked: boolean) => {
     setShowToggleTable(checked);
   };
@@ -56,6 +55,8 @@ const RecentSection: FC<any> = ({
             <UploadFile
               setUploadFileData={setUploadFileData}
               uploadFileData={uploadFileData}
+              addQuoteLineItem={addQuoteLineItem}
+              form={form}
             />
           </Col>
           <Divider />
@@ -89,7 +90,7 @@ const RecentSection: FC<any> = ({
             loading={loading}
             text="Generate"
             buttontype="PRIMARY"
-            clickHandler={() => addQuoteLineItem()}
+            clickHandler={() => form.submit()}
           />
         </Col>
       </Row>
