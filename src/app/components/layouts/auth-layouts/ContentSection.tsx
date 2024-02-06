@@ -138,15 +138,13 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           setUserInformation({
             id: payload?.payload?.id,
             organization: payload?.payload?.organization,
-            Admin: payload?.payload?.admin,
+            Admin: payload?.payload?.is_admin,
             QuoteAI: payload?.payload?.is_quote,
             DealReg: payload?.payload?.is_dealReg,
             OrderAI: payload?.payload?.is_order,
           }),
         );
-        localStorage.setItem('id', payload.payload.id);
-        localStorage.setItem('organization', payload.payload.organization);
-        localStorage.setItem('Admin', payload.payload.admin);
+
         Cookies.set('token', payload.payload.token);
         // return;
         router.push('/crmInAccount');

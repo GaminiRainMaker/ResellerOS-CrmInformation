@@ -1,3 +1,4 @@
+/* eslint-disable no-extra-boolean-cast */
 /* eslint-disable eqeqeq */
 
 'use client';
@@ -20,20 +21,41 @@ import {
 } from '@heroicons/react/24/outline';
 import {Layout, MenuProps} from 'antd';
 import {useRouter} from 'next/navigation';
-import React, {useState} from 'react';
-import {useAppSelector} from '../../../../../redux/hook';
+import React, {useEffect, useState} from 'react';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {LayoutMenuStyle} from './styled-components';
+import {getUserByTokenAccess} from '../../../../../redux/actions/user';
+import {setUserInformation} from '../../../../../redux/slices/user';
 
 const {Sider} = Layout;
 
 const SideBar = () => {
   const [token] = useThemeToken();
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [seleectedKey, setSelectedKey] = useState<number>(1);
   const {userInformation} = useAppSelector((state) => state.user);
   type MenuItem = Required<MenuProps>['items'][number];
+
+  useEffect(() => {
+    if (!!userInformation) {
+      dispatch(getUserByTokenAccess('')).then((payload: any) => {
+        dispatch(
+          setUserInformation({
+            id: payload?.payload?.id,
+            organization: payload?.payload?.organization,
+            Admin: payload?.payload?.is_admin,
+            QuoteAI: payload?.payload?.is_quote,
+            DealReg: payload?.payload?.is_dealReg,
+            OrderAI: payload?.payload?.is_order,
+          }),
+        );
+      });
+    }
+  }, []);
+
 
   function getItem(
     label: React.ReactNode,

@@ -195,7 +195,7 @@ const AddUser = () => {
     const userNewData = form.getFieldsValue();
     const userDataobj: any = {
       ...userNewData,
-      organization: localStorage.getItem('organization'),
+      organization: userInformation?.organization,
     };
     if (userNewData) {
       if (addUserType === 'insert') {

@@ -22,7 +22,6 @@ import {
   insertUpdateSyncTable,
   deleteSyncTableRow,
 } from '../../../../../../../../redux/actions/syncTable';
-import {getUserByTokenAccess} from '../../../../../../../../redux/actions/user';
 
 const SyncQuoteLineItemField = () => {
   const [token] = useThemeToken();
@@ -31,6 +30,7 @@ const SyncQuoteLineItemField = () => {
   const {data: syncTableData, loading} = useAppSelector(
     (state) => state.syncTable,
   );
+  const {userInformation} = useAppSelector((state) => state.user);
 
   const [updateColumn, setUpdateColumn] = useState<any>();
   const [quoteLineItemFilteredOption, setQuoteLineItemFilteredOption] =
@@ -39,7 +39,6 @@ const SyncQuoteLineItemField = () => {
     opportunityLineItemFilteredOption,
     setOpportunityeLineItemFilteredOption,
   ] = useState<any>();
-  const {data: userDetails} = useAppSelector((state) => state.user);
 
   useEffect(() => {
     const quoteLine: any = [];
@@ -67,10 +66,6 @@ const SyncQuoteLineItemField = () => {
     setOpportunityeLineItemFilteredOption(opportunityLineItemOptionFiltered);
     setQuoteLineItemFilteredOption(quoteLineItemOptionFiltered);
   }, [updateColumn]);
-
-  useEffect(() => {
-    dispatch(getUserByTokenAccess(''));
-  }, []);
 
   const deleteRowSync = (id: any) => {
     dispatch(deleteSyncTableRow(id));
@@ -165,7 +160,7 @@ const SyncQuoteLineItemField = () => {
       key: updateColumn?.length > 0 ? updateColumn?.length + 1 : 0,
       sender_table_name: 'QuoteLineItem',
       reciver_table_name: 'OpportunityLineItem',
-      organization: userDetails?.organization,
+      organization: userInformation?.organization,
     });
     setUpdateColumn(newArr);
   };
