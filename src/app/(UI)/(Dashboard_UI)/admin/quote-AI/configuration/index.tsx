@@ -70,11 +70,7 @@ const QuoteAI = () => {
             setActiveTab(e);
           }}
           activeKey={activeTab}
-          items={tabItems.map((tabItem: any, index: number) => ({
-            key: `${index + 1}`,
-            label: tabItem?.label,
-            ...tabItem,
-          }))}
+          items={tabItems}
         />
       </Row>
     </Space>

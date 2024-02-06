@@ -11,6 +11,7 @@ import {opportunityOptions, quoteOptions} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Row, Space} from 'antd';
 import {useEffect, useState} from 'react';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {
   deleteSyncTableRow,
   getAllSyncTable,
@@ -21,6 +22,7 @@ import {
   useAppSelector,
 } from '../../../../../../../../redux/hook';
 import {TabContainerStyle} from './styled-components';
+import {getUserByTokenAccess} from '../../../../../../../../redux/actions/user';
 
 const SyncQuoteField = () => {
   const [token] = useThemeToken();
@@ -29,6 +31,7 @@ const SyncQuoteField = () => {
   const {data: syncTableData, loading} = useAppSelector(
     (state) => state.syncTable,
   );
+  const {data: userDetails} = useAppSelector((state) => state.user);
 
   const [updatedColumnforQuoteSync, setUpdatedColumnforQuoteSync] =
     useState<any>();
@@ -59,6 +62,10 @@ const SyncQuoteField = () => {
     setOpportunityOIptions(opportunityFiltered);
     setQuoteOptions(quoteFiltered);
   }, [updatedColumnforQuoteSync]);
+
+  useEffect(() => {
+    dispatch(getUserByTokenAccess(''));
+  }, []);
 
   const deleteRowSync = (id: any) => {
     dispatch(deleteSyncTableRow(id));
@@ -162,6 +169,7 @@ const SyncQuoteField = () => {
           : 0,
       sender_table_name: 'Quote',
       reciver_table_name: 'Opportunity',
+      organization: userDetails?.organization,
     });
     setUpdatedColumnforQuoteSync(newArr);
   };
@@ -313,7 +321,7 @@ const SyncQuoteField = () => {
                 label: <Typography name="Body 2/Medium">Sync Quote</Typography>,
                 children: (
                   <Space size={24} direction="vertical" style={{width: '100%'}}>
-                    <OsTable
+                    <OsTableWithOutDrag
                       loading={false}
                       // rowSelection={rowSelection}
                       tableSelectionType="checkbox"

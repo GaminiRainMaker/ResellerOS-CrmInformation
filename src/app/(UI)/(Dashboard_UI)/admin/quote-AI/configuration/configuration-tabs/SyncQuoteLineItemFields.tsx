@@ -9,8 +9,9 @@ import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {quoteAndOpportunityLineItemOptions} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {Row, Space} from 'antd';
+import {Row, Space, Table} from 'antd';
 import {useEffect, useState} from 'react';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {TabContainerStyle} from './styled-components';
 import {
   useAppDispatch,
@@ -21,6 +22,7 @@ import {
   insertUpdateSyncTable,
   deleteSyncTableRow,
 } from '../../../../../../../../redux/actions/syncTable';
+import {getUserByTokenAccess} from '../../../../../../../../redux/actions/user';
 
 const SyncQuoteLineItemField = () => {
   const [token] = useThemeToken();
@@ -37,6 +39,7 @@ const SyncQuoteLineItemField = () => {
     opportunityLineItemFilteredOption,
     setOpportunityeLineItemFilteredOption,
   ] = useState<any>();
+  const {data: userDetails} = useAppSelector((state) => state.user);
 
   useEffect(() => {
     const quoteLine: any = [];
@@ -65,6 +68,10 @@ const SyncQuoteLineItemField = () => {
     setQuoteLineItemFilteredOption(quoteLineItemOptionFiltered);
   }, [updateColumn]);
 
+  useEffect(() => {
+    dispatch(getUserByTokenAccess(''));
+  }, []);
+
   const deleteRowSync = (id: any) => {
     dispatch(deleteSyncTableRow(id));
     setTimeout(() => {
@@ -89,8 +96,6 @@ const SyncQuoteLineItemField = () => {
     }, 1000);
   };
 
-  console.log('43er', updateColumn);
-
   const commonMethodForChecks = (
     ids: any,
     names: any,
@@ -99,8 +104,6 @@ const SyncQuoteLineItemField = () => {
   ) => {
     const previousArray: any =
       updateColumn?.length > 0 ? [...updateColumn] : [];
-    console.log('4311', updateColumn);
-    return;
     if (previousArray?.length > 0) {
       let indexOfCurrentId: any;
       if (ids) {
@@ -162,6 +165,7 @@ const SyncQuoteLineItemField = () => {
       key: updateColumn?.length > 0 ? updateColumn?.length + 1 : 0,
       sender_table_name: 'QuoteLineItem',
       reciver_table_name: 'OpportunityLineItem',
+      organization: userDetails?.organization,
     });
     setUpdateColumn(newArr);
   };
@@ -186,26 +190,29 @@ const SyncQuoteLineItemField = () => {
       dataIndex: 'product_code',
       key: 'product_code',
       render: (text: string, record: any) => (
-        <CommonSelect
-          style={{width: '100%', height: '36px'}}
-          placeholder="Select"
-          value={record?.sender_table_col}
-          onChange={(e) => {
-            if (record?.id) {
-              commonMethodForChecks(record?.id, 'sender_table_col', e, '');
-            } else {
-              commonMethodForChecks(
-                '',
-                // eslint-disable-next-line no-unsafe-optional-chaining
+        <>
+          {' '}
+          <CommonSelect
+            style={{width: '100%', height: '36px'}}
+            placeholder="Select"
+            value={record?.sender_table_col}
+            onChange={(e) => {
+              if (record?.id) {
+                commonMethodForChecks(record?.id, 'sender_table_col', e, '');
+              } else {
+                commonMethodForChecks(
+                  '',
+                  // eslint-disable-next-line no-unsafe-optional-chaining
 
-                'sender_table_col',
-                e,
-                record?.key,
-              );
-            }
-          }}
-          options={opportunityLineItemFilteredOption}
-        />
+                  'sender_table_col',
+                  e,
+                  record?.key,
+                );
+              }
+            }}
+            options={opportunityLineItemFilteredOption}
+          />
+        </>
       ),
       width: 470,
     },
@@ -318,7 +325,7 @@ const SyncQuoteLineItemField = () => {
                 ),
                 children: (
                   <Space size={24} direction="vertical" style={{width: '100%'}}>
-                    <OsTable
+                    <OsTableWithOutDrag
                       loading={false}
                       // rowSelection={rowSelection}
                       tableSelectionType="checkbox"
