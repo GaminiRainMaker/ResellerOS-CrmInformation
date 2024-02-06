@@ -7,6 +7,7 @@ import OsButton from '@/app/components/common/os-button';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
+import {CheckCircleIcon} from '@heroicons/react/20/solid';
 import {
   PencilSquareIcon,
   PlusIcon,
@@ -274,8 +275,12 @@ const AddUser = () => {
       <DailogModal
         setShowDailogModal={setShowDailogModal}
         showDailogModal={showDailogModal}
-        heading="Invite Sent"
-        description="Invite has been sent on email with auto-generated password"
+        title="Invite Sent"
+        subTitle="Invite has been sent on email with auto-generated password"
+        primaryButtonText="Send Again"
+        icon={
+          <CheckCircleIcon width={35} height={35} color={token?.colorSuccess} />
+        }
       />
       <DeleteModal
         loading={loading}
