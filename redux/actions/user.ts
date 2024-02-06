@@ -41,7 +41,6 @@ export const updateUserById = createAsyncThunk(
 export const getUserByOrganization = createAsyncThunk(
   'user/getUserByOrganization',
   async (organization: string, thunkApi) => {
-    console.log('organization', organization);
     try {
       const res = await USERAPI.get();
       return res.data;
