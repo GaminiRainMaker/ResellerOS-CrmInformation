@@ -9,8 +9,9 @@ import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {quoteAndOpportunityLineItemOptions} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {Row, Space} from 'antd';
+import {Row, Space, Table} from 'antd';
 import {useEffect, useState} from 'react';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {TabContainerStyle} from './styled-components';
 import {
   useAppDispatch,
@@ -21,6 +22,7 @@ import {
   insertUpdateSyncTable,
   deleteSyncTableRow,
 } from '../../../../../../../../redux/actions/syncTable';
+import {getUserByTokenAccess} from '../../../../../../../../redux/actions/user';
 
 const SyncQuoteLineItemField = () => {
   const [token] = useThemeToken();
@@ -29,15 +31,15 @@ const SyncQuoteLineItemField = () => {
   const {data: syncTableData, loading} = useAppSelector(
     (state) => state.syncTable,
   );
-  const [selectedData, setSelectedData] = useState<any>({});
 
-  const [updateColumn, setUpdateColumn] = useState<any>([]);
+  const [updateColumn, setUpdateColumn] = useState<any>();
   const [quoteLineItemFilteredOption, setQuoteLineItemFilteredOption] =
-    useState<any>([]);
+    useState<any>();
   const [
     opportunityLineItemFilteredOption,
     setOpportunityeLineItemFilteredOption,
-  ] = useState<any>([]);
+  ] = useState<any>();
+  const {data: userDetails} = useAppSelector((state) => state.user);
 
   useEffect(() => {
     const quoteLine: any = [];
@@ -66,6 +68,10 @@ const SyncQuoteLineItemField = () => {
     setQuoteLineItemFilteredOption(quoteLineItemOptionFiltered);
   }, [updateColumn]);
 
+  useEffect(() => {
+    dispatch(getUserByTokenAccess(''));
+  }, []);
+
   const deleteRowSync = (id: any) => {
     dispatch(deleteSyncTableRow(id));
     setTimeout(() => {
@@ -80,20 +86,6 @@ const SyncQuoteLineItemField = () => {
     setUpdateColumn(syncTableData);
   }, [syncTableData]);
 
-  useEffect(() => {
-    if (selectedData && Object.keys(selectedData).length > 0) {
-      let arr = [...updateColumn];
-      const index = arr.findIndex((item) => item.key == selectedData.key);
-      if (index > -1) {
-        arr[index] = selectedData;
-      }
-      setUpdateColumn(arr);
-    }
-    return () => {
-      setSelectedData({});
-    };
-  });
-
   const updateTableColumnValues = async () => {
     for (let i = 0; i < updateColumn?.length; i++) {
       const dataItems = updateColumn[i];
@@ -104,74 +96,66 @@ const SyncQuoteLineItemField = () => {
     }, 1000);
   };
 
-  // const commonMethodForChecks = (
-  //   ids: any,
-  //   names: any,
-  //   valuess: any,
-  //   keys: any,
-  // ) => {
-  //   const previousArray: any =
-  //     updateColumn?.length > 0 ? [...updateColumn] : [];
-  //   console.log('435435435', newState, updateColumn);
-  //   return;
-  //   if (previousArray?.length > 0) {
-  //     let indexOfCurrentId: any;
-  //     if (ids) {
-  //       indexOfCurrentId = previousArray?.findIndex(
-  //         (item: any) => item?.id === ids,
-  //       );
-  //     } else {
-  //       indexOfCurrentId = previousArray?.findIndex(
-  //         (item: any) => item?.key === keys,
-  //       );
-  //     }
+  const commonMethodForChecks = (
+    ids: any,
+    names: any,
+    valuess: any,
+    keys: any,
+  ) => {
+    const previousArray: any =
+      updateColumn?.length > 0 ? [...updateColumn] : [];
+    if (previousArray?.length > 0) {
+      let indexOfCurrentId: any;
+      if (ids) {
+        indexOfCurrentId = previousArray?.findIndex(
+          (item: any) => item?.id === ids,
+        );
+      } else {
+        indexOfCurrentId = previousArray?.findIndex(
+          (item: any) => item?.key === keys,
+        );
+      }
 
-  //     if (indexOfCurrentId === -1) {
-  //       let newObj: any;
-  //       if (ids) {
-  //         newObj = {
-  //           id: ids,
-  //           [names]: valuess,
-  //         };
-  //       } else {
-  //         newObj = {
-  //           key: keys,
-  //           [names]: valuess,
-  //         };
-  //       }
-  //       previousArray?.push(newObj);
-  //     } else {
-  //       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-  //       // previousArray?.[indexOfCurrentId]?.names = valuess;
-  //       let newObj = previousArray[indexOfCurrentId];
-  //       newObj = {
-  //         ...newObj,
-  //         [names]: valuess,
-  //       };
-  //       previousArray[indexOfCurrentId] = newObj;
-  //     }
-  //   } else {
-  //     let newObj: any;
-  //     if (ids) {
-  //       newObj = {
-  //         id: ids,
-  //         [names]: valuess,
-  //       };
-  //     } else {
-  //       newObj = {
-  //         key: keys,
-  //         [names]: valuess,
-  //       };
-  //     }
-  //     previousArray?.push(newObj);
-  //   }
-  //   setUpdateColumn(previousArray);
-  // };
-
-  const onDataChange = (record: any, name: any, value: any) => {
-    let obj = {...record};
-    obj[name] = value;
-    setSelectedData(obj);
+      if (indexOfCurrentId === -1) {
+        let newObj: any;
+        if (ids) {
+          newObj = {
+            id: ids,
+            [names]: valuess,
+          };
+        } else {
+          newObj = {
+            key: keys,
+            [names]: valuess,
+          };
+        }
+        previousArray?.push(newObj);
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        // previousArray?.[indexOfCurrentId]?.names = valuess;
+        let newObj = previousArray[indexOfCurrentId];
+        newObj = {
+          ...newObj,
+          [names]: valuess,
+        };
+        previousArray[indexOfCurrentId] = newObj;
+      }
+    } else {
+      let newObj: any;
+      if (ids) {
+        newObj = {
+          id: ids,
+          [names]: valuess,
+        };
+      } else {
+        newObj = {
+          key: keys,
+          [names]: valuess,
+        };
+      }
+      previousArray?.push(newObj);
+    }
+    setUpdateColumn(previousArray);
   };
 
   const addNewRow = () => {
@@ -181,9 +165,7 @@ const SyncQuoteLineItemField = () => {
       key: updateColumn?.length > 0 ? updateColumn?.length + 1 : 0,
       sender_table_name: 'QuoteLineItem',
       reciver_table_name: 'OpportunityLineItem',
-      sender_table_col: '',
-      reciver_table_col: '',
-      is_required: false,
+      organization: userDetails?.organization,
     });
     setUpdateColumn(newArr);
   };
@@ -205,21 +187,33 @@ const SyncQuoteLineItemField = () => {
           Quote Line Item Fields
         </Typography>
       ),
-      dataIndex: 'sender_table_col',
-      key: 'sender_table_col',
-      render: (text: string, record: any) => {
-        return (
+      dataIndex: 'product_code',
+      key: 'product_code',
+      render: (text: string, record: any) => (
+        <>
+          {' '}
           <CommonSelect
             style={{width: '100%', height: '36px'}}
             placeholder="Select"
             value={record?.sender_table_col}
             onChange={(e) => {
-              onDataChange(record, 'sender_table_col', e);
+              if (record?.id) {
+                commonMethodForChecks(record?.id, 'sender_table_col', e, '');
+              } else {
+                commonMethodForChecks(
+                  '',
+                  // eslint-disable-next-line no-unsafe-optional-chaining
+
+                  'sender_table_col',
+                  e,
+                  record?.key,
+                );
+              }
             }}
             options={opportunityLineItemFilteredOption}
           />
-        );
-      },
+        </>
+      ),
       width: 470,
     },
     {
@@ -228,22 +222,35 @@ const SyncQuoteLineItemField = () => {
           Opportunity Line Item Fields
         </Typography>
       ),
-      dataIndex: 'reciver_table_col',
-      key: 'reciver_table_col',
-      render: (text: string, record: any) => {
-        return (
-          <CommonSelect
-            style={{width: '100%', height: '36px'}}
-            placeholder="Select"
-            defaultValue={text}
-            value={record?.reciver_table_col}
-            onChange={(e) => {
-              onDataChange(record, 'reciver_table_col', e);
-            }}
-            options={quoteLineItemFilteredOption}
-          />
-        );
-      },
+      dataIndex: 'quantity',
+      key: 'quantity',
+      render: (text: string, record: any) => (
+        <CommonSelect
+          style={{width: '100%', height: '36px'}}
+          placeholder="Select"
+          defaultValue={text}
+          value={record?.reciver_table_col}
+          onChange={(e) => {
+            if (record?.id) {
+              commonMethodForChecks(
+                record?.id,
+                'reciver_table_col',
+                e,
+                record?.key,
+              );
+            } else {
+              commonMethodForChecks(
+                // eslint-disable-next-line no-unsafe-optional-chaining
+                '',
+                'reciver_table_col',
+                e,
+                record?.key,
+              );
+            }
+          }}
+          options={quoteLineItemFilteredOption}
+        />
+      ),
       width: 470,
     },
     {
@@ -252,19 +259,27 @@ const SyncQuoteLineItemField = () => {
           Active{' '}
         </Typography>
       ),
-      dataIndex: 'is_required',
-      key: 'is_required',
-      render: (text: string, record: any) => {
-        return (
-          <Switch
-            size="default"
-            checked={record?.is_required}
-            onChange={(e) => {
-              onDataChange(record, 'is_required', e);
-            }}
-          />
-        );
-      },
+      dataIndex: 'adjusted_price',
+      key: 'adjusted_price',
+      render: (text: string, record: any) => (
+        <Switch
+          size="default"
+          defaultChecked={record?.is_required}
+          onChange={(e) => {
+            if (record?.id) {
+              commonMethodForChecks(record?.id, 'is_required', e, record?.key);
+            } else {
+              commonMethodForChecks(
+                // eslint-disable-next-line no-unsafe-optional-chaining
+                '',
+                'is_required',
+                e,
+                record?.key,
+              );
+            }
+          }}
+        />
+      ),
       width: 77,
     },
     {
@@ -310,7 +325,7 @@ const SyncQuoteLineItemField = () => {
                 ),
                 children: (
                   <Space size={24} direction="vertical" style={{width: '100%'}}>
-                    <OsTable
+                    <OsTableWithOutDrag
                       loading={false}
                       // rowSelection={rowSelection}
                       tableSelectionType="checkbox"

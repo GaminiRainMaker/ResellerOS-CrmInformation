@@ -11,8 +11,9 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {Row, Space} from 'antd';
+import {Row, Space, Table} from 'antd';
 import {useEffect, useState} from 'react';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {
   getAllTableColumn,
   updateTableColumnById,
@@ -278,7 +279,7 @@ const FieldDisplayConfiguration = () => {
                 ),
                 children: (
                   <Space size={24} direction="vertical" style={{width: '100%'}}>
-                    <OsTable
+                    <OsTableWithOutDrag
                       loading={false}
                       tableSelectionType="checkbox"
                       columns={FieldDisplayConfigurationFields}
