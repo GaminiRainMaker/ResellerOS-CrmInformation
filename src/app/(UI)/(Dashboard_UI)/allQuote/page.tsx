@@ -77,6 +77,7 @@ const AllQuote: React.FC = () => {
   const [toDate, setToDate] = useState(null);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
+  const {userInformation} = useAppSelector((state) => state.user);
   const {data: generalSettingData} = useAppSelector(
     (state) => state.gereralSetting,
   );
@@ -182,7 +183,7 @@ const AllQuote: React.FC = () => {
         pdf_url: uploadFileDataItem?.pdf_url,
         customer_id: customerId,
         opportunity_id: opportunityId,
-        organization: localStorage.getItem('organization'),
+        organization: userInformation.organization,
       });
     });
     const newrrLineItems: any = [];

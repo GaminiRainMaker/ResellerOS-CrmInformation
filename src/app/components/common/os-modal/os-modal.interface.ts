@@ -17,3 +17,20 @@ export interface OSModalPropsInterface extends ModalProps {
   footer?: boolean;
   footerPadding?: number;
 }
+
+export interface OSDailogInterface extends ModalProps {
+  title?: string;
+  subTitle?: string;
+  titleTypography?: StyleName;
+  subTitleTypography?: StyleName;
+  subtitleColor?: string;
+  titleColor?: string;
+  primaryButtonText?: string;
+  secondaryButtonText?: string;
+  body?: React.ReactNode;
+  loading?: boolean;
+  showDailogModal?: boolean;
+  setShowDailogModal?: any;
+  icon?: React.ReactNode;
+  onOk?: any;
+}

@@ -6,8 +6,10 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsDropdown from '@/app/components/common/os-dropdown';
+import DailogModal from '@/app/components/common/os-modal/DialogModal';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
+import {ShieldCheckIcon} from '@heroicons/react/20/solid';
 import {useEffect, useState} from 'react';
 import {
   getUserByOrganization,
@@ -21,6 +23,8 @@ const RolesAndPermission = () => {
   const {data, loading} = useAppSelector((state) => state.user);
   const {userInformation} = useAppSelector((state) => state.user);
   const [userRules, setUserRules] = useState<any>(data);
+  const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
+  const [recordId, setRecordId] = useState<number>();
 
   const dropDownItemss = [
     {
@@ -40,6 +44,24 @@ const RolesAndPermission = () => {
       ),
     },
   ];
+
+  const providePermissions = () => {
+    setUserRules((prev: any) =>
+      prev.map((prevItem: any) => {
+        if (prevItem.id === recordId) {
+          return {
+            ...prevItem,
+            is_admin: true,
+            is_quote: true,
+            is_dealReg: true,
+            is_order: true,
+          };
+        }
+        return prevItem;
+      }),
+    );
+    setShowDailogModal(false);
+  };
 
   const RolesAndPermissionsColumns = [
     {
@@ -67,6 +89,12 @@ const RolesAndPermission = () => {
       render: (text: any, record: any) => (
         <Checkbox
           defaultChecked={text}
+          onClick={(d: any) => {
+            if (d?.target?.checked) {
+              setShowDailogModal(true);
+              setRecordId(record?.id);
+            }
+          }}
           onChange={(e) => {
             setUserRules((prev: any) =>
               prev.map((prevItem: any) => {
@@ -94,7 +122,7 @@ const RolesAndPermission = () => {
       width: 173,
       render: (text: any, record: any) => (
         <Checkbox
-          defaultChecked={text}
+          checked={text}
           onChange={(e) => {
             setUserRules((prev: any) =>
               prev.map((prevItem: any) => {
@@ -122,7 +150,7 @@ const RolesAndPermission = () => {
       width: 173,
       render: (text: any, record: any) => (
         <Checkbox
-          defaultChecked={text}
+          checked={text}
           onChange={(e) => {
             setUserRules((prev: any) =>
               prev.map((prevItem: any) => {
@@ -150,7 +178,7 @@ const RolesAndPermission = () => {
       width: 173,
       render: (text: any, record: any) => (
         <Checkbox
-          defaultChecked={text}
+          checked={text}
           onChange={(e) => {
             setUserRules((prev: any) =>
               prev.map((prevItem: any) => {
@@ -190,7 +218,6 @@ const RolesAndPermission = () => {
   const rowSelection = {
     onChange: (selectedRowKeys: any, record: any) => {
       console.log('selectedRowKeys', selectedRowKeys, record);
-      //   setExistingQuoteId(Number(selectedRowKeys));
     },
   };
 
@@ -232,6 +259,19 @@ const RolesAndPermission = () => {
           rowSelection={rowSelection}
         />
       </Space>
+
+      <DailogModal
+        setShowDailogModal={setShowDailogModal}
+        showDailogModal={showDailogModal}
+        title="Permissions"
+        subTitle="Do you wish to grant full access to this administrator?"
+        primaryButtonText="Yes"
+        secondaryButtonText="No"
+        icon={
+          <ShieldCheckIcon width={35} height={35} color={token?.colorSuccess} />
+        }
+        onOk={providePermissions}
+      />
     </>
   );
 };

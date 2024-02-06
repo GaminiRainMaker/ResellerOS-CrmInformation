@@ -22,7 +22,6 @@ import {
   useAppSelector,
 } from '../../../../../../../../redux/hook';
 import {TabContainerStyle} from './styled-components';
-import {getUserByTokenAccess} from '../../../../../../../../redux/actions/user';
 
 const SyncQuoteField = () => {
   const [token] = useThemeToken();
@@ -31,10 +30,11 @@ const SyncQuoteField = () => {
   const {data: syncTableData, loading} = useAppSelector(
     (state) => state.syncTable,
   );
-  const {data: userDetails} = useAppSelector((state) => state.user);
 
   const [updatedColumnforQuoteSync, setUpdatedColumnforQuoteSync] =
     useState<any>();
+  const {userInformation} = useAppSelector((state) => state.user);
+
   const [quoteFilteredOption, setQuoteOptions] = useState<any>();
   const [opportunityFilteredOption, setOpportunityOIptions] = useState<any>();
 
@@ -62,10 +62,6 @@ const SyncQuoteField = () => {
     setOpportunityOIptions(opportunityFiltered);
     setQuoteOptions(quoteFiltered);
   }, [updatedColumnforQuoteSync]);
-
-  useEffect(() => {
-    dispatch(getUserByTokenAccess(''));
-  }, []);
 
   const deleteRowSync = (id: any) => {
     dispatch(deleteSyncTableRow(id));
@@ -169,7 +165,7 @@ const SyncQuoteField = () => {
           : 0,
       sender_table_name: 'Quote',
       reciver_table_name: 'Opportunity',
-      organization: userDetails?.organization,
+      organization: userInformation?.organization,
     });
     setUpdatedColumnforQuoteSync(newArr);
   };

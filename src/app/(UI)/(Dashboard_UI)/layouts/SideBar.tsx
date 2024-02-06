@@ -1,13 +1,14 @@
+/* eslint-disable no-extra-boolean-cast */
 /* eslint-disable eqeqeq */
 
 'use client';
 
-import { Space } from '@/app/components/common/antd/Space';
+import {Space} from '@/app/components/common/antd/Space';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsAvatar from '@/app/components/common/os-avatar';
 import Typography from '@/app/components/common/typography';
-import { ChevronRightIcon, LifebuoyIcon } from '@heroicons/react/20/solid';
+import {ChevronRightIcon, LifebuoyIcon} from '@heroicons/react/20/solid';
 import {
   AdjustmentsHorizontalIcon,
   BoltIcon,
@@ -18,22 +19,43 @@ import {
   UserGroupIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
-import { Layout, MenuProps } from 'antd';
-import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
-import { useAppSelector } from '../../../../../redux/hook';
-import { LayoutMenuStyle } from './styled-components';
+import {Layout, MenuProps} from 'antd';
+import {useRouter} from 'next/navigation';
+import React, {useEffect, useState} from 'react';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {LayoutMenuStyle} from './styled-components';
+import {getUserByTokenAccess} from '../../../../../redux/actions/user';
+import {setUserInformation} from '../../../../../redux/slices/user';
 
 const {Sider} = Layout;
 
 const SideBar = () => {
   const [token] = useThemeToken();
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [seleectedKey, setSelectedKey] = useState<number>(1);
   const {userInformation} = useAppSelector((state) => state.user);
   type MenuItem = Required<MenuProps>['items'][number];
+
+  useEffect(() => {
+    if (!!userInformation) {
+      dispatch(getUserByTokenAccess('')).then((payload: any) => {
+        dispatch(
+          setUserInformation({
+            id: payload?.payload?.id,
+            organization: payload?.payload?.organization,
+            Admin: payload?.payload?.is_admin,
+            QuoteAI: payload?.payload?.is_quote,
+            DealReg: payload?.payload?.is_dealReg,
+            OrderAI: payload?.payload?.is_order,
+          }),
+        );
+      });
+    }
+  }, []);
+
 
   function getItem(
     label: React.ReactNode,
@@ -50,6 +72,9 @@ const SideBar = () => {
   }
 
   const isAdmin = userInformation?.Admin;
+  const isQuoteAI = userInformation?.QuoteAI;
+  const isDealReg = userInformation?.DealReg;
+  const isOrderAI = userInformation?.OrderAI;
 
   const items: MenuItem[] = [
     getItem(
@@ -90,122 +115,126 @@ const SideBar = () => {
       </Typography>,
       '1',
     ),
-    getItem(
-      <Space
-        size={12}
-        onClick={() => {
-          setSelectedKey(2);
-          router?.push('/allQuote');
-        }}
-        color={token?.colorTextSecondary}
-      >
-        <OsAvatar
-          icon={
-            <CurrencyDollarIcon
+    isQuoteAI &&
+      getItem(
+        <Space
+          size={12}
+          onClick={() => {
+            setSelectedKey(2);
+            router?.push('/allQuote');
+          }}
+          color={token?.colorTextSecondary}
+        >
+          <OsAvatar
+            icon={
+              <CurrencyDollarIcon
+                color={
+                  seleectedKey?.toString()?.includes('2')
+                    ? token?.colorPrimary
+                    : token?.colorTextSecondary
+                }
+                width={24}
+              />
+            }
+          />
+          <Typography
+            cursor="pointer"
+            name="Button 1"
+            color={
+              seleectedKey?.toString()?.includes('2')
+                ? token?.colorPrimary
+                : token?.colorTextSecondary
+            }
+          >
+            Quote AI
+          </Typography>
+        </Space>,
+
+        '2',
+      ),
+    isDealReg &&
+      getItem(
+        <Typography
+          onClick={() => {
+            setSelectedKey(3);
+            router?.push('/dealReg');
+          }}
+          name="Button 1"
+          color={token?.colorTextSecondary}
+        >
+          <Space size={12}>
+            <OsAvatar
+              icon={
+                <ReceiptPercentIcon
+                  color={
+                    seleectedKey?.toString()?.includes('3')
+                      ? token?.colorPrimary
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+
+            <Typography
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+              }}
               color={
-                seleectedKey?.toString()?.includes('2')
+                seleectedKey?.toString()?.includes('3')
                   ? token?.colorPrimary
                   : token?.colorTextSecondary
               }
-              width={24}
-            />
-          }
-        />
+            >
+              {' '}
+              DealReg AI
+            </Typography>
+          </Space>
+        </Typography>,
+        '3',
+      ),
+    isOrderAI &&
+      getItem(
         <Typography
-          cursor="pointer"
+          onClick={() => {
+            setSelectedKey(4);
+          }}
           name="Button 1"
-          color={
-            seleectedKey?.toString()?.includes('2')
-              ? token?.colorPrimary
-              : token?.colorTextSecondary
-          }
+          color={token?.colorTextSecondary}
         >
-          Quote AI
-        </Typography>
-      </Space>,
-      '2',
-    ),
-    getItem(
-      <Typography
-        onClick={() => {
-          setSelectedKey(3);
-          router?.push('/dealReg');
-        }}
-        name="Button 1"
-        color={token?.colorTextSecondary}
-      >
-        <Space size={12}>
-          <OsAvatar
-            icon={
-              <ReceiptPercentIcon
-                color={
-                  seleectedKey?.toString()?.includes('3')
-                    ? token?.colorPrimary
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
+          <Space size={12}>
+            <OsAvatar
+              icon={
+                <ShoppingBagIcon
+                  color={
+                    seleectedKey?.toString()?.includes('4')
+                      ? token?.colorPrimary
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
 
-          <Typography
-            name="Button 1"
-            style={{
-              marginTop: '1px',
-            }}
-            color={
-              seleectedKey?.toString()?.includes('3')
-                ? token?.colorPrimary
-                : token?.colorTextSecondary
-            }
-          >
-            {' '}
-            DealReg AI
-          </Typography>
-        </Space>
-      </Typography>,
-      '3',
-    ),
-    getItem(
-      <Typography
-        onClick={() => {
-          setSelectedKey(4);
-        }}
-        name="Button 1"
-        color={token?.colorTextSecondary}
-      >
-        <Space size={12}>
-          <OsAvatar
-            icon={
-              <ShoppingBagIcon
-                color={
-                  seleectedKey?.toString()?.includes('4')
-                    ? token?.colorPrimary
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
-
-          <Typography
-            name="Button 1"
-            style={{
-              marginTop: '1px',
-            }}
-            color={
-              seleectedKey?.toString()?.includes('4')
-                ? token?.colorPrimary
-                : token?.colorTextSecondary
-            }
-          >
-            {' '}
-            Orders AI
-          </Typography>
-        </Space>
-      </Typography>,
-      '4',
-    ),
+            <Typography
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+              }}
+              color={
+                seleectedKey?.toString()?.includes('4')
+                  ? token?.colorPrimary
+                  : token?.colorTextSecondary
+              }
+            >
+              {' '}
+              Orders AI
+            </Typography>
+          </Space>
+        </Typography>,
+        '4',
+      ),
     getItem(
       <Typography
         onClick={() => {
@@ -436,48 +465,43 @@ const SideBar = () => {
         ),
       ],
     ),
-    getItem(
-      <>
-        {isAdmin?.toString()?.includes('true') ? (
-          <Space
-            size={12}
-            onClick={() => {
-              setSelectedKey(11);
-              router?.push('/admin');
-            }}
-            color={token?.colorTextSecondary}
-          >
-            <OsAvatar
-              icon={
-                <AdjustmentsHorizontalIcon
-                  color={
-                    seleectedKey?.toString()?.includes('11')
-                      ? token?.colorPrimary
-                      : token?.colorTextSecondary
-                  }
-                  width={24}
-                />
-              }
-            />
+    isAdmin &&
+      getItem(
+        <Space
+          size={12}
+          onClick={() => {
+            setSelectedKey(11);
+            router?.push('/admin');
+          }}
+          color={token?.colorTextSecondary}
+        >
+          <OsAvatar
+            icon={
+              <AdjustmentsHorizontalIcon
+                color={
+                  seleectedKey?.toString()?.includes('11')
+                    ? token?.colorPrimary
+                    : token?.colorTextSecondary
+                }
+                width={24}
+              />
+            }
+          />
 
-            <Typography
-              cursor="pointer"
-              name="Button 1"
-              color={
-                seleectedKey?.toString()?.includes('11')
-                  ? token?.colorPrimary
-                  : token?.colorTextSecondary
-              }
-            >
-              Admin
-            </Typography>
-          </Space>
-        ) : (
-          ''
-        )}
-      </>,
-      '11',
-    ),
+          <Typography
+            cursor="pointer"
+            name="Button 1"
+            color={
+              seleectedKey?.toString()?.includes('11')
+                ? token?.colorPrimary
+                : token?.colorTextSecondary
+            }
+          >
+            Admin
+          </Typography>
+        </Space>,
+        '11',
+      ),
   ];
 
   return (

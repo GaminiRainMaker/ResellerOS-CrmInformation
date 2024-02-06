@@ -53,6 +53,8 @@ const OsUpload: React.FC<any> = ({
   }));
 
   useEffect(() => {
+    form?.resetFields(['opportunity_id']);
+
     const filterUsers = opportunityData?.filter((item: any) =>
       item?.customer_id?.toString()?.includes(customerValue),
     );
@@ -125,6 +127,7 @@ const OsUpload: React.FC<any> = ({
             >
               <CommonSelect
                 placeholder="Select"
+                allowClear
                 style={{width: '100%'}}
                 options={customerOptions}
                 onChange={(value) => {
@@ -141,6 +144,7 @@ const OsUpload: React.FC<any> = ({
             >
               <CommonSelect
                 placeholder="Select"
+                allowClear
                 style={{width: '100%'}}
                 options={opportunityFilterOption}
               />

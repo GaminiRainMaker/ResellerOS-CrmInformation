@@ -41,9 +41,6 @@ const CustomHeader = () => {
             Cookies.remove('token');
             Cookies.remove('id');
             router.push('/login');
-            localStorage.removeItem('id');
-            localStorage.removeItem('organization');
-            localStorage.removeItem('Admin');
           }}
         >
           Sign Out

@@ -20,7 +20,6 @@ const DeleteModal: FC<any> = ({
   const [token] = useThemeToken();
   return (
     <OsModal
-      // loading={loading}
       body={
         <Row style={{width: '100%', padding: '15px'}}>
           <Space
@@ -66,10 +65,8 @@ const DeleteModal: FC<any> = ({
       }
       width={600}
       open={showModalDelete}
-      // onOk={() => addQuoteLineItem()}
       onCancel={() => {
         setShowModalDelete((p: boolean) => !p);
-        // deleteSelectedIds();
       }}
     />
   );

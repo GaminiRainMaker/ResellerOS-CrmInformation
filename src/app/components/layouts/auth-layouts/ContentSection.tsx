@@ -6,10 +6,14 @@ import Image from 'next/image';
 import {FC, useEffect, useState} from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Cookies from 'js-cookie';
-import {useRouter, useSearchParams} from 'next/navigation';
+import {useRouter} from 'next/navigation';
 import OSResellerLogo from '../../../../../public/assets/static/ResellerOsText.svg';
-import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
 import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
+import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
+import {signUpAuth, verifyAuth} from '../../../../../redux/actions/auth';
+import {getUserByTokenAccess} from '../../../../../redux/actions/user';
+import {useAppDispatch} from '../../../../../redux/hook';
+import {setUserInformation} from '../../../../../redux/slices/user';
 import {Space} from '../../common/antd/Space';
 import useThemeToken from '../../common/hooks/useThemeToken';
 import OsButton from '../../common/os-button';
@@ -18,10 +22,6 @@ import OsInputPassword from '../../common/os-input/InputPassword';
 import Typography from '../../common/typography';
 import {AuthLayoutInterface} from './authLayout.interface';
 import {ContentSectionWrapper, CustomCheckbox} from './styled-components';
-import {useAppDispatch} from '../../../../../redux/hook';
-import {signUpAuth, verifyAuth} from '../../../../../redux/actions/auth';
-import {setUserInformation} from '../../../../../redux/slices/user';
-import {getUserByTokenAccess} from '../../../../../redux/actions/user';
 
 const ContentSection: FC<AuthLayoutInterface> = ({
   heading,
@@ -55,6 +55,9 @@ const ContentSection: FC<AuthLayoutInterface> = ({
               email: dataaa?.email,
               organization: dataaa?.organization,
               Admin: dataaa?.is_admin,
+              QuoteAI: dataaa?.is_quote,
+              DealReg: dataaa?.is_dealReg,
+              OrderAI: dataaa?.is_order,
             }),
           );
           router.push('/crmInAccount');
@@ -133,14 +136,15 @@ const ContentSection: FC<AuthLayoutInterface> = ({
         });
         dispatch(
           setUserInformation({
-            id: payload.payload.id,
-            organization: payload.payload.organization,
-            Admin: payload.payload.admin,
+            id: payload?.payload?.id,
+            organization: payload?.payload?.organization,
+            Admin: payload?.payload?.is_admin,
+            QuoteAI: payload?.payload?.is_quote,
+            DealReg: payload?.payload?.is_dealReg,
+            OrderAI: payload?.payload?.is_order,
           }),
         );
-        localStorage.setItem('id', payload.payload.id);
-        localStorage.setItem('organization', payload.payload.organization);
-        localStorage.setItem('Admin', payload.payload.admin);
+
         Cookies.set('token', payload.payload.token);
         // return;
         router.push('/crmInAccount');
