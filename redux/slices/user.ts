@@ -103,7 +103,7 @@ const userSlice = createSlice({
         getUserByTokenAccess.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.userInformation = action.payload;
         },
       )
       .addCase(

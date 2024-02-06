@@ -33,9 +33,11 @@ const AddUser = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [showAddUserModal, setShowAddUserModal] = useState<boolean>(false);
-  const {data, loading, userInformation} = useAppSelector(
-    (state) => state.user,
-  );
+  const {
+    data: UsersData,
+    loading,
+    userInformation,
+  } = useAppSelector((state) => state.user);
   const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
@@ -188,7 +190,9 @@ const AddUser = () => {
   ];
 
   useEffect(() => {
-    dispatch(getUserByOrganization(userInformation?.organization));
+    if (userInformation?.organization) {
+      dispatch(getUserByOrganization(userInformation?.organization));
+    }
   }, []);
 
   const onFinish = () => {
@@ -253,7 +257,7 @@ const AddUser = () => {
 
         <OsTable
           columns={UserColumns}
-          dataSource={data}
+          dataSource={UsersData}
           scroll
           loading={loading}
         />
