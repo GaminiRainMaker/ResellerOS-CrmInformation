@@ -62,7 +62,6 @@ const AddUser = () => {
       ),
     },
   ];
-
   const deleteSelectedIds = async () => {
     const dataa = {id: deleteIds};
     await dispatch(deleteUser(dataa));
@@ -72,7 +71,6 @@ const AddUser = () => {
     setDeleteIds([]);
     setShowModalDelete(false);
   };
-
   const UserColumns = [
     {
       title: (
@@ -193,7 +191,6 @@ const AddUser = () => {
     dispatch(getUserByOrganization(userInformation?.organization));
   }, []);
 
-
   const onFinish = () => {
     const userNewData = form.getFieldsValue();
     const userDataobj: any = {
@@ -218,7 +215,7 @@ const AddUser = () => {
     }
     setTimeout(() => {
       dispatch(getUserByOrganization(userInformation?.organization));
-    }, 2000);
+    }, 1000);
   };
 
   return (
