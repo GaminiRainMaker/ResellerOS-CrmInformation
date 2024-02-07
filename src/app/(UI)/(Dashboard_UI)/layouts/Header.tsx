@@ -9,11 +9,17 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import SearchInput from '@/app/components/common/os-input/SearchInput';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
-import {BellIcon, WrenchScrewdriverIcon} from '@heroicons/react/24/outline';
+import {
+  ArrowLeftStartOnRectangleIcon,
+  BellIcon,
+  WrenchScrewdriverIcon,
+} from '@heroicons/react/24/outline';
 import {Layout} from 'antd';
 import {MenuProps} from 'antd/es/menu';
 import Image from 'next/image';
 import {useRouter} from 'next/navigation';
+import React from 'react';
+import {Divider} from '@/app/components/common/antd/Divider';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
@@ -22,12 +28,17 @@ import UserIcon from '../../../../../public/assets/static/userIcon.svg';
 const CustomHeader = () => {
   const [token] = useThemeToken();
   const router = useRouter();
+
   const items: MenuProps['items'] = [
     {
       key: '1',
       label: (
-        <Typography name="Body 3/Regular" cursor="pointer">
-          View Profile
+        <Typography
+          name="Body 3/Regular"
+          cursor="pointer"
+          onClick={() => router.push(`/accountInfo`)}
+        >
+          My Account{' '}
         </Typography>
       ),
     },
@@ -37,17 +48,37 @@ const CustomHeader = () => {
         <Typography
           name="Body 3/Regular"
           cursor="pointer"
-          onClick={() => {
-            Cookies.remove('token');
-            Cookies.remove('id');
-            router.push('/login');
-          }}
+          onClick={() => router.push(`/accountInfo`)}
         >
-          Sign Out
+          Settings{' '}
+        </Typography>
+      ),
+    },
+    {
+      key: '3',
+      label: (
+        <Typography
+          name="Body 3/Regular"
+          cursor="pointer"
+          onClick={() => router.push(`/accountInfo`)}
+        >
+          Help & Support{' '}
         </Typography>
       ),
     },
   ];
+
+  const contentStyle: React.CSSProperties = {
+    backgroundColor: 'white',
+    borderRadius: '12px',
+    boxShadow: token.boxShadowSecondary,
+    padding: '12px',
+  };
+  const menuStyle: React.CSSProperties = {
+    boxShadow: 'none',
+    padding: '0px',
+    margin: '0px',
+  };
 
   return (
     <Layout>
@@ -95,7 +126,54 @@ const CustomHeader = () => {
               background={token?.colorInfoBg}
               icon={<BellIcon width={24} color={token?.colorInfoBorder} />}
             />
-            <Dropdown menu={{items}}>
+            <Dropdown
+              menu={{items}}
+              // eslint-disable-next-line react/no-unstable-nested-components
+              dropdownRender={(menu: any) => (
+                <div style={contentStyle}>
+                  <Space>
+                    <Image
+                      src={UserIcon}
+                      alt="UserIcon"
+                      style={{cursor: 'pointer'}}
+                    />
+                    <Space direction="vertical" size={0}>
+                      <Typography name="Body 3/Regular">Josh Walker</Typography>
+                      <Typography name="Body 4/Medium" color={token?.colorInfo}>
+                        josh.walker@email.com
+                      </Typography>
+                    </Space>
+                  </Space>
+                  <Divider />
+                  <Typography name="Body 2/Medium">Account Info</Typography>
+                  {React.cloneElement(menu as React.ReactElement, {
+                    style: menuStyle,
+                  })}
+                  <Divider />
+                  <Space
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      Cookies.remove('token');
+                      Cookies.remove('id');
+                      router.push('/login');
+                    }}
+                  >
+                    <ArrowLeftStartOnRectangleIcon
+                      width={24}
+                      style={{marginTop: '5px'}}
+                      color={token?.colorError}
+                    />
+                    <Typography name="Body 3/Regular" cursor="pointer">
+                      Logout
+                    </Typography>
+                  </Space>
+                </div>
+              )}
+            >
               <a onClick={(e) => e.preventDefault()}>
                 <Space>
                   <Image
