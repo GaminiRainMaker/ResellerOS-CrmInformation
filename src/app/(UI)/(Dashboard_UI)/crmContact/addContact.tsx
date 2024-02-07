@@ -46,7 +46,6 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
     dispatch(insertbillingContact(formValue));
     setShowModal((p: boolean) => !p);
   };
-
   return (
     <>
       {!drawer && (
