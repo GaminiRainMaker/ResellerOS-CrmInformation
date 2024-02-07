@@ -56,7 +56,6 @@ const SideBar = () => {
     }
   }, []);
 
-
   function getItem(
     label: React.ReactNode,
     key: React.Key,
@@ -244,6 +243,7 @@ const SideBar = () => {
         name="Button 1"
         color={token?.colorTextSecondary}
       >
+        
         <Space size={12}>
           <OsAvatar
             icon={
