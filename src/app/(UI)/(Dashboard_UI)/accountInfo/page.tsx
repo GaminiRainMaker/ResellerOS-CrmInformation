@@ -10,7 +10,7 @@ const AccountInfo = () => {
       title: 'Account',
       childitem: [
         {key: 1, name: 'My Profile', superChild: <MyProfile />},
-        {key: 2, name: 'My Team', superChild: 'wrtwrwtr'},
+        {key: 2, name: 'My Team', superChild: 'No Data'},
       ],
     },
     {

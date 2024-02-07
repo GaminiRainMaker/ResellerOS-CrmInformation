@@ -353,6 +353,7 @@ const AllQuote: React.FC = () => {
     }, 1000);
     setDeleteIds([]);
     setShowModalDelete(false);
+    form.resetFields(['opportunity_id', 'customer_id']);
   };
 
   const Quotecolumns = [
