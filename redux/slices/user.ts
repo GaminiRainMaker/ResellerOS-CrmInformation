@@ -8,6 +8,7 @@ import {
   getUserByOrganization,
   getUserByTokenAccess,
   deleteUser,
+  getUserByIdLogin,
 } from '../actions/user';
 
 type UserState = {
@@ -44,7 +45,7 @@ const userSlice = createSlice({
       })
       .addCase(createUser.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.data = [action.payload];
+        state.data = action.payload;
       })
       .addCase(createUser.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
@@ -103,7 +104,7 @@ const userSlice = createSlice({
         getUserByTokenAccess.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.userInformation = action.payload;
         },
       )
       .addCase(
@@ -124,7 +125,25 @@ const userSlice = createSlice({
       .addCase(deleteUser.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(getUserByIdLogin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getUserByIdLogin.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getUserByIdLogin.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      );
   },
 });
 
