@@ -26,7 +26,9 @@ import {getUserByIdLogin} from '../../../../../../redux/actions/user';
 
 const MyProfile = () => {
   const [token] = useThemeToken();
-  const {data: loginUserData} = useAppSelector((state) => state.user);
+  const {loginUserInformation: loginUserData} = useAppSelector(
+    (state) => state.user,
+  );
 
   const dispatch = useAppDispatch();
 
