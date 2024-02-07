@@ -19,10 +19,18 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline';
 import {Form} from 'antd';
+import {useEffect} from 'react';
 import {CollapseSpaceStyle} from '../../dealRegDetail/DealRegDetailForm/styled-components';
+import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+import {getUserByIdLogin} from '../../../../../../redux/actions/user';
 
 const MyProfile = () => {
   const [token] = useThemeToken();
+  const {loginUserInformation: loginUserData} = useAppSelector(
+    (state) => state.user,
+  );
+
+  const dispatch = useAppDispatch();
 
   const analyticsData = [
     {
@@ -47,7 +55,6 @@ const MyProfile = () => {
       iconBg: token?.colorSuccessBg,
     },
   ];
-
   const customerUpdatedData = {
     id: 1,
     name: 'gamini',
@@ -64,6 +71,9 @@ const MyProfile = () => {
     billing_country: 'California',
     BillingContacts: '',
   };
+  useEffect(() => {
+    dispatch(getUserByIdLogin(''));
+  }, []);
 
   const headerButtons = (
     <OsButton
@@ -121,7 +131,7 @@ const MyProfile = () => {
       <Col>
         <ProfileCard
           headerButtons={headerButtons}
-          customerData={customerUpdatedData}
+          customerData={loginUserData}
           myProfile
         />
       </Col>

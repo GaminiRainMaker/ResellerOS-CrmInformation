@@ -8,6 +8,7 @@ import {
   getUserByOrganization,
   getUserByTokenAccess,
   deleteUser,
+  getUserByIdLogin,
 } from '../actions/user';
 
 type UserState = {
@@ -16,6 +17,7 @@ type UserState = {
   data: any;
   user: any;
   userInformation: any;
+  loginUserInformation: any;
 };
 const initialState: UserState = {
   loading: false,
@@ -23,6 +25,7 @@ const initialState: UserState = {
   data: [],
   user: [],
   userInformation: [],
+  loginUserInformation: {},
 };
 
 const userSlice = createSlice({
@@ -124,7 +127,25 @@ const userSlice = createSlice({
       .addCase(deleteUser.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(getUserByIdLogin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getUserByIdLogin.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.loginUserInformation = action.payload;
+        },
+      )
+      .addCase(
+        getUserByIdLogin.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      );
   },
 });
 
