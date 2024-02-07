@@ -103,7 +103,7 @@ const ProfileCard: FC<OSProfileInterface> = ({
                     }
                   />
                   <Typography name="Body 3/Regular">
-                    {'josh.walker@email.com' ?? '--'}
+                    {customerData?.email ?? '--'}
                   </Typography>
                 </Space>
               </Col>
@@ -121,7 +121,7 @@ const ProfileCard: FC<OSProfileInterface> = ({
                     }
                   />
                   <Typography name="Body 3/Regular">
-                    {'+1 999-999-9999' ?? '--'}
+                    {customerData?.phone_number ?? '--'}
                   </Typography>
                 </Space>
               </Col>

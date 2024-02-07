@@ -17,6 +17,7 @@ type UserState = {
   data: any;
   user: any;
   userInformation: any;
+  loginUserInformation: any;
 };
 const initialState: UserState = {
   loading: false,
@@ -24,6 +25,7 @@ const initialState: UserState = {
   data: [],
   user: [],
   userInformation: [],
+  loginUserInformation: {},
 };
 
 const userSlice = createSlice({
@@ -134,7 +136,7 @@ const userSlice = createSlice({
         getUserByIdLogin.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.loginUserInformation = action.payload;
         },
       )
       .addCase(
