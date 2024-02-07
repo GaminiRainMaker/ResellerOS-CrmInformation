@@ -1,6 +1,10 @@
 'use client';
 
 import CustomTabs from '@/app/components/common/os-custom-tab/AdminSectionTab';
+import RolesAndPermission from '@/app/(UI)/(Dashboard_UI)/admin/users/rolesPermissions';
+import Configuration from './quote-AI/configuration';
+import Products from '../../../components/common/os-add-products';
+import Users from '../../../components/common/os-add-users';
 
 const AdminPage = () => {
   const tabs = [
@@ -8,8 +12,8 @@ const AdminPage = () => {
       key: 1,
       title: 'Quote AI',
       childitem: [
-        {key: 1, name: 'Configuration'},
-        {key: 2, name: 'Add Products'},
+        {key: 1, name: 'Configuration', superChild: <Configuration />},
+        {key: 2, name: 'Add Products', superChild: <Products />},
       ],
     },
     {
@@ -32,8 +36,12 @@ const AdminPage = () => {
       key: 4,
       title: 'Users',
       childitem: [
-        {key: 7, name: 'All users'},
-        {key: 8, name: 'Roles and Permissions'},
+        {key: 7, name: 'All users', superChild: <Users />},
+        {
+          key: 8,
+          name: 'Roles and Permissions',
+          superChild: <RolesAndPermission />,
+        },
       ],
     },
     {

@@ -2,19 +2,30 @@
 /* eslint-disable arrow-body-style */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import {FC, useState} from 'react';
-import RolesAndPermission from '@/app/(UI)/(Dashboard_UI)/admin/users/rolesPermissions';
-import Configuration from '../../../(UI)/(Dashboard_UI)/admin/quote-AI/configuration';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
-import Products from '../os-add-products';
-import Users from '../os-add-users';
-
 import Typography from '../typography';
 import {CustomTabStyle} from './styled-components';
 
 const AdminCustomTabs: FC<any> = (tabs) => {
   const [activekeysall, setActivekeysall] = useState<number>(1);
   const [token] = useThemeToken();
+  const [tempChild, setTempChild] = useState<any>();
+
+  const getSuperChild = () => {
+    return (
+      <div
+        style={{
+          width: '100%',
+          background: 'transparent',
+          padding: '0px 0px 24px 24px',
+          borderRadius: '12px',
+        }}
+      >
+        {tempChild ?? 'No Data'}
+      </div>
+    );
+  };
 
   return (
     <div style={{display: 'flex'}}>
@@ -32,27 +43,32 @@ const AdminCustomTabs: FC<any> = (tabs) => {
                 <div style={{marginBottom: '26px', cursor: 'pointer'}}>
                   {itemtab?.childitem?.map((itemild: any) => {
                     return (
-                      <Typography
-                        style={{
-                          padding: '12px 24px',
-                          background:
-                            activekeysall === itemild?.key
-                              ? token.colorInfo
-                              : '',
-                          color:
-                            activekeysall === itemild?.key
-                              ? token.colorBgContainer
-                              : token.colorTextDisabled,
-                          borderRadius: '12px',
-                        }}
-                        as="div"
-                        cursor="pointer"
-                        name="Button 1"
-                        onClick={() => setActivekeysall(itemild?.key)}
-                        key={`${itemild?.key}`}
-                      >
-                        {itemild?.name}
-                      </Typography>
+                      <>
+                        <Typography
+                          style={{
+                            padding: '12px 24px',
+                            background:
+                              activekeysall === itemild?.key
+                                ? token.colorInfo
+                                : '',
+                            color:
+                              activekeysall === itemild?.key
+                                ? token.colorBgContainer
+                                : token.colorTextDisabled,
+                            borderRadius: '12px',
+                          }}
+                          as="div"
+                          cursor="pointer"
+                          name="Button 1"
+                          onClick={() => {
+                            setTempChild(itemild?.superChild);
+                            setActivekeysall(itemild?.key);
+                          }}
+                          key={`${itemild?.key}`}
+                        >
+                          {itemild?.name}
+                        </Typography>
+                      </>
                     );
                   })}
                 </div>
@@ -61,26 +77,7 @@ const AdminCustomTabs: FC<any> = (tabs) => {
           })}
         </div>
       </CustomTabStyle>
-      <div
-        style={{
-          width: '100%',
-          background: 'transparent',
-          padding: '24px 0px 24px 24px',
-          borderRadius: '12px',
-        }}
-      >
-        {activekeysall === 1 ? (
-          <Configuration />
-        ) : activekeysall === 2 ? (
-          <Products />
-        ) : activekeysall === 7 ? (
-          <Users />
-        ) : activekeysall === 8 ? (
-          <RolesAndPermission />
-        ) : (
-          <>No Data</>
-        )}
-      </div>
+      <>{getSuperChild()}</>
     </div>
   );
 };
