@@ -126,7 +126,11 @@ const MyProfile = () => {
         />
       </Col>
       <Col span={17}>
-        <Space direction="vertical" size={24} style={{width: '100%'}}>
+        <Space
+          direction="vertical"
+          size={24}
+          style={{width: '100%'}}
+        >
           <Row gutter={[16, 16]} justify="center">
             {analyticsData?.map((item: any) => (
               <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={8}>
@@ -139,7 +143,7 @@ const MyProfile = () => {
               </Col>
             ))}
           </Row>
-          <Row gutter={[16, 16]} justify="center">
+          <Row justify="center">
             <CollapseSpaceStyle size={24} direction="vertical">
               <OsCollapseAdmin items={ResponseDetailItem} />
             </CollapseSpaceStyle>
