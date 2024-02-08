@@ -139,7 +139,7 @@ const ProfileCard: FC<OSProfileInterface> = ({
                     }
                   />
                   <Typography name="Body 3/Regular">
-                    {'Sr. Product Manager' ?? '--'}
+                    {customerData?.job_title  ?? '--'}
                   </Typography>
                 </Space>
               </Col>

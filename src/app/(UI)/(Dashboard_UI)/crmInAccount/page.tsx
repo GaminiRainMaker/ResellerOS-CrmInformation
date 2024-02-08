@@ -39,8 +39,8 @@ import {
   updateCustomer,
 } from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import AddCustomer from './addCustomer';
-import AddCustomerInputVale from './addCustomerInput';
+import AddCustomer from '@/app/components/common/os-add-customer';
+import AddCustomerInputVale from '@/app/components/common/os-add-customer/AddCustomerInput';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();

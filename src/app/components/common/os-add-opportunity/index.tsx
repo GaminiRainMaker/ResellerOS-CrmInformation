@@ -14,14 +14,7 @@ import {useEffect, useState} from 'react';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {insertOpportunity} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-
-interface AddOpportunityInterface {
-  formValue: any;
-  setFormValue: any;
-  setShowModal: any;
-  tableData: any;
-  drawer?: any;
-}
+import {AddOpportunityInterface} from './os-add-opportunity-interface';
 
 const AddOpportunity: React.FC<AddOpportunityInterface> = ({
   formValue,

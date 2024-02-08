@@ -5,17 +5,11 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import Typography from '@/app/components/common/typography';
 import {useState} from 'react';
-import AddCustomerInputVale from './addCustomerInput';
-
-interface AddCustomertInterface {
-  setShowModal: any;
-  setOpen?: any;
-  open?: any;
-}
+import AddCustomerInputVale from './AddCustomerInput';
+import {AddCustomertInterface} from './os-add-customer-interface';
 
 const AddCustomer: React.FC<AddCustomertInterface> = ({setShowModal}) => {
   const [token] = useThemeToken();
-
   const [formValue, setFormValue] = useState<any>();
   const [customerValue, setCustomerValue] = useState<any>();
 

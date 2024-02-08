@@ -24,7 +24,6 @@ import {PencilSquareIcon} from '@heroicons/react/24/outline';
 import {Checkbox, Space, TabsProps} from 'antd';
 import Image from 'next/image';
 import {useState} from 'react';
-import {OsContactCard} from '@/app/components/common/os-card/OsContactCard';
 import uploadGallery from '../../../../../public/assets/static/uploadGallery.svg';
 import {insertAddAddress} from '../../../../../redux/actions/address';
 import {
@@ -33,16 +32,7 @@ import {
 } from '../../../../../redux/actions/billingContact';
 import {insertCustomer} from '../../../../../redux/actions/customer';
 import {useAppDispatch} from '../../../../../redux/hook';
-
-interface CustomerAccountInterface {
-  formValue: any;
-  setFormValue: any;
-  setCustomerValue: any;
-  customerValue: any;
-  setShowModal: any;
-  drawer?: any;
-  setOpen?: any;
-}
+import {CustomerAccountInterface} from './os-add-customer-interface';
 
 const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
   formValue,

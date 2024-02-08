@@ -16,9 +16,11 @@ import {
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import AddOpportunity from '@/app/components/common/os-add-opportunity';
 import OsButton from '@/app/components/common/os-button';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
@@ -30,7 +32,6 @@ import {StageValue} from '@/app/utils/CONSTANTS';
 import {SearchOutlined} from '@ant-design/icons';
 import {MenuProps, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
-import EmptyContainer from '@/app/components/common/os-empty-container';
 import {
   deleteOpportunity,
   getAllOpportunity,
@@ -39,7 +40,6 @@ import {
   updateOpportunity,
 } from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import AddOpportunity from './AddOpportunity';
 
 const CrmOpportunity: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -49,7 +49,6 @@ const CrmOpportunity: React.FC = () => {
   const [tableData, setTableData] = useState<any>();
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
-  const [deletedData, setDeletedData] = useState<any>();
   const [open, setOpen] = useState(false);
   const {
     data: opportunityData,
@@ -80,19 +79,24 @@ const CrmOpportunity: React.FC = () => {
     dispatch(getAllOpportunity());
     setOpen(false);
   };
+
   useEffect(() => {
     dispatch(getAllOpportunity());
     dispatch(getdeleteOpportunity(''));
   }, []);
+
   useEffect(() => {
     setTimeout(() => {
       dispatch(getAllOpportunity());
     }, 1000);
+
     dispatch(getdeleteOpportunity(''));
   }, [!showModal]);
+
   useEffect(() => {
     setOpportunityValueData(opportunityData);
   }, [opportunityData]);
+
   const analyticsData = [
     {
       key: 1,
@@ -444,7 +448,6 @@ const CrmOpportunity: React.FC = () => {
       </Space>
 
       <OsModal
-        // loading={loading}
         body={
           <AddOpportunity
             setFormValue={setFormValue}
@@ -455,7 +458,6 @@ const CrmOpportunity: React.FC = () => {
         }
         width={600}
         open={showModal}
-        // onOk={() => addQuoteLineItem()}
         onCancel={() => {
           setShowModal((p) => !p);
         }}
