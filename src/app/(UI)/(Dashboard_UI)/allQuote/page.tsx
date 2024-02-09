@@ -380,7 +380,13 @@ const AllQuote: React.FC = () => {
       key: 'opportunity',
       width: 187,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => {
+            window.open(`/opportunityDetail?id=${record?.Opportunity?.id}`);
+          }}
+          hoverOnText
+        >
           {record?.Opportunity?.title ?? '--'}
         </Typography>
       ),

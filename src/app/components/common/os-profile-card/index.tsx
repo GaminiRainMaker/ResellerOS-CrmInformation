@@ -56,7 +56,7 @@ const ProfileCard: FC<OSProfileInterface> = ({
               </Typography>
             </Avatar>
             <Typography name="Heading 3/Medium" style={{textAlign: 'center'}}>
-              {customerData?.user_name ?? '--'}
+              {(customerData?.user_name || customerData?.name) ?? '--'}
               <Typography
                 name="Body 4/Bold"
                 style={{textAlign: 'center'}}
@@ -139,7 +139,7 @@ const ProfileCard: FC<OSProfileInterface> = ({
                     }
                   />
                   <Typography name="Body 3/Regular">
-                    {customerData?.job_title  ?? '--'}
+                    {customerData?.job_title ?? '--'}
                   </Typography>
                 </Space>
               </Col>

@@ -144,8 +144,16 @@ const CrmOpportunity: React.FC = () => {
       dataIndex: 'title',
       key: 'title',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '-d-'}</Typography>
+      render: (text: string, record: any) => (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => {
+            window.open(`/opportunityDetail?id=${record?.id}`);
+          }}
+          hoverOnText
+        >
+          {text ?? '--'}
+        </Typography>
       ),
     },
     {

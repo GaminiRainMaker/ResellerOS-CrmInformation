@@ -109,7 +109,13 @@ const DealReg: React.FC = () => {
       key: 'account',
       width: 187,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => {
+            window.open(`/accountDetails?id=${record?.Customer?.id}`);
+          }}
+          hoverOnText
+        >
           {record?.Customer?.name ?? '--'}
         </Typography>
       ),
