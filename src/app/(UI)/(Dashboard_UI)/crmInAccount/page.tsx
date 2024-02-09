@@ -31,6 +31,8 @@ import OsTabs from '@/app/components/common/os-tabs';
 import {SearchOutlined} from '@ant-design/icons';
 import {MenuProps, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
+import AddCustomer from '@/app/components/common/os-add-customer';
+import AddCustomerInputVale from '@/app/components/common/os-add-customer/AddCustomerInput';
 import {updateAddress} from '../../../../../redux/actions/address';
 import {
   deleteCustomers,
@@ -39,8 +41,6 @@ import {
   updateCustomer,
 } from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import AddCustomer from '@/app/components/common/os-add-customer';
-import AddCustomerInputVale from '@/app/components/common/os-add-customer/AddCustomerInput';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();
