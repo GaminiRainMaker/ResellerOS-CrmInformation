@@ -6,6 +6,7 @@ import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
+import AddOpportunity from '../os-add-opportunity';
 import OsModal from '../os-modal';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
@@ -21,6 +22,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
   const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
   const [open, setOpen] = useState<boolean>(false);
   const [opportunityFilterOption, setOpportunityFilterOption] = useState<any>();
+  const [formValue, setFormValue] = useState<any>();
 
   useEffect(() => {
     dispatch(getAllOpportunity());
@@ -83,8 +85,14 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
       </Form.Item>
 
       <OsModal
-        // body={<AddOpportunity setShowModal={setOpen} />}
-        width={800}
+        body={
+          <AddOpportunity
+            setFormValue={setFormValue}
+            formValue={formValue}
+            setShowModal={setOpen}
+          />
+        }
+        width={600}
         open={open}
         onCancel={() => {
           setOpen((p) => !p);

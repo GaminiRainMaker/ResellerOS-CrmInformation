@@ -13,11 +13,11 @@
 'use client';
 
 import Typography from '@/app/components/common/typography';
-import {EyeIcon, PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
+import { EyeIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 // eslint-disable-next-line import/no-extraneous-dependencies
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
@@ -28,14 +28,14 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import {Form, MenuProps, TabsProps} from 'antd';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
-import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
-import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
-import {insertProduct} from '../../../../../redux/actions/product';
-import {insertProfitability} from '../../../../../redux/actions/profitability';
+import { Form, MenuProps, TabsProps } from 'antd';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getContractProductByProductCode } from '../../../../../redux/actions/contractProduct';
+import { getAllGeneralSetting } from '../../../../../redux/actions/generalSetting';
+import { insertOpportunityLineItem } from '../../../../../redux/actions/opportunityLineItem';
+import { insertProduct } from '../../../../../redux/actions/product';
+import { insertProfitability } from '../../../../../redux/actions/profitability';
 import {
   deleteQuoteById,
   getQuotesByDateFilter,
@@ -43,12 +43,12 @@ import {
   updateQuoteByQuery,
   updateQuoteWithNewlineItemAddByID,
 } from '../../../../../redux/actions/quote';
-import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
-import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
-import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
-import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
-import {insertValidation} from '../../../../../redux/actions/validation';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { insertQuoteLineItem } from '../../../../../redux/actions/quotelineitem';
+import { getRebatesByProductCode } from '../../../../../redux/actions/rebate';
+import { insertRebateQuoteLineItem } from '../../../../../redux/actions/rebateQuoteLineitem';
+import { getAllSyncTable } from '../../../../../redux/actions/syncTable';
+import { insertValidation } from '../../../../../redux/actions/validation';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import UploadFile from '../generateQuote/UploadFile';
 import RecentSection from './RecentSection';
 import QuoteAnalytics from './analytics';
@@ -665,6 +665,7 @@ const AllQuote: React.FC = () => {
         onCancel={() => {
           setShowModal((p) => !p);
           setUploadFileData([]);
+          form.resetFields(['customer_id'])
         }}
       />
 

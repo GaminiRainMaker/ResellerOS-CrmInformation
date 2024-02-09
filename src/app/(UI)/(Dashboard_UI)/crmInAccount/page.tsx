@@ -83,7 +83,6 @@ const CrmInformation: React.FC = () => {
       dispatch(queryCustomer(''));
     }, 1000);
   };
-  const tokens = Cookies.get('token');
 
   const deleteSelectedIds = async () => {
     const data = {Ids: deleteIds};

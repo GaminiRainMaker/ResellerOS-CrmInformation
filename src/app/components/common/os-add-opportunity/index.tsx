@@ -32,6 +32,7 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
     setShowModal((p: boolean) => !p);
     setFormValue('');
   };
+
   useEffect(() => {
     const customerDataArray: any = [];
     if (customerData?.length > 0) {
@@ -42,6 +43,7 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
     }
     setCustomerOptions(customerDataArray);
   }, [customerData]);
+
   useEffect(() => {
     dispatch(getAllCustomer(''));
   }, []);
