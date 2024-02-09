@@ -34,7 +34,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import OsTabs from '@/app/components/common/os-tabs';
 import {selectData, selectDataForProduct} from '@/app/utils/CONSTANTS';
-import {MenuProps} from 'antd';
+import {Collapse, MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -865,9 +865,11 @@ const GenerateQuote: React.FC = () => {
                           {dataNullForBundle?.[0]?.length > 0 &&
                             dataNullForBundle?.[0] && (
                               <OsCollapse
+                                collapsible="header"
+                                defaultActiveKey={['1']}
                                 items={[
                                   {
-                                    key: '2',
+                                    key: '1',
                                     label: (
                                       <>
                                         <Space

@@ -6,6 +6,7 @@ import {OsCollapseStyle} from './styled-components';
 const OsCollapse: FC<CollapseProps> = ({items}, props) => (
   <OsCollapseStyle
     expandIconPosition="start"
+    defaultActiveKey={['1']}
     items={items}
     ghost
     {...props}
