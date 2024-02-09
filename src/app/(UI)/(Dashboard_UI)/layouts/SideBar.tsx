@@ -50,6 +50,8 @@ const SideBar = () => {
             QuoteAI: payload?.payload?.is_quote,
             DealReg: payload?.payload?.is_dealReg,
             OrderAI: payload?.payload?.is_order,
+            username: payload?.payload?.user_name,
+            email: payload?.payload?.email,
           }),
         );
       });

@@ -58,6 +58,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
               QuoteAI: dataaa?.is_quote,
               DealReg: dataaa?.is_dealReg,
               OrderAI: dataaa?.is_order,
+              username: dataaa?.email,
             }),
           );
           router.push('/crmInAccount');
@@ -142,6 +143,8 @@ const ContentSection: FC<AuthLayoutInterface> = ({
             QuoteAI: payload?.payload?.is_quote,
             DealReg: payload?.payload?.is_dealReg,
             OrderAI: payload?.payload?.is_order,
+            username: payload?.payload?.user_name,
+            email: payload?.payload?.email,
           }),
         );
 
