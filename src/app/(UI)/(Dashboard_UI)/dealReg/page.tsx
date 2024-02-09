@@ -188,9 +188,10 @@ const DealReg: React.FC = () => {
         <>
           {finalDealRegData?.map((itemDeal: any) => (
             <OsCollapse
+              defaultActiveKey={['1']}
               items={[
                 {
-                  key: '2',
+                  key: '1',
                   label: (
                     <>
                       <Space

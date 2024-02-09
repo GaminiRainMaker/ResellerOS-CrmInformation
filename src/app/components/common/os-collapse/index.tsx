@@ -3,10 +3,10 @@ import {FC} from 'react';
 import {CollapseProps} from '../antd/Collapse';
 import {OsCollapseStyle} from './styled-components';
 
-const OsCollapse: FC<CollapseProps> = ({items}, props) => (
+const OsCollapse: FC<CollapseProps> = ({items, defaultActiveKey}, props) => (
   <OsCollapseStyle
     expandIconPosition="start"
-    defaultActiveKey={['1']}
+    defaultActiveKey={defaultActiveKey}
     items={items}
     ghost
     {...props}

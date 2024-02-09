@@ -34,7 +34,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import OsTabs from '@/app/components/common/os-tabs';
 import {selectData, selectDataForProduct} from '@/app/utils/CONSTANTS';
-import {Collapse, MenuProps} from 'antd';
+import {MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -64,11 +64,11 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
 import InputDetails from './allTabs/InputDetails';
 import Metrics from './allTabs/Metrics';
+import Profitability from './allTabs/Profitability';
 import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
 import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
-import Profitability from './allTabs/Profitability';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -865,8 +865,6 @@ const GenerateQuote: React.FC = () => {
                           {dataNullForBundle?.[0]?.length > 0 &&
                             dataNullForBundle?.[0] && (
                               <OsCollapse
-                                collapsible="header"
-                                defaultActiveKey={['1']}
                                 items={[
                                   {
                                     key: '1',
