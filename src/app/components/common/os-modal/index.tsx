@@ -32,7 +32,7 @@ const OsModal: FC<OSModalPropsInterface> = ({
       destroyOnClose
       width={rest?.width ?? 500}
       open={open}
-      onCancel={(e) => {
+      onCancel={(e: any) => {
         onCancel && onCancel(e);
       }}
       onOk={onOk}

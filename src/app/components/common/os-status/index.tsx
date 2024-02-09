@@ -26,6 +26,11 @@ const OsStatusWrapper: FC<OsStatusWrapperProps> = ({value}) => {
       textColor: `${token?.colorSuccess}`,
       border: `${token?.colorSuccess}`,
     },
+    Active: {
+      color: `${token?.colorSuccessBg}`,
+      textColor: `${token?.colorSuccess}`,
+      border: `${token?.colorSuccess}`,
+    },
     Reject: {
       color: `${token?.colorErrorBg}`,
       textColor: `${token?.colorError}`,

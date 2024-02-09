@@ -268,7 +268,7 @@ const SideBar = () => {
                 : token?.colorTextSecondary
             }
           >
-            Vendors
+            Partners & Partners Program
           </Typography>
         </Space>
       </Typography>,

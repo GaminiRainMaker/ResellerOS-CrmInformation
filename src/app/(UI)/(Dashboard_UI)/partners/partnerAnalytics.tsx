@@ -3,32 +3,34 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
 import {
-  CheckBadgeIcon,
   ClipboardDocumentCheckIcon,
-  ClockIcon,
-  DocumentCheckIcon,
   PencilIcon,
-  QueueListIcon,
   TagIcon,
   TrashIcon,
-  UsersIcon,
+  UserGroupIcon,
 } from '@heroicons/react/24/outline';
+import {useAppSelector} from '../../../../../redux/hook';
 
-const PartnerAnalytics = (props: any) => {
+const PartnerAnalytics = () => {
   const [token] = useThemeToken();
+  const {data: PartnerData} = useAppSelector((state) => state.partner);
 
   const analyticsData = [
     {
       key: 1,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
+      primary: (
+        <Typography name="Heading 3/Medium">{PartnerData?.length}</Typography>
+      ),
       secondry: 'Partners',
-      icon: <UsersIcon width={24} color={token?.colorInfo} />,
+      icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
-      secondry: 'Programs',
+      primary: (
+        <Typography name="Heading 3/Medium">{PartnerData?.length}</Typography>
+      ),
+      secondry: 'Partner Programs',
       icon: (
         <ClipboardDocumentCheckIcon width={24} color={token?.colorSuccess} />
       ),
@@ -36,33 +38,24 @@ const PartnerAnalytics = (props: any) => {
     },
     {
       key: 3,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
-      secondry: 'Registrations',
+      primary: <Typography name="Heading 3/Medium">20</Typography>,
+      secondry: 'Deal Registrations',
       icon: <PencilIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
     {
       key: 4,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
+      primary: <Typography name="Heading 3/Medium">05</Typography>,
       secondry: 'Quotes',
       icon: <TagIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
     },
     {
       key: 5,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
-      secondry: 'Registered',
-      icon: <DocumentCheckIcon width={24} color={token?.colorError} />,
+      primary: <Typography name="Heading 3/Medium">30</Typography>,
+      secondry: 'Deleted',
+      icon: <TrashIcon width={24} color={token?.colorError} />,
       iconBg: token?.colorErrorBg,
-    },
-    {
-      key: 6,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
-      secondry: 'Self-Registered',
-      icon: (
-        <ClipboardDocumentCheckIcon width={24} color={token?.colorLinkHover} />
-      ),
-      iconBg: token?.colorInfoHover,
     },
   ];
 

@@ -3,41 +3,39 @@
 
 'use client';
 
-import Typography from '@/app/components/common/typography';
-import {PlusIcon} from '@heroicons/react/24/outline';
-
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import AddPartner from '@/app/components/common/os-add-partner';
 import OsButton from '@/app/components/common/os-button';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
+import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import {MenuProps, TabsProps} from 'antd';
-import {useState} from 'react';
-import {useAppSelector} from '../../../../../redux/hook';
-import AddPartner from './AddPartner';
+import Typography from '@/app/components/common/typography';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import {Form, MenuProps, TabsProps} from 'antd';
+import {useEffect, useState} from 'react';
+import {getAllPartner} from '../../../../../redux/actions/partner';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import PartnerAnalytics from './partnerAnalytics';
 
 const Partners: React.FC = () => {
   const [token] = useThemeToken();
-  const [activeTab, setActiveTab] = useState<any>('1');
+  const [form] = Form.useForm();
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [showModalEdit, setShowModalEdit] = useState<boolean>(false);
-  const [formValue, setFormValue] = useState<any>();
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
-  const [open, setOpen] = useState(false);
-  const {loading, filteredData} = useAppSelector(
-    (state) => state.billingContact,
-  );
-  const [tableData, setTableData] = useState<any>();
+  const {data: PartnerData, loading} = useAppSelector((state) => state.partner);
+  const dispatch = useAppDispatch();
 
-  const [billingFilterSeach, setBillingFilterSearch] = useState<any>();
+  useEffect(() => {
+    dispatch(getAllPartner());
+  }, []);
 
   const rowSelection = {
     onChange: (selectedRowKeys: any) => {
@@ -52,8 +50,8 @@ const Partners: React.FC = () => {
           Partner Name
         </Typography>
       ),
-      dataIndex: 'partner_name',
-      key: 'partner_name',
+      dataIndex: 'partner',
+      key: 'partner',
       width: 295,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -78,8 +76,8 @@ const Partners: React.FC = () => {
           Generated Date
         </Typography>
       ),
-      dataIndex: 'generated_date',
-      key: 'generated_date',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       width: 295,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -88,17 +86,26 @@ const Partners: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Type
+          Partner Type
         </Typography>
       ),
       dataIndex: 'type',
       key: 'type',
       width: 295,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
-          {record?.Customer?.name ?? '--'}
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Status
         </Typography>
       ),
+      dataIndex: 'status',
+      key: 'status',
+      width: 295,
+      render: (text: string, record: any) => <OsStatusWrapper value="Active" />,
     },
     {
       title: (
@@ -134,7 +141,35 @@ const Partners: React.FC = () => {
       children: (
         <OsTable
           columns={PartnerColumns}
-          dataSource={filteredData}
+          dataSource={[]}
+          rowSelection={rowSelection}
+          scroll
+          locale={locale}
+          loading={false}
+        />
+      ),
+    },
+    {
+      label: <Typography name="Body 4/Regular">Partner Programs</Typography>,
+      key: '2',
+      children: (
+        <OsTable
+          columns={PartnerColumns}
+          dataSource={[]}
+          rowSelection={rowSelection}
+          scroll
+          locale={locale}
+          loading={false}
+        />
+      ),
+    },
+    {
+      label: <Typography name="Body 4/Regular">Requested</Typography>,
+      key: '3',
+      children: (
+        <OsTable
+          columns={PartnerColumns}
+          dataSource={PartnerData}
           rowSelection={rowSelection}
           scroll
           locale={locale}
@@ -151,35 +186,17 @@ const Partners: React.FC = () => {
     },
     {
       key: '2',
-      label: (
-        <Typography
-          onClick={() => setShowModalEdit((p) => !p)}
-          name="Body 3/Regular"
-        >
-          Edit Selected
-        </Typography>
-      ),
+      label: <Typography name="Body 3/Regular">Download Selected</Typography>,
     },
     {
       key: '3',
-      label: (
-        <Typography
-          onClick={() => setShowModalEdit((p) => !p)}
-          name="Body 3/Regular"
-        >
-          Download Selected
-        </Typography>
-      ),
-    },
-    {
-      key: '4',
       label: (
         <Typography
           name="Body 3/Regular"
           color={token?.colorError}
           onClick={() => setShowModalDelete(true)}
         >
-          Delete Selected{' '}
+          Delete Selected
         </Typography>
       ),
     },
@@ -198,7 +215,7 @@ const Partners: React.FC = () => {
           <Col style={{display: 'flex', alignItems: 'center'}}>
             <Space size={12} style={{height: '48px'}}>
               <OsButton
-                text="Request New Partner"
+                text="Request Partner"
                 buttontype="PRIMARY"
                 icon={<PlusIcon />}
                 clickHandler={() => setShowModal((p) => !p)}
@@ -212,31 +229,17 @@ const Partners: React.FC = () => {
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
           <OsTabs
-            onChange={(e) => {
-              setActiveTab(e);
-            }}
-            activeKey={activeTab}
             tabBarExtraContent={
               <Space size={12} align="center">
                 <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">
-                    Registration Form
-                  </Typography>
+                  <Typography name="Body 4/Medium">Partner Name</Typography>
                   <OsInput style={{width: '180px'}} placeholder="Search Here" />
                 </Space>
                 <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Customer Account</Typography>
+                  <Typography name="Body 4/Medium">Partner Programs</Typography>
                   <CommonSelect
                     style={{width: '180px'}}
                     placeholder="Search Here"
-                    options={tableData}
-                    onChange={(e) => {
-                      setBillingFilterSearch({
-                        ...billingFilterSeach,
-                        customer_id: e,
-                      });
-                      // setSelectedValue(e);
-                    }}
                   />
                 </Space>
                 <div
@@ -263,20 +266,17 @@ const Partners: React.FC = () => {
       </Space>
 
       <OsModal
-        // loading={loading}
-        body={
-          <AddPartner
-            setShowModal={setShowModal}
-            open={open}
-            setOpen={setOpen}
-          />
-        }
+        loading={loading}
+        body={<AddPartner form={form} setOpen={setShowModal} />}
         width={800}
         open={showModal}
-        // onOk={() => addQuoteLineItem()}
         onCancel={() => {
           setShowModal((p) => !p);
         }}
+        footer
+        primaryButtonText="Request"
+        onOk={form?.submit}
+        footerPadding={30}
       />
     </>
   );

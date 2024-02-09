@@ -1,0 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { AxiosResponse } from 'axios';
+import { API } from './CONSTANTS';
+import { get, patch, post } from './index';
+
+export const PARTNER_API = {
+  get: () => get(API.PARTNER.INDEX) as Promise<AxiosResponse<[]>>,
+  post: (data: any) => post(API.PARTNER.INDEX, data),
+  query: (data: any) =>
+    post(API.PARTNER.QUERY, data) as Promise<AxiosResponse<[]>>,
+  getById: (id: number) =>
+    get(`${API.PARTNER.INDEX}/${id}`) as Promise<AxiosResponse<any>>,
+  patch: (data: any) =>
+    patch(API.PARTNER.INDEX, data) as Promise<AxiosResponse<any>>,
+  deleteById: (data: any) =>
+    patch(API.PARTNER.DeleteById, data) as Promise<AxiosResponse<any>>,
+  updatePartnerById: (data: any) =>
+    patch(API.PARTNER.UpdatePartnerById, data) as Promise<AxiosResponse<any>>,
+};

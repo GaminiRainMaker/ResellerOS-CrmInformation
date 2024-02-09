@@ -116,4 +116,10 @@ export const API = {
     INDEX: '/dealRegAddress',
     QUERY: '/dealRegAddress/query',
   },
+  PARTNER: {
+    INDEX: '/partner',
+    QUERY: 'partner/query',
+    DeleteById: '/partner/deleteById',
+    UpdatePartnerById: '/partner/updatePartnerById',
+  },
 };
