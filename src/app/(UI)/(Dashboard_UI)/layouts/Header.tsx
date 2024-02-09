@@ -24,10 +24,12 @@ import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
 import UserIcon from '../../../../../public/assets/static/userIcon.svg';
+import {useAppSelector} from '../../../../../redux/hook';
 
 const CustomHeader = () => {
   const [token] = useThemeToken();
   const router = useRouter();
+  const {loading, userInformation} = useAppSelector((state) => state.user);
 
   const items: MenuProps['items'] = [
     {
@@ -138,9 +140,11 @@ const CustomHeader = () => {
                       style={{cursor: 'pointer'}}
                     />
                     <Space direction="vertical" size={0}>
-                      <Typography name="Body 3/Regular">Josh Walker</Typography>
+                      <Typography name="Body 3/Regular">
+                        {userInformation?.username || 'Josh Walker'}
+                      </Typography>
                       <Typography name="Body 4/Medium" color={token?.colorInfo}>
-                        josh.walker@email.com
+                        {userInformation?.email || 'josh.walker@email.com'}
                       </Typography>
                     </Space>
                   </Space>
@@ -181,7 +185,10 @@ const CustomHeader = () => {
                     alt="UserIcon"
                     style={{cursor: 'pointer'}}
                   />
-                  <Typography name="Body 3/Regular">Josh Walker</Typography>
+                  <Typography name="Body 3/Regular">
+                    {' '}
+                    {userInformation?.username || 'Josh Walker'}
+                  </Typography>
                   <Image
                     src={DownArrow}
                     alt="DownArrow"
