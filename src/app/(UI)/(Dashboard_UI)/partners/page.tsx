@@ -128,7 +128,7 @@ const Partners: React.FC = () => {
     emptyText: (
       <EmptyContainer
         title="No Files"
-        actionButton="Request New Partner"
+        actionButton="Request Partner"
         onClick={() => setShowModal((p) => !p)}
       />
     ),
