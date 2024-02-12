@@ -462,13 +462,9 @@ const AllQuote: React.FC = () => {
   ];
 
   const markAsComplete = async () => {
-    if (activeQuotes && activeQuotes?.length > 0) {
-      const IdsArr: any = [];
-      activeQuotes?.map((item: any) => {
-        IdsArr?.push(item?.id);
-      });
+    if (deleteIds && deleteIds?.length > 0) {
       const data = {
-        ids: IdsArr,
+        ids: deleteIds,
         query: 'completed',
       };
       await dispatch(updateQuoteByQuery(data));
@@ -476,6 +472,7 @@ const AllQuote: React.FC = () => {
       setActiveTab('4');
     }
   };
+
   const locale = {
     emptyText: (
       <EmptyContainer
@@ -649,6 +646,7 @@ const AllQuote: React.FC = () => {
                   scroll
                   loading={loading}
                   locale={locale}
+                  rowSelection={rowSelection}
                 />
               ),
               ...tabItem,
