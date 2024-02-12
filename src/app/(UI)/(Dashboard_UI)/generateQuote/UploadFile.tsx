@@ -28,6 +28,8 @@ const UploadFile: FC<any> = ({
   uploadFileData,
   addInExistingQuote,
   addQuoteLineItem,
+  setCustomerValue,
+  customerValue,
   form,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -91,6 +93,8 @@ const UploadFile: FC<any> = ({
         addInExistingQuote={addInExistingQuote}
         addQuoteLineItem={addQuoteLineItem}
         form={form}
+        setCustomerValue={setCustomerValue}
+        customerValue={customerValue}
       />
     </GlobalLoader>
   );

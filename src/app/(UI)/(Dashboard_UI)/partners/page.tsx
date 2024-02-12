@@ -31,6 +31,9 @@ const Partners: React.FC = () => {
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const {data: PartnerData, loading} = useAppSelector((state) => state.partner);
+  const {loginUserInformation, userInformation} = useAppSelector(
+    (state) => state.user,
+  );
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -201,7 +204,7 @@ const Partners: React.FC = () => {
       ),
     },
   ];
-
+  console.log('loginUserInformation', loginUserInformation);
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>

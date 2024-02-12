@@ -18,11 +18,12 @@ const OsModal: FC<OSModalPropsInterface> = ({
   titleTypography = 'Heading 3/Medium',
   footer = true,
   footerPadding,
+  disabledButton,
   ...rest
 }) => {
   const {onCancel, open, onOk} = rest;
   const [token] = useThemeToken();
-
+  console.log('34543', disabledButton);
   return (
     <OSModalStyle
       bodyPadding={bodyPadding}
@@ -47,6 +48,7 @@ const OsModal: FC<OSModalPropsInterface> = ({
             {secondaryButtonText && (
               <OsButton
                 text={secondaryButtonText}
+                disabled={disabledButton}
                 buttontype="SECONDARY"
                 clickHandler={() => {
                   if (onOk) {
@@ -60,6 +62,7 @@ const OsModal: FC<OSModalPropsInterface> = ({
               <OsButton
                 loading={loading}
                 text={primaryButtonText}
+                disabled={disabledButton}
                 buttontype="PRIMARY"
                 clickHandler={() => {
                   if (onOk) {

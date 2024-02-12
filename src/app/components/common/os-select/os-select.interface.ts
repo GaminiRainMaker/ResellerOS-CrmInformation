@@ -5,4 +5,5 @@ export type OsSelectProps = SelectProps & {
   prefixIcon?: ReactNode;
   inset?: boolean;
   clearIconPostion?: number;
+  value?: any;
 };

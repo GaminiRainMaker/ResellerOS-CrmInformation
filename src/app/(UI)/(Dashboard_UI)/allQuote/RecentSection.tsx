@@ -42,7 +42,7 @@ const RecentSection: FC<any> = ({
         <Row>
           <Col span={7}>
             <Space direction="vertical" size={2}>
-              <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
+              <Typography name="Body 2/Medium" color={token?.colorPrimaryText}>
                 Upload file to generate quote
               </Typography>
               <Typography name="Body 4/Regular" color={token?.colorPrimaryText}>

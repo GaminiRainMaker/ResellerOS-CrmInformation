@@ -20,7 +20,7 @@ import {
   UsersIcon,
 } from '@heroicons/react/24/outline';
 import {Layout, MenuProps} from 'antd';
-import {useRouter} from 'next/navigation';
+import {usePathname, useRouter} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {LayoutMenuStyle} from './styled-components';
@@ -76,6 +76,28 @@ const SideBar = () => {
   const isQuoteAI = userInformation?.QuoteAI;
   const isDealReg = userInformation?.DealReg;
   const isOrderAI = userInformation?.OrderAI;
+  const pathname = usePathname();
+
+  console.log('pathname', pathname, isAdmin);
+  useEffect(() => {
+    if (pathname?.includes('dashboard')) {
+      setSelectedKey(1);
+    } else if (pathname?.includes('allQuote')) {
+      setSelectedKey(2);
+    } else if (pathname?.includes('dealReg')) {
+      setSelectedKey(3);
+    } else if (pathname?.includes('partners')) {
+      setSelectedKey(5);
+    } else if (pathname?.includes('crmInAccount')) {
+      setSelectedKey(8);
+    } else if (pathname?.includes('crmContact')) {
+      setSelectedKey(9);
+    } else if (pathname?.includes('crmOpportunity')) {
+      setSelectedKey(10);
+    } else if (pathname?.includes('admin')) {
+      setSelectedKey(11);
+    }
+  }, []);
 
   const items: MenuItem[] = [
     getItem(
@@ -245,7 +267,6 @@ const SideBar = () => {
         name="Button 1"
         color={token?.colorTextSecondary}
       >
-        
         <Space size={12}>
           <OsAvatar
             icon={
@@ -354,7 +375,7 @@ const SideBar = () => {
                 : token?.colorTextSecondary
             }
           >
-            CRM information
+            CRM Information
           </Typography>
         </Space>
       </Typography>,
