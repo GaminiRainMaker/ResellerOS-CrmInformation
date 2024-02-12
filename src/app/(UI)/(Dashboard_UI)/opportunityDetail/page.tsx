@@ -82,8 +82,8 @@ const OpportunityDetails = () => {
           File Name
         </Typography>
       ),
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       width: 130,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -102,21 +102,21 @@ const OpportunityDetails = () => {
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Opportunity
-        </Typography>
-      ),
-      dataIndex: 'title',
-      key: 'title',
-      width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">
-          {OpportunityData?.title ?? '--'}
-        </Typography>
-      ),
-    },
+    // {
+    //   title: (
+    //     <Typography name="Body 4/Medium" className="dragHandler">
+    //       Opportunity
+    //     </Typography>
+    //   ),
+    //   dataIndex: 'opportunity',
+    //   key: 'opportunity',
+    //   width: 187,
+    //   render: (text: string) => (
+    //     <Typography name="Body 4/Regular">
+    //       {OpportunityData?.title ?? '--'}
+    //     </Typography>
+    //   ),
+    // },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
