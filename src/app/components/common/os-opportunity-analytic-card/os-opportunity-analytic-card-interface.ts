@@ -1,3 +1,3 @@
 export interface OsOpportunityAnalyicCardInterface {
-    OpportunityData: any;
+  OpportunityData: any;
 }
