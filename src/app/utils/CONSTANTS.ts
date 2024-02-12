@@ -295,3 +295,11 @@ export const dealRegStatusOptions = [
   {value: 'Ext Approved', label: 'Ext Approved'},
   {value: 'Vendor Received - Held', label: 'Vendor Received - Held'},
 ];
+
+export const industryOptions = [
+  {value: 'Information Technology', label: 'Information Technology'},
+  {value: 'Design', label: 'Design'},
+  {value: 'Technology', label: 'Technology'},
+  {value: 'Search Engine', label: 'Search Engine'},
+  {value: 'Manufacturing', label: 'Manufacturing'},
+];

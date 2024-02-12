@@ -52,6 +52,7 @@ const SideBar = () => {
             OrderAI: payload?.payload?.is_order,
             username: payload?.payload?.user_name,
             email: payload?.payload?.email,
+            SuperAdmin: payload?.payload?.super_admin,
           }),
         );
       });
@@ -245,7 +246,6 @@ const SideBar = () => {
         name="Button 1"
         color={token?.colorTextSecondary}
       >
-        
         <Space size={12}>
           <OsAvatar
             icon={
