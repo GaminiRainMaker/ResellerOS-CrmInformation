@@ -276,7 +276,7 @@ const GenerateQuote: React.FC = () => {
           <PopConfirm
             placement="top"
             title=""
-            description="Are you sure to delete this Quote Line Item?"
+            description="Are you sure you want to delete this Quote Line Item?"
             onConfirm={() => {
               deleteQuote(record?.id);
             }}

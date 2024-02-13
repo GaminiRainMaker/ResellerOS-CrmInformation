@@ -533,9 +533,15 @@ const AllQuote: React.FC = () => {
   const dropDownItemss: MenuProps['items'] = [
     {
       key: '1',
-      label: (
-        <Typography name="Body 3/Regular">Bundle Configuration</Typography>
-      ),
+      label: <Typography name="Body 3/Regular">Select All</Typography>,
+    },
+    {
+      key: '2',
+      label: <Typography name="Body 3/Regular">Download Selected</Typography>,
+    },
+    {
+      key: '3',
+      label: <Typography name="Body 3/Regular">Delete Selected</Typography>,
     },
   ];
 
@@ -696,7 +702,7 @@ const AllQuote: React.FC = () => {
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteQuote}
         heading="Delete Quote"
-        description="Are you sure to delete this Quote?"
+        description="Are you sure you want to delete this Quote?"
       />
     </>
   );

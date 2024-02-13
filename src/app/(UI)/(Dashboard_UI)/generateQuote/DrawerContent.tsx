@@ -242,10 +242,10 @@ const DrawerContent: FC<any> = ({setOpen}) => {
               />
             </Form.Item>
 
-            <Form.Item label="Contact Assign" name="billing_contact">
+            <Form.Item label="Contacts" name="billing_contact">
               <CommonSelect
                 style={{width: '100%'}}
-                placeholder="Contact Assign"
+                placeholder="Contacts"
                 options={billingOptionsData}
               />
             </Form.Item>
