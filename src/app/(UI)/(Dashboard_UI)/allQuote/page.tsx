@@ -208,9 +208,9 @@ const AllQuote: React.FC = () => {
                 product_code: insertedProduct?.payload?.product_code,
                 line_amount: insertedProduct?.payload?.line_amount,
                 list_price: insertedProduct?.payload?.list_price,
+                adjusted_price: insertedProduct?.payload?.adjusted_price,
                 description: insertedProduct?.payload?.description,
                 quantity: insertedProduct?.payload?.quantity,
-                adjusted_price: insertedProduct?.payload?.adjusted_price,
                 line_number: insertedProduct?.payload?.line_number,
                 pdf_url:
                   generalSettingData?.attach_doc_type === 'quote_line_item'
@@ -240,13 +240,13 @@ const AllQuote: React.FC = () => {
                     contractProductByProductCode?.payload?.id,
                 });
               }
-
               newrrLineItems?.push(obj1);
             }
           }
         }
       }
-    } else if (existingQuoteId) {
+    }
+    else if (existingQuoteId) {
       await dispatch(updateQuoteWithNewlineItemAddByID(existingQuoteId));
       for (let i = 0; i < formattedArray?.length; i++) {
         const items = formattedArray[i];
@@ -348,6 +348,7 @@ const AllQuote: React.FC = () => {
     setShowModal(false);
     setUploadFileData([]);
   };
+
   const deleteQuote = async () => {
     const data = {Ids: deleteIds};
     await dispatch(deleteQuoteById(data));
@@ -369,7 +370,7 @@ const AllQuote: React.FC = () => {
       key: 'createdAt',
       width: 130,
       render: (text: string) => (
-        <Typography name="Body 4/Regular" >
+        <Typography name="Body 4/Regular">
           {moment(text).format('MM/DD/YYYY') ?? '--'}
         </Typography>
       ),
