@@ -2,7 +2,7 @@
 /* eslint-disable no-param-reassign */
 import {AxiosError, AxiosResponse} from 'axios';
 
-export const responseInterceptor = (config: AxiosResponse): AxiosResponse => {
+export const responseInterceptor = (config: AxiosResponse, ): AxiosResponse => {
   const {headers} = config;
   if (headers?.location) {
     const loc = headers.location.split('/');
