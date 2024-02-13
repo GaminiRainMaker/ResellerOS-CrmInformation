@@ -2,31 +2,30 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable array-callback-return */
-import {Space} from '@/app/components/common/antd/Space';
+import { Space } from '@/app/components/common/antd/Space';
+import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
-import {selectDataForProduct} from '@/app/utils/CONSTANTS';
-import {FC, useEffect, useState} from 'react';
-import {TrashIcon} from '@heroicons/react/24/outline';
-import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import Typography from '@/app/components/common/typography';
-import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
-import {useRemoveDollarAndCommahook} from '@/app/utils/base';
-import {updateProductFamily} from '../../../../../../redux/actions/product';
-import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
-import {
-  getQuoteLineItemByQuoteIdandBundleIdNull,
-  updateQuoteLineItemForBundleId,
-} from '../../../../../../redux/actions/quotelineitem';
-import {getAllBundle} from '../../../../../../redux/actions/bundle';
+import { selectDataForProduct } from '@/app/utils/CONSTANTS';
+import { useRemoveDollarAndCommahook } from '@/app/utils/base';
+import { TrashIcon } from '@heroicons/react/24/outline';
+import { FC, useEffect, useState } from 'react';
+import { updateProductFamily } from '../../../../../../redux/actions/product';
+import { updateQuoteLineItemForBundleId } from '../../../../../../redux/actions/quotelineitem';
+import { useAppDispatch, useAppSelector } from '../../../../../../redux/hook';
 
 const InputDetails: FC<any> = ({tableColumnDataShow}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const {abbreviate} = useAbbreviationHook(0);
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
+  const [isDeleteIds, setDeleteIds] = useState<any>();
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
+  const [isShowModalDelete, setShowModalDelete] = useState<boolean>(false);
   const {quoteLineItemByQuoteID, loading} = useAppSelector(
     (state) => state.quoteLineItem,
   );
@@ -45,12 +44,13 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
   };
 
   const deleteQuote = async (id: number) => {
+    // isShowModalDelete
     if (id) {
       const data = {
         Ids: [id],
         bundle_id: null,
       };
-      await dispatch(updateQuoteLineItemForBundleId(data));
+      // await dispatch(updateQuoteLineItemForBundleId(data));
       // dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
       // dispatch(getAllBundle(getQuoteID));
     }
@@ -151,17 +151,21 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
       key: 'adjusted_price',
       width: 187,
       render: (text: any, record: any) => {
-        const totalAddedPrice = record?.Product?.adjusted_price
-          ?.slice(1, record?.Product?.adjusted_price?.length)
-          .replace(',', '');
-        // eslint-disable-next-line no-unsafe-optional-chaining
-        const ExactPriceForOne = totalAddedPrice / record?.Product?.quantity;
-        let bundleQuantity: any = 1;
-        bundleQuantity = record?.Bundle ? record?.Bundle?.quantity : 1;
-        const totalQuantity = record?.quantity * bundleQuantity;
-        const TotalPrice = totalQuantity * ExactPriceForOne;
-
-        return <>${TotalPrice}</>;
+        // const totalAddedPrice = record?.Product?.adjusted_price
+        //   ?.slice(1, record?.Product?.adjusted_price?.length)
+        //   .replace(',', '');
+        // // eslint-disable-next-line no-unsafe-optional-chaining
+        // const ExactPriceForOne = totalAddedPrice / record?.Product?.quantity;
+        // let bundleQuantity: any = 1;
+        // bundleQuantity = record?.Bundle ? record?.Bundle?.quantity : 1;
+        // const totalQuantity = record?.quantity * bundleQuantity;
+        // const TotalPrice = totalQuantity * ExactPriceForOne;
+        const value = useRemoveDollarAndCommahook(text);
+        return (
+          <Typography name="Body 4/Medium">
+            {`$ ${abbreviate(value ?? 0)}`}
+          </Typography>
+        );
       },
     },
     {
@@ -212,24 +216,11 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
             width={24}
             color={token.colorError}
             style={{cursor: 'pointer'}}
-          />
-          {/* <PopConfirm
-            placement="top"
-            title=""
-            description="Are you sure you want to delete this Quote Line Item?"
-            onConfirm={() => {
-              deleteQuote(record?.id);
+            onClick={() => {
+              setDeleteIds([record?.id]);
+              setShowModalDelete(true);
             }}
-            okText="Yes"
-            cancelText="No"
-          >
-            <TrashIcon
-              height={24}
-              width={24}
-              color={token.colorError}
-              style={{cursor: 'pointer'}}
-            />
-          </PopConfirm> */}
+          />
         </Space>
       ),
     },
@@ -257,12 +248,23 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
   }, [tableColumnDataShow]);
 
   return (
-    <OsTableWithOutDrag
-      loading={loading}
-      columns={finalInputColumn}
-      dataSource={quoteLineItemByQuoteData}
-      scroll
-    />
+    <>
+      <OsTableWithOutDrag
+        loading={loading}
+        columns={finalInputColumn}
+        dataSource={quoteLineItemByQuoteData}
+        scroll
+      />
+
+      <DeleteModal
+        setShowModalDelete={setShowModalDelete}
+        setDeleteIds={setDeleteIds}
+        showModalDelete={isShowModalDelete}
+        deleteSelectedIds={isDeleteIds}
+        description="Are you sure you want to delete this QuoteLineItem?"
+        heading="Delete QuoteLineItem"
+      />
+    </>
   );
 };
 

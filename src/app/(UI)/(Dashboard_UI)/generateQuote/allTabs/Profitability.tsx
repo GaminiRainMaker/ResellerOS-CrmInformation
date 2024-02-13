@@ -52,7 +52,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
 
   const ProfitabilityQuoteLineItemcolumns = [
     {
-      title: '#Line',
+      title: 'Line',
       dataIndex: 'line_number',
       key: 'line_number',
       render: (text: string) => (
@@ -100,8 +100,8 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
     },
     {
       title: 'Cost',
-      dataIndex: 'list_price',
-      key: 'list_price',
+      dataIndex: 'adjusted_price',
+      key: 'adjusted_price ',
       render: (text: string, record: any) => (
         <OsInput
           style={{
@@ -113,7 +113,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
             setProfitabilityData((prev: any) =>
               prev.map((prevItem: any) => {
                 if (prevItem.id === record?.id) {
-                  return {...prevItem, list_price: v.target.value};
+                  return {...prevItem, adjusted_price: v.target.value};
                 }
                 return prevItem;
               }),
@@ -133,11 +133,11 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       title: 'Pricing Method',
       dataIndex: 'pricing_method',
       key: 'pricing_method',
-      width: 160,
+      width: 120,
       render: (text: string, record: any) => (
         <CommonSelect
           disabled={renderEditableInput('Pricing Method')}
-          style={{width: '200px'}}
+          style={{width: '150px'}}
           placeholder="Select"
           defaultValue={text}
           onChange={(v) => {
@@ -158,8 +158,8 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
                     useRemoveDollarAndCommahook(prevItem?.quantity),
                     prevItem?.pricing_method,
                     useRemoveDollarAndCommahook(prevItem?.line_amount),
+                    useRemoveDollarAndCommahook(prevItem?.adjusted_price),
                     useRemoveDollarAndCommahook(prevItem?.list_price),
-                    20,
                   );
                   return {
                     ...prevItem,
@@ -274,7 +274,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
           id: profitabilityDataItem?.id,
           line_number: profitabilityDataItem?.line_number,
           quantity: profitabilityDataItem?.quantity,
-          list_price: profitabilityDataItem?.list_price,
+          adjusted_price: profitabilityDataItem?.adjusted_price,
           pricing_method: profitabilityDataItem?.pricing_method,
           line_amount: profitabilityDataItem?.line_amount,
           unit_price: profitabilityDataItem?.unit_price,
