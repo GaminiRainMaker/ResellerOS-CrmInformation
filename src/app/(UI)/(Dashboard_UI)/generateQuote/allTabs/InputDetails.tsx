@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable array-callback-return */
@@ -9,6 +10,9 @@ import {selectDataForProduct} from '@/app/utils/CONSTANTS';
 import {FC, useEffect, useState} from 'react';
 import {TrashIcon} from '@heroicons/react/24/outline';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import Typography from '@/app/components/common/typography';
+import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
+import {useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {updateProductFamily} from '../../../../../../redux/actions/product';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {
@@ -20,6 +24,7 @@ import {getAllBundle} from '../../../../../../redux/actions/bundle';
 const InputDetails: FC<any> = ({tableColumnDataShow}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
+  const {abbreviate} = useAbbreviationHook(0);
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
   const {quoteLineItemByQuoteID, loading} = useAppSelector(
@@ -130,10 +135,14 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
       dataIndex: 'list_price',
       key: 'list_price',
       width: 187,
-      render: (text: any, record: any) => {
-        let doubleVal: any;
-
-        return <>{record?.Bundle?.quantity ? record?.Bundle?.quantity : 1}</>;
+      render: (text: number) => {
+        const value = useRemoveDollarAndCommahook(text);
+        return (
+          <Typography name="Body 4/Medium">
+            {`$ ${abbreviate(value ?? 0)}`}
+            {/* {record?.Bundle?.quantity ? record?.Bundle?.quantity : 1} */}
+          </Typography>
+        );
       },
     },
     {
@@ -142,8 +151,8 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
       key: 'adjusted_price',
       width: 187,
       render: (text: any, record: any) => {
-        const totalAddedPrice = record?.Product?.list_price
-          ?.slice(1, record?.Product?.list_price?.length)
+        const totalAddedPrice = record?.Product?.adjusted_price
+          ?.slice(1, record?.Product?.adjusted_price?.length)
           .replace(',', '');
         // eslint-disable-next-line no-unsafe-optional-chaining
         const ExactPriceForOne = totalAddedPrice / record?.Product?.quantity;
