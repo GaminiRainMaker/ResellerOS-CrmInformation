@@ -77,6 +77,7 @@ const SideBar = () => {
   const isQuoteAI = userInformation?.QuoteAI;
   const isDealReg = userInformation?.DealReg;
   const isOrderAI = userInformation?.OrderAI;
+  const isSuperAdmin = userInformation?.SuperAdmin;
 
   const items: MenuItem[] = [
     getItem(
@@ -241,7 +242,7 @@ const SideBar = () => {
       <Typography
         onClick={() => {
           setSelectedKey(5);
-          router?.push('/partners');
+          router?.push(isSuperAdmin ? 'superAdminPartner' : '/partners');
         }}
         name="Button 1"
         color={token?.colorTextSecondary}

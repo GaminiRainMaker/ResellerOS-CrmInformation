@@ -5,19 +5,18 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
-import {industryOptions} from '@/app/utils/CONSTANTS';
 import {Form} from 'antd';
 import {useEffect} from 'react';
 import {
-  getAllPartner,
-  insertPartner,
-  updatePartnerById,
-} from '../../../../../redux/actions/partner';
+  getAllPartnerProgram,
+  insertPartnerProgram,
+  updatePartnerProgramById,
+} from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import CommonSelect from '../os-select';
-import {AddPartnerInterface} from './os-add-partner.interface';
+import {AddPartnerInterface} from '../os-add-partner/os-add-partner.interface';
+import OsPartnerSelect from '../os-partner-select';
 
-const AddPartner: React.FC<AddPartnerInterface> = ({
+const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
   form,
   setOpen,
   drawer = false,
@@ -28,18 +27,25 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
   const {userInformation} = useAppSelector((state) => state.user);
 
   const onFinish = (value: any) => {
-    const partnerObj = {
+    const partnerProgramObj = {
       ...value,
       organization: userInformation?.organization,
     };
     if (drawer) {
-      dispatch(updatePartnerById({...partnerObj, id: formPartnerData?.id}));
+      dispatch(
+        updatePartnerProgramById({
+          ...partnerProgramObj,
+          id: formPartnerData?.id,
+        }),
+      );
     } else {
-      dispatch(insertPartner(partnerObj)).then(() => {
+      dispatch(insertPartnerProgram(partnerProgramObj)).then(() => {
         form?.resetFields();
       });
     }
-    dispatch(getAllPartner());
+    setTimeout(() => {
+      dispatch(getAllPartnerProgram());
+    }, 1000);
     setOpen(false);
   };
 
@@ -64,7 +70,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
             align="left"
             color={token?.colorLinkHover}
           >
-            Add New Partner
+            Add New Partner Program
           </Typography>
         </Row>
       )}
@@ -81,26 +87,20 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
           requiredMark={false}
           initialValues={formPartnerData}
         >
+          <OsPartnerSelect />
+
           <Form.Item
-            label="Partner Name"
-            name="partner"
-            rules={[{required: true, message: 'Please Enter Partner!'}]}
+            label="Partner Program"
+            name="partner_program"
+            rules={[{required: true, message: 'Please Enter Partner Program!'}]}
           >
             <OsInput placeholder="Partner name here" />
           </Form.Item>
 
-          <Form.Item
-            label="Industry"
-            name="industry"
-            rules={[{required: true, message: 'Please select industry!'}]}
-          >
-            <CommonSelect
-              style={{width: '100%'}}
-              placeholder="Select"
-              options={industryOptions}
-              allowClear
-            />
+          <Form.Item label="Description" name="description">
+            <OsInput placeholder="Partner name here" />
           </Form.Item>
+
           <Row justify="space-between" gutter={[16, 16]}>
             <Col span={drawer ? 24 : 12}>
               <Form.Item
@@ -123,4 +123,4 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
   );
 };
 
-export default AddPartner;
+export default AddPartnerProgram;

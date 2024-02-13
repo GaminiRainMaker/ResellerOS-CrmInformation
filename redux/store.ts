@@ -13,6 +13,7 @@ import dealRegAddress from './slices/dealRegAddress';
 import gereralSetting from './slices/gereralSetting';
 import Opportunity from './slices/opportunity';
 import partner from './slices/partner';
+import partnerProgram from './slices/partnerProgram';
 import product from './slices/product';
 import profitability from './slices/profitability';
 import quote from './slices/quote';
@@ -49,6 +50,7 @@ const store = configureStore({
     dealReg,
     dealRegAddress,
     partner,
+    partnerProgram,
   },
   middleware: [thunk],
   devTools: true,

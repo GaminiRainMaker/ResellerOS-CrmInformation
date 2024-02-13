@@ -122,4 +122,10 @@ export const API = {
     DeleteById: '/partner/deleteById',
     UpdatePartnerById: '/partner/updatePartnerById',
   },
+  PARTNER_PROGRAM: {
+    INDEX: '/partnerProgram',
+    QUERY: 'partnerProgram/query',
+    DeleteById: '/partnerProgram/deleteById',
+    UpdatePartnerProgramById: '/partnerProgram/updatePartnerProgramById',
+  },
 };

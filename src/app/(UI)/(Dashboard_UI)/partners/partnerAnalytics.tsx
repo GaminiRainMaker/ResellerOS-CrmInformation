@@ -19,6 +19,7 @@ import {useAppSelector} from '../../../../../redux/hook';
 const PartnerAnalytics = () => {
   const [token] = useThemeToken();
   const {data: PartnerData} = useAppSelector((state) => state.partner);
+  const {data: PartnerProgramData} = useAppSelector((state) => state.partnerProgram);
   const {userInformation} = useAppSelector((state) => state.user);
   const [activeCount, setActiveCount] = useState<number>(0);
   const [inActiveCount, setInActiveCount] = useState<number>(0);
@@ -53,7 +54,7 @@ const PartnerAnalytics = () => {
     {
       key: 2,
       primary: (
-        <Typography name="Heading 3/Medium">{0}</Typography>
+        <Typography name="Heading 3/Medium">{PartnerProgramData?.length}</Typography>
       ),
       secondry: 'Partner Programs',
       icon: (
