@@ -13,7 +13,7 @@ export const DynamicDiv = styled.div<{
   maxWidth?: number;
   cursor?: string;
 }>`
-  display: flex;
+  // display: flex;
   font-family: ${(props) => `${props?.styles?.fontFamily}`};
   font-size: ${(props) => `${props?.styles?.fontSize}`};
   line-height: ${(props) => `${props?.styles?.lineHeight}`};
