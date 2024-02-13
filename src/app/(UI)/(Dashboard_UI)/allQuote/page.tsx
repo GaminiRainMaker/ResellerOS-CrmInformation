@@ -79,7 +79,6 @@ const AllQuote: React.FC = () => {
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
-  const [customerValue, setCustomerValue] = useState<any>();
   const {data: generalSettingData} = useAppSelector(
     (state) => state.gereralSetting,
   );
@@ -193,7 +192,6 @@ const AllQuote: React.FC = () => {
     const contractProductArray: any = [];
     if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
       const response = await dispatch(insertQuote(labelOcrMap));
-      setCustomerValue('');
       form.resetFields(['customer_id']);
       for (let j = 0; j < response?.payload?.data?.length; j++) {
         const item = response?.payload?.data[j];
@@ -245,8 +243,7 @@ const AllQuote: React.FC = () => {
           }
         }
       }
-    }
-    else if (existingQuoteId) {
+    } else if (existingQuoteId) {
       await dispatch(updateQuoteWithNewlineItemAddByID(existingQuoteId));
       for (let i = 0; i < formattedArray?.length; i++) {
         const items = formattedArray[i];
@@ -577,7 +574,6 @@ const AllQuote: React.FC = () => {
                 icon={<PlusIcon />}
                 clickHandler={() => {
                   setShowModal((p) => !p);
-                  setCustomerValue('');
                 }}
               />
 
@@ -681,8 +677,6 @@ const AllQuote: React.FC = () => {
             addInExistingQuote
             addQuoteLineItem={addQuoteLineItem}
             form={form}
-            setCustomerValue={setCustomerValue}
-            customerValue={customerValue}
           />
         }
         width={900}
