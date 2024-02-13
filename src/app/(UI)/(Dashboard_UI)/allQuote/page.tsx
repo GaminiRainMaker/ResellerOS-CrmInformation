@@ -31,6 +31,7 @@ import OsTabs from '@/app/components/common/os-tabs';
 import {Form, MenuProps, TabsProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import moment from 'moment';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
@@ -78,6 +79,7 @@ const AllQuote: React.FC = () => {
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
+  const [customerValue, setCustomerValue] = useState<any>();
   const {data: generalSettingData} = useAppSelector(
     (state) => state.gereralSetting,
   );
@@ -191,6 +193,8 @@ const AllQuote: React.FC = () => {
     const contractProductArray: any = [];
     if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
       const response = await dispatch(insertQuote(labelOcrMap));
+      setCustomerValue('');
+      form.resetFields(['customer_id']);
       for (let j = 0; j < response?.payload?.data?.length; j++) {
         const item = response?.payload?.data[j];
         if (item?.id) {
@@ -344,7 +348,6 @@ const AllQuote: React.FC = () => {
     setShowModal(false);
     setUploadFileData([]);
   };
-
   const deleteQuote = async () => {
     const data = {Ids: deleteIds};
     await dispatch(deleteQuoteById(data));
@@ -355,7 +358,6 @@ const AllQuote: React.FC = () => {
     setShowModalDelete(false);
     form.resetFields(['opportunity_id', 'customer_id']);
   };
-
   const Quotecolumns = [
     {
       title: (
@@ -367,7 +369,9 @@ const AllQuote: React.FC = () => {
       key: 'createdAt',
       width: 130,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+        <Typography name="Body 4/Regular" >
+          {moment(text).format('MM/DD/YYYY') ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -529,9 +533,15 @@ const AllQuote: React.FC = () => {
   const dropDownItemss: MenuProps['items'] = [
     {
       key: '1',
-      label: (
-        <Typography name="Body 3/Regular">Bundle Configuration</Typography>
-      ),
+      label: <Typography name="Body 3/Regular">Select All</Typography>,
+    },
+    {
+      key: '2',
+      label: <Typography name="Body 3/Regular">Download Selected</Typography>,
+    },
+    {
+      key: '3',
+      label: <Typography name="Body 3/Regular">Delete Selected</Typography>,
     },
   ];
 
@@ -564,7 +574,10 @@ const AllQuote: React.FC = () => {
                 text="Add Quote"
                 buttontype="PRIMARY"
                 icon={<PlusIcon />}
-                clickHandler={() => setShowModal((p) => !p)}
+                clickHandler={() => {
+                  setShowModal((p) => !p);
+                  setCustomerValue('');
+                }}
               />
 
               <Space>
@@ -614,6 +627,7 @@ const AllQuote: React.FC = () => {
                   <Typography
                     cursor="pointer"
                     name="Button 1"
+                    style={{cursor: 'pointer'}}
                     color={token?.colorLink}
                     onClick={handleReset}
                   >
@@ -658,6 +672,7 @@ const AllQuote: React.FC = () => {
       <OsModal
         bodyPadding={22}
         loading={loading}
+        disabledButton={!(uploadFileData?.length > 0)}
         body={
           <UploadFile
             setUploadFileData={setUploadFileData}
@@ -665,10 +680,12 @@ const AllQuote: React.FC = () => {
             addInExistingQuote
             addQuoteLineItem={addQuoteLineItem}
             form={form}
+            setCustomerValue={setCustomerValue}
+            customerValue={customerValue}
           />
         }
         width={900}
-        primaryButtonText="Generate"
+        primaryButtonText="Generate Single Quote"
         secondaryButtonText="Save & Generate Individual Quotes"
         open={showModal}
         onOk={() => form.submit()}
@@ -686,7 +703,7 @@ const AllQuote: React.FC = () => {
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteQuote}
         heading="Delete Quote"
-        description="Are you sure to delete this Quote?"
+        description="Are you sure you want to delete this Quote?"
       />
     </>
   );

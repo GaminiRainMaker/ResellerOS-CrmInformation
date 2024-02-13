@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
-import {Form} from 'antd';
+import {Form, Switch} from 'antd';
 import React, {useEffect, useState} from 'react';
 import {Checkbox} from '../antd/Checkbox';
 import {Col, Row} from '../antd/Grid';
@@ -18,11 +18,13 @@ const OsUpload: React.FC<any> = ({
   setUploadFileData,
   addInExistingQuote,
   addQuoteLineItem,
+  setCustomerValue,
+  customerValue,
   form,
 }) => {
   const [token] = useThemeToken();
   const [fileList, setFileList] = useState([]);
-  const [customerValue, setCustomerValue] = useState<number>(0);
+  // const [customerValue, setCustomerValue] = useState<number>(0);
 
   useEffect(() => {
     const newrrr: any = [...fileList];
@@ -41,12 +43,6 @@ const OsUpload: React.FC<any> = ({
 
   return (
     <Space size={24} direction="vertical" style={{width: '100%'}}>
-      {addInExistingQuote && (
-        <Space size={8} direction="horizontal">
-          <Checkbox />
-          <Typography name="Body 3/Regular">Add in existing quote</Typography>
-        </Space>
-      )}
       <OSDraggerStyle
         beforeUpload={beforeUpload}
         showUploadList={false}
@@ -75,6 +71,12 @@ const OsUpload: React.FC<any> = ({
         uploadFileData={uploadFileData}
         setUploadFileData={setUploadFileData}
       />
+      {addInExistingQuote && (
+        <Space size={8} direction="horizontal">
+          <Typography name="Body 3/Regular">Add in existing quote</Typography>
+          <Switch />
+        </Space>
+      )}
       <Form
         layout="vertical"
         requiredMark={false}
@@ -85,6 +87,7 @@ const OsUpload: React.FC<any> = ({
           <Col sm={24} md={12}>
             <OsCustomerSelect
               setCustomerValue={setCustomerValue}
+              customerValue={customerValue}
               isAddNewCustomer
             />
           </Col>

@@ -31,7 +31,7 @@ const Matrix: FC<any> = (familyFilter: any) => {
       name: 'Revenue by Product Category',
       filterOption: familyFilter?.selectedFilter
         ? familyFilter?.selectedFilter
-        : '--',
+        : '',
       pieData: [
         {id: 1001, name: 'Unassigned', value: 400, color: '#2364AA'},
         {id: 1002, name: 'Professional Services', value: 300, color: '#6C97C6'},
@@ -45,7 +45,7 @@ const Matrix: FC<any> = (familyFilter: any) => {
       name: 'Profit by Product Category',
       filterOption: familyFilter?.selectedFilter
         ? familyFilter?.selectedFilter
-        : '--',
+        : '',
       pieData: [
         {id: 1001, name: 'Unassigned', value: 400, color: '#2364AA'},
         {id: 1002, name: 'Professional Services', value: 300, color: '#6C97C6'},
@@ -130,7 +130,7 @@ const Matrix: FC<any> = (familyFilter: any) => {
       {sectionData.map((item) => (
         <div
           style={{
-            padding: '12px',
+            padding: '18px',
             background: '#f6f7f8',
             borderRadius: '12px',
           }}
@@ -142,7 +142,7 @@ const Matrix: FC<any> = (familyFilter: any) => {
               <Typography name="Body 3/Regular">
                 {familyFilter?.selectedFilter
                   ? `(${familyFilter?.selectedFilter})`
-                  : '--'}
+                  : ''}
               </Typography>
             </Space>
 

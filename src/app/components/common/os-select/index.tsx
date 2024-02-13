@@ -4,11 +4,17 @@ import {OsSelectProps} from './os-select.interface';
 import {SelectStyled} from './styled-components';
 import useThemeToken from '../hooks/useThemeToken';
 
-const CommonSelect: FC<OsSelectProps> = ({suffixIcon, children, ...rest}) => {
+const CommonSelect: FC<OsSelectProps> = ({
+  suffixIcon,
+  children,
+  value,
+  ...rest
+}) => {
   const [token] = useThemeToken();
   return (
     <SelectStyled
       {...rest}
+      value={value}
       suffixIcon={
         suffixIcon ?? (
           <ChevronDownIcon width={24} color={token?.colorInfoBorder} />

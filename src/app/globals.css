@@ -137,3 +137,10 @@ a {
 .ant-form-vertical .ant-form-item-label {
   padding: 0px;
 }
+
+.ant-layout-sider-trigger {
+  width: 316px;
+  display: flex;
+  justify-content: end;
+  padding-right: 32px;
+}

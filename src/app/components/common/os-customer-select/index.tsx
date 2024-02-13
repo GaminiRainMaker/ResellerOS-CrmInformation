@@ -14,6 +14,7 @@ import {OsCustomerSelectInterface} from './os-customer-select-interface';
 
 const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
   setCustomerValue,
+  customerValue,
   isAddNewCustomer = false,
 }) => {
   const [token] = useThemeToken();
@@ -33,7 +34,7 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
   useEffect(() => {
     dispatch(getAllCustomer({}));
   }, []);
-
+  console.log('43534', customerValue);
   return (
     <>
       <Form.Item
@@ -46,6 +47,7 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
           allowClear
           style={{width: '100%'}}
           options={customerOptions}
+          value={customerValue}
           onChange={(value: number) => {
             setCustomerValue(value);
           }}
