@@ -185,7 +185,7 @@ const CustomHeader = () => {
                     alt="UserIcon"
                     style={{cursor: 'pointer'}}
                   />
-                  <Typography name="Body 3/Regular">
+                  <Typography name="Body 3/Regular" color="#0D0D0D">
                     {' '}
                     {userInformation?.username || 'Josh Walker'}
                   </Typography>

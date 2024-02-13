@@ -108,13 +108,6 @@ const GenerateQuote: React.FC = () => {
     dispatch(getAllContractSetting(''));
   }, []);
 
-  console.log(
-    '4353454',
-    // showTableDataa && quoteLineItemByQuoteData,
-    showTableDataa,
-    quoteLineItemByQuoteData,
-    quoteLineItemByQuoteID,
-  );
   const deleteQuote = async (id: number) => {
     if (id) {
       const data = {
@@ -317,7 +310,6 @@ const GenerateQuote: React.FC = () => {
     const filterRequired = filteredArray?.filter(
       (item: any) => item?.is_required,
     );
-    console.log('filteredArray', filteredArray, filterRequired);
     setTableColumnDataShow(filterRequired);
   }, [activeTab, tableColumnData]);
 
@@ -578,27 +570,37 @@ const GenerateQuote: React.FC = () => {
         </Typography>
       ),
     },
-    {
-      key: '2',
-      label: (
-        <Typography name="Body 3/Regular" onClick={() => setIsEditable(true)}>
-          Edit Selected
-        </Typography>
-      ),
-    },
-    {
-      key: '3',
-      label: (
-        <Typography
-          name="Body 3/Regular"
-          color={token?.colorError}
-          onClick={deleteLineItems}
-        >
-          Delete
-        </Typography>
-      ),
-    },
   ];
+
+  useEffect(() => {
+    if (selectTedRowIds?.length > 0) {
+      items?.push(
+        {
+          key: '2',
+          label: (
+            <Typography
+              name="Body 3/Regular"
+              onClick={() => setIsEditable(true)}
+            >
+              Edit Selected
+            </Typography>
+          ),
+        },
+        {
+          key: '3',
+          label: (
+            <Typography
+              name="Body 3/Regular"
+              color={token?.colorError}
+              onClick={deleteLineItems}
+            >
+              Delete
+            </Typography>
+          ),
+        },
+      );
+    }
+  }, [selectTedRowIds]);
 
   const showDrawer = () => {
     setOpen(true);
@@ -686,7 +688,6 @@ const GenerateQuote: React.FC = () => {
       ),
     },
   ];
-
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -729,6 +730,9 @@ const GenerateQuote: React.FC = () => {
 
               <OsButton
                 buttontype="PRIMARY_ICON"
+                clickHandler={() => {
+                  window?.open(quoteLineItemByQuoteData?.[0]?.Quote?.pdf_url);
+                }}
                 icon={<ArrowDownTrayIcon width={24} />}
               />
             </Space>
@@ -768,10 +772,10 @@ const GenerateQuote: React.FC = () => {
           >
             {TabPaneData?.map((item: any) => (
               <TabPane
+                key={item?.key}
                 tab={
                   <Typography name="Body 4/Regular">{item?.name}</Typography>
                 }
-                key={item?.key}
               >
                 {activeTab === '1' ? (
                   bundleData && bundleData?.length > 0 ? (
@@ -779,6 +783,7 @@ const GenerateQuote: React.FC = () => {
                       {' '}
                       {bundleData?.map((item: any, index: any) => (
                         <OsCollapse
+                          key={item?.id}
                           items={[
                             {
                               key: '1',
@@ -831,9 +836,10 @@ const GenerateQuote: React.FC = () => {
                         <>
                           {familyFilter?.map((item: any, index: any) => (
                             <OsCollapse
+                              key={item?.id}
                               items={[
                                 {
-                                  key: index,
+                                  key: item?.id,
                                   label: (
                                     <>
                                       <Space
@@ -905,9 +911,10 @@ const GenerateQuote: React.FC = () => {
                           {' '}
                           {familyFilter?.map((item: any, index: any) => (
                             <OsCollapse
+                              key={item?.id}
                               items={[
                                 {
-                                  key: index,
+                                  key: item.id,
                                   label: (
                                     <>
                                       <Space

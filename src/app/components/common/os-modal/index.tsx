@@ -23,7 +23,6 @@ const OsModal: FC<OSModalPropsInterface> = ({
 }) => {
   const {onCancel, open, onOk} = rest;
   const [token] = useThemeToken();
-  console.log('34543', disabledButton);
   return (
     <OSModalStyle
       bodyPadding={bodyPadding}

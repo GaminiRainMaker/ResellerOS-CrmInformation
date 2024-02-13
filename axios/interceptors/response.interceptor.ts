@@ -1,5 +1,6 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable no-param-reassign */
-import {AxiosResponse} from 'axios';
+import {AxiosError, AxiosResponse} from 'axios';
 
 export const responseInterceptor = (config: AxiosResponse): AxiosResponse => {
   const {headers} = config;

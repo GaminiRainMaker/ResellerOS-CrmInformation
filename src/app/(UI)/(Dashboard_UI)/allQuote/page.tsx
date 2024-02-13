@@ -369,7 +369,7 @@ const AllQuote: React.FC = () => {
       key: 'createdAt',
       width: 130,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">
+        <Typography name="Body 4/Regular" >
           {moment(text).format('MM/DD/YYYY') ?? '--'}
         </Typography>
       ),
@@ -627,6 +627,7 @@ const AllQuote: React.FC = () => {
                   <Typography
                     cursor="pointer"
                     name="Button 1"
+                    style={{cursor: 'pointer'}}
                     color={token?.colorLink}
                     onClick={handleReset}
                   >

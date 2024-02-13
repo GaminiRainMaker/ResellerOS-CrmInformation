@@ -78,7 +78,6 @@ const SideBar = () => {
   const isOrderAI = userInformation?.OrderAI;
   const pathname = usePathname();
 
-  console.log('pathname', pathname, isAdmin);
   useEffect(() => {
     if (pathname?.includes('dashboard')) {
       setSelectedKey(1);

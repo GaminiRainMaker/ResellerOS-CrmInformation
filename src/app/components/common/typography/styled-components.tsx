@@ -13,6 +13,7 @@ export const DynamicDiv = styled.div<{
   maxWidth?: number;
   cursor?: string;
 }>`
+  display: flex;
   font-family: ${(props) => `${props?.styles?.fontFamily}`};
   font-size: ${(props) => `${props?.styles?.fontSize}`};
   line-height: ${(props) => `${props?.styles?.lineHeight}`};
@@ -37,7 +38,7 @@ export const DynamicDiv = styled.div<{
 
   &:hover {
     color: ${(props) => (props.hoverOnText ? '#2364AA' : 'none')};
-    cursor: ${(props) => (props.hoverOnText ? 'pointer' : 'unset')};;
+    cursor: ${(props) => (props.hoverOnText ? 'pointer' : 'unset')};
   }
 `;
 
