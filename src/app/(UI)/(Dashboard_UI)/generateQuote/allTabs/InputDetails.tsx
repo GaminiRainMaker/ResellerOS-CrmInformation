@@ -192,7 +192,7 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
       },
     },
     {
-      title: ' ',
+      title: 'Actions',
       dataIndex: 'actions',
       key: 'actions',
       width: 94,
@@ -229,9 +229,14 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
   useEffect(() => {
     const newArr: any = [];
     InputDetailQuoteLineItemcolumns?.map((itemCol: any) => {
+      let countForDel: any = 0;
       tableColumnDataShow?.filter((item: any) => {
         if (item?.field_name?.includes(itemCol?.title)) {
           newArr?.push(itemCol);
+        } else if (itemCol?.title?.includes('Actions') && countForDel === 0) {
+          newArr?.push(itemCol);
+          // eslint-disable-next-line operator-assignment
+          countForDel = countForDel + 1;
         }
       });
       // if (itemCol?.dataIndex?.includes('actions')) {
