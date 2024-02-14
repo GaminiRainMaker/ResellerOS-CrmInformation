@@ -8,7 +8,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
-import OsTable from '@/app/components/common/os-table';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
 import {pricingMethod} from '@/app/utils/CONSTANTS';
@@ -21,15 +21,20 @@ import {
   ExclamationCircleIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline';
+import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
-import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
-import {updateValidationById} from '../../../../../../redux/actions/validation';
+import {
+  getAllValidationByQuoteId,
+  updateValidationById,
+} from '../../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 
 const Validation: FC<any> = ({tableColumnDataShow}) => {
   const {abbreviate} = useAbbreviationHook(0);
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
+  const getQuoteID = searchParams.get('id');
   const {data: ValidationData, loading} = useAppSelector(
     (state) => state.validation,
   );
@@ -286,7 +291,6 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
     setFinalValidationTableCol(newArr);
   }, [tableColumnDataShow]);
 
-  
   useEffect(() => {
     validationDataData.map((validationDataItem: any) => {
       if (validationDataItem?.rowId === validationDataItem?.id) {
@@ -303,6 +307,12 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       }
     });
   }, [validationDataData]);
+
+  useEffect(() => {
+    dispatch(getAllValidationByQuoteId(Number(getQuoteID))).then((d: any) => {
+      setValidationDataData(d?.payload);
+    });
+  }, [getQuoteID]);
 
   return (
     <>

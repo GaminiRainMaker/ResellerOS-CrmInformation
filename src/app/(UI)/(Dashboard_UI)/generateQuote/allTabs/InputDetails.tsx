@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable array-callback-return */
-import { Space } from '@/app/components/common/antd/Space';
+import {Space} from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
@@ -10,19 +10,24 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
-import { selectDataForProduct } from '@/app/utils/CONSTANTS';
-import { useRemoveDollarAndCommahook } from '@/app/utils/base';
-import { TrashIcon } from '@heroicons/react/24/outline';
-import { FC, useEffect, useState } from 'react';
-import { updateProductFamily } from '../../../../../../redux/actions/product';
-import { updateQuoteLineItemForBundleId } from '../../../../../../redux/actions/quotelineitem';
-import { useAppDispatch, useAppSelector } from '../../../../../../redux/hook';
+import {selectDataForProduct} from '@/app/utils/CONSTANTS';
+import {useRemoveDollarAndCommahook} from '@/app/utils/base';
+import {TrashIcon} from '@heroicons/react/24/outline';
+import {useSearchParams} from 'next/navigation';
+import {FC, useEffect, useState} from 'react';
+import {updateProductFamily} from '../../../../../../redux/actions/product';
+import {
+  DeleteQuoteLineItemById,
+  getQuoteLineItemByQuoteId,
+} from '../../../../../../redux/actions/quotelineitem';
+import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 
 const InputDetails: FC<any> = ({tableColumnDataShow}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
+  const searchParams = useSearchParams();
+  const getQuoteID = searchParams.get('id');
   const {abbreviate} = useAbbreviationHook(0);
-  const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [isDeleteIds, setDeleteIds] = useState<any>();
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
   const [isShowModalDelete, setShowModalDelete] = useState<boolean>(false);
@@ -43,17 +48,26 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
     return true;
   };
 
-  const deleteQuote = async (id: number) => {
-    // isShowModalDelete
-    if (id) {
-      const data = {
-        Ids: [id],
-        bundle_id: null,
-      };
-      // await dispatch(updateQuoteLineItemForBundleId(data));
-      // dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
-      // dispatch(getAllBundle(getQuoteID));
+  const deleteQuoteLineItems = () => {
+    if (isDeleteIds) {
+      const data = {Ids: isDeleteIds};
+      dispatch(DeleteQuoteLineItemById(data));
+      setDeleteIds([]);
+      setTimeout(() => {
+        dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID))).then(
+          (d: any) => {
+            setQuoteLineItemByQuoteData(d?.payload);
+          },
+        );
+      }, 1000);
     }
+    setShowModalDelete(false);
+  };
+
+  const rowSelection = {
+    onChange: (selectedRowKeys: any) => {
+      setDeleteIds(selectedRowKeys);
+    },
   };
 
   const InputDetailQuoteLineItemcolumns = [
@@ -69,7 +83,7 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
           }}
           placeholder={text}
           value={
-            !selectTedRowIds?.includes(record?.id)
+            !isDeleteIds?.includes(record?.id)
               ? text * (record?.Bundle?.quantity ? record?.Bundle?.quantity : 1)
               : quoteLineItemByQuoteData?.line_number
           }
@@ -112,7 +126,7 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
           // }
           placeholder={text}
           value={
-            !selectTedRowIds?.includes(record?.id)
+            !isDeleteIds?.includes(record?.id)
               ? text * (record?.Bundle?.quantity ? record?.Bundle?.quantity : 1)
               : quoteLineItemByQuoteData?.quantity
           }
@@ -183,9 +197,7 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
         return {
           props: {
             style: {
-              background: selectTedRowIds?.includes(record?.id)
-                ? '#E8EBEE'
-                : ' ',
+              background: isDeleteIds?.includes(record?.id) ? '#E8EBEE' : ' ',
             },
           },
           children: (
@@ -218,6 +230,7 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
             style={{cursor: 'pointer'}}
             onClick={() => {
               setDeleteIds([record?.id]);
+
               setShowModalDelete(true);
             }}
           />
@@ -247,12 +260,19 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
     setFinalInputColumn(newArr);
   }, [tableColumnDataShow]);
 
+  useEffect(() => {
+    dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID))).then((d: any) => {
+      setQuoteLineItemByQuoteData(d?.payload);
+    });
+  }, [getQuoteID]);
+
   return (
     <>
       <OsTableWithOutDrag
         loading={loading}
         columns={finalInputColumn}
         dataSource={quoteLineItemByQuoteData}
+        rowSelection={rowSelection}
         scroll
       />
 
@@ -260,7 +280,7 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
         setShowModalDelete={setShowModalDelete}
         setDeleteIds={setDeleteIds}
         showModalDelete={isShowModalDelete}
-        deleteSelectedIds={isDeleteIds}
+        deleteSelectedIds={deleteQuoteLineItems}
         description="Are you sure you want to delete this QuoteLineItem?"
         heading="Delete QuoteLineItem"
       />

@@ -38,20 +38,15 @@ import {
 } from '../../../../../redux/actions/bundle';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
-import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
 import {
   getQuoteById,
   updateQuoteByQuery,
 } from '../../../../../redux/actions/quote';
 import {
-  DeleteQuoteLineItemQuantityById,
   UpdateQuoteLineItemQuantityById,
-  getQuoteLineItemByQuoteId,
   getQuoteLineItemByQuoteIdandBundleIdNull,
 } from '../../../../../redux/actions/quotelineitem';
-import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
 import {getAllTableColumn} from '../../../../../redux/actions/tableColumn';
-import {getAllValidationByQuoteId} from '../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
 import InputDetails from './allTabs/InputDetails';
@@ -193,11 +188,8 @@ const GenerateQuote: React.FC = () => {
   }, [selectedFilter]);
 
   useEffect(() => {
-    if (getQuoteID) dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID)));
-    dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
-    dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
-    dispatch(getRebateQuoteLineItemByQuoteId(Number(getQuoteID)));
-    dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
+    if (getQuoteID)
+      dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
     dispatch(getQuoteById(Number(getQuoteID)));
     dispatch(getAllGeneralSetting(''));
   }, [getQuoteID]);
@@ -298,6 +290,18 @@ const GenerateQuote: React.FC = () => {
     }
   }, [quoteLineItemByQuoteID]);
 
+  const deleteQuote = async (id: number) => {
+    if (id) {
+      const data = {
+        Ids: [id],
+        bundle_id: null,
+      };
+      // await dispatch(updateQuoteLineItemForBundleId(data));
+      // dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
+      // dispatch(getAllBundle(getQuoteID));
+    }
+  };
+
   const commonUpdateCompleteAndDraftMethod = (queryItem: string) => {
     if (getQuoteID) {
       const data = {
@@ -329,16 +333,6 @@ const GenerateQuote: React.FC = () => {
   //     }
   //   });
   // };
-
-  const deleteLineItems = () => {
-    if (selectTedRowIds) {
-      dispatch(DeleteQuoteLineItemQuantityById(selectTedRowIds));
-      setSelectedRowIds([]);
-      setTimeout(() => {
-        dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID)));
-      }, 500);
-    }
-  };
 
   const items: MenuProps['items'] = [
     {
@@ -390,17 +384,6 @@ const GenerateQuote: React.FC = () => {
 
   const onClose = () => {
     setOpen(false);
-  };
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[], data: any) => {
-      setSelectedRowKeys(data);
-      setSelectedRowIds(selectedRowKeys);
-    },
-    getCheckboxProps: (record: any) => ({
-      disabled: record.name === 'Disabled User', // Column configuration not to be checked
-      name: record.name,
-    }),
   };
 
   const updateBundleQuantityData = async (data: any) => {

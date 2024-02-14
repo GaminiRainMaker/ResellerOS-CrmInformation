@@ -2,7 +2,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
-  DeleteQuoteLineItemQuantityById,
+  DeleteQuoteLineItemById,
   UpdateQuoteLineItemQuantityById,
   getQuoteLineItem,
   getQuoteLineItemById,
@@ -109,19 +109,19 @@ const quoteLineItemSlice = createSlice({
           state.error = action.payload;
         },
       )
-      .addCase(DeleteQuoteLineItemQuantityById.pending, (state) => {
+      .addCase(DeleteQuoteLineItemById.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        DeleteQuoteLineItemQuantityById.fulfilled,
+        DeleteQuoteLineItemById.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.data = action.payload;
         },
       )
       .addCase(
-        DeleteQuoteLineItemQuantityById.rejected,
+        DeleteQuoteLineItemById.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

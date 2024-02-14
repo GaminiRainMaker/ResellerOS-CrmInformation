@@ -12,15 +12,20 @@ import {
   calculateProfitabilityData,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
+import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
-import {updateProfitabilityById} from '../../../../../../redux/actions/profitability';
+import {
+  getProfitabilityByQuoteId,
+  updateProfitabilityById,
+} from '../../../../../../redux/actions/profitability';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
 
 const Profitability: FC<any> = ({tableColumnDataShow}) => {
   const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
-
+  const searchParams = useSearchParams();
+  const getQuoteID = searchParams.get('id');
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
     (state) => state.profitability,
   );
@@ -288,6 +293,12 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
     });
     dispatch(setProfitability(profitabilityData));
   }, [profitabilityData]);
+
+  useEffect(() => {
+    dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
+      setProfitabilityData(d?.payload);
+    });
+  }, [getQuoteID]);
 
   return (
     <OsTableWithOutDrag

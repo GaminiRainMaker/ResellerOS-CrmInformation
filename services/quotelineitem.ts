@@ -14,8 +14,8 @@ export const QUOTE_LINE_ITEM_API = {
     post(API.QUOTE_LINE_ITEM.UpdateQuoteLineItemQuantityById, data) as Promise<
       AxiosResponse<any>
     >,
-  deleteQuoteLineItemQuantityById: (data: any) =>
-    post(API.QUOTE_LINE_ITEM.DeleteQuoteLineItemQuantityById, data) as Promise<
+  deleteQuoteLineItemById: (data: any) =>
+    patch(API.QUOTE_LINE_ITEM.DeleteQuoteLineItemById, data) as Promise<
       AxiosResponse<any>
     >,
   getQuoteLineItemByQuoteId: (id: number) =>
