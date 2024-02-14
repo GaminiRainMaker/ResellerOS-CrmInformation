@@ -64,18 +64,18 @@ const GenerateQuote: React.FC = () => {
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const [activeTab, setActiveTab] = useState<any>('1');
-  const [isEditable, setIsEditable] = useState<boolean>(false);
   const {
     quoteLineItemByQuoteID,
     data: dataNullForBundle,
     loading,
   } = useAppSelector((state) => state.quoteLineItem);
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
-  const [selectedRowKeys, setSelectedRowKeys] = useState<any>();
   const [amountData, setAmountData] = useState<any>();
   const [getAllItemsQuoteId, setGetAllItemsQuoteId] = useState<React.Key[]>([]);
   const [open, setOpen] = useState(false);
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
+  const [isDeleteInputDetailModal, setIsDeleteInputDetailModal] =
+    useState<boolean>(false);
   const [selectedFilter, setSelectedFilter] = useState<String>();
   const {data: bundleData} = useAppSelector((state) => state.bundle);
   const [familyFilter, setFamilyFilter] = useState<any>([]);
@@ -346,6 +346,22 @@ const GenerateQuote: React.FC = () => {
         </Typography>
       ),
     },
+    {
+      key: '2',
+      label: (
+        <Typography
+          name="Body 3/Regular"
+          color={token?.colorError}
+          onClick={() => {
+            if (activeTab === '1') {
+              setIsDeleteInputDetailModal(true);
+            }
+          }}
+        >
+          Delete Selected
+        </Typography>
+      ),
+    },
   ];
 
   useEffect(() => {
@@ -353,14 +369,7 @@ const GenerateQuote: React.FC = () => {
       items?.push(
         {
           key: '2',
-          label: (
-            <Typography
-              name="Body 3/Regular"
-              onClick={() => setIsEditable(true)}
-            >
-              Edit Selected
-            </Typography>
-          ),
+          label: <Typography name="Body 3/Regular">Edit Selected</Typography>,
         },
         {
           key: '3',
@@ -368,9 +377,9 @@ const GenerateQuote: React.FC = () => {
             <Typography
               name="Body 3/Regular"
               color={token?.colorError}
-              onClick={deleteLineItems}
+              // onClick={deleteLineItems}
             >
-              Delete
+              Delete Selected
             </Typography>
           ),
         },
@@ -394,32 +403,53 @@ const GenerateQuote: React.FC = () => {
   const TabPaneData = [
     {
       key: 1,
-      name: 'Input Details',
+      name: (
+        <Typography name="Body 4/Regular" onClick={() => setActiveTab('1')}>
+          Input Details
+        </Typography>
+      ),
       children: (
         <InputDetails
-          isEditable={isEditable}
+          setIsDeleteInputDetailModal={setIsDeleteInputDetailModal}
+          isDeleteInputDetailModal={isDeleteInputDetailModal}
           tableColumnDataShow={tableColumnDataShow}
         />
       ),
     },
     {
       key: 2,
-      name: 'Profitability',
+      name: (
+        <Typography name="Body 4/Regular" onClick={() => setActiveTab('2')}>
+          Profitability
+        </Typography>
+      ),
       children: <Profitability tableColumnDataShow={tableColumnDataShow} />,
     },
     {
       key: 3,
-      name: 'Rebates',
+      name: (
+        <Typography name="Body 4/Regular" onClick={() => setActiveTab('3')}>
+          Rebates
+        </Typography>
+      ),
       children: <Rebates tableColumnDataShow={tableColumnDataShow} />,
     },
     contractSettingData?.show_validation_tab && {
       key: 4,
-      name: 'Validation',
+      name: (
+        <Typography name="Body 4/Regular" onClick={() => setActiveTab('4')}>
+          Validation
+        </Typography>
+      ),
       children: <Validation tableColumnDataShow={tableColumnDataShow} />,
     },
     {
       key: 5,
-      name: 'Metrics',
+      name: (
+        <Typography name="Body 4/Regular" onClick={() => setActiveTab('5')}>
+          Metrics
+        </Typography>
+      ),
       children: (
         <Metrics familyFilter={familyFilter} selectedFilter={selectedFilter} />
       ),

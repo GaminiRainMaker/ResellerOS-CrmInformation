@@ -21,8 +21,13 @@ import {
   getQuoteLineItemByQuoteId,
 } from '../../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+import {InputDetailTabInterface} from '../generateQuote.interface';
 
-const InputDetails: FC<any> = ({tableColumnDataShow}) => {
+const InputDetails: FC<InputDetailTabInterface> = ({
+  tableColumnDataShow,
+  setIsDeleteInputDetailModal,
+  isDeleteInputDetailModal,
+}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const searchParams = useSearchParams();
@@ -30,7 +35,8 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
   const {abbreviate} = useAbbreviationHook(0);
   const [isDeleteIds, setDeleteIds] = useState<any>();
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
-  const [isShowModalDelete, setShowModalDelete] = useState<boolean>(false);
+  // const [setIsDeleteInputDetailModal, isDeleteInputDetailModal] =
+  //   useState(false);
   const {quoteLineItemByQuoteID, loading} = useAppSelector(
     (state) => state.quoteLineItem,
   );
@@ -61,7 +67,7 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
         );
       }, 1000);
     }
-    setShowModalDelete(false);
+    setIsDeleteInputDetailModal(false);
   };
 
   const rowSelection = {
@@ -231,7 +237,7 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
             onClick={() => {
               setDeleteIds([record?.id]);
 
-              setShowModalDelete(true);
+              setIsDeleteInputDetailModal(true);
             }}
           />
         </Space>
@@ -277,9 +283,9 @@ const InputDetails: FC<any> = ({tableColumnDataShow}) => {
       />
 
       <DeleteModal
-        setShowModalDelete={setShowModalDelete}
+        setShowModalDelete={setIsDeleteInputDetailModal}
         setDeleteIds={setDeleteIds}
-        showModalDelete={isShowModalDelete}
+        showModalDelete={isDeleteInputDetailModal}
         deleteSelectedIds={deleteQuoteLineItems}
         description="Are you sure you want to delete this QuoteLineItem?"
         heading="Delete QuoteLineItem"
