@@ -4,7 +4,12 @@ import {Button} from '../antd/Button';
 
 export const ButtonStyled = styled(Button)<{buttontype?: any}>`
   display: inline-flex;
-  justify-content: center;
+  justify-content: ${(props) => {
+    if (props.buttontype === 'BUILD_BUTTON') {
+      return 'start';
+    }
+    return 'center';
+  }};
   align-items: center;
   gap: var(--Corners, 8px);
   box-shadow: none;
@@ -12,6 +17,9 @@ export const ButtonStyled = styled(Button)<{buttontype?: any}>`
   background: ${(props) => {
     if (props.buttontype === 'PRIMARY') {
       return '#1c3557 !important';
+    }
+    if (props.buttontype === 'BUILD_BUTTON') {
+      return '#E9F0F7 !important';
     }
     if (props.buttontype === 'PRIMARY_SMALL') {
       return '#1c3557 !important';
@@ -35,6 +43,9 @@ export const ButtonStyled = styled(Button)<{buttontype?: any}>`
     if (props.buttontype === 'PRIMARY') {
       return '1px solid #14263e !important';
     }
+    if (props.buttontype === 'BUILD_BUTTON') {
+      return '1px solid #E9F0F7 !important';
+    }
     if (props.buttontype === 'PRIMARY_SMALL') {
       return '1px solid #14263e !important';
     }
@@ -55,6 +66,9 @@ export const ButtonStyled = styled(Button)<{buttontype?: any}>`
   color: ${(props) => {
     if (props.buttontype === 'PRIMARY') {
       return 'white !important';
+    }
+    if (props.buttontype === 'BUILD_BUTTON') {
+      return '#2364AA !important';
     }
     if (props.buttontype === 'PRIMARY_SMALL') {
       return 'white !important';
@@ -94,7 +108,16 @@ export const ButtonStyled = styled(Button)<{buttontype?: any}>`
     if (props.buttontype === 'PRIMARY_SMALL') {
       return '40px';
     }
+    if (props.buttontype === 'BUILD_BUTTON') {
+      return '44px';
+    }
     return '48px';
+  }};
+  width: ${(props) => {
+    if (props.buttontype === 'BUILD_BUTTON') {
+      return '130px';
+    }
+    return 'auto';
   }};
   &.ant-btn:not(:disabled):focus-visible {
     outline: 4px solid var(--foundation-secondary-2-secondary-2200, #a6d6ee);
