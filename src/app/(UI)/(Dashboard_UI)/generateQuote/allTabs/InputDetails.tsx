@@ -5,6 +5,7 @@
 import {Space} from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
@@ -35,14 +36,16 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   const {abbreviate} = useAbbreviationHook(0);
   const [isDeleteIds, setDeleteIds] = useState<any>();
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
-  // const [setIsDeleteInputDetailModal, isDeleteInputDetailModal] =
-  //   useState(false);
   const {quoteLineItemByQuoteID, loading} = useAppSelector(
     (state) => state.quoteLineItem,
   );
   const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] = useState<any>(
     quoteLineItemByQuoteID,
   );
+
+  const locale = {
+    emptyText: <EmptyContainer title="There is no data for Input Details" />,
+  };
 
   const renderEditableInput = (field: string) => {
     const editableField = tableColumnDataShow.find(
@@ -65,7 +68,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
             setQuoteLineItemByQuoteData(d?.payload);
           },
         );
-      }, 1000);
+      }, 2000);
     }
     setIsDeleteInputDetailModal(false);
   };
@@ -274,13 +277,21 @@ const InputDetails: FC<InputDetailTabInterface> = ({
 
   return (
     <>
-      <OsTableWithOutDrag
-        loading={loading}
-        columns={finalInputColumn}
-        dataSource={quoteLineItemByQuoteData}
-        rowSelection={rowSelection}
-        scroll
-      />
+      {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
+        <OsTableWithOutDrag
+          loading={loading}
+          columns={finalInputColumn}
+          dataSource={quoteLineItemByQuoteData}
+          rowSelection={rowSelection}
+          scroll
+          locale={locale}
+        />
+      ) : (
+        <EmptyContainer
+          title="There is no columns for Input Details"
+          subTitle="Please Update from admin Configuration Tab or Request to admin to update the columns."
+        />
+      )}
 
       <DeleteModal
         setShowModalDelete={setIsDeleteInputDetailModal}

@@ -3,6 +3,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
@@ -32,6 +33,10 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
   const [profitabilityData, setProfitabilityData] = useState<any>(
     profitabilityDataByQuoteId,
   );
+
+  const locale = {
+    emptyText: <EmptyContainer title="There is no data for Profitability" />,
+  };
 
   const updateAmountValue = (value: any, pricingMethods: string) => {
     const val = useRemoveDollarAndCommahook(value);
@@ -301,12 +306,22 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
   }, [getQuoteID]);
 
   return (
-    <OsTableWithOutDrag
-      loading={loading}
-      columns={finalProfitTableCol}
-      dataSource={profitabilityData}
-      scroll
-    />
+    <>
+      {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
+        <OsTableWithOutDrag
+          loading={loading}
+          columns={finalProfitTableCol}
+          dataSource={profitabilityData}
+          scroll
+          locale={locale}
+        />
+      ) : (
+        <EmptyContainer
+          title="There is no columns for Profitability"
+          subTitle="Please Update from admin Configuration Tab or Request to admin to update the columns."
+        />
+      )}
+    </>
   );
 };
 

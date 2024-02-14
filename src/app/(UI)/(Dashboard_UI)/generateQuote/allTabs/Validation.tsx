@@ -45,6 +45,10 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
   const [validationDataData, setValidationDataData] =
     useState<any>(ValidationData);
 
+  const locale = {
+    emptyText: <EmptyContainer title="There is no data for Validation Data" />,
+  };
+
   const contractStatusCheck = (record: any) => {
     const matchingField = ContractSettingData.matching_filed;
 
@@ -316,15 +320,16 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
 
   return (
     <>
-      {finalValidationTableCol && finalValidationTableCol?.length > 0 ? (
+      {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         <OsTableWithOutDrag
           loading={loading}
           columns={finalValidationTableCol}
           dataSource={validationDataData}
           scroll
+          locale={locale}
         />
       ) : (
-        <EmptyContainer title="There Is No Columns" />
+        <EmptyContainer title="There Is No Validation Columns" />
       )}
     </>
   );
