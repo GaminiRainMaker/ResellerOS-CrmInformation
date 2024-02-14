@@ -38,16 +38,15 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
     emptyText: <EmptyContainer title="There is no data for Profitability" />,
   };
 
-  const updateAmountValue = (value: any, pricingMethods: string) => {
-    const val = useRemoveDollarAndCommahook(value);
+  const updateAmountValue = (pricingMethods: string) => {
     if (
       pricingMethods === 'cost_percentage' ||
       pricingMethods === 'list_percentage' ||
       pricingMethods === 'gp'
     ) {
-      return `% ${String(val)}`;
+      return `%`;
     }
-    return `$ ${String(val)}`;
+    return `$`;
   };
 
   const renderEditableInput = (field: string) => {
@@ -131,7 +130,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
           }}
         />
       ),
-      width: 115,
+      width: 150,
     },
     {
       title: 'Product Description',
@@ -192,14 +191,15 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       title: 'Amount',
       dataIndex: 'line_amount',
       key: 'line_amount',
-      width: 121,
+      width: 150,
       render: (text: string, record: any) => (
         <OsInput
           disabled={renderEditableInput('Amount')}
           style={{
             height: '36px',
           }}
-          value={updateAmountValue(text, record?.pricing_method)}
+          prefix={updateAmountValue(record?.pricing_method)}
+          value={text ? useRemoveDollarAndCommahook(text) : 0}
           onChange={(v) => {
             setProfitabilityData((prev: any) =>
               prev.map((prevItem: any) => {
@@ -217,10 +217,10 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       title: 'Unit Price',
       dataIndex: 'unit_price',
       key: 'unit_price',
-      width: 150,
+      width: 130,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
-          {text ? `$${abbreviate(text ?? 0)}` : '--'}
+          {text ? `$${abbreviate(text ?? 0)}` : 0}
         </Typography>
       ),
     },
@@ -228,10 +228,10 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       title: 'Exit Price',
       dataIndex: 'exit_price',
       key: 'exit_price',
-      width: 150,
+      width: 130,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
-          {text ? `$${abbreviate(text ?? 0)}` : '--'}
+          {text ? `$${abbreviate(text ?? 0)}` : 0}
         </Typography>
       ),
     },
@@ -239,10 +239,10 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       title: 'Gross Profit',
       dataIndex: 'gross_profit',
       key: 'gross_profit',
-      width: 150,
+      width: 130,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
-          {text ? `$${abbreviate(text ?? 0)}` : '--'}
+          {text ? `$${abbreviate(text ?? 0)}` : 0}
         </Typography>
       ),
     },
@@ -250,10 +250,10 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       title: 'Gross Profit %',
       dataIndex: 'gross_profit_percentage',
       key: 'gross_profit_percentage',
-      width: 200,
+      width: 120,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
-          {text ? `${abbreviate(text ?? 0)} %` : '--'}
+          {text ? `${abbreviate(text ?? 0)} %` : 0}
         </Typography>
       ),
     },
@@ -264,16 +264,22 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
   useEffect(() => {
     const newArr: any = [];
     ProfitabilityQuoteLineItemcolumns?.map((itemCol: any) => {
-      tableColumnDataShow?.filter((item: any) => {
-        if (item?.field_name?.includes(itemCol?.title)) {
-          newArr?.push(itemCol);
+      let shouldPush = false;
+      tableColumnDataShow?.forEach((item: any) => {
+        if (item?.field_name === itemCol?.title) {
+          shouldPush = true;
         }
       });
-      if (itemCol?.dataIndex?.includes('actions')) {
+      if (
+        itemCol?.dataIndex === 'actions' ||
+        itemCol?.dataIndex?.includes('actions.')
+      ) {
+        shouldPush = true;
+      }
+      if (shouldPush) {
         newArr?.push(itemCol);
       }
     });
-    // actions
     setFinalProfitTableCol(newArr);
   }, [tableColumnDataShow]);
 
