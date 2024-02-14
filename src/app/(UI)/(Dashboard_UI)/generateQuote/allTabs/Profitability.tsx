@@ -3,31 +3,40 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
-import OsTable from '@/app/components/common/os-table';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
 import {pricingMethod} from '@/app/utils/CONSTANTS';
 import {
   calculateProfitabilityData,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
+import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
-import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
-import {updateProfitabilityById} from '../../../../../../redux/actions/profitability';
+import {
+  getProfitabilityByQuoteId,
+  updateProfitabilityById,
+} from '../../../../../../redux/actions/profitability';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
 
 const Profitability: FC<any> = ({tableColumnDataShow}) => {
   const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
-
+  const searchParams = useSearchParams();
+  const getQuoteID = searchParams.get('id');
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
     (state) => state.profitability,
   );
   const [profitabilityData, setProfitabilityData] = useState<any>(
     profitabilityDataByQuoteId,
   );
+
+  const locale = {
+    emptyText: <EmptyContainer title="There is no data for Profitability" />,
+  };
 
   const updateAmountValue = (value: any, pricingMethods: string) => {
     const val = useRemoveDollarAndCommahook(value);
@@ -53,7 +62,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
 
   const ProfitabilityQuoteLineItemcolumns = [
     {
-      title: '#Line',
+      title: 'Line',
       dataIndex: 'line_number',
       key: 'line_number',
       render: (text: string) => (
@@ -101,8 +110,8 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
     },
     {
       title: 'Cost',
-      dataIndex: 'list_price',
-      key: 'list_price',
+      dataIndex: 'adjusted_price',
+      key: 'adjusted_price ',
       render: (text: string, record: any) => (
         <OsInput
           style={{
@@ -114,7 +123,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
             setProfitabilityData((prev: any) =>
               prev.map((prevItem: any) => {
                 if (prevItem.id === record?.id) {
-                  return {...prevItem, list_price: v.target.value};
+                  return {...prevItem, adjusted_price: v.target.value};
                 }
                 return prevItem;
               }),
@@ -134,11 +143,11 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       title: 'Pricing Method',
       dataIndex: 'pricing_method',
       key: 'pricing_method',
-      width: 160,
+      width: 120,
       render: (text: string, record: any) => (
         <CommonSelect
           disabled={renderEditableInput('Pricing Method')}
-          style={{width: '200px'}}
+          style={{width: '150px'}}
           placeholder="Select"
           defaultValue={text}
           onChange={(v) => {
@@ -159,8 +168,8 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
                     useRemoveDollarAndCommahook(prevItem?.quantity),
                     prevItem?.pricing_method,
                     useRemoveDollarAndCommahook(prevItem?.line_amount),
+                    useRemoveDollarAndCommahook(prevItem?.adjusted_price),
                     useRemoveDollarAndCommahook(prevItem?.list_price),
-                    20,
                   );
                   return {
                     ...prevItem,
@@ -250,249 +259,6 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
     },
   ];
 
-  // const ProfitabilityQuoteLineItemcolumns1 = [
-  //   {
-  //     title: (
-  //       <Typography name="Body 4/Medium" className="dragHandler">
-  //         #Line
-  //       </Typography>
-  //     ),
-  //     dataIndex: 'line_number',
-  //     key: 'line_number',
-  //     render: (text: string) => (
-  //       <OsInput
-  //         disabled={renderEditableInput('Line')}
-  //         style={{
-  //           height: '36px',
-  //         }}
-  //         value={text}
-  //         onChange={(v) => {}}
-  //       />
-  //     ),
-  //     width: 111,
-  //   },
-  //   {
-  //     title: (
-  //       <Typography name="Body 4/Medium" className="dragHandler">
-  //         SKU
-  //       </Typography>
-  //     ),
-  //     dataIndex: 'product_code',
-  //     key: 'product_code',
-  //     width: 120,
-  //   },
-  //   {
-  //     title: (
-  //       <Typography name="Body 4/Medium" className="dragHandler">
-  //         Qty
-  //       </Typography>
-  //     ),
-  //     dataIndex: 'quantity',
-  //     key: 'quantity',
-  //     render: (text: string, record: any) => (
-  //       <OsInput
-  //         disabled={renderEditableInput('Qty')}
-  //         style={{
-  //           height: '36px',
-  //         }}
-  //         value={text}
-  //         onChange={(v) => {
-  //           setProfitabilityData((prev: any) =>
-  //             prev.map((prevItem: any) => {
-  //               if (prevItem.id === record?.id) {
-  //                 return {...prevItem, quantity: v.target.value};
-  //               }
-  //               return prevItem;
-  //             }),
-  //           );
-  //         }}
-  //       />
-  //     ),
-  //     width: 120,
-  //   },
-  //   {
-  //     title: (
-  //       <Typography name="Body 4/Medium" className="dragHandler">
-  //         Cost
-  //       </Typography>
-  //     ),
-  //     dataIndex: 'list_price',
-  //     key: 'list_price',
-  //     render: (text: string, record: any) => (
-  //       <OsInput
-  //         style={{
-  //           height: '36px',
-  //         }}
-  //         disabled={renderEditableInput('Cost')}
-  //         value={text}
-  //         onChange={(v) => {
-  //           setProfitabilityData((prev: any) =>
-  //             prev.map((prevItem: any) => {
-  //               if (prevItem.id === record?.id) {
-  //                 return {...prevItem, list_price: v.target.value};
-  //               }
-  //               return prevItem;
-  //             }),
-  //           );
-  //         }}
-  //       />
-  //     ),
-  //     width: 115,
-  //   },
-  //   {
-  //     title: (
-  //       <Typography name="Body 4/Medium" className="dragHandler">
-  //         Product Description
-  //       </Typography>
-  //     ),
-  //     dataIndex: 'description',
-  //     key: 'description',
-  //     width: 277,
-  //   },
-  //   {
-  //     title: (
-  //       <Typography name="Body 4/Medium" className="dragHandler">
-  //         Pricing Method
-  //       </Typography>
-  //     ),
-  //     dataIndex: 'pricing_method',
-  //     key: 'pricing_method',
-  //     width: 160,
-  //     render: (text: string, record: any) => (
-  //       <CommonSelect
-  //         disabled={renderEditableInput('Pricing Method')}
-  //         style={{width: '200px'}}
-  //         placeholder="Select"
-  //         defaultValue={text}
-  //         onChange={(v) => {
-  //           setProfitabilityData((prev: any) =>
-  //             prev.map((prevItem: any) => {
-  //               if (prevItem.id === record?.id) {
-  //                 return {...prevItem, pricing_method: v};
-  //               }
-  //               return prevItem;
-  //             }),
-  //           );
-
-  //           setProfitabilityData((prev: any) =>
-  //             prev.map((prevItem: any) => {
-  //               if (record?.id === prevItem?.id) {
-  //                 const rowId = record?.id;
-  //                 const result: any = calculateProfitabilityData(
-  //                   useRemoveDollarAndCommahook(prevItem?.quantity),
-  //                   prevItem?.pricing_method,
-  //                   useRemoveDollarAndCommahook(prevItem?.line_amount),
-  //                   useRemoveDollarAndCommahook(prevItem?.list_price),
-  //                   20,
-  //                 );
-  //                 return {
-  //                   ...prevItem,
-  //                   unit_price: result.unitPrice,
-  //                   exit_price: result.exitPrice,
-  //                   gross_profit: result.grossProfit,
-  //                   gross_profit_percentage: result.grossProfitPercentage,
-  //                   rowId,
-  //                 };
-  //               }
-  //               return prevItem;
-  //             }),
-  //           );
-  //         }}
-  //         options={pricingMethod}
-  //       />
-  //     ),
-  //   },
-  //   {
-  //     title: (
-  //       <Typography name="Body 4/Medium" className="dragHandler">
-  //         Amount
-  //       </Typography>
-  //     ),
-  //     dataIndex: 'line_amount',
-  //     key: 'line_amount',
-  //     width: 121,
-  //     render: (text: string, record: any) => (
-  //       <OsInput
-  //         disabled={renderEditableInput('Amount')}
-  //         style={{
-  //           height: '36px',
-  //         }}
-  //         value={updateAmountValue(text, record?.pricing_method)}
-  //         onChange={(v) => {
-  //           setProfitabilityData((prev: any) =>
-  //             prev.map((prevItem: any) => {
-  //               if (prevItem.id === record?.id) {
-  //                 return {...prevItem, line_amount: v.target.value};
-  //               }
-  //               return prevItem;
-  //             }),
-  //           );
-  //         }}
-  //       />
-  //     ),
-  //   },
-  //   {
-  //     title: (
-  //       <Typography name="Body 4/Medium" className="dragHandler">
-  //         Unit Price
-  //       </Typography>
-  //     ),
-  //     dataIndex: 'unit_price',
-  //     key: 'unit_price',
-  //     width: 150,
-  //     render: (text: number) => (
-  //       <Typography name="Body 4/Medium">
-  //         {text ? `$${abbreviate(text ?? 0)}` : '--'}
-  //       </Typography>
-  //     ),
-  //   },
-  //   {
-  //     title: (
-  //       <Typography name="Body 4/Medium" className="dragHandler">
-  //         Exit Price
-  //       </Typography>
-  //     ),
-  //     dataIndex: 'exit_price',
-  //     key: 'exit_price',
-  //     width: 150,
-  //     render: (text: number) => (
-  //       <Typography name="Body 4/Medium">
-  //         {text ? `$${abbreviate(text ?? 0)}` : '--'}
-  //       </Typography>
-  //     ),
-  //   },
-  //   {
-  //     title: (
-  //       <Typography name="Body 4/Medium" className="dragHandler">
-  //         Gross Profit
-  //       </Typography>
-  //     ),
-  //     dataIndex: 'gross_profit',
-  //     key: 'gross_profit',
-  //     width: 150,
-  //     render: (text: number) => (
-  //       <Typography name="Body 4/Medium">
-  //         {text ? `$${abbreviate(text ?? 0)}` : '--'}
-  //       </Typography>
-  //     ),
-  //   },
-  //   {
-  //     title: (
-  //       <Typography name="Body 4/Medium" className="dragHandler">
-  //         Gross Profit %
-  //       </Typography>
-  //     ),
-  //     dataIndex: 'gross_profit_percentage',
-  //     key: 'gross_profit_percentage',
-  //     width: 200,
-  //     render: (text: number) => (
-  //       <Typography name="Body 4/Medium">
-  //         {text ? `${abbreviate(text ?? 0)} %` : '--'}
-  //       </Typography>
-  //     ),
-  //   },
-  // ];
-
   const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>();
 
   useEffect(() => {
@@ -518,7 +284,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
           id: profitabilityDataItem?.id,
           line_number: profitabilityDataItem?.line_number,
           quantity: profitabilityDataItem?.quantity,
-          list_price: profitabilityDataItem?.list_price,
+          adjusted_price: profitabilityDataItem?.adjusted_price,
           pricing_method: profitabilityDataItem?.pricing_method,
           line_amount: profitabilityDataItem?.line_amount,
           unit_price: profitabilityDataItem?.unit_price,
@@ -533,13 +299,29 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
     dispatch(setProfitability(profitabilityData));
   }, [profitabilityData]);
 
+  useEffect(() => {
+    dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
+      setProfitabilityData(d?.payload);
+    });
+  }, [getQuoteID]);
+
   return (
-    <OsTableWithOutDrag
-      loading={loading}
-      columns={finalProfitTableCol}
-      dataSource={profitabilityData}
-      scroll
-    />
+    <>
+      {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
+        <OsTableWithOutDrag
+          loading={loading}
+          columns={finalProfitTableCol}
+          dataSource={profitabilityData}
+          scroll
+          locale={locale}
+        />
+      ) : (
+        <EmptyContainer
+          title="There is no columns for Profitability"
+          subTitle="Please Update from admin Configuration Tab or Request to admin to update the columns."
+        />
+      )}
+    </>
   );
 };
 

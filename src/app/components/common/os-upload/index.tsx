@@ -1,16 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
-import {Form, Switch} from 'antd';
-import React, {useEffect, useState} from 'react';
-import {Checkbox} from '../antd/Checkbox';
-import {Col, Row} from '../antd/Grid';
-import {Space} from '../antd/Space';
+import { FolderArrowDownIcon } from '@heroicons/react/24/outline';
+import { Form, Switch } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Col, Row } from '../antd/Grid';
+import { Space } from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import OsCustomerSelect from '../os-customer-select';
 import OsOpportunitySelect from '../os-opportunity-select';
 import Typography from '../typography';
 import UploadCard from './UploadCard';
-import {OSDraggerStyle} from './styled-components';
+import { OSDraggerStyle } from './styled-components';
 
 const OsUpload: React.FC<any> = ({
   beforeUpload,
@@ -18,13 +17,11 @@ const OsUpload: React.FC<any> = ({
   setUploadFileData,
   addInExistingQuote,
   addQuoteLineItem,
-  setCustomerValue,
-  customerValue,
   form,
 }) => {
   const [token] = useThemeToken();
   const [fileList, setFileList] = useState([]);
-  // const [customerValue, setCustomerValue] = useState<number>(0);
+  const [customerValue, setCustomerValue] = useState<number>(0);
 
   useEffect(() => {
     const newrrr: any = [...fileList];

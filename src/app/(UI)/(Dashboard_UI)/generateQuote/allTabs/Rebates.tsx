@@ -12,7 +12,8 @@ import EmptyContainer from '@/app/components/common/os-empty-container';
 import Typography from '@/app/components/common/typography';
 import {rebateAmount, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
-import {updateRebateQuoteLineItemById} from '../../../../../../redux/actions/rebateQuoteLineitem';
+import {useSearchParams} from 'next/navigation';
+import {getRebateQuoteLineItemByQuoteId, updateRebateQuoteLineItemById} from '../../../../../../redux/actions/rebateQuoteLineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setRebate} from '../../../../../../redux/slices/rebate';
 import {setRebateQuoteLineItem} from '../../../../../../redux/slices/rebateQuoteLineItem';
@@ -20,7 +21,8 @@ import {setRebateQuoteLineItem} from '../../../../../../redux/slices/rebateQuote
 const Rebates: FC<any> = ({tableColumnDataShow}) => {
   const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
-
+  const searchParams = useSearchParams();
+  const getQuoteID = searchParams.get('id');
   const {data: RebateData, loading} = useAppSelector(
     (state) => state.rebateQuoteLineItem,
   );
@@ -40,7 +42,6 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
     }, 500);
   }, [rebateData]);
 
-  
   const handleInputChange = (recordId: number, list_price: string) => {
     rebateData.map((prevItem: any) => {
       if (recordId === prevItem?.id) {
@@ -242,6 +243,12 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
     });
     setFinaRebateTableCol(newArr);
   }, [tableColumnDataShow]);
+
+  useEffect(() => {
+    dispatch(getRebateQuoteLineItemByQuoteId(Number(getQuoteID))).then((d: any) => {
+      setRebateData(d?.payload);
+    });
+  }, [getQuoteID]);
 
   return (
     <>

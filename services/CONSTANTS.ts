@@ -18,7 +18,7 @@ export const API = {
     QUERY: '/quoteLineItem/query',
     UpdateQuoteLineItemQuantityById:
       '/quoteLineItem/updateQuantityOfQuoteLineItem',
-    DeleteQuoteLineItemQuantityById: '/quoteLineItem/deleteQuoteLineItems',
+    DeleteQuoteLineItemById: '/quoteLineItem/deleteQuoteLineItems',
     GetQuoteLineItemByQuoteId: '/quoteLineItem/getQuoteLineItemByQuoteId',
     GetQuoteLineItemByQuoteIdandBundleIdNull:
       '/quoteLineItem/getQuoteLineItemByQuoteIdandBundleIdNull',
