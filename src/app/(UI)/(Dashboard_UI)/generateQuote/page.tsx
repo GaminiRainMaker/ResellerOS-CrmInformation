@@ -368,7 +368,7 @@ const GenerateQuote: React.FC = () => {
             <Typography
               name="Body 3/Regular"
               color={token?.colorError}
-              onClick={deleteLineItems}
+              // onClick={deleteLineItems}
             >
               Delete
             </Typography>
