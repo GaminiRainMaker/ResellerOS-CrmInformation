@@ -22,6 +22,7 @@ import {Select} from '@/app/components/common/antd/Select';
 import {Table} from '@/app/components/common/antd/Table';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import InputOptions from './inputOptions';
+import TableSort from './tableSort';
 
 const FormBuilder = () => {
   const [sectionSelected, setSectionSelcted] = useState<any>();
@@ -39,6 +40,12 @@ const FormBuilder = () => {
   const {setNodeRef} = useDroppable({
     id: 'cart-droppable',
   });
+
+  const updateSection = (sectionInd: number, itemCont: string) => {
+    const temp = [...cartItems];
+    temp?.[sectionInd]?.content?.push(itemCont);
+    setCartItems(temp);
+  };
 
   return (
     <>
@@ -61,7 +68,7 @@ const FormBuilder = () => {
               gap: '12px',
               borderRadius: '10px',
             }}
-            span={16}
+            span={12}
           >
             <Row justify="space-between">
               <Typography name="Heading 3/Medium">
@@ -84,8 +91,8 @@ const FormBuilder = () => {
                 {cartItems && cartItems?.length > 0 ? (
                   <>
                     {' '}
-                    {cartItems.map((item: any, idx: number) => (
-                      <div style={{marginTop: '20px'}}>
+                    {cartItems.map((item: any, Sectidx: number) => (
+                      <div style={{marginTop: '20px'}} key={Sectidx}>
                         <Typography name="Body 1/Medium" color="#2364AA">
                           {item?.section}
                         </Typography>
@@ -99,52 +106,72 @@ const FormBuilder = () => {
                             marginTop: '10px',
                           }}
                         >
-                          {item?.content?.map((itemCon: any, index: any) => {
-                            if (itemCon == 'Table') {
-                              return (
-                                <Table
-                                  style={{marginTop: '10px', width: '100%'}}
-                                />
-                              );
-                            }
-                            if (
-                              itemCon == 'T text Content' ||
-                              itemCon == 'T Text' ||
-                              itemCon == 'Currency' ||
-                              itemCon == 'Email' ||
-                              itemCon == 'Toggle' ||
-                              itemCon == 'Radio Button' ||
-                              itemCon == 'Checkbox' ||
-                              itemCon == 'Line Break' ||
-                              itemCon == 'Attachment' ||
-                              itemCon == 'Contact' ||
-                              itemCon == 'Time' ||
-                              itemCon == 'Add Section'
-                            ) {
-                              return (
-                                <OsInput
-                                  style={{marginTop: '10px', width: '100%'}}
-                                />
-                              );
-                            }
-                            if (
-                              itemCon == 'Multi-Select' ||
-                              itemCon == 'Drop Down'
-                            ) {
-                              return (
-                                <Select
-                                  style={{marginTop: '10px', width: '100%'}}
-                                />
-                              );
-                            }
-                            if (itemCon == 'Date') {
-                              return (
-                                <DatePicker
-                                  style={{marginTop: '10px', width: '100%'}}
-                                />
-                              );
-                            }
-                          })}
+                          {item?.content?.map(
+                            (itemCon: any, ItemConindex: any) => {
+                              if (itemCon == 'Table') {
+                                return (
+                                  <Table
+                                    style={{marginTop: '10px', width: '100%'}}
+                                  />
+                                );
+                              }
+                              if (
+                                itemCon == 'T text Content' ||
+                                itemCon == 'T Text' ||
+                                itemCon == 'Currency' ||
+                                itemCon == 'Email' ||
+                                itemCon == 'Toggle' ||
+                                itemCon == 'Radio Button' ||
+                                itemCon == 'Checkbox' ||
+                                itemCon == 'Line Break' ||
+                                itemCon == 'Attachment' ||
+                                itemCon == 'Contact' ||
+                                itemCon == 'Time' ||
+                                itemCon == 'Add Section'
+                              ) {
+                                return (
+                                  <>
+                                    {' '}
+                                    <Space
+                                      direction="horizontal"
+                                      style={{
+                                        marginLeft:
+                                          ItemConindex % 2 !== 0 ? '30px' : '',
+                                      }}
+                                    >
+                                      <OsInput style={{width: '220px'}} />{' '}
+                                      {ItemConindex === 0 && (
+                                        <OsButton
+                                          buttontype="PRIMARY_ICON"
+                                          icon="+"
+                                          clickHandler={() => {
+                                            updateSection(Sectidx, itemCon);
+                                          }}
+                                        />
+                                      )}
+                                    </Space>
+                                  </>
+                                );
+                              }
+                              if (
+                                itemCon == 'Multi-Select' ||
+                                itemCon == 'Drop Down'
+                              ) {
+                                return (
+                                  <Select
+                                    style={{marginTop: '10px', width: '100%'}}
+                                  />
+                                );
+                              }
+                              if (itemCon == 'Date') {
+                                return (
+                                  <DatePicker
+                                    style={{marginTop: '10px', width: '100%'}}
+                                  />
+                                );
+                              }
+                            },
+                          )}
                         </Row>
                       </div>
                     ))}
