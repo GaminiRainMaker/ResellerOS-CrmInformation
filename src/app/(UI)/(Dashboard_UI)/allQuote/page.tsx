@@ -198,7 +198,12 @@ const AllQuote: React.FC = () => {
         if (item?.id) {
           for (let i = 0; i < formattedArray?.length; i++) {
             const items = formattedArray[i];
-            const insertedProduct = await dispatch(insertProduct(items));
+            const insertedProduct = await dispatch(
+              insertProduct({
+                ...items,
+                organization: userInformation.organization,
+              }),
+            );
             if (insertedProduct?.payload?.id) {
               const obj1: any = {
                 quote_id: item?.id,
@@ -214,6 +219,7 @@ const AllQuote: React.FC = () => {
                   generalSettingData?.attach_doc_type === 'quote_line_item'
                     ? item?.pdf_url
                     : null,
+                organization: insertedProduct?.payload?.organization,
               };
               const RebatesByProductCodData = await dispatch(
                 getRebatesByProductCode(insertedProduct?.payload?.product_code),
@@ -247,7 +253,12 @@ const AllQuote: React.FC = () => {
       await dispatch(updateQuoteWithNewlineItemAddByID(existingQuoteId));
       for (let i = 0; i < formattedArray?.length; i++) {
         const items = formattedArray[i];
-        const insertedProduct = await dispatch(insertProduct(items));
+        const insertedProduct = await dispatch(
+          insertProduct({
+            ...items,
+            organization: userInformation.organization,
+          }),
+        );
         if (insertedProduct?.payload?.id) {
           const obj1: any = {
             quote_id: existingQuoteId,
@@ -259,6 +270,7 @@ const AllQuote: React.FC = () => {
             quantity: insertedProduct?.payload?.quantity,
             adjusted_price: insertedProduct?.payload?.adjusted_price,
             line_number: insertedProduct?.payload?.line_number,
+            organization: insertedProduct?.payload?.organization,
           };
           const RebatesByProductCodData = await dispatch(
             getRebatesByProductCode(insertedProduct?.payload?.product_code),

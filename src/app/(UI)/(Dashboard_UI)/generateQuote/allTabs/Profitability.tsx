@@ -61,12 +61,12 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
 
   const ProfitabilityQuoteLineItemcolumns = [
     {
-      title: 'Line',
+      title: '#Line',
       dataIndex: 'line_number',
       key: 'line_number',
       render: (text: string) => (
         <OsInput
-          disabled={renderEditableInput('Line')}
+          disabled={renderEditableInput('#Line')}
           style={{
             height: '36px',
           }}

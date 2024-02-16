@@ -82,11 +82,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
 
   const ValidationQuoteLineItemcolumns = [
     {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          #Line
-        </Typography>
-      ),
+      title: '#Line',
       dataIndex: 'line_number',
       key: 'line_number',
       render: (text: string) => (
@@ -102,31 +98,19 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       width: 111,
     },
     {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          SKU
-        </Typography>
-      ),
+      title: 'SKU',
       dataIndex: 'product_code',
       key: 'product_code',
       width: 130,
     },
     {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Product Description
-        </Typography>
-      ),
+      title: 'Product Description',
       dataIndex: 'description',
       key: 'description',
       width: 353,
     },
     {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Pricing Method
-        </Typography>
-      ),
+      title: 'Pricing Method',
       dataIndex: 'pricing_method',
       key: 'pricing_method',
       width: 208,
@@ -173,11 +157,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       ),
     },
     {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Amount
-        </Typography>
-      ),
+      title: 'Amount',
       dataIndex: 'line_amount',
       key: 'line_amount',
       width: 130,
@@ -202,51 +182,40 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       ),
     },
     {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Unit Price
-        </Typography>
-      ),
+      title: 'Unit Price',
       dataIndex: 'unit_price',
       key: 'unit_price',
       width: 152,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
-          {text ? `$${abbreviate(text ?? 0)}` : '--'}
+          {text ? `$${abbreviate(text ?? 0)}` : 0}
         </Typography>
       ),
     },
     {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Exit Price
-        </Typography>
-      ),
+      title: 'Exit Price',
       dataIndex: 'exit_price',
       key: 'exit_price',
       width: 152,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
-          {text ? `$${abbreviate(text ?? 0)}` : '--'}
+          {text ? `$${abbreviate(text ?? 0)}` : 0}
         </Typography>
       ),
     },
     {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Contract Price
-        </Typography>
-      ),
+      title: 'Contract Price',
       dataIndex: 'contract_price',
       key: 'contract_price',
       width: 135,
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Contract Status
+      render: (text: number) => (
+        <Typography name="Body 4/Medium">
+          {text ? `$ ${abbreviate(text ?? 0)}` : 0}
         </Typography>
       ),
+    },
+    {
+      title: 'Contract Status',
       dataIndex: 'contract_status',
       key: 'contract_status',
       width: 135,
@@ -286,11 +255,21 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
   useEffect(() => {
     const newArr: any = [];
     ValidationQuoteLineItemcolumns?.map((itemCol: any) => {
-      tableColumnDataShow?.filter((item: any) => {
-        if (item?.field_name?.includes(itemCol?.title?.props?.children)) {
-          newArr?.push(itemCol);
+      let shouldPush = false;
+      tableColumnDataShow?.forEach((item: any) => {
+        if (item?.field_name === itemCol?.title) {
+          shouldPush = true;
         }
       });
+      if (
+        itemCol?.dataIndex === 'actions' ||
+        itemCol?.dataIndex?.includes('actions.')
+      ) {
+        shouldPush = true;
+      }
+      if (shouldPush) {
+        newArr?.push(itemCol);
+      }
     });
     setFinalValidationTableCol(newArr);
   }, [tableColumnDataShow]);

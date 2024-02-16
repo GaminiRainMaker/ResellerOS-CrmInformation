@@ -81,12 +81,12 @@ const InputDetails: FC<InputDetailTabInterface> = ({
 
   const InputDetailQuoteLineItemcolumns = [
     {
-      title: 'Line',
+      title: '#Line',
       dataIndex: 'line_number',
       key: 'line_number',
       render: (text: any, record: any) => (
         <OsInput
-          disabled={renderEditableInput('Line')}
+          disabled={renderEditableInput('#Line')}
           style={{
             height: '36px',
           }}
@@ -239,7 +239,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
             style={{cursor: 'pointer'}}
             onClick={() => {
               setDeleteIds([record?.id]);
-
               setIsDeleteInputDetailModal(true);
             }}
           />
