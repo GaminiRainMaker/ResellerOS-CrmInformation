@@ -34,6 +34,7 @@ const OsButton: React.FC<ButtonInterface> = ({
     PRIMARY_DISABLED: 'PRIMARY_DISABLED',
     SECONDARY: 'SECONDARY',
     SECONDARY_DISABLED: 'SECONDARY_DISABLED',
+    BUILD_BUTTON: 'BUILD_BUTTON',
   };
 
   return (

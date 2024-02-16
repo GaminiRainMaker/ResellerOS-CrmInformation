@@ -27,6 +27,7 @@ const DetailCard = () => {
     },
   ];
 
+  
   const contactCardData = [
     {
       name: customerData?.BillingContacts?.[0]?.billing_first_name,
