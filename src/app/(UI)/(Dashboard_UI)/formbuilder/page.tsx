@@ -21,7 +21,7 @@ import Typography from '@/app/components/common/typography';
 import {PlayCircleOutlined} from '@ant-design/icons';
 import {DndContext, DragEndEvent, useDroppable} from '@dnd-kit/core';
 import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {DatePicker, MenuProps} from 'antd';
+import {DatePicker, Form, MenuProps} from 'antd';
 import React, {useState} from 'react';
 import EditFiledDetails from './detailsFieldEdit';
 import InputOptions from './inputOptions';
@@ -30,6 +30,9 @@ const FormBuilder = () => {
   const [sectionSelected, setSectionSelcted] = useState<any>();
   const [isOpenDrawer, setIsOpenDrawer] = useState<boolean>(false);
   const dropDownItemss: MenuProps['items'] = [];
+  const [activeContentIndex, setActiveContentIndex] = useState<number>(0);
+  const [activeSetionIndex, setActiveSectionIndex] = useState<number>(0);
+  const [form] = Form.useForm();
 
   const [token] = useThemeToken();
   const [cartItems, setCartItems] = useState<any>([]);
@@ -37,7 +40,19 @@ const FormBuilder = () => {
   const addItemsToCart = (e: DragEndEvent) => {
     const newItem = e.active.data.current?.title?.props?.text;
     const temp = [...cartItems];
-    temp.push({section: `Section${cartItems?.length + 1}`, content: [newItem]});
+    temp.push({
+      section: `Section${cartItems?.length + 1}`,
+      content: [
+        {
+          name: newItem,
+          label: 'Label',
+          type: 'text',
+          required: false,
+          requuireLabel: true,
+          hintext: false,
+        },
+      ],
+    });
     setCartItems(temp);
   };
   const {setNodeRef} = useDroppable({
@@ -46,7 +61,14 @@ const FormBuilder = () => {
 
   const updateSection = (sectionInd: number, itemCont: string) => {
     const temp = [...cartItems];
-    temp?.[sectionInd]?.content?.push(itemCont);
+    temp?.[sectionInd]?.content?.push({
+      name: itemCont,
+      label: 'Label',
+      type: 'text',
+      required: false,
+      requuireLabel: true,
+      hintext: false,
+    });
     setCartItems(temp);
   };
 
@@ -79,13 +101,6 @@ const FormBuilder = () => {
 
   return (
     <>
-      <div
-        onClick={() => {
-          openEditDrawer();
-        }}
-      >
-        openEditDrawer
-      </div>
       <Row style={{background: 'rrghed'}} justify="space-between">
         <DndContext onDragEnd={addItemsToCart}>
           <Col
@@ -145,7 +160,7 @@ const FormBuilder = () => {
                         >
                           {item?.content?.map(
                             (itemCon: any, ItemConindex: any) => {
-                              if (itemCon == 'Table') {
+                              if (itemCon?.name == 'Table') {
                                 return (
                                   <Table
                                     style={{marginTop: '10px', width: '100%'}}
@@ -153,18 +168,18 @@ const FormBuilder = () => {
                                 );
                               }
                               if (
-                                itemCon == 'T text Content' ||
-                                itemCon == 'T Text' ||
-                                itemCon == 'Currency' ||
-                                itemCon == 'Email' ||
-                                itemCon == 'Toggle' ||
-                                itemCon == 'Radio Button' ||
-                                itemCon == 'Checkbox' ||
-                                itemCon == 'Line Break' ||
-                                itemCon == 'Attachment' ||
-                                itemCon == 'Contact' ||
-                                itemCon == 'Time' ||
-                                itemCon == 'Add Section'
+                                itemCon?.name == 'T text Content' ||
+                                itemCon?.name == 'T Text' ||
+                                itemCon?.name == 'Currency' ||
+                                itemCon?.name == 'Email' ||
+                                itemCon?.name == 'Toggle' ||
+                                itemCon?.name == 'Radio Button' ||
+                                itemCon?.name == 'Checkbox' ||
+                                itemCon?.name == 'Line Break' ||
+                                itemCon?.name == 'Attachment' ||
+                                itemCon?.name == 'Contact' ||
+                                itemCon?.name == 'Time' ||
+                                itemCon?.name == 'Add Section'
                               ) {
                                 return (
                                   <>
@@ -173,12 +188,12 @@ const FormBuilder = () => {
                                       direction="vertical"
                                       style={{
                                         width:
-                                          ItemConindex === 0 ? '100%' : '45%',
+                                          ItemConindex === 0 &&
+                                          item?.content?.length === 0
+                                            ? '100%'
+                                            : '45%',
                                         marginLeft:
-                                          ItemConindex % 2 === 0 &&
-                                          ItemConindex !== 0
-                                            ? '25px'
-                                            : '',
+                                          ItemConindex % 2 === 0 ? '25px' : '',
                                         marginBottom: '20px',
                                       }}
                                       draggable
@@ -195,6 +210,12 @@ const FormBuilder = () => {
                                     >
                                       <Row justify="space-between">
                                         <Col
+                                          onClick={() => {
+                                            openEditDrawer();
+                                            setActiveContentIndex(ItemConindex);
+                                            setActiveSectionIndex(Sectidx);
+                                            form.resetFields();
+                                          }}
                                           style={{
                                             width: '96px',
                                             height: '26px',
@@ -234,7 +255,11 @@ const FormBuilder = () => {
                                         </Col>
                                       </Row>
                                       <Typography name="Body 4/Medium">
-                                        Label
+                                        {itemCon?.requuireLabel &&
+                                          itemCon?.label}{' '}
+                                        {itemCon?.required && (
+                                          <span style={{color: 'red'}}>*</span>
+                                        )}
                                       </Typography>
                                       <div
                                         style={{
@@ -244,8 +269,10 @@ const FormBuilder = () => {
                                         }}
                                       >
                                         <OsInput
+                                          type={itemCon?.type}
+
                                           // style={{width: '270px'}}
-                                          onClick={showDrawer}
+                                          // onClick={showDrawer}
                                         />{' '}
                                         {item?.content?.length - 1 ===
                                           ItemConindex && (
@@ -254,18 +281,24 @@ const FormBuilder = () => {
                                             buttontype="PRIMARY_ICON"
                                             icon="+"
                                             clickHandler={() => {
-                                              updateSection(Sectidx, itemCon);
+                                              updateSection(
+                                                Sectidx,
+                                                itemCon?.name,
+                                              );
                                             }}
                                           />
                                         )}
                                       </div>
+                                      {itemCon?.hintext && (
+                                        <div>this is hint text</div>
+                                      )}
                                     </Space>
                                   </>
                                 );
                               }
                               if (
-                                itemCon == 'Multi-Select' ||
-                                itemCon == 'Drop Down'
+                                itemCon?.name == 'Multi-Select' ||
+                                itemCon?.name == 'Drop Down'
                               ) {
                                 return (
                                   <Select
@@ -273,7 +306,7 @@ const FormBuilder = () => {
                                   />
                                 );
                               }
-                              if (itemCon == 'Date') {
+                              if (itemCon?.name == 'Date') {
                                 return (
                                   <DatePicker
                                     style={{marginTop: '10px', width: '100%'}}
@@ -318,6 +351,11 @@ const FormBuilder = () => {
           <EditFiledDetails
             setIsOpenDrawer={openEditDrawer}
             isOpenDrawer={isOpenDrawer}
+            contentIndex={activeContentIndex}
+            sectionIndex={activeSetionIndex}
+            setCartItems={setCartItems}
+            cartItems={cartItems}
+            form={form}
           />
         </Col>
       </Row>{' '}
