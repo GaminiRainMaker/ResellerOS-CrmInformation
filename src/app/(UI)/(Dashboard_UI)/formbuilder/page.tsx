@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable consistent-return */
 /* eslint-disable eqeqeq */
@@ -14,15 +16,17 @@ import OsButton from '@/app/components/common/os-button';
 import {PlayCircleOutlined} from '@ant-design/icons';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import {DatePicker, MenuProps} from 'antd';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import {DndContext, DragEndEvent, useDroppable} from '@dnd-kit/core';
 import OsInput from '@/app/components/common/os-input';
-import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {Select} from '@/app/components/common/antd/Select';
 import {Table} from '@/app/components/common/antd/Table';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import OsDrawer from '@/app/components/common/os-drawer';
+import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
 import InputOptions from './inputOptions';
-import TableSort from './tableSort';
+import EditFiledDetails from './detailsFieldEdit';
+import ListSort from './listSort';
 
 const FormBuilder = () => {
   const [sectionSelected, setSectionSelcted] = useState<any>();
@@ -47,10 +51,43 @@ const FormBuilder = () => {
     setCartItems(temp);
   };
 
+  // save reference for dragItem and dragOverItem
+  const dragItem = React.useRef<any>(null);
+  const dragOverItem = React.useRef<any>(null);
+
+  // const handle drag sorting
+  const handleSort = () => {
+    // duplicate items
+    const _fruitItems = [...cartItems?.[0]?.content];
+
+    // remove and save the dragged item content
+    const draggedItemContent = _fruitItems.splice(dragItem.current, 1)[0];
+
+    // switch the position
+    _fruitItems.splice(dragOverItem.current, 0, draggedItemContent);
+
+    // reset the position ref
+    dragItem.current = null;
+    dragOverItem.current = null;
+
+    // update the actual array
+    setCartItems(_fruitItems);
+  };
+
+  const [open, setOpen] = useState(false);
+
+  const showDrawer = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
+
   return (
     <>
-      <DndContext onDragEnd={addItemsToCart}>
-        <Row>
+      <Row>
+        <DndContext onDragEnd={addItemsToCart}>
           <Col
             span={6}
             style={{
@@ -68,7 +105,7 @@ const FormBuilder = () => {
               gap: '12px',
               borderRadius: '10px',
             }}
-            span={12}
+            span={10}
           >
             <Row justify="space-between">
               <Typography name="Heading 3/Medium">
@@ -133,22 +170,86 @@ const FormBuilder = () => {
                                   <>
                                     {' '}
                                     <Space
-                                      direction="horizontal"
-                                      style={{
-                                        marginLeft:
-                                          ItemConindex % 2 !== 0 ? '30px' : '',
-                                      }}
+                                      direction="vertical"
+                                      style={{width: '100%'}}
+                                      draggable
+                                      // eslint-disable-next-line no-return-assign
+                                      onDragStart={(e) =>
+                                        (dragItem.current = ItemConindex)
+                                      }
+                                      // eslint-disable-next-line no-return-assign
+                                      onDragEnter={(e) =>
+                                        (dragOverItem.current = ItemConindex)
+                                      }
+                                      onDragEnd={handleSort}
+                                      onDragOver={(e) => e.preventDefault()}
                                     >
-                                      <OsInput style={{width: '220px'}} />{' '}
-                                      {ItemConindex === 0 && (
-                                        <OsButton
-                                          buttontype="PRIMARY_ICON"
-                                          icon="+"
-                                          clickHandler={() => {
-                                            updateSection(Sectidx, itemCon);
+                                      <Row justify="space-between">
+                                        <Col
+                                          style={{
+                                            width: '96px',
+                                            height: '26px',
+                                            borderRadius: '50px',
+                                            padding: '4px 12px 4px 12px',
+                                            gap: '12px',
+                                            background: '#ECF2F5',
+                                            display: 'flex',
+                                            justifyContent: 'center',
                                           }}
-                                        />
-                                      )}
+                                        >
+                                          <div
+                                            style={{
+                                              width: '54px',
+                                              height: '18px',
+                                              fontWeight: '500',
+                                              fontSize: '12px',
+                                              lineHeight: '18px',
+                                            }}
+                                          >
+                                            Text Filed
+                                          </div>
+                                        </Col>
+                                        <Col
+                                          style={{
+                                            width: '96px',
+                                            height: '30px',
+                                            borderRadius: '50px',
+                                            padding: '4px 12px 4px 12px',
+                                            gap: '12px',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                          }}
+                                        >
+                                          <TrashIcon color="#EB445A" />{' '}
+                                          <ArrowsPointingOutIcon color="#2364AA" />
+                                        </Col>
+                                      </Row>
+                                      <Typography name="Body 4/Medium">
+                                        Label
+                                      </Typography>
+                                      <div
+                                        style={{
+                                          width: '100%',
+                                          display: 'flex',
+                                          gap: '12px',
+                                        }}
+                                      >
+                                        <OsInput
+                                          // style={{width: '270px'}}
+                                          onClick={showDrawer}
+                                        />{' '}
+                                        {item?.content?.length - 1 ===
+                                          ItemConindex && (
+                                          <OsButton
+                                            style={{marginLeft: '10px'}}
+                                            buttontype="PRIMARY_ICON"
+                                            icon="+"
+                                            clickHandler={() => {
+                                              updateSection(Sectidx, itemCon);
+                                            }}
+                                          />
+                                        )}
+                                      </div>
                                     </Space>
                                   </>
                                 );
@@ -202,8 +303,25 @@ const FormBuilder = () => {
               </div>
             </Row>
           </Col>
-        </Row>{' '}
-      </DndContext>
+          -
+        </DndContext>
+        <Col span={6}>
+          {/* <OsDrawer
+            title="Basic Drawer"
+            placement="right"
+            closable={false}
+            onClose={onClose}
+            open={open}
+            getContainer={false}
+          >
+            <EditFiledDetails
+              cartItems={cartItems}
+              setCartItems={setCartItems}
+            />
+          </OsDrawer> */}
+          <EditFiledDetails cartItems={cartItems} setCartItems={setCartItems} />
+        </Col>
+      </Row>{' '}
     </>
   );
 };

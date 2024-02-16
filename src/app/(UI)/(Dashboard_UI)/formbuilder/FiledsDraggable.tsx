@@ -3,13 +3,12 @@
 import {useDraggable} from '@dnd-kit/core';
 import {FC} from 'react';
 import {CSS} from '@dnd-kit/utilities';
-import OsButton from '@/app/components/common/os-button';
 
-interface IFruitDraggable {
+interface Draggable {
   children?: JSX.Element | JSX.Element[];
 }
 
-const FiledsDraggable: FC<IFruitDraggable> = (props: any) => {
+const FiledsDraggable: FC<Draggable> = (props: any) => {
   const {attributes, listeners, setNodeRef, transform} = useDraggable({
     id: props.children,
     data: {title: props.children},
