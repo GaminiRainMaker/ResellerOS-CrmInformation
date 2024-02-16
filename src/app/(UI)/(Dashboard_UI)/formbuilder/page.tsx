@@ -10,26 +10,25 @@
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
-import Typography from '@/app/components/common/typography';
-import {Space} from '@/app/components/common/antd/Space';
-import OsButton from '@/app/components/common/os-button';
-import {PlayCircleOutlined} from '@ant-design/icons';
-import OsDropdown from '@/app/components/common/os-dropdown';
-import {DatePicker, MenuProps} from 'antd';
-import React, {useState} from 'react';
-import {DndContext, DragEndEvent, useDroppable} from '@dnd-kit/core';
-import OsInput from '@/app/components/common/os-input';
 import {Select} from '@/app/components/common/antd/Select';
+import {Space} from '@/app/components/common/antd/Space';
 import {Table} from '@/app/components/common/antd/Table';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import OsDrawer from '@/app/components/common/os-drawer';
+import OsButton from '@/app/components/common/os-button';
+import OsDropdown from '@/app/components/common/os-dropdown';
+import OsInput from '@/app/components/common/os-input';
+import Typography from '@/app/components/common/typography';
+import {PlayCircleOutlined} from '@ant-design/icons';
+import {DndContext, DragEndEvent, useDroppable} from '@dnd-kit/core';
 import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
-import InputOptions from './inputOptions';
+import {DatePicker, MenuProps} from 'antd';
+import React, {useState} from 'react';
 import EditFiledDetails from './detailsFieldEdit';
-import ListSort from './listSort';
+import InputOptions from './inputOptions';
 
 const FormBuilder = () => {
   const [sectionSelected, setSectionSelcted] = useState<any>();
+  const [isOpenDrawer, setIsOpenDrawer] = useState<boolean>(false);
   const dropDownItemss: MenuProps['items'] = [];
 
   const [token] = useThemeToken();
@@ -74,19 +73,20 @@ const FormBuilder = () => {
     setCartItems(_fruitItems);
   };
 
-  const [open, setOpen] = useState(false);
-
-  const showDrawer = () => {
-    setOpen(true);
-  };
-
-  const onClose = () => {
-    setOpen(false);
+  const openEditDrawer = () => {
+    setIsOpenDrawer((p) => !p);
   };
 
   return (
     <>
-      <Row>
+      <div
+        onClick={() => {
+          openEditDrawer();
+        }}
+      >
+        openEditDrawer
+      </div>
+      <Row style={{background: 'rrghed'}} justify="space-between">
         <DndContext onDragEnd={addItemsToCart}>
           <Col
             span={6}
@@ -105,7 +105,7 @@ const FormBuilder = () => {
               gap: '12px',
               borderRadius: '10px',
             }}
-            span={10}
+            span={isOpenDrawer ? 10 : 18}
           >
             <Row justify="space-between">
               <Typography name="Heading 3/Medium">
@@ -305,21 +305,11 @@ const FormBuilder = () => {
           </Col>
           -
         </DndContext>
-        <Col span={6}>
-          {/* <OsDrawer
-            title="Basic Drawer"
-            placement="right"
-            closable={false}
-            onClose={onClose}
-            open={open}
-            getContainer={false}
-          >
-            <EditFiledDetails
-              cartItems={cartItems}
-              setCartItems={setCartItems}
-            />
-          </OsDrawer> */}
-          <EditFiledDetails cartItems={cartItems} setCartItems={setCartItems} />
+        <Col span={isOpenDrawer ? 6 : 0}>
+          <EditFiledDetails
+            setIsOpenDrawer={openEditDrawer}
+            isOpenDrawer={isOpenDrawer}
+          />
         </Col>
       </Row>{' '}
     </>

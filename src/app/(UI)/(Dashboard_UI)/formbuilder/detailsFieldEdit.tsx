@@ -1,51 +1,116 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable import/no-extraneous-dependencies */
-import {useDraggable} from '@dnd-kit/core';
-import {FC} from 'react';
-import {CSS} from '@dnd-kit/utilities';
-import {Divider, Row, Select, Space} from 'antd';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Switch} from '@/app/components/common/antd/Switch';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
+import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import Typography from '@/app/components/common/typography';
-import MenuDivider from 'antd/es/menu/MenuDivider';
-import OsInput from '@/app/components/common/os-input';
-import OsCustomerSelect from '@/app/components/common/os-customer-select';
-import OsPartnerSelect from '@/app/components/common/os-partner-select';
-import CommonSelect from '@/app/components/common/os-select';
+import {Drawer, Form} from 'antd';
+import React from 'react';
+import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
+import {FormBuilderInterFace} from './formBuilder.interface';
 
-interface EditDetailsInterface {
-  cartItems?: any;
-  setCartItems?: any;
-}
+const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
+  isOpenDrawer = false,
+  setIsOpenDrawer,
+}) => {
+  const [token] = useThemeToken();
+  const containerStyle: React.CSSProperties = {
+    position: 'relative',
+    height: 800,
+    overflow: 'hidden',
+    background: 'null',
+    border: 'null',
+    borderRadius: 'null',
+    padding: '0px',
+  };
 
-const EditFiledDetails: FC<EditDetailsInterface> = (props: any) => {
-  console.log('dddd');
-
-  return (
-    <Row style={{backgroundColor: 'white', padding: '12px'}}>
-      <Space direction="vertical" style={{width: '100%'}}>
-        {' '}
-        <Typography name="Body 1/Regular">Text Field</Typography>
-        {/* <MenuDivider /> */}
-        <Divider style={{marginTop: '0px', marginBottom: '0px'}} />
-        <Typography name="Body 2/Medium" color="#2364AA">
+  const QuickSetupItems = [
+    {
+      key: '1',
+      label: (
+        <Typography name="Body 2/Medium" color={token?.colorInfo}>
           Quick Setup
         </Typography>
-        <Typography name="Body 4/Medium">Change Label</Typography>
-        <OsInput placeholder="Label" />
-        <Typography name="Body 4/Medium">Field Type</Typography>
-        <CommonSelect
-          placeholder="Select"
-          allowClear
-          style={{width: '100%'}}
-          options={[]}
-          //   dropdownRender={(menu) => ({menu})}
-        />
-      </Space>
-      <Space direction="vertical">
-        <Typography name="Body 2/Regular" color="#2364AA">
+      ),
+      children: (
+        <Form layout="vertical">
+          <Row gutter={[16, 16]}>
+            <Col sm={12}>
+              <Form.Item
+                label={
+                  <Typography name="Body 4/Medium">No. of Rows</Typography>
+                }
+                name="no_of_rows"
+              >
+                <OsInputNumber placeholder="2" />
+              </Form.Item>
+            </Col>
+            <Col sm={12}>
+              <Form.Item
+                label={
+                  <Typography name="Body 4/Medium">No. of Columns</Typography>
+                }
+                name="no_of_columns"
+              >
+                <OsInputNumber placeholder="2" />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+      ),
+    },
+  ];
+
+  const OptionsItems = [
+    {
+      key: '1',
+      label: (
+        <Typography name="Body 2/Medium" color={token?.colorInfo}>
           Options
         </Typography>
-      </Space>
-    </Row>
+      ),
+      children: (
+        <Form layout="vertical">
+          <Row>
+            <Col>
+              <Form.Item
+                label={
+                  <Typography name="Body 4/Medium">Required Field</Typography>
+                }
+                name="is_required"
+              >
+                <Switch />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+      ),
+    },
+  ];
+
+  return (
+    <div style={containerStyle}>
+      <Drawer
+        title="Text Field"
+        placement="right"
+        closable={false}
+        onClose={() => setIsOpenDrawer && setIsOpenDrawer(false)}
+        open={isOpenDrawer}
+        getContainer={false}
+      >
+        <Row >
+          <CollapseSpaceStyle size={24} direction="vertical">
+            <OsCollapseAdmin items={QuickSetupItems} />
+          </CollapseSpaceStyle>
+        </Row>
+
+        <Row>
+          <CollapseSpaceStyle size={24} direction="vertical">
+            <OsCollapseAdmin items={OptionsItems} />
+          </CollapseSpaceStyle>
+        </Row>
+      </Drawer>
+    </div>
   );
 };
 
