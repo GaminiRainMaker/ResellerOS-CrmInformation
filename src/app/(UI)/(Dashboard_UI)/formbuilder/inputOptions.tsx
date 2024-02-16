@@ -126,7 +126,7 @@ const InputOptions: React.FC<InputDetailsProps> = ({setSectionSelcted}) => {
     <Row>
       <Space direction="vertical">
         <Typography name="Body 2/Bold">Text Fields</Typography>
-     
+
         <Space size={40}>
           <FiledsDraggable key="T text Content">
             <OsButton buttontype="BUILD_BUTTON" text="T text Content" />
