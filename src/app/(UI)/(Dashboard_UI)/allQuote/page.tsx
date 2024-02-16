@@ -219,7 +219,7 @@ const AllQuote: React.FC = () => {
                   generalSettingData?.attach_doc_type === 'quote_line_item'
                     ? item?.pdf_url
                     : null,
-                organization: insertedProduct?.payload?.organization,
+                organization: userInformation.organization,
               };
               const RebatesByProductCodData = await dispatch(
                 getRebatesByProductCode(insertedProduct?.payload?.product_code),
@@ -270,7 +270,7 @@ const AllQuote: React.FC = () => {
             quantity: insertedProduct?.payload?.quantity,
             adjusted_price: insertedProduct?.payload?.adjusted_price,
             line_number: insertedProduct?.payload?.line_number,
-            organization: insertedProduct?.payload?.organization,
+            organization: userInformation.organization,
           };
           const RebatesByProductCodData = await dispatch(
             getRebatesByProductCode(insertedProduct?.payload?.product_code),
