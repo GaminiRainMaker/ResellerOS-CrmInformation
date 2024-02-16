@@ -171,7 +171,16 @@ const FormBuilder = () => {
                                     {' '}
                                     <Space
                                       direction="vertical"
-                                      style={{width: '100%'}}
+                                      style={{
+                                        width:
+                                          ItemConindex === 0 ? '100%' : '45%',
+                                        marginLeft:
+                                          ItemConindex % 2 === 0 &&
+                                          ItemConindex !== 0
+                                            ? '25px'
+                                            : '',
+                                        marginBottom: '20px',
+                                      }}
                                       draggable
                                       // eslint-disable-next-line no-return-assign
                                       onDragStart={(e) =>
