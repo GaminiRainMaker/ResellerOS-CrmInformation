@@ -32,6 +32,7 @@ import {formatDate} from '@/app/utils/base';
 import {Form, MenuProps, TabsProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import moment from 'moment';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
@@ -185,6 +186,7 @@ const AllQuote: React.FC = () => {
         customer_id: customerId,
         opportunity_id: opportunityId,
         organization: userInformation.organization,
+        file_name: moment(new Date()).format('MM/DD/YYYY'),
       });
     });
     const newrrLineItems: any = [];
@@ -371,20 +373,30 @@ const AllQuote: React.FC = () => {
   const Quotecolumns = [
     {
       title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
           File Name
         </Typography>
       ),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'file_name',
+      key: 'file_name',
       width: 130,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{formatDate(text)}</Typography>
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {text ?? formatDate(record?.createdAt)}
+        </Typography>
       ),
     },
     {
       title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
           Opportunity
         </Typography>
       ),
@@ -405,7 +417,11 @@ const AllQuote: React.FC = () => {
     },
     {
       title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
           Customer Name
         </Typography>
       ),
@@ -426,7 +442,11 @@ const AllQuote: React.FC = () => {
     },
     {
       title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
           Status
         </Typography>
       ),
@@ -489,18 +509,37 @@ const AllQuote: React.FC = () => {
     emptyText: (
       <EmptyContainer
         title="No Files"
-        onClick={() => setShowModal((p) => !p)}
+        actionButton="Add Quote"
+        onClick={() => {
+          setShowModal(true);
+        }}
       />
     ),
   };
 
   const tabItems: TabsProps['items'] = [
     {
-      label: <Typography name="Body 4/Medium">All</Typography>,
+      label: (
+        <Typography
+          name="Body 4/Medium"
+          cursor="pointer"
+          color={token?.colorTextBase}
+        >
+          All
+        </Typography>
+      ),
       key: '1',
     },
     {
-      label: <Typography name="Body 4/Medium">Drafts</Typography>,
+      label: (
+        <Typography
+          name="Body 4/Medium"
+          cursor="pointer"
+          color={token?.colorTextBase}
+        >
+          Drafts
+        </Typography>
+      ),
       key: '2',
       children: (
         <>
@@ -511,6 +550,7 @@ const AllQuote: React.FC = () => {
               scroll
               loading={loading}
               locale={locale}
+              rowSelection={rowSelection}
             />
           ) : (
             <RecentSection
@@ -529,11 +569,27 @@ const AllQuote: React.FC = () => {
     },
 
     {
-      label: <Typography name="Body 4/Medium">In Progress</Typography>,
+      label: (
+        <Typography
+          name="Body 4/Medium"
+          cursor="pointer"
+          color={token?.colorTextBase}
+        >
+          In Progress
+        </Typography>
+      ),
       key: '3',
     },
     {
-      label: <Typography name="Body 4/Medium">Completed</Typography>,
+      label: (
+        <Typography
+          name="Body 4/Medium"
+          cursor="pointer"
+          color={token?.colorTextBase}
+        >
+          Completed
+        </Typography>
+      ),
       key: '4',
     },
   ];
@@ -571,7 +627,7 @@ const AllQuote: React.FC = () => {
                 gap: '8px',
               }}
             >
-              {activeTab == 3 && (
+              {activeTab == 3 && deleteIds && deleteIds?.length > 0 && (
                 <OsButton
                   text="Mark as Complete"
                   buttontype="PRIMARY"
@@ -645,20 +701,7 @@ const AllQuote: React.FC = () => {
             }
             items={tabItems.map((tabItem: any, index: number) => ({
               key: `${index + 1}`,
-              label: (
-                <div>
-                  <div>{tabItem?.label}</div>
-                  <div
-                    style={{
-                      // eslint-disable-next-line eqeqeq
-                      borderBottom:
-                        // eslint-disable-next-line eqeqeq
-                        activeTab == tabItem?.key ? '2px solid #1C3557' : '',
-                      // marginTop: '3px',
-                    }}
-                  />
-                </div>
-              ),
+              label: tabItem?.label,
               children: (
                 <OsTable
                   key={tabItem?.key}

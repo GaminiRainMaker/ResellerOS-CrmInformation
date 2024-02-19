@@ -304,7 +304,10 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
           scroll
         />
       ) : (
-        <EmptyContainer title="There Is No Columns" />
+        <EmptyContainer
+          title="There is no columns for Rebates"
+          subTitle="Please Update from admin Configuration Tab or Request to admin to update the columns."
+        />
       )}
     </>
   );

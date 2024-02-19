@@ -46,6 +46,7 @@ const theme: ThemeConfig = {
     colorIcon: '#EF697B',
     colorInfoBgHover: '#E9F0F7',
     colorTextDisabled: '#6C97C6',
+    colorTextBase: '#666666',
   },
   components: {
     Button: {

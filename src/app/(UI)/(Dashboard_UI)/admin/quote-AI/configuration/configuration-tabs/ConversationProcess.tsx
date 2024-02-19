@@ -120,7 +120,7 @@ const ConverSationProcess = () => {
                       <Space>
                         <Checkbox />
                         <Typography name="Body 4/Medium">
-                          Check Case for OEM Case
+                          Check case for OEM case
                         </Typography>
                       </Space>
                     </Space>
@@ -128,13 +128,13 @@ const ConverSationProcess = () => {
                       <Space>
                         <Checkbox />
                         <Typography name="Body 4/Medium">
-                          Include Another Vendor/Disti Field
+                          Include another vendor/disti field
                         </Typography>
                       </Space>
                       <Space>
                         <Checkbox />
                         <Typography name="Body 4/Medium">
-                          Check Case for Vendor/Disti Field
+                          Check case for vendor/disti field
                         </Typography>
                       </Space>
                     </Space>
@@ -162,7 +162,7 @@ const ConverSationProcess = () => {
                 key: '3',
                 label: (
                   <Typography name="Body 2/Medium">
-                    Existing Product configuration{' '}
+                    Existing Product Configuration{' '}
                   </Typography>
                 ),
                 children: (

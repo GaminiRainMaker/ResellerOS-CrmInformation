@@ -174,7 +174,7 @@ const SyncQuoteLineItemField = () => {
       ),
       dataIndex: 'id',
       key: 'id',
-      width: 50,
+      width: 80,
     },
     {
       title: (

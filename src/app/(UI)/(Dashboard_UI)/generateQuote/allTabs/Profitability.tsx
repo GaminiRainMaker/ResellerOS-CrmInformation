@@ -114,7 +114,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
             style={{
               height: '36px',
             }}
-            type="number"
+            // type="number"
             value={text}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
@@ -148,7 +148,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
           initialValue={text}
         >
           <OsInput
-            type="number"
+            // type="number"
             disabled={renderEditableInput('MSRP')}
             style={{
               height: '36px',
@@ -190,7 +190,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
             style={{
               height: '36px',
             }}
-            type="number"
+            // type="number"
             disabled={renderEditableInput('Cost')}
             value={text}
             onChange={(v) => {
@@ -298,7 +298,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
             style={{
               height: '36px',
             }}
-            type="number"
+            // type="number"
             prefix={updateAmountValue(record?.pricing_method)}
             value={text ? useRemoveDollarAndCommahook(text) : 0}
             onChange={(v) => {
@@ -395,6 +395,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
           adjusted_price: profitabilityDataItem?.adjusted_price,
           pricing_method: profitabilityDataItem?.pricing_method,
           line_amount: profitabilityDataItem?.line_amount,
+          list_price: profitabilityDataItem?.list_price,
           unit_price: profitabilityDataItem?.unit_price,
           exit_price: profitabilityDataItem?.exit_price,
           gross_profit: profitabilityDataItem?.gross_profit,

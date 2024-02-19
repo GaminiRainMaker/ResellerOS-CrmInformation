@@ -142,7 +142,7 @@ const FieldDisplayConfiguration = () => {
       ),
       dataIndex: 'id',
       key: 'id',
-      width: 50,
+      width: 80,
       render: (text: any, record: any) => {
         const sno =
           record?.id -
