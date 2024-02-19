@@ -144,3 +144,9 @@ a {
   justify-content: end;
   padding-right: 32px;
 }
+
+.formmarginBottom {
+  &.ant-form-item {
+    margin-bottom: 0px;
+  }
+}

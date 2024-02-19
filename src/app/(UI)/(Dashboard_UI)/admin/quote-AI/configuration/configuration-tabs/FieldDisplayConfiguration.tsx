@@ -3,17 +3,17 @@
 'use client';
 
 import {Checkbox} from '@/app/components/common/antd/Checkbox';
+import {Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import {Switch} from '@/app/components/common/antd/Switch';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import CommonSelect from '@/app/components/common/os-select';
-import OsTable from '@/app/components/common/os-table';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {Row, Space, Table} from 'antd';
 import {useEffect, useState} from 'react';
-import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {
   getAllTableColumn,
   updateTableColumnById,
@@ -38,6 +38,7 @@ const FieldDisplayConfiguration = () => {
   useEffect(() => {
     dispatch(getAllTableColumn(''));
   }, []);
+  console.log('tableColumnData', tableColumnData);
 
   const updateTableColumnValues = async () => {
     for (let i = 0; i < updateColumn?.length; i++) {
@@ -59,6 +60,7 @@ const FieldDisplayConfiguration = () => {
 
     setTableColumnDataShow(filteredArray);
   }, [selectedTable]);
+
   const commonMethodForChecks = (ids: any, names: any, valuess: any) => {
     const previousArray = updateColumn?.length > 0 ? [...updateColumn] : [];
     if (previousArray?.length > 0) {
@@ -91,36 +93,8 @@ const FieldDisplayConfiguration = () => {
     }
     setUpdateColumn(previousArray);
   };
-  const FieldDisplayConfigurationFields = [
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          S No.
-        </Typography>
-      ),
-      dataIndex: 'id',
-      key: 'id',
-      width: 50,
-      render: (text: any, record: any) => {
-        const sno =
-          record?.id -
-          tableColumnDataShow?.[
-            tableColumnDataShow?.length - tableColumnDataShow?.length
-          ]?.id +
-          1;
-        return <>{sno}</>;
-      },
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Field Name
-        </Typography>
-      ),
-      dataIndex: 'field_name',
-      key: 'field_name',
-      width: 313,
-    },
+
+  const FiledDisplayConfigurationUniqueItem = [
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -157,6 +131,41 @@ const FieldDisplayConfiguration = () => {
       ),
       width: 313,
     },
+  ];
+
+  const FieldDisplayConfigurationFields = [
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          S No.
+        </Typography>
+      ),
+      dataIndex: 'id',
+      key: 'id',
+      width: 50,
+      render: (text: any, record: any) => {
+        const sno =
+          record?.id -
+          tableColumnDataShow?.[
+            tableColumnDataShow?.length - tableColumnDataShow?.length
+          ]?.id +
+          1;
+        return <>{sno}</>;
+      },
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Field Name
+        </Typography>
+      ),
+      dataIndex: 'field_name',
+      key: 'field_name',
+      width: 313,
+    },
+  ];
+
+  const thirdFieldDisplayConfigurationFields = [
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -196,6 +205,11 @@ const FieldDisplayConfiguration = () => {
     },
   ];
 
+  const allColumns = [
+    ...FieldDisplayConfigurationFields,
+    ...(selectedTable !== 'Rebates' ? FiledDisplayConfigurationUniqueItem : []),
+    ...thirdFieldDisplayConfigurationFields,
+  ];
   return (
     <TabContainerStyle>
       <Row>
@@ -282,7 +296,7 @@ const FieldDisplayConfiguration = () => {
                     <OsTableWithOutDrag
                       loading={false}
                       tableSelectionType="checkbox"
-                      columns={FieldDisplayConfigurationFields}
+                      columns={allColumns}
                       dataSource={tableColumnDataShow}
                       pageSize={{
                         pageSize: 3,

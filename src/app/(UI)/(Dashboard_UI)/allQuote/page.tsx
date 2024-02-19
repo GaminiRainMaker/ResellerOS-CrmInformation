@@ -28,10 +28,10 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
+import {formatDate} from '@/app/utils/base';
 import {Form, MenuProps, TabsProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import moment from 'moment';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
@@ -379,9 +379,7 @@ const AllQuote: React.FC = () => {
       key: 'createdAt',
       width: 130,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">
-          {moment(text).format('MM/DD/YYYY') ?? '--'}
-        </Typography>
+        <Typography name="Body 4/Regular">{formatDate(text)}</Typography>
       ),
     },
     {

@@ -13,6 +13,7 @@ import {
   calculateProfitabilityData,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
+import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {
@@ -59,6 +60,16 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
     return true;
   };
 
+  const renderRequiredInput = (field: string) => {
+    const requiredField = tableColumnDataShow.find(
+      (item: any) => item.field_name === field,
+    );
+    if (requiredField?.is_required) {
+      return true;
+    }
+    return false;
+  };
+
   const ProfitabilityQuoteLineItemcolumns = [
     {
       title: '#Line',
@@ -87,23 +98,75 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       dataIndex: 'quantity',
       key: 'quantity',
       render: (text: string, record: any) => (
-        <OsInput
-          disabled={renderEditableInput('Qty')}
-          style={{
-            height: '36px',
-          }}
-          value={text}
-          onChange={(v) => {
-            setProfitabilityData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {...prevItem, quantity: v.target.value};
-                }
-                return prevItem;
-              }),
-            );
-          }}
-        />
+        <Form.Item
+          className="formmarginBottom"
+          name={`quantity ${record?.id}`}
+          rules={[
+            {
+              required: renderRequiredInput('Qty'),
+              message: 'This Field id Required',
+            },
+          ]}
+          initialValue={text}
+        >
+          <OsInput
+            disabled={renderEditableInput('Qty')}
+            style={{
+              height: '36px',
+            }}
+            type="number"
+            value={text}
+            onChange={(v) => {
+              setProfitabilityData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (prevItem.id === record?.id) {
+                    return {...prevItem, quantity: v.target.value};
+                  }
+                  return prevItem;
+                }),
+              );
+            }}
+          />
+        </Form.Item>
+      ),
+      width: 120,
+    },
+    {
+      title: 'MSRP',
+      dataIndex: 'list_price',
+      key: 'list_price',
+      render: (text: string, record: any) => (
+        <Form.Item
+          className="formmarginBottom"
+          name={`list_price ${record?.id}`}
+          rules={[
+            {
+              required: renderRequiredInput('MSRP'),
+              message: 'This Field id Required',
+            },
+          ]}
+          initialValue={text}
+        >
+          <OsInput
+            type="number"
+            disabled={renderEditableInput('MSRP')}
+            style={{
+              height: '36px',
+              borderRadius: '10px',
+            }}
+            value={text}
+            onChange={(v) => {
+              setProfitabilityData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (prevItem.id === record?.id) {
+                    return {...prevItem, list_price: v.target.value};
+                  }
+                  return prevItem;
+                }),
+              );
+            }}
+          />
+        </Form.Item>
       ),
       width: 120,
     },
@@ -112,23 +175,36 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       dataIndex: 'adjusted_price',
       key: 'adjusted_price ',
       render: (text: string, record: any) => (
-        <OsInput
-          style={{
-            height: '36px',
-          }}
-          disabled={renderEditableInput('Cost')}
-          value={text}
-          onChange={(v) => {
-            setProfitabilityData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {...prevItem, adjusted_price: v.target.value};
-                }
-                return prevItem;
-              }),
-            );
-          }}
-        />
+        <Form.Item
+          className="formmarginBottom"
+          name={`adjusted_price ${record?.id}`}
+          rules={[
+            {
+              required: renderRequiredInput('Cost'),
+              message: 'This Field id Required',
+            },
+          ]}
+          initialValue={text}
+        >
+          <OsInput
+            style={{
+              height: '36px',
+            }}
+            type="number"
+            disabled={renderEditableInput('Cost')}
+            value={text}
+            onChange={(v) => {
+              setProfitabilityData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (prevItem.id === record?.id) {
+                    return {...prevItem, adjusted_price: v.target.value};
+                  }
+                  return prevItem;
+                }),
+              );
+            }}
+          />
+        </Form.Item>
       ),
       width: 150,
     },
@@ -144,47 +220,60 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       key: 'pricing_method',
       width: 120,
       render: (text: string, record: any) => (
-        <CommonSelect
-          disabled={renderEditableInput('Pricing Method')}
-          style={{width: '150px'}}
-          placeholder="Select"
-          defaultValue={text}
-          onChange={(v) => {
-            setProfitabilityData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {...prevItem, pricing_method: v};
-                }
-                return prevItem;
-              }),
-            );
+        <Form.Item
+          className="formmarginBottom"
+          name={`pricing_method ${record?.id}`}
+          rules={[
+            {
+              required: renderRequiredInput('Pricing Method'),
+              message: 'This Field id Required',
+            },
+          ]}
+          initialValue={text}
+        >
+          <CommonSelect
+            allowClear
+            disabled={renderEditableInput('Pricing Method')}
+            style={{width: '150px'}}
+            placeholder="Select"
+            defaultValue={text}
+            onChange={(v) => {
+              setProfitabilityData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (prevItem.id === record?.id) {
+                    return {...prevItem, pricing_method: v};
+                  }
+                  return prevItem;
+                }),
+              );
 
-            setProfitabilityData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (record?.id === prevItem?.id) {
-                  const rowId = record?.id;
-                  const result: any = calculateProfitabilityData(
-                    useRemoveDollarAndCommahook(prevItem?.quantity),
-                    prevItem?.pricing_method,
-                    useRemoveDollarAndCommahook(prevItem?.line_amount),
-                    useRemoveDollarAndCommahook(prevItem?.adjusted_price),
-                    useRemoveDollarAndCommahook(prevItem?.list_price),
-                  );
-                  return {
-                    ...prevItem,
-                    unit_price: result.unitPrice,
-                    exit_price: result.exitPrice,
-                    gross_profit: result.grossProfit,
-                    gross_profit_percentage: result.grossProfitPercentage,
-                    rowId,
-                  };
-                }
-                return prevItem;
-              }),
-            );
-          }}
-          options={pricingMethod}
-        />
+              setProfitabilityData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (record?.id === prevItem?.id) {
+                    const rowId = record?.id;
+                    const result: any = calculateProfitabilityData(
+                      useRemoveDollarAndCommahook(prevItem?.quantity),
+                      prevItem?.pricing_method,
+                      useRemoveDollarAndCommahook(prevItem?.line_amount),
+                      useRemoveDollarAndCommahook(prevItem?.adjusted_price),
+                      useRemoveDollarAndCommahook(prevItem?.list_price),
+                    );
+                    return {
+                      ...prevItem,
+                      unit_price: result.unitPrice,
+                      exit_price: result.exitPrice,
+                      gross_profit: result.grossProfit,
+                      gross_profit_percentage: result.grossProfitPercentage,
+                      rowId,
+                    };
+                  }
+                  return prevItem;
+                }),
+              );
+            }}
+            options={pricingMethod}
+          />
+        </Form.Item>
       ),
     },
     {
@@ -193,24 +282,37 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       key: 'line_amount',
       width: 150,
       render: (text: string, record: any) => (
-        <OsInput
-          disabled={renderEditableInput('Amount')}
-          style={{
-            height: '36px',
-          }}
-          prefix={updateAmountValue(record?.pricing_method)}
-          value={text ? useRemoveDollarAndCommahook(text) : 0}
-          onChange={(v) => {
-            setProfitabilityData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {...prevItem, line_amount: v.target.value};
-                }
-                return prevItem;
-              }),
-            );
-          }}
-        />
+        <Form.Item
+          className="formmarginBottom"
+          name={`line_amount ${record?.id}`}
+          rules={[
+            {
+              required: renderRequiredInput('Amount'),
+              message: 'This Field id Required',
+            },
+          ]}
+          initialValue={text}
+        >
+          <OsInput
+            disabled={renderEditableInput('Amount')}
+            style={{
+              height: '36px',
+            }}
+            type="number"
+            prefix={updateAmountValue(record?.pricing_method)}
+            value={text ? useRemoveDollarAndCommahook(text) : 0}
+            onChange={(v) => {
+              setProfitabilityData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (prevItem.id === record?.id) {
+                    return {...prevItem, line_amount: v.target.value};
+                  }
+                  return prevItem;
+                }),
+              );
+            }}
+          />
+        </Form.Item>
       ),
     },
     {
@@ -314,13 +416,15 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
   return (
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
-        <OsTableWithOutDrag
-          loading={loading}
-          columns={finalProfitTableCol}
-          dataSource={profitabilityData}
-          scroll
-          locale={locale}
-        />
+        <Form>
+          <OsTableWithOutDrag
+            loading={loading}
+            columns={finalProfitTableCol}
+            dataSource={profitabilityData}
+            scroll
+            locale={locale}
+          />
+        </Form>
       ) : (
         <EmptyContainer
           title="There is no columns for Profitability"

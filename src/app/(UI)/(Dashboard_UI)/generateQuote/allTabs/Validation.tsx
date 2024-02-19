@@ -21,6 +21,7 @@ import {
   ExclamationCircleIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline';
+import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {
@@ -80,6 +81,16 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
     return true;
   };
 
+  const renderRequiredInput = (field: string) => {
+    const requiredField = tableColumnDataShow.find(
+      (item: any) => item.field_name === field,
+    );
+    if (requiredField?.is_required) {
+      return true;
+    }
+    return false;
+  };
+
   const ValidationQuoteLineItemcolumns = [
     {
       title: '#Line',
@@ -115,45 +126,58 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       key: 'pricing_method',
       width: 208,
       render: (text: string, record: any) => (
-        <CommonSelect
-          disabled={renderEditableInput('Pricing Method')}
-          style={{width: '200px'}}
-          placeholder="Select"
-          defaultValue={text}
-          onChange={(v) => {
-            setValidationDataData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {...prevItem, pricing_method: v};
-                }
-                return prevItem;
-              }),
-            );
+        <Form.Item
+          className="formmarginBottom"
+          name={`pricing_method ${record?.id}`}
+          rules={[
+            {
+              required: renderRequiredInput('Pricing Method'),
+              message: 'This Field id Required',
+            },
+          ]}
+          initialValue={text}
+        >
+          <CommonSelect
+            allowClear
+            disabled={renderEditableInput('Pricing Method')}
+            style={{width: '200px'}}
+            placeholder="Select"
+            defaultValue={text}
+            onChange={(v) => {
+              setValidationDataData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (prevItem.id === record?.id) {
+                    return {...prevItem, pricing_method: v};
+                  }
+                  return prevItem;
+                }),
+              );
 
-            setValidationDataData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (record?.id === prevItem?.id) {
-                  const rowId = record?.id;
-                  const result: any = calculateProfitabilityData(
-                    useRemoveDollarAndCommahook(prevItem?.quantity),
-                    prevItem?.pricing_method,
-                    useRemoveDollarAndCommahook(prevItem?.line_amount),
-                    useRemoveDollarAndCommahook(prevItem?.list_price),
-                    20,
-                  );
-                  return {
-                    ...prevItem,
-                    unit_price: result.unitPrice,
-                    exit_price: result.exitPrice,
-                    rowId,
-                  };
-                }
-                return prevItem;
-              }),
-            );
-          }}
-          options={pricingMethod}
-        />
+              setValidationDataData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (record?.id === prevItem?.id) {
+                    const rowId = record?.id;
+                    const result: any = calculateProfitabilityData(
+                      useRemoveDollarAndCommahook(prevItem?.quantity),
+                      prevItem?.pricing_method,
+                      useRemoveDollarAndCommahook(prevItem?.line_amount),
+                      useRemoveDollarAndCommahook(prevItem?.list_price),
+                      20,
+                    );
+                    return {
+                      ...prevItem,
+                      unit_price: result.unitPrice,
+                      exit_price: result.exitPrice,
+                      rowId,
+                    };
+                  }
+                  return prevItem;
+                }),
+              );
+            }}
+            options={pricingMethod}
+          />
+        </Form.Item>
       ),
     },
     {
@@ -162,23 +186,35 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       key: 'line_amount',
       width: 130,
       render: (text: string, record: any) => (
-        <OsInput
-          disabled={renderEditableInput('Amount')}
-          style={{
-            height: '36px',
-          }}
-          value={text}
-          onChange={(v) => {
-            setValidationDataData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {...prevItem, line_amount: v.target.value};
-                }
-                return prevItem;
-              }),
-            );
-          }}
-        />
+        <Form.Item
+          className="formmarginBottom"
+          name={`line_amount ${record?.id}`}
+          rules={[
+            {
+              required: renderRequiredInput('Amount'),
+              message: 'This Field id Required',
+            },
+          ]}
+          initialValue={text}
+        >
+          <OsInput
+            disabled={renderEditableInput('Amount')}
+            style={{
+              height: '36px',
+            }}
+            value={text}
+            onChange={(v) => {
+              setValidationDataData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (prevItem.id === record?.id) {
+                    return {...prevItem, line_amount: v.target.value};
+                  }
+                  return prevItem;
+                }),
+              );
+            }}
+          />
+        </Form.Item>
       ),
     },
     {
@@ -300,13 +336,15 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
   return (
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
-        <OsTableWithOutDrag
-          loading={loading}
-          columns={finalValidationTableCol}
-          dataSource={validationDataData}
-          scroll
-          locale={locale}
-        />
+        <Form>
+          <OsTableWithOutDrag
+            loading={loading}
+            columns={finalValidationTableCol}
+            dataSource={validationDataData}
+            scroll
+            locale={locale}
+          />
+        </Form>
       ) : (
         <EmptyContainer title="There Is No Validation Columns" />
       )}

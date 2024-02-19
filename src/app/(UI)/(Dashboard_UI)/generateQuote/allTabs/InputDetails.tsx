@@ -14,6 +14,7 @@ import Typography from '@/app/components/common/typography';
 import {selectDataForProduct} from '@/app/utils/CONSTANTS';
 import {useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {TrashIcon} from '@heroicons/react/24/outline';
+import {Form, InputNumber} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {updateProductFamily} from '../../../../../../redux/actions/product';
@@ -55,6 +56,16 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       return false;
     }
     return true;
+  };
+
+  const renderRequiredInput = (field: string) => {
+    const requiredField = tableColumnDataShow.find(
+      (item: any) => item.field_name === field,
+    );
+    if (requiredField?.is_required) {
+      return true;
+    }
+    return false;
   };
 
   const deleteQuoteLineItems = () => {
@@ -121,35 +132,42 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       dataIndex: 'quantity',
       key: 'quantity',
       render: (text: any, record: any) => (
-        <OsInput
-          style={{
-            height: '36px',
-          }}
-          disabled={renderEditableInput('Qty')}
-          // value={
-          //   // eslint-disable-next-line no-unsafe-optional-chaining
-          //   text *
-          //   (!isEditable && record?.Bundle?.quantity
-          //     ? record?.Bundle?.quantity
-          //     : 1)
-          // }
-          placeholder={text}
-          value={
-            !isDeleteIds?.includes(record?.id)
-              ? text * (record?.Bundle?.quantity ? record?.Bundle?.quantity : 1)
-              : quoteLineItemByQuoteData?.quantity
-          }
-          onChange={(v) => {
-            setQuoteLineItemByQuoteData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {...prevItem, quantity: v.target.value};
-                }
-                return prevItem;
-              }),
-            );
-          }}
-        />
+        <Form.Item
+          className="formmarginBottom"
+          name={`Quantity ${record?.id}`}
+          rules={[
+            {
+              required: renderRequiredInput('Qty'),
+              message: 'This Field id Required',
+            },
+          ]}
+          initialValue={text}
+        >
+          <OsInput
+            style={{
+              height: '36px',
+            }}
+            placeholder="0"
+            disabled={renderEditableInput('Qty')}
+            type="number"
+            value={
+              !isDeleteIds?.includes(record?.id)
+                ? text *
+                  (record?.Bundle?.quantity ? record?.Bundle?.quantity : 1)
+                : quoteLineItemByQuoteData?.quantity
+            }
+            onChange={(v) => {
+              setQuoteLineItemByQuoteData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (prevItem.id === record?.id) {
+                    return {...prevItem, quantity: v?.target?.value};
+                  }
+                  return prevItem;
+                }),
+              );
+            }}
+          />
+        </Form.Item>
       ),
       width: 187,
     },
@@ -210,17 +228,30 @@ const InputDetails: FC<InputDetailTabInterface> = ({
             },
           },
           children: (
-            <CommonSelect
-              disabled={renderEditableInput('Product Family')}
-              style={{width: '200px'}}
-              placeholder="Select"
-              defaultValue={record?.Product?.product_family}
-              options={selectDataForProduct}
-              onChange={(e) => {
-                const data = {id: record?.product_id, product_family: e};
-                dispatch(updateProductFamily(data));
-              }}
-            />
+            <Form.Item
+              className="formmarginBottom"
+              name={`product_family ${record?.id}`}
+              rules={[
+                {
+                  required: renderRequiredInput('Product Family'),
+                  message: 'This Field id Required',
+                },
+              ]}
+              initialValue={text}
+            >
+              <CommonSelect
+                disabled={renderEditableInput('Product Family')}
+                allowClear
+                style={{width: '200px'}}
+                placeholder="Select"
+                defaultValue={record?.Product?.product_family}
+                options={selectDataForProduct}
+                onChange={(e) => {
+                  const data = {id: record?.product_id, product_family: e};
+                  dispatch(updateProductFamily(data));
+                }}
+              />
+            </Form.Item>
           ),
         };
       },
@@ -277,14 +308,16 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   return (
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
-        <OsTableWithOutDrag
-          loading={loading}
-          columns={finalInputColumn}
-          dataSource={quoteLineItemByQuoteData}
-          rowSelection={rowSelection}
-          scroll
-          locale={locale}
-        />
+        <Form>
+          <OsTableWithOutDrag
+            loading={loading}
+            columns={finalInputColumn}
+            dataSource={quoteLineItemByQuoteData}
+            rowSelection={rowSelection}
+            scroll
+            locale={locale}
+          />
+        </Form>
       ) : (
         <EmptyContainer
           title="There is no columns for Input Details"

@@ -13,13 +13,12 @@ export const DynamicDiv = styled.div<{
   maxWidth?: number;
   cursor?: string;
 }>`
-  // display: flex;
   font-family: ${(props) => `${props?.styles?.fontFamily}`};
   font-size: ${(props) => `${props?.styles?.fontSize}`};
   line-height: ${(props) => `${props?.styles?.lineHeight}`};
   font-weight: ${(props) => `${props?.styles?.fontWeight}`};
   color: ${(props) => props?.color};
-  cursor: ${(props) => props?.cursor};
+  cursor: ${(props) => `${props?.cursor} !important`};
   text-align: ${(props) => props?.align};
   ${(props) =>
     props.ellipsis &&
@@ -38,7 +37,7 @@ export const DynamicDiv = styled.div<{
 
   &:hover {
     color: ${(props) => (props.hoverOnText ? '#2364AA' : 'none')};
-    cursor: ${(props) => (props.hoverOnText ? 'pointer' : 'unset')};
+    cursor: ${(props) => (props.hoverOnText ? 'pointer !important' : 'unset')};
   }
 `;
 

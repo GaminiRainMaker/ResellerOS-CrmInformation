@@ -32,6 +32,7 @@ import {MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import {formatDate} from '@/app/utils/base';
 import {
   getAllBundle,
   updateBundleQuantity,
@@ -112,7 +113,7 @@ const GenerateQuote: React.FC = () => {
       );
     }
     const filterRequired = filteredArray?.filter(
-      (item: any) => item?.is_required,
+      (item: any) => item?.is_active,
     );
     setTableColumnDataShow(filterRequired);
   }, [activeTab, tableColumnData]);
@@ -477,13 +478,15 @@ const GenerateQuote: React.FC = () => {
       title: (
         <Typography
           name="Heading 3/Medium"
-          cursor="pointer"
           color={token?.colorPrimaryText}
           onClick={() => {
             router?.push(`/generateQuote?id=${getQuoteID}`);
           }}
         >
-          {quoteLineItemByQuoteID?.[0]?.Quote?.createdAt ?? ''}
+          {formatDate(
+            quoteLineItemByQuoteID?.[0]?.Quote?.createdAt,
+            'MM/DD/YYYY | HH:MM',
+          )}
         </Typography>
       ),
     },

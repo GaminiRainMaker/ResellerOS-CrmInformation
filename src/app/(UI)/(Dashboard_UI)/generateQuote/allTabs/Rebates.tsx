@@ -97,7 +97,7 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
       key: 'line_number',
       render: (text: string) => (
         <OsInput
-          disabled={renderEditableInput('Line')}
+          disabled
           style={{
             height: '36px',
           }}
@@ -125,7 +125,7 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
       key: 'pricing_method',
       render: (text: string, record: any) => (
         <CommonSelect
-          disabled={renderEditableInput('Pricing Method')}
+          disabled
           style={{width: '100%'}}
           placeholder="Select"
           defaultValue={text}
@@ -174,7 +174,7 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
       width: 121,
       render: (text: string, record: any) => (
         <OsInput
-          disabled={renderEditableInput('Amount')}
+          disabled
           style={{
             height: '36px',
           }}
