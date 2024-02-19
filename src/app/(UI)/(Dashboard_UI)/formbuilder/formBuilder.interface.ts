@@ -8,4 +8,5 @@ export interface FormBuilderInterFace {
   setCartItems?: any;
   cartItems?: any;
   form: FormInstance;
+  typeFiled?: string;
 }

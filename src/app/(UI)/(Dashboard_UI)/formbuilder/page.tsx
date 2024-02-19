@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable no-unsafe-optional-chaining */
@@ -21,8 +23,9 @@ import Typography from '@/app/components/common/typography';
 import {PlayCircleOutlined} from '@ant-design/icons';
 import {DndContext, DragEndEvent, useDroppable} from '@dnd-kit/core';
 import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {DatePicker, Form, MenuProps} from 'antd';
-import React, {useState} from 'react';
+import {DatePicker, Form, MenuProps, TimePicker} from 'antd';
+import React, {useEffect, useState} from 'react';
+import CommonSelect from '@/app/components/common/os-select';
 import EditFiledDetails from './detailsFieldEdit';
 import InputOptions from './inputOptions';
 
@@ -33,6 +36,7 @@ const FormBuilder = () => {
   const [activeContentIndex, setActiveContentIndex] = useState<number>(0);
   const [activeSetionIndex, setActiveSectionIndex] = useState<number>(0);
   const [form] = Form.useForm();
+  const [selectedTypeFiled, setSelectedtypeFiled] = useState<string>();
 
   const [token] = useThemeToken();
   const [cartItems, setCartItems] = useState<any>([]);
@@ -40,18 +44,100 @@ const FormBuilder = () => {
   const addItemsToCart = (e: DragEndEvent) => {
     const newItem = e.active.data.current?.title?.props?.text;
     const temp = [...cartItems];
+    const cutomizedTables = [
+      {
+        filed: 'Filed Name',
+        typeOfFiled: 'text',
+      },
+      {
+        filed: 'Quote',
+        typeOfFiled: 'number',
+      },
+    ];
+
     temp.push({
       section: `Section${cartItems?.length + 1}`,
-      content: [
-        {
-          name: newItem,
-          label: 'Label',
-          type: 'text',
-          required: false,
-          requuireLabel: true,
-          hintext: false,
-        },
-      ],
+      content:
+        newItem === 'Table'
+          ? [
+              {
+                name: newItem,
+                label: 'Label',
+                required: false,
+                requuireLabel: true,
+                noOfRows: 2,
+                noOfColumn: 2,
+                cutomizedTable: cutomizedTables,
+
+                ColumnsData: [
+                  {
+                    title: (
+                      <Typography name="Body 4/Medium" className="dragHandler">
+                        Filed Name1
+                      </Typography>
+                    ),
+                    dataIndex: 'Filed Name1',
+                    key: 'Filed Name1',
+                    width: 130,
+                    render: (text: string) => (
+                      <OsInput type="text" value={text} />
+                    ),
+                  },
+                  {
+                    title: (
+                      <Typography name="Body 4/Medium" className="dragHandler">
+                        Filed Name2
+                      </Typography>
+                    ),
+                    dataIndex: 'Filed Name2',
+                    key: 'Filed Name2',
+                    width: 130,
+                    render: (text: string) => (
+                      <OsInput type="text" value={text} />
+                    ),
+                  },
+                ],
+                RowsData: [
+                  {'Filed Name1': 'text', 'Filed Name2': 'text'},
+                  {'Filed Name1': 'text', 'Filed Name2': 'text'},
+                ],
+              },
+            ]
+          : newItem === 'Multi-Select'
+            ? [
+                {
+                  name: newItem,
+                  label: 'Label',
+                  type: 'multiple',
+                  required: false,
+                  requuireLabel: true,
+                  hintext: false,
+                  options: [],
+                },
+              ]
+            : newItem == 'Time'
+              ? [
+                  {
+                    name: newItem,
+                    label: 'Label',
+                    type: 'Time',
+                    required: false,
+                    requuireLabel: true,
+                    hintext: false,
+                    timeformat: 'HH:mm',
+                    use12hours: true,
+                  },
+                ]
+              : [
+                  {
+                    name: newItem,
+                    label: 'Label',
+                    type: 'text',
+                    required: false,
+                    requuireLabel: true,
+                    hintext: false,
+                  },
+                ],
     });
     setCartItems(temp);
   };
@@ -59,16 +145,45 @@ const FormBuilder = () => {
     id: 'cart-droppable',
   });
 
+  const deleteSelectedIntem = (sectionInde: number, contentIn: number) => {
+    const temp: any = [...cartItems];
+    temp?.[sectionInde || 0]?.content?.splice(contentIn, 1);
+    setCartItems(temp);
+  };
   const updateSection = (sectionInd: number, itemCont: string) => {
     const temp = [...cartItems];
-    temp?.[sectionInd]?.content?.push({
-      name: itemCont,
-      label: 'Label',
-      type: 'text',
-      required: false,
-      requuireLabel: true,
-      hintext: false,
-    });
+    if (itemCont === 'Multi-Select') {
+      temp?.[sectionInd]?.content?.push({
+        name: itemCont,
+        label: 'Label',
+        type: 'multiple',
+        required: false,
+        requuireLabel: true,
+        hintext: false,
+        options: [],
+      });
+    } else if (itemCont === 'Time') {
+      temp?.[sectionInd]?.content?.push({
+        name: itemCont,
+        label: 'Label',
+        type: 'Time',
+        required: false,
+        requuireLabel: true,
+        hintext: false,
+        timeformat: 'HH:mm',
+        use12hours: true,
+      });
+    } else {
+      temp?.[sectionInd]?.content?.push({
+        name: itemCont,
+        label: 'Label',
+        type: 'text',
+        required: false,
+        requuireLabel: true,
+        hintext: false,
+      });
+    }
+
     setCartItems(temp);
   };
 
@@ -162,9 +277,91 @@ const FormBuilder = () => {
                             (itemCon: any, ItemConindex: any) => {
                               if (itemCon?.name == 'Table') {
                                 return (
-                                  <Table
-                                    style={{marginTop: '10px', width: '100%'}}
-                                  />
+                                  <Space
+                                    direction="vertical"
+                                    style={{
+                                      width: '100%',
+                                      // marginLeft:
+                                      //   ItemConindex % 2 === 0 ? '25px' : '',
+                                      // marginBottom: '20px',
+                                    }}
+                                    draggable
+                                    // eslint-disable-next-line no-return-assign
+                                    onDragStart={(e) =>
+                                      (dragItem.current = ItemConindex)
+                                    }
+                                    // eslint-disable-next-line no-return-assign
+                                    onDragEnter={(e) =>
+                                      (dragOverItem.current = ItemConindex)
+                                    }
+                                    onDragEnd={handleSort}
+                                    onDragOver={(e) => e.preventDefault()}
+                                  >
+                                    <Row justify="space-between">
+                                      <Col
+                                        onClick={() => {
+                                          setSelectedtypeFiled('Table');
+                                          openEditDrawer();
+                                          setActiveContentIndex(ItemConindex);
+                                          setActiveSectionIndex(Sectidx);
+                                          form.resetFields();
+                                        }}
+                                        style={{
+                                          width: '96px',
+                                          height: '26px',
+                                          borderRadius: '50px',
+                                          padding: '4px 12px 4px 12px',
+                                          gap: '12px',
+                                          background: '#ECF2F5',
+                                          display: 'flex',
+                                          justifyContent: 'center',
+                                        }}
+                                      >
+                                        <div
+                                          style={{
+                                            width: '54px',
+                                            height: '18px',
+                                            fontWeight: '500',
+                                            fontSize: '12px',
+                                            lineHeight: '18px',
+                                          }}
+                                        >
+                                          Table
+                                        </div>
+                                      </Col>
+                                      <Col
+                                        style={{
+                                          width: '96px',
+                                          height: '30px',
+                                          borderRadius: '50px',
+                                          padding: '4px 12px 4px 12px',
+                                          gap: '12px',
+                                          display: 'flex',
+                                          justifyContent: 'center',
+                                        }}
+                                      >
+                                        <TrashIcon color="#EB445A" />{' '}
+                                        <ArrowsPointingOutIcon color="#2364AA" />
+                                      </Col>
+                                    </Row>
+
+                                    <div
+                                      style={{
+                                        width: '100%',
+                                        display: 'flex',
+                                        gap: '12px',
+                                      }}
+                                    >
+                                      <Table
+                                        columns={itemCon?.ColumnsData}
+                                        dataSource={itemCon?.RowsData}
+                                        style={{
+                                          marginTop: '10px',
+                                          width: '100%',
+                                        }}
+                                      />
+                                    </div>
+                                  </Space>
                                 );
                               }
                               if (
@@ -215,6 +412,7 @@ const FormBuilder = () => {
                                             setActiveContentIndex(ItemConindex);
                                             setActiveSectionIndex(Sectidx);
                                             form.resetFields();
+                                            setSelectedtypeFiled(itemCon?.name);
                                           }}
                                           style={{
                                             width: '96px',
@@ -236,7 +434,9 @@ const FormBuilder = () => {
                                               lineHeight: '18px',
                                             }}
                                           >
-                                            Text Filed
+                                            {itemCon?.name == 'Time'
+                                              ? 'Time'
+                                              : 'Text Filed'}
                                           </div>
                                         </Col>
                                         <Col
@@ -250,7 +450,15 @@ const FormBuilder = () => {
                                             justifyContent: 'center',
                                           }}
                                         >
-                                          <TrashIcon color="#EB445A" />{' '}
+                                          <TrashIcon
+                                            color="#EB445A"
+                                            onClick={() => {
+                                              deleteSelectedIntem(
+                                                Sectidx,
+                                                ItemConindex,
+                                              );
+                                            }}
+                                          />{' '}
                                           <ArrowsPointingOutIcon color="#2364AA" />
                                         </Col>
                                       </Row>
@@ -268,12 +476,31 @@ const FormBuilder = () => {
                                           gap: '12px',
                                         }}
                                       >
-                                        <OsInput
-                                          type={itemCon?.type}
+                                        {itemCon?.name == 'Time' ? (
+                                          <TimePicker
+                                            // format={{
+                                            //   format: 'hh:mm A',
+                                            //   use12Hours: true,
+                                            // }}
+                                            use12Hours={itemCon?.use12hours}
+                                            format={itemCon?.timeformat}
+                                            style={{
+                                              width: '100%',
+                                              height: '44px',
+                                            }}
+                                            // type={itemCon?.type}
 
-                                          // style={{width: '270px'}}
-                                          // onClick={showDrawer}
-                                        />{' '}
+                                            // style={{width: '270px'}}
+                                            // onClick={showDrawer}
+                                          />
+                                        ) : (
+                                          <OsInput
+                                            type={itemCon?.type}
+
+                                            // style={{width: '270px'}}
+                                            // onClick={showDrawer}
+                                          />
+                                        )}{' '}
                                         {item?.content?.length - 1 ===
                                           ItemConindex && (
                                           <OsButton
@@ -301,9 +528,129 @@ const FormBuilder = () => {
                                 itemCon?.name == 'Drop Down'
                               ) {
                                 return (
-                                  <Select
-                                    style={{marginTop: '10px', width: '100%'}}
-                                  />
+                                  <>
+                                    {' '}
+                                    <Space
+                                      direction="vertical"
+                                      style={{
+                                        width:
+                                          ItemConindex === 0 &&
+                                          item?.content?.length === 0
+                                            ? '100%'
+                                            : '45%',
+                                        marginLeft:
+                                          ItemConindex % 2 === 0 ? '25px' : '',
+                                        marginBottom: '20px',
+                                      }}
+                                      draggable
+                                      // eslint-disable-next-line no-return-assign
+                                      onDragStart={(e) =>
+                                        (dragItem.current = ItemConindex)
+                                      }
+                                      // eslint-disable-next-line no-return-assign
+                                      onDragEnter={(e) =>
+                                        (dragOverItem.current = ItemConindex)
+                                      }
+                                      onDragEnd={handleSort}
+                                      onDragOver={(e) => e.preventDefault()}
+                                    >
+                                      <Row justify="space-between">
+                                        <Col
+                                          onClick={() => {
+                                            openEditDrawer();
+                                            setActiveContentIndex(ItemConindex);
+                                            setActiveSectionIndex(Sectidx);
+                                            form.resetFields();
+                                            setSelectedtypeFiled(itemCon?.name);
+                                          }}
+                                          style={{
+                                            width: '96px',
+                                            height: '26px',
+                                            borderRadius: '50px',
+                                            padding: '4px 12px 4px 12px',
+                                            gap: '12px',
+                                            background: '#ECF2F5',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                          }}
+                                        >
+                                          <div
+                                            style={{
+                                              width: '84px',
+                                              height: '18px',
+                                              fontWeight: '500',
+                                              fontSize: '12px',
+                                              lineHeight: '18px',
+                                            }}
+                                          >
+                                            Multi-Select
+                                          </div>
+                                        </Col>
+                                        <Col
+                                          style={{
+                                            width: '96px',
+                                            height: '30px',
+                                            borderRadius: '50px',
+                                            padding: '4px 12px 4px 12px',
+                                            gap: '12px',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                          }}
+                                        >
+                                          <TrashIcon
+                                            color="#EB445A"
+                                            onClick={() => {
+                                              deleteSelectedIntem(
+                                                Sectidx,
+                                                ItemConindex,
+                                              );
+                                            }}
+                                          />{' '}
+                                          <ArrowsPointingOutIcon color="#2364AA" />
+                                        </Col>
+                                      </Row>
+                                      <Typography name="Body 4/Medium">
+                                        {itemCon?.requuireLabel &&
+                                          itemCon?.label}{' '}
+                                        {itemCon?.required && (
+                                          <span style={{color: 'red'}}>*</span>
+                                        )}
+                                      </Typography>
+                                      <div
+                                        style={{
+                                          width: '100%',
+                                          display: 'flex',
+                                          gap: '12px',
+                                        }}
+                                      >
+                                        <CommonSelect
+                                          options={itemCon?.options}
+                                          style={{
+                                            // marginTop: '10px',
+                                            width: '100%',
+                                          }}
+                                          mode={itemCon?.type}
+                                        />
+                                        {item?.content?.length - 1 ===
+                                          ItemConindex && (
+                                          <OsButton
+                                            style={{marginLeft: '10px'}}
+                                            buttontype="PRIMARY_ICON"
+                                            icon="+"
+                                            clickHandler={() => {
+                                              updateSection(
+                                                Sectidx,
+                                                itemCon?.name,
+                                              );
+                                            }}
+                                          />
+                                        )}
+                                      </div>
+                                      {itemCon?.hintext && (
+                                        <div>this is hint text</div>
+                                      )}
+                                    </Space>
+                                  </>
                                 );
                               }
                               if (itemCon?.name == 'Date') {
@@ -356,6 +703,7 @@ const FormBuilder = () => {
             setCartItems={setCartItems}
             cartItems={cartItems}
             form={form}
+            typeFiled=""
           />
         </Col>
       </Row>{' '}
