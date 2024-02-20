@@ -11,6 +11,7 @@ import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import {formatDate} from '@/app/utils/base';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {
   getAllOpportunity,
@@ -197,9 +198,11 @@ const DrawerContent: FC<any> = ({setOpen}) => {
       <Row justify="space-between">
         <Col>
           <Typography name="Body 4/Medium" as="div">
-            3
+            Quote Generate Date
           </Typography>
-          <Typography name="Body 2/Regular">{drawerData?.createdAt}</Typography>
+          <Typography name="Body 2/Regular">
+            {formatDate(drawerData?.createdAt, 'MM/DD/YYYY | HH:MM')}
+          </Typography>
         </Col>
         <Col>
           <Typography name="Body 4/Medium" as="div">

@@ -1,13 +1,16 @@
-import type {Metadata} from 'next';
-import './globals.css';
 import ConfigProvider from 'antd/es/config-provider';
+import type {Metadata} from 'next';
 import {Plus_Jakarta_Sans} from 'next/font/google';
+import './globals.css';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {getServerSession} from 'next-auth/next';
-import theme from './style/theme';
 import Providers from './Provider';
+import theme from './style/theme';
 
-const inter = Plus_Jakarta_Sans({subsets: ['latin']});
+const jakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-jakarta-sans',
+});
 
 export const metadata: Metadata = {
   title: 'ResellerOS',
@@ -19,11 +22,10 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
   return (
     <ConfigProvider theme={theme}>
       <html lang="en">
-        <body className={inter.className}>
+        <body className={`${jakartaSans.variable}`}>
           <Providers>{children}</Providers>
         </body>
       </html>

@@ -48,7 +48,6 @@ const CrmInformation: React.FC = () => {
   const [activeTab, setActiveTab] = useState<any>('1');
   const [formValue, setFormValue] = useState<any>();
   const [customerValue, setCustomerValue] = useState<any>();
-
   const [showModal, setShowModal] = useState<boolean>(false);
   const {loading, filteredData} = useAppSelector((state) => state.customer);
   const {data: billingData} = useAppSelector((state) => state.billingContact);

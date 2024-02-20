@@ -90,12 +90,9 @@ a {
   }
 }
 
-.ant-layout-content {
-  padding: 25px;
-}
 
 .ant-layout {
-  flex: none;
+  /* flex: none; */
 }
 
 .ant-layout .ant-layout-sider-light {
@@ -143,4 +140,10 @@ a {
   display: flex;
   justify-content: end;
   padding-right: 32px;
+}
+
+.formmarginBottom {
+  &.ant-form-item {
+    margin-bottom: 0px;
+  }
 }

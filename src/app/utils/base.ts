@@ -74,8 +74,8 @@ export const rebateAmount = (
 export const totalRevenue = (list_amount: number, quantity: number) =>
   list_amount * quantity;
 
-export const formatDate = (date: Date, format = 'MM/DD/YYYY') =>
-  new Date(moment(date).format(format));
+export const formatDate = (date: Date | string, format = 'MM/DD/YYYY') =>
+  moment(date).format(format) ?? '--';
 
 export const calculateDaysDifference = (startDate: string, endDate: string) => {
   const startMoment = moment(startDate);

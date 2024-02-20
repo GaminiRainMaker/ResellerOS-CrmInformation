@@ -12,18 +12,18 @@ import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 
-import {partnerOptions} from '@/app/utils/CONSTANTS';
-import {PlusIcon} from '@heroicons/react/24/outline';
-import {useEffect, useState} from 'react';
-import {getProgramOptions} from '@/app/utils/base';
-import {useRouter} from 'next/navigation';
 import AddCustomer from '@/app/components/common/os-add-customer';
+import {partnerOptions} from '@/app/utils/CONSTANTS';
+import {getProgramOptions} from '@/app/utils/base';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import {useRouter} from 'next/navigation';
+import {useEffect, useState} from 'react';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
+import {insertDealReg} from '../../../../../redux/actions/dealReg';
+import {insertDealRegAddress} from '../../../../../redux/actions/dealRegAddress';
 import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
-import {insertDealReg} from '../../../../../redux/actions/dealReg';
-import {insertDealRegAddress} from '../../../../../redux/actions/dealRegAddress';
 
 const AddRegistrationForm = () => {
   const [token] = useThemeToken();
@@ -32,6 +32,7 @@ const AddRegistrationForm = () => {
   const {data: dataAddress} = useAppSelector((state) => state.customer);
   const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
   const {loading} = useAppSelector((state) => state.dealReg);
+  const {userInformation} = useAppSelector((state) => state.user);
 
   const [toggle, setToggle] = useState(false);
   const [customerValue, setCustomerValue] = useState<number>(0);
@@ -349,6 +350,7 @@ const AddRegistrationForm = () => {
           country: dealRegFormDataItem?.country || null,
           zip_code: dealRegFormDataItem?.zip_code || null,
           title: dealRegFormDataItem?.partner_id || null,
+          organization: userInformation?.organization,
         };
         newarr.push(obj);
       });

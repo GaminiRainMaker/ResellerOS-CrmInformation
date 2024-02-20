@@ -1,4 +1,4 @@
-export type FontFamily = '__Plus_Jakarta_Sans_d21556';
+export type FontFamily = 'var(--font-jakarta-sans)';
 
 export type FontSize =
   | '12px'
