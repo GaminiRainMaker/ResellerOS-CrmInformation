@@ -27,6 +27,7 @@ import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {
   Checkbox,
   DatePicker,
+  Divider,
   Form,
   MenuProps,
   Radio,
@@ -123,55 +124,46 @@ const FormBuilder = () => {
                 hintext: false,
                 options: [],
               }
-            : newItem == 'Time'
+            : newItem === 'Line Break'
               ? {
                   name: newItem,
-                  label: 'Label',
-                  type: 'Time',
-                  required: false,
-                  requuireLabel: true,
-                  hintext: false,
-                  timeformat: 'HH:mm',
-                  use12hours: true,
                 }
-              : newItem == 'Date'
+              : newItem == 'Time'
                 ? {
                     name: newItem,
                     label: 'Label',
-                    type: 'Date',
+                    type: 'Time',
                     required: false,
                     requuireLabel: true,
                     hintext: false,
-                    dateformat: 'mm/dd/yyyy',
-                    weekStartOn: 'sunday',
-                    StartDate: '',
-                    enddate: '',
+                    timeformat: 'HH:mm',
+                    use12hours: true,
                   }
-                : newItem == 'Contact'
+                : newItem == 'Date'
                   ? {
                       name: newItem,
                       label: 'Label',
-                      type: 'number',
+                      type: 'Date',
                       required: false,
                       requuireLabel: true,
                       hintext: false,
-                      defaultcountry: 'india',
-                      dataformat: '3-3-3',
+                      dateformat: 'mm/dd/yyyy',
+                      weekStartOn: 'sunday',
+                      StartDate: '',
+                      enddate: '',
                     }
-                  : newItem == 'Currency'
+                  : newItem == 'Contact'
                     ? {
                         name: newItem,
                         label: 'Label',
-                        type: 'text',
+                        type: 'number',
                         required: false,
                         requuireLabel: true,
                         hintext: false,
-                        currency: 'USB',
-                        deciamlHide: false,
+                        defaultcountry: 'india',
+                        dataformat: '3-3-3',
                       }
-                    : newItem == 'Checkbox' ||
-                        newItem == 'Radio Button' ||
-                        newItem == 'Toggle'
+                    : newItem == 'Currency'
                       ? {
                           name: newItem,
                           label: 'Label',
@@ -179,22 +171,35 @@ const FormBuilder = () => {
                           required: false,
                           requuireLabel: true,
                           hintext: false,
+                          currency: 'USB',
+                          deciamlHide: false,
                         }
-                      : newItem == 'T text Content'
+                      : newItem == 'Checkbox' ||
+                          newItem == 'Radio Button' ||
+                          newItem == 'Toggle'
                         ? {
-                            name: newItem,
-                            sectionTitle: 'Section Title',
-                            Alignemnt: 'left',
-                            FontSize: 'Heading 2',
-                          }
-                        : {
                             name: newItem,
                             label: 'Label',
                             type: 'text',
                             required: false,
                             requuireLabel: true,
                             hintext: false,
-                          },
+                          }
+                        : newItem == 'T text Content'
+                          ? {
+                              name: newItem,
+                              sectionTitle: 'Section Title',
+                              Alignemnt: 'left',
+                              FontSize: 'Heading 2',
+                            }
+                          : {
+                              name: newItem,
+                              label: 'Label',
+                              type: 'text',
+                              required: false,
+                              requuireLabel: true,
+                              hintext: false,
+                            },
       );
     }
     setCartItems(temp);
@@ -540,7 +545,8 @@ const FormBuilder = () => {
                                               lineHeight: '18px',
                                             }}
                                           >
-                                            {itemCon?.name == 'Time'
+                                            {onmouseenter &&
+                                            itemCon?.name == 'Time'
                                               ? 'Time'
                                               : itemCon?.name == 'Email'
                                                 ? 'Email'
@@ -660,53 +666,6 @@ const FormBuilder = () => {
                                             // style={{width: '270px'}}
                                             // onClick={showDrawer}
                                           />
-                                        ) : // sectionTitle: 'Section Title',
-                                        // Alignemnt: 'Left',
-                                        // FontSize: 'h2',
-                                        itemCon?.name === 'T text Content' ? (
-                                          <>
-                                            {itemCon?.FontSize == 'h1' ? (
-                                              <h1
-                                                style={{
-                                                  display: 'flex',
-                                                  justifyContent:
-                                                    itemCon?.Alignemnt,
-                                                }}
-                                              >
-                                                {itemCon?.sectionTitle}
-                                              </h1>
-                                            ) : itemCon?.FontSize == 'h2' ? (
-                                              <h2
-                                                style={{
-                                                  display: 'flex',
-                                                  justifyContent:
-                                                    itemCon?.Alignemnt,
-                                                }}
-                                              >
-                                                {itemCon?.sectionTitle}
-                                              </h2>
-                                            ) : itemCon?.FontSize == 'h3' ? (
-                                              <h3
-                                                style={{
-                                                  display: 'flex',
-                                                  justifyContent:
-                                                    itemCon?.Alignemnt,
-                                                }}
-                                              >
-                                                {itemCon?.sectionTitle}
-                                              </h3>
-                                            ) : (
-                                              <h4
-                                                style={{
-                                                  display: 'flex',
-                                                  justifyContent:
-                                                    itemCon?.Alignemnt,
-                                                }}
-                                              >
-                                                {itemCon?.sectionTitle}
-                                              </h4>
-                                            )}
-                                          </>
                                         ) : (
                                           <OsInput
                                             type={itemCon?.type}
@@ -876,6 +835,154 @@ const FormBuilder = () => {
                                 );
                               }
                               if (itemCon?.name == 'T text Content') {
+                                return (
+                                  <>
+                                    {' '}
+                                    <Space
+                                      direction="vertical"
+                                      style={{
+                                        width: '94%',
+                                        marginBottom: '20px',
+                                      }}
+                                      draggable
+                                      // eslint-disable-next-line no-return-assign
+                                      onDragStart={(e) =>
+                                        (dragItem.current = ItemConindex)
+                                      }
+                                      // eslint-disable-next-line no-return-assign
+                                      onDragEnter={(e) =>
+                                        (dragOverItem.current = ItemConindex)
+                                      }
+                                      onDragEnd={handleSort}
+                                      onDragOver={(e) => e.preventDefault()}
+                                    >
+                                      <Row justify="space-between">
+                                        <Col
+                                          onClick={() => {
+                                            openEditDrawer();
+                                            setActiveContentIndex(ItemConindex);
+                                            setActiveSectionIndex(Sectidx);
+                                            form.resetFields();
+                                          }}
+                                          style={{
+                                            width: '100px',
+                                            height: '26px',
+                                            borderRadius: '50px',
+                                            // padding: '4px 12px 4px 12px',
+                                            gap: '12px',
+                                            background: '#ECF2F5',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                          }}
+                                        >
+                                          <div
+                                            style={{
+                                              width: '64px',
+                                              height: '18px',
+                                              fontWeight: '500',
+                                              fontSize: '12px',
+                                              lineHeight: '24px',
+                                            }}
+                                          >
+                                            Header Text
+                                          </div>
+                                        </Col>
+                                        <Col
+                                          style={{
+                                            width: '96px',
+                                            height: '30px',
+                                            borderRadius: '50px',
+                                            padding: '4px 12px 4px 12px',
+                                            gap: '12px',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                          }}
+                                        >
+                                          <TrashIcon
+                                            color="#EB445A"
+                                            onClick={() => {
+                                              deleteSelectedIntem(
+                                                Sectidx,
+                                                ItemConindex,
+                                              );
+                                            }}
+                                          />{' '}
+                                          <ArrowsPointingOutIcon color="#2364AA" />
+                                        </Col>
+                                      </Row>
+                                      <div
+                                        style={{
+                                          width: '100%',
+                                          display: 'flex',
+                                          gap: '12px',
+                                        }}
+                                      >
+                                        <>
+                                          {itemCon?.FontSize == 'h1' ? (
+                                            <h1
+                                              style={{
+                                                display: 'flex',
+                                                justifyContent:
+                                                  itemCon?.Alignemnt,
+                                                width: '100%',
+                                              }}
+                                            >
+                                              {itemCon?.sectionTitle}
+                                            </h1>
+                                          ) : itemCon?.FontSize == 'h2' ? (
+                                            <h2
+                                              style={{
+                                                display: 'flex',
+                                                justifyContent:
+                                                  itemCon?.Alignemnt,
+                                                width: '100%',
+                                              }}
+                                            >
+                                              {itemCon?.sectionTitle}
+                                            </h2>
+                                          ) : itemCon?.FontSize == 'h3' ? (
+                                            <h3
+                                              style={{
+                                                display: 'flex',
+                                                justifyContent:
+                                                  itemCon?.Alignemnt,
+                                                width: '100%',
+                                              }}
+                                            >
+                                              {itemCon?.sectionTitle}
+                                            </h3>
+                                          ) : (
+                                            <h4
+                                              style={{
+                                                display: 'flex',
+                                                justifyContent:
+                                                  itemCon?.Alignemnt,
+                                                width: '100%',
+                                              }}
+                                            >
+                                              {itemCon?.sectionTitle}
+                                            </h4>
+                                          )}
+                                        </>
+                                      </div>
+                                    </Space>
+                                  </>
+                                );
+                              }
+                              if (itemCon?.name == 'Line Break') {
+                                return (
+                                  <>
+                                    {' '}
+                                    <Divider
+                                      style={{
+                                        margin: '0px',
+                                        border: '1px solid #C7CDD5',
+                                      }}
+                                    />
+                                  </>
+                                );
+                              }
+                              if (itemCon?.name == 'Checkbox') {
                                 return (
                                   <>
                                     {' '}
