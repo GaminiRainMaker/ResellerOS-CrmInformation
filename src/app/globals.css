@@ -90,12 +90,9 @@ a {
   }
 }
 
-.ant-layout-content {
-  padding: 25px;
-}
 
 .ant-layout {
-  flex: none;
+  /* flex: none; */
 }
 
 .ant-layout .ant-layout-sider-light {
