@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-lonely-if */
@@ -9,7 +10,14 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import Typography from '@/app/components/common/typography';
-import {Checkbox, Drawer, Form, Radio, RadioChangeEvent} from 'antd';
+import {
+  Checkbox,
+  DatePicker,
+  Drawer,
+  Form,
+  Radio,
+  RadioChangeEvent,
+} from 'antd';
 import React, {useState} from 'react';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
@@ -374,6 +382,42 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
     },
   ];
 
+  const QuickSetupItemsForTTextContent = [
+    {
+      key: '1',
+      label: (
+        <Typography name="Body 2/Medium" color={token?.colorInfo}>
+          Quick Setup
+        </Typography>
+      ),
+      children: (
+        <Form layout="vertical" form={form}>
+          <Form.Item
+            label={<Typography name="Body 4/Medium">Text</Typography>}
+            name="no_of_columns"
+          >
+            <OsInput
+              style={{width: '100%'}}
+              placeholder="Label"
+              defaultValue={
+                isOpenDrawer &&
+                cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                  ?.sectionTitle
+              }
+              value={
+                isOpenDrawer &&
+                cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                  ?.sectionTitle
+              }
+              onChange={(e: any) => {
+                changeFieldValues(e?.target?.value, 'sectionTitle');
+              }}
+            />
+          </Form.Item>
+        </Form>
+      ),
+    },
+  ];
   const optionsType = [
     {
       name: 'Required Field',
@@ -430,6 +474,70 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
               </Col>
             </Row>
           ))}
+        </Form>
+      ),
+    },
+  ];
+  const OptionsItemsForTextContent = [
+    {
+      key: '1',
+      label: (
+        <Typography name="Body 2/Medium" color={token?.colorInfo}>
+          Options
+        </Typography>
+      ),
+      children: (
+        <Form layout="vertical">
+          {/* <Form.Item */}
+          {/* label={<Typography name="Body 4/Medium">Date Format</Typography>}
+          name="no_of_columns"
+        > */}
+          <Typography name="Body 4/Medium">Alignement</Typography>
+          <CommonSelect
+            onChange={(e: any) => {
+              changeFieldValues(e, 'Alignemnt');
+            }}
+            defaultValue={
+              cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                ?.Alignemnt
+            }
+            // value={
+            //   cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+            //     ?.dateformat
+            // }
+            style={{width: '100%', marginBottom: '20px'}}
+            options={[
+              {label: 'Left', value: 'left'},
+              {label: 'Right', value: 'right'},
+              {label: 'Center', value: 'center'},
+            ]}
+          />
+          {/* </Form.Item> */}
+          <Form.Item
+            label={<Typography name="Body 4/Medium">Font Size</Typography>}
+            name="no_of_columns"
+          >
+            <CommonSelect
+              onChange={(e: any) => {
+                changeFieldValues(e, 'FontSize');
+              }}
+              defaultValue={
+                cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                  ?.FontSize
+              }
+              // value={
+              //   cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+              //     ?.dateformat
+              // }
+              style={{width: '100%', marginBottom: '20px'}}
+              options={[
+                {label: 'Heading 1', value: 'h1'},
+                {label: 'Heading 2', value: 'h2'},
+                {label: 'Heading 3', value: 'h3'},
+                {label: 'Heading 4', value: 'h4'},
+              ]}
+            />
+          </Form.Item>
         </Form>
       ),
     },
@@ -506,7 +614,7 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
     setCartItems(newTempArr);
   };
 
-  const validationOptions = [
+  const validationOptionsforTime = [
     {
       key: '1',
       label: (
@@ -577,7 +685,240 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
     },
   ];
 
-  console.log('typetype', type);
+  const validationOptionsForCurrency = [
+    {
+      key: '1',
+      label: (
+        <Typography name="Body 2/Medium" color={token?.colorInfo}>
+          Validation
+        </Typography>
+      ),
+      children: (
+        <Form layout="vertical">
+          <Form.Item
+            label={<Typography name="Body 4/Medium">Currency</Typography>}
+            name="no_of_columns"
+          >
+            <CommonSelect
+              onChange={(e: any) => {
+                changeFieldValues(e, 'currency');
+              }}
+              defaultValue={
+                cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                  ?.currency
+              }
+              value={
+                cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                  ?.currency
+              }
+              style={{width: '100%'}}
+              options={[
+                {label: 'USB', value: 'USB'},
+                {label: 'Euro', value: 'Euro'},
+                {label: 'EUR', value: 'EUR'},
+                {label: 'KWANZA', value: 'KWANZA'},
+              ]}
+            />
+          </Form.Item>
+          <Row style={{width: '100%'}}>
+            <Col
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '100%',
+                marginBottom: '25px',
+              }}
+            >
+              <Typography name="Body 4/Medium">Hide Decimals</Typography>
+              <Switch
+                defaultChecked={
+                  cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                    ?.deciamlHide
+                }
+                onChange={(e: any) => {
+                  changeFieldValues(e, 'deciamlHide');
+                }}
+              />
+            </Col>
+          </Row>
+        </Form>
+      ),
+    },
+  ];
+  const validationOptionsForDate = [
+    {
+      key: '1',
+      label: (
+        <Typography name="Body 2/Medium" color={token?.colorInfo}>
+          Validation
+        </Typography>
+      ),
+      children: (
+        <Form layout="vertical">
+          {/* <Form.Item */}
+          {/* label={<Typography name="Body 4/Medium">Date Format</Typography>}
+            name="no_of_columns"
+          > */}
+          <Typography name="Body 4/Medium">Date Format</Typography>
+          <CommonSelect
+            onChange={(e: any) => {
+              changeFieldValues(e, 'dateformat');
+            }}
+            defaultValue={
+              cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                ?.dateformat
+            }
+            // value={
+            //   cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+            //     ?.dateformat
+            // }
+            style={{width: '100%', marginBottom: '20px'}}
+            options={[
+              {label: 'mm/dd/yyyy', value: 'mm/dd/yyyy'},
+              {label: 'YYYY-MM-DD', value: 'YYYY-MM-DD'},
+              {label: 'MM/DD/YYYY', value: 'MM/DD/YYYY'},
+              {label: 'Day, month, year', value: 'Day, month, year'},
+            ]}
+          />
+          {/* </Form.Item> */}
+          <Form.Item
+            label={
+              <Typography name="Body 4/Medium">Weeks Starts On</Typography>
+            }
+            name="no_of_columns"
+          >
+            <CommonSelect
+              onChange={(e: any) => {
+                changeFieldValues(e, 'weekStartOn');
+              }}
+              // defaultValue={
+              //   cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+              //     ?.weekStartOn
+              // }
+              value={
+                cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                  ?.weekStartOn
+              }
+              style={{width: '100%'}}
+              options={[
+                {label: 'Sunday', value: 'sunday'},
+                {label: 'Monday', value: 'monday'},
+                {label: 'Tuesday', value: 'tuesday'},
+                {label: 'Wednesday', value: 'wednesday'},
+                {label: 'Thursday', value: 'thursday'},
+                {label: 'Friday', value: 'friday'},
+                {label: 'Saturday', value: 'saturday'},
+              ]}
+            />
+          </Form.Item>
+          <Row style={{width: '100%'}}>
+            <Col
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '100%',
+                marginBottom: '25px',
+                gap: '12px',
+              }}
+            >
+              <Row>
+                <Typography name="Body 4/Medium">Start Date</Typography>
+                <DatePicker
+                  onChange={(e: any) => {
+                    changeFieldValues(e, 'StartDate');
+                  }}
+                  value={
+                    cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                      ?.StartDate
+                  }
+                  style={{
+                    width: '100%',
+                    height: '44px',
+                  }}
+                />{' '}
+              </Row>
+              <Row>
+                <Typography name="Body 4/Medium">End Date</Typography>
+                <DatePicker
+                  onChange={(e: any) => {
+                    changeFieldValues(e, 'enddate');
+                  }}
+                  value={
+                    cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                      ?.enddate
+                  }
+                  style={{
+                    width: '100%',
+                    height: '44px',
+                  }}
+                />{' '}
+              </Row>
+            </Col>
+          </Row>
+        </Form>
+      ),
+    },
+  ];
+  const validationOptionsForContact = [
+    {
+      key: '1',
+      label: (
+        <Typography name="Body 2/Medium" color={token?.colorInfo}>
+          Validation
+        </Typography>
+      ),
+      children: (
+        <Form layout="vertical">
+          {/* <Form.Item */}
+          {/* label={<Typography name="Body 4/Medium">Date Format</Typography>}
+            name="no_of_columns"
+          > */}
+          <Typography name="Body 4/Medium">Deafult</Typography>
+          <CommonSelect
+            onChange={(e: any) => {
+              changeFieldValues(e, 'defaultcountry');
+            }}
+            defaultValue={
+              cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                ?.defaultcountry
+            }
+            style={{width: '100%', marginBottom: '20px'}}
+            options={[
+              {label: '+91 India', value: 'india'},
+              {label: '+64 NZ', value: 'NZ'},
+              {label: '+31 Netherlands', value: 'netherlands'},
+              {label: '+52 Mexico', value: 'mexico'},
+              {label: '+1 Canada', value: 'canada'},
+              {label: '+7 Russia', value: 'russia'},
+              {label: '+44 USA', value: 'usa'},
+            ]}
+          />
+          {/* </Form.Item> */}
+          <Form.Item
+            label={<Typography name="Body 4/Medium">Data Format</Typography>}
+            name="no_of_columns"
+          >
+            <CommonSelect
+              onChange={(e: any) => {
+                changeFieldValues(e, 'dataformat');
+              }}
+              value={
+                cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                  ?.dataformat
+              }
+              style={{width: '100%'}}
+              options={[
+                {label: '3-3-3', value: '3-3-3'},
+                {label: '33-33-33', value: '33-33-33'},
+                {label: '333-333-333', value: '333-333-333'},
+              ]}
+            />
+          </Form.Item>
+        </Form>
+      ),
+    },
+  ];
+
   return (
     <div style={containerStyle}>
       <Drawer
@@ -590,20 +931,47 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
       >
         <Row>
           <CollapseSpaceStyle size={24} direction="vertical">
-            <OsCollapseAdmin items={QuickSetupItems} />
+            <OsCollapseAdmin
+              items={
+                type === 'T text Content'
+                  ? QuickSetupItemsForTTextContent
+                  : QuickSetupItems
+              }
+            />
           </CollapseSpaceStyle>
         </Row>
 
         <Row>
           <CollapseSpaceStyle size={24} direction="vertical">
-            <OsCollapseAdmin items={OptionsItems} />
+            <OsCollapseAdmin
+              items={
+                type === 'T text Content'
+                  ? OptionsItemsForTextContent
+                  : OptionsItems
+              }
+            />
           </CollapseSpaceStyle>
         </Row>
-        {(type === 'Multi-Select' || type === 'Time') && (
+        {(type === 'Multi-Select' ||
+          type === 'Date' ||
+          type === 'Drop Down' ||
+          type === 'Time' ||
+          type === 'Currency' ||
+          type === 'Contact') && (
           <Row>
             <CollapseSpaceStyle size={24} direction="vertical">
               <OsCollapseAdmin
-                items={type == 'Time' ? validationOptions : editChoicesOptions}
+                items={
+                  type == 'Time'
+                    ? validationOptionsforTime
+                    : type === 'Currency'
+                      ? validationOptionsForCurrency
+                      : type === 'Date'
+                        ? validationOptionsForDate
+                        : type === 'Contact'
+                          ? validationOptionsForContact
+                          : editChoicesOptions
+                }
               />
             </CollapseSpaceStyle>
           </Row>

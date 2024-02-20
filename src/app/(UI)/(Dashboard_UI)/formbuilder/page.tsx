@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-underscore-dangle */
@@ -20,23 +21,30 @@ import OsButton from '@/app/components/common/os-button';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
-import {PlayCircleOutlined} from '@ant-design/icons';
+import {MailOutlined, PlayCircleOutlined} from '@ant-design/icons';
 import {DndContext, DragEndEvent, useDroppable} from '@dnd-kit/core';
 import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {DatePicker, Form, MenuProps, TimePicker} from 'antd';
+import {
+  Checkbox,
+  DatePicker,
+  Form,
+  MenuProps,
+  Radio,
+  Switch,
+  TimePicker,
+} from 'antd';
 import React, {useEffect, useState} from 'react';
 import CommonSelect from '@/app/components/common/os-select';
 import EditFiledDetails from './detailsFieldEdit';
 import InputOptions from './inputOptions';
 
 const FormBuilder = () => {
-  const [sectionSelected, setSectionSelcted] = useState<any>();
   const [isOpenDrawer, setIsOpenDrawer] = useState<boolean>(false);
   const dropDownItemss: MenuProps['items'] = [];
   const [activeContentIndex, setActiveContentIndex] = useState<number>(0);
   const [activeSetionIndex, setActiveSectionIndex] = useState<number>(0);
   const [form] = Form.useForm();
-  const [selectedTypeFiled, setSelectedtypeFiled] = useState<string>();
+  const [sectionIndexActive, setSectionIndexActive] = useState<number>(0);
 
   const [token] = useThemeToken();
   const [cartItems, setCartItems] = useState<any>([]);
@@ -54,91 +62,141 @@ const FormBuilder = () => {
         typeOfFiled: 'number',
       },
     ];
-
-    temp.push({
-      section: `Section${cartItems?.length + 1}`,
-      content:
+    if (newItem === 'Add Section') {
+      temp?.push({
+        section: `Section${cartItems?.length + 1}`,
+        content: [],
+      });
+      setSectionIndexActive(cartItems?.length);
+    } else {
+      temp?.[sectionIndexActive]?.content?.push(
         newItem === 'Table'
-          ? [
-              {
+          ? {
+              name: newItem,
+              label: 'Label',
+              required: false,
+              requuireLabel: true,
+              noOfRows: 2,
+              noOfColumn: 2,
+              cutomizedTable: cutomizedTables,
+
+              ColumnsData: [
+                {
+                  title: (
+                    <Typography name="Body 4/Medium" className="dragHandler">
+                      Filed Name1
+                    </Typography>
+                  ),
+                  dataIndex: 'Filed Name1',
+                  key: 'Filed Name1',
+                  width: 130,
+                  render: (text: string) => (
+                    <OsInput type="text" value={text} />
+                  ),
+                },
+                {
+                  title: (
+                    <Typography name="Body 4/Medium" className="dragHandler">
+                      Filed Name2
+                    </Typography>
+                  ),
+                  dataIndex: 'Filed Name2',
+                  key: 'Filed Name2',
+                  width: 130,
+                  render: (text: string) => (
+                    <OsInput type="text" value={text} />
+                  ),
+                },
+              ],
+              RowsData: [
+                {'Filed Name1': 'text', 'Filed Name2': 'text'},
+                {'Filed Name1': 'text', 'Filed Name2': 'text'},
+              ],
+            }
+          : newItem === 'Multi-Select' || newItem === 'Drop Down'
+            ? {
                 name: newItem,
                 label: 'Label',
+                type: 'multiple',
                 required: false,
                 requuireLabel: true,
-                noOfRows: 2,
-                noOfColumn: 2,
-                cutomizedTable: cutomizedTables,
-
-                ColumnsData: [
-                  {
-                    title: (
-                      <Typography name="Body 4/Medium" className="dragHandler">
-                        Filed Name1
-                      </Typography>
-                    ),
-                    dataIndex: 'Filed Name1',
-                    key: 'Filed Name1',
-                    width: 130,
-                    render: (text: string) => (
-                      <OsInput type="text" value={text} />
-                    ),
-                  },
-                  {
-                    title: (
-                      <Typography name="Body 4/Medium" className="dragHandler">
-                        Filed Name2
-                      </Typography>
-                    ),
-                    dataIndex: 'Filed Name2',
-                    key: 'Filed Name2',
-                    width: 130,
-                    render: (text: string) => (
-                      <OsInput type="text" value={text} />
-                    ),
-                  },
-                ],
-                RowsData: [
-                  {'Filed Name1': 'text', 'Filed Name2': 'text'},
-                  {'Filed Name1': 'text', 'Filed Name2': 'text'},
-                ],
-              },
-            ]
-          : newItem === 'Multi-Select'
-            ? [
-                {
+                hintext: false,
+                options: [],
+              }
+            : newItem == 'Time'
+              ? {
                   name: newItem,
                   label: 'Label',
-                  type: 'multiple',
+                  type: 'Time',
                   required: false,
                   requuireLabel: true,
                   hintext: false,
-                  options: [],
-                },
-              ]
-            : newItem == 'Time'
-              ? [
-                  {
+                  timeformat: 'HH:mm',
+                  use12hours: true,
+                }
+              : newItem == 'Date'
+                ? {
                     name: newItem,
                     label: 'Label',
-                    type: 'Time',
+                    type: 'Date',
                     required: false,
                     requuireLabel: true,
                     hintext: false,
-                    timeformat: 'HH:mm',
-                    use12hours: true,
-                  },
-                ]
-              : [
-                  {
-                    name: newItem,
-                    label: 'Label',
-                    type: 'text',
-                    required: false,
-                    requuireLabel: true,
-                    hintext: false,
-                  },
-                ],
-    });
+                    dateformat: 'mm/dd/yyyy',
+                    weekStartOn: 'sunday',
+                    StartDate: '',
+                    enddate: '',
+                  }
+                : newItem == 'Contact'
+                  ? {
+                      name: newItem,
+                      label: 'Label',
+                      type: 'number',
+                      required: false,
+                      requuireLabel: true,
+                      hintext: false,
+                      defaultcountry: 'india',
+                      dataformat: '3-3-3',
+                    }
+                  : newItem == 'Currency'
+                    ? {
+                        name: newItem,
+                        label: 'Label',
+                        type: 'text',
+                        required: false,
+                        requuireLabel: true,
+                        hintext: false,
+                        currency: 'USB',
+                        deciamlHide: false,
+                      }
+                    : newItem == 'Checkbox' ||
+                        newItem == 'Radio Button' ||
+                        newItem == 'Toggle'
+                      ? {
+                          name: newItem,
+                          label: 'Label',
+                          type: 'text',
+                          required: false,
+                          requuireLabel: true,
+                          hintext: false,
+                        }
+                      : newItem == 'T text Content'
+                        ? {
+                            name: newItem,
+                            sectionTitle: 'Section Title',
+                            Alignemnt: 'left',
+                            FontSize: 'Heading 2',
+                          }
+                        : {
+                            name: newItem,
+                            label: 'Label',
+                            type: 'text',
+                            required: false,
+                            requuireLabel: true,
+                            hintext: false,
+                          },
+      );
+    }
     setCartItems(temp);
   };
   const {setNodeRef} = useDroppable({
@@ -152,7 +210,7 @@ const FormBuilder = () => {
   };
   const updateSection = (sectionInd: number, itemCont: string) => {
     const temp = [...cartItems];
-    if (itemCont === 'Multi-Select') {
+    if (itemCont === 'Multi-Select' || itemCont === 'Drop Down') {
       temp?.[sectionInd]?.content?.push({
         name: itemCont,
         label: 'Label',
@@ -172,6 +230,48 @@ const FormBuilder = () => {
         hintext: false,
         timeformat: 'HH:mm',
         use12hours: true,
+      });
+    } else if (itemCont == 'Currency') {
+      temp?.[sectionInd]?.content?.push({
+        name: itemCont,
+        label: 'Label',
+        type: 'text',
+        required: false,
+        requuireLabel: true,
+        hintext: false,
+        currency: 'USB',
+        deciamlHide: false,
+      });
+    } else if (itemCont === 'Date') {
+      temp?.[sectionInd]?.content?.push({
+        name: itemCont,
+        label: 'Label',
+        type: 'Date',
+        required: false,
+        requuireLabel: true,
+        hintext: false,
+        dateformat: 'mm/dd/yyyy',
+        weekStartOn: 'sunday',
+        StartDate: '',
+        enddate: '',
+      });
+    } else if (itemCont === 'Contact') {
+      temp?.[sectionInd]?.content?.push({
+        name: itemCont,
+        label: 'Label',
+        type: 'number',
+        required: false,
+        requuireLabel: true,
+        hintext: false,
+        defaultcountry: 'india',
+        dataformat: '3-3-3',
+      });
+    } else if (itemCont == 'T text Content') {
+      temp?.[sectionInd]?.content?.push({
+        name: itemCont,
+        sectionTitle: 'Section Title',
+        Alignemnt: 'left',
+        FontSize: 'h2',
       });
     } else {
       temp?.[sectionInd]?.content?.push({
@@ -213,7 +313,6 @@ const FormBuilder = () => {
   const openEditDrawer = () => {
     setIsOpenDrawer((p) => !p);
   };
-
   return (
     <>
       <Row style={{background: 'rrghed'}} justify="space-between">
@@ -227,7 +326,7 @@ const FormBuilder = () => {
               borderRadius: '10px',
             }}
           >
-            <InputOptions setSectionSelcted={setSectionSelcted} />
+            <InputOptions />
           </Col>
           <Col
             style={{
@@ -259,7 +358,13 @@ const FormBuilder = () => {
                   <>
                     {' '}
                     {cartItems.map((item: any, Sectidx: number) => (
-                      <div style={{marginTop: '20px'}} key={Sectidx}>
+                      <div
+                        onClick={() => {
+                          setSectionIndexActive(Sectidx);
+                        }}
+                        style={{marginTop: '20px'}}
+                        key={Sectidx}
+                      >
                         <Typography name="Body 1/Medium" color="#2364AA">
                           {item?.section}
                         </Typography>
@@ -300,7 +405,6 @@ const FormBuilder = () => {
                                     <Row justify="space-between">
                                       <Col
                                         onClick={() => {
-                                          setSelectedtypeFiled('Table');
                                           openEditDrawer();
                                           setActiveContentIndex(ItemConindex);
                                           setActiveSectionIndex(Sectidx);
@@ -340,7 +444,15 @@ const FormBuilder = () => {
                                           justifyContent: 'center',
                                         }}
                                       >
-                                        <TrashIcon color="#EB445A" />{' '}
+                                        <TrashIcon
+                                          onClick={() => {
+                                            deleteSelectedIntem(
+                                              Sectidx,
+                                              ItemConindex,
+                                            );
+                                          }}
+                                          color="#EB445A"
+                                        />{' '}
                                         <ArrowsPointingOutIcon color="#2364AA" />
                                       </Col>
                                     </Row>
@@ -365,18 +477,13 @@ const FormBuilder = () => {
                                 );
                               }
                               if (
-                                itemCon?.name == 'T text Content' ||
                                 itemCon?.name == 'T Text' ||
                                 itemCon?.name == 'Currency' ||
                                 itemCon?.name == 'Email' ||
-                                itemCon?.name == 'Toggle' ||
-                                itemCon?.name == 'Radio Button' ||
-                                itemCon?.name == 'Checkbox' ||
-                                itemCon?.name == 'Line Break' ||
-                                itemCon?.name == 'Attachment' ||
                                 itemCon?.name == 'Contact' ||
                                 itemCon?.name == 'Time' ||
-                                itemCon?.name == 'Add Section'
+                                itemCon?.name == 'Add Section' ||
+                                itemCon?.name == 'Date'
                               ) {
                                 return (
                                   <>
@@ -412,7 +519,6 @@ const FormBuilder = () => {
                                             setActiveContentIndex(ItemConindex);
                                             setActiveSectionIndex(Sectidx);
                                             form.resetFields();
-                                            setSelectedtypeFiled(itemCon?.name);
                                           }}
                                           style={{
                                             width: '96px',
@@ -436,7 +542,24 @@ const FormBuilder = () => {
                                           >
                                             {itemCon?.name == 'Time'
                                               ? 'Time'
-                                              : 'Text Filed'}
+                                              : itemCon?.name == 'Email'
+                                                ? 'Email'
+                                                : itemCon?.name == 'Currency'
+                                                  ? 'Currency'
+                                                  : itemCon?.name == 'Checkbox'
+                                                    ? 'Checkbox'
+                                                    : itemCon?.name ==
+                                                        'Radio Button'
+                                                      ? 'Radio'
+                                                      : itemCon?.name == 'Date'
+                                                        ? 'Date'
+                                                        : itemCon?.name ==
+                                                            'Contact'
+                                                          ? 'Contact'
+                                                          : itemCon?.name ===
+                                                              'T text Content'
+                                                            ? 'Header Text'
+                                                            : 'Text Filed'}
                                           </div>
                                         </Col>
                                         <Col
@@ -493,6 +616,97 @@ const FormBuilder = () => {
                                             // style={{width: '270px'}}
                                             // onClick={showDrawer}
                                           />
+                                        ) : itemCon?.name == 'Currency' ? (
+                                          <>
+                                            {' '}
+                                            <OsInput
+                                              suffix={itemCon?.currency}
+                                              type={itemCon?.type}
+                                              value={
+                                                itemCon?.deciamlHide
+                                                  ? '12'
+                                                  : '12.00'
+                                              }
+
+                                              // style={{width: '270px'}}
+                                              // onClick={showDrawer}
+                                            />
+                                          </>
+                                        ) : itemCon?.name == 'Date' ? (
+                                          <>
+                                            <DatePicker
+                                              format={itemCon?.dateformat}
+                                              style={{
+                                                width: '100%',
+                                                height: '44px',
+                                              }}
+                                            />
+                                          </>
+                                        ) : itemCon?.name === 'Contact' ? (
+                                          <>
+                                            {' '}
+                                            <OsInput
+                                              type={itemCon?.type}
+
+                                              // style={{width: '270px'}}
+                                              // onClick={showDrawer}
+                                            />
+                                          </>
+                                        ) : itemCon?.name === 'Email' ? (
+                                          <OsInput
+                                            type={itemCon?.type}
+                                            suffix={<MailOutlined />}
+
+                                            // style={{width: '270px'}}
+                                            // onClick={showDrawer}
+                                          />
+                                        ) : // sectionTitle: 'Section Title',
+                                        // Alignemnt: 'Left',
+                                        // FontSize: 'h2',
+                                        itemCon?.name === 'T text Content' ? (
+                                          <>
+                                            {itemCon?.FontSize == 'h1' ? (
+                                              <h1
+                                                style={{
+                                                  display: 'flex',
+                                                  justifyContent:
+                                                    itemCon?.Alignemnt,
+                                                }}
+                                              >
+                                                {itemCon?.sectionTitle}
+                                              </h1>
+                                            ) : itemCon?.FontSize == 'h2' ? (
+                                              <h2
+                                                style={{
+                                                  display: 'flex',
+                                                  justifyContent:
+                                                    itemCon?.Alignemnt,
+                                                }}
+                                              >
+                                                {itemCon?.sectionTitle}
+                                              </h2>
+                                            ) : itemCon?.FontSize == 'h3' ? (
+                                              <h3
+                                                style={{
+                                                  display: 'flex',
+                                                  justifyContent:
+                                                    itemCon?.Alignemnt,
+                                                }}
+                                              >
+                                                {itemCon?.sectionTitle}
+                                              </h3>
+                                            ) : (
+                                              <h4
+                                                style={{
+                                                  display: 'flex',
+                                                  justifyContent:
+                                                    itemCon?.Alignemnt,
+                                                }}
+                                              >
+                                                {itemCon?.sectionTitle}
+                                              </h4>
+                                            )}
+                                          </>
                                         ) : (
                                           <OsInput
                                             type={itemCon?.type}
@@ -561,7 +775,6 @@ const FormBuilder = () => {
                                             setActiveContentIndex(ItemConindex);
                                             setActiveSectionIndex(Sectidx);
                                             form.resetFields();
-                                            setSelectedtypeFiled(itemCon?.name);
                                           }}
                                           style={{
                                             width: '96px',
@@ -583,7 +796,9 @@ const FormBuilder = () => {
                                               lineHeight: '18px',
                                             }}
                                           >
-                                            Multi-Select
+                                            {itemCon?.name === 'Drop Down'
+                                              ? 'Drop Down'
+                                              : 'Multi-Select'}
                                           </div>
                                         </Col>
                                         <Col
@@ -658,6 +873,141 @@ const FormBuilder = () => {
                                   <DatePicker
                                     style={{marginTop: '10px', width: '100%'}}
                                   />
+                                );
+                              }
+                              if (itemCon?.name == 'T text Content') {
+                                return (
+                                  <>
+                                    {' '}
+                                    <Space
+                                      direction="vertical"
+                                      style={{
+                                        width: '94%',
+                                        marginBottom: '20px',
+                                      }}
+                                      draggable
+                                      // eslint-disable-next-line no-return-assign
+                                      onDragStart={(e) =>
+                                        (dragItem.current = ItemConindex)
+                                      }
+                                      // eslint-disable-next-line no-return-assign
+                                      onDragEnter={(e) =>
+                                        (dragOverItem.current = ItemConindex)
+                                      }
+                                      onDragEnd={handleSort}
+                                      onDragOver={(e) => e.preventDefault()}
+                                    >
+                                      <Row justify="space-between">
+                                        <Col
+                                          onClick={() => {
+                                            openEditDrawer();
+                                            setActiveContentIndex(ItemConindex);
+                                            setActiveSectionIndex(Sectidx);
+                                            form.resetFields();
+                                          }}
+                                          style={{
+                                            width: '100px',
+                                            height: '26px',
+                                            borderRadius: '50px',
+                                            // padding: '4px 12px 4px 12px',
+                                            gap: '12px',
+                                            background: '#ECF2F5',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                          }}
+                                        >
+                                          <div
+                                            style={{
+                                              width: '64px',
+                                              height: '18px',
+                                              fontWeight: '500',
+                                              fontSize: '12px',
+                                              lineHeight: '24px',
+                                            }}
+                                          >
+                                            Header Text
+                                          </div>
+                                        </Col>
+                                        <Col
+                                          style={{
+                                            width: '96px',
+                                            height: '30px',
+                                            borderRadius: '50px',
+                                            padding: '4px 12px 4px 12px',
+                                            gap: '12px',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                          }}
+                                        >
+                                          <TrashIcon
+                                            color="#EB445A"
+                                            onClick={() => {
+                                              deleteSelectedIntem(
+                                                Sectidx,
+                                                ItemConindex,
+                                              );
+                                            }}
+                                          />{' '}
+                                          <ArrowsPointingOutIcon color="#2364AA" />
+                                        </Col>
+                                      </Row>
+                                      <div
+                                        style={{
+                                          width: '100%',
+                                          display: 'flex',
+                                          gap: '12px',
+                                        }}
+                                      >
+                                        <>
+                                          {itemCon?.FontSize == 'h1' ? (
+                                            <h1
+                                              style={{
+                                                display: 'flex',
+                                                justifyContent:
+                                                  itemCon?.Alignemnt,
+                                                width: '100%',
+                                              }}
+                                            >
+                                              {itemCon?.sectionTitle}
+                                            </h1>
+                                          ) : itemCon?.FontSize == 'h2' ? (
+                                            <h2
+                                              style={{
+                                                display: 'flex',
+                                                justifyContent:
+                                                  itemCon?.Alignemnt,
+                                                width: '100%',
+                                              }}
+                                            >
+                                              {itemCon?.sectionTitle}
+                                            </h2>
+                                          ) : itemCon?.FontSize == 'h3' ? (
+                                            <h3
+                                              style={{
+                                                display: 'flex',
+                                                justifyContent:
+                                                  itemCon?.Alignemnt,
+                                                width: '100%',
+                                              }}
+                                            >
+                                              {itemCon?.sectionTitle}
+                                            </h3>
+                                          ) : (
+                                            <h4
+                                              style={{
+                                                display: 'flex',
+                                                justifyContent:
+                                                  itemCon?.Alignemnt,
+                                                width: '100%',
+                                              }}
+                                            >
+                                              {itemCon?.sectionTitle}
+                                            </h4>
+                                          )}
+                                        </>
+                                      </div>
+                                    </Space>
+                                  </>
                                 );
                               }
                             },

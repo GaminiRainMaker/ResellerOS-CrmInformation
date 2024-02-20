@@ -24,10 +24,8 @@ import {
 } from '@heroicons/react/24/outline';
 import FiledsDraggable from './FiledsDraggable';
 
-interface InputDetailsProps {
-  setSectionSelcted?: any;
-}
-const InputOptions: React.FC<InputDetailsProps> = ({setSectionSelcted}) => {
+interface InputDetailsProps {}
+const InputOptions: React.FC<InputDetailsProps> = () => {
   const FiledsButton = [
     {
       key: 1,
@@ -170,9 +168,6 @@ const InputOptions: React.FC<InputDetailsProps> = ({setSectionSelcted}) => {
             <OsButton
               buttontype="BUILD_BUTTON"
               text="Table"
-              clickHandler={() => {
-                setSectionSelcted('hloooo');
-              }}
               icon={<TableCellsIcon color="#2364AA" width={15} />}
             />
           </FiledsDraggable>
