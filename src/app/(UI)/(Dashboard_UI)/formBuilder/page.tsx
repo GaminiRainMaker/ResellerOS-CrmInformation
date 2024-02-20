@@ -33,13 +33,19 @@ import {
   Radio,
   Switch,
   TimePicker,
+  Layout,
 } from 'antd';
 import React, {useEffect, useState} from 'react';
 import CommonSelect from '@/app/components/common/os-select';
 import EditFiledDetails from './detailsFieldEdit';
-import InputOptions from './inputOptions';
+
+import FieldCard from './FieldCard';
+
+const {Sider, Content} = Layout;
 
 const FormBuilder = () => {
+  const [collapsed, setCollapsed] = useState<boolean>(false);
+
   const [isOpenDrawer, setIsOpenDrawer] = useState<boolean>(false);
   const dropDownItemss: MenuProps['items'] = [];
   const [activeContentIndex, setActiveContentIndex] = useState<number>(0);
@@ -297,50 +303,67 @@ const FormBuilder = () => {
   const dragOverItem = React.useRef<any>(null);
 
   // const handle drag sorting
-  const handleSort = () => {
-    // duplicate items
-    const _fruitItems = [...cartItems?.[0]?.content];
+  const handleSort = (sectionIndex: any) => {
+    const optionItems: any = [...cartItems];
 
     // remove and save the dragged item content
-    const draggedItemContent = _fruitItems.splice(dragItem.current, 1)[0];
+    const draggedItemContent1 = optionItems?.[
+      sectionIndex || 0
+    ]?.content.splice(dragItem.current, 1)[0];
 
     // switch the position
-    _fruitItems.splice(dragOverItem.current, 0, draggedItemContent);
+    optionItems?.[sectionIndex || 0]?.content.splice(
+      dragOverItem.current,
+      0,
+      draggedItemContent1,
+    );
 
     // reset the position ref
     dragItem.current = null;
     dragOverItem.current = null;
 
-    // update the actual array
-    setCartItems(_fruitItems);
+    // update the actual array;
+    setCartItems(optionItems);
   };
 
   const openEditDrawer = () => {
     setIsOpenDrawer((p) => !p);
   };
+
+  const contentStyle: React.CSSProperties = {
+    margin: '24px 24px 24px 0px',
+    backgroundColor: 'transparent',
+  };
+
+  const layoutStyle = {
+    borderRadius: 12,
+    overflow: 'hidden',
+    width: '100%',
+  };
+
+  const siderStyle: React.CSSProperties = {
+    padding: '12px',
+    margin: '24px',
+    borderRadius: 12,
+  };
+
+  //   <p
+  //   onClick={() => {
+  //     setCollapsed((p) => !p);
+  //   }}
+  // >
+  //   Button
+  // </p>
+  console.log('4354354345', cartItems);
   return (
-    <>
-      <Row style={{background: 'rrghed'}} justify="space-between">
-        <DndContext onDragEnd={addItemsToCart}>
-          <Col
-            span={6}
-            style={{
-              padding: '36px 24px 36px 24px',
-              gap: '12px',
-              backgroundColor: 'white',
-              borderRadius: '10px',
-            }}
-          >
-            <InputOptions />
-          </Col>
-          <Col
-            style={{
-              padding: '36px 24px 36px 24px',
-              gap: '12px',
-              borderRadius: '10px',
-            }}
-            span={isOpenDrawer ? 10 : 18}
-          >
+    <Layout style={layoutStyle}>
+      <DndContext onDragEnd={addItemsToCart}>
+        <Sider width="300px" theme="light" style={siderStyle}>
+          <FieldCard />
+        </Sider>
+
+        <Layout>
+          <Content style={contentStyle}>
             <Row justify="space-between">
               <Typography name="Heading 3/Medium">
                 Cisco- Cisco Hardware
@@ -404,13 +427,15 @@ const FormBuilder = () => {
                                     onDragEnter={(e) =>
                                       (dragOverItem.current = ItemConindex)
                                     }
-                                    onDragEnd={handleSort}
+                                    onDragEnd={() => {
+                                      handleSort(Sectidx);
+                                    }}
                                     onDragOver={(e) => e.preventDefault()}
                                   >
                                     <Row justify="space-between">
                                       <Col
                                         onClick={() => {
-                                          openEditDrawer();
+                                          setCollapsed((p) => !p);
                                           setActiveContentIndex(ItemConindex);
                                           setActiveSectionIndex(Sectidx);
                                           form.resetFields();
@@ -494,6 +519,19 @@ const FormBuilder = () => {
                                   <>
                                     {' '}
                                     <Space
+                                      key={ItemConindex}
+                                      className="list-item"
+                                      draggable
+                                      onDragStart={(e) => {
+                                        dragItem.current = ItemConindex;
+                                      }}
+                                      onDragEnter={(e) => {
+                                        dragOverItem.current = ItemConindex;
+                                      }}
+                                      onDragEnd={() => {
+                                        handleSort(Sectidx);
+                                      }}
+                                      onDragOver={(e) => e.preventDefault()}
                                       direction="vertical"
                                       style={{
                                         width:
@@ -505,22 +543,11 @@ const FormBuilder = () => {
                                           ItemConindex % 2 === 0 ? '25px' : '',
                                         marginBottom: '20px',
                                       }}
-                                      draggable
-                                      // eslint-disable-next-line no-return-assign
-                                      onDragStart={(e) =>
-                                        (dragItem.current = ItemConindex)
-                                      }
-                                      // eslint-disable-next-line no-return-assign
-                                      onDragEnter={(e) =>
-                                        (dragOverItem.current = ItemConindex)
-                                      }
-                                      onDragEnd={handleSort}
-                                      onDragOver={(e) => e.preventDefault()}
                                     >
                                       <Row justify="space-between">
                                         <Col
                                           onClick={() => {
-                                            openEditDrawer();
+                                            setCollapsed((p) => !p);
                                             setActiveContentIndex(ItemConindex);
                                             setActiveSectionIndex(Sectidx);
                                             form.resetFields();
@@ -538,15 +565,14 @@ const FormBuilder = () => {
                                         >
                                           <div
                                             style={{
-                                              width: '54px',
+                                              width: '104px',
                                               height: '18px',
                                               fontWeight: '500',
                                               fontSize: '12px',
                                               lineHeight: '18px',
                                             }}
                                           >
-                                            {onmouseenter &&
-                                            itemCon?.name == 'Time'
+                                            {itemCon?.name == 'Time'
                                               ? 'Time'
                                               : itemCon?.name == 'Email'
                                                 ? 'Email'
@@ -700,6 +726,14 @@ const FormBuilder = () => {
                                 itemCon?.name == 'Multi-Select' ||
                                 itemCon?.name == 'Drop Down'
                               ) {
+                                const optionssMulti: any = [];
+                                itemCon?.options?.map((itemoo: any) => {
+                                  optionssMulti?.push({
+                                    label: itemoo,
+                                    value: itemoo,
+                                  });
+                                });
+
                                 return (
                                   <>
                                     {' '}
@@ -724,13 +758,15 @@ const FormBuilder = () => {
                                       onDragEnter={(e) =>
                                         (dragOverItem.current = ItemConindex)
                                       }
-                                      onDragEnd={handleSort}
+                                      onDragEnd={() => {
+                                        handleSort(Sectidx);
+                                      }}
                                       onDragOver={(e) => e.preventDefault()}
                                     >
                                       <Row justify="space-between">
                                         <Col
                                           onClick={() => {
-                                            openEditDrawer();
+                                            setCollapsed((p) => !p);
                                             setActiveContentIndex(ItemConindex);
                                             setActiveSectionIndex(Sectidx);
                                             form.resetFields();
@@ -798,7 +834,7 @@ const FormBuilder = () => {
                                         }}
                                       >
                                         <CommonSelect
-                                          options={itemCon?.options}
+                                          options={optionssMulti}
                                           style={{
                                             // marginTop: '10px',
                                             width: '100%',
@@ -830,7 +866,10 @@ const FormBuilder = () => {
                               if (itemCon?.name == 'Date') {
                                 return (
                                   <DatePicker
-                                    style={{marginTop: '10px', width: '100%'}}
+                                    style={{
+                                      marginTop: '10px',
+                                      width: '100%',
+                                    }}
                                   />
                                 );
                               }
@@ -853,13 +892,15 @@ const FormBuilder = () => {
                                       onDragEnter={(e) =>
                                         (dragOverItem.current = ItemConindex)
                                       }
-                                      onDragEnd={handleSort}
+                                      onDragEnd={() => {
+                                        handleSort(Sectidx);
+                                      }}
                                       onDragOver={(e) => e.preventDefault()}
                                     >
                                       <Row justify="space-between">
                                         <Col
                                           onClick={() => {
-                                            openEditDrawer();
+                                            setCollapsed((p) => !p);
                                             setActiveContentIndex(ItemConindex);
                                             setActiveSectionIndex(Sectidx);
                                             form.resetFields();
@@ -877,7 +918,7 @@ const FormBuilder = () => {
                                         >
                                           <div
                                             style={{
-                                              width: '64px',
+                                              width: '84px',
                                               height: '18px',
                                               fontWeight: '500',
                                               fontSize: '12px',
@@ -1001,13 +1042,15 @@ const FormBuilder = () => {
                                       onDragEnter={(e) =>
                                         (dragOverItem.current = ItemConindex)
                                       }
-                                      onDragEnd={handleSort}
+                                      onDragEnd={() => {
+                                        handleSort(Sectidx);
+                                      }}
                                       onDragOver={(e) => e.preventDefault()}
                                     >
                                       <Row justify="space-between">
                                         <Col
                                           onClick={() => {
-                                            openEditDrawer();
+                                            setCollapsed((p) => !p);
                                             setActiveContentIndex(ItemConindex);
                                             setActiveSectionIndex(Sectidx);
                                             form.resetFields();
@@ -1148,10 +1191,18 @@ const FormBuilder = () => {
                 )}
               </div>
             </Row>
-          </Col>
-          -
-        </DndContext>
-        <Col span={isOpenDrawer ? 6 : 0}>
+          </Content>
+        </Layout>
+      </DndContext>
+
+      {collapsed && (
+        <div
+          style={{
+            width: '20%',
+            // height: '100vh',
+            background: 'white',
+          }}
+        >
           <EditFiledDetails
             setIsOpenDrawer={openEditDrawer}
             isOpenDrawer={isOpenDrawer}
@@ -1162,9 +1213,9 @@ const FormBuilder = () => {
             form={form}
             typeFiled=""
           />
-        </Col>
-      </Row>{' '}
-    </>
+        </div>
+      )}
+    </Layout>
   );
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-unsafe-optional-chaining */
@@ -8,7 +9,6 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Switch} from '@/app/components/common/antd/Switch';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
-import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import Typography from '@/app/components/common/typography';
 import {
   Checkbox,
@@ -21,7 +21,6 @@ import {
 import React, {useState} from 'react';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
-import {useSearchParams} from 'next/navigation';
 import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
 import {FormBuilderInterFace} from './formBuilder.interface';
@@ -80,11 +79,7 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
                 options: contItem?.options?.map(
                   (itemOp: any, indexOption: number) => {
                     if (indexofOption === indexOption) {
-                      return {
-                        ...itemOp,
-                        value: newValue,
-                        label: newValue,
-                      };
+                      return newValue;
                     }
                     return itemOp;
                   },
@@ -100,6 +95,8 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
 
     setCartItems(newTempArr);
   };
+
+  console.log('43543543', cartItems);
   const addNewRowsColumn = (
     labelTypeVal: string,
     type: string,
@@ -156,7 +153,6 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
       }
       return sectItem;
     });
-    console.log('3454353', temp);
     setCartItems(temp);
   };
 
@@ -164,7 +160,7 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
     const tempvalue: any = [...cartItems];
 
     tempvalue?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.options?.push(
-      {value: '', label: ''},
+      '',
     );
     setCartItems(tempvalue);
   };
@@ -179,6 +175,113 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
 
   const type =
     cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.name;
+
+  // save reference for dragItem and dragOverItem
+  const dragItem = React.useRef<any>(null);
+  const dragOverItem = React.useRef<any>(null);
+
+  // const handle drag sorting
+  const handleSort = () => {
+    const optionItems: any = [...cartItems];
+
+    // remove and save the dragged item content
+    const draggedItemContent1 = optionItems?.[sectionIndex || 0]?.content?.[
+      contentIndex || 0
+    ]?.options.splice(dragItem.current, 1)[0];
+
+    // switch the position
+    optionItems?.[sectionIndex || 0]?.content?.[
+      contentIndex || 0
+    ]?.options.splice(dragOverItem.current, 0, draggedItemContent1);
+
+    // reset the position ref
+    dragItem.current = null;
+    dragOverItem.current = null;
+
+    // update the actual array;
+    setCartItems(optionItems);
+  };
+
+  
+  const editChoicesOptions = [
+    {
+      key: '1',
+      label: (
+        <Typography name="Body 2/Medium" color={token?.colorInfo}>
+          Edit Choices
+        </Typography>
+      ),
+      children: (
+        <Form layout="vertical">
+          {cartItems?.[sectionIndex || 0]?.content?.[
+            contentIndex || 0
+          ]?.options?.map((itemOption: any, indexOp: number) => (
+            <Row style={{width: '100%'}}>
+              <Col
+                key={indexOp}
+                className="list-item"
+                draggable
+                onDragStart={(e) => {
+                  dragItem.current = indexOp;
+                }}
+                onDragEnter={(e) => {
+                  dragOverItem.current = indexOp;
+                }}
+                onDragEnd={handleSort}
+                onDragOver={(e) => e.preventDefault()}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  marginBottom: '25px',
+                  gap: '12px',
+                }}
+              >
+                {/* <div>{itemOption}</div> */}
+                <OsInput
+                  key={indexOp}
+                  defaultValue={itemOption}
+                  value={itemOption}
+                  onChange={(e: any) => {
+                    changeFiellOptionsValue(e?.target?.value, indexOp);
+                  }}
+                />{' '}
+                <TrashIcon
+                  color="#EB445A"
+                  width={35}
+                  onClick={() => deleteOption(indexOp)}
+                />{' '}
+                <ArrowsPointingOutIcon
+                  color="#2364AA"
+                  width={35}
+                  key={indexOp}
+                  className="list-item"
+                  // draggable
+                  onDragStart={(e) => {
+                    dragItem.current = indexOp;
+                  }}
+                  onDragEnter={(e) => {
+                    dragOverItem.current = indexOp;
+                  }}
+                  onDragEnd={handleSort}
+                  onDragOver={(e) => e.preventDefault()}
+                />
+              </Col>
+            </Row>
+          ))}
+          <Typography
+            name="Body 3/Bold"
+            color={token?.colorInfo}
+            onClick={addnewOptions}
+            cursor="pointer"
+            style={{cursor: 'pointer'}}
+          >
+            + Add New
+          </Typography>
+        </Form>
+      ),
+    },
+  ];
 
   const QuickSetupItems = [
     {
@@ -320,13 +423,6 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
                   <OsInput
                     placeholder="Label"
                     defaultValue={
-                      isOpenDrawer &&
-                      cartItems?.[sectionIndex || 0]?.content?.[
-                        contentIndex || 0
-                      ]?.label
-                    }
-                    value={
-                      isOpenDrawer &&
                       cartItems?.[sectionIndex || 0]?.content?.[
                         contentIndex || 0
                       ]?.label
@@ -538,56 +634,6 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
               ]}
             />
           </Form.Item>
-        </Form>
-      ),
-    },
-  ];
-  const editChoicesOptions = [
-    {
-      key: '1',
-      label: (
-        <Typography name="Body 2/Medium" color={token?.colorInfo}>
-          Edit Choices
-        </Typography>
-      ),
-      children: (
-        <Form layout="vertical">
-          {cartItems?.[sectionIndex || 0]?.content?.[
-            contentIndex || 0
-          ]?.options?.map((itemOption: any, indexOp: number) => (
-            <Row style={{width: '100%'}}>
-              <Col
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  width: '100%',
-                  marginBottom: '25px',
-                  gap: '12px',
-                }}
-              >
-                <OsInput
-                  onChange={(e: any) => {
-                    changeFiellOptionsValue(e?.target?.value, indexOp);
-                  }}
-                />{' '}
-                <TrashIcon
-                  color="#EB445A"
-                  width={35}
-                  onClick={() => deleteOption(indexOp)}
-                />{' '}
-                <ArrowsPointingOutIcon color="#2364AA" width={35} />
-              </Col>
-            </Row>
-          ))}
-          <Typography
-            name="Body 3/Bold"
-            color={token?.colorInfo}
-            onClick={addnewOptions}
-            cursor="pointer"
-            style={{cursor: 'pointer'}}
-          >
-            + Add New
-          </Typography>
         </Form>
       ),
     },
@@ -921,62 +967,53 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
 
   return (
     <div style={containerStyle}>
-      <Drawer
-        title="Text Field"
-        placement="right"
-        closable={false}
-        onClose={() => setIsOpenDrawer && setIsOpenDrawer(false)}
-        open={isOpenDrawer}
-        getContainer={false}
-      >
-        <Row>
-          <CollapseSpaceStyle size={24} direction="vertical">
-            <OsCollapseAdmin
-              items={
-                type === 'T text Content'
-                  ? QuickSetupItemsForTTextContent
-                  : QuickSetupItems
-              }
-            />
-          </CollapseSpaceStyle>
-        </Row>
+      <Row>
+        <CollapseSpaceStyle size={24} direction="vertical">
+          <OsCollapseAdmin
+            items={
+              type === 'T text Content'
+                ? QuickSetupItemsForTTextContent
+                : QuickSetupItems
+            }
+          />
+        </CollapseSpaceStyle>
+      </Row>
 
+      <Row>
+        <CollapseSpaceStyle size={24} direction="vertical">
+          <OsCollapseAdmin
+            items={
+              type === 'T text Content'
+                ? OptionsItemsForTextContent
+                : OptionsItems
+            }
+          />
+        </CollapseSpaceStyle>
+      </Row>
+      {(type === 'Multi-Select' ||
+        type === 'Date' ||
+        type === 'Drop Down' ||
+        type === 'Time' ||
+        type === 'Currency' ||
+        type === 'Contact') && (
         <Row>
           <CollapseSpaceStyle size={24} direction="vertical">
             <OsCollapseAdmin
               items={
-                type === 'T text Content'
-                  ? OptionsItemsForTextContent
-                  : OptionsItems
+                type == 'Time'
+                  ? validationOptionsforTime
+                  : type === 'Currency'
+                    ? validationOptionsForCurrency
+                    : type === 'Date'
+                      ? validationOptionsForDate
+                      : type === 'Contact'
+                        ? validationOptionsForContact
+                        : editChoicesOptions
               }
             />
           </CollapseSpaceStyle>
         </Row>
-        {(type === 'Multi-Select' ||
-          type === 'Date' ||
-          type === 'Drop Down' ||
-          type === 'Time' ||
-          type === 'Currency' ||
-          type === 'Contact') && (
-          <Row>
-            <CollapseSpaceStyle size={24} direction="vertical">
-              <OsCollapseAdmin
-                items={
-                  type == 'Time'
-                    ? validationOptionsforTime
-                    : type === 'Currency'
-                      ? validationOptionsForCurrency
-                      : type === 'Date'
-                        ? validationOptionsForDate
-                        : type === 'Contact'
-                          ? validationOptionsForContact
-                          : editChoicesOptions
-                }
-              />
-            </CollapseSpaceStyle>
-          </Row>
-        )}
-      </Drawer>
+      )}
     </div>
   );
 };
