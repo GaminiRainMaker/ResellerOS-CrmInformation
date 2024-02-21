@@ -95,8 +95,6 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
 
     setCartItems(newTempArr);
   };
-
-  console.log('43543543', cartItems);
   const addNewRowsColumn = (
     labelTypeVal: string,
     type: string,
@@ -202,7 +200,6 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
     setCartItems(optionItems);
   };
 
-  
   const editChoicesOptions = [
     {
       key: '1',

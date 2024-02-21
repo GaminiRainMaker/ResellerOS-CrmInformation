@@ -52,6 +52,7 @@ const FormBuilder = () => {
   const [activeSetionIndex, setActiveSectionIndex] = useState<number>(0);
   const [form] = Form.useForm();
   const [sectionIndexActive, setSectionIndexActive] = useState<number>(0);
+  const [contentActiveIndex, setContentActiveIndex] = useState<number>(0);
 
   const [token] = useThemeToken();
   const [cartItems, setCartItems] = useState<any>([]);
@@ -75,6 +76,7 @@ const FormBuilder = () => {
         content: [],
       });
       setSectionIndexActive(cartItems?.length);
+      setContentActiveIndex(cartItems?.length);
     } else {
       temp?.[sectionIndexActive]?.content?.push(
         newItem === 'Table'
@@ -82,7 +84,7 @@ const FormBuilder = () => {
               name: newItem,
               label: 'Label',
               required: false,
-              requuireLabel: true,
+              requiredLabel: true,
               noOfRows: 2,
               noOfColumn: 2,
               cutomizedTable: cutomizedTables,
@@ -126,7 +128,7 @@ const FormBuilder = () => {
                 label: 'Label',
                 type: 'multiple',
                 required: false,
-                requuireLabel: true,
+                requiredLabel: true,
                 hintext: false,
                 options: [],
               }
@@ -140,7 +142,7 @@ const FormBuilder = () => {
                     label: 'Label',
                     type: 'Time',
                     required: false,
-                    requuireLabel: true,
+                    requiredLabel: true,
                     hintext: false,
                     timeformat: 'HH:mm',
                     use12hours: true,
@@ -151,7 +153,7 @@ const FormBuilder = () => {
                       label: 'Label',
                       type: 'Date',
                       required: false,
-                      requuireLabel: true,
+                      requiredLabel: true,
                       hintext: false,
                       dateformat: 'mm/dd/yyyy',
                       weekStartOn: 'sunday',
@@ -164,7 +166,7 @@ const FormBuilder = () => {
                         label: 'Label',
                         type: 'number',
                         required: false,
-                        requuireLabel: true,
+                        requiredLabel: true,
                         hintext: false,
                         defaultcountry: 'india',
                         dataformat: '3-3-3',
@@ -175,20 +177,18 @@ const FormBuilder = () => {
                           label: 'Label',
                           type: 'text',
                           required: false,
-                          requuireLabel: true,
+                          requiredLabel: true,
                           hintext: false,
                           currency: 'USB',
                           deciamlHide: false,
                         }
-                      : newItem == 'Checkbox' ||
-                          newItem == 'Radio Button' ||
-                          newItem == 'Toggle'
+                      : newItem == 'Radio Button' || newItem == 'Toggle'
                         ? {
                             name: newItem,
                             label: 'Label',
                             type: 'text',
                             required: false,
-                            requuireLabel: true,
+                            requiredLabel: true,
                             hintext: false,
                           }
                         : newItem == 'T text Content'
@@ -198,15 +198,26 @@ const FormBuilder = () => {
                               Alignemnt: 'left',
                               FontSize: 'Heading 2',
                             }
-                          : {
-                              name: newItem,
-                              label: 'Label',
-                              type: 'text',
-                              required: false,
-                              requuireLabel: true,
-                              hintext: false,
-                            },
+                          : newItem == 'Checkbox'
+                            ? {
+                                name: newItem,
+                                placeholdertext: 'placeholder text',
+                                labelOptions: [],
+                                columnRequired: 1,
+                                required: false,
+                                requiredLabel: true,
+                                filedType: 'multiple',
+                              }
+                            : {
+                                name: newItem,
+                                label: 'Label',
+                                type: 'text',
+                                required: false,
+                                requiredLabel: true,
+                                hintext: false,
+                              },
       );
+      setContentActiveIndex(temp?.[sectionIndexActive]?.content?.length);
     }
     setCartItems(temp);
   };
@@ -227,7 +238,7 @@ const FormBuilder = () => {
         label: 'Label',
         type: 'multiple',
         required: false,
-        requuireLabel: true,
+        requiredLabel: true,
         hintext: false,
         options: [],
       });
@@ -237,7 +248,7 @@ const FormBuilder = () => {
         label: 'Label',
         type: 'Time',
         required: false,
-        requuireLabel: true,
+        requiredLabel: true,
         hintext: false,
         timeformat: 'HH:mm',
         use12hours: true,
@@ -248,7 +259,7 @@ const FormBuilder = () => {
         label: 'Label',
         type: 'text',
         required: false,
-        requuireLabel: true,
+        requiredLabel: true,
         hintext: false,
         currency: 'USB',
         deciamlHide: false,
@@ -259,7 +270,7 @@ const FormBuilder = () => {
         label: 'Label',
         type: 'Date',
         required: false,
-        requuireLabel: true,
+        requiredLabel: true,
         hintext: false,
         dateformat: 'mm/dd/yyyy',
         weekStartOn: 'sunday',
@@ -272,7 +283,7 @@ const FormBuilder = () => {
         label: 'Label',
         type: 'number',
         required: false,
-        requuireLabel: true,
+        requiredLabel: true,
         hintext: false,
         defaultcountry: 'india',
         dataformat: '3-3-3',
@@ -290,7 +301,7 @@ const FormBuilder = () => {
         label: 'Label',
         type: 'text',
         required: false,
-        requuireLabel: true,
+        requiredLabel: true,
         hintext: false,
       });
     }
@@ -347,14 +358,6 @@ const FormBuilder = () => {
     borderRadius: 12,
   };
 
-  //   <p
-  //   onClick={() => {
-  //     setCollapsed((p) => !p);
-  //   }}
-  // >
-  //   Button
-  // </p>
-  console.log('4354354345', cartItems);
   return (
     <Layout style={layoutStyle}>
       <DndContext onDragEnd={addItemsToCart}>
@@ -618,7 +621,7 @@ const FormBuilder = () => {
                                         </Col>
                                       </Row>
                                       <Typography name="Body 4/Medium">
-                                        {itemCon?.requuireLabel &&
+                                        {itemCon?.requiredLabel &&
                                           itemCon?.label}{' '}
                                         {itemCon?.required && (
                                           <span style={{color: 'red'}}>*</span>
@@ -820,7 +823,7 @@ const FormBuilder = () => {
                                         </Col>
                                       </Row>
                                       <Typography name="Body 4/Medium">
-                                        {itemCon?.requuireLabel &&
+                                        {itemCon?.requiredLabel &&
                                           itemCon?.label}{' '}
                                         {itemCon?.required && (
                                           <span style={{color: 'red'}}>*</span>
@@ -1023,29 +1026,42 @@ const FormBuilder = () => {
                                   </>
                                 );
                               }
+
                               if (itemCon?.name == 'Checkbox') {
                                 return (
                                   <>
                                     {' '}
                                     <Space
-                                      direction="vertical"
-                                      style={{
-                                        width: '94%',
-                                        marginBottom: '20px',
-                                      }}
+                                      key={ItemConindex}
+                                      className="list-item"
                                       draggable
-                                      // eslint-disable-next-line no-return-assign
-                                      onDragStart={(e) =>
-                                        (dragItem.current = ItemConindex)
-                                      }
-                                      // eslint-disable-next-line no-return-assign
-                                      onDragEnter={(e) =>
-                                        (dragOverItem.current = ItemConindex)
-                                      }
+                                      onDragStart={(e) => {
+                                        dragItem.current = ItemConindex;
+                                      }}
+                                      onDragEnter={(e) => {
+                                        dragOverItem.current = ItemConindex;
+                                      }}
                                       onDragEnd={() => {
                                         handleSort(Sectidx);
                                       }}
                                       onDragOver={(e) => e.preventDefault()}
+                                      direction="vertical"
+                                      style={{
+                                        width: '95%',
+                                        marginBottom: '20px',
+                                        background:
+                                          contentActiveIndex == ItemConindex
+                                            ? '#F6F7F8'
+                                            : 'transparent',
+                                        padding:
+                                          contentActiveIndex == ItemConindex
+                                            ? '10px'
+                                            : '10px',
+                                        borderRadius:
+                                          contentActiveIndex == ItemConindex
+                                            ? '10px'
+                                            : '10px',
+                                      }}
                                     >
                                       <Row justify="space-between">
                                         <Col
@@ -1053,13 +1069,14 @@ const FormBuilder = () => {
                                             setCollapsed((p) => !p);
                                             setActiveContentIndex(ItemConindex);
                                             setActiveSectionIndex(Sectidx);
+                                            setContentActiveIndex(ItemConindex);
                                             form.resetFields();
                                           }}
                                           style={{
-                                            width: '100px',
+                                            width: '96px',
                                             height: '26px',
                                             borderRadius: '50px',
-                                            // padding: '4px 12px 4px 12px',
+                                            padding: '4px 12px 4px 12px',
                                             gap: '12px',
                                             background: '#ECF2F5',
                                             display: 'flex',
@@ -1068,14 +1085,14 @@ const FormBuilder = () => {
                                         >
                                           <div
                                             style={{
-                                              width: '64px',
+                                              width: '104px',
                                               height: '18px',
                                               fontWeight: '500',
                                               fontSize: '12px',
-                                              lineHeight: '24px',
+                                              lineHeight: '18px',
                                             }}
                                           >
-                                            Header Text
+                                            checkbox
                                           </div>
                                         </Col>
                                         <Col
@@ -1101,6 +1118,13 @@ const FormBuilder = () => {
                                           <ArrowsPointingOutIcon color="#2364AA" />
                                         </Col>
                                       </Row>
+                                      <Typography name="Body 4/Medium">
+                                        {itemCon?.requiredLabel &&
+                                          itemCon?.placeholdertext}{' '}
+                                        {itemCon?.required && (
+                                          <span style={{color: 'red'}}>*</span>
+                                        )}
+                                      </Typography>
                                       <div
                                         style={{
                                           width: '100%',
@@ -1108,53 +1132,20 @@ const FormBuilder = () => {
                                           gap: '12px',
                                         }}
                                       >
-                                        <>
-                                          {itemCon?.FontSize == 'h1' ? (
-                                            <h1
-                                              style={{
-                                                display: 'flex',
-                                                justifyContent:
-                                                  itemCon?.Alignemnt,
-                                                width: '100%',
-                                              }}
-                                            >
-                                              {itemCon?.sectionTitle}
-                                            </h1>
-                                          ) : itemCon?.FontSize == 'h2' ? (
-                                            <h2
-                                              style={{
-                                                display: 'flex',
-                                                justifyContent:
-                                                  itemCon?.Alignemnt,
-                                                width: '100%',
-                                              }}
-                                            >
-                                              {itemCon?.sectionTitle}
-                                            </h2>
-                                          ) : itemCon?.FontSize == 'h3' ? (
-                                            <h3
-                                              style={{
-                                                display: 'flex',
-                                                justifyContent:
-                                                  itemCon?.Alignemnt,
-                                                width: '100%',
-                                              }}
-                                            >
-                                              {itemCon?.sectionTitle}
-                                            </h3>
-                                          ) : (
-                                            <h4
-                                              style={{
-                                                display: 'flex',
-                                                justifyContent:
-                                                  itemCon?.Alignemnt,
-                                                width: '100%',
-                                              }}
-                                            >
-                                              {itemCon?.sectionTitle}
-                                            </h4>
-                                          )}
-                                        </>
+                                        {itemCon?.labelOptions?.map(
+                                          (
+                                            itemLabelOp: any,
+                                            itemLabelInde: number,
+                                          ) => (
+                                            <Row key={itemLabelInde}>
+                                              <Col
+                                                span={itemCon?.columnRequired}
+                                              >
+                                                <Checkbox />
+                                              </Col>
+                                            </Row>
+                                          ),
+                                        )}
                                       </div>
                                     </Space>
                                   </>
