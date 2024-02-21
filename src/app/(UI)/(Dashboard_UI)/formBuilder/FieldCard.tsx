@@ -18,7 +18,7 @@ import {
   RadioIcon,
   TableCellsIcon,
 } from '@heroicons/react/24/outline';
-import FiledsDraggable from '../formbuilder/FiledsDraggable';
+import FiledsDraggable from './FiledsDraggable';
 
 const FieldCard = () => {
   const [token] = useThemeToken();
@@ -30,7 +30,7 @@ const FieldCard = () => {
       childitem: [
         {
           key: 1,
-          name: 'Text Content',
+          name: 'T text Content',
           icon: <DocumentTextIcon width={15} color={token?.colorInfo} />,
         },
         {
@@ -46,7 +46,7 @@ const FieldCard = () => {
       childitem: [
         {
           key: 3,
-          name: 'Text',
+          name: 'T Text',
           icon: <DocumentTextIcon width={15} color={token?.colorInfo} />,
         },
         {
@@ -151,7 +151,7 @@ const FieldCard = () => {
               }}
             >
               {itemtab?.childitem?.map((itemild: any) => (
-                <FiledsDraggable key="Attachment">
+                <FiledsDraggable key={itemild?.name}>
                   <OsButton
                     buttontype="BUILD_BUTTON"
                     text={itemild?.name}

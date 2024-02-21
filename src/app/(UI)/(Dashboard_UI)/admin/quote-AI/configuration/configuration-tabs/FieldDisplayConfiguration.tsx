@@ -45,14 +45,15 @@ const FieldDisplayConfiguration: FC<any> = () => {
       const dataItems = updateColumn[i];
       dispatch(updateTableColumnById(dataItems));
     }
-    setTimeout(() => {
-      dispatch(getAllTableColumn(''));
-    }, 1000);
+    dispatch(getAllTableColumn(''));
+    // setTimeout(() => {
+    //   dispatch(getAllTableColumn(''));
+    // }, 1000);
   };
 
   useEffect(() => {
     let filteredArray: any = [];
-    if (tableColumnData && selectedTable) {
+    if (tableColumnData && selectedTable && tableColumnData?.length > 0) {
       filteredArray = tableColumnData?.filter((item: any) =>
         item?.table_name?.includes(selectedTable),
       );
