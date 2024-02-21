@@ -29,6 +29,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   tableColumnDataShow,
   setIsDeleteInputDetailModal,
   isDeleteInputDetailModal,
+  setFinalInputColumn,
+  finalInputColumn,
 }) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
@@ -36,7 +38,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   const getQuoteID = searchParams.get('id');
   const {abbreviate} = useAbbreviationHook(0);
   const [isDeleteIds, setDeleteIds] = useState<any>();
-  const [finalInputColumn, setFinalInputColumn] = useState<any>();
+  // const [finalInputColumn, setFinalInputColumn] = useState<any>();
   const {quoteLineItemByQuoteID, loading} = useAppSelector(
     (state) => state.quoteLineItem,
   );

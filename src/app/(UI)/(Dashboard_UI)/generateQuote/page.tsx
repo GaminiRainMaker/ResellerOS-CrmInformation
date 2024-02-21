@@ -33,6 +33,7 @@ import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {formatDate} from '@/app/utils/base';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {
   getAllBundle,
   updateBundleQuantity,
@@ -87,6 +88,8 @@ const GenerateQuote: React.FC = () => {
     (state) => state.contractSetting,
   );
   const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
+
+  const [finalInputColumn, setFinalInputColumn] = useState<any>();
 
   useEffect(() => {
     dispatch(getAllTableColumn(''));
@@ -414,6 +417,8 @@ const GenerateQuote: React.FC = () => {
           setIsDeleteInputDetailModal={setIsDeleteInputDetailModal}
           isDeleteInputDetailModal={isDeleteInputDetailModal}
           tableColumnDataShow={tableColumnDataShow}
+          setFinalInputColumn={setFinalInputColumn}
+          finalInputColumn={finalInputColumn}
         />
       ),
     },
@@ -644,7 +649,17 @@ const GenerateQuote: React.FC = () => {
                                       </Space>
                                     </>
                                   ),
-                                  children: item?.children,
+                                  // children: item?.children,
+                                  children: (
+                                    <OsTableWithOutDrag
+                                      loading={loading}
+                                      columns={finalInputColumn}
+                                      dataSource={quoteLineItemByQuoteData}
+                                      rowSelection={rowSelection}
+                                      scroll
+                                      locale={locale}
+                                    />
+                                  ),
                                 },
                               ]}
                             />
