@@ -245,7 +245,12 @@ const GenerateQuote: React.FC = () => {
     {
       key: 1,
       name: (
-        <Typography name="Body 4/Regular" onClick={() => setActiveTab('1')}>
+        <Typography
+          name="Body 4/Regular"
+          cursor="pointer"
+          color={token?.colorTextBase}
+          onClick={() => setActiveTab('1')}
+        >
           Input Details
         </Typography>
       ),
@@ -267,7 +272,12 @@ const GenerateQuote: React.FC = () => {
     {
       key: 2,
       name: (
-        <Typography name="Body 4/Regular" onClick={() => setActiveTab('2')}>
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => setActiveTab('2')}
+          cursor="pointer"
+          color={token?.colorTextBase}
+        >
           Profitability
         </Typography>
       ),
@@ -276,7 +286,12 @@ const GenerateQuote: React.FC = () => {
     {
       key: 3,
       name: (
-        <Typography name="Body 4/Regular" onClick={() => setActiveTab('3')}>
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => setActiveTab('3')}
+          cursor="pointer"
+          color={token?.colorTextBase}
+        >
           Rebates
         </Typography>
       ),
@@ -285,7 +300,12 @@ const GenerateQuote: React.FC = () => {
     contractSettingData?.show_validation_tab && {
       key: 4,
       name: (
-        <Typography name="Body 4/Regular" onClick={() => setActiveTab('4')}>
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => setActiveTab('4')}
+          cursor="pointer"
+          color={token?.colorTextBase}
+        >
           Validation
         </Typography>
       ),
@@ -294,7 +314,12 @@ const GenerateQuote: React.FC = () => {
     {
       key: 5,
       name: (
-        <Typography name="Body 4/Regular" onClick={() => setActiveTab('5')}>
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => setActiveTab('5')}
+          cursor="pointer"
+          color={token?.colorTextBase}
+        >
           Metrics
         </Typography>
       ),

@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable no-unsafe-optional-chaining */
 
 'use client';
 
 import {Checkbox} from '@/app/components/common/antd/Checkbox';
-import {Row} from '@/app/components/common/antd/Grid';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import {Switch} from '@/app/components/common/antd/Switch';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -13,7 +14,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {useEffect, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {
   getAllTableColumn,
   updateTableColumnById,
@@ -24,7 +25,7 @@ import {
 } from '../../../../../../../../redux/hook';
 import {TabContainerStyle} from './styled-components';
 
-const FieldDisplayConfiguration = () => {
+const FieldDisplayConfiguration: FC<any> = () => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {data: tableColumnData, loading} = useAppSelector(
@@ -38,7 +39,6 @@ const FieldDisplayConfiguration = () => {
   useEffect(() => {
     dispatch(getAllTableColumn(''));
   }, []);
-  console.log('tableColumnData', tableColumnData);
 
   const updateTableColumnValues = async () => {
     for (let i = 0; i < updateColumn?.length; i++) {
@@ -212,129 +212,142 @@ const FieldDisplayConfiguration = () => {
     ...thirdFieldDisplayConfigurationFields,
   ];
   return (
-    <TabContainerStyle>
-      <Row>
-        <Space
-          size={36}
-          direction="vertical"
-          style={{
-            width: '100%',
-            background: 'white',
-            borderRadius: '12px',
-            padding: '24px',
-          }}
-        >
-          <OsCollapseAdmin
-            items={[
-              {
-                key: '1',
-                label: (
-                  <Typography name="Body 2/Medium">Select Tab </Typography>
-                ),
-                children: (
-                  <Space
-                    size={24}
-                    direction="vertical"
-                    style={{
-                      width: '100%',
-                      background: 'white',
-                      borderRadius: '12px',
-                    }}
-                  >
-                    <Typography name="Body 4/Medium">Select Tab</Typography>
-                    <CommonSelect
-                      placeholder="Select"
-                      options={[
-                        {
-                          label: 'Input Details',
-                          value: 'Input Details',
-                        },
-                        {
-                          label: 'Profitability',
-                          value: 'Profitability',
-                        },
-                        {
-                          label: 'Rebates',
-                          value: 'Rebates',
-                        },
-                        {
-                          label: 'Validation',
-                          value: 'Validation',
-                        },
-                      ]}
-                      onChange={(e) => {
-                        setSelectedTable(e);
-                      }}
-                      style={{width: '100%'}}
-                    />
-                  </Space>
-                ),
-              },
-            ]}
-          />
-        </Space>
+    <>
+      <TabContainerStyle>
+        <Row>
+          <Col md={24} xs={12}>
+            <Space
+              size={36}
+              direction="vertical"
+              style={{
+                width: '100%',
+                background: 'white',
+                borderRadius: '12px',
+                padding: '24px',
+              }}
+            >
+              <OsCollapseAdmin
+                items={[
+                  {
+                    key: '1',
+                    label: (
+                      <Typography name="Body 2/Medium">Select Tab </Typography>
+                    ),
+                    children: (
+                      <Space
+                        size={24}
+                        direction="vertical"
+                        style={{
+                          width: '100%',
+                          background: 'white',
+                          borderRadius: '12px',
+                        }}
+                      >
+                        <Typography name="Body 4/Medium">Select Tab</Typography>
+                        <CommonSelect
+                          placeholder="Select"
+                          options={[
+                            {
+                              label: 'Input Details',
+                              value: 'Input Details',
+                            },
+                            {
+                              label: 'Profitability',
+                              value: 'Profitability',
+                            },
+                            {
+                              label: 'Rebates',
+                              value: 'Rebates',
+                            },
+                            {
+                              label: 'Validation',
+                              value: 'Validation',
+                            },
+                          ]}
+                          onChange={(e) => {
+                            setSelectedTable(e);
+                          }}
+                          style={{width: '100%'}}
+                        />
+                      </Space>
+                    ),
+                  },
+                ]}
+              />
+            </Space>
 
-        <Space
-          size={24}
-          direction="vertical"
-          style={{
-            width: '100%',
-            background: 'white',
-            padding: '24px',
-            borderRadius: '12px',
-            marginTop: '30px',
-          }}
-        >
-          <OsCollapseAdmin
-            items={[
-              {
-                key: '1',
-                label: (
-                  <Typography name="Body 2/Medium">Selected Fields</Typography>
-                ),
-                children: (
-                  <Space size={24} direction="vertical" style={{width: '100%'}}>
-                    <OsTableWithOutDrag
-                      loading={false}
-                      tableSelectionType="checkbox"
-                      columns={allColumns}
-                      dataSource={tableColumnDataShow}
-                      pageSize={{
-                        pageSize: 3,
-                      }}
-                    />
-                    <div style={{width: 'max-content', float: 'right'}}>
-                      <OsButton
-                        text="Add Field"
-                        buttontype="PRIMARY"
-                        icon={<PlusIcon width={24} />}
-                        clickHandler={() => {}}
-                      />
-                    </div>
-                  </Space>
-                ),
-              },
-            ]}
-          />
-        </Space>
-      </Row>
+            <Space
+              size={24}
+              direction="vertical"
+              style={{
+                width: '100%',
+                background: 'white',
+                padding: '24px',
+                borderRadius: '12px',
+                marginTop: '30px',
+              }}
+            >
+              <OsCollapseAdmin
+                items={[
+                  {
+                    key: '1',
+                    label: (
+                      <Typography name="Body 2/Medium">
+                        Selected Fields
+                      </Typography>
+                    ),
+                    children: (
+                      <Space
+                        size={24}
+                        direction="vertical"
+                        style={{width: '100%'}}
+                      >
+                        <OsTableWithOutDrag
+                          loading={false}
+                          tableSelectionType="checkbox"
+                          columns={allColumns}
+                          dataSource={tableColumnDataShow}
+                          tablePageSize={50}
+                          scrolly={165}
+                        />
+                        <div style={{width: 'max-content', float: 'right'}}>
+                          <OsButton
+                            text="Add Field"
+                            buttontype="PRIMARY"
+                            icon={<PlusIcon width={24} />}
+                            clickHandler={() => {}}
+                          />
+                        </div>
+                      </Space>
+                    ),
+                  },
+                ]}
+              />
+            </Space>
+          </Col>
+        </Row>
+      </TabContainerStyle>
       <footer
         style={{
           width: 'max-content',
           float: 'right',
           position: 'absolute',
           bottom: '0%',
-          right: '0%',
+          right: '10px',
         }}
       >
-        <OsButton
-          text="Save"
-          buttontype="PRIMARY"
-          clickHandler={updateTableColumnValues}
-          loading={loading}
-        />
+        <Row>
+          <Col>
+            <OsButton
+              text="Save"
+              buttontype="PRIMARY"
+              clickHandler={updateTableColumnValues}
+              loading={loading}
+            />
+          </Col>
+        </Row>
       </footer>
-    </TabContainerStyle>
+    </>
   );
 };
 export default FieldDisplayConfiguration;

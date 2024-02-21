@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable import/no-extraneous-dependencies */
@@ -45,6 +46,8 @@ const OsTable: FC<any> = ({
   cursor = 'default',
   tableSelectionType = 'checkbox',
   loading = false,
+  scrolly = 1000,
+  tablePageSize = 10,
   ...rest
 }) => {
   const [token] = useThemeToken();
@@ -125,16 +128,22 @@ const OsTable: FC<any> = ({
           indicator: <GlobalLoader loading={loading} />,
           spinning: loading,
         }}
-        scroll={scrollx ? {x: scrollx as number} : undefined}
         pagination={
           paginationProps
             ? {
                 ...rest.pagination,
-                ...rest?.pageSize,
+                pageSize: tablePageSize,
                 itemRender,
                 showQuickJumper: false,
               }
             : false
+        }
+        scroll={
+          scrolly
+            ? {y: scrolly as number}
+            : scrollx
+              ? {y: scrollx as number}
+              : undefined
         }
         paginationBorder={paginationProps}
       />

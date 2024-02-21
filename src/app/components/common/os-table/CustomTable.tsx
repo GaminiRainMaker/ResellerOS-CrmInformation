@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable no-nested-ternary */
 /* eslint-disable consistent-return */
-import {PaginationProps} from 'antd';
+import {PaginationProps, Table} from 'antd';
 import {FC} from 'react';
 import useThemeToken from '../hooks/useThemeToken';
 import GlobalLoader from '../os-global-loader';
@@ -12,6 +14,8 @@ const OsTableWithOutDrag: FC<any> = ({
   rowSelection,
   cursor = 'default',
   tableSelectionType = 'checkbox',
+  scrolly = 1000,
+  tablePageSize = 10,
   ...rest
 }) => {
   const [token] = useThemeToken();
@@ -44,11 +48,22 @@ const OsTableWithOutDrag: FC<any> = ({
         indicator: <GlobalLoader loading={rest.loading} />,
         spinning: rest.loading,
       }}
-      scroll={scrollx ? {x: scrollx as number} : undefined}
       pagination={
         paginationProps
-          ? {...rest.pagination, itemRender, showQuickJumper: false}
+          ? {
+              ...rest.pagination,
+              pageSize: tablePageSize,
+              itemRender,
+              showQuickJumper: false,
+            }
           : false
+      }
+      scroll={
+        scrolly
+          ? {y: scrolly as number}
+          : scrollx
+            ? {y: scrollx as number}
+            : undefined
       }
       paginationBorder={paginationProps}
     />

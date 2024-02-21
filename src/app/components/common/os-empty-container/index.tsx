@@ -4,8 +4,10 @@ import {PlusIcon} from '@heroicons/react/24/outline';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
-import {EmptyContainerInterface} from './os-empty-container';
+import {EmptyContainerInterface} from './os-empty-container.interface';
 import EmptyDataIcon from '../../../../../public/assets/static/EmptyContainerIcon.svg';
+import MetricsEmptyIcon from '../../../../../public/assets/static/emptyDataIcon.svg';
+
 import OsButton from '../os-button';
 
 const EmptyContainer: FC<EmptyContainerInterface> = ({
@@ -13,6 +15,7 @@ const EmptyContainer: FC<EmptyContainerInterface> = ({
   subTitle,
   actionButton,
   onClick,
+  MetricsIcon = false,
 }) => {
   const [token] = useThemeToken();
   return (
@@ -28,11 +31,13 @@ const EmptyContainer: FC<EmptyContainerInterface> = ({
       }}
     >
       <Image
-        src={EmptyDataIcon}
+        src={MetricsIcon ? MetricsEmptyIcon : EmptyDataIcon}
         alt="EmptyDataIcon"
         style={{cursor: 'pointer', marginTop: '50px'}}
       />
-      <Typography name="Body 3/Medium">{title}</Typography>
+      <Typography name="Body 3/Medium" color={token?.colorPrimaryText}>
+        {title}
+      </Typography>
       {subTitle && (
         <Typography name="Body 4/Regular" color={token?.colorTextSecondary}>
           {subTitle}

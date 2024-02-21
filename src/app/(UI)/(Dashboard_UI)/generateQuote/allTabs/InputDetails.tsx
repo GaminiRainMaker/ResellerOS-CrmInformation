@@ -146,7 +146,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       width: 130,
     },
     {
-      title: 'Product Code',
+      title: 'SKU',
       dataIndex: 'product_code',
       key: 'product_code',
       width: 187,
@@ -193,7 +193,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
           />
         </Form.Item>
       ),
-      width: 187,
+      width: 120,
     },
     {
       title: 'MSRP',
@@ -215,7 +215,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       dataIndex: 'adjusted_price',
       key: 'adjusted_price',
       width: 187,
-      render: (text: any, record: any) => {
+      render: (text: any) => {
         // const totalAddedPrice = record?.Product?.adjusted_price
         //   ?.slice(1, record?.Product?.adjusted_price?.length)
         //   .replace(',', '');

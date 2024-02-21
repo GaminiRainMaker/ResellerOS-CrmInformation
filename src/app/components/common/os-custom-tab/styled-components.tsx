@@ -37,8 +37,7 @@ export const CustmDealRegTab = styled(Tabs)<{
 
 export const CustomTabStyle = styled.div<{token: GlobalToken}>`
   display: flex;
-  min-width: 292px;
-  max-width: 292px;
+  // min-width: 292px;
   padding: 36px 24px;
   background: ${({token}) => token.colorBgContainer};
   border-radius: 12px;

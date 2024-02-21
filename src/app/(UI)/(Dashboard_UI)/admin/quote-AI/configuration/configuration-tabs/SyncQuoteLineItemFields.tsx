@@ -12,6 +12,7 @@ import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Row, Space, Table} from 'antd';
 import {useEffect, useState} from 'react';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
+import {Col} from '@/app/components/common/antd/Grid';
 import {TabContainerStyle} from './styled-components';
 import {
   useAppDispatch,
@@ -299,49 +300,55 @@ const SyncQuoteLineItemField = () => {
   return (
     <TabContainerStyle>
       <Row>
-        <Space
-          size={24}
-          direction="vertical"
-          style={{
-            width: '100%',
-            background: 'white',
-            padding: '24px',
-            borderRadius: '12px',
-          }}
-        >
-          <OsCollapseAdmin
-            items={[
-              {
-                key: '1',
-                label: (
-                  <Typography name="Body 2/Medium">
-                    Sync Quote Line Item
-                  </Typography>
-                ),
-                children: (
-                  <Space size={24} direction="vertical" style={{width: '100%'}}>
-                    <OsTableWithOutDrag
-                      loading={false}
-                      // rowSelection={rowSelection}
-                      tableSelectionType="checkbox"
-                      columns={SyncQuoteLineItemFields}
-                      dataSource={updateColumn}
-                      scroll
-                    />
-                    <div style={{width: 'max-content', float: 'right'}}>
-                      <OsButton
-                        text="Add Field"
-                        buttontype="PRIMARY"
-                        icon={<PlusIcon width={24} />}
-                        clickHandler={addNewRow}
+        <Col md={24} xs={12}>
+          <Space
+            size={24}
+            direction="vertical"
+            style={{
+              width: '100%',
+              background: 'white',
+              padding: '24px',
+              borderRadius: '12px',
+            }}
+          >
+            <OsCollapseAdmin
+              items={[
+                {
+                  key: '1',
+                  label: (
+                    <Typography name="Body 2/Medium">
+                      Sync Quote Line Item
+                    </Typography>
+                  ),
+                  children: (
+                    <Space
+                      size={24}
+                      direction="vertical"
+                      style={{width: '100%'}}
+                    >
+                      <OsTableWithOutDrag
+                        loading={false}
+                        // rowSelection={rowSelection}
+                        tableSelectionType="checkbox"
+                        columns={SyncQuoteLineItemFields}
+                        dataSource={updateColumn}
+                        scroll
                       />
-                    </div>
-                  </Space>
-                ),
-              },
-            ]}
-          />
-        </Space>
+                      <div style={{width: 'max-content', float: 'right'}}>
+                        <OsButton
+                          text="Add Field"
+                          buttontype="PRIMARY"
+                          icon={<PlusIcon width={24} />}
+                          clickHandler={addNewRow}
+                        />
+                      </div>
+                    </Space>
+                  ),
+                },
+              ]}
+            />
+          </Space>
+        </Col>
       </Row>
       <footer
         style={{

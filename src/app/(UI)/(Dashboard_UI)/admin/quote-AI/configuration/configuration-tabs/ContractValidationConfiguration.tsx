@@ -127,58 +127,40 @@ const ContractValidationConfiguration = () => {
   return (
     <TabContainerStyle>
       <Row>
-        <Space
-          size={24}
-          direction="vertical"
-          style={{
-            width: '100%',
-            background: 'white',
-            padding: '24px',
-            borderRadius: '12px',
-          }}
-        >
+        <Col md={24} xs={12}>
           <Space
-            size={36}
+            size={24}
             direction="vertical"
             style={{
               width: '100%',
               background: 'white',
+              padding: '24px',
               borderRadius: '12px',
             }}
           >
-            <Row justify="space-between">
-              <Col>
-                <Typography name="Body 2/Medium">
-                  Contract Configuration{' '}
-                </Typography>
-              </Col>
-              <Col>
-                <Space size={8}>
-                  <Typography name="Body 3/Regular">Active</Typography>
-                  <Switch size="default" onChange={() => {}} />
-                </Space>
-              </Col>
-            </Row>
-
             <Space
-              size={4}
+              size={36}
               direction="vertical"
               style={{
                 width: '100%',
+                background: 'white',
+                borderRadius: '12px',
               }}
             >
-              <Typography name="Body 4/Medium">Contract Status</Typography>
-              <CommonSelect
-                placeholder="Select"
-                style={{width: '100%'}}
-                options={ContractStatusOptions}
-                onChange={(e) => {
-                  setIsSelectStatus(true);
-                  setIsSelectLogic(false);
-                }}
-              />
-            </Space>
-            {isSelectStatus && (
+              <Row justify="space-between">
+                <Col>
+                  <Typography name="Body 2/Medium">
+                    Contract Configuration{' '}
+                  </Typography>
+                </Col>
+                <Col>
+                  <Space size={8}>
+                    <Typography name="Body 3/Regular">Active</Typography>
+                    <Switch size="default" onChange={() => {}} />
+                  </Space>
+                </Col>
+              </Row>
+
               <Space
                 size={4}
                 direction="vertical"
@@ -186,75 +168,98 @@ const ContractValidationConfiguration = () => {
                   width: '100%',
                 }}
               >
-                <Typography name="Body 4/Medium">Logic</Typography>
+                <Typography name="Body 4/Medium">Contract Status</Typography>
                 <CommonSelect
                   placeholder="Select"
                   style={{width: '100%'}}
-                  options={LogicOptions}
+                  options={ContractStatusOptions}
                   onChange={(e) => {
-                    if (e === 'custom_logic') setIsSelectLogic(true);
-                    else setIsSelectLogic(false);
+                    setIsSelectStatus(true);
+                    setIsSelectLogic(false);
                   }}
                 />
               </Space>
-            )}
+              {isSelectStatus && (
+                <Space
+                  size={4}
+                  direction="vertical"
+                  style={{
+                    width: '100%',
+                  }}
+                >
+                  <Typography name="Body 4/Medium">Logic</Typography>
+                  <CommonSelect
+                    placeholder="Select"
+                    style={{width: '100%'}}
+                    options={LogicOptions}
+                    onChange={(e) => {
+                      if (e === 'custom_logic') setIsSelectLogic(true);
+                      else setIsSelectLogic(false);
+                    }}
+                  />
+                </Space>
+              )}
 
-            {isSelectLogic && (
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">Custom</Typography>
-                <OsInput placeholder="Select" style={{width: '100%'}} />
-              </Space>
-            )}
+              {isSelectLogic && (
+                <Space
+                  size={4}
+                  direction="vertical"
+                  style={{
+                    width: '100%',
+                  }}
+                >
+                  <Typography name="Body 4/Medium">Custom</Typography>
+                  <OsInput placeholder="Select" style={{width: '100%'}} />
+                </Space>
+              )}
+            </Space>
           </Space>
-        </Space>
-        <Space
-          size={24}
-          direction="vertical"
-          style={{
-            width: '100%',
-            background: 'white',
-            padding: '24px',
-            borderRadius: '12px',
-            marginTop: '30px',
-          }}
-        >
-          <OsCollapseAdmin
-            items={[
-              {
-                key: '1',
-                label: <Typography name="Body 2/Medium">Fields</Typography>,
-                children: (
-                  <Space size={24} direction="vertical" style={{width: '100%'}}>
-                    <OsTable
-                      loading={false}
-                      tableSelectionType="checkbox"
-                      columns={ContractConfigurationFields}
-                      dataSource={dummyData}
-                      scroll
-                      pageSize={{
-                        pageSize: 3,
-                      }}
-                    />
-                    <div style={{width: 'max-content', float: 'right'}}>
-                      <OsButton
-                        text="Add Field"
-                        buttontype="PRIMARY"
-                        icon={<PlusIcon width={24} />}
-                        clickHandler={() => {}}
+          <Space
+            size={24}
+            direction="vertical"
+            style={{
+              width: '100%',
+              background: 'white',
+              padding: '24px',
+              borderRadius: '12px',
+              marginTop: '30px',
+            }}
+          >
+            <OsCollapseAdmin
+              items={[
+                {
+                  key: '1',
+                  label: <Typography name="Body 2/Medium">Fields</Typography>,
+                  children: (
+                    <Space
+                      size={24}
+                      direction="vertical"
+                      style={{width: '100%'}}
+                    >
+                      <OsTable
+                        loading={false}
+                        tableSelectionType="checkbox"
+                        columns={ContractConfigurationFields}
+                        dataSource={dummyData}
+                        scroll
+                        tablePageSize={50}
+                        scrolly={20}
                       />
-                    </div>
-                  </Space>
-                ),
-              },
-            ]}
-          />
-        </Space>
+                      <div style={{width: 'max-content', float: 'right'}}>
+                        <OsButton
+                          text="Add Field"
+                          buttontype="PRIMARY"
+                          icon={<PlusIcon width={24} />}
+                          clickHandler={() => {}}
+                        />
+                      </div>
+                    </Space>
+                  ),
+                },
+              ]}
+            />
+          </Space>
+        </Col>
       </Row>
       <footer
         style={{
