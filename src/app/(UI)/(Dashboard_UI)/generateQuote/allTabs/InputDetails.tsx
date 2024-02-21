@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unsafe-optional-chaining */
@@ -5,6 +6,7 @@
 import {Space} from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import OsCollapse from '@/app/components/common/os-collapse';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
@@ -14,9 +16,13 @@ import Typography from '@/app/components/common/typography';
 import {selectDataForProduct} from '@/app/utils/CONSTANTS';
 import {useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {TrashIcon} from '@heroicons/react/24/outline';
-import {Form, InputNumber} from 'antd';
+import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import {
+  getAllBundle,
+  updateBundleQuantity,
+} from '../../../../../../redux/actions/bundle';
 import {updateProductFamily} from '../../../../../../redux/actions/product';
 import {
   DeleteQuoteLineItemById,
@@ -31,21 +37,27 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   isDeleteInputDetailModal,
   setFinalInputColumn,
   finalInputColumn,
+  selectedFilter,
+  familyFilter,
+  setFamilyFilter,
+  setSelectedRowIds,
+  selectTedRowIds,
 }) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const {abbreviate} = useAbbreviationHook(0);
-  const [isDeleteIds, setDeleteIds] = useState<any>();
   // const [finalInputColumn, setFinalInputColumn] = useState<any>();
-  const {quoteLineItemByQuoteID, loading} = useAppSelector(
-    (state) => state.quoteLineItem,
-  );
+  const {
+    quoteLineItemByQuoteID,
+    loading,
+    data: dataNullForBundle,
+  } = useAppSelector((state) => state.quoteLineItem);
   const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] = useState<any>(
     quoteLineItemByQuoteID,
   );
-
+  const {data: bundleData} = useAppSelector((state) => state.bundle);
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Input Details" />,
   };
@@ -70,11 +82,30 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     return false;
   };
 
+  // const deleteQuote = async (id: number) => {
+  //   if (id) {
+  //     const data = {
+  //       Ids: [id],
+  //       bundle_id: null,
+  //     };
+  //     await dispatch(updateQuoteLineItemForBundleId(data));
+  //     dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
+  //     dispatch(getAllBundle(getQuoteID));
+  //   }
+  // };
+
+  const updateBundleQuantityData = async (data: any) => {
+    await dispatch(updateBundleQuantity(data));
+    dispatch(getAllBundle(getQuoteID));
+  };
+  useEffect(() => {
+    dispatch(getAllBundle(getQuoteID));
+  }, []);
   const deleteQuoteLineItems = () => {
-    if (isDeleteIds) {
-      const data = {Ids: isDeleteIds};
+    if (selectTedRowIds) {
+      const data = {Ids: selectTedRowIds};
       dispatch(DeleteQuoteLineItemById(data));
-      setDeleteIds([]);
+      setSelectedRowIds([]);
       setTimeout(() => {
         dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID))).then(
           (d: any) => {
@@ -88,7 +119,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
 
   const rowSelection = {
     onChange: (selectedRowKeys: any) => {
-      setDeleteIds(selectedRowKeys);
+      setSelectedRowIds(selectedRowKeys);
     },
   };
 
@@ -105,7 +136,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
           }}
           placeholder={text}
           value={
-            !isDeleteIds?.includes(record?.id)
+            !selectTedRowIds?.includes(record?.id)
               ? text * (record?.Bundle?.quantity ? record?.Bundle?.quantity : 1)
               : quoteLineItemByQuoteData?.line_number
           }
@@ -153,7 +184,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
             disabled={renderEditableInput('Qty')}
             type="number"
             value={
-              !isDeleteIds?.includes(record?.id)
+              !selectTedRowIds?.includes(record?.id)
                 ? text *
                   (record?.Bundle?.quantity ? record?.Bundle?.quantity : 1)
                 : quoteLineItemByQuoteData?.quantity
@@ -226,7 +257,9 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         return {
           props: {
             style: {
-              background: isDeleteIds?.includes(record?.id) ? '#E8EBEE' : ' ',
+              background: selectTedRowIds?.includes(record?.id)
+                ? '#E8EBEE'
+                : ' ',
             },
           },
           children: (
@@ -271,7 +304,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
             color={token.colorError}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              setDeleteIds([record?.id]);
+              setSelectedRowIds([record?.id]);
               setIsDeleteInputDetailModal(true);
             }}
           />
@@ -280,6 +313,71 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     },
   ];
 
+  useEffect(() => {
+    if (selectedFilter === 'Product Family') {
+      const finalFamilyArr: any = [];
+      let productsArr: any = [];
+      let professionalServiceArr: any = [];
+      let maintenanceArr: any = [];
+      let subscriptionArr: any = [];
+      let unassignedArr: any = [];
+
+      if (dataNullForBundle?.[0] && dataNullForBundle?.[0]?.length > 0) {
+        productsArr = dataNullForBundle?.[0]?.filter(
+          (item: any) => item?.Product?.product_family === 'Products',
+        );
+        professionalServiceArr = dataNullForBundle?.[0]?.filter(
+          (item: any) =>
+            item?.Product?.product_family === 'Professional Services',
+        );
+        maintenanceArr = dataNullForBundle?.[0]?.filter(
+          (item: any) => item?.Product?.product_family === 'Maintenance',
+        );
+        subscriptionArr = dataNullForBundle?.[0]?.filter(
+          (item: any) => item?.Product?.product_family === 'Subscriptions',
+        );
+        unassignedArr = dataNullForBundle?.[0]?.filter(
+          (item: any) => item?.Product?.product_family == null,
+        );
+      }
+      if (productsArr && productsArr?.length > 0) {
+        const obj: any = {
+          name: 'Products',
+          QuoteLineItem: productsArr,
+        };
+        finalFamilyArr?.push(obj);
+      }
+      if (professionalServiceArr && professionalServiceArr?.length > 0) {
+        const obj: any = {
+          name: 'Professional Services',
+          QuoteLineItem: professionalServiceArr,
+        };
+        finalFamilyArr?.push(obj);
+      }
+      if (maintenanceArr && maintenanceArr?.length > 0) {
+        const obj: any = {
+          name: 'Maintenances',
+          QuoteLineItem: maintenanceArr,
+        };
+        finalFamilyArr?.push(obj);
+      }
+      if (unassignedArr && subscriptionArr?.length > 0) {
+        const obj: any = {
+          name: 'Subscriptions',
+          QuoteLineItem: subscriptionArr,
+        };
+        finalFamilyArr?.push(obj);
+      }
+      if (unassignedArr && unassignedArr?.length > 0) {
+        const obj: any = {
+          name: 'Unassigned',
+          QuoteLineItem: unassignedArr,
+        };
+        finalFamilyArr?.push(obj);
+      }
+      setFamilyFilter(finalFamilyArr);
+    }
+  }, [selectedFilter]);
   useEffect(() => {
     const newArr: any = [];
     InputDetailQuoteLineItemcolumns?.map((itemCol: any) => {
@@ -311,14 +409,193 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         <Form>
-          <OsTableWithOutDrag
+          {bundleData && bundleData?.length > 0 ? (
+            <>
+              {' '}
+              {bundleData?.map((item: any, index: any) => (
+                <OsCollapse
+                  key={item?.id}
+                  items={[
+                    {
+                      key: '1',
+                      label: (
+                        <>
+                          <Space
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                            }}
+                          >
+                            <p>{item?.name}</p>
+                            <p>Lines:{item?.QuoteLineItems?.length}</p>
+                            <p>Desc: {item?.description}</p>
+                            <p>
+                              Quantity:
+                              <OsInput
+                                defaultValue={item?.quantity}
+                                style={{width: '60px'}}
+                                onChange={(e: any) => {
+                                  const data = {
+                                    id: item?.id,
+                                    quantity: e.target.value,
+                                  };
+                                  updateBundleQuantityData(data);
+                                }}
+                              />
+                            </p>
+                          </Space>
+                        </>
+                      ),
+                      // children: item?.children,
+                      children: (
+                        <OsTableWithOutDrag
+                          loading={loading}
+                          // rowSelection={rowSelection}
+                          columns={finalInputColumn}
+                          dataSource={item?.QuoteLineItems || []}
+                          scroll
+                          rowSelection={rowSelection}
+                          locale={locale}
+                        />
+                      ),
+                    },
+                  ]}
+                />
+              ))}{' '}
+              {selectedFilter ? (
+                <>
+                  {familyFilter?.map((item: any, index: any) => (
+                    <OsCollapse
+                      key={item?.id}
+                      items={[
+                        {
+                          key: item?.id,
+                          label: (
+                            <>
+                              <Space
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'start',
+                                }}
+                              >
+                                <p>{item?.name}</p>
+                              </Space>
+                            </>
+                          ),
+                          // children: item?.children,
+                          children: (
+                            <OsTableWithOutDrag
+                              loading={loading}
+                              columns={finalInputColumn}
+                              dataSource={item?.QuoteLineItem || []}
+                              scroll
+                              rowSelection={rowSelection}
+                              locale={locale}
+                            />
+                          ),
+                        },
+                      ]}
+                    />
+                  ))}
+                </>
+              ) : (
+                <>
+                  {dataNullForBundle?.[0]?.length > 0 &&
+                    dataNullForBundle?.[0] && (
+                      <OsCollapse
+                        items={[
+                          {
+                            key: '1',
+                            label: (
+                              <>
+                                <Space
+                                  style={{
+                                    display: 'flex',
+                                    justifyContent: 'start',
+                                  }}
+                                >
+                                  <p>Unassigned</p>
+                                </Space>
+                              </>
+                            ),
+                            // children: item?.children,
+                            children: (
+                              <OsTableWithOutDrag
+                                loading={loading}
+                                columns={finalInputColumn}
+                                dataSource={dataNullForBundle?.[0] || []}
+                                scroll
+                                rowSelection={rowSelection}
+                                locale={locale}
+                              />
+                            ),
+                          },
+                        ]}
+                      />
+                    )}
+                </>
+              )}{' '}
+            </>
+          ) : (
+            <>
+              {selectedFilter ? (
+                <>
+                  {' '}
+                  {familyFilter?.map((item: any, index: any) => (
+                    <OsCollapse
+                      key={item?.id}
+                      items={[
+                        {
+                          key: item.id,
+                          label: (
+                            <>
+                              <Space
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'start',
+                                }}
+                              >
+                                <p>{item?.name}</p>
+                              </Space>
+                            </>
+                          ),
+                          // children: item?.children,
+                          children: (
+                            <OsTableWithOutDrag
+                              loading={loading}
+                              columns={finalInputColumn}
+                              dataSource={item?.QuoteLineItem || []}
+                              scroll
+                              rowSelection={rowSelection}
+                              locale={locale}
+                            />
+                          ),
+                        },
+                      ]}
+                    />
+                  ))}
+                </>
+              ) : (
+                // item?.children
+                <OsTableWithOutDrag
+                  loading={loading}
+                  columns={finalInputColumn}
+                  dataSource={quoteLineItemByQuoteData || []}
+                  scroll
+                  rowSelection={rowSelection}
+                  locale={locale}
+                />
+              )}{' '}
+            </>
+          )}
+          {/* <OsTableWithOutDrag
             loading={loading}
             columns={finalInputColumn}
             dataSource={quoteLineItemByQuoteData}
             rowSelection={rowSelection}
             scroll
             locale={locale}
-          />
+          /> */}
         </Form>
       ) : (
         <EmptyContainer
@@ -329,7 +606,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
 
       <DeleteModal
         setShowModalDelete={setIsDeleteInputDetailModal}
-        setDeleteIds={setDeleteIds}
+        setSelectedRowIds={setSelectedRowIds}
         showModalDelete={isDeleteInputDetailModal}
         deleteSelectedIds={deleteQuoteLineItems}
         description="Are you sure you want to delete this QuoteLineItem?"

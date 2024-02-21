@@ -10,4 +10,9 @@ export interface InputDetailTabInterface {
   isDeleteInputDetailModal: boolean;
   setFinalInputColumn: any;
   finalInputColumn: any;
+  selectedFilter?: string;
+  familyFilter?: any;
+  setFamilyFilter?: any;
+  setSelectedRowIds?: any;
+  selectTedRowIds?: any;
 }
