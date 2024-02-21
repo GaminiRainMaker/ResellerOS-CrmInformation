@@ -649,17 +649,7 @@ const GenerateQuote: React.FC = () => {
                                       </Space>
                                     </>
                                   ),
-                                  // children: item?.children,
-                                  children: (
-                                    <OsTableWithOutDrag
-                                      loading={loading}
-                                      columns={finalInputColumn}
-                                      dataSource={quoteLineItemByQuoteData}
-                                      rowSelection={rowSelection}
-                                      scroll
-                                      locale={locale}
-                                    />
-                                  ),
+                                  children: item?.children,
                                 },
                               ]}
                             />
