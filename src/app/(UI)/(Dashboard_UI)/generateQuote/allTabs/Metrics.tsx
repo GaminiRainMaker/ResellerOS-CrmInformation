@@ -7,6 +7,7 @@
 /* eslint-disable react/destructuring-assignment */
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsPieChart from '@/app/components/common/os-piechart';
 import Typography from '@/app/components/common/typography';
 import {totalRevenue, useRemoveDollarAndCommahook} from '@/app/utils/base';
@@ -55,6 +56,8 @@ const Matrix: FC<any> = (familyFilter: any) => {
       ],
     },
   ]);
+
+  console.log('familyFilter', familyFilter?.familyFilter?.length);
 
   const getPieCellColor = (name: string) => {
     if (name === 'Unassigned') return '#2364AA';
@@ -126,31 +129,40 @@ const Matrix: FC<any> = (familyFilter: any) => {
   }, [familyFilter]);
 
   return (
-    <Row gutter={[24, 24]} justify="space-between">
-      {sectionData.map((item) => (
-        <div
-          style={{
-            padding: '18px',
-            background: '#f6f7f8',
-            borderRadius: '12px',
-          }}
-          key={item.id}
-        >
-          <Col>
-            <Space direction="vertical">
-              <Typography name="Body 1/Regular">{item.name}</Typography>
-              <Typography name="Body 3/Regular">
-                {familyFilter?.selectedFilter
-                  ? `(${familyFilter?.selectedFilter})`
-                  : ''}
-              </Typography>
-            </Space>
+    <>
+      {familyFilter?.familyFilter?.length > 0 ? (
+        <Row gutter={[24, 24]} justify="space-between">
+          {sectionData.map((item) => (
+            <div
+              style={{
+                padding: '18px',
+                background: '#f6f7f8',
+                borderRadius: '12px',
+              }}
+              key={item.id}
+            >
+              <Col>
+                <Space direction="vertical">
+                  <Typography name="Body 1/Regular">{item.name}</Typography>
+                  <Typography name="Body 3/Regular">
+                    {familyFilter?.selectedFilter
+                      ? `(${familyFilter?.selectedFilter})`
+                      : ''}
+                  </Typography>
+                </Space>
 
-            <OsPieChart data={item.pieData} />
-          </Col>
-        </div>
-      ))}
-    </Row>
+                <OsPieChart data={item.pieData} />
+              </Col>
+            </div>
+          ))}
+        </Row>
+      ) : (
+        <EmptyContainer
+          title="Please Select Grouping to view Matrics"
+          MetricsIcon
+        />
+      )}
+    </>
   );
 };
 

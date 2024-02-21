@@ -1,7 +1,7 @@
 'use client';
 
 import {Checkbox} from '@/app/components/common/antd/Checkbox';
-import {Row} from '@/app/components/common/antd/Grid';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
@@ -38,11 +38,9 @@ const QuoteProcess = () => {
     dispatch(getAllContractSetting(''));
   };
 
-
   useEffect(() => {
     setContractSetting(contractSettingData);
   }, [contractSettingData]);
-
 
   useEffect(() => {
     dispatch(getAllContractSetting(''));
@@ -58,146 +56,149 @@ const QuoteProcess = () => {
     }
   }, [contractSetting?.object_name]);
 
-  
   return (
     <TabContainerStyle>
       <Row>
-        <Space
-          size={24}
-          direction="vertical"
-          style={{
-            width: '100%',
-            background: 'white',
-            padding: '24px',
-            borderRadius: '12px',
-          }}
-        >
-          <OsCollapseAdmin
-            items={[
-              {
-                key: '1',
-                label: (
-                  <Typography name="Body 2/Medium">
-                    Contract Configuration
-                  </Typography>
-                ),
-                children: (
-                  <Space
-                    size={36}
-                    direction="vertical"
-                    style={{
-                      width: '100%',
-                      background: 'white',
-                      borderRadius: '12px',
-                    }}
-                  >
+        <Col md={24} xs={12}>
+          <Space
+            size={24}
+            direction="vertical"
+            style={{
+              width: '100%',
+              background: 'white',
+              padding: '24px',
+              borderRadius: '12px',
+            }}
+          >
+            <OsCollapseAdmin
+              items={[
+                {
+                  key: '1',
+                  label: (
+                    <Typography name="Body 2/Medium">
+                      Contract Configuration
+                    </Typography>
+                  ),
+                  children: (
                     <Space
-                      size={4}
+                      size={36}
                       direction="vertical"
                       style={{
                         width: '100%',
+                        background: 'white',
+                        borderRadius: '12px',
                       }}
                     >
-                      <Typography name="Body 4/Medium">Object Name </Typography>
-                      <CommonSelect
-                        placeholder="Select"
-                        style={{width: '100%'}}
-                        value={contractSetting?.object_name}
-                        options={ContractConfigurationColumn}
-                        onChange={(e) => {
-                          setContractSetting({
-                            ...contractSetting,
-                            object_name: e,
-                          });
+                      <Space
+                        size={4}
+                        direction="vertical"
+                        style={{
+                          width: '100%',
                         }}
-                      />
+                      >
+                        <Typography name="Body 4/Medium">
+                          Object Name{' '}
+                        </Typography>
+                        <CommonSelect
+                          placeholder="Select"
+                          style={{width: '100%'}}
+                          value={contractSetting?.object_name}
+                          options={ContractConfigurationColumn}
+                          onChange={(e) => {
+                            setContractSetting({
+                              ...contractSetting,
+                              object_name: e,
+                            });
+                          }}
+                        />
+                      </Space>
+                      <Space
+                        size={4}
+                        direction="vertical"
+                        style={{
+                          width: '100%',
+                        }}
+                      >
+                        <Typography name="Body 4/Medium">
+                          Matching Field Name
+                        </Typography>
+                        <CommonSelect
+                          placeholder="Select"
+                          style={{width: '100%'}}
+                          options={fieldNameOption}
+                          value={contractSetting?.matching_filed}
+                          onChange={(e) => {
+                            setContractSetting({
+                              ...contractSetting,
+                              matching_filed: e,
+                            });
+                          }}
+                        />
+                      </Space>
                     </Space>
+                  ),
+                },
+              ]}
+            />
+          </Space>
+          <Space
+            size={36}
+            direction="vertical"
+            style={{
+              width: '100%',
+              background: 'white',
+              padding: '24px',
+              borderRadius: '12px',
+              marginTop: '30px',
+            }}
+          >
+            <OsCollapseAdmin
+              items={[
+                {
+                  key: '2',
+                  label: (
+                    <Typography name="Body 2/Medium">
+                      Validation Tab Visibility Configuration
+                    </Typography>
+                  ),
+                  children: (
                     <Space
-                      size={4}
+                      size={36}
                       direction="vertical"
                       style={{
                         width: '100%',
+                        background: 'white',
+                        borderRadius: '12px',
                       }}
                     >
-                      <Typography name="Body 4/Medium">
-                        Matching Field Name
-                      </Typography>
-                      <CommonSelect
-                        placeholder="Select"
-                        style={{width: '100%'}}
-                        options={fieldNameOption}
-                        value={contractSetting?.matching_filed}
-                        onChange={(e) => {
-                          setContractSetting({
-                            ...contractSetting,
-                            matching_filed: e,
-                          });
-                        }}
-                      />
+                      <Space size={8}>
+                        <Checkbox
+                          checked={contractSetting?.show_validation_tab}
+                          onChange={(e) => {
+                            if (e?.target?.checked) {
+                              setContractSetting({
+                                ...contractSetting,
+                                show_validation_tab: true,
+                              });
+                            } else {
+                              setContractSetting({
+                                ...contractSetting,
+                                show_validation_tab: false,
+                              });
+                            }
+                          }}
+                        />
+                        <Typography name="Body 4/Medium">
+                          Show Validation Tab
+                        </Typography>
+                      </Space>
                     </Space>
-                  </Space>
-                ),
-              },
-            ]}
-          />
-        </Space>
-        <Space
-          size={36}
-          direction="vertical"
-          style={{
-            width: '100%',
-            background: 'white',
-            padding: '24px',
-            borderRadius: '12px',
-            marginTop: '30px',
-          }}
-        >
-          <OsCollapseAdmin
-            items={[
-              {
-                key: '2',
-                label: (
-                  <Typography name="Body 2/Medium">
-                    Validation Tab Visibility Configuration
-                  </Typography>
-                ),
-                children: (
-                  <Space
-                    size={36}
-                    direction="vertical"
-                    style={{
-                      width: '100%',
-                      background: 'white',
-                      borderRadius: '12px',
-                    }}
-                  >
-                    <Space size={8}>
-                      <Checkbox
-                        checked={contractSetting?.show_validation_tab}
-                        onChange={(e) => {
-                          if (e?.target?.checked) {
-                            setContractSetting({
-                              ...contractSetting,
-                              show_validation_tab: true,
-                            });
-                          } else {
-                            setContractSetting({
-                              ...contractSetting,
-                              show_validation_tab: false,
-                            });
-                          }
-                        }}
-                      />
-                      <Typography name="Body 4/Medium">
-                        Show Validation Tab
-                      </Typography>
-                    </Space>
-                  </Space>
-                ),
-              },
-            ]}
-          />
-        </Space>
+                  ),
+                },
+              ]}
+            />
+          </Space>
+        </Col>
       </Row>
       <footer
         style={{
@@ -205,7 +206,7 @@ const QuoteProcess = () => {
           float: 'right',
           position: 'absolute',
           bottom: '0%',
-          right: '0%',
+          right: '10px',
         }}
       >
         <OsButton

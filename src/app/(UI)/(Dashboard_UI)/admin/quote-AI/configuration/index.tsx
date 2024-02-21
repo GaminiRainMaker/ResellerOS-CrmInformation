@@ -5,7 +5,7 @@
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {Row, Space, TabsProps} from 'antd';
-import {useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import ContractValidationConfiguration from './configuration-tabs/ContractValidationConfiguration';
 import ConverSationProcess from './configuration-tabs/ConversationProcess';
 import FieldDisplayConfiguration from './configuration-tabs/FieldDisplayConfiguration';
@@ -13,7 +13,7 @@ import QuoteProcess from './configuration-tabs/QuoteProcess';
 import SyncQuoteField from './configuration-tabs/SyncQuoteFields';
 import SyncQuoteLineItemField from './configuration-tabs/SyncQuoteLineItemFields';
 
-const QuoteAI = () => {
+const QuoteAI: FC<any> = () => {
   const [activeTab, setActiveTab] = useState<any>('1');
 
   const tabItems: TabsProps['items'] = [
@@ -58,9 +58,10 @@ const QuoteAI = () => {
         </Typography>
       ),
       key: '6',
-      children: <FieldDisplayConfiguration />,
+      children: <FieldDisplayConfiguration/>,
     },
   ];
+
   return (
     <Space size={24} direction="vertical" style={{width: '100%'}}>
       <Row>

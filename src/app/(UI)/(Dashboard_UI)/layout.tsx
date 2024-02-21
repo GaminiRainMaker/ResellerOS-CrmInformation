@@ -15,7 +15,7 @@ export default function DashboardLayout({
   const pathname = usePathname();
   return (
     <>
-      <Layout style={{minHeight: '95vh'}}>
+      <Layout style={{minHeight: '90vh'}}>
         <CustomHeader />
         <Layout>
           <SideBar />

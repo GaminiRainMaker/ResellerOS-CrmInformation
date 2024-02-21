@@ -3,4 +3,5 @@ export interface EmptyContainerInterface {
   subTitle?: string;
   actionButton?: string;
   onClick?: (value: any) => void;
+  MetricsIcon?: boolean;
 }

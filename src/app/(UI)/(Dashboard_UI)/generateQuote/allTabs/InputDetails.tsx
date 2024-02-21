@@ -14,7 +14,7 @@ import Typography from '@/app/components/common/typography';
 import {selectDataForProduct} from '@/app/utils/CONSTANTS';
 import {useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {TrashIcon} from '@heroicons/react/24/outline';
-import {Form, InputNumber} from 'antd';
+import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {updateProductFamily} from '../../../../../../redux/actions/product';
@@ -122,7 +122,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       width: 130,
     },
     {
-      title: 'Product Code',
+      title: 'SKU',
       dataIndex: 'product_code',
       key: 'product_code',
       width: 187,
@@ -169,7 +169,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
           />
         </Form.Item>
       ),
-      width: 187,
+      width: 120,
     },
     {
       title: 'MSRP',
@@ -191,7 +191,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       dataIndex: 'adjusted_price',
       key: 'adjusted_price',
       width: 187,
-      render: (text: any, record: any) => {
+      render: (text: any) => {
         // const totalAddedPrice = record?.Product?.adjusted_price
         //   ?.slice(1, record?.Product?.adjusted_price?.length)
         //   .replace(',', '');
