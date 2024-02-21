@@ -84,6 +84,7 @@ const GenerateQuote: React.FC = () => {
     dispatch(getAllContractSetting(''));
   }, []);
 
+ 
   useEffect(() => {
     let tabsname: any;
     if (activeTab == '1') {
@@ -147,44 +148,44 @@ const GenerateQuote: React.FC = () => {
     setAmountData(newObj);
   }, [quoteLineItemByQuoteID]);
 
-  // useEffect(() => {
-  //   let isExist: any;
-  //   const bundleData: any = [];
-  //   const UnAssigned: any = [];
-  //   if (quoteLineItemByQuoteID && quoteLineItemByQuoteID?.length > 0) {
-  //     isExist = quoteLineItemByQuoteID?.find((item: any) => item?.Bundle);
-  //   }
+  useEffect(() => {
+    let isExist: any;
+    const bundleData: any = [];
+    const UnAssigned: any = [];
+    if (quoteLineItemByQuoteID && quoteLineItemByQuoteID?.length > 0) {
+      isExist = quoteLineItemByQuoteID?.find((item: any) => item?.Bundle);
+    }
 
-  //   if (isExist) {
-  //     quoteLineItemByQuoteID?.map((lineItem: any) => {
-  //       let bundleObj: any;
-  //       if (lineItem?.Bundle) {
-  //         if (bundleObj) {
-  //           bundleObj = {
-  //             name: bundleObj.name,
-  //             description: bundleObj.description,
-  //             quantity: bundleObj.quantity,
-  //             quoteLieItem: [...bundleObj.quoteLieItem, ...lineItem],
-  //             bundleId: lineItem?.Bundle.id,
-  //             id: lineItem.id,
-  //           };
-  //         } else {
-  //           bundleObj = {
-  //             name: lineItem?.Bundle?.name,
-  //             description: lineItem?.Bundle?.description,
-  //             quantity: lineItem?.Bundle?.quantity,
-  //             quoteLieItem: [lineItem],
-  //             bundleId: lineItem?.Bundle?.id,
-  //             id: lineItem?.id,
-  //           };
-  //           bundleData?.push(bundleObj);
-  //         }
-  //       } else {
-  //         UnAssigned?.push(lineItem);
-  //       }
-  //     });
-  //   }
-  // }, [quoteLineItemByQuoteID]);
+    if (isExist) {
+      quoteLineItemByQuoteID?.map((lineItem: any) => {
+        let bundleObj: any;
+        if (lineItem?.Bundle) {
+          if (bundleObj) {
+            bundleObj = {
+              name: bundleObj.name,
+              description: bundleObj.description,
+              quantity: bundleObj.quantity,
+              quoteLieItem: [...bundleObj.quoteLieItem, ...lineItem],
+              bundleId: lineItem?.Bundle.id,
+              id: lineItem.id,
+            };
+          } else {
+            bundleObj = {
+              name: lineItem?.Bundle?.name,
+              description: lineItem?.Bundle?.description,
+              quantity: lineItem?.Bundle?.quantity,
+              quoteLieItem: [lineItem],
+              bundleId: lineItem?.Bundle?.id,
+              id: lineItem?.id,
+            };
+            bundleData?.push(bundleObj);
+          }
+        } else {
+          UnAssigned?.push(lineItem);
+        }
+      });
+    }
+  }, [quoteLineItemByQuoteID]);
 
   const commonUpdateCompleteAndDraftMethod = (queryItem: string) => {
     if (getQuoteID) {

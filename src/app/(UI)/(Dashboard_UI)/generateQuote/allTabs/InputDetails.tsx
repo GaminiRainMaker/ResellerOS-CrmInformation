@@ -27,6 +27,7 @@ import {updateProductFamily} from '../../../../../../redux/actions/product';
 import {
   DeleteQuoteLineItemById,
   getQuoteLineItemByQuoteId,
+  getQuoteLineItemByQuoteIdandBundleIdNull,
 } from '../../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {InputDetailTabInterface} from '../generateQuote.interface';
@@ -61,6 +62,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Input Details" />,
   };
+  console.log('selectedFilter', selectedFilter, familyFilter);
 
   const renderEditableInput = (field: string) => {
     const editableField = tableColumnDataShow.find(
@@ -82,24 +84,13 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     return false;
   };
 
-  // const deleteQuote = async (id: number) => {
-  //   if (id) {
-  //     const data = {
-  //       Ids: [id],
-  //       bundle_id: null,
-  //     };
-  //     await dispatch(updateQuoteLineItemForBundleId(data));
-  //     dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
-  //     dispatch(getAllBundle(getQuoteID));
-  //   }
-  // };
-
   const updateBundleQuantityData = async (data: any) => {
     await dispatch(updateBundleQuantity(data));
     dispatch(getAllBundle(getQuoteID));
   };
   useEffect(() => {
     dispatch(getAllBundle(getQuoteID));
+    dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
   }, []);
   const deleteQuoteLineItems = () => {
     if (selectTedRowIds) {
@@ -313,6 +304,11 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     },
   ];
 
+  console.log(
+    'dataNullForBundledataNullForBundle',
+    selectedFilter,
+    dataNullForBundle,
+  );
   useEffect(() => {
     if (selectedFilter === 'Product Family') {
       const finalFamilyArr: any = [];
