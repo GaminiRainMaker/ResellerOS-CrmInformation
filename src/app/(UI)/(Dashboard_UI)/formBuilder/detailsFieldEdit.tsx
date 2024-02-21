@@ -9,19 +9,12 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Switch} from '@/app/components/common/antd/Switch';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
-import Typography from '@/app/components/common/typography';
-import {
-  Checkbox,
-  DatePicker,
-  Drawer,
-  Form,
-  Radio,
-  RadioChangeEvent,
-} from 'antd';
-import React, {useState} from 'react';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
+import Typography from '@/app/components/common/typography';
 import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {DatePicker, Form, Radio, RadioChangeEvent} from 'antd';
+import React from 'react';
 import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
 import {FormBuilderInterFace} from './formBuilder.interface';
 
@@ -67,7 +60,11 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
     setCartItems(newTempArr);
   };
 
-  const changeFiellOptionsValue = (newValue: string, indexofOption: number) => {
+  const changeFiellOptionsValue = (
+    newValue: string,
+    indexofOption: number,
+    optiontypename: string,
+  ) => {
     const newTempArr = cartItems.map((sectItem: any, sectioIndex: number) => {
       if (sectioIndex === sectionIndex) {
         return {
@@ -76,7 +73,7 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
             if (contInde === contentIndex) {
               return {
                 ...contItem,
-                options: contItem?.options?.map(
+                [optiontypename]: contItem?.[optiontypename]?.map(
                   (itemOp: any, indexOption: number) => {
                     if (indexofOption === indexOption) {
                       return newValue;
@@ -95,6 +92,7 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
 
     setCartItems(newTempArr);
   };
+
   const addNewRowsColumn = (
     labelTypeVal: string,
     type: string,
@@ -154,20 +152,20 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
     setCartItems(temp);
   };
 
-  const addnewOptions = () => {
+  const addnewOptions = (nameOptions: any) => {
     const tempvalue: any = [...cartItems];
 
-    tempvalue?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.options?.push(
-      '',
-    );
+    tempvalue?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.[
+      nameOptions
+    ]?.push('');
     setCartItems(tempvalue);
   };
-  const deleteOption = (indexofoption: number) => {
+  const deleteOption = (indexofoption: number, nameOptions: any) => {
     const tempvalue: any = [...cartItems];
 
-    tempvalue?.[sectionIndex || 0]?.content?.[
-      contentIndex || 0
-    ]?.options?.splice(indexofoption, 1);
+    tempvalue?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.[
+      nameOptions
+    ]?.splice(indexofoption, 1);
     setCartItems(tempvalue);
   };
 
@@ -179,18 +177,18 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
   const dragOverItem = React.useRef<any>(null);
 
   // const handle drag sorting
-  const handleSort = () => {
+  const handleSort = (changeOptions: any) => {
     const optionItems: any = [...cartItems];
 
     // remove and save the dragged item content
     const draggedItemContent1 = optionItems?.[sectionIndex || 0]?.content?.[
       contentIndex || 0
-    ]?.options.splice(dragItem.current, 1)[0];
+    ]?.[changeOptions].splice(dragItem.current, 1)[0];
 
     // switch the position
-    optionItems?.[sectionIndex || 0]?.content?.[
-      contentIndex || 0
-    ]?.options.splice(dragOverItem.current, 0, draggedItemContent1);
+    optionItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.[
+      changeOptions
+    ].splice(dragOverItem.current, 0, draggedItemContent1);
 
     // reset the position ref
     dragItem.current = null;
@@ -224,7 +222,7 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
                 onDragEnter={(e) => {
                   dragOverItem.current = indexOp;
                 }}
-                onDragEnd={handleSort}
+                onDragEnd={() => handleSort('options')}
                 onDragOver={(e) => e.preventDefault()}
                 style={{
                   display: 'flex',
@@ -240,13 +238,17 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
                   defaultValue={itemOption}
                   value={itemOption}
                   onChange={(e: any) => {
-                    changeFiellOptionsValue(e?.target?.value, indexOp);
+                    changeFiellOptionsValue(
+                      e?.target?.value,
+                      indexOp,
+                      'options',
+                    );
                   }}
                 />{' '}
                 <TrashIcon
                   color="#EB445A"
                   width={35}
-                  onClick={() => deleteOption(indexOp)}
+                  onClick={() => deleteOption(indexOp, 'options')}
                 />{' '}
                 <ArrowsPointingOutIcon
                   color="#2364AA"
@@ -260,7 +262,7 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
                   onDragEnter={(e) => {
                     dragOverItem.current = indexOp;
                   }}
-                  onDragEnd={handleSort}
+                  onDragEnd={() => handleSort('options')}
                   onDragOver={(e) => e.preventDefault()}
                 />
               </Col>
@@ -269,7 +271,90 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
           <Typography
             name="Body 3/Bold"
             color={token?.colorInfo}
-            onClick={addnewOptions}
+            onClick={() => addnewOptions('options')}
+            cursor="pointer"
+            style={{cursor: 'pointer'}}
+          >
+            + Add New
+          </Typography>
+        </Form>
+      ),
+    },
+  ];
+  const editChoicesOptionsForCheckBox = [
+    {
+      key: '1',
+      label: (
+        <Typography name="Body 2/Medium" color={token?.colorInfo}>
+          Edit Choices
+        </Typography>
+      ),
+      children: (
+        <Form layout="vertical">
+          {cartItems?.[sectionIndex || 0]?.content?.[
+            contentIndex || 0
+          ]?.labelOptions?.map((itemOption: any, indexOp: number) => (
+            <Row style={{width: '100%'}}>
+              <Col
+                key={indexOp}
+                className="list-item"
+                draggable
+                onDragStart={(e) => {
+                  dragItem.current = indexOp;
+                }}
+                onDragEnter={(e) => {
+                  dragOverItem.current = indexOp;
+                }}
+                onDragEnd={() => handleSort('labelOptions')}
+                onDragOver={(e) => e.preventDefault()}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  marginBottom: '25px',
+                  gap: '12px',
+                }}
+              >
+                {/* <div>{itemOption}</div> */}
+                <OsInput
+                  key={indexOp}
+                  defaultValue={itemOption}
+                  value={itemOption}
+                  onChange={(e: any) => {
+                    changeFiellOptionsValue(
+                      e?.target?.value,
+                      indexOp,
+                      'labelOptions',
+                    );
+                  }}
+                />{' '}
+                <TrashIcon
+                  color="#EB445A"
+                  width={35}
+                  onClick={() => deleteOption(indexOp, 'labelOptions')}
+                />{' '}
+                <ArrowsPointingOutIcon
+                  color="#2364AA"
+                  width={35}
+                  key={indexOp}
+                  className="list-item"
+                  // draggable
+                  onDragStart={(e) => {
+                    dragItem.current = indexOp;
+                  }}
+                  onDragEnter={(e) => {
+                    dragOverItem.current = indexOp;
+                  }}
+                  onDragEnd={() => handleSort('labelOptions')}
+                  onDragOver={(e) => e.preventDefault()}
+                />
+              </Col>
+            </Row>
+          ))}
+          <Typography
+            name="Body 3/Bold"
+            color={token?.colorInfo}
+            onClick={() => addnewOptions('labelOptions')}
             cursor="pointer"
             style={{cursor: 'pointer'}}
           >
@@ -383,27 +468,6 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
                       }
                     }}
                   />
-                  {/* <CommonSelect
-                    onChange={(e: any) => {
-                      changeFieldValues(e, 'type');
-                    }}
-                    defaultValue={
-                      cartItems?.[sectionIndex || 0]?.content?.[
-                        contentIndex || 0
-                      ]?.type
-                    }
-                    value={
-                      cartItems?.[sectionIndex || 0]?.content?.[
-                        contentIndex || 0
-                      ]?.type
-                    }
-                    style={{width: '100%'}}
-                    options={[
-                      {label: 'Text', value: 'text'},
-                      {label: 'Number', value: 'number'},
-                      {label: 'Email', value: 'email'},
-                    ]}
-                  /> */}
                 </Form.Item>
               </Col>
             </Row>
@@ -511,6 +575,63 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
       ),
     },
   ];
+  const QuickSetupItemsForCheckBox = [
+    {
+      key: '1',
+      label: (
+        <Typography name="Body 2/Medium" color={token?.colorInfo}>
+          Quick Setup
+        </Typography>
+      ),
+      children: (
+        <Form layout="vertical" form={form}>
+          <Form.Item
+            label={<Typography name="Body 4/Medium">Change Label</Typography>}
+            name="placeholdertext"
+          >
+            <OsInput
+              style={{width: '100%'}}
+              placeholder="Label"
+              defaultValue={
+                cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                  ?.placeholdertext
+              }
+              value={
+                cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                  ?.placeholdertext
+              }
+              onChange={(e: any) => {
+                changeFieldValues(e?.target?.value, 'placeholdertext');
+              }}
+            />
+          </Form.Item>
+          <Form.Item
+            label={<Typography name="Body 4/Medium">Field Type</Typography>}
+            name="filedType"
+          >
+            <CommonSelect
+              onChange={(e: any) => {
+                changeFieldValues(e, 'filedType');
+              }}
+              defaultValue={
+                cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                  ?.filedType
+              }
+              value={
+                cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                  ?.filedType
+              }
+              style={{width: '100%', marginBottom: '20px'}}
+              options={[
+                {label: 'Multi-select Drop Down', value: 'multiple'},
+                {label: 'Single-select Drop Down', value: 'single'},
+              ]}
+            />
+          </Form.Item>
+        </Form>
+      ),
+    },
+  ];
   const optionsType = [
     {
       name: 'Required Field',
@@ -524,8 +645,8 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
       key: 2,
       value:
         cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
-          ?.requuireLabel,
-      changeValue: 'requuireLabel',
+          ?.requiredLabel,
+      changeValue: 'requiredLabel',
     },
     {
       name: 'Hint Text',
@@ -546,31 +667,61 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
       ),
       children: (
         <Form layout="vertical">
-          {optionsType?.map((itemOption: any) => (
-            <Row style={{width: '100%'}}>
-              <Col
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  width: '100%',
-                  marginBottom: '25px',
-                }}
-              >
-                <Typography name="Body 4/Medium">{itemOption?.name}</Typography>
-                <Switch
-                  onChange={(e: any) => {
-                    changeFieldValues(e, itemOption?.changeValue);
-                  }}
-                  defaultChecked={itemOption?.value}
-                  checked={itemOption?.value}
-                />
-              </Col>
-            </Row>
+          {optionsType?.map((itemOption: any, index: number) => (
+            <>
+              {' '}
+              {((type === 'Checkbox' && index != 2) || type !== 'Checkbox') && (
+                <Row style={{width: '100%'}}>
+                  <Col
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                      marginBottom: '25px',
+                    }}
+                  >
+                    <Typography name="Body 4/Medium">
+                      {itemOption?.name}
+                    </Typography>
+                    <Switch
+                      onChange={(e: any) => {
+                        changeFieldValues(e, itemOption?.changeValue);
+                      }}
+                      defaultChecked={itemOption?.value}
+                      checked={itemOption?.value}
+                    />
+                  </Col>
+                </Row>
+              )}
+            </>
           ))}
+          {type === 'Checkbox' && (
+            <>
+              {' '}
+              <Typography name="Body 4/Medium">No Of Columns</Typography>
+              <OsInput
+                style={{width: '100%'}}
+                placeholder="Label"
+                type="number"
+                defaultValue={
+                  cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                    ?.columnRequired
+                }
+                value={
+                  cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                    ?.columnRequired
+                }
+                onChange={(e: any) => {
+                  changeFieldValues(e?.target?.value, 'columnRequired');
+                }}
+              />
+            </>
+          )}
         </Form>
       ),
     },
   ];
+
   const OptionsItemsForTextContent = [
     {
       key: '1',
@@ -970,7 +1121,9 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
             items={
               type === 'T text Content'
                 ? QuickSetupItemsForTTextContent
-                : QuickSetupItems
+                : type === 'Checkbox'
+                  ? QuickSetupItemsForCheckBox
+                  : QuickSetupItems
             }
           />
         </CollapseSpaceStyle>
@@ -988,6 +1141,7 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
         </CollapseSpaceStyle>
       </Row>
       {(type === 'Multi-Select' ||
+        type === 'Checkbox' ||
         type === 'Date' ||
         type === 'Drop Down' ||
         type === 'Time' ||
@@ -1005,7 +1159,9 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
                       ? validationOptionsForDate
                       : type === 'Contact'
                         ? validationOptionsForContact
-                        : editChoicesOptions
+                        : type === 'Checkbox'
+                          ? editChoicesOptionsForCheckBox
+                          : editChoicesOptions
               }
             />
           </CollapseSpaceStyle>

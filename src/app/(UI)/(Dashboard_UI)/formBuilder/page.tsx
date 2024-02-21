@@ -70,7 +70,7 @@ const FormBuilder = () => {
         typeOfFiled: 'number',
       },
     ];
-    if (newItem === 'Add Section') {
+    if (newItem === 'Add Section' || cartItems?.length === 0) {
       temp?.push({
         section: `Section${cartItems?.length + 1}`,
         content: [],
@@ -221,6 +221,7 @@ const FormBuilder = () => {
     }
     setCartItems(temp);
   };
+
   const {setNodeRef} = useDroppable({
     id: 'cart-droppable',
   });
@@ -1132,20 +1133,25 @@ const FormBuilder = () => {
                                           gap: '12px',
                                         }}
                                       >
-                                        {itemCon?.labelOptions?.map(
-                                          (
-                                            itemLabelOp: any,
-                                            itemLabelInde: number,
-                                          ) => (
-                                            <Row key={itemLabelInde}>
+                                        <Row>
+                                          {itemCon?.labelOptions?.map(
+                                            (
+                                              itemLabelOp: any,
+                                              itemLabelInde: number,
+                                            ) => (
                                               <Col
-                                                span={itemCon?.columnRequired}
+                                                style={{
+                                                  display: 'flex',
+                                                  gap: '10px',
+                                                }}
+                                                span={24}
                                               >
                                                 <Checkbox />
+                                                {itemLabelOp}
                                               </Col>
-                                            </Row>
-                                          ),
-                                        )}
+                                            ),
+                                          )}
+                                        </Row>
                                       </div>
                                     </Space>
                                   </>
