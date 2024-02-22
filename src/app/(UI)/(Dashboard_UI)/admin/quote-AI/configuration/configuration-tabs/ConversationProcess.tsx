@@ -41,7 +41,7 @@ const ConverSationProcess = () => {
   return (
     <TabContainerStyle>
       <Row>
-        <Col md={24} xs={12}>
+        <Col span={24}>
           <Space
             size={24}
             direction="vertical"
@@ -112,36 +112,40 @@ const ConverSationProcess = () => {
                     </Typography>
                   ),
                   children: (
-                    <Space size={36} direction="vertical">
-                      <Space size={24}>
+                    <Row gutter={[16, 16]}>
+                      <Col>
                         <Space>
                           <Checkbox />
                           <Typography name="Body 4/Medium">
                             Include another field
                           </Typography>
                         </Space>
+                      </Col>
+                      <Col>
                         <Space>
                           <Checkbox />
                           <Typography name="Body 4/Medium">
                             Check case for OEM case
                           </Typography>
                         </Space>
-                      </Space>
-                      <Space size={24}>
+                      </Col>
+                      <Col>
                         <Space>
                           <Checkbox />
                           <Typography name="Body 4/Medium">
                             Include another vendor/disti field
                           </Typography>
                         </Space>
+                      </Col>
+                      <Col>
                         <Space>
                           <Checkbox />
                           <Typography name="Body 4/Medium">
                             Check case for vendor/disti field
                           </Typography>
                         </Space>
-                      </Space>
-                    </Space>
+                      </Col>
+                    </Row>
                   ),
                 },
               ]}

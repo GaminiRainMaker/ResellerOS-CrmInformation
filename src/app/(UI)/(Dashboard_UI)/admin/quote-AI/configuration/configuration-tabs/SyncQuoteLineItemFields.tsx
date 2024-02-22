@@ -300,7 +300,7 @@ const SyncQuoteLineItemField = () => {
   return (
     <TabContainerStyle>
       <Row>
-        <Col md={24} xs={12}>
+        <Col span={24}>
           <Space
             size={24}
             direction="vertical"
