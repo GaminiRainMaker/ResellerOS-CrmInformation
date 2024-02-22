@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -131,18 +132,22 @@ const Matrix: FC<any> = (familyFilter: any) => {
           totalProfitValue += ProfitValue;
         });
 
-        tempArrRevenue.push({
-          id: 1,
-          name: element.name,
-          value: Math.floor(totalRevenueValue) ?? 0,
-          color: getPieCellColor(element.name) ?? '',
-        });
-        tempArrProfit.push({
-          id: 1,
-          name: element.name,
-          value: Math.floor(totalProfitValue) ?? 0,
-          color: getPieCellColor(element.name) ?? '',
-        });
+        totalRevenueValue > 0 &&
+          tempArrRevenue.push({
+            id: 1,
+            name: element.name,
+            value: Math.floor(totalRevenueValue) ?? 0,
+            color: getPieCellColor(element.name) ?? '',
+          });
+
+
+        totalProfitValue > 0 &&
+          tempArrProfit.push({
+            id: 1,
+            name: element.name,
+            value: Math.floor(totalProfitValue) ?? 0,
+            color: getPieCellColor(element.name) ?? '',
+          });
       });
       setSectionData((prev) =>
         prev.map((prevItem) => {
