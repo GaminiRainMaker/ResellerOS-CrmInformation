@@ -218,7 +218,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       title: 'Pricing Method',
       dataIndex: 'pricing_method',
       key: 'pricing_method',
-      width: 120,
+      width: 200,
       render: (text: string, record: any) => (
         <Form.Item
           className="formmarginBottom"
@@ -234,7 +234,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
           <CommonSelect
             allowClear
             disabled={renderEditableInput('Pricing Method')}
-            style={{width: '150px'}}
+            style={{width: '100%'}}
             placeholder="Select"
             defaultValue={text}
             onChange={(v) => {
