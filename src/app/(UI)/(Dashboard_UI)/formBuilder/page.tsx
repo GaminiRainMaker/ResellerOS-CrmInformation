@@ -1108,7 +1108,7 @@ const FormBuilder = () => {
                                           }}
                                         >
                                           <TrashIcon
-                                            color="#EB445A"
+                                            color={token?.colorError}
                                             onClick={() => {
                                               deleteSelectedIntem(
                                                 Sectidx,
