@@ -8,6 +8,7 @@ import {message} from 'antd';
 import axios from 'axios';
 import {uploadToAws} from '../../../../../redux/actions/upload';
 import {useAppDispatch} from '../../../../../redux/hook';
+import {UploadFileInterface} from './generateQuote.interface';
 
 const convertFileToBase64 = (file: File): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -23,12 +24,13 @@ const convertFileToBase64 = (file: File): Promise<string> =>
     reader.readAsDataURL(file);
   });
 
-const UploadFile: FC<any> = ({
+const UploadFile: FC<UploadFileInterface> = ({
   setUploadFileData,
   uploadFileData,
   addInExistingQuote,
   addQuoteLineItem,
   form,
+  showSelectFields = true,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -91,6 +93,7 @@ const UploadFile: FC<any> = ({
         addInExistingQuote={addInExistingQuote}
         addQuoteLineItem={addQuoteLineItem}
         form={form}
+        showSelectFields={showSelectFields}
       />
     </GlobalLoader>
   );

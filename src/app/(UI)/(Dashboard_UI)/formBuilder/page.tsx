@@ -19,25 +19,25 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import OsInput from '@/app/components/common/os-input';
+import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {MailOutlined, PlayCircleOutlined} from '@ant-design/icons';
-import 'react-phone-number-input/style.css';
 import {DndContext, DragEndEvent, useDroppable} from '@dnd-kit/core';
 import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
+import 'react-phone-number-input/style.css';
 
+import {OsPhoneInputStyle} from '@/app/components/common/os-contact/styled-components';
+import {formbuildernewObject} from '@/app/utils/base';
 import {
   Checkbox,
   DatePicker,
   Divider,
   Form,
+  Layout,
   MenuProps,
   TimePicker,
-  Layout,
 } from 'antd';
 import React, {useState} from 'react';
-import CommonSelect from '@/app/components/common/os-select';
-import {OsPhoneInputStyle} from '@/app/components/common/os-contact/styled-components';
-import {formbuildernewObject} from '@/app/utils/base';
 import EditFiledDetails from './detailsFieldEdit';
 
 import FieldCard from './FieldCard';
@@ -169,10 +169,9 @@ const FormBuilder = () => {
   return (
     <Layout style={layoutStyle}>
       <DndContext onDragEnd={addItemsToCart}>
-        <Sider width="300px" theme="light" style={siderStyle}>
+        <Sider width="350px" theme="light" style={siderStyle}>
           <FieldCard />
         </Sider>
-
         <Layout>
           <Content style={contentStyle}>
             <Row justify="space-between">
@@ -328,7 +327,7 @@ const FormBuilder = () => {
                                 );
                               }
                               if (
-                                itemCon?.name == 'T Text' ||
+                                itemCon?.name == 'Text' ||
                                 itemCon?.name == 'Currency' ||
                                 itemCon?.name == 'Email' ||
                                 itemCon?.name == 'Contact' ||
@@ -410,7 +409,7 @@ const FormBuilder = () => {
                                                             'Contact'
                                                           ? 'Contact'
                                                           : itemCon?.name ===
-                                                              'T text Content'
+                                                              'Text Content'
                                                             ? 'Header Text'
                                                             : 'Text Filed'}
                                           </div>
@@ -715,7 +714,7 @@ const FormBuilder = () => {
                                   />
                                 );
                               }
-                              if (itemCon?.name == 'T text Content') {
+                              if (itemCon?.name == 'Text Content') {
                                 return (
                                   <>
                                     {' '}
@@ -1034,7 +1033,6 @@ const FormBuilder = () => {
         <div
           style={{
             width: '20%',
-            // height: '100vh',
             background: 'white',
           }}
         >

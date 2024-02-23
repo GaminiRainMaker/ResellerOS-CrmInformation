@@ -203,7 +203,7 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       hintext: false,
       hintTextValue :"hint Vlaue",
     };
-  } else if (newItem == 'T text Content') {
+  } else if (newItem == 'Text Content') {
     newObjAddedon = {
       name: newItem,
       sectionTitle: 'Section Title',
@@ -220,7 +220,7 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       requiredLabel: true,
       filedType: 'multiple',
     };
-  } else if (newItem == 'T Text' || newItem == 'Email') {
+  } else if (newItem == 'Text' || newItem == 'Email') {
     newObjAddedon = {
       name: newItem,
       label: 'Label',

@@ -84,7 +84,6 @@ const GenerateQuote: React.FC = () => {
     dispatch(getAllContractSetting(''));
   }, []);
 
- 
   useEffect(() => {
     let tabsname: any;
     if (activeTab == '1') {
@@ -355,11 +354,7 @@ const GenerateQuote: React.FC = () => {
             router?.push(`/generateQuote?id=${getQuoteID}`);
           }}
         >
-          {quoteLineItemByQuoteID?.[0]?.Quote?.file_name ??
-            formatDate(
-              quoteLineItemByQuoteID?.[0]?.Quote?.createdAt,
-              'MM/DD/YYYY | HH:MM',
-            )}
+          {quoteLineItemByQuoteID?.[0]?.Quote?.file_name}
         </Typography>
       ),
     },
