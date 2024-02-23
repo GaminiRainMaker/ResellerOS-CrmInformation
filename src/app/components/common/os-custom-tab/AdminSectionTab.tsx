@@ -1,7 +1,8 @@
+/* eslint-disable react/destructuring-assignment */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable arrow-body-style */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import {FC, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import Row from 'antd/es/grid/row';
 import Col from 'antd/es/grid/col';
 import {Space} from '../antd/Space';
@@ -13,6 +14,14 @@ const AdminCustomTabs: FC<any> = (tabs) => {
   const [activekeysall, setActivekeysall] = useState<number>(1);
   const [token] = useThemeToken();
   const [tempChild, setTempChild] = useState<any>();
+
+  useEffect(() => {
+    if (tabs?.tabs?.length > 0) {
+      const initialChild = tabs?.tabs[0]?.childitem?.[0]?.superChild;
+      setTempChild(initialChild);
+      setActivekeysall(tabs?.tabs[0]?.childitem?.[0]?.key);
+    }
+  }, [tabs]);
 
   const getSuperChild = () => {
     return (
@@ -81,7 +90,7 @@ const AdminCustomTabs: FC<any> = (tabs) => {
           </div>
         </CustomTabStyle>
       </Col>
-      <Col xs={24} sm={16}md={19} span={19}>
+      <Col xs={24} sm={16} md={19} span={19}>
         {getSuperChild()}
       </Col>
     </Row>

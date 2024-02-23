@@ -256,7 +256,7 @@ const AddProduct = () => {
       />
 
       <OsDrawer
-        title={<Typography name="Body 1/Regular">Add New Product</Typography>}
+        title={<Typography name="Body 1/Regular">Product Setting</Typography>}
         placement="right"
         onClose={() => {
           setOpen(false);

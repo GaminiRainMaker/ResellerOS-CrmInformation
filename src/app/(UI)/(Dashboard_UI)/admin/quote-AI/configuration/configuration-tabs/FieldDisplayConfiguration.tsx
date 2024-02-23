@@ -215,7 +215,7 @@ const FieldDisplayConfiguration: FC<any> = () => {
     <>
       <TabContainerStyle>
         <Row>
-          <Col md={24} xs={12}>
+          <Col span={24}>
             <Space
               size={36}
               direction="vertical"

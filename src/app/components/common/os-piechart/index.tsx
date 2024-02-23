@@ -4,49 +4,64 @@
 import {FC} from 'react';
 import {Cell, Legend, Pie, PieChart, Tooltip} from 'recharts';
 
-// const data = [
-//   {name: 'Unassigned', value: 400},
-//   {name: 'Professional Services', value: 300},
-//   {name: 'Subscriptions', value: 300},
-//   {name: 'Pricing method', value: 200},
-// ];
-// interface OsPieChartInterFace {
-
-// }
+const CustomTooltip = (props: any) => {
+  const {active, payload} = props;
+  if (active && payload && payload.length) {
+    return (
+      <div
+        style={{
+          background: 'none',
+          border: 'none',
+          padding: '8px',
+          backgroundColor: `${payload[0]?.payload?.fill}`,
+          color: '#fff',
+          borderRadius: '4px',
+          width: 'fit-content',
+          boxShadow: '0px 6px 12px 0px rgba(0, 0, 0, 0.10)',
+        }}
+      >
+        {payload.map((entry: any) => (
+          <p key={entry.value} className="caption">
+            {`${entry.name}: $ ${entry.value}`}
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
 
 const OsPieChart: FC<any> = ({data}: any) => (
-  <div>
-    <PieChart
-      width={650}
-      height={230}
-      //  onMouseEnter={this.onPieEnter}
+  <PieChart width={650} height={230}>
+    <Pie
+      data={data}
+      cx={200}
+      cy={120}
+      innerRadius={50}
+      outerRadius={75}
+      dataKey="value"
     >
-      <Pie
-        data={data}
-        cx={200}
-        cy={120}
-        innerRadius={50}
-        outerRadius={75}
-        fill="#8884d8"
-        dataKey="value"
-      >
-        {data &&
-          data.map((entry: any, index: number) => (
-            <Cell key={`cell-${index}`} fill={entry?.color} />
-          ))}
-      </Pie>
-      <Legend
-        iconSize={20}
-        iconType="circle"
-        width={200}
-        height={100}
-        layout="vertical"
-        verticalAlign="middle"
-        align="right"
-      />
-      <Tooltip />
-    </PieChart>
-  </div>
+      {data &&
+        data.map((entry: any, index: number) => (
+          <Cell key={`cell-${index}`} fill={entry?.color} />
+        ))}
+    </Pie>
+    <Legend
+      iconSize={20}
+      iconType="circle"
+      width={200}
+      height={100}
+      layout="vertical"
+      verticalAlign="middle"
+      align="right"
+    />
+    <Tooltip
+      isAnimationActive={false}
+      animationEasing="linear"
+      content={<CustomTooltip />}
+      position={{x: 0, y: 10}}
+    />
+  </PieChart>
 );
 
 export default OsPieChart;
