@@ -136,7 +136,7 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue :"hint Vlaue",
+      hintTextValue: 'hint Vlaue',
       options: [],
     };
   } else if (newItem === 'Line Break') {
@@ -151,7 +151,7 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue :"hint Vlaue",
+      hintTextValue: 'hint Vlaue',
       timeformat: 'HH:mm',
       use12hours: true,
     };
@@ -163,7 +163,7 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue :"hint Vlaue",
+      hintTextValue: 'hint Vlaue',
       dateformat: 'mm/dd/yyyy',
       weekStartOn: 'sunday',
       StartDate: '',
@@ -177,7 +177,7 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue :"hint Vlaue",
+      hintTextValue: 'hint Vlaue',
       defaultcountry: 'US',
       dataformat: '333-333-3333',
     };
@@ -189,7 +189,7 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue :"hint Vlaue",
+      hintTextValue: 'hint Vlaue',
       currency: 'USB',
       deciamlHide: false,
     };
@@ -201,7 +201,7 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue :"hint Vlaue",
+      hintTextValue: 'hint Vlaue',
     };
   } else if (newItem == 'Text Content') {
     newObjAddedon = {
@@ -228,8 +228,62 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue :"hint Vlaue",
+      hintTextValue: 'hint Vlaue',
     };
   }
   return newObjAddedon;
 };
+
+export const filterDataByColumns = (columns: any, data: any) =>
+  data.map((item: any) => {
+    const filteredItem: any = {};
+    columns?.forEach((column: any) => {
+      const {dataIndex, title} = column;
+      // eslint-disable-next-line no-prototype-builtins
+      if (dataIndex && item.hasOwnProperty(dataIndex)) {
+        filteredItem[title] = item[dataIndex];
+      }
+    });
+    return filteredItem;
+  });
+
+export const convertDataToText = (columns: any, data: any) => {
+  const filteredData = filterDataByColumns(columns, data);
+
+  if (!filteredData.length) {
+    console.error('No data available for conversion.');
+    return '';
+  }
+
+  const header = Object.keys(filteredData[0]).join('\t');
+  // eslint-disable-next-line arrow-body-style
+  const textData = filteredData?.map((item: any) => {
+    return (
+      Object.values(item)
+        // eslint-disable-next-line arrow-body-style
+        .map((value) => {
+          // Ensure that values are strings, and escape tabs
+          return typeof value === 'string'
+            ? value.replace(/\t/g, '\\t').replace(/\n/g, ' ')
+            : value;
+        })
+        .join('\t')
+    );
+  });
+
+  return `${header}\n${textData.join('\n')}`;
+};
+
+export const convertFileToBase64 = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64String = reader.result as string;
+      resolve(base64String);
+    };
+    reader.onerror = (error) => {
+      reject(error);
+    };
+
+    reader.readAsDataURL(file);
+  });

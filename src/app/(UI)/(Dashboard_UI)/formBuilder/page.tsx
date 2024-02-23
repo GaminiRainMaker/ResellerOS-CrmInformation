@@ -41,6 +41,7 @@ import React, {useState} from 'react';
 import EditFiledDetails from './detailsFieldEdit';
 
 import FieldCard from './FieldCard';
+import FormUpload from '@/app/components/common/os-upload/FormUpload';
 
 const {Sider, Content} = Layout;
 
@@ -1021,6 +1022,7 @@ const FormBuilder = () => {
                     >
                       + Drop Filed
                     </div>
+                    <FormUpload/>
                   </Row>
                 )}
               </div>

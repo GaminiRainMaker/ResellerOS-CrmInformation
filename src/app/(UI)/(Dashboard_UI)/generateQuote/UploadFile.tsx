@@ -6,23 +6,10 @@ import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsUpload from '@/app/components/common/os-upload';
 import {message} from 'antd';
 import axios from 'axios';
+import {convertFileToBase64} from '@/app/utils/base';
 import {uploadToAws} from '../../../../../redux/actions/upload';
 import {useAppDispatch} from '../../../../../redux/hook';
 import {UploadFileInterface} from './generateQuote.interface';
-
-const convertFileToBase64 = (file: File): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64String = reader.result as string;
-      resolve(base64String);
-    };
-    reader.onerror = (error) => {
-      reject(error);
-    };
-
-    reader.readAsDataURL(file);
-  });
 
 const UploadFile: FC<UploadFileInterface> = ({
   setUploadFileData,

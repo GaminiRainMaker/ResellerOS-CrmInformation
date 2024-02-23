@@ -14,10 +14,12 @@ import Typography from '@/app/components/common/typography';
 import {pricingMethod} from '@/app/utils/CONSTANTS';
 import {
   calculateProfitabilityData,
+  convertDataToText,
   rebateAmount,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
+import {Button} from '@/app/components/common/antd/Button';
 import {
   getRebateQuoteLineItemByQuoteId,
   updateRebateQuoteLineItemById,
@@ -297,12 +299,28 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
   return (
     <>
       {finaRebateTableCol && finaRebateTableCol?.length > 0 ? (
-        <OsTableWithOutDrag
-          loading={loading}
-          columns={finaRebateTableCol}
-          dataSource={rebateData}
-          scroll
-        />
+        <>
+          <Button
+            onClick={() => {
+              const textResult = convertDataToText(
+                finaRebateTableCol,
+                rebateData,
+              );
+              if (textResult) {
+                navigator.clipboard.writeText(textResult);
+              }
+            }}
+          >
+            Table Data
+          </Button>
+
+          <OsTableWithOutDrag
+            loading={loading}
+            columns={finaRebateTableCol}
+            dataSource={rebateData}
+            scroll
+          />
+        </>
       ) : (
         <EmptyContainer
           title="There is no columns for Rebates"

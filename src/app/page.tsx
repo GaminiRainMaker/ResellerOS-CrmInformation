@@ -37,19 +37,7 @@ export default function Home() {
     return bytes.buffer;
   };
 
-  const convertFileToBase64 = (file: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64String = reader.result as string;
-        resolve(base64String);
-      };
-      reader.onerror = (error) => {
-        reject(error);
-      };
 
-      reader.readAsDataURL(file);
-    });
 
   // useEffect(() => {
   //   const container = containerRef.current;
@@ -130,18 +118,7 @@ export default function Home() {
     },
   };
 
-  const beforeUpload = (file: File) => {
-    convertFileToBase64(file)
-      .then((base64String) => {
-        // const urlsBuffer = base64ToArrayBuffer(base64String);
-        // setBase64Data(base64String);
-        // sendDataToNanonets(base64String, file);
-      })
-      .catch((error) => {
-        // message.error('Error converting file to base64', error);
-      });
-    return false;
-  };
+
   useEffect(() => {
     router?.push('/login');
   }, []);
