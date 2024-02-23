@@ -33,11 +33,16 @@ import {
   MenuProps,
   TimePicker,
   Layout,
+  Radio,
+  Switch,
+  Input,
+  Select,
 } from 'antd';
 import React, {useState} from 'react';
 import CommonSelect from '@/app/components/common/os-select';
 import {OsPhoneInputStyle} from '@/app/components/common/os-contact/styled-components';
 import {formbuildernewObject} from '@/app/utils/base';
+import OsPieChart from '@/app/components/common/os-piechart';
 import EditFiledDetails from './detailsFieldEdit';
 
 import FieldCard from './FieldCard';
@@ -54,7 +59,7 @@ const FormBuilder = () => {
   const [form] = Form.useForm();
   const [sectionIndexActive, setSectionIndexActive] = useState<number>(0);
   const [contentActiveIndex, setContentActiveIndex] = useState<number>(0);
-
+  const [radioValue, setRadioValue] = useState<any>();
   const [token] = useThemeToken();
   const [cartItems, setCartItems] = useState<any>([]);
   const [columnData, setColumnData] = useState<any>([]);
@@ -164,8 +169,35 @@ const FormBuilder = () => {
     margin: '24px',
     borderRadius: 12,
   };
-  console.log('3242342', cartItems);
 
+  const addnewColumn = () => {
+    const tempVar: any = [...columnData];
+    console.log('3333333', tempVar);
+    tempVar?.[0]?.tableCol?.push({
+      title: 'Column 1',
+      dataIndex: 'address',
+      key: '3',
+    });
+    // tempVar?.push({
+    //   tableKey: columnData?.length,
+    //   C: [
+    //     {title: 'Column 1', dataIndex: 'address', key: '1'},
+    //     {title: 'Column 2', dataIndex: 'address', key: '2'},
+    //   ],
+    // });
+
+    setColumnData(tempVar);
+  };
+  const [colmsss, setColumnss] = useState<any>([
+    'Column1 ',
+    'column2',
+    'Column3',
+  ]);
+  const addnewColimnsdsds = () => {
+    const temp: any = [...colmsss];
+    temp?.push('Column4');
+    setColumnss(temp);
+  };
   return (
     <Layout style={layoutStyle}>
       <DndContext onDragEnd={addItemsToCart}>
@@ -226,8 +258,6 @@ const FormBuilder = () => {
                                   }
                                 },
                               );
-
-                              console.log('43546435', newColumnData);
                               if (itemCon?.name == 'Table') {
                                 return (
                                   <Space
@@ -252,6 +282,9 @@ const FormBuilder = () => {
                                     }}
                                     onDragOver={(e) => e.preventDefault()}
                                   >
+                                    <button onClick={addnewColumn}>
+                                      dsssd
+                                    </button>
                                     <Row justify="space-between">
                                       <Col
                                         onClick={() => {
@@ -480,9 +513,6 @@ const FormBuilder = () => {
                                                   ? '12'
                                                   : '12.00'
                                               }
-
-                                              // style={{width: '270px'}}
-                                              // onClick={showDrawer}
                                             />
                                           </>
                                         ) : itemCon?.name == 'Date' ? (
@@ -497,9 +527,6 @@ const FormBuilder = () => {
                                           </>
                                         ) : itemCon?.name === 'Contact' ? (
                                           <>
-                                            {' '}
-                                            {/* defaultcountry: 'india',
-                        dataformat: '3-3-3', */}
                                             <OsPhoneInputStyle
                                               style={{
                                                 border:
@@ -508,39 +535,22 @@ const FormBuilder = () => {
                                                 padding: '3px',
                                               }}
                                               mask={itemCon?.dataformat}
-                                              // mask="333-333-3333"
                                               limitMaxLength
                                               defaultCountry={
                                                 itemCon?.defaultcountry
                                               }
                                               countryCallingCodeEditable={false}
                                               max={11}
-                                              onChange={(e: any) => {
-                                                console.log('5345435', e);
-                                              }}
+                                              onChange={(e: any) => {}}
                                             />
-                                            {/* <OsInput
-                                              type={itemCon?.type}
-
-                                              // style={{width: '270px'}}
-                                              // onClick={showDrawer}
-                                            /> */}
                                           </>
                                         ) : itemCon?.name === 'Email' ? (
                                           <OsInput
                                             type={itemCon?.type}
                                             suffix={<MailOutlined />}
-
-                                            // style={{width: '270px'}}
-                                            // onClick={showDrawer}
                                           />
                                         ) : (
-                                          <OsInput
-                                            type={itemCon?.type}
-
-                                            // style={{width: '270px'}}
-                                            // onClick={showDrawer}
-                                          />
+                                          <OsInput type={itemCon?.type} />
                                         )}{' '}
                                         {item?.content?.length - 1 ===
                                           ItemConindex && (
@@ -699,7 +709,7 @@ const FormBuilder = () => {
                                         )}
                                       </div>
                                       {itemCon?.hintext && (
-                                        <div>this is hint text</div>
+                                        <div>{itemCon?.hintTextValue}</div>
                                       )}
                                     </Space>
                                   </>
@@ -866,7 +876,11 @@ const FormBuilder = () => {
                                 );
                               }
 
-                              if (itemCon?.name == 'Checkbox') {
+                              if (
+                                itemCon?.name == 'Checkbox' ||
+                                itemCon?.name == 'Radio Button' ||
+                                itemCon?.name == 'Toggle'
+                              ) {
                                 return (
                                   <>
                                     {' '}
@@ -931,7 +945,11 @@ const FormBuilder = () => {
                                               lineHeight: '18px',
                                             }}
                                           >
-                                            checkbox
+                                            {itemCon?.name == 'Radio Button'
+                                              ? 'Radio'
+                                              : itemCon?.name == 'Toggle'
+                                                ? 'Toggle'
+                                                : 'checkbox'}
                                           </div>
                                         </Col>
                                         <Col
@@ -981,16 +999,43 @@ const FormBuilder = () => {
                                                 style={{
                                                   display: 'flex',
                                                   gap: '10px',
+                                                  marginBottom: '10px',
                                                 }}
                                                 span={24}
                                               >
-                                                <Checkbox />
-                                                {itemLabelOp}
+                                                {itemCon?.name ===
+                                                'Radio Button' ? (
+                                                  <Radio.Group
+                                                    onChange={(e: any) => {
+                                                      setRadioValue(
+                                                        e.target.value,
+                                                      );
+                                                    }}
+                                                    value={radioValue}
+                                                  >
+                                                    <Radio
+                                                      value={itemLabelInde}
+                                                    >
+                                                      {' '}
+                                                      {itemLabelOp}
+                                                    </Radio>
+                                                  </Radio.Group>
+                                                ) : itemCon?.name ===
+                                                  'Toggle' ? (
+                                                  <>
+                                                    <Switch /> {itemLabelOp}
+                                                  </>
+                                                ) : (
+                                                  <>
+                                                    <Checkbox /> {itemLabelOp}
+                                                  </>
+                                                )}
                                               </Col>
                                             ),
                                           )}
                                         </Row>
                                       </div>
+                                      {itemCon?.hintTextValue}
                                     </Space>
                                   </>
                                 );
@@ -1002,27 +1047,126 @@ const FormBuilder = () => {
                     ))}
                   </>
                 ) : (
-                  <Row
-                    style={{
-                      width: '100%',
-                      height: '48px',
-                      borderRadius: '12px',
-                      padding: '12px',
-                      backgroundColor: '#ECF6FB',
-                      color: '#3DA5D9',
-                      border: `1px dashed ${token?.colorLink}`,
-                      marginTop: '10px',
-                    }}
-                  >
-                    <div
+                  <>
+                    {' '}
+                    <Row
                       style={{
-                        fontSize: '16px',
-                        height: '24px',
+                        width: '100%',
+                        height: '48px',
+                        borderRadius: '12px',
+                        padding: '12px',
+                        backgroundColor: '#ECF6FB',
+                        color: '#3DA5D9',
+                        border: `1px dashed ${token?.colorLink}`,
+                        marginTop: '10px',
                       }}
                     >
-                      + Drop Filed
-                    </div>
-                  </Row>
+                      <div
+                        style={{
+                          fontSize: '16px',
+                          height: '24px',
+                        }}
+                        onClick={addnewColimnsdsds}
+                      >
+                        + Drop Filed
+                      </div>
+                    </Row>
+                    <Row
+                      style={{
+                        background: '#F6F7F8',
+                        padding: '10px',
+                        marginTop: '30px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Row style={{width: '100%'}}>
+                        {colmsss?.map((itemColum: string) => {
+                          const totalSpanVaue = 24;
+                          const totalCol = colmsss?.length;
+                          const totalLengthAchived = totalSpanVaue / totalCol;
+                          const totalFloorValue =
+                            Math.floor(totalLengthAchived);
+                          return (
+                            <Col
+                              span={totalFloorValue}
+                              style={{
+                                height: '40px',
+                                borderRadius: '0px 0px 1px 0px',
+                                gap: '8px',
+                                padding: '8px 12px 8px 12px',
+                                background: '#EDEFF2',
+                                width: '100%',
+                                color: '#0D0D0D',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                borderLeft: '1px solid white',
+                              }}
+                            >
+                              Colun1
+                            </Col>
+                          );
+                        })}
+                      </Row>
+                      <Row style={{width: '100%'}}>
+                        {colmsss?.map((itemColum: string) => {
+                          const totalSpanVaue = 24;
+                          const totalCol = colmsss?.length;
+                          const totalLengthAchived = totalSpanVaue / totalCol;
+                          const totalFloorValue =
+                            Math.floor(totalLengthAchived);
+                          return (
+                            <Col
+                              span={totalFloorValue}
+                              style={{
+                                height: '48px',
+                                borderRadius: '0px 0px 1px 0px',
+                                gap: '8px',
+                                padding: '8px 12px 8px 12px',
+                                background: 'white',
+                                color: '#0D0D0D',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                border: '1px solid rgb(242 242 242)',
+                                width: '100%',
+                              }}
+                            />
+                          );
+                        })}
+                      </Row>
+                      <Row style={{width: '100%'}}>
+                        {colmsss?.map((itemColum: string) => {
+                          const totalSpanVaue = 24;
+                          const totalCol = colmsss?.length;
+                          const totalLengthAchived = totalSpanVaue / totalCol;
+                          const totalFloorValue =
+                            Math.floor(totalLengthAchived);
+                          return (
+                            <Col
+                              span={totalFloorValue}
+                              style={{
+                                height: 'auto',
+                                borderRadius: '0px 0px 1px 0px',
+                                gap: '8px',
+                                padding: '8px 12px 8px 12px',
+                                background: 'white',
+                                color: '#0D0D0D',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                border: '1px solid rgb(242 242 242)',
+                                width: '100%',
+                              }}
+                            >
+                              <Select
+                                variant="borderless"
+                                style={{width: '100%'}}
+                              />
+                            </Col>
+                          );
+                        })}
+                      </Row>
+                    </Row>
+                  </>
                 )}
               </div>
             </Row>

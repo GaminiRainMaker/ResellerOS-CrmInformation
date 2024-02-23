@@ -136,7 +136,7 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue :"hint Vlaue",
+      hintTextValue: 'hint Vlaue',
       options: [],
     };
   } else if (newItem === 'Line Break') {
@@ -151,7 +151,7 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue :"hint Vlaue",
+      hintTextValue: 'hint Vlaue',
       timeformat: 'HH:mm',
       use12hours: true,
     };
@@ -163,7 +163,7 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue :"hint Vlaue",
+      hintTextValue: 'hint Vlaue',
       dateformat: 'mm/dd/yyyy',
       weekStartOn: 'sunday',
       StartDate: '',
@@ -177,7 +177,7 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue :"hint Vlaue",
+      hintTextValue: 'hint Vlaue',
       defaultcountry: 'US',
       dataformat: '333-333-3333',
     };
@@ -189,21 +189,23 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue :"hint Vlaue",
+      hintTextValue: 'hint Vlaue',
       currency: 'USB',
       deciamlHide: false,
     };
-  } else if (newItem == 'Radio Button' || newItem == 'Toggle') {
-    newObjAddedon = {
-      name: newItem,
-      label: 'Label',
-      type: 'text',
-      required: false,
-      requiredLabel: true,
-      hintext: false,
-      hintTextValue :"hint Vlaue",
-    };
-  } else if (newItem == 'T text Content') {
+  }
+  //  else if (newItem == 'Radio Button' || newItem == 'Toggle') {
+  //   newObjAddedon = {
+  //     name: newItem,
+  //     label: 'Label',
+  //     type: 'text',
+  //     required: false,
+  //     requiredLabel: true,
+  //     hintext: false,
+  //     hintTextValue: 'hint Vlaue',
+  //   };
+  // }
+  else if (newItem == 'T text Content') {
     newObjAddedon = {
       name: newItem,
       sectionTitle: 'Section Title',
@@ -220,6 +222,15 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       requiredLabel: true,
       filedType: 'multiple',
     };
+  } else if (newItem == 'Radio Button' || newItem == 'Toggle') {
+    newObjAddedon = {
+      name: newItem,
+      placeholdertext: 'placeholder text',
+      labelOptions: [],
+      columnRequired: 1,
+      required: false,
+      requiredLabel: true,
+    };
   } else if (newItem == 'T Text' || newItem == 'Email') {
     newObjAddedon = {
       name: newItem,
@@ -228,7 +239,7 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue :"hint Vlaue",
+      hintTextValue: 'hint Vlaue',
     };
   }
   return newObjAddedon;
