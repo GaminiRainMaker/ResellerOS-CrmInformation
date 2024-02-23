@@ -104,8 +104,6 @@ const FormBuilder = () => {
     id: 'cart-droppable',
   });
 
-  console.log('34543543435', columnData);
-
   const deleteSelectedIntem = (sectionInde: number, contentIn: number) => {
     const temp: any = [...cartItems];
     temp?.[sectionInde || 0]?.content?.splice(contentIn, 1);
