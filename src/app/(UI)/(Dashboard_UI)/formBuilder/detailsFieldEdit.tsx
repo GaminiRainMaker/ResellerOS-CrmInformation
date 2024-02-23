@@ -1167,6 +1167,27 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
   ];
 
   console.log('ew4354353', cartItems);
+  const QuickSetupItemsForAttachement = [
+    {
+      key: '1',
+      label: (
+        <Typography name="Body 2/Medium" color={token?.colorInfo}>
+          Quick Setup
+        </Typography>
+      ),
+      children: (
+        <Form layout="vertical" form={form}>
+          <Form.Item
+            label={<Typography name="Body 4/Medium">Change Label</Typography>}
+            name="placeholdertext"
+          >
+            <UploadFile showSelectFields={false} />
+          </Form.Item>
+        </Form>
+      ),
+    },
+  ];
+
   return (
     <div style={containerStyle}>
       <Row>
@@ -1179,7 +1200,9 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
                     type === 'Radio Button' ||
                     type === 'Toggle'
                   ? QuickSetupItemsForCheckBox
-                  : QuickSetupItems
+                  : type === 'Attachement'
+                    ? QuickSetupItemsForAttachement
+                    : QuickSetupItems
             }
           />
         </CollapseSpaceStyle>
@@ -1227,8 +1250,6 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
           </CollapseSpaceStyle>
         </Row>
       )}
-
-      {/* <UploadFile showSelectFields={false} /> */}
     </div>
   );
 };

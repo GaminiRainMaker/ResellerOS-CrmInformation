@@ -1,7 +1,9 @@
+/* eslint-disable arrow-body-style */
 /* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
+import {Button} from '@/app/components/common/antd/Button';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
@@ -11,6 +13,7 @@ import Typography from '@/app/components/common/typography';
 import {pricingMethod} from '@/app/utils/CONSTANTS';
 import {
   calculateProfitabilityData,
+  convertDataToText,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
 import {Form} from 'antd';
@@ -417,15 +420,30 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
   return (
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
-        <Form>
-          <OsTableWithOutDrag
-            loading={loading}
-            columns={finalProfitTableCol}
-            dataSource={profitabilityData}
-            scroll
-            locale={locale}
-          />
-        </Form>
+        <>
+          <Button
+            onClick={() => {
+              const textResult = convertDataToText(
+                ProfitabilityQuoteLineItemcolumns,
+                profitabilityData,
+              );
+              if (textResult) {
+                navigator.clipboard.writeText(textResult);
+              }
+            }}
+          >
+            Table Data
+          </Button>
+          <Form>
+            <OsTableWithOutDrag
+              loading={loading}
+              columns={finalProfitTableCol}
+              dataSource={profitabilityData}
+              scroll
+              locale={locale}
+            />
+          </Form>
+        </>
       ) : (
         <EmptyContainer
           title="There is no columns for Profitability"

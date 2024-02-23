@@ -42,6 +42,7 @@ import {
 import {OsPhoneInputStyle} from '@/app/components/common/os-contact/styled-components';
 import {formbuildernewObject} from '@/app/utils/base';
 import React, {useState} from 'react';
+import FormUpload from '@/app/components/common/os-upload/FormUpload';
 import EditFiledDetails from './detailsFieldEdit';
 
 import FieldCard from './FieldCard';
@@ -1068,6 +1069,7 @@ const FormBuilder = () => {
                       >
                         + Drop Filed
                       </div>
+                      <FormUpload />
                     </Row>
                     <Row
                       style={{
