@@ -9,4 +9,6 @@ export interface FormBuilderInterFace {
   cartItems?: any;
   form: FormInstance;
   typeFiled?: string;
+  setColumnData?: any;
+  columnData?: any;
 }

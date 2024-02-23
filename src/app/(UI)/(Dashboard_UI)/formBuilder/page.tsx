@@ -13,7 +13,6 @@
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Select} from '@/app/components/common/antd/Select';
 import {Space} from '@/app/components/common/antd/Space';
 import {Table} from '@/app/components/common/antd/Table';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -22,21 +21,23 @@ import OsDropdown from '@/app/components/common/os-dropdown';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
 import {MailOutlined, PlayCircleOutlined} from '@ant-design/icons';
+import 'react-phone-number-input/style.css';
 import {DndContext, DragEndEvent, useDroppable} from '@dnd-kit/core';
 import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
+
 import {
   Checkbox,
   DatePicker,
   Divider,
   Form,
   MenuProps,
-  Radio,
-  Switch,
   TimePicker,
   Layout,
 } from 'antd';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import CommonSelect from '@/app/components/common/os-select';
+import {OsPhoneInputStyle} from '@/app/components/common/os-contact/styled-components';
+import {formbuildernewObject} from '@/app/utils/base';
 import EditFiledDetails from './detailsFieldEdit';
 
 import FieldCard from './FieldCard';
@@ -56,167 +57,44 @@ const FormBuilder = () => {
 
   const [token] = useThemeToken();
   const [cartItems, setCartItems] = useState<any>([]);
+  const [columnData, setColumnData] = useState<any>([]);
 
   const addItemsToCart = (e: DragEndEvent) => {
     const newItem = e.active.data.current?.title?.props?.text;
     const temp = [...cartItems];
-    const cutomizedTables = [
-      {
-        filed: 'Filed Name',
-        typeOfFiled: 'text',
-      },
-      {
-        filed: 'Quote',
-        typeOfFiled: 'number',
-      },
-    ];
+    const addnewField = formbuildernewObject(newItem, columnData);
+
     if (newItem === 'Add Section' || cartItems?.length === 0) {
       temp?.push({
         section: `Section${cartItems?.length + 1}`,
-        content: [],
+        content: newItem === 'Add Section' ? [] : [addnewField],
       });
+      const tempVar: any = [...columnData];
+      if (newItem === 'Table') {
+        tempVar?.push({
+          tableKey: columnData?.length,
+          tableCol: [
+            {title: 'Column 1', dataIndex: 'address', key: '1'},
+            {title: 'Column 2', dataIndex: 'address', key: '2'},
+          ],
+        });
+      }
+      setColumnData(tempVar);
       setSectionIndexActive(cartItems?.length);
       setContentActiveIndex(cartItems?.length);
     } else {
-      temp?.[sectionIndexActive]?.content?.push(
-        newItem === 'Table'
-          ? {
-              name: newItem,
-              label: 'Label',
-              required: false,
-              requiredLabel: true,
-              noOfRows: 2,
-              noOfColumn: 2,
-              cutomizedTable: cutomizedTables,
-
-              ColumnsData: [
-                {
-                  title: (
-                    <Typography name="Body 4/Medium" className="dragHandler">
-                      Filed Name1
-                    </Typography>
-                  ),
-                  dataIndex: 'Filed Name1',
-                  key: 'Filed Name1',
-                  width: 130,
-                  render: (text: string) => (
-                    <OsInput type="text" value={text} />
-                  ),
-                },
-                {
-                  title: (
-                    <Typography name="Body 4/Medium" className="dragHandler">
-                      Filed Name2
-                    </Typography>
-                  ),
-                  dataIndex: 'Filed Name2',
-                  key: 'Filed Name2',
-                  width: 130,
-                  render: (text: string) => (
-                    <OsInput type="text" value={text} />
-                  ),
-                },
-              ],
-              RowsData: [
-                {'Filed Name1': 'text', 'Filed Name2': 'text'},
-                {'Filed Name1': 'text', 'Filed Name2': 'text'},
-              ],
-            }
-          : newItem === 'Multi-Select' || newItem === 'Drop Down'
-            ? {
-                name: newItem,
-                label: 'Label',
-                type: 'multiple',
-                required: false,
-                requiredLabel: true,
-                hintext: false,
-                options: [],
-              }
-            : newItem === 'Line Break'
-              ? {
-                  name: newItem,
-                }
-              : newItem == 'Time'
-                ? {
-                    name: newItem,
-                    label: 'Label',
-                    type: 'Time',
-                    required: false,
-                    requiredLabel: true,
-                    hintext: false,
-                    timeformat: 'HH:mm',
-                    use12hours: true,
-                  }
-                : newItem == 'Date'
-                  ? {
-                      name: newItem,
-                      label: 'Label',
-                      type: 'Date',
-                      required: false,
-                      requiredLabel: true,
-                      hintext: false,
-                      dateformat: 'mm/dd/yyyy',
-                      weekStartOn: 'sunday',
-                      StartDate: '',
-                      enddate: '',
-                    }
-                  : newItem == 'Contact'
-                    ? {
-                        name: newItem,
-                        label: 'Label',
-                        type: 'number',
-                        required: false,
-                        requiredLabel: true,
-                        hintext: false,
-                        defaultcountry: 'india',
-                        dataformat: '3-3-3',
-                      }
-                    : newItem == 'Currency'
-                      ? {
-                          name: newItem,
-                          label: 'Label',
-                          type: 'text',
-                          required: false,
-                          requiredLabel: true,
-                          hintext: false,
-                          currency: 'USB',
-                          deciamlHide: false,
-                        }
-                      : newItem == 'Radio Button' || newItem == 'Toggle'
-                        ? {
-                            name: newItem,
-                            label: 'Label',
-                            type: 'text',
-                            required: false,
-                            requiredLabel: true,
-                            hintext: false,
-                          }
-                        : newItem == 'T text Content'
-                          ? {
-                              name: newItem,
-                              sectionTitle: 'Section Title',
-                              Alignemnt: 'left',
-                              FontSize: 'Heading 2',
-                            }
-                          : newItem == 'Checkbox'
-                            ? {
-                                name: newItem,
-                                placeholdertext: 'placeholder text',
-                                labelOptions: [],
-                                columnRequired: 1,
-                                required: false,
-                                requiredLabel: true,
-                                filedType: 'multiple',
-                              }
-                            : {
-                                name: newItem,
-                                label: 'Label',
-                                type: 'text',
-                                required: false,
-                                requiredLabel: true,
-                                hintext: false,
-                              },
-      );
+      const tempVar: any = [...columnData];
+      if (newItem === 'Table') {
+        tempVar?.push({
+          tableKey: columnData?.length,
+          tableCol: [
+            {title: 'Column 1', dataIndex: 'address', key: '1'},
+            {title: 'Column 2', dataIndex: 'address', key: '2'},
+          ],
+        });
+      }
+      setColumnData(tempVar);
+      temp?.[sectionIndexActive]?.content?.push(addnewField);
       setContentActiveIndex(temp?.[sectionIndexActive]?.content?.length);
     }
     setCartItems(temp);
@@ -226,87 +104,17 @@ const FormBuilder = () => {
     id: 'cart-droppable',
   });
 
+  console.log('34543543435', columnData);
+
   const deleteSelectedIntem = (sectionInde: number, contentIn: number) => {
     const temp: any = [...cartItems];
     temp?.[sectionInde || 0]?.content?.splice(contentIn, 1);
     setCartItems(temp);
   };
   const updateSection = (sectionInd: number, itemCont: string) => {
+    const addnewField = formbuildernewObject(itemCont, columnData);
     const temp = [...cartItems];
-    if (itemCont === 'Multi-Select' || itemCont === 'Drop Down') {
-      temp?.[sectionInd]?.content?.push({
-        name: itemCont,
-        label: 'Label',
-        type: 'multiple',
-        required: false,
-        requiredLabel: true,
-        hintext: false,
-        options: [],
-      });
-    } else if (itemCont === 'Time') {
-      temp?.[sectionInd]?.content?.push({
-        name: itemCont,
-        label: 'Label',
-        type: 'Time',
-        required: false,
-        requiredLabel: true,
-        hintext: false,
-        timeformat: 'HH:mm',
-        use12hours: true,
-      });
-    } else if (itemCont == 'Currency') {
-      temp?.[sectionInd]?.content?.push({
-        name: itemCont,
-        label: 'Label',
-        type: 'text',
-        required: false,
-        requiredLabel: true,
-        hintext: false,
-        currency: 'USB',
-        deciamlHide: false,
-      });
-    } else if (itemCont === 'Date') {
-      temp?.[sectionInd]?.content?.push({
-        name: itemCont,
-        label: 'Label',
-        type: 'Date',
-        required: false,
-        requiredLabel: true,
-        hintext: false,
-        dateformat: 'mm/dd/yyyy',
-        weekStartOn: 'sunday',
-        StartDate: '',
-        enddate: '',
-      });
-    } else if (itemCont === 'Contact') {
-      temp?.[sectionInd]?.content?.push({
-        name: itemCont,
-        label: 'Label',
-        type: 'number',
-        required: false,
-        requiredLabel: true,
-        hintext: false,
-        defaultcountry: 'india',
-        dataformat: '3-3-3',
-      });
-    } else if (itemCont == 'T text Content') {
-      temp?.[sectionInd]?.content?.push({
-        name: itemCont,
-        sectionTitle: 'Section Title',
-        Alignemnt: 'left',
-        FontSize: 'h2',
-      });
-    } else {
-      temp?.[sectionInd]?.content?.push({
-        name: itemCont,
-        label: 'Label',
-        type: 'text',
-        required: false,
-        requiredLabel: true,
-        hintext: false,
-      });
-    }
-
+    temp?.[sectionInd]?.content?.push(addnewField);
     setCartItems(temp);
   };
 
@@ -358,6 +166,7 @@ const FormBuilder = () => {
     margin: '24px',
     borderRadius: 12,
   };
+  console.log('3242342', cartItems);
 
   return (
     <Layout style={layoutStyle}>
@@ -412,6 +221,15 @@ const FormBuilder = () => {
                         >
                           {item?.content?.map(
                             (itemCon: any, ItemConindex: any) => {
+                              const newColumnData = columnData?.find(
+                                (itemss: any) => {
+                                  if (itemss?.tableKey === itemCon?.tableKey) {
+                                    return itemss;
+                                  }
+                                },
+                              );
+
+                              console.log('43546435', newColumnData);
                               if (itemCon?.name == 'Table') {
                                 return (
                                   <Space
@@ -499,7 +317,8 @@ const FormBuilder = () => {
                                       }}
                                     >
                                       <Table
-                                        columns={itemCon?.ColumnsData}
+                                        // columns={itemCon?.ColumnsData}
+                                        columns={newColumnData?.tableCol}
                                         dataSource={itemCon?.RowsData}
                                         style={{
                                           marginTop: '10px',
@@ -681,12 +500,33 @@ const FormBuilder = () => {
                                         ) : itemCon?.name === 'Contact' ? (
                                           <>
                                             {' '}
-                                            <OsInput
+                                            {/* defaultcountry: 'india',
+                        dataformat: '3-3-3', */}
+                                            <OsPhoneInputStyle
+                                              style={{
+                                                border:
+                                                  '1px solid var(--foundation-neutrals-black-n-70, #a3a3a3)',
+                                                borderRadius: '10px',
+                                                padding: '3px',
+                                              }}
+                                              mask={itemCon?.dataformat}
+                                              // mask="333-333-3333"
+                                              limitMaxLength
+                                              defaultCountry={
+                                                itemCon?.defaultcountry
+                                              }
+                                              countryCallingCodeEditable={false}
+                                              max={11}
+                                              onChange={(e: any) => {
+                                                console.log('5345435', e);
+                                              }}
+                                            />
+                                            {/* <OsInput
                                               type={itemCon?.type}
 
                                               // style={{width: '270px'}}
                                               // onClick={showDrawer}
-                                            />
+                                            /> */}
                                           </>
                                         ) : itemCon?.name === 'Email' ? (
                                           <OsInput
@@ -720,7 +560,7 @@ const FormBuilder = () => {
                                         )}
                                       </div>
                                       {itemCon?.hintext && (
-                                        <div>this is hint text</div>
+                                        <div>{itemCon?.hintTextValue}</div>
                                       )}
                                     </Space>
                                   </>
@@ -1209,6 +1049,8 @@ const FormBuilder = () => {
             cartItems={cartItems}
             form={form}
             typeFiled=""
+            setColumnData={setColumnData}
+            columnData={columnData}
           />
         </div>
       )}

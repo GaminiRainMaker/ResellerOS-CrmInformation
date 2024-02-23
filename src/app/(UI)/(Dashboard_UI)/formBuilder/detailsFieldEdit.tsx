@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-redeclare */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable @typescript-eslint/indent */
@@ -27,6 +28,8 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
   setCartItems,
   form,
   typeFiled,
+  setColumnData,
+  columnData,
 }) => {
   const [token] = useThemeToken();
   const containerStyle: React.CSSProperties = {
@@ -97,39 +100,54 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
     labelTypeVal: string,
     type: string,
     newValue: number,
+    tableKey: number,
   ) => {
     let temp: any = [...cartItems];
-    if (labelTypeVal == 'noOfRows') {
-      if (type == 'increase') {
-        temp?.[sectionIndex || 0]?.content?.[
-          contentIndex || 0
-        ]?.tableData?.push({});
-      } else {
-        temp?.[sectionIndex || 0]?.content?.[
-          contentIndex || 0
-        ]?.tableData?.splice(0, 1);
-      }
+    // eslint-disable-next-line prefer-const
+    //   if (type == 'increase') {
+    //     columnDat
+    //  const    colmunTemp:any
+    //     colmunTemp = columnData.map((sectItem: any, sectioIndex: number) => {
+    //       if (sectItem?.tableKey === tableKey) {
+    //         return {
+    //           ...sectItem,
+    //           tableCol: sectItem.tableCol.push({
+    //             title: 'Column 2',
+    //             dataIndex: 'address',
+    //             key: '2',
+    //           }),
+    //         };
+    //       }
+    //       return sectItem;
+    //     });
+    //   } else {
+    //     colmunTemp = columnData.map((sectItem: any, sectioIndex: number) => {
+    //       if (sectItem?.tableKey === tableKey) {
+    //         return {
+    //           ...sectItem,
+    //           tableCol: sectItem.tableCol?.slice(0, 1),
+    //         };
+    //       }
+    //       return sectItem;
+    //     });
+    //   }
+
+    const colmunTemp: any = [...columnData];
+    colmunTemp?.[0]?.tableCol?.push({
+      title: 'Column 2',
+      dataIndex: 'address',
+      key: '3',
+    });
+
+    setColumnData(colmunTemp);
+    if (type == 'increase') {
+      temp?.[sectionIndex || 0]?.content?.[
+        contentIndex || 0
+      ]?.ColumnsData?.push({title: 'Column 2', dataIndex: 'address', key: '2'});
     } else {
-      if (type == 'increase') {
-        temp?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.Rows?.push({
-          title: (
-            <Typography name="Body 4/Medium" className="dragHandler">
-              Filed Name
-              {temp?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.Rows
-                ?.length + 1}
-            </Typography>
-          ),
-          dataIndex: 'Filed Name1',
-          key: 'Filed Name1',
-          width: 130,
-          render: (text: string) => <OsInput type="text" />,
-        });
-      } else {
-        temp?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.Rows?.splice(
-          0,
-          1,
-        );
-      }
+      temp?.[sectionIndex || 0]?.content?.[
+        contentIndex || 0
+      ]?.ColumnsData?.splice(0, 1);
     }
 
     temp = cartItems.map((sectItem: any, sectioIndex: number) => {
@@ -149,6 +167,7 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
       }
       return sectItem;
     });
+
     setCartItems(temp);
   };
 
@@ -389,38 +408,36 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
                     placeholder="Label"
                     type="number"
                     defaultValue={
-                      isOpenDrawer &&
                       cartItems?.[sectionIndex || 0]?.content?.[
                         contentIndex || 0
                       ]?.noOfRows
                     }
                     value={
-                      isOpenDrawer &&
                       cartItems?.[sectionIndex || 0]?.content?.[
                         contentIndex || 0
                       ]?.noOfRows
                     }
-                    onChange={(e: any) => {
-                      // changeFieldValues(e?.target?.value, 'noOfRows');
-                      if (
-                        e?.target?.value >
-                        cartItems?.[sectionIndex || 0]?.content?.[
-                          contentIndex || 0
-                        ]?.noOfRows
-                      ) {
-                        addNewRowsColumn(
-                          'noOfRows',
-                          'increase',
-                          e?.target?.value,
-                        );
-                      } else {
-                        addNewRowsColumn(
-                          'noOfRows',
-                          'decrease',
-                          e?.target?.value,
-                        );
-                      }
-                    }}
+                    // onChange={(e: any) => {
+                    //   // changeFieldValues(e?.target?.value, 'noOfRows');
+                    //   if (
+                    //     e?.target?.value >
+                    //     cartItems?.[sectionIndex || 0]?.content?.[
+                    //       contentIndex || 0
+                    //     ]?.noOfRows
+                    //   ) {
+                    //     addNewRowsColumn(
+                    //       'noOfRows',
+                    //       'increase',
+                    //       e?.target?.value,
+                    //     );
+                    //   } else {
+                    //     addNewRowsColumn(
+                    //       'noOfRows',
+                    //       'decrease',
+                    //       e?.target?.value,
+                    //     );
+                    //   }
+                    // }}
                   />
                 </Form.Item>
               </Col>
@@ -435,13 +452,11 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
                     placeholder="Label"
                     type="number"
                     defaultValue={
-                      isOpenDrawer &&
                       cartItems?.[sectionIndex || 0]?.content?.[
                         contentIndex || 0
                       ]?.noOfColumn
                     }
                     value={
-                      isOpenDrawer &&
                       cartItems?.[sectionIndex || 0]?.content?.[
                         contentIndex || 0
                       ]?.noOfColumn
@@ -458,12 +473,18 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
                           'noOfColumn',
                           'increase',
                           e?.target?.value,
+                          cartItems?.[sectionIndex || 0]?.content?.[
+                            contentIndex || 0
+                          ]?.tableKey,
                         );
                       } else {
                         addNewRowsColumn(
                           'noOfColumn',
                           'decrease',
                           e?.target?.value,
+                          cartItems?.[sectionIndex || 0]?.content?.[
+                            contentIndex || 0
+                          ]?.tableKey,
                         );
                       }
                     }}
@@ -557,12 +578,10 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
               style={{width: '100%'}}
               placeholder="Label"
               defaultValue={
-                isOpenDrawer &&
                 cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
                   ?.sectionTitle
               }
               value={
-                isOpenDrawer &&
                 cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
                   ?.sectionTitle
               }
@@ -695,6 +714,29 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
               )}
             </>
           ))}
+          {cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+            ?.hintext && (
+            <>
+              {' '}
+              <Typography name="Body 4/Medium">Hint Text</Typography>
+              <OsInput
+                style={{width: '100%'}}
+                placeholder="Label"
+                type="text"
+                defaultValue={
+                  cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                    ?.hintTextValue
+                }
+                value={
+                  cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                    ?.hintTextValue
+                }
+                onChange={(e: any) => {
+                  changeFieldValues(e?.target?.value, 'hintTextValue');
+                }}
+              />
+            </>
+          )}
           {type === 'Checkbox' && (
             <>
               {' '}
