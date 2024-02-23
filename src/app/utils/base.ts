@@ -193,19 +193,17 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       currency: 'USB',
       deciamlHide: false,
     };
-  }
-  //  else if (newItem == 'Radio Button' || newItem == 'Toggle') {
-  //   newObjAddedon = {
-  //     name: newItem,
-  //     label: 'Label',
-  //     type: 'text',
-  //     required: false,
-  //     requiredLabel: true,
-  //     hintext: false,
-  //     hintTextValue: 'hint Vlaue',
-  //   };
-  // }
-  else if (newItem == 'T text Content') {
+  } else if (newItem == 'Radio Button' || newItem == 'Toggle') {
+    newObjAddedon = {
+      name: newItem,
+      label: 'Label',
+      type: 'text',
+      required: false,
+      requiredLabel: true,
+      hintext: false,
+      hintTextValue: 'hint Vlaue',
+    };
+  } else if (newItem == 'Text Content') {
     newObjAddedon = {
       name: newItem,
       sectionTitle: 'Section Title',
@@ -222,16 +220,7 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       requiredLabel: true,
       filedType: 'multiple',
     };
-  } else if (newItem == 'Radio Button' || newItem == 'Toggle') {
-    newObjAddedon = {
-      name: newItem,
-      placeholdertext: 'placeholder text',
-      labelOptions: [],
-      columnRequired: 1,
-      required: false,
-      requiredLabel: true,
-    };
-  } else if (newItem == 'T Text' || newItem == 'Email') {
+  } else if (newItem == 'Text' || newItem == 'Email') {
     newObjAddedon = {
       name: newItem,
       label: 'Label',

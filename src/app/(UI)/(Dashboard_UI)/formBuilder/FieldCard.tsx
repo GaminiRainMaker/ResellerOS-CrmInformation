@@ -30,7 +30,7 @@ const FieldCard = () => {
       childitem: [
         {
           key: 1,
-          name: 'T text Content',
+          name: 'Text Content',
           icon: <DocumentTextIcon width={15} color={token?.colorInfo} />,
         },
         {
@@ -46,7 +46,7 @@ const FieldCard = () => {
       childitem: [
         {
           key: 3,
-          name: 'T Text',
+          name: 'Text',
           icon: <DocumentTextIcon width={15} color={token?.colorInfo} />,
         },
         {

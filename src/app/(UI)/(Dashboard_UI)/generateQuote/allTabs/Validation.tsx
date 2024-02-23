@@ -124,7 +124,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       title: 'Pricing Method',
       dataIndex: 'pricing_method',
       key: 'pricing_method',
-      width: 208,
+      width: 200,
       render: (text: string, record: any) => (
         <Form.Item
           className="formmarginBottom"
@@ -140,7 +140,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
           <CommonSelect
             allowClear
             disabled={renderEditableInput('Pricing Method')}
-            style={{width: '200px'}}
+            style={{width: '100%'}}
             placeholder="Select"
             defaultValue={text}
             onChange={(v) => {

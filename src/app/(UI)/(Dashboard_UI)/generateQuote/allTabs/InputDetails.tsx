@@ -304,11 +304,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     },
   ];
 
-  console.log(
-    'dataNullForBundledataNullForBundle',
-    selectedFilter,
-    dataNullForBundle,
-  );
   useEffect(() => {
     if (selectedFilter === 'Product Family') {
       const finalFamilyArr: any = [];
@@ -374,6 +369,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       setFamilyFilter(finalFamilyArr);
     }
   }, [selectedFilter]);
+
   useEffect(() => {
     const newArr: any = [];
     InputDetailQuoteLineItemcolumns?.map((itemCol: any) => {

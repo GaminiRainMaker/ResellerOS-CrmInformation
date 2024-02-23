@@ -18,6 +18,7 @@ import {DatePicker, Form, Radio, RadioChangeEvent} from 'antd';
 import React from 'react';
 import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
 import {FormBuilderInterFace} from './formBuilder.interface';
+import UploadFile from '../generateQuote/UploadFile';
 
 const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
   isOpenDrawer = false,
@@ -1171,7 +1172,7 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
         <CollapseSpaceStyle size={24} direction="vertical">
           <OsCollapseAdmin
             items={
-              type === 'T text Content'
+              type === 'Text Content'
                 ? QuickSetupItemsForTTextContent
                 : type === 'Checkbox' ||
                     type === 'Radio Button' ||
@@ -1187,7 +1188,7 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
         <CollapseSpaceStyle size={24} direction="vertical">
           <OsCollapseAdmin
             items={
-              type === 'T text Content'
+              type === 'Text Content'
                 ? OptionsItemsForTextContent
                 : OptionsItems
             }
@@ -1225,6 +1226,8 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
           </CollapseSpaceStyle>
         </Row>
       )}
+
+      {/* <UploadFile showSelectFields={false} /> */}
     </div>
   );
 };

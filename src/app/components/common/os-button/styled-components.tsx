@@ -115,7 +115,7 @@ export const ButtonStyled = styled(Button)<{buttontype?: any}>`
   }};
   width: ${(props) => {
     if (props.buttontype === 'BUILD_BUTTON') {
-      return '130px';
+      return '158px';
     }
     return 'auto';
   }};

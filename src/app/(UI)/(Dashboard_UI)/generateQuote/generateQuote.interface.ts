@@ -1,3 +1,5 @@
+import {FormInstance} from 'antd';
+
 export interface FormDataProps {
   file_name: string;
   opportunity: string;
@@ -15,4 +17,13 @@ export interface InputDetailTabInterface {
   setFamilyFilter?: any;
   setSelectedRowIds?: any;
   selectTedRowIds?: any;
+}
+
+export interface UploadFileInterface {
+  setUploadFileData?: any;
+  uploadFileData?: any;
+  addInExistingQuote?: boolean;
+  addQuoteLineItem?: boolean;
+  form?: FormInstance;
+  showSelectFields?: boolean;
 }
