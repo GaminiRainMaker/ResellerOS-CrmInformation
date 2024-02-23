@@ -201,7 +201,8 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue: 'hint Vlaue',
+      hintTextValue: 'hint Value',
+      labelOptions: [],
     };
   } else if (newItem == 'Text Content') {
     newObjAddedon = {

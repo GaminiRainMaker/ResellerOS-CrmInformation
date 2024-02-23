@@ -1166,6 +1166,7 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
     },
   ];
 
+  console.log('ew4354353', cartItems);
   return (
     <div style={containerStyle}>
       <Row>
