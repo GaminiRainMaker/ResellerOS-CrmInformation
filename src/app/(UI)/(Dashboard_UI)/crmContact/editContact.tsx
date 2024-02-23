@@ -12,32 +12,18 @@
 'use client';
 
 import Typography from '@/app/components/common/typography';
-import {
-  CheckBadgeIcon,
-  EllipsisVerticalIcon,
-} from '@heroicons/react/24/outline';
 
-import {Dropdown} from '@/app/components/common/antd/DropDown';
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {PopConfirm} from '@/app/components/common/antd/PopConfirm';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import OsModal from '@/app/components/common/os-modal';
-import OsTable from '@/app/components/common/os-table';
-import OsTabs from '@/app/components/common/os-tabs';
-import {Button, Checkbox, MenuProps, TabsProps, Upload} from 'antd';
-import {useRouter} from 'next/navigation';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import OsInput from '@/app/components/common/os-input';
-import {useState} from 'react';
-import CommonSelect from '@/app/components/common/os-select';
-import OsAvatar from '@/app/components/common/os-avatar';
-import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
-import {CheckCircleOutlined, MailOutlined} from '@ant-design/icons';
-import {CheckCircleIcon} from '@heroicons/react/24/solid';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import UploadFile from '../generateQuote/UploadFile';
+import { AvatarStyled } from '@/app/components/common/os-table/styled-components';
+import { CheckCircleOutlined, MailOutlined } from '@ant-design/icons';
+import { Checkbox } from 'antd';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useAppDispatch } from '../../../../../redux/hook';
 
 const EditContactModal: React.FC = () => {
   const dispatch = useAppDispatch();

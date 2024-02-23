@@ -23,7 +23,7 @@ export interface UploadFileInterface {
   setUploadFileData?: any;
   uploadFileData?: any;
   addInExistingQuote?: boolean;
-  addQuoteLineItem?: boolean;
+  addQuoteLineItem?: any;
   form?: FormInstance;
   showSelectFields?: boolean;
 }

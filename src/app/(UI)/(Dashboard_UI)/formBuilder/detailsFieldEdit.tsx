@@ -625,29 +625,33 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
               }}
             />
           </Form.Item>
-          <Form.Item
-            label={<Typography name="Body 4/Medium">Field Type</Typography>}
-            name="filedType"
-          >
-            <CommonSelect
-              onChange={(e: any) => {
-                changeFieldValues(e, 'filedType');
-              }}
-              defaultValue={
-                cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
-                  ?.filedType
-              }
-              value={
-                cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
-                  ?.filedType
-              }
-              style={{width: '100%', marginBottom: '20px'}}
-              options={[
-                {label: 'Multi-select Drop Down', value: 'multiple'},
-                {label: 'Single-select Drop Down', value: 'single'},
-              ]}
-            />
-          </Form.Item>
+          {type === 'Radio Button' ? (
+            <></>
+          ) : (
+            <Form.Item
+              label={<Typography name="Body 4/Medium">Field Type</Typography>}
+              name="filedType"
+            >
+              <CommonSelect
+                onChange={(e: any) => {
+                  changeFieldValues(e, 'filedType');
+                }}
+                defaultValue={
+                  cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                    ?.filedType
+                }
+                value={
+                  cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                    ?.filedType
+                }
+                style={{width: '100%', marginBottom: '20px'}}
+                options={[
+                  {label: 'Multi-select Drop Down', value: 'multiple'},
+                  {label: 'Single-select Drop Down', value: 'single'},
+                ]}
+              />
+            </Form.Item>
+          )}
         </Form>
       ),
     },
@@ -690,7 +694,11 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
           {optionsType?.map((itemOption: any, index: number) => (
             <>
               {' '}
-              {((type === 'Checkbox' && index != 2) || type !== 'Checkbox') && (
+              {(((type === 'Checkbox' ||
+                type === 'Radio Button' ||
+                type === 'Toggle') &&
+                index != 2) ||
+                type !== 'Checkbox') && (
                 <Row style={{width: '100%'}}>
                   <Col
                     style={{
@@ -738,7 +746,9 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
               />
             </>
           )}
-          {type === 'Checkbox' && (
+          {(type === 'Checkbox' ||
+            type === 'Radio Button' ||
+            type === 'Toggle') && (
             <>
               {' '}
               <Typography name="Body 4/Medium">No Of Columns</Typography>
@@ -1185,7 +1195,9 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
             items={
               type === 'Text Content'
                 ? QuickSetupItemsForTTextContent
-                : type === 'Checkbox'
+                : type === 'Checkbox' ||
+                    type === 'Radio Button' ||
+                    type === 'Toggle'
                   ? QuickSetupItemsForCheckBox
                   : type === 'Attachement'
                     ? QuickSetupItemsForAttachement
@@ -1208,6 +1220,8 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
       </Row>
       {(type === 'Multi-Select' ||
         type === 'Checkbox' ||
+        type === 'Radio Button' ||
+        type === 'Toggle' ||
         type === 'Date' ||
         type === 'Drop Down' ||
         type === 'Time' ||
@@ -1225,7 +1239,9 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
                       ? validationOptionsForDate
                       : type === 'Contact'
                         ? validationOptionsForContact
-                        : type === 'Checkbox'
+                        : type === 'Checkbox' ||
+                            type === 'Radio Button' ||
+                            type === 'Toggle'
                           ? editChoicesOptionsForCheckBox
                           : editChoicesOptions
               }
