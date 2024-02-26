@@ -1,3 +1,4 @@
+/* eslint-disable no-lone-blocks */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable @typescript-eslint/indent */
@@ -38,14 +39,17 @@ import {
   Switch,
   Input,
   Select,
+  Modal,
 } from 'antd';
 import {OsPhoneInputStyle} from '@/app/components/common/os-contact/styled-components';
 import {formbuildernewObject} from '@/app/utils/base';
 import React, {useState} from 'react';
 import FormUpload from '@/app/components/common/os-upload/FormUpload';
+import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
 import EditFiledDetails from './detailsFieldEdit';
 
 import FieldCard from './FieldCard';
+import FormBuilderPreview from './previewFile';
 
 const {Sider, Content} = Layout;
 
@@ -63,7 +67,9 @@ const FormBuilder = () => {
   const [token] = useThemeToken();
   const [cartItems, setCartItems] = useState<any>([]);
   const [columnData, setColumnData] = useState<any>([]);
-
+  const [selectedColumnIndex, setSelectedColumnIndex] = useState<number>(0);
+  const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
+  // console.log('selectedColumnIndex', selectedColumnIndex);
   const addItemsToCart = (e: DragEndEvent) => {
     const newItem = e.active.data.current?.title?.props?.text;
     const temp = [...cartItems];
@@ -170,34 +176,6 @@ const FormBuilder = () => {
     borderRadius: 12,
   };
 
-  const addnewColumn = () => {
-    const tempVar: any = [...columnData];
-    console.log('3333333', tempVar);
-    tempVar?.[0]?.tableCol?.push({
-      title: 'Column 1',
-      dataIndex: 'address',
-      key: '3',
-    });
-    // tempVar?.push({
-    //   tableKey: columnData?.length,
-    //   C: [
-    //     {title: 'Column 1', dataIndex: 'address', key: '1'},
-    //     {title: 'Column 2', dataIndex: 'address', key: '2'},
-    //   ],
-    // });
-
-    setColumnData(tempVar);
-  };
-  const [colmsss, setColumnss] = useState<any>([
-    'Column1 ',
-    'column2',
-    'Column3',
-  ]);
-  const addnewColimnsdsds = () => {
-    const temp: any = [...colmsss];
-    temp?.push('Column4');
-    setColumnss(temp);
-  };
   return (
     <Layout style={layoutStyle}>
       <DndContext onDragEnd={addItemsToCart}>
@@ -214,8 +192,19 @@ const FormBuilder = () => {
                 <OsButton buttontype="PRIMARY" text="Save" />
                 <OsButton
                   buttontype="PRIMARY_ICON"
+                  onClick={() => {
+                    console.log('43535345', 'ss');
+                    setOpenPreviewModal(!openPreviewModal);
+                  }}
                   text=""
-                  icon={<PlayCircleOutlined />}
+                  icon={
+                    <PlayCircleOutlined
+                      onClick={() => {
+                        console.log('43535345', 'ss');
+                        setOpenPreviewModal(!openPreviewModal);
+                      }}
+                    />
+                  }
                 />
                 <Space>
                   <OsDropdown menu={{items: dropDownItemss}} />
@@ -281,9 +270,6 @@ const FormBuilder = () => {
                                     }}
                                     onDragOver={(e) => e.preventDefault()}
                                   >
-                                    <button onClick={addnewColumn}>
-                                      dsssd
-                                    </button>
                                     <Row justify="space-between">
                                       <Col
                                         onClick={() => {
@@ -341,20 +327,157 @@ const FormBuilder = () => {
 
                                     <div
                                       style={{
-                                        width: '100%',
                                         display: 'flex',
                                         gap: '12px',
+                                        width: '100%',
                                       }}
                                     >
-                                      <Table
-                                        // columns={itemCon?.ColumnsData}
-                                        columns={newColumnData?.tableCol}
-                                        dataSource={itemCon?.RowsData}
+                                      <Row
                                         style={{
-                                          marginTop: '10px',
+                                          background: '#F6F7F8',
+                                          padding: '10px',
+                                          marginTop: '30px',
+                                          display: 'flex',
+                                          justifyContent: 'center',
                                           width: '100%',
                                         }}
-                                      />
+                                      >
+                                        <Row style={{width: '100%'}}>
+                                          {itemCon?.ColumnsData?.length > 0 &&
+                                            itemCon?.ColumnsData?.map(
+                                              (
+                                                itemColum: any,
+                                                indexOfColumn: number,
+                                              ) => {
+                                                const totalSpanVaue = 24;
+                                                const totalCol =
+                                                  itemCon?.ColumnsData?.length;
+                                                const totalLengthAchived =
+                                                  totalSpanVaue / totalCol;
+                                                const totalFloorValue =
+                                                  Math.floor(
+                                                    totalLengthAchived,
+                                                  );
+                                                return (
+                                                  <Col
+                                                    onClick={() => {
+                                                      form.resetFields();
+                                                      setSelectedColumnIndex(
+                                                        indexOfColumn,
+                                                      );
+                                                    }}
+                                                    span={totalFloorValue}
+                                                    style={{
+                                                      height: '40px',
+                                                      borderRadius:
+                                                        '0px 0px 1px 0px',
+                                                      gap: '8px',
+                                                      padding:
+                                                        '8px 12px 8px 12px',
+                                                      background: '#EDEFF2',
+                                                      width: '100%',
+                                                      color: '#0D0D0D',
+                                                      display: 'flex',
+                                                      justifyContent: 'center',
+                                                      borderLeft:
+                                                        '1px solid white',
+                                                    }}
+                                                  >
+                                                    {itemColum?.title}
+                                                  </Col>
+                                                );
+                                              },
+                                            )}
+                                        </Row>
+                                        {itemCon?.noOfRowsData?.map(
+                                          (rowsMapItem: string) => (
+                                            <Row style={{width: '100%'}}>
+                                              {itemCon?.ColumnsData?.map(
+                                                (itemColum: any) => {
+                                                  const totalSpanVaue = 24;
+                                                  const totalCol =
+                                                    itemCon?.ColumnsData
+                                                      ?.length;
+                                                  const totalLengthAchived =
+                                                    totalSpanVaue / totalCol;
+                                                  const totalFloorValue =
+                                                    Math.floor(
+                                                      totalLengthAchived,
+                                                    );
+                                                  {
+                                                    // eslint-disable-next-line no-unreachable-loop
+                                                    console.log(
+                                                      '4564564',
+                                                      itemColum?.type ===
+                                                        'single',
+                                                    );
+                                                    const optionsData: any = [];
+                                                    itemColum?.options?.map(
+                                                      (itemss: any) => {
+                                                        optionsData?.push({
+                                                          label: itemss,
+                                                          value: itemss,
+                                                        });
+                                                      },
+                                                    );
+                                                    return (
+                                                      <Col
+                                                        span={totalFloorValue}
+                                                        style={{
+                                                          height: 'auto',
+                                                          borderRadius:
+                                                            '0px 0px 1px 0px',
+                                                          gap: '8px',
+                                                          padding:
+                                                            '8px 12px 8px 12px',
+                                                          background: 'white',
+                                                          color: '#0D0D0D',
+                                                          display: 'flex',
+                                                          justifyContent:
+                                                            'center',
+                                                          border:
+                                                            '1px solid rgb(242 242 242)',
+                                                          width: '100%',
+                                                        }}
+                                                      >
+                                                        {itemColum?.type ===
+                                                          'single' ||
+                                                        itemColum?.type ===
+                                                          'multiple' ? (
+                                                          <CommonSelect
+                                                            variant="borderless"
+                                                            // type={number}
+                                                            mode={
+                                                              itemColum?.type
+                                                            }
+                                                            options={
+                                                              optionsData
+                                                            }
+                                                            style={{
+                                                              border: 'none',
+                                                              width: '100%',
+                                                            }}
+                                                          />
+                                                        ) : (
+                                                          <OsInput
+                                                            variant="borderless"
+                                                            type={
+                                                              itemColum?.type
+                                                            }
+                                                            style={{
+                                                              border: 'none',
+                                                            }}
+                                                          />
+                                                        )}
+                                                      </Col>
+                                                    );
+                                                  }
+                                                },
+                                              )}
+                                            </Row>
+                                          ),
+                                        )}
+                                      </Row>
                                     </div>
                                   </Space>
                                 );
@@ -677,6 +800,7 @@ const FormBuilder = () => {
                                           <span style={{color: 'red'}}>*</span>
                                         )}
                                       </Typography>
+
                                       <div
                                         style={{
                                           width: '100%',
@@ -1039,6 +1163,56 @@ const FormBuilder = () => {
                                   </>
                                 );
                               }
+                              if (itemCon?.name == 'Attachment') {
+                                return (
+                                  <Space direction="vertical">
+                                    <Col
+                                      onClick={() => {
+                                        setCollapsed((p) => !p);
+                                        setActiveContentIndex(ItemConindex);
+                                        setActiveSectionIndex(Sectidx);
+                                        form.resetFields();
+                                      }}
+                                      style={{
+                                        width: '100px',
+                                        height: '26px',
+                                        borderRadius: '50px',
+                                        // padding: '4px 12px 4px 12px',
+                                        gap: '12px',
+                                        background: '#ECF2F5',
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                      }}
+                                    >
+                                      <div
+                                        style={{
+                                          width: '84px',
+                                          height: '18px',
+                                          fontWeight: '500',
+                                          fontSize: '12px',
+                                          lineHeight: '24px',
+                                          cursor: 'pointer',
+                                        }}
+                                      >
+                                        Attachment{' '}
+                                        {itemCon?.required && (
+                                          <span style={{color: 'red'}}>*</span>
+                                        )}
+                                      </div>
+                                    </Col>
+                                    {itemCon?.pdfUrl ? (
+                                      <>
+                                        {' '}
+                                        <FormUploadCard
+                                          uploadFileData={itemCon?.pdfUrl}
+                                        />
+                                      </>
+                                    ) : (
+                                      <FormUpload setCollapsed={setCollapsed} />
+                                    )}
+                                  </Space>
+                                );
+                              }
                             },
                           )}
                         </Row>
@@ -1065,106 +1239,9 @@ const FormBuilder = () => {
                           fontSize: '16px',
                           height: '24px',
                         }}
-                        onClick={addnewColimnsdsds}
                       >
                         + Drop Filed
                       </div>
-                    </Row>
-                    <FormUpload />
-                    <Row
-                      style={{
-                        background: '#F6F7F8',
-                        padding: '10px',
-                        marginTop: '30px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <Row style={{width: '100%'}}>
-                        {colmsss?.map((itemColum: string) => {
-                          const totalSpanVaue = 24;
-                          const totalCol = colmsss?.length;
-                          const totalLengthAchived = totalSpanVaue / totalCol;
-                          const totalFloorValue =
-                            Math.floor(totalLengthAchived);
-                          return (
-                            <Col
-                              span={totalFloorValue}
-                              style={{
-                                height: '40px',
-                                borderRadius: '0px 0px 1px 0px',
-                                gap: '8px',
-                                padding: '8px 12px 8px 12px',
-                                background: '#EDEFF2',
-                                width: '100%',
-                                color: '#0D0D0D',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                borderLeft: '1px solid white',
-                              }}
-                            >
-                              Colun1
-                            </Col>
-                          );
-                        })}
-                      </Row>
-                      <Row style={{width: '100%'}}>
-                        {colmsss?.map((itemColum: string) => {
-                          const totalSpanVaue = 24;
-                          const totalCol = colmsss?.length;
-                          const totalLengthAchived = totalSpanVaue / totalCol;
-                          const totalFloorValue =
-                            Math.floor(totalLengthAchived);
-                          return (
-                            <Col
-                              span={totalFloorValue}
-                              style={{
-                                height: '48px',
-                                borderRadius: '0px 0px 1px 0px',
-                                gap: '8px',
-                                padding: '8px 12px 8px 12px',
-                                background: 'white',
-                                color: '#0D0D0D',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                border: '1px solid rgb(242 242 242)',
-                                width: '100%',
-                              }}
-                            />
-                          );
-                        })}
-                      </Row>
-                      <Row style={{width: '100%'}}>
-                        {colmsss?.map((itemColum: string) => {
-                          const totalSpanVaue = 24;
-                          const totalCol = colmsss?.length;
-                          const totalLengthAchived = totalSpanVaue / totalCol;
-                          const totalFloorValue =
-                            Math.floor(totalLengthAchived);
-                          return (
-                            <Col
-                              span={totalFloorValue}
-                              style={{
-                                height: 'auto',
-                                borderRadius: '0px 0px 1px 0px',
-                                gap: '8px',
-                                padding: '8px 12px 8px 12px',
-                                background: 'white',
-                                color: '#0D0D0D',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                border: '1px solid rgb(242 242 242)',
-                                width: '100%',
-                              }}
-                            >
-                              <Select
-                                variant="borderless"
-                                style={{width: '100%'}}
-                              />
-                            </Col>
-                          );
-                        })}
-                      </Row>
                     </Row>
                   </>
                 )}
@@ -1192,8 +1269,24 @@ const FormBuilder = () => {
             typeFiled=""
             setColumnData={setColumnData}
             columnData={columnData}
+            selectedColumnIndex={selectedColumnIndex}
           />
         </div>
+      )}
+      {openPreviewModal && (
+        <>
+          <Modal
+            open={openPreviewModal}
+            width={1400}
+            footer={false}
+            onCancel={() => {
+              setOpenPreviewModal(false);
+            }}
+            style={{height: '100%', overflow: 'scroll'}}
+          >
+            <FormBuilderPreview cartItems={cartItems} />
+          </Modal>
+        </>
       )}
     </Layout>
   );

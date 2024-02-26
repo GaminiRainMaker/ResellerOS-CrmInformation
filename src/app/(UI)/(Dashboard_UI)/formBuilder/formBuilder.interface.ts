@@ -11,4 +11,12 @@ export interface FormBuilderInterFace {
   typeFiled?: string;
   setColumnData?: any;
   columnData?: any;
+  selectedColumnIndex?: number;
+}
+
+export interface FormUploadInterface {
+  setCollapsed?: any;
+}
+export interface PreviewFormBuilder {
+  cartItems?: any;
 }
