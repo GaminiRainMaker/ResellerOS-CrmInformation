@@ -311,7 +311,7 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
               }
             }}
           >
-            Table Data
+            Copy Data
           </Button>
 
           <OsTableWithOutDrag

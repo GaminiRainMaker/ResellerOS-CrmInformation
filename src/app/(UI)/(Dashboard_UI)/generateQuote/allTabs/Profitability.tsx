@@ -432,7 +432,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
               }
             }}
           >
-            Table Data
+            Copy Data
           </Button>
           <Form>
             <OsTableWithOutDrag

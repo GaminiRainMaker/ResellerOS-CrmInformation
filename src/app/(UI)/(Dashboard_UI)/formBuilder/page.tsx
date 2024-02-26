@@ -1069,8 +1069,8 @@ const FormBuilder = () => {
                       >
                         + Drop Filed
                       </div>
-                      <FormUpload />
                     </Row>
+                    <FormUpload />
                     <Row
                       style={{
                         background: '#F6F7F8',

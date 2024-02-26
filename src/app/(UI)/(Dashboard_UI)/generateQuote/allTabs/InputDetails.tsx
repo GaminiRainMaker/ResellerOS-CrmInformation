@@ -14,11 +14,12 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
 import {selectDataForProduct} from '@/app/utils/CONSTANTS';
-import {useRemoveDollarAndCommahook} from '@/app/utils/base';
+import {convertDataToText, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {TrashIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import {Button} from '@/app/components/common/antd/Button';
 import {
   getAllBundle,
   updateBundleQuantity,
@@ -62,7 +63,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Input Details" />,
   };
-  console.log('selectedFilter', selectedFilter, familyFilter);
 
   const renderEditableInput = (field: string) => {
     const editableField = tableColumnDataShow.find(
@@ -400,104 +400,83 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   return (
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
-        <Form>
-          {bundleData && bundleData?.length > 0 ? (
-            <>
-              {' '}
-              {bundleData?.map((item: any, index: any) => (
-                <OsCollapse
-                  key={item?.id}
-                  items={[
-                    {
-                      key: '1',
-                      label: (
-                        <>
-                          <Space
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                            }}
-                          >
-                            <p>{item?.name}</p>
-                            <p>Lines:{item?.QuoteLineItems?.length}</p>
-                            <p>Desc: {item?.description}</p>
-                            <p>
-                              Quantity:
-                              <OsInput
-                                defaultValue={item?.quantity}
-                                style={{width: '60px'}}
-                                onChange={(e: any) => {
-                                  const data = {
-                                    id: item?.id,
-                                    quantity: e.target.value,
-                                  };
-                                  updateBundleQuantityData(data);
-                                }}
-                              />
-                            </p>
-                          </Space>
-                        </>
-                      ),
-                      // children: item?.children,
-                      children: (
-                        <OsTableWithOutDrag
-                          loading={loading}
-                          // rowSelection={rowSelection}
-                          columns={finalInputColumn}
-                          dataSource={item?.QuoteLineItems || []}
-                          scroll
-                          rowSelection={rowSelection}
-                          locale={locale}
-                        />
-                      ),
-                    },
-                  ]}
-                />
-              ))}{' '}
-              {selectedFilter ? (
-                <>
-                  {familyFilter?.map((item: any, index: any) => (
-                    <OsCollapse
-                      key={item?.id}
-                      items={[
-                        {
-                          key: item?.id,
-                          label: (
-                            <>
-                              <Space
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'start',
-                                }}
-                              >
-                                <p>{item?.name}</p>
-                              </Space>
-                            </>
-                          ),
-                          // children: item?.children,
-                          children: (
-                            <OsTableWithOutDrag
-                              loading={loading}
-                              columns={finalInputColumn}
-                              dataSource={item?.QuoteLineItem || []}
-                              scroll
-                              rowSelection={rowSelection}
-                              locale={locale}
-                            />
-                          ),
-                        },
-                      ]}
-                    />
-                  ))}
-                </>
-              ) : (
-                <>
-                  {dataNullForBundle?.[0]?.length > 0 &&
-                    dataNullForBundle?.[0] && (
+        <>
+          <Button
+            onClick={() => {
+              const textResult = convertDataToText(
+                finalInputColumn,
+                quoteLineItemByQuoteData,
+              );
+              if (textResult) {
+                navigator.clipboard.writeText(textResult);
+              }
+            }}
+          >
+            Copy Data
+          </Button>
+
+          <Form>
+            {bundleData && bundleData?.length > 0 ? (
+              <>
+                {' '}
+                {bundleData?.map((item: any, index: any) => (
+                  <OsCollapse
+                    key={item?.id}
+                    items={[
+                      {
+                        key: '1',
+                        label: (
+                          <>
+                            <Space
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                              }}
+                            >
+                              <p>{item?.name}</p>
+                              <p>Lines:{item?.QuoteLineItems?.length}</p>
+                              <p>Desc: {item?.description}</p>
+                              <p>
+                                Quantity:
+                                <OsInput
+                                  defaultValue={item?.quantity}
+                                  style={{width: '60px'}}
+                                  onChange={(e: any) => {
+                                    const data = {
+                                      id: item?.id,
+                                      quantity: e.target.value,
+                                    };
+                                    updateBundleQuantityData(data);
+                                  }}
+                                />
+                              </p>
+                            </Space>
+                          </>
+                        ),
+                        // children: item?.children,
+                        children: (
+                          <OsTableWithOutDrag
+                            loading={loading}
+                            // rowSelection={rowSelection}
+                            columns={finalInputColumn}
+                            dataSource={item?.QuoteLineItems || []}
+                            scroll
+                            rowSelection={rowSelection}
+                            locale={locale}
+                          />
+                        ),
+                      },
+                    ]}
+                  />
+                ))}{' '}
+                {selectedFilter ? (
+                  <>
+                    {familyFilter?.map((item: any, index: any) => (
                       <OsCollapse
+                        key={item?.id}
                         items={[
                           {
-                            key: '1',
+                            key: item?.id,
                             label: (
                               <>
                                 <Space
@@ -506,7 +485,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                     justifyContent: 'start',
                                   }}
                                 >
-                                  <p>Unassigned</p>
+                                  <p>{item?.name}</p>
                                 </Space>
                               </>
                             ),
@@ -515,7 +494,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                               <OsTableWithOutDrag
                                 loading={loading}
                                 columns={finalInputColumn}
-                                dataSource={dataNullForBundle?.[0] || []}
+                                dataSource={item?.QuoteLineItem || []}
                                 scroll
                                 rowSelection={rowSelection}
                                 locale={locale}
@@ -524,63 +503,99 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                           },
                         ]}
                       />
-                    )}
-                </>
-              )}{' '}
-            </>
-          ) : (
-            <>
-              {selectedFilter ? (
-                <>
-                  {' '}
-                  {familyFilter?.map((item: any, index: any) => (
-                    <OsCollapse
-                      key={item?.id}
-                      items={[
-                        {
-                          key: item.id,
-                          label: (
-                            <>
-                              <Space
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'start',
-                                }}
-                              >
-                                <p>{item?.name}</p>
-                              </Space>
-                            </>
-                          ),
-                          // children: item?.children,
-                          children: (
-                            <OsTableWithOutDrag
-                              loading={loading}
-                              columns={finalInputColumn}
-                              dataSource={item?.QuoteLineItem || []}
-                              scroll
-                              rowSelection={rowSelection}
-                              locale={locale}
-                            />
-                          ),
-                        },
-                      ]}
-                    />
-                  ))}
-                </>
-              ) : (
-                // item?.children
-                <OsTableWithOutDrag
-                  loading={loading}
-                  columns={finalInputColumn}
-                  dataSource={quoteLineItemByQuoteData || []}
-                  scroll
-                  rowSelection={rowSelection}
-                  locale={locale}
-                />
-              )}{' '}
-            </>
-          )}
-          {/* <OsTableWithOutDrag
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {dataNullForBundle?.[0]?.length > 0 &&
+                      dataNullForBundle?.[0] && (
+                        <OsCollapse
+                          items={[
+                            {
+                              key: '1',
+                              label: (
+                                <>
+                                  <Space
+                                    style={{
+                                      display: 'flex',
+                                      justifyContent: 'start',
+                                    }}
+                                  >
+                                    <p>Unassigned</p>
+                                  </Space>
+                                </>
+                              ),
+                              // children: item?.children,
+                              children: (
+                                <OsTableWithOutDrag
+                                  loading={loading}
+                                  columns={finalInputColumn}
+                                  dataSource={dataNullForBundle?.[0] || []}
+                                  scroll
+                                  rowSelection={rowSelection}
+                                  locale={locale}
+                                />
+                              ),
+                            },
+                          ]}
+                        />
+                      )}
+                  </>
+                )}{' '}
+              </>
+            ) : (
+              <>
+                {selectedFilter ? (
+                  <>
+                    {' '}
+                    {familyFilter?.map((item: any, index: any) => (
+                      <OsCollapse
+                        key={item?.id}
+                        items={[
+                          {
+                            key: item.id,
+                            label: (
+                              <>
+                                <Space
+                                  style={{
+                                    display: 'flex',
+                                    justifyContent: 'start',
+                                  }}
+                                >
+                                  <p>{item?.name}</p>
+                                </Space>
+                              </>
+                            ),
+                            // children: item?.children,
+                            children: (
+                              <OsTableWithOutDrag
+                                loading={loading}
+                                columns={finalInputColumn}
+                                dataSource={item?.QuoteLineItem || []}
+                                scroll
+                                rowSelection={rowSelection}
+                                locale={locale}
+                              />
+                            ),
+                          },
+                        ]}
+                      />
+                    ))}
+                  </>
+                ) : (
+                  // item?.children
+                  <OsTableWithOutDrag
+                    loading={loading}
+                    columns={finalInputColumn}
+                    dataSource={quoteLineItemByQuoteData || []}
+                    scroll
+                    rowSelection={rowSelection}
+                    locale={locale}
+                  />
+                )}{' '}
+              </>
+            )}
+            {/* <OsTableWithOutDrag
             loading={loading}
             columns={finalInputColumn}
             dataSource={quoteLineItemByQuoteData}
@@ -588,7 +603,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
             scroll
             locale={locale}
           /> */}
-        </Form>
+          </Form>
+        </>
       ) : (
         <EmptyContainer
           title="There is no columns for Input Details"

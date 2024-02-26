@@ -6,27 +6,31 @@ import {Row} from '../antd/Grid';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
-import {UploadCardAvatarStyle, UploadCardColStyle} from './styled-components';
+import {
+  UploadCardAvatarStyle,
+  FormUploadCardColStyle,
+} from './styled-components';
 
 const FormUploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
   const [token] = useThemeToken();
 
   const removeFile = (uid: number | undefined | string) => {
-    const filtered = uploadFileData.filter(
-      (p: any) => p?.uid !== uid,
-    );
+    const filtered = uploadFileData.filter((p: any) => p?.uid !== uid);
     setUploadFileData(filtered);
   };
 
   return (
     <Row justify="start" style={{gap: '12px'}}>
       {uploadFileData?.map((item: any) => (
-        <UploadCardColStyle key={item?.id}>
-          <Space direction="vertical">
+        <FormUploadCardColStyle key={item?.id}>
+          <Space style={{width: '100%'}}>
             <Image src={PdfImg} alt="PdfImg" />
-            <Typography name="Body 4/Medium">
-              {item?.name}
-            </Typography>
+            <Space direction="vertical" size={0} style={{textAlign: 'initial'}}>
+              <Typography as="div" name="Body 4/Medium" color={token?.colorPrimaryText}>
+                {item?.name}
+              </Typography>
+              <Typography name="Body 4/Medium">23MB</Typography>
+            </Space>
           </Space>
           <UploadCardAvatarStyle
             colorErrorBg={token?.colorErrorBg}
@@ -40,7 +44,7 @@ const FormUploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
               />
             }
           />
-        </UploadCardColStyle>
+        </FormUploadCardColStyle>
       ))}
     </Row>
   );
