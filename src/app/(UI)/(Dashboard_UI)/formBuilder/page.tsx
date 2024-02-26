@@ -1282,7 +1282,7 @@ const FormBuilder = () => {
             onCancel={() => {
               setOpenPreviewModal(false);
             }}
-            style={{height: '100%', overflow: 'scroll'}}
+            // style={{height: '100%', overflow: 'scroll'}}
           >
             <FormBuilderPreview cartItems={cartItems} />
           </Modal>
