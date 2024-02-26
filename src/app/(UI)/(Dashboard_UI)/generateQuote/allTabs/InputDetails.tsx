@@ -14,12 +14,11 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
 import {selectDataForProduct} from '@/app/utils/CONSTANTS';
-import {convertDataToText, useRemoveDollarAndCommahook} from '@/app/utils/base';
+import {useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {TrashIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
-import {Button} from '@/app/components/common/antd/Button';
 import {
   getAllBundle,
   updateBundleQuantity,
@@ -402,7 +401,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         <>
-          <Button
+          {/* <Button
             onClick={() => {
               const textResult = convertDataToText(
                 finalInputColumn,
@@ -414,7 +413,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
             }}
           >
             Copy Data
-          </Button>
+          </Button> */}
 
           <Form>
             {bundleData && bundleData?.length > 0 ? (

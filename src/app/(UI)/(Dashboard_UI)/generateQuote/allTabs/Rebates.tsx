@@ -300,7 +300,7 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
     <>
       {finaRebateTableCol && finaRebateTableCol?.length > 0 ? (
         <>
-          <Button
+          {/* <Button
             onClick={() => {
               const textResult = convertDataToText(
                 finaRebateTableCol,
@@ -312,7 +312,7 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
             }}
           >
             Copy Data
-          </Button>
+          </Button> */}
 
           <OsTableWithOutDrag
             loading={loading}
