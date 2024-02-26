@@ -13,12 +13,20 @@ import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {DatePicker, Form, Radio, RadioChangeEvent} from 'antd';
-import React from 'react';
+import {
+  ArrowsPointingOutIcon,
+  FolderArrowDownIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
+import {DatePicker, Form, Input, Radio, RadioChangeEvent, message} from 'antd';
+import React, {useState} from 'react';
+import {OSDraggerStyle} from '@/app/components/common/os-upload/styled-components';
+import {convertFileToBase64} from '@/app/utils/base';
 import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
 import {FormBuilderInterFace} from './formBuilder.interface';
 import UploadFile from '../generateQuote/UploadFile';
+import {uploadToAws} from '../../../../../redux/actions/upload';
+import {useAppDispatch} from '../../../../../redux/hook';
 
 const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
   isOpenDrawer = false,
@@ -31,6 +39,7 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
   typeFiled,
   setColumnData,
   columnData,
+  selectedColumnIndex,
 }) => {
   const [token] = useThemeToken();
   const containerStyle: React.CSSProperties = {
@@ -42,6 +51,14 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
     borderRadius: 'null',
     padding: '0px',
   };
+  const [noofrows, setNoofrows] = useState<number>(
+    cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.noOfRows,
+  );
+  const [noofcolumn, setNoofcolumn] = useState<number>(
+    cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.noOfColumn,
+  );
+
+  console.log('noofrows', noofrows);
   const changeFieldValues = (newValue: any, labelTypeVal: string) => {
     const newTempArr = cartItems.map((sectItem: any, sectioIndex: number) => {
       if (sectioIndex === sectionIndex) {
@@ -63,6 +80,139 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
 
     setCartItems(newTempArr);
   };
+
+  const addNewRowsColumn = (
+    labelTypeVal: string,
+    type: string,
+    newValue: number,
+  ) => {
+    let temp: any;
+    console.log('454534', type);
+
+    if (labelTypeVal === 'ColumnsData') {
+      if (type === 'increase') {
+        temp = cartItems.map((sectItem: any, sectioIndex: number) => {
+          if (sectioIndex === sectionIndex) {
+            return {
+              ...sectItem,
+              content: sectItem.content.map(
+                (contItem: any, contInde: number) => {
+                  if (contInde === contentIndex) {
+                    const tempvar: any = [...contItem?.ColumnsData];
+                    tempvar?.push({
+                      title: `Column${contItem?.ColumnsData?.length + 1}`,
+                      dataIndex: 'address',
+                      key: '1',
+                      type: 'text',
+                      options: [],
+                    });
+                    return {
+                      ...contItem,
+                      ColumnsData: tempvar,
+                    };
+                  }
+                  return contItem;
+                },
+              ),
+            };
+          }
+          return sectItem;
+        });
+      } else {
+        temp = cartItems.map((sectItem: any, sectioIndex: number) => {
+          if (sectioIndex === sectionIndex) {
+            return {
+              ...sectItem,
+              content: sectItem.content.map(
+                (contItem: any, contInde: number) => {
+                  if (contInde === contentIndex) {
+                    const tempvar: any = [...contItem?.ColumnsData];
+                    tempvar?.splice(contItem?.ColumnsData?.length - 1, 1);
+
+                    return {
+                      ...contItem,
+                      ColumnsData: tempvar,
+                    };
+                  }
+                  return contItem;
+                },
+              ),
+            };
+          }
+          return sectItem;
+        });
+      }
+    } else {
+      if (type === 'increase') {
+        temp = cartItems.map((sectItem: any, sectioIndex: number) => {
+          if (sectioIndex === sectionIndex) {
+            return {
+              ...sectItem,
+              content: sectItem.content.map(
+                (contItem: any, contInde: number) => {
+                  if (contInde === contentIndex) {
+                    const tempvar: any = [...contItem?.noOfRowsData];
+                    tempvar?.push('row');
+                    return {
+                      ...contItem,
+                      noOfRowsData: tempvar,
+                    };
+                  }
+                  return contItem;
+                },
+              ),
+            };
+          }
+          return sectItem;
+        });
+      } else {
+        temp = cartItems.map((sectItem: any, sectioIndex: number) => {
+          if (sectioIndex === sectionIndex) {
+            return {
+              ...sectItem,
+              content: sectItem.content.map(
+                (contItem: any, contInde: number) => {
+                  if (contInde === contentIndex) {
+                    const tempvar: any = [...contItem?.noOfRowsData];
+                    tempvar?.splice(contItem?.ColumnsData?.length - 1, 1);
+
+                    return {
+                      ...contItem,
+                      noOfRowsData: tempvar,
+                    };
+                  }
+                  return contItem;
+                },
+              ),
+            };
+          }
+          return sectItem;
+        });
+      }
+    }
+    console.log('435435435', temp);
+    setCartItems(temp);
+  };
+
+  const addnewOptions = (nameOptions: any) => {
+    const tempvalue: any = [...cartItems];
+
+    tempvalue?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.[
+      nameOptions
+    ]?.push('');
+    setCartItems(tempvalue);
+  };
+  const deleteOption = (indexofoption: number, nameOptions: any) => {
+    const tempvalue: any = [...cartItems];
+
+    tempvalue?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.ColumnsData?.[
+      selectedColumnIndex || 0
+    ]?.[nameOptions]?.splice(indexofoption, 1);
+    setCartItems(tempvalue);
+  };
+
+  const type =
+    cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.name;
 
   const changeFiellOptionsValue = (
     newValue: string,
@@ -97,101 +247,6 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
     setCartItems(newTempArr);
   };
 
-  const addNewRowsColumn = (
-    labelTypeVal: string,
-    type: string,
-    newValue: number,
-    tableKey: number,
-  ) => {
-    let temp: any = [...cartItems];
-    // eslint-disable-next-line prefer-const
-    //   if (type == 'increase') {
-    //     columnDat
-    //  const    colmunTemp:any
-    //     colmunTemp = columnData.map((sectItem: any, sectioIndex: number) => {
-    //       if (sectItem?.tableKey === tableKey) {
-    //         return {
-    //           ...sectItem,
-    //           tableCol: sectItem.tableCol.push({
-    //             title: 'Column 2',
-    //             dataIndex: 'address',
-    //             key: '2',
-    //           }),
-    //         };
-    //       }
-    //       return sectItem;
-    //     });
-    //   } else {
-    //     colmunTemp = columnData.map((sectItem: any, sectioIndex: number) => {
-    //       if (sectItem?.tableKey === tableKey) {
-    //         return {
-    //           ...sectItem,
-    //           tableCol: sectItem.tableCol?.slice(0, 1),
-    //         };
-    //       }
-    //       return sectItem;
-    //     });
-    //   }
-
-    const colmunTemp: any = [...columnData];
-    colmunTemp?.[0]?.tableCol?.push({
-      title: 'Column 2',
-      dataIndex: 'address',
-      key: '3',
-    });
-
-    setColumnData(colmunTemp);
-    if (type == 'increase') {
-      temp?.[sectionIndex || 0]?.content?.[
-        contentIndex || 0
-      ]?.ColumnsData?.push({title: 'Column 2', dataIndex: 'address', key: '2'});
-    } else {
-      temp?.[sectionIndex || 0]?.content?.[
-        contentIndex || 0
-      ]?.ColumnsData?.splice(0, 1);
-    }
-
-    temp = cartItems.map((sectItem: any, sectioIndex: number) => {
-      if (sectioIndex === sectionIndex) {
-        return {
-          ...sectItem,
-          content: sectItem.content.map((contItem: any, contInde: number) => {
-            if (contInde === contentIndex) {
-              return {
-                ...contItem,
-                [labelTypeVal]: newValue,
-              };
-            }
-            return contItem;
-          }),
-        };
-      }
-      return sectItem;
-    });
-
-    setCartItems(temp);
-  };
-
-  const addnewOptions = (nameOptions: any) => {
-    const tempvalue: any = [...cartItems];
-
-    tempvalue?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.[
-      nameOptions
-    ]?.push('');
-    setCartItems(tempvalue);
-  };
-  const deleteOption = (indexofoption: number, nameOptions: any) => {
-    const tempvalue: any = [...cartItems];
-
-    tempvalue?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.[
-      nameOptions
-    ]?.splice(indexofoption, 1);
-    setCartItems(tempvalue);
-  };
-
-  const type =
-    cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.name;
-
   // save reference for dragItem and dragOverItem
   const dragItem = React.useRef<any>(null);
   const dragOverItem = React.useRef<any>(null);
@@ -218,6 +273,33 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
     setCartItems(optionItems);
   };
 
+  const handleSortfortable = (changeOptions: any) => {
+    const optionItems: any = [...cartItems];
+
+    // remove and save the dragged item content
+    const draggedItemContent1 = optionItems?.[sectionIndex || 0]?.content?.[
+      contentIndex || 0
+    ]?.ColumnsData?.[selectedColumnIndex || 0]?.options.splice(
+      dragItem.current,
+      1,
+    )[0];
+
+    // switch the position
+    optionItems?.[sectionIndex || 0]?.content?.[
+      contentIndex || 0
+    ]?.ColumnsData?.[selectedColumnIndex || 0]?.options.splice(
+      dragOverItem.current,
+      0,
+      draggedItemContent1,
+    );
+
+    // reset the position ref
+    dragItem.current = null;
+    dragOverItem.current = null;
+
+    // update the actual array;
+    setCartItems(optionItems);
+  };
   const editChoicesOptions = [
     {
       key: '1',
@@ -253,9 +335,9 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
                 }}
               >
                 {/* <div>{itemOption}</div> */}
-                <OsInput
+                <Input
                   key={indexOp}
-                  defaultValue={itemOption}
+                  // defaultValue={itemOption}
                   value={itemOption}
                   onChange={(e: any) => {
                     changeFiellOptionsValue(
@@ -384,6 +466,164 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
       ),
     },
   ];
+  const addnewOptionsForTable = (nameOptions: any) => {
+    const tempvalue: any = [...cartItems];
+
+    tempvalue?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.ColumnsData?.[
+      selectedColumnIndex || 0
+    ]?.[nameOptions]?.push('');
+    setCartItems(tempvalue);
+  };
+  const onChangeColumnHeader = (newValue: string, typeOfUpdate: string) => {
+    let newTempArr: any = [...cartItems];
+    newTempArr = cartItems.map((sectItem: any, sectioIndex: number) => {
+      if (sectioIndex === sectionIndex) {
+        return {
+          ...sectItem,
+          content: sectItem.content.map((contItem: any, contInde: number) => {
+            if (contInde === contentIndex) {
+              return {
+                ...contItem,
+                ColumnsData: contItem?.ColumnsData?.map(
+                  (itemOp: any, indexOption: number) => {
+                    if (selectedColumnIndex === indexOption) {
+                      return {
+                        ...itemOp,
+                        [typeOfUpdate]: newValue,
+                      };
+                    }
+                    return itemOp;
+                  },
+                ),
+              };
+            }
+            return contItem;
+          }),
+        };
+      }
+      return sectItem;
+    });
+    setCartItems(newTempArr);
+  };
+
+  const changeFiellOptionsValueForTable = (
+    newValue: string,
+    indexofOption: number,
+    optiontypename: string,
+  ) => {
+    const newTempArr = cartItems.map((sectItem: any, sectioIndex: number) => {
+      if (sectioIndex === sectionIndex) {
+        return {
+          ...sectItem,
+          content: sectItem.content.map((contItem: any, contInde: number) => {
+            if (contInde === contentIndex) {
+              return {
+                ...contItem,
+                ColumnsData: contItem?.ColumnsData?.map(
+                  (columnIntData: any, columnIntIndex: number) => {
+                    if (selectedColumnIndex === columnIntIndex) {
+                      return {
+                        ...columnIntData,
+                        options: columnIntData?.options?.map(
+                          (optionItem: any, optionIndex: number) => {
+                            if (optionIndex === indexofOption) {
+                              return newValue;
+                            }
+                            return optionItem;
+                          },
+                        ),
+                      };
+                    }
+                    return columnIntData;
+                  },
+                ),
+              };
+            }
+            return contItem;
+          }),
+        };
+      }
+      return sectItem;
+    });
+    console.log('newTempArr', newTempArr);
+    setCartItems(newTempArr);
+  };
+  const editChoicesOptionsFOrTable = [
+    {
+      key: '1',
+      label: (
+        <Typography name="Body 2/Medium" color={token?.colorInfo}>
+          Edit Choices
+        </Typography>
+      ),
+      children: (
+        <Form layout="vertical">
+          {cartItems?.[sectionIndex || 0]?.content?.[
+            contentIndex || 0
+          ]?.ColumnsData?.[selectedColumnIndex || 0]?.options?.map(
+            (itemOption: any, indexOp: number) => (
+              <Row style={{width: '100%'}}>
+                <Col
+                  key={indexOp}
+                  className="list-item"
+                  draggable
+                  onDragStart={(e) => {
+                    dragItem.current = indexOp;
+                  }}
+                  onDragEnter={(e) => {
+                    dragOverItem.current = indexOp;
+                  }}
+                  onDragEnd={() => handleSortfortable('options')}
+                  onDragOver={(e) => e.preventDefault()}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    marginBottom: '25px',
+                    gap: '12px',
+                  }}
+                >
+                  {/* <div>{itemOption}</div> */}
+                  <Input
+                    key={indexOp}
+                    // defaultValue={itemOption}
+                    type="text"
+                    value={itemOption}
+                    onChange={(e: any) => {
+                      changeFiellOptionsValueForTable(
+                        e?.target?.value,
+                        indexOp,
+                        'options',
+                      );
+                    }}
+                  />{' '}
+                  <TrashIcon
+                    color="#EB445A"
+                    width={35}
+                    onClick={() => deleteOption(indexOp, 'options')}
+                  />{' '}
+                  <ArrowsPointingOutIcon
+                    color="#2364AA"
+                    width={35}
+                    key={indexOp}
+                  />
+                </Col>
+              </Row>
+            ),
+          )}
+          <Typography
+            name="Body 3/Bold"
+            color={token?.colorInfo}
+            onClick={() => addnewOptionsForTable('options')}
+            cursor="pointer"
+            style={{cursor: 'pointer'}}
+          >
+            + Add New
+          </Typography>
+        </Form>
+      ),
+    },
+  ];
 
   const QuickSetupItems = [
     {
@@ -396,103 +636,147 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
       children: (
         <Form layout="vertical" form={form}>
           {type == 'Table' ? (
-            <Row gutter={[16, 16]}>
-              <Col sm={12}>
-                <Form.Item
-                  label={
-                    <Typography name="Body 4/Medium">No. of Rows</Typography>
-                  }
-                  name="no_of_rows"
-                >
-                  {/* <OsInputNumber placeholder="2" /> */}
-                  <OsInput
-                    placeholder="Label"
-                    type="number"
-                    defaultValue={
-                      cartItems?.[sectionIndex || 0]?.content?.[
-                        contentIndex || 0
-                      ]?.noOfRows
+            <>
+              <Row gutter={[16, 16]}>
+                <Col sm={12}>
+                  <Form.Item
+                    label={
+                      <Typography name="Body 4/Medium">No. of Rows</Typography>
                     }
-                    value={
-                      cartItems?.[sectionIndex || 0]?.content?.[
-                        contentIndex || 0
-                      ]?.noOfRows
-                    }
-                    // onChange={(e: any) => {
-                    //   // changeFieldValues(e?.target?.value, 'noOfRows');
-                    //   if (
-                    //     e?.target?.value >
-                    //     cartItems?.[sectionIndex || 0]?.content?.[
-                    //       contentIndex || 0
-                    //     ]?.noOfRows
-                    //   ) {
-                    //     addNewRowsColumn(
-                    //       'noOfRows',
-                    //       'increase',
-                    //       e?.target?.value,
-                    //     );
-                    //   } else {
-                    //     addNewRowsColumn(
-                    //       'noOfRows',
-                    //       'decrease',
-                    //       e?.target?.value,
-                    //     );
-                    //   }
-                    // }}
-                  />
-                </Form.Item>
-              </Col>
-              <Col sm={12}>
-                <Form.Item
-                  label={
-                    <Typography name="Body 4/Medium">No. of Columns</Typography>
-                  }
-                  name="no_of_columns"
-                >
-                  <OsInput
-                    placeholder="Label"
-                    type="number"
-                    defaultValue={
-                      cartItems?.[sectionIndex || 0]?.content?.[
-                        contentIndex || 0
-                      ]?.noOfColumn
-                    }
-                    value={
-                      cartItems?.[sectionIndex || 0]?.content?.[
-                        contentIndex || 0
-                      ]?.noOfColumn
-                    }
-                    onChange={(e: any) => {
-                      // changeFieldValues(e?.target?.value, 'noOfRows');
-                      if (
-                        e?.target?.value >
+                    name="no_of_rows"
+                  >
+                    {/* <OsInputNumber placeholder="2" /> */}
+                    <OsInput
+                      placeholder="Label"
+                      type="number"
+                      defaultValue={
                         cartItems?.[sectionIndex || 0]?.content?.[
                           contentIndex || 0
                         ]?.noOfRows
-                      ) {
-                        addNewRowsColumn(
-                          'noOfColumn',
-                          'increase',
-                          e?.target?.value,
-                          cartItems?.[sectionIndex || 0]?.content?.[
-                            contentIndex || 0
-                          ]?.tableKey,
-                        );
-                      } else {
-                        addNewRowsColumn(
-                          'noOfColumn',
-                          'decrease',
-                          e?.target?.value,
-                          cartItems?.[sectionIndex || 0]?.content?.[
-                            contentIndex || 0
-                          ]?.tableKey,
-                        );
                       }
+                      value={
+                        cartItems?.[sectionIndex || 0]?.content?.[
+                          contentIndex || 0
+                        ]?.noOfRows
+                      }
+                      onChange={(e: any) => {
+                        changeFieldValues(e?.target?.value, 'noOfRows');
+                        setNoofrows(e?.target?.value);
+                        if (e?.target?.value > noofrows) {
+                          addNewRowsColumn(
+                            'noOfRowsData',
+                            'increase',
+                            e?.target?.value,
+                          );
+                        } else {
+                          addNewRowsColumn(
+                            'noOfRowsData',
+                            'decrease',
+                            e?.target?.value,
+                          );
+                        }
+                      }}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col sm={12}>
+                  <Form.Item
+                    label={
+                      <Typography name="Body 4/Medium">
+                        No. of Columns
+                      </Typography>
+                    }
+                    name="no_of_columns"
+                  >
+                    <OsInput
+                      placeholder="Label"
+                      type="number"
+                      defaultValue={
+                        cartItems?.[sectionIndex || 0]?.content?.[
+                          contentIndex || 0
+                        ]?.noOfColumn
+                      }
+                      value={
+                        cartItems?.[sectionIndex || 0]?.content?.[
+                          contentIndex || 0
+                        ]?.noOfColumn
+                      }
+                      onChange={(e: any) => {
+                        changeFieldValues(e?.target?.value, 'noOfColumn');
+                        setNoofcolumn(e?.target?.value);
+                        if (e?.target?.value > noofcolumn) {
+                          addNewRowsColumn(
+                            'ColumnsData',
+                            'increase',
+                            e?.target?.value,
+                          );
+                        } else {
+                          addNewRowsColumn(
+                            'ColumnsData',
+                            'decrease',
+                            e?.target?.value,
+                          );
+                        }
+                      }}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <>
+                <Form.Item
+                  label={
+                    <Typography name="Body 4/Medium">Column Header</Typography>
+                  }
+                  name="header"
+                >
+                  <OsInput
+                    type="text"
+                    value={
+                      cartItems?.[sectionIndex || 0]?.content?.[
+                        contentIndex || 0
+                      ]?.ColumnsData[selectedColumnIndex || 0]?.title
+                    }
+                    defaultValue={
+                      cartItems?.[sectionIndex || 0]?.content?.[
+                        contentIndex || 0
+                      ]?.ColumnsData[selectedColumnIndex || 0]?.title
+                    }
+                    onChange={(e: any) => {
+                      onChangeColumnHeader(e?.target?.value, 'title');
                     }}
                   />
                 </Form.Item>
-              </Col>
-            </Row>
+                <Form.Item
+                  label={
+                    <Typography name="Body 4/Medium">Field Type</Typography>
+                  }
+                  name="filedType"
+                >
+                  <CommonSelect
+                    onChange={(e: any) => {
+                      onChangeColumnHeader(e, 'type');
+                    }}
+                    defaultValue={
+                      cartItems?.[sectionIndex || 0]?.content?.[
+                        contentIndex || 0
+                      ]?.ColumnsData[selectedColumnIndex || 0]?.type
+                    }
+                    value={
+                      cartItems?.[sectionIndex || 0]?.content?.[
+                        contentIndex || 0
+                      ]?.ColumnsData[selectedColumnIndex || 0]?.type
+                    }
+                    style={{width: '100%', marginBottom: '20px'}}
+                    options={[
+                      {label: 'Multi-select Drop Down', value: 'multiple'},
+                      {label: 'Single-select Drop Down', value: 'single'},
+                      {label: 'Text', value: 'text'},
+                      {label: 'Number', value: 'number'},
+                    ]}
+                  />
+                </Form.Item>
+              </>
+            </>
           ) : (
             <Row gutter={[16, 16]}>
               <Col sm={24}>
@@ -785,11 +1069,7 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
       ),
       children: (
         <Form layout="vertical">
-          {/* <Form.Item */}
-          {/* label={<Typography name="Body 4/Medium">Date Format</Typography>}
-          name="no_of_columns"
-        > */}
-          <Typography name="Body 4/Medium">Alignement</Typography>
+          =<Typography name="Body 4/Medium">Alignement</Typography>
           <CommonSelect
             onChange={(e: any) => {
               changeFieldValues(e, 'Alignemnt');
@@ -798,10 +1078,6 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
               cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
                 ?.Alignemnt
             }
-            // value={
-            //   cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
-            //     ?.dateformat
-            // }
             style={{width: '100%', marginBottom: '20px'}}
             options={[
               {label: 'Left', value: 'left'},
@@ -809,7 +1085,7 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
               {label: 'Center', value: 'center'},
             ]}
           />
-          {/* </Form.Item> */}
+          =
           <Form.Item
             label={<Typography name="Body 4/Medium">Font Size</Typography>}
             name="no_of_columns"
@@ -822,10 +1098,6 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
                 cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
                   ?.FontSize
               }
-              // value={
-              //   cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
-              //     ?.dateformat
-              // }
               style={{width: '100%', marginBottom: '20px'}}
               options={[
                 {label: 'Heading 1', value: 'h1'},
@@ -1165,8 +1437,54 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
       ),
     },
   ];
+  const dispatch = useAppDispatch();
+  const beforeUpload = (file: File) => {
+    convertFileToBase64(file)
+      .then((base64String) => {
+        console.log('base64String', base64String);
 
-  console.log('ew4354353', cartItems);
+        if (base64String) {
+          dispatch(uploadToAws({document: base64String})).then(
+            (payload: any) => {
+              const pdfUrl = payload?.payload?.data?.Location;
+
+              const newTempArr = cartItems.map(
+                (sectItem: any, sectioIndex: number) => {
+                  if (sectioIndex === sectionIndex) {
+                    return {
+                      ...sectItem,
+                      content: sectItem.content.map(
+                        (contItem: any, contInde: number) => {
+                          if (contInde === contentIndex) {
+                            const tempPdf: any =
+                              contItem?.pdfUrl?.length > 0
+                                ? [...contItem?.pdfUrl]
+                                : [];
+                            tempPdf?.push(pdfUrl);
+                            return {
+                              ...contItem,
+                              pdfUrl: tempPdf,
+                            };
+                          }
+                          return contItem;
+                        },
+                      ),
+                    };
+                  }
+                  return sectItem;
+                },
+              );
+
+              setCartItems(newTempArr);
+            },
+          );
+        }
+      })
+      .catch((error) => {
+        message.error('Error converting file to base64', error);
+      });
+    return false;
+  };
   const QuickSetupItemsForAttachement = [
     {
       key: '1',
@@ -1177,12 +1495,73 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
       ),
       children: (
         <Form layout="vertical" form={form}>
-          <Form.Item
-            label={<Typography name="Body 4/Medium">Change Label</Typography>}
-            name="placeholdertext"
+          <OSDraggerStyle
+            beforeUpload={beforeUpload}
+            showUploadList={false}
+            multiple
           >
-            <UploadFile showSelectFields={false} />
-          </Form.Item>
+            <FolderArrowDownIcon width={24} color={token?.colorInfoBorder} />
+            <Typography
+              name="Body 4/Medium"
+              color={token?.colorPrimaryText}
+              as="div"
+            >
+              <Typography
+                name="Body 4/Medium"
+                style={{textDecoration: 'underline', cursor: 'pointer'}}
+                color={token?.colorPrimary}
+              >
+                Click to Upload
+              </Typography>{' '}
+              or Drag and Drop
+            </Typography>
+            <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
+              XLS, PDF, DOC, PNG and JPG
+            </Typography>
+          </OSDraggerStyle>
+        </Form>
+      ),
+    },
+  ];
+
+  const OptionsItemsForTable = [
+    {
+      key: '1',
+      label: (
+        <Typography name="Body 2/Medium" color={token?.colorInfo}>
+          Options
+        </Typography>
+      ),
+      children: (
+        <Form layout="vertical">
+          {optionsType?.map((itemOption: any, index: number) => (
+            <>
+              {' '}
+              {index === 0 && (
+                <Row style={{width: '100%'}}>
+                  <Col
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                      marginBottom: '25px',
+                    }}
+                  >
+                    <Typography name="Body 4/Medium">
+                      {itemOption?.name}
+                    </Typography>
+                    <Switch
+                      onChange={(e: any) => {
+                        changeFieldValues(e, itemOption?.changeValue);
+                      }}
+                      defaultChecked={itemOption?.value}
+                      checked={itemOption?.value}
+                    />
+                  </Col>
+                </Row>
+              )}
+            </>
+          ))}
         </Form>
       ),
     },
@@ -1200,7 +1579,7 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
                     type === 'Radio Button' ||
                     type === 'Toggle'
                   ? QuickSetupItemsForCheckBox
-                  : type === 'Attachement'
+                  : type === 'Attachment'
                     ? QuickSetupItemsForAttachement
                     : QuickSetupItems
             }
@@ -1214,20 +1593,22 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
             items={
               type === 'Text Content'
                 ? OptionsItemsForTextContent
-                : OptionsItems
+                : type === 'Table' || type === 'Attachment'
+                  ? OptionsItemsForTable
+                  : OptionsItems
             }
           />
         </CollapseSpaceStyle>
       </Row>
-      {(type === 'Multi-Select' ||
-        type === 'Checkbox' ||
-        type === 'Radio Button' ||
-        type === 'Toggle' ||
-        type === 'Date' ||
-        type === 'Drop Down' ||
-        type === 'Time' ||
-        type === 'Currency' ||
-        type === 'Contact') && (
+      {type === 'Multi-Select' ||
+      type === 'Checkbox' ||
+      type === 'Radio Button' ||
+      type === 'Toggle' ||
+      type === 'Date' ||
+      type === 'Drop Down' ||
+      type === 'Time' ||
+      type === 'Currency' ||
+      type === 'Contact' ? (
         <Row>
           <CollapseSpaceStyle size={24} direction="vertical">
             <OsCollapseAdmin
@@ -1248,6 +1629,19 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
               }
             />
           </CollapseSpaceStyle>
+        </Row>
+      ) : (
+        <Row>
+          {type === 'Table' &&
+            (cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+              ?.ColumnsData?.[selectedColumnIndex || 0]?.type === 'multiple' ||
+              cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
+                ?.ColumnsData?.[selectedColumnIndex || 0]?.type ===
+                'single') && (
+              <CollapseSpaceStyle size={24} direction="vertical">
+                <OsCollapseAdmin items={editChoicesOptionsFOrTable} />
+              </CollapseSpaceStyle>
+            )}
         </Row>
       )}
     </div>

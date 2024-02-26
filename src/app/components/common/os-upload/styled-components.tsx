@@ -89,3 +89,19 @@ export const DraggerStyle = styled(Dragger)`
   }
   background: red;
 `;
+export const DraggerStyleDiv = styled.div`
+  background: red;
+  display: flex;
+  // width: 192px;
+  height: 102px;
+  padding: 14px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  word-break: break-word;
+  display: revert-layer;
+  border-radius: 12px;
+  background: white;
+  border: 1px dashed #3da5d9;
+`;

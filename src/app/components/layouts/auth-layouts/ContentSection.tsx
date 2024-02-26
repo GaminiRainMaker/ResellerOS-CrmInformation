@@ -357,9 +357,9 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                     {' '}
                     Register Now
                   </Typography>
-                  {/* <button onClick={() => router?.push('/formBuilder')}>
+                  <button onClick={() => router?.push('/formBuilder')}>
                     sss
-                  </button> */}
+                  </button>
                 </Typography>
               )}
             </Space>

@@ -3,15 +3,20 @@ import {TrashIcon} from '@heroicons/react/24/outline';
 import message from 'antd/es/message';
 import Image from 'next/image';
 import {useState} from 'react';
+import {FormUploadInterface} from '@/app/(UI)/(Dashboard_UI)/formBuilder/formBuilder.interface';
 import HeaderLogo from '../../../../../public/assets/static/UploadFile.svg';
 import {Col, Row} from '../antd/Grid';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
 import FormUploadCard from './FormUploadCard';
-import {AtachmentStyleCol, DraggerStyle} from './styled-components';
+import {
+  AtachmentStyleCol,
+  DraggerStyle,
+  DraggerStyleDiv,
+} from './styled-components';
 
-const FormUpload = () => {
+const FormUpload: React.FC<FormUploadInterface> = ({setCollapsed}) => {
   const [fileData, setFileData] = useState<any>([]);
   const [token] = useThemeToken();
 
@@ -39,14 +44,17 @@ const FormUpload = () => {
   return (
     <>
       <Space size={16}>
-        <FormUploadCard
+        {/* <FormUploadCard
           uploadFileData={fileData}
           setUploadFileData={setFileData}
-        />
-        <DraggerStyle
-          beforeUpload={beforeUpload}
-          showUploadList={false}
-          multiple
+        /> */}
+        <DraggerStyleDiv
+          // beforeUpload={beforeUpload}
+          // showUploadList={false}
+          // multiple
+          onClick={() => {
+            setCollapsed((p: any) => !p);
+          }}
         >
           <Row justify="space-between">
             <AtachmentStyleCol>
@@ -69,7 +77,7 @@ const FormUpload = () => {
               </Typography>
             </Space>
           </Space>
-        </DraggerStyle>
+        </DraggerStyleDiv>
       </Space>
     </>
   );

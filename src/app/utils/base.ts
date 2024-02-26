@@ -114,18 +114,24 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       name: newItem,
       label: 'Label',
       required: false,
-      requiredLabel: true,
+      noOfRowsData: ['row1', 'row2'],
       noOfRows: 2,
       noOfColumn: 2,
-      cutomizedTable: cutomizedTables,
-      tableKey: column?.length,
       ColumnsData: [
-        {title: 'Column 1', dataIndex: 'address', key: '1'},
-        {title: 'Column 2', dataIndex: 'address', key: '2'},
-      ],
-      RowsData: [
-        {'Filed Name1': 'text', 'Filed Name2': 'text'},
-        {'Filed Name1': 'text', 'Filed Name2': 'text'},
+        {
+          title: 'Column 1',
+          dataIndex: 'address',
+          key: '1',
+          type: 'text',
+          options: [],
+        },
+        {
+          title: 'Column 2',
+          dataIndex: 'address',
+          key: '2',
+          type: 'text',
+          options: [],
+        },
       ],
     };
   } else if (newItem === 'Multi-Select' || newItem === 'Drop Down') {
@@ -230,6 +236,12 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       requiredLabel: true,
       hintext: false,
       hintTextValue: 'hint Vlaue',
+    };
+  } else if (newItem == 'Attachment') {
+    newObjAddedon = {
+      pdfUrl: null,
+      required: false,
+      name: newItem,
     };
   }
   return newObjAddedon;
