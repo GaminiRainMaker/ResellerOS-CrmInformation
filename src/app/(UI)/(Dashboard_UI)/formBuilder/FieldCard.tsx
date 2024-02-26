@@ -18,6 +18,8 @@ import {
   RadioIcon,
   TableCellsIcon,
 } from '@heroicons/react/24/outline';
+import Image from 'next/image';
+import AttachmentCircle from '../../../../../public/assets/static/attachcircle.svg';
 import FiledsDraggable from './FiledsDraggable';
 
 const FieldCard = () => {
@@ -97,7 +99,17 @@ const FieldCard = () => {
           name: 'Table',
           icon: <TableCellsIcon width={15} color={token?.colorInfo} />,
         },
-        {key: 12, name: 'Attachment', icon: ''},
+        {
+          key: 12,
+          name: 'Attachment',
+          icon: (
+            <Image
+              src={AttachmentCircle}
+              alt="AttachmentCircle"
+              style={{width: '15px', height: '15px'}}
+            />
+          ),
+        },
       ],
     },
     {
