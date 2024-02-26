@@ -55,8 +55,7 @@ export const DeleteQuoteLineItemById = createAsyncThunk(
   'quoteLineItem/deleteQuoteLineItemById',
   async (data: any, thunkApi) => {
     try {
-      const res =
-        await QUOTE_LINE_ITEM_API.deleteQuoteLineItemById(data);
+      const res = await QUOTE_LINE_ITEM_API.deleteQuoteLineItemById(data);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);
@@ -92,6 +91,18 @@ export const getQuoteLineItemByQuoteIdandBundleIdNull = createAsyncThunk(
     try {
       const res =
         await QUOTE_LINE_ITEM_API.getQuoteLineItemByQuoteIdandBundleIdNull(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+
+export const updateQuoteLineItemById = createAsyncThunk(
+  'quoteLineItem/updateQuoteLineItemById',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await QUOTE_LINE_ITEM_API.updateQuoteLineItemById(data);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

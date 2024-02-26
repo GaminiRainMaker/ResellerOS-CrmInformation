@@ -30,9 +30,9 @@ import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import {formatDate} from '@/app/utils/base';
 import {Form, MenuProps, TabsProps} from 'antd';
+import moment from 'moment';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import moment from 'moment';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
@@ -150,6 +150,16 @@ const AllQuote: React.FC = () => {
       disabled: record.name === 'Disabled User',
       name: record.name,
     }),
+  };
+
+  const genericFun = (payloadArr: any, Arr: any) => {
+    const newArr = Arr?.map((item: any) => ({
+      ...item,
+      quoteline_item_id: payloadArr?.find(
+        (itm: any) => itm?.product_code === item?.product_code,
+      )?.id,
+    }));
+    return newArr;
   };
 
   const addQuoteLineItem = async (
@@ -300,12 +310,7 @@ const AllQuote: React.FC = () => {
         }
       }
     }
-    if (rebateDataArray && rebateDataArray.length > 0) {
-      dispatch(insertRebateQuoteLineItem(rebateDataArray));
-    }
-    if (contractProductArray && contractProductArray.length > 0) {
-      dispatch(insertValidation(contractProductArray));
-    }
+
     const finalOpportunityArray: any = [];
     if (newrrLineItems && syncTableData?.length > 0) {
       const newRequiredArray: any = [];
@@ -348,8 +353,20 @@ const AllQuote: React.FC = () => {
       });
     }
     if (newrrLineItems && newrrLineItems.length > 0) {
-      dispatch(insertQuoteLineItem(newrrLineItems));
-      dispatch(insertProfitability(newrrLineItems));
+      dispatch(insertQuoteLineItem(newrrLineItems)).then((d) => {
+        if (rebateDataArray && rebateDataArray.length > 0) {
+          const data = genericFun(d?.payload, rebateDataArray);
+          dispatch(insertRebateQuoteLineItem(data));
+        }
+        if (contractProductArray && contractProductArray.length > 0) {
+          const data = genericFun(d?.payload, contractProductArray);
+          dispatch(insertValidation(data));
+        }
+        if (newrrLineItems && newrrLineItems.length > 0) {
+          const data = genericFun(d?.payload, newrrLineItems);
+          dispatch(insertProfitability(data));
+        }
+      });
     }
     if (finalOpportunityArray && syncTableData?.length > 0) {
       dispatch(insertOpportunityLineItem(finalOpportunityArray));

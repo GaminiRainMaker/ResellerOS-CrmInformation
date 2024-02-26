@@ -373,21 +373,22 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   useEffect(() => {
     const newArr: any = [];
     InputDetailQuoteLineItemcolumns?.map((itemCol: any) => {
-      let countForDel: any = 0;
-      tableColumnDataShow?.filter((item: any) => {
-        if (item?.field_name?.includes(itemCol?.title)) {
-          newArr?.push(itemCol);
-        } else if (itemCol?.title?.includes('Actions') && countForDel === 0) {
-          newArr?.push(itemCol);
-          // eslint-disable-next-line operator-assignment
-          countForDel = countForDel + 1;
+      let shouldPush = false;
+      tableColumnDataShow?.forEach((item: any) => {
+        if (item?.field_name === itemCol?.title) {
+          shouldPush = true;
         }
       });
-      // if (itemCol?.dataIndex?.includes('actions')) {
-      //   newArr?.push(itemCol);
-      // }
+      if (
+        itemCol?.dataIndex === 'actions' ||
+        itemCol?.dataIndex?.includes('actions.')
+      ) {
+        shouldPush = true;
+      }
+      if (shouldPush) {
+        newArr?.push(itemCol);
+      }
     });
-    // actions
     setFinalInputColumn(newArr);
   }, [tableColumnDataShow]);
 
