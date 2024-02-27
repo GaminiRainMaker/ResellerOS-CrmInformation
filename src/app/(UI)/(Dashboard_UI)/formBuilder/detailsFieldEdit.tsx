@@ -9,7 +9,7 @@ import EditCommonRestFields from './commonEditable/restFormDetails';
 import EditTableFields from './commonEditable/tableEdit';
 import EditFiledDetailsForTextContent from './commonEditable/textContentEdit';
 import TimeEditFileds from './commonEditable/timeEditFiled';
-import { FormBuilderInterFace } from './formBuilder.interface';
+import {FormBuilderInterFace} from './formBuilder.interface';
 
 const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
   sectionIndex,

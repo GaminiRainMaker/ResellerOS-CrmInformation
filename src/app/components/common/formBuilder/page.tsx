@@ -48,12 +48,11 @@ import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
 import {formbuildernewObject} from '@/app/utils/base';
 import {Checkbox, Layout, MenuProps, Radio, Switch, TimePicker} from 'antd';
 import React, {useState} from 'react';
-
-import {FormBuilderInterFaceMain} from './formBuilder.interface';
+import {FormBuilderInterFaceMain} from '@/app/(UI)/(Dashboard_UI)/formBuilder/formBuilder.interface';
 
 const {Sider, Content} = Layout;
 
-const FormBuilderPreview: React.FC<FormBuilderInterFaceMain> = ({
+const FormBuilderMain: React.FC<FormBuilderInterFaceMain> = ({
   cartItems,
   setCartItems,
   form,
@@ -65,6 +64,7 @@ const FormBuilderPreview: React.FC<FormBuilderInterFaceMain> = ({
   setActiveSectionIndex,
   setSelectedColumnIndex,
   setContentActiveIndex,
+  previewFile,
 }) => {
   const dropDownItemss: MenuProps['items'] = [];
 
@@ -178,7 +178,7 @@ const FormBuilderPreview: React.FC<FormBuilderInterFaceMain> = ({
                             <Row justify="space-between">
                               <SectionColStyled
                                 onClick={() => {
-                                  setCollapsed((p) => !p);
+                                  setCollapsed((p: any) => !p);
                                   setActiveContentIndex(ItemConindex);
                                   setActiveSectionIndex(Sectidx);
                                   form.resetFields();
@@ -298,7 +298,7 @@ const FormBuilderPreview: React.FC<FormBuilderInterFaceMain> = ({
                             <Row justify="space-between">
                               <SectionColStyled
                                 onClick={() => {
-                                  setCollapsed((p) => !p);
+                                  setCollapsed((p: any) => !p);
                                   setActiveContentIndex(ItemConindex);
                                   setActiveSectionIndex(Sectidx);
                                   form.resetFields();
@@ -436,7 +436,7 @@ const FormBuilderPreview: React.FC<FormBuilderInterFaceMain> = ({
                             <Row justify="space-between">
                               <SectionColStyled
                                 onClick={() => {
-                                  setCollapsed((p) => !p);
+                                  setCollapsed((p: any) => !p);
                                   setActiveContentIndex(ItemConindex);
                                   setActiveSectionIndex(Sectidx);
                                   form.resetFields();
@@ -502,7 +502,7 @@ const FormBuilderPreview: React.FC<FormBuilderInterFaceMain> = ({
                             <Row justify="space-between">
                               <SectionColStyledForTextCont
                                 onClick={() => {
-                                  setCollapsed((p) => !p);
+                                  setCollapsed((p: any) => !p);
                                   setActiveContentIndex(ItemConindex);
                                   setActiveSectionIndex(Sectidx);
                                   form.resetFields();
@@ -587,7 +587,7 @@ const FormBuilderPreview: React.FC<FormBuilderInterFaceMain> = ({
                             <Row justify="space-between">
                               <SectionColStyled
                                 onClick={() => {
-                                  setCollapsed((p) => !p);
+                                  setCollapsed((p: any) => !p);
                                   setActiveContentIndex(ItemConindex);
                                   setActiveSectionIndex(Sectidx);
                                   setContentActiveIndex(ItemConindex);
@@ -664,7 +664,7 @@ const FormBuilderPreview: React.FC<FormBuilderInterFaceMain> = ({
                           >
                             <SectionColStyledForTextCont
                               onClick={() => {
-                                setCollapsed((p) => !p);
+                                setCollapsed((p: any) => !p);
                                 setActiveContentIndex(ItemConindex);
                                 setActiveSectionIndex(Sectidx);
                                 form.resetFields();
@@ -704,4 +704,4 @@ const FormBuilderPreview: React.FC<FormBuilderInterFaceMain> = ({
   );
 };
 
-export default FormBuilderPreview;
+export default FormBuilderMain;
