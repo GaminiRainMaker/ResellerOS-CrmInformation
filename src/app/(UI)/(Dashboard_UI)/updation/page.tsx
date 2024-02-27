@@ -1,23 +1,23 @@
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
-import { formatDate } from '@/app/utils/base';
-import { ArrowDownTrayIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { updateProfitabilityById } from '../../../../../redux/actions/profitability';
-import { getQuoteById } from '../../../../../redux/actions/quote';
-import { updateQuoteLineItemById } from '../../../../../redux/actions/quotelineitem';
-import { updateRebateQuoteLineItemById } from '../../../../../redux/actions/rebateQuoteLineitem';
-import { updateValidationById } from '../../../../../redux/actions/validation';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {formatDate} from '@/app/utils/base';
+import {ArrowDownTrayIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {useEffect, useState} from 'react';
+import {updateProfitabilityById} from '../../../../../redux/actions/profitability';
+import {getQuoteById} from '../../../../../redux/actions/quote';
+import {updateQuoteLineItemById} from '../../../../../redux/actions/quotelineitem';
+import {updateRebateQuoteLineItemById} from '../../../../../redux/actions/rebateQuoteLineitem';
+import {updateValidationById} from '../../../../../redux/actions/validation';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 const UpdateGenerateQuote = () => {
   const [token] = useThemeToken();
@@ -25,13 +25,16 @@ const UpdateGenerateQuote = () => {
   const searchParams = useSearchParams();
   const getUserID = searchParams.get('id');
   const {quoteById, loading} = useAppSelector((state) => state.quote);
-  const [inputData, setInputData] = useState<any>();
+  const [inputData, setInputData] = useState<any>(quoteById?.QuoteLineItems);
   const router = useRouter();
 
   useEffect(() => {
-    dispatch(getQuoteById(Number(getUserID)));
-    setInputData(quoteById?.QuoteLineItems);
-  }, [getUserID]);
+    dispatch(getQuoteById(Number(getUserID))).then((d: any) => {
+      if (d?.payload?.QuoteLineItems) {
+        setInputData(d?.payload?.QuoteLineItems);
+      }
+    });
+  }, []);
 
   const menuItems = [
     {
