@@ -14,12 +14,11 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
 import {selectDataForProduct} from '@/app/utils/CONSTANTS';
-import {convertDataToText, useRemoveDollarAndCommahook} from '@/app/utils/base';
+import {useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {TrashIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
-import {Button} from '@/app/components/common/antd/Button';
 import {
   getAllBundle,
   updateBundleQuantity,
@@ -373,21 +372,22 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   useEffect(() => {
     const newArr: any = [];
     InputDetailQuoteLineItemcolumns?.map((itemCol: any) => {
-      let countForDel: any = 0;
-      tableColumnDataShow?.filter((item: any) => {
-        if (item?.field_name?.includes(itemCol?.title)) {
-          newArr?.push(itemCol);
-        } else if (itemCol?.title?.includes('Actions') && countForDel === 0) {
-          newArr?.push(itemCol);
-          // eslint-disable-next-line operator-assignment
-          countForDel = countForDel + 1;
+      let shouldPush = false;
+      tableColumnDataShow?.forEach((item: any) => {
+        if (item?.field_name === itemCol?.title) {
+          shouldPush = true;
         }
       });
-      // if (itemCol?.dataIndex?.includes('actions')) {
-      //   newArr?.push(itemCol);
-      // }
+      if (
+        itemCol?.dataIndex === 'actions' ||
+        itemCol?.dataIndex?.includes('actions.')
+      ) {
+        shouldPush = true;
+      }
+      if (shouldPush) {
+        newArr?.push(itemCol);
+      }
     });
-    // actions
     setFinalInputColumn(newArr);
   }, [tableColumnDataShow]);
 
@@ -401,7 +401,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         <>
-          <Button
+          {/* <Button
             onClick={() => {
               const textResult = convertDataToText(
                 finalInputColumn,
@@ -413,7 +413,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
             }}
           >
             Copy Data
-          </Button>
+          </Button> */}
 
           <Form>
             {bundleData && bundleData?.length > 0 ? (

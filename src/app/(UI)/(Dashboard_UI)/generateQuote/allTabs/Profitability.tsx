@@ -421,7 +421,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         <>
-          <Button
+          {/* <Button
             onClick={() => {
               const textResult = convertDataToText(
                 ProfitabilityQuoteLineItemcolumns,
@@ -433,7 +433,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
             }}
           >
             Copy Data
-          </Button>
+          </Button> */}
           <Form>
             <OsTableWithOutDrag
               loading={loading}

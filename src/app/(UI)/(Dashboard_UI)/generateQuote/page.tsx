@@ -222,6 +222,19 @@ const GenerateQuote: React.FC = () => {
       key: '2',
       label: <Typography name="Body 3/Regular">Edit Selected</Typography>,
     },
+    {
+      key: '2',
+      label: (
+        <Typography
+          name="Body 3/Regular"
+          onClick={() => {
+            router?.push(`/updation?id=${getQuoteID}`);
+          }}
+        >
+          Update LineItems
+        </Typography>
+      ),
+    },
 
     {
       key: '3',
@@ -354,7 +367,11 @@ const GenerateQuote: React.FC = () => {
             router?.push(`/generateQuote?id=${getQuoteID}`);
           }}
         >
-          {quoteLineItemByQuoteID?.[0]?.Quote?.file_name}
+          {quoteLineItemByQuoteID?.[0]?.Quote?.file_name ??
+            formatDate(
+              quoteLineItemByQuoteID?.[0]?.Quote?.createdAt,
+              'MM/DD/YYYY',
+            )}
         </Typography>
       ),
     },

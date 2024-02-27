@@ -22,10 +22,13 @@ import {
 import {Layout, MenuProps} from 'antd';
 import {usePathname, useRouter} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
+import Image from 'next/image';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {LayoutMenuStyle} from './styled-components';
 import {getUserByTokenAccess} from '../../../../../redux/actions/user';
 import {setUserInformation} from '../../../../../redux/slices/user';
+import InActiveCrmIcon from '../../../../../public/assets/static/inActiveCrmIcon.svg';
+import ActiveCrmIcon from '../../../../../public/assets/static/activeCrmIcon.svg';
 
 const {Sider} = Layout;
 
@@ -393,14 +396,19 @@ const SideBar = () => {
           >
             <OsAvatar
               icon={
-                <LifebuoyIcon
-                  color={
-                    seleectedKey?.toString()?.includes('8')
-                      ? token.colorPrimaryBorder
-                      : token?.colorTextSecondary
-                  }
-                  width={24}
-                />
+                seleectedKey?.toString()?.includes('8') ? (
+                  <Image
+                    src={ActiveCrmIcon}
+                    alt="ActiveCrmIcon"
+                    style={{width: '15px', height: '15px'}}
+                  />
+                ) : (
+                  <Image
+                    src={InActiveCrmIcon}
+                    alt="InActiveCrmIcon"
+                    style={{width: '15px', height: '15px'}}
+                  />
+                )
               }
             />
             <Typography
@@ -428,14 +436,19 @@ const SideBar = () => {
           >
             <OsAvatar
               icon={
-                <LifebuoyIcon
-                  color={
-                    seleectedKey?.toString()?.includes('9')
-                      ? token.colorPrimaryBorder
-                      : token?.colorTextSecondary
-                  }
-                  width={24}
-                />
+                seleectedKey?.toString()?.includes('9') ? (
+                  <Image
+                    src={ActiveCrmIcon}
+                    alt="ActiveCrmIcon"
+                    style={{width: '15px', height: '15px'}}
+                  />
+                ) : (
+                  <Image
+                    src={InActiveCrmIcon}
+                    alt="InActiveCrmIcon"
+                    style={{width: '15px', height: '15px'}}
+                  />
+                )
               }
             />
             <Typography
@@ -463,14 +476,19 @@ const SideBar = () => {
           >
             <OsAvatar
               icon={
-                <LifebuoyIcon
-                  color={
-                    seleectedKey?.toString() === '0'
-                      ? token.colorPrimaryBorder
-                      : token?.colorTextSecondary
-                  }
-                  width={24}
-                />
+                seleectedKey?.toString()?.includes('0') ? (
+                  <Image
+                    src={ActiveCrmIcon}
+                    alt="ActiveCrmIcon"
+                    style={{width: '15px', height: '15px'}}
+                  />
+                ) : (
+                  <Image
+                    src={InActiveCrmIcon}
+                    alt="InActiveCrmIcon"
+                    style={{width: '15px', height: '15px'}}
+                  />
+                )
               }
             />
             <Typography
