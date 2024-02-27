@@ -26,8 +26,6 @@ import CommonDatePicker from '@/app/components/common/os-date-picker';
 import {
   RowStyledForForm,
   SectionColStyled,
-  SectionColStyledForTextCont,
-  SectionColStyledForTextContDIV,
   SectionColStyledInner,
   SectionColStyledInnerContent,
   SectionDivStyled1,
@@ -173,7 +171,10 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                                   form.resetFields();
                                 }}
                               >
-                                <Typography name="Caption Regular" color={token?.colorLinkHover}>
+                                <Typography
+                                  name="Caption Regular"
+                                  color={token?.colorLinkHover}
+                                >
                                   {itemCon?.name}
                                 </Typography>
                               </SectionColStyled>
@@ -302,7 +303,10 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                                   form.resetFields();
                                 }}
                               >
-                                <Typography name="Caption Regular" color={token?.colorLinkHover}>
+                                <Typography
+                                  name="Caption Regular"
+                                  color={token?.colorLinkHover}
+                                >
                                   {itemCon?.name === 'Text'
                                     ? 'Text Field'
                                     : itemCon?.name}
@@ -422,7 +426,10 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                           >
                             <Row>
                               <SectionColStyled>
-                                <Typography name="Caption Regular" color={token?.colorLinkHover}>
+                                <Typography
+                                  name="Caption Regular"
+                                  color={token?.colorLinkHover}
+                                >
                                   {itemCon?.name}
                                 </Typography>
                               </SectionColStyled>
@@ -492,7 +499,10 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                                   form.resetFields();
                                 }}
                               >
-                                <Typography name="Caption Regular" color={token?.colorLinkHover}>
+                                <Typography
+                                  name="Caption Regular"
+                                  color={token?.colorLinkHover}
+                                >
                                   {itemCon?.name}
                                 </Typography>
                               </SectionColStyled>
@@ -582,7 +592,10 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                                   form.resetFields();
                                 }}
                               >
-                                <Typography name="Caption Regular" color={token?.colorLinkHover}>
+                                <Typography
+                                  name="Caption Regular"
+                                  color={token?.colorLinkHover}
+                                >
                                   {itemCon?.name}
                                 </Typography>
                               </SectionColStyled>
@@ -653,28 +666,28 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                             direction="vertical"
                             {...commonDraggableProps(ItemConindex, Sectidx)}
                           >
-                            <SectionColStyledForTextCont
-                              onClick={() => {
-                                setCollapsed((p: any) => !p);
-                                setActiveContentIndex(ItemConindex);
-                                setActiveSectionIndex(Sectidx);
-                                form.resetFields();
-                              }}
-                            >
-                              <SectionColStyledForTextContDIV>
-                                Attachment{' '}
-                                {itemCon?.required && (
-                                  <span style={{color: 'red'}}>*</span>
-                                )}
-                              </SectionColStyledForTextContDIV>
-                            </SectionColStyledForTextCont>
+                            <Row justify="space-between">
+                              <SectionColStyled
+                                onClick={() => {
+                                  setCollapsed((p: any) => !p);
+                                  setActiveContentIndex(ItemConindex);
+                                  setActiveSectionIndex(Sectidx);
+                                  form.resetFields();
+                                }}
+                              >
+                                <Typography
+                                  name="Caption Regular"
+                                  color={token?.colorLinkHover}
+                                >
+                                  {itemCon?.name}
+                                </Typography>
+                              </SectionColStyled>
+                            </Row>
+
                             {itemCon?.pdfUrl ? (
-                              <>
-                                {' '}
-                                <FormUploadCard
-                                  uploadFileData={itemCon?.pdfUrl}
-                                />
-                              </>
+                              <FormUploadCard
+                                uploadFileData={itemCon?.pdfUrl}
+                              />
                             ) : (
                               <FormUpload setCollapsed={setCollapsed} />
                             )}
