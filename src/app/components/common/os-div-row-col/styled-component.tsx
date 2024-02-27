@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import { Divider } from 'antd';
-import { Col, Row } from '../antd/Grid';
+import {Divider} from 'antd';
+import {Col, Row} from '../antd/Grid';
 
 export const RowStyledForForm = styled(Row)`
   width: 100%;

@@ -13,17 +13,17 @@
 
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import { MailOutlined, PlayCircleOutlined } from '@ant-design/icons';
-import { useDroppable } from '@dnd-kit/core';
-import { ArrowsPointingOutIcon, TrashIcon } from '@heroicons/react/24/outline';
+import {MailOutlined, PlayCircleOutlined} from '@ant-design/icons';
+import {useDroppable} from '@dnd-kit/core';
+import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
 import 'react-phone-number-input/style.css';
 
 import ContactInput from '@/app/components/common/os-contact';
@@ -41,22 +41,15 @@ import {
   SectionRowStyled,
   SectionRowStyledInner,
   StyledDivider,
-  ToggleColStyled
+  ToggleColStyled,
 } from '@/app/components/common/os-div-row-col/styled-component';
 import FormUpload from '@/app/components/common/os-upload/FormUpload';
 import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
-import { formbuildernewObject } from '@/app/utils/base';
-import {
-  Checkbox,
-  Layout,
-  MenuProps,
-  Radio,
-  Switch,
-  TimePicker
-} from 'antd';
-import React, { useState } from 'react';
+import {formbuildernewObject} from '@/app/utils/base';
+import {Checkbox, Layout, MenuProps, Radio, Switch, TimePicker} from 'antd';
+import React, {useState} from 'react';
 
-import { FormBuilderInterFaceMain } from './formBuilder.interface';
+import {FormBuilderInterFaceMain} from './formBuilder.interface';
 
 const {Sider, Content} = Layout;
 

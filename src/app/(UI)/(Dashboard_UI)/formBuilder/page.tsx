@@ -225,7 +225,6 @@ const FormBuilder = () => {
               setOpenPreviewModal(false);
             }}
           >
-            dd
             <FormBuilderPreview
               setCartItems={setCartItems}
               cartItems={cartItems}
