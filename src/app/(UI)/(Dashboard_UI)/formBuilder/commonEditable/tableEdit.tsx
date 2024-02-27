@@ -1,11 +1,8 @@
-/* eslint-disable @typescript-eslint/no-redeclare */
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable no-nested-ternary */
 /* eslint-disable @typescript-eslint/indent */
-/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-lonely-if */
-/* eslint-disable eqeqeq */
-/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable react/no-array-index-key */
+
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Switch} from '@/app/components/common/antd/Switch';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
