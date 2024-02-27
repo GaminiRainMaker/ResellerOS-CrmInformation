@@ -48,11 +48,11 @@ import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
 import {formbuildernewObject} from '@/app/utils/base';
 import {Checkbox, Layout, MenuProps, Radio, Switch, TimePicker} from 'antd';
 import React, {useState} from 'react';
-import {FormBuilderInterFaceMain} from '@/app/(UI)/(Dashboard_UI)/formBuilder/formBuilder.interface';
+import {FormBuilderMainInterFace} from '@/app/(UI)/(Dashboard_UI)/formBuilder/formBuilder.interface';
 
 const {Sider, Content} = Layout;
 
-const FormBuilderMain: React.FC<FormBuilderInterFaceMain> = ({
+const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
   cartItems,
   setCartItems,
   form,
@@ -64,7 +64,7 @@ const FormBuilderMain: React.FC<FormBuilderInterFaceMain> = ({
   setActiveSectionIndex,
   setSelectedColumnIndex,
   setContentActiveIndex,
-  previewFile,
+  //   previewFile,
 }) => {
   const dropDownItemss: MenuProps['items'] = [];
 

@@ -30,7 +30,7 @@ export interface EditableFiledsCommonInterface {
   selectedColumnIndex?: number;
 }
 
-export interface FormBuilderInterFaceMain {
+export interface FormBuilderMainInterFace {
   setCartItems?: any;
   cartItems?: any;
   form: FormInstance;
@@ -42,5 +42,5 @@ export interface FormBuilderInterFaceMain {
   setActiveSectionIndex?: any;
   setSelectedColumnIndex?: any;
   setContentActiveIndex?: any;
-  previewFile?: any;
+  // previewFile?: any;
 }

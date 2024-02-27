@@ -89,7 +89,7 @@ const FormBuilder = () => {
               setActiveSectionIndex={setActiveSectionIndex}
               setSelectedColumnIndex={setSelectedColumnIndex}
               setContentActiveIndex={setContentActiveIndex}
-              previewFile={false}
+              // previewFile={false}
             />
           </Content>
         </Layout>
@@ -132,7 +132,7 @@ const FormBuilder = () => {
               setSelectedColumnIndex={setSelectedColumnIndex}
               setContentActiveIndex={setContentActiveIndex}
               // eslint-disable-next-line react/jsx-boolean-value
-              previewFile={true}
+              // previewFile={true}
             />
           </Modal>
         </>
