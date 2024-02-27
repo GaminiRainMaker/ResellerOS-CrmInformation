@@ -212,6 +212,7 @@ const GenerateQuote: React.FC = () => {
       label: (
         <Typography
           name="Body 3/Regular"
+          cursor="pointer"
           onClick={() => setShowBundleModal((p) => !p)}
         >
           Bundle Configuration
@@ -220,13 +221,18 @@ const GenerateQuote: React.FC = () => {
     },
     {
       key: '2',
-      label: <Typography name="Body 3/Regular">Edit Selected</Typography>,
+      label: (
+        <Typography name="Body 3/Regular" cursor="pointer">
+          Edit Selected
+        </Typography>
+      ),
     },
     {
       key: '2',
       label: (
         <Typography
           name="Body 3/Regular"
+          cursor="pointer"
           onClick={() => {
             router?.push(`/updation?id=${getQuoteID}`);
           }}
@@ -242,6 +248,7 @@ const GenerateQuote: React.FC = () => {
         <Typography
           name="Body 3/Regular"
           color={token?.colorError}
+          cursor="pointer"
           onClick={() => {
             if (activeTab === '1') {
               setIsDeleteInputDetailModal(true);
