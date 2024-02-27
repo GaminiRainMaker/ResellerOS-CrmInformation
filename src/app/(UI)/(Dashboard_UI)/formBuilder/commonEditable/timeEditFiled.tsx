@@ -1,11 +1,5 @@
-/* eslint-disable @typescript-eslint/no-redeclare */
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable no-nested-ternary */
 /* eslint-disable @typescript-eslint/indent */
-/* eslint-disable no-unsafe-optional-chaining */
-/* eslint-disable no-lonely-if */
-/* eslint-disable eqeqeq */
-/* eslint-disable @typescript-eslint/no-unused-expressions */
+
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Switch} from '@/app/components/common/antd/Switch';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -106,7 +100,7 @@ const TimeEditFileds: React.FC<EditableFiledsCommonInterface> = ({
                   }
                   style={{width: '100%'}}
                   options={
-                    NameofTheCurrentFiled == 'Multi-Select'
+                    NameofTheCurrentFiled === 'Multi-Select'
                       ? [
                           {label: 'Mutiple', value: 'multiple'},
                           {label: 'Single', value: 'tag'},
@@ -163,7 +157,7 @@ const TimeEditFileds: React.FC<EditableFiledsCommonInterface> = ({
               {(((NameofTheCurrentFiled === 'Checkbox' ||
                 NameofTheCurrentFiled === 'Radio Button' ||
                 NameofTheCurrentFiled === 'Toggle') &&
-                index != 2) ||
+                index !== 2) ||
                 NameofTheCurrentFiled !== 'Checkbox') && (
                 <Row style={{width: '100%'}}>
                   <Col

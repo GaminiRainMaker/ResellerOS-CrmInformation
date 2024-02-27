@@ -38,8 +38,6 @@ const AttachmentEditFileds: React.FC<EditableFiledsCommonInterface> = ({
   const beforeUpload = (file: File) => {
     convertFileToBase64(file)
       .then((base64String) => {
-        console.log('base64String', base64String);
-
         if (base64String) {
           dispatch(uploadToAws({document: base64String})).then(
             (payload: any) => {
