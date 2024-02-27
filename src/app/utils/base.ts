@@ -185,7 +185,7 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue: 'hint Vlaue',
+      hintTextValue: 'Hint Value',
       currency: 'USB',
       deciamlHide: false,
     };
@@ -197,7 +197,7 @@ export const formbuildernewObject = (newItem: string, column: any) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue: 'hint Value',
+      hintTextValue: 'Hint Value',
       labelOptions: [],
     };
   } else if (newItem == 'Text Content') {

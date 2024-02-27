@@ -16,6 +16,7 @@ export const OsContactStyle = styled.div`
     border: 4px solid var(--foundation-secondary-21-secondary-21200, #a6d6ee);
     outline: none;
   }
+  width: 100%;
 `;
 export const OsPhoneInputStyle = styled(PhoneInput)`
   input {

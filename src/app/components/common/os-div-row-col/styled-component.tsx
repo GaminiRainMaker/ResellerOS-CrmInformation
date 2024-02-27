@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import {Col, DatePicker, Divider, Row} from 'antd';
+import { Divider } from 'antd';
+import { Col, Row } from '../antd/Grid';
 
 export const RowStyledForForm = styled(Row)`
   width: 100%;
@@ -15,7 +16,6 @@ export const RowStyledForForm = styled(Row)`
 export const SectionRowStyled = styled(Row)`
   padding: 16px;
   border: 0.5px;
-  gap: 12px;
   border-radius: 12px;
   background: white;
   margin-top: 10px;
@@ -118,8 +118,4 @@ export const ToggleColStyled = styled(Col)`
 export const SiderDivStyled = styled.div`
   width: 20%;
   background: white;
-`;
-export const StyledDatePicker = styled(DatePicker)`
-  margin-top: 10px;
-  width: 100%;
 `;

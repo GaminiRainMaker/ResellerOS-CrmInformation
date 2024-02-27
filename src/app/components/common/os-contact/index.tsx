@@ -34,12 +34,17 @@ interface InputProps {
   helperText?: string;
   disabled?: boolean;
   softDisabled?: boolean;
+  mask?: any;
+  defaultCountry?: any;
+  limitMaxLength?: boolean;
+  max?: number;
 }
 const ContactInput: React.FunctionComponent<InputProps> = ({
   onChange,
   onBlur = (_e) => {},
   onFocus = (_e) => {},
   onKeyDown = (_e) => {},
+  mask = (_e: any) => {},
   placeholder = '',
   endIcon = '',
   startIcon = '',
@@ -61,6 +66,9 @@ const ContactInput: React.FunctionComponent<InputProps> = ({
   disabled = false,
   softDisabled = false,
   name,
+  defaultCountry,
+  limitMaxLength,
+  max = 11,
 }) => (
   <OsContactStyle>
     <div>
@@ -85,7 +93,7 @@ const ContactInput: React.FunctionComponent<InputProps> = ({
         onChange={(val: any) => {
           onChange(val as string);
         }}
-        limitMaxLength
+        limitMaxLength={limitMaxLength}
         onBlur={onBlur}
         value={value}
         onKeyDown={onKeyDown}
@@ -93,7 +101,10 @@ const ContactInput: React.FunctionComponent<InputProps> = ({
         name={name}
         placeholder={placeholder}
         onFocus={onFocus}
-        // international
+        mask={mask}
+        international
+        defaultCountry={defaultCountry}
+        max={max}
       />
       {(endIcon || showErrorEndIcon) && (
         <div
