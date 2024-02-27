@@ -98,16 +98,6 @@ export const getProgramOptions = (value: string) => {
 
 export const formbuildernewObject = (newItem: string, column: any) => {
   let newObjAddedon: any;
-  const cutomizedTables = [
-    {
-      filed: 'Filed Name',
-      typeOfFiled: 'text',
-    },
-    {
-      filed: 'Quote',
-      typeOfFiled: 'number',
-    },
-  ];
 
   if (newItem === 'Table') {
     newObjAddedon = {

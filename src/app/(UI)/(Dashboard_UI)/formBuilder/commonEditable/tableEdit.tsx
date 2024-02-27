@@ -22,12 +22,9 @@ import {
 } from '@heroicons/react/24/outline';
 import {DatePicker, Form, Input, Radio, RadioChangeEvent, message} from 'antd';
 import React, {useState} from 'react';
-import {uploadToAws} from '../../../../../redux/actions/upload';
-import {useAppDispatch} from '../../../../../redux/hook';
-import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
-import {FormBuilderInterFace} from './formBuilder.interface';
+import {EditableFiledsCommonInterface} from '../formBuilder.interface';
 
-const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
+const EditFiledDetails: React.FC<EditableFiledsCommonInterface> = ({
   sectionIndex,
   cartItems,
   contentIndex,
@@ -48,7 +45,6 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
 
   const CommonIndexOfUse =
     cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0];
-
   const [noofrows, setNoofrows] = useState<number>(CommonIndexOfUse?.noOfRows);
   const [noofcolumn, setNoofcolumn] = useState<number>(
     CommonIndexOfUse?.noOfColumn,

@@ -20,3 +20,12 @@ export interface FormUploadInterface {
 export interface PreviewFormBuilder {
   cartItems?: any;
 }
+
+export interface EditableFiledsCommonInterface {
+  sectionIndex?: number | string;
+  cartItems?: any;
+  contentIndex?: number | string;
+  setCartItems?: any;
+  form?: FormInstance;
+  selectedColumnIndex?: number;
+}
