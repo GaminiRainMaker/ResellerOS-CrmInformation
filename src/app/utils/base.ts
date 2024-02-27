@@ -96,7 +96,7 @@ export const getProgramOptions = (value: string) => {
   }
 };
 
-export const formbuildernewObject = (newItem: string, column: any) => {
+export const formbuildernewObject = (newItem: string) => {
   let newObjAddedon: any;
 
   if (newItem === 'Table') {

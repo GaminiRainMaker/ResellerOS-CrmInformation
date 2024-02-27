@@ -29,3 +29,17 @@ export interface EditableFiledsCommonInterface {
   form?: FormInstance;
   selectedColumnIndex?: number;
 }
+
+export interface FormBuilderInterFaceMain {
+  setCartItems?: any;
+  cartItems?: any;
+  form: FormInstance;
+  setSectionIndexActive?: any;
+  setOpenPreviewModal?: any;
+  openPreviewModal?: any;
+  setCollapsed?: any;
+  setActiveContentIndex?: any;
+  setActiveSectionIndex?: any;
+  setSelectedColumnIndex?: any;
+  setContentActiveIndex?: any;
+}
