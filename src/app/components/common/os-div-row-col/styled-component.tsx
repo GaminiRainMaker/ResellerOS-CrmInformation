@@ -21,14 +21,14 @@ export const SectionRowStyled = styled(Row)`
   margin-top: 10px;
 `;
 export const SectionColStyled = styled(Col)`
-  width: 96px;
+  width: fit-content;
   height: 26px;
   border-radius: 50px;
   padding: 4px 12px 4px 12px;
-  gap: 12px;
   background: #ecf2f5;
+  text-align: center;
   display: flex;
-  justify-content: center;
+  align-items: center;
 `;
 export const SectionColStyledOPtions = styled(Col)`
   width: 96px;
@@ -36,7 +36,6 @@ export const SectionColStyledOPtions = styled(Col)`
   border-radius: 50px;
   padding: 4px 12px 4px 12px;
   gap: 12px;
-  //   background: #ecf2f5;
   display: flex;
   justify-content: center;
 `;

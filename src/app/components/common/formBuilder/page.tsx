@@ -1,15 +1,9 @@
-/* eslint-disable no-lone-blocks */
-/* eslint-disable @typescript-eslint/no-unused-expressions */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable @typescript-eslint/indent */
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable no-unsafe-optional-chaining */
-/* eslint-disable consistent-return */
-/* eslint-disable eqeqeq */
+/* eslint-disable no-nested-ternary */
 /* eslint-disable array-callback-return */
+/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable consistent-return */
 /* eslint-disable react/no-array-index-key */
-/* eslint-disable import/no-extraneous-dependencies */
 
 'use client';
 
@@ -26,17 +20,16 @@ import {useDroppable} from '@dnd-kit/core';
 import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
 import 'react-phone-number-input/style.css';
 
+import {FormBuilderMainInterFace} from '@/app/(UI)/(Dashboard_UI)/formBuilder/formBuilder.interface';
 import ContactInput from '@/app/components/common/os-contact';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import {
   RowStyledForForm,
-  SectionColDivStyled,
   SectionColStyled,
   SectionColStyledForTextCont,
   SectionColStyledForTextContDIV,
   SectionColStyledInner,
   SectionColStyledInnerContent,
-  SectionColStyledOPtions,
   SectionDivStyled1,
   SectionRowStyled,
   SectionRowStyledInner,
@@ -46,11 +39,8 @@ import {
 import FormUpload from '@/app/components/common/os-upload/FormUpload';
 import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
 import {formbuildernewObject} from '@/app/utils/base';
-import {Checkbox, Layout, MenuProps, Radio, Switch, TimePicker} from 'antd';
+import {Checkbox, MenuProps, Radio, Switch, TimePicker} from 'antd';
 import React, {useState} from 'react';
-import {FormBuilderMainInterFace} from '@/app/(UI)/(Dashboard_UI)/formBuilder/formBuilder.interface';
-
-const {Sider, Content} = Layout;
 
 const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
   cartItems,
@@ -165,11 +155,10 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                 <Typography name="Body 1/Medium" color={token?.colorInfo}>
                   {item?.section}
                 </Typography>
-
                 <SectionRowStyled gutter={[16, 16]} justify="space-between">
                   <>
                     {item?.content?.map((itemCon: any, ItemConindex: any) => {
-                      if (itemCon?.name == 'Table') {
+                      if (itemCon?.name === 'Table') {
                         return (
                           <Col
                             span={24}
@@ -184,19 +173,29 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                                   form.resetFields();
                                 }}
                               >
-                                <SectionColDivStyled>Table</SectionColDivStyled>
+                                <Typography name="Caption Regular" color={token?.colorLinkHover}>
+                                  {itemCon?.name}
+                                </Typography>
                               </SectionColStyled>
-                              <SectionColStyledOPtions>
-                                <TrashIcon
-                                  onClick={() => {
-                                    deleteSelectedIntem(Sectidx, ItemConindex);
-                                  }}
-                                  color={token?.colorError}
-                                />{' '}
-                                <ArrowsPointingOutIcon
-                                  color={token?.colorInfo}
-                                />
-                              </SectionColStyledOPtions>
+
+                              <Col>
+                                <Space size={8}>
+                                  <TrashIcon
+                                    width={18}
+                                    onClick={() => {
+                                      deleteSelectedIntem(
+                                        Sectidx,
+                                        ItemConindex,
+                                      );
+                                    }}
+                                    color={token?.colorError}
+                                  />
+                                  <ArrowsPointingOutIcon
+                                    width={18}
+                                    color={token?.colorInfo}
+                                  />
+                                </Space>
+                              </Col>
                             </Row>
                             <SectionRowStyledInner>
                               {itemCon?.ColumnsData?.length > 0 &&
@@ -235,7 +234,6 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                                         const totalFloorValue =
                                           Math.floor(totalLengthAchived);
                                         {
-                                          // eslint-disable-next-line no-unreachable-loop
                                           const optionsData: any = [];
                                           itemColum?.options?.map(
                                             (itemss: any) => {
@@ -282,13 +280,13 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                         );
                       }
                       if (
-                        itemCon?.name == 'Text' ||
-                        itemCon?.name == 'Currency' ||
-                        itemCon?.name == 'Email' ||
-                        itemCon?.name == 'Contact' ||
-                        itemCon?.name == 'Time' ||
-                        itemCon?.name == 'Add Section' ||
-                        itemCon?.name == 'Date'
+                        itemCon?.name === 'Text' ||
+                        itemCon?.name === 'Currency' ||
+                        itemCon?.name === 'Email' ||
+                        itemCon?.name === 'Contact' ||
+                        itemCon?.name === 'Time' ||
+                        itemCon?.name === 'Add Section' ||
+                        itemCon?.name === 'Date'
                       ) {
                         return (
                           <Col
@@ -304,39 +302,32 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                                   form.resetFields();
                                 }}
                               >
-                                <SectionColDivStyled>
-                                  {itemCon?.name == 'Time'
-                                    ? 'Time'
-                                    : itemCon?.name == 'Email'
-                                      ? 'Email'
-                                      : itemCon?.name == 'Currency'
-                                        ? 'Currency'
-                                        : itemCon?.name == 'Checkbox'
-                                          ? 'Checkbox'
-                                          : itemCon?.name == 'Radio Button'
-                                            ? 'Radio'
-                                            : itemCon?.name == 'Date'
-                                              ? 'Date'
-                                              : itemCon?.name == 'Contact'
-                                                ? 'Contact'
-                                                : itemCon?.name ===
-                                                    'Text Content'
-                                                  ? 'Header Text'
-                                                  : 'Text Filed'}
-                                </SectionColDivStyled>
+                                <Typography name="Caption Regular" color={token?.colorLinkHover}>
+                                  {itemCon?.name === 'Text'
+                                    ? 'Text Field'
+                                    : itemCon?.name}
+                                </Typography>
                               </SectionColStyled>
-                              <SectionColStyledOPtions>
-                                <TrashIcon
-                                  color={token?.colorError}
-                                  onClick={() => {
-                                    deleteSelectedIntem(Sectidx, ItemConindex);
-                                  }}
-                                />{' '}
-                                <ArrowsPointingOutIcon
-                                  color={token?.colorInfo}
-                                />
-                              </SectionColStyledOPtions>
+                              <Col>
+                                <Space size={8}>
+                                  <TrashIcon
+                                    width={18}
+                                    onClick={() => {
+                                      deleteSelectedIntem(
+                                        Sectidx,
+                                        ItemConindex,
+                                      );
+                                    }}
+                                    color={token?.colorError}
+                                  />
+                                  <ArrowsPointingOutIcon
+                                    width={18}
+                                    color={token?.colorInfo}
+                                  />
+                                </Space>
+                              </Col>
                             </Row>
+
                             <Typography name="Body 4/Medium">
                               {itemCon?.requiredLabel && itemCon?.label}{' '}
                               {itemCon?.required && (
@@ -344,7 +335,7 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                               )}
                             </Typography>
                             <SectionDivStyled1>
-                              {itemCon?.name == 'Time' ? (
+                              {itemCon?.name === 'Time' ? (
                                 <TimePicker
                                   // format={{
                                   //   format: 'hh:mm A',
@@ -356,12 +347,8 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                                     width: '100%',
                                     height: '44px',
                                   }}
-                                  // type={itemCon?.type}
-
-                                  // style={{width: '270px'}}
-                                  // onClick={showDrawer}
                                 />
-                              ) : itemCon?.name == 'Currency' ? (
+                              ) : itemCon?.name === 'Currency' ? (
                                 <>
                                   {' '}
                                   <OsInput
@@ -372,7 +359,7 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                                     }
                                   />
                                 </>
-                              ) : itemCon?.name == 'Date' ? (
+                              ) : itemCon?.name === 'Date' ? (
                                 <>
                                   <CommonDatePicker
                                     format={itemCon?.dateformat}
@@ -418,8 +405,8 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                         );
                       }
                       if (
-                        itemCon?.name == 'Multi-Select' ||
-                        itemCon?.name == 'Drop Down'
+                        itemCon?.name === 'Multi-Select' ||
+                        itemCon?.name === 'Drop Down'
                       ) {
                         const optionssMulti: any = [];
                         itemCon?.options?.map((itemoo: any) => {
@@ -433,32 +420,31 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                             span={12}
                             {...commonDraggableProps(ItemConindex, Sectidx)}
                           >
-                            <Row justify="space-between">
-                              <SectionColStyled
-                                onClick={() => {
-                                  setCollapsed((p: any) => !p);
-                                  setActiveContentIndex(ItemConindex);
-                                  setActiveSectionIndex(Sectidx);
-                                  form.resetFields();
-                                }}
-                              >
-                                <SectionColDivStyled>
-                                  {itemCon?.name === 'Drop Down'
-                                    ? 'Drop Down'
-                                    : 'Multi-Select'}
-                                </SectionColDivStyled>
+                            <Row>
+                              <SectionColStyled>
+                                <Typography name="Caption Regular" color={token?.colorLinkHover}>
+                                  {itemCon?.name}
+                                </Typography>
                               </SectionColStyled>
-                              <SectionColStyledOPtions>
-                                <TrashIcon
-                                  color={token?.colorError}
-                                  onClick={() => {
-                                    deleteSelectedIntem(Sectidx, ItemConindex);
-                                  }}
-                                />{' '}
-                                <ArrowsPointingOutIcon
-                                  color={token?.colorInfo}
-                                />
-                              </SectionColStyledOPtions>
+                              <Col>
+                                <Space size={8}>
+                                  <TrashIcon
+                                    width={18}
+                                    onClick={() => {
+                                      deleteSelectedIntem(
+                                        Sectidx,
+                                        ItemConindex,
+                                      );
+                                    }}
+                                    color={token?.colorError}
+                                  />
+
+                                  <ArrowsPointingOutIcon
+                                    width={18}
+                                    color={token?.colorInfo}
+                                  />
+                                </Space>
+                              </Col>
                             </Row>
                             <Typography name="Body 4/Medium">
                               {itemCon?.requiredLabel && itemCon?.label}{' '}
@@ -470,7 +456,6 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                               <CommonSelect
                                 options={optionssMulti}
                                 style={{
-                                  // marginTop: '10px',
                                   width: '100%',
                                 }}
                                 mode={itemCon?.type}
@@ -492,15 +477,14 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                           </Col>
                         );
                       }
-
-                      if (itemCon?.name == 'Text Content') {
+                      if (itemCon?.name === 'Text Content') {
                         return (
                           <Col
                             span={24}
                             {...commonDraggableProps(ItemConindex, Sectidx)}
                           >
                             <Row justify="space-between">
-                              <SectionColStyledForTextCont
+                              <SectionColStyled
                                 onClick={() => {
                                   setCollapsed((p: any) => !p);
                                   setActiveContentIndex(ItemConindex);
@@ -508,25 +492,32 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                                   form.resetFields();
                                 }}
                               >
-                                <SectionColStyledForTextContDIV>
-                                  Header Text
-                                </SectionColStyledForTextContDIV>
-                              </SectionColStyledForTextCont>
-                              <SectionColStyledOPtions>
-                                <TrashIcon
-                                  color={token?.colorError}
-                                  onClick={() => {
-                                    deleteSelectedIntem(Sectidx, ItemConindex);
-                                  }}
-                                />{' '}
-                                <ArrowsPointingOutIcon
-                                  color={token?.colorInfo}
-                                />
-                              </SectionColStyledOPtions>
+                                <Typography name="Caption Regular" color={token?.colorLinkHover}>
+                                  {itemCon?.name}
+                                </Typography>
+                              </SectionColStyled>
+                              <Col>
+                                <Space size={8}>
+                                  <TrashIcon
+                                    width={18}
+                                    onClick={() => {
+                                      deleteSelectedIntem(
+                                        Sectidx,
+                                        ItemConindex,
+                                      );
+                                    }}
+                                    color={token?.colorError}
+                                  />
+                                  <ArrowsPointingOutIcon
+                                    width={18}
+                                    color={token?.colorInfo}
+                                  />
+                                </Space>
+                              </Col>
                             </Row>
                             <SectionDivStyled1>
                               <>
-                                {itemCon?.FontSize == 'h1' ? (
+                                {itemCon?.FontSize === 'h1' ? (
                                   <h1
                                     style={{
                                       display: 'flex',
@@ -536,7 +527,7 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                                   >
                                     {itemCon?.sectionTitle}
                                   </h1>
-                                ) : itemCon?.FontSize == 'h2' ? (
+                                ) : itemCon?.FontSize === 'h2' ? (
                                   <h2
                                     style={{
                                       display: 'flex',
@@ -546,7 +537,7 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                                   >
                                     {itemCon?.sectionTitle}
                                   </h2>
-                                ) : itemCon?.FontSize == 'h3' ? (
+                                ) : itemCon?.FontSize === 'h3' ? (
                                   <h3
                                     style={{
                                       display: 'flex',
@@ -572,12 +563,10 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                           </Col>
                         );
                       }
-                      if (itemCon?.name == 'Line Break')
-                        return <StyledDivider />;
                       if (
-                        itemCon?.name == 'Checkbox' ||
-                        itemCon?.name == 'Radio Button' ||
-                        itemCon?.name == 'Toggle'
+                        itemCon?.name === 'Checkbox' ||
+                        itemCon?.name === 'Radio Button' ||
+                        itemCon?.name === 'Toggle'
                       ) {
                         return (
                           <Col
@@ -590,29 +579,31 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                                   setCollapsed((p: any) => !p);
                                   setActiveContentIndex(ItemConindex);
                                   setActiveSectionIndex(Sectidx);
-                                  setContentActiveIndex(ItemConindex);
                                   form.resetFields();
                                 }}
                               >
-                                <SectionColStyledForTextContDIV>
-                                  {itemCon?.name == 'Radio Button'
-                                    ? 'Radio'
-                                    : itemCon?.name == 'Toggle'
-                                      ? 'Toggle'
-                                      : 'checkbox'}
-                                </SectionColStyledForTextContDIV>
+                                <Typography name="Caption Regular" color={token?.colorLinkHover}>
+                                  {itemCon?.name}
+                                </Typography>
                               </SectionColStyled>
-                              <SectionColStyledOPtions>
-                                <TrashIcon
-                                  color={token?.colorError}
-                                  onClick={() => {
-                                    deleteSelectedIntem(Sectidx, ItemConindex);
-                                  }}
-                                />{' '}
-                                <ArrowsPointingOutIcon
-                                  color={token?.colorInfo}
-                                />
-                              </SectionColStyledOPtions>
+                              <Col>
+                                <Space size={8}>
+                                  <TrashIcon
+                                    width={18}
+                                    onClick={() => {
+                                      deleteSelectedIntem(
+                                        Sectidx,
+                                        ItemConindex,
+                                      );
+                                    }}
+                                    color={token?.colorError}
+                                  />
+                                  <ArrowsPointingOutIcon
+                                    width={18}
+                                    color={token?.colorInfo}
+                                  />
+                                </Space>
+                              </Col>
                             </Row>
                             <Typography name="Body 4/Medium">
                               {itemCon?.requiredLabel &&
@@ -656,7 +647,7 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                           </Col>
                         );
                       }
-                      if (itemCon?.name == 'Attachment') {
+                      if (itemCon?.name === 'Attachment') {
                         return (
                           <Space
                             direction="vertical"
@@ -690,6 +681,8 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                           </Space>
                         );
                       }
+                      if (itemCon?.name === 'Line Break')
+                        return <StyledDivider />;
                     })}
                   </>
                 </SectionRowStyled>
@@ -703,5 +696,4 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
     </>
   );
 };
-
 export default FormBuilderMain;
