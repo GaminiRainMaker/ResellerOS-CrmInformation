@@ -15,7 +15,6 @@
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
-import {Table} from '@/app/components/common/antd/Table';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsDropdown from '@/app/components/common/os-dropdown';
@@ -27,6 +26,10 @@ import {DndContext, DragEndEvent, useDroppable} from '@dnd-kit/core';
 import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
 import 'react-phone-number-input/style.css';
 
+import {OsPhoneInputStyle} from '@/app/components/common/os-contact/styled-components';
+import FormUpload from '@/app/components/common/os-upload/FormUpload';
+import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
+import {formbuildernewObject} from '@/app/utils/base';
 import {
   Checkbox,
   DatePicker,
@@ -34,18 +37,13 @@ import {
   Form,
   Layout,
   MenuProps,
-  TimePicker,
+  Modal,
   Radio,
   Switch,
-  Input,
-  Select,
-  Modal,
+  TimePicker,
 } from 'antd';
-import {OsPhoneInputStyle} from '@/app/components/common/os-contact/styled-components';
-import {formbuildernewObject} from '@/app/utils/base';
 import React, {useState} from 'react';
-import FormUpload from '@/app/components/common/os-upload/FormUpload';
-import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
+import {RowStyledForForm} from '@/app/components/common/os-div-row-col/styled-component';
 import EditFiledDetails from './detailsFieldEdit';
 
 import FieldCard from './FieldCard';
@@ -69,7 +67,6 @@ const FormBuilder = () => {
   const [columnData, setColumnData] = useState<any>([]);
   const [selectedColumnIndex, setSelectedColumnIndex] = useState<number>(0);
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
-  // console.log('selectedColumnIndex', selectedColumnIndex);
   const addItemsToCart = (e: DragEndEvent) => {
     const newItem = e.active.data.current?.title?.props?.text;
     const temp = [...cartItems];
@@ -80,31 +77,10 @@ const FormBuilder = () => {
         section: `Section${cartItems?.length + 1}`,
         content: newItem === 'Add Section' ? [] : [addnewField],
       });
-      const tempVar: any = [...columnData];
-      if (newItem === 'Table') {
-        tempVar?.push({
-          tableKey: columnData?.length,
-          tableCol: [
-            {title: 'Column 1', dataIndex: 'address', key: '1'},
-            {title: 'Column 2', dataIndex: 'address', key: '2'},
-          ],
-        });
-      }
-      setColumnData(tempVar);
+
       setSectionIndexActive(cartItems?.length);
       setContentActiveIndex(cartItems?.length);
     } else {
-      const tempVar: any = [...columnData];
-      if (newItem === 'Table') {
-        tempVar?.push({
-          tableKey: columnData?.length,
-          tableCol: [
-            {title: 'Column 1', dataIndex: 'address', key: '1'},
-            {title: 'Column 2', dataIndex: 'address', key: '2'},
-          ],
-        });
-      }
-      setColumnData(tempVar);
       temp?.[sectionIndexActive]?.content?.push(addnewField);
       setContentActiveIndex(temp?.[sectionIndexActive]?.content?.length);
     }
@@ -185,30 +161,28 @@ const FormBuilder = () => {
         <Layout>
           <Content style={contentStyle}>
             <Row justify="space-between">
-              <Typography name="Heading 3/Medium">
-                Cisco- Cisco Hardware
-              </Typography>
-              <Space size={10} style={{marginTop: '-10px'}}>
+              <Space size={10} direction="horizontal">
+                <Typography name="Heading 3/Medium">
+                  Cisco- Cisco Hardware
+                </Typography>
+              </Space>
+              <Space size={10}>
                 <OsButton buttontype="PRIMARY" text="Save" />
                 <OsButton
                   buttontype="PRIMARY_ICON"
                   onClick={() => {
-                    console.log('43535345', 'ss');
                     setOpenPreviewModal(!openPreviewModal);
                   }}
                   text=""
                   icon={
                     <PlayCircleOutlined
                       onClick={() => {
-                        console.log('43535345', 'ss');
                         setOpenPreviewModal(!openPreviewModal);
                       }}
                     />
                   }
                 />
-                <Space>
-                  <OsDropdown menu={{items: dropDownItemss}} />
-                </Space>
+                <OsDropdown menu={{items: dropDownItemss}} />
               </Space>
             </Row>
             <Row>
@@ -221,7 +195,7 @@ const FormBuilder = () => {
                         onClick={() => {
                           setSectionIndexActive(Sectidx);
                         }}
-                        style={{marginTop: '20px'}}
+                        // style={{marginTop: '20px'}}
                         key={Sectidx}
                       >
                         <Typography name="Body 1/Medium" color="#2364AA">
@@ -239,22 +213,12 @@ const FormBuilder = () => {
                         >
                           {item?.content?.map(
                             (itemCon: any, ItemConindex: any) => {
-                              const newColumnData = columnData?.find(
-                                (itemss: any) => {
-                                  if (itemss?.tableKey === itemCon?.tableKey) {
-                                    return itemss;
-                                  }
-                                },
-                              );
                               if (itemCon?.name == 'Table') {
                                 return (
                                   <Space
                                     direction="vertical"
                                     style={{
                                       width: '100%',
-                                      // marginLeft:
-                                      //   ItemConindex % 2 === 0 ? '25px' : '',
-                                      // marginBottom: '20px',
                                     }}
                                     draggable
                                     // eslint-disable-next-line no-return-assign
@@ -1222,27 +1186,7 @@ const FormBuilder = () => {
                 ) : (
                   <>
                     {' '}
-                    <Row
-                      style={{
-                        width: '100%',
-                        height: '48px',
-                        borderRadius: '12px',
-                        padding: '12px',
-                        backgroundColor: '#ECF6FB',
-                        color: '#3DA5D9',
-                        border: `1px dashed ${token?.colorLink}`,
-                        marginTop: '10px',
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: '16px',
-                          height: '24px',
-                        }}
-                      >
-                        + Drop Filed
-                      </div>
-                    </Row>
+                    <RowStyledForForm>+ Drop Filed</RowStyledForForm>
                   </>
                 )}
               </div>
@@ -1282,7 +1226,6 @@ const FormBuilder = () => {
             onCancel={() => {
               setOpenPreviewModal(false);
             }}
-            style={{height: '100%', overflow: 'scroll'}}
           >
             <FormBuilderPreview cartItems={cartItems} />
           </Modal>
