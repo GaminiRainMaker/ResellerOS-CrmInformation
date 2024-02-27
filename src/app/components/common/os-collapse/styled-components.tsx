@@ -19,6 +19,9 @@ export const OsCollapseStyle = styled(Collapse)`
   .ant-collapse-content-box {
     padding: 0px ;
   }
+.ant-collapse-content-box{
+  padding: 0px !important;
+}
 `;
 export const OsCollapseStyleForAdmin = styled(Collapse)`
   &.ant-collapse > .ant-collapse-item > .ant-collapse-header {

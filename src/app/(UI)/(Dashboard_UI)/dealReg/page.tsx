@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable import/no-named-as-default */
 /* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -21,6 +22,7 @@ import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import {MenuProps, TabsProps} from 'antd';
+import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {getAllDealReg} from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -39,19 +41,13 @@ const DealReg: React.FC = () => {
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [showModalEdit, setShowModalEdit] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
-  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const {data: DealRegData, loading: dealLoading} = useAppSelector(
     (state) => state.dealReg,
   );
-
-  const [tableData, setTableData] = useState<any>();
-
-  const [billingFilterSeach, setBillingFilterSearch] = useState<any>();
   const [finalDealRegData, setFinalDealRegData] = useState<any>();
-  const [query, setQuery] = useState('');
 
   const rowSelection = {
     onChange: (selectedRowKeys: any) => {
@@ -200,14 +196,20 @@ const DealReg: React.FC = () => {
                   key: '1',
                   label: (
                     <>
-                      <Space
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'start',
-                        }}
-                      >
-                        <p>{itemDeal?.title}</p>
-                      </Space>
+                      <Row justify="space-between">
+                        <Col>
+                          <p>{itemDeal?.title}</p>
+                        </Col>
+                        <Col>
+                          <p
+                            onClick={() => {
+                              router?.push(`/dealRegDetail?id=${itemDeal?.opportunity_id}`);
+                            }}
+                          >
+                            Form Detail
+                          </p>
+                        </Col>
+                      </Row>
                     </>
                   ),
                   children: (
@@ -244,34 +246,16 @@ const DealReg: React.FC = () => {
     },
     {
       key: '2',
-      label: (
-        <Typography
-          onClick={() => setShowModalEdit((p) => !p)}
-          name="Body 3/Regular"
-        >
-          Edit Selected
-        </Typography>
-      ),
+      label: <Typography name="Body 3/Regular">Edit Selected</Typography>,
     },
     {
       key: '3',
-      label: (
-        <Typography
-          onClick={() => setShowModalEdit((p) => !p)}
-          name="Body 3/Regular"
-        >
-          Download Selected
-        </Typography>
-      ),
+      label: <Typography name="Body 3/Regular">Download Selected</Typography>,
     },
     {
       key: '4',
       label: (
-        <Typography
-          name="Body 3/Regular"
-          color={token?.colorError}
-          onClick={() => setShowModalDelete(true)}
-        >
+        <Typography name="Body 3/Regular" color={token?.colorError}>
           Delete Selected{' '}
         </Typography>
       ),
@@ -319,32 +303,13 @@ const DealReg: React.FC = () => {
                   <Typography name="Body 4/Medium">
                     Registration Form
                   </Typography>
-                  <OsInput
-                    style={{width: '180px'}}
-                    placeholder="Search Here"
-                    // options={bundleOptions}
-                    onChange={(e) => {
-                      setBillingFilterSearch({
-                        ...billingFilterSeach,
-                        name: e.target.value,
-                      });
-                      setQuery(e.target.value);
-                    }}
-                  />
+                  <OsInput style={{width: '180px'}} placeholder="Search Here" />
                 </Space>
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Customer Account</Typography>
                   <CommonSelect
                     style={{width: '180px'}}
                     placeholder="Search Here"
-                    options={tableData}
-                    onChange={(e) => {
-                      setBillingFilterSearch({
-                        ...billingFilterSeach,
-                        customer_id: e,
-                      });
-                      // setSelectedValue(e);
-                    }}
                   />
                 </Space>
                 <div
@@ -354,12 +319,7 @@ const DealReg: React.FC = () => {
                     marginTop: '15px',
                   }}
                 >
-                  <Typography
-                    cursor="pointer"
-                    name="Button 1"
-                    color="#C6CDD5"
-                    //   onClick={searchBillingContacts}
-                  >
+                  <Typography cursor="pointer" name="Button 1" color="#C6CDD5">
                     Apply
                   </Typography>
                 </div>

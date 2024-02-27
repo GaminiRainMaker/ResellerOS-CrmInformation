@@ -4,6 +4,7 @@ import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
   getAllDealReg,
   getDealRegById,
+  getDealRegByOpportunityId,
   insertDealReg,
   updateDealRegById,
 } from '../actions/dealReg';
@@ -88,6 +89,24 @@ const dealRegSlice = createSlice({
       )
       .addCase(
         updateDealRegById.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getDealRegByOpportunityId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getDealRegByOpportunityId.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getDealRegByOpportunityId.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

@@ -1,7 +1,7 @@
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
@@ -9,20 +9,20 @@ import DealRegCustomTabs from '@/app/components/common/os-custom-tab/DealRegCust
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import Typography from '@/app/components/common/typography';
-import {ArrowDownTrayIcon, PlusIcon} from '@heroicons/react/24/outline';
-import {MenuProps} from 'antd';
+import { ArrowDownTrayIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { MenuProps } from 'antd';
 import Form from 'antd/es/form';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
-  getAllDealReg,
-  updateDealRegById,
+  getDealRegByOpportunityId,
+  updateDealRegById
 } from '../../../../../redux/actions/dealReg';
 import {
   getDealRegAddressById,
   updateDealRegAddressById,
 } from '../../../../../redux/actions/dealRegAddress';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
 
 const DealRegDetail = () => {
@@ -36,10 +36,12 @@ const DealRegDetail = () => {
     dealRegUpdateData,
   } = useAppSelector((state) => state.dealReg);
   const [open, setOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const getOpportunityId = searchParams.get('id');
   const [selectedUserId, setSelectedUserId] = useState<any>();
 
   useEffect(() => {
-    dispatch(getAllDealReg());
+    dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
   }, []);
 
   const OsBreadCrumbItems = [
@@ -61,15 +63,8 @@ const DealRegDetail = () => {
     {
       key: '2',
       title: (
-        <Typography
-          name="Heading 3/Medium"
-          cursor="pointer"
-          color={token?.colorPrimaryText}
-          onClick={() => {
-            // router?.push(`/generateQuote?id=${getQuoteID}`);
-          }}
-        >
-          Cisco- Impress Technology- Precision
+        <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
+          {DealRegData?.[0]?.Opportunity?.title}
         </Typography>
       ),
     },
@@ -99,7 +94,8 @@ const DealRegDetail = () => {
           updateDealRegAddressById({...dealRegNewData, dealRegId: dealReg?.id}),
         ),
       ]);
-      dispatch(getAllDealReg());
+      // dispatch(getAllDealReg());
+      dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
       dispatch(getDealRegAddressById(dealReg?.id));
       setOpen(false);
     } catch (error) {
@@ -120,7 +116,8 @@ const DealRegDetail = () => {
               buttontype="SECONDARY"
               clickHandler={() => {
                 dispatch(updateDealRegById(dealRegUpdateData)).then(() => {
-                  dispatch(getAllDealReg());
+                  // dispatch(getAllDealReg());
+                  dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
                 });
               }}
             />

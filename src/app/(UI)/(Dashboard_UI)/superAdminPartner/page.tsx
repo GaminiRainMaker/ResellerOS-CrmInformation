@@ -26,6 +26,7 @@ import {
 } from '@heroicons/react/24/outline';
 import {Form, MenuProps} from 'antd';
 import {useEffect, useState} from 'react';
+import OsCollapse from '@/app/components/common/os-collapse';
 import {
   deletePartner,
   getAllPartner,
@@ -37,6 +38,14 @@ import {
 } from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import PartnerAnalytics from '../partners/partnerAnalytics';
+
+interface SeparatedData {
+  [partnerId: number]: {
+    partner_id: number;
+    data: any[];
+    title: string;
+  };
+}
 
 const SuperAdminPartner: React.FC = () => {
   const [token] = useThemeToken();
@@ -62,6 +71,7 @@ const SuperAdminPartner: React.FC = () => {
   const {data: PartnerData, loading} = useAppSelector((state) => state.partner);
   const {data: PartnerProgramData, loading: partnerProgramLoading} =
     useAppSelector((state) => state.partnerProgram);
+  const [finalPartnerProgramData, setFinalPartnerProgramData] = useState<any>();
 
   useEffect(() => {
     dispatch(getAllPartner());
@@ -105,6 +115,24 @@ const SuperAdminPartner: React.FC = () => {
       }
     },
   };
+
+  useEffect(() => {
+    const separatedData: SeparatedData = {};
+    PartnerProgramData?.forEach((item: any) => {
+      const partnerId = item.partner;
+      const partnerName = item.Partner?.partner;
+      if (!separatedData[partnerId]) {
+        separatedData[partnerId] = {
+          partner_id: partnerId,
+          title: partnerName,
+          data: [],
+        };
+      }
+      separatedData[partnerId]?.data.push(item);
+    });
+    setFinalPartnerProgramData(Object.values(separatedData));
+  }, [PartnerProgramData]);
+
   const locale = {
     emptyText: (
       <EmptyContainer
@@ -124,7 +152,6 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'partner',
       key: 'partner',
-      width: 295,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -138,7 +165,6 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'createdAt',
       key: 'createdAt',
-      width: 295,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -151,7 +177,6 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'industry',
       key: 'industry',
-      width: 295,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -164,7 +189,6 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'email',
       key: 'email',
-      width: 295,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -177,7 +201,6 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'website',
       key: 'website',
-      width: 295,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -190,7 +213,6 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'is_active',
       key: 'is_active',
-      width: 295,
       render: (text: string, record: any) => (
         <Switch
           size="default"
@@ -205,7 +227,6 @@ const SuperAdminPartner: React.FC = () => {
       title: ' ',
       dataIndex: 'action',
       key: 'action',
-      width: 295,
       render: (text: string, record: any) => (
         <Space size={18}>
           <PencilSquareIcon
@@ -218,7 +239,6 @@ const SuperAdminPartner: React.FC = () => {
               setFormPartnerData(record);
             }}
           />
-
           <TrashIcon
             height={24}
             width={24}
@@ -264,12 +284,12 @@ const SuperAdminPartner: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Description
+          Program Type
         </Typography>
       ),
-      dataIndex: 'description',
-      key: 'typedescription',
-      width: 295,
+      dataIndex: 'program_type',
+      key: 'program_type',
+      width: 150,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -277,12 +297,12 @@ const SuperAdminPartner: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Email
+          Partner Approval ID
         </Typography>
       ),
-      dataIndex: 'email',
-      key: 'email',
-      width: 295,
+      dataIndex: 'program_approval_id',
+      key: 'program_approval_id',
+      width: 180,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -290,7 +310,7 @@ const SuperAdminPartner: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Website
+          Site Link
         </Typography>
       ),
       dataIndex: 'website',
@@ -301,10 +321,24 @@ const SuperAdminPartner: React.FC = () => {
       ),
     },
     {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Template
+        </Typography>
+      ),
+      dataIndex: 'template',
+      key: 'template',
+      width: 295,
+      render: (text: string) => (
+        <Typography name="Body 4/Medium" hoverOnText color={token?.colorLink}>
+          Create Template
+        </Typography>
+      ),
+    },
+    {
       title: ' ',
       dataIndex: 'action',
       key: 'action',
-      width: 295,
       render: (text: string, record: any) => (
         <Space size={18}>
           <PencilSquareIcon
@@ -360,14 +394,30 @@ const SuperAdminPartner: React.FC = () => {
       ),
       key: '2',
       children: (
-        <OsTable
-          columns={PartnerProgramColumns}
-          dataSource={PartnerProgramData}
-          rowSelection={rowSelection}
-          scroll
-          locale={locale}
-          loading={partnerProgramLoading}
-        />
+        <>
+          {finalPartnerProgramData?.map((itemDeal: any) => (
+            <OsCollapse
+              // defaultActiveKey={['1']}
+              items={[
+                {
+                  key: '1',
+                  label: <p>{itemDeal?.title}</p>,
+
+                  children: (
+                    <OsTable
+                      columns={PartnerProgramColumns}
+                      dataSource={itemDeal?.data}
+                      rowSelection={rowSelection}
+                      scroll
+                      loading={partnerProgramLoading}
+                      locale={locale}
+                    />
+                  ),
+                },
+              ]}
+            />
+          ))}
+        </>
       ),
     },
   ];
