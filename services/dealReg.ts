@@ -12,4 +12,8 @@ export const DEALREG_API = {
     get(`${API.DEALREG.INDEX}/${id}`) as Promise<AxiosResponse<any>>,
   patch: (data: any) =>
     patch(API.DEALREG.INDEX, data) as Promise<AxiosResponse<any>>,
+  getDealRegByOpportunityId: (id: number) =>
+    get(`${API.DEALREG.GetDealRegByOpportunityId}/${id}`) as Promise<
+      AxiosResponse<any>
+    >,
 };

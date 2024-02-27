@@ -112,6 +112,7 @@ export const API = {
   DEALREG: {
     INDEX: '/dealReg',
     QUERY: '/dealReg/query',
+    GetDealRegByOpportunityId: '/dealReg/getDealRegByOpportunityId',
   },
   DEALREGADDRESS: {
     INDEX: '/dealRegAddress',

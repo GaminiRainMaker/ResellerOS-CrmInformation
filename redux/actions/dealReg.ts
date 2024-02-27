@@ -49,3 +49,15 @@ export const updateDealRegById = createAsyncThunk(
     }
   },
 );
+
+export const getDealRegByOpportunityId = createAsyncThunk(
+  'dealReg/getDealRegByOpportunityId',
+  async (id: number, thunkApi) => {
+    try {
+      const res = await DEALREG_API.getDealRegByOpportunityId(id);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
