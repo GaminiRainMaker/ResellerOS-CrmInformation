@@ -16,12 +16,22 @@ const OsStatusWrapper: FC<OsStatusWrapperProps> = ({value}) => {
       textColor: `${token?.colorInfo}`,
       border: `${token?.colorInfo}`,
     },
+    'In Review': {
+      color: `${token?.colorInfoBgHover}`,
+      textColor: `${token?.colorInfo}`,
+      border: `${token?.colorInfo}`,
+    },
     'In Progress': {
       color: `${token?.colorWarningBg}`,
       textColor: `${token?.colorWarning}`,
       border: `${token?.colorWarning}`,
     },
     Completed: {
+      color: `${token?.colorSuccessBg}`,
+      textColor: `${token?.colorSuccess}`,
+      border: `${token?.colorSuccess}`,
+    },
+    Approved: {
       color: `${token?.colorSuccessBg}`,
       textColor: `${token?.colorSuccess}`,
       border: `${token?.colorSuccess}`,
@@ -36,6 +46,11 @@ const OsStatusWrapper: FC<OsStatusWrapperProps> = ({value}) => {
       textColor: `${token?.colorError}`,
       border: `${token?.colorError}`,
     },
+    Rejected: {
+      color: `${token?.colorErrorBg}`,
+      textColor: `${token?.colorError}`,
+      border: `${token?.colorError}`,
+    },
     'Invite Sent': {
       color: `${token?.colorWarningBg}`,
       textColor: `${token?.colorWarning}`,
@@ -45,6 +60,11 @@ const OsStatusWrapper: FC<OsStatusWrapperProps> = ({value}) => {
       color: `${token?.colorSuccessBg}`,
       textColor: `${token?.colorSuccess}`,
       border: `${token?.colorSuccess}`,
+    },
+    'Needs Review': {
+      color: `${token?.colorWarningBg}`,
+      textColor: `${token?.colorWarning}`,
+      border: `${token?.colorWarning}`,
     },
   };
   const finalValue: StatusProp = Status[value as keyof OsStatusType];

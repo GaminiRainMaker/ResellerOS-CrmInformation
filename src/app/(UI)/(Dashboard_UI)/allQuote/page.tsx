@@ -1,3 +1,6 @@
+/* eslint-disable arrow-body-style */
+/* eslint-disable no-else-return */
+/* eslint-disable consistent-return */
 /* eslint-disable no-debugger */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unstable-nested-components */
@@ -128,18 +131,63 @@ const AllQuote: React.FC = () => {
       const quoteItems =
         activeTab === '3'
           ? quoteData?.filter((item: any) => item?.is_drafted)
-          : activeTab === '4'
-            ? quoteData?.filter((item: any) => item?.is_completed)
-            : activeTab == '1'
-              ? quoteData
-              : quoteData?.filter(
-                  (item: any) => !item?.is_completed && !item?.is_drafted,
-                );
+          : activeTab === '5'
+            ? quoteData?.filter(
+                (item: any) => item?.approver_id === userInformation?.id,
+              )
+            : activeTab === '4'
+              ? quoteData?.filter(
+                  (item: any) =>
+                    item.is_completed &&
+                    item?.approver_id !== userInformation?.id &&
+                    !item?.approved_request &&
+                    !item?.rejected_request,
+                )
+              : activeTab == '1'
+                ? quoteData
+                : activeTab === '6'
+                  ? quoteData?.filter((item: any) => item?.approved_request)
+                  : activeTab === '7'
+                    ? quoteData?.filter((item: any) => item?.rejected_request)
+                    : quoteData?.filter(
+                        (item: any) => !item?.is_completed && !item?.is_drafted,
+                      );
       setActiveQuotes(quoteItems);
     } else {
       setActiveQuotes([]);
     }
   }, [activeTab, quoteData]);
+
+  const statusWrapper = (item: any) => {
+    const getStatus = () => {
+      // if (!item.is_completed && !item.is_drafted) {
+      //   return 'Drafts';
+      // }
+      // if (item.is_drafted) {
+      //   return 'In Progress';
+      // }
+      // if (item?.approver_id === userInformation?.id) {
+      //   return 'In Review';
+      // }
+      // if (item?.rejected_request) {
+      //   return 'Rejected';
+      // }
+      // if (item?.approved_request) {
+      //   return 'Approved';
+      // }
+      // if (
+      //   item.is_completed &&
+      //   item?.approver_id !== userInformation?.id &&
+      //   !item?.approved_request &&
+      //   !item?.rejected_request
+      // ) {
+      //   return 'Needs Review';
+      // }
+      return '--';
+    };
+
+    return <OsStatusWrapper value={getStatus()} />;
+  };
 
   const rowSelection = {
     onChange: (selectedRowKeys: any) => {
@@ -471,12 +519,7 @@ const AllQuote: React.FC = () => {
       key: 'status',
       width: 187,
       render: (text: string, record: any) => {
-        const statusValue = record.is_completed
-          ? 'Completed'
-          : record?.is_drafted
-            ? 'In Progress'
-            : 'Drafts';
-        return <OsStatusWrapper value={statusValue} />;
+        return statusWrapper(record);
       },
     },
     {
