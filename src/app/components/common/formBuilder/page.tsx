@@ -38,6 +38,8 @@ import {formbuildernewObject} from '@/app/utils/base';
 import {Checkbox, MenuProps, Radio, Switch, TimePicker} from 'antd';
 import React, {useState} from 'react';
 import ItemName from './ItemName';
+import {updatePartnerById} from '../../../../../redux/actions/partner';
+import {useAppDispatch} from '../../../../../redux/hook';
 
 const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
   cartItems,
@@ -54,7 +56,7 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
   previewFile,
 }) => {
   const dropDownItemss: MenuProps['items'] = [];
-
+  const dispatch = useAppDispatch();
   const [radioValue, setRadioValue] = useState<any>();
   //   const [previewFile, setPreviewFile] = useState<boolean>(true);
   const [token] = useThemeToken();
@@ -116,7 +118,13 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
   });
 
   const addFormData = async () => {
-    console.log('4354343432', JSON?.stringify(cartItems), cartItems);
+    // updatePartnerForm
+    const objNew = {
+      form_data: JSON?.stringify(cartItems),
+      id: '',
+    };
+    dispatch(updatePartnerById(objNew));
+    console.log('4354343432', objNew);
   };
 
   return (
