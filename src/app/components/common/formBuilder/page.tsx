@@ -126,6 +126,7 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
       form_data: JSON?.stringify(cartItems),
       id: Number(getPartnerProgramID),
     };
+
     dispatch(updatePartnerProgramById(objNew));
     router.push(`/superAdminPartner`);
   };
