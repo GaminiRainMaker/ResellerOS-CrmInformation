@@ -116,6 +116,10 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
     id: 'cart-droppable',
   });
 
+  const addFormData = async () => {
+    console.log('4354343432', JSON?.stringify(cartItems), cartItems);
+  };
+
   return (
     <>
       {!previewFile && (
@@ -126,7 +130,11 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
             </Typography>
           </Space>
           <Space size={10}>
-            <OsButton buttontype="PRIMARY" text="Save" />
+            <OsButton
+              buttontype="PRIMARY"
+              text="Save"
+              clickHandler={addFormData}
+            />
             <OsButton
               buttontype="PRIMARY_ICON"
               onClick={() => {
