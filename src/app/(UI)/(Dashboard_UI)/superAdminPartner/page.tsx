@@ -40,7 +40,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import PartnerAnalytics from '../partners/partnerAnalytics';
 
-interface SeparatedData {
+export interface SeparatedData {
   [partnerId: number]: {
     partner_id: number;
     data: any[];
@@ -397,28 +397,37 @@ const SuperAdminPartner: React.FC = () => {
       key: '2',
       children: (
         <>
-          {finalPartnerProgramData?.map((itemDeal: any) => (
-            <OsCollapse
-              // defaultActiveKey={['1']}
-              items={[
-                {
-                  key: '1',
-                  label: <p>{itemDeal?.title}</p>,
-
-                  children: (
-                    <OsTable
-                      columns={PartnerProgramColumns}
-                      dataSource={itemDeal?.data}
-                      rowSelection={rowSelection}
-                      scroll
-                      loading={partnerProgramLoading}
-                      locale={locale}
-                    />
-                  ),
-                },
-              ]}
+          {finalPartnerProgramData && finalPartnerProgramData?.length > 0 ? (
+            finalPartnerProgramData?.map((itemDeal: any) => (
+              <OsCollapse
+                items={[
+                  {
+                    key: '1',
+                    label: <p>{itemDeal?.title}</p>,
+                    children: (
+                      <OsTable
+                        columns={PartnerProgramColumns}
+                        dataSource={itemDeal?.data}
+                        rowSelection={rowSelection}
+                        scroll
+                        loading={partnerProgramLoading}
+                        locale={locale}
+                      />
+                    ),
+                  },
+                ]}
+              />
+            ))
+          ) : (
+            <OsTable
+              columns={PartnerProgramColumns}
+              dataSource={[]}
+              rowSelection={rowSelection}
+              scroll
+              loading={false}
+              locale={locale}
             />
-          ))}
+          )}
         </>
       ),
     },

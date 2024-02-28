@@ -7,19 +7,19 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {MailOutlined, PlayCircleOutlined} from '@ant-design/icons';
-import {useDroppable} from '@dnd-kit/core';
+import { MailOutlined, PlayCircleOutlined } from '@ant-design/icons';
+import { useDroppable } from '@dnd-kit/core';
 import 'react-phone-number-input/style.css';
 
-import {FormBuilderMainInterFace} from '@/app/(UI)/(Dashboard_UI)/formBuilder/formBuilder.interface';
+import { FormBuilderMainInterFace } from '@/app/(UI)/(Dashboard_UI)/formBuilder/formBuilder.interface';
 import ContactInput from '@/app/components/common/os-contact';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import {
@@ -34,12 +34,12 @@ import {
 } from '@/app/components/common/os-div-row-col/styled-component';
 import FormUpload from '@/app/components/common/os-upload/FormUpload';
 import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
-import {formbuildernewObject} from '@/app/utils/base';
-import {Checkbox, MenuProps, Radio, Switch, TimePicker} from 'antd';
-import {useSearchParams} from 'next/navigation';
-import React, {useState} from 'react';
-import {updatePartnerProgramById} from '../../../../../redux/actions/partnerProgram';
-import {useAppDispatch} from '../../../../../redux/hook';
+import { formbuildernewObject } from '@/app/utils/base';
+import { Checkbox, MenuProps, Radio, Switch, TimePicker } from 'antd';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useState } from 'react';
+import { updatePartnerProgramById } from '../../../../../redux/actions/partnerProgram';
+import { useAppDispatch } from '../../../../../redux/hook';
 import ItemName from './ItemName';
 
 const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
@@ -58,6 +58,7 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
 }) => {
   const dropDownItemss: MenuProps['items'] = [];
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const getPartnerProgramID = searchParams.get('id');
   const [radioValue, setRadioValue] = useState<any>();
@@ -126,6 +127,7 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
       id: Number(getPartnerProgramID),
     };
     dispatch(updatePartnerProgramById(objNew));
+    router.push(`/superAdminPartner`);
   };
 
   return (

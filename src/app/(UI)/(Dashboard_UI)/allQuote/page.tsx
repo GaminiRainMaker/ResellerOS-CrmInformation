@@ -604,10 +604,46 @@ const AllQuote: React.FC = () => {
           cursor="pointer"
           color={token?.colorTextBase}
         >
-          Completed
+          Needs Review
         </Typography>
       ),
       key: '4',
+    },
+    {
+      label: (
+        <Typography
+          name="Body 4/Medium"
+          cursor="pointer"
+          color={token?.colorTextBase}
+        >
+          In Review
+        </Typography>
+      ),
+      key: '5',
+    },
+    {
+      label: (
+        <Typography
+          name="Body 4/Medium"
+          cursor="pointer"
+          color={token?.colorTextBase}
+        >
+          Approved
+        </Typography>
+      ),
+      key: '6',
+    },
+    {
+      label: (
+        <Typography
+          name="Body 4/Medium"
+          cursor="pointer"
+          color={token?.colorTextBase}
+        >
+          Rejected
+        </Typography>
+      ),
+      key: '7',
     },
   ];
 

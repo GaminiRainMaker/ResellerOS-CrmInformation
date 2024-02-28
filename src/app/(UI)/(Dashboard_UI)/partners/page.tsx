@@ -8,12 +8,12 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import RequestPartner from '@/app/components/common/os-add-partner/RequestPartner';
 import OsButton from '@/app/components/common/os-button';
+import OsCollapse from '@/app/components/common/os-collapse';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
-import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
@@ -21,10 +21,12 @@ import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form, MenuProps} from 'antd';
 import {useEffect, useState} from 'react';
 import {
-  deletePartner,
+  // deletePartner,
   getAllPartner,
 } from '../../../../../redux/actions/partner';
+import {getAllPartnerProgram} from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {SeparatedData} from '../superAdminPartner/page';
 import PartnerAnalytics from './partnerAnalytics';
 
 const Partners: React.FC = () => {
@@ -35,19 +37,38 @@ const Partners: React.FC = () => {
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const {data: PartnerData, loading} = useAppSelector((state) => state.partner);
-  const {loginUserInformation, userInformation} = useAppSelector(
-    (state) => state.user,
+  const {data: PartnerProgramData, loading: Programloading} = useAppSelector(
+    (state) => state.partnerProgram,
   );
+  const [finalPartnerProgramData, setFinalPartnerProgramData] = useState<any>();
 
   useEffect(() => {
     dispatch(getAllPartner());
+    dispatch(getAllPartnerProgram());
   }, []);
+
+  useEffect(() => {
+    const separatedData: SeparatedData = {};
+    PartnerProgramData?.forEach((item: any) => {
+      const partnerId = item.partner;
+      const partnerName = item.Partner?.partner;
+      if (!separatedData[partnerId]) {
+        separatedData[partnerId] = {
+          partner_id: partnerId,
+          title: partnerName,
+          data: [],
+        };
+      }
+      separatedData[partnerId]?.data.push(item);
+    });
+    setFinalPartnerProgramData(Object.values(separatedData));
+  }, [PartnerProgramData]);
 
   const deleteSelectedIds = async () => {
     const data = {id: deleteIds};
-    await dispatch(deletePartner(data)).then(() => {
-      dispatch(getAllPartner());
-    });
+    // await dispatch(deletePartner(data)).then(() => {
+    //   dispatch(getAllPartner());
+    // });
     setDeleteIds([]);
     setShowModalDelete(false);
   };
@@ -77,7 +98,6 @@ const Partners: React.FC = () => {
       ),
       dataIndex: 'partner',
       key: 'partner',
-      width: 295,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -85,12 +105,64 @@ const Partners: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Partner Program
+          Created Date
+        </Typography>
+      ),
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Industry
+        </Typography>
+      ),
+      dataIndex: 'industry',
+      key: 'industry',
+
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Email
+        </Typography>
+      ),
+      dataIndex: 'email',
+      key: 'email',
+
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Website
+        </Typography>
+      ),
+      dataIndex: 'website',
+      key: 'website',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+  ];
+
+  const PartnerProgramColumns = [
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Partner Programs
         </Typography>
       ),
       dataIndex: 'partner_program',
       key: 'partner_program',
-      width: 295,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -103,7 +175,6 @@ const Partners: React.FC = () => {
       ),
       dataIndex: 'createdAt',
       key: 'createdAt',
-      width: 295,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -111,26 +182,27 @@ const Partners: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Partner Type
+          Program Type
         </Typography>
       ),
       dataIndex: 'type',
       key: 'type',
-      width: 295,
-      render: (text: string, record: any) => (
+      render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Status
+          Site Link
         </Typography>
       ),
-      dataIndex: 'status',
-      key: 'status',
-      width: 295,
-      render: (text: string, record: any) => <OsStatusWrapper value="Active" />,
+      dataIndex: 'website',
+      key: 'website',
+
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
     },
     {
       title: (
@@ -138,11 +210,10 @@ const Partners: React.FC = () => {
           Template
         </Typography>
       ),
-      dataIndex: 'template',
-      key: 'template',
-      width: 295,
-      render: () => (
-        <Typography name="Body 4/Bold" color={token?.colorLink}>
+      dataIndex: 'form_data',
+      key: 'form_data',
+      render: (text: string) => (
+        <Typography name="Body 4/Medium" hoverOnText color={token?.colorLink}>
           View
         </Typography>
       ),
@@ -156,11 +227,11 @@ const Partners: React.FC = () => {
       children: (
         <OsTable
           columns={PartnerColumns}
-          dataSource={[]}
+          dataSource={PartnerData}
           rowSelection={rowSelection}
           scroll
           locale={locale}
-          loading={false}
+          loading={loading}
         />
       ),
     },
@@ -168,14 +239,39 @@ const Partners: React.FC = () => {
       label: <Typography name="Body 4/Regular">Partner Programs</Typography>,
       key: '2',
       children: (
-        <OsTable
-          columns={PartnerColumns}
-          dataSource={[]}
-          rowSelection={rowSelection}
-          scroll
-          locale={locale}
-          loading={false}
-        />
+        <>
+          {finalPartnerProgramData && finalPartnerProgramData?.length > 0 ? (
+            finalPartnerProgramData?.map((itemDeal: any) => (
+              <OsCollapse
+                items={[
+                  {
+                    key: '1',
+                    label: <p>{itemDeal?.title}</p>,
+                    children: (
+                      <OsTable
+                        columns={PartnerProgramColumns}
+                        dataSource={itemDeal?.data}
+                        rowSelection={rowSelection}
+                        scroll
+                        loading={Programloading}
+                        locale={locale}
+                      />
+                    ),
+                  },
+                ]}
+              />
+            ))
+          ) : (
+            <OsTable
+              columns={PartnerProgramColumns}
+              dataSource={[]}
+              rowSelection={rowSelection}
+              scroll
+              loading={false}
+              locale={locale}
+            />
+          )}
+        </>
       ),
     },
     {
