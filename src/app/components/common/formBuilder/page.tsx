@@ -123,8 +123,7 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
       form_data: JSON?.stringify(cartItems),
       id: '',
     };
-    dispatch(updatePartnerById(objNew));
-    console.log('4354343432', objNew);
+    dispatch(updatePartnerById(objNew));\
   };
 
   return (
