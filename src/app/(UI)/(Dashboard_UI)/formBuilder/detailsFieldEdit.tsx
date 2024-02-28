@@ -53,7 +53,9 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
       {NameofTheCurrentFiled === 'Contact' &&
         renderComponent(ContactEditFields)}
       {NameofTheCurrentFiled === 'Time' && renderComponent(TimeEditFileds)}
-      {!NameofTheCurrentFiled && renderComponent(EditCommonRestFields)}
+      {(NameofTheCurrentFiled === 'Text' ||
+        NameofTheCurrentFiled === 'Email') &&
+        renderComponent(EditCommonRestFields)}
     </div>
   );
 };
