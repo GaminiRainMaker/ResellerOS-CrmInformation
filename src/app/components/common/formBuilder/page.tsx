@@ -124,6 +124,7 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
       id: '',
     };
     dispatch(updatePartnerById(objNew));
+    
   };
 
   return (
