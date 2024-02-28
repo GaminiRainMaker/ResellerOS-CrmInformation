@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable no-nested-ternary */
@@ -13,8 +14,6 @@ import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 
 import AddCustomer from '@/app/components/common/os-add-customer';
-import {partnerOptions} from '@/app/utils/CONSTANTS';
-import {getProgramOptions} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -22,6 +21,7 @@ import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {insertDealReg} from '../../../../../redux/actions/dealReg';
 import {insertDealRegAddress} from '../../../../../redux/actions/dealRegAddress';
 import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
+import {getAllPartner} from '../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
 
@@ -31,15 +31,37 @@ const AddRegistrationForm = () => {
   const router = useRouter();
   const {data: dataAddress} = useAppSelector((state) => state.customer);
   const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
+  const {data: partnerData} = useAppSelector((state) => state.partner);
   const {loading} = useAppSelector((state) => state.dealReg);
   const {userInformation} = useAppSelector((state) => state.user);
-
   const [toggle, setToggle] = useState(false);
   const [customerValue, setCustomerValue] = useState<number>(0);
   const [billingOptionsData, setBillingOptionData] = useState<any>();
   const [showCustomerModal, setShowCustomerModal] = useState<boolean>(false);
   const [updatedDealRegData, setUpdatedDealRegData] = useState<any>();
   const [opportunityFilterOption, setOpportunityFilterOption] = useState<any>();
+
+  useEffect(() => {
+    dispatch(getAllPartner());
+  }, []);
+
+  const partnerOptions = partnerData.map((partner: any) => ({
+    value: partner.id,
+    label: partner.partner,
+  }));
+
+  const findPartnerProgramsById = (chosenId: number) => {
+    const selectedData = partnerData.find((item: any) => item.id === chosenId);
+    if (selectedData) {
+      const partnerPrograms = selectedData.PartnerPrograms.map(
+        (program: any) => ({
+          label: program.partner_program,
+          key: program.id,
+        }),
+      );
+      return partnerPrograms;
+    }
+  };
 
   const [dealRegFormData, setDealRegFormData] = useState([
     {
@@ -94,7 +116,7 @@ const AddRegistrationForm = () => {
                   </Typography>
                   <CommonSelect
                     placeholder="Select"
-                    options={dealRegFormDataItem?.partnerOptions}
+                    options={partnerOptions}
                     style={{width: '100%'}}
                     onChange={(value) => {
                       setDealRegFormData((prev: any) =>
@@ -103,7 +125,8 @@ const AddRegistrationForm = () => {
                             return {
                               ...prevItem,
                               partner_id: value,
-                              partnerProgramOptions: getProgramOptions(value),
+                              partnerProgramOptions:
+                                findPartnerProgramsById(value),
                             };
                           }
                           return prevItem;

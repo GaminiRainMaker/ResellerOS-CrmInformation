@@ -216,7 +216,6 @@ const Partners: React.FC = () => {
       ),
     },
   ];
-  console.log('loginUserInformation', loginUserInformation);
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>

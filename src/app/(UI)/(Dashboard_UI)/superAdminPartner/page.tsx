@@ -10,6 +10,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import AddPartner from '@/app/components/common/os-add-partner';
 import AddPartnerProgram from '@/app/components/common/os-add-partner-program';
 import OsButton from '@/app/components/common/os-button';
+import OsCollapse from '@/app/components/common/os-collapse';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import EmptyContainer from '@/app/components/common/os-empty-container';
@@ -25,8 +26,8 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import {Form, MenuProps} from 'antd';
+import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import OsCollapse from '@/app/components/common/os-collapse';
 import {
   deletePartner,
   getAllPartner,
@@ -51,9 +52,9 @@ const SuperAdminPartner: React.FC = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [formPartnerData, setFormPartnerData] = useState<any>();
   const [formPartnerProgramData, setFormPartnerProgramData] = useState<any>();
-
   const [showAddPartnerModal, setShowAddPartnerModal] =
     useState<boolean>(false);
   const [showAddProgramModal, setShowAddProgramModal] =
@@ -263,7 +264,6 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'partner_program',
       key: 'partner_program',
-      width: 295,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -276,7 +276,6 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'createdAt',
       key: 'createdAt',
-      width: 295,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -289,7 +288,6 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'program_type',
       key: 'program_type',
-      width: 150,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -302,7 +300,6 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'program_approval_id',
       key: 'program_approval_id',
-      width: 180,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -315,7 +312,6 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'website',
       key: 'website',
-      width: 295,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -328,10 +324,16 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'template',
       key: 'template',
-      width: 295,
-      render: (text: string) => (
-        <Typography name="Body 4/Medium" hoverOnText color={token?.colorLink}>
-          Create Template
+      render: (text: string, record: any) => (
+        <Typography
+          name="Body 4/Medium"
+          hoverOnText
+          color={token?.colorLink}
+          onClick={() => {
+            router?.push(`/formBuilder?id=${record?.id}`);
+          }}
+        >
+          {record?.form_data ? 'View' : 'Create Template'}
         </Typography>
       ),
     },
