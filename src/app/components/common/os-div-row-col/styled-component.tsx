@@ -29,6 +29,7 @@ export const SectionColStyled = styled(Col)`
   text-align: center;
   display: flex;
   align-items: center;
+  cursor: pointer;
 `;
 export const SectionColStyledOPtions = styled(Col)`
   width: 96px;
