@@ -36,10 +36,11 @@ import FormUpload from '@/app/components/common/os-upload/FormUpload';
 import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
 import {formbuildernewObject} from '@/app/utils/base';
 import {Checkbox, MenuProps, Radio, Switch, TimePicker} from 'antd';
+import {useSearchParams} from 'next/navigation';
 import React, {useState} from 'react';
-import ItemName from './ItemName';
-import {updatePartnerById} from '../../../../../redux/actions/partner';
+import {updatePartnerProgramById} from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch} from '../../../../../redux/hook';
+import ItemName from './ItemName';
 
 const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
   cartItems,
@@ -57,6 +58,8 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
 }) => {
   const dropDownItemss: MenuProps['items'] = [];
   const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
+  const getPartnerProgramID = searchParams.get('id');
   const [radioValue, setRadioValue] = useState<any>();
   //   const [previewFile, setPreviewFile] = useState<boolean>(true);
   const [token] = useThemeToken();
@@ -118,12 +121,11 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
   });
 
   const addFormData = async () => {
-    // updatePartnerForm
     const objNew = {
       form_data: JSON?.stringify(cartItems),
-      id: '',
+      id: Number(getPartnerProgramID),
     };
-    dispatch(updatePartnerById(objNew));
+    dispatch(updatePartnerProgramById(objNew));
   };
 
   return (

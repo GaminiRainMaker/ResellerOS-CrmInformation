@@ -84,18 +84,6 @@ export const calculateDaysDifference = (startDate: string, endDate: string) => {
   return endMoment.diff(startMoment, 'days');
 };
 
-export const getProgramOptions = (value: string) => {
-  if (value === 'CISCO') {
-    return CiscoPartnerProgramOptions;
-  }
-  if (value === 'DELL') {
-    return DellPartnerProgramOptions;
-  }
-  if (value === 'AMAZON') {
-    return AmazonPartnerProgramOptions;
-  }
-};
-
 export const formbuildernewObject = (newItem: string) => {
   let newObjAddedon: any;
 
