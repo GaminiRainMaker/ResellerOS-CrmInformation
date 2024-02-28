@@ -49,12 +49,9 @@ const FormUpload: React.FC<FormUploadInterface> = ({setCollapsed}) => {
           setUploadFileData={setFileData}
         /> */}
         <DraggerStyleDiv
-          // beforeUpload={beforeUpload}
-          // showUploadList={false}
-          // multiple
-          onClick={() => {
-            setCollapsed((p: any) => !p);
-          }}
+        // beforeUpload={beforeUpload}
+        // showUploadList={false}
+        // multiple
         >
           <Row justify="space-between">
             <AtachmentStyleCol>
@@ -62,9 +59,6 @@ const FormUpload: React.FC<FormUploadInterface> = ({setCollapsed}) => {
                 Attachment
               </Typography>
             </AtachmentStyleCol>
-            <Col>
-              <TrashIcon width={24} color={token?.colorError} />
-            </Col>
           </Row>
           <Space size={16}>
             <Image src={HeaderLogo} alt="HeaderLogo" />

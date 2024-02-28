@@ -42,5 +42,5 @@ export interface FormBuilderMainInterFace {
   setActiveSectionIndex?: any;
   setSelectedColumnIndex?: any;
   setContentActiveIndex?: any;
-  // previewFile?: any;
+  previewFile?: boolean;
 }

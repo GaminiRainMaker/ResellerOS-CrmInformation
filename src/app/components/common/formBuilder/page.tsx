@@ -52,11 +52,12 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
   setActiveSectionIndex,
   setSelectedColumnIndex,
   setContentActiveIndex,
-  //   previewFile,
+  previewFile,
 }) => {
   const dropDownItemss: MenuProps['items'] = [];
 
   const [radioValue, setRadioValue] = useState<any>();
+  //   const [previewFile, setPreviewFile] = useState<boolean>(true);
   const [token] = useThemeToken();
 
   const deleteSelectedIntem = (sectionInde: number, contentIn: number) => {
@@ -117,29 +118,33 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
 
   return (
     <>
-      <Row justify="space-between">
-        <Space size={10} direction="horizontal">
-          <Typography name="Heading 3/Medium">Cisco- Cisco Hardware</Typography>
-        </Space>
-        <Space size={10}>
-          <OsButton buttontype="PRIMARY" text="Save" />
-          <OsButton
-            buttontype="PRIMARY_ICON"
-            onClick={() => {
-              setOpenPreviewModal(!openPreviewModal);
-            }}
-            text=""
-            icon={
-              <PlayCircleOutlined
-                onClick={() => {
-                  setOpenPreviewModal(!openPreviewModal);
-                }}
-              />
-            }
-          />
-          <OsDropdown menu={{items: dropDownItemss}} />
-        </Space>
-      </Row>
+      {!previewFile && (
+        <Row justify="space-between">
+          <Space size={10} direction="horizontal">
+            <Typography name="Heading 3/Medium">
+              Cisco- Cisco Hardware
+            </Typography>
+          </Space>
+          <Space size={10}>
+            <OsButton buttontype="PRIMARY" text="Save" />
+            <OsButton
+              buttontype="PRIMARY_ICON"
+              onClick={() => {
+                setOpenPreviewModal(!openPreviewModal);
+              }}
+              text=""
+              icon={
+                <PlayCircleOutlined
+                  onClick={() => {
+                    setOpenPreviewModal(!openPreviewModal);
+                  }}
+                />
+              }
+            />
+            <OsDropdown menu={{items: dropDownItemss}} />
+          </Space>
+        </Row>
+      )}
       <div ref={setNodeRef}>
         {cartItems && cartItems?.length > 0 ? (
           <>
@@ -160,44 +165,49 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                         return (
                           <Col
                             span={24}
-                            {...commonDraggableProps(ItemConindex, Sectidx)}
+                            {...(!previewFile && {
+                              ...commonDraggableProps(ItemConindex, Sectidx),
+                            })}
                           >
-                            <Row justify="space-between">
-                              <SectionColStyled
-                                onClick={() => {
-                                  setCollapsed((p: any) => !p);
-                                  setActiveContentIndex(ItemConindex);
-                                  setActiveSectionIndex(Sectidx);
-                                  form.resetFields();
-                                }}
-                              >
-                                <Typography
-                                  name="Caption Regular"
-                                  color={token?.colorLinkHover}
+                            {!previewFile && (
+                              <Row justify="space-between">
+                                <SectionColStyled
+                                  onClick={() => {
+                                    setCollapsed((p: any) => !p);
+                                    setActiveContentIndex(ItemConindex);
+                                    setActiveSectionIndex(Sectidx);
+                                    form.resetFields();
+                                  }}
                                 >
-                                  {itemCon?.name}
-                                </Typography>
-                              </SectionColStyled>
+                                  <Typography
+                                    name="Caption Regular"
+                                    color={token?.colorLinkHover}
+                                  >
+                                    {itemCon?.name}
+                                  </Typography>
+                                </SectionColStyled>
 
-                              <Col>
-                                <Space size={8}>
-                                  <TrashIcon
-                                    width={18}
-                                    onClick={() => {
-                                      deleteSelectedIntem(
-                                        Sectidx,
-                                        ItemConindex,
-                                      );
-                                    }}
-                                    color={token?.colorError}
-                                  />
-                                  <ArrowsPointingOutIcon
-                                    width={18}
-                                    color={token?.colorInfo}
-                                  />
-                                </Space>
-                              </Col>
-                            </Row>
+                                <Col>
+                                  <Space size={8}>
+                                    <TrashIcon
+                                      width={18}
+                                      onClick={() => {
+                                        deleteSelectedIntem(
+                                          Sectidx,
+                                          ItemConindex,
+                                        );
+                                      }}
+                                      color={token?.colorError}
+                                    />
+                                    <ArrowsPointingOutIcon
+                                      width={18}
+                                      color={token?.colorInfo}
+                                    />
+                                  </Space>
+                                </Col>
+                              </Row>
+                            )}
+
                             <SectionRowStyledInner>
                               {itemCon?.ColumnsData?.length > 0 &&
                                 itemCon?.ColumnsData?.map(
@@ -292,45 +302,49 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                         return (
                           <Col
                             span={12}
-                            {...commonDraggableProps(ItemConindex, Sectidx)}
+                            {...(!previewFile && {
+                              ...commonDraggableProps(ItemConindex, Sectidx),
+                            })}
                           >
-                            <Row justify="space-between">
-                              <SectionColStyled
-                                onClick={() => {
-                                  setCollapsed((p: any) => !p);
-                                  setActiveContentIndex(ItemConindex);
-                                  setActiveSectionIndex(Sectidx);
-                                  form.resetFields();
-                                }}
-                              >
-                                <Typography
-                                  name="Caption Regular"
-                                  color={token?.colorLinkHover}
+                            {!previewFile && (
+                              <Row justify="space-between">
+                                <SectionColStyled
+                                  onClick={() => {
+                                    setCollapsed((p: any) => !p);
+                                    setActiveContentIndex(ItemConindex);
+                                    setActiveSectionIndex(Sectidx);
+                                    form.resetFields();
+                                  }}
                                 >
-                                  {itemCon?.name === 'Text'
-                                    ? 'Text Field'
-                                    : itemCon?.name}
-                                </Typography>
-                              </SectionColStyled>
-                              <Col>
-                                <Space size={8}>
-                                  <TrashIcon
-                                    width={18}
-                                    onClick={() => {
-                                      deleteSelectedIntem(
-                                        Sectidx,
-                                        ItemConindex,
-                                      );
-                                    }}
-                                    color={token?.colorError}
-                                  />
-                                  <ArrowsPointingOutIcon
-                                    width={18}
-                                    color={token?.colorInfo}
-                                  />
-                                </Space>
-                              </Col>
-                            </Row>
+                                  <Typography
+                                    name="Caption Regular"
+                                    color={token?.colorLinkHover}
+                                  >
+                                    {itemCon?.name === 'Text'
+                                      ? 'Text Field'
+                                      : itemCon?.name}
+                                  </Typography>
+                                </SectionColStyled>
+                                <Col>
+                                  <Space size={8}>
+                                    <TrashIcon
+                                      width={18}
+                                      onClick={() => {
+                                        deleteSelectedIntem(
+                                          Sectidx,
+                                          ItemConindex,
+                                        );
+                                      }}
+                                      color={token?.colorError}
+                                    />
+                                    <ArrowsPointingOutIcon
+                                      width={18}
+                                      color={token?.colorInfo}
+                                    />
+                                  </Space>
+                                </Col>
+                              </Row>
+                            )}
 
                             <Typography name="Body 4/Medium">
                               {itemCon?.requiredLabel && itemCon?.label}{' '}
@@ -391,16 +405,17 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                               ) : (
                                 <OsInput type={itemCon?.type} />
                               )}{' '}
-                              {item?.content?.length - 1 === ItemConindex && (
-                                <OsButton
-                                  style={{marginLeft: '10px'}}
-                                  buttontype="PRIMARY_ICON"
-                                  icon="+"
-                                  clickHandler={() => {
-                                    updateSection(Sectidx, itemCon?.name);
-                                  }}
-                                />
-                              )}
+                              {item?.content?.length - 1 === ItemConindex &&
+                                !previewFile && (
+                                  <OsButton
+                                    style={{marginLeft: '10px'}}
+                                    buttontype="PRIMARY_ICON"
+                                    icon="+"
+                                    clickHandler={() => {
+                                      updateSection(Sectidx, itemCon?.name);
+                                    }}
+                                  />
+                                )}
                             </SectionDivStyled1>
                             {itemCon?.hintext && (
                               <div>{itemCon?.hintTextValue}</div>
@@ -422,37 +437,41 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                         return (
                           <Col
                             span={12}
-                            {...commonDraggableProps(ItemConindex, Sectidx)}
+                            {...(!previewFile && {
+                              ...commonDraggableProps(ItemConindex, Sectidx),
+                            })}
                           >
-                            <Row>
-                              <SectionColStyled>
-                                <Typography
-                                  name="Caption Regular"
-                                  color={token?.colorLinkHover}
-                                >
-                                  {itemCon?.name}
-                                </Typography>
-                              </SectionColStyled>
-                              <Col>
-                                <Space size={8}>
-                                  <TrashIcon
-                                    width={18}
-                                    onClick={() => {
-                                      deleteSelectedIntem(
-                                        Sectidx,
-                                        ItemConindex,
-                                      );
-                                    }}
-                                    color={token?.colorError}
-                                  />
+                            {!previewFile && (
+                              <Row>
+                                <SectionColStyled>
+                                  <Typography
+                                    name="Caption Regular"
+                                    color={token?.colorLinkHover}
+                                  >
+                                    {itemCon?.name}
+                                  </Typography>
+                                </SectionColStyled>
+                                <Col>
+                                  <Space size={8}>
+                                    <TrashIcon
+                                      width={18}
+                                      onClick={() => {
+                                        deleteSelectedIntem(
+                                          Sectidx,
+                                          ItemConindex,
+                                        );
+                                      }}
+                                      color={token?.colorError}
+                                    />
 
-                                  <ArrowsPointingOutIcon
-                                    width={18}
-                                    color={token?.colorInfo}
-                                  />
-                                </Space>
-                              </Col>
-                            </Row>
+                                    <ArrowsPointingOutIcon
+                                      width={18}
+                                      color={token?.colorInfo}
+                                    />
+                                  </Space>
+                                </Col>
+                              </Row>
+                            )}
                             <Typography name="Body 4/Medium">
                               {itemCon?.requiredLabel && itemCon?.label}{' '}
                               {itemCon?.required && (
@@ -467,16 +486,17 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                                 }}
                                 mode={itemCon?.type}
                               />
-                              {item?.content?.length - 1 === ItemConindex && (
-                                <OsButton
-                                  style={{marginLeft: '10px'}}
-                                  buttontype="PRIMARY_ICON"
-                                  icon="+"
-                                  clickHandler={() => {
-                                    updateSection(Sectidx, itemCon?.name);
-                                  }}
-                                />
-                              )}
+                              {item?.content?.length - 1 === ItemConindex &&
+                                !previewFile && (
+                                  <OsButton
+                                    style={{marginLeft: '10px'}}
+                                    buttontype="PRIMARY_ICON"
+                                    icon="+"
+                                    clickHandler={() => {
+                                      updateSection(Sectidx, itemCon?.name);
+                                    }}
+                                  />
+                                )}
                             </SectionDivStyled1>
                             {itemCon?.hintext && (
                               <div>{itemCon?.hintTextValue}</div>
@@ -488,43 +508,47 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                         return (
                           <Col
                             span={24}
-                            {...commonDraggableProps(ItemConindex, Sectidx)}
+                            {...(!previewFile && {
+                              ...commonDraggableProps(ItemConindex, Sectidx),
+                            })}
                           >
-                            <Row justify="space-between">
-                              <SectionColStyled
-                                onClick={() => {
-                                  setCollapsed((p: any) => !p);
-                                  setActiveContentIndex(ItemConindex);
-                                  setActiveSectionIndex(Sectidx);
-                                  form.resetFields();
-                                }}
-                              >
-                                <Typography
-                                  name="Caption Regular"
-                                  color={token?.colorLinkHover}
+                            {!previewFile && (
+                              <Row justify="space-between">
+                                <SectionColStyled
+                                  onClick={() => {
+                                    setCollapsed((p: any) => !p);
+                                    setActiveContentIndex(ItemConindex);
+                                    setActiveSectionIndex(Sectidx);
+                                    form.resetFields();
+                                  }}
                                 >
-                                  {itemCon?.name}
-                                </Typography>
-                              </SectionColStyled>
-                              <Col>
-                                <Space size={8}>
-                                  <TrashIcon
-                                    width={18}
-                                    onClick={() => {
-                                      deleteSelectedIntem(
-                                        Sectidx,
-                                        ItemConindex,
-                                      );
-                                    }}
-                                    color={token?.colorError}
-                                  />
-                                  <ArrowsPointingOutIcon
-                                    width={18}
-                                    color={token?.colorInfo}
-                                  />
-                                </Space>
-                              </Col>
-                            </Row>
+                                  <Typography
+                                    name="Caption Regular"
+                                    color={token?.colorLinkHover}
+                                  >
+                                    {itemCon?.name}
+                                  </Typography>
+                                </SectionColStyled>
+                                <Col>
+                                  <Space size={8}>
+                                    <TrashIcon
+                                      width={18}
+                                      onClick={() => {
+                                        deleteSelectedIntem(
+                                          Sectidx,
+                                          ItemConindex,
+                                        );
+                                      }}
+                                      color={token?.colorError}
+                                    />
+                                    <ArrowsPointingOutIcon
+                                      width={18}
+                                      color={token?.colorInfo}
+                                    />
+                                  </Space>
+                                </Col>
+                              </Row>
+                            )}
                             <SectionDivStyled1>
                               <>
                                 {itemCon?.FontSize === 'h1' ? (
@@ -581,43 +605,47 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                         return (
                           <Col
                             span={12}
-                            {...commonDraggableProps(ItemConindex, Sectidx)}
+                            {...(!previewFile && {
+                              ...commonDraggableProps(ItemConindex, Sectidx),
+                            })}
                           >
-                            <Row justify="space-between">
-                              <SectionColStyled
-                                onClick={() => {
-                                  setCollapsed((p: any) => !p);
-                                  setActiveContentIndex(ItemConindex);
-                                  setActiveSectionIndex(Sectidx);
-                                  form.resetFields();
-                                }}
-                              >
-                                <Typography
-                                  name="Caption Regular"
-                                  color={token?.colorLinkHover}
+                            {!previewFile && (
+                              <Row justify="space-between">
+                                <SectionColStyled
+                                  onClick={() => {
+                                    setCollapsed((p: any) => !p);
+                                    setActiveContentIndex(ItemConindex);
+                                    setActiveSectionIndex(Sectidx);
+                                    form.resetFields();
+                                  }}
                                 >
-                                  {itemCon?.name}
-                                </Typography>
-                              </SectionColStyled>
-                              <Col>
-                                <Space size={8}>
-                                  <TrashIcon
-                                    width={18}
-                                    onClick={() => {
-                                      deleteSelectedIntem(
-                                        Sectidx,
-                                        ItemConindex,
-                                      );
-                                    }}
-                                    color={token?.colorError}
-                                  />
-                                  <ArrowsPointingOutIcon
-                                    width={18}
-                                    color={token?.colorInfo}
-                                  />
-                                </Space>
-                              </Col>
-                            </Row>
+                                  <Typography
+                                    name="Caption Regular"
+                                    color={token?.colorLinkHover}
+                                  >
+                                    {itemCon?.name}
+                                  </Typography>
+                                </SectionColStyled>
+                                <Col>
+                                  <Space size={8}>
+                                    <TrashIcon
+                                      width={18}
+                                      onClick={() => {
+                                        deleteSelectedIntem(
+                                          Sectidx,
+                                          ItemConindex,
+                                        );
+                                      }}
+                                      color={token?.colorError}
+                                    />
+                                    <ArrowsPointingOutIcon
+                                      width={18}
+                                      color={token?.colorInfo}
+                                    />
+                                  </Space>
+                                </Col>
+                              </Row>
+                            )}
                             <Typography name="Body 4/Medium">
                               {itemCon?.requiredLabel &&
                                 itemCon?.placeholdertext}{' '}
@@ -664,32 +692,47 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                         return (
                           <Space
                             direction="vertical"
-                            {...commonDraggableProps(ItemConindex, Sectidx)}
+                            {...(!previewFile && {
+                              ...commonDraggableProps(ItemConindex, Sectidx),
+                            })}
                           >
-                            <Row justify="space-between">
-                              <SectionColStyled
-                                onClick={() => {
-                                  setCollapsed((p: any) => !p);
-                                  setActiveContentIndex(ItemConindex);
-                                  setActiveSectionIndex(Sectidx);
-                                  form.resetFields();
-                                }}
-                              >
-                                <Typography
-                                  name="Caption Regular"
-                                  color={token?.colorLinkHover}
+                            {!previewFile && (
+                              <Row justify="space-between">
+                                <SectionColStyled
+                                  onClick={() => {
+                                    setCollapsed((p: any) => !p);
+                                    setActiveContentIndex(ItemConindex);
+                                    setActiveSectionIndex(Sectidx);
+                                    form.resetFields();
+                                  }}
                                 >
-                                  {itemCon?.name}
-                                </Typography>
-                              </SectionColStyled>
-                            </Row>
-
+                                  <Typography
+                                    name="Caption Regular"
+                                    color={token?.colorLinkHover}
+                                  >
+                                    {itemCon?.name}
+                                  </Typography>
+                                </SectionColStyled>{' '}
+                                <Col>
+                                  <TrashIcon
+                                    onClick={() => {
+                                      deleteSelectedIntem(
+                                        Sectidx,
+                                        ItemConindex,
+                                      );
+                                    }}
+                                    width={24}
+                                    color={token?.colorError}
+                                  />
+                                </Col>
+                              </Row>
+                            )}
                             {itemCon?.pdfUrl ? (
                               <FormUploadCard
                                 uploadFileData={itemCon?.pdfUrl}
                               />
                             ) : (
-                              <FormUpload setCollapsed={setCollapsed} />
+                              <FormUpload />
                             )}
                           </Space>
                         );
