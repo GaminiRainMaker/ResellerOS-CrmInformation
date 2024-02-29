@@ -160,29 +160,29 @@ const AllQuote: React.FC = () => {
 
   const statusWrapper = (item: any) => {
     const getStatus = () => {
-      // if (!item.is_completed && !item.is_drafted) {
-      //   return 'Drafts';
-      // }
-      // if (item.is_drafted) {
-      //   return 'In Progress';
-      // }
-      // if (item?.approver_id === userInformation?.id) {
-      //   return 'In Review';
-      // }
-      // if (item?.rejected_request) {
-      //   return 'Rejected';
-      // }
-      // if (item?.approved_request) {
-      //   return 'Approved';
-      // }
-      // if (
-      //   item.is_completed &&
-      //   item?.approver_id !== userInformation?.id &&
-      //   !item?.approved_request &&
-      //   !item?.rejected_request
-      // ) {
-      //   return 'Needs Review';
-      // }
+      if (!item.is_completed && !item.is_drafted) {
+        return 'Drafts';
+      }
+      if (item.is_drafted) {
+        return 'In Progress';
+      }
+      if (item?.approver_id === userInformation?.id) {
+        return 'In Review';
+      }
+      if (item?.rejected_request) {
+        return 'Rejected';
+      }
+      if (item?.approved_request) {
+        return 'Approved';
+      }
+      if (
+        item.is_completed &&
+        item?.approver_id !== userInformation?.id &&
+        !item?.approved_request &&
+        !item?.rejected_request
+      ) {
+        return 'Needs Review';
+      }
       return '--';
     };
 
