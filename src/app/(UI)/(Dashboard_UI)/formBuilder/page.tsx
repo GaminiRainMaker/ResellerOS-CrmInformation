@@ -9,10 +9,11 @@ import FormBuilderMain from '@/app/components/common/formBuilder/page';
 import {SiderDivStyled} from '@/app/components/common/os-div-row-col/styled-component';
 import {formbuildernewObject} from '@/app/utils/base';
 import {Form, Layout, Modal} from 'antd';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import EditFiledDetails from './detailsFieldEdit';
 
 import FieldCard from './FieldCard';
+import { getPartnerProgramById } from '../../../../../redux/actions/partnerProgram';
 
 const {Sider, Content} = Layout;
 

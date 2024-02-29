@@ -60,3 +60,14 @@ export const getPartnerProgramById = createAsyncThunk(
     }
   },
 );
+export const deletePartnerProgramFormData = createAsyncThunk(
+  'partnerProgram/deletePartnerProgramFormData',
+  async (id: any, thunkApi) => {
+    try {
+      const res = await PARTNER_PROGRAM_API.deleteFormData(id);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

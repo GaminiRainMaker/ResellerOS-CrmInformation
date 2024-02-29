@@ -36,6 +36,7 @@ import {
 } from '../../../../../redux/actions/partner';
 import {
   deletePartnerProgram,
+  deletePartnerProgramFormData,
   getAllPartnerProgram,
 } from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -118,21 +119,31 @@ const SuperAdminPartner: React.FC = () => {
       }
     },
   };
+  const deletePartnerProgramFormDa = async (id: number) => {
+    dispatch(deletePartnerProgramFormData(id));
+    setOpenPreviewModal(false);
+    setTimeout(() => {
+      dispatch(getAllPartnerProgram());
+    }, 1000);
+  };
 
   useEffect(() => {
     const separatedData: SeparatedData = {};
-    PartnerProgramData?.forEach((item: any) => {
-      const partnerId = item.partner;
-      const partnerName = item.Partner?.partner;
-      if (!separatedData[partnerId]) {
-        separatedData[partnerId] = {
-          partner_id: partnerId,
-          title: partnerName,
-          data: [],
-        };
-      }
-      separatedData[partnerId]?.data.push(item);
-    });
+    if (PartnerProgramData && PartnerProgramData?.length > 0) {
+      PartnerProgramData?.forEach((item: any) => {
+        const partnerId = item.partner;
+        const partnerName = item.Partner?.partner;
+        if (!separatedData[partnerId]) {
+          separatedData[partnerId] = {
+            partner_id: partnerId,
+            title: partnerName,
+            data: [],
+          };
+        }
+        separatedData[partnerId]?.data.push(item);
+      });
+    }
+
     setFinalPartnerProgramData(Object.values(separatedData));
   }, [PartnerProgramData]);
 
@@ -335,7 +346,7 @@ const SuperAdminPartner: React.FC = () => {
             if (record?.form_data) {
               setOpenPreviewModal(true);
               const formDataObject = JSON?.parse(record?.form_data);
-              setformData(formDataObject);
+              setformData({formObject: formDataObject, Id: record?.id});
               // open modal to view form
               // console.log(record?.form_data, 'formData');
             } else {
@@ -658,7 +669,7 @@ const SuperAdminPartner: React.FC = () => {
               <>
                 {' '}
                 <FormBuilderMain
-                  cartItems={formData}
+                  cartItems={formData?.formObject}
                   form={form}
                   // eslint-disable-next-line react/jsx-boolean-value
                   previewFile
@@ -669,13 +680,19 @@ const SuperAdminPartner: React.FC = () => {
                   size={8}
                   style={{display: 'flex', justifyContent: 'end'}}
                 >
-                  <OsButton buttontype="PRIMARY" text="Delete" />
+                  <OsButton
+                    buttontype="PRIMARY"
+                    text="Delete"
+                    clickHandler={() => {
+                      deletePartnerProgramFormDa(formData?.Id);
+                    }}
+                  />
                   <OsButton
                     buttontype="SECONDARY"
                     text="EDIT"
                     color="red"
                     clickHandler={() => {
-                      router?.push(`/formBuilder?id=4`);
+                      router?.push(`/formBuilder?id=${formData?.Id}`);
                     }}
                   />{' '}
                 </Space>

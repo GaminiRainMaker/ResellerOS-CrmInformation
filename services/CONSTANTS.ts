@@ -131,5 +131,6 @@ export const API = {
     DeleteById: '/partnerProgram/deleteById',
     UpdatePartnerProgramById: '/partnerProgram/updatePartnerProgramById',
     GetPartnerProgramById: '/partnerProgram/getPartnerProgramById',
+    deletePartnerFormData : '/partnerProgram/deletePartnerProgramFormData',
   },
 };

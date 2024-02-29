@@ -22,4 +22,8 @@ export const PARTNER_PROGRAM_API = {
     get(`${API.PARTNER_PROGRAM.GetPartnerProgramById}/${id}`) as Promise<
       AxiosResponse<any>
     >,
+  deleteFormData: (id: number) =>
+    get(`${API.PARTNER_PROGRAM.deletePartnerFormData}/${id}`) as Promise<
+      AxiosResponse<any>
+    >,
 };

@@ -37,9 +37,12 @@ import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
 import {formbuildernewObject} from '@/app/utils/base';
 import {Checkbox, MenuProps, Radio, Switch, TimePicker} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
-import React, {useState} from 'react';
-import {updatePartnerProgramById} from '../../../../../redux/actions/partnerProgram';
-import {useAppDispatch} from '../../../../../redux/hook';
+import React, {useEffect, useState} from 'react';
+import {
+  getPartnerProgramById,
+  updatePartnerProgramById,
+} from '../../../../../redux/actions/partnerProgram';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import ItemName from './ItemName';
 
 const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
@@ -65,6 +68,7 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
   const [radioValue, setRadioValue] = useState<any>();
   //   const [previewFile, setPreviewFile] = useState<boolean>(true);
   const [token] = useThemeToken();
+  const {data: partnerData} = useAppSelector((state) => state.partnerProgram);
 
   const deleteSelectedIntem = (sectionInde: number, contentIn: number) => {
     const temp: any = [...cartItems];
@@ -77,6 +81,17 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
     temp?.[sectionInd]?.content?.push(addnewField);
     setCartItems(temp);
   };
+
+  useEffect(() => {
+    dispatch(getPartnerProgramById(Number(getPartnerProgramID)))?.then(
+      (payload) => {
+        if (payload?.payload?.form_data) {
+          const JsonParsedObject = JSON?.parse(payload?.payload?.form_data);
+          setCartItems(JsonParsedObject);
+        }
+      },
+    );
+  }, []);
 
   // save reference for dragItem and dragOverItem
   const dragItem = React.useRef<any>(null);
@@ -168,7 +183,7 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
       <div ref={setNodeRef}>
         {cartItems && cartItems?.length > 0 ? (
           <>
-            {cartItems.map((item: any, Sectidx: number) => (
+            {cartItems?.map((item: any, Sectidx: number) => (
               <div
                 onClick={() => {
                   setSectionIndexActive(Sectidx);
