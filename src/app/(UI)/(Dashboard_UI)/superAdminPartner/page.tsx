@@ -25,9 +25,10 @@ import {
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-import {Form, MenuProps} from 'antd';
+import {Form, MenuProps, Modal} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import FormBuilderMain from '@/app/components/common/formBuilder/page';
 import {
   deletePartner,
   getAllPartner,
@@ -73,7 +74,8 @@ const SuperAdminPartner: React.FC = () => {
   const {data: PartnerProgramData, loading: partnerProgramLoading} =
     useAppSelector((state) => state.partnerProgram);
   const [finalPartnerProgramData, setFinalPartnerProgramData] = useState<any>();
-
+  const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
+  const [formData, setformData] = useState<any>();
   useEffect(() => {
     dispatch(getAllPartner());
     dispatch(getAllPartnerProgram());
@@ -330,7 +332,13 @@ const SuperAdminPartner: React.FC = () => {
           hoverOnText
           color={token?.colorLink}
           onClick={() => {
-            router?.push(`/formBuilder?id=${record?.id}`);
+            if (record?.form_data) {
+              setOpenPreviewModal(true);
+              const formDataObject = JSON?.parse(record?.form_data);
+              setformData(formDataObject);
+            } else {
+              router?.push(`/formBuilder?id=${record?.id}`);
+            }
           }}
         >
           {record?.form_data ? 'View' : 'Create Template'}
@@ -639,6 +647,48 @@ const SuperAdminPartner: React.FC = () => {
         heading="Delete Partner"
         description="Are you sure you want to delete this partner?"
       />
+      {openPreviewModal && (
+        <>
+          <OsModal
+            bodyPadding={22}
+            loading={loading}
+            body={
+              <>
+                {' '}
+                <FormBuilderMain
+                  cartItems={formData}
+                  form={form}
+                  // eslint-disable-next-line react/jsx-boolean-value
+                  previewFile
+                  // previewFile={true}
+                />
+                <Space
+                  align="end"
+                  size={8}
+                  style={{display: 'flex', justifyContent: 'end'}}
+                >
+                  <OsButton buttontype="PRIMARY" text="Delete" />
+                  <OsButton
+                    buttontype="SECONDARY"
+                    text="EDIT"
+                    color="red"
+                    clickHandler={() => {
+                      router?.push(`/formBuilder?id=4`);
+                    }}
+                  />{' '}
+                </Space>
+              </>
+            }
+            width={900}
+            // primaryButtonText="Edit"
+            open={openPreviewModal}
+            // onOk={() => form.submit()}
+            onCancel={() => {
+              setOpenPreviewModal(false);
+            }}
+          />
+        </>
+      )}
     </>
   );
 };
