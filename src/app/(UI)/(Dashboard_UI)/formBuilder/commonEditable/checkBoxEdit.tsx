@@ -9,7 +9,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
-import React from 'react';
+import React, {useState} from 'react';
 import {EditableFiledsCommonInterface} from '../formBuilder.interface';
 import {CollapseSpaceStyle} from '../../dealRegDetail/DealRegDetailForm/styled-components';
 
@@ -60,10 +60,9 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
   };
   const deleteOption = (indexofoption: number, nameOptions: any) => {
     const tempvalue: any = [...cartItems];
-
-    tempvalue?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.ColumnsData?.[
-      selectedColumnIndex || 0
-    ]?.[nameOptions]?.splice(indexofoption, 1);
+    tempvalue?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.[
+      nameOptions
+    ]?.splice(indexofoption, 1);
     setCartItems(tempvalue);
   };
 

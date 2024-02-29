@@ -7,19 +7,19 @@
 
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import { MailOutlined, PlayCircleOutlined } from '@ant-design/icons';
-import { useDroppable } from '@dnd-kit/core';
+import {MailOutlined, PlayCircleOutlined} from '@ant-design/icons';
+import {useDroppable} from '@dnd-kit/core';
 import 'react-phone-number-input/style.css';
 
-import { FormBuilderMainInterFace } from '@/app/(UI)/(Dashboard_UI)/formBuilder/formBuilder.interface';
+import {FormBuilderMainInterFace} from '@/app/(UI)/(Dashboard_UI)/formBuilder/formBuilder.interface';
 import ContactInput from '@/app/components/common/os-contact';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import {
@@ -34,12 +34,12 @@ import {
 } from '@/app/components/common/os-div-row-col/styled-component';
 import FormUpload from '@/app/components/common/os-upload/FormUpload';
 import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
-import { formbuildernewObject } from '@/app/utils/base';
-import { Checkbox, MenuProps, Radio, Switch, TimePicker } from 'antd';
-import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useState } from 'react';
-import { updatePartnerProgramById } from '../../../../../redux/actions/partnerProgram';
-import { useAppDispatch } from '../../../../../redux/hook';
+import {formbuildernewObject} from '@/app/utils/base';
+import {Checkbox, MenuProps, Radio, Switch, TimePicker} from 'antd';
+import {useRouter, useSearchParams} from 'next/navigation';
+import React, {useState} from 'react';
+import {updatePartnerProgramById} from '../../../../../redux/actions/partnerProgram';
+import {useAppDispatch} from '../../../../../redux/hook';
 import ItemName from './ItemName';
 
 const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
@@ -61,6 +61,7 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
   const router = useRouter();
   const searchParams = useSearchParams();
   const getPartnerProgramID = searchParams.get('id');
+  const [holdelSelectedValue, setHoldSelectedValue] = useState<any>();
   const [radioValue, setRadioValue] = useState<any>();
   //   const [previewFile, setPreviewFile] = useState<boolean>(true);
   const [token] = useThemeToken();
@@ -553,33 +554,71 @@ const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
                               )}
                             </Typography>
                             <SectionDivStyled1>
-                              <Row>
+                              <Row
+                                style={{
+                                  width: '100%',
+                                }}
+                              >
                                 {itemCon?.labelOptions?.map(
-                                  (itemLabelOp: any, itemLabelInde: number) => (
-                                    <ToggleColStyled span={24}>
-                                      {itemCon?.name === 'Radio Button' ? (
-                                        <Radio.Group
-                                          onChange={(e: any) => {
-                                            setRadioValue(e.target.value);
-                                          }}
-                                          value={radioValue}
-                                        >
-                                          <Radio value={itemLabelInde}>
+                                  (itemLabelOp: any, itemLabelInde: number) => {
+                                    const totalSpanVaue = 24;
+                                    const totalCol = itemCon?.columnRequired;
+                                    const totalLengthAchived =
+                                      totalSpanVaue / totalCol;
+                                    const totalFloorValue =
+                                      Math.floor(totalLengthAchived);
+                                    return (
+                                      <ToggleColStyled span={totalFloorValue}>
+                                        {itemCon?.name === 'Radio Button' ? (
+                                          <Radio.Group
+                                            onChange={(e: any) => {
+                                              setRadioValue(e.target.value);
+                                            }}
+                                            value={radioValue}
+                                          >
+                                            <Radio value={itemLabelInde}>
+                                              {' '}
+                                              {itemLabelOp}
+                                            </Radio>
+                                          </Radio.Group>
+                                        ) : itemCon?.name === 'Toggle' ? (
+                                          <>
+                                            <Switch /> {itemLabelOp}
+                                          </>
+                                        ) : (
+                                          <>
                                             {' '}
-                                            {itemLabelOp}
-                                          </Radio>
-                                        </Radio.Group>
-                                      ) : itemCon?.name === 'Toggle' ? (
-                                        <>
-                                          <Switch /> {itemLabelOp}
-                                        </>
-                                      ) : (
-                                        <>
-                                          <Checkbox /> {itemLabelOp}
-                                        </>
-                                      )}
-                                    </ToggleColStyled>
-                                  ),
+                                            {/* setHoldSelectedValue */}
+                                            <Checkbox.Group
+                                              onChange={(e) => {
+                                                if (
+                                                  itemCon?.filedType ===
+                                                  'multiple'
+                                                ) {
+                                                  const temp: any =
+                                                    holdelSelectedValue?.length >
+                                                    0
+                                                      ? [...holdelSelectedValue]
+                                                      : [];
+                                                  temp?.push(e?.[0]);
+                                                  setHoldSelectedValue(temp);
+                                                } else {
+                                                  setHoldSelectedValue(e?.[0]);
+                                                }
+                                              }}
+                                              value={holdelSelectedValue}
+                                            >
+                                              {' '}
+                                              <Checkbox value={itemLabelOp}>
+                                                {' '}
+                                                {itemLabelOp}
+                                              </Checkbox>
+                                            </Checkbox.Group>
+                                          </>
+                                        )}
+                                      </ToggleColStyled>
+                                    );
+                                  },
                                 )}
                               </Row>
                             </SectionDivStyled1>

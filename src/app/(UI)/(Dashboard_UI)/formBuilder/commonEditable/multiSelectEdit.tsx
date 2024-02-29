@@ -62,9 +62,9 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
   const deleteOption = (indexofoption: number, nameOptions: any) => {
     const tempvalue: any = [...cartItems];
 
-    tempvalue?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.ColumnsData?.[
-      selectedColumnIndex || 0
-    ]?.[nameOptions]?.splice(indexofoption, 1);
+    tempvalue?.[sectionIndex || 0]?.content?.[contentIndex || 0]?.[
+      nameOptions
+    ]?.splice(indexofoption, 1);
     setCartItems(tempvalue);
   };
 
@@ -162,7 +162,7 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
                 }}
               >
                 {/* <div>{itemOption}</div> */}
-                <Input
+                <OsInput
                   key={indexOp}
                   // defaultValue={itemOption}
                   value={itemOption}
