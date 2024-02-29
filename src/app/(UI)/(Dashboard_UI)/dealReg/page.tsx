@@ -126,7 +126,9 @@ const DealReg: React.FC = () => {
       key: 'partner_id',
       width: 187,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+        <Typography name="Body 4/Regular">
+          {record?.Partner?.partner ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -139,7 +141,9 @@ const DealReg: React.FC = () => {
       key: 'partner_program_id',
       width: 187,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+        <Typography name="Body 4/Regular">
+          {record?.PartnerProgram?.partner_program ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -203,7 +207,9 @@ const DealReg: React.FC = () => {
                         <Col>
                           <p
                             onClick={() => {
-                              router?.push(`/dealRegDetail?id=${itemDeal?.opportunity_id}`);
+                              router?.push(
+                                `/dealRegDetail?id=${itemDeal?.opportunity_id}`,
+                              );
                             }}
                           >
                             Form Detail
@@ -232,10 +238,30 @@ const DealReg: React.FC = () => {
     {
       label: <Typography name="Body 4/Regular">In Progress</Typography>,
       key: '2',
+      children: (
+        <OsTable
+          columns={DealRegColumns}
+          dataSource={[]}
+          rowSelection={rowSelection}
+          scroll
+          loading={dealLoading}
+          locale={locale}
+        />
+      ),
     },
     {
       label: <Typography name="Body 4/Regular">Completed</Typography>,
       key: '3',
+      children: (
+        <OsTable
+          columns={DealRegColumns}
+          dataSource={[]}
+          rowSelection={rowSelection}
+          scroll
+          loading={dealLoading}
+          locale={locale}
+        />
+      ),
     },
   ];
 
@@ -332,7 +358,7 @@ const DealReg: React.FC = () => {
 
       <OsModal
         bodyPadding={22}
-        body={<AddRegistrationForm />}
+        body={<AddRegistrationForm setShowModal={setShowModal} />}
         width={583}
         open={showModal}
         onOk={() => {}}

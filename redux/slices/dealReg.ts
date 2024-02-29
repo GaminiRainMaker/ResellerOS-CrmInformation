@@ -5,6 +5,7 @@ import {
   getAllDealReg,
   getDealRegById,
   getDealRegByOpportunityId,
+  getDealRegByPartnerProgramId,
   insertDealReg,
   updateDealRegById,
 } from '../actions/dealReg';
@@ -107,6 +108,24 @@ const dealRegSlice = createSlice({
       )
       .addCase(
         getDealRegByOpportunityId.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getDealRegByPartnerProgramId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getDealRegByPartnerProgramId.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getDealRegByPartnerProgramId.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

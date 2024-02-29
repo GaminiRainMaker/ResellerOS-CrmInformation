@@ -61,3 +61,15 @@ export const getDealRegByOpportunityId = createAsyncThunk(
     }
   },
 );
+
+export const getDealRegByPartnerProgramId = createAsyncThunk(
+  'dealReg/getDealRegByPartnerProgramId',
+  async (id: number, thunkApi) => {
+    try {
+      const res = await DEALREG_API.getDealRegByPartnerProgramId(id);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

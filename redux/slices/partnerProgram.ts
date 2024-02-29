@@ -4,6 +4,7 @@ import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
   deletePartnerProgram,
   getAllPartnerProgram,
+  getPartnerProgramById,
   insertPartnerProgram,
   updatePartnerProgramById,
 } from '../actions/partnerProgram';
@@ -35,38 +36,56 @@ const partnerProgramSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(insertPartnerProgram.fulfilled, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.data = [action.payload];
-      })
-      .addCase(insertPartnerProgram.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+      .addCase(
+        insertPartnerProgram.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = [action.payload];
+        },
+      )
+      .addCase(
+        insertPartnerProgram.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
       .addCase(getAllPartnerProgram.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getAllPartnerProgram.fulfilled, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.data = action.payload;
-      })
-      .addCase(getAllPartnerProgram.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+      .addCase(
+        getAllPartnerProgram.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getAllPartnerProgram.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
       .addCase(deletePartnerProgram.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(deletePartnerProgram.fulfilled, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.data = action.payload;
-      })
-      .addCase(deletePartnerProgram.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+      .addCase(
+        deletePartnerProgram.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        deletePartnerProgram.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
       .addCase(updatePartnerProgramById.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -80,6 +99,24 @@ const partnerProgramSlice = createSlice({
       )
       .addCase(
         updatePartnerProgramById.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getPartnerProgramById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getPartnerProgramById.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getPartnerProgramById.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

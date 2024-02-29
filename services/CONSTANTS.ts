@@ -113,6 +113,7 @@ export const API = {
     INDEX: '/dealReg',
     QUERY: '/dealReg/query',
     GetDealRegByOpportunityId: '/dealReg/getDealRegByOpportunityId',
+    GetDealRegByPartnerProgramId: '/dealReg/getDealRegByPartnerProgramId',
   },
   DEALREGADDRESS: {
     INDEX: '/dealRegAddress',
@@ -129,5 +130,6 @@ export const API = {
     QUERY: 'partnerProgram/query',
     DeleteById: '/partnerProgram/deleteById',
     UpdatePartnerProgramById: '/partnerProgram/updatePartnerProgramById',
+    GetPartnerProgramById: '/partnerProgram/getPartnerProgramById',
   },
 };

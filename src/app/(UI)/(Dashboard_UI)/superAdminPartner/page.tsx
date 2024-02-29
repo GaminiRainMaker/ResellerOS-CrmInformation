@@ -330,7 +330,12 @@ const SuperAdminPartner: React.FC = () => {
           hoverOnText
           color={token?.colorLink}
           onClick={() => {
-            router?.push(`/formBuilder?id=${record?.id}`);
+            if (record?.form_data) {
+              // open modal to view form
+              // console.log(record?.form_data, 'formData');
+            } else {
+              router?.push(`/formBuilder?id=${record?.id}`);
+            }
           }}
         >
           {record?.form_data ? 'View' : 'Create Template'}
