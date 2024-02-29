@@ -16,7 +16,7 @@ import Typography from '@/app/components/common/typography';
 import AddCustomer from '@/app/components/common/os-add-customer';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {insertDealReg} from '../../../../../redux/actions/dealReg';
 import {insertDealRegAddress} from '../../../../../redux/actions/dealRegAddress';
@@ -25,7 +25,7 @@ import {getAllPartner} from '../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
 
-const AddRegistrationForm = () => {
+const AddRegistrationForm: FC<any> = ({setShowModal}) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -56,9 +56,10 @@ const AddRegistrationForm = () => {
       const partnerPrograms = selectedData.PartnerPrograms.map(
         (program: any) => ({
           label: program.partner_program,
-          key: program.id,
+          value: program.id,
         }),
       );
+      console.log('partnerPrograms', partnerPrograms);
       return partnerPrograms;
     }
   };
@@ -377,6 +378,7 @@ const AddRegistrationForm = () => {
         };
         newarr.push(obj);
       });
+      // console.log('dealRegFormData', newarr, userInformation);
       setUpdatedDealRegData(newarr);
 
       dispatch(insertDealReg(newarr)).then((d: any) => {
@@ -390,7 +392,7 @@ const AddRegistrationForm = () => {
               // eslint-disable-next-line @typescript-eslint/no-shadow
               await dispatch(insertDealRegAddress(obj12)).then((d: any) => {
                 if (d) {
-                  router.push(`/dealRegDetail`);
+                  setShowModal(false);
                 }
               });
             }

@@ -16,4 +16,8 @@ export const DEALREG_API = {
     get(`${API.DEALREG.GetDealRegByOpportunityId}/${id}`) as Promise<
       AxiosResponse<any>
     >,
+  getDealRegByPartnerProgramId: (id: number) =>
+    get(`${API.DEALREG.GetDealRegByPartnerProgramId}/${id}`) as Promise<
+      AxiosResponse<any>
+    >,
 };

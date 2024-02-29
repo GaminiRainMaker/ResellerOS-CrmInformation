@@ -49,3 +49,14 @@ export const updatePartnerProgramById = createAsyncThunk(
     }
   },
 );
+export const getPartnerProgramById = createAsyncThunk(
+  'partnerProgram/getPartnerProgramById',
+  async (id: number, thunkApi) => {
+    try {
+      const res = await PARTNER_PROGRAM_API.getPartnerProgramById(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

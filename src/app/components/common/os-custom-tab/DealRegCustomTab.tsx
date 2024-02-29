@@ -93,7 +93,7 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
                     cursor="pointer"
                     name="Button 1"
                   >
-                    {element?.title}
+                    {element?.PartnerProgram?.partner_program}
                   </Typography>
                 </Space>
               </DealRegCustomTabHeaderStyle>

@@ -336,6 +336,8 @@ const SuperAdminPartner: React.FC = () => {
               setOpenPreviewModal(true);
               const formDataObject = JSON?.parse(record?.form_data);
               setformData(formDataObject);
+              // open modal to view form
+              // console.log(record?.form_data, 'formData');
             } else {
               router?.push(`/formBuilder?id=${record?.id}`);
             }
