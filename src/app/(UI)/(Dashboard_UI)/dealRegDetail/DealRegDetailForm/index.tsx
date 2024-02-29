@@ -14,6 +14,7 @@ import {getAllCustomer} from '../../../../../../redux/actions/customer';
 const DealRegDetailForm: FC<any> = (data) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
+  const {dealReg} = useAppSelector((state) => state.dealReg);
   const CommonFieldsItems = [
     {
       key: '1',
@@ -50,17 +51,20 @@ const DealRegDetailForm: FC<any> = (data) => {
       <Space style={{width: '100%'}} size={24} direction="vertical">
         <OsCollapseAdmin items={CommonFieldsItems} />
       </Space>
-
-      <Space
-        size={24}
-        direction="vertical"
-        style={{
-          width: '100%',
-          marginTop: '30px',
-        }}
-      >
-        <OsCollapseAdmin items={UniqueFieldsItems} />
-      </Space>
+      <>
+        {dealReg?.PartnerProgram?.form_data && (
+          <Space
+            size={24}
+            direction="vertical"
+            style={{
+              width: '100%',
+              marginTop: '30px',
+            }}
+          >
+            <OsCollapseAdmin items={UniqueFieldsItems} />
+          </Space>
+        )}
+      </>
     </Row>
   );
 };
