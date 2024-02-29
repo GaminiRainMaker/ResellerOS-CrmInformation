@@ -114,6 +114,8 @@ export const ToggleColStyled = styled(Col)`
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
+  width: fir-content;
+  height: auto;
 `;
 export const SiderDivStyled = styled.div`
   width: 20%;
