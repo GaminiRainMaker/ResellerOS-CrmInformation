@@ -16,7 +16,8 @@ const OsPartnerSelect: FC<any> = () => {
     dispatch(getAllPartner());
   }, []);
 
-  const partnerOptions = partnerData.map((dataAddressItem: any) => ({
+
+  const partnerOptions = partnerData?.approved?.map((dataAddressItem: any) => ({
     value: dataAddressItem.id,
     label: (
       <Typography color={token?.colorPrimaryText} name="Body 3/Regular">

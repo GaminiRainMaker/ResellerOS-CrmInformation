@@ -19,7 +19,6 @@ import {MailOutlined, PlayCircleOutlined} from '@ant-design/icons';
 import {useDroppable} from '@dnd-kit/core';
 import 'react-phone-number-input/style.css';
 
-import {FormBuilderMainInterFace} from '@/app/(UI)/(Dashboard_UI)/formBuilder/formBuilder.interface';
 import ContactInput from '@/app/components/common/os-contact';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import {
@@ -44,8 +43,9 @@ import {
 } from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import ItemName from './ItemName';
+// import { FormBuilderInterFaceCheck } from './formBuilder.interface';
 
-const FormBuilderMain: React.FC<FormBuilderMainInterFace> = ({
+const FormBuilderMain: React.FC<any> = ({
   cartItems,
   setCartItems,
   form,

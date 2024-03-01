@@ -7,7 +7,7 @@ import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {partnerOptions} from '@/app/utils/CONSTANTS';
-import {formatDate, getProgramOptions} from '@/app/utils/base';
+import {formatDate} from '@/app/utils/base';
 import {FC, useEffect, useState} from 'react';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setDealRegUpdateData} from '../../../../../../redux/slices/dealReg';
@@ -213,7 +213,7 @@ const CommonFields: FC<any> = (data) => {
                   defaultValue={data?.data?.partner_id}
                   onChange={(value) => {
                     handleDealRegInformationChange('partner_id', value);
-                    setPartnerProgramOptions(getProgramOptions(value));
+                    // setPartnerProgramOptions(getProgramOptions(value));
                   }}
                   options={partnerOptions}
                 />

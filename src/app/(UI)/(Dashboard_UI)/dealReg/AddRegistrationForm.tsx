@@ -45,13 +45,13 @@ const AddRegistrationForm: FC<any> = ({setShowModal}) => {
     dispatch(getAllPartner());
   }, []);
 
-  const partnerOptions = partnerData.map((partner: any) => ({
+  const partnerOptions = partnerData?.approved?.map((partner: any) => ({
     value: partner.id,
     label: partner.partner,
   }));
 
   const findPartnerProgramsById = (chosenId: number) => {
-    const selectedData = partnerData.find((item: any) => item.id === chosenId);
+    const selectedData = partnerData?.approved?.find((item: any) => item.id === chosenId);
     if (selectedData) {
       const partnerPrograms = selectedData.PartnerPrograms.map(
         (program: any) => ({
@@ -59,7 +59,6 @@ const AddRegistrationForm: FC<any> = ({setShowModal}) => {
           value: program.id,
         }),
       );
-      console.log('partnerPrograms', partnerPrograms);
       return partnerPrograms;
     }
   };

@@ -77,15 +77,19 @@ const SuperAdminPartner: React.FC = () => {
   const [finalPartnerProgramData, setFinalPartnerProgramData] = useState<any>();
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
   const [formData, setformData] = useState<any>();
+
   useEffect(() => {
     dispatch(getAllPartner());
     dispatch(getAllPartnerProgram());
   }, []);
 
-  const onActiveControl = (is_active: boolean, recordId: number) => {
+  console.log('activeTab', activeTab);
+
+  const onRowUpdate = (type: string, recordId: number, value: boolean) => {
+    const updateField = type === 'Active' ? 'is_active' : 'is_approved';
     const partnerObj = {
-      is_active,
       id: recordId,
+      [updateField]: value,
     };
     dispatch(updatePartnerById(partnerObj)).then(() => {
       dispatch(getAllPartner());
@@ -232,11 +236,35 @@ const SuperAdminPartner: React.FC = () => {
           size="default"
           value={record?.is_active}
           onChange={(e) => {
-            onActiveControl(e, record?.id);
+            onRowUpdate('Active', record?.id, e);
           }}
         />
       ),
     },
+  ];
+
+  const secondSuperPartnerColumns = [
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Approved
+        </Typography>
+      ),
+      dataIndex: 'is_approved',
+      key: 'is_approved',
+      render: (text: string, record: any) => (
+        <Switch
+          size="default"
+          value={record?.is_approved}
+          onChange={(e) => {
+            onRowUpdate('Approved', record?.id, e);
+          }}
+        />
+      ),
+    },
+  ];
+
+  const thirdSuperPartnerColumns = [
     {
       title: ' ',
       dataIndex: 'action',
@@ -266,6 +294,12 @@ const SuperAdminPartner: React.FC = () => {
         </Space>
       ),
     },
+  ];
+
+  const allColumns = [
+    ...SuperPartnerColumns,
+    ...(activeTab === 3 ? secondSuperPartnerColumns : []),
+    ...thirdSuperPartnerColumns,
   ];
 
   const PartnerProgramColumns = [
@@ -400,8 +434,8 @@ const SuperAdminPartner: React.FC = () => {
       key: '1',
       children: (
         <OsTable
-          columns={SuperPartnerColumns}
-          dataSource={PartnerData}
+          columns={allColumns}
+          dataSource={PartnerData?.approved}
           rowSelection={rowSelection}
           scroll
           locale={locale}
@@ -450,6 +484,42 @@ const SuperAdminPartner: React.FC = () => {
             />
           )}
         </>
+      ),
+    },
+    {
+      label: (
+        <Typography name="Body 4/Regular" onClick={() => setActiveTab(3)}>
+          In Request
+        </Typography>
+      ),
+      key: '3',
+      children: (
+        <OsTable
+          columns={allColumns}
+          dataSource={PartnerData?.requested}
+          rowSelection={rowSelection}
+          scroll
+          locale={locale}
+          loading={loading}
+        />
+      ),
+    },
+    {
+      label: (
+        <Typography name="Body 4/Regular" onClick={() => setActiveTab(4)}>
+          Rejected
+        </Typography>
+      ),
+      key: '4',
+      children: (
+        <OsTable
+          columns={allColumns}
+          dataSource={PartnerData?.rejected}
+          rowSelection={rowSelection}
+          scroll
+          locale={locale}
+          loading={loading}
+        />
       ),
     },
   ];

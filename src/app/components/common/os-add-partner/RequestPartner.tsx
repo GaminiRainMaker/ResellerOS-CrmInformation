@@ -23,11 +23,11 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({form, setOpen}) => {
       ...value,
       organization: userInformation?.organization,
     };
-    // dispatch(insertPartner(partnerObj)).then(() => {
-    //   form?.resetFields(['partner', 'partner_program']);
-    //   dispatch(getAllPartner());
-    // });
-    //   setOpen(false);
+    dispatch(insertPartner(partnerObj)).then(() => {
+      form?.resetFields(['partner', 'partner_program']);
+      dispatch(getAllPartner());
+    });
+    setOpen(false);
   };
 
   return (

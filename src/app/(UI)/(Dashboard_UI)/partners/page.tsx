@@ -227,7 +227,7 @@ const Partners: React.FC = () => {
       children: (
         <OsTable
           columns={PartnerColumns}
-          dataSource={PartnerData}
+          dataSource={PartnerData?.approved}
           rowSelection={rowSelection}
           scroll
           locale={locale}
@@ -280,7 +280,7 @@ const Partners: React.FC = () => {
       children: (
         <OsTable
           columns={PartnerColumns}
-          dataSource={PartnerData}
+          dataSource={PartnerData?.requested}
           rowSelection={rowSelection}
           scroll
           locale={locale}

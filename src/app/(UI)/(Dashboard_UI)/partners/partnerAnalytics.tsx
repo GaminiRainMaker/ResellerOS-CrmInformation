@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-param-reassign */
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -19,33 +20,41 @@ import {useAppSelector} from '../../../../../redux/hook';
 const PartnerAnalytics = () => {
   const [token] = useThemeToken();
   const {data: PartnerData} = useAppSelector((state) => state.partner);
-  const {data: PartnerProgramData} = useAppSelector((state) => state.partnerProgram);
+  const {data: PartnerProgramData} = useAppSelector(
+    (state) => state.partnerProgram,
+  );
   const {userInformation} = useAppSelector((state) => state.user);
   const [activeCount, setActiveCount] = useState<number>(0);
   const [inActiveCount, setInActiveCount] = useState<number>(0);
 
-  useEffect(() => {
-    const {active, inactive} = PartnerData.reduce(
-      (counts: any, entry: any) => {
-        if (entry.is_active) {
-          counts.active++;
-        } else {
-          counts.inactive++;
-        }
+  console.log('PartnerData', PartnerData);
 
-        return counts;
-      },
-      {active: 0, inactive: 0},
-    );
-    setActiveCount(active);
-    setInActiveCount(inactive);
+  useEffect(() => {
+    if (PartnerData && PartnerData?.approved) {
+      const {active, inactive} = PartnerData?.approved.reduce(
+        (counts: any, entry: any) => {
+          if (entry.is_active) {
+            counts.active++;
+          } else {
+            counts.inactive++;
+          }
+
+          return counts;
+        },
+        {active: 0, inactive: 0},
+      );
+      setActiveCount(active);
+      setInActiveCount(inactive);
+    }
   }, [PartnerData]);
 
   const analyticsData = [
     {
       key: 1,
       primary: (
-        <Typography name="Heading 3/Medium">{PartnerData?.length}</Typography>
+        <Typography name="Heading 3/Medium">
+          {PartnerData?.approved?.length}
+        </Typography>
       ),
       secondry: 'Partners',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
@@ -54,7 +63,9 @@ const PartnerAnalytics = () => {
     {
       key: 2,
       primary: (
-        <Typography name="Heading 3/Medium">{PartnerProgramData?.length}</Typography>
+        <Typography name="Heading 3/Medium">
+          {PartnerProgramData?.length}
+        </Typography>
       ),
       secondry: 'Partner Programs',
       icon: (

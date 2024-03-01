@@ -31,6 +31,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
     const partnerObj = {
       ...value,
       organization: userInformation?.organization,
+      is_approved: true,
     };
     if (drawer) {
       dispatch(updatePartnerById({...partnerObj, id: formPartnerData?.id}));
