@@ -3,8 +3,8 @@ import {requestInterceptor} from './interceptors/request.interceptor';
 import {responseInterceptor} from './interceptors/response.interceptor';
 
 const client = axios.create({
-  baseURL: 'http://localhost:4000',
-  // baseURL: 'https://api.reselleros.com',
+  // baseURL: 'http://localhost:4000',
+  baseURL: 'https://api.reselleros.com',
   withCredentials: false,
 });
 
