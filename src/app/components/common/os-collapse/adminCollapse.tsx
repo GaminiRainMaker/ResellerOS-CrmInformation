@@ -9,12 +9,17 @@ const OsCollapseAdmin: FC<CollapseProps> = ({items}, props) => {
   const [token] = useThemeToken();
   return (
     <OsCollapseStyleForAdmin
+      defaultActiveKey={['1', '2', '3']}
       expandIconPosition="end"
       items={items}
       ghost
       {...props}
       expandIcon={() => (
-        <ChevronDownIcon className="viewIcon" width={24} style={{color: token.colorInfoBorder}} />
+        <ChevronDownIcon
+          className="viewIcon"
+          width={24}
+          style={{color: token.colorInfoBorder}}
+        />
       )}
     />
   );

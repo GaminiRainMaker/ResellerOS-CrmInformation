@@ -13,7 +13,7 @@ import React, {useEffect, useState} from 'react';
 import EditFiledDetails from './detailsFieldEdit';
 
 import FieldCard from './FieldCard';
-import { getPartnerProgramById } from '../../../../../redux/actions/partnerProgram';
+import {getPartnerProgramById} from '../../../../../redux/actions/partnerProgram';
 
 const {Sider, Content} = Layout;
 
@@ -23,7 +23,7 @@ const FormBuilder = () => {
   const [activeContentIndex, setActiveContentIndex] = useState<number>(0);
   const [activeSetionIndex, setActiveSectionIndex] = useState<number>(0);
   const [form] = Form.useForm();
-  const [sectionIndexActive, setSectionIndexActive] = useState<number>(0);
+  const [sectionIndexActive, setSectionIndexActive] = useState<any>(0);
   const [contentActiveIndex, setContentActiveIndex] = useState<number>(0);
 
   const [cartItems, setCartItems] = useState<any>([]);

@@ -23,18 +23,18 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
   selectedUserId,
 }) => {
   const dispatch = useAppDispatch();
-  const [activeKey, setActiveKey] = useState<string>('0');
+  const [activeKey, setActiveKey] = useState<any>(0);
   const [token] = useThemeToken();
   const [tabItems, setTabItems] = useState([]);
 
-  const handleTabChange = (key: string) => {
+  const handleTabChange = (key: any) => {
     setActiveKey(key);
   };
 
   useEffect(() => {
     const tempItems: any = [];
     if (tabs) {
-      tabs?.forEach((element: any, index: string) => {
+      tabs?.forEach((element: any, index: number) => {
         tempItems.push({
           key: index,
           label: (
@@ -50,7 +50,9 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
                 token={token}
                 style={{
                   background:
-                    activeKey === index ? token.colorInfo : token.colorInfoBg,
+                    activeKey?.toString() === index?.toString()
+                      ? token.colorInfo
+                      : token.colorInfoBg,
                 }}
                 onClick={() =>
                   // console.log("elementelement",element)
@@ -62,12 +64,12 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
                     type="circle"
                     percent={30}
                     trailColor={
-                      activeKey === index
+                      activeKey?.toString() === index?.toString()
                         ? token.colorBgContainer
                         : token?.colorTextDisabled
                     }
                     strokeColor={
-                      activeKey === index
+                      activeKey?.toString() === index?.toString()
                         ? token.colorTextDisabled
                         : token?.colorBorderSecondary
                     }
@@ -75,7 +77,7 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
                       <span
                         style={{
                           color:
-                            activeKey === index
+                            activeKey?.toString() === index?.toString()
                               ? token.colorBgContainer
                               : token?.colorTextDisabled,
                         }}
@@ -86,7 +88,7 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
                   <Typography
                     style={{
                       color:
-                        activeKey === index
+                        activeKey?.toString() === index?.toString()
                           ? token.colorBgContainer
                           : token?.colorTextDisabled,
                     }}
@@ -117,7 +119,7 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
     <CustmDealRegTab
       token={token}
       activeKey={activeKey}
-      defaultActiveKey="1"
+      defaultActiveKey="0"
       items={tabItems}
       onChange={handleTabChange}
     />
