@@ -87,6 +87,7 @@ const SuperAdminPartner: React.FC = () => {
 
   const onRowUpdate = (type: string, recordId: number, value: boolean) => {
     const updateField = type === 'Active' ? 'is_active' : 'is_approved';
+
     const partnerObj = {
       id: recordId,
       [updateField]: value,
@@ -258,6 +259,24 @@ const SuperAdminPartner: React.FC = () => {
           value={record?.is_approved}
           onChange={(e) => {
             onRowUpdate('Approved', record?.id, e);
+          }}
+        />
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Reject
+        </Typography>
+      ),
+      dataIndex: 'is_approved',
+      key: 'is_approved',
+      render: (text: string, record: any) => (
+        <Switch
+          size="default"
+          value={record?.is_approved}
+          onChange={(e) => {
+            onRowUpdate('Approved', record?.id, false);
           }}
         />
       ),
