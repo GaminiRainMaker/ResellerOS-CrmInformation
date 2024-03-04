@@ -48,6 +48,7 @@ import {
   updateQuoteByQuery,
   updateQuoteWithNewlineItemAddByID,
 } from '../../../../../redux/actions/quote';
+
 import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
 import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
 import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
@@ -230,7 +231,9 @@ const AllQuote: React.FC = () => {
         }
         formattedData[rowNum][item.label?.toLowerCase()] = item.text;
       });
+
       formattedArray = Object.values(formattedData);
+
       <>
         {uploadFileDataItem?.data?.result?.[0]?.prediction?.forEach(
           (item: any) => {
@@ -245,6 +248,7 @@ const AllQuote: React.FC = () => {
         opportunity_id: opportunityId,
         organization: userInformation.organization,
         file_name: moment(new Date()).format('MM/DD/YYYY'),
+        quote_json: [JSON?.stringify(formattedArray)],
       });
     });
     const newrrLineItems: any = [];
