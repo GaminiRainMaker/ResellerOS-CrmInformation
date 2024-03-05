@@ -13,25 +13,26 @@ import {
   UserGroupIcon,
 } from '@heroicons/react/24/outline';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import AddOpportunity from '@/app/components/common/os-add-opportunity';
 import OsButton from '@/app/components/common/os-button';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import EmptyContainer from '@/app/components/common/os-empty-container';
-import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import CommonSelect from '@/app/components/common/os-select';
 import CommonStageSelect from '@/app/components/common/os-stage-select';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
-import {StageValue} from '@/app/utils/CONSTANTS';
-import {SearchOutlined} from '@ant-design/icons';
-import {MenuProps, TabsProps} from 'antd';
-import {useEffect, useState} from 'react';
+import { StageValue } from '@/app/utils/CONSTANTS';
+import { MenuProps, TabsProps } from 'antd';
+import { Option } from 'antd/es/mentions';
+import { useEffect, useState } from 'react';
 import {
   deleteOpportunity,
   getAllOpportunity,
@@ -39,7 +40,7 @@ import {
   queryOpportunity,
   updateOpportunity,
 } from '../../../../../redux/actions/opportunity';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 
 const CrmOpportunity: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -55,13 +56,21 @@ const CrmOpportunity: React.FC = () => {
     loading,
     deletedCount: countDeletedOpp,
   } = useAppSelector((state) => state.Opportunity);
-  const [searchCustomerData, setSearchCustomerData] = useState<any>();
   const [formValue, setFormValue] = useState<any>();
   const [opportunityValueData, setOpportunityValueData] = useState<any>();
 
-  const searchOpportunity = async () => {
-    dispatch(queryOpportunity(searchCustomerData));
-  };
+  const [query, setQuery] = useState<{
+    opportunity: string | null;
+    customer: string | null;
+  }>({
+    opportunity: null,
+    customer: null,
+  });
+  const searchQuery = useDebounceHook(query, 500);
+
+  useEffect(() => {
+    dispatch(queryOpportunity(searchQuery));
+  }, [searchQuery]);
 
   const deleteSelectedIds = async () => {
     const data = {Ids: deleteIds};
@@ -81,17 +90,16 @@ const CrmOpportunity: React.FC = () => {
   };
 
   useEffect(() => {
-    dispatch(getAllOpportunity());
     dispatch(getdeleteOpportunity(''));
   }, []);
 
-  useEffect(() => {
-    setTimeout(() => {
-      dispatch(getAllOpportunity());
-    }, 1000);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     dispatch(getAllOpportunity());
+  //   }, 1000);
 
-    dispatch(getdeleteOpportunity(''));
-  }, [!showModal]);
+  //   dispatch(getdeleteOpportunity(''));
+  // }, [!showModal]);
 
   useEffect(() => {
     setOpportunityValueData(opportunityData);
@@ -338,6 +346,14 @@ const CrmOpportunity: React.FC = () => {
     },
   ];
 
+  const uniqueOpportunity = Array.from(
+    new Set(opportunityData.map((opportunity: any) => opportunity.title)),
+  );
+
+  const uniqueCustomer = Array.from(
+    new Set(opportunityData.map((contact: any) => contact.Customer?.name)),
+  );
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -399,49 +415,75 @@ const CrmOpportunity: React.FC = () => {
               <Space size={12} align="center">
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Opportunity</Typography>
-                  <OsInput
+                  <CommonSelect
                     style={{width: '200px'}}
                     placeholder="Search here"
-                    onChange={(e) => {
-                      setSearchCustomerData({
-                        ...searchCustomerData,
-                        title: e.target.value,
+                    showSearch
+                    onSearch={(e) => {
+                      setQuery({
+                        ...query,
+                        opportunity: e,
                       });
-                      // setQuery(e.target.value);
                     }}
-                    prefix={<SearchOutlined style={{color: '#949494'}} />}
-                  />
+                    onChange={(e) => {
+                      setQuery({
+                        ...query,
+                        opportunity: e,
+                      });
+                    }}
+                    value={query?.opportunity}
+                  >
+                    {uniqueOpportunity?.map((opportunity: any) => (
+                      <Option key={opportunity} value={opportunity}>
+                        {opportunity}
+                      </Option>
+                    ))}
+                  </CommonSelect>
                 </Space>
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Customer Account</Typography>
-                  <OsInput
+                  <CommonSelect
                     style={{width: '200px'}}
                     placeholder="Search here"
-                    onChange={(e) => {
-                      setSearchCustomerData({
-                        ...searchCustomerData,
-                        name: e.target.value,
+                    showSearch
+                    onSearch={(e) => {
+                      setQuery({
+                        ...query,
+                        customer: e,
                       });
                     }}
-                    prefix={<SearchOutlined style={{color: '#949494'}} />}
-                  />
+                    onChange={(e) => {
+                      setQuery({
+                        ...query,
+                        customer: e,
+                      });
+                    }}
+                    value={query?.customer}
+                  >
+                    {uniqueCustomer?.map((customer: any) => (
+                      <Option key={customer} value={customer}>
+                        {customer}
+                      </Option>
+                    ))}
+                  </CommonSelect>
                 </Space>
                 <div
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: '20px',
-                    cursor: 'pointer',
+                    marginTop: '15px',
                   }}
                 >
                   <Typography
                     cursor="pointer"
                     name="Button 1"
                     color="#C6CDD5"
-                    onClick={searchOpportunity}
+                    onClick={() => {
+                      setQuery({
+                        opportunity: null,
+                        customer: null,
+                      });
+                    }}
                   >
-                    Apply
+                    Reset
                   </Typography>
                 </div>
               </Space>

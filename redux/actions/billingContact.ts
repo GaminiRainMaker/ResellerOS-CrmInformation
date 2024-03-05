@@ -63,11 +63,11 @@ export const getBillingContactBySearch = createAsyncThunk(
 
 export const queryContact = createAsyncThunk(
   'billingContact/query',
-  async (query: string, thunkApi) => {
+  async (query: any, thunkApi) => {
     try {
       const obj = {
-        search: query,
-        // customer_id,
+        contact: query?.contact,
+        customer: query?.customer,
       };
       const res = await BILLINGADDRESS_API.query(obj);
       return res.data;

@@ -21,7 +21,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
-import OsInput from '@/app/components/common/os-input';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
@@ -29,10 +29,10 @@ import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
 import {MenuProps, TabsProps} from 'antd';
+import {Option} from 'antd/es/mentions';
 import {useEffect, useState} from 'react';
 import {
   deleteBillingContact,
-  getBillingContactBySearch,
   queryContact,
   updateBillingContact,
 } from '../../../../../redux/actions/billingContact';
@@ -56,38 +56,32 @@ const CrmAccount: React.FC = () => {
     (state) => state.billingContact,
   );
   const [tableData, setTableData] = useState<any>();
-
   const [deletedData, setDeletedData] = useState<any>();
-  const [billingFilterSeach, setBillingFilterSearch] = useState<any>();
-  const [query, setQuery] = useState('');
-  const searchQuery = useDebounceHook(query, 2000);
+  const [query, setQuery] = useState<{
+    contact: string | null;
+    customer: string | null;
+  }>({
+    contact: null,
+    customer: null,
+  });
+  const searchQuery = useDebounceHook(query, 500);
 
   useEffect(() => {
     dispatch(queryContact(searchQuery));
   }, [searchQuery]);
 
-  const searchBillingContacts = async () => {
-    dispatch(getBillingContactBySearch(billingFilterSeach));
-  };
-
   useEffect(() => {
     const deletedAll = filteredData?.filter((item: any) => item?.is_deleted);
-    // const onLive = billingData?.filter((item: any) => !item?.is_deleted);
-    // setTableDataforBillContact(onLive);
-    // const bilingOnly = onLive?.filter((item: any) => item?.billing);
-    // const deletedBill = bilingOnly?.filter((item: any) => item?.is_deleted);
-
-    // setBillingDataTable(bilingOnly);
     const setDeleted = deletedAll;
     setDeletedData(setDeleted);
   }, [filteredData, activeTab]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      dispatch(getAllCustomer(''));
-      dispatch(queryContact(''));
-    }, 1000);
-  }, [showModal, open]);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     // dispatch(getAllCustomer(''));
+  //     dispatch(queryContact(query));
+  //   }, 1000);
+  // }, [showModal, open]);
 
   useEffect(() => {
     const optionValues: any = [];
@@ -293,19 +287,26 @@ const CrmAccount: React.FC = () => {
       ),
     },
   ];
-  // const uploadImageTOBackend = async (newFileList: any) => {
-  //   const data = await getBase64(newFileList);
-  //   const mediaType = newFileList?.type.split('/')[0];
-  //   // const loaction = await uploadImage(data, mediaType, newFileList);
 
-  //   dispatch(
-  //     uploadToAws({
-  //       document: data,
-  //     }),
-  //   ).then((payload: any) => {
-  //     console.log('435435435', payload?.payload?.data?.Location);
-  //   });
-  // };
+  const uniqueContact = Array.from(
+    new Set(filteredData.map((contact: any) => contact.billing_first_name)),
+  );
+
+  const uniqueCustomer = Array.from(
+    new Set(filteredData.map((contact: any) => contact.Customer?.name)),
+  );
+
+  const locale = {
+    emptyText: (
+      <EmptyContainer
+        title="No Data"
+        actionButton="Add Customer"
+        onClick={() => {
+          setShowModal(true);
+        }}
+      />
+    ),
+  };
 
   return (
     <>
@@ -334,24 +335,7 @@ const CrmAccount: React.FC = () => {
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              Contact{' '}
-              <div>
-                {/* <Upload
-                  onChange={(e: any) => {
-                    uploadImageTOBackend(e.fileList[0]?.originFileObj);
-                    // Papa.parse(e.fileList[0]?.originFileObj, {
-                    //   header: true,
-                    //   skipEmptyLines: true,
-                    //   complete(results: any) {
-                    //     console.log(results.data);
-                    //   },
-                    // });
-                  }}
-                  // accept=".txt, .csv"
-                >
-                  CSV
-                </Upload> */}
-              </div>
+              Contact
             </Typography>
           </Col>
           <Col>
@@ -386,42 +370,73 @@ const CrmAccount: React.FC = () => {
               <Space size={12} align="center">
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Contact Name</Typography>
-                  <OsInput
-                    style={{width: '180px'}}
-                    placeholder="Search Here"
-                    // options={bundleOptions}
-                    onChange={(e) => {
-                      setBillingFilterSearch({
-                        ...billingFilterSeach,
-                        name: e.target.value,
+                  <CommonSelect
+                    style={{width: '200px'}}
+                    placeholder="Search here"
+                    showSearch
+                    onSearch={(e) => {
+                      setQuery({
+                        ...query,
+                        contact: e,
                       });
-                      setQuery(e.target.value);
                     }}
-                  />
+                    onChange={(e) => {
+                      setQuery({
+                        ...query,
+                        contact: e,
+                      });
+                    }}
+                    value={query?.contact}
+                  >
+                    {uniqueContact?.map((contact: any) => (
+                      <Option key={contact} value={contact}>
+                        {contact}
+                      </Option>
+                    ))}
+                  </CommonSelect>
                 </Space>
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Customer Account</Typography>
                   <CommonSelect
-                    style={{width: '180px'}}
-                    placeholder="Search Here"
-                    options={tableData}
-                    onChange={(e) => {
-                      setBillingFilterSearch({
-                        ...billingFilterSeach,
-                        customer_id: e,
+                    style={{width: '200px'}}
+                    placeholder="Search here"
+                    showSearch
+                    onSearch={(e) => {
+                      setQuery({
+                        ...query,
+                        customer: e,
                       });
-                      // setSelectedValue(e);
                     }}
-                  />
+                    onChange={(e) => {
+                      setQuery({
+                        ...query,
+                        customer: e,
+                      });
+                    }}
+                    value={query?.customer}
+                  >
+                    {uniqueCustomer?.map((customer: any) => (
+                      <Option key={customer} value={customer}>
+                        {customer}
+                      </Option>
+                    ))}
+                  </CommonSelect>
                 </Space>
-                <Typography
-                  cursor="pointer"
-                  name="Button 1"
-                  color="#C6CDD5"
-                  onClick={searchBillingContacts}
-                >
-                  Apply
-                </Typography>
+                <div style={{marginTop: '15px'}}>
+                  <Typography
+                    cursor="pointer"
+                    name="Button 1"
+                    color="#C6CDD5"
+                    onClick={() => {
+                      setQuery({
+                        contact: null,
+                        customer: null,
+                      });
+                    }}
+                  >
+                    Reset
+                  </Typography>
+                </div>
               </Space>
             }
             items={tabItems.map((tabItem: any, index: number) => ({
@@ -435,6 +450,7 @@ const CrmAccount: React.FC = () => {
                   rowSelection={rowSelection}
                   scroll
                   loading={loading}
+                  locale={locale}
                 />
               ),
               ...tabItem,
