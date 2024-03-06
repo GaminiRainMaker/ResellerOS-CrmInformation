@@ -20,7 +20,6 @@ import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import AddOpportunity from '@/app/components/common/os-add-opportunity';
 import OsButton from '@/app/components/common/os-button';
-import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
@@ -34,6 +33,7 @@ import {StageValue} from '@/app/utils/CONSTANTS';
 import {MenuProps, TabsProps} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useEffect, useState} from 'react';
+import {useRouter} from 'next/navigation';
 import {
   deleteOpportunity,
   getAllOpportunity,
@@ -42,6 +42,7 @@ import {
   updateOpportunity,
 } from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import EditOpportunity from './EditOpportunity';
 
 const CrmOpportunity: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -60,6 +61,7 @@ const CrmOpportunity: React.FC = () => {
   const [formValue, setFormValue] = useState<any>();
   const [opportunityValueData, setOpportunityValueData] = useState<any>();
   const {abbreviate} = useAbbreviationHook(0);
+  const router = useRouter();
 
   const [query, setQuery] = useState<{
     opportunity: string | null;
@@ -83,12 +85,6 @@ const CrmOpportunity: React.FC = () => {
     }, 1000);
     setDeleteIds([]);
     setShowModalDelete(false);
-  };
-
-  const updateOpportunityData = async () => {
-    await dispatch(updateOpportunity(formValue));
-    dispatch(getAllOpportunity());
-    setOpen(false);
   };
 
   useEffect(() => {
@@ -154,7 +150,6 @@ const CrmOpportunity: React.FC = () => {
       ),
       dataIndex: 'title',
       key: 'title',
-      width: 187,
       render: (text: string, record: any) => (
         <Typography
           name="Body 4/Regular"
@@ -175,12 +170,11 @@ const CrmOpportunity: React.FC = () => {
       ),
       dataIndex: 'customer_name',
       key: 'customer_name',
-      width: 187,
       render: (text: string, record: any) => (
         <Typography
           name="Body 4/Regular"
           onClick={() => {
-            window.open(`/accountDetails?id=${record?.Customer?.id}`);
+            router.push(`/accountDetails?id=${record?.Customer?.id}`);
           }}
           hoverOnText
         >
@@ -196,7 +190,6 @@ const CrmOpportunity: React.FC = () => {
       ),
       dataIndex: 'amount',
       key: 'amount',
-      width: 130,
       render: (text: string) => (
         <Typography name="Body 4/Regular">
           {`$ ${abbreviate(Number(text ?? 0))}` ?? '--'}
@@ -211,11 +204,9 @@ const CrmOpportunity: React.FC = () => {
       ),
       dataIndex: 'stages',
       key: 'stages',
-      width: 130,
       render: (text: string, record: any) => (
         <CommonStageSelect
           options={StageValue}
-          // value={text}
           onChange={(e: any) => {
             const dataa = {id: record?.id, stages: e};
             dispatch(updateOpportunity(dataa));
@@ -236,12 +227,14 @@ const CrmOpportunity: React.FC = () => {
       ),
       dataIndex: 'quotesForms',
       key: 'quotesForms',
-      width: 130,
-      render: () => (
+      render: (text: string, record: any) => (
         <Typography
           color={token?.colorLink}
           name="Body 4/Bold"
           cursor="pointer"
+          onClick={() => {
+            router.push(`/opportunityDetail?id=${record?.id}`);
+          }}
         >
           View All
         </Typography>
@@ -251,7 +244,6 @@ const CrmOpportunity: React.FC = () => {
       title: ' ',
       dataIndex: 'actions',
       key: 'actions',
-      width: 94,
       render: (text: string, record: any) => (
         <Space size={18}>
           <PencilSquareIcon
@@ -364,6 +356,8 @@ const CrmOpportunity: React.FC = () => {
   const uniqueCustomer = Array.from(
     new Set(opportunityData.map((contact: any) => contact.Customer?.name)),
   );
+
+  console.log('formValue123', formValue);
 
   return (
     <>
@@ -530,38 +524,15 @@ const CrmOpportunity: React.FC = () => {
         setDeleteIds={setDeleteIds}
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteSelectedIds}
-        description="Are you sure you want to delete this contact?"
-        heading="Delete Contact"
+        description="Are you sure you want to delete this opportunity?"
+        heading="Delete Opportunity"
       />
-
-      <OsDrawer
-        title={
-          <Typography name="Body 1/Regular">Opportunity Details</Typography>
-        }
-        placement="right"
-        onClose={() => setOpen((p) => !p)}
+      <EditOpportunity
+        setFormValue={setFormValue}
+        formValue={formValue}
         open={open}
-        width={450}
-        footer={
-          <Row style={{width: '100%', float: 'right'}}>
-            {' '}
-            <OsButton
-              btnStyle={{width: '100%'}}
-              buttontype="PRIMARY"
-              text="UPDATE CHANGES"
-              clickHandler={updateOpportunityData}
-            />
-          </Row>
-        }
-      >
-        <AddOpportunity
-          setFormValue={setFormValue}
-          formValue={formValue}
-          setShowModal={setShowModal}
-          tableData={tableData}
-          drawer="drawer"
-        />
-      </OsDrawer>
+        setOpen={setOpen}
+      />
     </>
   );
 };
