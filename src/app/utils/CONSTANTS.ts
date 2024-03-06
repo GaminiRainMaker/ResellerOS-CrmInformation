@@ -92,8 +92,8 @@ export const quoteDummyData = [
 
 export const StageValue = [
   {value: 'Commit', label: 'Commit'},
-  {value: 'Negotiate', label: 'Negotiate'},
   {value: 'Develop', label: 'Develop'},
+  {value: 'Negotiate', label: 'Negotiate'},
   {value: 'Qualify', label: 'Qualify'},
   {value: 'Prove', label: 'Prove'},
 ];

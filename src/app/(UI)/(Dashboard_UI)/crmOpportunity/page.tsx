@@ -1,3 +1,6 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable eqeqeq */
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable react-hooks/exhaustive-deps */
 
 'use client';
@@ -59,7 +62,9 @@ const CrmOpportunity: React.FC = () => {
     deletedCount: countDeletedOpp,
   } = useAppSelector((state) => state.Opportunity);
   const [formValue, setFormValue] = useState<any>();
-  const [opportunityValueData, setOpportunityValueData] = useState<any>();
+  const [activeOpportunity, setActiveOpportunity] = useState<any>();
+  const [selectedStage, setSelectedStage] = useState('Negotiate'); // Default stage
+
   const {abbreviate} = useAbbreviationHook(0);
   const router = useRouter();
 
@@ -98,10 +103,6 @@ const CrmOpportunity: React.FC = () => {
 
   //   dispatch(getdeleteOpportunity(''));
   // }, [!showModal]);
-
-  useEffect(() => {
-    setOpportunityValueData(opportunityData);
-  }, [opportunityData]);
 
   const analyticsData = [
     {
@@ -291,19 +292,37 @@ const CrmOpportunity: React.FC = () => {
     ),
   };
 
+  useEffect(() => {
+    if (activeTab && opportunityData.length > 0) {
+      const quoteItems =
+        activeTab === '3'
+          ? opportunityData?.filter((item: any) => item.stages === 'Develop')
+          : activeTab == '1'
+            ? opportunityData
+            : activeTab === '2'
+              ? opportunityData?.filter((item: any) => item.stages === 'Commit')
+              : activeTab === '4'
+                ? opportunityData?.filter(
+                    (item: any) => item.stages === 'Negotiate',
+                  )
+                : activeTab === '5'
+                  ? opportunityData?.filter(
+                      (item: any) => item.stages === 'Qualify',
+                    )
+                  : activeTab === '6'
+                    ? opportunityData?.filter(
+                        (item: any) => item.stages === 'Prove',
+                      )
+                    : opportunityData;
+      setActiveOpportunity(quoteItems);
+    } else {
+      setActiveOpportunity([]);
+    }
+  }, [activeTab, opportunityData]);
+
   const tabItems: TabsProps['items'] = [
     {
       label: <Typography name="Body 4/Regular">All</Typography>,
-      children: (
-        <OsTable
-          columns={OpportunityColumns}
-          dataSource={opportunityValueData}
-          rowSelection={rowSelection}
-          scroll
-          locale={locale}
-          loading={loading}
-        />
-      ),
       key: '1',
     },
     {
@@ -356,8 +375,6 @@ const CrmOpportunity: React.FC = () => {
   const uniqueCustomer = Array.from(
     new Set(opportunityData.map((contact: any) => contact.Customer?.name)),
   );
-
-  console.log('formValue123', formValue);
 
   return (
     <>
@@ -497,6 +514,17 @@ const CrmOpportunity: React.FC = () => {
             items={tabItems.map((tabItem: any, index: number) => ({
               key: `${index + 1}`,
               label: tabItem?.label,
+              children: (
+                <OsTable
+                  key={tabItem?.key}
+                  columns={OpportunityColumns}
+                  dataSource={activeOpportunity}
+                  scroll
+                  loading={loading}
+                  locale={locale}
+                  rowSelection={rowSelection}
+                />
+              ),
               ...tabItem,
             }))}
           />
