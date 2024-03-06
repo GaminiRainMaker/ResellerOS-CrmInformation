@@ -16,7 +16,7 @@
 'use client';
 
 import Typography from '@/app/components/common/typography';
-import {EyeIcon, PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {PlusIcon} from '@heroicons/react/24/outline';
 // eslint-disable-next-line import/no-extraneous-dependencies
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -31,8 +31,7 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import {formatDate} from '@/app/utils/base';
-import {Form, MenuProps, TabsProps} from 'antd';
+import {Form, TabsProps} from 'antd';
 import moment from 'moment';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -58,6 +57,8 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import UploadFile from '../generateQuote/UploadFile';
 import RecentSection from './RecentSection';
 import QuoteAnalytics from './analytics';
+import getColumns from './tableColumns';
+import {dropDownItems} from './constants';
 
 interface FormattedData {
   [key: string]: {
@@ -79,8 +80,10 @@ const AllQuote: React.FC = () => {
   const [deletedQuote, setDeletedQuote] = useState<React.Key[]>([]);
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
   const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
-  const [fromDate, setFromDate] = useState(null);
-  const [toDate, setToDate] = useState(null);
+  const [fromToDates, setFromToDates] = useState({
+    beforeDays: null,
+    afterDays: null,
+  });
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -100,20 +103,10 @@ const AllQuote: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    let obj = {};
-    if (toDate && fromDate) {
-      obj = {
-        beforeDays: toDate,
-        afterDays: fromDate,
-      };
+    if (Object.keys(fromToDates).length > 0) {
+      dispatch(getQuotesByDateFilter(fromToDates));
     }
-    dispatch(getQuotesByDateFilter(obj));
-  }, [fromDate, toDate]);
-
-  const handleReset = () => {
-    setFromDate(null);
-    setToDate(null);
-  };
+  }, [fromToDates]);
 
   useEffect(() => {
     if (filteredData && filteredData?.length > 0) {
@@ -428,7 +421,9 @@ const AllQuote: React.FC = () => {
     setShowModal(false);
     setUploadFileData([]);
   };
-
+  const editQuote = (quoteId: string) => {
+    router.push(`/generateQuote?id=${quoteId}`);
+  };
   const deleteQuote = async () => {
     const data = {Ids: deleteIds};
     await dispatch(deleteQuoteById(data));
@@ -439,123 +434,13 @@ const AllQuote: React.FC = () => {
     setShowModalDelete(false);
     form.resetFields(['opportunity_id', 'customer_id']);
   };
-  const Quotecolumns = [
-    {
-      title: (
-        <Typography
-          name="Body 4/Medium"
-          className="dragHandler"
-          color={token?.colorPrimaryText}
-        >
-          File Name
-        </Typography>
-      ),
-      dataIndex: 'file_name',
-      key: 'file_name',
-      width: 130,
-      render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
-          {text ?? formatDate(record?.createdAt)}
-        </Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography
-          name="Body 4/Medium"
-          className="dragHandler"
-          color={token?.colorPrimaryText}
-        >
-          Opportunity
-        </Typography>
-      ),
-      dataIndex: 'opportunity',
-      key: 'opportunity',
-      width: 187,
-      render: (text: string, record: any) => (
-        <Typography
-          name="Body 4/Regular"
-          onClick={() => {
-            window.open(`/opportunityDetail?id=${record?.Opportunity?.id}`);
-          }}
-          hoverOnText
-        >
-          {record?.Opportunity?.title ?? '--'}
-        </Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography
-          name="Body 4/Medium"
-          className="dragHandler"
-          color={token?.colorPrimaryText}
-        >
-          Customer Name
-        </Typography>
-      ),
-      dataIndex: 'customer_name',
-      key: 'customer_name',
-      width: 187,
-      render: (text: string, record: any) => (
-        <Typography
-          name="Body 4/Regular"
-          onClick={() => {
-            window.open(`/accountDetails?id=${record?.Customer?.id}`);
-          }}
-          hoverOnText
-        >
-          {record?.Customer?.name ?? '--'}
-        </Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography
-          name="Body 4/Medium"
-          className="dragHandler"
-          color={token?.colorPrimaryText}
-        >
-          Status
-        </Typography>
-      ),
-      dataIndex: 'status',
-      key: 'status',
-      width: 187,
-      render: (text: string, record: any) => {
-        return statusWrapper(record);
-      },
-    },
-    {
-      title: ' ',
-      dataIndex: 'actions',
-      key: 'actions',
-      width: 94,
-      render: (text: string, record: any) => (
-        <Space size={18}>
-          <EyeIcon
-            height={24}
-            width={24}
-            color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              router.push(`/generateQuote?id=${record?.id}`);
-            }}
-          />
-          <TrashIcon
-            height={24}
-            width={24}
-            color={token.colorError}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              setDeleteIds([record?.id]);
-              setShowModalDelete(true);
-            }}
-          />
-        </Space>
-      ),
-    },
-  ];
+  const Quotecolumns = getColumns(
+    token,
+    statusWrapper,
+    editQuote,
+    setDeleteIds,
+    setShowModalDelete,
+  );
 
   const markAsComplete = async () => {
     if (deleteIds && deleteIds?.length > 0) {
@@ -694,21 +579,6 @@ const AllQuote: React.FC = () => {
     },
   ];
 
-  const dropDownItemss: MenuProps['items'] = [
-    {
-      key: '1',
-      label: <Typography name="Body 3/Regular">Select All</Typography>,
-    },
-    {
-      key: '2',
-      label: <Typography name="Body 3/Regular">Download Selected</Typography>,
-    },
-    {
-      key: '3',
-      label: <Typography name="Body 3/Regular">Delete Selected</Typography>,
-    },
-  ];
-
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -744,7 +614,7 @@ const AllQuote: React.FC = () => {
               />
 
               <Space>
-                <OsDropdown menu={{items: dropDownItemss}} />
+                <OsDropdown menu={{items: dropDownItems}} />
               </Space>
             </div>
           </Col>
@@ -762,20 +632,24 @@ const AllQuote: React.FC = () => {
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">From Date</Typography>
                   <CommonDatePicker
-                    value={fromDate}
+                    value={fromToDates?.afterDays}
                     placeholder="MM/DD/YYYY"
                     onChange={(v: any) => {
-                      setFromDate(v);
+                      const obj: any = {...fromToDates};
+                      obj.afterDays = v;
+                      setFromToDates(v);
                     }}
                   />
                 </Space>
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">To Date</Typography>
                   <CommonDatePicker
-                    value={toDate}
+                    value={fromToDates?.beforeDays}
                     placeholder="MM/DD/YYYY"
                     onChange={(v: any) => {
-                      setToDate(v);
+                      const obj: any = {...fromToDates};
+                      obj.beforeDays = v;
+                      setFromToDates(v);
                     }}
                   />
                 </Space>
@@ -792,7 +666,9 @@ const AllQuote: React.FC = () => {
                     name="Button 1"
                     style={{cursor: 'pointer'}}
                     color={token?.colorLink}
-                    onClick={handleReset}
+                    onClick={() => {
+                      setFromToDates({beforeDays: null, afterDays: null});
+                    }}
                   >
                     Reset
                   </Typography>
