@@ -25,7 +25,7 @@ const EditorFile = () => {
   const [headerValues, setHeaderValues] = useState<any>();
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(getQuoteById(5)).then((d: any) => {
+    dispatch(getQuoteById(1)).then((d: any) => {
       if (d?.payload) {
         const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
         setQuoteItems(dataa);
