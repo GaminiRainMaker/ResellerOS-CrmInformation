@@ -1,4 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
+
+'use client';
+
 import Handsontable from 'handsontable';
 
 const headerAlignments = new Map([
