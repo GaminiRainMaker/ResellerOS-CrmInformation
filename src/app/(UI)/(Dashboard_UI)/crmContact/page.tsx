@@ -143,7 +143,7 @@ const CrmAccount: React.FC = () => {
     },
     {
       key: 3,
-      primary: <div>{filteredData.length}</div>,
+      primary: <div>{filteredData?.length}</div>,
       secondry: 'Contacts',
       icon: <PhoneIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,

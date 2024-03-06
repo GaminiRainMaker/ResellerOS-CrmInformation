@@ -7,14 +7,12 @@ import Cookies from 'js-cookie';
 export const requestInterceptor = (
   config: InternalAxiosRequestConfig,
 ): InternalAxiosRequestConfig => {
-  const token: any = Cookies.get('token');
-  Cookies.set('access_token', token, {
-    expires: 0.8,
-    secure: true,
-    sameSite: 'strict',
-  });
-  // const token = '';
-  config.headers.Authorization = `Bearer ${token}`;
+  if (!config?.url?.includes('auth') || !config?.url?.includes('addUser')) {
+    const token: any = Cookies.get('token');
+
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
   config.headers['Content-Type'] = 'application/json';
   return config;
 };
