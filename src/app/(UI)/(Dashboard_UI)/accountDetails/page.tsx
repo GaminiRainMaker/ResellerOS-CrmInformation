@@ -7,11 +7,13 @@
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
-import OsButton from '@/app/components/common/os-button';
 import {OsCard} from '@/app/components/common/os-card';
+import CommonStageSelect from '@/app/components/common/os-stage-select';
+import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import DetailAnalyticCard from '@/app/components/common/os-table/DetailAnalyticCard';
 import Typography from '@/app/components/common/typography';
+import {StageValue} from '@/app/utils/CONSTANTS';
 import {
   CheckCircleIcon,
   EyeIcon,
@@ -20,17 +22,19 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import {Space} from 'antd';
-import OsStatusWrapper from '@/app/components/common/os-status';
-import {StageValue, quoteDummyData} from '@/app/utils/CONSTANTS';
+
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
+import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect} from 'react';
-import CommonStageSelect from '@/app/components/common/os-stage-select';
-import {useSearchParams} from 'next/navigation';
-import DetailCard from './DetailCard';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 import {getCustomerBYId} from '../../../../../redux/actions/customer';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import DetailCard from './DetailCard';
 
 const AccountDetails = () => {
   const [token] = useThemeToken();
+  const router = useRouter();
+
   const {loading, data: customerData} = useAppSelector(
     (state) => state.customer,
   );
@@ -45,14 +49,14 @@ const AccountDetails = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{customerData?.Opportunities?.length}</div>,
+      primary: <div>{customerData?.Opportunities?.length ?? 0}</div>,
       secondry: 'Total Opportunities',
       icon: <CheckCircleIcon width={36} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
     },
     {
       key: 2,
-      primary: <div>{0}</div>,
+      primary: <div>{customerData?.Quotes?.length ?? 0}</div>,
       secondry: 'Total Quotes',
       icon: <TagIcon width={36} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
@@ -75,7 +79,7 @@ const AccountDetails = () => {
           color={token?.colorInfoBorder}
           cursor="pointer"
           onClick={() => {
-            // router?.push('/allQuote');
+            router?.push('/crmInAccount');
           }}
         >
           Accounts
@@ -93,7 +97,7 @@ const AccountDetails = () => {
             // router?.push(`/accountDetails?id=${getQuoteID}`);
           }}
         >
-          Impres Technologies
+          {customerData?.name}
         </Typography>
       ),
     },
@@ -106,8 +110,8 @@ const AccountDetails = () => {
           File Name
         </Typography>
       ),
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'file_name',
+      key: 'file_name',
       width: 130,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -135,8 +139,10 @@ const AccountDetails = () => {
       dataIndex: 'opportunity',
       key: 'opportunity',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.Opportunity?.title ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -149,7 +155,9 @@ const AccountDetails = () => {
       key: 'customer_name',
       width: 187,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+        <Typography name="Body 4/Regular">
+          {customerData?.name ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -303,19 +311,23 @@ const AccountDetails = () => {
     },
   ];
 
+  const locale = {
+    emptyText: <EmptyContainer title="No Data" />,
+  };
+
   return (
     <>
       <OsBreadCrumb items={menuItems} />
 
-      <Row justify="space-between" style={{width: '100%'}} gutter={[16, 16]}>
-        <Col>
+      <Row justify="space-between" gutter={[16, 16]}>
+        <Col xs={24} sm={8} md={8} lg={6}>
           <DetailCard />
         </Col>
-        <Col span={17}>
-          <Space direction="vertical" size={24} style={{width: '100%'}}>
-            <Row gutter={[16, 16]} justify="center">
+        <Col xs={24} sm={16} md={16} lg={18}>
+          <div style={{display: 'flex', flexDirection: 'column', gap: 24}}>
+            <Row justify="space-between" gutter={[16, 16]}>
               {analyticsData?.map((item: any) => (
-                <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={8}>
+                <Col xs={24} sm={24} md={24} lg={10} xl={8} xxl={8}>
                   <DetailAnalyticCard
                     primaryText={item?.primary}
                     secondaryText={item?.secondry}
@@ -326,49 +338,33 @@ const AccountDetails = () => {
               ))}
             </Row>
 
-            <Row justify="space-between">
-              <Col>
-                <Typography name="Heading 3/Medium">Quotes</Typography>
-              </Col>
-              <Col style={{float: 'right'}}>
-                <OsButton
-                  buttontype="PRIMARY"
-                  clickHandler={() => {}}
-                  text="View all"
-                />
-              </Col>
+            <Row justify="start">
+              <Typography name="Heading 3/Medium">Quotes</Typography>
             </Row>
 
             <OsCard>
-              <OsTable
-                loading={false}
+              <OsTableWithOutDrag
+                loading={loading}
                 columns={Quotecolumns}
-                dataSource={quoteDummyData}
+                dataSource={customerData?.Quotes}
                 scroll
+                locale={locale}
               />
             </OsCard>
 
-            <Row justify="space-between">
-              <Col>
-                <Typography name="Heading 3/Medium">Opportunities</Typography>
-              </Col>
-              <Col style={{float: 'right'}}>
-                <OsButton
-                  buttontype="PRIMARY"
-                  clickHandler={() => {}}
-                  text="View all"
-                />
-              </Col>
+            <Row justify="start">
+              <Typography name="Heading 3/Medium">Opportunities</Typography>
             </Row>
 
             <OsCard>
               <OsTable
-                loading={false}
+                loading={loading}
                 columns={OpportunityColumns}
                 dataSource={customerData?.Opportunities}
+                locale={locale}
               />
             </OsCard>
-          </Space>
+          </div>
         </Col>
       </Row>
     </>

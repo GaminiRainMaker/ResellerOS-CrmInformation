@@ -13,6 +13,7 @@ import {
   AdjustmentsHorizontalIcon,
   BoltIcon,
   CurrencyDollarIcon,
+  PhoneArrowDownLeftIcon,
   ReceiptPercentIcon,
   ShoppingBagIcon,
   Squares2X2Icon,
@@ -38,7 +39,8 @@ const SideBar = () => {
   const dispatch = useAppDispatch();
 
   const [collapsed, setCollapsed] = useState<boolean>(false);
-  const [seleectedKey, setSelectedKey] = useState<number>(1);
+  const [selectedKey, setSelectedKey] = useState<number>(1);
+  const [crmChildKey, setCrmChildKey] = useState<number>(0);
   const {userInformation} = useAppSelector((state) => state.user);
   type MenuItem = Required<MenuProps>['items'][number];
 
@@ -92,12 +94,18 @@ const SideBar = () => {
       setSelectedKey(3);
     } else if (pathname?.includes('partners')) {
       setSelectedKey(5);
-    } else if (pathname?.includes('crmInAccount')) {
-      setSelectedKey(8);
+    } else if (
+      pathname?.includes('crmInAccount') ||
+      pathname?.includes('accountDetails')
+    ) {
+      setSelectedKey(7);
+      setCrmChildKey(1);
     } else if (pathname?.includes('crmContact')) {
-      setSelectedKey(9);
+      setSelectedKey(7);
+      setCrmChildKey(2);
     } else if (pathname?.includes('crmOpportunity')) {
-      setSelectedKey(10);
+      setSelectedKey(7);
+      setCrmChildKey(3);
     } else if (pathname?.includes('admin')) {
       setSelectedKey(11);
     }
@@ -108,6 +116,7 @@ const SideBar = () => {
       <Typography
         onClick={() => {
           setSelectedKey(1);
+          setCrmChildKey(0);
           router?.push('/dashboard');
         }}
         name="Button 1"
@@ -117,7 +126,7 @@ const SideBar = () => {
             icon={
               <Squares2X2Icon
                 color={
-                  seleectedKey == 1
+                  selectedKey == 1
                     ? token?.colorPrimary
                     : token?.colorTextSecondary
                 }
@@ -131,9 +140,7 @@ const SideBar = () => {
               marginTop: '1px',
             }}
             color={
-              seleectedKey == 1
-                ? token?.colorPrimary
-                : token?.colorTextSecondary
+              selectedKey == 1 ? token?.colorPrimary : token?.colorTextSecondary
             }
           >
             Dashboard
@@ -148,6 +155,7 @@ const SideBar = () => {
           size={12}
           onClick={() => {
             setSelectedKey(2);
+            setCrmChildKey(0);
             router?.push('/allQuote');
           }}
           color={token?.colorTextSecondary}
@@ -156,7 +164,7 @@ const SideBar = () => {
             icon={
               <CurrencyDollarIcon
                 color={
-                  seleectedKey?.toString()?.includes('2')
+                  selectedKey?.toString()?.includes('2')
                     ? token?.colorPrimary
                     : token?.colorTextSecondary
                 }
@@ -168,7 +176,7 @@ const SideBar = () => {
             cursor="pointer"
             name="Button 1"
             color={
-              seleectedKey?.toString()?.includes('2')
+              selectedKey?.toString()?.includes('2')
                 ? token?.colorPrimary
                 : token?.colorTextSecondary
             }
@@ -184,6 +192,7 @@ const SideBar = () => {
         <Typography
           onClick={() => {
             setSelectedKey(3);
+            setCrmChildKey(0);
             router?.push('/dealReg');
           }}
           name="Button 1"
@@ -194,7 +203,7 @@ const SideBar = () => {
               icon={
                 <ReceiptPercentIcon
                   color={
-                    seleectedKey?.toString()?.includes('3')
+                    selectedKey?.toString()?.includes('3')
                       ? token?.colorPrimary
                       : token?.colorTextSecondary
                   }
@@ -209,7 +218,7 @@ const SideBar = () => {
                 marginTop: '1px',
               }}
               color={
-                seleectedKey?.toString()?.includes('3')
+                selectedKey?.toString()?.includes('3')
                   ? token?.colorPrimary
                   : token?.colorTextSecondary
               }
@@ -226,6 +235,7 @@ const SideBar = () => {
         <Typography
           onClick={() => {
             setSelectedKey(4);
+            setCrmChildKey(0);
           }}
           name="Button 1"
           color={token?.colorTextSecondary}
@@ -235,7 +245,7 @@ const SideBar = () => {
               icon={
                 <ShoppingBagIcon
                   color={
-                    seleectedKey?.toString()?.includes('4')
+                    selectedKey?.toString()?.includes('4')
                       ? token?.colorPrimary
                       : token?.colorTextSecondary
                   }
@@ -250,7 +260,7 @@ const SideBar = () => {
                 marginTop: '1px',
               }}
               color={
-                seleectedKey?.toString()?.includes('4')
+                selectedKey?.toString()?.includes('4')
                   ? token?.colorPrimary
                   : token?.colorTextSecondary
               }
@@ -266,6 +276,7 @@ const SideBar = () => {
       <Typography
         onClick={() => {
           setSelectedKey(5);
+          setCrmChildKey(0);
           router?.push(isSuperAdmin ? 'superAdminPartner' : '/partners');
         }}
         name="Button 1"
@@ -276,7 +287,7 @@ const SideBar = () => {
             icon={
               <UsersIcon
                 color={
-                  seleectedKey?.toString()?.includes('5')
+                  selectedKey?.toString()?.includes('5')
                     ? token?.colorPrimary
                     : token?.colorTextSecondary
                 }
@@ -290,7 +301,7 @@ const SideBar = () => {
               marginTop: '1px',
             }}
             color={
-              seleectedKey?.toString()?.includes('5')
+              selectedKey?.toString()?.includes('5')
                 ? token?.colorPrimary
                 : token?.colorTextSecondary
             }
@@ -305,6 +316,7 @@ const SideBar = () => {
       <Typography
         onClick={() => {
           setSelectedKey(6);
+          setCrmChildKey(0);
         }}
         name="Button 1"
         color={token?.colorTextSecondary}
@@ -314,7 +326,7 @@ const SideBar = () => {
             icon={
               <BoltIcon
                 color={
-                  seleectedKey?.toString()?.includes('6')
+                  selectedKey?.toString()?.includes('6')
                     ? token?.colorPrimary
                     : token?.colorTextSecondary
                 }
@@ -328,7 +340,7 @@ const SideBar = () => {
               marginTop: '1px',
             }}
             color={
-              seleectedKey?.toString()?.includes('6')
+              selectedKey?.toString()?.includes('6')
                 ? token?.colorPrimary
                 : token?.colorTextSecondary
             }
@@ -353,11 +365,11 @@ const SideBar = () => {
             icon={
               <UserGroupIcon
                 color={
-                  seleectedKey?.toString()?.includes('7') ||
-                  seleectedKey?.toString()?.includes('8') ||
-                  seleectedKey?.toString()?.includes('0') ||
-                  seleectedKey?.toString()?.includes('9')
-                    ? token?.colorPrimary
+                  selectedKey?.toString()?.includes('7') ||
+                  selectedKey?.toString()?.includes('8') ||
+                  selectedKey?.toString()?.includes('0') ||
+                  selectedKey?.toString()?.includes('9')
+                    ? token?.colorLink
                     : token?.colorTextSecondary
                 }
                 width={24}
@@ -371,11 +383,11 @@ const SideBar = () => {
               marginRight: '60px',
             }}
             color={
-              seleectedKey?.toString()?.includes('7') ||
-              seleectedKey?.toString()?.includes('8') ||
-              seleectedKey?.toString()?.includes('0') ||
-              seleectedKey?.toString()?.includes('9')
-                ? token?.colorPrimary
+              selectedKey?.toString()?.includes('7') ||
+              selectedKey?.toString()?.includes('8') ||
+              selectedKey?.toString()?.includes('0') ||
+              selectedKey?.toString()?.includes('9')
+                ? token?.colorLink
                 : token?.colorTextSecondary
             }
           >
@@ -390,13 +402,14 @@ const SideBar = () => {
           <Space
             size={12}
             onClick={() => {
-              setSelectedKey(8);
+              setCrmChildKey(1);
+              setSelectedKey(7);
               router?.push('/crmInAccount');
             }}
           >
             <OsAvatar
               icon={
-                seleectedKey?.toString()?.includes('8') ? (
+                crmChildKey === 1 ? (
                   <Image
                     src={ActiveCrmIcon}
                     alt="ActiveCrmIcon"
@@ -415,7 +428,7 @@ const SideBar = () => {
               name="Button 1"
               cursor="pointer"
               color={
-                seleectedKey?.toString()?.includes('8')
+                crmChildKey === 1
                   ? token.colorPrimaryBorder
                   : token?.colorTextSecondary
               }
@@ -429,14 +442,15 @@ const SideBar = () => {
           <Space
             size={12}
             onClick={() => {
-              setSelectedKey(9);
+              setCrmChildKey(2);
+              setSelectedKey(7);
               router?.push('/crmContact');
             }}
             color={token?.colorTextSecondary}
           >
             <OsAvatar
               icon={
-                seleectedKey?.toString()?.includes('9') ? (
+                crmChildKey === 2 ? (
                   <Image
                     src={ActiveCrmIcon}
                     alt="ActiveCrmIcon"
@@ -455,7 +469,7 @@ const SideBar = () => {
               cursor="pointer"
               name="Button 1"
               color={
-                seleectedKey?.toString()?.includes('9')
+                crmChildKey === 2
                   ? token.colorPrimaryBorder
                   : token?.colorTextSecondary
               }
@@ -469,14 +483,15 @@ const SideBar = () => {
           <Space
             size={12}
             onClick={() => {
-              setSelectedKey(0);
+              setCrmChildKey(3);
+              setSelectedKey(7);
               router?.push('/crmOpportunity');
             }}
             color={token?.colorTextSecondary}
           >
             <OsAvatar
               icon={
-                seleectedKey?.toString()?.includes('0') ? (
+                crmChildKey === 3 ? (
                   <Image
                     src={ActiveCrmIcon}
                     alt="ActiveCrmIcon"
@@ -495,7 +510,7 @@ const SideBar = () => {
               cursor="pointer"
               name="Button 1"
               color={
-                seleectedKey?.toString() === '0'
+                crmChildKey === 3
                   ? token.colorPrimaryBorder
                   : token?.colorTextSecondary
               }
@@ -513,6 +528,7 @@ const SideBar = () => {
           size={12}
           onClick={() => {
             setSelectedKey(11);
+            setCrmChildKey(0);
             router?.push('/admin');
           }}
           color={token?.colorTextSecondary}
@@ -521,7 +537,7 @@ const SideBar = () => {
             icon={
               <AdjustmentsHorizontalIcon
                 color={
-                  seleectedKey?.toString()?.includes('11')
+                  selectedKey?.toString()?.includes('11')
                     ? token?.colorPrimary
                     : token?.colorTextSecondary
                 }
@@ -534,7 +550,7 @@ const SideBar = () => {
             cursor="pointer"
             name="Button 1"
             color={
-              seleectedKey?.toString()?.includes('11')
+              selectedKey?.toString()?.includes('11')
                 ? token?.colorPrimary
                 : token?.colorTextSecondary
             }
@@ -565,10 +581,10 @@ const SideBar = () => {
             style={{
               width: '24px',
               color:
-                seleectedKey?.toString()?.includes('7') ||
-                seleectedKey?.toString()?.includes('8') ||
-                seleectedKey?.toString()?.includes('0') ||
-                seleectedKey?.toString()?.includes('9')
+                selectedKey?.toString()?.includes('7') ||
+                selectedKey?.toString()?.includes('8') ||
+                selectedKey?.toString()?.includes('0') ||
+                selectedKey?.toString()?.includes('9')
                   ? token?.colorPrimary
                   : token?.colorTextSecondary,
             }}

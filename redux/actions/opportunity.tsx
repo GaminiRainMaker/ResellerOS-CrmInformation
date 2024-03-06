@@ -72,10 +72,13 @@ export const getdeleteOpportunity = createAsyncThunk(
 );
 export const queryOpportunity = createAsyncThunk(
   'opportunity/query',
-  async (query: string, thunkApi) => {
+  async (query: any, thunkApi) => {
     try {
-    
-      const res = await OPPORTUNITY_API.query(query);
+      const obj = {
+        customer: query?.customer,
+        opportunity: query?.opportunity,
+      };
+      const res = await OPPORTUNITY_API.query(obj);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

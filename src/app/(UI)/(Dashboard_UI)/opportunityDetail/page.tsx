@@ -10,17 +10,21 @@ import OsButton from '@/app/components/common/os-button';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import OpportunityAnalyticCard from '@/app/components/common/os-opportunity-analytic-card';
-import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {EyeIcon, PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect} from 'react';
-import {getOpportunityById} from '../../../../../redux/actions/opportunity';
+import {useEffect, useState} from 'react';
+import {
+  deleteOpportunity,
+  getOpportunityById,
+} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import EditOpportunity from '../crmOpportunity/EditOpportunity';
 
 const OpportunityDetails = () => {
   const [token] = useThemeToken();
@@ -31,15 +35,23 @@ const OpportunityDetails = () => {
   const {loading, data: opportunityData} = useAppSelector(
     (state) => state.Opportunity,
   );
+  const [formValue, setFormValue] = useState<any>();
+  const [open, setOpen] = useState(false);
+  const [deleteIds, setDeleteIds] = useState<any>();
+  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+
   useEffect(() => {
     dispatch(getOpportunityById(opportunityId));
   }, []);
 
   const OpportunityData = {
+    id: opportunityData?.[0]?.id,
     title: opportunityData?.[0]?.title,
     amount: opportunityData?.[0]?.amount,
     customer: opportunityData?.[0]?.Customer?.name,
     quotes: opportunityData?.[0]?.Quotes,
+    stages: opportunityData?.[0]?.stages,
+    opportunity: opportunityData,
   };
 
   const menuItems = [
@@ -102,21 +114,6 @@ const OpportunityDetails = () => {
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
-    // {
-    //   title: (
-    //     <Typography name="Body 4/Medium" className="dragHandler">
-    //       Opportunity
-    //     </Typography>
-    //   ),
-    //   dataIndex: 'opportunity',
-    //   key: 'opportunity',
-    //   width: 187,
-    //   render: (text: string) => (
-    //     <Typography name="Body 4/Regular">
-    //       {OpportunityData?.title ?? '--'}
-    //     </Typography>
-    //   ),
-    // },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -127,7 +124,9 @@ const OpportunityDetails = () => {
       key: 'customer_name',
       width: 187,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+        <Typography name="Body 4/Regular">
+          {opportunityData?.customer ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -212,65 +211,101 @@ const OpportunityDetails = () => {
     },
   ];
 
+  const deleteSelectedIds = async () => {
+    const data = {Ids: deleteIds};
+    await dispatch(deleteOpportunity(data));
+    // setTimeout(() => {
+    //   dispatch(getAllOpportunity());
+    //   dispatch(getdeleteOpportunity(''));
+    // }, 1000);
+    router.push('/crmOpportunity');
+    setDeleteIds([]);
+    setShowModalDelete(false);
+  };
+
   return (
-    <Space direction="vertical" size={24} style={{width: '100%'}}>
-      <OsBreadCrumb items={menuItems} />
-      <OpportunityAnalyticCard OpportunityData={OpportunityData} />
-      <Row justify="space-between">
-        <Col>
-          <Typography name="Heading 3/Medium">Quotes</Typography>
-        </Col>
-        <Col style={{float: 'right'}}>
-          <div
-            style={{
-              display: 'flex',
-              width: '40%',
-              gap: '8px',
-            }}
-          >
-            <OsButton
-              text="Add Quote"
-              buttontype="PRIMARY"
-              icon={<PlusIcon />}
-            />
-            <Space>
-              <OsDropdown menu={{items: dropDownItemss}} />
-            </Space>
-          </div>
-        </Col>
-      </Row>
-      <Row style={{background: 'white', padding: '24px', borderRadius: '12px'}}>
-        <OsTabs
-          tabBarExtraContent={
-            <Space size={12} align="center">
-              <Space direction="vertical" size={0}>
-                <Typography name="Body 4/Medium">Registration Form</Typography>
-                <OsInput style={{width: '180px'}} placeholder="Search Here" />
-              </Space>
-              <Space direction="vertical" size={0}>
-                <Typography name="Body 4/Medium">Customer Account</Typography>
-                <CommonSelect
-                  style={{width: '180px'}}
-                  placeholder="Search Here"
-                />
-              </Space>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  marginTop: '15px',
-                }}
-              >
-                <Typography cursor="pointer" name="Button 1" color="#C6CDD5">
-                  Apply
-                </Typography>
-              </div>
-            </Space>
-          }
-          items={tabItems}
+    <>
+      <Space direction="vertical" size={24} style={{width: '100%'}}>
+        <OsBreadCrumb items={menuItems} />
+
+        <OpportunityAnalyticCard
+          setFormValue={setFormValue}
+          setOpen={setOpen}
+          OpportunityData={OpportunityData}
+          setDeleteIds={setDeleteIds}
+          setShowModalDelete={setShowModalDelete}
         />
-      </Row>
-    </Space>
+
+        <Row justify="space-between">
+          <Col>
+            <Typography name="Heading 3/Medium">Quotes</Typography>
+          </Col>
+          <Col style={{float: 'right'}}>
+            <div
+              style={{
+                display: 'flex',
+                width: '40%',
+                gap: '8px',
+              }}
+            >
+              <OsButton
+                text="Add Quote"
+                buttontype="PRIMARY"
+                icon={<PlusIcon />}
+              />
+              <Space>
+                <OsDropdown menu={{items: dropDownItemss}} />
+              </Space>
+            </div>
+          </Col>
+        </Row>
+        <Row
+          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+        >
+          <OsTabs
+            tabBarExtraContent={
+              <Space size={12} align="center">
+                <Space direction="vertical" size={0}>
+                  <Typography name="Body 4/Medium">
+                    Registration Form
+                  </Typography>
+                  <OsInput style={{width: '180px'}} placeholder="Search Here" />
+                </Space>
+
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    marginTop: '15px',
+                  }}
+                >
+                  <Typography cursor="pointer" name="Button 1" color="#C6CDD5">
+                    Apply
+                  </Typography>
+                </div>
+              </Space>
+            }
+            items={tabItems}
+          />
+        </Row>
+      </Space>
+
+      <EditOpportunity
+        setFormValue={setFormValue}
+        formValue={formValue}
+        open={open}
+        setOpen={setOpen}
+      />
+
+      <DeleteModal
+        setShowModalDelete={setShowModalDelete}
+        setDeleteIds={setDeleteIds}
+        showModalDelete={showModalDelete}
+        deleteSelectedIds={deleteSelectedIds}
+        description="Are you sure you want to delete this opportunity?"
+        heading="Delete Opportunity"
+      />
+    </>
   );
 };
 

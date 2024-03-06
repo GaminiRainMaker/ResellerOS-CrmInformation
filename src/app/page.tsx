@@ -3,15 +3,11 @@
 
 'use client';
 
-import React, {useEffect, useRef, useState} from 'react';
+import { useEffect, useRef, useState } from 'react';
 // import PSPDFKit from 'pspdfkit';
-import dynamic from 'next/dynamic';
-import {CloudDownloadOutlined} from '@ant-design/icons';
-import {useRouter} from 'next/navigation';
-import Typography from './components/common/typography';
+import { useRouter } from 'next/navigation';
+import { UploadProps } from './components/common/antd/Upload';
 import useThemeToken from './components/common/hooks/useThemeToken';
-import {Upload, UploadProps} from './components/common/antd/Upload';
-import {Button} from './components/common/antd/Button';
 
 // const PSPDFKit = dynamic(() => import('pspdfkit'), {
 //   ssr: false,

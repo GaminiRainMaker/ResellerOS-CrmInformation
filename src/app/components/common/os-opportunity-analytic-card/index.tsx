@@ -11,9 +11,19 @@ import useAbbreviationHook from '../hooks/useAbbreviationHook';
 
 const OpportunityAnalyticCard: FC<OsOpportunityAnalyicCardInterface> = ({
   OpportunityData,
+  setOpen,
+  setFormValue,
+  setDeleteIds,
+  setShowModalDelete,
 }) => {
   const [token] = useThemeToken();
   const {abbreviate} = useAbbreviationHook(0);
+
+  console.log(
+    'OpportunityData',
+    OpportunityData,
+    OpportunityData?.opportunity?.[0],
+  );
 
   return (
     <Row
@@ -68,7 +78,7 @@ const OpportunityAnalyticCard: FC<OsOpportunityAnalyicCardInterface> = ({
             <Typography name="Body 4/Medium" color={token?.colorLinkHover}>
               Stage
             </Typography>
-            <OsStatusWrapper value="Accepted" />
+            <OsStatusWrapper value={OpportunityData?.stages} />
           </Space>
         </Space>
       </Col>
@@ -90,6 +100,10 @@ const OpportunityAnalyticCard: FC<OsOpportunityAnalyicCardInterface> = ({
                 color={token?.colorLinkHover}
               />
             }
+            onClick={() => {
+              setOpen(true);
+              setFormValue(OpportunityData?.opportunity?.[0]);
+            }}
           />
           <AvatarStyled
             size={42}
@@ -97,6 +111,10 @@ const OpportunityAnalyticCard: FC<OsOpportunityAnalyicCardInterface> = ({
             icon={
               <TrashIcon width={19} height={19} color={token?.colorError} />
             }
+            onClick={() => {
+              setDeleteIds([OpportunityData?.id]);
+              setShowModalDelete(true);
+            }}
           />
         </Space>
       </Col>
