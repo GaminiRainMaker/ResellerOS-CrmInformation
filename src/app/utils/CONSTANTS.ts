@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 export const selectDataForProduct = [
   {value: 'Professional Services', label: 'Professional Services'},
   {value: 'Subscriptions', label: 'Subscriptions'},
@@ -303,3 +304,20 @@ export const industryOptions = [
   {value: 'Search Engine', label: 'Search Engine'},
   {value: 'Manufacturing', label: 'Manufacturing'},
 ];
+export function formatStatus(str: string) {
+  if (str === 'inprogress') {
+    return 'In Progress';
+  }
+  if (str === 'ro_closed') {
+    return 'RO Closed';
+  }
+  if (str === 'require_customer_authorization') {
+    return 'Requires Customer Authorization';
+  }
+  const frags = str?.toString()?.split('_');
+  const fragLength = frags?.length;
+  for (let i = 0; i < fragLength; i++) {
+    frags[i] = frags[i]?.charAt(0).toUpperCase() + frags[i].slice(1);
+  }
+  return frags?.join(' ');
+}
