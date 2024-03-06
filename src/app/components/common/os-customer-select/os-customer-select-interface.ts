@@ -1,5 +1,5 @@
 export interface OsCustomerSelectInterface {
   setCustomerValue: any;
-  isAddNewCustomer: boolean;
+  isAddNewCustomer?: boolean;
   customerValue: any;
 }

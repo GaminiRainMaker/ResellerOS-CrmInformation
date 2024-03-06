@@ -23,10 +23,11 @@ import {
 } from '@heroicons/react/24/outline';
 import {Space} from 'antd';
 
+import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect} from 'react';
-import EmptyContainer from '@/app/components/common/os-empty-container';
 import {getCustomerBYId} from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DetailCard from './DetailCard';
@@ -34,6 +35,8 @@ import DetailCard from './DetailCard';
 const AccountDetails = () => {
   const [token] = useThemeToken();
   const router = useRouter();
+  const {userInformation} = useAppSelector((state) => state.user);
+  const {abbreviate} = useAbbreviationHook(0);
 
   const {loading, data: customerData} = useAppSelector(
     (state) => state.customer,
@@ -45,6 +48,36 @@ const AccountDetails = () => {
   useEffect(() => {
     dispatch(getCustomerBYId(getCustomerID));
   }, [getCustomerID]);
+
+  const statusWrapper = (item: any) => {
+    const getStatus = () => {
+      if (!item.is_completed && !item.is_drafted) {
+        return 'Drafts';
+      }
+      if (item.is_drafted) {
+        return 'In Progress';
+      }
+      if (item?.approver_id === userInformation?.id) {
+        return 'In Review';
+      }
+      if (item?.rejected_request) {
+        return 'Rejected';
+      }
+      if (item?.approved_request) {
+        return 'Approved';
+      }
+      if (
+        item.is_completed &&
+        item?.approver_id !== userInformation?.id &&
+        !item?.approved_request &&
+        !item?.rejected_request
+      ) {
+        return 'Needs Review';
+      }
+      return '--';
+    };
+    return <OsStatusWrapper value={getStatus()} />;
+  };
 
   const analyticsData = [
     {
@@ -63,7 +96,13 @@ const AccountDetails = () => {
     },
     {
       key: 3,
-      primary: <div>{41}</div>,
+      primary: (
+        <div>
+          {customerData?.Quotes?.filter(
+            (item: any) => item.approved_request === true,
+          ).length ?? 0}
+        </div>
+      ),
       secondry: 'Completed Quotes',
       icon: <CheckCircleIcon width={36} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
@@ -169,9 +208,7 @@ const AccountDetails = () => {
       dataIndex: 'status',
       key: 'status',
       width: 187,
-      render: (text: string, record: any) => (
-        <OsStatusWrapper value={record.status} />
-      ),
+      render: (text: string, record: any) => statusWrapper(record),
     },
     {
       title: ' ',
@@ -248,7 +285,10 @@ const AccountDetails = () => {
       key: 'amount',
       width: 130,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+        <Typography name="Body 4/Regular">
+          {' '}
+          {`$ ${abbreviate(Number(text ?? 0))}` ?? '--'}
+        </Typography>
       ),
     },
     {

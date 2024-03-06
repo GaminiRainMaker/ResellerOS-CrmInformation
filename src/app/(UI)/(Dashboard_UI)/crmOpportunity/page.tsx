@@ -35,11 +35,10 @@ import OsTabs from '@/app/components/common/os-tabs';
 import {StageValue} from '@/app/utils/CONSTANTS';
 import {MenuProps, TabsProps} from 'antd';
 import {Option} from 'antd/es/mentions';
-import {useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation';
+import {useEffect, useState} from 'react';
 import {
   deleteOpportunity,
-  getAllOpportunity,
   getdeleteOpportunity,
   queryOpportunity,
   updateOpportunity,
@@ -52,7 +51,6 @@ const CrmOpportunity: React.FC = () => {
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [tableData, setTableData] = useState<any>();
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
@@ -63,7 +61,6 @@ const CrmOpportunity: React.FC = () => {
   } = useAppSelector((state) => state.Opportunity);
   const [formValue, setFormValue] = useState<any>();
   const [activeOpportunity, setActiveOpportunity] = useState<any>();
-  const [selectedStage, setSelectedStage] = useState('Negotiate'); // Default stage
 
   const {abbreviate} = useAbbreviationHook(0);
   const router = useRouter();
@@ -85,7 +82,7 @@ const CrmOpportunity: React.FC = () => {
     const data = {Ids: deleteIds};
     await dispatch(deleteOpportunity(data));
     setTimeout(() => {
-      dispatch(getAllOpportunity());
+      dispatch(queryOpportunity(query));
       dispatch(getdeleteOpportunity(''));
     }, 1000);
     setDeleteIds([]);
@@ -96,13 +93,13 @@ const CrmOpportunity: React.FC = () => {
     dispatch(getdeleteOpportunity(''));
   }, []);
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     dispatch(getAllOpportunity());
-  //   }, 1000);
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(queryOpportunity(query));
+    }, 1000);
 
-  //   dispatch(getdeleteOpportunity(''));
-  // }, [!showModal]);
+    dispatch(getdeleteOpportunity(''));
+  }, [!showModal]);
 
   const analyticsData = [
     {
@@ -212,7 +209,7 @@ const CrmOpportunity: React.FC = () => {
             const dataa = {id: record?.id, stages: e};
             dispatch(updateOpportunity(dataa));
             setTimeout(() => {
-              dispatch(getAllOpportunity());
+              dispatch(queryOpportunity(query));
               dispatch(getdeleteOpportunity(''));
             }, 1000);
           }}
@@ -537,7 +534,6 @@ const CrmOpportunity: React.FC = () => {
             setFormValue={setFormValue}
             formValue={formValue}
             setShowModal={setShowModal}
-            tableData={tableData}
           />
         }
         width={600}
