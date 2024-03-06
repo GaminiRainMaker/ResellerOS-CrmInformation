@@ -13,6 +13,7 @@ import Handsontable from 'handsontable';
 import {HotTable, HotColumn} from '@handsontable/react';
 
 import {formatStatus} from '@/app/utils/CONSTANTS';
+import {useSearchParams} from 'next/navigation';
 import {alignHeaders, addClassesToRows} from './hooksCallbacks';
 
 import 'handsontable/dist/handsontable.min.css';
@@ -21,11 +22,13 @@ import {useAppDispatch} from '../../../../../redux/hook';
 
 const EditorFile = () => {
   const hotRef = useRef(null);
+  const searchParams = useSearchParams();
+  const getQUoteId = searchParams.get('id');
   const [quoteItems, setQuoteItems] = useState<any>();
   const [headerValues, setHeaderValues] = useState<any>();
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(getQuoteById(1)).then((d: any) => {
+    dispatch(getQuoteById(Number(getQUoteId))).then((d: any) => {
       if (d?.payload) {
         const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
         setQuoteItems(dataa);

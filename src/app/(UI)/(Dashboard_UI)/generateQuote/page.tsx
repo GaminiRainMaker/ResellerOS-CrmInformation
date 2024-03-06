@@ -234,7 +234,8 @@ const GenerateQuote: React.FC = () => {
           name="Body 3/Regular"
           cursor="pointer"
           onClick={() => {
-            router?.push(`/updation?id=${getQuoteID}`);
+            // router?.push(`/updation?id=${getQuoteID}`);
+            router?.push(`/fileEditor?id=${getQuoteID}`);
           }}
         >
           Update LineItems

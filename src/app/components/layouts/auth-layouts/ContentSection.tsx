@@ -146,7 +146,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           }),
         );
 
-        Cookies.set('token', payload.payload.token, {
+        Cookies.set('token', payload.payload?.token, {
           expires: 0.8,
           secure: true,
           sameSite: 'strict',
