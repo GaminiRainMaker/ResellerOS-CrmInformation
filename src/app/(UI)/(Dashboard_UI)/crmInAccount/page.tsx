@@ -118,7 +118,7 @@ const CrmInformation: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{filteredData.length}</div>,
+      primary: <div>{filteredData?.length}</div>,
       secondry: 'Customers',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,

@@ -241,7 +241,7 @@ export const filterDataByColumns = (columns: any, data: any) =>
 export const convertDataToText = (columns: any, data: any) => {
   const filteredData = filterDataByColumns(columns, data);
 
-  if (!filteredData.length) {
+  if (!filteredData?.length) {
     console.error('No data available for conversion.');
     return '';
   }

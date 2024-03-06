@@ -131,11 +131,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
 
           return;
         }
-        Cookies.set('access_token', payload.payload.token, {
-          expires: 0.8,
-          secure: true,
-          sameSite: 'strict',
-        });
+
         dispatch(
           setUserInformation({
             id: payload?.payload?.id,
@@ -150,8 +146,11 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           }),
         );
 
-        Cookies.set('token', payload.payload.token);
-        // return;
+        Cookies.set('token', payload.payload.token, {
+          expires: 0.8,
+          secure: true,
+          sameSite: 'strict',
+        });
         router.push('/crmInAccount');
       });
     } else if (
@@ -357,7 +356,6 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                     {' '}
                     Register Now
                   </Typography>
-                 
                 </Typography>
               )}
             </Space>
