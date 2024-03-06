@@ -369,33 +369,6 @@ const CrmAccount: React.FC = () => {
             tabBarExtraContent={
               <Space size={12} align="center">
                 <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Contact Name</Typography>
-                  <CommonSelect
-                    style={{width: '200px'}}
-                    placeholder="Search here"
-                    showSearch
-                    onSearch={(e) => {
-                      setQuery({
-                        ...query,
-                        contact: e,
-                      });
-                    }}
-                    onChange={(e) => {
-                      setQuery({
-                        ...query,
-                        contact: e,
-                      });
-                    }}
-                    value={query?.contact}
-                  >
-                    {uniqueContact?.map((contact: any) => (
-                      <Option key={contact} value={contact}>
-                        {contact}
-                      </Option>
-                    ))}
-                  </CommonSelect>
-                </Space>
-                <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Customer Account</Typography>
                   <CommonSelect
                     style={{width: '200px'}}
@@ -422,6 +395,34 @@ const CrmAccount: React.FC = () => {
                     ))}
                   </CommonSelect>
                 </Space>
+                <Space direction="vertical" size={0}>
+                  <Typography name="Body 4/Medium">Contact Name</Typography>
+                  <CommonSelect
+                    style={{width: '200px'}}
+                    placeholder="Search here"
+                    showSearch
+                    onSearch={(e) => {
+                      setQuery({
+                        ...query,
+                        contact: e,
+                      });
+                    }}
+                    onChange={(e) => {
+                      setQuery({
+                        ...query,
+                        contact: e,
+                      });
+                    }}
+                    value={query?.contact}
+                  >
+                    {uniqueContact?.map((contact: any) => (
+                      <Option key={contact} value={contact}>
+                        {contact}
+                      </Option>
+                    ))}
+                  </CommonSelect>
+                </Space>
+
                 <div style={{marginTop: '15px'}}>
                   <Typography
                     cursor="pointer"

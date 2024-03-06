@@ -40,6 +40,7 @@ import {
   updateCustomer,
 } from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import EditCustomer from './EditCustomer';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -513,35 +514,15 @@ const CrmInformation: React.FC = () => {
         heading="Delete Account"
         description="Are you sure you want to delete this account?"
       />
-
-      <OsDrawer
-        title={<Typography name="Body 1/Regular">Customer Details</Typography>}
-        placement="right"
-        onClose={() => setOpen((p) => !p)}
+      
+      <EditCustomer
+        setOpen={setOpen}
         open={open}
-        width={450}
-        footer={
-          <Row style={{width: '100%', float: 'right'}}>
-            {' '}
-            <OsButton
-              btnStyle={{width: '100%'}}
-              buttontype="PRIMARY"
-              text="UPDATE"
-              clickHandler={updateCustomerDetails}
-            />
-          </Row>
-        }
-      >
-        <AddCustomerInputVale
-          drawer="drawer"
-          setShowModal=""
-          setFormValue={setFormValue}
-          formValue={formValue}
-          setCustomerValue={setCustomerValue}
-          customerValue={customerValue}
-          setOpen={setOpen}
-        />
-      </OsDrawer>
+        formValue={formValue}
+        setFormValue={setFormValue}
+        customerValue={customerValue}
+        setCustomerValue={setCustomerValue}
+      />
     </>
   );
 };

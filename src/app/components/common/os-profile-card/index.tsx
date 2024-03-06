@@ -17,6 +17,7 @@ import {
 } from '@heroicons/react/24/outline';
 import {DetailCardStyle} from './styled-components';
 import {OSProfileInterface} from './os-profile.interface';
+import DeleteModal from '../os-modal/DeleteModal';
 
 const ProfileCard: FC<OSProfileInterface> = ({
   contactCardData,
@@ -28,6 +29,7 @@ const ProfileCard: FC<OSProfileInterface> = ({
   const [token] = useThemeToken();
   const [showAllContactModal, setShowAllContactModal] =
     useState<boolean>(false);
+
 
   return (
     <>
@@ -75,6 +77,7 @@ const ProfileCard: FC<OSProfileInterface> = ({
                   key={item?.key}
                   background={item?.iconBg}
                   icon={item?.icon}
+                  onClick={item?.onClick}
                 />
               ))}
             {headerButtons && headerButtons}
@@ -225,7 +228,7 @@ const ProfileCard: FC<OSProfileInterface> = ({
 
             {contactCardData && (
               <Col span={24}>
-                <Space direction="vertical">
+                <Space direction="vertical" style={{width: '100%'}}>
                   <Space
                     align="center"
                     style={{display: 'flex', justifyContent: 'space-between'}}
@@ -240,7 +243,7 @@ const ProfileCard: FC<OSProfileInterface> = ({
                       name="Body 4/Bold"
                       color={token?.colorLink}
                       onClick={() => setShowAllContactModal((p) => !p)}
-                      style={{cursor: 'pointer'}}
+                      cursor="pointer"
                     >
                       View all{' '}
                     </Typography>

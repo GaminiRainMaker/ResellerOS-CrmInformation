@@ -13,8 +13,9 @@ import {
   UserGroupIcon,
 } from '@heroicons/react/24/outline';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
+import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import AddOpportunity from '@/app/components/common/os-add-opportunity';
@@ -29,10 +30,10 @@ import CommonStageSelect from '@/app/components/common/os-stage-select';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
-import { StageValue } from '@/app/utils/CONSTANTS';
-import { MenuProps, TabsProps } from 'antd';
-import { Option } from 'antd/es/mentions';
-import { useEffect, useState } from 'react';
+import {StageValue} from '@/app/utils/CONSTANTS';
+import {MenuProps, TabsProps} from 'antd';
+import {Option} from 'antd/es/mentions';
+import {useEffect, useState} from 'react';
 import {
   deleteOpportunity,
   getAllOpportunity,
@@ -40,7 +41,7 @@ import {
   queryOpportunity,
   updateOpportunity,
 } from '../../../../../redux/actions/opportunity';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 const CrmOpportunity: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -58,6 +59,7 @@ const CrmOpportunity: React.FC = () => {
   } = useAppSelector((state) => state.Opportunity);
   const [formValue, setFormValue] = useState<any>();
   const [opportunityValueData, setOpportunityValueData] = useState<any>();
+  const {abbreviate} = useAbbreviationHook(0);
 
   const [query, setQuery] = useState<{
     opportunity: string | null;
@@ -142,11 +144,12 @@ const CrmOpportunity: React.FC = () => {
       iconBg: token?.colorErrorBg,
     },
   ];
+
   const OpportunityColumns = [
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Opportunity{' '}
+          Opportunity
         </Typography>
       ),
       dataIndex: 'title',
@@ -173,9 +176,15 @@ const CrmOpportunity: React.FC = () => {
       dataIndex: 'customer_name',
       key: 'customer_name',
       width: 187,
-      render: (record: any, text: any) => (
-        <Typography name="Body 4/Regular">
-          {text?.Customer?.name ?? '--'}
+      render: (text: string, record: any) => (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => {
+            window.open(`/accountDetails?id=${record?.Customer?.id}`);
+          }}
+          hoverOnText
+        >
+          {record?.Customer?.name ?? '--'}
         </Typography>
       ),
     },
@@ -189,7 +198,9 @@ const CrmOpportunity: React.FC = () => {
       key: 'amount',
       width: 130,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+        <Typography name="Body 4/Regular">
+          {`$ ${abbreviate(Number(text ?? 0))}` ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -414,33 +425,6 @@ const CrmOpportunity: React.FC = () => {
             tabBarExtraContent={
               <Space size={12} align="center">
                 <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Opportunity</Typography>
-                  <CommonSelect
-                    style={{width: '200px'}}
-                    placeholder="Search here"
-                    showSearch
-                    onSearch={(e) => {
-                      setQuery({
-                        ...query,
-                        opportunity: e,
-                      });
-                    }}
-                    onChange={(e) => {
-                      setQuery({
-                        ...query,
-                        opportunity: e,
-                      });
-                    }}
-                    value={query?.opportunity}
-                  >
-                    {uniqueOpportunity?.map((opportunity: any) => (
-                      <Option key={opportunity} value={opportunity}>
-                        {opportunity}
-                      </Option>
-                    ))}
-                  </CommonSelect>
-                </Space>
-                <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Customer Account</Typography>
                   <CommonSelect
                     style={{width: '200px'}}
@@ -467,6 +451,34 @@ const CrmOpportunity: React.FC = () => {
                     ))}
                   </CommonSelect>
                 </Space>
+                <Space direction="vertical" size={0}>
+                  <Typography name="Body 4/Medium">Opportunity</Typography>
+                  <CommonSelect
+                    style={{width: '200px'}}
+                    placeholder="Search here"
+                    showSearch
+                    onSearch={(e) => {
+                      setQuery({
+                        ...query,
+                        opportunity: e,
+                      });
+                    }}
+                    onChange={(e) => {
+                      setQuery({
+                        ...query,
+                        opportunity: e,
+                      });
+                    }}
+                    value={query?.opportunity}
+                  >
+                    {uniqueOpportunity?.map((opportunity: any) => (
+                      <Option key={opportunity} value={opportunity}>
+                        {opportunity}
+                      </Option>
+                    ))}
+                  </CommonSelect>
+                </Space>
+
                 <div
                   style={{
                     marginTop: '15px',

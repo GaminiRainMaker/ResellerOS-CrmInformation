@@ -454,7 +454,13 @@ const AllQuote: React.FC = () => {
       key: 'file_name',
       width: 130,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
+        <Typography
+          hoverOnText
+          name="Body 4/Regular"
+          onClick={() => {
+            router.push(`/generateQuote?id=${record?.id}`);
+          }}
+        >
           {text ?? formatDate(record?.createdAt)}
         </Typography>
       ),
