@@ -4,7 +4,7 @@ import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
   getAllQuotesWithCompletedAndDraft,
   getQuoteById,
-  getQuoteByMaunalUpdated,
+  getQuoteByManualUpdated,
   getQuotesByDateFilter,
   insertQuote,
   updateQuoteById,
@@ -172,19 +172,19 @@ const quoteSlice = createSlice({
           state.error = action.payload;
         },
       )
-      .addCase(getQuoteByMaunalUpdated.pending, (state) => {
+      .addCase(getQuoteByManualUpdated.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        getQuoteByMaunalUpdated.fulfilled,
+        getQuoteByManualUpdated.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.filteredByDate = action.payload;
         },
       )
       .addCase(
-        getQuoteByMaunalUpdated.rejected,
+        getQuoteByManualUpdated.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

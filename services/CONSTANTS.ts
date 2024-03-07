@@ -12,7 +12,7 @@ export const API = {
     DeleteById: '/quote/deleteQuote',
     GetQuotesByDateFilter: '/quote/getQuotesByDateFilter',
     GetQuoteByID: '/quote/getQuoteById',
-    getQuoteByMaunalUpdated: '/quote/getQuoteByMaunalUpdated',
+    GetQuoteByManualUpdated: '/quote/getQuoteByManualUpdated',
   },
   QUOTE_LINE_ITEM: {
     INDEX: '/quoteLineItem',
