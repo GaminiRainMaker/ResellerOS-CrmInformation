@@ -114,6 +114,7 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
             <Col span={12}>
               <Typography name="Body 4/Regular">Amount</Typography>
               <OsInput
+                prefix="$"
                 placeholder="$ 00.00"
                 value={formValue?.amount}
                 onChange={(e) => {

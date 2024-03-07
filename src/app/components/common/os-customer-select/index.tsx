@@ -19,14 +19,14 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const {data: dataAddress} = useAppSelector((state) => state.customer);
+  const {data: dataAddress} = useAppSelector((state) => state?.customer);
   const [open, setOpen] = useState<boolean>(false);
 
-  const customerOptions = dataAddress.map((dataAddressItem: any) => ({
-    value: dataAddressItem.id,
+  const customerOptions = dataAddress?.map((dataAddressItem: any) => ({
+    value: dataAddressItem?.id,
     label: (
       <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-        {dataAddressItem.name}
+        {dataAddressItem?.name}
       </Typography>
     ),
   }));
@@ -34,7 +34,7 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
   useEffect(() => {
     dispatch(getAllCustomer({}));
   }, []);
-  console.log('43534', customerValue);
+  
   return (
     <>
       <Form.Item

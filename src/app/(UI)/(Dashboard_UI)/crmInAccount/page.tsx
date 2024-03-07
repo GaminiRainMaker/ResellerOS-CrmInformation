@@ -13,37 +13,35 @@ import {
   UserGroupIcon,
 } from '@heroicons/react/24/outline';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import Cookies from 'js-cookie';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import AddCustomer from '@/app/components/common/os-add-customer';
 import OsButton from '@/app/components/common/os-button';
-import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
-import OsInput from '@/app/components/common/os-input';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
-import {SearchOutlined} from '@ant-design/icons';
 import {MenuProps, TabsProps} from 'antd';
+import {Option} from 'antd/es/mentions';
+import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import AddCustomer from '@/app/components/common/os-add-customer';
-import AddCustomerInputVale from '@/app/components/common/os-add-customer/AddCustomerInput';
-import {updateAddress} from '../../../../../redux/actions/address';
 import {
   deleteCustomers,
   queryCustomer,
-  searchCustomer,
-  updateCustomer,
 } from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import EditCustomer from './EditCustomer';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
   const [formValue, setFormValue] = useState<any>();
@@ -55,9 +53,14 @@ const CrmInformation: React.FC = () => {
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deletedData, setDeletedData] = useState<any>();
-  const [searchCustomerData, setSearchCustomerData] = useState<any>();
-  const [query, setQuery] = useState('');
-  const searchQuery = useDebounceHook(query, 2000);
+  const [query, setQuery] = useState<{
+    customer: string | null;
+    contact: string | null;
+  }>({
+    customer: null,
+    contact: null,
+  });
+  const searchQuery = useDebounceHook(query, 500);
 
   useEffect(() => {
     dispatch(queryCustomer(searchQuery));
@@ -68,33 +71,21 @@ const CrmInformation: React.FC = () => {
     const setDeleted = deletedAll;
     setDeletedData(setDeleted);
   }, [billingData, activeTab]);
+
   useEffect(() => {
     setTimeout(() => {
-      dispatch(queryCustomer(''));
+      dispatch(queryCustomer(query));
     }, 1000);
   }, [!open, showModal]);
-
-  const updateCustomerDetails = async () => {
-    await dispatch(updateAddress(formValue));
-    await dispatch(updateCustomer(customerValue));
-    setOpen((p) => !p);
-    setTimeout(() => {
-      dispatch(queryCustomer(''));
-    }, 1000);
-  };
 
   const deleteSelectedIds = async () => {
     const data = {Ids: deleteIds};
     await dispatch(deleteCustomers(data));
     setTimeout(() => {
-      dispatch(queryCustomer(''));
+      dispatch(queryCustomer(query));
     }, 1000);
     setDeleteIds([]);
     setShowModalDelete(false);
-  };
-
-  const searchFilterForCustomer = async () => {
-    dispatch(searchCustomer(searchCustomerData));
   };
 
   const editCustomerFileds = (record: any) => {
@@ -132,14 +123,14 @@ const CrmInformation: React.FC = () => {
     },
     {
       key: 3,
-      primary: <div>{billingData.length}</div>,
+      primary: <div>{filteredData?.length}</div>,
       secondry: 'Contacts',
       icon: <PhoneIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
     {
       key: 4,
-      primary: <div>--</div>,
+      primary: <div>0</div>,
       secondry: 'Recents',
       icon: <ClockIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
@@ -167,7 +158,7 @@ const CrmInformation: React.FC = () => {
         <Typography
           name="Body 4/Regular"
           onClick={() => {
-            window.open(`/accountDetails?id=${record?.id}`);
+            router.push(`/accountDetails?id=${record?.id}`);
           }}
           hoverOnText
         >
@@ -284,7 +275,6 @@ const CrmInformation: React.FC = () => {
       label: (
         <div>
           <div>All</div>
-          {/* <div style={{border: activeTab == 1 ? '1px solid #1C3557' : ''}} /> */}
         </div>
       ),
       key: '1',
@@ -309,6 +299,29 @@ const CrmInformation: React.FC = () => {
       ),
     },
   ];
+
+  const uniqueBillingNames = Array.from(
+    new Set(
+      filteredData?.map(
+        (customer: any) => customer?.BillingContacts[0].billing_first_name,
+      ),
+    ),
+  );
+  const uniqueCustomer = Array.from(
+    new Set(filteredData?.map((customer: any) => customer.name)),
+  );
+
+  const locale = {
+    emptyText: (
+      <EmptyContainer
+        title="No Data"
+        actionButton="Add Customer"
+        onClick={() => {
+          setShowModal(true);
+        }}
+      />
+    ),
+  };
 
   return (
     <>
@@ -360,69 +373,101 @@ const CrmInformation: React.FC = () => {
           </Col>
         </Row>
         <Row
-          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+          style={{
+            background: 'white',
+            padding: '24px',
+            borderRadius: '12px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
+          }}
         >
-          <OsTabs
-            onChange={(e) => {
-              setActiveTab(e);
-            }}
-            activeKey={activeTab}
-            tabBarExtraContent={
-              <Space size={12} align="center">
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Customer Name</Typography>
-                  <OsInput
-                    style={{width: '200px'}}
-                    placeholder="Search here"
-                    onChange={(e) => {
-                      setSearchCustomerData({
-                        ...searchCustomerData,
-                        name: e.target.value,
-                      });
-                      setQuery(e.target.value);
-                    }}
-                    prefix={<SearchOutlined style={{color: '#949494'}} />}
-                  />
-                </Space>
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Customer Contact</Typography>
-                  <OsInput
-                    style={{width: '200px'}}
-                    placeholder="Search here"
-                    onChange={(e) => {
-                      setSearchCustomerData({
-                        ...searchCustomerData,
-                        currency: e.target.value,
-                      });
-                    }}
-                    prefix={<SearchOutlined style={{color: '#949494'}} />}
-                  />
-                </Space>
+          <Row justify="end" style={{width: '100%'}}>
+            <Space size={12} align="center">
+              <Space direction="vertical" size={0}>
+                <Typography name="Body 4/Medium">Customer Name</Typography>
+                <CommonSelect
+                  style={{width: '200px'}}
+                  placeholder="Search here"
+                  showSearch
+                  onSearch={(e) => {
+                    setQuery({
+                      ...query,
+                      customer: e,
+                    });
+                  }}
+                  onChange={(e) => {
+                    setQuery({
+                      ...query,
+                      customer: e,
+                    });
+                  }}
+                  value={query?.customer}
+                >
+                  {uniqueCustomer?.map((customer: any) => (
+                    <Option key={customer} value={customer}>
+                      {customer}
+                    </Option>
+                  ))}
+                </CommonSelect>
+              </Space>
+              <Space direction="vertical" size={0}>
+                <Typography name="Body 4/Medium">Contact</Typography>
+                <CommonSelect
+                  style={{width: '200px'}}
+                  placeholder="Search here"
+                  showSearch
+                  optionFilterProp="children"
+                  onSearch={(e) => {
+                    setQuery({
+                      ...query,
+                      contact: e,
+                    });
+                  }}
+                  onChange={(e) => {
+                    setQuery({
+                      ...query,
+                      contact: e,
+                    });
+                  }}
+                  value={query?.contact}
+                >
+                  {uniqueBillingNames?.map((billingName: any) => (
+                    <Option key={billingName} value={billingName}>
+                      {billingName}
+                    </Option>
+                  ))}
+                </CommonSelect>
+              </Space>
+              <div
+                style={{
+                  marginTop: '15px',
+                }}
+              >
                 <Typography
                   cursor="pointer"
                   name="Button 1"
                   color="#C6CDD5"
-                  onClick={searchFilterForCustomer}
+                  onClick={() => {
+                    setQuery({
+                      customer: null,
+                      contact: null,
+                    });
+                  }}
                 >
-                  Apply
+                  Reset
                 </Typography>
-              </Space>
-            }
-            items={tabItems.map((tabItem: any, index: number) => ({
-              key: `${index + 1}`,
-              label: tabItem?.label,
-              children: (
-                <OsTable
-                  key={tabItem?.key}
-                  columns={AccountColumns}
-                  dataSource={filteredData}
-                  rowSelection={rowSelection}
-                  scroll
-                  loading={loading}
-                />
-              ),
-              ...tabItem,
-            }))}
+              </div>
+            </Space>
+          </Row>
+
+          <OsTable
+            locale={locale}
+            columns={AccountColumns}
+            dataSource={filteredData}
+            rowSelection={rowSelection}
+            scroll
+            loading={loading}
           />
         </Row>
       </Space>
@@ -451,34 +496,14 @@ const CrmInformation: React.FC = () => {
         description="Are you sure you want to delete this account?"
       />
 
-      <OsDrawer
-        title={<Typography name="Body 1/Regular">Customer Details</Typography>}
-        placement="right"
-        onClose={() => setOpen((p) => !p)}
+      <EditCustomer
+        setOpen={setOpen}
         open={open}
-        width={450}
-        footer={
-          <Row style={{width: '100%', float: 'right'}}>
-            {' '}
-            <OsButton
-              btnStyle={{width: '100%'}}
-              buttontype="PRIMARY"
-              text="UPDATE"
-              clickHandler={updateCustomerDetails}
-            />
-          </Row>
-        }
-      >
-        <AddCustomerInputVale
-          drawer="drawer"
-          setShowModal=""
-          setFormValue={setFormValue}
-          formValue={formValue}
-          setCustomerValue={setCustomerValue}
-          customerValue={customerValue}
-          setOpen={setOpen}
-        />
-      </OsDrawer>
+        formValue={formValue}
+        setFormValue={setFormValue}
+        customerValue={customerValue}
+        setCustomerValue={setCustomerValue}
+      />
     </>
   );
 };

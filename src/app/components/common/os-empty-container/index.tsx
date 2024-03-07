@@ -48,7 +48,9 @@ const EmptyContainer: FC<EmptyContainerInterface> = ({
           text={actionButton}
           buttontype="PRIMARY"
           icon={<PlusIcon />}
-          clickHandler={() => onClick}
+          clickHandler={() => {
+            onClick();
+          }}
         />
       )}
     </Space>
