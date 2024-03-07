@@ -19,6 +19,9 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
+import OsCustomerSelect from '@/app/components/common/os-customer-select';
+import {useEffect, useState} from 'react';
+import Form from 'antd/es/form/Form';
 import {
   insertbillingContact,
   queryContact,
@@ -29,7 +32,6 @@ interface CustomerAccountInterface {
   formValue: any;
   setFormValue: any;
   setShowModal: any;
-  tableData: any;
   drawer?: any;
 }
 
@@ -37,15 +39,24 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
   formValue,
   setFormValue,
   setShowModal,
-  tableData,
   drawer,
 }) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
+  const [customerValue, setCustomerValue] = useState();
+
   const addNewContact = async () => {
     dispatch(insertbillingContact(formValue));
     setShowModal((p: boolean) => !p);
   };
+
+  useEffect(() => {
+    setFormValue({
+      ...formValue,
+      customer_id: customerValue,
+    });
+  }, [customerValue]);
+
   return (
     <>
       {!drawer && (
@@ -80,29 +91,16 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
       >
         {!drawer && (
           <>
-            {' '}
-            <Row style={{marginTop: '0px', width: '100%'}}>
-              <Typography name="Body 4/Regular">
-                Select Customer Account
-              </Typography>
-              <CommonSelect
-                placeholder="Select Customer Account"
-                style={{width: '100%', marginTop: '5px'}}
-                value={formValue?.customer_id}
-                options={tableData}
-                onChange={(e) => {
-                  setFormValue({
-                    ...formValue,
-                    customer_id: e,
-                  });
-                }}
+            <Form layout="vertical" requiredMark={false}>
+              <OsCustomerSelect
+                setCustomerValue={setCustomerValue}
+                customerValue={customerValue}
               />
-            </Row>
+            </Form>
+
             <div
               style={{
                 border: ' 1px solid #C7CDD5',
-                // marginLeft: '10px',
-                // marginRight: '10px',
                 width: '100%',
                 marginTop: '20px',
                 marginBottom: '10px',

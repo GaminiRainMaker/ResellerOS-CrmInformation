@@ -57,7 +57,6 @@ const CrmAccount: React.FC = () => {
   const {loading, filteredData} = useAppSelector(
     (state) => state.billingContact,
   );
-  const [tableData, setTableData] = useState<any>();
   const [deletedData, setDeletedData] = useState<any>();
   const [query, setQuery] = useState<{
     contact: string | null;
@@ -78,23 +77,11 @@ const CrmAccount: React.FC = () => {
     setDeletedData(setDeleted);
   }, [filteredData, activeTab]);
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     // dispatch(getAllCustomer(''));
-  //     dispatch(queryContact(query));
-  //   }, 1000);
-  // }, [showModal, open]);
-
   useEffect(() => {
-    const optionValues: any = [];
-    if (dataAddress) {
-      const liveOn = dataAddress?.filter((item: any) => !item?.is_deleted);
-      liveOn?.map((item: any) => {
-        optionValues?.push({label: item?.name, value: item?.id});
-      });
-    }
-    setTableData(optionValues);
-  }, [dataAddress]);
+    setTimeout(() => {
+      dispatch(queryContact(query));
+    }, 1000);
+  }, [showModal, open]);
 
   const updatebillDetails = async () => {
     dispatch(updateBillingContact(formValue));
@@ -355,103 +342,97 @@ const CrmAccount: React.FC = () => {
           </Col>
         </Row>
         <Row
-          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+          style={{
+            background: 'white',
+            padding: '24px',
+            borderRadius: '12px',
+            display: 'flex',
+            gap: 12,
+            flexDirection: 'column',
+          }}
         >
-          <OsTabs
-            onChange={(e) => {
-              setActiveTab(e);
-            }}
-            activeKey={activeTab}
-            tabBarExtraContent={
-              <Space size={12} align="center">
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Customer Account</Typography>
-                  <CommonSelect
-                    style={{width: '200px'}}
-                    placeholder="Search here"
-                    showSearch
-                    onSearch={(e) => {
-                      setQuery({
-                        ...query,
-                        customer: e,
-                      });
-                    }}
-                    onChange={(e) => {
-                      setQuery({
-                        ...query,
-                        customer: e,
-                      });
-                    }}
-                    value={query?.customer}
-                  >
-                    {uniqueCustomer?.map((customer: any) => (
-                      <Option key={customer} value={customer}>
-                        {customer}
-                      </Option>
-                    ))}
-                  </CommonSelect>
-                </Space>
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Contact Name</Typography>
-                  <CommonSelect
-                    style={{width: '200px'}}
-                    placeholder="Search here"
-                    showSearch
-                    onSearch={(e) => {
-                      setQuery({
-                        ...query,
-                        contact: e,
-                      });
-                    }}
-                    onChange={(e) => {
-                      setQuery({
-                        ...query,
-                        contact: e,
-                      });
-                    }}
-                    value={query?.contact}
-                  >
-                    {uniqueContact?.map((contact: any) => (
-                      <Option key={contact} value={contact}>
-                        {contact}
-                      </Option>
-                    ))}
-                  </CommonSelect>
-                </Space>
-
-                <div style={{marginTop: '15px'}}>
-                  <Typography
-                    cursor="pointer"
-                    name="Button 1"
-                    color="#C6CDD5"
-                    onClick={() => {
-                      setQuery({
-                        contact: null,
-                        customer: null,
-                      });
-                    }}
-                  >
-                    Reset
-                  </Typography>
-                </div>
+          <Row justify="end" style={{width: '100%'}}>
+            <Space size={12} align="center">
+              <Space direction="vertical" size={0}>
+                <Typography name="Body 4/Medium">Customer Account</Typography>
+                <CommonSelect
+                  style={{width: '200px'}}
+                  placeholder="Search here"
+                  showSearch
+                  onSearch={(e) => {
+                    setQuery({
+                      ...query,
+                      customer: e,
+                    });
+                  }}
+                  onChange={(e) => {
+                    setQuery({
+                      ...query,
+                      customer: e,
+                    });
+                  }}
+                  value={query?.customer}
+                >
+                  {uniqueCustomer?.map((customer: any) => (
+                    <Option key={customer} value={customer}>
+                      {customer}
+                    </Option>
+                  ))}
+                </CommonSelect>
               </Space>
-            }
-            items={tabItems.map((tabItem: any, index: number) => ({
-              key: `${index + 1}`,
-              label: tabItem?.label,
-              children: (
-                <OsTable
-                  key={tabItem?.key}
-                  columns={ContactColumns}
-                  dataSource={filteredData}
-                  rowSelection={rowSelection}
-                  scroll
-                  loading={loading}
-                  locale={locale}
-                />
-              ),
-              ...tabItem,
-            }))}
+              <Space direction="vertical" size={0}>
+                <Typography name="Body 4/Medium">Contact Name</Typography>
+                <CommonSelect
+                  style={{width: '200px'}}
+                  placeholder="Search here"
+                  showSearch
+                  onSearch={(e) => {
+                    setQuery({
+                      ...query,
+                      contact: e,
+                    });
+                  }}
+                  onChange={(e) => {
+                    setQuery({
+                      ...query,
+                      contact: e,
+                    });
+                  }}
+                  value={query?.contact}
+                >
+                  {uniqueContact?.map((contact: any) => (
+                    <Option key={contact} value={contact}>
+                      {contact}
+                    </Option>
+                  ))}
+                </CommonSelect>
+              </Space>
+
+              <div style={{marginTop: '15px'}}>
+                <Typography
+                  cursor="pointer"
+                  name="Button 1"
+                  color="#C6CDD5"
+                  onClick={() => {
+                    setQuery({
+                      contact: null,
+                      customer: null,
+                    });
+                  }}
+                >
+                  Reset
+                </Typography>
+              </div>
+            </Space>
+          </Row>
+
+          <OsTable
+            columns={ContactColumns}
+            dataSource={filteredData}
+            rowSelection={rowSelection}
+            scroll
+            loading={loading}
+            locale={locale}
           />
         </Row>
       </Space>
@@ -473,7 +454,6 @@ const CrmAccount: React.FC = () => {
             setFormValue={setFormValue}
             formValue={formValue}
             setShowModal={setShowModal}
-            tableData={tableData}
           />
         }
         width={600}
@@ -515,7 +495,6 @@ const CrmAccount: React.FC = () => {
           setFormValue={setFormValue}
           formValue={formValue}
           setShowModal={setShowModal}
-          tableData={tableData}
           drawer="drawer"
         />
       </OsDrawer>
