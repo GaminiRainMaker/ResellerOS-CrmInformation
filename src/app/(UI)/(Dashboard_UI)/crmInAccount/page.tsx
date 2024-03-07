@@ -128,7 +128,7 @@ const CrmInformation: React.FC = () => {
     },
     {
       key: 2,
-      primary: <div>{0}</div>,
+      primary: <div>{3}</div>,
       secondry: 'Opportunities',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
@@ -282,17 +282,6 @@ const CrmInformation: React.FC = () => {
     }),
   };
 
-  const tabItems: TabsProps['items'] = [
-    {
-      label: (
-        <div>
-          <div>All</div>
-          {/* <div style={{border: activeTab == 1 ? '1px solid #1C3557' : ''}} /> */}
-        </div>
-      ),
-      key: '1',
-    },
-  ];
 
   const dropDownItemss: MenuProps['items'] = [
     {

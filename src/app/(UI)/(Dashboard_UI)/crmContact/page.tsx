@@ -31,6 +31,7 @@ import OsTabs from '@/app/components/common/os-tabs';
 import {MenuProps, TabsProps} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useEffect, useState} from 'react';
+import {useRouter} from 'next/navigation';
 import {
   deleteBillingContact,
   queryContact,
@@ -44,6 +45,7 @@ import EditContactModal from './editContact';
 const CrmAccount: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<any>('1');
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showModalEdit, setShowModalEdit] = useState<boolean>(false);
@@ -208,7 +210,13 @@ const CrmAccount: React.FC = () => {
       key: 'Account',
       width: 187,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => {
+            router.push(`/accountDetails?id=${record?.Customer?.id}`);
+          }}
+          hoverOnText
+        >
           {record?.Customer?.name ?? '--'}
         </Typography>
       ),
@@ -246,18 +254,6 @@ const CrmAccount: React.FC = () => {
     },
   ];
 
-  const tabItems: TabsProps['items'] = [
-    {
-      label: (
-        <div>
-          <div>All</div>
-          <div style={{border: activeTab === 1 ? '1px solid #1C3557' : ''}} />
-        </div>
-      ),
-      key: '1',
-    },
-  ];
-
   const dropDownItemss: MenuProps['items'] = [
     {
       key: '1',
@@ -289,11 +285,11 @@ const CrmAccount: React.FC = () => {
   ];
 
   const uniqueContact = Array.from(
-    new Set(filteredData.map((contact: any) => contact.billing_first_name)),
+    new Set(filteredData?.map((contact: any) => contact?.billing_first_name)),
   );
 
   const uniqueCustomer = Array.from(
-    new Set(filteredData.map((contact: any) => contact.Customer?.name)),
+    new Set(filteredData?.map((contact: any) => contact.Customer?.name)),
   );
 
   const locale = {

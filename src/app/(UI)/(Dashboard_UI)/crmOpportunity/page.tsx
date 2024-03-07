@@ -369,11 +369,11 @@ const CrmOpportunity: React.FC = () => {
   ];
 
   const uniqueOpportunity = Array.from(
-    new Set(opportunityData.map((opportunity: any) => opportunity.title)),
+    new Set(opportunityData?.map((opportunity: any) => opportunity?.title)),
   );
 
   const uniqueCustomer = Array.from(
-    new Set(opportunityData.map((contact: any) => contact.Customer?.name)),
+    new Set(opportunityData?.map((contact: any) => contact.Customer?.name)),
   );
 
   return (
