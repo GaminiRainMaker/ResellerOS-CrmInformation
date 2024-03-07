@@ -107,3 +107,15 @@ export const getQuotesByDateFilter = createAsyncThunk(
     }
   },
 );
+
+export const getQuoteByMaunalUpdated = createAsyncThunk(
+  'quote/getQuoteByMaunalUpdated',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await QUOTEAPI.getQuoteByMaunalUpdated();
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

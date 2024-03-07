@@ -6,11 +6,9 @@
 'use client';
 
 import React, {useEffect, useRef, useState} from 'react';
-import ReactDOM from 'react-dom';
 import '@handsontable/pikaday/css/pikaday.css';
 import './styles.css';
-import Handsontable from 'handsontable';
-import {HotTable, HotColumn} from '@handsontable/react';
+import {HotTable} from '@handsontable/react';
 
 import {formatStatus} from '@/app/utils/CONSTANTS';
 import {useSearchParams} from 'next/navigation';

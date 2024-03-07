@@ -40,6 +40,7 @@ const SideBar = () => {
 
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [selectedKey, setSelectedKey] = useState<number>(1);
+
   const [crmChildKey, setCrmChildKey] = useState<number>(0);
   const {userInformation} = useAppSelector((state) => state.user);
   type MenuItem = Required<MenuProps>['items'][number];
@@ -148,6 +149,133 @@ const SideBar = () => {
         </Space>
       </Typography>,
       '1',
+    ),
+    getItem(
+      <Typography
+        onClick={() => {
+          setSelectedKey(7);
+        }}
+        name="Button 1"
+        color={token?.colorTextSecondary}
+      >
+        <Space size={12}>
+          <OsAvatar
+            icon={
+              <UserGroupIcon
+                color={
+                  selectedKey?.toString()?.includes('7') ||
+                  selectedKey?.toString()?.includes('8') ||
+                  selectedKey?.toString()?.includes('0') ||
+                  selectedKey?.toString()?.includes('9')
+                    ? token?.colorPrimary
+                    : token?.colorTextSecondary
+                }
+                width={24}
+              />
+            }
+          />
+          <Typography
+            name="Button 1"
+            style={{
+              marginTop: '1px',
+              marginRight: '60px',
+            }}
+            color={
+              selectedKey?.toString()?.includes('7') ||
+              selectedKey?.toString()?.includes('8') ||
+              selectedKey?.toString()?.includes('0') ||
+              selectedKey?.toString()?.includes('9')
+                ? token?.colorPrimary
+                : token?.colorTextSecondary
+            }
+          >
+            Quote
+          </Typography>
+        </Space>
+      </Typography>,
+      'CRM information',
+      '',
+      [
+        getItem(
+          <Space
+            size={12}
+            onClick={() => {
+              setSelectedKey(8);
+              router?.push('/unprocessedQuote');
+            }}
+          >
+            <OsAvatar
+              icon={
+                selectedKey?.toString()?.includes('8') ? (
+                  <Image
+                    src={ActiveCrmIcon}
+                    alt="ActiveCrmIcon"
+                    style={{width: '15px', height: '15px'}}
+                  />
+                ) : (
+                  <Image
+                    src={InActiveCrmIcon}
+                    alt="InActiveCrmIcon"
+                    style={{width: '15px', height: '15px'}}
+                  />
+                )
+              }
+            />
+            <Typography
+              name="Button 1"
+              cursor="pointer"
+              color={
+                selectedKey?.toString()?.includes('8')
+                  ? token.colorPrimaryBorder
+                  : token?.colorTextSecondary
+              }
+            >
+              UnProcessed Quote
+            </Typography>
+          </Space>,
+          '8',
+        ),
+        getItem(
+          <Space
+            size={12}
+            onClick={() => {
+              setSelectedKey(9);
+              router?.push('/quoteConfiguration');
+            }}
+            color={token?.colorTextSecondary}
+          >
+            <OsAvatar
+              icon={
+                selectedKey?.toString()?.includes('9') ? (
+                  <Image
+                    src={ActiveCrmIcon}
+                    alt="ActiveCrmIcon"
+                    style={{width: '15px', height: '15px'}}
+                  />
+                ) : (
+                  <Image
+                    src={InActiveCrmIcon}
+                    alt="InActiveCrmIcon"
+                    style={{width: '15px', height: '15px'}}
+                  />
+                )
+              }
+            />
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              color={
+                selectedKey?.toString()?.includes('9')
+                  ? token.colorPrimaryBorder
+                  : token?.colorTextSecondary
+              }
+            >
+              Quote Configuration
+            </Typography>
+          </Space>,
+          '9',
+        ),
+      ],
     ),
     isQuoteAI &&
       getItem(
