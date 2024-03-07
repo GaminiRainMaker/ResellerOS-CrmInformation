@@ -276,7 +276,7 @@ const CrmAccount: React.FC = () => {
   );
 
   const uniqueCustomer = Array.from(
-    new Set(filteredData?.map((contact: any) => contact.Customer?.name)),
+    new Set(filteredData?.map((contact: any) => contact?.Customer?.name)),
   );
 
   const locale = {
@@ -341,18 +341,16 @@ const CrmAccount: React.FC = () => {
             </div>
           </Col>
         </Row>
-        <Row
+
+        <div
           style={{
             background: 'white',
             padding: '24px',
             borderRadius: '12px',
-            display: 'flex',
-            gap: 12,
-            flexDirection: 'column',
           }}
         >
-          <Row justify="end" style={{width: '100%'}}>
-            <Space size={12} align="center">
+          <Row justify="end">
+            <Space size={12} align="center" style={{paddingBottom: '15px'}}>
               <Space direction="vertical" size={0}>
                 <Typography name="Body 4/Medium">Customer Account</Typography>
                 <CommonSelect
@@ -434,21 +432,20 @@ const CrmAccount: React.FC = () => {
             loading={loading}
             locale={locale}
           />
-        </Row>
+        </div>
       </Space>
 
       <OsModal
-        // loading={loading}
+        loading={loading}
         body={<EditContactModal />}
         width={1110}
         open={showModalEdit}
-        // onOk={() => addQuoteLineItem()}
         onCancel={() => {
           setShowModalEdit((p) => !p);
         }}
       />
       <OsModal
-        // loading={loading}
+        loading={loading}
         body={
           <AddContact
             setFormValue={setFormValue}
@@ -458,7 +455,6 @@ const CrmAccount: React.FC = () => {
         }
         width={600}
         open={showModal}
-        // onOk={() => addQuoteLineItem()}
         onCancel={() => {
           setShowModal((p) => !p);
         }}

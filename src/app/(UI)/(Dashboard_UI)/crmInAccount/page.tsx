@@ -362,7 +362,9 @@ const CrmInformation: React.FC = () => {
             </div>
           </Col>
         </Row>
-        <Row
+
+
+        <div
           style={{
             background: 'white',
             padding: '24px',
@@ -372,7 +374,7 @@ const CrmInformation: React.FC = () => {
             gap: 12,
           }}
         >
-          <Row justify="end" style={{width: '100%'}}>
+          <Row justify="end">
             <Space size={12} align="center">
               <Space direction="vertical" size={0}>
                 <Typography name="Body 4/Medium">Customer Name</Typography>
@@ -459,7 +461,7 @@ const CrmInformation: React.FC = () => {
             scroll
             loading={loading}
           />
-        </Row>
+        </div>
       </Space>
 
       <OsModal
