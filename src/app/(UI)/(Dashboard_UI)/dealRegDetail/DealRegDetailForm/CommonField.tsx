@@ -6,9 +6,10 @@ import OsInput from '@/app/components/common/os-input';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {partnerOptions} from '@/app/utils/CONSTANTS';
 import {formatDate} from '@/app/utils/base';
 import {FC, useEffect, useState} from 'react';
+import OsPartnerSelect from '@/app/components/common/os-partner-select';
+import {Form} from 'antd';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setDealRegUpdateData} from '../../../../../../redux/slices/dealReg';
 import {CollapseSpaceStyle} from './styled-components';
@@ -18,7 +19,7 @@ const CommonFields: FC<any> = (data) => {
   const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
   const {data: dataAddress} = useAppSelector((state) => state.customer);
   const {dealReg} = useAppSelector((state) => state.dealReg);
-
+  const [form] = Form.useForm();
   const [partnerProgramOptions, setPartnerProgramOptions] = useState<any>();
 
   const [commonFieldData, setCommonFieldData] = useState<{
@@ -42,26 +43,29 @@ const CommonFields: FC<any> = (data) => {
     }));
   };
   const [filteredOppOptions, setFilteredOppOptions] = useState<any>();
+
+  console.log('dealRegdealReg', dealReg, data);
+
   useEffect(() => {
     let opportunityOptions: any;
     if (data?.selectedUserId) {
       const filteredData = opportunityData?.filter((item: any) =>
         item?.customer_id?.toString()?.includes(data?.selectedUserId),
       );
-      opportunityOptions = filteredData.map((opportunity: any) => ({
-        value: opportunity.id,
-        label: opportunity.title,
+      opportunityOptions = filteredData?.map((opportunity: any) => ({
+        value: opportunity?.id,
+        label: opportunity?.title,
       }));
     } else {
-      opportunityOptions = opportunityData.map((customer: any) => ({
-        value: customer.id,
-        label: customer.name,
+      opportunityOptions = opportunityData?.map((customer: any) => ({
+        value: customer?.id,
+        label: customer?.name,
       }));
     }
     setFilteredOppOptions(opportunityOptions);
   }, [data?.selectedUserId, data]);
 
-  const customerOptions = dataAddress.map((customer: any) => ({
+  const customerOptions = dataAddress?.map((customer: any) => ({
     value: customer.id,
     label: customer.name,
   }));
@@ -197,49 +201,53 @@ const CommonFields: FC<any> = (data) => {
             width: '100%',
           }}
         >
-          <Row justify="space-between" gutter={[24, 24]}>
-            <Col sm={24} md={12}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">Partner Account</Typography>
-                <CommonSelect
-                  placeholder="Cisco"
-                  style={{width: '100%'}}
-                  defaultValue={data?.data?.partner_id}
+          <Form layout="vertical" form={form}>
+            <Row justify="space-between" gutter={[24, 24]}>
+              <Col sm={24} md={12}>
+                {/* <Space
+                  size={4}
+                  direction="vertical"
+                  style={{
+                    width: '100%',
+                  }}
+                >
+                  <Typography name="Body 4/Medium">Partner Account</Typography>
+                  <CommonSelect
                   onChange={(value) => {
                     handleDealRegInformationChange('partner_id', value);
                     // setPartnerProgramOptions(getProgramOptions(value));
                   }}
-                  options={partnerOptions}
                 />
-              </Space>
-            </Col>
-            <Col sm={24} md={12}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">Partner Programm</Typography>
-                <CommonSelect
-                  placeholder="Cisco Hardware"
-                  defaultValue={data?.data?.partner_program_id}
-                  style={{width: '100%'}}
-                  onChange={(value) =>
-                    handleDealRegInformationChange('partner_program_id', value)
-                  }
-                  options={partnerProgramOptions}
-                />
-              </Space>
-            </Col>
-          </Row>
+                </Space> */}
+
+                <OsPartnerSelect value={data?.data?.partner_id} />
+              </Col>
+
+              <Col sm={24} md={12}>
+                <Space
+                  size={4}
+                  direction="vertical"
+                  style={{
+                    width: '100%',
+                  }}
+                >
+                  <Typography name="Body 4/Medium">Partner Programm</Typography>
+                  <CommonSelect
+                    placeholder="Cisco Hardware"
+                    defaultValue={data?.data?.partner_program_id}
+                    style={{width: '100%'}}
+                    onChange={(value) =>
+                      handleDealRegInformationChange(
+                        'partner_program_id',
+                        value,
+                      )
+                    }
+                    options={partnerProgramOptions}
+                  />
+                </Space>
+              </Col>
+            </Row>
+          </Form>
 
           <Row justify="space-between" gutter={[24, 24]}>
             <Col sm={24} md={12}>

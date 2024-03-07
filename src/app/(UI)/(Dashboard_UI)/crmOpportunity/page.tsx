@@ -269,7 +269,7 @@ const CrmOpportunity: React.FC = () => {
   };
 
   useEffect(() => {
-    if (activeTab && opportunityData.length > 0) {
+    if (activeTab && opportunityData?.length > 0) {
       const quoteItems =
         activeTab === '3'
           ? opportunityData?.filter((item: any) => item.stages === 'Develop')

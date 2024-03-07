@@ -7,7 +7,10 @@ import useThemeToken from '../hooks/useThemeToken';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
 
-const OsPartnerSelect: FC<any> = () => {
+const OsPartnerSelect: FC<{
+  name?: string;
+  value?: number;
+}> = ({name = 'partner', value}) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {data: partnerData} = useAppSelector((state) => state.partner);
@@ -15,7 +18,6 @@ const OsPartnerSelect: FC<any> = () => {
   useEffect(() => {
     dispatch(getAllPartner());
   }, []);
-
 
   const partnerOptions = partnerData?.approved?.map((dataAddressItem: any) => ({
     value: dataAddressItem.id,
@@ -29,10 +31,12 @@ const OsPartnerSelect: FC<any> = () => {
   return (
     <Form.Item
       label="Partner Name"
-      name="partner"
+      name={name}
       rules={[{required: true, message: 'Please Select Partner!'}]}
+      initialValue={value}
     >
       <CommonSelect
+        optionLabelProp="label"
         placeholder="Select"
         allowClear
         style={{width: '100%'}}
