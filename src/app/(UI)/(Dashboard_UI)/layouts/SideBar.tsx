@@ -40,6 +40,7 @@ const SideBar = () => {
 
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [selectedKey, setSelectedKey] = useState<number>(1);
+
   const [crmChildKey, setCrmChildKey] = useState<number>(0);
   const {userInformation} = useAppSelector((state) => state.user);
   type MenuItem = Required<MenuProps>['items'][number];
@@ -162,10 +163,10 @@ const SideBar = () => {
             icon={
               <UserGroupIcon
                 color={
-                  seleectedKey?.toString()?.includes('7') ||
-                  seleectedKey?.toString()?.includes('8') ||
-                  seleectedKey?.toString()?.includes('0') ||
-                  seleectedKey?.toString()?.includes('9')
+                  selectedKey?.toString()?.includes('7') ||
+                  selectedKey?.toString()?.includes('8') ||
+                  selectedKey?.toString()?.includes('0') ||
+                  selectedKey?.toString()?.includes('9')
                     ? token?.colorPrimary
                     : token?.colorTextSecondary
                 }
@@ -180,10 +181,10 @@ const SideBar = () => {
               marginRight: '60px',
             }}
             color={
-              seleectedKey?.toString()?.includes('7') ||
-              seleectedKey?.toString()?.includes('8') ||
-              seleectedKey?.toString()?.includes('0') ||
-              seleectedKey?.toString()?.includes('9')
+              selectedKey?.toString()?.includes('7') ||
+              selectedKey?.toString()?.includes('8') ||
+              selectedKey?.toString()?.includes('0') ||
+              selectedKey?.toString()?.includes('9')
                 ? token?.colorPrimary
                 : token?.colorTextSecondary
             }
@@ -205,7 +206,7 @@ const SideBar = () => {
           >
             <OsAvatar
               icon={
-                seleectedKey?.toString()?.includes('8') ? (
+                selectedKey?.toString()?.includes('8') ? (
                   <Image
                     src={ActiveCrmIcon}
                     alt="ActiveCrmIcon"
@@ -224,7 +225,7 @@ const SideBar = () => {
               name="Button 1"
               cursor="pointer"
               color={
-                seleectedKey?.toString()?.includes('8')
+                selectedKey?.toString()?.includes('8')
                   ? token.colorPrimaryBorder
                   : token?.colorTextSecondary
               }
@@ -245,7 +246,7 @@ const SideBar = () => {
           >
             <OsAvatar
               icon={
-                seleectedKey?.toString()?.includes('9') ? (
+                selectedKey?.toString()?.includes('9') ? (
                   <Image
                     src={ActiveCrmIcon}
                     alt="ActiveCrmIcon"
@@ -264,7 +265,7 @@ const SideBar = () => {
               cursor="pointer"
               name="Button 1"
               color={
-                seleectedKey?.toString()?.includes('9')
+                selectedKey?.toString()?.includes('9')
                   ? token.colorPrimaryBorder
                   : token?.colorTextSecondary
               }
