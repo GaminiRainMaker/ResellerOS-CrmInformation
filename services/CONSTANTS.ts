@@ -12,6 +12,7 @@ export const API = {
     DeleteById: '/quote/deleteQuote',
     GetQuotesByDateFilter: '/quote/getQuotesByDateFilter',
     GetQuoteByID: '/quote/getQuoteById',
+    getQuoteByMaunalUpdated: '/quote/getQuoteByMaunalUpdated',
   },
   QUOTE_LINE_ITEM: {
     INDEX: '/quoteLineItem',
@@ -131,6 +132,6 @@ export const API = {
     DeleteById: '/partnerProgram/deleteById',
     UpdatePartnerProgramById: '/partnerProgram/updatePartnerProgramById',
     GetPartnerProgramById: '/partnerProgram/getPartnerProgramById',
-    deletePartnerFormData : '/partnerProgram/deletePartnerProgramFormData',
+    deletePartnerFormData: '/partnerProgram/deletePartnerProgramFormData',
   },
 };

@@ -142,6 +142,133 @@ const SideBar = () => {
       </Typography>,
       '1',
     ),
+    getItem(
+      <Typography
+        onClick={() => {
+          setSelectedKey(7);
+        }}
+        name="Button 1"
+        color={token?.colorTextSecondary}
+      >
+        <Space size={12}>
+          <OsAvatar
+            icon={
+              <UserGroupIcon
+                color={
+                  seleectedKey?.toString()?.includes('7') ||
+                  seleectedKey?.toString()?.includes('8') ||
+                  seleectedKey?.toString()?.includes('0') ||
+                  seleectedKey?.toString()?.includes('9')
+                    ? token?.colorPrimary
+                    : token?.colorTextSecondary
+                }
+                width={24}
+              />
+            }
+          />
+          <Typography
+            name="Button 1"
+            style={{
+              marginTop: '1px',
+              marginRight: '60px',
+            }}
+            color={
+              seleectedKey?.toString()?.includes('7') ||
+              seleectedKey?.toString()?.includes('8') ||
+              seleectedKey?.toString()?.includes('0') ||
+              seleectedKey?.toString()?.includes('9')
+                ? token?.colorPrimary
+                : token?.colorTextSecondary
+            }
+          >
+            Quote
+          </Typography>
+        </Space>
+      </Typography>,
+      'CRM information',
+      '',
+      [
+        getItem(
+          <Space
+            size={12}
+            onClick={() => {
+              setSelectedKey(8);
+              router?.push('/unprocessedQuote');
+            }}
+          >
+            <OsAvatar
+              icon={
+                seleectedKey?.toString()?.includes('8') ? (
+                  <Image
+                    src={ActiveCrmIcon}
+                    alt="ActiveCrmIcon"
+                    style={{width: '15px', height: '15px'}}
+                  />
+                ) : (
+                  <Image
+                    src={InActiveCrmIcon}
+                    alt="InActiveCrmIcon"
+                    style={{width: '15px', height: '15px'}}
+                  />
+                )
+              }
+            />
+            <Typography
+              name="Button 1"
+              cursor="pointer"
+              color={
+                seleectedKey?.toString()?.includes('8')
+                  ? token.colorPrimaryBorder
+                  : token?.colorTextSecondary
+              }
+            >
+              UnProcessed Quote
+            </Typography>
+          </Space>,
+          '8',
+        ),
+        getItem(
+          <Space
+            size={12}
+            onClick={() => {
+              setSelectedKey(9);
+              router?.push('/quoteConfiguration');
+            }}
+            color={token?.colorTextSecondary}
+          >
+            <OsAvatar
+              icon={
+                seleectedKey?.toString()?.includes('9') ? (
+                  <Image
+                    src={ActiveCrmIcon}
+                    alt="ActiveCrmIcon"
+                    style={{width: '15px', height: '15px'}}
+                  />
+                ) : (
+                  <Image
+                    src={InActiveCrmIcon}
+                    alt="InActiveCrmIcon"
+                    style={{width: '15px', height: '15px'}}
+                  />
+                )
+              }
+            />
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              color={
+                seleectedKey?.toString()?.includes('9')
+                  ? token.colorPrimaryBorder
+                  : token?.colorTextSecondary
+              }
+            >
+              Quote Configuration
+            </Typography>
+          </Space>,
+          '9',
+        ),
+      ],
+    ),
     isQuoteAI &&
       getItem(
         <Space
