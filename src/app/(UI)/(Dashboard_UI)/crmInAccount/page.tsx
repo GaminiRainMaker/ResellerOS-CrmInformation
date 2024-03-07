@@ -196,21 +196,23 @@ const CrmInformation: React.FC = () => {
         </Typography>
       ),
     },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Contact
-        </Typography>
-      ),
-      dataIndex: 'name',
-      key: 'name',
-      width: 187,
-      render: (text: any, record: any) => (
-        <Typography name="Body 4/Regular">
-          {record?.BillingContacts?.[0]?.billing_first_name ?? '--'}
-        </Typography>
-      ),
-    },
+
+    // for Billing Contact
+    // {
+    //   title: (
+    //     <Typography name="Body 4/Medium" className="dragHandler">
+    //       Contact
+    //     </Typography>
+    //   ),
+    //   dataIndex: 'name',
+    //   key: 'name',
+    //   width: 187,
+    //   render: (text: any, record: any) => (
+    //     <Typography name="Body 4/Regular">
+    //       {record?.BillingContacts?.[0]?.billing_first_name ?? '--'}
+    //     </Typography>
+    //   ),
+    // },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -269,7 +271,6 @@ const CrmInformation: React.FC = () => {
       name: record.name,
     }),
   };
-
 
   const dropDownItemss: MenuProps['items'] = [
     {
@@ -362,7 +363,6 @@ const CrmInformation: React.FC = () => {
             </div>
           </Col>
         </Row>
-
 
         <div
           style={{

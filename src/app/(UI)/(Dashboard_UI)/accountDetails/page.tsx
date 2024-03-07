@@ -309,22 +309,6 @@ const AccountDetails = () => {
       ),
     },
     {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Quotes / Forms
-        </Typography>
-      ),
-      dataIndex: 'quotesForms',
-      key: 'quotesForms',
-      width: 130,
-      render: (text: string) => (
-        <Typography color={token?.colorLink} name="Body 4/Bold">
-          View All
-        </Typography>
-      ),
-    },
-
-    {
       title: ' ',
       dataIndex: 'actions',
       key: 'actions',
@@ -337,7 +321,6 @@ const AccountDetails = () => {
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              // router.push(`/generateQuote?id=${record?.id}`);
             }}
           />
           <TrashIcon

@@ -218,27 +218,6 @@ const CrmOpportunity: React.FC = () => {
       ),
     },
     {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Quotes / Forms
-        </Typography>
-      ),
-      dataIndex: 'quotesForms',
-      key: 'quotesForms',
-      render: (text: string, record: any) => (
-        <Typography
-          color={token?.colorLink}
-          name="Body 4/Bold"
-          cursor="pointer"
-          onClick={() => {
-            router.push(`/opportunityDetail?id=${record?.id}`);
-          }}
-        >
-          View All
-        </Typography>
-      ),
-    },
-    {
       title: ' ',
       dataIndex: 'actions',
       key: 'actions',
