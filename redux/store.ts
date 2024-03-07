@@ -24,6 +24,7 @@ import syncTable from './slices/syncTable';
 import tableColumn from './slices/tabelColumn';
 import user from './slices/user';
 import validation from './slices/validation';
+import quoteConfig from './slices/nanonets';
 
 // Configure redux store
 const store = configureStore({
@@ -51,6 +52,7 @@ const store = configureStore({
     dealRegAddress,
     partner,
     partnerProgram,
+    quoteConfig,
   },
   middleware: [thunk],
   devTools: true,

@@ -134,4 +134,8 @@ export const API = {
     GetPartnerProgramById: '/partnerProgram/getPartnerProgramById',
     deletePartnerFormData: '/partnerProgram/deletePartnerProgramFormData',
   },
+  QUOTECONFIGURATION: {
+    INDEX: '/nanonetsConfiguration',
+    DeleteById: '/nanonetsConfiguration/deleteNanonetsModel',
+  },
 };

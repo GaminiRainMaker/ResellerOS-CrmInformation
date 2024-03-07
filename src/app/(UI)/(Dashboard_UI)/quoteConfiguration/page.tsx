@@ -21,26 +21,24 @@ import Typography from '@/app/components/common/typography';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
+import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
-import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import {SearchOutlined} from '@ant-design/icons';
+import {EditFilled, SearchOutlined} from '@ant-design/icons';
+import {EyeIcon, PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Form, TabsProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import OsButton from '@/app/components/common/os-button';
-import {PlusIcon} from '@heroicons/react/24/outline';
-import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
-import {
-  deleteQuoteById,
-  getQuotesByDateFilter,
-} from '../../../../../redux/actions/quote';
 
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import QuoteAnalytics from '../allQuote/analytics';
-import getColumns from '../allQuote/tableColumns';
+import AddQuoteConiguration from './addQuoteConfiguration';
+import {
+  deleteQuoteConfiguration,
+  getAllNanonetsModel,
+} from '../../../../../redux/actions/nanonets';
 
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -50,70 +48,31 @@ const AllQuote: React.FC = () => {
     (state) => state.quote,
   );
   const router = useRouter();
-  const [quoteData, setQuoteData] = useState<React.Key[]>([]);
-  const [deletedQuote, setDeletedQuote] = useState<React.Key[]>([]);
-  const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
-
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [formValue, setFormValue] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
-  const {userInformation} = useAppSelector((state) => state.user);
+  const [allQuoteConfigData, setAllQuoteConfigData] = useState<any>();
+  const [configData, setConfigData] = useState<boolean>(false);
 
   const [form] = Form.useForm();
-
   useEffect(() => {
-    dispatch(getAllGeneralSetting(''));
+    dispatch(getAllNanonetsModel()).then((payload: any) => {
+      setAllQuoteConfigData(payload?.payload);
+    });
   }, []);
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(getAllNanonetsModel()).then((payload: any) => {
+        setAllQuoteConfigData(payload?.payload);
+      });
+    }, 1000);
+    setFormValue({});
+  }, [!showModal]);
 
   useEffect(() => {
-    dispatch(getQuotesByDateFilter({beforeDays: null, afterDays: null}));
-  }, []);
-
-  useEffect(() => {
-    if (filteredData && filteredData?.length > 0) {
-      const deleted = filteredData?.filter((item: any) => item?.is_deleted);
-      const notDeleted = filteredData?.filter((item: any) => !item?.is_deleted);
-      setQuoteData(notDeleted);
-      setDeletedQuote(deleted);
-    } else {
-      setQuoteData([]);
-      setDeletedQuote([]);
-    }
-  }, [filteredData]);
-
-  useEffect(() => {
-    setActiveQuotes(quoteData);
-  }, [activeTab, quoteData]);
-
-  const statusWrapper = (item: any) => {
-    const getStatus = () => {
-      if (!item.is_completed && !item.is_drafted) {
-        return 'Drafts';
-      }
-      if (item.is_drafted) {
-        return 'In Progress';
-      }
-      if (item?.approver_id === userInformation?.id) {
-        return 'In Review';
-      }
-      if (item?.rejected_request) {
-        return 'Rejected';
-      }
-      if (item?.approved_request) {
-        return 'Approved';
-      }
-      if (
-        item.is_completed &&
-        item?.approver_id !== userInformation?.id &&
-        !item?.approved_request &&
-        !item?.rejected_request
-      ) {
-        return 'Needs Review';
-      }
-      return '--';
-    };
-
-    return <OsStatusWrapper value={getStatus()} />;
-  };
+    setConfigData(allQuoteConfigData);
+  }, [allQuoteConfigData]);
 
   const rowSelection = {
     onChange: (selectedRowKeys: any) => {
@@ -125,26 +84,98 @@ const AllQuote: React.FC = () => {
     }),
   };
 
-  const editQuote = (quoteId: string) => {
-    router.push(`/generateQuote?id=${quoteId}`);
-  };
-  const deleteQuote = async () => {
-    const data = {Ids: deleteIds};
-    await dispatch(deleteQuoteById(data));
+  const deleteQuoteConfig = async (id: number) => {
+    await dispatch(deleteQuoteConfiguration(deleteIds));
     setTimeout(() => {
-      dispatch(getQuotesByDateFilter({}));
+      dispatch(getAllNanonetsModel());
     }, 1000);
     setDeleteIds([]);
     setShowModalDelete(false);
-    form.resetFields(['opportunity_id', 'customer_id']);
   };
-  const Quotecolumns = getColumns(
-    token,
-    statusWrapper,
-    editQuote,
-    setDeleteIds,
-    setShowModalDelete,
-  );
+  const columns = [
+    {
+      title: (
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
+          OEM
+        </Typography>
+      ),
+      dataIndex: 'oem',
+      key: 'oem',
+      width: 130,
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">{text}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
+          Distributer
+        </Typography>
+      ),
+      dataIndex: 'distributer',
+      key: 'distributer',
+      width: 187,
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">{text}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
+          Model ID
+        </Typography>
+      ),
+      dataIndex: 'model_id',
+      key: 'model_id',
+      width: 187,
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">{text}</Typography>
+      ),
+    },
+    {
+      title: ' ',
+      dataIndex: 'actions',
+      key: 'actions',
+      width: 94,
+      render: (text: string, record: any) => (
+        <Space size={18}>
+          <EditFilled
+            height={24}
+            width={24}
+            color={token.colorInfoBorder}
+            style={{cursor: 'pointer'}}
+            onClick={() => {
+              setShowModal((p) => !p);
+              setFormValue(record);
+            }}
+          />
+          <TrashIcon
+            height={24}
+            width={24}
+            color={token.colorError}
+            style={{cursor: 'pointer'}}
+            onClick={() => {
+              setDeleteIds(record?.id);
+              setShowModalDelete(true);
+              // setShowModal((p) => !p);
+            }}
+          />
+        </Space>
+      ),
+    },
+  ];
 
   const tabItems: TabsProps['items'] = [
     {
@@ -164,7 +195,7 @@ const AllQuote: React.FC = () => {
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <QuoteAnalytics quoteData={quoteData} deletedQuote={deletedQuote} />
+        {/* <QuoteAnalytics quoteData={quoteData} deletedQuote={deletedQuote} /> */}
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
@@ -183,9 +214,7 @@ const AllQuote: React.FC = () => {
                 text="Add Quote Cnfiguration"
                 buttontype="PRIMARY"
                 icon={<PlusIcon />}
-                clickHandler={() => {
-                  //   setShowModal((p) => !p);
-                }}
+                clickHandler={() => setShowModal((p) => !p)}
               />
             </div>
           </Col>
@@ -255,8 +284,8 @@ const AllQuote: React.FC = () => {
               children: (
                 <OsTable
                   key={tabItem?.key}
-                  columns={Quotecolumns}
-                  dataSource={activeQuotes}
+                  columns={columns}
+                  dataSource={configData}
                   scroll
                   loading={loading}
                   locale=""
@@ -268,15 +297,30 @@ const AllQuote: React.FC = () => {
           />
         </Row>
       </Space>
+      <OsModal
+        // loading={loading}
+        body={
+          <AddQuoteConiguration
+            setFormValue={setFormValue}
+            formValue={formValue}
+            setShowModal={setShowModal}
+          />
+        }
+        width={600}
+        open={showModal}
+        onCancel={() => {
+          setShowModal((p) => !p);
+        }}
+      />
 
       <DeleteModal
         loading={loading}
         setShowModalDelete={setShowModalDelete}
         setDeleteIds={setDeleteIds}
         showModalDelete={showModalDelete}
-        deleteSelectedIds={deleteQuote}
-        heading="Delete Quote"
-        description="Are you sure you want to delete this Quote?"
+        deleteSelectedIds={deleteQuoteConfig}
+        heading="Delete Quote Configuration"
+        description="Are you sure you want to delete this Quote Configuration?"
       />
     </>
   );
