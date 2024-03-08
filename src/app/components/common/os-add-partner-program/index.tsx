@@ -87,7 +87,7 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
           requiredMark={false}
           initialValues={formPartnerData}
         >
-          <OsPartnerSelect />
+          <OsPartnerSelect form={form} />
 
           <Form.Item
             label="Partner Program"
