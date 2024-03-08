@@ -67,7 +67,6 @@ const AllQuote: React.FC = () => {
         setAllQuoteConfigData(payload?.payload);
       });
     }, 1000);
-    setFormValue({});
   }, [!showModal]);
 
   useEffect(() => {
@@ -92,6 +91,7 @@ const AllQuote: React.FC = () => {
     setDeleteIds([]);
     setShowModalDelete(false);
   };
+
   const columns = [
     {
       title: (
@@ -157,6 +157,7 @@ const AllQuote: React.FC = () => {
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
+              console.log('456456456', record);
               setShowModal((p) => !p);
               setFormValue(record);
             }}
@@ -214,7 +215,10 @@ const AllQuote: React.FC = () => {
                 text="Add Quote Cnfiguration"
                 buttontype="PRIMARY"
                 icon={<PlusIcon />}
-                clickHandler={() => setShowModal((p) => !p)}
+                clickHandler={() => {
+                  setShowModal((p) => !p);
+                  setFormValue({});
+                }}
               />
             </div>
           </Col>

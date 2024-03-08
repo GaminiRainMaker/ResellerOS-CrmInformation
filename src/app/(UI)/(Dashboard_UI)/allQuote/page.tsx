@@ -213,9 +213,6 @@ const AllQuote: React.FC = () => {
     const formattedData: FormattedData = {};
     uploadFileData?.map((uploadFileDataItem: any) => {
       const tempLabelOcrMap: any = {};
-
-      console.log('formattedArray', uploadFileDataItem);
-      return;
       const arrayOfTableObjects =
         uploadFileDataItem?.data?.result?.[0]?.prediction?.filter(
           (item: any) => item.label === 'table',
@@ -237,9 +234,35 @@ const AllQuote: React.FC = () => {
           },
         )}
       </>;
+      // for table JSON
 
-      console.log('formattedArray', formattedArray);
-      return;
+      const newArrrr: any = [];
+      for (let i = 0; i < uploadFileDataItem?.data?.result?.length; i++) {
+        const itemss: any = uploadFileDataItem?.data?.result[i];
+
+        const newItemsssadsd = itemss?.prediction?.filter((item: any) => item);
+        newArrrr?.push(newItemsssadsd);
+      }
+      const newAllgetOArr: any = [];
+      newArrrr?.map((itemNew: any, indexNew: number) => {
+        let formattedArray1: any = [];
+        const formattedData1: FormattedData = {};
+        itemNew?.map((itemIner1: any, indexInner1: number) => {
+          if (itemIner1?.cells) {
+            itemIner1?.cells.forEach((item: any) => {
+              const rowNum = item.row;
+              if (!formattedData1[rowNum]) {
+                formattedData1[rowNum] = {};
+              }
+              formattedData1[rowNum][item.label?.toLowerCase()] = item.text;
+            });
+          }
+        });
+        formattedArray1 = Object.values(formattedData1);
+        newAllgetOArr?.push(formattedArray1);
+      });
+
+      // =========================================================
       labelOcrMap?.push({
         ...tempLabelOcrMap,
         pdf_url: uploadFileDataItem?.pdf_url,
@@ -247,6 +270,7 @@ const AllQuote: React.FC = () => {
         opportunity_id: opportunityId,
         organization: userInformation.organization,
         file_name: moment(new Date()).format('MM/DD/YYYY'),
+        // quote_json: [JSON?.stringify(newAllgetOArr)],
         quote_json: [JSON?.stringify(formattedArray)],
       });
     });

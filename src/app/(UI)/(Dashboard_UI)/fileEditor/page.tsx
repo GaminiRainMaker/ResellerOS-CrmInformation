@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable array-callback-return */
 /* eslint-disable react/jsx-no-bind */
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -69,53 +70,80 @@ const EditorFile = () => {
 
     setQuoteItems(newArrr);
   };
+
   return (
     <>
-      {quoteItems && (
-        <HotTable
-          data={quoteItems}
-          ref={hotRef}
-          colWidths={[
-            200, 200, 400, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200,
-            200, 200, 200,
-          ]}
-          height="auto"
-          colHeaders={headerValues}
-          width="auto"
-          minSpareRows={0}
-          autoWrapRow
-          autoWrapCol
-          licenseKey="non-commercial-and-evaluation"
-          dropdownMenu
-          hiddenColumns={{
-            indicators: true,
-          }}
-          contextMenu
-          multiColumnSorting
-          filters
-          rowHeaders
-          allowInsertRow={false}
-          allowInsertColumn={false}
-          afterGetColHeader={alignHeaders}
-          beforeRenderer={() => {
-            addClassesToRows('', '', '', '', '', '', quoteItems);
-          }}
-          afterRemoveRow={(change, source) => {
-            deleteRowsItems(change, source);
-          }}
-          afterChange={(change: any, source) => {
-            if (change) {
-              updateRowsValue(
-                change?.[0]?.[0],
-                change?.[0]?.[1],
-                change?.[0]?.[3],
-              );
+      <div
+        style={{
+          background: 'white',
+          width: '100%',
+          height: '80vh',
+          overflow: 'auto',
+        }}
+      >
+        {' '}
+        {quoteItems &&
+          quoteItems?.map((itemss: any, indexOFTable: number) => {
+            const allHeaderValue: any = [];
+            const keys = itemss?.[0] && Object?.keys(itemss?.[0]);
+            if (keys) {
+              keys?.map((item: any) => {
+                if (item) {
+                  allHeaderValue?.push(formatStatus(item));
+                }
+              });
             }
-          }}
-          navigableHeaders
-        />
-      )}
+            return (
+              <>
+                <div>Table {indexOFTable}</div>
+                <HotTable
+                  data={itemss}
+                  ref={hotRef}
+                  colWidths={[
+                    200, 200, 400, 200, 200, 200, 200, 200, 200, 200, 200, 200,
+                    200, 200, 200, 200,
+                  ]}
+                  height="auto"
+                  colHeaders={allHeaderValue}
+                  width="auto"
+                  minSpareRows={0}
+                  autoWrapRow
+                  autoWrapCol
+                  licenseKey="non-commercial-and-evaluation"
+                  dropdownMenu
+                  hiddenColumns={{
+                    indicators: true,
+                  }}
+                  contextMenu
+                  multiColumnSorting
+                  filters
+                  rowHeaders
+                  allowInsertRow={false}
+                  allowInsertColumn={false}
+                  afterGetColHeader={alignHeaders}
+                  beforeRenderer={() => {
+                    addClassesToRows('', '', '', '', '', '', quoteItems);
+                  }}
+                  afterRemoveRow={(change, source) => {
+                    deleteRowsItems(change, source);
+                  }}
+                  afterChange={(change: any, source) => {
+                    if (change) {
+                      updateRowsValue(
+                        change?.[0]?.[0],
+                        change?.[0]?.[1],
+                        change?.[0]?.[3],
+                      );
+                    }
+                  }}
+                  navigableHeaders
+                />
+              </>
+            );
+          })}
+      </div>
     </>
   );
 };
 export default EditorFile;
+
