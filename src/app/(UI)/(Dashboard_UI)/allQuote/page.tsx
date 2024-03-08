@@ -213,6 +213,9 @@ const AllQuote: React.FC = () => {
     const formattedData: FormattedData = {};
     uploadFileData?.map((uploadFileDataItem: any) => {
       const tempLabelOcrMap: any = {};
+
+      console.log('formattedArray', uploadFileDataItem);
+      return;
       const arrayOfTableObjects =
         uploadFileDataItem?.data?.result?.[0]?.prediction?.filter(
           (item: any) => item.label === 'table',
@@ -236,6 +239,7 @@ const AllQuote: React.FC = () => {
       </>;
 
       console.log('formattedArray', formattedArray);
+      return;
       labelOcrMap?.push({
         ...tempLabelOcrMap,
         pdf_url: uploadFileDataItem?.pdf_url,
