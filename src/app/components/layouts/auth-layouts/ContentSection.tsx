@@ -62,7 +62,9 @@ const ContentSection: FC<AuthLayoutInterface> = ({
               SuperAdmin: dataaa?.super_admin,
             }),
           );
-          router.push('/crmInAccount');
+          router.push(
+            dataaa?.super_admin ? '/userManagement' : '/crmInAccount',
+          );
         }
       });
     }
@@ -151,7 +153,9 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           secure: true,
           sameSite: 'strict',
         });
-        router.push('/crmInAccount');
+        router.push(
+          payload?.payload?.super_admin ? '/userManagement' : '/crmInAccount',
+        );
       });
     } else if (
       formValues?.username &&

@@ -109,6 +109,8 @@ const SideBar = () => {
       setCrmChildKey(3);
     } else if (pathname?.includes('admin')) {
       setSelectedKey(11);
+    } else if (pathname?.includes('userManagement')) {
+      setSelectedKey(12);
     }
   }, []);
 
@@ -231,7 +233,7 @@ const SideBar = () => {
                     : token?.colorTextSecondary
                 }
               >
-                UnProcessed Quote
+                Un Processed Quote
               </Typography>
             </Space>,
             '8',
