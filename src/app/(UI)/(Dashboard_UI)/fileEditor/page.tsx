@@ -95,7 +95,7 @@ const EditorFile = () => {
             }
             return (
               <>
-                <div>Table {indexOFTable}</div>
+                <div>Table {indexOFTable + 1}</div>
                 <HotTable
                   data={itemss}
                   ref={hotRef}
@@ -146,4 +146,3 @@ const EditorFile = () => {
   );
 };
 export default EditorFile;
-
