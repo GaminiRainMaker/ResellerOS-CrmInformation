@@ -76,7 +76,7 @@ export const updateQuoteWithNewlineItemAddByID = createAsyncThunk(
   'quote/updateQuoteWithNewlineItemAdd',
   async (id: number, thunkApi) => {
     try {
-      const res = await QUOTEAPI.getById(id);
+      const res = await QUOTEAPI.updateQuoteWithNewlineItemAdd(id);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);
@@ -110,12 +110,14 @@ export const getQuotesByDateFilter = createAsyncThunk(
 
 export const getQuoteByManualUpdated = createAsyncThunk(
   'quote/getQuoteByManualUpdated',
-  async (data: any, thunkApi) => {
+  async (data, thunkApi) => {
     try {
-      const res = await QUOTEAPI.getQuoteByManualUpdated();
-      return res.data;
-    } catch (error) {
-      return thunkApi.rejectWithValue(error);
+      console.log('ssssssss');
+      const res = await QUOTEAPI.getQuoteByManual();
+      // return res.data;
+      return '';
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
     }
   },
 );

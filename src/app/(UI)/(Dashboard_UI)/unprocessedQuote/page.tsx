@@ -58,7 +58,7 @@ const AllQuote: React.FC = () => {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    dispatch(getQuoteByManualUpdated(''));
+    dispatch(getQuoteByManualUpdated());
   }, []);
 
   useEffect(() => {
@@ -125,7 +125,7 @@ const AllQuote: React.FC = () => {
     const data = {Ids: deleteIds};
     await dispatch(deleteQuoteById(data));
     setTimeout(() => {
-      dispatch(getQuoteByManualUpdated(''));
+      dispatch(getQuoteByManualUpdated());
     }, 1000);
     setDeleteIds([]);
     setShowModalDelete(false);

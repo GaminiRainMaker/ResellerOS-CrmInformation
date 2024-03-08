@@ -12,7 +12,8 @@ export const API = {
     DeleteById: '/quote/deleteQuote',
     GetQuotesByDateFilter: '/quote/getQuotesByDateFilter',
     GetQuoteByID: '/quote/getQuoteById',
-    GetQuoteByManualUpdated: '/quote/getQuoteByManualUpdated',
+    GetQuoteByManual: '/quote/getAllManualQuotes',
+    UpdateQuoteWithNewlineItemAdd: '/quote/updateQuoteWithNewlineItemAdd',
   },
   QUOTE_LINE_ITEM: {
     INDEX: '/quoteLineItem',
