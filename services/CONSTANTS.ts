@@ -33,7 +33,7 @@ export const API = {
     AddUser: '/user/addUser',
     TOKEN: '/user/getUserByToken',
     DeleteById: '/user/deleteById',
-    USERBYID: 'user/getUserById',
+    USERBYID: '/user/getUserById',
   },
   PRODUCT: {
     INDEX: '/product',

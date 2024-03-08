@@ -74,9 +74,21 @@ export const deleteUser = createAsyncThunk(
 );
 export const getUserByIdLogin = createAsyncThunk(
   'user/getUserById',
-  async (organization: string, thunkApi) => {
+  async (id: any, thunkApi) => {
     try {
-      const res = await USERAPI.getByIdDetail();
+      const res = await USERAPI.getByIdDetail(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+
+export const queryAllUsers = createAsyncThunk(
+  'user/queryAllUsers',
+  async (organization: any, thunkApi) => {
+    try {
+      const res = await USERAPI.query(organization);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

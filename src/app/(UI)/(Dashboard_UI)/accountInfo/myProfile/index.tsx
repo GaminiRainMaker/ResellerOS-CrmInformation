@@ -19,18 +19,20 @@ import {
   TagIcon,
 } from '@heroicons/react/24/outline';
 import {Form} from 'antd';
+import {useSearchParams} from 'next/navigation';
 import {useEffect} from 'react';
-import {CollapseSpaceStyle} from '../../dealRegDetail/DealRegDetailForm/styled-components';
-import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {getUserByIdLogin} from '../../../../../../redux/actions/user';
+import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+import {CollapseSpaceStyle} from '../../dealRegDetail/DealRegDetailForm/styled-components';
 
 const MyProfile = () => {
   const [token] = useThemeToken();
-  const {loginUserInformation: loginUserData} = useAppSelector(
+  const {loginUserInformation: loginUserData, data} = useAppSelector(
     (state) => state.user,
   );
   const dispatch = useAppDispatch();
-
+  const searchParams = useSearchParams();
+  const getUserID = searchParams.get('id');
   const analyticsData = [
     {
       key: 1,
@@ -71,8 +73,10 @@ const MyProfile = () => {
     BillingContacts: '',
   };
   useEffect(() => {
-    dispatch(getUserByIdLogin(''));
-  }, []);
+    if (getUserID) {
+      dispatch(getUserByIdLogin(getUserID));
+    }
+  }, [getUserID]);
 
   const headerButtons = (
     <OsButton
@@ -127,14 +131,14 @@ const MyProfile = () => {
 
   return (
     <Row justify="space-between" style={{width: '100%'}} gutter={[16, 16]}>
-      <Col>
+      <Col sm={24} md={8} span={8}>
         <ProfileCard
           headerButtons={headerButtons}
           customerData={loginUserData}
           myProfile
         />
       </Col>
-      <Col span={17}>
+      <Col sm={24} md={16} span={16}>
         <Space direction="vertical" size={24} style={{width: '100%'}}>
           <Row gutter={[16, 16]} justify="center">
             {analyticsData?.map((item: any) => (
