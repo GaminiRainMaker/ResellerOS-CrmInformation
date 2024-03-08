@@ -5,8 +5,8 @@ import {get, patch, post} from './index';
 
 export const QUOTEAPI = {
   get: () => get(API.QUOTE.INDEX) as Promise<AxiosResponse<[]>>,
-  getQuoteByManualUpdated: () =>
-    get(API.QUOTE.GetQuoteByManualUpdated) as Promise<AxiosResponse<[]>>,
+  getQuoteByManual: () =>
+    get(API.QUOTE.GetQuoteByManual) as Promise<AxiosResponse<[]>>,
   post: (data: any) => post(API.QUOTE.INDEX, data),
   query: (data: any) =>
     post(API.QUOTE.QUERY, data) as Promise<AxiosResponse<[]>>,
@@ -26,7 +26,8 @@ export const QUOTEAPI = {
     post(API.QUOTE.GetQuotesByDateFilter, data) as Promise<AxiosResponse<any>>,
   getQuoteByID: (id: number) =>
     get(`${API.QUOTE.GetQuoteByID}/${id}`) as Promise<AxiosResponse<any>>,
-
+  updateQuoteWithNewlineItemAdd: (id: number) =>
+    get(`${API.QUOTE.UpdateQuoteWithNewlineItemAdd}/${id}`) as Promise<AxiosResponse<any>>,
   // put: (id: number, data: any) => put(API.QUOTE.INDEX + "/" + id, data),
   // delete: (id: number) => del(API.QUOTE.INDEX + "/" + id),
 };

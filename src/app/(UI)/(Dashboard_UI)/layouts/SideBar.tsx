@@ -109,6 +109,8 @@ const SideBar = () => {
       setCrmChildKey(3);
     } else if (pathname?.includes('admin')) {
       setSelectedKey(11);
+    } else if (pathname?.includes('userManagement')) {
+      setSelectedKey(12);
     }
   }, []);
 
@@ -162,7 +164,7 @@ const SideBar = () => {
           <Space size={12}>
             <OsAvatar
               icon={
-                <UserGroupIcon
+                <CurrencyDollarIcon
                   color={
                     selectedKey?.toString()?.includes('7') ||
                     selectedKey?.toString()?.includes('8') ||
@@ -194,7 +196,7 @@ const SideBar = () => {
             </Typography>
           </Space>
         </Typography>,
-        'CRM information',
+        'Quote',
         '',
         [
           getItem(
@@ -231,7 +233,7 @@ const SideBar = () => {
                     : token?.colorTextSecondary
                 }
               >
-                UnProcessed Quote
+                Un Processed Quote
               </Typography>
             </Space>,
             '8',
@@ -482,176 +484,177 @@ const SideBar = () => {
       </Typography>,
       '6',
     ),
-    getItem(
-      <Typography
-        onClick={() => {
-          setSelectedKey(7);
-        }}
-        name="Button 1"
-        color={token?.colorTextSecondary}
-      >
-        <Space size={12}>
-          <OsAvatar
-            icon={
-              <UserGroupIcon
+    !isSuperAdmin &&
+      getItem(
+        <Typography
+          onClick={() => {
+            setSelectedKey(7);
+          }}
+          name="Button 1"
+          color={token?.colorTextSecondary}
+        >
+          <Space size={12}>
+            <OsAvatar
+              icon={
+                <UserGroupIcon
+                  color={
+                    selectedKey?.toString()?.includes('7') ||
+                    selectedKey?.toString()?.includes('8') ||
+                    selectedKey?.toString()?.includes('0') ||
+                    selectedKey?.toString()?.includes('9')
+                      ? token?.colorLink
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+                marginRight: '60px',
+              }}
+              color={
+                selectedKey?.toString()?.includes('7') ||
+                selectedKey?.toString()?.includes('8') ||
+                selectedKey?.toString()?.includes('0') ||
+                selectedKey?.toString()?.includes('9')
+                  ? token?.colorLink
+                  : token?.colorTextSecondary
+              }
+            >
+              CRM Information
+            </Typography>
+          </Space>
+        </Typography>,
+        'CRM information',
+        '',
+        [
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setCrmChildKey(1);
+                setSelectedKey(7);
+                router?.push('/crmInAccount');
+              }}
+            >
+              <OsAvatar
+                icon={
+                  crmChildKey === 1 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                name="Button 1"
+                cursor="pointer"
                 color={
-                  selectedKey?.toString()?.includes('7') ||
-                  selectedKey?.toString()?.includes('8') ||
-                  selectedKey?.toString()?.includes('0') ||
-                  selectedKey?.toString()?.includes('9')
-                    ? token?.colorLink
+                  crmChildKey === 1
+                    ? token.colorPrimaryBorder
                     : token?.colorTextSecondary
                 }
-                width={24}
+              >
+                Accounts
+              </Typography>
+            </Space>,
+            '8',
+          ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setCrmChildKey(2);
+                setSelectedKey(7);
+                router?.push('/crmContact');
+              }}
+              color={token?.colorTextSecondary}
+            >
+              <OsAvatar
+                icon={
+                  crmChildKey === 2 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
               />
-            }
-          />
-          <Typography
-            name="Button 1"
-            style={{
-              marginTop: '1px',
-              marginRight: '60px',
-            }}
-            color={
-              selectedKey?.toString()?.includes('7') ||
-              selectedKey?.toString()?.includes('8') ||
-              selectedKey?.toString()?.includes('0') ||
-              selectedKey?.toString()?.includes('9')
-                ? token?.colorLink
-                : token?.colorTextSecondary
-            }
-          >
-            CRM Information
-          </Typography>
-        </Space>
-      </Typography>,
-      'CRM information',
-      '',
-      [
-        getItem(
-          <Space
-            size={12}
-            onClick={() => {
-              setCrmChildKey(1);
-              setSelectedKey(7);
-              router?.push('/crmInAccount');
-            }}
-          >
-            <OsAvatar
-              icon={
-                crmChildKey === 1 ? (
-                  <Image
-                    src={ActiveCrmIcon}
-                    alt="ActiveCrmIcon"
-                    style={{width: '15px', height: '15px'}}
-                  />
-                ) : (
-                  <Image
-                    src={InActiveCrmIcon}
-                    alt="InActiveCrmIcon"
-                    style={{width: '15px', height: '15px'}}
-                  />
-                )
-              }
-            />
-            <Typography
-              name="Button 1"
-              cursor="pointer"
-              color={
-                crmChildKey === 1
-                  ? token.colorPrimaryBorder
-                  : token?.colorTextSecondary
-              }
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                color={
+                  crmChildKey === 2
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                Contacts
+              </Typography>
+            </Space>,
+            '9',
+          ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setCrmChildKey(3);
+                setSelectedKey(7);
+                router?.push('/crmOpportunity');
+              }}
+              color={token?.colorTextSecondary}
             >
-              Accounts
-            </Typography>
-          </Space>,
-          '8',
-        ),
-        getItem(
-          <Space
-            size={12}
-            onClick={() => {
-              setCrmChildKey(2);
-              setSelectedKey(7);
-              router?.push('/crmContact');
-            }}
-            color={token?.colorTextSecondary}
-          >
-            <OsAvatar
-              icon={
-                crmChildKey === 2 ? (
-                  <Image
-                    src={ActiveCrmIcon}
-                    alt="ActiveCrmIcon"
-                    style={{width: '15px', height: '15px'}}
-                  />
-                ) : (
-                  <Image
-                    src={InActiveCrmIcon}
-                    alt="InActiveCrmIcon"
-                    style={{width: '15px', height: '15px'}}
-                  />
-                )
-              }
-            />
-            <Typography
-              cursor="pointer"
-              name="Button 1"
-              color={
-                crmChildKey === 2
-                  ? token.colorPrimaryBorder
-                  : token?.colorTextSecondary
-              }
-            >
-              Contacts
-            </Typography>
-          </Space>,
-          '9',
-        ),
-        getItem(
-          <Space
-            size={12}
-            onClick={() => {
-              setCrmChildKey(3);
-              setSelectedKey(7);
-              router?.push('/crmOpportunity');
-            }}
-            color={token?.colorTextSecondary}
-          >
-            <OsAvatar
-              icon={
-                crmChildKey === 3 ? (
-                  <Image
-                    src={ActiveCrmIcon}
-                    alt="ActiveCrmIcon"
-                    style={{width: '15px', height: '15px'}}
-                  />
-                ) : (
-                  <Image
-                    src={InActiveCrmIcon}
-                    alt="InActiveCrmIcon"
-                    style={{width: '15px', height: '15px'}}
-                  />
-                )
-              }
-            />
-            <Typography
-              cursor="pointer"
-              name="Button 1"
-              color={
-                crmChildKey === 3
-                  ? token.colorPrimaryBorder
-                  : token?.colorTextSecondary
-              }
-            >
-              Opportunity
-            </Typography>
-          </Space>,
-          '0',
-        ),
-      ],
-    ),
+              <OsAvatar
+                icon={
+                  crmChildKey === 3 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                color={
+                  crmChildKey === 3
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                Opportunity
+              </Typography>
+            </Space>,
+            '0',
+          ),
+        ],
+      ),
     isAdmin &&
       !isSuperAdmin &&
       getItem(
@@ -691,7 +694,6 @@ const SideBar = () => {
         </Space>,
         '11',
       ),
-
     isSuperAdmin &&
       getItem(
         <Space
@@ -699,13 +701,13 @@ const SideBar = () => {
           onClick={() => {
             setSelectedKey(12);
             setCrmChildKey(0);
-            // router?.push('/admin');
+            router?.push('/userManagement');
           }}
           color={token?.colorTextSecondary}
         >
           <OsAvatar
             icon={
-              <AdjustmentsHorizontalIcon
+              <UserGroupIcon
                 color={
                   selectedKey?.toString()?.includes('12')
                     ? token?.colorPrimary

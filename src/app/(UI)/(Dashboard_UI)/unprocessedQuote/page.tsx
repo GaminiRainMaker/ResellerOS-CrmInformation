@@ -42,40 +42,20 @@ import getColumns from '../allQuote/tableColumns';
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const [activeTab, setActiveTab] = useState<any>('1');
-  const {loading, filteredByDate: filteredData} = useAppSelector(
-    (state) => state.quote,
-  );
+  const {loading, data} = useAppSelector((state) => state.quote);
   const router = useRouter();
   const [quoteData, setQuoteData] = useState<React.Key[]>([]);
   const [deletedQuote, setDeletedQuote] = useState<React.Key[]>([]);
-  const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
-
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
-
   const [form] = Form.useForm();
 
   useEffect(() => {
-    dispatch(getQuoteByManualUpdated(''));
+    dispatch(getQuoteByManualUpdated());
   }, []);
 
-  useEffect(() => {
-    if (filteredData && filteredData?.length > 0) {
-      const deleted = filteredData?.filter((item: any) => item?.is_deleted);
-      const notDeleted = filteredData?.filter((item: any) => !item?.is_deleted);
-      setQuoteData(notDeleted);
-      setDeletedQuote(deleted);
-    } else {
-      setQuoteData([]);
-      setDeletedQuote([]);
-    }
-  }, [filteredData]);
-
-  useEffect(() => {
-    setActiveQuotes(quoteData);
-  }, [activeTab, quoteData]);
+  console.log('datadata', data);
 
   const statusWrapper = (item: any) => {
     const getStatus = () => {
@@ -125,12 +105,13 @@ const AllQuote: React.FC = () => {
     const data = {Ids: deleteIds};
     await dispatch(deleteQuoteById(data));
     setTimeout(() => {
-      dispatch(getQuoteByManualUpdated(''));
+      dispatch(getQuoteByManualUpdated());
     }, 1000);
     setDeleteIds([]);
     setShowModalDelete(false);
     form.resetFields(['opportunity_id', 'customer_id']);
   };
+  
   const Quotecolumns = getColumns(
     token,
     statusWrapper,
@@ -138,21 +119,6 @@ const AllQuote: React.FC = () => {
     setDeleteIds,
     setShowModalDelete,
   );
-
-  const tabItems: TabsProps['items'] = [
-    {
-      label: (
-        <Typography
-          name="Body 4/Medium"
-          cursor="pointer"
-          color={token?.colorTextBase}
-        >
-          All
-        </Typography>
-      ),
-      key: '1',
-    },
-  ];
 
   return (
     <>
@@ -164,113 +130,19 @@ const AllQuote: React.FC = () => {
               Un Processed Quotes
             </Typography>
           </Col>
-          {/* <Col>
-            <div
-              style={{
-                display: 'flex',
-                width: '40%',
-                gap: '8px',
-              }}
-            >
-              {activeTab == 3 && deleteIds && deleteIds?.length > 0 && (
-                <OsButton
-                  text="Mark as Complete"
-                  buttontype="PRIMARY"
-                  clickHandler={markAsComplete}
-                />
-              )}
-              <OsButton
-                text="Add Quote"
-                buttontype="PRIMARY"
-                icon={<PlusIcon />}
-                clickHandler={() => {
-                  setShowModal((p) => !p);
-                }}
-              />
-
-              <Space>
-                <OsDropdown menu={{items: dropDownItems}} />
-              </Space>
-            </div>
-          </Col> */}
         </Row>
-        <Row
+        <div
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
-          <OsTabs
-            onChange={(e) => {
-              setActiveTab(e);
-            }}
-            activeKey={activeTab}
-            tabBarExtraContent={
-              <Space size={12} align="center">
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Reseller</Typography>
-                  <OsInput
-                    style={{width: '200px'}}
-                    placeholder="Search here"
-                    // onChange={(e) => {
-                    //   setSearchCustomerData({
-                    //     ...searchCustomerData,
-                    //     title: e.target.value,
-                    //   });
-                    //   // setQuery(e.target.value);
-                    // }}
-                    prefix={<SearchOutlined style={{color: '#949494'}} />}
-                  />
-                </Space>
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Quote Name</Typography>
-                  <OsInput
-                    style={{width: '200px'}}
-                    placeholder="Search here"
-                    // onChange={(e) => {
-                    //   setSearchCustomerData({
-                    //     ...searchCustomerData,
-                    //     name: e.target.value,
-                    //   });
-                    // }}
-                    prefix={<SearchOutlined style={{color: '#949494'}} />}
-                  />
-                </Space>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: '20px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <Typography
-                    cursor="pointer"
-                    name="Button 1"
-                    color="#C6CDD5"
-                    // onClick={searchOpportunity}
-                  >
-                    Apply
-                  </Typography>
-                </div>
-              </Space>
-            }
-            items={tabItems.map((tabItem: any, index: number) => ({
-              key: `${index + 1}`,
-              label: tabItem?.label,
-              children: (
-                <OsTable
-                  key={tabItem?.key}
-                  columns={Quotecolumns}
-                  dataSource={activeQuotes}
-                  scroll
-                  loading={loading}
-                  locale=""
-                  rowSelection={rowSelection}
-                />
-              ),
-              ...tabItem,
-            }))}
+          <OsTable
+            columns={Quotecolumns}
+            dataSource={data}
+            scroll
+            loading={loading}
+            locale=""
+            rowSelection={rowSelection}
           />
-        </Row>
+        </div>
       </Space>
 
       <DeleteModal
