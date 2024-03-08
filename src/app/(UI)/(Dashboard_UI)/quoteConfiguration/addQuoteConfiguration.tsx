@@ -58,7 +58,6 @@ const AddQuoteConiguration: React.FC<CustomerAccountInterface> = ({
       customer_id: customerValue,
     });
   }, [customerValue]);
-
   return (
     <>
       <Row

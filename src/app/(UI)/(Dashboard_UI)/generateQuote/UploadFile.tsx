@@ -1,3 +1,6 @@
+/* eslint-disable consistent-return */
+/* eslint-disable array-callback-return */
+
 'use client';
 
 import {FC, useState} from 'react';
@@ -11,6 +14,11 @@ import {uploadToAws} from '../../../../../redux/actions/upload';
 import {useAppDispatch} from '../../../../../redux/hook';
 import {UploadFileInterface} from './generateQuote.interface';
 
+interface FormattedData {
+  [key: string]: {
+    [key: string]: string | undefined;
+  };
+}
 const UploadFile: FC<UploadFileInterface> = ({
   setUploadFileData,
   uploadFileData,
