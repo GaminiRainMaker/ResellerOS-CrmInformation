@@ -1,9 +1,12 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable no-nested-ternary */
 import DealRegDetailForm from '@/app/(UI)/(Dashboard_UI)/dealRegDetail/DealRegDetailForm';
-import {FC, useEffect, useState} from 'react';
-import {Row} from '../antd/Grid';
-import {Space} from '../antd/Space';
+import { FormInstance } from 'antd';
+import { useEffect, useState } from 'react';
+import { useAppDispatch } from '../../../../../redux/hook';
+import { setDealReg } from '../../../../../redux/slices/dealReg';
+import { Row } from '../antd/Grid';
+import { Space } from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import OsProgress from '../os-progress';
 import Typography from '../typography';
@@ -11,16 +14,16 @@ import {
   CustmDealRegTab,
   DealRegCustomTabHeaderStyle,
 } from './styled-components';
-import {useAppDispatch} from '../../../../../redux/hook';
-import {setDealReg} from '../../../../../redux/slices/dealReg';
 
 interface DealRegCustomTabsInterface {
   tabs: any;
   selectedUserId: any;
+  form: FormInstance;
 }
 const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
   tabs,
   selectedUserId,
+  form
 }) => {
   const dispatch = useAppDispatch();
   const [activeKey, setActiveKey] = useState<any>(0);
@@ -106,6 +109,7 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
               <DealRegDetailForm
                 data={element}
                 selectedUserId={selectedUserId}
+                form={form}
               />
             </div>
           ),

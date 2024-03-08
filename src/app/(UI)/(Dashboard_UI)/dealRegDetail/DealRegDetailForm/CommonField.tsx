@@ -1,27 +1,27 @@
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
+import OsCustomerSelect from '@/app/components/common/os-customer-select';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import OsInput from '@/app/components/common/os-input';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
+import OsOpportunitySelect from '@/app/components/common/os-opportunity-select';
+import OsPartnerProgramSelect from '@/app/components/common/os-partner-program-select';
+import OsPartnerSelect from '@/app/components/common/os-partner-select';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {formatDate} from '@/app/utils/base';
-import {FC, useEffect, useState} from 'react';
-import OsPartnerSelect from '@/app/components/common/os-partner-select';
 import {Form} from 'antd';
+import {FC, useEffect, useState} from 'react';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setDealRegUpdateData} from '../../../../../../redux/slices/dealReg';
 import {CollapseSpaceStyle} from './styled-components';
 
 const CommonFields: FC<any> = (data) => {
   const dispatch = useAppDispatch();
-  const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
-  const {data: dataAddress} = useAppSelector((state) => state.customer);
-  const {dealReg} = useAppSelector((state) => state.dealReg);
   const [form] = Form.useForm();
-  const [partnerProgramOptions, setPartnerProgramOptions] = useState<any>();
-
+  const {dealReg, submitDealRegData} = useAppSelector((state) => state.dealReg);
+  const [partnerValue, setPartnerValue] = useState<number>();
   const [commonFieldData, setCommonFieldData] = useState<{
     status: '';
     date_submitted: '';
@@ -35,6 +35,7 @@ const CommonFields: FC<any> = (data) => {
     opportunity_description: '';
     opportunity_id: 0;
   }>();
+
   const handleDealRegInformationChange = (field: string, value: any) => {
     setCommonFieldData((prevData: any) => ({
       ...prevData,
@@ -42,33 +43,6 @@ const CommonFields: FC<any> = (data) => {
       [field]: value,
     }));
   };
-  const [filteredOppOptions, setFilteredOppOptions] = useState<any>();
-
-  console.log('dealRegdealReg', dealReg, data);
-
-  useEffect(() => {
-    let opportunityOptions: any;
-    if (data?.selectedUserId) {
-      const filteredData = opportunityData?.filter((item: any) =>
-        item?.customer_id?.toString()?.includes(data?.selectedUserId),
-      );
-      opportunityOptions = filteredData?.map((opportunity: any) => ({
-        value: opportunity?.id,
-        label: opportunity?.title,
-      }));
-    } else {
-      opportunityOptions = opportunityData?.map((customer: any) => ({
-        value: customer?.id,
-        label: customer?.name,
-      }));
-    }
-    setFilteredOppOptions(opportunityOptions);
-  }, [data?.selectedUserId, data]);
-
-  const customerOptions = dataAddress?.map((customer: any) => ({
-    value: customer.id,
-    label: customer.name,
-  }));
 
   const ResponseDetailItem = [
     {
@@ -187,6 +161,23 @@ const CommonFields: FC<any> = (data) => {
     },
   ];
 
+  useEffect(() => {
+    form?.setFieldsValue({
+      partner_id: data?.data?.partner_id,
+      partner_program_id: data?.data?.partner_program_id,
+      opportunity_id: data?.data?.opportunity_id,
+      amount: data?.data?.amount,
+      estimated_close_date: data?.data?.estimated_close_date,
+      opportunity_description: data?.data?.opportunity_description,
+      probability: data?.data?.probability,
+      customer_id: data?.data?.customer_id,
+    });
+  }, [data]);
+
+  const onFinish = (values: any) => {
+    console.log('valuesvalues', values);
+  };
+
   const OpportunityInformationItem = [
     {
       key: '1',
@@ -194,212 +185,92 @@ const CommonFields: FC<any> = (data) => {
         <Typography name="Body 2/Medium">Opportunity Information</Typography>
       ),
       children: (
-        <Space
-          size={36}
-          direction="vertical"
-          style={{
-            width: '100%',
-          }}
+        <Form
+          layout="vertical"
+          form={form}
+          // onFinish={onFinish}
+          requiredMark={false}
+          // onCanPlayCapture={onChange}
         >
-          <Form layout="vertical" form={form}>
-            <Row justify="space-between" gutter={[24, 24]}>
-              <Col sm={24} md={12}>
-                {/* <Space
-                  size={4}
-                  direction="vertical"
-                  style={{
-                    width: '100%',
-                  }}
-                >
-                  <Typography name="Body 4/Medium">Partner Account</Typography>
-                  <CommonSelect
-                  onChange={(value) => {
-                    handleDealRegInformationChange('partner_id', value);
-                    // setPartnerProgramOptions(getProgramOptions(value));
-                  }}
-                />
-                </Space> */}
-
-                <OsPartnerSelect value={data?.data?.partner_id} />
-              </Col>
-
-              <Col sm={24} md={12}>
-                <Space
-                  size={4}
-                  direction="vertical"
-                  style={{
-                    width: '100%',
-                  }}
-                >
-                  <Typography name="Body 4/Medium">Partner Programm</Typography>
-                  <CommonSelect
-                    placeholder="Cisco Hardware"
-                    defaultValue={data?.data?.partner_program_id}
-                    style={{width: '100%'}}
-                    onChange={(value) =>
-                      handleDealRegInformationChange(
-                        'partner_program_id',
-                        value,
-                      )
-                    }
-                    options={partnerProgramOptions}
-                  />
-                </Space>
-              </Col>
-            </Row>
-          </Form>
-
           <Row justify="space-between" gutter={[24, 24]}>
             <Col sm={24} md={12}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">Opportunity</Typography>
-                <CommonSelect
-                  placeholder="Blue hive- tech world"
-                  style={{width: '100%'}}
-                  defaultValue={
-                    data?.selectedUserId ? null : data?.data?.Opportunity?.title
-                  }
-                  options={filteredOppOptions}
-                  onChange={(value) =>
-                    handleDealRegInformationChange('opportunity_id', value)
-                  }
-                />
-              </Space>
+              <OsPartnerSelect
+                name="partner_id"
+                setPartnerValue={setPartnerValue}
+                form={form}
+                partnerProgramName="partner_program_id"
+              />
             </Col>
+
             <Col sm={24} md={12}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">
-                  Opportunity Description
-                </Typography>
-                <OsInput
-                  placeholder="Write text here!"
-                  style={{width: '100%'}}
-                  defaultValue={data?.data?.opportunity_description}
-                  onChange={(e) =>
-                    handleDealRegInformationChange(
-                      'opportunity_description',
-                      e?.target?.value,
-                    )
-                  }
-                />
-              </Space>
+              <OsPartnerProgramSelect
+                name="partner_program_id"
+                partnerId={partnerValue}
+                form={form}
+              />
             </Col>
           </Row>
 
           <Row justify="space-between" gutter={[24, 24]}>
             <Col sm={24} md={12}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">Opportunity Value</Typography>
-                <CommonSelect
-                  placeholder="$ 000-000-0000"
-                  style={{width: '100%'}}
-                  value={data?.data?.Opportunity?.amount}
-                />
-              </Space>
+              <OsOpportunitySelect
+                form={form}
+                customerValue={data?.data?.customer_id}
+              />
             </Col>
             <Col sm={24} md={12}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
+              <Form.Item
+                name="opportunity_description"
+                label="Opportunity Description"
               >
-                <Typography name="Body 4/Medium">Probability</Typography>
+                <OsInput placeholder="Write text here!" />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row justify="space-between" gutter={[24, 24]}>
+            <Col sm={24} md={12}>
+              <Form.Item name="amount" label="Opportunity Value">
+                <OsInput placeholder="Write text here!" />
+              </Form.Item>
+            </Col>
+            <Col sm={24} md={12}>
+              <Form.Item name="probability" label="Probability">
                 <OsInputNumber
-                  placeholder="0.00%"
-                  style={{width: '100%'}}
                   min={0}
-                  max={100}
-                  defaultValue={data?.data?.probability}
                   formatter={(value) => `${value}%`}
                   parser={(value) => value!.replace('%', '')}
-                  onChange={(value) =>
-                    handleDealRegInformationChange('probability', value)
-                  }
+                  max={100}
+                  style={{width: '100%'}}
+                  placeholder="0.00%"
                 />
-              </Space>
+              </Form.Item>
             </Col>
           </Row>
 
           <Row justify="space-between" gutter={[24, 24]}>
             <Col sm={24} md={12}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
+              <Form.Item
+                name="estimated_close_date"
+                label="Estimated Close Date"
               >
-                <Typography name="Body 4/Medium">
-                  Estimated Close Date
-                </Typography>
-                <CommonDatePicker
-                  // value={data?.data?.estimated_close_date}
-                  onChange={(value: any) =>
-                    handleDealRegInformationChange(
-                      'estimated_close_date',
-                      formatDate(value),
-                    )
-                  }
-                />
-              </Space>
+                <CommonDatePicker />
+              </Form.Item>
             </Col>
             <Col sm={24} md={12}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">
-                  New or Existing Customer
-                </Typography>
-                <CommonSelect
-                  placeholder="Select"
-                  style={{width: '100%'}}
-                  options={customerOptions}
-                  onChange={(value) =>
-                    handleDealRegInformationChange('customer_id', value)
-                  }
-                />
-              </Space>
+              <OsCustomerSelect isRequired={false} />
             </Col>
           </Row>
-        </Space>
+        </Form>
       ),
     },
   ];
-
-  useEffect(() => {
-    dispatch(setDealRegUpdateData(commonFieldData));
-  }, [commonFieldData]);
 
   return (
     <Row>
       <CollapseSpaceStyle size={24} direction="vertical">
         <OsCollapseAdmin items={ResponseDetailItem} />
       </CollapseSpaceStyle>
-
       <CollapseSpaceStyle
         size={24}
         direction="vertical"

@@ -12,7 +12,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {getAllOpportunity} from '../../../../../../redux/actions/opportunity';
 import {getAllCustomer} from '../../../../../../redux/actions/customer';
 
-const DealRegDetailForm: FC<any> = (data) => {
+const DealRegDetailForm: FC<any> = (data, form) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {dealReg} = useAppSelector((state) => state.dealReg);
@@ -25,7 +25,11 @@ const DealRegDetailForm: FC<any> = (data) => {
         </Typography>
       ),
       children: (
-        <CommonFields data={data?.data} selectedUserId={data?.selectedUserId} />
+        <CommonFields
+          data={data?.data}
+          selectedUserId={data?.selectedUserId}
+          form={form}
+        />
       ),
     },
   ];

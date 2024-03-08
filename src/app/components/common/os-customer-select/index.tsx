@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react/no-unstable-nested-components */
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
@@ -16,6 +17,7 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
   setCustomerValue,
   customerValue,
   isAddNewCustomer = false,
+  isRequired =true
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -34,13 +36,13 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
   useEffect(() => {
     dispatch(getAllCustomer({}));
   }, []);
-  
+
   return (
     <>
       <Form.Item
         label="Customer"
         name="customer_id"
-        rules={[{required: true, message: 'Please Select Customer!'}]}
+        rules={[{required: isRequired, message: 'Please Select Customer!'}]}
       >
         <CommonSelect
           placeholder="Select"
@@ -49,7 +51,7 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
           options={customerOptions}
           value={customerValue}
           onChange={(value: number) => {
-            setCustomerValue(value);
+            setCustomerValue && setCustomerValue(value);
           }}
           dropdownRender={(menu) => (
             <>
