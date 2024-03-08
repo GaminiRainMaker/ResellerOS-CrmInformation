@@ -234,6 +234,8 @@ const AllQuote: React.FC = () => {
           },
         )}
       </>;
+
+      console.log('formattedArray', formattedArray);
       labelOcrMap?.push({
         ...tempLabelOcrMap,
         pdf_url: uploadFileDataItem?.pdf_url,

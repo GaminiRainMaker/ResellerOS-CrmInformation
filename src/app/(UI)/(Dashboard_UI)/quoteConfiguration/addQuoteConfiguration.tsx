@@ -95,19 +95,6 @@ const AddQuoteConiguration: React.FC<CustomerAccountInterface> = ({
             justify="space-between"
           >
             <Col style={{width: '47%'}}>
-              <Typography name="Body 4/Regular">OEM</Typography>
-              <OsInput
-                placeholder="Oem"
-                value={formValue?.oem}
-                onChange={(e) => {
-                  setFormValue({
-                    ...formValue,
-                    oem: e.target.value,
-                  });
-                }}
-              />
-            </Col>
-            <Col style={{width: '47%'}}>
               <Typography name="Body 4/Regular">Distributer</Typography>
               <OsInput
                 placeholder="Distributer"
@@ -116,6 +103,19 @@ const AddQuoteConiguration: React.FC<CustomerAccountInterface> = ({
                   setFormValue({
                     ...formValue,
                     distributer: e.target.value,
+                  });
+                }}
+              />
+            </Col>
+            <Col style={{width: '47%'}}>
+              <Typography name="Body 4/Regular">OEM</Typography>
+              <OsInput
+                placeholder="Oem"
+                value={formValue?.oem}
+                onChange={(e) => {
+                  setFormValue({
+                    ...formValue,
+                    oem: e.target.value,
                   });
                 }}
               />

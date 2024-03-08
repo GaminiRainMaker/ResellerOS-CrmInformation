@@ -24,6 +24,7 @@ const UploadFile: FC<UploadFileInterface> = ({
 
   // Define your Nanonets API key and endpoint
   const API_KEY = '198c15fd-9680-11ed-82f6-7a0abc6e8cc8';
+  // const API_KEY = 'a02fffb7-5221-44a2-8eb1-85781a0ecd67';
   const API_ENDPOINT =
     'https://app.nanonets.com/api/v2/OCR/Model/91814dd8-75f6-44d7-aad3-776df449b59f/LabelFile/';
 

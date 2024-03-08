@@ -227,57 +227,6 @@ const AllQuote: React.FC = () => {
               setActiveTab(e);
             }}
             activeKey={activeTab}
-            tabBarExtraContent={
-              <Space size={12} align="center">
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Reseller</Typography>
-                  <OsInput
-                    style={{width: '200px'}}
-                    placeholder="Search here"
-                    // onChange={(e) => {
-                    //   setSearchCustomerData({
-                    //     ...searchCustomerData,
-                    //     title: e.target.value,
-                    //   });
-                    //   // setQuery(e.target.value);
-                    // }}
-                    prefix={<SearchOutlined style={{color: '#949494'}} />}
-                  />
-                </Space>
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Quote Name</Typography>
-                  <OsInput
-                    style={{width: '200px'}}
-                    placeholder="Search here"
-                    // onChange={(e) => {
-                    //   setSearchCustomerData({
-                    //     ...searchCustomerData,
-                    //     name: e.target.value,
-                    //   });
-                    // }}
-                    prefix={<SearchOutlined style={{color: '#949494'}} />}
-                  />
-                </Space>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: '20px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <Typography
-                    cursor="pointer"
-                    name="Button 1"
-                    color="#C6CDD5"
-                    // onClick={searchOpportunity}
-                  >
-                    Apply
-                  </Typography>
-                </div>
-              </Space>
-            }
             items={tabItems.map((tabItem: any, index: number) => ({
               key: `${index + 1}`,
               label: tabItem?.label,
