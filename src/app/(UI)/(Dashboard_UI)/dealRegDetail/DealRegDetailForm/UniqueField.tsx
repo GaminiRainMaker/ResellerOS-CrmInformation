@@ -22,68 +22,6 @@ const UniqueFields = () => {
               previewFile
             />
           )}
-          {/* <Space
-            size={36}
-            direction="vertical"
-            style={{
-              width: '100%',
-            }}
-          >
-            <Row justify="space-between" gutter={[24, 24]}>
-              <Col sm={24} md={12}>
-                <Space
-                  size={4}
-                  direction="vertical"
-                  style={{
-                    width: '100%',
-                  }}
-                >
-                  <Typography name="Body 4/Medium">Account Name</Typography>
-                  <CommonSelect placeholder="Select" style={{width: '100%'}} />
-                </Space>
-              </Col>
-              <Col sm={24} md={12}>
-                <Space
-                  size={4}
-                  direction="vertical"
-                  style={{
-                    width: '100%',
-                  }}
-                >
-                  <Typography name="Body 4/Medium">Industry</Typography>
-                  <CommonSelect placeholder="Select" style={{width: '100%'}} />
-                </Space>
-              </Col>
-            </Row>
-
-            <Row justify="space-between" gutter={[24, 24]}>
-              <Col sm={24} md={12}>
-                <Space
-                  size={4}
-                  direction="vertical"
-                  style={{
-                    width: '100%',
-                  }}
-                >
-                  <Typography name="Body 4/Medium">Account Website</Typography>
-                  <CommonSelect placeholder="Select" style={{width: '100%'}} />
-                </Space>
-              </Col>
-
-              <Col sm={24} md={12}>
-                <Space
-                  size={4}
-                  direction="vertical"
-                  style={{
-                    width: '100%',
-                  }}
-                >
-                  <Typography name="Body 4/Medium">Account Contact</Typography>
-                  <CommonSelect placeholder="Select" style={{width: '100%'}} />
-                </Space>
-              </Col>
-            </Row>
-          </Space> */}
         </>
       ),
     },

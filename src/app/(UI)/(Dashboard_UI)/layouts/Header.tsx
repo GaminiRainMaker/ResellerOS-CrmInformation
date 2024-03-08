@@ -1,9 +1,11 @@
+/* eslint-disable no-nested-ternary */
+
 'use client';
 
 import {Dropdown} from '@/app/components/common/antd/DropDown';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import Cookies from 'js-cookie';
+import {Divider} from '@/app/components/common/antd/Divider';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import SearchInput from '@/app/components/common/os-input/SearchInput';
@@ -16,10 +18,10 @@ import {
 } from '@heroicons/react/24/outline';
 import {Layout} from 'antd';
 import {MenuProps} from 'antd/es/menu';
+import Cookies from 'js-cookie';
 import Image from 'next/image';
 import {useRouter} from 'next/navigation';
-import React from 'react';
-import {Divider} from '@/app/components/common/antd/Divider';
+import React, {useEffect, useState} from 'react';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
@@ -30,6 +32,9 @@ const CustomHeader = () => {
   const [token] = useThemeToken();
   const router = useRouter();
   const {loading, userInformation} = useAppSelector((state) => state.user);
+  const [userRole, setUserRole] = useState<string>('');
+
+  console.log('userInformation', userInformation);
 
   const items: MenuProps['items'] = [
     {
@@ -81,6 +86,16 @@ const CustomHeader = () => {
     padding: '0px',
     margin: '0px',
   };
+
+  useEffect(() => {
+    setUserRole(
+      userInformation?.SuperAdmin
+        ? 'Super Admin'
+        : userInformation?.Admin
+          ? 'Admin'
+          : 'Reseller',
+    );
+  }, [userInformation]);
 
   return (
     <Layout>
@@ -185,10 +200,20 @@ const CustomHeader = () => {
                     alt="UserIcon"
                     style={{cursor: 'pointer'}}
                   />
-                  <Typography name="Body 3/Regular" color="#0D0D0D">
-                    {' '}
-                    {userInformation?.username || 'Josh Walker'}
-                  </Typography>
+                  <Space direction="vertical" size={0}>
+                    <Typography
+                      name="Body 3/Regular"
+                      color={token?.colorPrimaryText}
+                    >
+                      {userInformation?.username || '--'}
+                    </Typography>
+                    <Typography
+                      name="Body 3/Bold"
+                      color={token?.colorLink}
+                    >
+                      {userRole || '--'}
+                    </Typography>
+                  </Space>
                   <Image
                     src={DownArrow}
                     alt="DownArrow"

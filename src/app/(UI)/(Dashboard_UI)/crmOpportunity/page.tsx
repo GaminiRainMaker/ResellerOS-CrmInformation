@@ -218,27 +218,6 @@ const CrmOpportunity: React.FC = () => {
       ),
     },
     {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Quotes / Forms
-        </Typography>
-      ),
-      dataIndex: 'quotesForms',
-      key: 'quotesForms',
-      render: (text: string, record: any) => (
-        <Typography
-          color={token?.colorLink}
-          name="Body 4/Bold"
-          cursor="pointer"
-          onClick={() => {
-            router.push(`/opportunityDetail?id=${record?.id}`);
-          }}
-        >
-          View All
-        </Typography>
-      ),
-    },
-    {
       title: ' ',
       dataIndex: 'actions',
       key: 'actions',
@@ -290,7 +269,7 @@ const CrmOpportunity: React.FC = () => {
   };
 
   useEffect(() => {
-    if (activeTab && opportunityData.length > 0) {
+    if (activeTab && opportunityData?.length > 0) {
       const quoteItems =
         activeTab === '3'
           ? opportunityData?.filter((item: any) => item.stages === 'Develop')
@@ -367,10 +346,11 @@ const CrmOpportunity: React.FC = () => {
 
   const uniqueOpportunity = Array.from(
     new Set(opportunityData?.map((opportunity: any) => opportunity.title)),
+    // new Set(opportunityData?.map((opportunity: any) => opportunity?.title)),
   );
 
   const uniqueCustomer = Array.from(
-    new Set(opportunityData.map((contact: any) => contact.Customer?.name)),
+    new Set(opportunityData?.map((contact: any) => contact.Customer?.name)),
   );
 
   return (

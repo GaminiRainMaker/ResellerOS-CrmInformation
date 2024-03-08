@@ -108,11 +108,11 @@ export const getQuotesByDateFilter = createAsyncThunk(
   },
 );
 
-export const getQuoteByMaunalUpdated = createAsyncThunk(
-  'quote/getQuoteByMaunalUpdated',
+export const getQuoteByManualUpdated = createAsyncThunk(
+  'quote/getQuoteByManualUpdated',
   async (data: any, thunkApi) => {
     try {
-      const res = await QUOTEAPI.getQuoteByMaunalUpdated();
+      const res = await QUOTEAPI.getQuoteByManualUpdated();
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

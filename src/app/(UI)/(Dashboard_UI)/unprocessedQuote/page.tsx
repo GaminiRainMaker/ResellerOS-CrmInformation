@@ -32,7 +32,7 @@ import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {
   deleteQuoteById,
-  getQuoteByMaunalUpdated,
+  getQuoteByManualUpdated,
 } from '../../../../../redux/actions/quote';
 
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -58,7 +58,7 @@ const AllQuote: React.FC = () => {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    dispatch(getQuoteByMaunalUpdated(''));
+    dispatch(getQuoteByManualUpdated(''));
   }, []);
 
   useEffect(() => {
@@ -125,7 +125,7 @@ const AllQuote: React.FC = () => {
     const data = {Ids: deleteIds};
     await dispatch(deleteQuoteById(data));
     setTimeout(() => {
-      dispatch(getQuoteByMaunalUpdated(''));
+      dispatch(getQuoteByManualUpdated(''));
     }, 1000);
     setDeleteIds([]);
     setShowModalDelete(false);

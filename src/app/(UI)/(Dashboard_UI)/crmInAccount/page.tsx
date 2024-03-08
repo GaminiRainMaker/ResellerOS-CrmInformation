@@ -116,7 +116,7 @@ const CrmInformation: React.FC = () => {
     },
     {
       key: 2,
-      primary: <div>{0}</div>,
+      primary: <div>{3}</div>,
       secondry: 'Opportunities',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
@@ -196,21 +196,23 @@ const CrmInformation: React.FC = () => {
         </Typography>
       ),
     },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Contact
-        </Typography>
-      ),
-      dataIndex: 'name',
-      key: 'name',
-      width: 187,
-      render: (text: any, record: any) => (
-        <Typography name="Body 4/Regular">
-          {record?.BillingContacts?.[0]?.billing_first_name ?? '--'}
-        </Typography>
-      ),
-    },
+
+    // for Billing Contact
+    // {
+    //   title: (
+    //     <Typography name="Body 4/Medium" className="dragHandler">
+    //       Contact
+    //     </Typography>
+    //   ),
+    //   dataIndex: 'name',
+    //   key: 'name',
+    //   width: 187,
+    //   render: (text: any, record: any) => (
+    //     <Typography name="Body 4/Regular">
+    //       {record?.BillingContacts?.[0]?.billing_first_name ?? '--'}
+    //     </Typography>
+    //   ),
+    // },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -269,17 +271,6 @@ const CrmInformation: React.FC = () => {
       name: record.name,
     }),
   };
-
-  const tabItems: TabsProps['items'] = [
-    {
-      label: (
-        <div>
-          <div>All</div>
-        </div>
-      ),
-      key: '1',
-    },
-  ];
 
   const dropDownItemss: MenuProps['items'] = [
     {
@@ -372,7 +363,8 @@ const CrmInformation: React.FC = () => {
             </div>
           </Col>
         </Row>
-        <Row
+
+        <div
           style={{
             background: 'white',
             padding: '24px',
@@ -382,7 +374,7 @@ const CrmInformation: React.FC = () => {
             gap: 12,
           }}
         >
-          <Row justify="end" style={{width: '100%'}}>
+          <Row justify="end">
             <Space size={12} align="center">
               <Space direction="vertical" size={0}>
                 <Typography name="Body 4/Medium">Customer Name</Typography>
@@ -469,7 +461,7 @@ const CrmInformation: React.FC = () => {
             scroll
             loading={loading}
           />
-        </Row>
+        </div>
       </Space>
 
       <OsModal
