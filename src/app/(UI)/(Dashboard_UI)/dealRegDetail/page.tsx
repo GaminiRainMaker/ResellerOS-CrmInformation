@@ -25,6 +25,7 @@ import {
 } from '../../../../../redux/actions/dealRegAddress';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
+import {setSubmitDealRegData} from '../../../../../redux/slices/dealReg';
 
 const DealRegDetail = () => {
   const [form] = Form.useForm();
@@ -111,6 +112,8 @@ const DealRegDetail = () => {
     }
   };
 
+  console.log('dealRegUpdateData', dealRegUpdateData);
+
   return (
     <div>
       <Row justify="space-between" align="middle">
@@ -123,10 +126,12 @@ const DealRegDetail = () => {
               text="Save"
               buttontype="SECONDARY"
               clickHandler={() => {
-                dispatch(updateDealRegById(dealRegUpdateData)).then(() => {
-                  // dispatch(getAllDealReg());
-                  dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-                });
+                // dispatch(updateDealRegById(dealRegUpdateData)).then(() => {
+                //   // dispatch(getAllDealReg());
+                //   dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+                // });
+                // dispatch(setSubmitDealRegData((p: boolean) => !p));
+                console.log('SECONDARY', form.submit());
               }}
             />
             <OsButton
@@ -150,7 +155,8 @@ const DealRegDetail = () => {
           </Space>
         </Col>
       </Row>
-      <DealRegCustomTabs tabs={DealRegData} selectedUserId={selectedUserId} />
+
+      <DealRegCustomTabs tabs={DealRegData} selectedUserId={selectedUserId} form={form} />
 
       <OsDrawer
         title={<Typography name="Body 1/Regular">Form Settings</Typography>}
