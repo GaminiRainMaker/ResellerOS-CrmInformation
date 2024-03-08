@@ -112,10 +112,8 @@ export const getQuoteByManualUpdated = createAsyncThunk(
   'quote/getQuoteByManualUpdated',
   async (data, thunkApi) => {
     try {
-      console.log('ssssssss');
       const res = await QUOTEAPI.getQuoteByManual();
-      // return res.data;
-      return '';
+      return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error?.message);
     }

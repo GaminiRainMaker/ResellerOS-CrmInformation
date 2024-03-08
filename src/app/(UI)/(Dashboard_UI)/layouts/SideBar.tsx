@@ -164,7 +164,7 @@ const SideBar = () => {
           <Space size={12}>
             <OsAvatar
               icon={
-                <UserGroupIcon
+                <CurrencyDollarIcon
                   color={
                     selectedKey?.toString()?.includes('7') ||
                     selectedKey?.toString()?.includes('8') ||
@@ -196,7 +196,7 @@ const SideBar = () => {
             </Typography>
           </Space>
         </Typography>,
-        'CRM information',
+        'Quote',
         '',
         [
           getItem(

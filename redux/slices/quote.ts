@@ -180,7 +180,7 @@ const quoteSlice = createSlice({
         getQuoteByManualUpdated.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.filteredByDate = action.payload;
+          state.data = action.payload;
         },
       )
       .addCase(

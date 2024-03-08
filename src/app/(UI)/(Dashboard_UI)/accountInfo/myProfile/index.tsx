@@ -142,7 +142,7 @@ const MyProfile = () => {
         <Space direction="vertical" size={24} style={{width: '100%'}}>
           <Row gutter={[16, 16]} justify="center">
             {analyticsData?.map((item: any) => (
-              <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={8}>
+              <Col xs={24} sm={24} md={24} lg={24} xl={8} xxl={8}>
                 <DetailAnalyticCard
                   primaryText={item?.primary}
                   secondaryText={item?.secondry}
