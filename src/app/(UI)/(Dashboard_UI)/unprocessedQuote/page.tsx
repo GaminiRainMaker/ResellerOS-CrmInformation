@@ -55,8 +55,6 @@ const AllQuote: React.FC = () => {
     dispatch(getQuoteByManualUpdated());
   }, []);
 
-  console.log('datadata', data);
-
   const statusWrapper = (item: any) => {
     const getStatus = () => {
       if (!item.is_completed && !item.is_drafted) {
@@ -111,7 +109,7 @@ const AllQuote: React.FC = () => {
     setShowModalDelete(false);
     form.resetFields(['opportunity_id', 'customer_id']);
   };
-  
+
   const Quotecolumns = getColumns(
     token,
     statusWrapper,
