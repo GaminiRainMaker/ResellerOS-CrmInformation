@@ -25,6 +25,8 @@ import tableColumn from './slices/tabelColumn';
 import user from './slices/user';
 import validation from './slices/validation';
 import quoteConfig from './slices/nanonets';
+import distributor from './slices/distributor';
+import oem from './slices/oem';
 
 // Configure redux store
 const store = configureStore({
@@ -53,6 +55,8 @@ const store = configureStore({
     partner,
     partnerProgram,
     quoteConfig,
+    distributor,
+    oem,
   },
   middleware: [thunk],
   devTools: true,

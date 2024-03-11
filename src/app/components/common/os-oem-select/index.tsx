@@ -3,37 +3,33 @@
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {FC, useEffect, useState} from 'react';
-import {queryDistributor} from '../../../../../redux/actions/distributor';
+import {queryOEM} from '../../../../../redux/actions/oem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
-import AddDistributor from '../os-add-distributor';
+import AddOem from '../os-add-oem';
 import OsModal from '../os-modal';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
-import {OsDistriButorSelectInterface} from './os-distributor.interface';
-import {SelectFormItem} from '../os-oem-select/oem-select-styled';
+import {OsOemSelectInterface} from './os-oem.interface';
+import {SelectFormItem} from './oem-select-styled';
 
 const queryParams: any = {
-  distributor: null,
+  oem: null,
 };
 
-const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
+const OsOemSelect: FC<OsOemSelectInterface> = ({
   isRequired = false,
-  distributorValue,
-  setDistributorValue,
-  isAddNewDistributor = false,
-  label = false,
+  oemValue,
+  setOemValue,
+  isAddNewOem = false,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
-  const {data} = useAppSelector((state) => state?.distributor);
-  const {loading: DistributorLoading} = useAppSelector(
-    (state) => state.distributor,
-  );
-  const [showDistributorModal, setShowDistributorModal] =
-    useState<boolean>(false);
+  const {data} = useAppSelector((state) => state?.oem);
+  const {loading: OemLoading} = useAppSelector((state) => state.oem);
+  const [showOemModal, setShowOemModal] = useState<boolean>(false);
 
   const capitalizeFirstLetter = (str: string | undefined) => {
     if (!str) {
@@ -42,42 +38,42 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
-  const distributorOptions = data?.map((dataAddressItem: any) => ({
+  const OemOptions = data?.map((dataAddressItem: any) => ({
     value: dataAddressItem?.id,
     label: (
       <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-        {capitalizeFirstLetter(dataAddressItem?.distributor)}
+        {capitalizeFirstLetter(dataAddressItem?.oem)}
       </Typography>
     ),
   }));
 
   useEffect(() => {
-    dispatch(queryDistributor(queryParams));
+    dispatch(queryOEM(queryParams));
   }, []);
 
   return (
     <>
       <SelectFormItem
-        label={label ? 'Distributor' : ''}
-        name="distributor_id"
-        rules={[{required: isRequired, message: 'Please Select Distributor!'}]}
+        label=""
+        name="oem"
+        rules={[{required: isRequired, message: 'Please Select OEM!'}]}
       >
         <CommonSelect
           placeholder="Select"
           allowClear
           style={{width: '100%', height: '38px'}}
-          options={distributorOptions}
-          value={distributorValue}
+          options={OemOptions}
+          value={oemValue}
           onChange={(value: number) => {
-            setDistributorValue && setDistributorValue(value);
+            setOemValue && setOemValue(value);
           }}
           dropdownRender={(menu) => (
             <>
-              {isAddNewDistributor && (
+              {isAddNewOem && (
                 <Space
                   style={{cursor: 'pointer'}}
                   size={8}
-                  onClick={() => setShowDistributorModal(true)}
+                  onClick={() => setShowOemModal(true)}
                 >
                   <PlusIcon
                     width={24}
@@ -88,7 +84,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
                     color={token?.colorPrimaryText}
                     name="Body 3/Regular"
                   >
-                    Add Distributor Account
+                    Add OEM Account
                   </Typography>
                 </Space>
               )}
@@ -99,14 +95,12 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
       </SelectFormItem>
 
       <OsModal
-        loading={DistributorLoading}
-        body={
-          <AddDistributor form={form} setShowModal={setShowDistributorModal} />
-        }
+        loading={OemLoading}
+        body={<AddOem form={form} setShowModal={setShowOemModal} />}
         width={600}
-        open={showDistributorModal}
+        open={showOemModal}
         onCancel={() => {
-          setShowDistributorModal((p) => !p);
+          setShowOemModal((p) => !p);
         }}
         primaryButtonText="Save"
         onOk={() => {
@@ -119,4 +113,4 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
   );
 };
 
-export default OsDistributorSelect;
+export default OsOemSelect;

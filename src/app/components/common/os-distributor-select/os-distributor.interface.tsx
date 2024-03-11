@@ -1,6 +1,11 @@
 import {FormInstance} from 'antd';
 
-export interface OsDistriButorInterface {
+export interface OsDistriButorSelectInterface {
   form?: FormInstance;
-  name: string;
+  name?: string;
+  isRequired?: boolean;
+  setDistributorValue?: any;
+  distributorValue?: string;
+  isAddNewDistributor?: boolean;
+  label?: boolean;
 }

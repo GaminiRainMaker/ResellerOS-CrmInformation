@@ -17,13 +17,16 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
+import OsDistributorSelect from '@/app/components/common/os-distributor-select';
 import OsInput from '@/app/components/common/os-input';
+import OsOemSelect from '@/app/components/common/os-oem-select';
+import {Form} from 'antd';
 import {useEffect, useState} from 'react';
-import {useAppDispatch} from '../../../../../redux/hook';
 import {
   insertQuoteConfiguration,
   updateNanonetsModel,
 } from '../../../../../redux/actions/nanonets';
+import {useAppDispatch} from '../../../../../redux/hook';
 
 interface CustomerAccountInterface {
   formValue: any;
@@ -88,66 +91,10 @@ const AddQuoteConiguration: React.FC<CustomerAccountInterface> = ({
           background: drawer ? '#F6F7F8' : '',
         }}
       >
-        <Row>
-          <Row
-            style={{marginTop: '20px', width: '100%'}}
-            justify="space-between"
-          >
-            <Col style={{width: '47%'}}>
-              <Typography name="Body 4/Regular">Distributer</Typography>
-              <OsInput
-                placeholder="Distributer"
-                value={formValue?.distributer}
-                onChange={(e) => {
-                  setFormValue({
-                    ...formValue,
-                    distributer: e.target.value,
-                  });
-                }}
-              />
-            </Col>
-            <Col style={{width: '47%'}}>
-              <Typography name="Body 4/Regular">OEM</Typography>
-              <OsInput
-                placeholder="Oem"
-                value={formValue?.oem}
-                onChange={(e) => {
-                  setFormValue({
-                    ...formValue,
-                    oem: e.target.value,
-                  });
-                }}
-              />
-            </Col>
-          </Row>
-          <Row style={{marginTop: '20px', width: '100%'}}>
-            <Typography name="Body 4/Regular">Model ID</Typography>
-            <OsInput
-              placeholder="Model"
-              value={formValue?.model_id}
-              onChange={(e) => {
-                setFormValue({
-                  ...formValue,
-                  model_id: e.target.value,
-                });
-              }}
-            />
-          </Row>
-        </Row>
-        <Row
-          style={{
-            marginTop: '20px',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'end',
-          }}
-        >
-          <OsButton
-            buttontype="PRIMARY"
-            clickHandler={addNewQuoteConfiguration}
-            text={formValue?.id ? 'Update' : 'Add'}
-          />
-        </Row>
+        <Form layout="vertical">
+          <OsDistributorSelect isAddNewDistributor />
+          <OsOemSelect isAddNewOem />
+        </Form>
       </Space>
     </>
   );

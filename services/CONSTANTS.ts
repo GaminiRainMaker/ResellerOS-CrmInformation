@@ -139,4 +139,14 @@ export const API = {
     INDEX: '/nanonetsConfiguration',
     DeleteById: '/nanonetsConfiguration/deleteNanonetsModel',
   },
+  DISTRIBUTOR: {
+    INDEX: '/distributor',
+    QUERY: 'distributor/query',
+    DeleteById: '/distributor/deleteById',
+  },
+  OEM: {
+    INDEX: '/oem',
+    QUERY: 'oem/query',
+    DeleteById: '/oem/deleteById',
+  },
 };

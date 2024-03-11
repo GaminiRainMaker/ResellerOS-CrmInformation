@@ -18,24 +18,31 @@
 import Typography from '@/app/components/common/typography';
 // eslint-disable-next-line import/no-extraneous-dependencies
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import { PencilSquareIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { Form, TabsProps } from 'antd';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import {
+  PencilSquareIcon,
+  PlusIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
+import {Form, TabsProps} from 'antd';
+import {useRouter} from 'next/navigation';
+import {useEffect, useState} from 'react';
 
+import OsDistributorSelect from '@/app/components/common/os-distributor-select';
+import OsOemSelect from '@/app/components/common/os-oem-select';
+import OsInput from '@/app/components/common/os-input';
 import {
   deleteQuoteConfiguration,
   getAllNanonetsModel,
 } from '../../../../../redux/actions/nanonets';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddQuoteConiguration from './addQuoteConfiguration';
 
 const AllQuote: React.FC = () => {
@@ -45,7 +52,7 @@ const AllQuote: React.FC = () => {
   const {loading, filteredByDate: filteredData} = useAppSelector(
     (state) => state.quote,
   );
-  const router = useRouter();
+
   const [showModal, setShowModal] = useState<boolean>(false);
   const [formValue, setFormValue] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
@@ -53,7 +60,15 @@ const AllQuote: React.FC = () => {
   const [allQuoteConfigData, setAllQuoteConfigData] = useState<any>();
   const [configData, setConfigData] = useState<boolean>(false);
 
-  const [form] = Form.useForm();
+  const [data, setData] = useState([
+    {
+      id: 1,
+      distributor: '',
+      oem: '',
+      model_id: '',
+    },
+  ]);
+
   useEffect(() => {
     dispatch(getAllNanonetsModel()).then((payload: any) => {
       setAllQuoteConfigData(payload?.payload);
@@ -98,15 +113,15 @@ const AllQuote: React.FC = () => {
           className="dragHandler"
           color={token?.colorPrimaryText}
         >
-          OEM
+          Distributer
         </Typography>
       ),
-      dataIndex: 'oem',
-      key: 'oem',
-      width: 130,
-      render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">{text}</Typography>
-      ),
+      dataIndex: 'distributer',
+      key: 'distributer',
+      width: 187,
+      render: (text: string, record: any) => {
+        return <OsDistributorSelect isAddNewDistributor />;
+      },
     },
     {
       title: (
@@ -115,15 +130,15 @@ const AllQuote: React.FC = () => {
           className="dragHandler"
           color={token?.colorPrimaryText}
         >
-          Distributer
+          OEM
         </Typography>
       ),
-      dataIndex: 'distributer',
-      key: 'distributer',
-      width: 187,
-      render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">{text}</Typography>
-      ),
+      dataIndex: 'oem',
+      key: 'oem',
+      width: 130,
+      render: (text: string, record: any) => {
+        return <OsOemSelect isAddNewOem />;
+      },
     },
     {
       title: (
@@ -139,54 +154,29 @@ const AllQuote: React.FC = () => {
       key: 'model_id',
       width: 187,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">{text}</Typography>
+        <OsInput placeholder="Write here" style={{height: '38px'}} />
       ),
     },
     {
       title: ' ',
       dataIndex: 'actions',
       key: 'actions',
-      width: 94,
+      width: 54,
       render: (text: string, record: any) => (
         <Space size={18}>
-          <PencilSquareIcon
-            height={24}
-            width={24}
-            color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              setShowModal((p) => !p);
-              setFormValue(record);
-            }}
-          />
           <TrashIcon
             height={24}
             width={24}
             color={token.colorError}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              setDeleteIds(record?.id);
-              setShowModalDelete(true);
-              // setShowModal((p) => !p);
+              setData((prev) =>
+                prev?.filter((prevItem) => prevItem?.id !== record?.id),
+              );
             }}
           />
         </Space>
       ),
-    },
-  ];
-
-  const tabItems: TabsProps['items'] = [
-    {
-      label: (
-        <Typography
-          name="Body 4/Medium"
-          cursor="pointer"
-          color={token?.colorTextBase}
-        >
-          All
-        </Typography>
-      ),
-      key: '1',
     },
   ];
 
@@ -200,55 +190,43 @@ const AllQuote: React.FC = () => {
               Quotes Configuration
             </Typography>
           </Col>
-          <Col>
-            <div
-              style={{
-                display: 'flex',
-                width: '40%',
-                gap: '8px',
-              }}
-            >
-              <OsButton
-                text="Add Quote Cnfiguration"
-                buttontype="PRIMARY"
-                icon={<PlusIcon />}
-                clickHandler={() => {
-                  setShowModal((p) => !p);
-                  setFormValue({});
-                }}
-              />
-            </div>
-          </Col>
         </Row>
-        <Row
+        <div
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
-          <OsTabs
-            onChange={(e) => {
-              setActiveTab(e);
+          <Form layout="vertical">
+            <OsTable
+              columns={columns}
+              dataSource={data}
+              scroll
+              loading={loading}
+              locale=""
+              rowSelection={rowSelection}
+            />
+          </Form>
+        </div>
+        <Row justify="end">
+          <OsButton
+            text="Add Field"
+            buttontype="PRIMARY"
+            icon={<PlusIcon />}
+            clickHandler={() => {
+              setData([
+                ...data,
+                ...[
+                  {
+                    id: data.length + 1,
+                    distributor: '',
+                    oem: '',
+                    model_id: '',
+                  },
+                ],
+              ]);
             }}
-            activeKey={activeTab}
-            items={tabItems.map((tabItem: any, index: number) => ({
-              key: `${index + 1}`,
-              label: tabItem?.label,
-              children: (
-                <OsTable
-                  key={tabItem?.key}
-                  columns={columns}
-                  dataSource={configData}
-                  scroll
-                  loading={loading}
-                  locale=""
-                  rowSelection={rowSelection}
-                />
-              ),
-              ...tabItem,
-            }))}
           />
         </Row>
       </Space>
       <OsModal
-        // loading={loading}
         body={
           <AddQuoteConiguration
             setFormValue={setFormValue}
