@@ -137,7 +137,7 @@ const UserManagement = () => {
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              All Resellors
+              All Resellers
             </Typography>
           </Col>
         </Row>

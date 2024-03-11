@@ -39,7 +39,7 @@ const oemSlice = createSlice({
         insertOEM.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = [action.payload];
+          state.data = action.payload;
         },
       )
       .addCase(
@@ -57,7 +57,7 @@ const oemSlice = createSlice({
         updateOEM.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = [action.payload];
+          state.data = action.payload;
         },
       )
       .addCase(
@@ -75,7 +75,7 @@ const oemSlice = createSlice({
         deleteOEM.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = [action.payload];
+          state.data = action.payload;
         },
       )
       .addCase(

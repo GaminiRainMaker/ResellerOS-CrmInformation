@@ -34,7 +34,6 @@ const CustomHeader = () => {
   const {loading, userInformation} = useAppSelector((state) => state.user);
   const [userRole, setUserRole] = useState<string>('');
 
-  console.log('userInformation', userInformation);
 
   const items: MenuProps['items'] = [
     {
@@ -92,7 +91,7 @@ const CustomHeader = () => {
       userInformation?.SuperAdmin
         ? 'Super Admin'
         : userInformation?.Admin
-          ? 'Admin'
+          ? 'Reseller Admin'
           : 'Reseller',
     );
   }, [userInformation]);

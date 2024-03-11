@@ -8,4 +8,5 @@ export interface OsDistriButorSelectInterface {
   distributorValue?: string;
   isAddNewDistributor?: boolean;
   label?: boolean;
+  height?: number;
 }

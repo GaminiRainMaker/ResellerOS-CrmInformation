@@ -24,6 +24,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
   setDistributorValue,
   isAddNewDistributor = false,
   label = false,
+  height
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -65,7 +66,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
         <CommonSelect
           placeholder="Select"
           allowClear
-          style={{width: '100%', height: '38px'}}
+          style={{width: '100%', height: `${height}px`}}
           options={distributorOptions}
           value={distributorValue}
           onChange={(value: number) => {

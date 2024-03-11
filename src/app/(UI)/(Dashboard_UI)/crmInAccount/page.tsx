@@ -403,7 +403,7 @@ const CrmInformation: React.FC = () => {
                   ))}
                 </CommonSelect>
               </Space>
-              <Space direction="vertical" size={0}>
+              {/* <Space direction="vertical" size={0}>
                 <Typography name="Body 4/Medium">Contact</Typography>
                 <CommonSelect
                   style={{width: '200px'}}
@@ -430,7 +430,7 @@ const CrmInformation: React.FC = () => {
                     </Option>
                   ))}
                 </CommonSelect>
-              </Space>
+              </Space> */}
               <div
                 style={{
                   marginTop: '15px',

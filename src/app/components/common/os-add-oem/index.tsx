@@ -1,13 +1,13 @@
 'use client';
 
-import { Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
-import { Form, FormInstance } from 'antd';
-import { insertOEM } from '../../../../../redux/actions/oem';
-import { useAppDispatch } from '../../../../../redux/hook';
+import {Form, FormInstance} from 'antd';
+import {insertOEM} from '../../../../../redux/actions/oem';
+import {useAppDispatch} from '../../../../../redux/hook';
 import OsDistributorSelect from '../os-distributor-select';
 
 interface AddOemInterface {
@@ -18,9 +18,13 @@ const AddOem: React.FC<AddOemInterface> = ({form, setShowModal}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const onFinish = () => {
-    const oemValue = form?.getFieldValue('oem');
+    const oemValue = form?.getFieldsValue();
+    const oemValueObj = {
+      distributor_id: oemValue?.distributor_id,
+      oem: oemValue?.oem,
+    };
     if (oemValue) {
-      dispatch(insertOEM({oem: oemValue}));
+      dispatch(insertOEM(oemValueObj));
     }
     setShowModal(false);
     form?.resetFields();
@@ -53,8 +57,14 @@ const AddOem: React.FC<AddOemInterface> = ({form, setShowModal}) => {
           padding: '24px 40px 20px 40px',
         }}
       >
-        <Form form={form} onFinish={onFinish} layout="vertical">
-          <OsDistributorSelect isAddNewDistributor label/>
+        <Form
+          form={form}
+          onFinish={onFinish}
+          layout="vertical"
+          requiredMark={false}
+        >
+          <OsDistributorSelect isAddNewDistributor label isRequired />
+          <br />
           <Form.Item name="oem" label="OEM">
             <OsInput placeholder="OEM" />
           </Form.Item>
