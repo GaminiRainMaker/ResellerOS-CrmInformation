@@ -32,6 +32,7 @@ import {MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import AddQuote from '@/app/components/common/addQuote';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {
@@ -61,6 +62,8 @@ const GenerateQuote: React.FC = () => {
     (state) => state.quoteLineItem,
   );
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
+  const [uploadFileData, setUploadFileData] = useState<any>([]);
+  const [existingQuoteId, setExistingQuoteId] = useState<number>();
 
   const [amountData, setAmountData] = useState<any>();
   const [open, setOpen] = useState(false);
@@ -412,11 +415,12 @@ const GenerateQuote: React.FC = () => {
                   commonUpdateCompleteAndDraftMethod('drafted');
                 }}
               />
-              <OsButton
-                text="Add Quote"
-                buttontype="PRIMARY"
-                icon={<PlusIcon />}
-                // clickHandler={() => setShowModal((p) => !p)}
+              <AddQuote
+                loading={loading}
+                buttonText="Add Quote"
+                setUploadFileData={setUploadFileData}
+                uploadFileData={uploadFileData}
+                existingQuoteId={existingQuoteId}
               />
               <OsButton
                 text=" Mark as Complete"

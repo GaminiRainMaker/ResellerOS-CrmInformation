@@ -5,24 +5,24 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {Divider} from 'antd';
-import {FC} from 'react';
+import {Divider, Form} from 'antd';
+import {FC, useState} from 'react';
+import AddQuote from '@/app/components/common/addQuote';
 import {useAppSelector} from '../../../../../redux/hook';
 import UploadFile from '../generateQuote/UploadFile';
 
 const RecentSection: FC<any> = ({
-  setUploadFileData,
-  uploadFileData,
   addQuoteLineItem,
   Quotecolumns,
   setShowToggleTable,
   showToggleTable,
   rowSelection,
-  form,
 }) => {
   const {filteredByDate: filteredData, loading} = useAppSelector(
     (state) => state.quote,
   );
+  const [uploadFileData, setUploadFileData] = useState<any>([]);
+  const [uploadForm] = Form.useForm();
   const [token] = useThemeToken();
   const onToggleChange = (checked: boolean) => {
     setShowToggleTable(checked);
@@ -56,7 +56,7 @@ const RecentSection: FC<any> = ({
               setUploadFileData={setUploadFileData}
               uploadFileData={uploadFileData}
               addQuoteLineItem={addQuoteLineItem}
-              form={form}
+              form={uploadForm}
             />
           </Col>
           <Divider />
@@ -86,11 +86,12 @@ const RecentSection: FC<any> = ({
         }}
       >
         <Col>
-          <OsButton
+          <AddQuote
+            buttonText="Generate"
             loading={loading}
-            text="Generate"
-            buttontype="PRIMARY"
-            clickHandler={() => form.submit()}
+            setUploadFileData={setUploadFileData}
+            uploadFileData={uploadFileData}
+            uploadForm={uploadForm}
           />
         </Col>
       </Row>
