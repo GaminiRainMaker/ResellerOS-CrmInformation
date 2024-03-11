@@ -16,7 +16,6 @@
 'use client';
 
 import Typography from '@/app/components/common/typography';
-import {PlusIcon} from '@heroicons/react/24/outline';
 // eslint-disable-next-line import/no-extraneous-dependencies
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -30,7 +29,6 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import {TabsProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import AddQuote from '@/app/components/common/addQuote';
@@ -46,7 +44,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import RecentSection from './RecentSection';
 import QuoteAnalytics from './analytics';
 import getColumns from './tableColumns';
-import {dropDownItems} from './constants';
+import {dropDownItems, tabItems} from './constants';
 
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -69,8 +67,6 @@ const AllQuote: React.FC = () => {
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
-
-  const {data: syncTableData} = useAppSelector((state) => state.syncTable);
 
   useEffect(() => {
     dispatch(getAllSyncTable('QuoteLineItem'));
@@ -217,117 +213,6 @@ const AllQuote: React.FC = () => {
     ),
   };
 
-  const tabItems: TabsProps['items'] = [
-    {
-      label: (
-        <Typography
-          name="Body 4/Medium"
-          cursor="pointer"
-          color={token?.colorTextBase}
-        >
-          All
-        </Typography>
-      ),
-      key: '1',
-    },
-    {
-      label: (
-        <Typography
-          name="Body 4/Medium"
-          cursor="pointer"
-          color={token?.colorTextBase}
-        >
-          Drafts
-        </Typography>
-      ),
-      key: '2',
-      children: (
-        <>
-          {activeQuotes?.length > 0 ? (
-            <OsTable
-              columns={Quotecolumns}
-              dataSource={activeQuotes}
-              scroll
-              loading={loading}
-              locale={locale}
-              rowSelection={rowSelection}
-            />
-          ) : (
-            <RecentSection
-              uploadFileData={uploadFileData}
-              setUploadFileData={setUploadFileData}
-              Quotecolumns={Quotecolumns}
-              setShowToggleTable={setShowToggleTable}
-              showToggleTable={showToggleTable}
-              rowSelection={rowSelection}
-            />
-          )}
-        </>
-      ),
-    },
-
-    {
-      label: (
-        <Typography
-          name="Body 4/Medium"
-          cursor="pointer"
-          color={token?.colorTextBase}
-        >
-          In Progress
-        </Typography>
-      ),
-      key: '3',
-    },
-    {
-      label: (
-        <Typography
-          name="Body 4/Medium"
-          cursor="pointer"
-          color={token?.colorTextBase}
-        >
-          Needs Review
-        </Typography>
-      ),
-      key: '4',
-    },
-    {
-      label: (
-        <Typography
-          name="Body 4/Medium"
-          cursor="pointer"
-          color={token?.colorTextBase}
-        >
-          In Review
-        </Typography>
-      ),
-      key: '5',
-    },
-    {
-      label: (
-        <Typography
-          name="Body 4/Medium"
-          cursor="pointer"
-          color={token?.colorTextBase}
-        >
-          Approved
-        </Typography>
-      ),
-      key: '6',
-    },
-    {
-      label: (
-        <Typography
-          name="Body 4/Medium"
-          cursor="pointer"
-          color={token?.colorTextBase}
-        >
-          Rejected
-        </Typography>
-      ),
-      key: '7',
-    },
-  ];
-
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -426,24 +311,55 @@ const AllQuote: React.FC = () => {
             }
             items={tabItems.map((tabItem: any, index: number) => ({
               key: `${index + 1}`,
-              label: tabItem?.label,
+              label: (
+                <Typography
+                  name="Body 4/Medium"
+                  cursor="pointer"
+                  color={token?.colorTextBase}
+                >
+                  {tabItem.label}
+                </Typography>
+              ),
               children: (
-                <OsTable
-                  key={tabItem?.key}
-                  columns={Quotecolumns}
-                  dataSource={activeQuotes}
-                  scroll
-                  loading={loading}
-                  locale={locale}
-                  rowSelection={rowSelection}
-                />
+                <>
+                  {tabItem.label === 'Drafts' ? (
+                    activeQuotes?.length > 0 ? (
+                      <OsTable
+                        columns={Quotecolumns}
+                        dataSource={activeQuotes}
+                        scroll
+                        loading={loading}
+                        locale={locale}
+                        rowSelection={rowSelection}
+                      />
+                    ) : (
+                      <RecentSection
+                        uploadFileData={uploadFileData}
+                        setUploadFileData={setUploadFileData}
+                        Quotecolumns={Quotecolumns}
+                        setShowToggleTable={setShowToggleTable}
+                        showToggleTable={showToggleTable}
+                        rowSelection={rowSelection}
+                      />
+                    )
+                  ) : (
+                    <OsTable
+                      key={tabItem?.key}
+                      columns={Quotecolumns}
+                      dataSource={activeQuotes}
+                      scroll
+                      loading={loading}
+                      locale={locale}
+                      rowSelection={rowSelection}
+                    />
+                  )}
+                </>
               ),
               ...tabItem,
             }))}
           />
         </Row>
       </Space>
-
       <DeleteModal
         loading={loading}
         setShowModalDelete={setShowModalDelete}
