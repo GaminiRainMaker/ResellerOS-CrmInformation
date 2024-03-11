@@ -41,16 +41,15 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         key: keyInd,
       });
     } else {
-      newSyncTableData?.[indexOfPre]?.push({
-        preVal: preValue,
+      let newObj = newSyncTableData[indexOfPre];
+      newObj = {
+        ...newObj,
         newVal: newSyncValue,
-        key: keyInd,
-      });
+      };
+      newSyncTableData[indexOfPre] = newObj;
     }
     setNewSyncedValue(newSyncTableData);
   };
-
-  console.log('indexOfPre', syncedNewValue);
 
   const mergeedColumn: any = [];
   const keys = mergedValue?.length > 0 && Object.keys(mergedValue?.[0]);
