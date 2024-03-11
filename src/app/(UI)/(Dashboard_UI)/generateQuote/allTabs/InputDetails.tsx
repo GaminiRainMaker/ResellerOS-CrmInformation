@@ -59,11 +59,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] = useState<any>(
     quoteLineItemByQuoteID,
   );
-  useEffect(() => {
-    if (quoteLineItemByQuoteData?.length > 0) {
-      setQuoteLineItemExist(true);
-    }
-  }, [quoteLineItemByQuoteData]);
 
   const {data: bundleData} = useAppSelector((state) => state.bundle);
   const locale = {
@@ -401,6 +396,9 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   useEffect(() => {
     dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID))).then((d: any) => {
       setQuoteLineItemByQuoteData(d?.payload);
+      if (d?.payload && d?.payload?.length > 0) {
+        setQuoteLineItemExist(true);
+      }
     });
   }, [getQuoteID]);
 
