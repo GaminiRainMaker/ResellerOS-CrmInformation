@@ -31,7 +31,14 @@ const AllQuote: React.FC = () => {
   const [allQuoteConfigData, setAllQuoteConfigData] = useState<any>();
   const [configData, setConfigData] = useState<boolean>(false);
 
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([
+    {
+      id: 1,
+      distributor: '',
+      oem: '',
+      model_id: '',
+    },
+  ]);
 
   useEffect(() => {
     dispatch(getAllNanonetsModel()).then((payload: any) => {
