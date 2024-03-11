@@ -3,7 +3,9 @@
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import moment from 'moment';
-import {FC, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
+import OsModal from '@/app/components/common/os-modal';
+import UploadFile from '@/app/(UI)/(Dashboard_UI)/generateQuote/UploadFile';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {insertProduct} from '../../../../../redux/actions/product';
@@ -20,11 +22,15 @@ import {insertValidation} from '../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '../os-button';
 import {AddQuoteInterface, FormattedData} from './addQuote.interface';
+import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
   existingQuoteId,
   setUploadFileData,
+  loading,
+  buttonText,
+  uploadForm,
 }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -34,6 +40,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
   );
   const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    dispatch(getAllGeneralSetting(''));
+  }, []);
 
   const genericFun = (payloadArr: any, Arr: any) => {
     const newArr = Arr?.map((item: any) => ({
@@ -264,14 +274,44 @@ const AddQuote: FC<AddQuoteInterface> = ({
   };
 
   return (
-    <OsButton
-      text="Add Quote"
-      buttontype="PRIMARY"
-      icon={<PlusIcon />}
-      clickHandler={() => {
-        setShowModal((p) => !p);
-      }}
-    />
+    <>
+      <OsButton
+        text={buttonText}
+        buttontype="PRIMARY"
+        icon={<PlusIcon />}
+        clickHandler={() => {
+          if (buttonText === 'Generate') {
+            uploadForm?.submit();
+          } else {
+            setShowModal((p) => !p);
+          }
+        }}
+      />
+      <OsModal
+        bodyPadding={22}
+        loading={loading}
+        disabledButton={!(uploadFileData?.length > 0)}
+        body={
+          <UploadFile
+            setUploadFileData={setUploadFileData}
+            uploadFileData={uploadFileData}
+            addInExistingQuote
+            addQuoteLineItem={addQuoteLineItem}
+            form={form}
+          />
+        }
+        width={900}
+        primaryButtonText="Generate Single Quote"
+        secondaryButtonText="Save & Generate Individual Quotes"
+        open={showModal}
+        onOk={() => form.submit()}
+        onCancel={() => {
+          setShowModal(false);
+          setUploadFileData([]);
+          form.resetFields(['customer_id']);
+        }}
+      />
+    </>
   );
 };
 

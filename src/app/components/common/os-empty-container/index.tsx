@@ -16,6 +16,7 @@ const EmptyContainer: FC<EmptyContainerInterface> = ({
   actionButton,
   onClick,
   MetricsIcon = false,
+  buttonContainer,
 }) => {
   const [token] = useThemeToken();
   return (
@@ -53,6 +54,7 @@ const EmptyContainer: FC<EmptyContainerInterface> = ({
           }}
         />
       )}
+      {buttonContainer}
     </Space>
   );
 };
