@@ -145,6 +145,15 @@ export const quoteLineItemColumn = [
   {value: 'pdf_url', label: 'PDF'},
 ];
 
+export const quoteLineItemColumnForSync = [
+  {value: 'line_number', label: 'Line Number'},
+  {value: 'product_code', label: 'Product Code'},
+  {value: 'quantity', label: 'Quantity'},
+  {value: 'list_price', label: 'List Price'},
+  {value: 'adjusted_price', label: 'Adjusted Price'},
+  {value: 'description', label: 'Description'},
+];
+
 export const quoteColumns = [
   {value: 'cage_code', label: 'Stages'},
   {value: 'customer_address', label: 'Customer Address'},

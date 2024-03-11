@@ -27,7 +27,11 @@ export const QUOTEAPI = {
   getQuoteByID: (id: number) =>
     get(`${API.QUOTE.GetQuoteByID}/${id}`) as Promise<AxiosResponse<any>>,
   updateQuoteWithNewlineItemAdd: (id: number) =>
-    get(`${API.QUOTE.UpdateQuoteWithNewlineItemAdd}/${id}`) as Promise<AxiosResponse<any>>,
+    get(`${API.QUOTE.UpdateQuoteWithNewlineItemAdd}/${id}`) as Promise<
+      AxiosResponse<any>
+    >,
+  updateQuoteJson: (data: any) =>
+    post(API.QUOTE.updateQuoteJson, data) as Promise<AxiosResponse<any>>,
   // put: (id: number, data: any) => put(API.QUOTE.INDEX + "/" + id, data),
   // delete: (id: number) => del(API.QUOTE.INDEX + "/" + id),
 };

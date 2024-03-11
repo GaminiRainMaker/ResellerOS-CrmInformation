@@ -17,6 +17,7 @@ export interface InputDetailTabInterface {
   setFamilyFilter?: any;
   setSelectedRowIds?: any;
   selectTedRowIds?: any;
+  setQuoteLineItemExist?: any;
 }
 
 export interface UploadFileInterface {

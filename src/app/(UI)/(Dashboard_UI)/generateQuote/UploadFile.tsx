@@ -34,9 +34,9 @@ const UploadFile: FC<UploadFileInterface> = ({
   const API_KEY = '198c15fd-9680-11ed-82f6-7a0abc6e8cc8';
   const API_ENDPOINT =
     //   prevoius
-    'https://app.nanonets.com/api/v2/OCR/Model/91814dd8-75f6-44d7-aad3-776df449b59f/LabelFile/';
-  // new4
-  // 'https://app.nanonets.com/api/v2/OCR/Model/a0b1d3b7-c9c1-445a-b0f0-197a4023a9d2/LabelFile/';
+    // 'https://app.nanonets.com/api/v2/OCR/Model/91814dd8-75f6-44d7-aad3-776df449b59f/LabelFile/';
+    // new4
+    'https://app.nanonets.com/api/v2/OCR/Model/a0b1d3b7-c9c1-445a-b0f0-197a4023a9d2/LabelFile/';
 
   const sendDataToNanonets = async (base64Data: string, file: File) => {
     const formData = new FormData();
