@@ -157,7 +157,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
           }
         }
       }
-    } else if (existingQuoteId) {
+    } 
+    else if (existingQuoteId) {
       await dispatch(updateQuoteWithNewlineItemAddByID(existingQuoteId));
       for (let i = 0; i < formattedArray?.length; i++) {
         const items = formattedArray[i];
