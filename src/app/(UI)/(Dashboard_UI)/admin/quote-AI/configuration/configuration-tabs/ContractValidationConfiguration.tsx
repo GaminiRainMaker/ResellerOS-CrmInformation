@@ -243,7 +243,7 @@ const ContractValidationConfiguration = () => {
                         dataSource={dummyData}
                         scroll
                         tablePageSize={50}
-                        scrolly={20}
+                        scrolly={165}
                       />
                       <div style={{width: 'max-content', float: 'right'}}>
                         <OsButton

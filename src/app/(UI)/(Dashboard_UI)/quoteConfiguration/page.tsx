@@ -18,27 +18,25 @@
 import Typography from '@/app/components/common/typography';
 // eslint-disable-next-line import/no-extraneous-dependencies
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import {EditFilled, SearchOutlined} from '@ant-design/icons';
-import {EyeIcon, PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {Form, TabsProps} from 'antd';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import { PencilSquareIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { Form, TabsProps } from 'antd';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import AddQuoteConiguration from './addQuoteConfiguration';
 import {
   deleteQuoteConfiguration,
   getAllNanonetsModel,
 } from '../../../../../redux/actions/nanonets';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import AddQuoteConiguration from './addQuoteConfiguration';
 
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -151,13 +149,12 @@ const AllQuote: React.FC = () => {
       width: 94,
       render: (text: string, record: any) => (
         <Space size={18}>
-          <EditFilled
+          <PencilSquareIcon
             height={24}
             width={24}
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              console.log('456456456', record);
               setShowModal((p) => !p);
               setFormValue(record);
             }}

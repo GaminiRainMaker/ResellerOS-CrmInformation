@@ -3,10 +3,10 @@
 
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 // import PSPDFKit from 'pspdfkit';
-import { useRouter } from 'next/navigation';
-import { UploadProps } from './components/common/antd/Upload';
+import {useRouter} from 'next/navigation';
+import {UploadProps} from './components/common/antd/Upload';
 import useThemeToken from './components/common/hooks/useThemeToken';
 
 // const PSPDFKit = dynamic(() => import('pspdfkit'), {
@@ -23,17 +23,6 @@ export default function Home() {
   const searchPhoneRegex = '\\(\\d{3}\\) \\d{3}-\\d{4}';
   const searchEmailRegex = '([a-zA-Z0-9.]+@[a-zA-Z0-9]+.[a-zA-Z0-9.]+)';
   const searchItems = [searchPhoneRegex, searchEmailRegex];
-
-  const base64ToArrayBuffer = (base64: any) => {
-    const binaryString = window.atob(base64);
-    const bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-    return bytes.buffer;
-  };
-
-
 
   // useEffect(() => {
   //   const container = containerRef.current;
@@ -113,7 +102,6 @@ export default function Home() {
       // }
     },
   };
-
 
   useEffect(() => {
     router?.push('/login');
