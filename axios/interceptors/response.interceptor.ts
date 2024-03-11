@@ -14,7 +14,7 @@ export const responseInterceptor = (config: AxiosResponse): AxiosResponse => {
 export const errorResponseInterceptor = (error: AxiosError) => {
   if (error?.response?.status == 401) {
     Cookies.remove('token');
-    window.location.href = '/'  as string;
+    window.location.href = '/' as string;
   }
   return Promise.resolve({
     success: false,
