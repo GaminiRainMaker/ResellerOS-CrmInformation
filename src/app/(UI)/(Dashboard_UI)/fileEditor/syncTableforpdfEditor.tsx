@@ -17,11 +17,10 @@ import {
   quoteLineItemColumnForSync,
 } from '@/app/utils/CONSTANTS';
 import OsButton from '@/app/components/common/os-button';
-import {useSearchParams} from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {
   updateQuoteJsonAndManual,
-  updateQuoteWithNewlineItemAddByID,
 } from '../../../../../redux/actions/quote';
 import {insertProduct} from '../../../../../redux/actions/product';
 import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
@@ -46,7 +45,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
-
+  const router = useRouter();
   const syncTableToLineItems = (
     preValue: string,
     newSyncValue: string,
@@ -125,8 +124,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         id: Number(getQuoteID),
       };
       await dispatch(updateQuoteJsonAndManual(data));
-      for (let i = 0; i < newUpdatedArr?.length; i++) {
-        const items = newUpdatedArr[i];
+      for (let i = 0; i < mergedValue?.length; i++) {
+        const items = mergedValue[i];
+        console.log('5464534', items);
         const insertedProduct = await dispatch(
           insertProduct({
             ...items,
@@ -233,6 +233,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     if (finalOpportunityArray && syncTableData?.length > 0) {
       dispatch(insertOpportunityLineItem(finalOpportunityArray));
     }
+
+    router?.push(`/generateQuote?id=${Number(getQuoteID)}`);
   };
 
   return (

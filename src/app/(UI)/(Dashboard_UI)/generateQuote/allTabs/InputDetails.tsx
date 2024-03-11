@@ -43,6 +43,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   setFamilyFilter,
   setSelectedRowIds,
   selectTedRowIds,
+  setQuoteLineItemExist,
 }) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
@@ -58,6 +59,12 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] = useState<any>(
     quoteLineItemByQuoteID,
   );
+  useEffect(() => {
+    if (quoteLineItemByQuoteData?.length > 0) {
+      setQuoteLineItemExist(true);
+    }
+  }, [quoteLineItemByQuoteData]);
+
   const {data: bundleData} = useAppSelector((state) => state.bundle);
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Input Details" />,

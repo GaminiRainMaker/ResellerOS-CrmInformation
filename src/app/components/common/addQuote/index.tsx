@@ -85,6 +85,33 @@ const AddQuote: FC<AddQuoteInterface> = ({
           },
         )}
       </>;
+
+      const newArrrr: any = [];
+      for (let i = 0; i < uploadFileDataItem?.data?.result?.length; i++) {
+        const itemss: any = uploadFileDataItem?.data?.result[i];
+
+        const newItemsssadsd = itemss?.prediction?.filter((item: any) => item);
+        newArrrr?.push(newItemsssadsd);
+      }
+      const newAllgetOArr: any = [];
+      newArrrr?.map((itemNew: any, indexNew: number) => {
+        let formattedArray1: any = [];
+        const formattedData1: FormattedData = {};
+        itemNew?.map((itemIner1: any, indexInner1: number) => {
+          if (itemIner1?.cells) {
+            itemIner1?.cells.forEach((item: any) => {
+              const rowNum = item.row;
+              if (!formattedData1[rowNum]) {
+                formattedData1[rowNum] = {};
+              }
+              formattedData1[rowNum][item.label?.toLowerCase()] = item.text;
+            });
+          }
+        });
+        formattedArray1 = Object.values(formattedData1);
+        newAllgetOArr?.push(formattedArray1);
+      });
+
       labelOcrMap?.push({
         ...tempLabelOcrMap,
         pdf_url: uploadFileDataItem?.pdf_url,
@@ -92,7 +119,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
         opportunity_id: opportunityId,
         organization: userInformation.organization,
         file_name: moment(new Date()).format('MM/DD/YYYY'),
-        quote_json: [JSON?.stringify(formattedArray)],
+        quote_json: [JSON?.stringify(newAllgetOArr)],
       });
     });
     const newrrLineItems: any = [];
@@ -157,8 +184,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           }
         }
       }
-    } 
-    else if (existingQuoteId) {
+    } else if (existingQuoteId) {
       await dispatch(updateQuoteWithNewlineItemAddByID(existingQuoteId));
       for (let i = 0; i < formattedArray?.length; i++) {
         const items = formattedArray[i];

@@ -58,6 +58,7 @@ const GenerateQuote: React.FC = () => {
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const [activeTab, setActiveTab] = useState<any>('1');
+
   const {quoteLineItemByQuoteID, loading} = useAppSelector(
     (state) => state.quoteLineItem,
   );
@@ -82,11 +83,13 @@ const GenerateQuote: React.FC = () => {
 
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
 
+  const [quoteLineItemExist, setQuoteLineItemExist] = useState<boolean>(false);
+
   useEffect(() => {
     dispatch(getAllTableColumn(''));
     dispatch(getAllContractSetting(''));
   }, []);
-
+  console.log('quoteLineItemExist', quoteLineItemExist);
   useEffect(() => {
     let tabsname: any;
     if (activeTab == '1') {
@@ -238,7 +241,9 @@ const GenerateQuote: React.FC = () => {
           cursor="pointer"
           onClick={() => {
             // router?.push(`/updation?id=${getQuoteID}`);
-            router?.push(`/fileEditor?id=${getQuoteID}`);
+            router?.push(
+              `/fileEditor?id=${getQuoteID}&quoteExist=${quoteLineItemExist}`,
+            );
           }}
         >
           Update LineItems
@@ -289,6 +294,7 @@ const GenerateQuote: React.FC = () => {
           setFamilyFilter={setFamilyFilter}
           setSelectedRowIds={setSelectedRowIds}
           selectTedRowIds={selectTedRowIds}
+          setQuoteLineItemExist={setQuoteLineItemExist}
         />
       ),
     },
