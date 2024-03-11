@@ -31,6 +31,7 @@ const EditorFile = () => {
   const getQUoteId = searchParams.get('id');
   const [quoteItems, setQuoteItems] = useState<any>();
   const [mergedValue, setMergedVaalues] = useState<any>();
+  const ExistingQuoteItemss = searchParams.get('quoteExist');
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -141,7 +142,10 @@ const EditorFile = () => {
   };
 
   const mergeedColumn: any = [];
-  const keys = mergedValue?.length > 0 && Object.keys(mergedValue?.[0]);
+  const keys =
+    ExistingQuoteItemss === 'true'
+      ? quoteItems?.length > 0 && Object.keys(quoteItems?.[0])
+      : mergedValue?.length > 0 && Object.keys(mergedValue?.[0]);
   if (keys) {
     keys?.map((item: any) => {
       if (item) {
@@ -159,38 +163,40 @@ const EditorFile = () => {
           overflow: 'auto',
         }}
       >
-        {mergedValue?.length > 0 ? (
+        {mergedValue?.length > 0 || ExistingQuoteItemss === 'true' ? (
           <>
-            <Space
-              onClick={(e) => {
-                e?.preventDefault();
-                setShowModal(true);
-              }}
-              size={50}
-              style={{
-                display: 'flex',
-                justifyContent: 'end',
-                marginRight: '50px',
-                // top: '10',
-                position: 'fixed',
-
-                right: '0',
-                bottom: '0',
-                marginBottom: '20px',
-              }}
-            >
-              {' '}
-              <OsButton
-                text="Sync Table"
-                buttontype="PRIMARY"
-                clickHandler={() => {
+            {ExistingQuoteItemss === 'false' && (
+              <Space
+                onClick={(e) => {
+                  e?.preventDefault();
                   setShowModal(true);
                 }}
-              />
-            </Space>
+                size={50}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'end',
+                  marginRight: '50px',
+                  // top: '10',
+                  position: 'fixed',
+
+                  right: '0',
+                  bottom: '0',
+                  marginBottom: '20px',
+                }}
+              >
+                {' '}
+                <OsButton
+                  text="Sync Table"
+                  buttontype="PRIMARY"
+                  clickHandler={() => {
+                    setShowModal(true);
+                  }}
+                />
+              </Space>
+            )}
 
             <HotTable
-              data={mergedValue}
+              data={ExistingQuoteItemss === 'true' ? quoteItems : mergedValue}
               ref={hotRef}
               colWidths={[
                 200, 200, 400, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200,
@@ -212,7 +218,7 @@ const EditorFile = () => {
               filters
               rowHeaders
               allowInsertRow={false}
-              allowInsertColumn={false}
+              allowInsertColumn
               afterGetColHeader={alignHeaders}
               beforeRenderer={() => {
                 addClassesToRows('', '', '', '', '', '', quoteItems);
