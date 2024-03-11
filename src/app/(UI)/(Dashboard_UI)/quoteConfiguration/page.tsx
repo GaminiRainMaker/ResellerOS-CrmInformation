@@ -157,7 +157,6 @@ const AllQuote: React.FC = () => {
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              console.log('456456456', record);
               setShowModal((p) => !p);
               setFormValue(record);
             }}

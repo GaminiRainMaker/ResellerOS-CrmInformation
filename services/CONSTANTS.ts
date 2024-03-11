@@ -14,6 +14,7 @@ export const API = {
     GetQuoteByID: '/quote/getQuoteById',
     GetQuoteByManual: '/quote/getAllManualQuotes',
     UpdateQuoteWithNewlineItemAdd: '/quote/updateQuoteWithNewlineItemAdd',
+    updateQuoteJson: '/quote/updateQuoteJsonAndManual',
   },
   QUOTE_LINE_ITEM: {
     INDEX: '/quoteLineItem',
