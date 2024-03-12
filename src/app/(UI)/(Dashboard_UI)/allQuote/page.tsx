@@ -311,22 +311,44 @@ const AllQuote: React.FC = () => {
                 </div>
               </Space>
             }
-            items={tabItems?.map((tabItem: any, index: number) => ({
-              key: `${index + 1}`,
-              label: (
-                <Typography
-                  name="Body 4/Medium"
-                  cursor="pointer"
-                  color={token?.colorTextBase}
-                >
-                  {tabItem.label}
-                </Typography>
-              ),
-              children: (
-                <>
-                  {tabItem.label === 'Drafts' ? (
-                    activeQuotes?.length > 0 ? (
+            items={
+              tabItems &&
+              tabItems.map((tabItem: any, index: number) => ({
+                key: `${index + 1}`,
+                label: (
+                  <Typography
+                    name="Body 4/Medium"
+                    cursor="pointer"
+                    color={token?.colorTextBase}
+                  >
+                    {tabItem.label}
+                  </Typography>
+                ),
+                children: (
+                  <>
+                    {tabItem.label === 'Drafts' ? (
+                      activeQuotes?.length > 0 ? (
+                        <OsTable
+                          columns={Quotecolumns}
+                          dataSource={activeQuotes}
+                          scroll
+                          loading={loading}
+                          locale={locale}
+                          rowSelection={rowSelection}
+                        />
+                      ) : (
+                        <RecentSection
+                          uploadFileData={uploadFileData}
+                          setUploadFileData={setUploadFileData}
+                          Quotecolumns={Quotecolumns}
+                          setShowToggleTable={setShowToggleTable}
+                          showToggleTable={showToggleTable}
+                          rowSelection={rowSelection}
+                        />
+                      )
+                    ) : (
                       <OsTable
+                        key={tabItem?.key}
                         columns={Quotecolumns}
                         dataSource={activeQuotes}
                         scroll
@@ -334,31 +356,12 @@ const AllQuote: React.FC = () => {
                         locale={locale}
                         rowSelection={rowSelection}
                       />
-                    ) : (
-                      <RecentSection
-                        uploadFileData={uploadFileData}
-                        setUploadFileData={setUploadFileData}
-                        Quotecolumns={Quotecolumns}
-                        setShowToggleTable={setShowToggleTable}
-                        showToggleTable={showToggleTable}
-                        rowSelection={rowSelection}
-                      />
-                    )
-                  ) : (
-                    <OsTable
-                      key={tabItem?.key}
-                      columns={Quotecolumns}
-                      dataSource={activeQuotes}
-                      scroll
-                      loading={loading}
-                      locale={locale}
-                      rowSelection={rowSelection}
-                    />
-                  )}
-                </>
-              ),
-              ...tabItem,
-            }))}
+                    )}
+                  </>
+                ),
+                ...tabItem,
+              }))
+            }
           />
         </Row>
       </Space>

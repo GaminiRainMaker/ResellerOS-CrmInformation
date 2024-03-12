@@ -131,3 +131,14 @@ export const updateQuoteJsonAndManual = createAsyncThunk(
     }
   },
 );
+export const updateQuoteConcern = createAsyncThunk(
+  'quote/updateQuoteConcern',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await QUOTEAPI.updateQuoteConcern(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

@@ -8,7 +8,7 @@
 import {FC, useEffect, useState} from 'react';
 
 import {Space} from '@/app/components/common/antd/Space';
-import {Col, Row} from 'antd';
+import {Col, Row, notification} from 'antd';
 import CommonSelect from '@/app/components/common/os-select';
 import OsInput from '@/app/components/common/os-input';
 import {
@@ -19,9 +19,7 @@ import {
 import OsButton from '@/app/components/common/os-button';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {
-  updateQuoteJsonAndManual,
-} from '../../../../../redux/actions/quote';
+import {updateQuoteJsonAndManual} from '../../../../../redux/actions/quote';
 import {insertProduct} from '../../../../../redux/actions/product';
 import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
@@ -85,21 +83,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     });
   }
 
-  const replaceKeys = (arr1: any, arr2: any) =>
-    // Iterate through each object in arr1
-    arr1.map((obj: any) => {
-      // For each key in the object, check if there's a replacement specified in arr2
-      Object.keys(obj).forEach((key) => {
-        const replacement = arr2?.find((item: any) => item.preVal === key);
-        if (replacement) {
-          obj[replacement.newVal] = obj[key]; // Replace the key with the new value
-          delete obj[key]; // Delete the old key
-        }
-        return key;
-      });
-      return obj;
-    });
-
   const genericFun = (payloadArr: any, Arr: any) => {
     const newArr = Arr?.map((item: any) => ({
       ...item,
@@ -111,22 +94,40 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   };
 
   const syncTableDataNew = async () => {
-    const newUpdatedArr = replaceKeys(mergedValue, syncedNewValue);
+    const alllArrayValue: any = [];
+    if (mergeedColumn?.length !== syncedNewValue?.length) {
+      notification.open({
+        message: 'Please sync All Items',
+        type: 'error',
+      });
+      return;
+    }
+    mergedValue?.map((obj: any) => {
+      const newObj: any = {};
+      syncedNewValue?.forEach((mapping: any) => {
+        if (mapping?.preVal in obj) {
+          newObj[mapping?.newVal] = obj[mapping?.preVal];
+        }
+      });
+      Object.entries(obj).forEach(([key, value]) => {
+        if (!syncedNewValue?.some((mapping: any) => mapping?.preVal === key)) {
+          newObj[key] = value;
+        }
+      });
+      alllArrayValue?.push(newObj);
+    });
+
     const newrrLineItems: any = [];
     const rebateDataArray: any = [];
     const contractProductArray: any = [];
-    // const newrrLineItems: any = [];
-    //         const rebateDataArray: any = [];
-    //         const contractProductArray: any = [];,
-    if (newUpdatedArr) {
+    if (alllArrayValue) {
       const data = {
-        quote_json: JSON?.stringify(newUpdatedArr),
+        quote_json: JSON?.stringify(alllArrayValue),
         id: Number(getQuoteID),
       };
       await dispatch(updateQuoteJsonAndManual(data));
-      for (let i = 0; i < mergedValue?.length; i++) {
-        const items = mergedValue[i];
-        console.log('5464534', items);
+      for (let i = 0; i < alllArrayValue?.length; i++) {
+        const items = alllArrayValue[i];
         const insertedProduct = await dispatch(
           insertProduct({
             ...items,
