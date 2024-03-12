@@ -9,6 +9,7 @@ import {
   insertQuote,
   updateQuoteById,
   updateQuoteByQuery,
+  updateQuoteConcern,
   updateQuoteDraftById,
   updateQuoteWithNewlineItemAddByID,
 } from '../actions/quote';
@@ -185,6 +186,24 @@ const quoteSlice = createSlice({
       )
       .addCase(
         getQuoteByManualUpdated.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(updateQuoteConcern.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateQuoteConcern.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        updateQuoteConcern.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
