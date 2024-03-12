@@ -22,9 +22,6 @@ const OsModal: FC<OSModalPropsInterface> = ({
   ...rest
 }) => {
   const {onCancel, open, onOk} = rest;
-  console.log('primaryButtonText', primaryButtonText);
-
-  
   const [token] = useThemeToken();
   return (
     <OSModalStyle
@@ -53,9 +50,9 @@ const OsModal: FC<OSModalPropsInterface> = ({
                 disabled={disabledButton}
                 buttontype="SECONDARY"
                 clickHandler={() => {
-                  if (onOk) {
+                  if (onCancel) {
                     const mockEvent = {} as React.MouseEvent<HTMLButtonElement>;
-                    onOk(mockEvent); // Pass a mock event or any required argument
+                    onCancel(mockEvent); // Pass a mock event or any required argument
                   }
                 }}
               />

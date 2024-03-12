@@ -14,8 +14,9 @@
 'use client';
 
 import Typography from '@/app/components/common/typography';
-import {ArrowDownTrayIcon, PlusIcon} from '@heroicons/react/24/outline';
+import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
 
+import AddQuote from '@/app/components/common/addQuote';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -24,17 +25,15 @@ import OsButton from '@/app/components/common/os-button';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import OsModal from '@/app/components/common/os-modal';
+import RaiseConcern from '@/app/components/common/os-raise-concern';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
 import {selectData} from '@/app/utils/CONSTANTS';
 import {formatDate, useRemoveDollarAndCommahook} from '@/app/utils/base';
-import {Input, MenuProps, notification} from 'antd';
+import {Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import AddQuote from '@/app/components/common/addQuote';
-import OsInput from '@/app/components/common/os-input';
-import TextArea from 'antd/es/input/TextArea';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {
@@ -58,6 +57,7 @@ const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const router = useRouter();
+  const [form] = Form.useForm();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const [activeTab, setActiveTab] = useState<any>('1');
@@ -94,7 +94,6 @@ const GenerateQuote: React.FC = () => {
     dispatch(getAllTableColumn(''));
     dispatch(getAllContractSetting(''));
   }, []);
-  console.log('quoteLineItemExist', quoteLineItemExist);
   useEffect(() => {
     let tabsname: any;
     if (activeTab == '1') {
@@ -400,22 +399,6 @@ const GenerateQuote: React.FC = () => {
     },
   ];
 
-  const [concernData, setConcernData] = useState<any>();
-  const addConcernToQuote = async () => {
-    console.log('concernData', concernData?.length > 0);
-    if (concernData === undefined || concernData?.length === 0) {
-      notification.open({
-        message: 'Please add concern',
-        type: 'info',
-      });
-      return;
-    }
-    const data = {concern: concernData, id: getQuoteID};
-    await dispatch(updateQuoteConcern(data));
-    router?.push(
-      `/fileEditor?id=${getQuoteID}&quoteExist=${quoteLineItemExist}`,
-    );
-  };
 
   return (
     <>
@@ -546,52 +529,24 @@ const GenerateQuote: React.FC = () => {
       <OsModal
         loading={loading}
         body={
-          <Space direction="vertical" style={{padding: '20px', width: '100%'}}>
-            <Typography
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-              name="Heading 3/Medium"
-            >
-              Raise Your Concern
-            </Typography>
-            <Typography
-              name="Body 3/Regular"
-              style={{textAlign: 'center', display: 'flex'}}
-            >
-              We are here to assist you ! Please write your concern regarding
-              this quote to us. Also, you can update the quote manually.
-            </Typography>
-            <Typography name="Body 4/Regular">Concern</Typography>
-            <TextArea
-              placeholder="Controlled autosize"
-              autoSize={{minRows: 3, maxRows: 5}}
-              onChange={(e) => {
-                setConcernData(e?.target?.value);
-              }}
-            />
-            <Space
-              size={20}
-              style={{
-                display: 'flex',
-                justifyContent: 'end',
-                marginRight: '20px',
-              }}
-            >
-              <OsButton text="Cancel" buttontype="SECONDARY" />
-              <OsButton
-                clickHandler={addConcernToQuote}
-                text="Upadte Line Items"
-                buttontype="PRIMARY"
-              />
-            </Space>
-          </Space>
+          <RaiseConcern
+            form={form}
+            quoteLineItemExist={quoteLineItemExist}
+            setShowRaiseConcernModal={setShowRaiseConcernModal}
+          />
         }
+        bodyPadding={40}
         width={700}
         open={showRaiseConcernModal}
         onCancel={() => {
-          setShowRaiseConcernModal((p) => !p);
+          setShowRaiseConcernModal(false);
+        }}
+        destroyOnClose
+        
+        secondaryButtonText="Cancel"
+        primaryButtonText="Upadte Line Items"
+        onOk={() => {
+          form?.submit();
         }}
       />
     </>
