@@ -6,7 +6,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
 import {Form, FormInstance} from 'antd';
-import {insertOEM} from '../../../../../redux/actions/oem';
+import {insertOEM, queryOEM} from '../../../../../redux/actions/oem';
 import {useAppDispatch} from '../../../../../redux/hook';
 import OsDistributorSelect from '../os-distributor-select';
 
@@ -28,6 +28,9 @@ const AddOem: React.FC<AddOemInterface> = ({form, setShowModal}) => {
     }
     setShowModal(false);
     form?.resetFields();
+
+    
+    dispatch(queryOEM({}));
   };
   return (
     <>

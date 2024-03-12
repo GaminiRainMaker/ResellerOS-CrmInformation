@@ -22,7 +22,6 @@ const OsModal: FC<OSModalPropsInterface> = ({
   ...rest
 }) => {
   const {onCancel, open, onOk} = rest;
-  console.log('primaryButtonText', primaryButtonText);
 
   
   const [token] = useThemeToken();

@@ -4,76 +4,98 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
+import OsDistributorSelect from '@/app/components/common/os-distributor-select';
+import OsDropdown from '@/app/components/common/os-dropdown';
+import EmptyContainer from '@/app/components/common/os-empty-container';
+import OsInput from '@/app/components/common/os-input';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import OsOemSelect from '@/app/components/common/os-oem-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {Form} from 'antd';
+import {Form, notification} from 'antd';
 import {useEffect, useState} from 'react';
-
-import OsDistributorSelect from '@/app/components/common/os-distributor-select';
-import OsInput from '@/app/components/common/os-input';
-import OsOemSelect from '@/app/components/common/os-oem-select';
-import EmptyContainer from '@/app/components/common/os-empty-container';
 import {
-  deleteQuoteConfiguration,
-  getAllNanonetsModel,
-} from '../../../../../redux/actions/nanonets';
+  insertQuoteConfiguration,
+  queryQuoteConfiguration,
+} from '../../../../../redux/actions/quoteConfiguration';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
+  const [form] = Form.useForm();
   const [token] = useThemeToken();
-  const {loading} = useAppSelector((state) => state.quote);
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const {loading, data: quoteConfigData} = useAppSelector(
+    (state) => state.quoteConfig,
+  );
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
-  const [allQuoteConfigData, setAllQuoteConfigData] = useState<any>();
-  const [configData, setConfigData] = useState<boolean>(false);
+  const [api, contextHolder] = notification.useNotification();
 
-  const [data, setData] = useState([
-    {
-      id: 1,
-      distributor: '',
-      oem: '',
-      model_id: '',
-    },
-  ]);
-
-  useEffect(() => {
-    dispatch(getAllNanonetsModel()).then((payload: any) => {
-      setAllQuoteConfigData(payload?.payload);
+  const openNotificationWithIcon = () => {
+    api.info({
+      message: 'Quote Configuration',
+      description: 'This combination already exists.',
     });
-  }, []);
-  useEffect(() => {
-    setTimeout(() => {
-      dispatch(getAllNanonetsModel()).then((payload: any) => {
-        setAllQuoteConfigData(payload?.payload);
-      });
-    }, 1000);
-  }, [!showModal]);
-
-  useEffect(() => {
-    setConfigData(allQuoteConfigData);
-  }, [allQuoteConfigData]);
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: any) => {
-      setDeleteIds(selectedRowKeys);
-    },
-    getCheckboxProps: (record: any) => ({
-      disabled: record.name === 'Disabled User',
-      name: record.name,
-    }),
   };
 
-  const deleteQuoteConfig = async (id: number) => {
-    await dispatch(deleteQuoteConfiguration(deleteIds));
+  useEffect(() => {
+    dispatch(queryQuoteConfiguration({}));
+  }, []);
+
+  const handleInputData = (inputData: any) =>
+    inputData.map((item: any) => ({
+      id: item.id,
+      distributor: item.distributor_id,
+      oem: item.oem_id,
+      model_id: item.model_id,
+    }));
+
+  const [data, setData] = useState(handleInputData([]));
+
+  useEffect(() => {
+    setData(quoteConfigData);
+    if (Array.isArray(quoteConfigData)) {
+      quoteConfigData.forEach((configItem: any) => {
+        form?.setFieldsValue({
+          distributor: configItem?.distributor_id,
+          oem: configItem?.oem_id,
+          model_id: configItem?.model_id,
+        });
+      });
+    }
+  }, [quoteConfigData]);
+
+  const getInputDataArray = () =>
+    data.map((item: any) => ({
+      id: item.id,
+      distributor_id: item.distributor,
+      oem_id: item.oem,
+      model_id: item.model_id,
+    }));
+
+  const handleButtonClick = () => {
+    const inputDataArray = getInputDataArray();
+
+    inputDataArray?.forEach((dataItem: any) =>
+      dispatch(insertQuoteConfiguration(dataItem)),
+    );
+
     setTimeout(() => {
-      dispatch(getAllNanonetsModel());
+      dispatch(queryQuoteConfiguration({}));
     }, 1000);
-    setDeleteIds([]);
-    setShowModalDelete(false);
+    console.log('inputDataArray', inputDataArray);
+  };
+
+  const checkCombinationExists = (checkCombination: any) => {
+    const exists = quoteConfigData.some(
+      (item: any) =>
+        item?.distributor_id === checkCombination.distributor &&
+        item?.oem_id === checkCombination.oem,
+    );
+    if (exists) {
+      openNotificationWithIcon();
+    }
   };
 
   const columns = [
@@ -91,7 +113,28 @@ const AllQuote: React.FC = () => {
       key: 'distributer',
       width: 187,
       render: (text: string, record: any) => (
-        <OsDistributorSelect isAddNewDistributor height={38} isRequired />
+        <OsDistributorSelect
+          name={`distributor_${record?.id}`}
+          distributorValue={record?.distributor_id}
+          isAddNewDistributor
+          height={38}
+          isRequired
+          form={form}
+          onChange={(value: any) => {
+            form.resetFields([`oem_${record?.id}`]);
+            setData((prev: any) =>
+              prev.map((prevItem: any) => {
+                if (prevItem.id === record.id) {
+                  return {
+                    ...prevItem,
+                    distributor: value,
+                  };
+                }
+                return prevItem;
+              }),
+            );
+          }}
+        />
       ),
     },
     {
@@ -108,7 +151,32 @@ const AllQuote: React.FC = () => {
       key: 'oem',
       width: 130,
       render: (text: string, record: any) => (
-        <OsOemSelect isAddNewOem isRequired />
+        <OsOemSelect
+          name={`oem_${record?.id}`}
+          oemValue={record?.oem_id}
+          isAddNewOem
+          isRequired
+          form={form}
+          distributorValue={record?.distributor}
+          onChange={(value: any) => {
+            checkCombinationExists({
+              record: record?.id,
+              distributor: record?.distributor,
+              oem: value,
+            });
+            setData((prev: any) =>
+              prev.map((prevItem: any) => {
+                if (prevItem.id === record.id) {
+                  return {
+                    ...prevItem,
+                    oem: value,
+                  };
+                }
+                return prevItem;
+              }),
+            );
+          }}
+        />
       ),
     },
     {
@@ -125,7 +193,25 @@ const AllQuote: React.FC = () => {
       key: 'model_id',
       width: 187,
       render: (text: string, record: any) => (
-        <OsInput placeholder="Write here" style={{height: '38px'}} />
+        <OsInput
+          name={`model_${record?.id}`}
+          placeholder="Write here"
+          style={{height: '38px'}}
+          value={text}
+          onChange={(e) => {
+            setData((prev: any) =>
+              prev.map((prevItem: any) => {
+                if (prevItem.id === record.id) {
+                  return {
+                    ...prevItem,
+                    model_id: e?.target?.value,
+                  };
+                }
+                return prevItem;
+              }),
+            );
+          }}
+        />
       ),
     },
     {
@@ -141,8 +227,10 @@ const AllQuote: React.FC = () => {
             color={token.colorError}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              setData((prev) =>
-                prev?.filter((prevItem) => prevItem?.id !== record?.id),
+              setData((prev: any) =>
+                handleInputData(
+                  prev?.filter((prevItem: any) => prevItem?.id !== record?.id),
+                ),
               );
             }}
           />
@@ -160,28 +248,58 @@ const AllQuote: React.FC = () => {
     ),
   };
 
+  const deleteQuoteConfig = async (id: number) => {
+    // await dispatch(deleteQuoteConfiguration(deleteIds));
+    // setTimeout(() => {
+    //   dispatch(getAllNanonetsModel());
+    // }, 1000);
+    // setDeleteIds([]);
+    // setShowModalDelete(false);
+  };
+
   return (
     <>
+      {contextHolder}
+
       <Space size={24} direction="vertical" style={{width: '100%'}}>
-        {/* <QuoteAnalytics quoteData={quoteData} deletedQuote={deletedQuote} /> */}
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
               Quotes Configuration
             </Typography>
           </Col>
+
+          <Col>
+            <Space size={8} direction="horizontal">
+              <OsButton
+                text="Cancel"
+                buttontype="SECONDARY"
+                clickHandler={() => {}}
+              />
+
+              <OsButton
+                text="Save"
+                buttontype="PRIMARY"
+                clickHandler={() => {
+                  handleButtonClick();
+                }}
+              />
+              <Space>
+                <OsDropdown menu={{items: []}} />
+              </Space>
+            </Space>
+          </Col>
         </Row>
         <div
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
-          <Form layout="vertical">
+          <Form layout="vertical" form={form}>
             <OsTable
               columns={columns}
               dataSource={data}
               scroll
               loading={loading}
               locale={locale}
-              rowSelection={rowSelection}
             />
           </Form>
         </div>
@@ -191,17 +309,17 @@ const AllQuote: React.FC = () => {
             buttontype="PRIMARY"
             icon={<PlusIcon />}
             clickHandler={() => {
-              setData([
-                ...data,
-                ...[
+              setData(
+                handleInputData([
+                  ...data,
                   {
                     id: data.length + 1,
                     distributor: '',
                     oem: '',
                     model_id: '',
                   },
-                ],
-              ]);
+                ]),
+              );
             }}
           />
         </Row>

@@ -1,12 +1,12 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {createAsyncThunk} from '@reduxjs/toolkit';
-import {OEM_API} from '../../services/oem';
+import {QUOTE_CONFIGURATION_API} from '../../services/quoteConfiguration';
 
-export const insertOEM = createAsyncThunk(
-  'oem/addOEM',
+export const insertQuoteConfiguration = createAsyncThunk(
+  'quoteConfiguration/addQuoteConfiguration',
   async (data: any, thunkApi) => {
     try {
-      const res = await OEM_API.post(data);
+      const res = await QUOTE_CONFIGURATION_API.post(data);
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error.message);
@@ -14,14 +14,14 @@ export const insertOEM = createAsyncThunk(
   },
 );
 
-export const queryOEM = createAsyncThunk(
-  'oem/query',
+export const queryQuoteConfiguration = createAsyncThunk(
+  'quoteConfiguration/query',
   async (query: any, thunkApi) => {
     try {
       const obj = {
-        oem: query?.oem,
+        quoteConfiguration: query?.quoteConfiguration,
       };
-      const res = await OEM_API.query(obj);
+      const res = await QUOTE_CONFIGURATION_API.query(obj);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);
@@ -29,23 +29,11 @@ export const queryOEM = createAsyncThunk(
   },
 );
 
-export const getOemByDistributorId = createAsyncThunk(
-  'oem/getOemByDistributorId',
-  async (id: number, thunkApi) => {
-    try {
-      const res = await OEM_API.getById(id);
-      return res.data;
-    } catch (error) {
-      return thunkApi.rejectWithValue(error);
-    }
-  },
-);
-
-export const updateOEM = createAsyncThunk(
-  'oem/updateOEM',
+export const updateQuoteConfiguration = createAsyncThunk(
+  'quoteConfiguration/updateQuoteConfiguration',
   async (data: any, thunkApi) => {
     try {
-      const res = await OEM_API.patch(data);
+      const res = await QUOTE_CONFIGURATION_API.patch(data);
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error?.message);
@@ -53,11 +41,11 @@ export const updateOEM = createAsyncThunk(
   },
 );
 
-export const deleteOEM = createAsyncThunk(
-  'oem/deleteOEM',
+export const deleteQuoteConfiguration = createAsyncThunk(
+  'quoteConfiguration/deleteQuoteConfiguration',
   async (data: any, thunkApi) => {
     try {
-      const res = await OEM_API.delete(data);
+      const res = await QUOTE_CONFIGURATION_API.delete(data);
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error?.message);

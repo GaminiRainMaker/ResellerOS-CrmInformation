@@ -136,10 +136,6 @@ export const API = {
     GetPartnerProgramById: '/partnerProgram/getPartnerProgramById',
     deletePartnerFormData: '/partnerProgram/deletePartnerProgramFormData',
   },
-  QUOTECONFIGURATION: {
-    INDEX: '/nanonetsConfiguration',
-    DeleteById: '/nanonetsConfiguration/deleteNanonetsModel',
-  },
   DISTRIBUTOR: {
     INDEX: '/distributor',
     QUERY: 'distributor/query',
@@ -147,7 +143,13 @@ export const API = {
   },
   OEM: {
     INDEX: '/oem',
-    QUERY: 'oem/query',
+    QUERY: '/oem/query',
     DeleteById: '/oem/deleteById',
+    GetOemByDistributorId: '/oem/getOemByDistributorId',
+  },
+  QUOTE_CONFIGURATION: {
+    INDEX: '/quoteConfiguration',
+    QUERY: '/quoteConfiguration/query',
+    DeleteById: '/quoteConfiguration/deleteById',
   },
 };

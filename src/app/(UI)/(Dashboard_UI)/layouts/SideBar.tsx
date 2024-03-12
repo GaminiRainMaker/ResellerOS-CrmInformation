@@ -444,46 +444,47 @@ const SideBar = () => {
       </Typography>,
       '5',
     ),
-    getItem(
-      <Typography
-        onClick={() => {
-          setSelectedKey(6);
-          setCrmChildKey(0);
-        }}
-        name="Button 1"
-        color={token?.colorTextSecondary}
-      >
-        <Space size={12}>
-          <OsAvatar
-            icon={
-              <BoltIcon
-                color={
-                  selectedKey?.toString()?.includes('6')
-                    ? token?.colorPrimary
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
-          <Typography
-            name="Button 1"
-            style={{
-              marginTop: '1px',
-            }}
-            color={
-              selectedKey?.toString()?.includes('6')
-                ? token?.colorPrimary
-                : token?.colorTextSecondary
-            }
-          >
-            {' '}
-            Renewals and Upgrades
-          </Typography>
-        </Space>
-      </Typography>,
-      '6',
-    ),
+    !isSuperAdmin &&
+      getItem(
+        <Typography
+          onClick={() => {
+            setSelectedKey(6);
+            setCrmChildKey(0);
+          }}
+          name="Button 1"
+          color={token?.colorTextSecondary}
+        >
+          <Space size={12}>
+            <OsAvatar
+              icon={
+                <BoltIcon
+                  color={
+                    selectedKey?.toString()?.includes('6')
+                      ? token?.colorPrimary
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+              }}
+              color={
+                selectedKey?.toString()?.includes('6')
+                  ? token?.colorPrimary
+                  : token?.colorTextSecondary
+              }
+            >
+              {' '}
+              Renewals and Upgrades
+            </Typography>
+          </Space>
+        </Typography>,
+        '6',
+      ),
     !isSuperAdmin &&
       getItem(
         <Typography

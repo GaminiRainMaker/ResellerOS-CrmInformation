@@ -24,7 +24,9 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
   setDistributorValue,
   isAddNewDistributor = false,
   label = false,
-  height
+  height,
+  onChange,
+  name = 'distributor_id',
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -60,18 +62,19 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
     <>
       <SelectFormItem
         label={label ? 'Distributor' : ''}
-        name="distributor_id"
-        rules={[{required: isRequired, message: 'Please Select Distributor!'}]}
+        name={name}
+        // rules={[{required: isRequired, message: 'Please Select Distributor!'}]}
       >
         <CommonSelect
           placeholder="Select"
           allowClear
           style={{width: '100%', height: `${height}px`}}
           options={distributorOptions}
-          value={distributorValue}
-          onChange={(value: number) => {
-            setDistributorValue && setDistributorValue(value);
-          }}
+          defaultValue={distributorValue}
+          // onChange={(value: number) => {
+          //    (setDistributorValue && setDistributorValue(value));
+          // }}
+          onChange={onChange}
           dropdownRender={(menu) => (
             <>
               {isAddNewDistributor && (
@@ -88,8 +91,9 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
                   <Typography
                     color={token?.colorPrimaryText}
                     name="Body 3/Regular"
+                    hoverOnText
                   >
-                    Add Distributor Account
+                    Add Distributor
                   </Typography>
                 </Space>
               )}

@@ -7,4 +7,6 @@ export interface OsOemSelectInterface {
   setOemValue?: any;
   oemValue?: string;
   isAddNewOem?: boolean;
+  distributorValue?: any
+  onChange?: any
 }
