@@ -33,13 +33,6 @@ const AllQuote: React.FC = () => {
   const [api, contextHolder] = notification.useNotification();
   const [quoteConfig, setQuoteConfig] = useState([]);
 
-  const openNotificationWithIcon = () => {
-    api.info({
-      message: 'Quote Configuration',
-      description: 'This combination already exists.',
-    });
-  };
-
   useEffect(() => {
     dispatch(queryQuoteConfiguration({}));
   }, []);
@@ -58,16 +51,16 @@ const AllQuote: React.FC = () => {
     );
   };
 
-  const checkCombinationExists = (checkCombination: any) => {
-    const exists = quoteConfigData.some(
-      (item: any) =>
-        item?.distributor_id === checkCombination.distributor_id &&
-        item?.oem_id === checkCombination.oem_id,
-    );
-    if (exists) {
-      openNotificationWithIcon();
-    }
-  };
+  // const checkCombinationExists = (checkCombination: any) => {
+  //   const exists = quoteConfigData.some(
+  //     (item: any) =>
+  //       item?.distributor_id === checkCombination.distributor_id &&
+  //       item?.oem_id === checkCombination.oem_id,
+  //   );
+  //   if (exists) {
+  //     openNotificationWithIcon();
+  //   }
+  // };
 
   const columns = [
     {
@@ -134,10 +127,12 @@ const AllQuote: React.FC = () => {
             setQuoteConfig((prev: any) =>
               prev.map((prevItem: any, prevIndex: any) => {
                 if (prevIndex === index) {
-                  return {
+                  const obj = {
                     ...prevItem,
                     oem_id: value,
                   };
+
+                  return obj;
                 }
                 return prevItem;
               }),
