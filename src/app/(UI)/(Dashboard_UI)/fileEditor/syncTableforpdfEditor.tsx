@@ -7,27 +7,22 @@
 
 import {FC, useEffect, useState} from 'react';
 
-import {Space} from '@/app/components/common/antd/Space';
-import {Col, Row, notification} from 'antd';
-import CommonSelect from '@/app/components/common/os-select';
-import OsInput from '@/app/components/common/os-input';
-import {
-  formatStatus,
-  quoteLineItemColumn,
-  quoteLineItemColumnForSync,
-} from '@/app/utils/CONSTANTS';
 import OsButton from '@/app/components/common/os-button';
+import OsInput from '@/app/components/common/os-input';
+import CommonSelect from '@/app/components/common/os-select';
+import {formatStatus, quoteLineItemColumnForSync} from '@/app/utils/CONSTANTS';
+import {Col, Row, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {updateQuoteJsonAndManual} from '../../../../../redux/actions/quote';
-import {insertProduct} from '../../../../../redux/actions/product';
-import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
+import {insertProduct} from '../../../../../redux/actions/product';
 import {insertProfitability} from '../../../../../redux/actions/profitability';
-import {insertValidation} from '../../../../../redux/actions/validation';
-import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
+import {updateQuoteJsonAndManual} from '../../../../../redux/actions/quote';
 import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
+import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
+import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
+import {insertValidation} from '../../../../../redux/actions/validation';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 interface EditPdfDataInterface {
   setMergedVaalues?: any;
@@ -44,6 +39,44 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const router = useRouter();
+
+  const mergeedColumn: any = [];
+  const keys = mergedValue?.length > 0 && Object.keys(mergedValue?.[0]);
+  if (keys) {
+    keys?.map((item: any) => {
+      if (item) {
+        mergeedColumn?.push(item);
+      }
+    });
+  }
+
+  useEffect(() => {
+    const newSyncTableData =
+      syncedNewValue?.length > 0 ? [...syncedNewValue] : [];
+
+    mergeedColumn?.map((mergeItem: string, indexMerge: number) => {
+      const NewFilterOption = quoteLineItemColumnForSync?.find(
+        (item: any) => item?.value === mergeItem,
+      );
+      if (NewFilterOption) {
+        newSyncTableData?.push({
+          preVal: mergeItem,
+          newVal: NewFilterOption?.value,
+          key: indexMerge,
+        });
+      } else {
+        newSyncTableData?.push({
+          preVal: mergeItem,
+          newVal: '',
+          key: indexMerge,
+        });
+      }
+      // if(mergeItem)
+    });
+    console.log(newSyncTableData, 'mergeedColumn');
+    setNewSyncedValue(newSyncTableData);
+  }, []);
+
   const syncTableToLineItems = (
     preValue: string,
     newSyncValue: string,
@@ -72,16 +105,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     }
     setNewSyncedValue(newSyncTableData);
   };
-
-  const mergeedColumn: any = [];
-  const keys = mergedValue?.length > 0 && Object.keys(mergedValue?.[0]);
-  if (keys) {
-    keys?.map((item: any) => {
-      if (item) {
-        mergeedColumn?.push(item);
-      }
-    });
-  }
 
   const genericFun = (payloadArr: any, Arr: any) => {
     const newArr = Arr?.map((item: any) => ({
@@ -256,12 +279,13 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         </Col>
 
         <Col>
-          {mergeedColumn?.map((item: any, indexOfCol: number) => (
+          {syncedNewValue?.map((item: any, indexOfCol: number) => (
             <Row style={{marginTop: '6px'}}>
               <CommonSelect
                 onChange={(e) => {
                   syncTableToLineItems(item, e, indexOfCol);
                 }}
+                value={item?.newVal}
                 style={{width: '250px'}}
                 options={quoteLineItemColumnForSync}
               />

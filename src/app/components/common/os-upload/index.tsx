@@ -76,6 +76,7 @@ const OsUpload: React.FC<any> = ({
         </Space>
       )}
       {showSelectFields && (
+        
         <Form
           layout="vertical"
           requiredMark={false}
