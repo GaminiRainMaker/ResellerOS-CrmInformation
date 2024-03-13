@@ -24,6 +24,7 @@ import 'handsontable/dist/handsontable.min.css';
 import {getQuoteById} from '../../../../../redux/actions/quote';
 import {useAppDispatch} from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
+import {getQuoteLineItemByQuoteId} from '../../../../../redux/actions/quotelineitem';
 
 const EditorFile = () => {
   const hotRef = useRef(null);
@@ -36,13 +37,23 @@ const EditorFile = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(getQuoteById(Number(getQUoteId))).then((d: any) => {
-      if (d?.payload) {
-        const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
-        setQuoteItems(dataa);
-        const allHeaderValue: any = [];
-      }
-    });
+    if (ExistingQuoteItemss === 'true') {
+      dispatch(getQuoteLineItemByQuoteId(Number(getQUoteId))).then((d: any) => {
+        if (d?.payload) {
+          // const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
+          setQuoteItems(d?.payload);
+          const allHeaderValue: any = [];
+        }
+      });
+    } else {
+      dispatch(getQuoteById(Number(getQUoteId))).then((d: any) => {
+        if (d?.payload) {
+          const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
+          setQuoteItems(dataa);
+          const allHeaderValue: any = [];
+        }
+      });
+    }
   }, []);
 
   const updateRowsValueforTable = (
@@ -198,10 +209,8 @@ const EditorFile = () => {
             <HotTable
               data={ExistingQuoteItemss === 'true' ? quoteItems : mergedValue}
               ref={hotRef}
-              colWidths={[
-                200, 200, 400, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200,
-                200, 200, 200,
-              ]}
+              colWidths={200}
+              columnHeaderHeight={40}
               height="auto"
               colHeaders={mergeedColumn}
               width="auto"

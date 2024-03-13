@@ -35,8 +35,7 @@ const OsPartnerSelect: FC<{
     <Form.Item
       label="Partner Name"
       name={name}
-      rules={[{required: true, message: 'Please Select Partner!'}]}
-
+      rules={[{required: false, message: 'Please Select Partner!'}]}
     >
       <CommonSelect
         placeholder="Select"
@@ -45,6 +44,9 @@ const OsPartnerSelect: FC<{
         options={partnerOptions}
         onChange={(e) => {
           setPartnerValue && setPartnerValue(e);
+          form?.setFieldsValue({
+            name: e,
+          });
           form?.resetFields([partnerProgramName]);
         }}
         onClear={() => {

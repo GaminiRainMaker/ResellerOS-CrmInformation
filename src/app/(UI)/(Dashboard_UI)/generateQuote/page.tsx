@@ -14,8 +14,9 @@
 'use client';
 
 import Typography from '@/app/components/common/typography';
-import {ArrowDownTrayIcon, PlusIcon} from '@heroicons/react/24/outline';
+import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
 
+import AddQuote from '@/app/components/common/addQuote';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -24,20 +25,21 @@ import OsButton from '@/app/components/common/os-button';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import OsModal from '@/app/components/common/os-modal';
+import RaiseConcern from '@/app/components/common/os-raise-concern';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
 import {selectData} from '@/app/utils/CONSTANTS';
 import {formatDate, useRemoveDollarAndCommahook} from '@/app/utils/base';
-import {MenuProps} from 'antd';
+import {Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import AddQuote from '@/app/components/common/addQuote';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {
   getQuoteById,
   updateQuoteByQuery,
+  updateQuoteConcern,
 } from '../../../../../redux/actions/quote';
 import {UpdateQuoteLineItemQuantityById} from '../../../../../redux/actions/quotelineitem';
 import {getAllTableColumn} from '../../../../../redux/actions/tableColumn';
@@ -57,6 +59,7 @@ const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const router = useRouter();
+  const [form] = Form.useForm();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const [activeTab, setActiveTab] = useState<any>('1');
@@ -71,6 +74,8 @@ const GenerateQuote: React.FC = () => {
   const [amountData, setAmountData] = useState<any>();
   const [open, setOpen] = useState(false);
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
+  const [showRaiseConcernModal, setShowRaiseConcernModal] =
+    useState<boolean>(false);
   const [isDeleteInputDetailModal, setIsDeleteInputDetailModal] =
     useState<boolean>(false);
   const [selectedFilter, setSelectedFilter] = useState<string>('');
@@ -84,14 +89,21 @@ const GenerateQuote: React.FC = () => {
   const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
 
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
-
   const [quoteLineItemExist, setQuoteLineItemExist] = useState<boolean>(false);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotificationWithIcon = () => {
+    api.warning({
+      message: 'Please Add Concern!',
+      description:
+        'We are here to assist you! Please write your concern regarding this quote to us.',
+    });
+  };
 
   useEffect(() => {
     dispatch(getAllTableColumn(''));
     dispatch(getAllContractSetting(''));
   }, []);
-  console.log('quoteLineItemExist', quoteLineItemExist);
   useEffect(() => {
     let tabsname: any;
     if (activeTab == '1') {
@@ -242,13 +254,14 @@ const GenerateQuote: React.FC = () => {
           name="Body 3/Regular"
           cursor="pointer"
           onClick={() => {
+            setShowRaiseConcernModal(true);
             // router?.push(`/updation?id=${getQuoteID}`);
-            router?.push(
-              `/fileEditor?id=${getQuoteID}&quoteExist=${quoteLineItemExist}`,
-            );
+            // router?.push(
+            //   `/fileEditor?id=${getQuoteID}&quoteExist=${quoteLineItemExist}`,
+            // );
           }}
         >
-          Update LineItems
+          Raise Concern
         </Typography>
       ),
     },
@@ -395,8 +408,25 @@ const GenerateQuote: React.FC = () => {
       ),
     },
   ];
+
+  const addConcernData = () => {
+    const concernData = form?.getFieldsValue();
+    if (!concernData?.concern_text) {
+      openNotificationWithIcon();
+    } else {
+      const data = {concern: concernData?.concern_text, id: getQuoteID};
+      dispatch(updateQuoteConcern(data));
+      router?.push(
+        `/fileEditor?id=${getQuoteID}&quoteExist=${quoteLineItemExist}`,
+      );
+      setShowRaiseConcernModal(false);
+      form?.resetFields();
+    }
+  };
+
   return (
     <>
+      {contextHolder}
       <Space size={24} direction="vertical" style={{width: '100%'}}>
         <GenerateQuoteAnalytics
           quoteLineItemByQuoteID={quoteLineItemByQuoteID}
@@ -521,7 +551,7 @@ const GenerateQuote: React.FC = () => {
           }}
         />
       )}
-      {/* <OsModal
+      <OsModal
         loading={loading}
         body={
           <RaiseConcern
@@ -544,7 +574,7 @@ const GenerateQuote: React.FC = () => {
         onOk={() => {
           form?.submit();
         }}
-      /> */}
+      />
 
       {/* <OsModal
         loading={loading}

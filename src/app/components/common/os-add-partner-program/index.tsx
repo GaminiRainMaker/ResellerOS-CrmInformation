@@ -6,7 +6,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {
   getAllPartnerProgram,
   insertPartnerProgram,
@@ -25,11 +25,13 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
+  const [partnerValue, setPartnerValue] = useState<number>(0);
 
   const onFinish = (value: any) => {
     const partnerProgramObj = {
       ...value,
       organization: userInformation?.organization,
+      partner: partnerValue,
     };
     if (drawer) {
       dispatch(
@@ -87,7 +89,7 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
           requiredMark={false}
           initialValues={formPartnerData}
         >
-          <OsPartnerSelect form={form} />
+          <OsPartnerSelect name='partner' form={form} setPartnerValue={setPartnerValue} />
           <Form.Item
             label="Partner Program"
             name="partner_program"
