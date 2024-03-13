@@ -583,8 +583,6 @@ const GenerateQuote: React.FC = () => {
             title="Concern Raised"
             description="Your Concern has been raised to our support"
             image={RaiseConcernImg}
-            form={form}
-            onClick={addConcernData}
             showTextArea={false}
           />
         }
