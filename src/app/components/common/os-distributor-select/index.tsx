@@ -31,7 +31,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
-  const {loading: DistributorLoading, data: DistributorData} = useAppSelector(
+  const {loading, data: DistributorData} = useAppSelector(
     (state) => state.distributor,
   );
   const [showDistributorModal, setShowDistributorModal] =
@@ -44,10 +44,6 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
     }
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
-
-  useEffect(() => {
-    dispatch(queryDistributor(queryParams));
-  }, []);
 
   useEffect(() => {
     const distributorOptions =
@@ -63,7 +59,11 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
       }));
 
     setDistributorFilterOption(distributorOptions);
-  }, [DistributorData]);
+  }, [JSON.stringify(DistributorData)]);
+
+  useEffect(() => {
+    dispatch(queryDistributor(queryParams));
+  }, []);
 
   return (
     <>
@@ -108,7 +108,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
       </SelectFormItem>
 
       <OsModal
-        loading={DistributorLoading}
+        loading={loading}
         body={
           <AddDistributor form={form} setShowModal={setShowDistributorModal} />
         }

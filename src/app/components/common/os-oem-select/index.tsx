@@ -45,10 +45,21 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
   const {loading: OemLoading, data: OemData} = useAppSelector(
     (state) => state.oem,
   );
+  const {data: QuoteConfigData} = useAppSelector((state) => state.quoteConfig);
 
   useEffect(() => {
+    const filteredData123 = QuoteConfigData?.filter(
+      (item: any) => item.distributor_id === distributorValue,
+    );
+
+    const oemDataIdData = filteredData123.map((item: any) => item.oem_id);
+
     const filteredData = Array.isArray(OemData)
-      ? OemData.filter((item: any) => item?.distributor_id === distributorValue)
+      ? OemData.filter(
+          (item: any) =>
+            item?.distributor_id === distributorValue
+            //  && !oemDataIdData.includes(item?.id),
+        )
       : [];
 
     const OemOptions =
@@ -77,6 +88,7 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
         rules={[{required: isRequired, message: 'Please Select OEM!'}]}
       >
         <CommonSelect
+          disabled={!distributorValue}
           placeholder="Select"
           allowClear
           style={{width: '100%', height: '38px'}}

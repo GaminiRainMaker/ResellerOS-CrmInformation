@@ -50,12 +50,12 @@ const AllQuote: React.FC = () => {
 
   const handleButtonClick = () => {
     quoteConfig?.forEach((dataItem: any) =>
-      dispatch(insertQuoteConfiguration(dataItem)),
+      dispatch(insertQuoteConfiguration(dataItem)).then((d) => {
+        if (d?.payload) {
+          dispatch(queryQuoteConfiguration({}));
+        }
+      }),
     );
-
-    setTimeout(() => {
-      dispatch(queryQuoteConfiguration({}));
-    }, 1000);
   };
 
   const checkCombinationExists = (checkCombination: any) => {
@@ -67,13 +67,6 @@ const AllQuote: React.FC = () => {
     if (exists) {
       openNotificationWithIcon();
     }
-  };
-
-  const handleDeleteQuoteConfig = (index: number) => {
-    debugger;
-    const arr = [...quoteConfig];
-    arr.splice(index, 1);
-    setQuoteConfig(arr);
   };
 
   const columns = [
@@ -130,6 +123,7 @@ const AllQuote: React.FC = () => {
       width: 130,
       render: (text: string, record: any, index: number) => (
         <OsOemSelect
+          // disabled
           name={`oem_${index}`}
           oemValue={record?.oem_id}
           isAddNewOem

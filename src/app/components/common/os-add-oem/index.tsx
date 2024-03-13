@@ -8,7 +8,6 @@ import Typography from '@/app/components/common/typography';
 import {Form, FormInstance} from 'antd';
 import {insertOEM, queryOEM} from '../../../../../redux/actions/oem';
 import {useAppDispatch} from '../../../../../redux/hook';
-import OsDistributorSelect from '../os-distributor-select';
 
 interface AddOemInterface {
   form?: FormInstance;
@@ -26,7 +25,7 @@ const AddOem: React.FC<AddOemInterface> = ({
   const onFinish = async () => {
     const oemValue = form?.getFieldsValue();
     const oemValueObj = {
-      distributor_id: oemValue?.distributor_id,
+      distributor_id: distributorValue,
       oem: oemValue?.oem,
     };
     if (oemValue) {
@@ -70,8 +69,6 @@ const AddOem: React.FC<AddOemInterface> = ({
           layout="vertical"
           requiredMark={false}
         >
-          <OsDistributorSelect isAddNewDistributor label isRequired />
-          <br />
           <Form.Item name="oem" label="OEM">
             <OsInput placeholder="OEM" />
           </Form.Item>

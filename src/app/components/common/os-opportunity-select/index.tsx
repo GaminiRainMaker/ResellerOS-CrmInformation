@@ -19,7 +19,9 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
+  const {data: opportunityData, loading} = useAppSelector(
+    (state) => state.Opportunity,
+  );
   const [open, setOpen] = useState<boolean>(false);
   const [opportunityFilterOption, setOpportunityFilterOption] = useState<any>();
   const [formValue, setFormValue] = useState<any>();
@@ -44,7 +46,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
     }));
 
     setOpportunityFilterOption(opportunityOptions);
-  }, [customerValue, opportunityData]);
+  }, [JSON.stringify(opportunityData), customerValue]);
 
   return (
     <>
@@ -86,6 +88,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
       </Form.Item>
 
       <OsModal
+        loading={loading}
         body={
           <AddOpportunity
             setFormValue={setFormValue}

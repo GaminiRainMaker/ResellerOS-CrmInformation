@@ -36,11 +36,13 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
     if (drawer) {
       dispatch(updatePartnerById({...partnerObj, id: formPartnerData?.id}));
     } else {
-      dispatch(insertPartner(partnerObj)).then(() => {
+      dispatch(insertPartner(partnerObj)).then((d) => {
         form?.resetFields();
+        if (d?.payload) {
+          dispatch(getAllPartner());
+        }
       });
     }
-    dispatch(getAllPartner());
     setOpen(false);
   };
 

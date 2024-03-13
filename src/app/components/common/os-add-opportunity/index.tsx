@@ -31,12 +31,13 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
   const [customerOptions, setCustomerOptions] = useState<any>();
 
   const addOpportunity = async () => {
-    dispatch(insertOpportunity(formValue));
+    dispatch(insertOpportunity(formValue)).then((d) => {
+      if (d?.payload) {
+        dispatch(getAllOpportunity());
+      }
+    });
     setShowModal((p: boolean) => !p);
     setFormValue('');
-    setTimeout(() => {
-      dispatch(getAllOpportunity());
-    }, 500);
   };
 
   useEffect(() => {
