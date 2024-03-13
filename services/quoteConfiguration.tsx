@@ -15,4 +15,12 @@ export const QUOTE_CONFIGURATION_API = {
     post(API.QUOTE_CONFIGURATION.DeleteById, data) as Promise<
       AxiosResponse<[]>
     >,
+  getByDistributorId: (id: any) =>
+    get(`${API.QUOTE_CONFIGURATION.GetOemByDistributorId}/${id}`) as Promise<
+      AxiosResponse<any>
+    >,
+  getByOemId: (id: any) =>
+    get(`${API.QUOTE_CONFIGURATION.GetDistributorByOemId}/${id}`) as Promise<
+      AxiosResponse<any>
+    >,
 };

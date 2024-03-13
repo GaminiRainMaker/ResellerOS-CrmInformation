@@ -29,18 +29,6 @@ export const queryOEM = createAsyncThunk(
   },
 );
 
-export const getOemByDistributorId = createAsyncThunk(
-  'oem/getOemByDistributorId',
-  async (id: number, thunkApi) => {
-    try {
-      const res = await OEM_API.getById(id);
-      return res.data;
-    } catch (error) {
-      return thunkApi.rejectWithValue(error);
-    }
-  },
-);
-
 export const updateOEM = createAsyncThunk(
   'oem/updateOEM',
   async (data: any, thunkApi) => {

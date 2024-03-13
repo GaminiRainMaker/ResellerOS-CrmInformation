@@ -40,7 +40,28 @@ export const updateQuoteConfiguration = createAsyncThunk(
     }
   },
 );
-
+export const getOemByDistributorId = createAsyncThunk(
+  'quoteConfiguration/getOemByDistributorId',
+  async (id: number, thunkApi) => {
+    try {
+      const res = await QUOTE_CONFIGURATION_API.getByDistributorId(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+export const getDistributorByOemId = createAsyncThunk(
+  'quoteConfiguration/getDistributorByOemId',
+  async (id: number, thunkApi) => {
+    try {
+      const res = await QUOTE_CONFIGURATION_API.getByOemId(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
 export const deleteQuoteConfiguration = createAsyncThunk(
   'quoteConfiguration/deleteQuoteConfiguration',
   async (data: any, thunkApi) => {

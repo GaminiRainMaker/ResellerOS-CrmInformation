@@ -146,11 +146,12 @@ export const API = {
     INDEX: '/oem',
     QUERY: '/oem/query',
     DeleteById: '/oem/deleteById',
-    GetOemByDistributorId: '/oem/getOemByDistributorId',
   },
   QUOTE_CONFIGURATION: {
     INDEX: '/quoteConfiguration',
     QUERY: '/quoteConfiguration/query',
     DeleteById: '/quoteConfiguration/deleteById',
+    GetOemByDistributorId: '/quoteConfiguration/getOemByDistributorId',
+    GetDistributorByOemId: '/quoteConfiguration/getDistributorByOemId',
   },
 };

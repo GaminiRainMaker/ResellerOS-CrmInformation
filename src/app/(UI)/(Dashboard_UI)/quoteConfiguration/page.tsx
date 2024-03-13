@@ -116,13 +116,11 @@ const AllQuote: React.FC = () => {
       width: 130,
       render: (text: string, record: any, index: number) => (
         <OsOemSelect
-          // disabled
           name={`oem_${index}`}
           oemValue={record?.oem_id}
           isAddNewOem
           isRequired
           form={form}
-          distributorValue={record?.distributor_id}
           onChange={(value: any) => {
             setQuoteConfig((prev: any) =>
               prev.map((prevItem: any, prevIndex: any) => {

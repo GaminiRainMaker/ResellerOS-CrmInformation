@@ -16,15 +16,10 @@ import Typography from '../typography';
 import {SelectFormItem} from './oem-select-styled';
 import {OsOemSelectInterface} from './os-oem.interface';
 
-const queryParams: any = {
-  oem: null,
-};
-
 const OsOemSelect: FC<OsOemSelectInterface> = ({
   isRequired = false,
   oemValue,
   isAddNewOem = false,
-  distributorValue,
   onChange,
   name = 'oem_id',
 }) => {
@@ -45,26 +40,11 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
   const {loading: OemLoading, data: OemData} = useAppSelector(
     (state) => state.oem,
   );
-  const {data: QuoteConfigData} = useAppSelector((state) => state.quoteConfig);
 
   useEffect(() => {
-    const filteredData123 = QuoteConfigData?.filter(
-      (item: any) => item.distributor_id === distributorValue,
-    );
-
-    const oemDataIdData = filteredData123.map((item: any) => item.oem_id);
-
-    const filteredData = Array.isArray(OemData)
-      ? OemData.filter(
-          (item: any) =>
-            item?.distributor_id === distributorValue
-            //  && !oemDataIdData.includes(item?.id),
-        )
-      : [];
-
     const OemOptions =
-      filteredData &&
-      filteredData?.map((dataAddressItem: any) => ({
+      OemData &&
+      OemData?.map((dataAddressItem: any) => ({
         value: dataAddressItem?.id,
         label: (
           <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
@@ -74,7 +54,7 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
       }));
 
     setFinalOemOptions(OemOptions);
-  }, [JSON.stringify(OemData), distributorValue]);
+  }, [JSON.stringify(OemData)]);
 
   useEffect(() => {
     dispatch(queryOEM({}));
@@ -88,7 +68,6 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
         rules={[{required: isRequired, message: 'Please Select OEM!'}]}
       >
         <CommonSelect
-          disabled={!distributorValue}
           placeholder="Select"
           allowClear
           style={{width: '100%', height: '38px'}}
@@ -125,13 +104,7 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
 
       <OsModal
         loading={OemLoading}
-        body={
-          <AddOem
-            form={form}
-            setShowModal={setShowOemModal}
-            distributorValue={distributorValue}
-          />
-        }
+        body={<AddOem form={form} setShowModal={setShowOemModal} />}
         width={600}
         open={showOemModal}
         onCancel={() => {

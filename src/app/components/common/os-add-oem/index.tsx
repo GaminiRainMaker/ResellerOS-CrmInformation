@@ -12,20 +12,14 @@ import {useAppDispatch} from '../../../../../redux/hook';
 interface AddOemInterface {
   form?: FormInstance;
   setShowModal?: any;
-  distributorValue: number;
 }
-const AddOem: React.FC<AddOemInterface> = ({
-  form,
-  setShowModal,
-  distributorValue,
-}) => {
+const AddOem: React.FC<AddOemInterface> = ({form, setShowModal}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
 
   const onFinish = async () => {
     const oemValue = form?.getFieldsValue();
     const oemValueObj = {
-      distributor_id: distributorValue,
       oem: oemValue?.oem,
     };
     if (oemValue) {

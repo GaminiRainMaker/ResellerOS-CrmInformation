@@ -11,8 +11,4 @@ export const OEM_API = {
   query: (data: any) => post(API.OEM.QUERY, data) as Promise<AxiosResponse<[]>>,
   delete: (data: any) =>
     post(API.OEM.DeleteById, data) as Promise<AxiosResponse<[]>>,
-  getById: (id: any) =>
-    get(`${API.OEM.GetOemByDistributorId}/${id}`) as Promise<
-      AxiosResponse<any>
-    >,
 };
