@@ -24,17 +24,19 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
   setDistributorValue,
   isAddNewDistributor = false,
   label = false,
-  height
+  height,
+  onChange,
+  name = 'distributor_id',
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
-  const {data} = useAppSelector((state) => state?.distributor);
-  const {loading: DistributorLoading} = useAppSelector(
+  const {loading, data: DistributorData} = useAppSelector(
     (state) => state.distributor,
   );
   const [showDistributorModal, setShowDistributorModal] =
     useState<boolean>(false);
+  const [distributorFilterOption, setDistributorFilterOption] = useState<any>();
 
   const capitalizeFirstLetter = (str: string | undefined) => {
     if (!str) {
@@ -43,14 +45,21 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
-  const distributorOptions = data?.map((dataAddressItem: any) => ({
-    value: dataAddressItem?.id,
-    label: (
-      <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-        {capitalizeFirstLetter(dataAddressItem?.distributor)}
-      </Typography>
-    ),
-  }));
+  useEffect(() => {
+    const distributorOptions =
+      DistributorData &&
+      DistributorData?.map((dataAddressItem: any) => ({
+        key: dataAddressItem?.id,
+        value: dataAddressItem?.id,
+        label: (
+          <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+            {capitalizeFirstLetter(dataAddressItem?.distributor)}
+          </Typography>
+        ),
+      }));
+
+    setDistributorFilterOption(distributorOptions);
+  }, [JSON.stringify(DistributorData)]);
 
   useEffect(() => {
     dispatch(queryDistributor(queryParams));
@@ -60,18 +69,16 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
     <>
       <SelectFormItem
         label={label ? 'Distributor' : ''}
-        name="distributor_id"
-        rules={[{required: isRequired, message: 'Please Select Distributor!'}]}
+        name={name}
+        // rules={[{required: isRequired, message: 'Please Select Distributor!'}]}
       >
         <CommonSelect
           placeholder="Select"
           allowClear
           style={{width: '100%', height: `${height}px`}}
-          options={distributorOptions}
-          value={distributorValue}
-          onChange={(value: number) => {
-            setDistributorValue && setDistributorValue(value);
-          }}
+          options={distributorFilterOption}
+          defaultValue={distributorValue}
+          onChange={onChange}
           dropdownRender={(menu) => (
             <>
               {isAddNewDistributor && (
@@ -88,8 +95,9 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
                   <Typography
                     color={token?.colorPrimaryText}
                     name="Body 3/Regular"
+                    hoverOnText
                   >
-                    Add Distributor Account
+                    Add Distributor
                   </Typography>
                 </Space>
               )}
@@ -100,7 +108,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
       </SelectFormItem>
 
       <OsModal
-        loading={DistributorLoading}
+        loading={loading}
         body={
           <AddDistributor form={form} setShowModal={setShowDistributorModal} />
         }

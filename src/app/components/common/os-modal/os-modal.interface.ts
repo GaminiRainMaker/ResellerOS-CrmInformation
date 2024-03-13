@@ -17,6 +17,7 @@ export interface OSModalPropsInterface extends ModalProps {
   footer?: boolean;
   footerPadding?: number;
   disabledButton?: boolean;
+  singleButtonInCenter?: boolean;
 }
 
 export interface OSDailogInterface extends ModalProps {

@@ -2,73 +2,35 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
-  deleteQuoteConfiguration,
-  getAllNanonetsModel,
   insertQuoteConfiguration,
-  updateNanonetsModel,
-} from '../actions/nanonets';
+  queryQuoteConfiguration,
+  updateQuoteConfiguration,
+  deleteQuoteConfiguration,
+} from '../actions/quoteConfiguration';
 
-type QuoteConfiguration = {
+type QuoteConfigurationState = {
   loading: boolean;
   error: string | null;
   data: any;
-  product: any;
-  filteredData: any;
+  quoteConfiguration: any;
 };
-const initialState: QuoteConfiguration = {
+const initialState: QuoteConfigurationState = {
   loading: false,
   error: null,
   data: [],
-  product: [],
-  filteredData: [],
+  quoteConfiguration: [],
 };
 
-const quoteConfigurationSetting = createSlice({
-  name: 'quoteCOnfiguration',
+const quoteConfigurationSlice = createSlice({
+  name: 'quoteConfiguration',
   initialState,
   reducers: {
     setQuoteConfiguration: (state, action) => {
-      state.product = action.payload;
+      state.quoteConfiguration = action.payload;
     },
   },
   extraReducers(builder) {
     builder
-      .addCase(deleteQuoteConfiguration.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        deleteQuoteConfiguration.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.data = [action.payload];
-        },
-      )
-      .addCase(
-        deleteQuoteConfiguration.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.error = action.payload;
-        },
-      )
-      .addCase(getAllNanonetsModel.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        getAllNanonetsModel.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.data = action.payload;
-        },
-      )
-      .addCase(
-        getAllNanonetsModel.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.error = action.payload;
-        },
-      )
       .addCase(insertQuoteConfiguration.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -77,7 +39,7 @@ const quoteConfigurationSetting = createSlice({
         insertQuoteConfiguration.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = [action.payload];
+          // state.data = action.payload;
         },
       )
       .addCase(
@@ -87,19 +49,55 @@ const quoteConfigurationSetting = createSlice({
           state.error = action.payload;
         },
       )
-      .addCase(updateNanonetsModel.pending, (state) => {
+      .addCase(updateQuoteConfiguration.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        updateNanonetsModel.fulfilled,
+        updateQuoteConfiguration.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.data = action.payload;
         },
       )
       .addCase(
-        updateNanonetsModel.rejected,
+        updateQuoteConfiguration.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(deleteQuoteConfiguration.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        deleteQuoteConfiguration.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        deleteQuoteConfiguration.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(queryQuoteConfiguration.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        queryQuoteConfiguration.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        queryQuoteConfiguration.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
@@ -108,5 +106,5 @@ const quoteConfigurationSetting = createSlice({
   },
 });
 
-export const {setQuoteConfiguration} = quoteConfigurationSetting.actions;
-export default quoteConfigurationSetting?.reducer;
+export const {setQuoteConfiguration} = quoteConfigurationSlice.actions;
+export default quoteConfigurationSlice?.reducer;

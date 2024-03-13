@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react/no-unstable-nested-components */
 import {PlusIcon} from '@heroicons/react/24/outline';
@@ -11,8 +13,8 @@ import AddOem from '../os-add-oem';
 import OsModal from '../os-modal';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
-import {OsOemSelectInterface} from './os-oem.interface';
 import {SelectFormItem} from './oem-select-styled';
+import {OsOemSelectInterface} from './os-oem.interface';
 
 const queryParams: any = {
   oem: null,
@@ -21,52 +23,78 @@ const queryParams: any = {
 const OsOemSelect: FC<OsOemSelectInterface> = ({
   isRequired = false,
   oemValue,
-  setOemValue,
   isAddNewOem = false,
+  distributorValue,
+  onChange,
+  name = 'oem_id',
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
-  const {data} = useAppSelector((state) => state?.oem);
-  const {loading: OemLoading} = useAppSelector((state) => state.oem);
+
   const [showOemModal, setShowOemModal] = useState<boolean>(false);
+  const [finalOemOptions, setFinalOemOptions] = useState<any>();
 
   const capitalizeFirstLetter = (str: string | undefined) => {
     if (!str) {
-      return ''; // Return an empty string or handle the case as appropriate
+      return '';
     }
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
-  const OemOptions = data?.map((dataAddressItem: any) => ({
-    value: dataAddressItem?.id,
-    label: (
-      <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-        {capitalizeFirstLetter(dataAddressItem?.oem)}
-      </Typography>
-    ),
-  }));
+  const {loading: OemLoading, data: OemData} = useAppSelector(
+    (state) => state.oem,
+  );
+  const {data: QuoteConfigData} = useAppSelector((state) => state.quoteConfig);
 
   useEffect(() => {
-    dispatch(queryOEM(queryParams));
+    const filteredData123 = QuoteConfigData?.filter(
+      (item: any) => item.distributor_id === distributorValue,
+    );
+
+    const oemDataIdData = filteredData123.map((item: any) => item.oem_id);
+
+    const filteredData = Array.isArray(OemData)
+      ? OemData.filter(
+          (item: any) =>
+            item?.distributor_id === distributorValue
+            //  && !oemDataIdData.includes(item?.id),
+        )
+      : [];
+
+    const OemOptions =
+      filteredData &&
+      filteredData?.map((dataAddressItem: any) => ({
+        value: dataAddressItem?.id,
+        label: (
+          <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+            {capitalizeFirstLetter(dataAddressItem?.oem)}
+          </Typography>
+        ),
+      }));
+
+    setFinalOemOptions(OemOptions);
+  }, [JSON.stringify(OemData), distributorValue]);
+
+  useEffect(() => {
+    dispatch(queryOEM({}));
   }, []);
 
   return (
     <>
       <SelectFormItem
         label=""
-        name="oem"
+        name={name}
         rules={[{required: isRequired, message: 'Please Select OEM!'}]}
       >
         <CommonSelect
+          disabled={!distributorValue}
           placeholder="Select"
           allowClear
           style={{width: '100%', height: '38px'}}
-          options={OemOptions}
-          value={oemValue}
-          onChange={(value: number) => {
-            setOemValue && setOemValue(value);
-          }}
+          options={finalOemOptions}
+          defaultValue={oemValue}
+          onChange={onChange}
           dropdownRender={(menu) => (
             <>
               {isAddNewOem && (
@@ -83,8 +111,9 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
                   <Typography
                     color={token?.colorPrimaryText}
                     name="Body 3/Regular"
+                    hoverOnText
                   >
-                    Add OEM Account
+                    Add OEM
                   </Typography>
                 </Space>
               )}
@@ -96,7 +125,13 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
 
       <OsModal
         loading={OemLoading}
-        body={<AddOem form={form} setShowModal={setShowOemModal} />}
+        body={
+          <AddOem
+            form={form}
+            setShowModal={setShowOemModal}
+            distributorValue={distributorValue}
+          />
+        }
         width={600}
         open={showOemModal}
         onCancel={() => {

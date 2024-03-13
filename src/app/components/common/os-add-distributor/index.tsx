@@ -29,10 +29,12 @@ const AddDistributor: React.FC<AddDistributorInterface> = ({
   const onFinish = () => {
     const distributorValue = form?.getFieldValue('distributor');
     if (distributorValue) {
-      dispatch(insertDistributor({distributor: distributorValue}));
+      dispatch(insertDistributor({distributor: distributorValue})).then((d) => {
+        if (d?.payload) {
+          dispatch(queryDistributor({}));
+        }
+      });
     }
-    dispatch(queryDistributor(queryParams));
-
     setShowModal(false);
     form?.resetFields();
   };

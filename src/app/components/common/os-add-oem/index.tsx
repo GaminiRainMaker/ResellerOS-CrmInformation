@@ -6,28 +6,34 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
 import {Form, FormInstance} from 'antd';
-import {insertOEM} from '../../../../../redux/actions/oem';
+import {insertOEM, queryOEM} from '../../../../../redux/actions/oem';
 import {useAppDispatch} from '../../../../../redux/hook';
-import OsDistributorSelect from '../os-distributor-select';
 
 interface AddOemInterface {
   form?: FormInstance;
   setShowModal?: any;
+  distributorValue: number;
 }
-const AddOem: React.FC<AddOemInterface> = ({form, setShowModal}) => {
+const AddOem: React.FC<AddOemInterface> = ({
+  form,
+  setShowModal,
+  distributorValue,
+}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const onFinish = () => {
+
+  const onFinish = async () => {
     const oemValue = form?.getFieldsValue();
     const oemValueObj = {
-      distributor_id: oemValue?.distributor_id,
+      distributor_id: distributorValue,
       oem: oemValue?.oem,
     };
     if (oemValue) {
-      dispatch(insertOEM(oemValueObj));
+      await dispatch(insertOEM(oemValueObj));
     }
     setShowModal(false);
     form?.resetFields();
+    await dispatch(queryOEM({}));
   };
   return (
     <>
@@ -63,8 +69,6 @@ const AddOem: React.FC<AddOemInterface> = ({form, setShowModal}) => {
           layout="vertical"
           requiredMark={false}
         >
-          <OsDistributorSelect isAddNewDistributor label isRequired />
-          <br />
           <Form.Item name="oem" label="OEM">
             <OsInput placeholder="OEM" />
           </Form.Item>

@@ -24,7 +24,7 @@ import syncTable from './slices/syncTable';
 import tableColumn from './slices/tabelColumn';
 import user from './slices/user';
 import validation from './slices/validation';
-import quoteConfig from './slices/nanonets';
+import quoteConfig from './slices/quoteConfiguration';
 import distributor from './slices/distributor';
 import oem from './slices/oem';
 

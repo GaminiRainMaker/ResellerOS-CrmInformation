@@ -19,7 +19,9 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
+  const {data: opportunityData, loading} = useAppSelector(
+    (state) => state.Opportunity,
+  );
   const [open, setOpen] = useState<boolean>(false);
   const [opportunityFilterOption, setOpportunityFilterOption] = useState<any>();
   const [formValue, setFormValue] = useState<any>();
@@ -28,12 +30,12 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
     dispatch(getAllOpportunity());
   }, []);
 
-
   useEffect(() => {
     form?.resetFields(['opportunity_id']);
     const filterUsers = opportunityData?.filter((item: any) =>
       item?.customer_id?.toString()?.includes(customerValue),
     );
+
     const opportunityOptions = filterUsers?.map((opportunity: any) => ({
       value: opportunity.id,
       label: (
@@ -44,7 +46,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
     }));
 
     setOpportunityFilterOption(opportunityOptions);
-  }, [customerValue]);
+  }, [JSON.stringify(opportunityData), customerValue]);
 
   return (
     <>
@@ -86,6 +88,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
       </Form.Item>
 
       <OsModal
+        loading={loading}
         body={
           <AddOpportunity
             setFormValue={setFormValue}
