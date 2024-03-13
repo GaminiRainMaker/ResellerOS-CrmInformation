@@ -19,6 +19,7 @@ const OsModal: FC<OSModalPropsInterface> = ({
   footer = true,
   footerPadding,
   disabledButton,
+  singleButtonInCenter = false,
   ...rest
 }) => {
   const {onCancel, open, onOk} = rest;
@@ -44,7 +45,11 @@ const OsModal: FC<OSModalPropsInterface> = ({
         footer && (
           <Space
             size={12}
-            style={{padding: footerPadding ? `${footerPadding}px` : '0px'}}
+            style={{
+              padding: footerPadding ? `${footerPadding}px` : '0px',
+              display: singleButtonInCenter ? 'flex' : '',
+              justifyContent: singleButtonInCenter ? 'center' : '',
+            }}
           >
             {secondaryButtonText && (
               <OsButton

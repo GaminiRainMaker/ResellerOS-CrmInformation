@@ -50,6 +50,8 @@ import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
 import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
+import RaiseConcernImg from '../../../../../public/assets/static/raiseConcern.svg';
+import RaiseConcern from '@/app/components/common/os-raise-concern';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -519,6 +521,55 @@ const GenerateQuote: React.FC = () => {
           }}
         />
       )}
+      {/* <OsModal
+        loading={loading}
+        body={
+          <RaiseConcern
+            title="Raise Your Concern"
+            description="We are here to assist you ! Please write your concern regarding this quote to us. Also, you can update the quote manually."
+            image={RaiseConcernImg}
+            form={form}
+            onClick={addConcernData}
+          />
+        }
+        bodyPadding={40}
+        width={638}
+        open={showRaiseConcernModal}
+        onCancel={() => {
+          setShowRaiseConcernModal(false);
+        }}
+        destroyOnClose
+        secondaryButtonText="Cancel"
+        primaryButtonText="Update Line Items"
+        onOk={() => {
+          form?.submit();
+        }}
+      /> */}
+
+      {/* <OsModal
+        loading={loading}
+        body={
+          <RaiseConcern
+            title="Concern Raised"
+            description="Your Concern has been raised to our support"
+            image={RaiseConcernImg}
+            form={form}
+            onClick={addConcernData}
+            showTextArea={false}
+          />
+        }
+        singleButtonInCenter
+        bodyPadding={45}
+        width={500}
+        open={showRaiseConcernModal}
+        onCancel={() => {
+          setShowRaiseConcernModal(false);
+        }}
+        primaryButtonText="Done"
+        onOk={() => {
+          console.log('fsdsffssff');
+        }}
+      /> */}
     </>
   );
 };
