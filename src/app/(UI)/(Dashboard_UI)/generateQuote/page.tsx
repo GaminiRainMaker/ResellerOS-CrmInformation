@@ -87,8 +87,16 @@ const GenerateQuote: React.FC = () => {
   const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
 
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
-
   const [quoteLineItemExist, setQuoteLineItemExist] = useState<boolean>(false);
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotificationWithIcon = () => {
+    api.warning({
+      message: 'Please Add Concern!',
+      description:
+        'We are here to assist you! Please write your concern regarding this quote to us.',
+    });
+  };
 
   useEffect(() => {
     dispatch(getAllTableColumn(''));
@@ -399,9 +407,24 @@ const GenerateQuote: React.FC = () => {
     },
   ];
 
+  const addConcernData = () => {
+    const concernData = form?.getFieldsValue();
+    if (!concernData?.concern_text) {
+      openNotificationWithIcon();
+    } else {
+      const data = {concern: concernData?.concern_text, id: getQuoteID};
+      dispatch(updateQuoteConcern(data));
+      router?.push(
+        `/fileEditor?id=${getQuoteID}&quoteExist=${quoteLineItemExist}`,
+      );
+      setShowRaiseConcernModal(false);
+      form?.resetFields();
+    }
+  };
 
   return (
     <>
+      {contextHolder}
       <Space size={24} direction="vertical" style={{width: '100%'}}>
         <GenerateQuoteAnalytics
           quoteLineItemByQuoteID={quoteLineItemByQuoteID}
@@ -528,13 +551,7 @@ const GenerateQuote: React.FC = () => {
       )}
       <OsModal
         loading={loading}
-        body={
-          <RaiseConcern
-            form={form}
-            quoteLineItemExist={quoteLineItemExist}
-            setShowRaiseConcernModal={setShowRaiseConcernModal}
-          />
-        }
+        body={<RaiseConcern form={form} onClick={addConcernData} />}
         bodyPadding={40}
         width={700}
         open={showRaiseConcernModal}
@@ -542,7 +559,6 @@ const GenerateQuote: React.FC = () => {
           setShowRaiseConcernModal(false);
         }}
         destroyOnClose
-        
         secondaryButtonText="Cancel"
         primaryButtonText="Upadte Line Items"
         onOk={() => {
