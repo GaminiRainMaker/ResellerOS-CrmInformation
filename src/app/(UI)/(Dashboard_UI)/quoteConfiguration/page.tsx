@@ -58,22 +58,16 @@ const AllQuote: React.FC = () => {
     }, 1000);
   };
 
-  const checkCombinationExists = (checkCombination: any) => {
-    const exists = quoteConfigData.some(
+  const checkCombinationExists = (checkCombination: any, prevData: any) => {
+    const existingIndex = prevData.findIndex(
       (item: any) =>
         item?.distributor_id === checkCombination.distributor_id &&
         item?.oem_id === checkCombination.oem_id,
     );
-    if (exists) {
-      openNotificationWithIcon();
+    if (existingIndex > -1) {
+      return true;
     }
-  };
-
-  const handleDeleteQuoteConfig = (index: number) => {
-    debugger;
-    const arr = [...quoteConfig];
-    arr.splice(index, 1);
-    setQuoteConfig(arr);
+    return false;
   };
 
   const columns = [
@@ -140,10 +134,15 @@ const AllQuote: React.FC = () => {
             setQuoteConfig((prev: any) =>
               prev.map((prevItem: any, prevIndex: any) => {
                 if (prevIndex === index) {
-                  return {
+                  const obj = {
                     ...prevItem,
                     oem_id: value,
                   };
+                  const existence = checkCombinationExists(obj, prev);
+                  if (existence) {
+                    return openNotificationWithIcon();
+                  }
+                  return obj;
                 }
                 return prevItem;
               }),
