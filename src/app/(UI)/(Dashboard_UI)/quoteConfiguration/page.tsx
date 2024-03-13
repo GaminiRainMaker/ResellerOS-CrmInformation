@@ -33,13 +33,6 @@ const AllQuote: React.FC = () => {
   const [api, contextHolder] = notification.useNotification();
   const [quoteConfig, setQuoteConfig] = useState([]);
 
-  const openNotificationWithIcon = () => {
-    api.info({
-      message: 'Quote Configuration',
-      description: 'This combination already exists.',
-    });
-  };
-
   useEffect(() => {
     dispatch(queryQuoteConfiguration({}));
   }, []);
@@ -56,18 +49,6 @@ const AllQuote: React.FC = () => {
     setTimeout(() => {
       dispatch(queryQuoteConfiguration({}));
     }, 1000);
-  };
-
-  const checkCombinationExists = (checkCombination: any, prevData: any) => {
-    const existingIndex = prevData.findIndex(
-      (item: any) =>
-        item?.distributor_id === checkCombination.distributor_id &&
-        item?.oem_id === checkCombination.oem_id,
-    );
-    if (existingIndex > -1) {
-      return true;
-    }
-    return false;
   };
 
   const columns = [
@@ -138,10 +119,7 @@ const AllQuote: React.FC = () => {
                     ...prevItem,
                     oem_id: value,
                   };
-                  const existence = checkCombinationExists(obj, prev);
-                  if (existence) {
-                    return openNotificationWithIcon();
-                  }
+
                   return obj;
                 }
                 return prevItem;
