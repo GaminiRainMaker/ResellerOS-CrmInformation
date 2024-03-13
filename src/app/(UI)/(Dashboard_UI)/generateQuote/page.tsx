@@ -34,6 +34,8 @@ import {Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import RaiseConcernImg from '../../../../../public/assets/static/raiseConcern.svg';
+import GreenCheckIcon from '../../../../../public/assets/static/greenCheckIcon.svg';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {
@@ -52,8 +54,6 @@ import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
 import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
-import RaiseConcernImg from '../../../../../public/assets/static/raiseConcern.svg';
-import RaiseConcern from '@/app/components/common/os-raise-concern';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -551,7 +551,7 @@ const GenerateQuote: React.FC = () => {
           }}
         />
       )}
-      <OsModal
+      {/* <OsModal
         loading={loading}
         body={
           <RaiseConcern
@@ -574,15 +574,15 @@ const GenerateQuote: React.FC = () => {
         onOk={() => {
           form?.submit();
         }}
-      />
+      /> */}
 
-      {/* <OsModal
+      <OsModal
         loading={loading}
         body={
           <RaiseConcern
             title="Concern Raised"
-            description="Your Concern has been raised to our support"
-            image={RaiseConcernImg}
+            description="Your Concern has been raised to our support team. We are sorry for you experience and will try our best to provide you better experience next time."
+            image={GreenCheckIcon}
             showTextArea={false}
           />
         }
@@ -595,9 +595,9 @@ const GenerateQuote: React.FC = () => {
         }}
         primaryButtonText="Done"
         onOk={() => {
-          console.log('fsdsffssff');
+          // setShowRaiseConcernModal(false);
         }}
-      /> */}
+      />
     </>
   );
 };
