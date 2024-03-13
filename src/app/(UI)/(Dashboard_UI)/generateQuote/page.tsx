@@ -560,7 +560,7 @@ const GenerateQuote: React.FC = () => {
         }}
         destroyOnClose
         secondaryButtonText="Cancel"
-        primaryButtonText="Upadte Line Items"
+        primaryButtonText="Update Line Items"
         onOk={() => {
           form?.submit();
         }}
