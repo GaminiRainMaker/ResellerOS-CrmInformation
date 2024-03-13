@@ -28,9 +28,9 @@ const AddOem: React.FC<AddOemInterface> = ({form, setShowModal}) => {
     }
     setShowModal(false);
     form?.resetFields();
-
-    
-    dispatch(queryOEM({}));
+    setTimeout(() => {
+      dispatch(queryOEM({}));
+    }, 500);
   };
   return (
     <>

@@ -31,12 +31,12 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
-  const {data} = useAppSelector((state) => state?.distributor);
-  const {loading: DistributorLoading} = useAppSelector(
+  const {loading: DistributorLoading, data: DistributorData} = useAppSelector(
     (state) => state.distributor,
   );
   const [showDistributorModal, setShowDistributorModal] =
     useState<boolean>(false);
+  const [distributorFilterOption, setDistributorFilterOption] = useState<any>();
 
   const capitalizeFirstLetter = (str: string | undefined) => {
     if (!str) {
@@ -45,18 +45,24 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
-  const distributorOptions = data?.map((dataAddressItem: any) => ({
-    value: dataAddressItem?.id,
-    label: (
-      <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-        {capitalizeFirstLetter(dataAddressItem?.distributor)}
-      </Typography>
-    ),
-  }));
-
   useEffect(() => {
     dispatch(queryDistributor(queryParams));
   }, []);
+
+  useEffect(() => {
+    const distributorOptions =
+      DistributorData &&
+      DistributorData?.map((dataAddressItem: any) => ({
+        value: dataAddressItem?.id,
+        label: (
+          <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+            {capitalizeFirstLetter(dataAddressItem?.distributor)}
+          </Typography>
+        ),
+      }));
+
+    setDistributorFilterOption(distributorOptions);
+  }, [DistributorData]);
 
   return (
     <>
@@ -69,7 +75,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
           placeholder="Select"
           allowClear
           style={{width: '100%', height: `${height}px`}}
-          options={distributorOptions}
+          options={distributorFilterOption}
           defaultValue={distributorValue}
           // onChange={(value: number) => {
           //    (setDistributorValue && setDistributorValue(value));

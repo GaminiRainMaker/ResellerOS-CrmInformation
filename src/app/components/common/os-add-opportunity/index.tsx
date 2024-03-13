@@ -12,7 +12,10 @@ import Typography from '@/app/components/common/typography';
 import {StageValue} from '@/app/utils/CONSTANTS';
 import {useEffect, useState} from 'react';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
-import {insertOpportunity} from '../../../../../redux/actions/opportunity';
+import {
+  getAllOpportunity,
+  insertOpportunity,
+} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {AddOpportunityInterface} from './os-add-opportunity-interface';
 
@@ -31,6 +34,9 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
     dispatch(insertOpportunity(formValue));
     setShowModal((p: boolean) => !p);
     setFormValue('');
+    setTimeout(() => {
+      dispatch(getAllOpportunity());
+    }, 500);
   };
 
   useEffect(() => {

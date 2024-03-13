@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react/no-unstable-nested-components */
@@ -30,36 +31,43 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
-  const {loading: OemLoading, data: OemData} = useAppSelector(
-    (state) => state.oem,
-  );
+
   const [showOemModal, setShowOemModal] = useState<boolean>(false);
+  const [finalOemOptions, setFinalOemOptions] = useState<any>();
 
   const capitalizeFirstLetter = (str: string | undefined) => {
     if (!str) {
-      return ''; // Return an empty string or handle the case as appropriate
+      return '';
     }
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
+  const {loading: OemLoading, data: OemData} = useAppSelector(
+    (state) => state.oem,
+  );
+
+  useEffect(() => {
+    const filteredData = Array.isArray(OemData)
+      ? OemData.filter((item: any) => item?.distributor_id === distributorValue)
+      : [];
+
+    const OemOptions =
+      filteredData &&
+      filteredData?.map((dataAddressItem: any) => ({
+        value: dataAddressItem?.id,
+        label: (
+          <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+            {capitalizeFirstLetter(dataAddressItem?.oem)}
+          </Typography>
+        ),
+      }));
+
+    setFinalOemOptions(OemOptions);
+  }, [OemData]);
+
   useEffect(() => {
     dispatch(queryOEM(distributorValue));
   }, [distributorValue]);
-
-  const filteredData = Array.isArray(OemData)
-    ? OemData.filter((item: any) => item?.distributor_id === distributorValue)
-    : [];
-
-  const OemOptions = (distributorValue ? filteredData : OemData)?.map(
-    (dataAddressItem: any) => ({
-      value: dataAddressItem?.id,
-      label: (
-        <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-          {capitalizeFirstLetter(dataAddressItem?.oem)}
-        </Typography>
-      ),
-    }),
-  );
 
   return (
     <>
@@ -72,7 +80,7 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
           placeholder="Select"
           allowClear
           style={{width: '100%', height: '38px'}}
-          options={OemOptions}
+          options={finalOemOptions}
           defaultValue={oemValue}
           // onChange={(value: number) => {
           //   setOemValue && setOemValue(value);

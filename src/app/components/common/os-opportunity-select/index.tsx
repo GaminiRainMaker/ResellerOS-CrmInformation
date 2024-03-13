@@ -28,12 +28,12 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
     dispatch(getAllOpportunity());
   }, []);
 
-
   useEffect(() => {
     form?.resetFields(['opportunity_id']);
     const filterUsers = opportunityData?.filter((item: any) =>
       item?.customer_id?.toString()?.includes(customerValue),
     );
+
     const opportunityOptions = filterUsers?.map((opportunity: any) => ({
       value: opportunity.id,
       label: (
@@ -44,7 +44,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
     }));
 
     setOpportunityFilterOption(opportunityOptions);
-  }, [customerValue]);
+  }, [customerValue, opportunityData]);
 
   return (
     <>
