@@ -63,11 +63,11 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
       }));
 
     setFinalOemOptions(OemOptions);
-  }, [OemData]);
+  }, [JSON.stringify(OemData), distributorValue]);
 
   useEffect(() => {
-    dispatch(queryOEM(distributorValue));
-  }, [distributorValue]);
+    dispatch(queryOEM({}));
+  }, []);
 
   return (
     <>
@@ -82,9 +82,6 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
           style={{width: '100%', height: '38px'}}
           options={finalOemOptions}
           defaultValue={oemValue}
-          // onChange={(value: number) => {
-          //   setOemValue && setOemValue(value);
-          // }}
           onChange={onChange}
           dropdownRender={(menu) => (
             <>
@@ -116,7 +113,13 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
 
       <OsModal
         loading={OemLoading}
-        body={<AddOem form={form} setShowModal={setShowOemModal} />}
+        body={
+          <AddOem
+            form={form}
+            setShowModal={setShowOemModal}
+            distributorValue={distributorValue}
+          />
+        }
         width={600}
         open={showOemModal}
         onCancel={() => {

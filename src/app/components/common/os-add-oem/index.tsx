@@ -13,24 +13,28 @@ import OsDistributorSelect from '../os-distributor-select';
 interface AddOemInterface {
   form?: FormInstance;
   setShowModal?: any;
+  distributorValue: number;
 }
-const AddOem: React.FC<AddOemInterface> = ({form, setShowModal}) => {
+const AddOem: React.FC<AddOemInterface> = ({
+  form,
+  setShowModal,
+  distributorValue,
+}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const onFinish = () => {
+
+  const onFinish = async () => {
     const oemValue = form?.getFieldsValue();
     const oemValueObj = {
       distributor_id: oemValue?.distributor_id,
       oem: oemValue?.oem,
     };
     if (oemValue) {
-      dispatch(insertOEM(oemValueObj));
+      await dispatch(insertOEM(oemValueObj));
     }
     setShowModal(false);
     form?.resetFields();
-    setTimeout(() => {
-      dispatch(queryOEM({}));
-    }, 500);
+    await dispatch(queryOEM({}));
   };
   return (
     <>

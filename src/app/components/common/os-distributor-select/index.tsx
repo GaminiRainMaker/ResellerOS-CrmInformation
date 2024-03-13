@@ -53,6 +53,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
     const distributorOptions =
       DistributorData &&
       DistributorData?.map((dataAddressItem: any) => ({
+        key: dataAddressItem?.id,
         value: dataAddressItem?.id,
         label: (
           <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
@@ -77,9 +78,6 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
           style={{width: '100%', height: `${height}px`}}
           options={distributorFilterOption}
           defaultValue={distributorValue}
-          // onChange={(value: number) => {
-          //    (setDistributorValue && setDistributorValue(value));
-          // }}
           onChange={onChange}
           dropdownRender={(menu) => (
             <>

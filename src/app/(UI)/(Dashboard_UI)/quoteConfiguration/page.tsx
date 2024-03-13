@@ -31,6 +31,7 @@ const AllQuote: React.FC = () => {
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [api, contextHolder] = notification.useNotification();
+  const [quoteConfig, setQuoteConfig] = useState([]);
 
   const openNotificationWithIcon = () => {
     api.info({
@@ -43,59 +44,36 @@ const AllQuote: React.FC = () => {
     dispatch(queryQuoteConfiguration({}));
   }, []);
 
-  const handleInputData = (inputData: any) =>
-    inputData.map((item: any) => ({
-      id: item.id,
-      distributor: item.distributor_id,
-      oem: item.oem_id,
-      model_id: item.model_id,
-    }));
-
-  const [data, setData] = useState(handleInputData([]));
-
   useEffect(() => {
-    setData(quoteConfigData);
-    if (Array.isArray(quoteConfigData)) {
-      quoteConfigData.forEach((configItem: any) => {
-        form?.setFieldsValue({
-          distributor: configItem?.distributor_id,
-          oem: configItem?.oem_id,
-          model_id: configItem?.model_id,
-        });
-      });
-    }
+    setQuoteConfig(quoteConfigData);
   }, [quoteConfigData]);
 
-  const getInputDataArray = () =>
-    data.map((item: any) => ({
-      id: item.id,
-      distributor_id: item.distributor,
-      oem_id: item.oem,
-      model_id: item.model_id,
-    }));
-
   const handleButtonClick = () => {
-    const inputDataArray = getInputDataArray();
-
-    inputDataArray?.forEach((dataItem: any) =>
+    quoteConfig?.forEach((dataItem: any) =>
       dispatch(insertQuoteConfiguration(dataItem)),
     );
 
     setTimeout(() => {
       dispatch(queryQuoteConfiguration({}));
     }, 1000);
-    console.log('inputDataArray', inputDataArray);
   };
 
   const checkCombinationExists = (checkCombination: any) => {
     const exists = quoteConfigData.some(
       (item: any) =>
-        item?.distributor_id === checkCombination.distributor &&
-        item?.oem_id === checkCombination.oem,
+        item?.distributor_id === checkCombination.distributor_id &&
+        item?.oem_id === checkCombination.oem_id,
     );
     if (exists) {
       openNotificationWithIcon();
     }
+  };
+
+  const handleDeleteQuoteConfig = (index: number) => {
+    debugger;
+    const arr = [...quoteConfig];
+    arr.splice(index, 1);
+    setQuoteConfig(arr);
   };
 
   const columns = [
@@ -112,22 +90,22 @@ const AllQuote: React.FC = () => {
       dataIndex: 'distributer',
       key: 'distributer',
       width: 187,
-      render: (text: string, record: any) => (
+      render: (text: string, record: any, index: number) => (
         <OsDistributorSelect
-          name={`distributor_${record?.id}`}
+          name={`distributor_${index}`}
           distributorValue={record?.distributor_id}
           isAddNewDistributor
           height={38}
           isRequired
           form={form}
           onChange={(value: any) => {
-            form.resetFields([`oem_${record?.id}`]);
-            setData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record.id) {
+            form.resetFields([`oem_${index}`]);
+            setQuoteConfig((prev: any) =>
+              prev.map((prevItem: any, prevIndex: number) => {
+                if (prevIndex === index) {
                   return {
                     ...prevItem,
-                    distributor: value,
+                    distributor_id: value,
                   };
                 }
                 return prevItem;
@@ -150,26 +128,21 @@ const AllQuote: React.FC = () => {
       dataIndex: 'oem',
       key: 'oem',
       width: 130,
-      render: (text: string, record: any) => (
+      render: (text: string, record: any, index: number) => (
         <OsOemSelect
-          name={`oem_${record?.id}`}
+          name={`oem_${index}`}
           oemValue={record?.oem_id}
           isAddNewOem
           isRequired
           form={form}
-          distributorValue={record?.distributor}
+          distributorValue={record?.distributor_id}
           onChange={(value: any) => {
-            checkCombinationExists({
-              record: record?.id,
-              distributor: record?.distributor,
-              oem: value,
-            });
-            setData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record.id) {
+            setQuoteConfig((prev: any) =>
+              prev.map((prevItem: any, prevIndex: any) => {
+                if (prevIndex === index) {
                   return {
                     ...prevItem,
-                    oem: value,
+                    oem_id: value,
                   };
                 }
                 return prevItem;
@@ -192,16 +165,16 @@ const AllQuote: React.FC = () => {
       dataIndex: 'model_id',
       key: 'model_id',
       width: 187,
-      render: (text: string, record: any) => (
+      render: (text: string, record: any, index: number) => (
         <OsInput
-          name={`model_${record?.id}`}
+          name={`model_${index}`}
           placeholder="Write here"
           style={{height: '38px'}}
           value={text}
           onChange={(e) => {
-            setData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record.id) {
+            setQuoteConfig((prev: any) =>
+              prev.map((prevItem: any, prevIndex: number) => {
+                if (prevIndex === index) {
                   return {
                     ...prevItem,
                     model_id: e?.target?.value,
@@ -219,7 +192,7 @@ const AllQuote: React.FC = () => {
       dataIndex: 'actions',
       key: 'actions',
       width: 54,
-      render: (text: string, record: any) => (
+      render: (text: string, record: any, index: number) => (
         <Space size={18}>
           <TrashIcon
             height={24}
@@ -227,9 +200,9 @@ const AllQuote: React.FC = () => {
             color={token.colorError}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              setData((prev: any) =>
-                handleInputData(
-                  prev?.filter((prevItem: any) => prevItem?.id !== record?.id),
+              setQuoteConfig((prev: any) =>
+                prev.filter(
+                  (prevItem: any, prevIndex: number) => prevIndex !== index,
                 ),
               );
             }}
@@ -296,7 +269,7 @@ const AllQuote: React.FC = () => {
           <Form layout="vertical" form={form}>
             <OsTable
               columns={columns}
-              dataSource={data}
+              dataSource={quoteConfig}
               scroll
               loading={loading}
               locale={locale}
@@ -309,17 +282,13 @@ const AllQuote: React.FC = () => {
             buttontype="PRIMARY"
             icon={<PlusIcon />}
             clickHandler={() => {
-              setData(
-                handleInputData([
-                  ...data,
-                  {
-                    id: data.length + 1,
-                    distributor: '',
-                    oem: '',
-                    model_id: '',
-                  },
-                ]),
-              );
+              const arr: any = [...quoteConfig];
+              arr.push({
+                distributor_id: '',
+                oem_id: '',
+                model_id: '',
+              });
+              setQuoteConfig(arr);
             }}
           />
         </Row>
