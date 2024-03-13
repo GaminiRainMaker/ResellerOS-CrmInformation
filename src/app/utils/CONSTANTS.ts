@@ -330,3 +330,6 @@ export function formatStatus(str: string) {
   }
   return frags?.join(' ');
 }
+
+
+export const concernDescription = 'Your Concern has been raised to our support team. We are sorry for you experience and will try our best to provide you better experience next time.'

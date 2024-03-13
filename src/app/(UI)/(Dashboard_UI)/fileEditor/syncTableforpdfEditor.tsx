@@ -9,10 +9,17 @@ import {FC, useEffect, useState} from 'react';
 
 import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
+import OsModal from '@/app/components/common/os-modal';
+import RaiseConcern from '@/app/components/common/os-raise-concern';
 import CommonSelect from '@/app/components/common/os-select';
-import {formatStatus, quoteLineItemColumnForSync} from '@/app/utils/CONSTANTS';
+import {
+  concernDescription,
+  formatStatus,
+  quoteLineItemColumnForSync,
+} from '@/app/utils/CONSTANTS';
 import {Col, Row, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
+import GreenCheckIcon from '../../../../../public/assets/static/greenCheckIcon.svg';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {insertProduct} from '../../../../../redux/actions/product';
@@ -35,6 +42,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
   const [syncedNewValue, setNewSyncedValue] = useState<any>();
+  const [showRaiseConcernModal, setShowRaiseConcernModal] = useState<any>();
   const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
@@ -257,8 +265,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     if (finalOpportunityArray && syncTableData?.length > 0) {
       dispatch(insertOpportunityLineItem(finalOpportunityArray));
     }
-
-    router?.push(`/generateQuote?id=${Number(getQuoteID)}`);
+    setShowRaiseConcernModal(true);
   };
 
   return (
@@ -309,6 +316,29 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           clickHandler={syncTableDataNew}
         />
       </Row>
+
+      <OsModal
+        body={
+          <RaiseConcern
+            title="Concern Raised"
+            description={concernDescription}
+            image={GreenCheckIcon}
+            showTextArea={false}
+          />
+        }
+        singleButtonInCenter
+        bodyPadding={45}
+        width={500}
+        open={showRaiseConcernModal}
+        onCancel={() => {
+          setShowRaiseConcernModal(false);
+        }}
+        primaryButtonText="Done"
+        onOk={() => {
+          setShowRaiseConcernModal(false);
+          router?.push(`/generateQuote?id=${Number(getQuoteID)}`);
+        }}
+      />
     </>
   );
 };

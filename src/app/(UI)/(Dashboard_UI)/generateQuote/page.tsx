@@ -35,7 +35,6 @@ import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import RaiseConcernImg from '../../../../../public/assets/static/raiseConcern.svg';
-import GreenCheckIcon from '../../../../../public/assets/static/greenCheckIcon.svg';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {
@@ -551,7 +550,7 @@ const GenerateQuote: React.FC = () => {
           }}
         />
       )}
-      {/* <OsModal
+      <OsModal
         loading={loading}
         body={
           <RaiseConcern
@@ -574,30 +573,9 @@ const GenerateQuote: React.FC = () => {
         onOk={() => {
           form?.submit();
         }}
-      /> */}
-
-      <OsModal
-        loading={loading}
-        body={
-          <RaiseConcern
-            title="Concern Raised"
-            description="Your Concern has been raised to our support team. We are sorry for you experience and will try our best to provide you better experience next time."
-            image={GreenCheckIcon}
-            showTextArea={false}
-          />
-        }
-        singleButtonInCenter
-        bodyPadding={45}
-        width={500}
-        open={showRaiseConcernModal}
-        onCancel={() => {
-          setShowRaiseConcernModal(false);
-        }}
-        primaryButtonText="Done"
-        onOk={() => {
-          // setShowRaiseConcernModal(false);
-        }}
       />
+
+      
     </>
   );
 };
