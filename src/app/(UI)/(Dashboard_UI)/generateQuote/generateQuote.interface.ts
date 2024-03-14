@@ -27,4 +27,5 @@ export interface UploadFileInterface {
   addQuoteLineItem?: any;
   form?: FormInstance;
   showSelectFields?: boolean;
+  beforeUpload?: any;
 }

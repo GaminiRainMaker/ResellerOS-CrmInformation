@@ -9,10 +9,11 @@ import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import AddDistributor from '../os-add-distributor';
 import OsModal from '../os-modal';
+import {SelectFormItem} from '../os-oem-select/oem-select-styled';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
 import {OsDistriButorSelectInterface} from './os-distributor.interface';
-import {SelectFormItem} from '../os-oem-select/oem-select-styled';
+import {getDistributorByOemId} from '../../../../../redux/actions/quoteConfiguration';
 
 const queryParams: any = {
   distributor: null,
@@ -27,6 +28,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
   height,
   onChange,
   name = 'distributor_id',
+  quoteCreation = false,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -34,6 +36,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
   const {loading, data: DistributorData} = useAppSelector(
     (state) => state.distributor,
   );
+  const {data: QuoteConfigData} = useAppSelector((state) => state.quoteConfig);
   const [showDistributorModal, setShowDistributorModal] =
     useState<boolean>(false);
   const [distributorFilterOption, setDistributorFilterOption] = useState<any>();
@@ -64,6 +67,14 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
   useEffect(() => {
     dispatch(queryDistributor(queryParams));
   }, []);
+
+  // useEffect(() => {
+  //   if (quoteCreation) {
+  //     dispatch(getDistributorByOemId(Number(distributorValue)));
+  //   }
+  // }, [distributorValue]);
+
+  console.log('QuoteConfigData', QuoteConfigData);
 
   return (
     <>
