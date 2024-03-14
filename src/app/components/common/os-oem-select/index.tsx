@@ -15,6 +15,7 @@ import CommonSelect from '../os-select';
 import Typography from '../typography';
 import {SelectFormItem} from './oem-select-styled';
 import {OsOemSelectInterface} from './os-oem.interface';
+import {getOemByDistributorId} from '../../../../../redux/actions/quoteConfiguration';
 
 const OsOemSelect: FC<OsOemSelectInterface> = ({
   isRequired = false,
@@ -22,6 +23,7 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
   isAddNewOem = false,
   onChange,
   name = 'oem_id',
+  quoteCreation = false,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -42,6 +44,16 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
   );
 
   useEffect(() => {
+    dispatch(queryOEM({}));
+  }, []);
+
+  // useEffect(() => {
+  //   if (quoteCreation) {
+  //     dispatch(getOemByDistributorId(Number(oemValue)));
+  //   }
+  // }, [oemValue]);
+
+  useEffect(() => {
     const OemOptions =
       OemData &&
       OemData?.map((dataAddressItem: any) => ({
@@ -55,10 +67,6 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
 
     setFinalOemOptions(OemOptions);
   }, [JSON.stringify(OemData)]);
-
-  useEffect(() => {
-    dispatch(queryOEM({}));
-  }, []);
 
   return (
     <>

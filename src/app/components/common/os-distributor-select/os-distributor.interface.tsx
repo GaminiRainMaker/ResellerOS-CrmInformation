@@ -10,4 +10,5 @@ export interface OsDistriButorSelectInterface {
   label?: boolean;
   height?: number;
   onChange?: any;
+  quoteCreation?: boolean;
 }

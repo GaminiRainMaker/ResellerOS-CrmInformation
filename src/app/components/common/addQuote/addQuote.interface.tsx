@@ -9,7 +9,7 @@ export interface AddQuoteInterface {
   setUploadFileData: any;
   existingQuoteId?: number;
   uploadFileData: any;
-  loading: boolean;
+  loading?: boolean;
   buttonText: string;
   uploadForm?: any;
 }

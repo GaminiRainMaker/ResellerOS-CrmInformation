@@ -431,15 +431,6 @@ const GenerateQuote: React.FC = () => {
     }
   };
 
-  console.log(
-    'QuoteDataById',
-    quoteById?.concern,
-
-    'QuoteDataByIdLength',
-    quoteById?.concern?.length,
-    quoteById?.concern?.length > 0,
-  );
-
   return (
     <>
       {contextHolder}

@@ -8,4 +8,5 @@ export interface OsOemSelectInterface {
   oemValue?: string;
   isAddNewOem?: boolean;
   onChange?: any;
+  quoteCreation?: boolean;
 }
