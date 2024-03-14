@@ -6,7 +6,6 @@ import moment from 'moment';
 import {FC, useEffect, useState} from 'react';
 import OsModal from '@/app/components/common/os-modal';
 import UploadFile from '@/app/(UI)/(Dashboard_UI)/generateQuote/UploadFile';
-import axios from 'axios';
 import {convertFileToBase64} from '@/app/utils/base';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
@@ -27,11 +26,6 @@ import {AddQuoteInterface, FormattedData} from './addQuote.interface';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {uploadToAws} from '../../../../../redux/actions/upload';
 
-interface FileWithBase64 {
-  file: File;
-  base64String: string;
-}
-
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
   existingQuoteId,
@@ -49,64 +43,28 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false);
-  const [filesWithBase64, setFilesWithBase64] = useState<FileWithBase64[]>([]);
 
   useEffect(() => {
     dispatch(getAllGeneralSetting(''));
   }, []);
 
-  // Define your Nanonets API key and endpoint
-  const API_KEY = '198c15fd-9680-11ed-82f6-7a0abc6e8cc8';
-  const API_ENDPOINT =
-    //   prevoius
-    // 'https://app.nanonets.com/api/v2/OCR/Model/91814dd8-75f6-44d7-aad3-776df449b59f/LabelFile/';
-    // new4
-    'https://app.nanonets.com/api/v2/OCR/Model/a0b1d3b7-c9c1-445a-b0f0-197a4023a9d2/LabelFile/';
-
-  const sendDataToNanonets = async (base64Data: string, file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    try {
-      setLoading(true);
-      const response = await axios.post(API_ENDPOINT, formData, {
-        headers: {
-          Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString(
-            'base64',
-          )}`,
-          'Content-Type': 'application/pdf',
-        },
-      });
-
-      if (response) {
-        dispatch(uploadToAws({document: base64Data})).then((payload: any) => {
-          const pdfUrl = payload?.payload?.data?.Location;
-          setUploadFileData((filedData: any) => [
-            ...filedData,
-            {...response, pdf_url: pdfUrl},
-          ]);
-        });
-      }
-      setLoading(false);
-      return response;
-    } catch (error) {
-      setLoading(false);
-      throw error;
-    }
-  };
-
   const beforeUpload = (file: File) => {
-    setUploadFileData((filedData: any) => [...filedData, file]);
-    convertFileToBase64(file).then((base64String: string) => {
-      // sendDataToNanonets(base64String, file);
-      setFilesWithBase64((prevFiles) => [...prevFiles, {file, base64String}]);
-    });
-    //   .catch((error) => {
-    //     message.error('Error converting file to base64', error);
-    //   });
-    // return false;
+    const obj: any = {...file};
+    convertFileToBase64(file)
+      .then((base64String: string) => {
+        obj.base64 = base64String;
+        setLoading(true);
+        dispatch(uploadToAws({document: base64String})).then((payload: any) => {
+          const pdfUrl = payload?.payload?.data?.Location;
+          obj.pdf_url = pdfUrl;
+        });
+        setUploadFileData((fileData: any) => [...fileData, obj]);
+        setLoading(false);
+      })
+      .catch((error) => {
+        message.error('Error converting file to base64', error);
+      });
   };
-
-  console.log('base64StringData', filesWithBase64);
 
   const genericFun = (payloadArr: any, Arr: any) => {
     const newArr = Arr?.map((item: any) => ({
@@ -119,14 +77,15 @@ const AddQuote: FC<AddQuoteInterface> = ({
   };
 
   const addQuoteLineItem = async (
-    customerId?: string,
-    opportunityId?: string,
+    customerId: string,
+    opportunityId: string,
+    updatedArr: any,
   ) => {
     const labelOcrMap: any = [];
     let formattedArray: any = [];
     const formattedData: FormattedData = {};
 
-    uploadFileData?.map((uploadFileDataItem: any) => {
+    updatedArr?.map((uploadFileDataItem: any) => {
       const tempLabelOcrMap: any = {};
       const arrayOfTableObjects =
         uploadFileDataItem?.data?.result?.[0]?.prediction?.filter(

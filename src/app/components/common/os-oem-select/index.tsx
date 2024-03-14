@@ -58,6 +58,7 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
       OemData &&
       OemData?.map((dataAddressItem: any) => ({
         value: dataAddressItem?.id,
+        model_id: dataAddressItem?.model_id,
         label: (
           <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
             {capitalizeFirstLetter(dataAddressItem?.oem)}

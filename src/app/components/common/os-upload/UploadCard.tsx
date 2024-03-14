@@ -14,7 +14,6 @@ import {Divider} from '../antd/Divider';
 import OsOemSelect from '../os-oem-select';
 
 const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
-  console.log('uploadFileData', uploadFileData);
   const [token] = useThemeToken();
   const [distributorValue, setDistributorValue] = useState<any>();
   const [oemValue, setOemValue] = useState<any>();
@@ -52,52 +51,57 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
           <Col span={2} />
         </Row>
       )}
-      {uploadFileData?.map((item: any) => {
-        console.log('name===>', item?.name);
-        return (
-          <Form key={item?.uid} layout="vertical">
-            <Row key={item?.uid} justify="space-between" gutter={[0, 8]}>
-              <Col span={8}>
-                <Space size={12}>
-                  <Image src={PdfImg} alt="PdfImg" />
-                  <Typography name="Body 4/Medium">{item?.name}</Typography>
-                </Space>
-              </Col>
-              <Col span={6}>
-                <OsDistributorSelect
-                  name="distributor"
-                  onChange={(e: number) => {
-                    setDistributorValue(e);
-                  }}
-                  quoteCreation
-                  distributorValue={distributorValue}
-                />
-              </Col>
-              <Col span={6}>
-                <OsOemSelect
-                  name="oem"
-                  onChange={(e: number) => {
-                    setOemValue(e);
-                  }}
-                  oemValue={oemValue}
-                  quoteCreation
-                />
-              </Col>
-              <Col span={2}>
-                <TrashIcon
-                  cursor="pointer"
-                  width={20}
-                  color={token?.colorError}
-                  onClick={() => {
-                    removeFile(item?.uid);
-                  }}
-                />
-              </Col>
-            </Row>
-            <Divider />
-          </Form>
-        );
-      })}
+      {uploadFileData?.map((item: any, index: number) => (
+        <Form key={item?.uid} layout="vertical">
+          <Row key={item?.uid} justify="space-between" gutter={[0, 8]}>
+            <Col span={8}>
+              <Space size={12}>
+                <Image src={PdfImg} alt="PdfImg" />
+                <Typography name="Body 4/Medium">{item?.name}</Typography>
+              </Space>
+            </Col>
+            <Col span={6}>
+              <OsDistributorSelect
+                name="distributor"
+                onChange={(e: number, dropdownValue: any) => {
+                  const arr = [...uploadFileData];
+                  const obj = {...arr[index]};
+                  obj.distributor_id = e;
+                  obj.model_id = dropdownValue.model_id;
+                  setUploadFileData(arr);
+                }}
+                quoteCreation
+                distributorValue={item.distributor_id}
+              />
+            </Col>
+            <Col span={6}>
+              <OsOemSelect
+                name="oem"
+                onChange={(e: number, dropdownValue: any) => {
+                  const arr = [...uploadFileData];
+                  const obj = {...arr[index]};
+                  obj.oem_id = e;
+                  obj.model_id = dropdownValue.model_id;
+                  setUploadFileData(arr);
+                }}
+                oemValue={item.oem_id}
+                quoteCreation
+              />
+            </Col>
+            <Col span={2}>
+              <TrashIcon
+                cursor="pointer"
+                width={20}
+                color={token?.colorError}
+                onClick={() => {
+                  removeFile(item?.uid);
+                }}
+              />
+            </Col>
+          </Row>
+          <Divider />
+        </Form>
+      ))}
     </div>
   );
 };
