@@ -13,7 +13,10 @@ import {SelectFormItem} from '../os-oem-select/oem-select-styled';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
 import {OsDistriButorSelectInterface} from './os-distributor.interface';
-import {getDistributorByOemId} from '../../../../../redux/actions/quoteConfiguration';
+import {
+  getDistributorByOemId,
+  queryQuoteConfiguration,
+} from '../../../../../redux/actions/quoteConfiguration';
 
 const queryParams: any = {
   distributor: null,
@@ -37,7 +40,9 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
   const {loading, data: DistributorData} = useAppSelector(
     (state) => state.distributor,
   );
-  const {distributorDataByOemId} = useAppSelector((state) => state.quoteConfig);
+  const {distributorDataByOemId, data: quoteConfigData} = useAppSelector(
+    (state) => state.quoteConfig,
+  );
   const [showDistributorModal, setShowDistributorModal] =
     useState<boolean>(false);
   const [distributorFilterOption, setDistributorFilterOption] = useState<any>();
@@ -52,6 +57,14 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
   useEffect(() => {
     dispatch(queryDistributor(queryParams));
   }, []);
+
+  useEffect(() => {
+    if (quoteCreation) {
+      dispatch(queryQuoteConfiguration({}));
+    }
+  }, [quoteCreation]);
+
+  console.log('quoteConfigData', quoteConfigData);
 
   useEffect(() => {
     if (quoteCreation && oemValue) {
@@ -72,6 +85,19 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
       distributorFinalOptions =
         distributorDataByOemId &&
         distributorDataByOemId?.map((item: any) => ({
+          label: (
+            <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+              {capitalizeFirstLetter(item?.Distributor?.distributor)}
+            </Typography>
+          ),
+          key: item?.Distributor?.id,
+          // model_id: item.Distributor?.model_id,
+          value: item?.Distributor?.id,
+        }));
+    } else if (quoteCreation) {
+      distributorFinalOptions =
+        quoteConfigData &&
+        quoteConfigData?.map((item: any) => ({
           label: (
             <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
               {capitalizeFirstLetter(item?.Distributor?.distributor)}
