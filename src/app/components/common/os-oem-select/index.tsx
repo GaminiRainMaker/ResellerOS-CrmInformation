@@ -29,7 +29,9 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
-  const {oemDatByDistributorId} = useAppSelector((state) => state.quoteConfig);
+  const {oemDatByDistributorId, data: quoteConfigData} = useAppSelector(
+    (state) => state.quoteConfig,
+  );
   const [showOemModal, setShowOemModal] = useState<boolean>(false);
   const [finalOemOptions, setFinalOemOptions] = useState<any>();
 
@@ -66,6 +68,19 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
       oemFinalOptions =
         oemDatByDistributorId &&
         oemDatByDistributorId?.map((item: any) => ({
+          label: (
+            <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+              {capitalizeFirstLetter(item?.Oem?.oem)}
+            </Typography>
+          ),
+          key: item?.Oem?.id,
+          // model_id: item.Oem?.model_id,
+          value: item.Oem?.id,
+        }));
+    } else if (quoteCreation) {
+      oemFinalOptions =
+        quoteConfigData &&
+        quoteConfigData?.map((item: any) => ({
           label: (
             <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
               {capitalizeFirstLetter(item?.Oem?.oem)}
