@@ -28,7 +28,7 @@ import OsModal from '@/app/components/common/os-modal';
 import RaiseConcern from '@/app/components/common/os-raise-concern';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import {selectData} from '@/app/utils/CONSTANTS';
+import {concernDescription, selectData} from '@/app/utils/CONSTANTS';
 import {formatDate, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
@@ -53,6 +53,7 @@ import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
 import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
+import GreenCheckIcon from '../../../../../public/assets/static/greenCheckIcon.svg';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -75,6 +76,10 @@ const GenerateQuote: React.FC = () => {
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
   const [showRaiseConcernModal, setShowRaiseConcernModal] =
     useState<boolean>(false);
+  const [showAfterRaiseConcernModal, setShowAfterRaiseConcernModal] =
+    useState<boolean>(false);
+  const [showAlreadyRaiseConcernModal, setShowAlreadyRaiseConcernModal] =
+    useState<boolean>(false);
   const [isDeleteInputDetailModal, setIsDeleteInputDetailModal] =
     useState<boolean>(false);
   const [selectedFilter, setSelectedFilter] = useState<string>('');
@@ -82,6 +87,7 @@ const GenerateQuote: React.FC = () => {
   const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] =
     useState<any>();
   const {data: tableColumnData} = useAppSelector((state) => state.tableColumn);
+  const {quoteById} = useAppSelector((state) => state.quote);
   const {data: contractSettingData} = useAppSelector(
     (state) => state.contractSetting,
   );
@@ -253,7 +259,11 @@ const GenerateQuote: React.FC = () => {
           name="Body 3/Regular"
           cursor="pointer"
           onClick={() => {
-            setShowRaiseConcernModal(true);
+            if (quoteById?.concern?.length > 0) {
+              setShowAlreadyRaiseConcernModal(true);
+            } else {
+              setShowRaiseConcernModal(true);
+            }
             // router?.push(`/updation?id=${getQuoteID}`);
             // router?.push(
             //   `/fileEditor?id=${getQuoteID}&quoteExist=${quoteLineItemExist}`,
@@ -415,13 +425,20 @@ const GenerateQuote: React.FC = () => {
     } else {
       const data = {concern: concernData?.concern_text, id: getQuoteID};
       dispatch(updateQuoteConcern(data));
-      router?.push(
-        `/fileEditor?id=${getQuoteID}&quoteExist=${quoteLineItemExist}`,
-      );
       setShowRaiseConcernModal(false);
+      setShowAfterRaiseConcernModal(true);
       form?.resetFields();
     }
   };
+
+  console.log(
+    'QuoteDataById',
+    quoteById?.concern,
+
+    'QuoteDataByIdLength',
+    quoteById?.concern?.length,
+    quoteById?.concern?.length > 0,
+  );
 
   return (
     <>
@@ -569,13 +586,57 @@ const GenerateQuote: React.FC = () => {
         }}
         destroyOnClose
         secondaryButtonText="Cancel"
-        primaryButtonText="Update Line Items"
+        primaryButtonText="Raise Concern"
         onOk={() => {
           form?.submit();
         }}
       />
 
-      
+      <OsModal
+        body={
+          <RaiseConcern
+            title="Concern Raised"
+            description={concernDescription}
+            image={GreenCheckIcon}
+            showTextArea={false}
+          />
+        }
+        singleButtonInCenter
+        bodyPadding={45}
+        width={500}
+        open={showAfterRaiseConcernModal}
+        onCancel={() => {
+          setShowAfterRaiseConcernModal(false);
+        }}
+        primaryButtonText="Update Line Item"
+        onOk={() => {
+          setShowAfterRaiseConcernModal(false);
+          router?.push(
+            `/fileEditor?id=${getQuoteID}&quoteExist=${quoteLineItemExist}`,
+          );
+        }}
+      />
+      <OsModal
+        body={
+          <RaiseConcern
+            title="Concern Already Raised"
+            description="Your concern already raised."
+            image={GreenCheckIcon}
+            showTextArea={false}
+          />
+        }
+        singleButtonInCenter
+        bodyPadding={45}
+        width={500}
+        open={showAlreadyRaiseConcernModal}
+        onCancel={() => {
+          setShowAlreadyRaiseConcernModal(false);
+        }}
+        primaryButtonText="Done"
+        onOk={() => {
+          setShowAlreadyRaiseConcernModal(false);
+        }}
+      />
     </>
   );
 };
