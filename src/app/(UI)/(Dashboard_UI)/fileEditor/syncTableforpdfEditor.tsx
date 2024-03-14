@@ -73,7 +73,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       }
       // if(mergeItem)
     });
-    console.log(newSyncTableData, 'mergeedColumn');
     setNewSyncedValue(newSyncTableData);
   }, []);
 
