@@ -1,17 +1,16 @@
 /* eslint-disable array-callback-return */
 import {TrashIcon} from '@heroicons/react/24/outline';
+import {Form} from 'antd';
 import Image from 'next/image';
 import {FC, useState} from 'react';
-import {Form} from 'antd';
 import PdfImg from '../../../../../public/assets/static/pdf.svg';
+import {Divider} from '../antd/Divider';
 import {Col, Row} from '../antd/Grid';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
-import Typography from '../typography';
-import {UploadCardAvatarStyle, UploadCardColStyle} from './styled-components';
 import OsDistributorSelect from '../os-distributor-select';
-import {Divider} from '../antd/Divider';
 import OsOemSelect from '../os-oem-select';
+import Typography from '../typography';
 
 const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
   const [token] = useThemeToken();
@@ -28,6 +27,8 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
       prev.filter((prevIndex: any) => prevIndex?.uid !== uid),
     );
   };
+
+  console.log('uploadFileData', uploadFileData);
 
   return (
     <div>
@@ -67,11 +68,12 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
                   const arr = [...uploadFileData];
                   const obj = {...arr[index]};
                   obj.distributor_id = e;
-                  obj.model_id = dropdownValue.model_id;
+                  obj.model_id = dropdownValue?.model_id;
                   setUploadFileData(arr);
                 }}
                 quoteCreation
-                distributorValue={item.distributor_id}
+                distributorValue={item?.distributor_id}
+                oemValue={item?.oem_id}
               />
             </Col>
             <Col span={6}>
@@ -81,10 +83,11 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
                   const arr = [...uploadFileData];
                   const obj = {...arr[index]};
                   obj.oem_id = e;
-                  obj.model_id = dropdownValue.model_id;
+                  obj.model_id = dropdownValue?.model_id;
                   setUploadFileData(arr);
                 }}
-                oemValue={item.oem_id}
+                oemValue={item?.oem_id}
+                distributorValue={item?.distributor_id}
                 quoteCreation
               />
             </Col>

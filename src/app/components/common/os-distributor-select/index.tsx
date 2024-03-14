@@ -29,6 +29,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
   onChange,
   name = 'distributor_id',
   quoteCreation = false,
+  oemValue,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -36,7 +37,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
   const {loading, data: DistributorData} = useAppSelector(
     (state) => state.distributor,
   );
-  const {data: QuoteConfigData} = useAppSelector((state) => state.quoteConfig);
+  const {distributorDataByOemId} = useAppSelector((state) => state.quoteConfig);
   const [showDistributorModal, setShowDistributorModal] =
     useState<boolean>(false);
   const [distributorFilterOption, setDistributorFilterOption] = useState<any>();
@@ -49,33 +50,54 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
   };
 
   useEffect(() => {
-    const distributorOptions =
-      DistributorData &&
-      DistributorData?.map((dataAddressItem: any) => ({
-        key: dataAddressItem?.id,
-        model_id: dataAddressItem?.model_id,
-        value: dataAddressItem?.id,
-        label: (
-          <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-            {capitalizeFirstLetter(dataAddressItem?.distributor)}
-          </Typography>
-        ),
-      }));
-
-    setDistributorFilterOption(distributorOptions);
-  }, [JSON.stringify(DistributorData)]);
-
-  useEffect(() => {
     dispatch(queryDistributor(queryParams));
   }, []);
 
-  // useEffect(() => {
-  //   if (quoteCreation) {
-  //     dispatch(getDistributorByOemId(Number(distributorValue)));
-  //   }
-  // }, [distributorValue]);
+  useEffect(() => {
+    if (quoteCreation && oemValue) {
+      dispatch(getDistributorByOemId(Number(oemValue)));
+    }
+  }, [oemValue]);
 
-  console.log('QuoteConfigData', QuoteConfigData);
+  console.log(
+    'QuoteConfigData===>distributorDataByOemId',
+    distributorDataByOemId,
+    oemValue,
+  );
+
+  useEffect(() => {
+    let distributorFinalOptions = [];
+
+    if (quoteCreation && oemValue) {
+      distributorFinalOptions =
+        distributorDataByOemId &&
+        distributorDataByOemId?.map((item: any) => ({
+          label: (
+            <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+              {capitalizeFirstLetter(item?.Distributor?.distributor)}
+            </Typography>
+          ),
+          key: item?.Distributor?.id,
+          // model_id: item.Distributor?.model_id,
+          value: item?.Distributor?.id,
+        }));
+    } else {
+      distributorFinalOptions =
+        DistributorData &&
+        DistributorData?.map((dataAddressItem: any) => ({
+          key: dataAddressItem?.id,
+          model_id: dataAddressItem?.model_id,
+          value: dataAddressItem?.id,
+          label: (
+            <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+              {capitalizeFirstLetter(dataAddressItem?.distributor)}
+            </Typography>
+          ),
+        }));
+    }
+
+    setDistributorFilterOption(distributorFinalOptions);
+  }, [JSON.stringify(DistributorData), JSON.stringify(distributorDataByOemId)]);
 
   return (
     <>
@@ -87,7 +109,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
         <CommonSelect
           placeholder="Select"
           allowClear
-          style={{width: '100%', height: `${height}px`}}
+          style={{width: '100%', height: '38px'}}
           options={distributorFilterOption}
           defaultValue={distributorValue}
           onChange={onChange}

@@ -13,12 +13,16 @@ type QuoteConfigurationState = {
   error: string | null;
   data: any;
   quoteConfiguration: any;
+  distributorDataByOemId: any;
+  oemDatByDistributorId: any;
 };
 const initialState: QuoteConfigurationState = {
   loading: false,
   error: null,
   data: [],
   quoteConfiguration: [],
+  distributorDataByOemId: [],
+  oemDatByDistributorId: [],
 };
 
 const quoteConfigurationSlice = createSlice({
@@ -111,7 +115,7 @@ const quoteConfigurationSlice = createSlice({
         getOemByDistributorId.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.oemDatByDistributorId = action.payload;
         },
       )
       .addCase(
@@ -129,7 +133,7 @@ const quoteConfigurationSlice = createSlice({
         getDistributorByOemId.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.distributorDataByOemId = action.payload;
         },
       )
       .addCase(

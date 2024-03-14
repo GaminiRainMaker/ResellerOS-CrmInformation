@@ -11,4 +11,5 @@ export interface OsDistriButorSelectInterface {
   height?: number;
   onChange?: any;
   quoteCreation?: boolean;
+  oemValue?: number;
 }

@@ -24,11 +24,12 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
   onChange,
   name = 'oem_id',
   quoteCreation = false,
+  distributorValue,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
-
+  const {oemDatByDistributorId} = useAppSelector((state) => state.quoteConfig);
   const [showOemModal, setShowOemModal] = useState<boolean>(false);
   const [finalOemOptions, setFinalOemOptions] = useState<any>();
 
@@ -47,27 +48,49 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
     dispatch(queryOEM({}));
   }, []);
 
-  // useEffect(() => {
-  //   if (quoteCreation) {
-  //     dispatch(getOemByDistributorId(Number(oemValue)));
-  //   }
-  // }, [oemValue]);
+  useEffect(() => {
+    if (quoteCreation && distributorValue) {
+      dispatch(getOemByDistributorId(Number(distributorValue)));
+    }
+  }, [distributorValue]);
+
+  console.log(
+    'QuoteConfigData===>oemDatByDistributorId',
+    oemDatByDistributorId,
+    distributorValue,
+  );
 
   useEffect(() => {
-    const OemOptions =
-      OemData &&
-      OemData?.map((dataAddressItem: any) => ({
-        value: dataAddressItem?.id,
-        model_id: dataAddressItem?.model_id,
-        label: (
-          <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-            {capitalizeFirstLetter(dataAddressItem?.oem)}
-          </Typography>
-        ),
-      }));
+    let oemFinalOptions = [];
+    if (quoteCreation && distributorValue) {
+      oemFinalOptions =
+        oemDatByDistributorId &&
+        oemDatByDistributorId?.map((item: any) => ({
+          label: (
+            <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+              {capitalizeFirstLetter(item?.Oem?.oem)}
+            </Typography>
+          ),
+          key: item?.Oem?.id,
+          // model_id: item.Oem?.model_id,
+          value: item.Oem?.id,
+        }));
+    } else {
+      oemFinalOptions =
+        OemData &&
+        OemData?.map((dataAddressItem: any) => ({
+          value: dataAddressItem?.id,
+          model_id: dataAddressItem?.model_id,
+          label: (
+            <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+              {capitalizeFirstLetter(dataAddressItem?.oem)}
+            </Typography>
+          ),
+        }));
+    }
 
-    setFinalOemOptions(OemOptions);
-  }, [JSON.stringify(OemData)]);
+    setFinalOemOptions(oemFinalOptions);
+  }, [JSON.stringify(OemData), JSON.stringify(oemDatByDistributorId)]);
 
   return (
     <>

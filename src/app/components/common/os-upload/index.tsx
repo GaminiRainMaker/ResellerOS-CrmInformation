@@ -68,6 +68,8 @@ const OsUpload: React.FC<any> = ({
       throw error;
     }
   };
+
+
   const onFinish = async () => {
     const customerId = form.getFieldValue('customer_id');
     const opportunityId = form.getFieldValue('opportunity_id');
@@ -85,7 +87,6 @@ const OsUpload: React.FC<any> = ({
     }
 
     addQuoteLineItem(customerId, opportunityId, newArr);
-    // console.log('customerId', customerId, opportunityId);
   };
 
   return (

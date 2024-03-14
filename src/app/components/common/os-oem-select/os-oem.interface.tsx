@@ -9,4 +9,5 @@ export interface OsOemSelectInterface {
   isAddNewOem?: boolean;
   onChange?: any;
   quoteCreation?: boolean;
+  distributorValue?: number;
 }
