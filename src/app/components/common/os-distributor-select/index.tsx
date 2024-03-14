@@ -56,8 +56,13 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
 
   useEffect(() => {
     dispatch(queryDistributor(queryParams));
-    dispatch(queryQuoteConfiguration({}));
   }, []);
+
+  useEffect(() => {
+    if (quoteCreation) {
+      dispatch(queryQuoteConfiguration({}));
+    }
+  }, [quoteCreation]);
 
   console.log('quoteConfigData', quoteConfigData);
 
