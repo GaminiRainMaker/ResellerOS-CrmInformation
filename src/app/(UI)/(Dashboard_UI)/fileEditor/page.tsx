@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable array-callback-return */
 /* eslint-disable react/jsx-no-bind */
@@ -84,16 +85,11 @@ const EditorFile = () => {
     NumberOf: number,
   ) => {
     const newArrr = quoteItems?.length > 0 ? [...quoteItems] : [];
-
-    newArrr?.[indexOFTable || 0]?.splice(indexOfDeletion, NumberOf);
+    newArrr?.[indexOFTable || 0]
+      .slice(0, indexOfDeletion)
+      .concat(newArrr?.[indexOFTable || 0].slice(indexOfDeletion + NumberOf));
 
     setQuoteItems(newArrr);
-  };
-
-  const deleteTable = (indexOfTable: number) => {
-    const newTableData: any = quoteItems?.length > 0 ? [...quoteItems] : [];
-    newTableData?.splice(indexOfTable, 1);
-    setQuoteItems(newTableData);
   };
 
   const mergeTableData = () => {
@@ -113,9 +109,9 @@ const EditorFile = () => {
     quoteItems?.map((itemOFMainQuote: any, indexOfMain: number) => {
       const newObj: any = {};
       itemOFMainQuote?.map((innerMainItem: any) => {
-        myAllKey?.map((keyItem: string) => {
+        myAllKey?.map((keyItem: string, indexoddd: number) => {
           if (!innerMainItem[keyItem]) {
-            newObj[keyItem] = '';
+            newObj[keyItem] = `value${indexOfMain}`;
           } else {
             newObj[keyItem] = innerMainItem?.[keyItem];
           }
@@ -123,9 +119,21 @@ const EditorFile = () => {
         newArrOfObjectForMerged?.push(newObj);
       });
     });
+
     setMergedVaalues(newArrOfObjectForMerged);
   };
 
+  const deleteTable = (indexOfTable: number) => {
+    const newTableData: any = quoteItems?.length > 0 ? [...quoteItems] : [];
+    newTableData?.splice(indexOfTable, 1);
+
+    setQuoteItems(newTableData);
+    setTimeout(() => {
+      if (newTableData?.length === 1) {
+        mergeTableData();
+      }
+    }, 100);
+  };
   // ============================= After Merged Value Update Delete ==================
 
   const updateRowsValue = (
@@ -146,8 +154,9 @@ const EditorFile = () => {
   };
   const deleteRowsItems = (indexOfDeletion: number, NumberOf: number) => {
     const newArrr = mergedValue?.length > 0 ? [...mergedValue] : [];
-
-    newArrr?.splice(indexOfDeletion, NumberOf);
+    newArrr
+      ?.slice(0, indexOfDeletion)
+      .concat(newArrr?.slice(indexOfDeletion + NumberOf));
 
     setMergedVaalues(newArrr);
   };
@@ -233,9 +242,10 @@ const EditorFile = () => {
                 addClassesToRows('', '', '', '', '', '', quoteItems);
               }}
               afterRemoveRow={(change, source) => {
-                deleteRowsItems(change, source);
+                deleteRowsItems(source, change);
               }}
               afterChange={(change: any, source) => {
+                console.log('433223423', change, source);
                 if (change) {
                   updateRowsValue(
                     change?.[0]?.[0],
