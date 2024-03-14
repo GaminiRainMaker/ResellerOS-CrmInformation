@@ -11,12 +11,13 @@ import useThemeToken from '../hooks/useThemeToken';
 import OsDistributorSelect from '../os-distributor-select';
 import OsOemSelect from '../os-oem-select';
 import Typography from '../typography';
+import {useAppSelector} from '../../../../../redux/hook';
 
 const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
   const [token] = useThemeToken();
   const [distributorValue, setDistributorValue] = useState<any>();
   const [oemValue, setOemValue] = useState<any>();
-
+  const {data: quoteConfigData} = useAppSelector((state) => state.quoteConfig);
   const removeFile = (uid: number | undefined | string) => {
     // const filtered = uploadFileData.filter(
     //   (p: any) => p?.id !== id,
@@ -64,11 +65,16 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
             <Col span={6}>
               <OsDistributorSelect
                 name="distributor"
-                onChange={(e: number, dropdownValue: any) => {
+                onChange={(e: number) => {
                   const arr = [...uploadFileData];
                   const obj = {...arr[index]};
                   obj.distributor_id = e;
-                  obj.model_id = dropdownValue?.model_id;
+                  const data = quoteConfigData.find(
+                    (quoteData: any) =>
+                      quoteData.distributor_id === e &&
+                      (obj?.oem_id ? quoteData.oem_id === obj.oem_id : true),
+                  );
+                  obj.model_id = data?.model_id;
                   setUploadFileData(arr);
                 }}
                 quoteCreation
@@ -83,6 +89,14 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
                   const arr = [...uploadFileData];
                   const obj = {...arr[index]};
                   obj.oem_id = e;
+                  const data = quoteConfigData.find(
+                    (quoteData: any) =>
+                      quoteData.oem_id === e &&
+                      (obj?.distributor_id
+                        ? quoteData.distributor_id === obj.distributor_id
+                        : true),
+                  );
+                  obj.model_id = data?.model_id;
                   obj.model_id = dropdownValue?.model_id;
                   setUploadFileData(arr);
                 }}

@@ -56,56 +56,41 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
     }
   }, [distributorValue]);
 
-  console.log(
-    'QuoteConfigData===>oemDatByDistributorId',
-    oemDatByDistributorId,
-    distributorValue,
-  );
-
   useEffect(() => {
-    let oemFinalOptions = [];
+    const oemFinalOptions = [];
+    let finalArr = [];
     if (quoteCreation && distributorValue) {
-      oemFinalOptions =
-        oemDatByDistributorId &&
-        oemDatByDistributorId?.map((item: any) => ({
-          label: (
-            <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-              {capitalizeFirstLetter(item?.Oem?.oem)}
-            </Typography>
-          ),
-          key: item?.Oem?.id,
-          // model_id: item.Oem?.model_id,
-          value: item.Oem?.id,
-        }));
+      finalArr = oemDatByDistributorId;
     } else if (quoteCreation) {
-      oemFinalOptions =
-        quoteConfigData &&
-        quoteConfigData?.map((item: any) => ({
+      finalArr = quoteConfigData;
+    } else {
+      finalArr = OemData;
+    }
+    for (let i = 0; i < finalArr.length; i++) {
+      const item = finalArr[i];
+      const index = oemFinalOptions.findIndex(
+        (optionItem) => item.Oem?.id === optionItem.value,
+      );
+      if (index === -1) {
+        const obj = {
           label: (
             <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
               {capitalizeFirstLetter(item?.Oem?.oem)}
             </Typography>
           ),
           key: item?.Oem?.id,
-          // model_id: item.Oem?.model_id,
           value: item.Oem?.id,
-        }));
-    } else {
-      oemFinalOptions =
-        OemData &&
-        OemData?.map((dataAddressItem: any) => ({
-          value: dataAddressItem?.id,
-          model_id: dataAddressItem?.model_id,
-          label: (
-            <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-              {capitalizeFirstLetter(dataAddressItem?.oem)}
-            </Typography>
-          ),
-        }));
+        };
+        oemFinalOptions.push(obj);
+      }
     }
 
     setFinalOemOptions(oemFinalOptions);
-  }, [JSON.stringify(OemData), JSON.stringify(oemDatByDistributorId)]);
+  }, [
+    JSON.stringify(OemData),
+    JSON.stringify(oemDatByDistributorId),
+    JSON.stringify(quoteConfigData),
+  ]);
 
   return (
     <>

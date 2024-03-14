@@ -74,47 +74,33 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
   );
 
   useEffect(() => {
-    let distributorFinalOptions = [];
-
+    const distributorFinalOptions = [];
+    let finalArr = [];
     if (quoteCreation && oemValue) {
-      distributorFinalOptions =
-        distributorDataByOemId &&
-        distributorDataByOemId?.map((item: any) => ({
-          label: (
-            <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-              {capitalizeFirstLetter(item?.Distributor?.distributor)}
-            </Typography>
-          ),
-          key: item?.Distributor?.id,
-          // model_id: item.Distributor?.model_id,
-          value: item?.Distributor?.id,
-        }));
+      finalArr = distributorDataByOemId;
     } else if (quoteCreation) {
-      distributorFinalOptions =
-        quoteConfigData &&
-        quoteConfigData?.map((item: any) => ({
+      finalArr = quoteConfigData;
+    } else {
+      finalArr = DistributorData;
+    }
+    for (let i = 0; i < finalArr.length; i++) {
+      const item = finalArr[i];
+      const index = distributorFinalOptions.findIndex(
+        (optionItem) => item?.Distributor?.id === optionItem.value,
+      );
+      if (index === -1) {
+        const obj = {
           label: (
             <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
               {capitalizeFirstLetter(item?.Distributor?.distributor)}
             </Typography>
           ),
           key: item?.Distributor?.id,
-          // model_id: item.Distributor?.model_id,
+          model_id: item.Distributor?.model_id,
           value: item?.Distributor?.id,
-        }));
-    } else {
-      distributorFinalOptions =
-        DistributorData &&
-        DistributorData?.map((dataAddressItem: any) => ({
-          key: dataAddressItem?.id,
-          model_id: dataAddressItem?.model_id,
-          value: dataAddressItem?.id,
-          label: (
-            <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-              {capitalizeFirstLetter(dataAddressItem?.distributor)}
-            </Typography>
-          ),
-        }));
+        };
+        distributorFinalOptions.push(obj);
+      }
     }
 
     setDistributorFilterOption(distributorFinalOptions);
@@ -122,11 +108,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
 
   return (
     <>
-      <SelectFormItem
-        label={label ? 'Distributor' : ''}
-        name={name}
-        // rules={[{required: isRequired, message: 'Please Select Distributor!'}]}
-      >
+      <SelectFormItem label={label ? 'Distributor' : ''} name={name}>
         <CommonSelect
           placeholder="Select"
           allowClear
