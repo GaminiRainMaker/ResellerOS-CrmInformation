@@ -5,7 +5,7 @@ import {
   insertQuoteConfiguration,
   queryQuoteConfiguration,
   updateQuoteConfiguration,
-  deleteQuoteConfiguration,
+  deleteQuoteConfiguration,getDistributorByOemId,getOemByDistributorId
 } from '../actions/quoteConfiguration';
 
 type QuoteConfigurationState = {
@@ -102,7 +102,43 @@ const quoteConfigurationSlice = createSlice({
           state.loading = false;
           state.error = action.payload;
         },
-      );
+      )
+      .addCase(getOemByDistributorId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getOemByDistributorId.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getOemByDistributorId.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getDistributorByOemId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getDistributorByOemId.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getDistributorByOemId.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
   },
 });
 

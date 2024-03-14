@@ -51,16 +51,6 @@ const AllQuote: React.FC = () => {
     );
   };
 
-  // const checkCombinationExists = (checkCombination: any) => {
-  //   const exists = quoteConfigData.some(
-  //     (item: any) =>
-  //       item?.distributor_id === checkCombination.distributor_id &&
-  //       item?.oem_id === checkCombination.oem_id,
-  //   );
-  //   if (exists) {
-  //     openNotificationWithIcon();
-  //   }
-  // };
 
   const columns = [
     {
