@@ -1,31 +1,77 @@
 'use client';
 
-import {Space} from '@/app/components/common/antd/Space';
-import React from 'react';
 import {Col, Row} from '@/app/components/common/antd/Grid';
-import Typography from '@/app/components/common/typography';
-import OsButton from '@/app/components/common/os-button';
-import {PlusIcon} from '@heroicons/react/24/outline';
-import OsDropdown from '@/app/components/common/os-dropdown';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import OsTabs from '@/app/components/common/os-tabs';
-import {Form} from 'antd';
+import OsButton from '@/app/components/common/os-button';
+import OsDropdown from '@/app/components/common/os-dropdown';
 import CommonSelect from '@/app/components/common/os-select';
+import OsStatusWrapper from '@/app/components/common/os-status';
+import OsTable from '@/app/components/common/os-table';
+import OsTabs from '@/app/components/common/os-tabs';
+import Typography from '@/app/components/common/typography';
+import {standardAttributesData, templateDummyData} from '@/app/utils/CONSTANTS';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import {Form} from 'antd';
+import {useState} from 'react';
 import SuperAdminDealRegAnalytic from './superAdminDealRegAnalytic';
+import {standardAttributes, templateColumns} from './templateColumns';
 
 const SuperAdminDealReg = () => {
   const [token] = useThemeToken();
+  const [showModalDelete, setShowModalDelete] = useState<any>();
+
+  const statusWrapper = (item: any) => {
+    const getStatus = () => item;
+
+    return <OsStatusWrapper value={getStatus()} />;
+  };
+  const editQuote = () => {};
+  const setDeleteIds = () => {};
+
+  const TemplateColumns = templateColumns(
+    token,
+    statusWrapper,
+    editQuote,
+    setDeleteIds,
+    setShowModalDelete,
+  );
+  const StandardAttributesColumns = standardAttributes(
+    token,
+    statusWrapper,
+    editQuote,
+    setDeleteIds,
+    setShowModalDelete,
+  );
 
   const superAdmintabItems = [
     {
       label: <Typography name="Body 4/Regular">Templates</Typography>,
       key: '1',
-      children: <>dfgh</>,
+      children: (
+        <OsTable
+          columns={TemplateColumns}
+          dataSource={templateDummyData}
+          // rowSelection={rowSelection}
+          scroll
+          locale={[]}
+          loading={false}
+        />
+      ),
     },
     {
       label: <Typography name="Body 4/Regular">Standard Attributes</Typography>,
       key: '2',
-      children: <></>,
+      children: (
+        <OsTable
+          columns={StandardAttributesColumns}
+          dataSource={standardAttributesData}
+          // rowSelection={rowSelection}
+          scroll
+          locale={[]}
+          loading={false}
+        />
+      ),
     },
     {
       label: (
@@ -34,7 +80,7 @@ const SuperAdminDealReg = () => {
         </Typography>
       ),
       key: '3',
-      children: <>mnbvcx</>,
+      children: <>In Development Phase....</>,
     },
   ];
 
