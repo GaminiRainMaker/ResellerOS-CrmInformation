@@ -28,4 +28,5 @@ export interface UploadFileInterface {
   form?: FormInstance;
   showSelectFields?: boolean;
   beforeUpload?: any;
+  cardLoading?: boolean;
 }

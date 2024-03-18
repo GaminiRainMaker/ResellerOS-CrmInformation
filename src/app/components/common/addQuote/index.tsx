@@ -7,6 +7,7 @@ import {FC, useEffect, useState} from 'react';
 import OsModal from '@/app/components/common/os-modal';
 import UploadFile from '@/app/(UI)/(Dashboard_UI)/generateQuote/UploadFile';
 import {convertFileToBase64} from '@/app/utils/base';
+import {useRouter} from 'next/navigation';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {insertProduct} from '../../../../../redux/actions/product';
@@ -30,19 +31,21 @@ const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
   existingQuoteId,
   setUploadFileData,
-  // loading,
   buttonText,
   uploadForm,
 }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const {userInformation} = useAppSelector((state) => state.user);
   const {data: generalSettingData} = useAppSelector(
     (state) => state.gereralSetting,
   );
+  const {loading: insertQuoteLoading} = useAppSelector((state) => state.quote);
   const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false);
+  const [quoteId, setQuoteId] = useState<number>();
 
   useEffect(() => {
     dispatch(getAllGeneralSetting(''));
@@ -58,9 +61,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
         dispatch(uploadToAws({document: base64String})).then((payload: any) => {
           const pdfUrl = payload?.payload?.data?.Location;
           obj.pdf_url = pdfUrl;
+          setLoading(false);
         });
         setUploadFileData((fileData: any) => [...fileData, obj]);
-        setLoading(false);
       })
       .catch((error) => {
         message.error('Error converting file to base64', error);
@@ -153,6 +156,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
       form.resetFields(['customer_id']);
       for (let j = 0; j < response?.payload?.data?.length; j++) {
         const item = response?.payload?.data[j];
+        setQuoteId(item?.id);
         if (item?.id) {
           for (let i = 0; i < formattedArray?.length; i++) {
             const items = formattedArray[i];
@@ -317,11 +321,16 @@ const AddQuote: FC<AddQuoteInterface> = ({
     if (finalOpportunityArray && syncTableData?.length > 0) {
       dispatch(insertOpportunityLineItem(finalOpportunityArray));
     }
-
     dispatch(getQuotesByDateFilter({}));
     setShowModal(false);
     setUploadFileData([]);
   };
+
+  useEffect(() => {
+    if (quoteId) {
+      router.push(`/generateQuote?id=${quoteId}`);
+    }
+  }, [quoteId]);
 
   return (
     <>
@@ -338,8 +347,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
         }}
       />
       <OsModal
+        loading={insertQuoteLoading}
         bodyPadding={22}
-        loading={loading}
         disabledButton={!(uploadFileData?.length > 0)}
         body={
           <UploadFile
@@ -349,6 +358,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
             addQuoteLineItem={addQuoteLineItem}
             form={form}
             beforeUpload={beforeUpload}
+            cardLoading={loading}
           />
         }
         width={900}

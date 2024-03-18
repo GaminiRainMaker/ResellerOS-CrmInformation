@@ -21,6 +21,7 @@ const OsUpload: React.FC<any> = ({
   addQuoteLineItem,
   form,
   showSelectFields,
+  cardLoading,
 }) => {
   const [token] = useThemeToken();
   const [fileList, setFileList] = useState([]);
@@ -88,7 +89,7 @@ const OsUpload: React.FC<any> = ({
   };
 
   return (
-    <GlobalLoader loading={loading}>
+    <GlobalLoader loading={cardLoading || loading}>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
         <OSDraggerStyle
           beforeUpload={beforeUpload}

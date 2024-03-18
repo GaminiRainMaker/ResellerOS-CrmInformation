@@ -17,6 +17,7 @@ const UploadFile: FC<UploadFileInterface> = ({
   form,
   showSelectFields = true,
   beforeUpload,
+  cardLoading
 }) => (
   <OsUpload
     beforeUpload={beforeUpload}
@@ -26,6 +27,7 @@ const UploadFile: FC<UploadFileInterface> = ({
     addQuoteLineItem={addQuoteLineItem}
     form={form}
     showSelectFields={showSelectFields}
+    cardLoading={cardLoading}
   />
 );
 
