@@ -320,12 +320,57 @@ const SideBar = () => {
         '2',
       ),
     isDealReg &&
+      !isSuperAdmin &&
       getItem(
         <Typography
           onClick={() => {
             setSelectedKey(3);
             setCrmChildKey(0);
             router?.push('/dealReg');
+          }}
+          name="Button 1"
+          color={token?.colorTextSecondary}
+        >
+          <Space size={12}>
+            <OsAvatar
+              icon={
+                <ReceiptPercentIcon
+                  color={
+                    selectedKey?.toString()?.includes('3')
+                      ? token?.colorPrimary
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+
+            <Typography
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+              }}
+              color={
+                selectedKey?.toString()?.includes('3')
+                  ? token?.colorPrimary
+                  : token?.colorTextSecondary
+              }
+            >
+              {' '}
+              DealReg AI
+            </Typography>
+          </Space>
+        </Typography>,
+        '3',
+      ),
+    isDealReg &&
+      isSuperAdmin &&
+      getItem(
+        <Typography
+          onClick={() => {
+            setSelectedKey(3);
+            setCrmChildKey(0);
+            router?.push('/superAdminDealReg');
           }}
           name="Button 1"
           color={token?.colorTextSecondary}
