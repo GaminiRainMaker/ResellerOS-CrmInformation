@@ -3,22 +3,12 @@
 
 'use client';
 
-import {FC, useState} from 'react';
+import {FC} from 'react';
 
-import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsUpload from '@/app/components/common/os-upload';
-import {message} from 'antd';
-import axios from 'axios';
-import {convertFileToBase64} from '@/app/utils/base';
-import {uploadToAws} from '../../../../../redux/actions/upload';
-import {useAppDispatch} from '../../../../../redux/hook';
+
 import {UploadFileInterface} from './generateQuote.interface';
 
-interface FormattedData {
-  [key: string]: {
-    [key: string]: string | undefined;
-  };
-}
 const UploadFile: FC<UploadFileInterface> = ({
   setUploadFileData,
   uploadFileData,

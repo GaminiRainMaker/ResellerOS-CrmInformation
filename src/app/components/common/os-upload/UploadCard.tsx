@@ -29,7 +29,28 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
     );
   };
 
-  console.log('uploadFileData', uploadFileData);
+  const handleChangeDistributorOem = (
+    type: string,
+    index: number,
+    value: number,
+  ) => {
+    const arr = [...uploadFileData];
+    const obj = {...arr[index]};
+    if (type === 'distributor') {
+      obj.distributor_id = value;
+    } else {
+      obj.oem_id = value;
+    }
+    const data = quoteConfigData.find(
+      (quoteData: any) =>
+        (obj?.distributor_id
+          ? quoteData.distributor_id === obj.distributor_id
+          : true) && (obj?.oem_id ? quoteData.oem_id === obj.oem_id : true),
+    );
+    obj.model_id = data?.model_id;
+    arr[index] = obj;
+    setUploadFileData(arr);
+  };
 
   return (
     <div>
@@ -66,16 +87,7 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
               <OsDistributorSelect
                 name="distributor"
                 onChange={(e: number) => {
-                  const arr = [...uploadFileData];
-                  const obj = {...arr[index]};
-                  obj.distributor_id = e;
-                  const data = quoteConfigData.find(
-                    (quoteData: any) =>
-                      quoteData.distributor_id === e &&
-                      (obj?.oem_id ? quoteData.oem_id === obj.oem_id : true),
-                  );
-                  obj.model_id = data?.model_id;
-                  setUploadFileData(arr);
+                  handleChangeDistributorOem('distributor', index, e);
                 }}
                 quoteCreation
                 distributorValue={item?.distributor_id}
@@ -85,20 +97,8 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
             <Col span={6}>
               <OsOemSelect
                 name="oem"
-                onChange={(e: number, dropdownValue: any) => {
-                  const arr = [...uploadFileData];
-                  const obj = {...arr[index]};
-                  obj.oem_id = e;
-                  const data = quoteConfigData.find(
-                    (quoteData: any) =>
-                      quoteData.oem_id === e &&
-                      (obj?.distributor_id
-                        ? quoteData.distributor_id === obj.distributor_id
-                        : true),
-                  );
-                  obj.model_id = data?.model_id;
-                  obj.model_id = dropdownValue?.model_id;
-                  setUploadFileData(arr);
+                onChange={(e: number) => {
+                  handleChangeDistributorOem('oem', index, e);
                 }}
                 oemValue={item?.oem_id}
                 distributorValue={item?.distributor_id}

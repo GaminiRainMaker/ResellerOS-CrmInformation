@@ -109,7 +109,14 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
     }
 
     setDistributorFilterOption(distributorFinalOptions);
-  }, [JSON.stringify(DistributorData), JSON.stringify(distributorDataByOemId)]);
+  }, [
+    DistributorData,
+    distributorDataByOemId,
+    oemValue,
+    quoteConfigData,
+    quoteCreation,
+    token?.colorPrimaryText,
+  ]);
 
   return (
     <>
