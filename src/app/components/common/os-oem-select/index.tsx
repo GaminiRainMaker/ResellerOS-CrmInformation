@@ -68,18 +68,22 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
     }
     for (let i = 0; i < finalArr.length; i++) {
       const item = finalArr[i];
-      const index = oemFinalOptions.findIndex(
-        (optionItem) => item.Oem?.id === optionItem.value,
+      const index = oemFinalOptions.findIndex((optionItem) =>
+        quoteCreation
+          ? item.Oem?.id === optionItem?.value
+          : item?.id === optionItem?.value,
       );
       if (index === -1) {
         const obj = {
           label: (
             <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-              {capitalizeFirstLetter(item?.Oem?.oem)}
+              {capitalizeFirstLetter(
+                quoteCreation ? item?.Oem?.oem : item?.oem,
+              )}
             </Typography>
           ),
-          key: item?.Oem?.id,
-          value: item.Oem?.id,
+          key: quoteCreation ? item.Oem?.id : item?.id,
+          value: quoteCreation ? item.Oem?.id : item?.id,
         };
         oemFinalOptions.push(obj);
       }

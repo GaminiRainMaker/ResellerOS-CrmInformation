@@ -77,14 +77,13 @@ const OsUpload: React.FC<any> = ({
       let obj: any = {...uploadFileData[i]};
       // eslint-disable-next-line no-await-in-loop
       const response = await sendDataToNanonets(
-        obj.base64,
-        obj.file,
-        obj.model_id,
+        obj?.base64,
+        obj?.file,
+        obj?.model_id,
       );
       obj = {...obj, ...response};
       newArr.push(obj);
     }
-
     addQuoteLineItem(customerId, opportunityId, newArr);
   };
 

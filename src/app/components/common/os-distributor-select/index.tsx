@@ -64,19 +64,11 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
     }
   }, [quoteCreation]);
 
-  console.log('quoteConfigData', quoteConfigData);
-
   useEffect(() => {
     if (quoteCreation && oemValue) {
       dispatch(getDistributorByOemId(Number(oemValue)));
     }
   }, [oemValue]);
-
-  console.log(
-    'QuoteConfigData===>distributorDataByOemId',
-    distributorDataByOemId,
-    oemValue,
-  );
 
   useEffect(() => {
     const distributorFinalOptions = [];
@@ -90,19 +82,25 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
     }
     for (let i = 0; i < finalArr.length; i++) {
       const item = finalArr[i];
-      const index = distributorFinalOptions.findIndex(
-        (optionItem) => item?.Distributor?.id === optionItem.value,
+      const index = distributorFinalOptions.findIndex((optionItem) =>
+        quoteCreation
+          ? item?.Distributor?.id === optionItem?.value
+          : item?.id === optionItem?.value,
       );
       if (index === -1) {
         const obj = {
           label: (
             <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-              {capitalizeFirstLetter(item?.Distributor?.distributor)}
+              {capitalizeFirstLetter(
+                quoteCreation
+                  ? item?.Distributor?.distributor
+                  : item?.distributor,
+              )}
             </Typography>
           ),
-          key: item?.Distributor?.id,
-          model_id: item.Distributor?.model_id,
-          value: item?.Distributor?.id,
+          key: quoteCreation ? item?.Distributor?.id : item?.id,
+          // model_id: quoteCreation && item.Distributor?.model_id,
+          value: quoteCreation ? item?.Distributor?.id : item?.id,
         };
         distributorFinalOptions.push(obj);
       }

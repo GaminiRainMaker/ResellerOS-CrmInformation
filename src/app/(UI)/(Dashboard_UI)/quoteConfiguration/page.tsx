@@ -136,6 +136,8 @@ const AllQuote: React.FC = () => {
               scroll
               loading={loading}
               locale={locale}
+              tablePageSize={50}
+              scrolly={500}
             />
           </Form>
         </div>

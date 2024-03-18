@@ -53,6 +53,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
     convertFileToBase64(file)
       .then((base64String: string) => {
         obj.base64 = base64String;
+        obj.file = file;
         setLoading(true);
         dispatch(uploadToAws({document: base64String})).then((payload: any) => {
           const pdfUrl = payload?.payload?.data?.Location;
@@ -65,7 +66,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
         message.error('Error converting file to base64', error);
       });
   };
-
   const genericFun = (payloadArr: any, Arr: any) => {
     const newArr = Arr?.map((item: any) => ({
       ...item,

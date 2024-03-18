@@ -48,7 +48,11 @@ function getColumns(
               );
             }}
           />
-          {record.error && <span>Duplicate Entry</span>}
+          {record.error && (
+            <Typography name="Body 4/Regular" color={token?.colorError}>
+              Duplicate Entry
+            </Typography>
+          )}
         </>
       ),
     },
@@ -89,7 +93,11 @@ function getColumns(
               );
             }}
           />
-          {record.error && <span>Duplicate Entry</span>}
+          {record.error && (
+            <Typography name="Body 4/Regular" color={token?.colorError}>
+              Duplicate Entry
+            </Typography>
+          )}
         </>
       ),
     },

@@ -2,8 +2,9 @@
 import {TrashIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import Image from 'next/image';
-import {FC, useState} from 'react';
+import {FC} from 'react';
 import PdfImg from '../../../../../public/assets/static/pdf.svg';
+import {useAppSelector} from '../../../../../redux/hook';
 import {Divider} from '../antd/Divider';
 import {Col, Row} from '../antd/Grid';
 import {Space} from '../antd/Space';
@@ -11,19 +12,11 @@ import useThemeToken from '../hooks/useThemeToken';
 import OsDistributorSelect from '../os-distributor-select';
 import OsOemSelect from '../os-oem-select';
 import Typography from '../typography';
-import {useAppSelector} from '../../../../../redux/hook';
 
 const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
   const [token] = useThemeToken();
-  const [distributorValue, setDistributorValue] = useState<any>();
-  const [oemValue, setOemValue] = useState<any>();
   const {data: quoteConfigData} = useAppSelector((state) => state.quoteConfig);
   const removeFile = (uid: number | undefined | string) => {
-    // const filtered = uploadFileData.filter(
-    //   (p: any) => p?.id !== id,
-    // );
-    // setUploadFileData(filtered);
-
     setUploadFileData((prev: any) =>
       prev.filter((prevIndex: any) => prevIndex?.uid !== uid),
     );
@@ -80,7 +73,7 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
             <Col span={8}>
               <Space size={12}>
                 <Image src={PdfImg} alt="PdfImg" />
-                <Typography name="Body 4/Medium">{item?.name}</Typography>
+                <Typography name="Body 4/Medium">{item?.file?.name}</Typography>
               </Space>
             </Col>
             <Col span={6}>
