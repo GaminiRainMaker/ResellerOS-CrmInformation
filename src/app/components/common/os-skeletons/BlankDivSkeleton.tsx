@@ -10,7 +10,7 @@ const BlankDivSkeleton: FC<CSSProperties> = (props) => (
     }}
     active
   >
-    <div style={props} />
+    <div style={{...props}} />
   </Skeleton.Node>
 );
 

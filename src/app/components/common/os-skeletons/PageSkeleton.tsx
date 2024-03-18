@@ -1,14 +1,16 @@
-import { FC } from 'react';
-import { Col, Row } from '../antd/Grid';
+'use client';
+
+import {FC} from 'react';
+import {Col, Row} from '../antd/Grid';
 import Skeleton from '../antd/Skeleton';
-import { Space } from '../antd/Space';
+import {Space} from '../antd/Space';
 import AnalyticCardSkeleton from './AnalyticCardSkeleton';
 import BlankDivSkeleton from './BlankDivSkeleton';
 
 const PageSkeleton: FC = () => (
   <Space size={24} direction="vertical" style={{width: '100%'}}>
     <AnalyticCardSkeleton />{' '}
-    {/* <Row justify="space-between">
+    <Row justify="space-between">
       <Col span={12}>
         <Skeleton paragraph={{rows: 0}} active />
       </Col>
@@ -28,11 +30,11 @@ const PageSkeleton: FC = () => (
           />
         </Space>
       </Col>
-    </Row> */}
-    {/* <BlankDivSkeleton
+    </Row>
+    <BlankDivSkeleton
       height="calc(100vh - 300px)"
       width="calc(100vw - 150px)"
-    /> */}
+    />
   </Space>
 );
 
