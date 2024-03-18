@@ -69,7 +69,6 @@ const OsUpload: React.FC<any> = ({
     }
   };
 
-
   const onFinish = async () => {
     const customerId = form.getFieldValue('customer_id');
     const opportunityId = form.getFieldValue('opportunity_id');

@@ -22,7 +22,7 @@ import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuot
 import {insertValidation} from '../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '../os-button';
-import {AddQuoteInterface, FormattedData} from './addQuote.interface';
+import {AddQuoteInterface, FormattedData} from './types';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {uploadToAws} from '../../../../../redux/actions/upload';
 
