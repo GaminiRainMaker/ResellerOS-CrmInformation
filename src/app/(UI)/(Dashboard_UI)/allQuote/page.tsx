@@ -19,8 +19,8 @@ import Typography from '@/app/components/common/typography';
 // eslint-disable-next-line import/no-extraneous-dependencies
 
 import AddQuote from '@/app/components/common/addQuote';
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
@@ -30,21 +30,20 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-import AnalyticCardSkeleton from '@/app/components/common/os-skeletons/AnalyticCardSkeleton';
 import {
   deleteQuoteById,
   getQuotesByDateFilter,
   updateQuoteByQuery,
 } from '../../../../../redux/actions/quote';
 
-import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { getAllSyncTable } from '../../../../../redux/actions/syncTable';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import RecentSection from './RecentSection';
 import QuoteAnalytics from './analytics';
-import {dropDownItems, tabItems} from './constants';
+import { dropDownItems, tabItems } from './constants';
 import getColumns from './tableColumns';
 
 const AllQuote: React.FC = () => {
@@ -216,7 +215,6 @@ const AllQuote: React.FC = () => {
 
   return (
     <>
-      {/* <AnalyticCardSkeleton />{' '} */}
       <Space size={24} direction="vertical" style={{width: '100%'}}>
         <QuoteAnalytics quoteData={quoteData} deletedQuote={deletedQuote} />
         <Row justify="space-between" align="middle">
