@@ -141,6 +141,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
       labelOcrMap?.push({
         ...tempLabelOcrMap,
         pdf_url: uploadFileDataItem?.pdf_url,
+        quote_config_id: uploadFileDataItem?.quote_config_id ?? 22,
         customer_id: customerId,
         opportunity_id: opportunityId,
         organization: userInformation.organization,

@@ -4,6 +4,7 @@ import {Form} from 'antd';
 import Image from 'next/image';
 import {FC} from 'react';
 import PdfImg from '../../../../../public/assets/static/pdf.svg';
+import XlsImg from '../../../../../public/assets/static/xls.svg';
 import {useAppSelector} from '../../../../../redux/hook';
 import {Divider} from '../antd/Divider';
 import {Col, Row} from '../antd/Grid';
@@ -41,6 +42,7 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
           : true) && (obj?.oem_id ? quoteData.oem_id === obj.oem_id : true),
     );
     obj.model_id = data?.model_id;
+    obj.quote_config_id = data?.id;
     arr[index] = obj;
     setUploadFileData(arr);
   };
@@ -72,7 +74,12 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
           <Row key={item?.uid} justify="space-between" gutter={[0, 8]}>
             <Col span={8}>
               <Space size={12}>
-                <Image src={PdfImg} alt="PdfImg" />
+                {item?.file?.type.split('/')[1] === 'pdf' ? (
+                  <Image src={PdfImg} alt="PdfImg" />
+                ) : (
+                  <Image src={XlsImg} alt="XlsImg" />
+                )}
+
                 <Typography name="Body 4/Medium">{item?.file?.name}</Typography>
               </Space>
             </Col>
