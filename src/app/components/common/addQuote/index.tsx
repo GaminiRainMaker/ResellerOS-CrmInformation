@@ -112,7 +112,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
             quoteLineItemArr = Object.values(lineItemData);
             lineItems?.push({
               pdf_url: updatedArr[i]?.pdf_url,
-              values: quoteLineItemArr,
+              ...lineItemData,
               quote_config_id: updatedArr[i]?.quote_config_id ?? 22,
             });
           } else {
