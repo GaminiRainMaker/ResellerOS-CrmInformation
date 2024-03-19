@@ -78,6 +78,8 @@ const OsUpload: React.FC<any> = ({
   const onFinish = async () => {
     const customerId = form.getFieldValue('customer_id');
     const opportunityId = form.getFieldValue('opportunity_id');
+    const singleQuote = form.getFieldValue('singleQuote');
+
     const newArr = [];
     for (let i = 0; i < uploadFileData.length; i++) {
       let obj: any = {...uploadFileData[i]};
@@ -90,7 +92,7 @@ const OsUpload: React.FC<any> = ({
       obj = {...obj, ...response};
       newArr.push(obj);
     }
-    addQuoteLineItem(customerId, opportunityId, newArr);
+    addQuoteLineItem(customerId, opportunityId, newArr, singleQuote);
   };
 
   return (
