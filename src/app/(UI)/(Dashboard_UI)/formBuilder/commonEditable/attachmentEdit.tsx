@@ -155,7 +155,7 @@ const AttachmentEditFileds: React.FC<EditableFiledsCommonInterface> = ({
               or Drag and Drop
             </Typography>
             <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
-              XLS, PDF, DOC, PNG and JPG
+              XLS, PDF.
             </Typography>
           </OSDraggerStyle>
         </Form>

@@ -43,12 +43,17 @@ const OsUpload: React.FC<any> = ({
     file: File,
     model_id: string,
   ) => {
+    //   prevoius
+    // 'https://app.nanonets.com/api/v2/OCR/Model/91814dd8-75f6-44d7-aad3-776df449b59f/LabelFile/';
+
+    let API_ENDPOINT = '';
+    if (file?.type.split('/')[1] === 'pdf') {
+      API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/${model_id}/LabelFile/`;
+    } else {
+      API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/0ba764d3-bfd5-4756-bdb1-0e5bc427bdda/LabelFile/`;
+    }
     const API_KEY = '198c15fd-9680-11ed-82f6-7a0abc6e8cc8';
-    const API_ENDPOINT =
-      //   prevoius
-      // 'https://app.nanonets.com/api/v2/OCR/Model/91814dd8-75f6-44d7-aad3-776df449b59f/LabelFile/';
-      // new4
-      `https://app.nanonets.com/api/v2/OCR/Model/${model_id}/LabelFile/`;
+
     const formData = new FormData();
     formData.append('file', file);
     try {
@@ -85,7 +90,7 @@ const OsUpload: React.FC<any> = ({
       obj = {...obj, ...response};
       newArr.push(obj);
     }
-    addQuoteLineItem(customerId, opportunityId, newArr);
+    // addQuoteLineItem(customerId, opportunityId, newArr);
   };
 
   return (
@@ -112,7 +117,7 @@ const OsUpload: React.FC<any> = ({
             or Drag and Drop
           </Typography>
           <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
-            XLS, PDF, DOC, PNG and JPG
+            XLS, PDF.
           </Typography>
         </OSDraggerStyle>
         <UploadCard

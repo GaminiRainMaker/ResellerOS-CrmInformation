@@ -19,11 +19,11 @@ function getColumns(
           className="dragHandler"
           color={token?.colorPrimaryText}
         >
-          Distributer
+          Distributor
         </Typography>
       ),
-      dataIndex: 'distributer',
-      key: 'distributer',
+      dataIndex: 'distributor',
+      key: 'distributor',
       width: 187,
       render: (text: string, record: any, index: number) => (
         <>
