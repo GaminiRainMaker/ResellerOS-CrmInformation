@@ -90,7 +90,7 @@ const OsUpload: React.FC<any> = ({
       obj = {...obj, ...response};
       newArr.push(obj);
     }
-    // addQuoteLineItem(customerId, opportunityId, newArr);
+    addQuoteLineItem(customerId, opportunityId, newArr);
   };
 
   return (
