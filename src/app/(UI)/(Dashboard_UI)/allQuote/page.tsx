@@ -44,7 +44,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import RecentSection from './RecentSection';
 import QuoteAnalytics from './analytics';
 import {dropDownItems, tabItems} from './constants';
-import getColumns from './tableColumns';
+import {getColumns} from './tableColumns';
 
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();

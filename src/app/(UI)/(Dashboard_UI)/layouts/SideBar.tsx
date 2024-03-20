@@ -233,7 +233,7 @@ const SideBar = () => {
                     : token?.colorTextSecondary
                 }
               >
-                UnProcessed Quote
+                Edited Quotes
               </Typography>
             </Space>,
             '8',
