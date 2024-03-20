@@ -72,14 +72,14 @@ const GenerateQuoteAnalytics: FC<any> = ({
     },
     {
       key: 2,
-      primary: `$${amountData?.AdjustPrice}`,
+      primary:  `$${abbreviate(amountData?.AdjustPrice ?? 0)}`,
       secondry: 'Quote Total',
       icon: <TagIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
     },
     {
       key: 3,
-      primary: `$${amountData?.LineAmount}`,
+      primary: `$${abbreviate(amountData?.LineAmount ?? 0)}`,
       secondry: 'Total Cost',
       icon: <CurrencyDollarIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,

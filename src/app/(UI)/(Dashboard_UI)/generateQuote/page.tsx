@@ -613,7 +613,7 @@ const GenerateQuote: React.FC = () => {
         primaryButtonText={
           fileNameOption && fileNameOption?.length > 0 ? 'Raise Concern' : null
         }
-        singleButtonInCenter={!fileNameOption && fileNameOption?.length > 0}
+        singleButtonInCenter
         onOk={() => {
           form?.submit();
         }}
