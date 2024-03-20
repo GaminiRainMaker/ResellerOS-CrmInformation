@@ -9,7 +9,7 @@ export interface OSModalPropsInterface extends ModalProps {
   subTitleTypography?: StyleName;
   subtitleColor?: string;
   titleColor?: string;
-  primaryButtonText?: string;
+  primaryButtonText?: any;
   secondaryButtonText?: string;
   thirdButtonText?: any;
   body?: React.ReactNode;
