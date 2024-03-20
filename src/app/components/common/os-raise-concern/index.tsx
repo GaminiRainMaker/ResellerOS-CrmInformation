@@ -24,25 +24,6 @@ const RaiseConcern: FC<RaiseConcernInterface> = ({
   const {quoteLineItemByQuoteID} = useAppSelector(
     (state) => state.quoteLineItem,
   );
-  // const fileNameMap: any = {};
-  // const uniqueFileNames: any = [];
-
-  // quoteLineItemByQuoteID?.forEach((dataAddressItem: any) => {
-  //   if (!dataAddressItem.concern && !fileNameMap[dataAddressItem.file_name]) {
-  //     fileNameMap[dataAddressItem.file_name] = {
-  //       value: dataAddressItem.file_name,
-  //       label: (
-  //         <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-  //           {dataAddressItem.file_name}
-  //         </Typography>
-  //       ),
-  //     };
-  //     uniqueFileNames.push(dataAddressItem.file_name);
-  //   }
-  // });
-  // const fileNameOption = uniqueFileNames.map(
-  //   (fileName: string) => fileNameMap[fileName],
-  // );
 
   const getSelectFileData = (value: string) => {
     const filteredData = quoteLineItemByQuoteID.filter((item: any) =>
@@ -90,7 +71,7 @@ const RaiseConcern: FC<RaiseConcernInterface> = ({
             }
           >
             <CommonSelect
-              style={{width: '100%'}}
+              style={{width: '100%', height: "fit-content", minHeight: '48px !important',}}
               placeholder="Select File"
               mode="multiple"
               options={fileNameOption}
