@@ -96,13 +96,17 @@ const AddQuote: FC<AddQuoteInterface> = ({
       for (let i = 0; i < updatedArr.length; i++) {
         const nanoNetsResult = updatedArr[i]?.data?.result;
         let quoteObj: any = {};
+
         for (let j = 0; j < nanoNetsResult.length; j++) {
           const result: any = nanoNetsResult[j];
           const lineItems: any = [];
           let quoteItem = {};
+          let quoteJson: any = {values: []};
+
           const predictions = result?.prediction?.filter((item: any) => item);
+
           // eslint-disable-next-line @typescript-eslint/no-loop-func
-          predictions?.map((itemNew: any) => {
+          predictions?.map((itemNew: any, predictionIndex: number) => {
             if (itemNew.label === 'table') {
               if (itemNew?.cells) {
                 itemNew?.cells.forEach((item: any) => {
@@ -114,6 +118,15 @@ const AddQuote: FC<AddQuoteInterface> = ({
                 });
               }
               quoteLineItemArr = Object.values(lineItemData);
+
+              quoteJson = {
+                ...quoteJson,
+                file_name: updatedArr[i]?.file?.name,
+                values:
+                  predictionIndex > 0
+                    ? [...quoteLineItemArr, ...quoteJson.values]
+                    : quoteLineItemArr,
+              };
               quoteLineItemArr?.forEach((obj: any) => {
                 const newObj = {
                   ...obj,
@@ -131,12 +144,13 @@ const AddQuote: FC<AddQuoteInterface> = ({
               };
             }
           });
+
           quoteObj = {
             ...quoteItem,
             customer_id: customerId,
             opportunity_id: opportunityId,
             organization: userInformation.organization,
-            quote_json: [JSON?.stringify(lineItems)],
+            quote_json: [JSON.stringify(quoteJson)],
             lineItems: lineItems.length > 0 ? lineItems : [],
           };
         }
@@ -146,7 +160,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
           } else {
             quotesArr[0].quote_json = [
               ...quotesArr[0].quote_json,
-              JSON?.stringify(quoteObj?.quote_json),
+              // eslint-disable-next-line no-unsafe-optional-chaining
+              ...quoteObj?.quote_json,
             ];
             quotesArr[0].lineItems = [
               ...quotesArr[0].lineItems,

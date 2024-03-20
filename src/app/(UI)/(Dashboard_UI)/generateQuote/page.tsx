@@ -638,9 +638,7 @@ const GenerateQuote: React.FC = () => {
         primaryButtonText="Update Line Item"
         onOk={() => {
           setShowAfterRaiseConcernModal(false);
-          router?.push(
-            `/fileEditor?id=${getQuoteID}&quoteExist=${quoteLineItemExist}`,
-          );
+          router?.push(`/fileEditor?id=${getQuoteID}&quoteExist=false`);
         }}
       />
     </>
