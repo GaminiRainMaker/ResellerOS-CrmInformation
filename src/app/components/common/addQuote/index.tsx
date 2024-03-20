@@ -121,6 +121,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
                   file_name: updatedArr[i]?.file?.name,
                   quote_config_id: updatedArr[i]?.quote_config_id ?? 22,
                   organization: userInformation.organization,
+                  user_id: userInformation.id,
                 };
                 lineItems.push(newObj);
               });
@@ -133,6 +134,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           });
           quoteObj = {
             ...quoteItem,
+            user_id: userInformation.id,
             customer_id: customerId,
             opportunity_id: opportunityId,
             organization: userInformation.organization,

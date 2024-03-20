@@ -51,6 +51,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
 
           dispatch(
             setUserInformation({
+              id: dataaa?.id,
               user_name: dataaa?.user_name,
               email: dataaa?.email,
               organization: dataaa?.organization,
