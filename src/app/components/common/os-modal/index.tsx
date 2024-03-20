@@ -20,6 +20,8 @@ const OsModal: FC<OSModalPropsInterface> = ({
   footerPadding,
   disabledButton,
   singleButtonInCenter = false,
+  thirdButtonText,
+  thirdButtonfunction,
   ...rest
 }) => {
   const {onCancel, open, onOk} = rest;
@@ -49,6 +51,19 @@ const OsModal: FC<OSModalPropsInterface> = ({
               justifyContent: singleButtonInCenter ? 'center' : '',
             }}
           >
+            {thirdButtonText && (
+              <OsButton
+                text={thirdButtonText}
+                disabled={disabledButton}
+                buttontype="SECONDARY"
+                clickHandler={() => {
+                  if (thirdButtonfunction) {
+                    const mockEvent = {} as React.MouseEvent<HTMLButtonElement>;
+                    thirdButtonfunction(mockEvent); // Pass a mock event or any required argument
+                  }
+                }}
+              />
+            )}
             {secondaryButtonText && (
               <OsButton
                 text={secondaryButtonText}

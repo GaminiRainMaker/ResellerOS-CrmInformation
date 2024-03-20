@@ -11,6 +11,7 @@ export interface OSModalPropsInterface extends ModalProps {
   titleColor?: string;
   primaryButtonText?: string;
   secondaryButtonText?: string;
+  thirdButtonText?: any;
   body?: React.ReactNode;
   loading?: boolean;
   bodyPadding?: number;
@@ -18,6 +19,7 @@ export interface OSModalPropsInterface extends ModalProps {
   footerPadding?: number;
   disabledButton?: boolean;
   singleButtonInCenter?: boolean;
+  thirdButtonfunction?: any;
 }
 
 export interface OSDailogInterface extends ModalProps {

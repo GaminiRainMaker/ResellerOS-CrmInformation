@@ -1,14 +1,14 @@
 /* eslint-disable array-callback-return */
-import {TrashIcon} from '@heroicons/react/24/outline';
-import {Form} from 'antd';
+import { TrashIcon } from '@heroicons/react/24/outline';
+import { Form } from 'antd';
 import Image from 'next/image';
-import {FC} from 'react';
+import { FC } from 'react';
 import PdfImg from '../../../../../public/assets/static/pdf.svg';
 import XlsImg from '../../../../../public/assets/static/xls.svg';
-import {useAppSelector} from '../../../../../redux/hook';
-import {Divider} from '../antd/Divider';
-import {Col, Row} from '../antd/Grid';
-import {Space} from '../antd/Space';
+import { useAppSelector } from '../../../../../redux/hook';
+import { Divider } from '../antd/Divider';
+import { Col, Row } from '../antd/Grid';
+import { Space } from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import OsDistributorSelect from '../os-distributor-select';
 import OsOemSelect from '../os-oem-select';
@@ -113,6 +113,7 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
                 onClick={() => {
                   removeFile(item?.uid);
                 }}
+                style={{marginTop: '8px'}}
               />
             </Col>
           </Row>

@@ -1,5 +1,3 @@
-import {FormLayout} from 'antd/es/form/Form';
-
 export interface FormattedData {
   [key: string]: {
     [key: string]: string | undefined;
@@ -12,4 +10,8 @@ export interface AddQuoteInterface {
   loading?: boolean;
   buttonText: string;
   uploadForm?: any;
+  rowSelection?: any;
+  setShowToggleTable?: any;
+  showToggleTable?: boolean;
+  Quotecolumns?: any;
 }

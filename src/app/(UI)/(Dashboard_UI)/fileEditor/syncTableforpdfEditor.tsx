@@ -35,7 +35,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
   const [syncedNewValue, setNewSyncedValue] = useState<any>();
-  const {data: syncTableData} = useAppSelector((state) => state.syncTable);
+  const {data: syncTableData, loading: syncDataLoading} = useAppSelector(
+    (state) => state.syncTable,
+  );
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const router = useRouter();
@@ -299,7 +301,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         }}
       >
         <OsButton
-          text=" Sync And Save"
+          loading={syncDataLoading}
+          text="Sync And Save"
           style={{
             width: '100%',
           }}

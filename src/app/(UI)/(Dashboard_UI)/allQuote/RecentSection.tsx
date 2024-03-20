@@ -61,7 +61,7 @@ const RecentSection: FC<any> = ({
           </Col>
           <Divider />
         </Row>
-        <Space size={30} direction="horizontal" align="center">
+        {/* <Space size={30} direction="horizontal" align="center">
           <Typography name="Body 4/Medium">Select Existing Quote?</Typography>
           <Switch size="default" onChange={onToggleChange} />
         </Space>
@@ -74,7 +74,7 @@ const RecentSection: FC<any> = ({
             dataSource={filteredData}
             scroll
           />
-        )}
+        )} */}
       </Space>
       <Row
         justify="end"

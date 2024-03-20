@@ -17,7 +17,12 @@ const UploadFile: FC<UploadFileInterface> = ({
   form,
   showSelectFields = true,
   beforeUpload,
-  cardLoading
+  cardLoading,
+  rowSelection,
+  setShowToggleTable,
+  showToggleTable,
+  Quotecolumns,
+  existingQuoteId
 }) => (
   <OsUpload
     beforeUpload={beforeUpload}
@@ -28,6 +33,11 @@ const UploadFile: FC<UploadFileInterface> = ({
     form={form}
     showSelectFields={showSelectFields}
     cardLoading={cardLoading}
+    rowSelection={rowSelection}
+    setShowToggleTable={setShowToggleTable}
+    showToggleTable={showToggleTable}
+    Quotecolumns={Quotecolumns}
+    existingQuoteId={existingQuoteId}
   />
 );
 

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
-import {Form, Switch} from 'antd';
+import {Form} from 'antd';
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {Col, Row} from '../antd/Grid';
@@ -12,22 +12,31 @@ import Typography from '../typography';
 import UploadCard from './UploadCard';
 import {OSDraggerStyle} from './styled-components';
 import GlobalLoader from '../os-global-loader';
+import OsTable from '../os-table';
+import {useAppSelector} from '../../../../../redux/hook';
+import { Switch } from '../antd/Switch';
 
 const OsUpload: React.FC<any> = ({
   beforeUpload,
   uploadFileData,
   setUploadFileData,
-  addInExistingQuote,
   addQuoteLineItem,
   form,
   showSelectFields,
   cardLoading,
+  rowSelection,
+  setShowToggleTable,
+  showToggleTable,
+  Quotecolumns,
+  existingQuoteId,
 }) => {
   const [token] = useThemeToken();
   const [fileList, setFileList] = useState([]);
   const [customerValue, setCustomerValue] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
-
+  const {filteredByDate: filteredData, loading: quoteLoading} = useAppSelector(
+    (state) => state.quote,
+  );
   useEffect(() => {
     const newrrr: any = [...fileList];
     if (uploadFileData && uploadFileData?.length > 0) {
@@ -44,7 +53,7 @@ const OsUpload: React.FC<any> = ({
     model_id: string,
   ) => {
     //   prevoius
-    // 'https://app.nanonets.com/api/v2/OCR/Model/91814dd8-75f6-44d7-aad3-776df449b59f/LabelFile/';
+    // const API_ENDPOINT ='https://app.nanonets.com/api/v2/OCR/Model/91814dd8-75f6-44d7-aad3-776df449b59f/LabelFile/';
 
     let API_ENDPOINT = '';
     if (file?.type.split('/')[1] === 'pdf') {
@@ -95,6 +104,10 @@ const OsUpload: React.FC<any> = ({
     addQuoteLineItem(customerId, opportunityId, newArr, singleQuote);
   };
 
+  const onToggleChange = (checked: boolean) => {
+    setShowToggleTable(checked);
+  };
+
   return (
     <GlobalLoader loading={cardLoading || loading}>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -126,13 +139,22 @@ const OsUpload: React.FC<any> = ({
           uploadFileData={uploadFileData}
           setUploadFileData={setUploadFileData}
         />
-        {addInExistingQuote && (
-          <Space size={8} direction="horizontal">
-            <Typography name="Body 3/Regular">Add in existing quote</Typography>
-            <Switch />
-          </Space>
+        <Space size={30} direction="horizontal" align="center">
+          <Typography name="Body 4/Medium">Select Existing Quote?</Typography>
+          <Switch size="default" onChange={onToggleChange} />
+        </Space>
+        {showToggleTable && (
+          <OsTable
+            loading={quoteLoading}
+            rowSelection={rowSelection}
+            tableSelectionType="radio"
+            columns={Quotecolumns}
+            dataSource={filteredData}
+            scroll
+          />
         )}
-        {showSelectFields && (
+
+        {showSelectFields && !existingQuoteId && (
           <Form
             layout="vertical"
             requiredMark={false}
