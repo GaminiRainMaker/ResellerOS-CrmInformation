@@ -136,9 +136,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
             customer_id: customerId,
             opportunity_id: opportunityId,
             organization: userInformation.organization,
-            file_name: moment(new Date()).format('MM/DD/YYYY'),
             quote_json: [JSON?.stringify(lineItems)],
-            lineItems,
+            lineItems: lineItems.length > 0 ? lineItems : [],
           };
         }
         if (singleQuote || existingQuoteId) {
@@ -151,7 +150,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
             ];
             quotesArr[0].lineItems = [
               ...quotesArr[0].lineItems,
-              quoteObj?.lineItems,
+              // eslint-disable-next-line no-unsafe-optional-chaining
+              ...quoteObj?.lineItems,
             ];
           }
         } else {
