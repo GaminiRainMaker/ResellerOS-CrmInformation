@@ -34,15 +34,18 @@ import {Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import GreenCheckIcon from '../../../../../public/assets/static/greenCheckIcon.svg';
 import RaiseConcernImg from '../../../../../public/assets/static/raiseConcern.svg';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {
   getQuoteById,
   updateQuoteByQuery,
-  updateQuoteConcern,
 } from '../../../../../redux/actions/quote';
-import {UpdateQuoteLineItemQuantityById} from '../../../../../redux/actions/quotelineitem';
+import {
+  UpdateQuoteLineItemQuantityById,
+  updateQuoteLineItemConcern,
+} from '../../../../../redux/actions/quotelineitem';
 import {getAllTableColumn} from '../../../../../redux/actions/tableColumn';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
@@ -53,7 +56,6 @@ import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
 import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
-import GreenCheckIcon from '../../../../../public/assets/static/greenCheckIcon.svg';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -64,9 +66,8 @@ const GenerateQuote: React.FC = () => {
   const getQuoteID = searchParams.get('id');
   const [activeTab, setActiveTab] = useState<any>('1');
 
-  const {quoteLineItemByQuoteID, loading} = useAppSelector(
-    (state) => state.quoteLineItem,
-  );
+  const {quoteLineItemByQuoteID, loading, concernQuoteLineItemData} =
+    useAppSelector((state) => state.quoteLineItem);
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
@@ -92,7 +93,6 @@ const GenerateQuote: React.FC = () => {
     (state) => state.contractSetting,
   );
   const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
-
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
   const [quoteLineItemExist, setQuoteLineItemExist] = useState<boolean>(false);
   const [api, contextHolder] = notification.useNotification();
@@ -423,8 +423,9 @@ const GenerateQuote: React.FC = () => {
     if (!concernData?.concern_text) {
       openNotificationWithIcon();
     } else {
-      const data = {concern: concernData?.concern_text, id: getQuoteID};
-      dispatch(updateQuoteConcern(data));
+      const idArray = concernQuoteLineItemData.map((item: any) => item.id);
+      const data = {concern: concernData?.concern_text, id: idArray};
+      dispatch(updateQuoteLineItemConcern(data));
       setShowRaiseConcernModal(false);
       setShowAfterRaiseConcernModal(true);
       form?.resetFields();

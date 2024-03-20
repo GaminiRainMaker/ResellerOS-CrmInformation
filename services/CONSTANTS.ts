@@ -27,6 +27,7 @@ export const API = {
     GetQuoteLineItemByQuoteIdandBundleIdNull:
       '/quoteLineItem/getQuoteLineItemByQuoteIdandBundleIdNull',
     UpdateQuoteLineItemById: '/quoteLineItem/updateQuoteLineItemById',
+    UpdateQuoteLineItemConcern: '/quoteLineItem/updateQuoteLineItemConcern',
   },
   USER: {
     INDEX: '/user',

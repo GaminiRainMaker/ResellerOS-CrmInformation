@@ -109,3 +109,14 @@ export const updateQuoteLineItemById = createAsyncThunk(
     }
   },
 );
+export const updateQuoteLineItemConcern = createAsyncThunk(
+  'quoteLineItem/updateQuoteLineItemConcern',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await QUOTE_LINE_ITEM_API.updateQuoteLineItemConcern(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

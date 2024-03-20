@@ -29,7 +29,13 @@ export const QUOTE_LINE_ITEM_API = {
       `${API.QUOTE_LINE_ITEM.GetQuoteLineItemByQuoteIdandBundleIdNull}/${id}`,
     ) as Promise<AxiosResponse<[]>>,
   updateQuoteLineItemById: (data: any) =>
-    patch(API.QUOTE_LINE_ITEM.UpdateQuoteLineItemById, data) as Promise<AxiosResponse<[]>>,
+    patch(API.QUOTE_LINE_ITEM.UpdateQuoteLineItemById, data) as Promise<
+      AxiosResponse<[]>
+    >,
+  updateQuoteLineItemConcern: (data: any) =>
+    patch(API.QUOTE_LINE_ITEM.UpdateQuoteLineItemConcern, data) as Promise<
+      AxiosResponse<[]>
+    >,
 
   // put: (id: number, data: any) => put(API.QUOTE_LINE_ITEM.INDEX + "/" + id, data),
   // delete: (id: number) => del(API.QUOTE_LINE_ITEM.INDEX + "/" + id),

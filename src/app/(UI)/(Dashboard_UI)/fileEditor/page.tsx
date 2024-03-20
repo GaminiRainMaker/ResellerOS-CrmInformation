@@ -26,6 +26,7 @@ import {getQuoteById} from '../../../../../redux/actions/quote';
 import {useAppDispatch} from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
 import {getQuoteLineItemByQuoteId} from '../../../../../redux/actions/quotelineitem';
+import UpdateGenerateQuote from '../updation/page';
 
 const EditorFile = () => {
   const hotRef = useRef(null);
@@ -183,175 +184,195 @@ const EditorFile = () => {
           overflow: 'auto',
         }}
       >
-        {mergedValue?.length > 0 || ExistingQuoteItemss === 'true' ? (
-          <>
-            {ExistingQuoteItemss === 'false' && (
-              <Space
-                onClick={(e) => {
-                  e?.preventDefault();
-                  setShowModal(true);
-                }}
-                size={50}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'end',
-                  marginRight: '50px',
-                  // top: '10',
-                  position: 'fixed',
-
-                  right: '0',
-                  bottom: '0',
-                  marginBottom: '20px',
-                }}
-              >
-                {' '}
-                <OsButton
-                  text="Sync Table"
-                  buttontype="PRIMARY"
-                  clickHandler={() => {
-                    setShowModal(true);
-                  }}
-                />
-              </Space>
-            )}
-
-            <HotTable
-              data={ExistingQuoteItemss === 'true' ? quoteItems : mergedValue}
-              ref={hotRef}
-              colWidths={200}
-              columnHeaderHeight={40}
-              height="auto"
-              colHeaders={mergeedColumn}
-              width="auto"
-              minSpareRows={0}
-              autoWrapRow
-              autoWrapCol
-              licenseKey="non-commercial-and-evaluation"
-              dropdownMenu
-              hiddenColumns={{
-                indicators: true,
-              }}
-              contextMenu
-              multiColumnSorting
-              filters
-              rowHeaders
-              allowInsertRow={false}
-              allowInsertColumn
-              afterGetColHeader={alignHeaders}
-              beforeRenderer={() => {
-                addClassesToRows('', '', '', '', '', '', quoteItems);
-              }}
-              afterRemoveRow={(change, source) => {
-                deleteRowsItems(source, change);
-              }}
-              afterChange={(change: any, source) => {
-                console.log('433223423', change, source);
-                if (change) {
-                  updateRowsValue(
-                    change?.[0]?.[0],
-                    change?.[0]?.[1],
-                    change?.[0]?.[3],
-                  );
-                }
-              }}
-              navigableHeaders
-            />
-          </>
+        {ExistingQuoteItemss ? (
+          <UpdateGenerateQuote />
         ) : (
           <>
-            <Space
-              size={50}
-              style={{
-                display: 'flex',
-                justifyContent: 'end',
-                marginRight: '50px',
-                // top: '10',
-                position: 'fixed',
+            {mergedValue?.length > 0 || ExistingQuoteItemss === 'true' ? (
+              <>
+                {ExistingQuoteItemss === 'false' && (
+                  <Space
+                    onClick={(e) => {
+                      e?.preventDefault();
+                      setShowModal(true);
+                    }}
+                    size={50}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'end',
+                      marginRight: '50px',
+                      // top: '10',
+                      position: 'fixed',
 
-                right: '0',
-                bottom: '0',
-                marginBottom: '20px',
-              }}
-            >
-              {' '}
-              <OsButton
-                text="Merge Table"
-                buttontype="PRIMARY"
-                clickHandler={mergeTableData}
-              />
-            </Space>
-            {quoteItems &&
-              quoteItems?.map((itemss: any, indexOFTable: number) => {
-                const allHeaderValue: any = [];
-                const keysData = itemss?.[0] && Object?.keys(itemss?.[0]);
-                if (keysData) {
-                  keysData?.map((item: any) => {
-                    if (item) {
-                      allHeaderValue?.push(formatStatus(item));
-                    }
-                  });
-                }
-                return (
-                  <>
-                    <Space direction="horizontal" style={{width: '100%'}}>
-                      <Typography onClick={mergeTableData}>
-                        Table {indexOFTable + 1}
-                      </Typography>
-                      <TrashIcon
-                        style={{color: 'red', width: '20px'}}
-                        onClick={() => {
-                          deleteTable(indexOFTable);
-                        }}
-                      />
-                    </Space>
-                    <HotTable
-                      data={itemss}
-                      ref={hotRef}
-                      colWidths={[
-                        200, 200, 400, 200, 200, 200, 200, 200, 200, 200, 200,
-                        200, 200, 200, 200, 200,
-                      ]}
-                      height="auto"
-                      colHeaders={allHeaderValue}
-                      width="auto"
-                      minSpareRows={0}
-                      autoWrapRow
-                      autoWrapCol
-                      licenseKey="non-commercial-and-evaluation"
-                      dropdownMenu
-                      hiddenColumns={{
-                        indicators: true,
+                      right: '0',
+                      bottom: '0',
+                      marginBottom: '20px',
+                    }}
+                  >
+                    {' '}
+                    <OsButton
+                      text="Sync Table"
+                      buttontype="PRIMARY"
+                      clickHandler={() => {
+                        setShowModal(true);
                       }}
-                      contextMenu
-                      multiColumnSorting
-                      filters
-                      rowHeaders
-                      allowInsertRow={false}
-                      allowInsertColumn={false}
-                      afterGetColHeader={alignHeaders}
-                      beforeRenderer={() => {
-                        addClassesToRows('', '', '', '', '', '', quoteItems);
-                      }}
-                      afterRemoveRow={(change, source) => {
-                        deleteRowsItemsForTable(indexOFTable, change, source);
-                      }}
-                      afterChange={(change: any, source) => {
-                        if (change) {
-                          updateRowsValueforTable(
-                            indexOFTable,
-                            change?.[0]?.[0],
-                            change?.[0]?.[1],
-                            change?.[0]?.[3],
-                          );
-                        }
-                      }}
-                      navigableHeaders
                     />
-                  </>
-                );
-              })}
+                  </Space>
+                )}
+
+                <HotTable
+                  data={
+                    ExistingQuoteItemss === 'true' ? quoteItems : mergedValue
+                  }
+                  ref={hotRef}
+                  colWidths={200}
+                  columnHeaderHeight={40}
+                  height="auto"
+                  colHeaders={mergeedColumn}
+                  width="auto"
+                  minSpareRows={0}
+                  autoWrapRow
+                  autoWrapCol
+                  licenseKey="non-commercial-and-evaluation"
+                  dropdownMenu
+                  hiddenColumns={{
+                    indicators: true,
+                  }}
+                  contextMenu
+                  multiColumnSorting
+                  filters
+                  rowHeaders
+                  allowInsertRow={false}
+                  allowInsertColumn
+                  afterGetColHeader={alignHeaders}
+                  beforeRenderer={() => {
+                    addClassesToRows('', '', '', '', '', '', quoteItems);
+                  }}
+                  afterRemoveRow={(change, source) => {
+                    deleteRowsItems(source, change);
+                  }}
+                  afterChange={(change: any, source) => {
+                    console.log('433223423', change, source);
+                    if (change) {
+                      updateRowsValue(
+                        change?.[0]?.[0],
+                        change?.[0]?.[1],
+                        change?.[0]?.[3],
+                      );
+                    }
+                  }}
+                  navigableHeaders
+                />
+              </>
+            ) : (
+              <>
+                <Space
+                  size={50}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'end',
+                    marginRight: '50px',
+                    // top: '10',
+                    position: 'fixed',
+
+                    right: '0',
+                    bottom: '0',
+                    marginBottom: '20px',
+                  }}
+                >
+                  {' '}
+                  <OsButton
+                    text="Merge Table"
+                    buttontype="PRIMARY"
+                    clickHandler={mergeTableData}
+                  />
+                </Space>
+                {quoteItems &&
+                  quoteItems?.map((itemss: any, indexOFTable: number) => {
+                    const allHeaderValue: any = [];
+                    const keysData = itemss?.[0] && Object?.keys(itemss?.[0]);
+                    if (keysData) {
+                      keysData?.map((item: any) => {
+                        if (item) {
+                          allHeaderValue?.push(formatStatus(item));
+                        }
+                      });
+                    }
+                    return (
+                      <>
+                        <Space direction="horizontal" style={{width: '100%'}}>
+                          <Typography onClick={mergeTableData}>
+                            Table {indexOFTable + 1}
+                          </Typography>
+                          <TrashIcon
+                            style={{color: 'red', width: '20px'}}
+                            onClick={() => {
+                              deleteTable(indexOFTable);
+                            }}
+                          />
+                        </Space>
+                        <HotTable
+                          data={itemss}
+                          ref={hotRef}
+                          colWidths={[
+                            200, 200, 400, 200, 200, 200, 200, 200, 200, 200,
+                            200, 200, 200, 200, 200, 200,
+                          ]}
+                          height="auto"
+                          colHeaders={allHeaderValue}
+                          width="auto"
+                          minSpareRows={0}
+                          autoWrapRow
+                          autoWrapCol
+                          licenseKey="non-commercial-and-evaluation"
+                          dropdownMenu
+                          hiddenColumns={{
+                            indicators: true,
+                          }}
+                          contextMenu
+                          multiColumnSorting
+                          filters
+                          rowHeaders
+                          allowInsertRow={false}
+                          allowInsertColumn={false}
+                          afterGetColHeader={alignHeaders}
+                          beforeRenderer={() => {
+                            addClassesToRows(
+                              '',
+                              '',
+                              '',
+                              '',
+                              '',
+                              '',
+                              quoteItems,
+                            );
+                          }}
+                          afterRemoveRow={(change, source) => {
+                            deleteRowsItemsForTable(
+                              indexOFTable,
+                              change,
+                              source,
+                            );
+                          }}
+                          afterChange={(change: any, source) => {
+                            if (change) {
+                              updateRowsValueforTable(
+                                indexOFTable,
+                                change?.[0]?.[0],
+                                change?.[0]?.[1],
+                                change?.[0]?.[3],
+                              );
+                            }
+                          }}
+                          navigableHeaders
+                        />
+                      </>
+                    );
+                  })}
+              </>
+            )}
           </>
-        )}{' '}
+        )}
       </div>
       <OsModal
         // loading={loading}

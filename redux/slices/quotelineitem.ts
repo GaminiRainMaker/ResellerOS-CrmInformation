@@ -19,6 +19,7 @@ type QuoteLineItemState = {
   data: any;
   quoteLineItem: any;
   quoteLineItemByQuoteID: any;
+  concernQuoteLineItemData: any;
 };
 const initialState: QuoteLineItemState = {
   loading: false,
@@ -26,6 +27,7 @@ const initialState: QuoteLineItemState = {
   data: [],
   quoteLineItem: [],
   quoteLineItemByQuoteID: [],
+  concernQuoteLineItemData: [],
 };
 
 const quoteLineItemSlice = createSlice({
@@ -34,6 +36,9 @@ const quoteLineItemSlice = createSlice({
   reducers: {
     setQuoteLineItem: (state, action) => {
       state.quoteLineItem = action.payload;
+    },
+    setConcernQuoteLineItemData: (state, action) => {
+      state.concernQuoteLineItemData = action.payload;
     },
   },
   extraReducers(builder) {
@@ -203,5 +208,6 @@ const quoteLineItemSlice = createSlice({
   },
 });
 
-export const {setQuoteLineItem} = quoteLineItemSlice.actions;
+export const {setQuoteLineItem, setConcernQuoteLineItemData} =
+  quoteLineItemSlice.actions;
 export default quoteLineItemSlice?.reducer;

@@ -1,11 +1,14 @@
 import {Form} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Image from 'next/image';
-import {FC} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
 import {RaiseConcernInterface} from './os-raise-concern.interface';
+import CommonSelect from '../os-select';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {setConcernQuoteLineItemData} from '../../../../../redux/slices/quotelineitem';
 
 const RaiseConcern: FC<RaiseConcernInterface> = ({
   form,
@@ -16,6 +19,35 @@ const RaiseConcern: FC<RaiseConcernInterface> = ({
   showTextArea = true,
 }) => {
   const [token] = useThemeToken();
+  const dispatch = useAppDispatch();
+  const {quoteLineItemByQuoteID} = useAppSelector(
+    (state) => state.quoteLineItem,
+  );
+  const fileNameMap: any = {};
+  const uniqueFileNames: any = [];
+  quoteLineItemByQuoteID?.forEach((dataAddressItem: any) => {
+    if (!fileNameMap[dataAddressItem.file_name]) {
+      fileNameMap[dataAddressItem.file_name] = {
+        value: dataAddressItem.file_name,
+        label: (
+          <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+            {dataAddressItem.file_name}
+          </Typography>
+        ),
+      };
+      uniqueFileNames.push(dataAddressItem.file_name);
+    }
+  });
+  const fileNameOption = uniqueFileNames.map(
+    (fileName: string) => fileNameMap[fileName],
+  );
+
+  const getSelectFileData = (value: string) => {
+    const filteredData = quoteLineItemByQuoteID.filter((item: any) =>
+      value.includes(item.file_name),
+    );
+    dispatch(setConcernQuoteLineItemData(filteredData));
+  };
 
   return (
     <div>
@@ -34,6 +66,34 @@ const RaiseConcern: FC<RaiseConcernInterface> = ({
       </Space>
       <br />
       <br />
+      {showTextArea && (
+        <Form
+          onFinish={onClick}
+          form={form}
+          layout="vertical"
+          requiredMark={false}
+        >
+          <Form.Item
+            name="file_name"
+            label={
+              <Typography name="Body 4/Regular" color={token?.colorPrimaryText}>
+                File Name
+              </Typography>
+            }
+          >
+            <CommonSelect
+              style={{width: '100%'}}
+              placeholder="Select File"
+              mode="multiple"
+              options={fileNameOption}
+              onChange={(e) => {
+                getSelectFileData(e);
+              }}
+            />
+          </Form.Item>
+        </Form>
+      )}
+
       {showTextArea && (
         <Form
           onFinish={onClick}
