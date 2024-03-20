@@ -48,7 +48,12 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false);
   const [finalLoading, setFinalLoading] = useState<boolean>(false);
-  const [quoteId, setQuoteId] = useState<number>();
+
+  useEffect(() => {
+    if (existingQuoteId) {
+      form?.setFieldValue('existingQuoteId', existingQuoteId);
+    }
+  }, [existingQuoteId]);
 
   useEffect(() => {
     dispatch(getAllGeneralSetting(''));
@@ -88,6 +93,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
     updatedArr: any,
     singleQuote: boolean,
   ) => {
+    const quoteId = form.getFieldValue('existingQuoteId');
     let quoteLineItemArr: any = [];
     const lineItemData: FormattedData = {};
     const quotesArr: any = [];
@@ -156,7 +162,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
             lineItems: lineItems.length > 0 ? lineItems : [],
           };
         }
-        if (singleQuote || existingQuoteId) {
+        if (singleQuote || quoteId) {
           if (i === 0) {
             quotesArr.push(quoteObj);
           } else {
@@ -175,16 +181,16 @@ const AddQuote: FC<AddQuoteInterface> = ({
           quotesArr.push(quoteObj);
         }
       }
-      if (quotesArr.length > 0 && !existingQuoteId) {
+      if (quotesArr.length > 0 && !quoteId) {
         for (let i = 0; i < quotesArr.length; i++) {
           const response = await dispatch(insertQuote([quotesArr[i]]));
           // eslint-disable-next-line no-unsafe-optional-chaining
           quotesArr[i] = {...response?.payload?.data[0], ...quotesArr[i]};
         }
       } else {
-        console.log('existingQuoteId12345', existingQuoteId);
+        console.log('existingQuoteId12345', quoteId);
 
-        dispatch(getQuoteById(existingQuoteId)).then((payload: any) => {
+        dispatch(getQuoteById(quoteId)).then((payload: any) => {
           quotesArr[0] = {
             ...payload?.payload,
             quote_json:
@@ -196,9 +202,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
             lineItems: [...quotesArr[0].lineItems],
           };
         });
-        await dispatch(
-          updateQuoteWithNewlineItemAddByID(Number(existingQuoteId)),
-        );
+        await dispatch(updateQuoteWithNewlineItemAddByID(Number(quoteId)));
       }
       const rebateDataArray: any = [];
       const contractProductArray: any = [];
@@ -321,12 +325,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
     setUploadFileData([]);
     form.resetFields(['customer_id', 'opportunity_id']);
   };
-
-  useEffect(() => {
-    if (quoteId) {
-      router.push(`/generateQuote?id=${quoteId}`);
-    }
-  }, [quoteId]);
 
   const resetFields = () => {
     setShowModal(false);
