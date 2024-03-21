@@ -1,50 +1,23 @@
 /* eslint-disable react/no-unstable-nested-components */
-import {FC} from 'react';
-import {LeftOutlined, RightOutlined} from '@ant-design/icons';
-import {CarouselProps, Carousel} from '../antd/Carousel';
+import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
+import { FC } from 'react';
+import { Carousel, CarouselProps } from '../antd/Carousel';
 
-const SampleNextArrow = (props: any) => {
-  const {className, style, onClick} = props;
-  return (
-    <div
-      className={className}
-      style={{
-        ...style,
-        color: 'black',
-        fontSize: '15px',
-        lineHeight: '1.5715',
-      }}
-      onClick={onClick}
-    >
-      <RightOutlined />
-    </div>
-  );
-};
+const CustomPrevArrow = ({ onClick }: any) => (
+  <Button onClick={onClick} style={{ position: 'absolute', top: '50%', left: '0', zIndex: '1', color: 'black' }}>
+    <LeftOutlined />
+  </Button>
+);
 
-const SamplePrevArrow = (props: any) => {
-  const {className, style, onClick} = props;
-  return (
-    <div
-      className={className}
-      style={{
-        ...style,
-        color: 'black',
-        fontSize: '15px',
-        lineHeight: '1.5715',
-      }}
-      onClick={onClick}
-    >
-      <LeftOutlined />
-    </div>
-  );
-};
+const CustomNextArrow = ({ onClick }: any) => (
+  <Button onClick={onClick} style={{ position: 'absolute', top: '50%', right: '0', zIndex: '1', color: 'black' }}>
+    <RightOutlined />
+  </Button>
+);
 
-const OSCarousel: FC<CarouselProps> = (props) => (
-  <>
-    <SampleNextArrow />
-    <Carousel />
-    <SamplePrevArrow />
-  </>
+const OSCarousel: FC<CarouselProps> = () => (
+  <Carousel prevArrow={<CustomPrevArrow />} nextArrow={<CustomNextArrow />} />
 );
 
 export default OSCarousel;

@@ -1,12 +1,22 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react-hooks/exhaustive-deps */
+import {Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import Typography from '@/app/components/common/typography';
+import {
+  ArrowDownTrayIcon,
+  ArrowTopRightOnSquareIcon,
+} from '@heroicons/react/24/outline';
 import {Carousel} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
+import Image from 'next/image';
 import {FC, useEffect, useState} from 'react';
+import PdfImg from '../../../../../public/assets/static/pdf.svg';
 import {getQuoteById} from '../../../../../redux/actions/quote';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {ConcernDetailInterface} from './editedQuote.interface';
+import {CardStyle, IconWrapper} from './styled-components';
 
 const ConcernDetail: FC<ConcernDetailInterface> = ({
   showConcernDetailModal,
@@ -23,18 +33,18 @@ const ConcernDetail: FC<ConcernDetailInterface> = ({
   useEffect(() => {
     const concernPDFArray: any = [];
     quoteById?.QuoteLineItems?.forEach((item: any) => {
-      if (item?.concern) {
+      if (item?.issue_type) {
         const existingConcernIndex = concernPDFArray.findIndex(
-          (concernObj: any) => concernObj?.concern === item?.concern,
+          (concernObj: any) => concernObj?.issue_type === item?.issue_type,
         );
         if (existingConcernIndex !== -1) {
-          // If concern exists, add unique PDF URLs
+          // If Issue Type exists, add unique PDF URLs
           const uniqueUrls = new Set(
             concernPDFArray[existingConcernIndex]?.data?.map(
               (urlObj: any) => urlObj?.pdf_url,
             ),
           );
-          if (!uniqueUrls.has(item?.pdf_url)) {
+          if (!uniqueUrls?.has(item?.pdf_url)) {
             concernPDFArray[existingConcernIndex]?.data?.push({
               pdf_url: item?.pdf_url,
               nanonets_id: item?.nanonets_id,
@@ -53,7 +63,7 @@ const ConcernDetail: FC<ConcernDetailInterface> = ({
             },
           ];
           concernPDFArray?.push({
-            concern: item?.concern,
+            issue_type: item?.issue_type,
             data,
           });
         }
@@ -68,13 +78,20 @@ const ConcernDetail: FC<ConcernDetailInterface> = ({
       <br />
       <Carousel autoplay arrows>
         {concernData?.map((item: any) => (
-          <div key={item.concern}>
+          <div key={item.issue_type}>
+            <Typography
+              name="Body 4/Medium"
+              color={token?.colorPrimaryText}
+            >
+              Issue Type
+            </Typography>
             <TextArea
               placeholder="Write your Concern here!"
-              autoSize={{minRows: 3, maxRows: 5}}
-              value={item.concern}
+              value={item.issue_type}
               disabled
             />
+            <br />
+            <br />
             <div
               style={{
                 display: 'flex',
@@ -82,33 +99,57 @@ const ConcernDetail: FC<ConcernDetailInterface> = ({
               }}
             >
               {item?.data?.map((dataItem: any) => (
-                <div
-                  key={dataItem?.pdf_url}
-                  style={{
-                    width: '100px',
-                    height: '100px',
-                    display: 'flex',
-                    background: 'cyan',
-                  }}
-                >
-                  <a
-                    onClick={() => {
-                      window.open(dataItem?.pdf_url);
+                <CardStyle>
+                  <Row
+                    justify="space-between"
+                    style={{
+                      position: 'absolute',
+                      top: '1%',
+                      width: '100%',
+                      padding: '5px',
                     }}
                   >
-                    PDF
-                  </a>
-                  <a
-                    onClick={() => {
-                      window.open(
-                        `https://app.nanonets.com/#/ocr/test/${dataItem?.model_id}/${dataItem?.nanonets_id}`,
-                      );
-                    }}
-                  >
-                    Nanonets
-                  </a>
-                  {dataItem?.file_name}
-                </div>
+                    <IconWrapper>
+                      <ArrowDownTrayIcon
+                        color={token?.colorInfo}
+                        cursor="pointer"
+                        width={22}
+                        onClick={() => {
+                          window.open(dataItem?.pdf_url);
+                        }}
+                      />
+                    </IconWrapper>
+                    <IconWrapper>
+                      <ArrowTopRightOnSquareIcon
+                        color={token?.colorInfo}
+                        cursor="pointer"
+                        width={22}
+                        onClick={() => {
+                          window.open(
+                            `https://app.nanonets.com/#/ocr/test/${dataItem?.model_id}/${dataItem?.nanonets_id}`,
+                          );
+                        }}
+                      />
+                    </IconWrapper>
+                  </Row>
+                  <Space direction="vertical" style={{textAlign: 'center'}}>
+                    {/* {item?.file?.type.split('/')[1] === 'pdf' ? ( */}
+                    <Image src={PdfImg} alt="PdfImg" />
+                    {/* ) : (
+                      <Image src={XlsImg} alt="XlsImg" />
+                    )} */}
+                    <Typography
+                      name="Body 4/Medium"
+                      color={token?.colorPrimaryText}
+                    >
+                      {dataItem?.file_name}
+                    </Typography>
+
+                    <Typography name="Body 4/Medium" color={token?.colorText}>
+                      30 Kb
+                    </Typography>
+                  </Space>
+                </CardStyle>
               ))}
             </div>
           </div>

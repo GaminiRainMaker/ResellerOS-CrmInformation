@@ -303,7 +303,7 @@ const GenerateQuote: React.FC = () => {
           color={token?.colorTextBase}
           onClick={() => setActiveTab('1')}
         >
-          Input Details
+          Review Quotes
         </Typography>
       ),
       children: (
@@ -417,40 +417,6 @@ const GenerateQuote: React.FC = () => {
       ),
     },
   ];
-
-  const addConcernData = () => {
-    const concernData = form?.getFieldsValue();
-    if (!concernData?.concern_text) {
-      openNotificationWithIcon();
-    } else {
-      const idArray = concernQuoteLineItemData.map((item: any) => item.id);
-      const data = {concern: concernData?.concern_text, id: idArray};
-      dispatch(updateQuoteLineItemConcern(data));
-      setShowRaiseConcernModal(false);
-      setShowAfterRaiseConcernModal(true);
-      form?.resetFields();
-    }
-  };
-
-  const fileNameMap: any = {};
-  const uniqueFileNames: any = [];
-  quoteLineItemByQuoteID?.forEach((dataAddressItem: any) => {
-    if (!dataAddressItem.concern && !fileNameMap[dataAddressItem.file_name]) {
-      fileNameMap[dataAddressItem.file_name] = {
-        value: dataAddressItem.file_name,
-        label: (
-          <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-            {dataAddressItem.file_name}
-          </Typography>
-        ),
-      };
-      uniqueFileNames.push(dataAddressItem.file_name);
-    }
-  });
-  const fileNameOption = uniqueFileNames.map(
-    (fileName: string) => fileNameMap[fileName],
-  );
-  console.log('fileNameOption', fileNameOption);
 
   return (
     <>
@@ -579,47 +545,8 @@ const GenerateQuote: React.FC = () => {
           }}
         />
       )}
-      <OsModal
-        loading={loading}
-        body={
-          fileNameOption && fileNameOption?.length > 0 ? (
-            <RaiseConcern
-              title="Raise Your Concern"
-              description="We are here to assist you ! Please write your concern regarding this quote to us. Also, you can update the quote manually."
-              image={RaiseConcernImg}
-              form={form}
-              onClick={addConcernData}
-              fileNameOption={fileNameOption}
-            />
-          ) : (
-            <RaiseConcern
-              title="Concern Already Raised"
-              description="Your concern already raised."
-              image={GreenCheckIcon}
-              showTextArea={false}
-            />
-          )
-        }
-        bodyPadding={40}
-        width={638}
-        open={showRaiseConcernModal}
-        onCancel={() => {
-          setShowRaiseConcernModal(false);
-        }}
-        destroyOnClose
-        secondaryButtonText={
-          fileNameOption && fileNameOption?.length > 0 ? 'Cancel' : 'Done'
-        }
-        primaryButtonText={
-          fileNameOption && fileNameOption?.length > 0 ? 'Raise Concern' : null
-        }
-        singleButtonInCenter
-        onOk={() => {
-          form?.submit();
-        }}
-      />
 
-      <OsModal
+      {/* <OsModal
         body={
           <RaiseConcern
             title="Concern Raised"
@@ -640,7 +567,7 @@ const GenerateQuote: React.FC = () => {
           setShowAfterRaiseConcernModal(false);
           router?.push(`/fileEditor?id=${getQuoteID}&quoteExist=false`);
         }}
-      />
+      /> */}
     </>
   );
 };

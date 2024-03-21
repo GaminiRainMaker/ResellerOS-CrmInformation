@@ -369,12 +369,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
         onOk={() => {
           form?.setFieldValue('singleQuote', true);
           form.submit();
-          // resetFields();
         }}
         thirdButtonfunction={() => {
           form?.setFieldValue('singleQuote', false);
           form.submit();
-          // resetFields();
         }}
         onCancel={() => {
           resetFields();

@@ -1,7 +1,8 @@
+import {IssueTypeOption, affectedColumns} from '@/app/utils/CONSTANTS';
 import {Form} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Image from 'next/image';
-import {FC} from 'react';
+import {FC, useState} from 'react';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setConcernQuoteLineItemData} from '../../../../../redux/slices/quotelineitem';
 import {Space} from '../antd/Space';
@@ -24,6 +25,7 @@ const RaiseConcern: FC<RaiseConcernInterface> = ({
   const {quoteLineItemByQuoteID} = useAppSelector(
     (state) => state.quoteLineItem,
   );
+  const [isShowOtherIssue, setIsShowOtherIssue] = useState<boolean>(false);
 
   const getSelectFileData = (value: string) => {
     const filteredData = quoteLineItemByQuoteID.filter((item: any) =>
@@ -49,62 +51,90 @@ const RaiseConcern: FC<RaiseConcernInterface> = ({
       </Space>
       <br />
       <br />
-      {showTextArea && (
-        <Form
-          onFinish={onClick}
-          form={form}
-          layout="vertical"
-          requiredMark={false}
+      <Form
+        onFinish={onClick}
+        form={form}
+        layout="vertical"
+        requiredMark={false}
+      >
+        <Form.Item
+          rules={[
+            {
+              required: true,
+              message: 'Please Select the Issue Type',
+            },
+          ]}
+          name="issue_type"
+          label={
+            <Typography name="Body 4/Regular" color={token?.colorPrimaryText}>
+              Issue Type
+            </Typography>
+          }
         >
+          <CommonSelect
+            style={{
+              width: '100%',
+            }}
+            placeholder="Select Type"
+            options={IssueTypeOption}
+            onChange={(e) => {
+              if (e === 'Other Issue') {
+                setIsShowOtherIssue(true);
+              } else {
+                setIsShowOtherIssue(false);
+              }
+            }}
+          />
+        </Form.Item>
+        {isShowOtherIssue && (
           <Form.Item
             rules={[
               {
                 required: true,
-                message: 'Please Select the File Name',
+                message: 'Please write the issue',
               },
             ]}
-            name="file_name"
+            name="other_issue"
             label={
               <Typography name="Body 4/Regular" color={token?.colorPrimaryText}>
-                File Name
-              </Typography>
-            }
-          >
-            <CommonSelect
-              style={{width: '100%', height: "fit-content", minHeight: '48px !important',}}
-              placeholder="Select File"
-              mode="multiple"
-              options={fileNameOption}
-              onChange={(e) => {
-                getSelectFileData(e);
-              }}
-            />
-          </Form.Item>
-        </Form>
-      )}
-
-      {showTextArea && (
-        <Form
-          onFinish={onClick}
-          form={form}
-          layout="vertical"
-          requiredMark={false}
-        >
-          <Form.Item
-            name="concern_text"
-            label={
-              <Typography name="Body 4/Regular" color={token?.colorPrimaryText}>
-                Concern
+                Other Issue
               </Typography>
             }
           >
             <TextArea
-              placeholder="Write your Concern here!"
-              autoSize={{minRows: 3, maxRows: 5}}
+              placeholder="Write your issue here!"
+              autoSize={{minRows: 2, maxRows: 4}}
             />
           </Form.Item>
-        </Form>
-      )}
+        )}
+        <Form.Item
+          rules={[
+            {
+              required: true,
+              message: 'Please Select the Affected Columns',
+            },
+          ]}
+          name="affected_columns"
+          label={
+            <Typography name="Body 4/Regular" color={token?.colorPrimaryText}>
+              Affected Columns
+            </Typography>
+          }
+        >
+          <CommonSelect
+            allowClear
+            style={{
+              width: '100%',
+            }}
+            placeholder="Select Columns"
+            mode="multiple"
+            options={affectedColumns}
+            // onChange={(e) => {
+            //   // getSelectFileData(e);
+            // }}
+          />
+        </Form.Item>
+      </Form>
     </div>
   );
 };

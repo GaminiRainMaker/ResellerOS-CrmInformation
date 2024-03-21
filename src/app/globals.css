@@ -153,13 +153,11 @@ a {
 /* Custom styles for Ant Design Carousel */
 .ant-carousel .slick-prev,
 .ant-carousel .slick-next {
-  color: red;
-  /* Change the arrow color as per your preference */
+  color: red; /* Change the arrow color as per your preference */
 }
 
 /* Optional: To change the arrow size */
 .ant-carousel .slick-prev:before,
 .ant-carousel .slick-next:before {
-  font-size: 24px;
-  /* Adjust the font size as needed */
+  font-size: 24px; /* Adjust the font size as needed */
 }

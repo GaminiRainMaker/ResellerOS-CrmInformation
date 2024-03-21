@@ -113,7 +113,6 @@ const AllQuote: React.FC = () => {
   };
   const actionEye = async (value: string) => {
     setShowConcernDetailModal({visible: true, quoteId: value});
-    console.log('actionEye', value, showConcernDetailModal);
   };
 
   const Quotecolumns = getSuperAdminQuoteColumns(

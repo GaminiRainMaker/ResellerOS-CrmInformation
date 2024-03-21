@@ -332,6 +332,21 @@ export function formatStatus(str: string) {
   return frags?.join(' ');
 }
 
+export const IssueTypeOption = [
+  {
+    value: 'Missing Row',
+    label: 'Missing Row',
+  },
+  {
+    value: 'Unread Column',
+    label: 'Unread Column',
+  },
+  {
+    value: 'Other Issue',
+    label: 'Other Issue',
+  },
+];
+
 export const concernDescription =
   'Your Concern has been raised to our support team. We are sorry for you experience and will try our best to provide you better experience next time.';
 
@@ -430,5 +445,32 @@ export const standardAttributesData = [
     is_active: false,
     is_required: false,
     is_view: true,
+  },
+];
+
+export const affectedColumns = [
+  {
+    label: '#Line',
+    value: 'line_number',
+  },
+  {
+    label: 'SKU',
+    value: 'product_code',
+  },
+  {
+    label: 'Qty',
+    value: 'quantity',
+  },
+  {
+    label: 'MSRP',
+    value: 'list_price',
+  },
+  {
+    label: 'Cost',
+    value: 'adjusted_price',
+  },
+  {
+    label: 'Product Description',
+    value: 'description',
   },
 ];

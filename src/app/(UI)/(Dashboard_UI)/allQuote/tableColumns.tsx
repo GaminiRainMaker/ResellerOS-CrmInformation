@@ -3,9 +3,7 @@ import Typography from '@/app/components/common/typography';
 import {formatDate} from '@/app/utils/base';
 import {EyeIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {GlobalToken} from 'antd';
-import Image from 'next/image';
 import {JSX, SetStateAction} from 'react';
-import attachcircle from '../../../../../public/assets/static/attachcircle.svg';
 
 function getColumns(
   token: GlobalToken,
@@ -313,14 +311,6 @@ function getSuperAdminQuoteColumns(
             style={{cursor: 'pointer'}}
             onClick={() => {
               actionEye(record.id);
-            }}
-          />
-          <Image
-            src={attachcircle}
-            alt="attachcircle"
-            style={{width: '24px', height: '24px'}}
-            onClick={() => {
-              window.open(`${record?.QuoteLineItems?.[0]?.pdf_url}`);
             }}
           />
           <TrashIcon

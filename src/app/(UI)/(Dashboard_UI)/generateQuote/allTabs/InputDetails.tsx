@@ -3,23 +3,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable array-callback-return */
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapse from '@/app/components/common/os-collapse';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
+import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import RaiseConcern from '@/app/components/common/os-raise-concern';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
 import {selectDataForProduct} from '@/app/utils/CONSTANTS';
 import {useRemoveDollarAndCommahook} from '@/app/utils/base';
-import {TrashIcon} from '@heroicons/react/24/outline';
-import {Form} from 'antd';
-import {useSearchParams} from 'next/navigation';
+import {CheckIcon, TrashIcon, XMarkIcon} from '@heroicons/react/24/outline';
+import {Form, notification} from 'antd';
+import {useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import RaiseConcernImg from '../../../../../../public/assets/static/raiseConcern.svg';
 import {
   getAllBundle,
   updateBundleQuantity,
@@ -29,6 +32,7 @@ import {
   DeleteQuoteLineItemById,
   getQuoteLineItemByQuoteId,
   getQuoteLineItemByQuoteIdandBundleIdNull,
+  updateQuoteLineItemConcern,
 } from '../../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {InputDetailTabInterface} from '../generateQuote.interface';
@@ -48,9 +52,11 @@ const InputDetails: FC<InputDetailTabInterface> = ({
 }) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const {abbreviate} = useAbbreviationHook(0);
+  const [form] = Form.useForm();
   // const [finalInputColumn, setFinalInputColumn] = useState<any>();
   const {
     quoteLineItemByQuoteID,
@@ -62,8 +68,21 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   );
   const [quoteLineItemByQuoteData1, setQuoteLineItemByQuoteData1] =
     useState<any>(quoteLineItemByQuoteID);
-
+  const [showRaiseConcernModal, setShowRaiseConcernModal] =
+    useState<boolean>(false);
+  const [fileLineItemIds, setFileLineItemIds] = useState<number[]>([]);
+  const [buttonType, setButtonType] = useState<string>('');
   const {data: bundleData} = useAppSelector((state) => state.bundle);
+
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotificationWithIcon = () => {
+    api.warning({
+      message: 'Please Add Concern!',
+      description:
+        'We are here to assist you! Please write your concern regarding this quote to us.',
+    });
+  };
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Input Details" />,
   };
@@ -372,6 +391,10 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       }
       setFamilyFilter(finalFamilyArr);
     }
+
+    // else if(selectedFilter === 'File'){
+
+    // }
   }, [selectedFilter]);
 
   useEffect(() => {
@@ -405,7 +428,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     });
   }, [getQuoteID]);
 
-
   useEffect(() => {
     const separatedData: any = {};
     quoteLineItemByQuoteID?.forEach((item: any) => {
@@ -415,16 +437,49 @@ const InputDetails: FC<InputDetailTabInterface> = ({
           id: item.id,
           title: fileName,
           data: [],
+          dataLength: 0,
+          totalAdjustedPrice: 0,
+          dataIds: [],
         };
       }
       separatedData[fileName].data.push(item);
+      separatedData[fileName].dataLength++;
+      separatedData[fileName].totalAdjustedPrice += parseFloat(
+        item.adjusted_price.replace(/[$,]/g, ''),
+      );
+      separatedData[fileName].dataIds.push(item.id);
     });
     const result = Object.values(separatedData);
     setQuoteLineItemByQuoteData1(result);
   }, [quoteLineItemByQuoteID]);
 
+  const addConcernData = () => {
+    const raiseIssueData = form?.getFieldsValue();
+    const updatedIssue =
+      raiseIssueData?.other_issue || raiseIssueData?.issue_type;
+
+    if (!raiseIssueData) {
+      openNotificationWithIcon();
+      return;
+    }
+    const data = {
+      issue_type: updatedIssue,
+      affected_columns: raiseIssueData?.affected_columns,
+      id: fileLineItemIds,
+    };
+    dispatch(updateQuoteLineItemConcern(data));
+    if (buttonType === 'primary') {
+      router?.push(`/fileEditor?id=${getQuoteID}&quoteExist=false`);
+    } else {
+      router?.push(`/updation`);
+    }
+    setShowRaiseConcernModal(false);
+    form?.resetFields();
+  };
+
   return (
     <>
+      {contextHolder}
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         <>
           <Form>
@@ -578,7 +633,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                 </Space>
                               </>
                             ),
-                            // children: item?.children,
                             children: (
                               <OsTableWithOutDrag
                                 loading={loading}
@@ -608,6 +662,31 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                   <Col>
                                     <p>{item?.title}</p>
                                   </Col>
+                                  <Col>
+                                    <p>Line Items: {item?.dataLength}</p>
+                                  </Col>
+                                  <Col>
+                                    <p>
+                                      Total Cost: {item?.totalAdjustedPrice}
+                                    </p>
+                                  </Col>
+                                  <Col>
+                                    <Space>
+                                      <CheckIcon
+                                        width={25}
+                                        color={token?.colorSuccess}
+                                      />
+                                      <XMarkIcon
+                                        width={25}
+                                        color={token?.colorError}
+                                        onClick={(e) => {
+                                          e?.stopPropagation();
+                                          setShowRaiseConcernModal(true);
+                                          setFileLineItemIds(item?.dataIds);
+                                        }}
+                                      />
+                                    </Space>
+                                  </Col>
                                 </Row>
                               </>
                             ),
@@ -625,31 +704,10 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                         ]}
                       />
                     ))}
-
-                    {console.log(
-                      'quoteLineItemByQuoteData',
-                      quoteLineItemByQuoteData1,
-                    )}
-                    {/* <OsTableWithOutDrag
-                      loading={loading}
-                      columns={finalInputColumn}
-                      dataSource={quoteLineItemByQuoteData || []}
-                      scroll
-                      rowSelection={rowSelection}
-                      locale={locale}
-                    /> */}
                   </>
                 )}{' '}
               </>
             )}
-            {/* <OsTableWithOutDrag
-            loading={loading}
-            columns={finalInputColumn}
-            dataSource={quoteLineItemByQuoteData}
-            rowSelection={rowSelection}
-            scroll
-            locale={locale}
-          /> */}
           </Form>
         </>
       ) : (
@@ -666,6 +724,36 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         deleteSelectedIds={deleteQuoteLineItems}
         description="Are you sure you want to delete this QuoteLineItem?"
         heading="Delete QuoteLineItem"
+      />
+
+      <OsModal
+        // loading={loading}
+        body={
+          // fileNameOption && fileNameOption?.length > 0 ? (
+          <RaiseConcern
+            title="Report an issue"
+            description="We are here to assist you ! Please write your concern regarding this quote to us. Also, you can update the quote manually."
+            image={RaiseConcernImg}
+            form={form}
+            onClick={addConcernData}
+          />
+        }
+        bodyPadding={40}
+        width={638}
+        open={showRaiseConcernModal}
+        onCancel={() => {
+          setShowRaiseConcernModal(false);
+        }}
+        destroyOnClose
+        thirdButtonText="Export File to Tables"
+        primaryButtonText="Edit Data As-Is"
+        onOk={() => {
+          form?.submit();
+          setButtonType('primary');
+        }}
+        thirdButtonfunction={() => {
+          form?.submit();
+        }}
       />
     </>
   );
