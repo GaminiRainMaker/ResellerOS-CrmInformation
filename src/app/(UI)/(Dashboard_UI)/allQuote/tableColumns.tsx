@@ -145,6 +145,7 @@ function getSuperAdminQuoteColumns(
     (value: SetStateAction<boolean>): void;
     (arg0: boolean): void;
   },
+  actionEye: {(value: string): void; (arg0: any): void},
 ) {
   const columns = [
     {
@@ -311,7 +312,7 @@ function getSuperAdminQuoteColumns(
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              editQuote(record.id);
+              actionEye(record.id);
             }}
           />
           <Image

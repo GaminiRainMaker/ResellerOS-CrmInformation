@@ -21,6 +21,7 @@ import Typography from '@/app/components/common/typography';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
@@ -35,17 +36,22 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import QuoteAnalytics from '../allQuote/analytics';
 import {getSuperAdminQuoteColumns} from '../allQuote/tableColumns';
+import ConcernDetail from './ConcernDetail';
 
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
+  const [form] = Form.useForm();
   const [token] = useThemeToken();
   const {loading, data} = useAppSelector((state) => state.quote);
-  const router = useRouter();
+  const {userInformation} = useAppSelector((state) => state.user);
   const [deletedQuote, setDeletedQuote] = useState<React.Key[]>([]);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
-  const {userInformation} = useAppSelector((state) => state.user);
-  const [form] = Form.useForm();
+  const [showConcernDetailModal, setShowConcernDetailModal] = useState<{
+    visible: boolean;
+    quoteId?: string;
+  }>();
 
   useEffect(() => {
     dispatch(getQuoteByManualUpdated());
@@ -105,6 +111,10 @@ const AllQuote: React.FC = () => {
     setShowModalDelete(false);
     form.resetFields(['opportunity_id', 'customer_id']);
   };
+  const actionEye = async (value: string) => {
+    setShowConcernDetailModal({visible: true, quoteId: value});
+    console.log('actionEye', value, showConcernDetailModal);
+  };
 
   const Quotecolumns = getSuperAdminQuoteColumns(
     token,
@@ -112,6 +122,7 @@ const AllQuote: React.FC = () => {
     editQuote,
     setDeleteIds,
     setShowModalDelete,
+    actionEye,
   );
 
   return (
@@ -232,6 +243,17 @@ const AllQuote: React.FC = () => {
         deleteSelectedIds={deleteQuote}
         heading="Delete Quote"
         description="Are you sure you want to delete this Quote?"
+      />
+
+      <OsModal
+        width={700}
+        bodyPadding={40}
+        open={showConcernDetailModal?.visible}
+        onCancel={() => {
+          setShowConcernDetailModal({visible: false});
+        }}
+        title="Concern & Documents"
+        body={<ConcernDetail showConcernDetailModal={showConcernDetailModal} />}
       />
     </>
   );

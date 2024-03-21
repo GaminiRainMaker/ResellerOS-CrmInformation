@@ -6,7 +6,6 @@ import OsModal from '@/app/components/common/os-modal';
 import {convertFileToBase64} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form, message} from 'antd';
-import moment from 'moment';
 import {useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
@@ -102,15 +101,12 @@ const AddQuote: FC<AddQuoteInterface> = ({
       for (let i = 0; i < updatedArr.length; i++) {
         const nanoNetsResult = updatedArr[i]?.data?.result;
         let quoteObj: any = {};
-
-        for (let j = 0; j < nanoNetsResult.length; j++) {
+        for (let j = 0; j < nanoNetsResult?.length; j++) {
           const result: any = nanoNetsResult[j];
           const lineItems: any = [];
           let quoteItem = {};
           let quoteJson: any = {values: []};
-
           const predictions = result?.prediction?.filter((item: any) => item);
-
           // eslint-disable-next-line @typescript-eslint/no-loop-func
           predictions?.map((itemNew: any, predictionIndex: number) => {
             if (itemNew.label === 'table') {
@@ -124,7 +120,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
                 });
               }
               quoteLineItemArr = Object.values(lineItemData);
-
               quoteJson = {
                 ...quoteJson,
                 file_name: updatedArr[i]?.file?.name,
@@ -141,6 +136,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
                   quote_config_id: updatedArr[i]?.quote_config_id ?? 22,
                   organization: userInformation.organization,
                   user_id: userInformation.id,
+                  nanonets_id: result?.id,
                 };
                 lineItems.push(newObj);
               });
@@ -151,7 +147,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
               };
             }
           });
-
           quoteObj = {
             ...quoteItem,
             user_id: userInformation.id,
@@ -188,8 +183,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
           quotesArr[i] = {...response?.payload?.data[0], ...quotesArr[i]};
         }
       } else {
-        console.log('existingQuoteId12345', quoteId);
-
         dispatch(getQuoteById(quoteId)).then((payload: any) => {
           quotesArr[0] = {
             ...payload?.payload,
@@ -226,6 +219,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
               pdf_url: lineItem?.pdf_url,
               quote_config_id: lineItem?.quote_config_id,
               file_name: lineItem?.file_name,
+              nanonets_id: lineItem?.nanonets_id,
             };
             const RebatesByProductCodData = await dispatch(
               getRebatesByProductCode(insertedProduct?.payload?.product_code),
