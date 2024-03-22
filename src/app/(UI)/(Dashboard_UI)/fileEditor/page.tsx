@@ -51,7 +51,8 @@ const EditorFile = () => {
       dispatch(getQuoteById(Number(getQUoteId))).then((d: any) => {
         if (d?.payload) {
           const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
-          setQuoteItems(dataa.values);
+          const newArray = dataa?.length > 0 ? [...dataa] : [];
+          setQuoteItems(newArray);
           const allHeaderValue: any = [];
         }
       });
@@ -220,7 +221,6 @@ const EditorFile = () => {
 
                 <HotTable
                   data={mergedValue}
-              
                   colWidths={200}
                   columnHeaderHeight={40}
                   height="auto"
@@ -309,7 +309,7 @@ const EditorFile = () => {
                           />
                         </Space>
                         <HotTable
-                          data={quoteItems}
+                          data={itemss}
                           colWidths={[
                             200, 200, 400, 200, 200, 200, 200, 200, 200, 200,
                             200, 200, 200, 200, 200, 200,
