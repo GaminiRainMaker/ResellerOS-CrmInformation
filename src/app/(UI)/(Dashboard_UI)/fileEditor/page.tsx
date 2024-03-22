@@ -88,10 +88,10 @@ const EditorFile = () => {
     } else {
       dispatch(getQuoteById(Number(getQUoteId))).then((d: any) => {
         if (d?.payload) {
-          const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
+          const dataa: any = JSON?.parse(d?.payload?.quote_json?.[2]);
 
           console.log('4564564', dataa, d?.payload);
-          const newArray = dataa?.length > 0 ? [...dataa] : [];
+          const newArray = dataa.values?.length > 0 ? [...dataa.values] : [];
           setQuoteItems(newArray);
           const allHeaderValue: any = [];
         }
@@ -520,7 +520,7 @@ const EditorFile = () => {
                           />
                         </Space>
                         <HotTable
-                          data={itemss}
+                          data={quoteItems}
                           colWidths={[
                             200, 200, 400, 200, 200, 200, 200, 200, 200, 200,
                             200, 200, 200, 200, 200, 200,
