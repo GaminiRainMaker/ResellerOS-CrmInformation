@@ -479,7 +479,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     );
     dispatch(setConcernQuoteLineItemData(filteredData));
     if (buttonType === 'primary') {
-      router?.push(`/updation`);
+      router?.push(`/fileEditor?id=${getQuoteID}&quoteExist=true`);
     } else {
       router?.push(`/fileEditor?id=${getQuoteID}&quoteExist=false`);
     }

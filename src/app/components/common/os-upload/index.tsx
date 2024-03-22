@@ -14,7 +14,7 @@ import {OSDraggerStyle} from './styled-components';
 import GlobalLoader from '../os-global-loader';
 import OsTable from '../os-table';
 import {useAppSelector} from '../../../../../redux/hook';
-import { Switch } from '../antd/Switch';
+import {Switch} from '../antd/Switch';
 
 const OsUpload: React.FC<any> = ({
   beforeUpload,
@@ -57,7 +57,12 @@ const OsUpload: React.FC<any> = ({
 
     let API_ENDPOINT = '';
     if (file?.type.split('/')[1] === 'pdf') {
-      API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/${model_id}/LabelFile/`;
+      console.log('43543543', model_id);
+      if (!model_id || model_id === undefined) {
+        API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/0ba764d3-bfd5-4756-bdb1-0e5bc427bdda/LabelFile/`;
+      } else {
+        API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/${model_id}/LabelFile/`;
+      }
     } else {
       API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/0ba764d3-bfd5-4756-bdb1-0e5bc427bdda/LabelFile/`;
     }
