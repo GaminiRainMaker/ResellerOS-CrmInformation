@@ -335,16 +335,16 @@ export function formatStatus(str: string) {
 
 export const IssueTypeOption = [
   {
-    value: 'Missing Row',
     label: 'Missing Row',
+    value: 'Missing Row',
   },
   {
-    value: 'Unread Column',
-    label: 'Unread Column',
+    label: 'Unread Column/Unmatched Column',
+    value: 'Unread Column/Unmatched Column',
   },
   {
-    value: 'Other Issue',
     label: 'Other Issue',
+    value: 'Other Issue',
   },
 ];
 

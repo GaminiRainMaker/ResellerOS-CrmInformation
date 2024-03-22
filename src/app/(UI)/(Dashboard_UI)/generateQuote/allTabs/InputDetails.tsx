@@ -465,7 +465,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     }
     const data = {
       issue_type: updatedIssue,
-      affected_columns: raiseIssueData?.affected_columns,
+      affected_columns: raiseIssueData?.issue_type === 'Unread Column/Unmatched Column' ? raiseIssueData?.affected_columns : null,
       id: fileLineItemIds,
     };
     dispatch(updateQuoteLineItemConcern(data));

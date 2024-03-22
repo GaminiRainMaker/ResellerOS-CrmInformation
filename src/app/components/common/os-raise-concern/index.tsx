@@ -1,13 +1,13 @@
-import { IssueTypeOption, affectedColumns } from '@/app/utils/CONSTANTS';
-import { Form } from 'antd';
+import {IssueTypeOption, affectedColumns} from '@/app/utils/CONSTANTS';
+import {Form} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Image from 'next/image';
-import { FC, useState } from 'react';
-import { Space } from '../antd/Space';
+import {FC, useState} from 'react';
+import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
-import { RaiseConcernInterface } from './os-raise-concern.interface';
+import {RaiseConcernInterface} from './os-raise-concern.interface';
 
 const RaiseConcern: FC<RaiseConcernInterface> = ({
   form,
@@ -17,18 +17,10 @@ const RaiseConcern: FC<RaiseConcernInterface> = ({
   image,
 }) => {
   const [token] = useThemeToken();
-  // const dispatch = useAppDispatch();
-  // const {quoteLineItemByQuoteID} = useAppSelector(
-  //   (state) => state.quoteLineItem,
-  // );
-
-  // const getSelectFileData = (value: string) => {
-  //   const filteredData = quoteLineItemByQuoteID.filter((item: any) =>
-  //   value.includes(item.file_name),
-  //   );
-  //   dispatch(setConcernQuoteLineItemData(filteredData));
-  // };
-  const [isShowOtherIssue, setIsShowOtherIssue] = useState<boolean>(false);
+  const [isShowOtherIssue, setIsShowOtherIssue] = useState<{
+    otherText: boolean;
+    unMatchedColumns: boolean;
+  }>();
 
   return (
     <div>
@@ -75,14 +67,25 @@ const RaiseConcern: FC<RaiseConcernInterface> = ({
             options={IssueTypeOption}
             onChange={(e) => {
               if (e === 'Other Issue') {
-                setIsShowOtherIssue(true);
+                setIsShowOtherIssue({
+                  otherText: true,
+                  unMatchedColumns: false,
+                });
+              } else if (e === 'Unread Column/Unmatched Column') {
+                setIsShowOtherIssue({
+                  otherText: false,
+                  unMatchedColumns: true,
+                });
               } else {
-                setIsShowOtherIssue(false);
+                setIsShowOtherIssue({
+                  otherText: false,
+                  unMatchedColumns: false,
+                });
               }
             }}
           />
         </Form.Item>
-        {isShowOtherIssue && (
+        {isShowOtherIssue?.otherText && (
           <Form.Item
             rules={[
               {
@@ -103,33 +106,32 @@ const RaiseConcern: FC<RaiseConcernInterface> = ({
             />
           </Form.Item>
         )}
-        <Form.Item
-          rules={[
-            {
-              required: true,
-              message: 'Please Select the Affected Columns',
-            },
-          ]}
-          name="affected_columns"
-          label={
-            <Typography name="Body 4/Regular" color={token?.colorPrimaryText}>
-              Affected Columns
-            </Typography>
-          }
-        >
-          <CommonSelect
-            allowClear
-            style={{
-              width: '100%',
-            }}
-            placeholder="Select Columns"
-            mode="multiple"
-            options={affectedColumns}
-            // onChange={(e) => {
-            //   // getSelectFileData(e);
-            // }}
-          />
-        </Form.Item>
+        {isShowOtherIssue?.unMatchedColumns && (
+          <Form.Item
+            rules={[
+              {
+                required: true,
+                message: 'Please Select the Affected Columns',
+              },
+            ]}
+            name="affected_columns"
+            label={
+              <Typography name="Body 4/Regular" color={token?.colorPrimaryText}>
+                Affected Columns
+              </Typography>
+            }
+          >
+            <CommonSelect
+              allowClear
+              style={{
+                width: '100%',
+              }}
+              placeholder="Select Columns"
+              mode="multiple"
+              options={affectedColumns}
+            />
+          </Form.Item>
+        )}
       </Form>
     </div>
   );
