@@ -33,7 +33,6 @@ import OsTabs from '@/app/components/common/os-tabs';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 
-import AnalyticCardSkeleton from '@/app/components/common/os-skeletons/AnalyticCardSkeleton';
 import {
   deleteQuoteById,
   getQuotesByDateFilter,
@@ -45,7 +44,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import RecentSection from './RecentSection';
 import QuoteAnalytics from './analytics';
 import {dropDownItems, tabItems} from './constants';
-import getColumns from './tableColumns';
+import {getColumns} from './tableColumns';
 
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -216,7 +215,6 @@ const AllQuote: React.FC = () => {
 
   return (
     <>
-      {/* <AnalyticCardSkeleton />{' '} */}
       <Space size={24} direction="vertical" style={{width: '100%'}}>
         <QuoteAnalytics quoteData={quoteData} deletedQuote={deletedQuote} />
         <Row justify="space-between" align="middle">
@@ -246,7 +244,11 @@ const AllQuote: React.FC = () => {
                 setUploadFileData={setUploadFileData}
                 loading={loading}
                 existingQuoteId={existingQuoteId}
+                rowSelection={rowSelection}
                 buttonText="Add Quote"
+                setShowToggleTable={setShowToggleTable}
+                showToggleTable={showToggleTable}
+                Quotecolumns={Quotecolumns}
               />
 
               <Space>

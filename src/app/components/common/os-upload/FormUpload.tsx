@@ -67,7 +67,7 @@ const FormUpload: React.FC<FormUploadInterface> = ({setCollapsed}) => {
                 UploadFile
               </Typography>
               <Typography name="Body 4/Medium">
-                XLS, PDF, DOC, PNG and JPG
+                XLS, PDF.
               </Typography>
             </Space>
           </Space>

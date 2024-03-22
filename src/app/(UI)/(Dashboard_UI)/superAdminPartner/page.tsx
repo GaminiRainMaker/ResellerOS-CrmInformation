@@ -83,8 +83,6 @@ const SuperAdminPartner: React.FC = () => {
     dispatch(getAllPartnerProgram());
   }, []);
 
-  console.log('activeTab', activeTab);
-
   const onRowUpdate = (type: string, recordId: number, value: boolean) => {
     const updateField = type === 'Active' ? 'is_active' : 'is_approved';
 
@@ -315,11 +313,7 @@ const SuperAdminPartner: React.FC = () => {
     },
   ];
 
-  const allColumns = [
-    ...SuperPartnerColumns,
-    ...(activeTab === 3 ? secondSuperPartnerColumns : []),
-    ...thirdSuperPartnerColumns,
-  ];
+ 
 
   const PartnerProgramColumns = [
     {
@@ -453,7 +447,7 @@ const SuperAdminPartner: React.FC = () => {
       key: '1',
       children: (
         <OsTable
-          columns={allColumns}
+          columns={[...SuperPartnerColumns, ...thirdSuperPartnerColumns]}
           dataSource={PartnerData?.approved}
           rowSelection={rowSelection}
           scroll
@@ -514,7 +508,11 @@ const SuperAdminPartner: React.FC = () => {
       key: '3',
       children: (
         <OsTable
-          columns={allColumns}
+          columns={[
+            ...SuperPartnerColumns,
+            ...secondSuperPartnerColumns,
+            ...thirdSuperPartnerColumns,
+          ]}
           dataSource={PartnerData?.requested}
           rowSelection={rowSelection}
           scroll
@@ -532,7 +530,7 @@ const SuperAdminPartner: React.FC = () => {
       key: '4',
       children: (
         <OsTable
-          columns={allColumns}
+          columns={[...SuperPartnerColumns, ...thirdSuperPartnerColumns]}
           dataSource={PartnerData?.rejected}
           rowSelection={rowSelection}
           scroll

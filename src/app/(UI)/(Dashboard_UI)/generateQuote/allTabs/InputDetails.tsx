@@ -19,6 +19,7 @@ import {TrashIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import {
   getAllBundle,
   updateBundleQuantity,
@@ -59,6 +60,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] = useState<any>(
     quoteLineItemByQuoteID,
   );
+  const [quoteLineItemByQuoteData1, setQuoteLineItemByQuoteData1] =
+    useState<any>(quoteLineItemByQuoteID);
 
   const {data: bundleData} = useAppSelector((state) => state.bundle);
   const locale = {
@@ -402,24 +405,28 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     });
   }, [getQuoteID]);
 
+
+  useEffect(() => {
+    const separatedData: any = {};
+    quoteLineItemByQuoteID?.forEach((item: any) => {
+      const fileName = item?.file_name;
+      if (!separatedData[fileName]) {
+        separatedData[fileName] = {
+          id: item.id,
+          title: fileName,
+          data: [],
+        };
+      }
+      separatedData[fileName].data.push(item);
+    });
+    const result = Object.values(separatedData);
+    setQuoteLineItemByQuoteData1(result);
+  }, [quoteLineItemByQuoteID]);
+
   return (
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         <>
-          {/* <Button
-            onClick={() => {
-              const textResult = convertDataToText(
-                finalInputColumn,
-                quoteLineItemByQuoteData,
-              );
-              if (textResult) {
-                navigator.clipboard.writeText(textResult);
-              }
-            }}
-          >
-            Copy Data
-          </Button> */}
-
           <Form>
             {bundleData && bundleData?.length > 0 ? (
               <>
@@ -588,15 +595,50 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                     ))}
                   </>
                 ) : (
-                  // item?.children
-                  <OsTableWithOutDrag
-                    loading={loading}
-                    columns={finalInputColumn}
-                    dataSource={quoteLineItemByQuoteData || []}
-                    scroll
-                    rowSelection={rowSelection}
-                    locale={locale}
-                  />
+                  <>
+                    {quoteLineItemByQuoteData1?.map((item: any) => (
+                      <OsCollapse
+                        defaultActiveKey={['1']}
+                        items={[
+                          {
+                            key: '1',
+                            label: (
+                              <>
+                                <Row justify="space-between">
+                                  <Col>
+                                    <p>{item?.title}</p>
+                                  </Col>
+                                </Row>
+                              </>
+                            ),
+                            children: (
+                              <OsTableWithOutDrag
+                                columns={finalInputColumn}
+                                dataSource={item?.data || []}
+                                rowSelection={rowSelection}
+                                scroll
+                                loading={loading}
+                                locale={locale}
+                              />
+                            ),
+                          },
+                        ]}
+                      />
+                    ))}
+
+                    {console.log(
+                      'quoteLineItemByQuoteData',
+                      quoteLineItemByQuoteData1,
+                    )}
+                    {/* <OsTableWithOutDrag
+                      loading={loading}
+                      columns={finalInputColumn}
+                      dataSource={quoteLineItemByQuoteData || []}
+                      scroll
+                      rowSelection={rowSelection}
+                      locale={locale}
+                    /> */}
+                  </>
                 )}{' '}
               </>
             )}

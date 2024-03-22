@@ -21,35 +21,37 @@ import Typography from '@/app/components/common/typography';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import OsInput from '@/app/components/common/os-input';
+import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
-import OsTable from '@/app/components/common/os-table';
-import OsTabs from '@/app/components/common/os-tabs';
-import {SearchOutlined} from '@ant-design/icons';
-import {Form, TabsProps} from 'antd';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
+import {Form} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {
   deleteQuoteById,
   getQuoteByManualUpdated,
 } from '../../../../../redux/actions/quote';
-
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import QuoteAnalytics from '../allQuote/analytics';
-import getColumns from '../allQuote/tableColumns';
+import {getSuperAdminQuoteColumns} from '../allQuote/tableColumns';
+import ConcernDetail from './ConcernDetail';
 
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
+  const [form] = Form.useForm();
   const [token] = useThemeToken();
   const {loading, data} = useAppSelector((state) => state.quote);
-  const router = useRouter();
-  const [quoteData, setQuoteData] = useState<React.Key[]>([]);
+  const {userInformation} = useAppSelector((state) => state.user);
   const [deletedQuote, setDeletedQuote] = useState<React.Key[]>([]);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
-  const {userInformation} = useAppSelector((state) => state.user);
-  const [form] = Form.useForm();
+  const [showConcernDetailModal, setShowConcernDetailModal] = useState<{
+    visible: boolean;
+    quoteId?: string;
+  }>();
 
   useEffect(() => {
     dispatch(getQuoteByManualUpdated());
@@ -109,30 +111,120 @@ const AllQuote: React.FC = () => {
     setShowModalDelete(false);
     form.resetFields(['opportunity_id', 'customer_id']);
   };
+  const actionEye = async (value: string) => {
+    setShowConcernDetailModal({visible: true, quoteId: value});
+    console.log('actionEye', value, showConcernDetailModal);
+  };
 
-  const Quotecolumns = getColumns(
+  const Quotecolumns = getSuperAdminQuoteColumns(
     token,
     statusWrapper,
     editQuote,
     setDeleteIds,
     setShowModalDelete,
+    actionEye,
   );
 
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <QuoteAnalytics quoteData={quoteData} deletedQuote={deletedQuote} />
+        <QuoteAnalytics quoteData={data} deletedQuote={deletedQuote} />
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              Un Processed Quotes
+              Edited Quotes
             </Typography>
           </Col>
         </Row>
         <div
-          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+          style={{
+            background: 'white',
+            padding: '24px',
+            borderRadius: '12px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
+          }}
         >
-          <OsTable
+          <Row justify="end">
+            <Space size={12} align="center">
+              <Space direction="vertical" size={0}>
+                <Typography name="Body 4/Medium">Reseller</Typography>
+                <CommonSelect
+                  style={{width: '200px'}}
+                  placeholder="Search here"
+                  showSearch
+                  // onSearch={(e) => {
+                  //   setQuery({
+                  //     ...query,
+                  //     customer: e,
+                  //   });
+                  // }}
+                  // onChange={(e) => {
+                  //   setQuery({
+                  //     ...query,
+                  //     customer: e,
+                  //   });
+                  // }}
+                  // value={query?.customer}
+                >
+                  {/* {uniqueCustomer?.map((customer: any) => (
+                    <Option key={customer} value={customer}>
+                      {customer}
+                    </Option>
+                  ))} */}
+                </CommonSelect>
+              </Space>
+              <Space direction="vertical" size={0}>
+                <Typography name="Body 4/Medium">Quote Name</Typography>
+                <CommonSelect
+                  style={{width: '200px'}}
+                  placeholder="Search here"
+                  showSearch
+                  optionFilterProp="children"
+                  // onSearch={(e) => {
+                  //   setQuery({
+                  //     ...query,
+                  //     contact: e,
+                  //   });
+                  // }}
+                  // onChange={(e) => {
+                  //   setQuery({
+                  //     ...query,
+                  //     contact: e,
+                  //   });
+                  // }}
+                  // value={query?.contact}
+                >
+                  {/* {uniqueBillingNames?.map((billingName: any) => (
+                    <Option key={billingName} value={billingName}>
+                      {billingName}
+                    </Option>
+                  ))} */}
+                </CommonSelect>
+              </Space>
+              <div
+                style={{
+                  marginTop: '15px',
+                }}
+              >
+                <Typography
+                  cursor="pointer"
+                  name="Button 1"
+                  color="#C6CDD5"
+                  // onClick={() => {
+                  //   setQuery({
+                  //     customer: null,
+                  //     contact: null,
+                  //   });
+                  // }}
+                >
+                  Reset
+                </Typography>
+              </div>
+            </Space>
+          </Row>
+          <OsTableWithOutDrag
             columns={Quotecolumns}
             dataSource={data}
             scroll
@@ -151,6 +243,17 @@ const AllQuote: React.FC = () => {
         deleteSelectedIds={deleteQuote}
         heading="Delete Quote"
         description="Are you sure you want to delete this Quote?"
+      />
+
+      <OsModal
+        width={700}
+        bodyPadding={40}
+        open={showConcernDetailModal?.visible}
+        onCancel={() => {
+          setShowConcernDetailModal({visible: false});
+        }}
+        title="Concern & Documents"
+        body={<ConcernDetail showConcernDetailModal={showConcernDetailModal} />}
       />
     </>
   );

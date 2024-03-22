@@ -9,10 +9,14 @@ import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import AddDistributor from '../os-add-distributor';
 import OsModal from '../os-modal';
+import {SelectFormItem} from '../os-oem-select/oem-select-styled';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
 import {OsDistriButorSelectInterface} from './os-distributor.interface';
-import {SelectFormItem} from '../os-oem-select/oem-select-styled';
+import {
+  getDistributorByOemId,
+  queryQuoteConfiguration,
+} from '../../../../../redux/actions/quoteConfiguration';
 
 const queryParams: any = {
   distributor: null,
@@ -24,17 +28,24 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
   setDistributorValue,
   isAddNewDistributor = false,
   label = false,
-  height
+  height,
+  onChange,
+  name = 'distributor_id',
+  quoteCreation = false,
+  oemValue,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
-  const {data} = useAppSelector((state) => state?.distributor);
-  const {loading: DistributorLoading} = useAppSelector(
+  const {loading, data: DistributorData} = useAppSelector(
     (state) => state.distributor,
+  );
+  const {distributorDataByOemId, data: quoteConfigData} = useAppSelector(
+    (state) => state.quoteConfig,
   );
   const [showDistributorModal, setShowDistributorModal] =
     useState<boolean>(false);
+  const [distributorFilterOption, setDistributorFilterOption] = useState<any>();
 
   const capitalizeFirstLetter = (str: string | undefined) => {
     if (!str) {
@@ -43,35 +54,78 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
-  const distributorOptions = data?.map((dataAddressItem: any) => ({
-    value: dataAddressItem?.id,
-    label: (
-      <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-        {capitalizeFirstLetter(dataAddressItem?.distributor)}
-      </Typography>
-    ),
-  }));
-
   useEffect(() => {
     dispatch(queryDistributor(queryParams));
   }, []);
 
+  useEffect(() => {
+    if (quoteCreation) {
+      dispatch(queryQuoteConfiguration({}));
+    }
+  }, [quoteCreation]);
+
+  useEffect(() => {
+    if (quoteCreation && oemValue) {
+      dispatch(getDistributorByOemId(Number(oemValue)));
+    }
+  }, [oemValue]);
+
+  useEffect(() => {
+    const distributorFinalOptions = [];
+    let finalArr = [];
+    if (quoteCreation && oemValue) {
+      finalArr = distributorDataByOemId;
+    } else if (quoteCreation) {
+      finalArr = quoteConfigData;
+    } else {
+      finalArr = DistributorData;
+    }
+    for (let i = 0; i < finalArr.length; i++) {
+      const item = finalArr[i];
+      const index = distributorFinalOptions.findIndex((optionItem) =>
+        quoteCreation
+          ? item?.Distributor?.id === optionItem?.value
+          : item?.id === optionItem?.value,
+      );
+      if (index === -1) {
+        const obj = {
+          label: (
+            <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+              {capitalizeFirstLetter(
+                quoteCreation
+                  ? item?.Distributor?.distributor
+                  : item?.distributor,
+              )}
+            </Typography>
+          ),
+          key: quoteCreation ? item?.Distributor?.id : item?.id,
+          // model_id: quoteCreation && item.Distributor?.model_id,
+          value: quoteCreation ? item?.Distributor?.id : item?.id,
+        };
+        distributorFinalOptions.push(obj);
+      }
+    }
+
+    setDistributorFilterOption(distributorFinalOptions);
+  }, [
+    DistributorData,
+    distributorDataByOemId,
+    oemValue,
+    quoteConfigData,
+    quoteCreation,
+    token?.colorPrimaryText,
+  ]);
+
   return (
     <>
-      <SelectFormItem
-        label={label ? 'Distributor' : ''}
-        name="distributor_id"
-        rules={[{required: isRequired, message: 'Please Select Distributor!'}]}
-      >
+      <SelectFormItem label={label ? 'Distributor' : ''} name={name}>
         <CommonSelect
           placeholder="Select"
           allowClear
-          style={{width: '100%', height: `${height}px`}}
-          options={distributorOptions}
-          value={distributorValue}
-          onChange={(value: number) => {
-            setDistributorValue && setDistributorValue(value);
-          }}
+          style={{width: '100%', height: '38px'}}
+          options={distributorFilterOption}
+          defaultValue={distributorValue}
+          onChange={onChange}
           dropdownRender={(menu) => (
             <>
               {isAddNewDistributor && (
@@ -88,8 +142,9 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
                   <Typography
                     color={token?.colorPrimaryText}
                     name="Body 3/Regular"
+                    hoverOnText
                   >
-                    Add Distributor Account
+                    Add Distributor
                   </Typography>
                 </Space>
               )}
@@ -100,7 +155,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
       </SelectFormItem>
 
       <OsModal
-        loading={DistributorLoading}
+        loading={loading}
         body={
           <AddDistributor form={form} setShowModal={setShowDistributorModal} />
         }

@@ -27,7 +27,6 @@ const PartnerAnalytics = () => {
   const [activeCount, setActiveCount] = useState<number>(0);
   const [inActiveCount, setInActiveCount] = useState<number>(0);
 
-  console.log('PartnerData', PartnerData);
 
   useEffect(() => {
     if (PartnerData && PartnerData?.approved) {

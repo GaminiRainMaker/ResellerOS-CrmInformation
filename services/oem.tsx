@@ -8,8 +8,7 @@ export const OEM_API = {
   post: (data: any) => post(API.OEM.INDEX, data),
   patch: (data: any) =>
     patch(API.OEM.INDEX, data) as Promise<AxiosResponse<any>>,
-  query: (data: any) =>
-    post(API.OEM.QUERY, data) as Promise<AxiosResponse<[]>>,
+  query: (data: any) => post(API.OEM.QUERY, data) as Promise<AxiosResponse<[]>>,
   delete: (data: any) =>
     post(API.OEM.DeleteById, data) as Promise<AxiosResponse<[]>>,
 };

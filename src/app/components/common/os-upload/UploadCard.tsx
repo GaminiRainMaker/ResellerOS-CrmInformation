@@ -1,24 +1,50 @@
-import {TrashIcon} from '@heroicons/react/24/outline';
+/* eslint-disable array-callback-return */
+import { TrashIcon } from '@heroicons/react/24/outline';
+import { Form } from 'antd';
 import Image from 'next/image';
-import {FC} from 'react';
-import {Form} from 'antd';
+import { FC } from 'react';
 import PdfImg from '../../../../../public/assets/static/pdf.svg';
-import {Col, Row} from '../antd/Grid';
-import {Space} from '../antd/Space';
+import XlsImg from '../../../../../public/assets/static/xls.svg';
+import { useAppSelector } from '../../../../../redux/hook';
+import { Divider } from '../antd/Divider';
+import { Col, Row } from '../antd/Grid';
+import { Space } from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
-import Typography from '../typography';
-import {UploadCardAvatarStyle, UploadCardColStyle} from './styled-components';
 import OsDistributorSelect from '../os-distributor-select';
-import {Divider} from '../antd/Divider';
+import OsOemSelect from '../os-oem-select';
+import Typography from '../typography';
 
 const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
   const [token] = useThemeToken();
-
-  const removeFile = (id: number | undefined | string) => {
-    const filtered = uploadFileData.filter(
-      (p: any) => p?.data?.result?.[0]?.id !== id,
+  const {data: quoteConfigData} = useAppSelector((state) => state.quoteConfig);
+  const removeFile = (uid: number | undefined | string) => {
+    setUploadFileData((prev: any) =>
+      prev.filter((prevIndex: any) => prevIndex?.uid !== uid),
     );
-    setUploadFileData(filtered);
+  };
+
+  const handleChangeDistributorOem = (
+    type: string,
+    index: number,
+    value: number,
+  ) => {
+    const arr = [...uploadFileData];
+    const obj = {...arr[index]};
+    if (type === 'distributor') {
+      obj.distributor_id = value;
+    } else {
+      obj.oem_id = value;
+    }
+    const data = quoteConfigData.find(
+      (quoteData: any) =>
+        (obj?.distributor_id
+          ? quoteData.distributor_id === obj.distributor_id
+          : true) && (obj?.oem_id ? quoteData.oem_id === obj.oem_id : true),
+    );
+    obj.model_id = data?.model_id;
+    obj.quote_config_id = data?.id;
+    arr[index] = obj;
+    setUploadFileData(arr);
   };
 
   return (
@@ -43,26 +69,41 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
           <Col span={2} />
         </Row>
       )}
-      {uploadFileData?.map((item: any) => (
-        <Form key={item?.data?.result?.[0]?.id} layout="vertical">
-          <Row
-            key={item?.data?.result?.[0]?.id}
-            justify="space-between"
-            gutter={[0, 8]}
-          >
+      {uploadFileData?.map((item: any, index: number) => (
+        <Form key={item?.uid} layout="vertical">
+          <Row key={item?.uid} justify="space-between" gutter={[0, 8]}>
             <Col span={8}>
               <Space size={12}>
-                <Image src={PdfImg} alt="PdfImg" />
-                <Typography name="Body 4/Medium">
-                  {item?.data?.result?.[0]?.input}
-                </Typography>
+                {item?.file?.type.split('/')[1] === 'pdf' ? (
+                  <Image src={PdfImg} alt="PdfImg" />
+                ) : (
+                  <Image src={XlsImg} alt="XlsImg" />
+                )}
+
+                <Typography name="Body 4/Medium">{item?.file?.name}</Typography>
               </Space>
             </Col>
             <Col span={6}>
-              <OsDistributorSelect name="distributor" />
+              <OsDistributorSelect
+                name="distributor"
+                onChange={(e: number) => {
+                  handleChangeDistributorOem('distributor', index, e);
+                }}
+                quoteCreation
+                distributorValue={item?.distributor_id}
+                oemValue={item?.oem_id}
+              />
             </Col>
             <Col span={6}>
-              <OsDistributorSelect name="distributor" />
+              <OsOemSelect
+                name="oem"
+                onChange={(e: number) => {
+                  handleChangeDistributorOem('oem', index, e);
+                }}
+                oemValue={item?.oem_id}
+                distributorValue={item?.distributor_id}
+                quoteCreation
+              />
             </Col>
             <Col span={2}>
               <TrashIcon
@@ -70,8 +111,9 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
                 width={20}
                 color={token?.colorError}
                 onClick={() => {
-                  removeFile(item?.data?.result?.[0]?.id);
+                  removeFile(item?.uid);
                 }}
+                style={{marginTop: '8px'}}
               />
             </Col>
           </Row>

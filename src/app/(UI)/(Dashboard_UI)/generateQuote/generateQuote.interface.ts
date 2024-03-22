@@ -27,4 +27,11 @@ export interface UploadFileInterface {
   addQuoteLineItem?: any;
   form?: FormInstance;
   showSelectFields?: boolean;
+  beforeUpload?: any;
+  cardLoading?: boolean;
+  rowSelection?: boolean;
+  setShowToggleTable?: any;
+  showToggleTable?: boolean;
+  Quotecolumns?: any;
+  existingQuoteId?: number;
 }

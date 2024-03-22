@@ -2,170 +2,149 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
-  insertOpportunity,
-  getAllOpportunity,
-  getOpportunityById,
-  updateOpportunity,
-  deleteOpportunity,
-  getdeleteOpportunity,
-  queryOpportunity,
-} from '../actions/opportunity';
+  insertQuoteConfiguration,
+  queryQuoteConfiguration,
+  updateQuoteConfiguration,
+  deleteQuoteConfiguration,getDistributorByOemId,getOemByDistributorId
+} from '../actions/quoteConfiguration';
 
-type OpportunityState = {
+type QuoteConfigurationState = {
   loading: boolean;
   error: string | null;
   data: any;
-  product: any;
-  filteredData: any;
-  deletedCount?: any;
+  quoteConfiguration: any;
+  distributorDataByOemId: any;
+  oemDatByDistributorId: any;
 };
-const initialState: OpportunityState = {
+const initialState: QuoteConfigurationState = {
   loading: false,
   error: null,
   data: [],
-  product: [],
-  filteredData: [],
-  deletedCount: null,
+  quoteConfiguration: [],
+  distributorDataByOemId: [],
+  oemDatByDistributorId: [],
 };
 
-const opportunitySlice = createSlice({
-  name: 'opportunity',
+const quoteConfigurationSlice = createSlice({
+  name: 'quoteConfiguration',
   initialState,
   reducers: {
-    setOpportunity: (state, action) => {
-      state.product = action.payload;
+    setQuoteConfiguration: (state, action) => {
+      state.quoteConfiguration = action.payload;
     },
   },
   extraReducers(builder) {
     builder
-      .addCase(insertOpportunity.pending, (state) => {
+      .addCase(insertQuoteConfiguration.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        insertOpportunity.fulfilled,
+        insertQuoteConfiguration.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          // state.data = [action.payload];
+          // state.data = action.payload;
         },
       )
       .addCase(
-        insertOpportunity.rejected,
+        insertQuoteConfiguration.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
         },
       )
-      .addCase(getAllOpportunity.pending, (state) => {
+      .addCase(updateQuoteConfiguration.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        getAllOpportunity.fulfilled,
+        updateQuoteConfiguration.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.data = action.payload;
         },
       )
       .addCase(
-        getAllOpportunity.rejected,
+        updateQuoteConfiguration.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
         },
       )
-      .addCase(getOpportunityById.pending, (state) => {
+      .addCase(deleteQuoteConfiguration.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        getOpportunityById.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.data = [action.payload];
-        },
-      )
-      .addCase(
-        getOpportunityById.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.error = action.payload;
-        },
-      )
-      .addCase(updateOpportunity.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        updateOpportunity.fulfilled,
+        deleteQuoteConfiguration.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.data = action.payload;
         },
       )
       .addCase(
-        updateOpportunity.rejected,
+        deleteQuoteConfiguration.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
         },
       )
-      .addCase(deleteOpportunity.pending, (state) => {
+      .addCase(queryQuoteConfiguration.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        deleteOpportunity.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.data = [action.payload];
-        },
-      )
-      .addCase(
-        deleteOpportunity.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.error = action.payload;
-        },
-      )
-      .addCase(getdeleteOpportunity.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        getdeleteOpportunity.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.deletedCount = action.payload;
-        },
-      )
-      .addCase(
-        getdeleteOpportunity.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.error = action.payload;
-        },
-      )
-      .addCase(queryOpportunity.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        queryOpportunity.fulfilled,
+        queryQuoteConfiguration.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.data = action.payload;
         },
       )
       .addCase(
-        queryOpportunity.rejected,
+        queryQuoteConfiguration.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
         },
-      );
+      )
+      .addCase(getOemByDistributorId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getOemByDistributorId.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.oemDatByDistributorId = action.payload;
+        },
+      )
+      .addCase(
+        getOemByDistributorId.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getDistributorByOemId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getDistributorByOemId.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.distributorDataByOemId = action.payload;
+        },
+      )
+      .addCase(
+        getDistributorByOemId.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
   },
 });
 
-export const {setOpportunity} = opportunitySlice.actions;
-export default opportunitySlice?.reducer;
+export const {setQuoteConfiguration} = quoteConfigurationSlice.actions;
+export default quoteConfigurationSlice?.reducer;

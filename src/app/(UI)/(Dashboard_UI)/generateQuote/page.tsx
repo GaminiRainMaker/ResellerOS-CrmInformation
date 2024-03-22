@@ -28,20 +28,24 @@ import OsModal from '@/app/components/common/os-modal';
 import RaiseConcern from '@/app/components/common/os-raise-concern';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import {selectData} from '@/app/utils/CONSTANTS';
+import {concernDescription, selectData} from '@/app/utils/CONSTANTS';
 import {formatDate, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import GreenCheckIcon from '../../../../../public/assets/static/greenCheckIcon.svg';
+import RaiseConcernImg from '../../../../../public/assets/static/raiseConcern.svg';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {
   getQuoteById,
   updateQuoteByQuery,
-  updateQuoteConcern,
 } from '../../../../../redux/actions/quote';
-import {UpdateQuoteLineItemQuantityById} from '../../../../../redux/actions/quotelineitem';
+import {
+  UpdateQuoteLineItemQuantityById,
+  updateQuoteLineItemConcern,
+} from '../../../../../redux/actions/quotelineitem';
 import {getAllTableColumn} from '../../../../../redux/actions/tableColumn';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
@@ -62,9 +66,8 @@ const GenerateQuote: React.FC = () => {
   const getQuoteID = searchParams.get('id');
   const [activeTab, setActiveTab] = useState<any>('1');
 
-  const {quoteLineItemByQuoteID, loading} = useAppSelector(
-    (state) => state.quoteLineItem,
-  );
+  const {quoteLineItemByQuoteID, loading, concernQuoteLineItemData} =
+    useAppSelector((state) => state.quoteLineItem);
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
@@ -74,6 +77,10 @@ const GenerateQuote: React.FC = () => {
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
   const [showRaiseConcernModal, setShowRaiseConcernModal] =
     useState<boolean>(false);
+  const [showAfterRaiseConcernModal, setShowAfterRaiseConcernModal] =
+    useState<boolean>(false);
+  const [showAlreadyRaiseConcernModal, setShowAlreadyRaiseConcernModal] =
+    useState<boolean>(false);
   const [isDeleteInputDetailModal, setIsDeleteInputDetailModal] =
     useState<boolean>(false);
   const [selectedFilter, setSelectedFilter] = useState<string>('');
@@ -81,11 +88,11 @@ const GenerateQuote: React.FC = () => {
   const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] =
     useState<any>();
   const {data: tableColumnData} = useAppSelector((state) => state.tableColumn);
+  const {quoteById} = useAppSelector((state) => state.quote);
   const {data: contractSettingData} = useAppSelector(
     (state) => state.contractSetting,
   );
   const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
-
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
   const [quoteLineItemExist, setQuoteLineItemExist] = useState<boolean>(false);
   const [api, contextHolder] = notification.useNotification();
@@ -252,7 +259,11 @@ const GenerateQuote: React.FC = () => {
           name="Body 3/Regular"
           cursor="pointer"
           onClick={() => {
-            setShowRaiseConcernModal(true);
+            if (quoteById?.concern?.length > 0) {
+              setShowAlreadyRaiseConcernModal(true);
+            } else {
+              setShowRaiseConcernModal(true);
+            }
             // router?.push(`/updation?id=${getQuoteID}`);
             // router?.push(
             //   `/fileEditor?id=${getQuoteID}&quoteExist=${quoteLineItemExist}`,
@@ -412,15 +423,34 @@ const GenerateQuote: React.FC = () => {
     if (!concernData?.concern_text) {
       openNotificationWithIcon();
     } else {
-      const data = {concern: concernData?.concern_text, id: getQuoteID};
-      dispatch(updateQuoteConcern(data));
-      router?.push(
-        `/fileEditor?id=${getQuoteID}&quoteExist=${quoteLineItemExist}`,
-      );
+      const idArray = concernQuoteLineItemData.map((item: any) => item.id);
+      const data = {concern: concernData?.concern_text, id: idArray};
+      dispatch(updateQuoteLineItemConcern(data));
       setShowRaiseConcernModal(false);
+      setShowAfterRaiseConcernModal(true);
       form?.resetFields();
     }
   };
+
+  const fileNameMap: any = {};
+  const uniqueFileNames: any = [];
+  quoteLineItemByQuoteID?.forEach((dataAddressItem: any) => {
+    if (!dataAddressItem.concern && !fileNameMap[dataAddressItem.file_name]) {
+      fileNameMap[dataAddressItem.file_name] = {
+        value: dataAddressItem.file_name,
+        label: (
+          <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+            {dataAddressItem.file_name}
+          </Typography>
+        ),
+      };
+      uniqueFileNames.push(dataAddressItem.file_name);
+    }
+  });
+  const fileNameOption = uniqueFileNames.map(
+    (fileName: string) => fileNameMap[fileName],
+  );
+  console.log('fileNameOption', fileNameOption);
 
   return (
     <>
@@ -551,18 +581,64 @@ const GenerateQuote: React.FC = () => {
       )}
       <OsModal
         loading={loading}
-        body={<RaiseConcern form={form} onClick={addConcernData} />}
+        body={
+          fileNameOption && fileNameOption?.length > 0 ? (
+            <RaiseConcern
+              title="Raise Your Concern"
+              description="We are here to assist you ! Please write your concern regarding this quote to us. Also, you can update the quote manually."
+              image={RaiseConcernImg}
+              form={form}
+              onClick={addConcernData}
+              fileNameOption={fileNameOption}
+            />
+          ) : (
+            <RaiseConcern
+              title="Concern Already Raised"
+              description="Your concern already raised."
+              image={GreenCheckIcon}
+              showTextArea={false}
+            />
+          )
+        }
         bodyPadding={40}
-        width={700}
+        width={638}
         open={showRaiseConcernModal}
         onCancel={() => {
           setShowRaiseConcernModal(false);
         }}
         destroyOnClose
-        secondaryButtonText="Cancel"
-        primaryButtonText="Update Line Items"
+        secondaryButtonText={
+          fileNameOption && fileNameOption?.length > 0 ? 'Cancel' : 'Done'
+        }
+        primaryButtonText={
+          fileNameOption && fileNameOption?.length > 0 ? 'Raise Concern' : null
+        }
+        singleButtonInCenter
         onOk={() => {
           form?.submit();
+        }}
+      />
+
+      <OsModal
+        body={
+          <RaiseConcern
+            title="Concern Raised"
+            description={concernDescription}
+            image={GreenCheckIcon}
+            showTextArea={false}
+          />
+        }
+        singleButtonInCenter
+        bodyPadding={45}
+        width={500}
+        open={showAfterRaiseConcernModal}
+        onCancel={() => {
+          setShowAfterRaiseConcernModal(false);
+        }}
+        primaryButtonText="Update Line Item"
+        onOk={() => {
+          setShowAfterRaiseConcernModal(false);
+          router?.push(`/fileEditor?id=${getQuoteID}&quoteExist=false`);
         }}
       />
     </>

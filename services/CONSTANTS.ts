@@ -27,6 +27,7 @@ export const API = {
     GetQuoteLineItemByQuoteIdandBundleIdNull:
       '/quoteLineItem/getQuoteLineItemByQuoteIdandBundleIdNull',
     UpdateQuoteLineItemById: '/quoteLineItem/updateQuoteLineItemById',
+    UpdateQuoteLineItemConcern: '/quoteLineItem/updateQuoteLineItemConcern',
   },
   USER: {
     INDEX: '/user',
@@ -137,10 +138,6 @@ export const API = {
     GetPartnerProgramById: '/partnerProgram/getPartnerProgramById',
     deletePartnerFormData: '/partnerProgram/deletePartnerProgramFormData',
   },
-  QUOTECONFIGURATION: {
-    INDEX: '/nanonetsConfiguration',
-    DeleteById: '/nanonetsConfiguration/deleteNanonetsModel',
-  },
   DISTRIBUTOR: {
     INDEX: '/distributor',
     QUERY: 'distributor/query',
@@ -148,7 +145,14 @@ export const API = {
   },
   OEM: {
     INDEX: '/oem',
-    QUERY: 'oem/query',
+    QUERY: '/oem/query',
     DeleteById: '/oem/deleteById',
+  },
+  QUOTE_CONFIGURATION: {
+    INDEX: '/quoteConfiguration',
+    QUERY: '/quoteConfiguration/query',
+    DeleteById: '/quoteConfiguration/deleteById',
+    GetOemByDistributorId: '/quoteConfiguration/getOemByDistributorId',
+    GetDistributorByOemId: '/quoteConfiguration/getDistributorByOemId',
   },
 };

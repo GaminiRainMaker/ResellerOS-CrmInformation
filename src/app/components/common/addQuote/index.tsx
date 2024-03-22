@@ -1,16 +1,20 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-await-in-loop */
-import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form} from 'antd';
-import moment from 'moment';
-import {FC, useEffect, useState} from 'react';
-import OsModal from '@/app/components/common/os-modal';
 import UploadFile from '@/app/(UI)/(Dashboard_UI)/generateQuote/UploadFile';
+import OsModal from '@/app/components/common/os-modal';
+import {convertFileToBase64} from '@/app/utils/base';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import {Form, message} from 'antd';
+import {useRouter} from 'next/navigation';
+import {FC, useEffect, useState} from 'react';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
+import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {insertProduct} from '../../../../../redux/actions/product';
 import {insertProfitability} from '../../../../../redux/actions/profitability';
 import {
+  getQuoteById,
   getQuotesByDateFilter,
   insertQuote,
   updateQuoteWithNewlineItemAddByID,
@@ -18,33 +22,60 @@ import {
 import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
 import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
 import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
+import {uploadToAws} from '../../../../../redux/actions/upload';
 import {insertValidation} from '../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '../os-button';
-import {AddQuoteInterface, FormattedData} from './addQuote.interface';
-import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
+import {AddQuoteInterface, FormattedData} from './types';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
   existingQuoteId,
   setUploadFileData,
-  loading,
   buttonText,
   uploadForm,
+  rowSelection,
+  setShowToggleTable,
+  showToggleTable,
+  Quotecolumns,
 }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const {userInformation} = useAppSelector((state) => state.user);
-  const {data: generalSettingData} = useAppSelector(
-    (state) => state.gereralSetting,
-  );
   const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [finalLoading, setFinalLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (existingQuoteId) {
+      form?.setFieldValue('existingQuoteId', existingQuoteId);
+    }
+  }, [existingQuoteId]);
 
   useEffect(() => {
     dispatch(getAllGeneralSetting(''));
   }, []);
 
+  const beforeUpload = (file: File) => {
+    const obj: any = {...file};
+    convertFileToBase64(file)
+      .then((base64String: string) => {
+        obj.base64 = base64String;
+        obj.file = file;
+        setLoading(true);
+        dispatch(uploadToAws({document: base64String})).then((payload: any) => {
+          const pdfUrl = payload?.payload?.data?.Location;
+          obj.pdf_url = pdfUrl;
+          setLoading(false);
+        });
+        setUploadFileData((fileData: any) => [...fileData, obj]);
+      })
+      .catch((error) => {
+        message.error('Error converting file to base64', error);
+      });
+  };
   const genericFun = (payloadArr: any, Arr: any) => {
     const newArr = Arr?.map((item: any) => ({
       ...item,
@@ -56,248 +87,243 @@ const AddQuote: FC<AddQuoteInterface> = ({
   };
 
   const addQuoteLineItem = async (
-    customerId?: string,
-    opportunityId?: string,
+    customerId: string,
+    opportunityId: string,
+    updatedArr: any,
+    singleQuote: boolean,
   ) => {
-    const labelOcrMap: any = [];
-    let formattedArray: any = [];
-    const formattedData: FormattedData = {};
-    uploadFileData?.map((uploadFileDataItem: any) => {
-      const tempLabelOcrMap: any = {};
-      const arrayOfTableObjects =
-        uploadFileDataItem?.data?.result?.[0]?.prediction?.filter(
-          (item: any) => item.label === 'table',
-        );
-      arrayOfTableObjects?.[0]?.cells.forEach((item: any) => {
-        const rowNum = item.row;
-        if (!formattedData[rowNum]) {
-          formattedData[rowNum] = {};
-        }
-        formattedData[rowNum][item.label?.toLowerCase()] = item.text;
-      });
-
-      formattedArray = Object.values(formattedData);
-
-      <>
-        {uploadFileDataItem?.data?.result?.[0]?.prediction?.forEach(
-          (item: any) => {
-            tempLabelOcrMap[item?.label?.toLowerCase()] = item?.ocr_text;
-          },
-        )}
-      </>;
-
-      const newArrrr: any = [];
-      for (let i = 0; i < uploadFileDataItem?.data?.result?.length; i++) {
-        const itemss: any = uploadFileDataItem?.data?.result[i];
-
-        const newItemsssadsd = itemss?.prediction?.filter((item: any) => item);
-        newArrrr?.push(newItemsssadsd);
-      }
-      const newAllgetOArr: any = [];
-      newArrrr?.map((itemNew: any, indexNew: number) => {
-        let formattedArray1: any = [];
-        const formattedData1: FormattedData = {};
-        itemNew?.map((itemIner1: any, indexInner1: number) => {
-          if (itemIner1?.cells) {
-            itemIner1?.cells.forEach((item: any) => {
-              const rowNum = item.row;
-              if (!formattedData1[rowNum]) {
-                formattedData1[rowNum] = {};
+    const quoteId = form.getFieldValue('existingQuoteId');
+    let quoteLineItemArr: any = [];
+    const lineItemData: FormattedData = {};
+    const quotesArr: any = [];
+    try {
+      setFinalLoading(true);
+      for (let i = 0; i < updatedArr.length; i++) {
+        const nanoNetsResult = updatedArr[i]?.data?.result;
+        let quoteObj: any = {};
+        for (let j = 0; j < nanoNetsResult?.length; j++) {
+          const result: any = nanoNetsResult[j];
+          const lineItems: any = [];
+          let quoteItem = {};
+          let quoteJson: any = {values: []};
+          const predictions = result?.prediction?.filter((item: any) => item);
+          // eslint-disable-next-line @typescript-eslint/no-loop-func
+          predictions?.map((itemNew: any, predictionIndex: number) => {
+            if (itemNew.label === 'table') {
+              if (itemNew?.cells) {
+                itemNew?.cells.forEach((item: any) => {
+                  const rowNum = item.row;
+                  if (!lineItemData[rowNum]) {
+                    lineItemData[rowNum] = {};
+                  }
+                  lineItemData[rowNum][item.label?.toLowerCase()] = item.text;
+                });
               }
-              formattedData1[rowNum][item.label?.toLowerCase()] = item.text;
-            });
-          }
-        });
-        formattedArray1 = Object.values(formattedData1);
-        newAllgetOArr?.push(formattedArray1);
-      });
-
-      labelOcrMap?.push({
-        ...tempLabelOcrMap,
-        pdf_url: uploadFileDataItem?.pdf_url,
-        customer_id: customerId,
-        opportunity_id: opportunityId,
-        organization: userInformation.organization,
-        file_name: moment(new Date()).format('MM/DD/YYYY'),
-        quote_json: [JSON?.stringify(newAllgetOArr)],
-      });
-    });
-    const newrrLineItems: any = [];
-    const rebateDataArray: any = [];
-    const contractProductArray: any = [];
-    if (labelOcrMap && uploadFileData.length > 0 && !existingQuoteId) {
-      const response = await dispatch(insertQuote(labelOcrMap));
-      form.resetFields(['customer_id']);
-      for (let j = 0; j < response?.payload?.data?.length; j++) {
-        const item = response?.payload?.data[j];
-        if (item?.id) {
-          for (let i = 0; i < formattedArray?.length; i++) {
-            const items = formattedArray[i];
-            const insertedProduct = await dispatch(
-              insertProduct({
-                ...items,
-                organization: userInformation.organization,
-              }),
-            );
-            if (insertedProduct?.payload?.id) {
-              const obj1: any = {
-                quote_id: item?.id,
-                product_id: insertedProduct?.payload?.id,
-                product_code: insertedProduct?.payload?.product_code,
-                line_amount: insertedProduct?.payload?.line_amount,
-                list_price: insertedProduct?.payload?.list_price,
-                adjusted_price: insertedProduct?.payload?.adjusted_price,
-                description: insertedProduct?.payload?.description,
-                quantity: insertedProduct?.payload?.quantity,
-                line_number: insertedProduct?.payload?.line_number,
-                pdf_url:
-                  generalSettingData?.attach_doc_type === 'quote_line_item'
-                    ? item?.pdf_url
-                    : null,
-                organization: userInformation.organization,
+              quoteLineItemArr = Object.values(lineItemData);
+              quoteJson = {
+                ...quoteJson,
+                file_name: updatedArr[i]?.file?.name,
+                values:
+                  predictionIndex > 0
+                    ? [...quoteLineItemArr, ...quoteJson.values]
+                    : quoteLineItemArr,
               };
-              const RebatesByProductCodData = await dispatch(
-                getRebatesByProductCode(insertedProduct?.payload?.product_code),
-              );
-              if (RebatesByProductCodData?.payload?.id) {
-                rebateDataArray?.push({
-                  ...obj1,
-                  rebate_id: RebatesByProductCodData?.payload?.id,
-                  percentage_payout:
-                    RebatesByProductCodData?.payload?.percentage_payout,
-                });
-              }
-              const contractProductByProductCode = await dispatch(
-                getContractProductByProductCode(
-                  insertedProduct?.payload?.product_code,
-                ),
-              );
-              if (contractProductByProductCode?.payload?.id) {
-                contractProductArray?.push({
-                  ...obj1,
-                  contract_product_id:
-                    contractProductByProductCode?.payload?.id,
-                });
-              }
-              newrrLineItems?.push(obj1);
+              quoteLineItemArr?.forEach((obj: any) => {
+                const newObj = {
+                  ...obj,
+                  pdf_url: updatedArr[i]?.pdf_url,
+                  file_name: updatedArr[i]?.file?.name,
+                  quote_config_id: updatedArr[i]?.quote_config_id ?? 22,
+                  organization: userInformation.organization,
+                  user_id: userInformation.id,
+                  nanonets_id: result?.id,
+                };
+                lineItems.push(newObj);
+              });
+            } else {
+              quoteItem = {
+                ...quoteItem,
+                [itemNew?.label?.toLowerCase()]: itemNew?.ocr_text,
+              };
             }
-          }
-        }
-      }
-    } else if (existingQuoteId) {
-      await dispatch(updateQuoteWithNewlineItemAddByID(existingQuoteId));
-      for (let i = 0; i < formattedArray?.length; i++) {
-        const items = formattedArray[i];
-        const insertedProduct = await dispatch(
-          insertProduct({
-            ...items,
+          });
+          quoteObj = {
+            ...quoteItem,
+            user_id: userInformation.id,
+            customer_id: customerId,
+            opportunity_id: opportunityId,
             organization: userInformation.organization,
-          }),
-        );
-        if (insertedProduct?.payload?.id) {
-          const obj1: any = {
-            quote_id: existingQuoteId,
-            product_id: insertedProduct?.payload?.id,
-            product_code: insertedProduct?.payload?.product_code,
-            line_amount: insertedProduct?.payload?.line_amount,
-            list_price: insertedProduct?.payload?.list_price,
-            description: insertedProduct?.payload?.description,
-            quantity: insertedProduct?.payload?.quantity,
-            adjusted_price: insertedProduct?.payload?.adjusted_price,
-            line_number: insertedProduct?.payload?.line_number,
-            organization: userInformation.organization,
+            quote_json: [JSON.stringify(quoteJson)],
+            lineItems: lineItems.length > 0 ? lineItems : [],
           };
-          const RebatesByProductCodData = await dispatch(
-            getRebatesByProductCode(insertedProduct?.payload?.product_code),
-          );
-          if (RebatesByProductCodData?.payload?.id) {
-            rebateDataArray?.push({
-              ...obj1,
-              rebate_id: RebatesByProductCodData?.payload?.id,
-              percentage_payout:
-                RebatesByProductCodData?.payload?.percentage_payout,
-            });
+        }
+        if (singleQuote || quoteId) {
+          if (i === 0) {
+            quotesArr.push(quoteObj);
+          } else {
+            quotesArr[0].quote_json = [
+              ...quotesArr[0].quote_json,
+              // eslint-disable-next-line no-unsafe-optional-chaining
+              ...quoteObj?.quote_json,
+            ];
+            quotesArr[0].lineItems = [
+              ...quotesArr[0].lineItems,
+              // eslint-disable-next-line no-unsafe-optional-chaining
+              ...quoteObj?.lineItems,
+            ];
           }
-          const contractProductByProductCode = await dispatch(
-            getContractProductByProductCode(
-              insertedProduct?.payload?.product_code,
-            ),
-          );
-          if (contractProductByProductCode?.payload?.id) {
-            contractProductArray?.push({
-              ...obj1,
-              contract_product_id: contractProductByProductCode?.payload?.id,
-            });
-          }
-          newrrLineItems?.push(obj1);
+        } else {
+          quotesArr.push(quoteObj);
         }
       }
-    }
+      if (quotesArr.length > 0 && !quoteId) {
+        for (let i = 0; i < quotesArr.length; i++) {
+          const response = await dispatch(insertQuote([quotesArr[i]]));
+          // eslint-disable-next-line no-unsafe-optional-chaining
+          quotesArr[i] = {...response?.payload?.data[0], ...quotesArr[i]};
+        }
+      } else {
+        dispatch(getQuoteById(quoteId)).then((payload: any) => {
+          quotesArr[0] = {
+            ...payload?.payload,
+            quote_json:
+              payload?.payload?.quote_json &&
+              payload?.payload?.quote_json.length > 0
+                ? // eslint-disable-next-line no-unsafe-optional-chaining
+                  [...payload?.payload?.quote_json, ...quotesArr[0].quote_json]
+                : [...quotesArr[0].quote_json],
+            lineItems: [...quotesArr[0].lineItems],
+          };
+        });
+        await dispatch(updateQuoteWithNewlineItemAddByID(Number(quoteId)));
+      }
+      const rebateDataArray: any = [];
+      const contractProductArray: any = [];
+      const finalLineItems: any = [];
+      for (let i = 0; i < quotesArr?.length; i++) {
+        for (let j = 0; j < quotesArr[i]?.lineItems.length; j++) {
+          const lineItem = quotesArr[i]?.lineItems[j];
+          const insertedProduct = await dispatch(insertProduct(lineItem));
+          if (insertedProduct?.payload?.id) {
+            const obj1: any = {
+              quote_id: quotesArr[i]?.id,
+              product_id: insertedProduct?.payload?.id,
+              product_code: insertedProduct?.payload?.product_code,
+              line_amount: insertedProduct?.payload?.line_amount,
+              list_price: insertedProduct?.payload?.list_price,
+              description: insertedProduct?.payload?.description,
+              quantity: insertedProduct?.payload?.quantity,
+              adjusted_price: insertedProduct?.payload?.adjusted_price,
+              line_number: insertedProduct?.payload?.line_number,
+              organization: userInformation.organization,
+              pdf_url: lineItem?.pdf_url,
+              quote_config_id: lineItem?.quote_config_id,
+              file_name: lineItem?.file_name,
+              nanonets_id: lineItem?.nanonets_id,
+            };
+            const RebatesByProductCodData = await dispatch(
+              getRebatesByProductCode(insertedProduct?.payload?.product_code),
+            );
+            if (RebatesByProductCodData?.payload?.id) {
+              rebateDataArray?.push({
+                ...obj1,
+                rebate_id: RebatesByProductCodData?.payload?.id,
+                percentage_payout:
+                  RebatesByProductCodData?.payload?.percentage_payout,
+              });
+            }
+            const contractProductByProductCode = await dispatch(
+              getContractProductByProductCode(
+                insertedProduct?.payload?.product_code,
+              ),
+            );
+            if (contractProductByProductCode?.payload?.id) {
+              contractProductArray?.push({
+                ...obj1,
+                contract_product_id: contractProductByProductCode?.payload?.id,
+              });
+            }
+            finalLineItems?.push(obj1);
+          }
+        }
+      }
 
-    const finalOpportunityArray: any = [];
-    if (newrrLineItems && syncTableData?.length > 0) {
-      const newRequiredArray: any = [];
-      syncTableData?.map((item: any) => {
-        if (item?.is_required) {
-          newRequiredArray?.push({
-            sender: item?.sender_table_col,
-            reciver: item?.reciver_table_col,
+      const finalOpportunityArray: any = [];
+      if (finalLineItems && syncTableData?.length > 0) {
+        const newRequiredArray: any = [];
+        syncTableData?.map((item: any) => {
+          if (item?.is_required) {
+            newRequiredArray?.push({
+              sender: item?.sender_table_col,
+              reciver: item?.reciver_table_col,
+            });
+          }
+        });
+        const newArrayForOpporQuoteLineItem: any = [];
+        for (let i = 0; i < finalLineItems?.length; i++) {
+          const itemsss: any = finalLineItems[i];
+          newRequiredArray?.map((itemsRe: any) => {
+            newArrayForOpporQuoteLineItem?.push({
+              key: itemsRe?.reciver,
+              value: itemsss?.[itemsRe?.sender],
+            });
           });
         }
-      });
-      const newArrayForOpporQuoteLineItem: any = [];
-      for (let i = 0; i < newrrLineItems?.length; i++) {
-        const itemsss: any = newrrLineItems[i];
-        newRequiredArray?.map((itemsRe: any) => {
-          newArrayForOpporQuoteLineItem?.push({
-            key: itemsRe?.reciver,
-            value: itemsss?.[itemsRe?.sender],
-          });
+
+        const resultArrForAllArr: any = [];
+        const checkValue = syncTableData?.length;
+
+        newArrayForOpporQuoteLineItem.forEach((item: any, index: number) => {
+          if (index % checkValue === 0) {
+            resultArrForAllArr.push(
+              newArrayForOpporQuoteLineItem.slice(index, index + checkValue),
+            );
+          }
+        });
+
+        resultArrForAllArr?.map((itemss: any) => {
+          const singleObjects = itemss.reduce(
+            (obj: any, item: any) =>
+              Object.assign(obj, {[item.key]: item.value}),
+            {},
+          );
+          finalOpportunityArray?.push(singleObjects);
         });
       }
-
-      const resultArrForAllArr: any = [];
-      const checkValue = syncTableData?.length;
-
-      newArrayForOpporQuoteLineItem.forEach((item: any, index: number) => {
-        if (index % checkValue === 0) {
-          resultArrForAllArr.push(
-            newArrayForOpporQuoteLineItem.slice(index, index + checkValue),
-          );
-        }
-      });
-
-      resultArrForAllArr?.map((itemss: any) => {
-        const singleObjects = itemss.reduce(
-          (obj: any, item: any) => Object.assign(obj, {[item.key]: item.value}),
-          {},
-        );
-        finalOpportunityArray?.push(singleObjects);
-      });
+      if (finalLineItems && finalLineItems.length > 0) {
+        dispatch(insertQuoteLineItem(finalLineItems)).then((d) => {
+          if (rebateDataArray && rebateDataArray.length > 0) {
+            const data = genericFun(d?.payload, rebateDataArray);
+            dispatch(insertRebateQuoteLineItem(data));
+          }
+          if (contractProductArray && contractProductArray.length > 0) {
+            const data = genericFun(d?.payload, contractProductArray);
+            dispatch(insertValidation(data));
+          }
+          if (finalLineItems && finalLineItems.length > 0) {
+            const data = genericFun(d?.payload, finalLineItems);
+            dispatch(insertProfitability(data));
+          }
+        });
+      }
+      if (finalOpportunityArray && syncTableData?.length > 0) {
+        dispatch(insertOpportunityLineItem(finalOpportunityArray));
+      }
+      setFinalLoading(false);
+    } catch (err) {
+      setFinalLoading(false);
+      console.log('object', err);
     }
-    if (newrrLineItems && newrrLineItems.length > 0) {
-      dispatch(insertQuoteLineItem(newrrLineItems)).then((d) => {
-        if (rebateDataArray && rebateDataArray.length > 0) {
-          const data = genericFun(d?.payload, rebateDataArray);
-          dispatch(insertRebateQuoteLineItem(data));
-        }
-        if (contractProductArray && contractProductArray.length > 0) {
-          const data = genericFun(d?.payload, contractProductArray);
-          dispatch(insertValidation(data));
-        }
-        if (newrrLineItems && newrrLineItems.length > 0) {
-          const data = genericFun(d?.payload, newrrLineItems);
-          dispatch(insertProfitability(data));
-        }
-      });
-    }
-    if (finalOpportunityArray && syncTableData?.length > 0) {
-      dispatch(insertOpportunityLineItem(finalOpportunityArray));
-    }
-
     dispatch(getQuotesByDateFilter({}));
     setShowModal(false);
     setUploadFileData([]);
+    form.resetFields(['customer_id', 'opportunity_id']);
+  };
+
+  const resetFields = () => {
+    setShowModal(false);
+    setUploadFileData([]);
+    form.resetFields(['customer_id', 'opportunity_id']);
   };
 
   return (
@@ -315,8 +341,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
         }}
       />
       <OsModal
+        loading={finalLoading}
         bodyPadding={22}
-        loading={loading}
         disabledButton={!(uploadFileData?.length > 0)}
         body={
           <UploadFile
@@ -325,17 +351,33 @@ const AddQuote: FC<AddQuoteInterface> = ({
             addInExistingQuote
             addQuoteLineItem={addQuoteLineItem}
             form={form}
+            beforeUpload={beforeUpload}
+            cardLoading={loading}
+            rowSelection={rowSelection}
+            setShowToggleTable={setShowToggleTable}
+            showToggleTable={showToggleTable}
+            Quotecolumns={Quotecolumns}
+            existingQuoteId={existingQuoteId}
           />
         }
         width={900}
         primaryButtonText="Generate Single Quote"
-        secondaryButtonText="Save & Generate Individual Quotes"
+        thirdButtonText={
+          !existingQuoteId ? 'Save & Generate Individual Quotes' : null
+        }
         open={showModal}
-        onOk={() => form.submit()}
+        onOk={() => {
+          form?.setFieldValue('singleQuote', true);
+          form.submit();
+          // resetFields();
+        }}
+        thirdButtonfunction={() => {
+          form?.setFieldValue('singleQuote', false);
+          form.submit();
+          // resetFields();
+        }}
         onCancel={() => {
-          setShowModal(false);
-          setUploadFileData([]);
-          form.resetFields(['customer_id']);
+          resetFields();
         }}
       />
     </>

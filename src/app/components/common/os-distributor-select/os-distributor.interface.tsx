@@ -9,4 +9,7 @@ export interface OsDistriButorSelectInterface {
   isAddNewDistributor?: boolean;
   label?: boolean;
   height?: number;
+  onChange?: any;
+  quoteCreation?: boolean;
+  oemValue?: number;
 }

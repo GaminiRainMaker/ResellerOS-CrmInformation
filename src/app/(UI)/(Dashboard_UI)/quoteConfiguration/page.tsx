@@ -4,152 +4,76 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
+import OsDistributorSelect from '@/app/components/common/os-distributor-select';
+import OsDropdown from '@/app/components/common/os-dropdown';
+import EmptyContainer from '@/app/components/common/os-empty-container';
+import OsInput from '@/app/components/common/os-input';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import OsOemSelect from '@/app/components/common/os-oem-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {Form} from 'antd';
+import {Form, notification} from 'antd';
 import {useEffect, useState} from 'react';
-
-import OsDistributorSelect from '@/app/components/common/os-distributor-select';
-import OsInput from '@/app/components/common/os-input';
-import OsOemSelect from '@/app/components/common/os-oem-select';
-import EmptyContainer from '@/app/components/common/os-empty-container';
 import {
-  deleteQuoteConfiguration,
-  getAllNanonetsModel,
-} from '../../../../../redux/actions/nanonets';
+  insertQuoteConfiguration,
+  queryQuoteConfiguration,
+} from '../../../../../redux/actions/quoteConfiguration';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import getColumns from './tableColumns';
 
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
+  const [form] = Form.useForm();
   const [token] = useThemeToken();
-  const {loading} = useAppSelector((state) => state.quote);
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const {loading, data: quoteConfigData} = useAppSelector(
+    (state) => state.quoteConfig,
+  );
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
-  const [allQuoteConfigData, setAllQuoteConfigData] = useState<any>();
-  const [configData, setConfigData] = useState<boolean>(false);
-
-  const [data, setData] = useState([
-    {
-      id: 1,
-      distributor: '',
-      oem: '',
-      model_id: '',
-    },
-  ]);
+  const [api, contextHolder] = notification.useNotification();
+  const [quoteConfig, setQuoteConfig] = useState([]);
 
   useEffect(() => {
-    dispatch(getAllNanonetsModel()).then((payload: any) => {
-      setAllQuoteConfigData(payload?.payload);
-    });
+    dispatch(queryQuoteConfiguration({}));
   }, []);
+
   useEffect(() => {
-    setTimeout(() => {
-      dispatch(getAllNanonetsModel()).then((payload: any) => {
-        setAllQuoteConfigData(payload?.payload);
+    setQuoteConfig(quoteConfigData);
+  }, [quoteConfigData]);
+
+  const handleButtonClick = () => {
+    const finalArr: any = [];
+    let indexError = -1;
+    for (let i = 0; i < quoteConfig.length; i++) {
+      const dataItem: any = quoteConfig[i];
+      const index = finalArr.findIndex(
+        (item: any) =>
+          item.distributor_id === dataItem.distributor_id &&
+          item.oem_id === dataItem.oem_id,
+      );
+      if (index === -1) {
+        finalArr.push(dataItem);
+      } else {
+        indexError = index;
+      }
+    }
+    if (indexError === -1) {
+      finalArr?.forEach((dataItem: any) => {
+        dispatch(insertQuoteConfiguration(dataItem)).then((d) => {
+          if (d?.payload) {
+            dispatch(queryQuoteConfiguration({}));
+          }
+        });
       });
-    }, 1000);
-  }, [!showModal]);
-
-  useEffect(() => {
-    setConfigData(allQuoteConfigData);
-  }, [allQuoteConfigData]);
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: any) => {
-      setDeleteIds(selectedRowKeys);
-    },
-    getCheckboxProps: (record: any) => ({
-      disabled: record.name === 'Disabled User',
-      name: record.name,
-    }),
+    } else {
+      const arr: any = [...quoteConfig];
+      const obj = {...arr[indexError]};
+      obj.error = true;
+      arr[indexError] = obj;
+      setQuoteConfig(arr);
+    }
   };
-
-  const deleteQuoteConfig = async (id: number) => {
-    await dispatch(deleteQuoteConfiguration(deleteIds));
-    setTimeout(() => {
-      dispatch(getAllNanonetsModel());
-    }, 1000);
-    setDeleteIds([]);
-    setShowModalDelete(false);
-  };
-
-  const columns = [
-    {
-      title: (
-        <Typography
-          name="Body 4/Medium"
-          className="dragHandler"
-          color={token?.colorPrimaryText}
-        >
-          Distributer
-        </Typography>
-      ),
-      dataIndex: 'distributer',
-      key: 'distributer',
-      width: 187,
-      render: (text: string, record: any) => (
-        <OsDistributorSelect isAddNewDistributor height={38} isRequired />
-      ),
-    },
-    {
-      title: (
-        <Typography
-          name="Body 4/Medium"
-          className="dragHandler"
-          color={token?.colorPrimaryText}
-        >
-          OEM
-        </Typography>
-      ),
-      dataIndex: 'oem',
-      key: 'oem',
-      width: 130,
-      render: (text: string, record: any) => (
-        <OsOemSelect isAddNewOem isRequired />
-      ),
-    },
-    {
-      title: (
-        <Typography
-          name="Body 4/Medium"
-          className="dragHandler"
-          color={token?.colorPrimaryText}
-        >
-          Model ID
-        </Typography>
-      ),
-      dataIndex: 'model_id',
-      key: 'model_id',
-      width: 187,
-      render: (text: string, record: any) => (
-        <OsInput placeholder="Write here" style={{height: '38px'}} />
-      ),
-    },
-    {
-      title: ' ',
-      dataIndex: 'actions',
-      key: 'actions',
-      width: 54,
-      render: (text: string, record: any) => (
-        <Space size={18}>
-          <TrashIcon
-            height={24}
-            width={24}
-            color={token.colorError}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              setData((prev) =>
-                prev?.filter((prevItem) => prevItem?.id !== record?.id),
-              );
-            }}
-          />
-        </Space>
-      ),
-    },
-  ];
 
   const locale = {
     emptyText: (
@@ -160,28 +84,60 @@ const AllQuote: React.FC = () => {
     ),
   };
 
+  const deleteQuoteConfig = async (id: number) => {
+    // await dispatch(deleteQuoteConfiguration(deleteIds));
+    // setTimeout(() => {
+    //   dispatch(getAllNanonetsModel());
+    // }, 1000);
+    // setDeleteIds([]);
+    // setShowModalDelete(false);
+  };
+  const quoteConfigurationColumns = getColumns(token, setQuoteConfig, form);
   return (
     <>
+      {contextHolder}
+
       <Space size={24} direction="vertical" style={{width: '100%'}}>
-        {/* <QuoteAnalytics quoteData={quoteData} deletedQuote={deletedQuote} /> */}
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
               Quotes Configuration
             </Typography>
           </Col>
+
+          <Col>
+            <Space size={8} direction="horizontal">
+              <OsButton
+                text="Cancel"
+                buttontype="SECONDARY"
+                clickHandler={() => {}}
+              />
+
+              <OsButton
+                text="Save"
+                buttontype="PRIMARY"
+                clickHandler={() => {
+                  handleButtonClick();
+                }}
+              />
+              <Space>
+                <OsDropdown menu={{items: []}} />
+              </Space>
+            </Space>
+          </Col>
         </Row>
         <div
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
-          <Form layout="vertical">
+          <Form layout="vertical" form={form}>
             <OsTable
-              columns={columns}
-              dataSource={data}
+              columns={quoteConfigurationColumns}
+              dataSource={quoteConfig}
               scroll
               loading={loading}
               locale={locale}
-              rowSelection={rowSelection}
+              tablePageSize={50}
+              scrolly={500}
             />
           </Form>
         </div>
@@ -191,17 +147,13 @@ const AllQuote: React.FC = () => {
             buttontype="PRIMARY"
             icon={<PlusIcon />}
             clickHandler={() => {
-              setData([
-                ...data,
-                ...[
-                  {
-                    id: data.length + 1,
-                    distributor: '',
-                    oem: '',
-                    model_id: '',
-                  },
-                ],
-              ]);
+              const arr: any = [...quoteConfig];
+              arr.push({
+                distributor_id: null,
+                oem_id: null,
+                model_id: '',
+              });
+              setQuoteConfig(arr);
             }}
           />
         </Row>

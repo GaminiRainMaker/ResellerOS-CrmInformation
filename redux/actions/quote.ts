@@ -28,7 +28,7 @@ export const insertQuote = createAsyncThunk(
 
 export const getQuoteById = createAsyncThunk(
   'quote/getQuoteById',
-  async (id: number, thunkApi) => {
+  async (id: any, thunkApi) => {
     try {
       const res = await QUOTEAPI.getQuoteByID(id);
       return res.data;

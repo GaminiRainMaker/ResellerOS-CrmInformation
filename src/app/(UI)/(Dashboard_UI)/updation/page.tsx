@@ -25,15 +25,15 @@ const UpdateGenerateQuote = () => {
   const searchParams = useSearchParams();
   const getUserID = searchParams.get('id');
   const {quoteById, loading} = useAppSelector((state) => state.quote);
-  const [inputData, setInputData] = useState<any>(quoteById?.QuoteLineItems);
+  const {concernQuoteLineItemData} = useAppSelector(
+    (state) => state.quoteLineItem,
+  );
+
+  const [inputData, setInputData] = useState<any>(concernQuoteLineItemData);
   const router = useRouter();
 
   useEffect(() => {
-    dispatch(getQuoteById(Number(getUserID))).then((d: any) => {
-      if (d?.payload?.QuoteLineItems) {
-        setInputData(d?.payload?.QuoteLineItems);
-      }
-    });
+    dispatch(getQuoteById(Number(getUserID)));
   }, []);
 
   const menuItems = [
