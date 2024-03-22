@@ -33,6 +33,8 @@ const UpdateGenerateQuote = () => {
   const router = useRouter();
   const hotRef = useRef(null);
 
+  console.log('concernQuoteLineItemData', concernQuoteLineItemData);
+
   useEffect(() => {
     dispatch(getQuoteById(Number(getUserID)));
   }, []);

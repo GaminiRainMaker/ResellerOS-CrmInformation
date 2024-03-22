@@ -38,6 +38,7 @@ import {
   updateQuoteLineItemVerified,
 } from '../../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+import {setConcernQuoteLineItemData} from '../../../../../../redux/slices/quotelineitem';
 import {InputDetailTabInterface} from '../generateQuote.interface';
 
 const InputDetails: FC<InputDetailTabInterface> = ({
@@ -60,7 +61,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   const getQuoteID = searchParams.get('id');
   const {abbreviate} = useAbbreviationHook(0);
   const [form] = Form.useForm();
-  // const [finalInputColumn, setFinalInputColumn] = useState<any>();
   const {
     quoteLineItemByQuoteID,
     loading,
@@ -77,6 +77,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     useState<boolean>(false);
   const [fileLineItemIds, setFileLineItemIds] = useState<number[]>([]);
   const [buttonType, setButtonType] = useState<string>('');
+  const [selectedFileName, setSelectedFileName] = useState<string>('');
   const {data: bundleData} = useAppSelector((state) => state.bundle);
 
   const [api, contextHolder] = notification.useNotification();
@@ -465,14 +466,22 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     }
     const data = {
       issue_type: updatedIssue,
-      affected_columns: raiseIssueData?.issue_type === 'Unread Column/Unmatched Column' ? raiseIssueData?.affected_columns : null,
+      affected_columns:
+        raiseIssueData?.issue_type === 'Unread Column/Unmatched Column'
+          ? raiseIssueData?.affected_columns
+          : null,
       id: fileLineItemIds,
     };
     dispatch(updateQuoteLineItemConcern(data));
+    console.log('fileName', selectedFileName);
+    const filteredData = quoteLineItemByQuoteID?.filter((item: any) =>
+      selectedFileName?.includes(item.file_name),
+    );
+    dispatch(setConcernQuoteLineItemData(filteredData));
     if (buttonType === 'primary') {
-      router?.push(`/fileEditor?id=${getQuoteID}&quoteExist=false`);
-    } else {
       router?.push(`/updation`);
+    } else {
+      router?.push(`/fileEditor?id=${getQuoteID}&quoteExist=false`);
     }
     setShowRaiseConcernModal(false);
     form?.resetFields();
@@ -698,6 +707,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                           e?.stopPropagation();
                                           setShowRaiseConcernModal(true);
                                           setFileLineItemIds(item?.dataIds);
+                                          setSelectedFileName(item?.title);
                                         }}
                                       />
                                     </Space>

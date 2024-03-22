@@ -23,21 +23,26 @@ import {alignHeaders, addClassesToRows} from './hooksCallbacks';
 
 import 'handsontable/dist/handsontable.min.css';
 import {getQuoteById} from '../../../../../redux/actions/quote';
-import {useAppDispatch} from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
 import {getQuoteLineItemByQuoteId} from '../../../../../redux/actions/quotelineitem';
 import UpdateGenerateQuote from '../updation/page';
 
 const EditorFile = () => {
+  const dispatch = useAppDispatch();
   const hotRef = useRef(null);
   const searchParams = useSearchParams();
   const getQUoteId = searchParams.get('id');
   const [quoteItems, setQuoteItems] = useState<any>();
   const [mergedValue, setMergedVaalues] = useState<any>();
   const ExistingQuoteItemss = searchParams.get('quoteExist');
-
+  const {concernQuoteLineItemData} = useAppSelector(
+    (state) => state.quoteLineItem,
+  );
   const [showModal, setShowModal] = useState<boolean>(false);
-  const dispatch = useAppDispatch();
+
+  console.log('concernQuoteLineItemData', concernQuoteLineItemData);
+
   useEffect(() => {
     if (ExistingQuoteItemss === 'true') {
       dispatch(getQuoteLineItemByQuoteId(Number(getQUoteId))).then((d: any) => {
