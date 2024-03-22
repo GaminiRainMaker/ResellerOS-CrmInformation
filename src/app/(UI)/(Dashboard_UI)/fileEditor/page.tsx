@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-duplicate-props */
 /* eslint-disable consistent-return */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable array-callback-return */
@@ -29,7 +30,6 @@ import {getQuoteLineItemByQuoteId} from '../../../../../redux/actions/quotelinei
 import UpdateGenerateQuote from '../updation/page';
 
 const EditorFile = () => {
-  const hotRef = useRef(null);
   const searchParams = useSearchParams();
   const getQUoteId = searchParams.get('id');
   const [quoteItems, setQuoteItems] = useState<any>();
@@ -51,7 +51,8 @@ const EditorFile = () => {
       dispatch(getQuoteById(Number(getQUoteId))).then((d: any) => {
         if (d?.payload) {
           const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
-          setQuoteItems(dataa.values);
+          const newArray = dataa?.length > 0 ? [...dataa] : [];
+          setQuoteItems(newArray);
           const allHeaderValue: any = [];
         }
       });
@@ -112,7 +113,7 @@ const EditorFile = () => {
       itemOFMainQuote?.map((innerMainItem: any) => {
         myAllKey?.map((keyItem: string, indexoddd: number) => {
           if (!innerMainItem[keyItem]) {
-            newObj[keyItem] = `value${indexOfMain}`;
+            newObj[keyItem] = '';
           } else {
             newObj[keyItem] = innerMainItem?.[keyItem];
           }
@@ -220,7 +221,6 @@ const EditorFile = () => {
 
                 <HotTable
                   data={mergedValue}
-                  ref={hotRef}
                   colWidths={200}
                   columnHeaderHeight={40}
                   height="auto"
@@ -309,8 +309,7 @@ const EditorFile = () => {
                           />
                         </Space>
                         <HotTable
-                          data={quoteItems}
-                          ref={hotRef}
+                          data={itemss}
                           colWidths={[
                             200, 200, 400, 200, 200, 200, 200, 200, 200, 200,
                             200, 200, 200, 200, 200, 200,
