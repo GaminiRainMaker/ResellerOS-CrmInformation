@@ -6,12 +6,12 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
-import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
 import {formatDate} from '@/app/utils/base';
+import {HotTable} from '@handsontable/react';
 import {ArrowDownTrayIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {updateProfitabilityById} from '../../../../../redux/actions/profitability';
 import {getQuoteById} from '../../../../../redux/actions/quote';
 import {updateQuoteLineItemById} from '../../../../../redux/actions/quotelineitem';
@@ -31,6 +31,7 @@ const UpdateGenerateQuote = () => {
 
   const [inputData, setInputData] = useState<any>(concernQuoteLineItemData);
   const router = useRouter();
+  const hotRef = useRef(null);
 
   useEffect(() => {
     dispatch(getQuoteById(Number(getUserID)));
@@ -347,7 +348,7 @@ const UpdateGenerateQuote = () => {
       </Row>
       <Row style={{overflow: 'auto'}}>
         <Col span={24}>
-          <OsTableWithOutDrag
+          {/* <OsTableWithOutDrag
             loading={loading}
             // rowSelection={rowSelection}
             columns={InputDetailQuoteLineItemcolumns}
@@ -356,6 +357,48 @@ const UpdateGenerateQuote = () => {
             scrollx={200}
             // rowSelection={rowSelection}
             // locale={locale}
+          /> */}
+
+          <HotTable
+            data={inputData}
+            ref={hotRef}
+            colWidths={200}
+            columnHeaderHeight={40}
+            height="auto"
+            // colHeaders={InputDetailQuoteLineItemcolumns}
+            width="auto"
+            minSpareRows={0}
+            autoWrapRow
+            autoWrapCol
+            licenseKey="non-commercial-and-evaluation"
+            dropdownMenu
+            hiddenColumns={{
+              indicators: true,
+            }}
+            contextMenu
+            multiColumnSorting
+            filters
+            rowHeaders
+            allowInsertRow={false}
+            allowInsertColumn
+            // afterGetColHeader={alignHeaders}
+            // beforeRenderer={() => {
+            //   addClassesToRows('', '', '', '', '', '', quoteItems);
+            // }}
+            // afterRemoveRow={(change, source) => {
+            //   deleteRowsItems(source, change);
+            // }}
+            // afterChange={(change: any, source) => {
+            //   console.log('433223423', change, source);
+            //   if (change) {
+            //     updateRowsValue(
+            //       change?.[0]?.[0],
+            //       change?.[0]?.[1],
+            //       change?.[0]?.[3],
+            //     );
+            //   }
+            // }}
+            navigableHeaders
           />
         </Col>
       </Row>

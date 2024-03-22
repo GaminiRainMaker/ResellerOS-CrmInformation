@@ -12,6 +12,7 @@ export const selectData = [
   {value: 'Pricing Method', label: 'Pricing Method'},
   {value: 'Vendor/Disti', label: 'Vendor/Disti'},
   {value: 'OEM', label: 'OEM'},
+  {value: 'File Name', label: 'File Name'},
 ];
 
 export const pricingMethod = [

@@ -15,7 +15,6 @@
 
 import Typography from '@/app/components/common/typography';
 import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
-
 import AddQuote from '@/app/components/common/addQuote';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
@@ -25,27 +24,21 @@ import OsButton from '@/app/components/common/os-button';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import OsModal from '@/app/components/common/os-modal';
-import RaiseConcern from '@/app/components/common/os-raise-concern';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
-import {concernDescription, selectData} from '@/app/utils/CONSTANTS';
+import {selectData} from '@/app/utils/CONSTANTS';
 import {formatDate, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import GreenCheckIcon from '../../../../../public/assets/static/greenCheckIcon.svg';
-import RaiseConcernImg from '../../../../../public/assets/static/raiseConcern.svg';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {
   getQuoteById,
   updateQuoteByQuery,
 } from '../../../../../redux/actions/quote';
-import {
-  UpdateQuoteLineItemQuantityById,
-  updateQuoteLineItemConcern,
-} from '../../../../../redux/actions/quotelineitem';
+import {UpdateQuoteLineItemQuantityById} from '../../../../../redux/actions/quotelineitem';
 import {getAllTableColumn} from '../../../../../redux/actions/tableColumn';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
@@ -65,13 +58,11 @@ const GenerateQuote: React.FC = () => {
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const [activeTab, setActiveTab] = useState<any>('1');
-
   const {quoteLineItemByQuoteID, loading, concernQuoteLineItemData} =
     useAppSelector((state) => state.quoteLineItem);
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
-
   const [amountData, setAmountData] = useState<any>();
   const [open, setOpen] = useState(false);
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
@@ -97,18 +88,11 @@ const GenerateQuote: React.FC = () => {
   const [quoteLineItemExist, setQuoteLineItemExist] = useState<boolean>(false);
   const [api, contextHolder] = notification.useNotification();
 
-  const openNotificationWithIcon = () => {
-    api.warning({
-      message: 'Please Add Concern!',
-      description:
-        'We are here to assist you! Please write your concern regarding this quote to us.',
-    });
-  };
-
   useEffect(() => {
     dispatch(getAllTableColumn(''));
     dispatch(getAllContractSetting(''));
   }, []);
+
   useEffect(() => {
     let tabsname: any;
     if (activeTab == '1') {
@@ -293,6 +277,7 @@ const GenerateQuote: React.FC = () => {
       ),
     },
   ];
+
   const TabPaneData = [
     {
       key: 1,
@@ -496,6 +481,7 @@ const GenerateQuote: React.FC = () => {
                     onChange={(e) => {
                       setSelectedFilter(e);
                     }}
+                    defaultValue="File Name"
                   />
                   <Space>
                     <OsDropdown menu={{items}} />

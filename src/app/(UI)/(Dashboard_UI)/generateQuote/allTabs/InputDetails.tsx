@@ -8,6 +8,7 @@ import {Space} from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapse from '@/app/components/common/os-collapse';
+import OSDialog from '@/app/components/common/os-dialog';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
@@ -22,9 +23,8 @@ import {CheckIcon, TrashIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
-import OSDialog from '@/app/components/common/os-dialog';
-import RaiseConcernImg from '../../../../../../public/assets/static/raiseConcern.svg';
 import GreenCheckIcon from '../../../../../../public/assets/static/greenCheckIcon.svg';
+import RaiseConcernImg from '../../../../../../public/assets/static/raiseConcern.svg';
 import {
   getAllBundle,
   updateBundleQuantity,
@@ -396,10 +396,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       }
       setFamilyFilter(finalFamilyArr);
     }
-
-    // else if(selectedFilter === 'File'){
-
-    // }
   }, [selectedFilter]);
 
   useEffect(() => {
@@ -746,9 +742,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       />
 
       <OsModal
-        // loading={loading}
+        loading={loading}
         body={
-          // fileNameOption && fileNameOption?.length > 0 ? (
           <RaiseConcern
             title="Report an issue"
             description="We are here to assist you ! Please write your concern regarding this quote to us. Also, you can update the quote manually."
@@ -776,7 +771,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       />
 
       <OsModal
-      loading={loading}
+        loading={loading}
         body={
           <OSDialog
             title="Are you sure want to verified this file?"
@@ -796,6 +791,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         onOk={() => {
           fileVerification();
         }}
+        singleButtonInCenter
       />
     </>
   );
