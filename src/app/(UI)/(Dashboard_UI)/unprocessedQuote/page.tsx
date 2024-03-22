@@ -18,24 +18,24 @@
 import Typography from '@/app/components/common/typography';
 // eslint-disable-next-line import/no-extraneous-dependencies
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
-import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
-import {Form} from 'antd';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import OsTable from '@/app/components/common/os-table';
+import { Form } from 'antd';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
   deleteQuoteById,
   getQuoteByManualUpdated,
 } from '../../../../../redux/actions/quote';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import QuoteAnalytics from '../allQuote/analytics';
-import {getSuperAdminQuoteColumns} from '../allQuote/tableColumns';
+import { getSuperAdminQuoteColumns } from '../allQuote/tableColumns';
 import ConcernDetail from './ConcernDetail';
 
 const AllQuote: React.FC = () => {
@@ -223,12 +223,12 @@ const AllQuote: React.FC = () => {
               </div>
             </Space>
           </Row>
-          <OsTableWithOutDrag
+
+          <OsTable
             columns={Quotecolumns}
             dataSource={data}
             scroll
             loading={loading}
-            locale=""
             rowSelection={rowSelection}
           />
         </div>

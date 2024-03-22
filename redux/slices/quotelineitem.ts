@@ -11,6 +11,7 @@ import {
   insertQuoteLineItem,
   updateQuoteLineItemForBundleId,
   updateQuoteLineItemById,
+  updateQuoteLineItemVerified
 } from '../actions/quotelineitem';
 
 type QuoteLineItemState = {
@@ -200,6 +201,24 @@ const quoteLineItemSlice = createSlice({
       )
       .addCase(
         updateQuoteLineItemById.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(updateQuoteLineItemVerified.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateQuoteLineItemVerified.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        updateQuoteLineItemVerified.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

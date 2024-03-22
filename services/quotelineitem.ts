@@ -36,6 +36,10 @@ export const QUOTE_LINE_ITEM_API = {
     patch(API.QUOTE_LINE_ITEM.UpdateQuoteLineItemConcern, data) as Promise<
       AxiosResponse<[]>
     >,
+  updateQuoteLineItemVerified: (data: any) =>
+    patch(API.QUOTE_LINE_ITEM.UpdateQuoteLineItemVerified, data) as Promise<
+      AxiosResponse<[]>
+    >,
 
   // put: (id: number, data: any) => put(API.QUOTE_LINE_ITEM.INDEX + "/" + id, data),
   // delete: (id: number) => del(API.QUOTE_LINE_ITEM.INDEX + "/" + id),

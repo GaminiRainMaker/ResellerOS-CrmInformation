@@ -6,6 +6,4 @@ export interface RaiseConcernInterface {
   title: string;
   description: string;
   image?: any;
-  fileNameOption?: any;
-  showTextArea?: boolean;
 }

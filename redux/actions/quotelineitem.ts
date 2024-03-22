@@ -120,3 +120,16 @@ export const updateQuoteLineItemConcern = createAsyncThunk(
     }
   },
 );
+
+
+export const updateQuoteLineItemVerified = createAsyncThunk(
+  'quoteLineItem/updateQuoteLineItemVerified',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await QUOTE_LINE_ITEM_API.updateQuoteLineItemVerified(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

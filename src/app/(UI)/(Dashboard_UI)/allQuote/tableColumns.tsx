@@ -175,7 +175,7 @@ function getSuperAdminQuoteColumns(
       ),
       dataIndex: 'createdAt',
       key: 'createdAt',
-      // width: 180,
+      width: 180,
       render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
           {formatDate(record?.createdAt)}
@@ -194,7 +194,7 @@ function getSuperAdminQuoteColumns(
       ),
       dataIndex: 'file_name',
       key: 'file_name',
-      // width: 230,
+      width: 230,
       render: (text: string, record: any) => (
         <Typography
           name="Body 4/Regular"
@@ -216,6 +216,7 @@ function getSuperAdminQuoteColumns(
           Opportunity
         </Typography>
       ),
+      width: 180,
       dataIndex: 'opportunity',
       key: 'opportunity',
       render: (text: string, record: any) => (
@@ -242,6 +243,7 @@ function getSuperAdminQuoteColumns(
       ),
       dataIndex: 'customer_name',
       key: 'customer_name',
+      width: 130,
       render: (text: string, record: any) => (
         <Typography
           name="Body 4/Regular"
@@ -266,7 +268,7 @@ function getSuperAdminQuoteColumns(
       ),
       dataIndex: 'customer_name',
       key: 'customer_name',
-      // width: 187,
+      width: 187,
       render: (text: string, record: any) => (
         <Typography
           color={token?.colorInfo}
@@ -301,7 +303,7 @@ function getSuperAdminQuoteColumns(
       title: ' ',
       dataIndex: 'actions',
       key: 'actions',
-      // width: 94,
+      width: 94,
       render: (text: string, record: any) => (
         <Space size={18}>
           <EyeIcon

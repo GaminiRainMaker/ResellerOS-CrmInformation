@@ -1,15 +1,13 @@
-import {IssueTypeOption, affectedColumns} from '@/app/utils/CONSTANTS';
-import {Form} from 'antd';
+import { IssueTypeOption, affectedColumns } from '@/app/utils/CONSTANTS';
+import { Form } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Image from 'next/image';
-import {FC, useState} from 'react';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {setConcernQuoteLineItemData} from '../../../../../redux/slices/quotelineitem';
-import {Space} from '../antd/Space';
+import { FC, useState } from 'react';
+import { Space } from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
-import {RaiseConcernInterface} from './os-raise-concern.interface';
+import { RaiseConcernInterface } from './os-raise-concern.interface';
 
 const RaiseConcern: FC<RaiseConcernInterface> = ({
   form,
@@ -17,22 +15,20 @@ const RaiseConcern: FC<RaiseConcernInterface> = ({
   title,
   description,
   image,
-  showTextArea = true,
-  fileNameOption,
 }) => {
   const [token] = useThemeToken();
-  const dispatch = useAppDispatch();
-  const {quoteLineItemByQuoteID} = useAppSelector(
-    (state) => state.quoteLineItem,
-  );
-  const [isShowOtherIssue, setIsShowOtherIssue] = useState<boolean>(false);
+  // const dispatch = useAppDispatch();
+  // const {quoteLineItemByQuoteID} = useAppSelector(
+  //   (state) => state.quoteLineItem,
+  // );
 
-  const getSelectFileData = (value: string) => {
-    const filteredData = quoteLineItemByQuoteID.filter((item: any) =>
-      value.includes(item.file_name),
-    );
-    dispatch(setConcernQuoteLineItemData(filteredData));
-  };
+  // const getSelectFileData = (value: string) => {
+  //   const filteredData = quoteLineItemByQuoteID.filter((item: any) =>
+  //   value.includes(item.file_name),
+  //   );
+  //   dispatch(setConcernQuoteLineItemData(filteredData));
+  // };
+  const [isShowOtherIssue, setIsShowOtherIssue] = useState<boolean>(false);
 
   return (
     <div>

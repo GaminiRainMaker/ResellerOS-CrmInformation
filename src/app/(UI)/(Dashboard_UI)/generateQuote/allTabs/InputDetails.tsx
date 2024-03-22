@@ -22,7 +22,9 @@ import {CheckIcon, TrashIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import OSDialog from '@/app/components/common/os-dialog';
 import RaiseConcernImg from '../../../../../../public/assets/static/raiseConcern.svg';
+import GreenCheckIcon from '../../../../../../public/assets/static/greenCheckIcon.svg';
 import {
   getAllBundle,
   updateBundleQuantity,
@@ -33,6 +35,7 @@ import {
   getQuoteLineItemByQuoteId,
   getQuoteLineItemByQuoteIdandBundleIdNull,
   updateQuoteLineItemConcern,
+  updateQuoteLineItemVerified,
 } from '../../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {InputDetailTabInterface} from '../generateQuote.interface';
@@ -69,6 +72,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   const [quoteLineItemByQuoteData1, setQuoteLineItemByQuoteData1] =
     useState<any>(quoteLineItemByQuoteID);
   const [showRaiseConcernModal, setShowRaiseConcernModal] =
+    useState<boolean>(false);
+  const [showVerificationFileModal, setShowVerificationFileModal] =
     useState<boolean>(false);
   const [fileLineItemIds, setFileLineItemIds] = useState<number[]>([]);
   const [buttonType, setButtonType] = useState<string>('');
@@ -477,6 +482,16 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     form?.resetFields();
   };
 
+  const fileVerification = () => {
+    // this API also call after table updatation.
+    dispatch(updateQuoteLineItemVerified({ids: fileLineItemIds})).then((d) => {
+      if (d) {
+        dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID)));
+        setShowVerificationFileModal(false);
+      }
+    });
+  };
+
   return (
     <>
       {contextHolder}
@@ -652,7 +667,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                   <>
                     {quoteLineItemByQuoteData1?.map((item: any) => (
                       <OsCollapse
-                        defaultActiveKey={['1']}
                         items={[
                           {
                             key: '1',
@@ -675,6 +689,11 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                       <CheckIcon
                                         width={25}
                                         color={token?.colorSuccess}
+                                        onClick={(e) => {
+                                          e?.stopPropagation();
+                                          setShowVerificationFileModal(true);
+                                          setFileLineItemIds(item?.dataIds);
+                                        }}
                                       />
                                       <XMarkIcon
                                         width={25}
@@ -753,6 +772,29 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         }}
         thirdButtonfunction={() => {
           form?.submit();
+        }}
+      />
+
+      <OsModal
+      loading={loading}
+        body={
+          <OSDialog
+            title="Are you sure want to verified this file?"
+            description="Please acknowledge before proceeding."
+            image={GreenCheckIcon}
+          />
+        }
+        bodyPadding={40}
+        width={638}
+        open={showVerificationFileModal}
+        onCancel={() => {
+          setShowVerificationFileModal(false);
+        }}
+        destroyOnClose
+        secondaryButtonText="Cancel"
+        primaryButtonText="Yes"
+        onOk={() => {
+          fileVerification();
         }}
       />
     </>
