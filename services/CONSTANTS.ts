@@ -160,6 +160,7 @@ export const API = {
     INDEX: '/quoteFile',
     QUERY: '/quoteFile/query',
     DeleteById: '/quoteFile/deleteById',
-    UpdateQuoteFileById: '/quoteFile/updateQuoteFileById'
+    UpdateQuoteFileById: '/quoteFile/updateQuoteFileById',
+    GetQuoteFileByQuoteId: '/quoteFile/getQuoteFileByQuoteId',
   },
 };

@@ -40,6 +40,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setConcernQuoteLineItemData} from '../../../../../../redux/slices/quotelineitem';
 import {InputDetailTabInterface} from '../generateQuote.interface';
+import {getQuoteFileByQuoteId} from '../../../../../../redux/actions/quoteFile';
 
 const InputDetails: FC<InputDetailTabInterface> = ({
   tableColumnDataShow,
@@ -66,11 +67,14 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     loading,
     data: dataNullForBundle,
   } = useAppSelector((state) => state.quoteLineItem);
+  const {loading: quoteFileDataLoading, data: quoteFileData} = useAppSelector(
+    (state) => state.quoteFile,
+  );
   const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] = useState<any>(
     quoteLineItemByQuoteID,
   );
   const [quoteLineItemByQuoteData1, setQuoteLineItemByQuoteData1] =
-    useState<any>(quoteLineItemByQuoteID);
+    useState<any>(quoteFileData);
   const [showRaiseConcernModal, setShowRaiseConcernModal] =
     useState<boolean>(false);
   const [showVerificationFileModal, setShowVerificationFileModal] =
@@ -422,6 +426,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   }, [tableColumnDataShow]);
 
   useEffect(() => {
+    dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
+
     dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID))).then((d: any) => {
       setQuoteLineItemByQuoteData(d?.payload);
       if (d?.payload && d?.payload?.length > 0) {
@@ -432,7 +438,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
 
   useEffect(() => {
     const separatedData: any = {};
-    quoteLineItemByQuoteID?.forEach((item: any) => {
+    quoteFileData?.forEach((item: any) => {
       const fileName = item?.file_name;
       if (!separatedData[fileName]) {
         separatedData[fileName] = {
@@ -453,7 +459,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     });
     const result = Object.values(separatedData);
     setQuoteLineItemByQuoteData1(result);
-  }, [quoteLineItemByQuoteID]);
+  }, [quoteFileData]);
 
   const addConcernData = () => {
     const raiseIssueData = form?.getFieldsValue();
@@ -473,7 +479,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       id: fileLineItemIds,
     };
     dispatch(updateQuoteLineItemConcern(data));
-    console.log('fileName', selectedFileName);
     const filteredData = quoteLineItemByQuoteID?.filter((item: any) =>
       selectedFileName?.includes(item.file_name),
     );

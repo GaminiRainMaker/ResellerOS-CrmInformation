@@ -177,7 +177,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
         for (let i = 0; i < quotesArr.length; i++) {
           const response = await dispatch(insertQuote([quotesArr[i]]));
           // eslint-disable-next-line no-unsafe-optional-chaining
-          console.log('responseresponse12345', response);
           quotesArr[i] = {...response?.payload?.data[0], ...quotesArr[i]};
         }
       } else {
@@ -208,6 +207,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           nanonets_id: quotesArr[i]?.nanonets_id,
           quote_json: quotesArr[i]?.quote_json,
         };
+        console.log('quoteFile', quoteFile);
         const insertedQuoteFile = await dispatch(insertQuoteFile(quoteFile));
 
         for (let j = 0; j < quotesArr[i]?.lineItems.length; j++) {
@@ -216,7 +216,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           if (insertedProduct?.payload?.id) {
             const obj1: any = {
               quote_id: quotesArr[i]?.id,
-              quote_file_id: insertedQuoteFile?.id,
+              quote_file_id: insertedQuoteFile?.payload?.id,
               product_id: insertedProduct?.payload?.id,
               product_code: insertedProduct?.payload?.product_code,
               line_amount: insertedProduct?.payload?.line_amount,
@@ -299,23 +299,23 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
       if (finalLineItems && finalLineItems.length > 0) {
         dispatch(insertQuoteLineItem(finalLineItems)).then((d) => {
-          if (rebateDataArray && rebateDataArray.length > 0) {
-            const data = genericFun(d?.payload, rebateDataArray);
-            dispatch(insertRebateQuoteLineItem(data));
-          }
-          if (contractProductArray && contractProductArray.length > 0) {
-            const data = genericFun(d?.payload, contractProductArray);
-            dispatch(insertValidation(data));
-          }
-          if (finalLineItems && finalLineItems.length > 0) {
-            const data = genericFun(d?.payload, finalLineItems);
-            dispatch(insertProfitability(data));
-          }
+          // if (rebateDataArray && rebateDataArray.length > 0) {
+          //   const data = genericFun(d?.payload, rebateDataArray);
+          //   dispatch(insertRebateQuoteLineItem(data));
+          // }
+          // if (contractProductArray && contractProductArray.length > 0) {
+          //   const data = genericFun(d?.payload, contractProductArray);
+          //   dispatch(insertValidation(data));
+          // }
+          // if (finalLineItems && finalLineItems.length > 0) {
+          //   const data = genericFun(d?.payload, finalLineItems);
+          //   dispatch(insertProfitability(data));
+          // }
         });
       }
-      if (finalOpportunityArray && syncTableData?.length > 0) {
-        dispatch(insertOpportunityLineItem(finalOpportunityArray));
-      }
+      // if (finalOpportunityArray && syncTableData?.length > 0) {
+      //   dispatch(insertOpportunityLineItem(finalOpportunityArray));
+      // }
       setFinalLoading(false);
     } catch (err) {
       setFinalLoading(false);

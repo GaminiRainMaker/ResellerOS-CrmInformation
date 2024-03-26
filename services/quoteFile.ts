@@ -16,4 +16,8 @@ export const QUOTE_FILE_API = {
     patch(API.QUOTE_FILE.UpdateQuoteFileById, data) as Promise<
       AxiosResponse<[]>
     >,
+  getQuoteFileByQuoteId: (id: number) =>
+    get(`${API.QUOTE_FILE.GetQuoteFileByQuoteId}/${id}`) as Promise<
+      AxiosResponse<any>
+    >,
 };
