@@ -27,7 +27,7 @@ import {insertValidation} from '../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '../os-button';
 import {AddQuoteInterface, FormattedData} from './types';
-import { insertQuoteFile } from '../../../../../redux/actions/quoteFile';
+import {insertQuoteFile} from '../../../../../redux/actions/quoteFile';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
@@ -106,7 +106,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           const result: any = nanoNetsResult[j];
           const lineItems: any = [];
           let quoteItem = {};
-          let quoteJson: any = {values: []};
+          let quoteJson: any = [];
           const predictions = result?.prediction?.filter((item: any) => item);
           // eslint-disable-next-line @typescript-eslint/no-loop-func
           predictions?.map((itemNew: any, predictionIndex: number) => {
@@ -121,23 +121,15 @@ const AddQuote: FC<AddQuoteInterface> = ({
                 });
               }
               quoteLineItemArr = Object.values(lineItemData);
-              quoteJson = {
-                ...quoteJson,
-                file_name: updatedArr[i]?.file?.name,
-                values:
-                  predictionIndex > 0
-                    ? [...quoteLineItemArr, ...quoteJson.values]
-                    : quoteLineItemArr,
-              };
+              quoteJson =
+                predictionIndex > 0
+                  ? [...quoteLineItemArr, ...quoteJson]
+                  : quoteLineItemArr;
               quoteLineItemArr?.forEach((obj: any) => {
                 const newObj = {
                   ...obj,
-                  pdf_url: updatedArr[i]?.pdf_url,
-                  file_name: updatedArr[i]?.file?.name,
-                  quote_config_id: updatedArr[i]?.quote_config_id ?? 22,
                   organization: userInformation.organization,
                   user_id: userInformation.id,
-                  nanonets_id: result?.id,
                 };
                 lineItems.push(newObj);
               });
@@ -150,6 +142,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
           });
           quoteObj = {
             ...quoteItem,
+            file_name: updatedArr[i]?.file?.name,
+            nanonets_id: result?.id,
+            quote_config_id: updatedArr[i]?.quote_config_id ?? 22,
+            pdf_url: updatedArr[i]?.pdf_url,
             user_id: userInformation.id,
             customer_id: customerId,
             opportunity_id: opportunityId,
@@ -200,20 +196,27 @@ const AddQuote: FC<AddQuoteInterface> = ({
         await dispatch(updateQuoteWithNewlineItemAddByID(Number(quoteId)));
       }
 
-      //  insertQuoteFile API
-      // dispatch((insertQuoteFile({})))
-
-
       const rebateDataArray: any = [];
       const contractProductArray: any = [];
       const finalLineItems: any = [];
       for (let i = 0; i < quotesArr?.length; i++) {
+        const quoteFile = {
+          file_name: quotesArr[i]?.file_name,
+          pdf_url: quotesArr[i]?.pdf_url,
+          quote_config_id: quotesArr[i]?.quote_config_id,
+          quote_id: quotesArr[i]?.id,
+          nanonets_id: quotesArr[i]?.nanonets_id,
+          quote_json: quotesArr[i]?.quote_json,
+        };
+        const insertedQuoteFile = await dispatch(insertQuoteFile(quoteFile));
+
         for (let j = 0; j < quotesArr[i]?.lineItems.length; j++) {
           const lineItem = quotesArr[i]?.lineItems[j];
           const insertedProduct = await dispatch(insertProduct(lineItem));
           if (insertedProduct?.payload?.id) {
             const obj1: any = {
               quote_id: quotesArr[i]?.id,
+              quote_file_id: insertedQuoteFile?.id,
               product_id: insertedProduct?.payload?.id,
               product_code: insertedProduct?.payload?.product_code,
               line_amount: insertedProduct?.payload?.line_amount,
@@ -223,10 +226,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
               adjusted_price: insertedProduct?.payload?.adjusted_price,
               line_number: insertedProduct?.payload?.line_number,
               organization: userInformation.organization,
-              pdf_url: lineItem?.pdf_url,
-              quote_config_id: lineItem?.quote_config_id,
-              file_name: lineItem?.file_name,
-              nanonets_id: lineItem?.nanonets_id,
             };
             const RebatesByProductCodData = await dispatch(
               getRebatesByProductCode(insertedProduct?.payload?.product_code),
