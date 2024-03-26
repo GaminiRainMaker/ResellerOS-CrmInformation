@@ -156,4 +156,10 @@ export const API = {
     GetOemByDistributorId: '/quoteConfiguration/getOemByDistributorId',
     GetDistributorByOemId: '/quoteConfiguration/getDistributorByOemId',
   },
+  QUOTE_FILE: {
+    INDEX: '/quoteFile',
+    QUERY: '/quoteFile/query',
+    DeleteById: '/quoteFile/deleteById',
+    UpdateQuoteFileById: '/quoteFile/updateQuoteFileById'
+  },
 };

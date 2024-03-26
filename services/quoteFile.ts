@@ -1,0 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import {AxiosResponse} from 'axios';
+import {API} from './CONSTANTS';
+import {get, patch, post} from './index';
+
+export const QUOTE_FILE_API = {
+  get: () => get(`${API.QUOTE_FILE.INDEX}`) as Promise<AxiosResponse<any>>,
+  post: (data: any) => post(API.QUOTE_FILE.INDEX, data),
+  patch: (data: any) =>
+    patch(API.QUOTE_FILE.INDEX, data) as Promise<AxiosResponse<any>>,
+  query: (data: any) =>
+    post(API.QUOTE_FILE.QUERY, data) as Promise<AxiosResponse<[]>>,
+  delete: (data: any) =>
+    post(API.QUOTE_FILE.DeleteById, data) as Promise<AxiosResponse<[]>>,
+  updateQuoteFileById: (data: any) =>
+    patch(API.QUOTE_FILE.UpdateQuoteFileById, data) as Promise<
+      AxiosResponse<[]>
+    >,
+};

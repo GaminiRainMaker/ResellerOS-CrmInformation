@@ -27,6 +27,7 @@ import validation from './slices/validation';
 import quoteConfig from './slices/quoteConfiguration';
 import distributor from './slices/distributor';
 import oem from './slices/oem';
+import quoteFile from './slices/quoteFile';
 
 // Configure redux store
 const store = configureStore({
@@ -57,6 +58,7 @@ const store = configureStore({
     quoteConfig,
     distributor,
     oem,
+    quoteFile,
   },
   middleware: [thunk],
   devTools: true,

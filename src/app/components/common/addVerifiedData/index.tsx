@@ -1,35 +1,27 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-await-in-loop */
-import UploadFile from '@/app/(UI)/(Dashboard_UI)/generateQuote/UploadFile';
 import OsModal from '@/app/components/common/os-modal';
-import {convertFileToBase64} from '@/app/utils/base';
-import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form, message} from 'antd';
-import {useRouter} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
-import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
-import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
-import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
-import {insertProduct} from '../../../../../redux/actions/product';
-import {insertProfitability} from '../../../../../redux/actions/profitability';
+import { PlusIcon } from '@heroicons/react/24/outline';
+import { Form } from 'antd';
+import { useRouter } from 'next/navigation';
+import { FC, useEffect, useState } from 'react';
+import { getContractProductByProductCode } from '../../../../../redux/actions/contractProduct';
+import { getAllGeneralSetting } from '../../../../../redux/actions/generalSetting';
+import { insertOpportunityLineItem } from '../../../../../redux/actions/opportunityLineItem';
+import { insertProduct } from '../../../../../redux/actions/product';
+import { insertProfitability } from '../../../../../redux/actions/profitability';
 import {
-  getQuoteById,
-  getQuotesByDateFilter,
-  insertQuote,
-  updateQuoteWithNewlineItemAddByID,
+    getQuotesByDateFilter
 } from '../../../../../redux/actions/quote';
-import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
-import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
-import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
-import {uploadToAws} from '../../../../../redux/actions/upload';
-import {insertValidation} from '../../../../../redux/actions/validation';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { insertQuoteLineItem } from '../../../../../redux/actions/quotelineitem';
+import { getRebatesByProductCode } from '../../../../../redux/actions/rebate';
+import { insertRebateQuoteLineItem } from '../../../../../redux/actions/rebateQuoteLineitem';
+import { insertValidation } from '../../../../../redux/actions/validation';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import OsButton from '../os-button';
-import {AddQuoteInterface, FormattedData} from './types';
-import { insertQuoteFile } from '../../../../../redux/actions/quoteFile';
 
-const AddQuote: FC<AddQuoteInterface> = ({
+const AddVerifiedData: FC<any> = ({
   uploadFileData,
   existingQuoteId,
   setUploadFileData,
@@ -59,24 +51,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
     dispatch(getAllGeneralSetting(''));
   }, []);
 
-  const beforeUpload = (file: File) => {
-    const obj: any = {...file};
-    convertFileToBase64(file)
-      .then((base64String: string) => {
-        obj.base64 = base64String;
-        obj.file = file;
-        setLoading(true);
-        dispatch(uploadToAws({document: base64String})).then((payload: any) => {
-          const pdfUrl = payload?.payload?.data?.Location;
-          obj.pdf_url = pdfUrl;
-          setLoading(false);
-        });
-        setUploadFileData((fileData: any) => [...fileData, obj]);
-      })
-      .catch((error) => {
-        message.error('Error converting file to base64', error);
-      });
-  };
+
   const genericFun = (payloadArr: any, Arr: any) => {
     const newArr = Arr?.map((item: any) => ({
       ...item,
@@ -87,123 +62,14 @@ const AddQuote: FC<AddQuoteInterface> = ({
     return newArr;
   };
 
-  const addQuoteLineItem = async (
-    customerId: string,
-    opportunityId: string,
-    updatedArr: any,
-    singleQuote: boolean,
-  ) => {
+  const addQuoteLineItem = async () => {
     const quoteId = form.getFieldValue('existingQuoteId');
-    let quoteLineItemArr: any = [];
-    const lineItemData: FormattedData = {};
+
     const quotesArr: any = [];
     try {
       setFinalLoading(true);
-      for (let i = 0; i < updatedArr.length; i++) {
-        const nanoNetsResult = updatedArr[i]?.data?.result;
-        let quoteObj: any = {};
-        for (let j = 0; j < nanoNetsResult?.length; j++) {
-          const result: any = nanoNetsResult[j];
-          const lineItems: any = [];
-          let quoteItem = {};
-          let quoteJson: any = {values: []};
-          const predictions = result?.prediction?.filter((item: any) => item);
-          // eslint-disable-next-line @typescript-eslint/no-loop-func
-          predictions?.map((itemNew: any, predictionIndex: number) => {
-            if (itemNew.label === 'table') {
-              if (itemNew?.cells) {
-                itemNew?.cells.forEach((item: any) => {
-                  const rowNum = item.row;
-                  if (!lineItemData[rowNum]) {
-                    lineItemData[rowNum] = {};
-                  }
-                  lineItemData[rowNum][item.label?.toLowerCase()] = item.text;
-                });
-              }
-              quoteLineItemArr = Object.values(lineItemData);
-              quoteJson = {
-                ...quoteJson,
-                file_name: updatedArr[i]?.file?.name,
-                values:
-                  predictionIndex > 0
-                    ? [...quoteLineItemArr, ...quoteJson.values]
-                    : quoteLineItemArr,
-              };
-              quoteLineItemArr?.forEach((obj: any) => {
-                const newObj = {
-                  ...obj,
-                  pdf_url: updatedArr[i]?.pdf_url,
-                  file_name: updatedArr[i]?.file?.name,
-                  quote_config_id: updatedArr[i]?.quote_config_id ?? 22,
-                  organization: userInformation.organization,
-                  user_id: userInformation.id,
-                  nanonets_id: result?.id,
-                };
-                lineItems.push(newObj);
-              });
-            } else {
-              quoteItem = {
-                ...quoteItem,
-                [itemNew?.label?.toLowerCase()]: itemNew?.ocr_text,
-              };
-            }
-          });
-          quoteObj = {
-            ...quoteItem,
-            user_id: userInformation.id,
-            customer_id: customerId,
-            opportunity_id: opportunityId,
-            organization: userInformation.organization,
-            quote_json: [JSON.stringify(quoteJson)],
-            lineItems: lineItems.length > 0 ? lineItems : [],
-          };
-        }
-        if (singleQuote || quoteId) {
-          if (i === 0) {
-            quotesArr.push(quoteObj);
-          } else {
-            quotesArr[0].quote_json = [
-              ...quotesArr[0].quote_json,
-              // eslint-disable-next-line no-unsafe-optional-chaining
-              ...quoteObj?.quote_json,
-            ];
-            quotesArr[0].lineItems = [
-              ...quotesArr[0].lineItems,
-              // eslint-disable-next-line no-unsafe-optional-chaining
-              ...quoteObj?.lineItems,
-            ];
-          }
-        } else {
-          quotesArr.push(quoteObj);
-        }
-      }
-      if (quotesArr.length > 0 && !quoteId) {
-        for (let i = 0; i < quotesArr.length; i++) {
-          const response = await dispatch(insertQuote([quotesArr[i]]));
-          // eslint-disable-next-line no-unsafe-optional-chaining
-          console.log('responseresponse12345', response);
-          quotesArr[i] = {...response?.payload?.data[0], ...quotesArr[i]};
-        }
-      } else {
-        dispatch(getQuoteById(quoteId)).then((payload: any) => {
-          quotesArr[0] = {
-            ...payload?.payload,
-            quote_json:
-              payload?.payload?.quote_json &&
-              payload?.payload?.quote_json.length > 0
-                ? // eslint-disable-next-line no-unsafe-optional-chaining
-                  [...payload?.payload?.quote_json, ...quotesArr[0].quote_json]
-                : [...quotesArr[0].quote_json],
-            lineItems: [...quotesArr[0].lineItems],
-          };
-        });
-        await dispatch(updateQuoteWithNewlineItemAddByID(Number(quoteId)));
-      }
 
-      //  insertQuoteFile API
       // dispatch((insertQuoteFile({})))
-
-
       const rebateDataArray: any = [];
       const contractProductArray: any = [];
       const finalLineItems: any = [];
@@ -352,22 +218,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
         loading={finalLoading}
         bodyPadding={22}
         disabledButton={!(uploadFileData?.length > 0)}
-        body={
-          <UploadFile
-            setUploadFileData={setUploadFileData}
-            uploadFileData={uploadFileData}
-            addInExistingQuote
-            addQuoteLineItem={addQuoteLineItem}
-            form={form}
-            beforeUpload={beforeUpload}
-            cardLoading={loading}
-            rowSelection={rowSelection}
-            setShowToggleTable={setShowToggleTable}
-            showToggleTable={showToggleTable}
-            Quotecolumns={Quotecolumns}
-            existingQuoteId={existingQuoteId}
-          />
-        }
+        body={<>dddddd</>}
         width={900}
         primaryButtonText="Generate Single Quote"
         thirdButtonText={
@@ -378,10 +229,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
           form?.setFieldValue('singleQuote', true);
           form.submit();
         }}
-        thirdButtonfunction={() => {
-          form?.setFieldValue('singleQuote', false);
-          form.submit();
-        }}
+        // thirdButtonfunction={() => {
+        //   form?.setFieldValue('singleQuote', false);
+        //   form.submit();
+        // }}
         onCancel={() => {
           resetFields();
         }}
@@ -390,4 +241,4 @@ const AddQuote: FC<AddQuoteInterface> = ({
   );
 };
 
-export default AddQuote;
+export default AddVerifiedData;
