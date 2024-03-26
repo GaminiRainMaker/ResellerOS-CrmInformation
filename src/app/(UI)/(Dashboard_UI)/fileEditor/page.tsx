@@ -91,7 +91,7 @@ const EditorFile = () => {
           const dataa: any = JSON?.parse(d?.payload?.quote_json?.[2]);
 
           console.log('4564564', dataa, d?.payload);
-          const newArray = dataa.values?.length > 0 ? [...dataa.values] : [];
+          const newArray = dataa?.length > 0 ? [...dataa] : [];
           setQuoteItems(newArray);
           const allHeaderValue: any = [];
         }
