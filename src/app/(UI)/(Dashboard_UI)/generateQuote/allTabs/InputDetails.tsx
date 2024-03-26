@@ -447,7 +447,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       separatedData[fileName].data.push(item);
       separatedData[fileName].dataLength++;
       separatedData[fileName].totalAdjustedPrice += parseFloat(
-        item.adjusted_price.replace(/[$,]/g, ''),
+        item?.adjusted_price?.replace(/[$,]/g, ''),
       );
       separatedData[fileName].dataIds.push(item.id);
     });
@@ -479,7 +479,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     );
     dispatch(setConcernQuoteLineItemData(filteredData));
     if (buttonType === 'primary') {
-      router?.push(`/updation`);
+      router?.push(`/fileEditor?id=${getQuoteID}&quoteExist=true`);
     } else {
       router?.push(`/fileEditor?id=${getQuoteID}&quoteExist=false`);
     }

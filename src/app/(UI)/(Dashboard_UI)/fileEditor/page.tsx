@@ -8,26 +8,32 @@
 
 'use client';
 
-import React, {useEffect, useRef, useState} from 'react';
 import '@handsontable/pikaday/css/pikaday.css';
-import './styles.css';
 import {HotTable} from '@handsontable/react';
+import {useEffect, useRef, useState} from 'react';
+import './styles.css';
 
-import {formatStatus} from '@/app/utils/CONSTANTS';
-import {useSearchParams} from 'next/navigation';
 import {Space} from '@/app/components/common/antd/Space';
-import Typography from 'antd/es/typography/Typography';
-import {TrashIcon} from '@heroicons/react/24/outline';
-import OsModal from '@/app/components/common/os-modal';
 import OsButton from '@/app/components/common/os-button';
-import {alignHeaders, addClassesToRows} from './hooksCallbacks';
+import OsModal from '@/app/components/common/os-modal';
+import {formatStatus} from '@/app/utils/CONSTANTS';
+import {TrashIcon} from '@heroicons/react/24/outline';
+import Typography from 'antd/es/typography/Typography';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {notification} from 'antd';
+import {addClassesToRows, alignHeaders} from './hooksCallbacks';
 
 import 'handsontable/dist/handsontable.min.css';
 import {getQuoteById} from '../../../../../redux/actions/quote';
+import {
+  getQuoteLineItemByQuoteId,
+  updateQuoteLineItemById,
+} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
-import {getQuoteLineItemByQuoteId} from '../../../../../redux/actions/quotelineitem';
-import UpdateGenerateQuote from '../updation/page';
+import {updateProfitabilityById} from '../../../../../redux/actions/profitability';
+import {updateRebateQuoteLineItemById} from '../../../../../redux/actions/rebateQuoteLineitem';
+import {updateValidationById} from '../../../../../redux/actions/validation';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
@@ -36,13 +42,39 @@ const EditorFile = () => {
   const getQUoteId = searchParams.get('id');
   const [quoteItems, setQuoteItems] = useState<any>();
   const [mergedValue, setMergedVaalues] = useState<any>();
+  const router = useRouter();
   const ExistingQuoteItemss = searchParams.get('quoteExist');
   const {concernQuoteLineItemData} = useAppSelector(
     (state) => state.quoteLineItem,
   );
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const {quoteById, loading} = useAppSelector((state) => state.quote);
 
-  console.log('concernQuoteLineItemData', concernQuoteLineItemData);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [updateLineItemsValue, setUpdateLineItemsValue] = useState<any>();
+  useEffect(() => {
+    const newArrr: any = [];
+    if (concernQuoteLineItemData) {
+      concernQuoteLineItemData?.map((itemsss: any) => {
+        if (itemsss) {
+          const newObj: any = {
+            ...itemsss,
+          };
+          delete newObj.Product;
+          delete newObj.Quote;
+          delete newObj.quote_id;
+          delete newObj.user_id;
+          delete newObj.quote_config_id;
+          delete newObj.product_id;
+          delete newObj.customer_id;
+          delete newObj.is_deleted;
+          newArrr?.push(newObj);
+        }
+      });
+
+      setUpdateLineItemsValue(newArrr);
+    }
+  }, [concernQuoteLineItemData]);
+  console.log('4645645', updateLineItemsValue);
 
   useEffect(() => {
     if (ExistingQuoteItemss === 'true') {
@@ -56,8 +88,10 @@ const EditorFile = () => {
     } else {
       dispatch(getQuoteById(Number(getQUoteId))).then((d: any) => {
         if (d?.payload) {
-          const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
-          const newArray = dataa?.length > 0 ? [...dataa] : [];
+          const dataa: any = JSON?.parse(d?.payload?.quote_json?.[2]);
+
+          console.log('4564564', dataa, d?.payload);
+          const newArray = dataa.values?.length > 0 ? [...dataa.values] : [];
           setQuoteItems(newArray);
           const allHeaderValue: any = [];
         }
@@ -181,6 +215,114 @@ const EditorFile = () => {
       }
     });
   }
+  // ======================================== FOr Update LineItems=====================================
+
+  const updateRowsValueForLineItems = (
+    rowIndex: number,
+    keyValue: string,
+    changedValue: any,
+  ) => {
+    if (keyValue === 'id') {
+      notification.open({
+        message: 'Cannot Update Id',
+        type: 'error',
+      });
+      return;
+    }
+    const changedArr = updateLineItemsValue?.map(
+      (itemTop: any, indexOfTop: number) => {
+        if (indexOfTop === rowIndex) {
+          return {
+            ...itemTop,
+            [keyValue]: changedValue,
+          };
+        }
+        return itemTop;
+      },
+    );
+    setUpdateLineItemsValue(changedArr);
+  };
+  const deleteRowsItemsForLineItemsa = (
+    indexOfDeletion: number,
+    NumberOf: number,
+  ) => {
+    const newArrr =
+      updateLineItemsValue?.length > 0 ? [...updateLineItemsValue] : [];
+    newArrr
+      ?.slice(0, indexOfDeletion)
+      .concat(newArrr?.slice(indexOfDeletion + NumberOf));
+
+    setUpdateLineItemsValue(newArrr);
+  };
+
+  const updateLineItemColumn: any = [];
+  const keysss =
+    updateLineItemsValue?.length > 0 && Object.keys(updateLineItemsValue?.[0]);
+  if (keysss) {
+    keysss?.map((item: any) => {
+      if (item) {
+        updateLineItemColumn?.push(formatStatus(item));
+      }
+    });
+  }
+
+  const generateUpdateObject = (resultItem: any) => ({
+    line_number: resultItem?.line_number,
+    product_code: resultItem?.product_code,
+    quantity: resultItem?.quantity,
+    adjusted_price: resultItem?.adjusted_price,
+    line_amount: resultItem?.line_amount,
+    list_price: resultItem?.list_price,
+    description: resultItem?.description,
+  });
+
+  const updateEntityById = (
+    updateAction: any,
+    entityToUpdate: any,
+    resultItem: any,
+  ) => {
+    if (entityToUpdate) {
+      const obj = {
+        id: entityToUpdate?.id,
+        ...generateUpdateObject(resultItem),
+      };
+      dispatch(updateAction(obj));
+    }
+  };
+
+  const updateData = () => {
+    updateLineItemsValue.forEach((resultItem: any) => {
+      updateEntityById(
+        updateQuoteLineItemById,
+        quoteById?.QuoteLineItems.find(
+          (item: any) => item.id === resultItem.id,
+        ),
+        resultItem,
+      );
+      updateEntityById(
+        updateProfitabilityById,
+        quoteById?.Profitabilities.find(
+          (item: any) => item.quoteline_item_id === resultItem.id,
+        ),
+        resultItem,
+      );
+      updateEntityById(
+        updateRebateQuoteLineItemById,
+        quoteById?.RebatesQuoteLineItems.find(
+          (item: any) => item.quoteline_item_id === resultItem.id,
+        ),
+        resultItem,
+      );
+      updateEntityById(
+        updateValidationById,
+        quoteById?.Validations.find(
+          (item: any) => item.quoteline_item_id === resultItem.id,
+        ),
+        resultItem,
+      );
+    });
+    router?.push(`/generateQuote?id=${getQUoteId}`);
+  };
   return (
     <>
       <div
@@ -192,7 +334,70 @@ const EditorFile = () => {
         }}
       >
         {ExistingQuoteItemss === 'true' ? (
-          <UpdateGenerateQuote />
+          <>
+            {' '}
+            <Space
+              size={50}
+              style={{
+                display: 'flex',
+                justifyContent: 'end',
+                marginRight: '50px',
+                // top: '10',
+                position: 'fixed',
+
+                right: '0',
+                bottom: '0',
+                marginBottom: '20px',
+              }}
+            >
+              {' '}
+              <OsButton
+                text="Save LineItems"
+                buttontype="PRIMARY"
+                clickHandler={updateData}
+              />
+            </Space>
+            <HotTable
+              data={updateLineItemsValue}
+              colWidths={200}
+              columnHeaderHeight={40}
+              height="auto"
+              colHeaders={updateLineItemColumn}
+              width="auto"
+              minSpareRows={0}
+              autoWrapRow
+              autoWrapCol
+              licenseKey="non-commercial-and-evaluation"
+              dropdownMenu
+              hiddenColumns={{
+                indicators: true,
+              }}
+              contextMenu
+              multiColumnSorting
+              filters
+              rowHeaders
+              allowInsertRow={false}
+              allowInsertColumn
+              afterGetColHeader={alignHeaders}
+              beforeRenderer={() => {
+                addClassesToRows('', '', '', '', '', '', quoteItems);
+              }}
+              afterRemoveRow={(change, source) => {
+                deleteRowsItemsForLineItemsa(source, change);
+              }}
+              afterChange={(change: any, source) => {
+                console.log('56456456', change);
+                if (change) {
+                  updateRowsValueForLineItems(
+                    change?.[0]?.[0],
+                    change?.[0]?.[1],
+                    change?.[0]?.[3],
+                  );
+                }
+              }}
+              navigableHeaders
+            />
+          </>
         ) : (
           <>
             {mergedValue?.length > 0 ? (
@@ -315,7 +520,7 @@ const EditorFile = () => {
                           />
                         </Space>
                         <HotTable
-                          data={itemss}
+                          data={quoteItems}
                           colWidths={[
                             200, 200, 400, 200, 200, 200, 200, 200, 200, 200,
                             200, 200, 200, 200, 200, 200,
