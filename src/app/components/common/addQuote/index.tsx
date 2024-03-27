@@ -102,11 +102,12 @@ const AddQuote: FC<AddQuoteInterface> = ({
       for (let i = 0; i < updatedArr.length; i++) {
         const nanoNetsResult = updatedArr[i]?.data?.result;
         let quoteObj: any = {};
+        const lineItems: any = [];
+        let quoteItem = {};
+        let quoteJson: any = [];
         for (let j = 0; j < nanoNetsResult?.length; j++) {
           const result: any = nanoNetsResult[j];
-          const lineItems: any = [];
-          let quoteItem = {};
-          let quoteJson: any = [];
+
           const predictions = result?.prediction?.filter((item: any) => item);
           // eslint-disable-next-line @typescript-eslint/no-loop-func
           predictions?.map((itemNew: any, predictionIndex: number) => {
@@ -142,7 +143,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           });
           quoteObj = {
             ...quoteItem,
-            file_name: updatedArr[i]?.file?.name,
+
             nanonets_id: result?.id,
             quote_config_id: updatedArr[i]?.quote_config_id ?? 22,
             pdf_url: updatedArr[i]?.pdf_url,
@@ -150,23 +151,26 @@ const AddQuote: FC<AddQuoteInterface> = ({
             customer_id: customerId,
             opportunity_id: opportunityId,
             organization: userInformation.organization,
-            quote_json: [JSON.stringify(quoteJson)],
-            lineItems: lineItems.length > 0 ? lineItems : [],
+            quoteFileObj: [
+              {
+                file_name: updatedArr[i]?.file?.name,
+                pdf_url: updatedArr[i]?.pdf_url,
+                quote_config_id: updatedArr[i]?.quote_config_id ?? 22,
+                nanonets_id: result?.id,
+                quote_json: [JSON.stringify(quoteJson)],
+                lineItems: lineItems.length > 0 ? lineItems : [],
+              },
+            ],
           };
         }
         if (singleQuote || quoteId) {
           if (i === 0) {
             quotesArr.push(quoteObj);
           } else {
-            quotesArr[0].quote_json = [
-              ...quotesArr[0].quote_json,
+            quotesArr[0].quoteFileObj = [
+              ...quotesArr[0].quoteFileObj,
               // eslint-disable-next-line no-unsafe-optional-chaining
-              ...quoteObj?.quote_json,
-            ];
-            quotesArr[0].lineItems = [
-              ...quotesArr[0].lineItems,
-              // eslint-disable-next-line no-unsafe-optional-chaining
-              ...quoteObj?.lineItems,
+              ...quoteObj?.quoteFileObj,
             ];
           }
         } else {
@@ -198,58 +202,62 @@ const AddQuote: FC<AddQuoteInterface> = ({
       const rebateDataArray: any = [];
       const contractProductArray: any = [];
       const finalLineItems: any = [];
+      console.log(quotesArr, 'quotesArrquotesArr');
       for (let i = 0; i < quotesArr?.length; i++) {
-        const quoteFile = {
-          file_name: quotesArr[i]?.file_name,
-          pdf_url: quotesArr[i]?.pdf_url,
-          quote_config_id: quotesArr[i]?.quote_config_id,
-          quote_id: quotesArr[i]?.id,
-          nanonets_id: quotesArr[i]?.nanonets_id,
-          quote_json: quotesArr[i]?.quote_json,
-        };
-        console.log('quoteFile', quoteFile);
-        const insertedQuoteFile = await dispatch(insertQuoteFile(quoteFile));
+        for (let k = 0; k < quotesArr[i].quoteFileObj.length; k++) {
+          const quoteFile = {
+            ...quotesArr[i].quoteFileObj[k],
+            quote_id: quotesArr[i]?.id,
+          };
+          console.log('quoteFile', quoteFile);
+          const insertedQuoteFile = await dispatch(insertQuoteFile(quoteFile));
 
-        for (let j = 0; j < quotesArr[i]?.lineItems.length; j++) {
-          const lineItem = quotesArr[i]?.lineItems[j];
-          const insertedProduct = await dispatch(insertProduct(lineItem));
-          if (insertedProduct?.payload?.id) {
-            const obj1: any = {
-              quote_id: quotesArr[i]?.id,
-              quote_file_id: insertedQuoteFile?.payload?.id,
-              product_id: insertedProduct?.payload?.id,
-              product_code: insertedProduct?.payload?.product_code,
-              line_amount: insertedProduct?.payload?.line_amount,
-              list_price: insertedProduct?.payload?.list_price,
-              description: insertedProduct?.payload?.description,
-              quantity: insertedProduct?.payload?.quantity,
-              adjusted_price: insertedProduct?.payload?.adjusted_price,
-              line_number: insertedProduct?.payload?.line_number,
-              organization: userInformation.organization,
-            };
-            const RebatesByProductCodData = await dispatch(
-              getRebatesByProductCode(insertedProduct?.payload?.product_code),
-            );
-            if (RebatesByProductCodData?.payload?.id) {
-              rebateDataArray?.push({
-                ...obj1,
-                rebate_id: RebatesByProductCodData?.payload?.id,
-                percentage_payout:
-                  RebatesByProductCodData?.payload?.percentage_payout,
-              });
+          for (
+            let j = 0;
+            j < quotesArr[i].quoteFileObj[k]?.lineItems.length;
+            j++
+          ) {
+            const lineItem = quotesArr[i].quoteFileObj[k]?.lineItems[j];
+            const insertedProduct = await dispatch(insertProduct(lineItem));
+            if (insertedProduct?.payload?.id) {
+              const obj1: any = {
+                quote_id: quotesArr[i]?.id,
+                quote_file_id: insertedQuoteFile?.payload?.id,
+                product_id: insertedProduct?.payload?.id,
+                product_code: insertedProduct?.payload?.product_code,
+                line_amount: insertedProduct?.payload?.line_amount,
+                list_price: insertedProduct?.payload?.list_price,
+                description: insertedProduct?.payload?.description,
+                quantity: insertedProduct?.payload?.quantity,
+                adjusted_price: insertedProduct?.payload?.adjusted_price,
+                line_number: insertedProduct?.payload?.line_number,
+                organization: userInformation.organization,
+              };
+              const RebatesByProductCodData = await dispatch(
+                getRebatesByProductCode(insertedProduct?.payload?.product_code),
+              );
+              if (RebatesByProductCodData?.payload?.id) {
+                rebateDataArray?.push({
+                  ...obj1,
+                  rebate_id: RebatesByProductCodData?.payload?.id,
+                  percentage_payout:
+                    RebatesByProductCodData?.payload?.percentage_payout,
+                });
+              }
+              const contractProductByProductCode = await dispatch(
+                getContractProductByProductCode(
+                  insertedProduct?.payload?.product_code,
+                ),
+              );
+              if (contractProductByProductCode?.payload?.id) {
+                contractProductArray?.push({
+                  ...obj1,
+                  contract_product_id:
+                    contractProductByProductCode?.payload?.id,
+                });
+              }
+              finalLineItems?.push(obj1);
             }
-            const contractProductByProductCode = await dispatch(
-              getContractProductByProductCode(
-                insertedProduct?.payload?.product_code,
-              ),
-            );
-            if (contractProductByProductCode?.payload?.id) {
-              contractProductArray?.push({
-                ...obj1,
-                contract_product_id: contractProductByProductCode?.payload?.id,
-              });
-            }
-            finalLineItems?.push(obj1);
           }
         }
       }
