@@ -126,37 +126,35 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           password: formValues?.password,
         }),
       ).then((payload) => {
-        if (payload?.type?.split('/')?.[2]?.toString() === 'rejected') {
+        if (payload?.payload) {
+          dispatch(
+            setUserInformation({
+              id: payload?.payload?.id,
+              organization: payload?.payload?.organization,
+              Admin: payload?.payload?.is_admin,
+              QuoteAI: payload?.payload?.is_quote,
+              DealReg: payload?.payload?.is_dealReg,
+              OrderAI: payload?.payload?.is_order,
+              username: payload?.payload?.user_name,
+              email: payload?.payload?.email,
+              SuperAdmin: payload?.payload?.super_admin,
+            }),
+          );
+
+          Cookies.set('token', payload.payload?.token, {
+            expires: 0.8,
+            secure: true,
+            sameSite: 'strict',
+          });
+          router.push(
+            payload?.payload?.super_admin ? '/userManagement' : '/crmInAccount',
+          );
+        } else {
           notification?.open({
             message: 'Invaild credentials! Please try again',
             type: 'error',
           });
-
-          return;
         }
-
-        dispatch(
-          setUserInformation({
-            id: payload?.payload?.id,
-            organization: payload?.payload?.organization,
-            Admin: payload?.payload?.is_admin,
-            QuoteAI: payload?.payload?.is_quote,
-            DealReg: payload?.payload?.is_dealReg,
-            OrderAI: payload?.payload?.is_order,
-            username: payload?.payload?.user_name,
-            email: payload?.payload?.email,
-            SuperAdmin: payload?.payload?.super_admin,
-          }),
-        );
-
-        Cookies.set('token', payload.payload?.token, {
-          expires: 0.8,
-          secure: true,
-          sameSite: 'strict',
-        });
-        router.push(
-          payload?.payload?.super_admin ? '/userManagement' : '/crmInAccount',
-        );
       });
     } else if (
       formValues?.username &&
