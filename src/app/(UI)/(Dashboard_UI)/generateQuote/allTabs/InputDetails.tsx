@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-await-in-loop */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -29,18 +31,25 @@ import {
   getAllBundle,
   updateBundleQuantity,
 } from '../../../../../../redux/actions/bundle';
+import {getContractProductByProductCode} from '../../../../../../redux/actions/contractProduct';
 import {updateProductFamily} from '../../../../../../redux/actions/product';
+import {insertProfitability} from '../../../../../../redux/actions/profitability';
+import {
+  UpdateQuoteFileById,
+  getQuoteFileByQuoteId,
+  quoteFileVerification,
+} from '../../../../../../redux/actions/quoteFile';
 import {
   DeleteQuoteLineItemById,
   getQuoteLineItemByQuoteId,
   getQuoteLineItemByQuoteIdandBundleIdNull,
-  updateQuoteLineItemConcern,
-  updateQuoteLineItemVerified,
 } from '../../../../../../redux/actions/quotelineitem';
+import {getRebatesByProductCode} from '../../../../../../redux/actions/rebate';
+import {insertRebateQuoteLineItem} from '../../../../../../redux/actions/rebateQuoteLineitem';
+import {insertValidation} from '../../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setConcernQuoteLineItemData} from '../../../../../../redux/slices/quotelineitem';
 import {InputDetailTabInterface} from '../generateQuote.interface';
-import {getQuoteFileByQuoteId} from '../../../../../../redux/actions/quoteFile';
 
 const InputDetails: FC<InputDetailTabInterface> = ({
   tableColumnDataShow,
@@ -67,6 +76,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     loading,
     data: dataNullForBundle,
   } = useAppSelector((state) => state.quoteLineItem);
+  const {userInformation} = useAppSelector((state) => state.user);
   const {loading: quoteFileDataLoading, data: quoteFileData} = useAppSelector(
     (state) => state.quoteFile,
   );
@@ -81,7 +91,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     useState<boolean>(false);
   const [fileLineItemIds, setFileLineItemIds] = useState<number[]>([]);
   const [buttonType, setButtonType] = useState<string>('');
-  const [selectedFileName, setSelectedFileName] = useState<string>('');
+  const [fileData, setFileData] = useState<any>();
+  const [selectedFile, setSelectedFile] = useState<number>(0);
   const {data: bundleData} = useAppSelector((state) => state.bundle);
 
   const [api, contextHolder] = notification.useNotification();
@@ -439,24 +450,26 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   useEffect(() => {
     const separatedData: any = {};
     quoteFileData?.forEach((item: any) => {
-      const fileName = item?.file_name;
+      const fileName = item.file_name;
       if (!separatedData[fileName]) {
         separatedData[fileName] = {
           id: item.id,
           title: fileName,
-          data: [],
-          dataLength: 0,
+          quoteLineItems: [],
+          totalCount: 0,
           totalAdjustedPrice: 0,
-          dataIds: [],
         };
       }
-      separatedData[fileName].data.push(item);
-      separatedData[fileName].dataLength++;
-      separatedData[fileName].totalAdjustedPrice += parseFloat(
-        item?.adjusted_price?.replace(/[$,]/g, ''),
-      );
-      separatedData[fileName].dataIds.push(item.id);
+
+      item?.QuoteLineItems?.forEach((quoteLineItem: any) => {
+        separatedData[fileName].quoteLineItems.push(quoteLineItem);
+        separatedData[fileName].totalCount++;
+        separatedData[fileName].totalAdjustedPrice += parseFloat(
+          quoteLineItem?.adjusted_price?.replace(/[$,]/g, ''),
+        );
+      });
     });
+
     const result = Object.values(separatedData);
     setQuoteLineItemByQuoteData1(result);
   }, [quoteFileData]);
@@ -478,11 +491,11 @@ const InputDetails: FC<InputDetailTabInterface> = ({
           : null,
       id: fileLineItemIds,
     };
-    dispatch(updateQuoteLineItemConcern(data));
-    const filteredData = quoteLineItemByQuoteID?.filter((item: any) =>
-      selectedFileName?.includes(item.file_name),
+    dispatch(UpdateQuoteFileById(data));
+    const filteredData = quoteFileData?.filter(
+      (item: any) => selectedFile === item?.id,
     );
-    dispatch(setConcernQuoteLineItemData(filteredData));
+    dispatch(setConcernQuoteLineItemData(filteredData?.QuoteLineItems));
     if (buttonType === 'primary') {
       router?.push(`/fileEditor?id=${getQuoteID}&quoteExist=true`);
     } else {
@@ -492,14 +505,95 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     form?.resetFields();
   };
 
-  const fileVerification = () => {
-    // this API also call after table updatation.
-    dispatch(updateQuoteLineItemVerified({ids: fileLineItemIds})).then((d) => {
-      if (d) {
-        dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID)));
-        setShowVerificationFileModal(false);
+  const genericFun = (
+    finalLineItems: any[],
+    dataArray: any[],
+  ): {[key: string]: any}[] =>
+    dataArray.map((item) => ({
+      ...item,
+      quote_line_item_id: finalLineItems?.find(
+        (itm) => itm.product_code === item.product_code,
+      )?.id,
+    }));
+
+  const updateAllTables = async (): Promise<void> => {
+    try {
+      const rebateDataArray: any[] = [];
+      const contractProductArray: any[] = [];
+      const profitabilityArray: any[] = [];
+      const finalLineItems: any[] = [];
+
+      for (const item of fileData?.quoteLineItems) {
+        const obj1: any = {
+          quote_id: item.quote_id,
+          product_id: item.product_id,
+          product_code: item.product_code,
+          line_amount: item.line_amount,
+          list_price: item.list_price,
+          description: item.description,
+          quantity: item.quantity,
+          adjusted_price: item.adjusted_price,
+          line_number: item.line_number,
+          organization: userInformation.organization,
+          quote_config_id: item.quote_config_id,
+          quote_file_id: item.quote_file_id,
+          file_name: fileData.title,
+          nanonets_id: item.nanonets_id,
+        };
+
+        const RebatesByProductCodData = await dispatch(
+          getRebatesByProductCode(obj1.product_code),
+        );
+        if (RebatesByProductCodData?.payload?.id) {
+          rebateDataArray.push({
+            ...obj1,
+            quote_line_item_id: item?.id,
+            rebate_id: RebatesByProductCodData.payload.id,
+            percentage_payout:
+              RebatesByProductCodData.payload.percentage_payout,
+          });
+        }
+
+        const contractProductByProductCode = await dispatch(
+          getContractProductByProductCode(obj1.product_code),
+        );
+        if (contractProductByProductCode?.payload?.id) {
+          contractProductArray.push({
+            ...obj1,
+            quote_line_item_id: item?.id,
+            contract_product_id: contractProductByProductCode.payload.id,
+          });
+        }
+        if (item?.id) {
+          profitabilityArray.push({
+            ...obj1,
+            quote_line_item_id: item?.id,
+          });
+        }
+        finalLineItems.push(obj1);
       }
-    });
+      if (finalLineItems.length > 0) {
+        if (rebateDataArray.length > 0) {
+          const rebateData = genericFun(finalLineItems, rebateDataArray);
+          dispatch(insertRebateQuoteLineItem(rebateData));
+        }
+        if (contractProductArray.length > 0) {
+          const contractProductData = genericFun(
+            finalLineItems,
+            contractProductArray,
+          );
+          dispatch(insertValidation(contractProductData));
+        }
+        const profitabilityData = genericFun(
+          finalLineItems,
+          profitabilityArray,
+        );
+        dispatch(insertProfitability(profitabilityData));
+        dispatch(quoteFileVerification({id: fileData?.id}));
+      }
+    } catch (err) {
+      console.error('Error:', err);
+    }
   };
 
   return (
@@ -687,7 +781,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                     <p>{item?.title}</p>
                                   </Col>
                                   <Col>
-                                    <p>Line Items: {item?.dataLength}</p>
+                                    <p>Line Items: {item?.totalCount}</p>
                                   </Col>
                                   <Col>
                                     <p>
@@ -702,7 +796,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                         onClick={(e) => {
                                           e?.stopPropagation();
                                           setShowVerificationFileModal(true);
-                                          setFileLineItemIds(item?.dataIds);
+                                          setFileLineItemIds(item?.id);
+                                          setFileData(item);
                                         }}
                                       />
                                       <XMarkIcon
@@ -711,8 +806,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                         onClick={(e) => {
                                           e?.stopPropagation();
                                           setShowRaiseConcernModal(true);
-                                          setFileLineItemIds(item?.dataIds);
-                                          setSelectedFileName(item?.title);
+                                          setFileLineItemIds(item?.id);
+                                          setSelectedFile(item?.id);
                                         }}
                                       />
                                     </Space>
@@ -723,7 +818,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                             children: (
                               <OsTableWithOutDrag
                                 columns={finalInputColumn}
-                                dataSource={item?.data || []}
+                                dataSource={item?.quoteLineItems || []}
                                 rowSelection={rowSelection}
                                 scroll
                                 loading={loading}
@@ -804,7 +899,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         secondaryButtonText="Cancel"
         primaryButtonText="Yes"
         onOk={() => {
-          fileVerification();
+          // fileVerification();
+          updateAllTables();
         }}
         singleButtonInCenter
       />

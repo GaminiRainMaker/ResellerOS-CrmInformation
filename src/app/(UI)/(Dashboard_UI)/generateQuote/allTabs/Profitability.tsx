@@ -389,7 +389,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
   }, [tableColumnDataShow]);
 
   useEffect(() => {
-    profitabilityData.map((profitabilityDataItem: any) => {
+    profitabilityData?.map((profitabilityDataItem: any) => {
       if (profitabilityDataItem?.rowId === profitabilityDataItem?.id) {
         const obj = {
           id: profitabilityDataItem?.id,

@@ -162,5 +162,6 @@ export const API = {
     DeleteById: '/quoteFile/deleteById',
     UpdateQuoteFileById: '/quoteFile/updateQuoteFileById',
     GetQuoteFileByQuoteId: '/quoteFile/getQuoteFileByQuoteId',
+    QuoteFileVerification: '/quoteFile/quoteFileVerification',
   },
 };

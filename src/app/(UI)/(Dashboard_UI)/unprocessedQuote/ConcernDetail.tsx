@@ -32,9 +32,9 @@ const ConcernDetail: FC<ConcernDetailInterface> = ({
 
   useEffect(() => {
     const concernPDFArray: any = [];
-    quoteById?.QuoteLineItems?.forEach((item: any) => {
+    quoteById?.QuoteFiles?.forEach((item: any) => {
       if (item?.issue_type) {
-        const existingConcernIndex = concernPDFArray.findIndex(
+        const existingConcernIndex: any = concernPDFArray.findIndex(
           (concernObj: any) => concernObj?.issue_type === item?.issue_type,
         );
         if (existingConcernIndex !== -1) {
@@ -79,10 +79,7 @@ const ConcernDetail: FC<ConcernDetailInterface> = ({
       <Carousel autoplay arrows>
         {concernData?.map((item: any) => (
           <div key={item.issue_type}>
-            <Typography
-              name="Body 4/Medium"
-              color={token?.colorPrimaryText}
-            >
+            <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
               Issue Type
             </Typography>
             <TextArea
