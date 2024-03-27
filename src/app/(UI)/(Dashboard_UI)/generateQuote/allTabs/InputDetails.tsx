@@ -20,7 +20,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
 import {selectDataForProduct} from '@/app/utils/CONSTANTS';
-import {useRemoveDollarAndCommahook} from '@/app/utils/base';
+import {updateTables, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {CheckIcon, TrashIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
@@ -92,7 +92,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   const [fileLineItemIds, setFileLineItemIds] = useState<number[]>([]);
   const [buttonType, setButtonType] = useState<string>('');
   const [fileData, setFileData] = useState<any>();
-  const [selectedFile, setSelectedFile] = useState<number>(0);
   const {data: bundleData} = useAppSelector((state) => state.bundle);
 
   const [api, contextHolder] = notification.useNotification();
@@ -458,6 +457,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
           quoteLineItems: [],
           totalCount: 0,
           totalAdjustedPrice: 0,
+          quoteJson: item?.quote_json,
         };
       }
 
@@ -492,10 +492,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       id: fileLineItemIds,
     };
     dispatch(UpdateQuoteFileById(data));
-    const filteredData = quoteFileData?.filter(
-      (item: any) => selectedFile === item?.id,
-    );
-    dispatch(setConcernQuoteLineItemData(filteredData?.QuoteLineItems));
+    dispatch(setConcernQuoteLineItemData(fileData));
     if (buttonType === 'primary') {
       router?.push(`/fileEditor?id=${getQuoteID}&quoteExist=true`);
     } else {
@@ -505,95 +502,10 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     form?.resetFields();
   };
 
-  const genericFun = (
-    finalLineItems: any[],
-    dataArray: any[],
-  ): {[key: string]: any}[] =>
-    dataArray.map((item) => ({
-      ...item,
-      quote_line_item_id: finalLineItems?.find(
-        (itm) => itm.product_code === item.product_code,
-      )?.id,
-    }));
-
-  const updateAllTables = async (): Promise<void> => {
-    try {
-      const rebateDataArray: any[] = [];
-      const contractProductArray: any[] = [];
-      const profitabilityArray: any[] = [];
-      const finalLineItems: any[] = [];
-
-      for (const item of fileData?.quoteLineItems) {
-        const obj1: any = {
-          quote_id: item.quote_id,
-          product_id: item.product_id,
-          product_code: item.product_code,
-          line_amount: item.line_amount,
-          list_price: item.list_price,
-          description: item.description,
-          quantity: item.quantity,
-          adjusted_price: item.adjusted_price,
-          line_number: item.line_number,
-          organization: userInformation.organization,
-          quote_config_id: item.quote_config_id,
-          quote_file_id: item.quote_file_id,
-          file_name: fileData.title,
-          nanonets_id: item.nanonets_id,
-        };
-
-        const RebatesByProductCodData = await dispatch(
-          getRebatesByProductCode(obj1.product_code),
-        );
-        if (RebatesByProductCodData?.payload?.id) {
-          rebateDataArray.push({
-            ...obj1,
-            quote_line_item_id: item?.id,
-            rebate_id: RebatesByProductCodData.payload.id,
-            percentage_payout:
-              RebatesByProductCodData.payload.percentage_payout,
-          });
-        }
-
-        const contractProductByProductCode = await dispatch(
-          getContractProductByProductCode(obj1.product_code),
-        );
-        if (contractProductByProductCode?.payload?.id) {
-          contractProductArray.push({
-            ...obj1,
-            quote_line_item_id: item?.id,
-            contract_product_id: contractProductByProductCode.payload.id,
-          });
-        }
-        if (item?.id) {
-          profitabilityArray.push({
-            ...obj1,
-            quote_line_item_id: item?.id,
-          });
-        }
-        finalLineItems.push(obj1);
-      }
-      if (finalLineItems.length > 0) {
-        if (rebateDataArray.length > 0) {
-          const rebateData = genericFun(finalLineItems, rebateDataArray);
-          dispatch(insertRebateQuoteLineItem(rebateData));
-        }
-        if (contractProductArray.length > 0) {
-          const contractProductData = genericFun(
-            finalLineItems,
-            contractProductArray,
-          );
-          dispatch(insertValidation(contractProductData));
-        }
-        const profitabilityData = genericFun(
-          finalLineItems,
-          profitabilityArray,
-        );
-        dispatch(insertProfitability(profitabilityData));
-        dispatch(quoteFileVerification({id: fileData?.id}));
-      }
-    } catch (err) {
-      console.error('Error:', err);
-    }
+  const updateAllTablesData = async () => {
+    updateTables(fileData, fileData?.quoteLineItems, userInformation, dispatch);
+    dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
+    setShowVerificationFileModal(false);
   };
 
   return (
@@ -807,7 +719,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                           e?.stopPropagation();
                                           setShowRaiseConcernModal(true);
                                           setFileLineItemIds(item?.id);
-                                          setSelectedFile(item?.id);
+                                          setFileData(item);
                                         }}
                                       />
                                     </Space>
@@ -900,7 +812,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         primaryButtonText="Yes"
         onOk={() => {
           // fileVerification();
-          updateAllTables();
+          updateAllTablesData();
         }}
         singleButtonInCenter
       />

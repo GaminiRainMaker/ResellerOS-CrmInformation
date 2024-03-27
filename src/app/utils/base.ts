@@ -1,13 +1,21 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable no-await-in-loop */
 /* eslint-disable eqeqeq */
 /* eslint-disable consistent-return */
 /* eslint-disable implicit-arrow-linebreak */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import moment from 'moment';
+import {getContractProductByProductCode} from '../../../redux/actions/contractProduct';
+import {insertProfitability} from '../../../redux/actions/profitability';
+import {quoteFileVerification} from '../../../redux/actions/quoteFile';
+import {getRebatesByProductCode} from '../../../redux/actions/rebate';
+import {insertRebateQuoteLineItem} from '../../../redux/actions/rebateQuoteLineitem';
+import {insertValidation} from '../../../redux/actions/validation';
 import {
-  AmazonPartnerProgramOptions,
-  CiscoPartnerProgramOptions,
-  DellPartnerProgramOptions,
-} from './CONSTANTS';
+  DeleteQuoteLineItemById,
+  updateQuoteLineItemById,
+} from '../../../redux/actions/quotelineitem';
 
 export const calculateProfitabilityData = (
   Qty: number,
@@ -278,3 +286,103 @@ export const convertFileToBase64 = (file: File): Promise<string> =>
 
     reader.readAsDataURL(file);
   });
+
+const genericFun = (
+  finalLineItems: any[],
+  dataArray: any[],
+): {[key: string]: any}[] =>
+  dataArray.map((item) => ({
+    ...item,
+    quote_line_item_id: finalLineItems?.find(
+      (itm) => itm.product_code === item.product_code,
+    )?.id,
+  }));
+
+export const updateTables = async (
+  fileData: any,
+  quoteLineItemData: any,
+  userInformation: any,
+  dispatch: any,
+  missingId?: any,
+  edited?: boolean,
+): Promise<void> => {
+  try {
+    const rebateDataArray: any[] = [];
+    const contractProductArray: any[] = [];
+    const profitabilityArray: any[] = [];
+    const finalLineItems: any[] = [];
+    if (edited) {
+      quoteLineItemData?.forEach((item: any) => {
+        dispatch(updateQuoteLineItemById(item));
+      });
+      dispatch(DeleteQuoteLineItemById({Ids: missingId}));
+    }
+
+    for (const item of quoteLineItemData) {
+      const obj1: any = {
+        quote_id: item.quote_id,
+        product_id: item.product_id,
+        product_code: item.product_code,
+        line_amount: item.line_amount,
+        list_price: item.list_price,
+        description: item.description,
+        quantity: item.quantity,
+        adjusted_price: item.adjusted_price,
+        line_number: item.line_number,
+        organization: userInformation.organization,
+        quote_config_id: item.quote_config_id,
+        quote_file_id: item.quote_file_id,
+        file_name: fileData.title,
+        nanonets_id: item.nanonets_id,
+      };
+
+      const RebatesByProductCodData = await dispatch(
+        getRebatesByProductCode(obj1.product_code),
+      );
+      if (RebatesByProductCodData?.payload?.id) {
+        rebateDataArray.push({
+          ...obj1,
+          quote_line_item_id: item?.id,
+          rebate_id: RebatesByProductCodData.payload.id,
+          percentage_payout: RebatesByProductCodData.payload.percentage_payout,
+        });
+      }
+
+      const contractProductByProductCode = await dispatch(
+        getContractProductByProductCode(obj1.product_code),
+      );
+      if (contractProductByProductCode?.payload?.id) {
+        contractProductArray.push({
+          ...obj1,
+          quote_line_item_id: item?.id,
+          contract_product_id: contractProductByProductCode.payload.id,
+        });
+      }
+      if (item?.id) {
+        profitabilityArray.push({
+          ...obj1,
+          quote_line_item_id: item?.id,
+        });
+      }
+      finalLineItems.push(obj1);
+    }
+    if (finalLineItems.length > 0) {
+      if (rebateDataArray.length > 0) {
+        const rebateData = genericFun(finalLineItems, rebateDataArray);
+        dispatch(insertRebateQuoteLineItem(rebateData));
+      }
+      if (contractProductArray.length > 0) {
+        const contractProductData = genericFun(
+          finalLineItems,
+          contractProductArray,
+        );
+        dispatch(insertValidation(contractProductData));
+      }
+      const profitabilityData = genericFun(finalLineItems, profitabilityArray);
+      dispatch(insertProfitability(profitabilityData));
+      dispatch(quoteFileVerification({id: fileData?.id}));
+    }
+  } catch (err) {
+    console.error('Error:', err);
+  }
+};

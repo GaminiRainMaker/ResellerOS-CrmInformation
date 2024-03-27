@@ -57,6 +57,9 @@ const AllQuote: React.FC = () => {
     dispatch(getQuoteByManualUpdated());
   }, []);
 
+  const filteredData = data?.filter((item: any) =>
+    item.QuoteFiles.some((quoteFile: any) => quoteFile.issue_type !== null),
+  );
   const statusWrapper = (item: any) => {
     const getStatus = () => {
       if (!item.is_completed && !item.is_drafted) {
@@ -226,7 +229,7 @@ const AllQuote: React.FC = () => {
 
           <OsTable
             columns={Quotecolumns}
-            dataSource={data}
+            dataSource={filteredData}
             scroll
             loading={loading}
             rowSelection={rowSelection}
@@ -243,17 +246,18 @@ const AllQuote: React.FC = () => {
         heading="Delete Quote"
         description="Are you sure you want to delete this Quote?"
       />
-
-      <OsModal
-        width={700}
-        bodyPadding={40}
-        open={showConcernDetailModal?.visible}
-        onCancel={() => {
-          setShowConcernDetailModal({visible: false});
-        }}
-        title="Concern & Documents"
-        body={<ConcernDetail showConcernDetailModal={showConcernDetailModal} />}
-      />
+        <OsModal
+          width={700}
+          bodyPadding={40}
+          open={showConcernDetailModal?.visible}
+          onCancel={() => {
+            setShowConcernDetailModal({visible: false});
+          }}
+          title="Concern & Documents"
+          body={
+            <ConcernDetail showConcernDetailModal={showConcernDetailModal} />
+          }
+        />
     </>
   );
 };

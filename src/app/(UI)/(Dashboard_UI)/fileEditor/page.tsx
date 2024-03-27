@@ -17,23 +17,18 @@ import {Space} from '@/app/components/common/antd/Space';
 import OsButton from '@/app/components/common/os-button';
 import OsModal from '@/app/components/common/os-modal';
 import {formatStatus} from '@/app/utils/CONSTANTS';
+import {updateTables} from '@/app/utils/base';
 import {TrashIcon} from '@heroicons/react/24/outline';
+import {notification} from 'antd';
 import Typography from 'antd/es/typography/Typography';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {notification} from 'antd';
 import {addClassesToRows, alignHeaders} from './hooksCallbacks';
 
 import 'handsontable/dist/handsontable.min.css';
 import {getQuoteById} from '../../../../../redux/actions/quote';
-import {
-  getQuoteLineItemByQuoteId,
-  updateQuoteLineItemById,
-} from '../../../../../redux/actions/quotelineitem';
+import {getQuoteLineItemByQuoteId} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
-import {updateProfitabilityById} from '../../../../../redux/actions/profitability';
-import {updateRebateQuoteLineItemById} from '../../../../../redux/actions/rebateQuoteLineitem';
-import {updateValidationById} from '../../../../../redux/actions/validation';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
@@ -47,18 +42,17 @@ const EditorFile = () => {
   const {concernQuoteLineItemData} = useAppSelector(
     (state) => state.quoteLineItem,
   );
-  const {quoteById, loading} = useAppSelector((state) => state.quote);
-
+  const {userInformation} = useAppSelector((state) => state.user);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [updateLineItemsValue, setUpdateLineItemsValue] = useState<any>();
+  const [missingId, setMissingId] = useState<number[]>([]);
+
   useEffect(() => {
     const newArrr: any = [];
-    if (concernQuoteLineItemData) {
-      concernQuoteLineItemData?.map((itemsss: any) => {
+    if (concernQuoteLineItemData?.quoteLineItems) {
+      concernQuoteLineItemData?.quoteLineItems?.map((itemsss: any) => {
         if (itemsss) {
-          const newObj: any = {
-            ...itemsss,
-          };
+          const newObj: any = {...itemsss};
           delete newObj.Product;
           delete newObj.Quote;
           delete newObj.quote_id;
@@ -74,7 +68,16 @@ const EditorFile = () => {
       setUpdateLineItemsValue(newArrr);
     }
   }, [concernQuoteLineItemData]);
-  console.log('4645645', updateLineItemsValue);
+
+  useEffect(() => {
+    const missingIds = concernQuoteLineItemData?.quoteLineItems
+      .filter(
+        (item1: any) =>
+          !updateLineItemsValue?.some((item2: any) => item1.id === item2.id),
+      )
+      .map((item: any) => item.id);
+    setMissingId(missingIds);
+  }, [updateLineItemsValue]);
 
   useEffect(() => {
     if (ExistingQuoteItemss === 'true') {
@@ -86,16 +89,13 @@ const EditorFile = () => {
         }
       });
     } else {
-      dispatch(getQuoteById(Number(getQUoteId))).then((d: any) => {
-        if (d?.payload) {
-          const dataa: any = JSON?.parse(d?.payload?.quote_json?.[2]);
-
-          console.log('4564564', dataa, d?.payload);
-          const newArray = dataa?.length > 0 ? [...dataa] : [];
-          setQuoteItems(newArray);
-          const allHeaderValue: any = [];
-        }
-      });
+      const quoteJson = concernQuoteLineItemData?.quoteJson?.[2];
+      if (quoteJson) {
+        const dataa: any = JSON.parse(quoteJson);
+        const newArray = dataa?.length > 0 ? [...dataa] : [];
+        setQuoteItems(newArray);
+        const allHeaderValue: any = [];
+      }
     }
   }, [ExistingQuoteItemss]);
 
@@ -266,61 +266,16 @@ const EditorFile = () => {
     });
   }
 
-  const generateUpdateObject = (resultItem: any) => ({
-    line_number: resultItem?.line_number,
-    product_code: resultItem?.product_code,
-    quantity: resultItem?.quantity,
-    adjusted_price: resultItem?.adjusted_price,
-    line_amount: resultItem?.line_amount,
-    list_price: resultItem?.list_price,
-    description: resultItem?.description,
-  });
-
-  const updateEntityById = (
-    updateAction: any,
-    entityToUpdate: any,
-    resultItem: any,
-  ) => {
-    if (entityToUpdate) {
-      const obj = {
-        id: entityToUpdate?.id,
-        ...generateUpdateObject(resultItem),
-      };
-      dispatch(updateAction(obj));
-    }
-  };
-
   const updateData = () => {
-    updateLineItemsValue.forEach((resultItem: any) => {
-      updateEntityById(
-        updateQuoteLineItemById,
-        quoteById?.QuoteLineItems.find(
-          (item: any) => item.id === resultItem.id,
-        ),
-        resultItem,
-      );
-      updateEntityById(
-        updateProfitabilityById,
-        quoteById?.Profitabilities.find(
-          (item: any) => item.quoteline_item_id === resultItem.id,
-        ),
-        resultItem,
-      );
-      updateEntityById(
-        updateRebateQuoteLineItemById,
-        quoteById?.RebatesQuoteLineItems.find(
-          (item: any) => item.quoteline_item_id === resultItem.id,
-        ),
-        resultItem,
-      );
-      updateEntityById(
-        updateValidationById,
-        quoteById?.Validations.find(
-          (item: any) => item.quoteline_item_id === resultItem.id,
-        ),
-        resultItem,
-      );
-    });
+    updateTables(
+      concernQuoteLineItemData,
+      updateLineItemsValue,
+      userInformation,
+      dispatch,
+      missingId,
+      true,
+    );
+
     router?.push(`/generateQuote?id=${getQUoteId}`);
   };
   return (

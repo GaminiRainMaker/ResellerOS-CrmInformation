@@ -1,29 +1,30 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react-hooks/exhaustive-deps */
-import {Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 import Typography from '@/app/components/common/typography';
 import {
   ArrowDownTrayIcon,
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/24/outline';
-import {Carousel} from 'antd';
+import { Carousel } from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Image from 'next/image';
-import {FC, useEffect, useState} from 'react';
+import { FC, useEffect, useState } from 'react';
 import PdfImg from '../../../../../public/assets/static/pdf.svg';
-import {getQuoteById} from '../../../../../redux/actions/quote';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {ConcernDetailInterface} from './editedQuote.interface';
-import {CardStyle, IconWrapper} from './styled-components';
+import { getQuoteById } from '../../../../../redux/actions/quote';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { ConcernDetailInterface } from './editedQuote.interface';
+import { CardStyle, IconWrapper } from './styled-components';
 
 const ConcernDetail: FC<ConcernDetailInterface> = ({
   showConcernDetailModal,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const {quoteById} = useAppSelector((state) => state.quote);
+  const {quoteById, loading} = useAppSelector((state) => state.quote);
   const [concernData, setConcernData] = useState<any>();
 
   useEffect(() => {
@@ -76,82 +77,84 @@ const ConcernDetail: FC<ConcernDetailInterface> = ({
   return (
     <div>
       <br />
-      <Carousel autoplay arrows>
-        {concernData?.map((item: any) => (
-          <div key={item.issue_type}>
-            <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
-              Issue Type
-            </Typography>
-            <TextArea
-              placeholder="Write your Concern here!"
-              value={item.issue_type}
-              disabled
-            />
-            <br />
-            <br />
-            <div
-              style={{
-                display: 'flex',
-                gap: 10,
-              }}
-            >
-              {item?.data?.map((dataItem: any) => (
-                <CardStyle>
-                  <Row
-                    justify="space-between"
-                    style={{
-                      position: 'absolute',
-                      top: '1%',
-                      width: '100%',
-                      padding: '5px',
-                    }}
-                  >
-                    <IconWrapper>
-                      <ArrowDownTrayIcon
-                        color={token?.colorInfo}
-                        cursor="pointer"
-                        width={22}
-                        onClick={() => {
-                          window.open(dataItem?.pdf_url);
-                        }}
-                      />
-                    </IconWrapper>
-                    <IconWrapper>
-                      <ArrowTopRightOnSquareIcon
-                        color={token?.colorInfo}
-                        cursor="pointer"
-                        width={22}
-                        onClick={() => {
-                          window.open(
-                            `https://app.nanonets.com/#/ocr/test/${dataItem?.model_id}/${dataItem?.nanonets_id}`,
-                          );
-                        }}
-                      />
-                    </IconWrapper>
-                  </Row>
-                  <Space direction="vertical" style={{textAlign: 'center'}}>
-                    {/* {item?.file?.type.split('/')[1] === 'pdf' ? ( */}
-                    <Image src={PdfImg} alt="PdfImg" />
-                    {/* ) : (
+      <GlobalLoader loading={loading}>
+        <Carousel autoplay arrows>
+          {concernData?.map((item: any) => (
+            <div key={item.issue_type}>
+              <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
+                Issue Type
+              </Typography>
+              <TextArea
+                placeholder="Write your Concern here!"
+                value={item.issue_type}
+                disabled
+              />
+              <br />
+              <br />
+              <div
+                style={{
+                  display: 'flex',
+                  gap: 10,
+                }}
+              >
+                {item?.data?.map((dataItem: any) => (
+                  <CardStyle>
+                    <Row
+                      justify="space-between"
+                      style={{
+                        position: 'absolute',
+                        top: '1%',
+                        width: '100%',
+                        padding: '5px',
+                      }}
+                    >
+                      <IconWrapper>
+                        <ArrowDownTrayIcon
+                          color={token?.colorInfo}
+                          cursor="pointer"
+                          width={22}
+                          onClick={() => {
+                            window.open(dataItem?.pdf_url);
+                          }}
+                        />
+                      </IconWrapper>
+                      <IconWrapper>
+                        <ArrowTopRightOnSquareIcon
+                          color={token?.colorInfo}
+                          cursor="pointer"
+                          width={22}
+                          onClick={() => {
+                            window.open(
+                              `https://app.nanonets.com/#/ocr/test/${dataItem?.model_id}/${dataItem?.nanonets_id}`,
+                            );
+                          }}
+                        />
+                      </IconWrapper>
+                    </Row>
+                    <Space direction="vertical" style={{textAlign: 'center'}}>
+                      {/* {item?.file?.type.split('/')[1] === 'pdf' ? ( */}
+                      <Image src={PdfImg} alt="PdfImg" />
+                      {/* ) : (
                       <Image src={XlsImg} alt="XlsImg" />
                     )} */}
-                    <Typography
-                      name="Body 4/Medium"
-                      color={token?.colorPrimaryText}
-                    >
-                      {dataItem?.file_name}
-                    </Typography>
+                      <Typography
+                        name="Body 4/Medium"
+                        color={token?.colorPrimaryText}
+                      >
+                        {dataItem?.file_name}
+                      </Typography>
 
-                    <Typography name="Body 4/Medium" color={token?.colorText}>
-                      30 Kb
-                    </Typography>
-                  </Space>
-                </CardStyle>
-              ))}
+                      <Typography name="Body 4/Medium" color={token?.colorText}>
+                        30 Kb
+                      </Typography>
+                    </Space>
+                  </CardStyle>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
-      </Carousel>
+          ))}
+        </Carousel>
+      </GlobalLoader>
     </div>
   );
 };
