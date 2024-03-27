@@ -89,7 +89,7 @@ const EditorFile = () => {
         }
       });
     } else {
-      const quoteJson = concernQuoteLineItemData?.quoteJson?.[2];
+      const quoteJson = concernQuoteLineItemData?.quoteJson;
       if (quoteJson) {
         const dataa: any = JSON.parse(quoteJson);
         const newArray = dataa?.length > 0 ? [...dataa] : [];

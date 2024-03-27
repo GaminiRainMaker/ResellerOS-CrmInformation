@@ -494,9 +494,13 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     dispatch(UpdateQuoteFileById(data));
     dispatch(setConcernQuoteLineItemData(fileData));
     if (buttonType === 'primary') {
-      router?.push(`/fileEditor?id=${getQuoteID}&quoteExist=true`);
+      router?.push(
+        `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=true`,
+      );
     } else {
-      router?.push(`/fileEditor?id=${getQuoteID}&quoteExist=false`);
+      router?.push(
+        `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}quoteExist=false`,
+      );
     }
     setShowRaiseConcernModal(false);
     form?.resetFields();
