@@ -184,18 +184,11 @@ const AddQuote: FC<AddQuoteInterface> = ({
           quotesArr[i] = {...response?.payload?.data[0], ...quotesArr[i]};
         }
       } else {
-        dispatch(getQuoteById(quoteId)).then((payload: any) => {
-          quotesArr[0] = {
-            ...payload?.payload,
-            quote_json:
-              payload?.payload?.quote_json &&
-              payload?.payload?.quote_json.length > 0
-                ? // eslint-disable-next-line no-unsafe-optional-chaining
-                  [...payload?.payload?.quote_json, ...quotesArr[0].quote_json]
-                : [...quotesArr[0].quote_json],
-            lineItems: [...quotesArr[0].lineItems],
-          };
-        });
+        const payload = await dispatch(getQuoteById(quoteId));
+        quotesArr[0] = {
+          ...payload?.payload,
+          quoteFileObj: [...quotesArr[0].quoteFileObj],
+        };
         await dispatch(updateQuoteWithNewlineItemAddByID(Number(quoteId)));
       }
 
@@ -204,6 +197,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
       const finalLineItems: any = [];
       console.log(quotesArr, 'quotesArrquotesArr');
       for (let i = 0; i < quotesArr?.length; i++) {
+        console.log(quotesArr[i], 'quotesArrquotesArr11');
+
         for (let k = 0; k < quotesArr[i].quoteFileObj.length; k++) {
           const quoteFile = {
             ...quotesArr[i].quoteFileObj[k],
