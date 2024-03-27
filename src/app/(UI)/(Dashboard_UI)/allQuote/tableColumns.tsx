@@ -177,7 +177,7 @@ function getSuperAdminQuoteColumns(
       key: 'createdAt',
       width: 180,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
+        <Typography name="Body 4/Regular" hoverOnText>
           {formatDate(record?.createdAt)}
         </Typography>
       ),
@@ -201,6 +201,7 @@ function getSuperAdminQuoteColumns(
           onClick={() => {
             editQuote(record.id);
           }}
+          hoverOnText
         >
           {text ?? formatDate(record?.createdAt)}
         </Typography>
