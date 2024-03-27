@@ -55,28 +55,29 @@ const EditorFile = () => {
           const newObj: any = {...itemsss};
           delete newObj.Product;
           delete newObj.Quote;
-          delete newObj.quote_id;
+          // delete newObj.quote_id;
           delete newObj.user_id;
-          delete newObj.quote_config_id;
-          delete newObj.product_id;
-          delete newObj.customer_id;
+          // delete newObj.quote_config_id;
+          // delete newObj.product_id;
+          // delete newObj.customer_id;
           delete newObj.is_deleted;
           newArrr?.push(newObj);
         }
       });
-
       setUpdateLineItemsValue(newArrr);
     }
   }, [concernQuoteLineItemData]);
 
   useEffect(() => {
-    const missingIds = concernQuoteLineItemData?.quoteLineItems
-      .filter(
-        (item1: any) =>
-          !updateLineItemsValue?.some((item2: any) => item1.id === item2.id),
-      )
-      .map((item: any) => item.id);
-    setMissingId(missingIds);
+    if (concernQuoteLineItemData?.quoteLineItems) {
+      const missingIds = concernQuoteLineItemData?.quoteLineItems
+        .filter(
+          (item1: any) =>
+            !updateLineItemsValue?.some((item2: any) => item1.id === item2.id),
+        )
+        .map((item: any) => item.id);
+      setMissingId(missingIds);
+    }
   }, [updateLineItemsValue]);
 
   useEffect(() => {
@@ -266,8 +267,8 @@ const EditorFile = () => {
     });
   }
 
-  const updateData = () => {
-    updateTables(
+  const updateData = async () => {
+    await updateTables(
       concernQuoteLineItemData,
       updateLineItemsValue,
       userInformation,
@@ -275,7 +276,6 @@ const EditorFile = () => {
       missingId,
       true,
     );
-
     router?.push(`/generateQuote?id=${getQUoteId}`);
   };
   return (
