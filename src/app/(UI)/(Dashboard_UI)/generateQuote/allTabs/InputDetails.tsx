@@ -499,7 +499,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       );
     } else {
       router?.push(
-        `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}quoteExist=false`,
+        `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=false`,
       );
     }
     setShowRaiseConcernModal(false);
