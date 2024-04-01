@@ -20,7 +20,11 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
 import {selectDataForProduct} from '@/app/utils/CONSTANTS';
-import {updateTables, useRemoveDollarAndCommahook} from '@/app/utils/base';
+import {
+  sendDataToNanonets,
+  updateTables,
+  useRemoveDollarAndCommahook,
+} from '@/app/utils/base';
 import {CheckIcon, TrashIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
@@ -458,6 +462,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
           totalCount: 0,
           totalAdjustedPrice: 0,
           quoteJson: item?.quote_json,
+          pdfUrl: item?.pdf_url,
         };
       }
 
@@ -498,9 +503,14 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=true`,
       );
     } else {
-      router?.push(
-        `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=false`,
-      );
+      // console.log('fileData', fileData?.quoteJson);
+      // sendDataToNanonets(
+      //   'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
+      //   fileData?.pdfUrl,
+      // );
+      // router?.push(
+      //   `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=false`,
+      // );
     }
     setShowRaiseConcernModal(false);
     form?.resetFields();

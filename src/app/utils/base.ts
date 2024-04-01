@@ -6,6 +6,7 @@
 /* eslint-disable implicit-arrow-linebreak */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import moment from 'moment';
+import axios from 'axios';
 import {getContractProductByProductCode} from '../../../redux/actions/contractProduct';
 import {insertProfitability} from '../../../redux/actions/profitability';
 import {quoteFileVerification} from '../../../redux/actions/quoteFile';
@@ -384,5 +385,38 @@ export const updateTables = async (
     }
   } catch (err) {
     console.error('Error:', err);
+  }
+};
+
+export const sendDataToNanonets = async (model_id: string, file: File) => {
+  //   prevoius
+  // const API_ENDPOINT ='https://app.nanonets.com/api/v2/OCR/Model/91814dd8-75f6-44d7-aad3-776df449b59f/LabelFile/';
+
+  console.log('filefile1234',file)
+
+  let API_ENDPOINT = '';
+  if (file?.type?.split('/')[1] === 'pdf') {
+    if (!model_id || model_id === undefined) {
+      API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/0ba764d3-bfd5-4756-bdb1-0e5bc427bdda/LabelFile/`;
+    } else {
+      API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/${model_id}/LabelFile/`;
+    }
+  } else {
+    API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/0ba764d3-bfd5-4756-bdb1-0e5bc427bdda/LabelFile/`;
+  }
+  const API_KEY = '198c15fd-9680-11ed-82f6-7a0abc6e8cc8';
+  const formData = new FormData();
+  formData?.append('file', file);
+  try {
+    const response = await axios.post(API_ENDPOINT, formData, {
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString('base64')}`,
+        'Content-Type': 'application/pdf',
+      },
+    });
+    return response;
+  } catch (err) {
+    console.log('ERR', err);
+    throw err;
   }
 };

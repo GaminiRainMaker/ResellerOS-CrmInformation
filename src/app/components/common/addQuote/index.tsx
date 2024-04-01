@@ -10,24 +10,20 @@ import {useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
-import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {insertProduct} from '../../../../../redux/actions/product';
-import {insertProfitability} from '../../../../../redux/actions/profitability';
 import {
   getQuoteById,
   getQuotesByDateFilter,
   insertQuote,
   updateQuoteWithNewlineItemAddByID,
 } from '../../../../../redux/actions/quote';
+import {insertQuoteFile} from '../../../../../redux/actions/quoteFile';
 import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
 import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
-import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
 import {uploadToAws} from '../../../../../redux/actions/upload';
-import {insertValidation} from '../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '../os-button';
 import {AddQuoteInterface, FormattedData} from './types';
-import {insertQuoteFile} from '../../../../../redux/actions/quoteFile';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
@@ -195,18 +191,13 @@ const AddQuote: FC<AddQuoteInterface> = ({
       const rebateDataArray: any = [];
       const contractProductArray: any = [];
       const finalLineItems: any = [];
-      console.log(quotesArr, 'quotesArrquotesArr');
       for (let i = 0; i < quotesArr?.length; i++) {
-        console.log(quotesArr[i], 'quotesArrquotesArr11');
-
         for (let k = 0; k < quotesArr[i].quoteFileObj.length; k++) {
           const quoteFile = {
             ...quotesArr[i].quoteFileObj[k],
             quote_id: quotesArr[i]?.id,
           };
-          console.log('quoteFile', quoteFile);
           const insertedQuoteFile = await dispatch(insertQuoteFile(quoteFile));
-
           for (
             let j = 0;
             j < quotesArr[i].quoteFileObj[k]?.lineItems.length;

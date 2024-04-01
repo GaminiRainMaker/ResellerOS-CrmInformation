@@ -1,20 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import {sendDataToNanonets} from '@/app/utils/base';
 import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import React, {useEffect, useState} from 'react';
-import axios from 'axios';
+import {useAppSelector} from '../../../../../redux/hook';
 import {Col, Row} from '../antd/Grid';
 import {Space} from '../antd/Space';
+import {Switch} from '../antd/Switch';
 import useThemeToken from '../hooks/useThemeToken';
 import OsCustomerSelect from '../os-customer-select';
+import GlobalLoader from '../os-global-loader';
 import OsOpportunitySelect from '../os-opportunity-select';
+import OsTable from '../os-table';
 import Typography from '../typography';
 import UploadCard from './UploadCard';
 import {OSDraggerStyle} from './styled-components';
-import GlobalLoader from '../os-global-loader';
-import OsTable from '../os-table';
-import {useAppSelector} from '../../../../../redux/hook';
-import {Switch} from '../antd/Switch';
 
 const OsUpload: React.FC<any> = ({
   beforeUpload,
@@ -45,50 +45,6 @@ const OsUpload: React.FC<any> = ({
     setFileList(newrrr);
   }, [uploadFileData]);
 
-  // Define your Nanonets API key and endpoint
-
-  const sendDataToNanonets = async (
-    base64Data: string,
-    file: File,
-    model_id: string,
-  ) => {
-    //   prevoius
-    // const API_ENDPOINT ='https://app.nanonets.com/api/v2/OCR/Model/91814dd8-75f6-44d7-aad3-776df449b59f/LabelFile/';
-
-    let API_ENDPOINT = '';
-    if (file?.type.split('/')[1] === 'pdf') {
-      console.log('43543543', model_id);
-      if (!model_id || model_id === undefined) {
-        API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/0ba764d3-bfd5-4756-bdb1-0e5bc427bdda/LabelFile/`;
-      } else {
-        API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/${model_id}/LabelFile/`;
-      }
-    } else {
-      API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/0ba764d3-bfd5-4756-bdb1-0e5bc427bdda/LabelFile/`;
-    }
-    const API_KEY = '198c15fd-9680-11ed-82f6-7a0abc6e8cc8';
-
-    const formData = new FormData();
-    formData.append('file', file);
-    try {
-      setLoading(true);
-      const response = await axios.post(API_ENDPOINT, formData, {
-        headers: {
-          Authorization: `Basic ${Buffer.from(`${API_KEY}:`).toString(
-            'base64',
-          )}`,
-          'Content-Type': 'application/pdf',
-        },
-      });
-
-      setLoading(false);
-      return response;
-    } catch (error) {
-      setLoading(false);
-      throw error;
-    }
-  };
-
   const onFinish = async () => {
     const customerId = form.getFieldValue('customer_id');
     const opportunityId = form.getFieldValue('opportunity_id');
@@ -98,11 +54,7 @@ const OsUpload: React.FC<any> = ({
     for (let i = 0; i < uploadFileData.length; i++) {
       let obj: any = {...uploadFileData[i]};
       // eslint-disable-next-line no-await-in-loop
-      const response = await sendDataToNanonets(
-        obj?.base64,
-        obj?.file,
-        obj?.model_id,
-      );
+      const response = await sendDataToNanonets(obj?.model_id, obj?.file);
       obj = {...obj, ...response};
       newArr.push(obj);
     }
