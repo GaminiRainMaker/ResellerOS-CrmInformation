@@ -47,8 +47,8 @@ const EditorFile = () => {
 
   useEffect(() => {
     const newArrr: any = [];
-    if (quoteFileById?.[0]?.QuoteLineItems) {
-      quoteFileById?.[0]?.QuoteLineItems?.map((itemsss: any) => {
+    if (quoteFileById?.QuoteLineItems) {
+      quoteFileById?.QuoteLineItems?.map((itemsss: any) => {
         if (itemsss) {
           const newObj: any = {...itemsss};
           delete newObj.Product;
@@ -66,9 +66,10 @@ const EditorFile = () => {
     }
   }, [quoteFileById]);
 
+
   useEffect(() => {
-    if (quoteFileById[0]?.QuoteLineItems) {
-      const missingIds = quoteFileById[0]?.QuoteLineItems.filter(
+    if (quoteFileById?.QuoteLineItems) {
+      const missingIds = quoteFileById?.QuoteLineItems.filter(
         (item1: any) =>
           !updateLineItemsValue?.some((item2: any) => item1.id === item2.id),
       ).map((item: any) => item.id);
@@ -272,7 +273,7 @@ const EditorFile = () => {
 
   const updateData = async () => {
     await updateTables(
-      quoteFileById[0],
+      quoteFileById,
       updateLineItemsValue,
       userInformation,
       dispatch,
