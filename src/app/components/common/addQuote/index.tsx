@@ -77,12 +77,13 @@ const AddQuote: FC<AddQuoteInterface> = ({
     singleQuote: boolean,
   ) => {
     const quoteId = form.getFieldValue('existingQuoteId');
-    let quoteLineItemArr: any = [];
-    const lineItemData: FormattedData = {};
+
     const quotesArr: any = [];
     try {
       setFinalLoading(true);
       for (let i = 0; i < updatedArr.length; i++) {
+        let quoteLineItemArr: any = [];
+        const lineItemData: FormattedData = {};
         const nanoNetsResult = updatedArr[i]?.data?.result;
         let quoteObj: any = {};
         const lineItems: any = [];
