@@ -13,6 +13,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import {formatStatus, quoteLineItemColumnForSync} from '@/app/utils/CONSTANTS';
 import {Col, Row, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
+import {updateTables} from '@/app/utils/base';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {insertProduct} from '../../../../../redux/actions/product';
@@ -23,6 +24,7 @@ import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
 import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
 import {insertValidation} from '../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {quoteFileVerification} from '../../../../../redux/actions/quoteFile';
 
 interface EditPdfDataInterface {
   setMergedVaalues?: any;
@@ -35,6 +37,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
   const [syncedNewValue, setNewSyncedValue] = useState<any>();
+  const {quoteFileById} = useAppSelector((state) => state.quoteFile);
   const {data: syncTableData, loading: syncDataLoading} = useAppSelector(
     (state) => state.syncTable,
   );
@@ -258,6 +261,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     if (finalOpportunityArray && syncTableData?.length > 0) {
       dispatch(insertOpportunityLineItem(finalOpportunityArray));
     }
+    dispatch(quoteFileVerification({id: quoteFileById?.[0]?.id}));
     router?.push(`/generateQuote?id=${Number(getQuoteID)}`);
   };
 

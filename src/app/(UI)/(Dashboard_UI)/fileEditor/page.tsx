@@ -456,8 +456,8 @@ const EditorFile = () => {
                 {quoteItems &&
                   quoteItems?.map((itemss: any, indexOFTable: number) => {
                     const allHeaderValue: any = [];
-                    const keysData = itemss && Object?.keys(itemss);
-                    console.log('464643545', keysData);
+                    const keysData = itemss?.[0] && Object?.keys(itemss?.[0]);
+                    console.log('464643545', keysData, itemss);
                     if (keysData) {
                       keysData?.map((item: any) => {
                         if (item) {
