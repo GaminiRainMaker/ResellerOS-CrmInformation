@@ -10,7 +10,7 @@
 
 import '@handsontable/pikaday/css/pikaday.css';
 import {HotTable} from '@handsontable/react';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
 import './styles.css';
 
 import {Space} from '@/app/components/common/antd/Space';
@@ -25,15 +25,13 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {addClassesToRows, alignHeaders} from './hooksCallbacks';
 
 import 'handsontable/dist/handsontable.min.css';
-import {getQuoteById} from '../../../../../redux/actions/quote';
+import {getQuoteFileById} from '../../../../../redux/actions/quoteFile';
 import {getQuoteLineItemByQuoteId} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
-import {getQuoteFileById} from '../../../../../redux/actions/quoteFile';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
-  const hotRef = useRef(null);
   const searchParams = useSearchParams();
   const getQUoteId = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
@@ -41,9 +39,6 @@ const EditorFile = () => {
   const [mergedValue, setMergedVaalues] = useState<any>();
   const router = useRouter();
   const ExistingQuoteItemss = searchParams.get('quoteExist');
-  const {concernQuoteLineItemData} = useAppSelector(
-    (state) => state.quoteLineItem,
-  );
   const {userInformation} = useAppSelector((state) => state.user);
   const {quoteFileById} = useAppSelector((state) => state.quoteFile);
   const [showModal, setShowModal] = useState<boolean>(false);
