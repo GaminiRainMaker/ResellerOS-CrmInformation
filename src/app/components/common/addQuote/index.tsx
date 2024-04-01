@@ -150,7 +150,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
                 pdf_url: updatedArr[i]?.pdf_url,
                 quote_config_id: updatedArr[i]?.quote_config_id ?? 22,
                 nanonets_id: result?.id,
-                quote_json: [JSON.stringify(quoteJson)],
+                // quote_json: [JSON.stringify(quoteJson)],
                 quote_file: [JSON?.stringify(newObjForNanonets)],
                 lineItems: lineItems.length > 0 ? lineItems : [],
               },

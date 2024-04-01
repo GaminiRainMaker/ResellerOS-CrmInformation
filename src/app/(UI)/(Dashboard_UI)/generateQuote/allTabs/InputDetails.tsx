@@ -498,7 +498,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       router?.push(
         `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=true`,
       );
-
+    } else {
       fetch(fileData?.pdfUrl)
         .then((res) => res.blob())
         .then(async (file) => {
@@ -510,7 +510,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
           );
           console.log(response, 'sdhjahdjshdfj');
         });
-
       // router?.push(
       //   `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=false`,
       // );
