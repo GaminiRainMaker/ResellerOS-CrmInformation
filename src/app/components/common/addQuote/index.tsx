@@ -6,6 +6,7 @@ import OsModal from '@/app/components/common/os-modal';
 import {convertFileToBase64} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form, message} from 'antd';
+import {useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {insertProduct} from '../../../../../redux/actions/product';
@@ -35,6 +36,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
 }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const {userInformation} = useAppSelector((state) => state.user);
   const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const [form] = Form.useForm();
@@ -162,7 +164,15 @@ const AddQuote: FC<AddQuoteInterface> = ({
         for (let i = 0; i < quotesArr.length; i++) {
           const response = await dispatch(insertQuote([quotesArr[i]]));
           // eslint-disable-next-line no-unsafe-optional-chaining
+
           quotesArr[i] = {...response?.payload?.data[0], ...quotesArr[i]};
+          console.log(
+            'response',
+            response,
+            singleQuote,
+            quotesArr[i],
+            quotesArr[0]?.id,
+          );
         }
       } else {
         const payload = await dispatch(getQuoteById(quoteId));
@@ -263,6 +273,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
     dispatch(getQuotesByDateFilter({}));
     setShowModal(false);
     setUploadFileData([]);
+    router.push(`/generateQuote?id=${quotesArr[0]?.id}`);
     form.resetFields(['customer_id', 'opportunity_id']);
   };
 
