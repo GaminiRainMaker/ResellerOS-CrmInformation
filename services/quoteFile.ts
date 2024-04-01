@@ -20,6 +20,10 @@ export const QUOTE_FILE_API = {
     get(`${API.QUOTE_FILE.GetQuoteFileByQuoteId}/${id}`) as Promise<
       AxiosResponse<any>
     >,
+  getQuoteFileById: (id: number) =>
+    get(`${API.QUOTE_FILE.GetQuoteFileById}/${id}`) as Promise<
+      AxiosResponse<any>
+    >,
   quoteFileVerification: (data: any) =>
     patch(API.QUOTE_FILE.QuoteFileVerification, data) as Promise<
       AxiosResponse<any>

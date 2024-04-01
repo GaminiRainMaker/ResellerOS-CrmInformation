@@ -163,5 +163,6 @@ export const API = {
     UpdateQuoteFileById: '/quoteFile/updateQuoteFileById',
     GetQuoteFileByQuoteId: '/quoteFile/getQuoteFileByQuoteId',
     QuoteFileVerification: '/quoteFile/quoteFileVerification',
+    GetQuoteFileById: '/quoteFile/getQuoteFileById',
   },
 };

@@ -80,7 +80,7 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
     } else {
       finalArr = DistributorData;
     }
-    for (let i = 0; i < finalArr.length; i++) {
+    for (let i = 0; i < finalArr?.length; i++) {
       const item = finalArr[i];
       const index = distributorFinalOptions.findIndex((optionItem) =>
         quoteCreation

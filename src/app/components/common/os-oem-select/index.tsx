@@ -66,7 +66,7 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
     } else {
       finalArr = OemData;
     }
-    for (let i = 0; i < finalArr.length; i++) {
+    for (let i = 0; i < finalArr?.length; i++) {
       const item = finalArr[i];
       const index = oemFinalOptions.findIndex((optionItem) =>
         quoteCreation

@@ -450,6 +450,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     });
   }, [getQuoteID]);
 
+  console.log('quoteFileData', quoteFileData);
+
   useEffect(() => {
     const separatedData: any = {};
     quoteFileData?.forEach((item: any) => {
@@ -461,7 +463,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
           quoteLineItems: [],
           totalCount: 0,
           totalAdjustedPrice: 0,
-          quoteJson: item?.quote_json,
+          quoteFile: item?.quote_file,
           pdfUrl: item?.pdf_url,
         };
       }
@@ -479,7 +481,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     setQuoteLineItemByQuoteData1(result);
   }, [quoteFileData]);
 
-  const addConcernData = () => {
+  const addConcernData = async () => {
     const raiseIssueData = form?.getFieldsValue();
     const updatedIssue =
       raiseIssueData?.other_issue || raiseIssueData?.issue_type;
@@ -503,11 +505,12 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=true`,
       );
     } else {
-      // console.log('fileData', fileData?.quoteJson);
-      // sendDataToNanonets(
-      //   'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
-      //   fileData?.pdfUrl,
-      // );
+      console.log('fileData123456', JSON.parse(fileData?.quoteFile[0]));
+      const response = await sendDataToNanonets(
+        'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
+        JSON.parse(fileData?.quoteFile[0]),
+      );
+      console.log('response123', response);
       // router?.push(
       //   `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=false`,
       // );

@@ -6,7 +6,8 @@ import {
   deleteQuoteById,
   getAllQuoteFile,
   insertQuoteFile,
-  getQuoteFileByQuoteId
+  getQuoteFileByQuoteId,
+  getQuoteFileById,
 } from '../actions/quoteFile';
 
 type QuoteFileState = {
@@ -14,12 +15,14 @@ type QuoteFileState = {
   error: string | null;
   data: any;
   quoteFile: any;
+  quoteFileById: any;
 };
 const initialState: QuoteFileState = {
   loading: false,
   error: null,
   data: [],
   quoteFile: [],
+  quoteFileById: [],
 };
 
 const quoteFileSlice = createSlice({
@@ -117,6 +120,24 @@ const quoteFileSlice = createSlice({
       )
       .addCase(
         getQuoteFileByQuoteId.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getQuoteFileById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getQuoteFileById.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.quoteFileById = action.payload;
+        },
+      )
+      .addCase(
+        getQuoteFileById.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

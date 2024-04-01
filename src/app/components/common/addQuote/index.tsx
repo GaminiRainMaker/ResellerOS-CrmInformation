@@ -8,7 +8,6 @@ import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form, message} from 'antd';
 import {useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
-import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {insertProduct} from '../../../../../redux/actions/product';
 import {
@@ -19,7 +18,6 @@ import {
 } from '../../../../../redux/actions/quote';
 import {insertQuoteFile} from '../../../../../redux/actions/quoteFile';
 import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
-import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
 import {uploadToAws} from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '../os-button';
@@ -73,15 +71,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
         message.error('Error converting file to base64', error);
       });
   };
-  const genericFun = (payloadArr: any, Arr: any) => {
-    const newArr = Arr?.map((item: any) => ({
-      ...item,
-      quoteline_item_id: payloadArr?.find(
-        (itm: any) => itm?.product_code === item?.product_code,
-      )?.id,
-    }));
-    return newArr;
-  };
 
   const addQuoteLineItem = async (
     customerId: string,
@@ -103,7 +92,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
         let quoteJson: any = [];
         for (let j = 0; j < nanoNetsResult?.length; j++) {
           const result: any = nanoNetsResult[j];
-
           const predictions = result?.prediction?.filter((item: any) => item);
           // eslint-disable-next-line @typescript-eslint/no-loop-func
           predictions?.map((itemNew: any, predictionIndex: number) => {
@@ -137,9 +125,18 @@ const AddQuote: FC<AddQuoteInterface> = ({
               };
             }
           });
+          const newObjForNanonets = {
+            uid: updatedArr[i]?.file?.uid,
+            lastModified: updatedArr[i]?.file?.lastModified,
+            lastModifiedDate: updatedArr[i]?.file?.lastModifiedDate,
+            size: updatedArr[i]?.file?.size,
+            name: updatedArr[i]?.file?.name,
+            type: updatedArr[i]?.file?.type,
+            webkitRelativePath: updatedArr[i]?.file?.webkitRelativePath,
+          };
+
           quoteObj = {
             ...quoteItem,
-
             nanonets_id: result?.id,
             quote_config_id: updatedArr[i]?.quote_config_id ?? 22,
             pdf_url: updatedArr[i]?.pdf_url,
@@ -154,6 +151,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
                 quote_config_id: updatedArr[i]?.quote_config_id ?? 22,
                 nanonets_id: result?.id,
                 quote_json: [JSON.stringify(quoteJson)],
+                quote_file: [JSON?.stringify(newObjForNanonets)],
                 lineItems: lineItems.length > 0 ? lineItems : [],
               },
             ],
@@ -188,8 +186,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
         await dispatch(updateQuoteWithNewlineItemAddByID(Number(quoteId)));
       }
 
-      const rebateDataArray: any = [];
-      const contractProductArray: any = [];
       const finalLineItems: any = [];
       for (let i = 0; i < quotesArr?.length; i++) {
         for (let k = 0; k < quotesArr[i].quoteFileObj.length; k++) {
@@ -219,29 +215,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
                 line_number: insertedProduct?.payload?.line_number,
                 organization: userInformation.organization,
               };
-              const RebatesByProductCodData = await dispatch(
-                getRebatesByProductCode(insertedProduct?.payload?.product_code),
-              );
-              if (RebatesByProductCodData?.payload?.id) {
-                rebateDataArray?.push({
-                  ...obj1,
-                  rebate_id: RebatesByProductCodData?.payload?.id,
-                  percentage_payout:
-                    RebatesByProductCodData?.payload?.percentage_payout,
-                });
-              }
-              const contractProductByProductCode = await dispatch(
-                getContractProductByProductCode(
-                  insertedProduct?.payload?.product_code,
-                ),
-              );
-              if (contractProductByProductCode?.payload?.id) {
-                contractProductArray?.push({
-                  ...obj1,
-                  contract_product_id:
-                    contractProductByProductCode?.payload?.id,
-                });
-              }
               finalLineItems?.push(obj1);
             }
           }
@@ -272,7 +245,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
         const resultArrForAllArr: any = [];
         const checkValue = syncTableData?.length;
-
         newArrayForOpporQuoteLineItem.forEach((item: any, index: number) => {
           if (index % checkValue === 0) {
             resultArrForAllArr.push(
@@ -280,7 +252,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
             );
           }
         });
-
         resultArrForAllArr?.map((itemss: any) => {
           const singleObjects = itemss.reduce(
             (obj: any, item: any) =>
@@ -292,20 +263,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
       }
 
       if (finalLineItems && finalLineItems.length > 0) {
-        dispatch(insertQuoteLineItem(finalLineItems)).then((d) => {
-          // if (rebateDataArray && rebateDataArray.length > 0) {
-          //   const data = genericFun(d?.payload, rebateDataArray);
-          //   dispatch(insertRebateQuoteLineItem(data));
-          // }
-          // if (contractProductArray && contractProductArray.length > 0) {
-          //   const data = genericFun(d?.payload, contractProductArray);
-          //   dispatch(insertValidation(data));
-          // }
-          // if (finalLineItems && finalLineItems.length > 0) {
-          //   const data = genericFun(d?.payload, finalLineItems);
-          //   dispatch(insertProfitability(data));
-          // }
-        });
+        dispatch(insertQuoteLineItem(finalLineItems));
       }
       // if (finalOpportunityArray && syncTableData?.length > 0) {
       //   dispatch(insertOpportunityLineItem(finalOpportunityArray));

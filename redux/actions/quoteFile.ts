@@ -72,3 +72,16 @@ export const getQuoteFileByQuoteId = createAsyncThunk(
     }
   },
 );
+
+export const getQuoteFileById = createAsyncThunk(
+  'quoteFile/getQuoteFileById',
+  async (id: number, thunkApi) => {
+    try {
+      const res = await QUOTE_FILE_API.getQuoteFileById(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+
