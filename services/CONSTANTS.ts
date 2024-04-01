@@ -164,5 +164,6 @@ export const API = {
     GetQuoteFileByQuoteId: '/quoteFile/getQuoteFileByQuoteId',
     QuoteFileVerification: '/quoteFile/quoteFileVerification',
     GetQuoteFileById: '/quoteFile/getQuoteFileById',
+    postJson: '/quoteFile/updateQuoteFileByIdForQuoteJson',
   },
 };

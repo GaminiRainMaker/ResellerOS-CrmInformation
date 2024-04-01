@@ -47,8 +47,8 @@ const EditorFile = () => {
 
   useEffect(() => {
     const newArrr: any = [];
-    if (quoteFileById[0]?.QuoteLineItems) {
-      quoteFileById[0]?.QuoteLineItems?.map((itemsss: any) => {
+    if (quoteFileById?.[0]?.QuoteLineItems) {
+      quoteFileById?.[0]?.QuoteLineItems?.map((itemsss: any) => {
         if (itemsss) {
           const newObj: any = {...itemsss};
           delete newObj.Product;
@@ -86,15 +86,18 @@ const EditorFile = () => {
         }
       });
     } else {
-      const quoteJson = quoteFileById[0]?.quote_json;
+      const quoteJson = quoteFileById?.quote_json;
+      console.log('3454353', quoteJson);
+
       if (quoteJson) {
-        const dataa: any = JSON.parse(quoteJson);
+        const dataa: any = JSON.parse(quoteJson?.[0]);
         const newArray = dataa?.length > 0 ? [...dataa] : [];
+        console.log('3454353', quoteJson, newArray);
         setQuoteItems(newArray);
         const allHeaderValue: any = [];
       }
     }
-  }, [ExistingQuoteItemss]);
+  }, [ExistingQuoteItemss, quoteFileById]);
 
   useEffect(() => {
     dispatch(getQuoteFileById(Number(getQuoteFileId)));
@@ -454,6 +457,7 @@ const EditorFile = () => {
                   quoteItems?.map((itemss: any, indexOFTable: number) => {
                     const allHeaderValue: any = [];
                     const keysData = itemss && Object?.keys(itemss);
+                    console.log('464643545', keysData);
                     if (keysData) {
                       keysData?.map((item: any) => {
                         if (item) {
@@ -461,6 +465,7 @@ const EditorFile = () => {
                         }
                       });
                     }
+
                     return (
                       <>
                         <Space direction="horizontal" style={{width: '100%'}}>
@@ -475,7 +480,7 @@ const EditorFile = () => {
                           />
                         </Space>
                         <HotTable
-                          data={quoteItems}
+                          data={itemss}
                           colWidths={[
                             200, 200, 400, 200, 200, 200, 200, 200, 200, 200,
                             200, 200, 200, 200, 200, 200,

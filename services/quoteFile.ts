@@ -6,6 +6,7 @@ import {get, patch, post} from './index';
 export const QUOTE_FILE_API = {
   get: () => get(`${API.QUOTE_FILE.INDEX}`) as Promise<AxiosResponse<any>>,
   post: (data: any) => post(API.QUOTE_FILE.INDEX, data),
+  postJson: (data: any) => post(API.QUOTE_FILE.postJson, data),
   patch: (data: any) =>
     patch(API.QUOTE_FILE.INDEX, data) as Promise<AxiosResponse<any>>,
   query: (data: any) =>
