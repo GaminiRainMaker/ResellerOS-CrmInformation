@@ -9,6 +9,7 @@ import {
   getQuoteFileByQuoteId,
   getQuoteFileById,
   quoteFileVerification,
+  updateFileForQuoteJson,
 } from '../actions/quoteFile';
 
 type QuoteFileState = {
@@ -139,6 +140,24 @@ const quoteFileSlice = createSlice({
       )
       .addCase(
         getQuoteFileById.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(updateFileForQuoteJson.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateFileForQuoteJson.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.quoteFileById = action.payload;
+        },
+      )
+      .addCase(
+        updateFileForQuoteJson.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

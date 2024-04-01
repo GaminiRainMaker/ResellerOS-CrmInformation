@@ -84,4 +84,14 @@ export const getQuoteFileById = createAsyncThunk(
     }
   },
 );
-
+export const updateFileForQuoteJson = createAsyncThunk(
+  'quoteFile/updateQuoteFileByIdForQuoteJson',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await QUOTE_FILE_API.postJson(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);

@@ -40,6 +40,7 @@ import {updateProductFamily} from '../../../../../../redux/actions/product';
 import {
   UpdateQuoteFileById,
   getQuoteFileByQuoteId,
+  updateFileForQuoteJson,
 } from '../../../../../../redux/actions/quoteFile';
 import {
   DeleteQuoteLineItemById,
@@ -505,6 +506,48 @@ const InputDetails: FC<InputDetailTabInterface> = ({
             finalFile,
           );
           console.log(response, 'sdhjahdjshdfj');
+          const newArrrrAll: any = [];
+          if (response) {
+            const newArrrr: any = [];
+            for (let i = 0; i < response?.data?.result?.length; i++) {
+              const itemss: any = response?.data?.result[i];
+
+              const newItemsssadsd = itemss?.prediction?.filter(
+                (item: any) => item,
+              );
+              newArrrr?.push(newItemsssadsd);
+            }
+            const newAllgetOArr: any = [];
+            newArrrr?.map((itemNew: any, indexNew: number) => {
+              let formattedArray1: any = [];
+              const formattedData1: any = {};
+              itemNew?.map((itemIner1: any, indexInner1: number) => {
+                if (itemIner1?.cells) {
+                  itemIner1?.cells.forEach((item: any) => {
+                    const rowNum = item.row;
+                    if (!formattedData1[rowNum]) {
+                      formattedData1[rowNum] = {};
+                    }
+                    formattedData1[rowNum][item.label?.toLowerCase()] =
+                      item.text;
+                  });
+                }
+              });
+              formattedArray1 = Object.values(formattedData1);
+              newAllgetOArr?.push(formattedArray1);
+              console.log('4543535435', formattedArray1);
+              newArrrrAll?.push(formattedArray1);
+            });
+
+            const jsonDataa = {
+              id: fileLineItemIds,
+              quote_json: [JSON?.stringify(newArrrrAll)],
+            };
+            dispatch(updateFileForQuoteJson(jsonDataa));
+            router?.push(
+              `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=false`,
+            );
+          }
         });
       // router?.push(
       //   `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=false`,
