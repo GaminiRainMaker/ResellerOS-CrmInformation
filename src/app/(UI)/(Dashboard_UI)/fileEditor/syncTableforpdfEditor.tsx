@@ -267,7 +267,11 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     if (finalOpportunityArray && syncTableData?.length > 0) {
       dispatch(insertOpportunityLineItem(finalOpportunityArray));
     }
-    dispatch(quoteFileVerification({id: quoteFileById?.[0]?.id}));
+    dispatch(
+      quoteFileVerification({
+        id: quoteFileById?.[0]?.id ? quoteFileById?.[0]?.id : getQuoteFileId,
+      }),
+    );
     router?.push(`/generateQuote?id=${Number(getQuoteID)}`);
   };
 
