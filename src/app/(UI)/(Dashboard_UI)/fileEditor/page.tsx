@@ -10,7 +10,7 @@
 
 import '@handsontable/pikaday/css/pikaday.css';
 import {HotTable} from '@handsontable/react';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
 import './styles.css';
 
 import {Space} from '@/app/components/common/antd/Space';
@@ -25,32 +25,30 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {addClassesToRows, alignHeaders} from './hooksCallbacks';
 
 import 'handsontable/dist/handsontable.min.css';
-import {getQuoteById} from '../../../../../redux/actions/quote';
+import {getQuoteFileById} from '../../../../../redux/actions/quoteFile';
 import {getQuoteLineItemByQuoteId} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
-  const hotRef = useRef(null);
   const searchParams = useSearchParams();
   const getQUoteId = searchParams.get('id');
+  const getQuoteFileId = searchParams.get('fileId');
   const [quoteItems, setQuoteItems] = useState<any>();
   const [mergedValue, setMergedVaalues] = useState<any>();
   const router = useRouter();
   const ExistingQuoteItemss = searchParams.get('quoteExist');
-  const {concernQuoteLineItemData} = useAppSelector(
-    (state) => state.quoteLineItem,
-  );
   const {userInformation} = useAppSelector((state) => state.user);
+  const {quoteFileById} = useAppSelector((state) => state.quoteFile);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [updateLineItemsValue, setUpdateLineItemsValue] = useState<any>();
   const [missingId, setMissingId] = useState<number[]>([]);
 
   useEffect(() => {
     const newArrr: any = [];
-    if (concernQuoteLineItemData?.quoteLineItems) {
-      concernQuoteLineItemData?.quoteLineItems?.map((itemsss: any) => {
+    if (quoteFileById[0]?.QuoteLineItems) {
+      quoteFileById[0]?.QuoteLineItems?.map((itemsss: any) => {
         if (itemsss) {
           const newObj: any = {...itemsss};
           delete newObj.Product;
@@ -66,16 +64,14 @@ const EditorFile = () => {
       });
       setUpdateLineItemsValue(newArrr);
     }
-  }, [concernQuoteLineItemData]);
+  }, [quoteFileById]);
 
   useEffect(() => {
-    if (concernQuoteLineItemData?.quoteLineItems) {
-      const missingIds = concernQuoteLineItemData?.quoteLineItems
-        .filter(
-          (item1: any) =>
-            !updateLineItemsValue?.some((item2: any) => item1.id === item2.id),
-        )
-        .map((item: any) => item.id);
+    if (quoteFileById[0]?.QuoteLineItems) {
+      const missingIds = quoteFileById[0]?.QuoteLineItems.filter(
+        (item1: any) =>
+          !updateLineItemsValue?.some((item2: any) => item1.id === item2.id),
+      ).map((item: any) => item.id);
       setMissingId(missingIds);
     }
   }, [updateLineItemsValue]);
@@ -90,7 +86,7 @@ const EditorFile = () => {
         }
       });
     } else {
-      const quoteJson = concernQuoteLineItemData?.quoteJson;
+      const quoteJson = quoteFileById[0]?.quote_json;
       if (quoteJson) {
         const dataa: any = JSON.parse(quoteJson);
         const newArray = dataa?.length > 0 ? [...dataa] : [];
@@ -99,6 +95,10 @@ const EditorFile = () => {
       }
     }
   }, [ExistingQuoteItemss]);
+
+  useEffect(() => {
+    dispatch(getQuoteFileById(Number(getQuoteFileId)));
+  }, [getQuoteFileId]);
 
   const updateRowsValueforTable = (
     indexOFTable: number,
@@ -269,7 +269,7 @@ const EditorFile = () => {
 
   const updateData = async () => {
     await updateTables(
-      concernQuoteLineItemData,
+      quoteFileById[0],
       updateLineItemsValue,
       userInformation,
       dispatch,
