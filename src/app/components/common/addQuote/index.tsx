@@ -6,7 +6,6 @@ import OsModal from '@/app/components/common/os-modal';
 import {convertFileToBase64} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form, message} from 'antd';
-import {useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {insertProduct} from '../../../../../redux/actions/product';
@@ -36,7 +35,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
 }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-  const router = useRouter();
   const {userInformation} = useAppSelector((state) => state.user);
   const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const [form] = Form.useForm();
@@ -125,16 +123,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
               };
             }
           });
-          const newObjForNanonets = {
-            uid: updatedArr[i]?.file?.uid,
-            lastModified: updatedArr[i]?.file?.lastModified,
-            lastModifiedDate: updatedArr[i]?.file?.lastModifiedDate,
-            size: updatedArr[i]?.file?.size,
-            name: updatedArr[i]?.file?.name,
-            type: updatedArr[i]?.file?.type,
-            webkitRelativePath: updatedArr[i]?.file?.webkitRelativePath,
-          };
-
           quoteObj = {
             ...quoteItem,
             nanonets_id: result?.id,
@@ -150,8 +138,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
                 pdf_url: updatedArr[i]?.pdf_url,
                 quote_config_id: updatedArr[i]?.quote_config_id ?? 22,
                 nanonets_id: result?.id,
-                // quote_json: [JSON.stringify(quoteJson)],
-                quote_file: [JSON?.stringify(newObjForNanonets)],
                 lineItems: lineItems.length > 0 ? lineItems : [],
               },
             ],
