@@ -43,6 +43,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   );
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
+  const getQuoteFileId = searchParams.get('fileId');
+
   const router = useRouter();
 
   const mergeedColumn: any = [];
@@ -163,7 +165,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         );
         if (insertedProduct?.payload?.id) {
           const obj1: any = {
-            quote_file_id: quoteFileById?.[0]?.id,
+            quote_file_id: quoteFileById?.[0]?.id
+              ? quoteFileById?.[0]?.id
+              : getQuoteFileId,
             quote_id: Number(getQuoteID),
             product_id: insertedProduct?.payload?.id,
             product_code: insertedProduct?.payload?.product_code,
