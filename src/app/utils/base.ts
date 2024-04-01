@@ -333,7 +333,7 @@ export const updateTables = async (
         organization: userInformation.organization,
         quote_config_id: item.quote_config_id,
         quote_file_id: item.quote_file_id,
-        file_name: fileData.title,
+        file_name: fileData?.title || fileData?.file_name,
         nanonets_id: item.nanonets_id,
       };
 
@@ -391,8 +391,6 @@ export const updateTables = async (
 export const sendDataToNanonets = async (model_id: string, file: File) => {
   //   prevoius
   // const API_ENDPOINT ='https://app.nanonets.com/api/v2/OCR/Model/91814dd8-75f6-44d7-aad3-776df449b59f/LabelFile/';
-
-  console.log('filefile1234',file)
 
   let API_ENDPOINT = '';
   if (file?.type?.split('/')[1] === 'pdf') {
