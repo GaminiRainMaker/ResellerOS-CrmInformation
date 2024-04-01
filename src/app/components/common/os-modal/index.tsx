@@ -22,6 +22,7 @@ const OsModal: FC<OSModalPropsInterface> = ({
   singleButtonInCenter = false,
   thirdButtonText,
   thirdButtonfunction,
+  thirdLoading,
   ...rest
 }) => {
   const {onCancel, open, onOk} = rest;
@@ -53,6 +54,7 @@ const OsModal: FC<OSModalPropsInterface> = ({
           >
             {thirdButtonText && (
               <OsButton
+                loading={thirdLoading}
                 text={thirdButtonText}
                 disabled={disabledButton}
                 buttontype="SECONDARY"

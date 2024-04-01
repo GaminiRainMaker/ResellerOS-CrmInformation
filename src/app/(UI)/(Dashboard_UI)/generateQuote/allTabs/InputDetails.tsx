@@ -12,6 +12,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapse from '@/app/components/common/os-collapse';
 import OSDialog from '@/app/components/common/os-dialog';
 import EmptyContainer from '@/app/components/common/os-empty-container';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
@@ -29,7 +30,6 @@ import {CheckIcon, TrashIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
-import GlobalLoader from '@/app/components/common/os-global-loader';
 import GreenCheckIcon from '../../../../../../public/assets/static/greenCheckIcon.svg';
 import RaiseConcernImg from '../../../../../../public/assets/static/raiseConcern.svg';
 import {
@@ -93,6 +93,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   const [fileData, setFileData] = useState<any>();
   const {data: bundleData} = useAppSelector((state) => state.bundle);
   const [api, contextHolder] = notification.useNotification();
+  const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
 
   const openNotificationWithIcon = () => {
     api.warning({
@@ -495,17 +496,18 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       router?.push(
         `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=true`,
       );
+      setShowRaiseConcernModal(false);
+      form?.resetFields();
     } else {
+      setNanonetsLoading(true);
       fetch(fileData?.pdfUrl)
         .then((res) => res.blob())
         .then(async (file) => {
           const finalFile = new File([file], 'name');
-
           const response = await sendDataToNanonets(
             'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
             finalFile,
           );
-          console.log(response, 'sdhjahdjshdfj');
           const newArrrrAll: any = [];
           if (response) {
             const newArrrr: any = [];
@@ -518,10 +520,10 @@ const InputDetails: FC<InputDetailTabInterface> = ({
               newArrrr?.push(newItemsssadsd);
             }
             const newAllgetOArr: any = [];
-            newArrrr?.map((itemNew: any, indexNew: number) => {
+            newArrrr?.map((itemNew: any) => {
               let formattedArray1: any = [];
               const formattedData1: any = {};
-              itemNew?.map((itemIner1: any, indexInner1: number) => {
+              itemNew?.map((itemIner1: any) => {
                 if (itemIner1?.cells) {
                   itemIner1?.cells.forEach((item: any) => {
                     const rowNum = item.row;
@@ -535,7 +537,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
               });
               formattedArray1 = Object.values(formattedData1);
               newAllgetOArr?.push(formattedArray1);
-              console.log('4543535435', formattedArray1);
               newArrrrAll?.push(formattedArray1);
             });
 
@@ -544,17 +545,15 @@ const InputDetails: FC<InputDetailTabInterface> = ({
               quote_json: [JSON?.stringify(newArrrrAll)],
             };
             dispatch(updateFileForQuoteJson(jsonDataa));
+            setNanonetsLoading(false);
             router?.push(
               `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=false`,
             );
+            setShowRaiseConcernModal(false);
+            form?.resetFields();
           }
         });
-      // router?.push(
-      //   `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=false`,
-      // );
     }
-    setShowRaiseConcernModal(false);
-    form?.resetFields();
   };
 
   const updateAllTablesData = async () => {
@@ -570,8 +569,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     }
     setShowVerificationFileModal(false);
   };
-
-  console.log('quoteFileDataLoading', quoteFileDataLoading);
 
   return (
     <>
@@ -839,6 +836,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
 
       <OsModal
         loading={loading}
+        thirdLoading={nanonetsLoading}
         body={
           <RaiseConcern
             title="Report an issue"

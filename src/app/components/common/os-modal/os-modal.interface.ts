@@ -14,6 +14,7 @@ export interface OSModalPropsInterface extends ModalProps {
   thirdButtonText?: any;
   body?: React.ReactNode;
   loading?: boolean;
+  thirdLoading?: boolean;
   bodyPadding?: number;
   footer?: boolean;
   footerPadding?: number;
