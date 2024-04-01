@@ -49,8 +49,8 @@ const OsUpload: React.FC<any> = ({
     const customerId = form.getFieldValue('customer_id');
     const opportunityId = form.getFieldValue('opportunity_id');
     const singleQuote = form.getFieldValue('singleQuote');
-
     const newArr = [];
+    setLoading(true);
     for (let i = 0; i < uploadFileData.length; i++) {
       let obj: any = {...uploadFileData[i]};
       // eslint-disable-next-line no-await-in-loop
@@ -58,6 +58,7 @@ const OsUpload: React.FC<any> = ({
       obj = {...obj, ...response};
       newArr.push(obj);
     }
+    setLoading(false);
     addQuoteLineItem(customerId, opportunityId, newArr, singleQuote);
   };
 

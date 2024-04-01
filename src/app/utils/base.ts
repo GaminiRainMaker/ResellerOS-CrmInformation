@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable no-await-in-loop */
@@ -5,18 +6,18 @@
 /* eslint-disable consistent-return */
 /* eslint-disable implicit-arrow-linebreak */
 // eslint-disable-next-line import/no-extraneous-dependencies
-import moment from 'moment';
 import axios from 'axios';
+import moment from 'moment';
 import {getContractProductByProductCode} from '../../../redux/actions/contractProduct';
 import {insertProfitability} from '../../../redux/actions/profitability';
 import {quoteFileVerification} from '../../../redux/actions/quoteFile';
-import {getRebatesByProductCode} from '../../../redux/actions/rebate';
-import {insertRebateQuoteLineItem} from '../../../redux/actions/rebateQuoteLineitem';
-import {insertValidation} from '../../../redux/actions/validation';
 import {
   DeleteQuoteLineItemById,
   updateQuoteLineItemById,
 } from '../../../redux/actions/quotelineitem';
+import {getRebatesByProductCode} from '../../../redux/actions/rebate';
+import {insertRebateQuoteLineItem} from '../../../redux/actions/rebateQuoteLineitem';
+import {insertValidation} from '../../../redux/actions/validation';
 
 export const calculateProfitabilityData = (
   Qty: number,
@@ -306,7 +307,7 @@ export const updateTables = async (
   dispatch: any,
   missingId?: any,
   edited?: boolean,
-): Promise<void> => {
+): Promise<any> => {
   try {
     const rebateDataArray: any[] = [];
     const contractProductArray: any[] = [];
@@ -383,8 +384,10 @@ export const updateTables = async (
       dispatch(insertProfitability(profitabilityData));
       dispatch(quoteFileVerification({id: fileData?.id}));
     }
+    return true;
   } catch (err) {
     console.error('Error:', err);
+    return false;
   }
 };
 
