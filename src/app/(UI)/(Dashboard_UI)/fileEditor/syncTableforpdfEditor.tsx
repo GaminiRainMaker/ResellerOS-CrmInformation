@@ -163,6 +163,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         );
         if (insertedProduct?.payload?.id) {
           const obj1: any = {
+            quote_file_id: quoteFileById?.[0]?.id,
             quote_id: Number(getQuoteID),
             product_id: insertedProduct?.payload?.id,
             product_code: insertedProduct?.payload?.product_code,
@@ -194,6 +195,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             contractProductArray?.push({
               ...obj1,
               contract_product_id: contractProductByProductCode?.payload?.id,
+              // quote_file_id:
             });
           }
           newrrLineItems?.push(obj1);
