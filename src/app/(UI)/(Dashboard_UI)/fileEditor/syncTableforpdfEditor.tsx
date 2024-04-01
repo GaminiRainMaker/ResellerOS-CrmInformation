@@ -19,7 +19,10 @@ import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunit
 import {insertProduct} from '../../../../../redux/actions/product';
 import {insertProfitability} from '../../../../../redux/actions/profitability';
 import {updateQuoteJsonAndManual} from '../../../../../redux/actions/quote';
-import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
+import {
+  deleteQuoteLineItemsByQuoteId,
+  insertQuoteLineItem,
+} from '../../../../../redux/actions/quotelineitem';
 import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
 import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
 import {insertValidation} from '../../../../../redux/actions/validation';
@@ -131,6 +134,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       });
       return;
     }
+    dispatch(deleteQuoteLineItemsByQuoteId(Number(getQuoteID)));
     mergedValue?.map((obj: any) => {
       const newObj: any = {};
       syncedNewValue?.forEach((mapping: any) => {
