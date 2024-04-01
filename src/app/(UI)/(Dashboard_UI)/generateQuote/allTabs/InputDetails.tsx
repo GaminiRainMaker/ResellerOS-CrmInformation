@@ -504,13 +504,19 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       router?.push(
         `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=true`,
       );
-    } else {
-      console.log('fileData123456', JSON.parse(fileData?.quoteFile[0]));
-      const response = await sendDataToNanonets(
-        'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
-        JSON.parse(fileData?.quoteFile[0]),
-      );
-      console.log('response123', response);
+
+      fetch(fileData?.pdfUrl)
+        .then((res) => res.blob())
+        .then(async (file) => {
+          const finalFile = new File([file], 'name');
+
+          const response = await sendDataToNanonets(
+            'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
+            finalFile,
+          );
+          console.log(response, 'sdhjahdjshdfj');
+        });
+
       // router?.push(
       //   `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=false`,
       // );
