@@ -29,6 +29,7 @@ import {CheckIcon, TrashIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 import GreenCheckIcon from '../../../../../../public/assets/static/greenCheckIcon.svg';
 import RaiseConcernImg from '../../../../../../public/assets/static/raiseConcern.svg';
 import {
@@ -43,7 +44,6 @@ import {
 } from '../../../../../../redux/actions/quoteFile';
 import {
   DeleteQuoteLineItemById,
-  getQuoteLineItemByQuoteId,
   getQuoteLineItemByQuoteIdandBundleIdNull,
 } from '../../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
@@ -92,7 +92,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   const [buttonType, setButtonType] = useState<string>('');
   const [fileData, setFileData] = useState<any>();
   const {data: bundleData} = useAppSelector((state) => state.bundle);
-
   const [api, contextHolder] = notification.useNotification();
 
   const openNotificationWithIcon = () => {
@@ -139,13 +138,13 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       const data = {Ids: selectTedRowIds};
       dispatch(DeleteQuoteLineItemById(data));
       setSelectedRowIds([]);
-      setTimeout(() => {
-        dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID))).then(
-          (d: any) => {
-            setQuoteLineItemByQuoteData(d?.payload);
-          },
-        );
-      }, 2000);
+      // setTimeout(() => {
+      //   dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID))).then(
+      //     (d: any) => {
+      //       setQuoteLineItemByQuoteData(d?.payload);
+      //     },
+      //   );
+      // }, 2000);
     }
     setIsDeleteInputDetailModal(false);
   };
@@ -436,16 +435,13 @@ const InputDetails: FC<InputDetailTabInterface> = ({
 
   useEffect(() => {
     dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
-
-    dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID))).then((d: any) => {
-      setQuoteLineItemByQuoteData(d?.payload);
-      if (d?.payload && d?.payload?.length > 0) {
-        setQuoteLineItemExist(true);
-      }
-    });
+    // dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID))).then((d: any) => {
+    //   setQuoteLineItemByQuoteData(d?.payload);
+    //   if (d?.payload && d?.payload?.length > 0) {
+    //     setQuoteLineItemExist(true);
+    //   }
+    // });
   }, [getQuoteID]);
-
-  console.log('quoteFileData', quoteFileData);
 
   useEffect(() => {
     const separatedData: any = {};
@@ -562,10 +558,20 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   };
 
   const updateAllTablesData = async () => {
-    updateTables(fileData, fileData?.quoteLineItems, userInformation, dispatch);
-    dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
+    const isState = await updateTables(
+      fileData,
+      fileData?.quoteLineItems,
+      userInformation,
+      dispatch,
+    );
+    console.log('isState', isState);
+    if (isState) {
+      dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
+    }
     setShowVerificationFileModal(false);
   };
+
+  console.log('quoteFileDataLoading', quoteFileDataLoading);
 
   return (
     <>
@@ -739,68 +745,77 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                     ))}
                   </>
                 ) : (
-                  <>
-                    {quoteLineItemByQuoteData1?.map((item: any) => (
-                      <OsCollapse
-                        items={[
-                          {
-                            key: '1',
-                            label: (
-                              <>
-                                <Row justify="space-between">
-                                  <Col>
-                                    <p>{item?.title}</p>
-                                  </Col>
-                                  <Col>
-                                    <p>Line Items: {item?.totalCount}</p>
-                                  </Col>
-                                  <Col>
-                                    <p>
-                                      Total Cost: {item?.totalAdjustedPrice}
-                                    </p>
-                                  </Col>
-                                  <Col>
-                                    <Space>
-                                      <CheckIcon
-                                        width={25}
-                                        color={token?.colorSuccess}
-                                        onClick={(e) => {
-                                          e?.stopPropagation();
-                                          setShowVerificationFileModal(true);
-                                          setFileLineItemIds(item?.id);
-                                          setFileData(item);
-                                        }}
-                                      />
-                                      <XMarkIcon
-                                        width={25}
-                                        color={token?.colorError}
-                                        onClick={(e) => {
-                                          e?.stopPropagation();
-                                          setShowRaiseConcernModal(true);
-                                          setFileLineItemIds(item?.id);
-                                          setFileData(item);
-                                        }}
-                                      />
-                                    </Space>
-                                  </Col>
-                                </Row>
-                              </>
-                            ),
-                            children: (
-                              <OsTableWithOutDrag
-                                columns={finalInputColumn}
-                                dataSource={item?.quoteLineItems || []}
-                                rowSelection={rowSelection}
-                                scroll
-                                loading={loading}
-                                locale={locale}
-                              />
-                            ),
-                          },
-                        ]}
+                  <GlobalLoader loading={quoteFileDataLoading}>
+                    {quoteLineItemByQuoteData1?.length > 0 ? (
+                      quoteLineItemByQuoteData1?.map((item: any) => (
+                        <OsCollapse
+                          items={[
+                            {
+                              key: '1',
+                              label: (
+                                <>
+                                  <Row justify="space-between">
+                                    <Col>
+                                      <p>{item?.title}</p>
+                                    </Col>
+                                    <Col>
+                                      <p>Line Items: {item?.totalCount}</p>
+                                    </Col>
+                                    <Col>
+                                      <p>
+                                        Total Cost: {item?.totalAdjustedPrice}
+                                      </p>
+                                    </Col>
+                                    <Col>
+                                      <Space>
+                                        <CheckIcon
+                                          width={25}
+                                          color={token?.colorSuccess}
+                                          onClick={(e) => {
+                                            e?.stopPropagation();
+                                            setShowVerificationFileModal(true);
+                                            setFileLineItemIds(item?.id);
+                                            setFileData(item);
+                                          }}
+                                        />
+                                        <XMarkIcon
+                                          width={25}
+                                          color={token?.colorError}
+                                          onClick={(e) => {
+                                            e?.stopPropagation();
+                                            setShowRaiseConcernModal(true);
+                                            setFileLineItemIds(item?.id);
+                                            setFileData(item);
+                                          }}
+                                        />
+                                      </Space>
+                                    </Col>
+                                  </Row>
+                                </>
+                              ),
+                              children: (
+                                <OsTableWithOutDrag
+                                  columns={finalInputColumn}
+                                  dataSource={item?.quoteLineItems || []}
+                                  rowSelection={rowSelection}
+                                  scroll
+                                  loading={false}
+                                  locale={locale}
+                                />
+                              ),
+                            },
+                          ]}
+                        />
+                      ))
+                    ) : (
+                      <OsTableWithOutDrag
+                        columns={finalInputColumn}
+                        scroll
+                        loading={false}
+                        locale={locale}
                       />
-                    ))}
-                  </>
+                    )}
+                  </GlobalLoader>
                 )}{' '}
               </>
             )}
@@ -808,7 +823,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         </>
       ) : (
         <EmptyContainer
-          title="There is no columns for Input Details"
+          title="There is no columns for Review Quotes"
           subTitle="Please Update from admin Configuration Tab or Request to admin to update the columns."
         />
       )}
@@ -852,7 +867,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       />
 
       <OsModal
-        loading={loading}
+        loading={quoteFileDataLoading}
         body={
           <OSDialog
             title="Are you sure want to verified this file?"
@@ -870,7 +885,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         secondaryButtonText="Cancel"
         primaryButtonText="Yes"
         onOk={() => {
-          // fileVerification();
           updateAllTablesData();
         }}
         singleButtonInCenter
