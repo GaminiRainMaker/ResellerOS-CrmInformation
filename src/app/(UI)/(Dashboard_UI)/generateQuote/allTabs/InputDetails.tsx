@@ -94,6 +94,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   const {data: bundleData} = useAppSelector((state) => state.bundle);
   const [api, contextHolder] = notification.useNotification();
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
+  const [confirmedData, setConfirmedData] = useState<boolean>(false);
 
   const openNotificationWithIcon = () => {
     api.warning({
@@ -557,6 +558,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   };
 
   const updateAllTablesData = async () => {
+    setConfirmedData(true);
     const isState = await updateTables(
       fileData,
       fileData?.quoteLineItems,
@@ -565,6 +567,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     );
     console.log('isState', isState);
     if (isState) {
+      setConfirmedData(false);
       dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
     }
     setShowVerificationFileModal(false);
@@ -865,7 +868,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       />
 
       <OsModal
-        loading={quoteFileDataLoading}
+        loading={confirmedData}
         body={
           <OSDialog
             title="Are you sure want to verified this file?"
