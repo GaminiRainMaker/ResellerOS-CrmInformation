@@ -66,7 +66,6 @@ const EditorFile = () => {
     }
   }, [quoteFileById]);
 
-
   useEffect(() => {
     if (quoteFileById?.QuoteLineItems) {
       const missingIds = quoteFileById?.QuoteLineItems.filter(
@@ -88,12 +87,10 @@ const EditorFile = () => {
       });
     } else {
       const quoteJson = quoteFileById?.quote_json;
-      console.log('3454353', quoteJson);
 
       if (quoteJson) {
         const dataa: any = JSON.parse(quoteJson?.[0]);
         const newArray = dataa?.length > 0 ? [...dataa] : [];
-        console.log('3454353', quoteJson, newArray);
         setQuoteItems(newArray);
         const allHeaderValue: any = [];
       }
@@ -138,36 +135,20 @@ const EditorFile = () => {
 
     setQuoteItems(newArrr);
   };
-
   const mergeTableData = () => {
-    const myAllKey: any = [];
-    quoteItems?.map((itemOfMain: any) => {
-      const keys = itemOfMain?.length > 0 && Object.keys(itemOfMain?.[0]);
-      if (keys) {
-        keys?.map((item: any) => {
-          if (item && !myAllKey?.includes(item)) {
-            myAllKey?.push(item);
-          }
-        });
-      }
-    });
-
-    const newArrOfObjectForMerged: any = [];
-    quoteItems?.map((itemOFMainQuote: any, indexOfMain: number) => {
+    const flattenedArray = quoteItems.flat();
+    const uniqueKeys = Array.from(
+      new Set(flattenedArray.flatMap((obj: any) => Object.keys(obj))),
+    );
+    const resultArray = flattenedArray.map((obj: any) => {
       const newObj: any = {};
-      itemOFMainQuote?.map((innerMainItem: any) => {
-        myAllKey?.map((keyItem: string, indexoddd: number) => {
-          if (!innerMainItem[keyItem]) {
-            newObj[keyItem] = '';
-          } else {
-            newObj[keyItem] = innerMainItem?.[keyItem];
-          }
-        });
-        newArrOfObjectForMerged?.push(newObj);
+      uniqueKeys.forEach((key: any) => {
+        newObj[key] = obj[key] !== undefined ? obj[key] : '';
       });
-    });
 
-    setMergedVaalues(newArrOfObjectForMerged);
+      return newObj;
+    });
+    setMergedVaalues(resultArray);
   };
 
   const deleteTable = (indexOfTable: number) => {
@@ -453,7 +434,6 @@ const EditorFile = () => {
                     clickHandler={mergeTableData}
                   />
                 </Space>
-                {console.log(quoteItems, 'quoteItemsquoteItems')}
                 {quoteItems &&
                   quoteItems?.map((itemss: any, indexOFTable: number) => {
                     const allHeaderValue: any = [];

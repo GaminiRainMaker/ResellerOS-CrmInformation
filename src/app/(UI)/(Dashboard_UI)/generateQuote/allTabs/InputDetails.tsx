@@ -578,7 +578,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     }
     setShowVerificationFileModal(false);
   };
-
   return (
     <>
       {contextHolder}
