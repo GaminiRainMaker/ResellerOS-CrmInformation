@@ -243,8 +243,6 @@ const AllQuote: React.FC = () => {
                 uploadFileData={uploadFileData}
                 setUploadFileData={setUploadFileData}
                 loading={loading}
-                existingQuoteId={existingQuoteId}
-                rowSelection={rowSelection}
                 buttonText="Add Quote"
                 setShowToggleTable={setShowToggleTable}
                 showToggleTable={showToggleTable}

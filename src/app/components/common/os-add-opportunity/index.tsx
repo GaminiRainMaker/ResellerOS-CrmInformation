@@ -24,18 +24,22 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
   setFormValue,
   setShowModal,
   drawer,
+  customerValue,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {data: customerData} = useAppSelector((state) => state.customer);
   const [customerOptions, setCustomerOptions] = useState<any>();
+  const [loading, setLoading] = useState(false);
 
   const addOpportunity = async () => {
+    setLoading(true);
     dispatch(insertOpportunity(formValue)).then((d) => {
       if (d?.payload) {
         dispatch(getAllOpportunity());
       }
     });
+    setLoading(false);
     setShowModal((p: boolean) => !p);
     setFormValue('');
   };
@@ -54,6 +58,15 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
   useEffect(() => {
     dispatch(getAllCustomer(''));
   }, []);
+
+  useEffect(() => {
+    if (customerValue) {
+      setFormValue({
+        ...formValue,
+        customer_id: customerValue,
+      });
+    }
+  }, [customerValue]);
 
   return (
     <>
@@ -85,23 +98,29 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
           padding: drawer ? '0px' : '40px',
         }}
       >
-        <Row>
-          <Typography name="Body 4/Regular">Select Customer Account</Typography>
-          <CommonSelect
-            placeholder="Select Customer Account"
-            style={{width: '100%', marginTop: '5px'}}
-            value={formValue?.customer_id}
-            options={customerOptions}
-            onChange={(e) => {
-              setFormValue({
-                ...formValue,
-                customer_id: e,
-              });
-            }}
-          />
-        </Row>
+        {!customerValue && (
+          <>
+            <Row>
+              <Typography name="Body 4/Regular">
+                Select Customer Account
+              </Typography>
+              <CommonSelect
+                placeholder="Select Customer Account"
+                style={{width: '100%', marginTop: '5px'}}
+                value={formValue?.customer_id}
+                options={customerOptions}
+                onChange={(e) => {
+                  setFormValue({
+                    ...formValue,
+                    customer_id: e,
+                  });
+                }}
+              />
+            </Row>
 
-        <Divider style={{border: '1px solid #C7CDD5'}} />
+            <Divider style={{border: '1px solid #C7CDD5'}} />
+          </>
+        )}
 
         <Space direction="vertical" style={{width: '100%'}} size={16}>
           <Row>
@@ -153,6 +172,7 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
         {!drawer && (
           <Row justify="end">
             <OsButton
+              loading={loading}
               disabled={!formValue}
               buttontype={formValue ? 'PRIMARY' : 'PRIMARY_DISABLED'}
               clickHandler={addOpportunity}

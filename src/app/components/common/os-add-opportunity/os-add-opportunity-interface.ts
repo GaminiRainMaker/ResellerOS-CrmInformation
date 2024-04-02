@@ -4,4 +4,5 @@ export interface AddOpportunityInterface {
   setShowModal?: any;
   tableData?: any;
   drawer?: any;
+  customerValue?: number;
 }
