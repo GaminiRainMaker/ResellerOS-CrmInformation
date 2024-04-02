@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-await-in-loop */
-import UploadFile from '@/app/(UI)/(Dashboard_UI)/generateQuote/UploadFile';
 import OsModal from '@/app/components/common/os-modal';
 import {convertFileToBase64} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
@@ -21,15 +20,16 @@ import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
 import {uploadToAws} from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '../os-button';
+import OsUpload from '../os-upload';
 import {AddQuoteInterface, FormattedData} from './types';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
-  existingQuoteId,
+  // existingQuoteId,
   setUploadFileData,
   buttonText,
   uploadForm,
-  rowSelection,
+  // rowSelection,
   setShowToggleTable,
   showToggleTable,
   Quotecolumns,
@@ -42,6 +42,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false);
   const [finalLoading, setFinalLoading] = useState<boolean>(false);
+  const [existingQuoteId, setExistingQuoteId] = useState<number>();
 
   useEffect(() => {
     if (existingQuoteId) {
@@ -280,7 +281,15 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const resetFields = () => {
     setShowModal(false);
     setUploadFileData([]);
+    setShowToggleTable(false);
+    setExistingQuoteId(0);
     form.resetFields(['customer_id', 'opportunity_id']);
+  };
+
+  const rowSelection = {
+    onChange: (selectedRowKeys: any) => {
+      setExistingQuoteId(Number(selectedRowKeys));
+    },
   };
 
   return (
@@ -301,20 +310,21 @@ const AddQuote: FC<AddQuoteInterface> = ({
         loading={finalLoading}
         bodyPadding={22}
         disabledButton={!(uploadFileData?.length > 0)}
+        destroyOnClose
         body={
-          <UploadFile
-            setUploadFileData={setUploadFileData}
+          <OsUpload
+            beforeUpload={beforeUpload}
             uploadFileData={uploadFileData}
-            addInExistingQuote
+            setUploadFileData={setUploadFileData}
             addQuoteLineItem={addQuoteLineItem}
             form={form}
-            beforeUpload={beforeUpload}
             cardLoading={loading}
             rowSelection={rowSelection}
             setShowToggleTable={setShowToggleTable}
             showToggleTable={showToggleTable}
             Quotecolumns={Quotecolumns}
             existingQuoteId={existingQuoteId}
+            setExistingQuoteId={setExistingQuoteId}
           />
         }
         width={900}
@@ -326,12 +336,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
         onOk={() => {
           form?.setFieldValue('singleQuote', true);
           form.submit();
-          // resetFields();
         }}
         thirdButtonfunction={() => {
           form?.setFieldValue('singleQuote', false);
           form.submit();
-          // resetFields();
         }}
         onCancel={() => {
           resetFields();
