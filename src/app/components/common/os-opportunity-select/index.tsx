@@ -94,6 +94,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
             setFormValue={setFormValue}
             formValue={formValue}
             setShowModal={setOpen}
+            customerValue={customerValue}
           />
         }
         width={600}
