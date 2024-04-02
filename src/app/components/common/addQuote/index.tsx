@@ -25,11 +25,9 @@ import {AddQuoteInterface, FormattedData} from './types';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
-  // existingQuoteId,
   setUploadFileData,
   buttonText,
   uploadForm,
-  // rowSelection,
   setShowToggleTable,
   showToggleTable,
   Quotecolumns,

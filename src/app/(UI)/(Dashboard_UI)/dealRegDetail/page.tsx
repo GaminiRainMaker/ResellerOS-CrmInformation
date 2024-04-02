@@ -112,8 +112,6 @@ const DealRegDetail = () => {
     }
   };
 
-  console.log('dealRegUpdateData', dealRegUpdateData);
-
   return (
     <div>
       <Row justify="space-between" align="middle">

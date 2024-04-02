@@ -4,4 +4,5 @@ export interface OsOpportunitySelectInterface {
   form: FormInstance;
   isAddNewOpportunity?: boolean;
   customerValue?: number
+  value?: number
 }

@@ -13,8 +13,6 @@
 
 'use client';
 
-import Typography from '@/app/components/common/typography';
-import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
 import AddQuote from '@/app/components/common/addQuote';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
@@ -26,9 +24,11 @@ import OsDropdown from '@/app/components/common/os-dropdown';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
+import Typography from '@/app/components/common/typography';
 import {selectData} from '@/app/utils/CONSTANTS';
 import {formatDate, useRemoveDollarAndCommahook} from '@/app/utils/base';
-import {Form, MenuProps, notification} from 'antd';
+import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
+import {Form, MenuProps} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -36,6 +36,7 @@ import {getAllContractSetting} from '../../../../../redux/actions/contractSettin
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {
   getQuoteById,
+  updateQuoteById,
   updateQuoteByQuery,
 } from '../../../../../redux/actions/quote';
 import {UpdateQuoteLineItemQuantityById} from '../../../../../redux/actions/quotelineitem';
@@ -53,40 +54,32 @@ import BundleSection from './bundleSection';
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const router = useRouter();
   const [form] = Form.useForm();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const [activeTab, setActiveTab] = useState<any>('1');
-  const {quoteLineItemByQuoteID, loading, concernQuoteLineItemData} =
-    useAppSelector((state) => state.quoteLineItem);
+  const {quoteLineItemByQuoteID, loading} = useAppSelector(
+    (state) => state.quoteLineItem,
+  );
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
-  const [existingQuoteId, setExistingQuoteId] = useState<number>();
   const [amountData, setAmountData] = useState<any>();
   const [open, setOpen] = useState(false);
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
-  const [showRaiseConcernModal, setShowRaiseConcernModal] =
-    useState<boolean>(false);
-  const [showAfterRaiseConcernModal, setShowAfterRaiseConcernModal] =
-    useState<boolean>(false);
-  const [showAlreadyRaiseConcernModal, setShowAlreadyRaiseConcernModal] =
-    useState<boolean>(false);
   const [isDeleteInputDetailModal, setIsDeleteInputDetailModal] =
     useState<boolean>(false);
-  const [selectedFilter, setSelectedFilter] = useState<string>('');
+  const [selectedFilter, setSelectedFilter] = useState<string>('File Name');
   const [familyFilter, setFamilyFilter] = useState<any>([]);
   const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] =
     useState<any>();
   const {data: tableColumnData} = useAppSelector((state) => state.tableColumn);
-  const {quoteById} = useAppSelector((state) => state.quote);
   const {data: contractSettingData} = useAppSelector(
     (state) => state.contractSetting,
   );
   const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
   const [quoteLineItemExist, setQuoteLineItemExist] = useState<boolean>(false);
-  const [api, contextHolder] = notification.useNotification();
 
   useEffect(() => {
     dispatch(getAllTableColumn(''));
@@ -119,7 +112,6 @@ const GenerateQuote: React.FC = () => {
   }, [activeTab, tableColumnData]);
 
   useEffect(() => {
-    if (getQuoteID) dispatch(getQuoteById(Number(getQuoteID)));
     dispatch(getAllGeneralSetting(''));
   }, [getQuoteID]);
 
@@ -239,21 +231,7 @@ const GenerateQuote: React.FC = () => {
     {
       key: '2',
       label: (
-        <Typography
-          name="Body 3/Regular"
-          cursor="pointer"
-          onClick={() => {
-            if (quoteById?.concern?.length > 0) {
-              setShowAlreadyRaiseConcernModal(true);
-            } else {
-              setShowRaiseConcernModal(true);
-            }
-            // router?.push(`/updation?id=${getQuoteID}`);
-            // router?.push(
-            //   `/fileEditor?id=${getQuoteID}&quoteExist=${quoteLineItemExist}`,
-            // );
-          }}
-        >
+        <Typography name="Body 3/Regular" cursor="pointer">
           Raise Concern
         </Typography>
       ),
@@ -403,9 +381,24 @@ const GenerateQuote: React.FC = () => {
     },
   ];
 
+  const onFinish = async () => {
+    const headerValue = form.getFieldsValue();
+    try {
+      const obj = {
+        id: Number(getQuoteID),
+        ...headerValue,
+      };
+      dispatch(updateQuoteById(obj));
+      setOpen(false);
+    } catch (error) {
+      setOpen(false);
+      console.error('Error:', error);
+    }
+  };
+
+
   return (
     <>
-      {contextHolder}
       <Space size={24} direction="vertical" style={{width: '100%'}}>
         <GenerateQuoteAnalytics
           quoteLineItemByQuoteID={quoteLineItemByQuoteID}
@@ -437,7 +430,6 @@ const GenerateQuote: React.FC = () => {
                 buttonText="Add Quote"
                 setUploadFileData={setUploadFileData}
                 uploadFileData={uploadFileData}
-                existingQuoteId={existingQuoteId}
               />
               <OsButton
                 text=" Mark as Complete"
@@ -481,6 +473,7 @@ const GenerateQuote: React.FC = () => {
                     onChange={(e) => {
                       setSelectedFilter(e);
                     }}
+                    allowClear
                     defaultValue="File Name"
                   />
                   <Space>
@@ -506,13 +499,21 @@ const GenerateQuote: React.FC = () => {
       <OsDrawer
         title={<Typography name="Body 1/Regular">Quote Settings</Typography>}
         placement="right"
-        onClose={() => {
-          setOpen(false);
-        }}
+        onClose={() => setOpen((p) => !p)}
         open={open}
         width={450}
+        footer={
+          <Row style={{width: '100%', float: 'right'}}>
+            <OsButton
+              btnStyle={{width: '100%'}}
+              buttontype="PRIMARY"
+              text="UPDATE CHANGES"
+              clickHandler={() => form.submit()}
+            />
+          </Row>
+        }
       >
-        <DrawerContent setOpen={setOpen} />
+        <DrawerContent form={form} open={open} onFinish={onFinish} />
       </OsDrawer>
 
       {selectTedRowIds?.length > 0 && (
@@ -531,29 +532,6 @@ const GenerateQuote: React.FC = () => {
           }}
         />
       )}
-
-      {/* <OsModal
-        body={
-          <RaiseConcern
-            title="Concern Raised"
-            description={concernDescription}
-            image={GreenCheckIcon}
-            showTextArea={false}
-          />
-        }
-        singleButtonInCenter
-        bodyPadding={45}
-        width={500}
-        open={showAfterRaiseConcernModal}
-        onCancel={() => {
-          setShowAfterRaiseConcernModal(false);
-        }}
-        primaryButtonText="Update Line Item"
-        onOk={() => {
-          setShowAfterRaiseConcernModal(false);
-          router?.push(`/fileEditor?id=${getQuoteID}&quoteExist=false`);
-        }}
-      /> */}
     </>
   );
 };

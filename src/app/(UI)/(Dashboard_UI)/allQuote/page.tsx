@@ -205,7 +205,6 @@ const AllQuote: React.FC = () => {
             uploadFileData={uploadFileData}
             setUploadFileData={setUploadFileData}
             loading={loading}
-            existingQuoteId={existingQuoteId}
             buttonText="Add Quote"
           />
         }
