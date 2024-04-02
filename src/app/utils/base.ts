@@ -89,7 +89,7 @@ export const formatDate = (date: Date | string, format = 'MM/DD/YYYY') =>
   moment(date).format(format) ?? '--';
 export const formatDateWithTime = (
   date: Date | string,
-  format = 'MM/DD/YYYY  hh:mm:ss',
+  format = 'MM/DD/YYYY  HH:MM',
 ) => moment(date).format(format) ?? '--';
 
 export const calculateDaysDifference = (startDate: string, endDate: string) => {
