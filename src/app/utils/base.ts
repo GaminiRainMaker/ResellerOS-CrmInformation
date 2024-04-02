@@ -392,16 +392,9 @@ export const updateTables = async (
 };
 
 export const sendDataToNanonets = async (model_id: string, file: File) => {
-  //   prevoius
-  // const API_ENDPOINT ='https://app.nanonets.com/api/v2/OCR/Model/91814dd8-75f6-44d7-aad3-776df449b59f/LabelFile/';
-
   let API_ENDPOINT = '';
-  if (file?.type?.split('/')[1] === 'pdf') {
-    if (!model_id || model_id === undefined) {
-      API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/0ba764d3-bfd5-4756-bdb1-0e5bc427bdda/LabelFile/`;
-    } else {
-      API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/${model_id}/LabelFile/`;
-    }
+  if (file?.type.includes('pdf')) {
+    API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/${model_id}/LabelFile/`;
   } else {
     API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/0ba764d3-bfd5-4756-bdb1-0e5bc427bdda/LabelFile/`;
   }
