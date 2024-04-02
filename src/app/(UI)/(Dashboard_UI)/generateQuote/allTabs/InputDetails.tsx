@@ -515,6 +515,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
             'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
             finalFile,
           );
+
           const newArrrrAll: any = [];
           if (response) {
             const newArrrr: any = [];
