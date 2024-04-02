@@ -87,6 +87,10 @@ export const totalRevenue = (list_amount: number, quantity: number) =>
 
 export const formatDate = (date: Date | string, format = 'MM/DD/YYYY') =>
   moment(date).format(format) ?? '--';
+export const formatDateWithTime = (
+  date: Date | string,
+  format = 'MM/DD/YYYY  hh:mm:ss',
+) => moment(date).format(format) ?? '--';
 
 export const calculateDaysDifference = (startDate: string, endDate: string) => {
   const startMoment = moment(startDate);

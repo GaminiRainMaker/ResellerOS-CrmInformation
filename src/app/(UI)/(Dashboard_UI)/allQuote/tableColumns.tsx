@@ -1,6 +1,6 @@
 import {Space} from '@/app/components/common/antd/Space';
 import Typography from '@/app/components/common/typography';
-import {formatDate} from '@/app/utils/base';
+import {formatDate, formatDateWithTime} from '@/app/utils/base';
 import {EyeIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {GlobalToken} from 'antd';
 import {JSX, SetStateAction} from 'react';
@@ -31,7 +31,7 @@ function getColumns(
       width: 130,
       render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
-          {text ?? formatDate(record?.createdAt)}
+          {text ?? formatDateWithTime(record?.createdAt)}
         </Typography>
       ),
     },
