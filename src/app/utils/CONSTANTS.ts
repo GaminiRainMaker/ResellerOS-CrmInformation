@@ -15,6 +15,16 @@ export const selectData = [
   {value: 'File Name', label: 'File Name'},
 ];
 
+export const quoteStatusOptions = [
+  {value: 'Drafts', label: 'Drafts'},
+  {value: 'In Progress', label: 'In Progress'},
+  {value: 'In Review', label: 'In Review'},
+  {value: 'Approved', label: 'Approved'},
+  {value: 'Rejected', label: 'Rejected'},
+  {value: 'Needs Review', label: 'Needs Review'},
+ 
+];
+
 export const pricingMethod = [
   {value: 'cost_percentage', label: 'Cost + %'},
   {value: 'cost_dollar', label: 'Cost + $'},

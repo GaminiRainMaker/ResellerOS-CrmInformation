@@ -35,11 +35,9 @@ import {useEffect, useState} from 'react';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {
-  getQuoteById,
   updateQuoteById,
-  updateQuoteByQuery,
+  updateQuoteStatusById,
 } from '../../../../../redux/actions/quote';
-import {UpdateQuoteLineItemQuantityById} from '../../../../../redux/actions/quotelineitem';
 import {getAllTableColumn} from '../../../../../redux/actions/tableColumn';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DrawerContent from './DrawerContent';
@@ -187,23 +185,31 @@ const GenerateQuote: React.FC = () => {
     }
   }, [quoteLineItemByQuoteID]);
 
-  const commonUpdateCompleteAndDraftMethod = (queryItem: string) => {
+  const commonUpdateCompleteAndDraftMethod = (status: string) => {
+    // if (getQuoteID) {
+    //   const data = {
+    //     id: getQuoteID,
+    //     query: queryItem,
+    //   };
+    //   dispatch(updateQuoteByQuery(data));
+    // }
+    // quoteLineItemByQuoteData?.map((prev: any) => {
+    //   if (selectTedRowIds?.includes(prev?.id)) {
+    //     const obj = {
+    //       id: prev?.id,
+    //       quantity: prev?.quantity,
+    //     };
+    //     return dispatch(UpdateQuoteLineItemQuantityById(obj));
+    //   }
+    // });
+
     if (getQuoteID) {
-      const data = {
-        ids: getQuoteID,
-        query: queryItem,
+      const obj = {
+        id: getQuoteID,
+        status,
       };
-      dispatch(updateQuoteByQuery(data));
+      dispatch(updateQuoteStatusById(obj));
     }
-    quoteLineItemByQuoteData?.map((prev: any) => {
-      if (selectTedRowIds?.includes(prev?.id)) {
-        const obj = {
-          id: prev?.id,
-          quantity: prev?.quantity,
-        };
-        return dispatch(UpdateQuoteLineItemQuantityById(obj));
-      }
-    });
     router?.push('/allQuote');
   };
 
@@ -396,7 +402,6 @@ const GenerateQuote: React.FC = () => {
     }
   };
 
-
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -422,7 +427,7 @@ const GenerateQuote: React.FC = () => {
                 text="Save"
                 buttontype="SECONDARY"
                 clickHandler={() => {
-                  commonUpdateCompleteAndDraftMethod('drafted');
+                  commonUpdateCompleteAndDraftMethod('In Progress');
                 }}
               />
               <AddQuote
@@ -435,7 +440,7 @@ const GenerateQuote: React.FC = () => {
                 text=" Mark as Complete"
                 buttontype="PRIMARY"
                 clickHandler={() => {
-                  commonUpdateCompleteAndDraftMethod('completed');
+                  commonUpdateCompleteAndDraftMethod('Needs Review');
                 }}
               />
 

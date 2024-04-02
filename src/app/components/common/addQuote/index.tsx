@@ -134,6 +134,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
             customer_id: customerId,
             opportunity_id: opportunityId,
             organization: userInformation.organization,
+            status: 'Drafts',
             quoteFileObj: [
               {
                 file_name: updatedArr[i]?.file?.name,

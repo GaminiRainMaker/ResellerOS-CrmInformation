@@ -22,6 +22,8 @@ export const QUOTEAPI = {
     patch(API.QUOTE.INDEX, data) as Promise<AxiosResponse<any>>,
   deleteById: (data: any) =>
     patch(API.QUOTE.DeleteById, data) as Promise<AxiosResponse<any>>,
+  updateQuoteStatusById: (data: any) =>
+    patch(API.QUOTE.UpdateQuoteStatusById, data) as Promise<AxiosResponse<any>>,
   getQuotesByDateFilter: (data: any) =>
     post(API.QUOTE.GetQuotesByDateFilter, data) as Promise<AxiosResponse<any>>,
   getQuoteByID: (id: number) =>

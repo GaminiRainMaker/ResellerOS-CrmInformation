@@ -3,16 +3,17 @@
 /* eslint-disable no-nested-ternary */
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import OsCustomerSelect from '@/app/components/common/os-customer-select';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsInput from '@/app/components/common/os-input';
 import OsOpportunitySelect from '@/app/components/common/os-opportunity-select';
 import CommonSelect from '@/app/components/common/os-select';
-import CommonStageSelect from '@/app/components/common/os-stage-select';
+import OsStatusWrapper from '@/app/components/common/os-status';
 import Typography from '@/app/components/common/typography';
+import {quoteStatusOptions} from '@/app/utils/CONSTANTS';
 import {formatDate} from '@/app/utils/base';
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
-import OsStatusWrapper from '@/app/components/common/os-status';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
 import {getQuoteById} from '../../../../../redux/actions/quote';
@@ -28,7 +29,7 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
   const {data: generalSettingData} = useAppSelector(
     (state) => state.gereralSetting,
   );
-  const {quoteById} = useAppSelector((state) => state.quote);
+  const {quoteById, quoteByIdLoading} = useAppSelector((state) => state.quote);
   const [customerValue, setCustomerValue] = useState<number>(0);
   const [quoteData, setQuoteData] = useState<any>();
   const [billingOptionsData, setBillingOptionData] = useState<any>();
@@ -152,101 +153,72 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
   //   setOpen(false);
   // };
 
-  const statusWrapper = (item: any) => {
-    const getStatus = () => {
-      if (!item.is_completed && !item.is_drafted) {
-        return 'Drafts';
-      }
-      if (item.is_drafted) {
-        return 'In Progress';
-      }
-      if (item?.approver_id === userInformation?.id) {
-        return 'In Review';
-      }
-      if (item?.rejected_request) {
-        return 'Rejected';
-      }
-      if (item?.approved_request) {
-        return 'Approved';
-      }
-      if (
-        item.is_completed &&
-        item?.approver_id !== userInformation?.id &&
-        !item?.approved_request &&
-        !item?.rejected_request
-      ) {
-        return 'Needs Review';
-      }
-      return '--';
-    };
-
-    return <OsStatusWrapper value={getStatus()} />;
-  };
-
   useEffect(() => {
     form.setFieldsValue({
       file_name: quoteById?.file_name,
       opportunity_id: quoteById?.opportunity_id,
       customer_id: quoteById?.customer_id,
       contact_id: quoteById?.contact_id,
+      status: quoteById?.status,
     });
     setCustomerValue(quoteById?.customer_id);
   }, [quoteById]);
 
   return (
-    <Form
-      layout="vertical"
-      name="wrap"
-      wrapperCol={{flex: 1}}
-      onFinish={onFinish}
-      form={form}
-      requiredMark={false}
-    >
-      <Row justify="space-between">
-        <Col span={12}>
-          <Typography name="Body 4/Medium" as="div">
-            Quote Generate Date
-          </Typography>
-          <Typography name="Body 2/Regular">
-            {formatDate(quoteById?.createdAt, 'MM/DD/YYYY | HH:MM')}
-          </Typography>
-        </Col>
-        <Col>
-          <Form.Item
-            label={
-              <Typography name="Body 4/Medium" as="div">
-                Status
-              </Typography>
-            }
-            name="status"
-          >
-            {statusWrapper(quoteById)}
-            {/* <CommonStageSelect options={[]} placeholder="Select Status" /> */}
-          </Form.Item>
-        </Col>
+    <GlobalLoader loading={quoteByIdLoading}>
+      <Form
+        layout="vertical"
+        name="wrap"
+        wrapperCol={{flex: 1}}
+        onFinish={onFinish}
+        form={form}
+        requiredMark={false}
+      >
+        <Row justify="space-between">
+          <Col span={12}>
+            <Typography name="Body 4/Medium" as="div">
+              Quote Generate Date
+            </Typography>
+            <Typography name="Body 2/Regular">
+              {formatDate(quoteById?.createdAt, 'MM/DD/YYYY | HH:MM')}
+            </Typography>
+          </Col>
+          <Col>
+            <Form.Item
+              label={
+                <Typography name="Body 4/Medium" as="div">
+                  Status
+                </Typography>
+              }
+              name="status"
+            >
+              <CommonSelect options={quoteStatusOptions} />
+            </Form.Item>
+          </Col>
 
-        <Col span={24}>
-          <Form.Item label="File Name" name="file_name">
-            <OsInput />
-          </Form.Item>
+          <Col span={24}>
+            <Form.Item label="File Name" name="file_name">
+              <OsInput />
+            </Form.Item>
 
-          <OsCustomerSelect
-            setCustomerValue={setCustomerValue}
-            customerValue={customerValue}
-          />
-
-          <OsOpportunitySelect form={form} customerValue={customerValue} />
-
-          <Form.Item label="Contacts" name="contact_id">
-            <CommonSelect
-              style={{width: '100%'}}
-              placeholder="Contacts"
-              options={billingOptionsData}
+            <OsCustomerSelect
+              setCustomerValue={setCustomerValue}
+              customerValue={customerValue}
             />
-          </Form.Item>
-        </Col>
-      </Row>
-    </Form>
+
+            <OsOpportunitySelect form={form} customerValue={customerValue} />
+
+            <Form.Item label="Contacts" name="contact_id">
+              <CommonSelect
+                style={{width: '100%'}}
+                placeholder="Contacts"
+                options={billingOptionsData}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
+    </GlobalLoader>
   );
 };
 

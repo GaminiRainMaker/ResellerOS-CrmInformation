@@ -16,6 +16,7 @@ import {
 
 type QuoteState = {
   loading: boolean;
+  quoteByIdLoading: boolean;
   error: string | null;
   data: any;
   quote: any;
@@ -24,6 +25,7 @@ type QuoteState = {
 };
 const initialState: QuoteState = {
   loading: false,
+  quoteByIdLoading: false,
   error: null,
   data: [],
   quote: [],
@@ -72,15 +74,15 @@ const quoteSlice = createSlice({
         },
       )
       .addCase(getQuoteById.pending, (state) => {
-        state.loading = true;
+        state.quoteByIdLoading = true;
         state.error = null;
       })
       .addCase(getQuoteById.fulfilled, (state, action: PayloadAction<any>) => {
-        state.loading = false;
+        state.quoteByIdLoading = false;
         state.quoteById = action.payload;
       })
       .addCase(getQuoteById.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
+        state.quoteByIdLoading = false;
         state.error = action.payload;
       })
       .addCase(updateQuoteDraftById.pending, (state) => {
