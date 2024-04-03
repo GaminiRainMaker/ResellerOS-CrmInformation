@@ -504,13 +504,9 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       fetch(fileData?.pdfUrl)
         .then((res) => res.blob())
         .then(async (file) => {
-          const finalFile = new File(
-            [file],
-            'name',
-            // {
-            //   type: file.type,
-            // }
-          );
+          const finalFile = new File([file], 'name', {
+            type: file.type,
+          });
           const response = await sendDataToNanonets(
             'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
             finalFile,

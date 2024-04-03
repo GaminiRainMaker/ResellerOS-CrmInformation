@@ -397,10 +397,11 @@ export const updateTables = async (
 
 export const sendDataToNanonets = async (model_id: string, file: File) => {
   let API_ENDPOINT = '';
-  if (file?.type.includes('pdf')) {
-    API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/${model_id}/LabelFile/`;
-  } else {
+
+  if (file?.type.includes('spreadsheetml')) {
     API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/0ba764d3-bfd5-4756-bdb1-0e5bc427bdda/LabelFile/`;
+  } else {
+    API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/${model_id}/LabelFile/`;
   }
   const API_KEY = '198c15fd-9680-11ed-82f6-7a0abc6e8cc8';
   const formData = new FormData();
