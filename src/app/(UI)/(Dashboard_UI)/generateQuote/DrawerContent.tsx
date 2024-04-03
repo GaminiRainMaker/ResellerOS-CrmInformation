@@ -2,79 +2,42 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-nested-ternary */
 import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
-import OsButton from '@/app/components/common/os-button';
+import OsCustomerSelect from '@/app/components/common/os-customer-select';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsInput from '@/app/components/common/os-input';
+import OsOpportunitySelect from '@/app/components/common/os-opportunity-select';
 import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import Typography from '@/app/components/common/typography';
+import {quoteStatusOptions} from '@/app/utils/CONSTANTS';
+import {formatDate} from '@/app/utils/base';
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
-import {formatDate} from '@/app/utils/base';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
-import {
-  getAllOpportunity,
-  updateOpportunity,
-} from '../../../../../redux/actions/opportunity';
-import {
-  getQuoteById,
-  updateQuoteById,
-} from '../../../../../redux/actions/quote';
-import {getQuoteLineItemByQuoteId} from '../../../../../redux/actions/quotelineitem';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
+import {getQuoteById} from '../../../../../redux/actions/quote';
 import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
-interface FormDataProps {
-  file_name: string;
-  opportunity_id: number;
-  customer_id: number;
-}
-
-const DrawerContent: FC<any> = ({setOpen}) => {
+const DrawerContent: FC<any> = ({open, form, onFinish}) => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
-  const getQuoteLineItemId = searchParams.get('id');
+  const getQuoteId = searchParams.get('id');
   const {data: dataAddress} = useAppSelector((state) => state.customer);
-  const {quoteLineItemByQuoteID} = useAppSelector(
-    (state) => state.quoteLineItem,
-  );
   const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
   const {data: generalSettingData} = useAppSelector(
     (state) => state.gereralSetting,
   );
-  const {quoteById} = useAppSelector((state) => state.quote);
-
-  const [form] = Form.useForm();
+  const {quoteById, quoteByIdLoading} = useAppSelector((state) => state.quote);
   const [customerValue, setCustomerValue] = useState<number>(0);
   const [quoteData, setQuoteData] = useState<any>();
-  const [drawerData, setDrawerData] = useState<{
-    id: number | string;
-    createdAt: string;
-    status: string;
-    formData: FormDataProps;
-  }>({
-    id: 1,
-    createdAt: quoteLineItemByQuoteID?.[0]?.Quote?.createdAt ?? '12/11/2023',
-    status: quoteLineItemByQuoteID?.[0]?.Quote?.is_completed
-      ? 'Completed'
-      : quoteLineItemByQuoteID?.[0]?.Quote?.is_drafted
-        ? 'In Progress'
-        : 'Drafts',
-    formData: {
-      file_name: quoteLineItemByQuoteID?.[0]?.Quote?.file_name ?? '',
-      opportunity_id: quoteLineItemByQuoteID?.[0]?.Quote?.opportunity_id ?? 0,
-      customer_id: quoteLineItemByQuoteID?.[0]?.Quote?.customer_id ?? 0,
-    },
-  });
-
-  const [customerOptionsData, setCustomerOptionData] = useState<any>();
   const [billingOptionsData, setBillingOptionData] = useState<any>();
   const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const [opportunityObject, setOpportunityObject] = useState<any>();
+  const {userInformation} = useAppSelector((state) => state.user);
 
   // BillingContacts
-
   useEffect(() => {
     const customerOptions: any = [];
     const updatedAllBillingContact: any = [];
@@ -107,19 +70,13 @@ const DrawerContent: FC<any> = ({setOpen}) => {
       });
     });
 
-    setCustomerOptionData(customerOptions);
     setBillingOptionData(updatedAllBillingContact);
   }, [dataAddress, customerValue]);
-
-  const opportunityOptions = opportunityData.map((opportunity: any) => ({
-    value: opportunity.id,
-    label: opportunity.title,
-  }));
 
   useEffect(() => {
     dispatch(getAllCustomer({}));
     dispatch(getAllOpportunity());
-    dispatch(getQuoteById(Number(getQuoteLineItemId))).then((payload) => {
+    dispatch(getQuoteById(Number(getQuoteId))).then((payload) => {
       setQuoteData(payload?.payload);
     });
     dispatch(getAllSyncTable('Quote'));
@@ -151,119 +108,117 @@ const DrawerContent: FC<any> = ({setOpen}) => {
     setOpportunityObject(singleObjects);
   }, [syncTableData, quoteData]);
 
-  const onSubmit = async (values: FormDataProps) => {
-    if (
-      generalSettingData?.attach_doc_type === 'opportunity' ||
-      syncTableData?.length > 0
-    ) {
-      const opportunityDataItemPDfUrl: any = [];
-      let OpportunityValue: any = {};
-      opportunityData?.map((opportunityDataItem: any) => {
-        if (opportunityDataItem?.id === values?.opportunity_id) {
-          opportunityDataItemPDfUrl.push(
-            opportunityDataItem?.pdf_url,
-            quoteById?.pdf_url,
-          );
-          if (generalSettingData?.attach_doc_type === 'opportunity') {
-            OpportunityValue = {
-              ...opportunityObject,
-              id: opportunityDataItem?.id,
-              pdf_url: [
-                ...(opportunityDataItem?.pdf_url || []),
-                ...opportunityDataItemPDfUrl.flat(),
-              ],
-            };
-          }
-        }
-      });
-      if (generalSettingData?.attach_doc_type === 'opportunity') {
-        dispatch(updateOpportunity(OpportunityValue));
-      } else {
-        dispatch(updateOpportunity(opportunityObject));
-      }
-    }
+  useEffect(() => {
+    if (getQuoteId) dispatch(getQuoteById(Number(getQuoteId)));
+  }, [open]);
 
-    setDrawerData((prev) => ({...prev, formData: values}));
-    const obj = {
-      id: Number(getQuoteLineItemId),
-      ...values,
-    };
-    dispatch(updateQuoteById(obj));
-    dispatch(getQuoteLineItemByQuoteId(Number(getQuoteLineItemId)));
-    setOpen(false);
-  };
+  // const onSubmit = async (values: FormDataProps) => {
+  //   console.log('values123', values)
+  // if (
+  //   generalSettingData?.attach_doc_type === 'opportunity' ||
+  //   syncTableData?.length > 0
+  // ) {
+  //   const opportunityDataItemPDfUrl: any = [];
+  //   let OpportunityValue: any = {};
+  //   opportunityData?.map((opportunityDataItem: any) => {
+  //     if (opportunityDataItem?.id === values?.opportunity_id) {
+  //       opportunityDataItemPDfUrl.push(
+  //         opportunityDataItem?.pdf_url,
+  //         quoteById?.pdf_url,
+  //       );
+  //       if (generalSettingData?.attach_doc_type === 'opportunity') {
+  //         OpportunityValue = {
+  //           ...opportunityObject,
+  //           id: opportunityDataItem?.id,
+  //           pdf_url: [
+  //             ...(opportunityDataItem?.pdf_url || []),
+  //             ...opportunityDataItemPDfUrl.flat(),
+  //           ],
+  //         };
+  //       }
+  //     }
+  //   });
+  //   if (generalSettingData?.attach_doc_type === 'opportunity') {
+  //     dispatch(updateOpportunity(OpportunityValue));
+  //   } else {
+  //     dispatch(updateOpportunity(opportunityObject));
+  //   }
+  // }
+  //   setDrawerData((prev) => ({...prev, formData: values}));
+  //   const obj = {
+  //     id: Number(getQuoteLineItemId),
+  //     ...values,
+  //   };
+  //   dispatch(updateQuoteById(obj));
+  //   setOpen(false);
+  // };
+
+  useEffect(() => {
+    form.setFieldsValue({
+      file_name: quoteById?.file_name,
+      opportunity_id: quoteById?.opportunity_id,
+      customer_id: quoteById?.customer_id,
+      contact_id: quoteById?.contact_id,
+      status: quoteById?.status,
+    });
+    setCustomerValue(quoteById?.customer_id);
+  }, [quoteById]);
 
   return (
-    <Space size={24} style={{width: '100%'}} direction="vertical">
-      <Row justify="space-between">
-        <Col>
-          <Typography name="Body 4/Medium" as="div">
-            Quote Generate Date
-          </Typography>
-          <Typography name="Body 2/Regular">
-            {formatDate(drawerData?.createdAt, 'MM/DD/YYYY | HH:MM')}
-          </Typography>
-        </Col>
-        <Col>
-          <Typography name="Body 4/Medium" as="div">
-            Status
-          </Typography>
-          <OsStatusWrapper value={drawerData?.status} />
-        </Col>
-      </Row>
-      <Row>
-        <Col style={{width: '100%'}}>
-          <Form
-            layout="vertical"
-            name="wrap"
-            wrapperCol={{flex: 1}}
-            onFinish={onSubmit}
-            form={form}
-            initialValues={drawerData?.formData}
-          >
+    <GlobalLoader loading={quoteByIdLoading}>
+      <Form
+        layout="vertical"
+        name="wrap"
+        wrapperCol={{flex: 1}}
+        onFinish={onFinish}
+        form={form}
+        requiredMark={false}
+      >
+        <Row justify="space-between">
+          <Col span={12}>
+            <Typography name="Body 4/Medium" as="div">
+              Quote Generate Date
+            </Typography>
+            <Typography name="Body 2/Regular">
+              {formatDate(quoteById?.createdAt, 'MM/DD/YYYY | HH:MM')}
+            </Typography>
+          </Col>
+          <Col>
+            <Form.Item
+              label={
+                <Typography name="Body 4/Medium" as="div">
+                  Status
+                </Typography>
+              }
+              name="status"
+            >
+              <CommonSelect options={quoteStatusOptions} />
+            </Form.Item>
+          </Col>
+
+          <Col span={24}>
             <Form.Item label="File Name" name="file_name">
               <OsInput />
             </Form.Item>
 
-            <Form.Item label="Opportunity" name="opportunity_id">
-              <CommonSelect
-                style={{width: '100%'}}
-                placeholder="Select Opportunity"
-                options={opportunityOptions}
-                // value={}
-              />
-            </Form.Item>
+            <OsCustomerSelect
+              setCustomerValue={setCustomerValue}
+              customerValue={customerValue}
+            />
 
-            <Form.Item label="Customer" name="customer_id">
-              <CommonSelect
-                style={{width: '100%'}}
-                placeholder="Select Customer"
-                options={customerOptionsData}
-                onChange={(e) => {
-                  setCustomerValue(e);
-                }}
-              />
-            </Form.Item>
+            <OsOpportunitySelect form={form} customerValue={customerValue} />
 
-            <Form.Item label="Contacts" name="billing_contact">
+            <Form.Item label="Contacts" name="contact_id">
               <CommonSelect
                 style={{width: '100%'}}
                 placeholder="Contacts"
                 options={billingOptionsData}
               />
             </Form.Item>
-
-            <Form.Item label=" ">
-              <OsButton
-                text="Update Changes"
-                buttontype="PRIMARY"
-                clickHandler={() => form.submit()}
-              />
-            </Form.Item>
-          </Form>
-        </Col>
-      </Row>
-    </Space>
+          </Col>
+        </Row>
+      </Form>
+    </GlobalLoader>
   );
 };
 

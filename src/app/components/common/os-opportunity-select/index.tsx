@@ -16,6 +16,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
   customerValue,
   isAddNewOpportunity = false,
   form,
+  value,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -31,7 +32,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
   }, []);
 
   useEffect(() => {
-    form?.resetFields(['opportunity_id']);
+    form?.resetFields(['opportunity_id','contact_id']);
     const filterUsers = opportunityData?.filter((item: any) =>
       item?.customer_id?.toString()?.includes(customerValue),
     );
@@ -58,6 +59,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
         <CommonSelect
           placeholder="Select"
           allowClear
+          defaultValue={value}
           style={{width: '100%'}}
           options={opportunityFilterOption}
           dropdownRender={(menu) => (

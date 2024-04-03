@@ -19,8 +19,8 @@ import Typography from '@/app/components/common/typography';
 // eslint-disable-next-line import/no-extraneous-dependencies
 
 import AddQuote from '@/app/components/common/addQuote';
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
@@ -30,8 +30,8 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 import {
   deleteQuoteById,
@@ -39,12 +39,12 @@ import {
   updateQuoteByQuery,
 } from '../../../../../redux/actions/quote';
 
-import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { getAllSyncTable } from '../../../../../redux/actions/syncTable';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import RecentSection from './RecentSection';
 import QuoteAnalytics from './analytics';
-import {dropDownItems, tabItems} from './constants';
-import {getColumns} from './tableColumns';
+import { dropDownItems, tabItems } from './constants';
+import { getColumns } from './tableColumns';
 
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -55,7 +55,6 @@ const AllQuote: React.FC = () => {
   );
   const router = useRouter();
   const [uploadFileData, setUploadFileData] = useState<any>([]);
-  const [existingQuoteId, setExistingQuoteId] = useState<number>();
   const [quoteData, setQuoteData] = useState<React.Key[]>([]);
   const [deletedQuote, setDeletedQuote] = useState<React.Key[]>([]);
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
@@ -94,28 +93,32 @@ const AllQuote: React.FC = () => {
     if (activeTab && quoteData.length > 0) {
       const quoteItems =
         activeTab === '3'
-          ? quoteData?.filter((item: any) => item?.is_drafted)
+          ? quoteData?.filter((item: any) =>
+              item?.status?.includes('In Progress'),
+            )
           : activeTab === '5'
-            ? quoteData?.filter(
-                (item: any) => item?.approver_id === userInformation?.id,
+            ? quoteData?.filter((item: any) =>
+                item?.status?.includes('In Review'),
               )
             : activeTab === '4'
-              ? quoteData?.filter(
-                  (item: any) =>
-                    item.is_completed &&
-                    item?.approver_id !== userInformation?.id &&
-                    !item?.approved_request &&
-                    !item?.rejected_request,
+              ? quoteData?.filter((item: any) =>
+                  item?.status?.includes('Needs Review'),
                 )
               : activeTab == '1'
                 ? quoteData
                 : activeTab === '6'
-                  ? quoteData?.filter((item: any) => item?.approved_request)
+                  ? quoteData?.filter((item: any) =>
+                      item?.status?.includes('Approved'),
+                    )
                   : activeTab === '7'
-                    ? quoteData?.filter((item: any) => item?.rejected_request)
-                    : quoteData?.filter(
-                        (item: any) => !item?.is_completed && !item?.is_drafted,
-                      );
+                    ? quoteData?.filter((item: any) =>
+                        item?.status?.includes('Rejected'),
+                      )
+                    : activeTab === '2'
+                      ? quoteData?.filter((item: any) =>
+                          item?.status?.includes('Drafts'),
+                        )
+                      : [];
       setActiveQuotes(quoteItems);
     } else {
       setActiveQuotes([]);
@@ -155,7 +158,6 @@ const AllQuote: React.FC = () => {
 
   const rowSelection = {
     onChange: (selectedRowKeys: any) => {
-      setExistingQuoteId(Number(selectedRowKeys));
       setDeleteIds(selectedRowKeys);
     },
     getCheckboxProps: (record: any) => ({
@@ -205,7 +207,6 @@ const AllQuote: React.FC = () => {
             uploadFileData={uploadFileData}
             setUploadFileData={setUploadFileData}
             loading={loading}
-            existingQuoteId={existingQuoteId}
             buttonText="Add Quote"
           />
         }

@@ -44,6 +44,7 @@ import {
 } from '../../../../../../redux/actions/quoteFile';
 import {
   DeleteQuoteLineItemById,
+  getQuoteLineItemByQuoteId,
   getQuoteLineItemByQuoteIdandBundleIdNull,
 } from '../../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
@@ -95,6 +96,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   const [api, contextHolder] = notification.useNotification();
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
   const [confirmedData, setConfirmedData] = useState<boolean>(false);
+  const [defaultDataShow, setDefaultDataShow] = useState<boolean>(true);
 
   const openNotificationWithIcon = () => {
     api.warning({
@@ -410,6 +412,10 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         finalFamilyArr?.push(obj);
       }
       setFamilyFilter(finalFamilyArr);
+    } else if (!selectedFilter) {
+      setDefaultDataShow(false);
+    } else if (selectedFilter === 'File Name') {
+      setDefaultDataShow(true);
     }
   }, [selectedFilter]);
 
@@ -437,13 +443,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
 
   useEffect(() => {
     dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
-    // dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID))).then((d: any) => {
-    //   setQuoteLineItemByQuoteData(d?.payload);
-    //   if (d?.payload && d?.payload?.length > 0) {
-    //     setQuoteLineItemExist(true);
-    //   }
-    // });
-  }, [getQuoteID]);
+    dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID)));
+  }, [getQuoteID, defaultDataShow]);
 
   useEffect(() => {
     const separatedData: any = {};
@@ -472,7 +473,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
 
     const result = Object.values(separatedData);
     setQuoteLineItemByQuoteData1(result);
-  }, [quoteFileData]);
+  }, [quoteFileData, defaultDataShow]);
 
   const addConcernData = async () => {
     const raiseIssueData = form?.getFieldsValue();
@@ -568,7 +569,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       userInformation,
       dispatch,
     );
-    console.log('isState', isState);
     if (isState) {
       setConfirmedData(false);
       dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
@@ -710,7 +710,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
               </>
             ) : (
               <>
-                {selectedFilter ? (
+                {selectedFilter && selectedFilter !== 'File Name'  ? (
                   <>
                     {' '}
                     {familyFilter?.map((item: any, index: any) => (
@@ -747,77 +747,93 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                     ))}
                   </>
                 ) : (
-                  <GlobalLoader loading={quoteFileDataLoading}>
-                    {quoteLineItemByQuoteData1?.length > 0 ? (
-                      quoteLineItemByQuoteData1?.map((item: any) => (
-                        <OsCollapse
-                          items={[
-                            {
-                              key: '1',
-                              label: (
-                                <>
-                                  <Row justify="space-between">
-                                    <Col>
-                                      <p>{item?.title}</p>
-                                    </Col>
-                                    <Col>
-                                      <p>Line Items: {item?.totalCount}</p>
-                                    </Col>
-                                    <Col>
-                                      <p>
-                                        Total Cost: {item?.totalAdjustedPrice}
-                                      </p>
-                                    </Col>
-                                    <Col>
-                                      <Space>
-                                        <CheckIcon
-                                          width={25}
-                                          color={token?.colorSuccess}
-                                          onClick={(e) => {
-                                            e?.stopPropagation();
-                                            setShowVerificationFileModal(true);
-                                            setFileLineItemIds(item?.id);
-                                            setFileData(item);
-                                          }}
-                                        />
-                                        <XMarkIcon
-                                          width={25}
-                                          color={token?.colorError}
-                                          onClick={(e) => {
-                                            e?.stopPropagation();
-                                            setShowRaiseConcernModal(true);
-                                            setFileLineItemIds(item?.id);
-                                            setFileData(item);
-                                          }}
-                                        />
-                                      </Space>
-                                    </Col>
-                                  </Row>
-                                </>
-                              ),
-                              children: (
-                                <OsTableWithOutDrag
-                                  columns={finalInputColumn}
-                                  dataSource={item?.quoteLineItems || []}
-                                  rowSelection={rowSelection}
-                                  scroll
-                                  loading={false}
-                                  locale={locale}
-                                />
-                              ),
-                            },
-                          ]}
-                        />
-                      ))
+                  <>
+                    {defaultDataShow ? (
+                      <GlobalLoader loading={quoteFileDataLoading}>
+                        {quoteLineItemByQuoteData1?.length > 0 ? (
+                          quoteLineItemByQuoteData1?.map((item: any) => (
+                            <OsCollapse
+                              items={[
+                                {
+                                  key: '1',
+                                  label: (
+                                    <>
+                                      <Row justify="space-between">
+                                        <Col>
+                                          <p>{item?.title}</p>
+                                        </Col>
+                                        <Col>
+                                          <p>Line Items: {item?.totalCount}</p>
+                                        </Col>
+                                        <Col>
+                                          <p>
+                                            Total Cost:{' '}
+                                            {item?.totalAdjustedPrice}
+                                          </p>
+                                        </Col>
+                                        <Col>
+                                          <Space>
+                                            <CheckIcon
+                                              width={25}
+                                              color={token?.colorSuccess}
+                                              onClick={(e) => {
+                                                e?.stopPropagation();
+                                                setShowVerificationFileModal(
+                                                  true,
+                                                );
+                                                setFileLineItemIds(item?.id);
+                                                setFileData(item);
+                                              }}
+                                            />
+                                            <XMarkIcon
+                                              width={25}
+                                              color={token?.colorError}
+                                              onClick={(e) => {
+                                                e?.stopPropagation();
+                                                setShowRaiseConcernModal(true);
+                                                setFileLineItemIds(item?.id);
+                                                setFileData(item);
+                                              }}
+                                            />
+                                          </Space>
+                                        </Col>
+                                      </Row>
+                                    </>
+                                  ),
+                                  children: (
+                                    <OsTableWithOutDrag
+                                      columns={finalInputColumn}
+                                      dataSource={item?.quoteLineItems || []}
+                                      rowSelection={rowSelection}
+                                      scroll
+                                      loading={false}
+                                      locale={locale}
+                                    />
+                                  ),
+                                },
+                              ]}
+                            />
+                          ))
+                        ) : (
+                          <OsTableWithOutDrag
+                            columns={finalInputColumn}
+                            scroll
+                            loading={false}
+                            locale={locale}
+                          />
+                        )}
+                      </GlobalLoader>
                     ) : (
                       <OsTableWithOutDrag
                         columns={finalInputColumn}
+                        dataSource={quoteLineItemByQuoteData || []}
+                        rowSelection={rowSelection}
                         scroll
                         loading={false}
                         locale={locale}
                       />
                     )}
-                  </GlobalLoader>
+                  </>
                 )}{' '}
               </>
             )}

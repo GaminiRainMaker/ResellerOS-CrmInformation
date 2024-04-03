@@ -142,3 +142,16 @@ export const updateQuoteConcern = createAsyncThunk(
     }
   },
 );
+
+
+export const updateQuoteStatusById = createAsyncThunk(
+  'quote/updateQuoteStatusById',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await QUOTEAPI.updateQuoteStatusById(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

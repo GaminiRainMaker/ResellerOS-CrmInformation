@@ -78,7 +78,6 @@ const OpportunityDetails = () => {
           cursor="pointer"
           color={token?.colorPrimaryText}
           onClick={() => {
-            // router?.push(`/accountDetails?id=${getQuoteID}`);
           }}
         >
           {OpportunityData?.title}

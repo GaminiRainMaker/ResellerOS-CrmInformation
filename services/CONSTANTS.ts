@@ -16,6 +16,7 @@ export const API = {
     UpdateQuoteWithNewlineItemAdd: '/quote/updateQuoteWithNewlineItemAdd',
     updateQuoteJson: '/quote/updateQuoteJsonAndManual',
     ConcernUpdate: '/quote/updateQuoteConcern',
+    UpdateQuoteStatusById: '/quote/updateQuoteStatusById',
   },
   QUOTE_LINE_ITEM: {
     INDEX: '/quoteLineItem',

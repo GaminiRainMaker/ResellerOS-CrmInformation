@@ -25,11 +25,9 @@ import {AddQuoteInterface, FormattedData} from './types';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
-  // existingQuoteId,
   setUploadFileData,
   buttonText,
   uploadForm,
-  // rowSelection,
   setShowToggleTable,
   showToggleTable,
   Quotecolumns,
@@ -136,6 +134,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
             customer_id: customerId,
             opportunity_id: opportunityId,
             organization: userInformation.organization,
+            status: 'Drafts',
             quoteFileObj: [
               {
                 file_name: updatedArr[i]?.file?.name,

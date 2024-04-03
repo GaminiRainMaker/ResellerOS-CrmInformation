@@ -5,16 +5,18 @@ import {OsStageType} from './os-stage-interface';
 import {StageSelectStyle} from './styled-components';
 
 interface CommonStageSelectProps {
-  currentStage: keyof OsStageType;
+  currentStage?: keyof OsStageType;
   onChange?: any;
   options?: any;
   style?: any;
+  placeholder?: string;
 }
 
 const CommonStageSelect: FC<CommonStageSelectProps> = ({
   currentStage,
   onChange,
   style,
+  placeholder = 'Select Stage',
   ...rest
 }) => {
   const [token] = useThemeToken();
@@ -122,7 +124,7 @@ const CommonStageSelect: FC<CommonStageSelectProps> = ({
       backgroundColor={selectedStage?.color}
       color={selectedStage?.textColor}
       borderColor={selectedStage?.border}
-      placeholder="Select Stage"
+      placeholder={placeholder}
       suffixIcon={
         <ChevronDownIcon width={20} color={selectedStage?.textColor} />
       }

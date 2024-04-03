@@ -1,4 +1,5 @@
 import {Space} from '@/app/components/common/antd/Space';
+import OsStatusWrapper from '@/app/components/common/os-status';
 import Typography from '@/app/components/common/typography';
 import {formatDate, formatDateWithTime} from '@/app/utils/base';
 import {EyeIcon, TrashIcon} from '@heroicons/react/24/outline';
@@ -98,7 +99,12 @@ function getColumns(
       dataIndex: 'status',
       key: 'status',
       width: 187,
-      render: (text: string, record: any) => statusWrapper(record),
+      // render: (text: string, record: any) => statusWrapper(record),
+      render: (text: string) => (
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+          <OsStatusWrapper value={text} />
+        </div>
+      ),
     },
     {
       title: ' ',
