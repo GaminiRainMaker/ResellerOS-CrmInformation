@@ -31,6 +31,7 @@ export const API = {
     UpdateQuoteLineItemConcern: '/quoteLineItem/updateQuoteLineItemConcern',
     UpdateQuoteLineItemVerified: '/quoteLineItem/updateQuoteLineItemVerified',
     deleteQuoteLineByQuoteId: '/quoteLineItem/deleteQuoteLineItemByQuoteId',
+    GetQuoteLineItemByQuoteIdForTableEdits: '/quoteLineItem/getQuoteLineItemByQuoteIdForEditTable',
   },
   USER: {
     INDEX: '/user',

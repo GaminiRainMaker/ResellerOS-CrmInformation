@@ -45,6 +45,11 @@ export const QUOTE_LINE_ITEM_API = {
       AxiosResponse<any>
     >,
 
+  getQuoteLineItemByQuoteIdForTableEdit: (id: number) =>
+    get(
+      `${API.QUOTE_LINE_ITEM.GetQuoteLineItemByQuoteIdForTableEdits}/${id}`,
+    ) as Promise<AxiosResponse<any>>,
+
   // put: (id: number, data: any) => put(API.QUOTE_LINE_ITEM.INDEX + "/" + id, data),
   // delete: (id: number) => del(API.QUOTE_LINE_ITEM.INDEX + "/" + id),
 };

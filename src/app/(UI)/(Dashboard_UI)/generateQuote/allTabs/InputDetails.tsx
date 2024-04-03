@@ -463,6 +463,9 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       }
 
       item?.QuoteLineItems?.forEach((quoteLineItem: any) => {
+        if (quoteLineItem?.is_deleted) {
+          return;
+        }
         separatedData[fileName].quoteLineItems.push(quoteLineItem);
         separatedData[fileName].totalCount++;
         separatedData[fileName].totalAdjustedPrice += parseFloat(
@@ -710,7 +713,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
               </>
             ) : (
               <>
-                {selectedFilter && selectedFilter !== 'File Name'  ? (
+                {selectedFilter && selectedFilter !== 'File Name' ? (
                   <>
                     {' '}
                     {familyFilter?.map((item: any, index: any) => (

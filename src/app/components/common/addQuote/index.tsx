@@ -166,13 +166,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
           // eslint-disable-next-line no-unsafe-optional-chaining
 
           quotesArr[i] = {...response?.payload?.data[0], ...quotesArr[i]};
-          console.log(
-            'response',
-            response,
-            singleQuote,
-            quotesArr[i],
-            quotesArr[0]?.id,
-          );
         }
       } else {
         const payload = await dispatch(getQuoteById(quoteId));
@@ -197,7 +190,11 @@ const AddQuote: FC<AddQuoteInterface> = ({
             j++
           ) {
             const lineItem = quotesArr[i].quoteFileObj[k]?.lineItems[j];
-            const insertedProduct = await dispatch(insertProduct(lineItem));
+            let insertedProduct;
+            if (lineItem?.product_code) {
+              insertedProduct = await dispatch(insertProduct(lineItem));
+            }
+
             if (insertedProduct?.payload?.id) {
               const obj1: any = {
                 quote_id: quotesArr[i]?.id,
@@ -273,8 +270,14 @@ const AddQuote: FC<AddQuoteInterface> = ({
     dispatch(getQuotesByDateFilter({}));
     setShowModal(false);
     setUploadFileData([]);
-    router.push(`/generateQuote?id=${quotesArr[0]?.id}`);
-    form.resetFields(['customer_id', 'opportunity_id']);
+
+    if (!singleQuote && updatedArr?.length > 1) {
+      form.resetFields(['customer_id', 'opportunity_id']);
+    } else {
+      router.push(`/generateQuote?id=${quotesArr[0]?.id}`);
+
+      form.resetFields(['customer_id', 'opportunity_id']);
+    }
   };
 
   const resetFields = () => {

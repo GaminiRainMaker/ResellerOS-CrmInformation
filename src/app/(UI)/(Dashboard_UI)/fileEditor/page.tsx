@@ -26,7 +26,10 @@ import {addClassesToRows, alignHeaders} from './hooksCallbacks';
 
 import 'handsontable/dist/handsontable.min.css';
 import {getQuoteFileById} from '../../../../../redux/actions/quoteFile';
-import {getQuoteLineItemByQuoteId} from '../../../../../redux/actions/quotelineitem';
+import {
+  getQuoteLineItemByQuoteId,
+  getQuoteLineItemByQuoteIdForEditTable,
+} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
 
@@ -47,18 +50,10 @@ const EditorFile = () => {
 
   useEffect(() => {
     const newArrr: any = [];
-    if (quoteFileById?.QuoteLineItems) {
-      quoteFileById?.QuoteLineItems?.map((itemsss: any) => {
+    if (quoteItems) {
+      quoteItems?.map((itemsss: any) => {
         if (itemsss) {
           const newObj: any = {...itemsss};
-          delete newObj.Product;
-          delete newObj.Quote;
-          // delete newObj.quote_id;
-          delete newObj.user_id;
-          // delete newObj.quote_config_id;
-          // delete newObj.product_id;
-          // delete newObj.customer_id;
-          delete newObj.is_deleted;
           newArrr?.push(newObj);
         }
       });
@@ -78,13 +73,15 @@ const EditorFile = () => {
 
   useEffect(() => {
     if (ExistingQuoteItemss === 'true') {
-      dispatch(getQuoteLineItemByQuoteId(Number(getQUoteId))).then((d: any) => {
-        if (d?.payload) {
-          // const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
-          setQuoteItems(d?.payload);
-          const allHeaderValue: any = [];
-        }
-      });
+      dispatch(getQuoteLineItemByQuoteIdForEditTable(Number(getQUoteId))).then(
+        (d: any) => {
+          if (d?.payload) {
+            // const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
+            setQuoteItems(d?.payload);
+            const allHeaderValue: any = [];
+          }
+        },
+      );
     } else {
       const quoteJson = quoteFileById?.quote_json;
 
@@ -242,11 +239,19 @@ const EditorFile = () => {
   };
 
   const updateLineItemColumn: any = [];
+  const updateLineItemColumnData: any = [];
   const keysss =
     updateLineItemsValue?.length > 0 && Object.keys(updateLineItemsValue?.[0]);
   if (keysss) {
     keysss?.map((item: any) => {
       if (item) {
+        if (item === 'id' || item === 'quote_id' || item === 'organization') {
+          const dataObj = {data: item, readOnly: true};
+          updateLineItemColumnData?.push(dataObj);
+        } else {
+          const dataObj = {data: item};
+          updateLineItemColumnData?.push(dataObj);
+        }
         updateLineItemColumn?.push(formatStatus(item));
       }
     });
@@ -263,6 +268,7 @@ const EditorFile = () => {
     );
     router?.push(`/generateQuote?id=${getQUoteId}`);
   };
+
   return (
     <>
       <div
@@ -303,6 +309,7 @@ const EditorFile = () => {
               columnHeaderHeight={40}
               height="auto"
               colHeaders={updateLineItemColumn}
+              columns={updateLineItemColumnData}
               width="auto"
               minSpareRows={0}
               autoWrapRow
@@ -389,7 +396,7 @@ const EditorFile = () => {
                   multiColumnSorting
                   filters
                   rowHeaders
-                  allowInsertRow={false}
+                  allowInsertRow
                   allowInsertColumn
                   afterGetColHeader={alignHeaders}
                   beforeRenderer={() => {
@@ -481,7 +488,7 @@ const EditorFile = () => {
                           multiColumnSorting
                           filters
                           rowHeaders
-                          allowInsertRow={false}
+                          allowInsertRow
                           allowInsertColumn={false}
                           afterGetColHeader={alignHeaders}
                           beforeRenderer={() => {

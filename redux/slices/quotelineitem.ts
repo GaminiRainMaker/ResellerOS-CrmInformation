@@ -13,6 +13,7 @@ import {
   updateQuoteLineItemById,
   updateQuoteLineItemVerified,
   deleteQuoteLineItemsByQuoteId,
+  getQuoteLineItemByQuoteIdForEditTable,
 } from '../actions/quotelineitem';
 
 type QuoteLineItemState = {
@@ -238,6 +239,24 @@ const quoteLineItemSlice = createSlice({
       )
       .addCase(
         deleteQuoteLineItemsByQuoteId.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getQuoteLineItemByQuoteIdForEditTable.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getQuoteLineItemByQuoteIdForEditTable.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getQuoteLineItemByQuoteIdForEditTable.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
