@@ -517,35 +517,42 @@ const InputDetails: FC<InputDetailTabInterface> = ({
           );
           const newArrrrAll: any = [];
           if (response) {
-            const newArrrr: any = [];
             for (let i = 0; i < response?.data?.result?.length; i++) {
               const itemss: any = response?.data?.result[i];
 
               const newItemsssadsd = itemss?.prediction?.filter(
                 (item: any) => item,
               );
-              newArrrr?.push(newItemsssadsd);
-            }
-            const newAllgetOArr: any = [];
-            newArrrr?.map((itemNew: any) => {
-              let formattedArray1: any = [];
-              const formattedData1: any = {};
-              itemNew?.map((itemIner1: any) => {
-                if (itemIner1?.cells) {
-                  itemIner1?.cells.forEach((item: any) => {
+              const newAllgetOArr: any = [];
+              newItemsssadsd?.map((itemNew: any) => {
+                let formattedArray1: any = [];
+                const formattedData1: any = {};
+                if (itemNew?.cells) {
+                  const titles = itemNew?.cells.filter(
+                    (innerCell: any) => innerCell.row === 1,
+                  );
+                  itemNew?.cells.forEach((item: any) => {
                     const rowNum = item.row;
+                    if (rowNum === 1) {
+                      return;
+                    }
                     if (!formattedData1[rowNum]) {
                       formattedData1[rowNum] = {};
                     }
-                    formattedData1[rowNum][item.label?.toLowerCase()] =
-                      item.text;
+                    formattedData1[rowNum][
+                      item.label?.toLowerCase()
+                        ? item.label?.toLowerCase()
+                        : titles.find(
+                            (titleRow: any) => titleRow.col === item.col,
+                          ).text
+                    ] = item.text;
                   });
                 }
+                formattedArray1 = Object.values(formattedData1);
+                newAllgetOArr?.push(formattedArray1);
+                newArrrrAll?.push(formattedArray1);
               });
-              formattedArray1 = Object.values(formattedData1);
-              newAllgetOArr?.push(formattedArray1);
-              newArrrrAll?.push(formattedArray1);
-            });
+            }
 
             const jsonDataa = {
               id: fileLineItemIds,
