@@ -379,6 +379,8 @@ const EditorFile = () => {
 
                 <HotTable
                   data={mergedValue}
+                  allowRemoveColumn
+                  dropdownMenu
                   colWidths={200}
                   columnHeaderHeight={40}
                   height="auto"
@@ -388,7 +390,6 @@ const EditorFile = () => {
                   autoWrapRow
                   autoWrapCol
                   licenseKey="non-commercial-and-evaluation"
-                  dropdownMenu
                   hiddenColumns={{
                     indicators: true,
                   }}
@@ -406,7 +407,6 @@ const EditorFile = () => {
                     deleteRowsItems(source, change);
                   }}
                   afterChange={(change: any, source) => {
-                    console.log('433223423', change, source);
                     if (change) {
                       updateRowsValue(
                         change?.[0]?.[0],

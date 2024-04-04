@@ -462,10 +462,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         };
       }
 
-      item?.QuoteLineItems?.forEach((quoteLineItem: any) => {
-        if (quoteLineItem?.is_deleted) {
-          return;
-        }
+      item?.Quote?.QuoteLineItems?.forEach((quoteLineItem: any) => {
         separatedData[fileName].quoteLineItems.push(quoteLineItem);
         separatedData[fileName].totalCount++;
         separatedData[fileName].totalAdjustedPrice += parseFloat(
@@ -608,7 +605,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                               }}
                             >
                               <p>{item?.name}</p>
-                              <p>Lines:{item?.QuoteLineItems?.length}</p>
+                              <p>Lines:{item?.Quote?.QuoteLineItems?.length}</p>
                               <p>Desc: {item?.description}</p>
                               <p>
                                 Quantity:
@@ -633,7 +630,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                             loading={loading}
                             // rowSelection={rowSelection}
                             columns={finalInputColumn}
-                            dataSource={item?.QuoteLineItems || []}
+                            dataSource={item?.Quote?.QuoteLineItems || []}
                             scroll
                             rowSelection={rowSelection}
                             locale={locale}
