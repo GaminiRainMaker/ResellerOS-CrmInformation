@@ -28,7 +28,7 @@ import Typography from '@/app/components/common/typography';
 import {selectData} from '@/app/utils/CONSTANTS';
 import {formatDate, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
-import {Form, MenuProps} from 'antd';
+import {Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -79,6 +79,9 @@ const GenerateQuote: React.FC = () => {
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
   const [quoteLineItemExist, setQuoteLineItemExist] = useState<boolean>(false);
 
+  const {loading: quoteFileDataLoading, data: quoteFileData} = useAppSelector(
+    (state) => state.quoteFile,
+  );
   useEffect(() => {
     dispatch(getAllTableColumn(''));
     dispatch(getAllContractSetting(''));
@@ -440,6 +443,14 @@ const GenerateQuote: React.FC = () => {
                 text=" Mark as Complete"
                 buttontype="PRIMARY"
                 clickHandler={() => {
+                  if (quoteFileData && quoteFileData?.length > 0) {
+                    notification?.open({
+                      message:
+                        'Please Verify All the Pdf to mark as Complete this Quote',
+                      type: 'error',
+                    });
+                    return;
+                  }
                   commonUpdateCompleteAndDraftMethod('Needs Review');
                 }}
               />

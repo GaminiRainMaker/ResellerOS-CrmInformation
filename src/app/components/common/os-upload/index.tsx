@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { sendDataToNanonets } from '@/app/utils/base';
-import { FolderArrowDownIcon } from '@heroicons/react/24/outline';
-import { Form } from 'antd';
-import React, { useEffect, useState } from 'react';
-import { useAppSelector } from '../../../../../redux/hook';
-import { Col, Row } from '../antd/Grid';
-import { Space } from '../antd/Space';
-import { Switch } from '../antd/Switch';
+import {sendDataToNanonets} from '@/app/utils/base';
+import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
+import {Form, notification} from 'antd';
+import React, {useEffect, useState} from 'react';
+import {useAppSelector} from '../../../../../redux/hook';
+import {Col, Row} from '../antd/Grid';
+import {Space} from '../antd/Space';
+import {Switch} from '../antd/Switch';
 import useThemeToken from '../hooks/useThemeToken';
 import OsCustomerSelect from '../os-customer-select';
 import GlobalLoader from '../os-global-loader';
@@ -14,7 +14,7 @@ import OsOpportunitySelect from '../os-opportunity-select';
 import OsTable from '../os-table';
 import Typography from '../typography';
 import UploadCard from './UploadCard';
-import { OSDraggerStyle } from './styled-components';
+import {OSDraggerStyle} from './styled-components';
 
 const OsUpload: React.FC<any> = ({
   beforeUpload,
@@ -69,6 +69,7 @@ const OsUpload: React.FC<any> = ({
     }
   };
 
+  console.log('uploadFileData', uploadFileData);
   return (
     <GlobalLoader loading={cardLoading || loading}>
       <Space size={24} direction="vertical" style={{width: '100%'}}>

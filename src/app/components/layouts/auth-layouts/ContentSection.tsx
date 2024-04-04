@@ -79,6 +79,13 @@ const ContentSection: FC<AuthLayoutInterface> = ({
         .match(
           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         );
+    if (!formValues?.email) {
+      notification?.open({
+        message: 'Please enter the email',
+        type: 'error',
+      });
+      return;
+    }
     if (!validateEmail(formValues?.email)) {
       notification?.open({
         message: 'Please enter vaild organization email',
@@ -99,6 +106,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
       'outlook',
     ];
     const organizationValue = newcheck[0];
+
     if (checkss.includes(newcheck[0])) {
       notification?.open({
         message: 'Please enter vaild organization email',
@@ -111,10 +119,17 @@ const ContentSection: FC<AuthLayoutInterface> = ({
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{8,15}$/,
       );
     validatePassword(formValues?.password);
-    if (formValues?.password.length < 8) {
+    if (!formValues?.password) {
+      notification?.open({
+        message: 'Please Enter the Password',
+        type: 'error',
+      });
+      return;
+    }
+    if (formValues?.password && formValues?.password.length < 8) {
       notification?.open({
         message: 'Password must be more than 8 digits',
-        type: 'info',
+        type: 'error',
       });
       return;
     }
@@ -169,13 +184,19 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           organization: organizationValue,
         }),
       ).then((payload) => {
+        if (payload?.payload === undefined || !payload?.payload) {
+          notification?.open({
+            message: 'User Already Exist with this Email',
+            type: 'error',
+          });
+        }
         if (payload?.type?.split('/')?.[1]?.toString() === 'rejected') {
           notification?.open({
             message: 'Something went wrong! Please try again',
             type: 'error',
           });
         } else {
-          router.push('/login');
+          // router.push('/login');
         }
       });
     }
@@ -273,6 +294,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                           [item.name]: e.target.value,
                         });
                       }}
+                      value={item.name}
                       suffix={
                         <Image
                           src={item.icon}
@@ -302,13 +324,14 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                     Remember Password
                   </Typography>
                 </CustomCheckbox>
-                <Typography
+                {/* <Typography
                   name="Body 3/Bold"
                   cursor="pointer"
                   color={token?.colorLink}
+                
                 >
                   Forgot Password?
-                </Typography>
+                </Typography> */}
               </Space>
             )}
 
@@ -354,7 +377,10 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                     color={token?.colorLink}
                     cursor="pointer"
                     style={{cursor: 'pointer'}}
-                    onClick={() => router?.push('/signUp')}
+                    onClick={() => {
+                      setSignUpData('');
+                      router?.push('/signUp');
+                    }}
                   >
                     {' '}
                     Register Now
