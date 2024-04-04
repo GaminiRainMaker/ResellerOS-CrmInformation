@@ -295,10 +295,9 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
       },
     );
   }, [getQuoteID]);
-
   return (
     <>
-      {finaRebateTableCol && finaRebateTableCol?.length > 0 ? (
+      {rebateData && rebateData?.length > 0 ? (
         <>
           {/* <Button
             onClick={() => {

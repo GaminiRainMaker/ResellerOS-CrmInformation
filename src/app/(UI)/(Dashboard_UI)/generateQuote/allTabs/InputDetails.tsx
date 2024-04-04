@@ -106,7 +106,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     });
   };
   const locale = {
-    emptyText: <EmptyContainer title="There is no data for Input Details" />,
+    emptyText: <EmptyContainer title="There are no Quotes to review" />,
   };
 
   const renderEditableInput = (field: string) => {
@@ -508,14 +508,13 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       fetch(fileData?.pdfUrl)
         .then((res) => res.blob())
         .then(async (file) => {
-          const finalFile = new File([file], 'name', {
+          const finalFile = new File([file], fileData?.file_name, {
             type: file.type,
           });
           const response = await sendDataToNanonets(
             'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
             finalFile,
           );
-
           const newArrrrAll: any = [];
           if (response) {
             const newArrrr: any = [];
@@ -770,7 +769,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                         </Col>
                                         <Col>
                                           <p>
-                                            Total Cost:{' '}
+                                            Total Cost: $
                                             {item?.totalAdjustedPrice}
                                           </p>
                                         </Col>
@@ -892,7 +891,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         loading={confirmedData}
         body={
           <OSDialog
-            title="Are you sure want to verified this file?"
+            title="Are you sure want to verify this file?"
             description="Please acknowledge before proceeding."
             image={GreenCheckIcon}
           />
