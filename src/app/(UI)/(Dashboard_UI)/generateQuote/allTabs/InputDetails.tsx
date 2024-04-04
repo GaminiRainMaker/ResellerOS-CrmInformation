@@ -106,7 +106,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     });
   };
   const locale = {
-    emptyText: <EmptyContainer title="There is no data for Input Details" />,
+    emptyText: <EmptyContainer title="There are no Quotes to review" />,
   };
 
   const renderEditableInput = (field: string) => {
@@ -505,45 +505,51 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       fetch(fileData?.pdfUrl)
         .then((res) => res.blob())
         .then(async (file) => {
-          const finalFile = new File([file], 'name', {
+          const finalFile = new File([file], fileData?.file_name, {
             type: file.type,
           });
           const response = await sendDataToNanonets(
             'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
             finalFile,
           );
-
           const newArrrrAll: any = [];
           if (response) {
-            const newArrrr: any = [];
             for (let i = 0; i < response?.data?.result?.length; i++) {
               const itemss: any = response?.data?.result[i];
 
               const newItemsssadsd = itemss?.prediction?.filter(
                 (item: any) => item,
               );
-              newArrrr?.push(newItemsssadsd);
-            }
-            const newAllgetOArr: any = [];
-            newArrrr?.map((itemNew: any) => {
-              let formattedArray1: any = [];
-              const formattedData1: any = {};
-              itemNew?.map((itemIner1: any) => {
-                if (itemIner1?.cells) {
-                  itemIner1?.cells.forEach((item: any) => {
+              const newAllgetOArr: any = [];
+              newItemsssadsd?.map((itemNew: any) => {
+                let formattedArray1: any = [];
+                const formattedData1: any = {};
+                if (itemNew?.cells) {
+                  const titles = itemNew?.cells.filter(
+                    (innerCell: any) => innerCell.row === 1,
+                  );
+                  itemNew?.cells.forEach((item: any) => {
                     const rowNum = item.row;
+                    if (rowNum === 1) {
+                      return;
+                    }
                     if (!formattedData1[rowNum]) {
                       formattedData1[rowNum] = {};
                     }
-                    formattedData1[rowNum][item.label?.toLowerCase()] =
-                      item.text;
+                    formattedData1[rowNum][
+                      item.label?.toLowerCase()
+                        ? item.label?.toLowerCase()
+                        : titles.find(
+                            (titleRow: any) => titleRow.col === item.col,
+                          ).text
+                    ] = item.text;
                   });
                 }
+                formattedArray1 = Object.values(formattedData1);
+                newAllgetOArr?.push(formattedArray1);
+                newArrrrAll?.push(formattedArray1);
               });
-              formattedArray1 = Object.values(formattedData1);
-              newAllgetOArr?.push(formattedArray1);
-              newArrrrAll?.push(formattedArray1);
-            });
+            }
 
             const jsonDataa = {
               id: fileLineItemIds,
@@ -767,7 +773,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                         </Col>
                                         <Col>
                                           <p>
-                                            Total Cost:{' '}
+                                            Total Cost: $
                                             {item?.totalAdjustedPrice}
                                           </p>
                                         </Col>
@@ -889,7 +895,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         loading={confirmedData}
         body={
           <OSDialog
-            title="Are you sure want to verified this file?"
+            title="Are you sure want to verify this file?"
             description="Please acknowledge before proceeding."
             image={GreenCheckIcon}
           />
