@@ -132,8 +132,8 @@ const EditorFile = () => {
 
     setQuoteItems(newArrr);
   };
-  const mergeTableData = () => {
-    const flattenedArray = quoteItems.flat();
+  const mergeTableData = (quoteItemsData: any) => {
+    const flattenedArray = quoteItemsData.flat();
     const uniqueKeys = Array.from(
       new Set(flattenedArray.flatMap((obj: any) => Object.keys(obj))),
     );
@@ -155,7 +155,7 @@ const EditorFile = () => {
     setQuoteItems(newTableData);
     setTimeout(() => {
       if (newTableData?.length === 1) {
-        mergeTableData();
+        mergeTableData(newTableData);
       }
     }, 100);
   };
@@ -438,14 +438,13 @@ const EditorFile = () => {
                   <OsButton
                     text="Merge Table"
                     buttontype="PRIMARY"
-                    clickHandler={mergeTableData}
+                    clickHandler={() => mergeTableData(quoteItems)}
                   />
                 </Space>
                 {quoteItems &&
                   quoteItems?.map((itemss: any, indexOFTable: number) => {
                     const allHeaderValue: any = [];
                     const keysData = itemss?.[0] && Object?.keys(itemss?.[0]);
-                    console.log('464643545', keysData, itemss);
                     if (keysData) {
                       keysData?.map((item: any) => {
                         if (item) {
@@ -457,7 +456,9 @@ const EditorFile = () => {
                     return (
                       <>
                         <Space direction="horizontal" style={{width: '100%'}}>
-                          <Typography onClick={mergeTableData}>
+                          <Typography
+                            onClick={() => mergeTableData(quoteItems)}
+                          >
                             Table {indexOFTable + 1}
                           </Typography>
                           <TrashIcon

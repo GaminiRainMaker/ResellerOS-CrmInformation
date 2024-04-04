@@ -605,7 +605,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                               }}
                             >
                               <p>{item?.name}</p>
-                              <p>Lines:{item?.Quote?.QuoteLineItems?.length}</p>
+                              <p>Lines:{item?.QuoteLineItems?.length}</p>
                               <p>Desc: {item?.description}</p>
                               <p>
                                 Quantity:
@@ -630,7 +630,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                             loading={loading}
                             // rowSelection={rowSelection}
                             columns={finalInputColumn}
-                            dataSource={item?.Quote?.QuoteLineItems || []}
+                            dataSource={item?.QuoteLineItems || []}
                             scroll
                             rowSelection={rowSelection}
                             locale={locale}
