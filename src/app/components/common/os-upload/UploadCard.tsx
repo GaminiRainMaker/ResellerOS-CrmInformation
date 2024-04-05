@@ -13,6 +13,7 @@ import useThemeToken from '../hooks/useThemeToken';
 import OsDistributorSelect from '../os-distributor-select';
 import OsOemSelect from '../os-oem-select';
 import Typography from '../typography';
+import {Tag} from '../antd/Tag';
 
 const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
   const [token] = useThemeToken();
@@ -105,7 +106,6 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
                 quoteCreation
               />
             </Col>
-            {item?.error && <p>Please select either Distributor or Oem</p>}
             <Col span={2}>
               <TrashIcon
                 cursor="pointer"
@@ -118,6 +118,13 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
               />
             </Col>
           </Row>
+          {item?.error && (
+            <Tag color="error" bordered={false} style={{borderRadius: '18px', padding: '8px'}}>
+              <Typography name="Body 4/Regular" color={token?.colorError}>
+                Please select either Distributor or OEM
+              </Typography>
+            </Tag>
+          )}
           <Divider />
         </Form>
       ))}

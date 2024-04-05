@@ -4,12 +4,8 @@ import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import OsButton from '@/app/components/common/os-button';
-import OsDropdown from '@/app/components/common/os-dropdown';
-import DailogModal from '@/app/components/common/os-modal/DialogModal';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {ShieldCheckIcon} from '@heroicons/react/20/solid';
 import {useEffect, useState} from 'react';
 import {
   getUserByOrganization,
@@ -23,45 +19,17 @@ const SuperAdminRolesAndPermission = () => {
   const {data, loading} = useAppSelector((state) => state.user);
   const {userInformation} = useAppSelector((state) => state.user);
   const [userRules, setUserRules] = useState<any>(data);
-  const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
-  const [recordId, setRecordId] = useState<number>();
 
-  const dropDownItemss = [
-    {
-      key: '1',
-      label: <Typography name="Body 3/Regular">Select All</Typography>,
-    },
-    {
-      key: '2',
-      label: <Typography name="Body 3/Regular">Edit Selected</Typography>,
-    },
-    {
-      key: '3',
-      label: (
-        <Typography name="Body 3/Regular" color="#EB445A">
-          Delete Selected
-        </Typography>
-      ),
-    },
-  ];
-
-  const providePermissions = () => {
-    setUserRules((prev: any) =>
-      prev.map((prevItem: any) => {
-        if (prevItem.id === recordId) {
-          return {
-            ...prevItem,
-            is_admin: true,
-            is_quote: true,
-            is_dealReg: true,
-            is_order: true,
-            super_admin: true,
-          };
-        }
-        return prevItem;
-      }),
-    );
-    setShowDailogModal(false);
+  const onUpdate = (record: any, type: string, value: boolean) => {
+    const obj = {
+      id: record?.id,
+      [type]: value,
+    };
+    dispatch(updateUserById(obj)).then((d) => {
+      if (d?.payload) {
+        dispatch(getUserByOrganization(userInformation?.organization));
+      }
+    });
   };
 
   const RolesAndPermissionsColumns = [
@@ -89,25 +57,9 @@ const SuperAdminRolesAndPermission = () => {
       width: 173,
       render: (text: any, record: any) => (
         <Checkbox
-          defaultChecked={text}
-          onClick={(d: any) => {
-            if (d?.target?.checked) {
-              setShowDailogModal(true);
-              setRecordId(record?.id);
-            }
-          }}
+          checked={text}
           onChange={(e) => {
-            setUserRules((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {
-                    ...prevItem,
-                    super_admin: e?.target?.checked,
-                  };
-                }
-                return prevItem;
-              }),
-            );
+            onUpdate(record, 'super_admin', e?.target?.checked);
           }}
         />
       ),
@@ -122,42 +74,10 @@ const SuperAdminRolesAndPermission = () => {
       key: 'is_admin',
       width: 173,
       render: (text: any, record: any) => (
-        // <Checkbox
-        //   defaultChecked={text}
-        //   onClick={(d: any) => {
-        //     if (d?.target?.checked) {
-        //       setRecordId(record?.id);
-        //     }
-        //   }}
-        //   onChange={(e) => {
-        //     setUserRules((prev: any) =>
-        //       prev.map((prevItem: any) => {
-        //         if (prevItem.id === record?.id) {
-        //           return {
-        //             ...prevItem,
-        //             is_admin: e?.target?.checked,
-        //           };
-        //         }
-        //         return prevItem;
-        //       }),
-        //     );
-        //   }}
-        // />
-
         <Checkbox
           checked={text}
           onChange={(e) => {
-            setUserRules((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {
-                    ...prevItem,
-                    is_admin: e?.target?.checked,
-                  };
-                }
-                return prevItem;
-              }),
-            );
+            onUpdate(record, 'is_admin', e?.target?.checked);
           }}
         />
       ),
@@ -175,17 +95,7 @@ const SuperAdminRolesAndPermission = () => {
         <Checkbox
           checked={text}
           onChange={(e) => {
-            setUserRules((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {
-                    ...prevItem,
-                    is_quote: e?.target?.checked,
-                  };
-                }
-                return prevItem;
-              }),
-            );
+            onUpdate(record, 'is_quote', e?.target?.checked);
           }}
         />
       ),
@@ -203,17 +113,7 @@ const SuperAdminRolesAndPermission = () => {
         <Checkbox
           checked={text}
           onChange={(e) => {
-            setUserRules((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {
-                    ...prevItem,
-                    is_dealReg: e?.target?.checked,
-                  };
-                }
-                return prevItem;
-              }),
-            );
+            onUpdate(record, 'is_dealReg', e?.target?.checked);
           }}
         />
       ),
@@ -231,17 +131,7 @@ const SuperAdminRolesAndPermission = () => {
         <Checkbox
           checked={text}
           onChange={(e) => {
-            setUserRules((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {
-                    ...prevItem,
-                    is_order: e?.target?.checked,
-                  };
-                }
-                return prevItem;
-              }),
-            );
+            onUpdate(record, 'is_order', e?.target?.checked);
           }}
         />
       ),
@@ -255,17 +145,6 @@ const SuperAdminRolesAndPermission = () => {
   useEffect(() => {
     dispatch(getUserByOrganization(userInformation?.organization));
   }, []);
-
-  const onFinish = () => {
-    for (let i = 0; i < userRules.length; i++) {
-      const items = userRules[i];
-      dispatch(updateUserById(items)).then((d: any) => {
-        if (d?.payload) {
-          dispatch(getUserByOrganization(userInformation?.organization));
-        }
-      });
-    }
-  };
 
   const rowSelection = {
     onChange: (selectedRowKeys: any, record: any) => {
@@ -282,25 +161,6 @@ const SuperAdminRolesAndPermission = () => {
               Super Admin Roles and Permissions
             </Typography>
           </Col>
-          <Col>
-            <div
-              style={{
-                display: 'flex',
-                width: '40%',
-                gap: '8px',
-              }}
-            >
-              <OsButton text="CANCEL" buttontype="SECONDARY" />
-              <OsButton
-                text="SAVE"
-                buttontype="PRIMARY"
-                clickHandler={onFinish}
-              />
-              <Space>
-                <OsDropdown menu={{items: dropDownItemss}} />
-              </Space>
-            </div>
-          </Col>
         </Row>
 
         <OsTable
@@ -311,19 +171,6 @@ const SuperAdminRolesAndPermission = () => {
           rowSelection={rowSelection}
         />
       </Space>
-
-      <DailogModal
-        setShowDailogModal={setShowDailogModal}
-        showDailogModal={showDailogModal}
-        title="Permissions"
-        subTitle="Do you wish to grant full access to this administrator?"
-        primaryButtonText="Yes"
-        secondaryButtonText="No"
-        icon={
-          <ShieldCheckIcon width={35} height={35} color={token?.colorSuccess} />
-        }
-        onOk={providePermissions}
-      />
     </>
   );
 };

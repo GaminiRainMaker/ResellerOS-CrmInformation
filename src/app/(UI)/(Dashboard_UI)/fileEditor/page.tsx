@@ -9,28 +9,27 @@
 'use client';
 
 import '@handsontable/pikaday/css/pikaday.css';
-import {HotTable} from '@handsontable/react';
-import {useEffect, useState} from 'react';
+import { HotTable } from '@handsontable/react';
+import { useEffect, useState } from 'react';
 import './styles.css';
 
-import {Space} from '@/app/components/common/antd/Space';
+import { Space } from '@/app/components/common/antd/Space';
 import OsButton from '@/app/components/common/os-button';
 import OsModal from '@/app/components/common/os-modal';
-import {formatStatus} from '@/app/utils/CONSTANTS';
-import {updateTables} from '@/app/utils/base';
-import {TrashIcon} from '@heroicons/react/24/outline';
-import {notification} from 'antd';
+import { formatStatus } from '@/app/utils/CONSTANTS';
+import { updateTables } from '@/app/utils/base';
+import { TrashIcon } from '@heroicons/react/24/outline';
+import { notification } from 'antd';
 import Typography from 'antd/es/typography/Typography';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {addClassesToRows, alignHeaders} from './hooksCallbacks';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { addClassesToRows, alignHeaders } from './hooksCallbacks';
 
 import 'handsontable/dist/handsontable.min.css';
-import {getQuoteFileById} from '../../../../../redux/actions/quoteFile';
+import { getQuoteFileById } from '../../../../../redux/actions/quoteFile';
 import {
-  getQuoteLineItemByQuoteId,
-  getQuoteLineItemByQuoteIdForEditTable,
+  getQuoteLineItemByQuoteIdForEditTable
 } from '../../../../../redux/actions/quotelineitem';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
 
 const EditorFile = () => {
@@ -265,6 +264,7 @@ const EditorFile = () => {
       dispatch,
       missingId,
       true,
+      Number(getQUoteId)
     );
     router?.push(`/generateQuote?id=${getQUoteId}`);
   };
