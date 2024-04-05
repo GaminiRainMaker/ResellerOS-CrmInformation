@@ -11,5 +11,7 @@ export interface AddQuoteInterface {
   uploadForm?: any;
   setShowToggleTable?: any;
   showToggleTable?: boolean;
+  isGenerateQuote?: boolean;
   Quotecolumns?: any;
+  existingGenerateQuoteId?: number;
 }

@@ -136,7 +136,12 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   useEffect(() => {
     dispatch(getAllBundle(getQuoteID));
     dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
-  }, []);
+  }, [getQuoteID]);
+
+  useEffect(() => {
+    setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);
+  }, [quoteLineItemByQuoteID]);
+
   const deleteQuoteLineItems = () => {
     if (selectTedRowIds) {
       const data = {Ids: selectTedRowIds};
@@ -581,6 +586,13 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     }
     setShowVerificationFileModal(false);
   };
+
+  console.log(
+    'quoteLineItemByQuoteData',
+    quoteLineItemByQuoteData,
+    quoteLineItemByQuoteID,
+  );
+
   return (
     <>
       {contextHolder}

@@ -1,20 +1,20 @@
 /* eslint-disable array-callback-return */
-import { TrashIcon } from '@heroicons/react/24/outline';
-import { Form } from 'antd';
+import {TrashIcon} from '@heroicons/react/24/outline';
+import {Form} from 'antd';
 import Image from 'next/image';
-import { FC } from 'react';
+import {FC} from 'react';
 import PdfImg from '../../../../../public/assets/static/pdf.svg';
 import XlsImg from '../../../../../public/assets/static/xls.svg';
-import { useAppSelector } from '../../../../../redux/hook';
-import { Divider } from '../antd/Divider';
-import { Col, Row } from '../antd/Grid';
-import { Space } from '../antd/Space';
+import {useAppSelector} from '../../../../../redux/hook';
+import {Divider} from '../antd/Divider';
+import {Col, Row} from '../antd/Grid';
+import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import OsDistributorSelect from '../os-distributor-select';
 import OsOemSelect from '../os-oem-select';
 import Typography from '../typography';
 
-const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
+const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
   const [token] = useThemeToken();
   const {data: quoteConfigData} = useAppSelector((state) => state.quoteConfig);
   const removeFile = (uid: number | undefined | string) => {
@@ -43,6 +43,7 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
     );
     obj.model_id = data?.model_id;
     obj.quote_config_id = data?.id;
+    // obj.value = value;
     arr[index] = obj;
     setUploadFileData(arr);
   };
@@ -70,7 +71,12 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
         </Row>
       )}
       {uploadFileData?.map((item: any, index: number) => (
-        <Form key={item?.uid} layout="vertical">
+        <Form
+          key={item?.uid}
+          layout="vertical"
+
+          // form={form}
+        >
           <Row key={item?.uid} justify="space-between" gutter={[0, 8]}>
             <Col span={8}>
               <Space size={12}>
