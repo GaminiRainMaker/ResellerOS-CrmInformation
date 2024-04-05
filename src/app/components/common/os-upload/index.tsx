@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {sendDataToNanonets} from '@/app/utils/base';
 import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
@@ -29,6 +30,7 @@ const OsUpload: React.FC<any> = ({
   Quotecolumns,
   existingQuoteId,
   setExistingQuoteId,
+  isGenerateQuote,
 }) => {
   const [token] = useThemeToken();
   const [fileList, setFileList] = useState([]);
@@ -53,13 +55,29 @@ const OsUpload: React.FC<any> = ({
     setLoading(true);
     for (let i = 0; i < uploadFileData.length; i++) {
       let obj: any = {...uploadFileData[i]};
-      // eslint-disable-next-line no-await-in-loop
-      const response = await sendDataToNanonets(obj?.model_id, obj?.file);
-      obj = {...obj, ...response};
+      if (!obj?.distributor_id && !obj?.oem_id) {
+        obj.error = true;
+      } else {
+        obj.error = false;
+      }
+      if (!obj.error) {
+        // eslint-disable-next-line no-await-in-loop
+        const response: any = await sendDataToNanonets(
+          obj?.model_id,
+          obj?.file,
+        );
+        obj = {...obj, ...response};
+      }
+
       newArr.push(obj);
     }
     setLoading(false);
-    addQuoteLineItem(customerId, opportunityId, newArr, singleQuote);
+    const index = newArr.findIndex((item) => item.error);
+    if (index > -1) {
+      setUploadFileData(newArr);
+    } else {
+      addQuoteLineItem(customerId, opportunityId, newArr, singleQuote);
+    }
   };
 
   const onToggleChange = (checked: boolean) => {
@@ -69,7 +87,6 @@ const OsUpload: React.FC<any> = ({
     }
   };
 
-  console.log('uploadFileData', uploadFileData);
   return (
     <GlobalLoader loading={cardLoading || loading}>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -101,21 +118,26 @@ const OsUpload: React.FC<any> = ({
           uploadFileData={uploadFileData}
           setUploadFileData={setUploadFileData}
         />
-        <Space size={30} direction="horizontal" align="center">
-          <Typography name="Body 4/Medium">Select Existing Quote?</Typography>
-          <Switch size="default" onChange={onToggleChange} />
-        </Space>
-        {showToggleTable && (
-          <OsTable
-            loading={quoteLoading}
-            rowSelection={rowSelection}
-            tableSelectionType="radio"
-            columns={Quotecolumns}
-            dataSource={filteredData}
-            scroll
-          />
+        {!isGenerateQuote && (
+          <>
+            <Space size={30} direction="horizontal" align="center">
+              <Typography name="Body 4/Medium">
+                Select Existing Quote?
+              </Typography>
+              <Switch size="default" onChange={onToggleChange} />
+            </Space>
+            {showToggleTable && (
+              <OsTable
+                loading={quoteLoading}
+                rowSelection={rowSelection}
+                tableSelectionType="radio"
+                columns={Quotecolumns}
+                dataSource={filteredData}
+                scroll
+              />
+            )}
+          </>
         )}
-
         {!existingQuoteId && (
           <Form
             layout="vertical"

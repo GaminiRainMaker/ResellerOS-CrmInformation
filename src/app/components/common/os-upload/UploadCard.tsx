@@ -1,20 +1,21 @@
 /* eslint-disable array-callback-return */
-import { TrashIcon } from '@heroicons/react/24/outline';
-import { Form } from 'antd';
+import {TrashIcon} from '@heroicons/react/24/outline';
+import {Form} from 'antd';
 import Image from 'next/image';
-import { FC } from 'react';
+import {FC} from 'react';
 import PdfImg from '../../../../../public/assets/static/pdf.svg';
 import XlsImg from '../../../../../public/assets/static/xls.svg';
-import { useAppSelector } from '../../../../../redux/hook';
-import { Divider } from '../antd/Divider';
-import { Col, Row } from '../antd/Grid';
-import { Space } from '../antd/Space';
+import {useAppSelector} from '../../../../../redux/hook';
+import {Divider} from '../antd/Divider';
+import {Col, Row} from '../antd/Grid';
+import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import OsDistributorSelect from '../os-distributor-select';
 import OsOemSelect from '../os-oem-select';
 import Typography from '../typography';
+import {Tag} from '../antd/Tag';
 
-const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
+const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
   const [token] = useThemeToken();
   const {data: quoteConfigData} = useAppSelector((state) => state.quoteConfig);
   const removeFile = (uid: number | undefined | string) => {
@@ -117,6 +118,13 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData}) => {
               />
             </Col>
           </Row>
+          {item?.error && (
+            <Tag color="error" bordered={false} style={{borderRadius: '18px', padding: '8px'}}>
+              <Typography name="Body 4/Regular" color={token?.colorError}>
+                Please select either Distributor or OEM
+              </Typography>
+            </Tag>
+          )}
           <Divider />
         </Form>
       ))}

@@ -118,7 +118,11 @@ const OsDistributorSelect: FC<OsDistriButorSelectInterface> = ({
 
   return (
     <>
-      <SelectFormItem label={label ? 'Distributor' : ''} name={name}>
+      <SelectFormItem
+        label={label ? 'Distributor' : ''}
+        name={name}
+        rules={[{required: isRequired, message: 'Please Select Distributor!'}]}
+      >
         <CommonSelect
           placeholder="Select"
           allowClear
