@@ -459,15 +459,15 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         separatedData[fileName] = {
           id: item.id,
           title: fileName,
-          quoteLineItems: [],
-          totalCount: 0,
           totalAdjustedPrice: 0,
+          totalCount: 0,
           quoteFile: item?.quote_file,
           pdfUrl: item?.pdf_url,
+          quoteLineItems: [],
         };
       }
 
-      item?.Quote?.QuoteLineItems?.forEach((quoteLineItem: any) => {
+      item?.QuoteLineItems?.forEach((quoteLineItem: any) => {
         separatedData[fileName].quoteLineItems.push(quoteLineItem);
         separatedData[fileName].totalCount++;
         separatedData[fileName].totalAdjustedPrice += parseFloat(
