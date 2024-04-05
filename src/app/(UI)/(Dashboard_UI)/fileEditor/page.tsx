@@ -25,7 +25,10 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {addClassesToRows, alignHeaders} from './hooksCallbacks';
 
 import 'handsontable/dist/handsontable.min.css';
-import {getQuoteFileById} from '../../../../../redux/actions/quoteFile';
+import {
+  UpdateQuoteFileById,
+  getQuoteFileById,
+} from '../../../../../redux/actions/quoteFile';
 import {
   getQuoteLineItemByQuoteId,
   getQuoteLineItemByQuoteIdForEditTable,
@@ -133,7 +136,7 @@ const EditorFile = () => {
     setQuoteItems(newArrr);
   };
   const mergeTableData = (quoteItemsData: any) => {
-    const flattenedArray = quoteItemsData.flat();
+    const flattenedArray = quoteItemsData?.flat();
     const uniqueKeys = Array.from(
       new Set(flattenedArray.flatMap((obj: any) => Object.keys(obj))),
     );
@@ -269,6 +272,16 @@ const EditorFile = () => {
     router?.push(`/generateQuote?id=${getQUoteId}`);
   };
 
+  const CancelEditing = () => {
+    const data = {
+      issue_type: null,
+      affected_columns: null,
+      id: getQuoteFileId,
+    };
+    dispatch(UpdateQuoteFileById(data));
+    router?.push(`/generateQuote?id=${getQUoteId}`);
+  };
+
   return (
     <>
       <div
@@ -354,7 +367,7 @@ const EditorFile = () => {
                     e?.preventDefault();
                     setShowModal(true);
                   }}
-                  size={50}
+                  size={25}
                   style={{
                     display: 'flex',
                     justifyContent: 'end',
@@ -367,7 +380,11 @@ const EditorFile = () => {
                     marginBottom: '20px',
                   }}
                 >
-                  {' '}
+                  <OsButton
+                    text="Cancel"
+                    buttontype="SECONDARY"
+                    clickHandler={CancelEditing}
+                  />{' '}
                   <OsButton
                     text="Sync Table"
                     buttontype="PRIMARY"
@@ -421,7 +438,7 @@ const EditorFile = () => {
             ) : (
               <>
                 <Space
-                  size={50}
+                  size={25}
                   style={{
                     display: 'flex',
                     justifyContent: 'end',
@@ -435,6 +452,11 @@ const EditorFile = () => {
                   }}
                 >
                   {' '}
+                  <OsButton
+                    text="Cancel"
+                    buttontype="SECONDARY"
+                    clickHandler={CancelEditing}
+                  />
                   <OsButton
                     text="Merge Table"
                     buttontype="PRIMARY"

@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
@@ -44,6 +45,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const {data: syncTableData, loading: syncDataLoading} = useAppSelector(
     (state) => state.syncTable,
   );
+
+  const [syncTableQuoteLItemValues, setSyncTableQuoteLItemValues] =
+    useState<any>(quoteLineItemColumnForSync);
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
@@ -65,9 +69,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       syncedNewValue?.length > 0 ? [...syncedNewValue] : [];
 
     mergeedColumn?.map((mergeItem: string, indexMerge: number) => {
-      const NewFilterOption = quoteLineItemColumnForSync?.find(
-        (item: any) => item?.value === mergeItem,
+      const NewFilterOption = syncTableQuoteLItemValues?.find(
+        (item: any) => item?.label == mergeItem,
       );
+
       if (NewFilterOption) {
         newSyncTableData?.push({
           preVal: mergeItem,
@@ -83,6 +88,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       }
       // if(mergeItem)
     });
+
     setNewSyncedValue(newSyncTableData);
   }, []);
 
@@ -91,6 +97,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     newSyncValue: string,
     keyInd: number,
   ) => {
+    console.log('4354354353', preValue, newSyncValue, keyInd);
     const newSyncTableData =
       syncedNewValue?.length > 0 ? [...syncedNewValue] : [];
 
@@ -303,9 +310,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                 onChange={(e) => {
                   syncTableToLineItems(item, e, indexOfCol);
                 }}
+                allowClear
                 value={item?.newVal}
                 style={{width: '250px'}}
-                options={quoteLineItemColumnForSync}
+                options={syncTableQuoteLItemValues}
               />
             </Row>
           ))}

@@ -48,16 +48,17 @@ const OsTableWithOutDrag: FC<any> = ({
         indicator: <GlobalLoader loading={rest.loading} />,
         spinning: rest.loading,
       }}
-      pagination={
-        paginationProps
-          ? {
-              ...rest.pagination,
-              pageSize: tablePageSize,
-              itemRender,
-              showQuickJumper: false,
-            }
-          : false
-      }
+      // pagination={
+      //   paginationProps
+      //     ? {
+      //         ...rest.pagination,
+      //         pageSize: tablePageSize,
+      //         itemRender,
+      //         showQuickJumper: false,
+      //       }
+      //     : false
+      // }
+      pagination
       scroll={
         scrolly
           ? {y: scrolly as number}

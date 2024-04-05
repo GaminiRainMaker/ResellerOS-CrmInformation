@@ -22,7 +22,6 @@ export const quoteStatusOptions = [
   {value: 'Approved', label: 'Approved'},
   {value: 'Rejected', label: 'Rejected'},
   {value: 'Needs Review', label: 'Needs Review'},
- 
 ];
 
 export const pricingMethod = [
@@ -158,11 +157,11 @@ export const quoteLineItemColumn = [
 ];
 
 export const quoteLineItemColumnForSync = [
-  {value: 'line_number', label: 'Line Number'},
-  {value: 'product_code', label: 'Product Code'},
-  {value: 'quantity', label: 'Quantity'},
-  {value: 'list_price', label: 'List Price'},
-  {value: 'adjusted_price', label: 'Adjusted Price'},
+  {value: 'line_number', label: 'Line'},
+  {value: 'product_code', label: 'SKU'},
+  {value: 'quantity', label: 'Qty'},
+  {value: 'list_price', label: 'MSRP'},
+  {value: 'adjusted_price', label: 'Cost'},
   {value: 'description', label: 'Description'},
 ];
 
