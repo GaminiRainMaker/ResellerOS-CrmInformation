@@ -57,6 +57,8 @@ const OsUpload: React.FC<any> = ({
       let obj: any = {...uploadFileData[i]};
       if (!obj?.distributor_id && !obj?.oem_id) {
         obj.error = true;
+      } else {
+        obj.error = false;
       }
       if (!obj.error) {
         // eslint-disable-next-line no-await-in-loop
