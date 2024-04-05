@@ -55,22 +55,16 @@ const OsUpload: React.FC<any> = ({
     setLoading(true);
     for (let i = 0; i < uploadFileData.length; i++) {
       let obj: any = {...uploadFileData[i]};
-      console.log('uploadFileData', obj?.value);
-      // if (obj?.value) {
+      if (!obj?.distributor_id && !obj?.oem_id) {
+        obj.error = true;
+      }
       // eslint-disable-next-line no-await-in-loop
-      const response = await sendDataToNanonets(obj?.model_id, obj?.file);
+      const response: any = await sendDataToNanonets(obj?.model_id, obj?.file);
       obj = {...obj, ...response};
       newArr.push(obj);
-      // }
-      //  else {
-      //   const buffer: React.ReactNode[] = [];
-      //   buffer.push('Please select Distributor or Oem!');
-      //   setLoading(false);
-      //   form.setFields([{name: 'distributor', errors: buffer as []}]);
-      // }
     }
     setLoading(false);
-    addQuoteLineItem(customerId, opportunityId, newArr, singleQuote);
+    // addQuoteLineItem(customerId, opportunityId, newArr, singleQuote);
   };
 
   const onToggleChange = (checked: boolean) => {
@@ -110,7 +104,6 @@ const OsUpload: React.FC<any> = ({
         <UploadCard
           uploadFileData={uploadFileData}
           setUploadFileData={setUploadFileData}
-          // form={form}
         />
         {!isGenerateQuote && (
           <>

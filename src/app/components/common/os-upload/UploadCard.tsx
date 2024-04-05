@@ -43,7 +43,6 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
     );
     obj.model_id = data?.model_id;
     obj.quote_config_id = data?.id;
-    // obj.value = value;
     arr[index] = obj;
     setUploadFileData(arr);
   };
@@ -71,12 +70,7 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
         </Row>
       )}
       {uploadFileData?.map((item: any, index: number) => (
-        <Form
-          key={item?.uid}
-          layout="vertical"
-
-          // form={form}
-        >
+        <Form key={item?.uid} layout="vertical">
           <Row key={item?.uid} justify="space-between" gutter={[0, 8]}>
             <Col span={8}>
               <Space size={12}>
