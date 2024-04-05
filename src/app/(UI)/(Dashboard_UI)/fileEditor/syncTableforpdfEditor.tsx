@@ -15,6 +15,11 @@ import {formatStatus, quoteLineItemColumnForSync} from '@/app/utils/CONSTANTS';
 import {Col, Row, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {updateTables} from '@/app/utils/base';
+import {
+  ChevronDownIcon,
+  CursorArrowRaysIcon,
+} from '@heroicons/react/24/outline';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {insertProduct} from '../../../../../redux/actions/product';
@@ -45,7 +50,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const {data: syncTableData, loading: syncDataLoading} = useAppSelector(
     (state) => state.syncTable,
   );
-
+  const [token] = useThemeToken();
   const [syncTableQuoteLItemValues, setSyncTableQuoteLItemValues] =
     useState<any>(quoteLineItemColumnForSync);
   const searchParams = useSearchParams();
@@ -67,9 +72,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   useEffect(() => {
     const newSyncTableData =
       syncedNewValue?.length > 0 ? [...syncedNewValue] : [];
-
+    let newSyncOptionChecks = syncTableQuoteLItemValues;
     mergeedColumn?.map((mergeItem: string, indexMerge: number) => {
-      const NewFilterOption = syncTableQuoteLItemValues?.find(
+      const NewFilterOption = newSyncOptionChecks?.find(
         (item: any) => item?.label == mergeItem,
       );
 
@@ -79,6 +84,15 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           newVal: NewFilterOption?.value,
           key: indexMerge,
         });
+
+        const newOptions: any = [...newSyncOptionChecks];
+
+        const indexOFItem = newOptions?.findIndex(
+          (itemV: any) => itemV?.value === NewFilterOption?.value,
+        );
+        newOptions?.splice(indexOFItem, 1);
+        // setSyncTableQuoteLItemValues(newOptions);
+        newSyncOptionChecks = newOptions;
       } else {
         newSyncTableData?.push({
           preVal: mergeItem,
@@ -89,6 +103,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       // if(mergeItem)
     });
 
+    setSyncTableQuoteLItemValues(newSyncOptionChecks);
     setNewSyncedValue(newSyncTableData);
   }, []);
 
@@ -97,13 +112,23 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     newSyncValue: string,
     keyInd: number,
   ) => {
-    console.log('4354354353', preValue, newSyncValue, keyInd);
     const newSyncTableData =
       syncedNewValue?.length > 0 ? [...syncedNewValue] : [];
 
     const indexOfPre = newSyncTableData?.findIndex(
       (item: any) => item?.key === keyInd,
     );
+    const syncOtions =
+      syncTableQuoteLItemValues?.length > 0
+        ? [...syncTableQuoteLItemValues]
+        : [];
+
+    const indexOFItem = syncOtions?.findIndex(
+      (itemV: any) => itemV?.value === newSyncValue,
+    );
+    syncOtions?.splice(indexOFItem, 1);
+
+    setSyncTableQuoteLItemValues(syncOtions);
 
     if (indexOfPre === -1) {
       newSyncTableData?.push({
@@ -285,6 +310,21 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     );
     router?.push(`/generateQuote?id=${Number(getQuoteID)}`);
   };
+  const handleChange = (value: string) => {
+    const newInsertOptions = quoteLineItemColumnForSync?.find(
+      (itemss: any) => itemss?.value === value,
+    );
+    const newArr =
+      syncTableQuoteLItemValues?.length > 0
+        ? [...syncTableQuoteLItemValues]
+        : [];
+
+    newArr?.push(newInsertOptions);
+
+    setTimeout(() => {
+      setSyncTableQuoteLItemValues(newArr);
+    }, 1000);
+  };
 
   return (
     <>
@@ -311,7 +351,28 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                   syncTableToLineItems(item, e, indexOfCol);
                 }}
                 allowClear
-                value={item?.newVal}
+                onClear={() => handleChange(item?.newVal)}
+                // }}
+                // onClear={}
+
+                // suffixIcon={
+                //   item?.newVal ? (
+                //     <div
+                //       // width={24}
+                //       style={{width: '34px', color: 'red'}}
+                //       color={token?.colorInfoBorder}
+                //       onClick={() => HandleClearOptions(item?.newVal)}
+                //     >
+                //       x
+                //     </div>
+                //   ) : (
+                //     <ChevronDownIcon
+                //       width={24}
+                //       color={token?.colorInfoBorder}
+                //     />
+                //   )
+                // }
+                defaultValue={item?.newVal}
                 style={{width: '250px'}}
                 options={syncTableQuoteLItemValues}
               />
