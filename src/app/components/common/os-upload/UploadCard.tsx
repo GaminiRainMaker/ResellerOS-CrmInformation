@@ -105,6 +105,7 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
                 quoteCreation
               />
             </Col>
+            {item?.error && <p>Please select either Distributor or Oem</p>}
             <Col span={2}>
               <TrashIcon
                 cursor="pointer"

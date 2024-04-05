@@ -58,13 +58,24 @@ const OsUpload: React.FC<any> = ({
       if (!obj?.distributor_id && !obj?.oem_id) {
         obj.error = true;
       }
-      // eslint-disable-next-line no-await-in-loop
-      const response: any = await sendDataToNanonets(obj?.model_id, obj?.file);
-      obj = {...obj, ...response};
+      if (!obj.error) {
+        // eslint-disable-next-line no-await-in-loop
+        const response: any = await sendDataToNanonets(
+          obj?.model_id,
+          obj?.file,
+        );
+        obj = {...obj, ...response};
+      }
+
       newArr.push(obj);
     }
     setLoading(false);
-    // addQuoteLineItem(customerId, opportunityId, newArr, singleQuote);
+    const index = newArr.findIndex((item) => item.error);
+    if (index > -1) {
+      setUploadFileData(newArr);
+    } else {
+      addQuoteLineItem(customerId, opportunityId, newArr, singleQuote);
+    }
   };
 
   const onToggleChange = (checked: boolean) => {
