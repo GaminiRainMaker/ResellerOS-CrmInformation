@@ -587,12 +587,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     setShowVerificationFileModal(false);
   };
 
-  console.log(
-    'quoteLineItemByQuoteData',
-    quoteLineItemByQuoteData,
-    quoteLineItemByQuoteID,
-  );
-
   return (
     <>
       {contextHolder}
@@ -602,7 +596,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
             {bundleData && bundleData?.length > 0 ? (
               <>
                 {' '}
-                {bundleData?.map((item: any, index: any) => (
+                {bundleData?.map((item: any) => (
                   <OsCollapse
                     key={item?.id}
                     items={[
