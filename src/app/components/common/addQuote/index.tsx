@@ -31,6 +31,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
   setShowToggleTable,
   showToggleTable,
   Quotecolumns,
+  isGenerateQuote,
+  existingGenerateQuoteId,
 }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -43,10 +45,12 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
 
   useEffect(() => {
-    if (existingQuoteId) {
-      form?.setFieldValue('existingQuoteId', existingQuoteId);
+    if (existingQuoteId || existingGenerateQuoteId) {
+      const dddd = existingQuoteId ?? existingGenerateQuoteId;
+      form?.setFieldValue('existingQuoteId', dddd);
     }
-  }, [existingQuoteId]);
+    setExistingQuoteId(existingGenerateQuoteId);
+  }, [existingQuoteId, existingGenerateQuoteId]);
 
   useEffect(() => {
     dispatch(getAllGeneralSetting(''));
@@ -78,7 +82,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
     singleQuote: boolean,
   ) => {
     const quoteId = form.getFieldValue('existingQuoteId');
-
     const quotesArr: any = [];
     try {
       setFinalLoading(true);
@@ -324,6 +327,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
             Quotecolumns={Quotecolumns}
             existingQuoteId={existingQuoteId}
             setExistingQuoteId={setExistingQuoteId}
+            isGenerateQuote={isGenerateQuote}
           />
         }
         width={900}

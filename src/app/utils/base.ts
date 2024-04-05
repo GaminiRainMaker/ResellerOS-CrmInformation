@@ -311,6 +311,7 @@ export const updateTables = async (
   dispatch: any,
   missingId?: any,
   edited?: boolean,
+  getQuoteId?: number,
 ): Promise<any> => {
   try {
     const rebateDataArray: any[] = [];
@@ -326,7 +327,7 @@ export const updateTables = async (
 
     for (const item of quoteLineItemData) {
       const obj1: any = {
-        quote_id: item.quote_id,
+        quote_id: item.quote_id ?? getQuoteId,
         product_id: item.product_id,
         product_code: item.product_code,
         line_amount: item.line_amount,

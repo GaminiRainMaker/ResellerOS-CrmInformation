@@ -776,7 +776,89 @@ const SideBar = () => {
             User Management
           </Typography>
         </Space>,
-        '12',
+        'User Management',
+        '',
+        [
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                // setSelectedKey(8);
+                router?.push('/userManagement');
+              }}
+            >
+              <OsAvatar
+                icon={
+                  selectedKey?.toString()?.includes('8') ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                name="Button 1"
+                cursor="pointer"
+                color={
+                  selectedKey?.toString()?.includes('8')
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                All Resellers
+              </Typography>
+            </Space>,
+            '8',
+          ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(9);
+                router?.push('/superAdminPermissions');
+              }}
+              color={token?.colorTextSecondary}
+            >
+              <OsAvatar
+                icon={
+                  selectedKey?.toString()?.includes('9') ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                color={
+                  selectedKey?.toString()?.includes('9')
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                Super Admin Permissions
+              </Typography>
+            </Space>,
+            '9',
+          ),
+        ],
       ),
   ];
 

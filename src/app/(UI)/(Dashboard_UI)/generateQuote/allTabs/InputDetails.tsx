@@ -136,7 +136,12 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   useEffect(() => {
     dispatch(getAllBundle(getQuoteID));
     dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
-  }, []);
+  }, [getQuoteID]);
+
+  useEffect(() => {
+    setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);
+  }, [quoteLineItemByQuoteID]);
+
   const deleteQuoteLineItems = () => {
     if (selectTedRowIds) {
       const data = {Ids: selectTedRowIds};
@@ -454,15 +459,15 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         separatedData[fileName] = {
           id: item.id,
           title: fileName,
-          quoteLineItems: [],
-          totalCount: 0,
           totalAdjustedPrice: 0,
+          totalCount: 0,
           quoteFile: item?.quote_file,
           pdfUrl: item?.pdf_url,
+          quoteLineItems: [],
         };
       }
 
-      item?.Quote?.QuoteLineItems?.forEach((quoteLineItem: any) => {
+      item?.QuoteLineItems?.forEach((quoteLineItem: any) => {
         separatedData[fileName].quoteLineItems.push(quoteLineItem);
         separatedData[fileName].totalCount++;
         separatedData[fileName].totalAdjustedPrice += parseFloat(
@@ -581,6 +586,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     }
     setShowVerificationFileModal(false);
   };
+
   return (
     <>
       {contextHolder}
@@ -590,7 +596,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
             {bundleData && bundleData?.length > 0 ? (
               <>
                 {' '}
-                {bundleData?.map((item: any, index: any) => (
+                {bundleData?.map((item: any) => (
                   <OsCollapse
                     key={item?.id}
                     items={[

@@ -236,16 +236,7 @@ const GenerateQuote: React.FC = () => {
           Edit Selected
         </Typography>
       ),
-    },
-    {
-      key: '2',
-      label: (
-        <Typography name="Body 3/Regular" cursor="pointer">
-          Raise Concern
-        </Typography>
-      ),
-    },
-
+    }, 
     {
       key: '3',
       label: (
@@ -438,6 +429,8 @@ const GenerateQuote: React.FC = () => {
                 buttonText="Add Quote"
                 setUploadFileData={setUploadFileData}
                 uploadFileData={uploadFileData}
+                isGenerateQuote
+                existingGenerateQuoteId={Number(getQuoteID)}
               />
               <OsButton
                 text=" Mark as Complete"

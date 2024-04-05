@@ -18,14 +18,15 @@ import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {useAppSelector} from '../../../../../redux/hook';
 
-const GenerateQuoteAnalytics: FC<any> = ({
-  quoteLineItemByQuoteID,
-  amountData,
-}) => {
+const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
   const [token] = useThemeToken();
   const [totalGrossValue, setTotalGrossValue] = useState<any>();
   const [totalRebateAmount, setTotalRebateAmount] = useState<any>();
+  // const [totalCost, setTotalCost] = useState<number>(0);
   const {profitability} = useAppSelector((state) => state.profitability);
+  const {quoteLineItemByQuoteID} = useAppSelector(
+    (state) => state.quoteLineItem,
+  );
   const {rebateQuoteLine} = useAppSelector(
     (state) => state.rebateQuoteLineItem,
   );
@@ -62,6 +63,24 @@ const GenerateQuoteAnalytics: FC<any> = ({
     });
   }, [JSON.stringify(profitability)]);
 
+  // useEffect(() => {
+  //   if (Array.isArray(quoteLineItemByQuoteID)) {
+  //     const totalAdjustedPrice = quoteLineItemByQuoteID.reduce(
+  //       (total, item) => {
+  //         const adjustedPrice = parseFloat(
+  //           item.adjusted_price.replace('$', '').replace(',', ''),
+  //         );
+
+  //         return total + adjustedPrice;
+  //       },
+  //       0,
+  //     );
+
+  //     // Update totalCost state
+  //     setTotalCost(totalAdjustedPrice);
+  //   }
+  // }, [quoteLineItemByQuoteID]);
+
   const analyticsData = [
     {
       key: 1,
@@ -72,7 +91,7 @@ const GenerateQuoteAnalytics: FC<any> = ({
     },
     {
       key: 2,
-      primary:  `$${abbreviate(amountData?.AdjustPrice ?? 0)}`,
+      primary: `$${abbreviate(amountData?.AdjustPrice ?? 0)}`,
       secondry: 'Quote Total',
       icon: <TagIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
