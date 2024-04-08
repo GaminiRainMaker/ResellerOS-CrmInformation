@@ -14,6 +14,7 @@ import {useEffect, useState} from 'react';
 import {getAdminUserOfAllOrganization} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AssignPartnerProgram from './AssignPartnerProgram';
+import {insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
 
 const UserManagement = () => {
   const dispatch = useAppDispatch();
@@ -21,6 +22,9 @@ const UserManagement = () => {
   const router = useRouter();
   const [form] = Form.useForm();
   const {data: userData, loading} = useAppSelector((state) => state.user);
+  const {loading: AssignPartnerProgramLoading} = useAppSelector(
+    (state) => state.assignPartnerProgram,
+  );
   const [query, setQuery] = useState<{
     organization: string | null;
   }>({
@@ -28,6 +32,7 @@ const UserManagement = () => {
   });
   const [showPartnerProgramAssignModal, setShowPartnerProgramAssignModal] =
     useState<boolean>(false);
+  const [selectedRecordData, setSelectedRecordData] = useState<any>();
 
   const UserDataColumns = [
     {
@@ -97,6 +102,7 @@ const UserManagement = () => {
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
+              setSelectedRecordData(record);
               setShowPartnerProgramAssignModal(true);
             }}
           />
@@ -115,7 +121,18 @@ const UserManagement = () => {
 
   const onFinish = () => {
     const Data = form?.getFieldsValue();
-    console.log('Dataa123', Data);
+
+    const obj = {
+      organization: selectedRecordData?.organization,
+      partner_program_id: Data?.partner_program_id,
+      is_approved: true,
+    };
+    dispatch(insertAssignPartnerProgram(obj)).then((d) => {
+      if (d?.payload) {
+        setShowPartnerProgramAssignModal(false);
+        form.resetFields();
+      }
+    });
   };
 
   return (
@@ -149,13 +166,15 @@ const UserManagement = () => {
       </Space>
 
       <OsModal
-        loading={false}
+        loading={AssignPartnerProgramLoading}
+        title='Assign Partner Program'
         body={<AssignPartnerProgram form={form} onFinish={onFinish} />}
         bodyPadding={40}
         width={638}
         open={showPartnerProgramAssignModal}
         onCancel={() => {
           setShowPartnerProgramAssignModal(false);
+          form.resetFields();
         }}
         destroyOnClose
         primaryButtonText="Assign"

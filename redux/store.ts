@@ -28,6 +28,7 @@ import quoteConfig from './slices/quoteConfiguration';
 import distributor from './slices/distributor';
 import oem from './slices/oem';
 import quoteFile from './slices/quoteFile';
+import assignPartnerProgram from './slices/assignPartnerProgram';
 
 // Configure redux store
 const store = configureStore({
@@ -59,6 +60,7 @@ const store = configureStore({
     distributor,
     oem,
     quoteFile,
+    assignPartnerProgram,
   },
   middleware: [thunk],
   devTools: true,

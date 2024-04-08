@@ -170,4 +170,10 @@ export const API = {
     GetQuoteFileById: '/quoteFile/getQuoteFileById',
     postJson: '/quoteFile/updateQuoteFileByIdForQuoteJson',
   },
+  ASSIGN_PARTNER_PROGRAM: {
+    INDEX: '/assignPartnerProgram',
+    QUERY: 'assignPartnerProgram/query',
+    DeleteById: '/assignPartnerProgram/deleteById',
+    UpdateAssignPartnerProgramById: '/assignPartnerProgram/updateAssignPartnerProgramById',
+  },
 };
