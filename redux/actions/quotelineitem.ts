@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {createAsyncThunk} from '@reduxjs/toolkit';
+import ConverSationProcess from '@/app/(UI)/(Dashboard_UI)/admin/quote-AI/configuration/configuration-tabs/ConversationProcess';
 import {QUOTE_LINE_ITEM_API} from '../../services/quotelineitem';
 
 export const getQuoteLineItem = createAsyncThunk(
@@ -135,9 +136,9 @@ export const updateQuoteLineItemVerified = createAsyncThunk(
 
 export const deleteQuoteLineItemsByQuoteId = createAsyncThunk(
   'quoteLineItem/deleteQuoteLineItemByQuoteId',
-  async (id: any, thunkApi) => {
+  async (data: any, thunkApi) => {
     try {
-      const res = await QUOTE_LINE_ITEM_API.deleteQuoteLineByQuoteID(id);
+      const res = await QUOTE_LINE_ITEM_API.deleteQuoteLineByQuoteID(data);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

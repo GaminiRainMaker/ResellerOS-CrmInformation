@@ -86,7 +86,7 @@ const AddVerifiedData: FC<any> = ({
               list_price: insertedProduct?.payload?.list_price,
               description: insertedProduct?.payload?.description,
               quantity: insertedProduct?.payload?.quantity,
-              adjusted_price: insertedProduct?.payload?.adjusted_price,
+              // adjusted_price: insertedProduct?.payload?.adjusted_price,
               line_number: insertedProduct?.payload?.line_number,
               organization: userInformation.organization,
               pdf_url: lineItem?.pdf_url,

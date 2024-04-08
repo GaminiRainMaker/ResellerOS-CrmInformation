@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable @typescript-eslint/indent */
@@ -278,7 +279,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         const value = useRemoveDollarAndCommahook(text);
         return (
           <Typography name="Body 4/Medium">
-            {`$ ${abbreviate(value ?? 0)}`}
+            {`$ ${abbreviate(value ?? 0.00)}`}
           </Typography>
         );
       },
@@ -528,11 +529,22 @@ const InputDetails: FC<InputDetailTabInterface> = ({
               const newAllgetOArr: any = [];
               newItemsssadsd?.map((itemNew: any) => {
                 let formattedArray1: any = [];
+
                 const formattedData1: any = {};
                 if (itemNew?.cells) {
                   const titles = itemNew?.cells.filter(
                     (innerCell: any) => innerCell.row === 1,
                   );
+                  const strifndfs = (str: any) => {
+                    const losadsd = str
+                      ?.toString()
+                      .match(/\d+(\.\d+)?/g)
+                      ?.map(Number)
+                      ?.toString()
+                      .match(/\d+(\.\d+)?/g)
+                      ?.map(Number);
+                  };
+
                   itemNew?.cells.forEach((item: any) => {
                     const rowNum = item.row;
                     if (rowNum === 1) {
@@ -547,7 +559,20 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                         : titles.find(
                             (titleRow: any) => titleRow.col === item.col,
                           ).text
-                    ] = item.text;
+                    ] = item.label?.toLowerCase()
+                      ? item.label?.toLowerCase()?.includes('Price')
+                      : titles
+                            .find((titleRow: any) => titleRow.col === item.col)
+                            .text?.includes('Price')
+                        ? item?.text
+                            ?.toString()
+                            .match(/\d+(\.\d+)?/g)
+                            ?.map(Number)
+                            ?.toString()
+                            .match(/\d+(\.\d+)?/g)
+                            ?.map(Number)
+                            ?.toString()
+                        : item.text;
                   });
                 }
                 formattedArray1 = Object.values(formattedData1);
