@@ -7,27 +7,61 @@ import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
 import {
-  getAllPartner,
+  getAllPartnerTemp,
   insertPartner,
 } from '../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {RequestPartnerInterface} from './os-add-partner.interface';
+import {insertPartnerProgram} from '../../../../../redux/actions/partnerProgram';
+import {getAssignPartnerProgramByOrganization, insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
 
 const RequestPartner: React.FC<RequestPartnerInterface> = ({form, setOpen}) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
 
-  const onFinish = (value: any) => {
-    const partnerObj = {
-      ...value,
-      organization: userInformation?.organization,
-    };
-    dispatch(insertPartner(partnerObj)).then(() => {
+
+  const onFinish = async (value: any) => {
+    try {
+      const partnerObj = {
+        ...value,
+        organization: userInformation?.organization,
+        requested_by: userInformation?.id,
+      };
+
+      const partnerInsertResult = await dispatch(insertPartner(partnerObj));
+      const partnerId = partnerInsertResult?.payload?.id;
+
+      if (partnerId) {
+        const partnerProgramInsertResult = await dispatch(
+          insertPartnerProgram({...partnerObj, partner: partnerId}),
+        );
+
+        const partnerProgramId = partnerProgramInsertResult?.payload?.id;
+
+        if (partnerProgramId) {
+          await dispatch(
+            insertAssignPartnerProgram({
+              ...partnerObj,
+              partner_program_id: partnerProgramId,
+              is_request: true,
+            }),
+          );
+        }
+      }
+
       form?.resetFields(['partner', 'partner_program']);
-      dispatch(getAllPartner());
-    });
-    setOpen(false);
+      dispatch(
+        getAssignPartnerProgramByOrganization({
+          organization: userInformation?.organization,
+        }),
+      );
+    } catch (error) {
+      // Handle errors here
+      console.error('Error occurred:', error);
+    } finally {
+      setOpen(false);
+    }
   };
 
   return (

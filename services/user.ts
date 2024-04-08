@@ -6,11 +6,14 @@ import {get, patch, post} from './index';
 export const USERAPI = {
   get: () => get(API.USER.INDEX) as Promise<AxiosResponse<[]>>,
   getByToken: () => get(API.USER.TOKEN) as Promise<AxiosResponse<[]>>,
-  getByIdDetail: (id: any) => get((`${API.USER.USERBYID}/${id}`)) as Promise<AxiosResponse<[]>>,
+  getByIdDetail: (id: any) =>
+    get(`${API.USER.USERBYID}/${id}`) as Promise<AxiosResponse<[]>>,
   post: (data: any) => post(API.USER.INDEX, data),
   loginUser: (data: any) => post(API.USER.LOGIN, data),
   query: (data: any) =>
     post(API.USER.QUERY, data) as Promise<AxiosResponse<[]>>,
+  getAdminUserOfAllOrganization: () =>
+    get(API.USER.GetAdminUserOfAllOrganization) as Promise<AxiosResponse<[]>>,
   getById: (id: number) =>
     get(`${API.USER.INDEX}/${id}`) as Promise<AxiosResponse<any>>,
   updateUserById: (data: any) =>

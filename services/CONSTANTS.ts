@@ -42,6 +42,7 @@ export const API = {
     TOKEN: '/user/getUserByToken',
     DeleteById: '/user/deleteById',
     USERBYID: '/user/getUserById',
+    GetAdminUserOfAllOrganization: '/user/getAdminUserOfAllOrganization',
   },
   PRODUCT: {
     INDEX: '/product',
@@ -133,6 +134,7 @@ export const API = {
     QUERY: 'partner/query',
     DeleteById: '/partner/deleteById',
     UpdatePartnerById: '/partner/updatePartnerById',
+    GetAllPartnerTemp: '/partner/getAllPartnerTemp',
   },
   PARTNER_PROGRAM: {
     INDEX: '/partnerProgram',
@@ -168,5 +170,11 @@ export const API = {
     QuoteFileVerification: '/quoteFile/quoteFileVerification',
     GetQuoteFileById: '/quoteFile/getQuoteFileById',
     postJson: '/quoteFile/updateQuoteFileByIdForQuoteJson',
+  },
+  ASSIGN_PARTNER_PROGRAM: {
+    INDEX: '/assignPartnerProgram',
+    QUERY: 'assignPartnerProgram/query',
+    DeleteById: '/assignPartnerProgram/deleteById',
+    UpdateAssignPartnerProgramById: '/assignPartnerProgram/updateAssignPartnerProgramById',
   },
 };

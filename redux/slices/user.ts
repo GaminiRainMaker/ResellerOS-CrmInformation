@@ -8,7 +8,9 @@ import {
   getUserByOrganization,
   getUserByTokenAccess,
   deleteUser,
-  getUserByIdLogin,queryAllUsers
+  getUserByIdLogin,
+  queryAllUsers,
+  getAdminUserOfAllOrganization,
 } from '../actions/user';
 
 type UserState = {
@@ -150,15 +152,27 @@ const userSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
+      .addCase(queryAllUsers.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(queryAllUsers.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getAdminUserOfAllOrganization.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(
-        queryAllUsers.fulfilled,
+        getAdminUserOfAllOrganization.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.data = action.payload;
         },
       )
       .addCase(
-        queryAllUsers.rejected,
+        getAdminUserOfAllOrganization.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

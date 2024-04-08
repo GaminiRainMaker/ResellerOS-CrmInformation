@@ -9,7 +9,7 @@ import {industryOptions} from '@/app/utils/CONSTANTS';
 import {Form} from 'antd';
 import {useEffect} from 'react';
 import {
-  getAllPartner,
+  getAllPartnerTemp,
   insertPartner,
   updatePartnerById,
 } from '../../../../../redux/actions/partner';
@@ -39,7 +39,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
       dispatch(insertPartner(partnerObj)).then((d) => {
         form?.resetFields();
         if (d?.payload) {
-          dispatch(getAllPartner());
+          dispatch(getAllPartnerTemp());
         }
       });
     }
