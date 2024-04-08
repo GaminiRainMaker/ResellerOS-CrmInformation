@@ -95,3 +95,14 @@ export const queryAllUsers = createAsyncThunk(
     }
   },
 );
+export const getAdminUserOfAllOrganization = createAsyncThunk(
+  'user/getAdminUserOfAllOrganization',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await USERAPI.getAdminUserOfAllOrganization();
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

@@ -42,6 +42,7 @@ export const API = {
     TOKEN: '/user/getUserByToken',
     DeleteById: '/user/deleteById',
     USERBYID: '/user/getUserById',
+    GetAdminUserOfAllOrganization: '/user/getAdminUserOfAllOrganization',
   },
   PRODUCT: {
     INDEX: '/product',

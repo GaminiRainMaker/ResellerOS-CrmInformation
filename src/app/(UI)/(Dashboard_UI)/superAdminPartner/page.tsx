@@ -3,9 +3,10 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
-import {Switch} from '@/app/components/common/antd/Switch';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
+import { Switch } from '@/app/components/common/antd/Switch';
+import FormBuilderMain from '@/app/components/common/formBuilder/page';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import AddPartner from '@/app/components/common/os-add-partner';
 import AddPartnerProgram from '@/app/components/common/os-add-partner-program';
@@ -25,10 +26,9 @@ import {
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-import {Form, MenuProps, Modal} from 'antd';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import FormBuilderMain from '@/app/components/common/formBuilder/page';
+import { Form, MenuProps } from 'antd';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
   deletePartner,
   getAllPartner,
@@ -39,7 +39,7 @@ import {
   deletePartnerProgramFormData,
   getAllPartnerProgram,
 } from '../../../../../redux/actions/partnerProgram';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import PartnerAnalytics from '../partners/partnerAnalytics';
 
 export interface SeparatedData {
@@ -553,12 +553,6 @@ const SuperAdminPartner: React.FC = () => {
           name="Body 3/Regular"
           color={token?.colorError}
           onClick={() => {
-            console.log(
-              'deletePartnerIds',
-              deletePartnerIds,
-              deletePartnerIds?.length,
-              activeTab,
-            );
             if (
               deletePartnerIds &&
               deletePartnerIds?.length > 0 &&

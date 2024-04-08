@@ -7,21 +7,19 @@ import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {EyeIcon} from '@heroicons/react/24/outline';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {getAdminUserOfAllOrganization} from '../../../../../redux/actions/user';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {useEffect} from 'react';
+import {queryAllUsers} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
-const UserManagement = () => {
+const OrganizationUsers = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
+  const searchParams = useSearchParams();
+  const getOrganization = searchParams.get('organization');
   const router = useRouter();
   const {data: userData, loading} = useAppSelector((state) => state.user);
-  const [query, setQuery] = useState<{
-    organization: string | null;
-  }>({
-    organization: null,
-  });
+
   const UserDataColumns = [
     {
       title: (
@@ -105,9 +103,7 @@ const UserManagement = () => {
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              router.push(
-                `/organizationUsers?organization=${record?.organization}`,
-              );
+              router.push(`/accountInfo?id=${record?.id}`);
             }}
           />
         </Space>
@@ -116,8 +112,8 @@ const UserManagement = () => {
   ];
 
   useEffect(() => {
-    dispatch(getAdminUserOfAllOrganization(query));
-  }, []);
+    dispatch(queryAllUsers({organization: getOrganization}));
+  }, [getOrganization]);
 
   const locale = {
     emptyText: <EmptyContainer title="No Users" />,
@@ -129,10 +125,11 @@ const UserManagement = () => {
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              All Resellers
+              {getOrganization} Resellers
             </Typography>
           </Col>
         </Row>
+
         <div
           style={{
             background: 'white',
@@ -157,4 +154,4 @@ const UserManagement = () => {
   );
 };
 
-export default UserManagement;
+export default OrganizationUsers;
