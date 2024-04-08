@@ -3,9 +3,9 @@
 
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
-import { Switch } from '@/app/components/common/antd/Switch';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
+import {Switch} from '@/app/components/common/antd/Switch';
 import FormBuilderMain from '@/app/components/common/formBuilder/page';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import AddPartner from '@/app/components/common/os-add-partner';
@@ -26,9 +26,9 @@ import {
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-import { Form, MenuProps } from 'antd';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import {Form, MenuProps} from 'antd';
+import {useRouter} from 'next/navigation';
+import {useEffect, useState} from 'react';
 import {
   deletePartner,
   getAllPartner,
@@ -39,7 +39,7 @@ import {
   deletePartnerProgramFormData,
   getAllPartnerProgram,
 } from '../../../../../redux/actions/partnerProgram';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import PartnerAnalytics from '../partners/partnerAnalytics';
 
 export interface SeparatedData {
@@ -72,6 +72,8 @@ const SuperAdminPartner: React.FC = () => {
   const [deletePartnerProgramIds, setDeletePartnerProgramIds] = useState<[]>();
   const [activeTab, setActiveTab] = useState<number>(1);
   const {data: PartnerData, loading} = useAppSelector((state) => state.partner);
+  const {data: AssignPartnerProgramData, loading: assignPartnerProgramLoading} =
+    useAppSelector((state) => state.assignPartnerProgram);
   const {data: PartnerProgramData, loading: partnerProgramLoading} =
     useAppSelector((state) => state.partnerProgram);
   const [finalPartnerProgramData, setFinalPartnerProgramData] = useState<any>();
@@ -82,6 +84,12 @@ const SuperAdminPartner: React.FC = () => {
     dispatch(getAllPartner());
     dispatch(getAllPartnerProgram());
   }, []);
+
+  // useEffect(() => {
+  //   dispatch(getAllAssignPartnerProgram());
+  // }, []);
+
+  console.log('AssignPartnerProgramData', AssignPartnerProgramData);
 
   const onRowUpdate = (type: string, recordId: number, value: boolean) => {
     const updateField = type === 'Active' ? 'is_active' : 'is_approved';
@@ -312,8 +320,6 @@ const SuperAdminPartner: React.FC = () => {
       ),
     },
   ];
-
- 
 
   const PartnerProgramColumns = [
     {

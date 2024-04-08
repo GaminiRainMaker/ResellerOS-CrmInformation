@@ -5,6 +5,7 @@
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
+import {Switch} from '@/app/components/common/antd/Switch';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import RequestPartner from '@/app/components/common/os-add-partner/RequestPartner';
 import OsButton from '@/app/components/common/os-button';
@@ -20,12 +21,10 @@ import Typography from '@/app/components/common/typography';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form, MenuProps} from 'antd';
 import {useEffect, useState} from 'react';
-import {getAssignPartnerProgramByOrganization} from '../../../../../redux/actions/assignPartnerProgram';
 import {
-  // deletePartner,
-  getAllPartnerTemp,
-} from '../../../../../redux/actions/partner';
-import {getAllPartnerProgram} from '../../../../../redux/actions/partnerProgram';
+  getAssignPartnerProgramByOrganization,
+  updateAssignPartnerProgramById,
+} from '../../../../../redux/actions/assignPartnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {SeparatedData} from '../superAdminPartner/page';
 import PartnerAnalytics from './partnerAnalytics';
@@ -37,21 +36,12 @@ const Partners: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
-  const {data: PartnerData, loading} = useAppSelector((state) => state.partner);
-  const {data: PartnerProgramData, loading: Programloading} = useAppSelector(
-    (state) => state.partnerProgram,
-  );
   const {
     data: AssignPartnerProgramData,
     loading: AssignPartnerProgramDataloading,
   } = useAppSelector((state) => state.assignPartnerProgram);
   const {userInformation} = useAppSelector((state) => state.user);
   const [finalPartnerProgramData, setFinalPartnerProgramData] = useState<any>();
-
-  useEffect(() => {
-    dispatch(getAllPartnerTemp());
-    dispatch(getAllPartnerProgram());
-  }, []);
 
   useEffect(() => {
     dispatch(
@@ -62,16 +52,29 @@ const Partners: React.FC = () => {
   }, [userInformation]);
 
   const partnerObjects: any[] = [];
-  AssignPartnerProgramData?.forEach((entry: any) => {
-    const partner = entry.PartnerProgram.Partner;
-    partnerObjects.push(partner);
+  AssignPartnerProgramData?.approved?.forEach((entry: any) => {
+    const partner = entry?.PartnerProgram?.Partner;
+    partnerObjects?.push(partner);
+  });
+
+  const partnerRequestedObjects: any[] = [];
+  AssignPartnerProgramData?.requested?.forEach((entry: any) => {
+    const partner = entry?.PartnerProgram?.Partner;
+    partnerRequestedObjects?.push(partner);
+  });
+
+  const allApprovedObjects: any[] = [];
+  AssignPartnerProgramData?.allApproved?.forEach((entry: any) => {
+    const partner = entry?.PartnerProgram?.Partner;
+    allApprovedObjects?.push(partner);
   });
 
   useEffect(() => {
     const separatedData: SeparatedData = {};
-    PartnerProgramData?.forEach((item: any) => {
-      const partnerId = item.partner;
-      const partnerName = item.Partner?.partner;
+    AssignPartnerProgramData?.approved?.forEach((item: any) => {
+      const partnerId = item?.PartnerProgram?.partner;
+      const partnerName = item?.PartnerProgram?.Partner?.partner;
+
       if (!separatedData[partnerId]) {
         separatedData[partnerId] = {
           partner_id: partnerId,
@@ -79,13 +82,13 @@ const Partners: React.FC = () => {
           data: [],
         };
       }
-      separatedData[partnerId]?.data.push(item);
+      separatedData[partnerId]?.data?.push(item);
     });
-    setFinalPartnerProgramData(Object.values(separatedData));
-  }, [PartnerProgramData]);
+    setFinalPartnerProgramData(Object?.values(separatedData));
+  }, [AssignPartnerProgramData]);
 
   const deleteSelectedIds = async () => {
-    const data = {id: deleteIds};
+    // const data = {id: deleteIds};
     // await dispatch(deletePartner(data)).then(() => {
     //   dispatch(getAllPartnerTemp());
     // });
@@ -97,6 +100,22 @@ const Partners: React.FC = () => {
     onChange: (selectedRowKeys: any) => {
       setDeleteIds(selectedRowKeys);
     },
+  };
+
+  const assignPartnerProgram = (record: any, value: any) => {
+    const obj = {
+      id: record?.id,
+      is_request: value,
+    };
+    dispatch(updateAssignPartnerProgramById(obj)).then((d) => {
+      if (d?.payload) {
+        dispatch(
+          getAssignPartnerProgramByOrganization({
+            organization: userInformation?.organization,
+          }),
+        );
+      }
+    });
   };
 
   const locale = {
@@ -174,6 +193,27 @@ const Partners: React.FC = () => {
     },
   ];
 
+  const secondSuperPartnerColumns = [
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Request
+        </Typography>
+      ),
+      dataIndex: 'is_request',
+      key: 'is_request',
+      render: (text: string, record: any) => (
+        <Switch
+          value={record?.is_request}
+          size="default"
+          onChange={(e: any) => {
+            assignPartnerProgram(record, e);
+          }}
+        />
+      ),
+    },
+  ];
+
   const PartnerProgramColumns = [
     {
       title: (
@@ -183,8 +223,10 @@ const Partners: React.FC = () => {
       ),
       dataIndex: 'partner_program',
       key: 'partner_program',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.PartnerProgram?.partner_program ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -220,8 +262,11 @@ const Partners: React.FC = () => {
       dataIndex: 'website',
       key: 'website',
 
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {' '}
+          {record?.PartnerProgram?.website ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -251,7 +296,7 @@ const Partners: React.FC = () => {
           rowSelection={rowSelection}
           scroll
           locale={locale}
-          loading={loading}
+          loading={AssignPartnerProgramDataloading}
         />
       ),
     },
@@ -273,7 +318,7 @@ const Partners: React.FC = () => {
                         dataSource={itemDeal?.data}
                         rowSelection={rowSelection}
                         scroll
-                        loading={Programloading}
+                        loading={AssignPartnerProgramDataloading}
                         locale={locale}
                       />
                     ),
@@ -300,11 +345,25 @@ const Partners: React.FC = () => {
       children: (
         <OsTable
           columns={PartnerColumns}
-          dataSource={PartnerData?.requested}
+          dataSource={partnerRequestedObjects}
           rowSelection={rowSelection}
           scroll
           locale={locale}
-          loading={loading}
+          loading={AssignPartnerProgramDataloading}
+        />
+      ),
+    },
+    {
+      label: <Typography name="Body 4/Regular">All Partners</Typography>,
+      key: '4',
+      children: (
+        <OsTable
+          columns={[...PartnerColumns, ...secondSuperPartnerColumns]}
+          dataSource={allApprovedObjects}
+          rowSelection={rowSelection}
+          scroll
+          locale={locale}
+          loading={false}
         />
       ),
     },
@@ -332,6 +391,7 @@ const Partners: React.FC = () => {
       ),
     },
   ];
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -391,7 +451,7 @@ const Partners: React.FC = () => {
       </Space>
 
       <OsModal
-        loading={loading}
+        loading={AssignPartnerProgramDataloading}
         body={<RequestPartner form={form} setOpen={setShowModal} />}
         width={800}
         open={showModal}

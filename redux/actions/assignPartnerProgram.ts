@@ -26,6 +26,19 @@ export const getAssignPartnerProgramByOrganization = createAsyncThunk(
   },
 );
 
+
+export const getAllAssignPartnerProgram = createAsyncThunk(
+  'assignPartnerProgram/getAllAssignPartnerProgram',
+  async (organization: any, thunkApi) => {
+    try {
+      const res = await ASSIGN_PARTNER_PROGRAM_API.get();
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+
 export const deleteAssignPartnerProgram = createAsyncThunk(
   'assignPartnerProgram/deleteAssignPartnerProgram',
   async (data: any, thunkApi) => {
