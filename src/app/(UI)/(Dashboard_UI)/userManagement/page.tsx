@@ -4,24 +4,31 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import EmptyContainer from '@/app/components/common/os-empty-container';
+import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {EyeIcon} from '@heroicons/react/24/outline';
+import {EyeIcon, UsersIcon} from '@heroicons/react/24/outline';
+import {Form} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {getAdminUserOfAllOrganization} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import AssignPartnerProgram from './AssignPartnerProgram';
 
 const UserManagement = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const router = useRouter();
+  const [form] = Form.useForm();
   const {data: userData, loading} = useAppSelector((state) => state.user);
   const [query, setQuery] = useState<{
     organization: string | null;
   }>({
     organization: null,
   });
+  const [showPartnerProgramAssignModal, setShowPartnerProgramAssignModal] =
+    useState<boolean>(false);
+
   const UserDataColumns = [
     {
       title: (
@@ -65,32 +72,6 @@ const UserManagement = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Job Title
-        </Typography>
-      ),
-      dataIndex: 'job_title',
-      key: 'job_title',
-      width: 173,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Contact
-        </Typography>
-      ),
-      dataIndex: 'phone_number',
-      key: 'phone_number',
-      width: 173,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
           {' '}
         </Typography>
       ),
@@ -110,6 +91,15 @@ const UserManagement = () => {
               );
             }}
           />
+          <UsersIcon
+            height={24}
+            width={24}
+            color={token.colorInfoBorder}
+            style={{cursor: 'pointer'}}
+            onClick={() => {
+              setShowPartnerProgramAssignModal(true);
+            }}
+          />
         </Space>
       ),
     },
@@ -121,6 +111,11 @@ const UserManagement = () => {
 
   const locale = {
     emptyText: <EmptyContainer title="No Users" />,
+  };
+
+  const onFinish = () => {
+    const Data = form?.getFieldsValue();
+    console.log('Dataa123', Data);
   };
 
   return (
@@ -147,12 +142,27 @@ const UserManagement = () => {
             locale={locale}
             columns={UserDataColumns}
             dataSource={userData}
-            // rowSelection={rowSelection}
             scroll
             loading={loading}
           />
         </div>
       </Space>
+
+      <OsModal
+        loading={false}
+        body={<AssignPartnerProgram form={form} onFinish={onFinish} />}
+        bodyPadding={40}
+        width={638}
+        open={showPartnerProgramAssignModal}
+        onCancel={() => {
+          setShowPartnerProgramAssignModal(false);
+        }}
+        destroyOnClose
+        primaryButtonText="Assign"
+        onOk={() => {
+          form?.submit();
+        }}
+      />
     </>
   );
 };
