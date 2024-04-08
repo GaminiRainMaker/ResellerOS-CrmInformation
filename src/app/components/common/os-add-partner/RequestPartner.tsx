@@ -7,7 +7,7 @@ import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
 import {
-  getAllPartner,
+  getAllPartnerTemp,
   insertPartner,
 } from '../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -25,7 +25,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({form, setOpen}) => {
     };
     dispatch(insertPartner(partnerObj)).then(() => {
       form?.resetFields(['partner', 'partner_program']);
-      dispatch(getAllPartner());
+      dispatch(getAllPartnerTemp());
     });
     setOpen(false);
   };

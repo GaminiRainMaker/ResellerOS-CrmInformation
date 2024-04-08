@@ -22,7 +22,7 @@ import {Form, MenuProps} from 'antd';
 import {useEffect, useState} from 'react';
 import {
   // deletePartner,
-  getAllPartner,
+  getAllPartnerTemp,
 } from '../../../../../redux/actions/partner';
 import {getAllPartnerProgram} from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -43,7 +43,7 @@ const Partners: React.FC = () => {
   const [finalPartnerProgramData, setFinalPartnerProgramData] = useState<any>();
 
   useEffect(() => {
-    dispatch(getAllPartner());
+    dispatch(getAllPartnerTemp());
     dispatch(getAllPartnerProgram());
   }, []);
 
@@ -67,7 +67,7 @@ const Partners: React.FC = () => {
   const deleteSelectedIds = async () => {
     const data = {id: deleteIds};
     // await dispatch(deletePartner(data)).then(() => {
-    //   dispatch(getAllPartner());
+    //   dispatch(getAllPartnerTemp());
     // });
     setDeleteIds([]);
     setShowModalDelete(false);

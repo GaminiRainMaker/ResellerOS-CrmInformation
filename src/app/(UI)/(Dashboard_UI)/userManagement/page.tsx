@@ -121,7 +121,6 @@ const UserManagement = () => {
 
   const onFinish = () => {
     const Data = form?.getFieldsValue();
-
     const obj = {
       organization: selectedRecordData?.organization,
       partner_program_id: Data?.partner_program_id,

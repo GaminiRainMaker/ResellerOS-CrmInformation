@@ -21,7 +21,7 @@ import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {insertDealReg} from '../../../../../redux/actions/dealReg';
 import {insertDealRegAddress} from '../../../../../redux/actions/dealRegAddress';
 import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
-import {getAllPartner} from '../../../../../redux/actions/partner';
+import {getAllPartnerTemp} from '../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
 
@@ -42,7 +42,7 @@ const AddRegistrationForm: FC<any> = ({setShowModal}) => {
   const [opportunityFilterOption, setOpportunityFilterOption] = useState<any>();
 
   useEffect(() => {
-    dispatch(getAllPartner());
+    dispatch(getAllPartnerTemp());
   }, []);
 
   const partnerOptions = partnerData?.approved?.map((partner: any) => ({

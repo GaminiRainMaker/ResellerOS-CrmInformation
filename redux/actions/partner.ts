@@ -26,6 +26,18 @@ export const getAllPartner = createAsyncThunk(
   },
 );
 
+export const getAllPartnerTemp = createAsyncThunk(
+  'partner/getAllPartnerTemp',
+  async (data, thunkApi) => {
+    try {
+      const res = await PARTNER_API.getAllPartnerTemp();
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+
 export const deletePartner = createAsyncThunk(
   'partner/deletePartner',
   async (data: any, thunkApi) => {

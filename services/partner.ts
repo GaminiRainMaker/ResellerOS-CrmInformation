@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AxiosResponse } from 'axios';
-import { API } from './CONSTANTS';
-import { get, patch, post } from './index';
+import {AxiosResponse} from 'axios';
+import {API} from './CONSTANTS';
+import {get, patch, post} from './index';
 
 export const PARTNER_API = {
   get: () => get(API.PARTNER.INDEX) as Promise<AxiosResponse<[]>>,
@@ -16,4 +16,6 @@ export const PARTNER_API = {
     patch(API.PARTNER.DeleteById, data) as Promise<AxiosResponse<any>>,
   updatePartnerById: (data: any) =>
     patch(API.PARTNER.UpdatePartnerById, data) as Promise<AxiosResponse<any>>,
+  getAllPartnerTemp: () =>
+    get(API.PARTNER.GetAllPartnerTemp) as Promise<AxiosResponse<[]>>,
 };

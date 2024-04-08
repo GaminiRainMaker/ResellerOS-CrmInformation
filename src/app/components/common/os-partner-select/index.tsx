@@ -2,7 +2,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import {Form, FormInstance} from 'antd';
 import {FC, useEffect} from 'react';
-import {getAllPartner} from '../../../../../redux/actions/partner';
+import {getAllPartnerTemp} from '../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import useThemeToken from '../hooks/useThemeToken';
 import CommonSelect from '../os-select';
@@ -20,7 +20,7 @@ const OsPartnerSelect: FC<{
   const {data: partnerData} = useAppSelector((state) => state.partner);
 
   useEffect(() => {
-    dispatch(getAllPartner());
+    dispatch(getAllPartnerTemp());
   }, []);
 
   const partnerOptions = partnerData?.approved?.map((dataAddressItem: any) => ({

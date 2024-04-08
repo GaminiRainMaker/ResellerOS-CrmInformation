@@ -448,7 +448,7 @@ const SuperAdminPartner: React.FC = () => {
       children: (
         <OsTable
           columns={[...SuperPartnerColumns, ...thirdSuperPartnerColumns]}
-          dataSource={PartnerData?.approved}
+          dataSource={PartnerData}
           rowSelection={rowSelection}
           scroll
           locale={locale}

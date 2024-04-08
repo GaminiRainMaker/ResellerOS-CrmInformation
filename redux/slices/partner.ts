@@ -3,9 +3,10 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
   deletePartner,
-  getAllPartner,
+  getAllPartnerTemp,
   insertPartner,
   updatePartnerById,
+  getAllPartner,
 } from '../actions/partner';
 
 type PartnerState = {
@@ -55,6 +56,24 @@ const partnerSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      .addCase(getAllPartnerTemp.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getAllPartnerTemp.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getAllPartnerTemp.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
       .addCase(deletePartner.pending, (state) => {
         state.loading = true;
         state.error = null;
