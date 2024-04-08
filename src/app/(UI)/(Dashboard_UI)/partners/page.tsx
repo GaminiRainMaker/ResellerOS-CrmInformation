@@ -20,6 +20,7 @@ import Typography from '@/app/components/common/typography';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form, MenuProps} from 'antd';
 import {useEffect, useState} from 'react';
+import {getAssignPartnerProgramByOrganization} from '../../../../../redux/actions/assignPartnerProgram';
 import {
   // deletePartner,
   getAllPartnerTemp,
@@ -40,12 +41,31 @@ const Partners: React.FC = () => {
   const {data: PartnerProgramData, loading: Programloading} = useAppSelector(
     (state) => state.partnerProgram,
   );
+  const {
+    data: AssignPartnerProgramData,
+    loading: AssignPartnerProgramDataloading,
+  } = useAppSelector((state) => state.assignPartnerProgram);
+  const {userInformation} = useAppSelector((state) => state.user);
   const [finalPartnerProgramData, setFinalPartnerProgramData] = useState<any>();
 
   useEffect(() => {
     dispatch(getAllPartnerTemp());
     dispatch(getAllPartnerProgram());
   }, []);
+
+  useEffect(() => {
+    dispatch(
+      getAssignPartnerProgramByOrganization({
+        organization: userInformation?.organization,
+      }),
+    );
+  }, [userInformation]);
+
+  const partnerObjects: any[] = [];
+  AssignPartnerProgramData?.forEach((entry: any) => {
+    const partner = entry.PartnerProgram.Partner;
+    partnerObjects.push(partner);
+  });
 
   useEffect(() => {
     const separatedData: SeparatedData = {};
@@ -227,7 +247,7 @@ const Partners: React.FC = () => {
       children: (
         <OsTable
           columns={PartnerColumns}
-          dataSource={PartnerData?.approved}
+          dataSource={partnerObjects}
           rowSelection={rowSelection}
           scroll
           locale={locale}

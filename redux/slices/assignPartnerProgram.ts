@@ -5,6 +5,7 @@ import {
   insertAssignPartnerProgram,
   updateAssignPartnerProgramById,
   deleteAssignPartnerProgram,
+  getAssignPartnerProgramByOrganization,
 } from '../actions/assignPartnerProgram';
 
 type AssignPartnerProgramState = {
@@ -79,6 +80,24 @@ const assignPartnerProgramSlice = createSlice({
       )
       .addCase(
         updateAssignPartnerProgramById.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getAssignPartnerProgramByOrganization.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getAssignPartnerProgramByOrganization.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getAssignPartnerProgramByOrganization.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

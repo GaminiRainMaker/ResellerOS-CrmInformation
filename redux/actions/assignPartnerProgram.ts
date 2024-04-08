@@ -14,17 +14,17 @@ export const insertAssignPartnerProgram = createAsyncThunk(
   },
 );
 
-// export const getAllAssignPartnerProgram = createAsyncThunk(
-//   'assignPartnerProgram/getAllAssignPartnerProgram',
-//   async (data, thunkApi) => {
-//     try {
-//       const res = await ASSIGN_PARTNER_PROGRAM_API.get();
-//       return res.data;
-//     } catch (error: any) {
-//       return thunkApi.rejectWithValue(error?.message);
-//     }
-//   },
-// );
+export const getAssignPartnerProgramByOrganization = createAsyncThunk(
+  'assignPartnerProgram/getAssignPartnerProgramByOrganization',
+  async (organization: any, thunkApi) => {
+    try {
+      const res = await ASSIGN_PARTNER_PROGRAM_API.query(organization);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
 
 export const deleteAssignPartnerProgram = createAsyncThunk(
   'assignPartnerProgram/deleteAssignPartnerProgram',
