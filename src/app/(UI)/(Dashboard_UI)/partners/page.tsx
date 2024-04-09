@@ -18,7 +18,10 @@ import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useEffect, useState} from 'react';
 import {partnerProgramFilter} from '@/app/utils/base';
-import {getAssignPartnerProgramByOrganization} from '../../../../../redux/actions/assignPartnerProgram';
+import {
+  getAssignPartnerProgramByOrganization,
+  insertAssignPartnerProgram,
+} from '../../../../../redux/actions/assignPartnerProgram';
 import {getUnassignedProgram} from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import PartnerAnalytics from './partnerAnalytics';
@@ -225,6 +228,19 @@ const Partners: React.FC = () => {
     },
   ];
 
+  const handleAddNewAssignedPartnerProgramRequest = async (id: number) => {
+    const partnerObj = {
+      organization: userInformation?.organization,
+      requested_by: userInformation?.id,
+      is_request: true,
+      partner_program_id: id,
+    };
+    await dispatch(insertAssignPartnerProgram(partnerObj));
+    dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
+      setAllPartnerData(payload?.payload);
+    });
+  };
+
   useEffect(() => {
     if (activeTab === 1) {
       const newArr = [...PartnerProgramColumns];
@@ -236,8 +252,14 @@ const Partners: React.FC = () => {
         ),
         dataIndex: 'website',
         key: 'website',
-        render: (text: string) => (
-          <OsButton buttontype="PRIMARY" text="Request" />
+        render: (text: string, record: any) => (
+          <OsButton
+            buttontype="PRIMARY"
+            text="Request"
+            clickHandler={() => {
+              handleAddNewAssignedPartnerProgramRequest(record?.id);
+            }}
+          />
         ),
       });
       setPartnerProgramColumns(newArr);

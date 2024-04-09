@@ -43,7 +43,10 @@ import {
 } from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import PartnerAnalytics from '../partners/partnerAnalytics';
-import {getAllAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
+import {
+  getAllAssignPartnerProgram,
+  updateAssignPartnerProgramById,
+} from '../../../../../redux/actions/assignPartnerProgram';
 
 export interface SeparatedData {
   [partnerId: number]: {
@@ -105,6 +108,18 @@ const SuperAdminPartner: React.FC = () => {
 
     setAllFilterPartnerData(FilterArrayDataa);
   }, [allPartnerData, activeTab]);
+
+  const updateRequest = async (type: boolean, id: number) => {
+    const Data = {
+      id,
+      is_approved: type,
+    };
+    await dispatch(updateAssignPartnerProgramById(Data));
+
+    dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
+      setAllPartnerData(payload?.payload);
+    });
+  };
 
   const onRowUpdate = (type: string, recordId: number, value: boolean) => {
     const updateField = type === 'Active' ? 'is_active' : 'is_approved';
@@ -527,11 +542,23 @@ const SuperAdminPartner: React.FC = () => {
         ),
         dataIndex: 'website',
         key: 'website',
-        render: (text: string) => (
+        render: (text: string, record: any) => (
           <Space direction="horizontal">
             {' '}
-            <OsButton buttontype="PRIMARY" text="Approve" />{' '}
-            <OsButton buttontype="SECONDARY" text="Decline" />
+            <OsButton
+              buttontype="PRIMARY"
+              text="Approve"
+              clickHandler={() => {
+                updateRequest(true, record?.AssignPartnerProgram?.id);
+              }}
+            />{' '}
+            <OsButton
+              buttontype="SECONDARY"
+              text="Decline"
+              clickHandler={() => {
+                updateRequest(false, record?.AssignPartnerProgram?.id);
+              }}
+            />
           </Space>
         ),
       });

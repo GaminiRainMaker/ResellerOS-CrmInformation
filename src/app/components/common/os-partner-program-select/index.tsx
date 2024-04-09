@@ -48,7 +48,7 @@ const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
     dispatch(getAllPartnerProgram());
   }, []);
 
-  const filteredData = partnerProgramData.filter(
+  const filteredData = partnerProgramData?.filter(
     (item: any) => item.partner === partnerId,
   );
 
