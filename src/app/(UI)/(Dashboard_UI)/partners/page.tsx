@@ -3,8 +3,8 @@
 
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import RequestPartner from '@/app/components/common/os-add-partner/RequestPartner';
 import OsButton from '@/app/components/common/os-button';
@@ -16,13 +16,13 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import { columns1, data123 } from '@/app/utils/CONSTANTS';
-import { PlusIcon } from '@heroicons/react/24/outline';
-import { Form, MenuProps } from 'antd';
-import { useEffect, useState } from 'react';
-import { getAssignPartnerProgramByOrganization } from '../../../../../redux/actions/assignPartnerProgram';
-import { getUnassignedProgram } from '../../../../../redux/actions/partnerProgram';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {columns1, data123} from '@/app/utils/CONSTANTS';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import {Form, MenuProps} from 'antd';
+import {useEffect, useState} from 'react';
+import {getAssignPartnerProgramByOrganization} from '../../../../../redux/actions/assignPartnerProgram';
+import {getUnassignedProgram} from '../../../../../redux/actions/partnerProgram';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import PartnerAnalytics from './partnerAnalytics';
 
 const Partners: React.FC = () => {
@@ -72,7 +72,6 @@ const Partners: React.FC = () => {
     const partner = entry?.PartnerProgram?.Partner;
     allApprovedObjects?.push(partner);
   });
-
 
   const deleteSelectedIds = async () => {
     // const data = {id: deleteIds};
@@ -286,15 +285,12 @@ const Partners: React.FC = () => {
 
           {activeTab === 1 && (
             <Col style={{display: 'flex', alignItems: 'center'}}>
-              <Space size={12} style={{height: '48px'}}>
-                <OsButton
-                  text="Request Partner"
-                  buttontype="PRIMARY"
-                  icon={<PlusIcon />}
-                  clickHandler={() => setShowModal((p) => !p)}
-                />
-                <OsDropdown menu={{items: dropDownItemss}} />
-              </Space>
+              <OsButton
+                text="Request Partner"
+                buttontype="PRIMARY"
+                icon={<PlusIcon />}
+                clickHandler={() => setShowModal((p) => !p)}
+              />
             </Col>
           )}
         </Row>
