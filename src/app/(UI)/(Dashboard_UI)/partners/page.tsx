@@ -3,13 +3,11 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
-import {Switch} from '@/app/components/common/antd/Switch';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import RequestPartner from '@/app/components/common/os-add-partner/RequestPartner';
 import OsButton from '@/app/components/common/os-button';
-import OsCollapse from '@/app/components/common/os-collapse';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
@@ -18,18 +16,14 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form, MenuProps} from 'antd';
-import {useEffect, useState} from 'react';
-import {columns1, data123} from '@/app/utils/CONSTANTS';
-import {
-  getAssignPartnerProgramByOrganization,
-  updateAssignPartnerProgramById,
-} from '../../../../../redux/actions/assignPartnerProgram';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {SeparatedData} from '../superAdminPartner/page';
+import { columns1, data123 } from '@/app/utils/CONSTANTS';
+import { PlusIcon } from '@heroicons/react/24/outline';
+import { Form, MenuProps } from 'antd';
+import { useEffect, useState } from 'react';
+import { getAssignPartnerProgramByOrganization } from '../../../../../redux/actions/assignPartnerProgram';
+import { getUnassignedProgram } from '../../../../../redux/actions/partnerProgram';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import PartnerAnalytics from './partnerAnalytics';
-import {getUnassignedProgram} from '../../../../../redux/actions/partnerProgram';
 
 const Partners: React.FC = () => {
   const [token] = useThemeToken();
@@ -38,6 +32,7 @@ const Partners: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<number>(1);
   const {
     data: AssignPartnerProgramData,
     loading: AssignPartnerProgramDataloading,
@@ -46,7 +41,6 @@ const Partners: React.FC = () => {
   const {data: unnassignedData} = useAppSelector(
     (state) => state.partnerProgram,
   );
-  const [finalPartnerProgramData, setFinalPartnerProgramData] = useState<any>();
 
   useEffect(() => {
     dispatch(
@@ -79,23 +73,6 @@ const Partners: React.FC = () => {
     allApprovedObjects?.push(partner);
   });
 
-  useEffect(() => {
-    const separatedData: SeparatedData = {};
-    AssignPartnerProgramData?.approved?.forEach((item: any) => {
-      const partnerId = item?.PartnerProgram?.partner;
-      const partnerName = item?.PartnerProgram?.Partner?.partner;
-
-      if (!separatedData[partnerId]) {
-        separatedData[partnerId] = {
-          partner_id: partnerId,
-          title: partnerName,
-          data: [],
-        };
-      }
-      separatedData[partnerId]?.data?.push(item);
-    });
-    setFinalPartnerProgramData(Object?.values(separatedData));
-  }, [AssignPartnerProgramData]);
 
   const deleteSelectedIds = async () => {
     // const data = {id: deleteIds};
@@ -110,22 +87,6 @@ const Partners: React.FC = () => {
     onChange: (selectedRowKeys: any) => {
       setDeleteIds(selectedRowKeys);
     },
-  };
-
-  const assignPartnerProgram = (record: any, value: any) => {
-    const obj = {
-      id: record?.id,
-      is_request: value,
-    };
-    dispatch(updateAssignPartnerProgramById(obj)).then((d) => {
-      if (d?.payload) {
-        dispatch(
-          getAssignPartnerProgramByOrganization({
-            organization: userInformation?.organization,
-          }),
-        );
-      }
-    });
   };
 
   const locale = {
@@ -203,101 +164,19 @@ const Partners: React.FC = () => {
     },
   ];
 
-  const secondSuperPartnerColumns = [
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Request
-        </Typography>
-      ),
-      dataIndex: 'is_request',
-      key: 'is_request',
-      render: (text: string, record: any) => (
-        <Switch
-          value={record?.is_request}
-          size="default"
-          onChange={(e: any) => {
-            assignPartnerProgram(record, e);
-          }}
-        />
-      ),
-    },
-  ];
-
-  const PartnerProgramColumns = [
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Partner Programs
-        </Typography>
-      ),
-      dataIndex: 'partner_program',
-      key: 'partner_program',
-      render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
-          {record?.PartnerProgram?.partner_program ?? '--'}
-        </Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Generated Date
-        </Typography>
-      ),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Program Type
-        </Typography>
-      ),
-      dataIndex: 'type',
-      key: 'type',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Site Link
-        </Typography>
-      ),
-      dataIndex: 'website',
-      key: 'website',
-
-      render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
-          {' '}
-          {record?.PartnerProgram?.website ?? '--'}
-        </Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Template
-        </Typography>
-      ),
-      dataIndex: 'form_data',
-      key: 'form_data',
-      render: (text: string) => (
-        <Typography name="Body 4/Medium" hoverOnText color={token?.colorLink}>
-          View
-        </Typography>
-      ),
-    },
-  ];
-
   const tabItems = [
     {
-      label: <Typography name="Body 4/Regular">All Partners</Typography>,
+      label: (
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setActiveTab(1);
+          }}
+          name="Body 4/Regular"
+        >
+          All Partners
+        </Typography>
+      ),
       key: '1',
       children: (
         <OsTable
@@ -322,7 +201,17 @@ const Partners: React.FC = () => {
       ),
     },
     {
-      label: <Typography name="Body 4/Regular">Active Partners</Typography>,
+      label: (
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setActiveTab(2);
+          }}
+          name="Body 4/Regular"
+        >
+          Active Partners
+        </Typography>
+      ),
       key: '2',
       children: (
         <OsTable
@@ -336,47 +225,18 @@ const Partners: React.FC = () => {
       ),
     },
     {
-      label: <Typography name="Body 4/Regular">Partner Programs</Typography>,
-      key: '3',
-      children: (
-        <>
-          {finalPartnerProgramData && finalPartnerProgramData?.length > 0 ? (
-            finalPartnerProgramData?.map((itemDeal: any) => (
-              <OsCollapse
-                items={[
-                  {
-                    key: '1',
-                    label: <p>{itemDeal?.title}</p>,
-                    children: (
-                      <OsTable
-                        columns={PartnerProgramColumns}
-                        dataSource={itemDeal?.data}
-                        rowSelection={rowSelection}
-                        scroll
-                        loading={AssignPartnerProgramDataloading}
-                        locale={locale}
-                      />
-                    ),
-                  },
-                ]}
-              />
-            ))
-          ) : (
-            <OsTable
-              columns={PartnerProgramColumns}
-              dataSource={[]}
-              rowSelection={rowSelection}
-              scroll
-              loading={false}
-              locale={locale}
-            />
-          )}
-        </>
+      label: (
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setActiveTab(3);
+          }}
+          name="Body 4/Regular"
+        >
+          Requested
+        </Typography>
       ),
-    },
-    {
-      label: <Typography name="Body 4/Regular">Requested</Typography>,
-      key: '4',
+      key: '3',
       children: (
         <OsTable
           columns={PartnerColumns}
@@ -423,17 +283,20 @@ const Partners: React.FC = () => {
               All Partners
             </Typography>
           </Col>
-          <Col style={{display: 'flex', alignItems: 'center'}}>
-            <Space size={12} style={{height: '48px'}}>
-              <OsButton
-                text="Request Partner"
-                buttontype="PRIMARY"
-                icon={<PlusIcon />}
-                clickHandler={() => setShowModal((p) => !p)}
-              />
-              <OsDropdown menu={{items: dropDownItemss}} />
-            </Space>
-          </Col>
+
+          {activeTab === 1 && (
+            <Col style={{display: 'flex', alignItems: 'center'}}>
+              <Space size={12} style={{height: '48px'}}>
+                <OsButton
+                  text="Request Partner"
+                  buttontype="PRIMARY"
+                  icon={<PlusIcon />}
+                  clickHandler={() => setShowModal((p) => !p)}
+                />
+                <OsDropdown menu={{items: dropDownItemss}} />
+              </Space>
+            </Col>
+          )}
         </Row>
 
         <Row
