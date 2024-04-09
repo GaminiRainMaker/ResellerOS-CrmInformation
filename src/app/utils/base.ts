@@ -1,3 +1,6 @@
+/* eslint-disable no-dupe-else-if */
+/* eslint-disable no-lonely-if */
+/* eslint-disable array-callback-return */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-unsafe-optional-chaining */
@@ -8,6 +11,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import axios from 'axios';
 import moment from 'moment';
+import {ServerStackIcon} from '@heroicons/react/24/outline';
 import {getContractProductByProductCode} from '../../../redux/actions/contractProduct';
 import {insertProfitability} from '../../../redux/actions/profitability';
 import {quoteFileVerification} from '../../../redux/actions/quoteFile';
@@ -419,4 +423,162 @@ export const sendDataToNanonets = async (model_id: string, file: File) => {
     console.log('ERR', err);
     throw err;
   }
+};
+
+export const partnerProgramFilter = (
+  typeOfLogin: string,
+  userInformation: any,
+  allPartnerData: any,
+  activeTab: number,
+) => {
+  const FilterArrayDataa: any = [];
+  // Used for case of User
+  const aprovedIds: any = [];
+  const allRequestedIds: any = [];
+
+  // Used for case of super admin
+
+  const superAdminAllApprovedIds: any = [];
+  const requestIdsForSuperAdmin: any = [];
+  const rejectedIdsForSuperAdmin: any = [];
+
+  allPartnerData?.map((itemPartner: any) => {
+    if (
+      itemPartner?.PartnerPrograms &&
+      itemPartner?.PartnerPrograms?.length > 0
+    ) {
+      itemPartner?.PartnerPrograms?.filter((itemProgram: any) => {
+        if (typeOfLogin === 'user') {
+          // Approved for organization
+          if (
+            itemProgram?.AssignPartnerProgram?.organization ===
+              userInformation?.organization &&
+            itemProgram?.AssignPartnerProgram?.is_approved
+          ) {
+            aprovedIds?.push(
+              itemProgram?.AssignPartnerProgram?.partner_program_id,
+            );
+          } else if (
+            // Requested but not approved or decliend
+            itemProgram?.AssignPartnerProgram?.organization ===
+              userInformation?.organization &&
+            itemProgram?.AssignPartnerProgram?.is_approved === null
+          ) {
+            allRequestedIds?.push(
+              itemProgram?.AssignPartnerProgram?.partner_program_id,
+            );
+          }
+        } else {
+          // Approved for organization
+          if (
+            itemProgram?.user_id === userInformation?.id ||
+            itemProgram?.AssignPartnerProgram?.is_approved
+          ) {
+            superAdminAllApprovedIds?.push(
+              itemProgram?.AssignPartnerProgram?.partner_program_id,
+            );
+          } else if (
+            // Requested but not approved or decliend
+            itemProgram?.AssignPartnerProgram?.is_approved === null
+          ) {
+            requestIdsForSuperAdmin?.push(
+              itemProgram?.AssignPartnerProgram?.partner_program_id,
+            );
+          } else if (!itemProgram?.AssignPartnerProgram?.is_approved) {
+            rejectedIdsForSuperAdmin?.push(
+              itemProgram?.AssignPartnerProgram?.partner_program_id,
+            );
+          }
+        }
+      });
+    }
+  });
+
+  let allNotRequestedIds: any = [];
+  allNotRequestedIds = aprovedIds?.concat(allRequestedIds);
+
+  if (activeTab === 1) {
+    allPartnerData?.map((item: any) => {
+      const newArrForPrograms: any = [];
+      if (item?.PartnerPrograms) {
+        if (typeOfLogin === 'user') {
+          item?.PartnerPrograms?.filter((itemProgramD: any) => {
+            if (!allNotRequestedIds?.includes(itemProgramD?.id)) {
+              newArrForPrograms?.push(itemProgramD);
+            }
+          });
+        } else {
+          item?.PartnerPrograms?.filter((itemProgramD: any) => {
+            if (superAdminAllApprovedIds?.includes(itemProgramD?.id)) {
+              newArrForPrograms?.push(itemProgramD);
+            }
+          });
+        }
+      }
+      if (newArrForPrograms?.length > 0) {
+        const newObj: any = {...item};
+        delete newObj.PartnerPrograms;
+        if (newArrForPrograms?.length > 0) {
+          newObj.PartnerPrograms = newArrForPrograms;
+        }
+        FilterArrayDataa?.push(newObj);
+      }
+    });
+  } else if (activeTab === 2) {
+    allPartnerData?.map((item: any) => {
+      const newArrForPrograms: any = [];
+      if (item?.PartnerPrograms) {
+        if (typeOfLogin === 'user') {
+          item?.PartnerPrograms?.filter((itemProgramD: any) => {
+            if (aprovedIds?.includes(itemProgramD?.id)) {
+              newArrForPrograms?.push(itemProgramD);
+            }
+          });
+        } else {
+          item?.PartnerPrograms?.filter((itemProgramD: any) => {
+            if (requestIdsForSuperAdmin?.includes(itemProgramD?.id)) {
+              newArrForPrograms?.push(itemProgramD);
+            }
+          });
+        }
+      }
+      if (newArrForPrograms?.length > 0) {
+        const newObj: any = {...item};
+        delete newObj.PartnerPrograms;
+        if (newArrForPrograms?.length > 0) {
+          newObj.PartnerPrograms = newArrForPrograms;
+        }
+        FilterArrayDataa?.push(newObj);
+      }
+    });
+  } else if (activeTab === 3) {
+    allPartnerData?.map((item: any) => {
+      const newArrForPrograms: any = [];
+      if (item?.PartnerPrograms) {
+        if (typeOfLogin === 'user') {
+          item?.PartnerPrograms?.filter((itemProgramD: any) => {
+            if (allRequestedIds?.includes(itemProgramD?.id)) {
+              newArrForPrograms?.push(itemProgramD);
+            }
+          });
+        } else {
+          item?.PartnerPrograms?.filter((itemProgramD: any) => {
+            if (rejectedIdsForSuperAdmin?.includes(itemProgramD?.id)) {
+              newArrForPrograms?.push(itemProgramD);
+            }
+          });
+        }
+      }
+      if (newArrForPrograms?.length > 0) {
+        const newObj: any = {...item};
+        delete newObj.PartnerPrograms;
+        if (newArrForPrograms?.length > 0) {
+          newObj.PartnerPrograms = newArrForPrograms;
+        }
+        FilterArrayDataa?.push(newObj);
+      }
+    });
+  }
+
+  return FilterArrayDataa;
 };

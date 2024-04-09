@@ -29,9 +29,11 @@ import {
 import {Form, MenuProps} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import {partnerProgramFilter} from '@/app/utils/base';
 import {
   deletePartner,
   getAllPartner,
+  getAllPartnerandProgram,
   updatePartnerById,
 } from '../../../../../redux/actions/partner';
 import {
@@ -78,7 +80,10 @@ const SuperAdminPartner: React.FC = () => {
   const [finalPartnerProgramData, setFinalPartnerProgramData] = useState<any>();
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
   const [formData, setformData] = useState<any>();
-
+  const [allPartnerData, setAllPartnerData] = useState<any>();
+  const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
+  const [partnerProgramColumns, setPartnerProgramColumns] = useState<any>();
+  const {userInformation} = useAppSelector((state) => state.user);
   // useEffect(() => {
   //   dispatch(getAllPartner());
   //   dispatch(getAllPartnerProgram());
@@ -86,9 +91,20 @@ const SuperAdminPartner: React.FC = () => {
 
   useEffect(() => {
     dispatch(getAllPartner());
+    dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
+      setAllPartnerData(payload?.payload);
+    });
   }, []);
+  useEffect(() => {
+    const FilterArrayDataa = partnerProgramFilter(
+      'super',
+      userInformation,
+      allPartnerData,
+      activeTab,
+    );
 
-  console.log('PartnerData1234', PartnerData);
+    setAllFilterPartnerData(FilterArrayDataa);
+  }, [allPartnerData, activeTab]);
 
   const onRowUpdate = (type: string, recordId: number, value: boolean) => {
     const updateField = type === 'Active' ? 'is_active' : 'is_approved';
@@ -167,20 +183,19 @@ const SuperAdminPartner: React.FC = () => {
     ),
   };
 
-  const SuperPartnerColumns = [
+  const PartnerProgramColumns = [
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Partner Name
+          Partner Program Name
         </Typography>
       ),
-      dataIndex: 'partner',
-      key: 'partner',
+      dataIndex: 'partner_program',
+      key: 'partner_program',
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
-
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -196,11 +211,12 @@ const SuperAdminPartner: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Industry
+          Organization
         </Typography>
       ),
-      dataIndex: 'industry',
-      key: 'industry',
+      dataIndex: 'organization',
+      key: 'organization',
+
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -213,6 +229,7 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'email',
       key: 'email',
+
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -229,22 +246,68 @@ const SuperAdminPartner: React.FC = () => {
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
+  ];
+  const PartnerColumns = [
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Active
+          Partner Name
         </Typography>
       ),
-      dataIndex: 'is_active',
-      key: 'is_active',
-      render: (text: string, record: any) => (
-        <Switch
-          size="default"
-          value={record?.is_active}
-          onChange={(e) => {
-            onRowUpdate('Active', record?.id, e);
-          }}
-        />
+      dataIndex: 'partner',
+      key: 'partner',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Created Date
+        </Typography>
+      ),
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Organization
+        </Typography>
+      ),
+      dataIndex: 'organization',
+      key: 'organization',
+
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Email
+        </Typography>
+      ),
+      dataIndex: 'email',
+      key: 'email',
+
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Website
+        </Typography>
+      ),
+      dataIndex: 'website',
+      key: 'website',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
   ];
@@ -320,128 +383,6 @@ const SuperAdminPartner: React.FC = () => {
     },
   ];
 
-  const PartnerProgramColumns = [
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Partner Program
-        </Typography>
-      ),
-      dataIndex: 'partner_program',
-      key: 'partner_program',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Generated Date
-        </Typography>
-      ),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Program Type
-        </Typography>
-      ),
-      dataIndex: 'program_type',
-      key: 'program_type',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Partner Approval ID
-        </Typography>
-      ),
-      dataIndex: 'program_approval_id',
-      key: 'program_approval_id',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Site Link
-        </Typography>
-      ),
-      dataIndex: 'website',
-      key: 'website',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Template
-        </Typography>
-      ),
-      dataIndex: 'template',
-      key: 'template',
-      render: (text: string, record: any) => (
-        <Typography
-          name="Body 4/Medium"
-          hoverOnText
-          color={token?.colorLink}
-          onClick={() => {
-            if (record?.form_data) {
-              setOpenPreviewModal(true);
-              const formDataObject = JSON?.parse(record?.form_data);
-              setformData({formObject: formDataObject, Id: record?.id});
-              // open modal to view form
-              // console.log(record?.form_data, 'formData');
-            } else {
-              router?.push(`/formBuilder?id=${record?.id}`);
-            }
-          }}
-        >
-          {record?.form_data ? 'View' : 'Create Template'}
-        </Typography>
-      ),
-    },
-    {
-      title: ' ',
-      dataIndex: 'action',
-      key: 'action',
-      render: (text: string, record: any) => (
-        <Space size={18}>
-          <PencilSquareIcon
-            height={24}
-            width={24}
-            color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              setShowPartnerProgramDrawer(true);
-              setFormPartnerProgramData(record);
-            }}
-          />
-
-          <TrashIcon
-            height={24}
-            width={24}
-            color={token.colorError}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              setDeletePartnerProgramIds(record?.id);
-              setShowPartnerProgramDeleteModal(true);
-            }}
-          />
-        </Space>
-      ),
-    },
-  ];
-
   const superAdmintabItems = [
     {
       label: (
@@ -452,95 +393,91 @@ const SuperAdminPartner: React.FC = () => {
       key: '1',
       children: (
         <OsTable
-          columns={[...SuperPartnerColumns, ...thirdSuperPartnerColumns]}
-          dataSource={PartnerData}
-          rowSelection={rowSelection}
+          columns={PartnerColumns}
+          expandable={{
+            // eslint-disable-next-line react/no-unstable-nested-components
+            expandedRowRender: (record: any) => (
+              <OsTable
+                columns={partnerProgramColumns}
+                // dataSource={allApprovedObjects}
+                dataSource={record?.PartnerPrograms}
+                scroll
+                locale={locale}
+                loading={false}
+              />
+            ),
+            rowExpandable: (record: any) => record.name !== 'Not Expandable',
+          }}
+          // dataSource={allApprovedObjects}
+          dataSource={allPartnerFilterData}
           scroll
           locale={locale}
-          loading={loading}
+          loading={false}
         />
       ),
     },
+
     {
       label: (
         <Typography name="Body 4/Regular" onClick={() => setActiveTab(2)}>
-          Partner Programs
+          In Request
         </Typography>
       ),
       key: '2',
       children: (
-        <>
-          {finalPartnerProgramData && finalPartnerProgramData?.length > 0 ? (
-            finalPartnerProgramData?.map((itemDeal: any) => (
-              <OsCollapse
-                items={[
-                  {
-                    key: '1',
-                    label: <p>{itemDeal?.title}</p>,
-                    children: (
-                      <OsTable
-                        columns={PartnerProgramColumns}
-                        dataSource={itemDeal?.data}
-                        rowSelection={rowSelection}
-                        scroll
-                        loading={partnerProgramLoading}
-                        locale={locale}
-                      />
-                    ),
-                  },
-                ]}
+        <OsTable
+          columns={PartnerColumns}
+          expandable={{
+            // eslint-disable-next-line react/no-unstable-nested-components
+            expandedRowRender: (record: any) => (
+              <OsTable
+                columns={partnerProgramColumns}
+                // dataSource={allApprovedObjects}
+                dataSource={record?.PartnerPrograms}
+                scroll
+                locale={locale}
+                loading={false}
               />
-            ))
-          ) : (
-            <OsTable
-              columns={PartnerProgramColumns}
-              dataSource={[]}
-              rowSelection={rowSelection}
-              scroll
-              loading={false}
-              locale={locale}
-            />
-          )}
-        </>
+            ),
+            rowExpandable: (record: any) => record.name !== 'Not Expandable',
+          }}
+          // dataSource={allApprovedObjects}
+          dataSource={allPartnerFilterData}
+          scroll
+          locale={locale}
+          loading={false}
+        />
       ),
     },
     {
       label: (
         <Typography name="Body 4/Regular" onClick={() => setActiveTab(3)}>
-          In Request
+          Rejected
         </Typography>
       ),
       key: '3',
       children: (
         <OsTable
-          columns={[
-            ...SuperPartnerColumns,
-            ...secondSuperPartnerColumns,
-            ...thirdSuperPartnerColumns,
-          ]}
-          dataSource={PartnerData?.requested}
-          rowSelection={rowSelection}
+          columns={PartnerColumns}
+          expandable={{
+            // eslint-disable-next-line react/no-unstable-nested-components
+            expandedRowRender: (record: any) => (
+              <OsTable
+                columns={partnerProgramColumns}
+                // dataSource={allApprovedObjects}
+                dataSource={record?.PartnerPrograms}
+                scroll
+                locale={locale}
+                loading={false}
+              />
+            ),
+            rowExpandable: (record: any) => record.name !== 'Not Expandable',
+          }}
+          // dataSource={allApprovedObjects}
+          dataSource={allPartnerFilterData}
           scroll
           locale={locale}
-          loading={loading}
-        />
-      ),
-    },
-    {
-      label: (
-        <Typography name="Body 4/Regular" onClick={() => setActiveTab(4)}>
-          Rejected
-        </Typography>
-      ),
-      key: '4',
-      children: (
-        <OsTable
-          columns={[...SuperPartnerColumns, ...thirdSuperPartnerColumns]}
-          dataSource={PartnerData?.rejected}
-          rowSelection={rowSelection}
-          scroll
-          locale={locale}
-          loading={loading}
+          loading={false}
         />
       ),
     },
@@ -578,6 +515,31 @@ const SuperAdminPartner: React.FC = () => {
       ),
     },
   ];
+
+  useEffect(() => {
+    if (activeTab === 2) {
+      const newArr = [...PartnerProgramColumns];
+      newArr?.push({
+        title: (
+          <Typography name="Body 4/Medium" className="dragHandler">
+            Action
+          </Typography>
+        ),
+        dataIndex: 'website',
+        key: 'website',
+        render: (text: string) => (
+          <Space direction="horizontal">
+            {' '}
+            <OsButton buttontype="PRIMARY" text="Approve" />{' '}
+            <OsButton buttontype="SECONDARY" text="Decline" />
+          </Space>
+        ),
+      });
+      setPartnerProgramColumns(newArr);
+    } else {
+      setPartnerProgramColumns(PartnerProgramColumns);
+    }
+  }, [activeTab]);
 
   return (
     <>

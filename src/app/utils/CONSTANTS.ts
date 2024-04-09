@@ -485,7 +485,7 @@ export const affectedColumns = [
   },
 ];
 
- export const columns1 = [
+export const columns1 = [
   {title: 'Name', dataIndex: 'name', key: 'name'},
   {title: 'Age', dataIndex: 'age', key: 'age'},
   {title: 'Address', dataIndex: 'address', key: 'address'},
