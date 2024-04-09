@@ -3,26 +3,24 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import RequestPartner from '@/app/components/common/os-add-partner/RequestPartner';
 import OsButton from '@/app/components/common/os-button';
-import OsDropdown from '@/app/components/common/os-dropdown';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
-import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {columns1, data123} from '@/app/utils/CONSTANTS';
-import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form, MenuProps} from 'antd';
-import {useEffect, useState} from 'react';
-import {getAssignPartnerProgramByOrganization} from '../../../../../redux/actions/assignPartnerProgram';
-import {getUnassignedProgram} from '../../../../../redux/actions/partnerProgram';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { columns1, data123 } from '@/app/utils/CONSTANTS';
+import { PlusIcon } from '@heroicons/react/24/outline';
+import { Form } from 'antd';
+import { useEffect, useState } from 'react';
+import { getAssignPartnerProgramByOrganization } from '../../../../../redux/actions/assignPartnerProgram';
+import { getUnassignedProgram } from '../../../../../redux/actions/partnerProgram';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import PartnerAnalytics from './partnerAnalytics';
 
 const Partners: React.FC = () => {
@@ -30,8 +28,6 @@ const Partners: React.FC = () => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [deleteIds, setDeleteIds] = useState<any>();
-  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<number>(1);
   const {
     data: AssignPartnerProgramData,
@@ -73,20 +69,6 @@ const Partners: React.FC = () => {
     allApprovedObjects?.push(partner);
   });
 
-  const deleteSelectedIds = async () => {
-    // const data = {id: deleteIds};
-    // await dispatch(deletePartner(data)).then(() => {
-    //   dispatch(getAllPartnerTemp());
-    // });
-    setDeleteIds([]);
-    setShowModalDelete(false);
-  };
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: any) => {
-      setDeleteIds(selectedRowKeys);
-    },
-  };
 
   const locale = {
     emptyText: (
@@ -192,7 +174,6 @@ const Partners: React.FC = () => {
           }}
           // dataSource={allApprovedObjects}
           dataSource={data123}
-          rowSelection={rowSelection}
           scroll
           locale={locale}
           loading={false}
@@ -216,7 +197,6 @@ const Partners: React.FC = () => {
         <OsTable
           columns={PartnerColumns}
           dataSource={partnerObjects}
-          rowSelection={rowSelection}
           scroll
           locale={locale}
           loading={AssignPartnerProgramDataloading}
@@ -240,34 +220,10 @@ const Partners: React.FC = () => {
         <OsTable
           columns={PartnerColumns}
           dataSource={partnerRequestedObjects}
-          rowSelection={rowSelection}
           scroll
           locale={locale}
           loading={AssignPartnerProgramDataloading}
         />
-      ),
-    },
-  ];
-
-  const dropDownItemss: MenuProps['items'] = [
-    {
-      key: '1',
-      label: <Typography name="Body 3/Regular">Download Selected</Typography>,
-    },
-    {
-      key: '2',
-      label: (
-        <Typography
-          name="Body 3/Regular"
-          color={token?.colorError}
-          onClick={() => {
-            if (deleteIds && deleteIds?.length > 0) {
-              setShowModalDelete(true);
-            }
-          }}
-        >
-          Delete Selected
-        </Typography>
       ),
     },
   ];
@@ -342,14 +298,6 @@ const Partners: React.FC = () => {
         primaryButtonText="Request"
         onOk={form?.submit}
         footerPadding={30}
-      />
-      <DeleteModal
-        setShowModalDelete={setShowModalDelete}
-        setDeleteIds={setDeleteIds}
-        showModalDelete={showModalDelete}
-        deleteSelectedIds={deleteSelectedIds}
-        heading="Delete Partner"
-        description="Are you sure you want to delete this partner?"
       />
     </>
   );
