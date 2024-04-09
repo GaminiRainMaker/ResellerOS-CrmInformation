@@ -206,13 +206,14 @@ const DealReg: React.FC = () => {
                         </Col>
                         <Col>
                           <p
-                            onClick={() => {
+                            onClick={(e) => {
                               router?.push(
                                 `/dealRegDetail?id=${itemDeal?.opportunity_id}`,
                               );
+                              e?.stopPropagation();
                             }}
                           >
-                            Form Detail
+                            Deal Registration
                           </p>
                         </Col>
                       </Row>

@@ -41,6 +41,7 @@ import {
 } from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import PartnerAnalytics from '../partners/partnerAnalytics';
+import {getAllAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
 
 export interface SeparatedData {
   [partnerId: number]: {
@@ -72,24 +73,22 @@ const SuperAdminPartner: React.FC = () => {
   const [deletePartnerProgramIds, setDeletePartnerProgramIds] = useState<[]>();
   const [activeTab, setActiveTab] = useState<number>(1);
   const {data: PartnerData, loading} = useAppSelector((state) => state.partner);
-  const {data: AssignPartnerProgramData, loading: assignPartnerProgramLoading} =
-    useAppSelector((state) => state.assignPartnerProgram);
   const {data: PartnerProgramData, loading: partnerProgramLoading} =
     useAppSelector((state) => state.partnerProgram);
   const [finalPartnerProgramData, setFinalPartnerProgramData] = useState<any>();
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
   const [formData, setformData] = useState<any>();
 
-  useEffect(() => {
-    dispatch(getAllPartner());
-    dispatch(getAllPartnerProgram());
-  }, []);
-
   // useEffect(() => {
-  //   dispatch(getAllAssignPartnerProgram());
+  //   dispatch(getAllPartner());
+  //   dispatch(getAllPartnerProgram());
   // }, []);
 
-  console.log('AssignPartnerProgramData', AssignPartnerProgramData);
+  useEffect(() => {
+    dispatch(getAllPartner());
+  }, []);
+
+  console.log('PartnerData1234', PartnerData);
 
   const onRowUpdate = (type: string, recordId: number, value: boolean) => {
     const updateField = type === 'Active' ? 'is_active' : 'is_approved';

@@ -287,8 +287,22 @@ const Partners: React.FC = () => {
 
   const tabItems = [
     {
-      label: <Typography name="Body 4/Regular">Partners</Typography>,
+      label: <Typography name="Body 4/Regular">All Partners</Typography>,
       key: '1',
+      children: (
+        <OsTable
+          columns={[...PartnerColumns, ...secondSuperPartnerColumns]}
+          dataSource={allApprovedObjects}
+          rowSelection={rowSelection}
+          scroll
+          locale={locale}
+          loading={false}
+        />
+      ),
+    },
+    {
+      label: <Typography name="Body 4/Regular">Active Partners</Typography>,
+      key: '2',
       children: (
         <OsTable
           columns={PartnerColumns}
@@ -302,7 +316,7 @@ const Partners: React.FC = () => {
     },
     {
       label: <Typography name="Body 4/Regular">Partner Programs</Typography>,
-      key: '2',
+      key: '3',
       children: (
         <>
           {finalPartnerProgramData && finalPartnerProgramData?.length > 0 ? (
@@ -341,7 +355,7 @@ const Partners: React.FC = () => {
     },
     {
       label: <Typography name="Body 4/Regular">Requested</Typography>,
-      key: '3',
+      key: '4',
       children: (
         <OsTable
           columns={PartnerColumns}
@@ -350,20 +364,6 @@ const Partners: React.FC = () => {
           scroll
           locale={locale}
           loading={AssignPartnerProgramDataloading}
-        />
-      ),
-    },
-    {
-      label: <Typography name="Body 4/Regular">All Partners</Typography>,
-      key: '4',
-      children: (
-        <OsTable
-          columns={[...PartnerColumns, ...secondSuperPartnerColumns]}
-          dataSource={allApprovedObjects}
-          rowSelection={rowSelection}
-          scroll
-          locale={locale}
-          loading={false}
         />
       ),
     },

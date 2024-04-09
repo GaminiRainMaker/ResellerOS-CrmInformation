@@ -7,6 +7,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import useThemeToken from '../hooks/useThemeToken';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
+import {getAssignPartnerProgramByOrganization} from '../../../../../redux/actions/assignPartnerProgram';
 
 const OsPartnerSelect: FC<{
   form: FormInstance;
@@ -14,14 +15,34 @@ const OsPartnerSelect: FC<{
   setPartnerValue?: any;
   partnerProgramName?: string;
   isRequired?: boolean;
-}> = ({name = 'partner', setPartnerValue, form, partnerProgramName, isRequired = false}) => {
+}> = ({
+  name = 'partner',
+  setPartnerValue,
+  form,
+  partnerProgramName,
+  isRequired = false,
+}) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {data: partnerData} = useAppSelector((state) => state.partner);
-
+  const {userInformation} = useAppSelector((state) => state.user);
+  const {
+    data: AssignPartnerProgramData,
+    loading: AssignPartnerProgramDataloading,
+  } = useAppSelector((state) => state.assignPartnerProgram);
   useEffect(() => {
     dispatch(getAllPartnerTemp());
   }, []);
+
+  // useEffect(() => {
+  //   dispatch(
+  //     getAssignPartnerProgramByOrganization({
+  //       organization: userInformation?.organization,
+  //     }),
+  //   );
+  // }, [userInformation]);
+
+  // console.log('AssignPartnerProgramData', AssignPartnerProgramData);
 
   const partnerOptions = partnerData?.approved?.map((dataAddressItem: any) => ({
     value: dataAddressItem.id,

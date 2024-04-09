@@ -27,6 +27,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({form, setOpen}) => {
         ...value,
         organization: userInformation?.organization,
         requested_by: userInformation?.id,
+        user_id: userInformation?.id,
       };
 
       const partnerInsertResult = await dispatch(insertPartner(partnerObj));
