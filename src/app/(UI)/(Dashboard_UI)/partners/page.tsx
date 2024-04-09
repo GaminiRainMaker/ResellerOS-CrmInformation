@@ -21,6 +21,7 @@ import Typography from '@/app/components/common/typography';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form, MenuProps} from 'antd';
 import {useEffect, useState} from 'react';
+import {columns1, data123} from '@/app/utils/CONSTANTS';
 import {
   getAssignPartnerProgramByOrganization,
   updateAssignPartnerProgramById,
@@ -28,6 +29,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {SeparatedData} from '../superAdminPartner/page';
 import PartnerAnalytics from './partnerAnalytics';
+import {getUnassignedProgram} from '../../../../../redux/actions/partnerProgram';
 
 const Partners: React.FC = () => {
   const [token] = useThemeToken();
@@ -41,6 +43,9 @@ const Partners: React.FC = () => {
     loading: AssignPartnerProgramDataloading,
   } = useAppSelector((state) => state.assignPartnerProgram);
   const {userInformation} = useAppSelector((state) => state.user);
+  const {data: unnassignedData} = useAppSelector(
+    (state) => state.partnerProgram,
+  );
   const [finalPartnerProgramData, setFinalPartnerProgramData] = useState<any>();
 
   useEffect(() => {
@@ -50,6 +55,11 @@ const Partners: React.FC = () => {
       }),
     );
   }, [userInformation]);
+  useEffect(() => {
+    dispatch(getUnassignedProgram());
+  }, []);
+
+  console.log('unnassignedData', unnassignedData);
 
   const partnerObjects: any[] = [];
   AssignPartnerProgramData?.approved?.forEach((entry: any) => {
@@ -291,8 +301,19 @@ const Partners: React.FC = () => {
       key: '1',
       children: (
         <OsTable
-          columns={[...PartnerColumns, ...secondSuperPartnerColumns]}
-          dataSource={allApprovedObjects}
+          // columns={[...PartnerColumns, ...secondSuperPartnerColumns]}
+          columns={columns1}
+          expandable={{
+            // eslint-disable-next-line react/no-unstable-nested-components
+            expandedRowRender: (record: any) => (
+              <p key={record?.key} style={{margin: 0}}>
+                {record.description}
+              </p>
+            ),
+            rowExpandable: (record: any) => record.name !== 'Not Expandable',
+          }}
+          // dataSource={allApprovedObjects}
+          dataSource={data123}
           rowSelection={rowSelection}
           scroll
           locale={locale}

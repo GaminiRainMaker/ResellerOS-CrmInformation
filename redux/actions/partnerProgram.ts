@@ -26,6 +26,18 @@ export const getAllPartnerProgram = createAsyncThunk(
   },
 );
 
+export const getUnassignedProgram = createAsyncThunk(
+  'partnerProgram/getUnassignedProgram',
+  async (data, thunkApi) => {
+    try {
+      const res = await PARTNER_PROGRAM_API.getUnassignedProgram();
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+
 export const deletePartnerProgram = createAsyncThunk(
   'partnerProgram/deletePartnerProgram',
   async (data: any, thunkApi) => {

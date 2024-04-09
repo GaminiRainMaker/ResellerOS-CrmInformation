@@ -5,6 +5,8 @@ import {get, patch, post} from './index';
 
 export const PARTNER_PROGRAM_API = {
   get: () => get(API.PARTNER_PROGRAM.INDEX) as Promise<AxiosResponse<[]>>,
+  getUnassignedProgram: () =>
+    get(API.PARTNER_PROGRAM.GetUnassignedProgram) as Promise<AxiosResponse<[]>>,
   post: (data: any) => post(API.PARTNER_PROGRAM.INDEX, data),
   query: (data: any) =>
     post(API.PARTNER_PROGRAM.QUERY, data) as Promise<AxiosResponse<[]>>,
