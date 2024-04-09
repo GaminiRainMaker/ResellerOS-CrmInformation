@@ -61,3 +61,15 @@ export const updatePartnerById = createAsyncThunk(
     }
   },
 );
+
+export const getAllPartnerandProgram = createAsyncThunk(
+  'partner/getAllPartnerandProgram',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PARTNER_API.getAllPartnerandProgram();
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

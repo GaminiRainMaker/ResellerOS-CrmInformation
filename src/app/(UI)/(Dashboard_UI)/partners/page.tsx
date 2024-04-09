@@ -24,6 +24,7 @@ import {getAssignPartnerProgramByOrganization} from '../../../../../redux/action
 import {getUnassignedProgram} from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import PartnerAnalytics from './partnerAnalytics';
+import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
 
 const Partners: React.FC = () => {
   const [token] = useThemeToken();
@@ -51,6 +52,9 @@ const Partners: React.FC = () => {
   }, [userInformation]);
   useEffect(() => {
     dispatch(getUnassignedProgram());
+    dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
+      console.log('35435345', payload?.payload);
+    });
   }, []);
 
   console.log('unnassignedData', unnassignedData);

@@ -18,4 +18,6 @@ export const PARTNER_API = {
     patch(API.PARTNER.UpdatePartnerById, data) as Promise<AxiosResponse<any>>,
   getAllPartnerTemp: () =>
     get(API.PARTNER.GetAllPartnerTemp) as Promise<AxiosResponse<[]>>,
+  getAllPartnerandProgram: () =>
+    get(API.PARTNER.getAllPartnerandProgram) as Promise<AxiosResponse<[]>>,
 };

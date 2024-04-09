@@ -7,6 +7,7 @@ import {
   insertPartner,
   updatePartnerById,
   getAllPartner,
+  getAllPartnerandProgram,
 } from '../actions/partner';
 
 type PartnerState = {
@@ -99,6 +100,24 @@ const partnerSlice = createSlice({
       )
       .addCase(
         updatePartnerById.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getAllPartnerandProgram.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getAllPartnerandProgram.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getAllPartnerandProgram.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

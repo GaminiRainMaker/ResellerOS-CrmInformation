@@ -31,7 +31,8 @@ export const API = {
     UpdateQuoteLineItemConcern: '/quoteLineItem/updateQuoteLineItemConcern',
     UpdateQuoteLineItemVerified: '/quoteLineItem/updateQuoteLineItemVerified',
     deleteQuoteLineByQuoteId: '/quoteLineItem/deleteQuoteLineItemByQuoteId',
-    GetQuoteLineItemByQuoteIdForTableEdits: '/quoteLineItem/getQuoteLineItemByQuoteIdForEditTable',
+    GetQuoteLineItemByQuoteIdForTableEdits:
+      '/quoteLineItem/getQuoteLineItemByQuoteIdForEditTable',
   },
   USER: {
     INDEX: '/user',
@@ -135,6 +136,7 @@ export const API = {
     DeleteById: '/partner/deleteById',
     UpdatePartnerById: '/partner/updatePartnerById',
     GetAllPartnerTemp: '/partner/getAllPartnerTemp',
+    getAllPartnerandProgram: '/partner/getAllPartnerandProgram',
   },
   PARTNER_PROGRAM: {
     INDEX: '/partnerProgram',
@@ -176,6 +178,7 @@ export const API = {
     INDEX: '/assignPartnerProgram',
     QUERY: 'assignPartnerProgram/query',
     DeleteById: '/assignPartnerProgram/deleteById',
-    UpdateAssignPartnerProgramById: '/assignPartnerProgram/updateAssignPartnerProgramById',
+    UpdateAssignPartnerProgramById:
+      '/assignPartnerProgram/updateAssignPartnerProgramById',
   },
 };
