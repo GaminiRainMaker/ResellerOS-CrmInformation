@@ -3,19 +3,19 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react/no-unstable-nested-components */
 import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form, FormInstance} from 'antd';
+import {Form} from 'antd';
 import {FC, useEffect, useState} from 'react';
+import {partnerProgramFilter} from '@/app/utils/base';
 import {getAssignPartnerProgramByOrganization} from '../../../../../redux/actions/assignPartnerProgram';
-import {getUnassignedProgram} from '../../../../../redux/actions/partnerProgram';
+import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {setPartnerRequestData} from '../../../../../redux/slices/partner';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
-import CommonSelect from '../os-select';
-import Typography from '../typography';
 import AddPartner from '../os-add-partner';
 import OsModal from '../os-modal';
-import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
-import {setPartnerRequestData} from '../../../../../redux/slices/partner';
+import CommonSelect from '../os-select';
+import Typography from '../typography';
 
 const OsPartnerSelect: FC<{
   // form: FormInstance;
@@ -46,11 +46,30 @@ const OsPartnerSelect: FC<{
   const {data: partnerData} = useAppSelector((state) => state.partner);
   const [openAddPartnerModal, setOpenAddPartnerModal] =
     useState<boolean>(false);
+  const [allPartnerData, setAllPartnerData] = useState<any>();
+  const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
 
   useEffect(() => {
     if (isSuperAdmin) {
-      dispatch(getUnassignedProgram());
+      dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
+        setAllPartnerData(payload?.payload);
+      });
     }
+  }, []);
+
+  useEffect(() => {
+    const FilterArrayDataa = partnerProgramFilter(
+      'user',
+      userInformation,
+      allPartnerData,
+      1,
+      true,
+    );
+
+    setAllFilterPartnerData(FilterArrayDataa);
+  }, [allPartnerData]);
+
+  useEffect(() => {
     if (notApprovedData) {
       dispatch(getAllPartnerandProgram(''));
     } else {
@@ -69,9 +88,12 @@ const OsPartnerSelect: FC<{
   });
 
   const partnerOptions = isSuperAdmin
-    ? []
+    ? allPartnerFilterData?.map((partner: any) => ({
+        label: partner?.partner,
+        value: partner?.id,
+      }))
     : notApprovedData
-      ? partnerData?.map((partner: any) => ({
+      ? allPartnerFilterData?.map((partner: any) => ({
           label: partner?.partner,
           value: partner?.id,
         }))
@@ -84,9 +106,10 @@ const OsPartnerSelect: FC<{
           ),
         }));
 
-        
   const setFinalData = (e: any) => {
-    const filteredData = partnerData?.filter((item: any) => item.id === e);
+    const filteredData = allPartnerFilterData?.filter(
+      (item: any) => item?.id === e,
+    );
     dispatch(setPartnerRequestData(filteredData));
   };
 
@@ -108,7 +131,7 @@ const OsPartnerSelect: FC<{
               name: e,
             });
             form?.resetFields([partnerProgramName]);
-            notApprovedData && setFinalData(e);
+             setFinalData(e);
           }}
           onClear={() => {
             form?.resetFields([partnerProgramName]);

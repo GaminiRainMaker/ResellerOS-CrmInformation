@@ -87,10 +87,7 @@ const SuperAdminPartner: React.FC = () => {
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [partnerProgramColumns, setPartnerProgramColumns] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
-  // useEffect(() => {
-  //   dispatch(getAllPartner());
-  //   dispatch(getAllPartnerProgram());
-  // }, []);
+
 
   useEffect(() => {
     dispatch(getAllPartner());
@@ -98,6 +95,7 @@ const SuperAdminPartner: React.FC = () => {
       setAllPartnerData(payload?.payload);
     });
   }, []);
+
   useEffect(() => {
     const FilterArrayDataa = partnerProgramFilter(
       'super',
@@ -105,7 +103,6 @@ const SuperAdminPartner: React.FC = () => {
       allPartnerData,
       activeTab,
     );
-
     setAllFilterPartnerData(FilterArrayDataa);
   }, [allPartnerData, activeTab]);
 

@@ -85,7 +85,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({form, setOpen}) => {
                 // form={form}
                 partnerProgramName="partner_program_id"
                 isRequired
-                isSuperAdmin={false}
+                // isSuperAdmin={false}
                 notApprovedData
                 isAddNewPartner
               />

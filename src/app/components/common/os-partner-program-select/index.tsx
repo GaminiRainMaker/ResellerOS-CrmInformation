@@ -29,34 +29,26 @@ const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
   );
   const {partnerRequestData} = useAppSelector((state) => state.partner);
 
-  const filteredPartnerPrograms =
-    partnerRequestData?.[0]?.PartnerPrograms?.filter(
-      (program: any) =>
-        !program?.AssignPartnerProgram ||
-        program?.AssignPartnerProgram?.is_approved === null ||
-        program?.AssignPartnerProgram?.is_approved === false,
-    );
+  const partnerProgramsRequestOptions =
+    partnerRequestData?.[0]?.PartnerPrograms?.map((program: any) => ({
+      label: program?.partner_program,
+      value: program?.id,
+    }));
 
-  const partnerProgramsRequestOptions = filteredPartnerPrograms?.map(
-    (program: any) => ({
-      label: program.partner_program,
-      value: program.id,
-    }),
-  );
 
   useEffect(() => {
     dispatch(getAllPartnerProgram());
   }, []);
 
   const filteredData = partnerProgramData?.filter(
-    (item: any) => item.partner === partnerId,
+    (item: any) => item?.partner === partnerId,
   );
 
   const partnerProgramsOptions = (
     partnerId ? filteredData : partnerProgramData
   )?.map((program: any) => ({
-    label: program.partner_program,
-    value: program.id,
+    label: program?.partner_program,
+    value: program?.id,
   }));
 
   return (
@@ -70,6 +62,7 @@ const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
       >
         <CommonSelect
           placeholder="Select"
+          disabled={!partnerId}
           allowClear
           style={{width: '100%'}}
           options={

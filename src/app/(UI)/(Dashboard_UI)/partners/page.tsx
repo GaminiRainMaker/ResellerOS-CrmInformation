@@ -14,18 +14,15 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
+import {partnerProgramFilter} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useEffect, useState} from 'react';
-import {partnerProgramFilter} from '@/app/utils/base';
-import {
-  getAssignPartnerProgramByOrganization,
-  insertAssignPartnerProgram,
-} from '../../../../../redux/actions/assignPartnerProgram';
+import {insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
+import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
 import {getUnassignedProgram} from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import PartnerAnalytics from './partnerAnalytics';
-import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
 
 const Partners: React.FC = () => {
   const [token] = useThemeToken();
@@ -35,22 +32,8 @@ const Partners: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(1);
   const [allPartnerData, setAllPartnerData] = useState<any>();
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
-  const {
-    data: AssignPartnerProgramData,
-    loading: AssignPartnerProgramDataloading,
-  } = useAppSelector((state) => state.assignPartnerProgram);
   const {userInformation} = useAppSelector((state) => state.user);
-  const {data: unnassignedData} = useAppSelector(
-    (state) => state.partnerProgram,
-  );
 
-  useEffect(() => {
-    dispatch(
-      getAssignPartnerProgramByOrganization({
-        organization: userInformation?.organization,
-      }),
-    );
-  }, [userInformation]);
   useEffect(() => {
     dispatch(getUnassignedProgram());
     dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
@@ -68,24 +51,6 @@ const Partners: React.FC = () => {
 
     setAllFilterPartnerData(FilterArrayDataa);
   }, [allPartnerData, activeTab]);
-
-  const partnerObjects: any[] = [];
-  AssignPartnerProgramData?.approved?.forEach((entry: any) => {
-    const partner = entry?.PartnerProgram?.Partner;
-    partnerObjects?.push(partner);
-  });
-
-  const partnerRequestedObjects: any[] = [];
-  AssignPartnerProgramData?.requested?.forEach((entry: any) => {
-    const partner = entry?.PartnerProgram?.Partner;
-    partnerRequestedObjects?.push(partner);
-  });
-
-  const allApprovedObjects: any[] = [];
-  AssignPartnerProgramData?.allApproved?.forEach((entry: any) => {
-    const partner = entry?.PartnerProgram?.Partner;
-    allApprovedObjects?.push(partner);
-  });
 
   const locale = {
     emptyText: (
@@ -252,7 +217,7 @@ const Partners: React.FC = () => {
         ),
         dataIndex: 'website',
         key: 'website',
-        render: (text: string, record: any) => (
+        render: (_: string, record: any) => (
           <OsButton
             buttontype="PRIMARY"
             text="Request"
@@ -444,7 +409,7 @@ const Partners: React.FC = () => {
       </Space>
 
       <OsModal
-        loading={AssignPartnerProgramDataloading}
+        loading={false}
         body={<RequestPartner form={form} setOpen={setShowModal} />}
         width={800}
         open={showModal}

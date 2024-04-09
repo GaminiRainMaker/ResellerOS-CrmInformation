@@ -430,6 +430,7 @@ export const partnerProgramFilter = (
   userInformation: any,
   allPartnerData: any,
   activeTab: number,
+  superAdminSide?: boolean,
 ) => {
   const FilterArrayDataa: any = [];
   // Used for case of User
@@ -501,7 +502,7 @@ export const partnerProgramFilter = (
     allPartnerData?.map((item: any) => {
       const newArrForPrograms: any = [];
       if (item?.PartnerPrograms) {
-        if (typeOfLogin === 'user') {
+        if (typeOfLogin === 'user' || superAdminSide) {
           item?.PartnerPrograms?.filter((itemProgramD: any) => {
             if (!allNotRequestedIds?.includes(itemProgramD?.id)) {
               newArrForPrograms?.push(itemProgramD);
@@ -515,7 +516,7 @@ export const partnerProgramFilter = (
           });
         }
       }
-      if (newArrForPrograms?.length > 0) {
+      if (newArrForPrograms?.length > 0 || superAdminSide) {
         const newObj: any = {...item};
         delete newObj.PartnerPrograms;
         if (newArrForPrograms?.length > 0) {
