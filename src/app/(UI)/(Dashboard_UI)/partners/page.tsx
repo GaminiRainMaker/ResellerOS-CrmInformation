@@ -3,8 +3,8 @@
 
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import RequestPartner from '@/app/components/common/os-add-partner/RequestPartner';
 import OsButton from '@/app/components/common/os-button';
@@ -14,13 +14,13 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import { columns1, data123 } from '@/app/utils/CONSTANTS';
-import { PlusIcon } from '@heroicons/react/24/outline';
-import { Form } from 'antd';
-import { useEffect, useState } from 'react';
-import { getAssignPartnerProgramByOrganization } from '../../../../../redux/actions/assignPartnerProgram';
-import { getUnassignedProgram } from '../../../../../redux/actions/partnerProgram';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import {Form} from 'antd';
+import {useEffect, useState} from 'react';
+import {partnerProgramFilter} from '@/app/utils/base';
+import {getAssignPartnerProgramByOrganization} from '../../../../../redux/actions/assignPartnerProgram';
+import {getUnassignedProgram} from '../../../../../redux/actions/partnerProgram';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import PartnerAnalytics from './partnerAnalytics';
 import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
 
@@ -30,6 +30,8 @@ const Partners: React.FC = () => {
   const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<number>(1);
+  const [allPartnerData, setAllPartnerData] = useState<any>();
+  const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const {
     data: AssignPartnerProgramData,
     loading: AssignPartnerProgramDataloading,
@@ -49,11 +51,20 @@ const Partners: React.FC = () => {
   useEffect(() => {
     dispatch(getUnassignedProgram());
     dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
-      console.log('35435345', payload?.payload);
+      setAllPartnerData(payload?.payload);
     });
   }, []);
 
-  console.log('unnassignedData', unnassignedData);
+  useEffect(() => {
+    const FilterArrayDataa = partnerProgramFilter(
+      'user',
+      userInformation,
+      allPartnerData,
+      activeTab,
+    );
+
+    setAllFilterPartnerData(FilterArrayDataa);
+  }, [allPartnerData, activeTab]);
 
   const partnerObjects: any[] = [];
   AssignPartnerProgramData?.approved?.forEach((entry: any) => {
@@ -73,7 +84,6 @@ const Partners: React.FC = () => {
     allApprovedObjects?.push(partner);
   });
 
-
   const locale = {
     emptyText: (
       <EmptyContainer
@@ -84,6 +94,72 @@ const Partners: React.FC = () => {
     ),
   };
 
+  const [partnerProgramColumns, setPartnerProgramColumns] = useState<any>();
+
+  const PartnerProgramColumns = [
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Partner Program Name
+        </Typography>
+      ),
+      dataIndex: 'partner_program',
+      key: 'partner_program',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Created Date
+        </Typography>
+      ),
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Organization
+        </Typography>
+      ),
+      dataIndex: 'organization',
+      key: 'organization',
+
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Email
+        </Typography>
+      ),
+      dataIndex: 'email',
+      key: 'email',
+
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Website
+        </Typography>
+      ),
+      dataIndex: 'website',
+      key: 'website',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+  ];
   const PartnerColumns = [
     {
       title: (
@@ -112,11 +188,11 @@ const Partners: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Industry
+          Organization
         </Typography>
       ),
-      dataIndex: 'industry',
-      key: 'industry',
+      dataIndex: 'organization',
+      key: 'organization',
 
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -149,6 +225,27 @@ const Partners: React.FC = () => {
     },
   ];
 
+  useEffect(() => {
+    if (activeTab === 1) {
+      const newArr = [...PartnerProgramColumns];
+      newArr?.push({
+        title: (
+          <Typography name="Body 4/Medium" className="dragHandler">
+            Action
+          </Typography>
+        ),
+        dataIndex: 'website',
+        key: 'website',
+        render: (text: string) => (
+          <OsButton buttontype="PRIMARY" text="Request" />
+        ),
+      });
+      setPartnerProgramColumns(newArr);
+    } else {
+      setPartnerProgramColumns(PartnerProgramColumns);
+    }
+  }, [activeTab]);
+
   const tabItems = [
     {
       label: (
@@ -165,19 +262,23 @@ const Partners: React.FC = () => {
       key: '1',
       children: (
         <OsTable
-          // columns={[...PartnerColumns, ...secondSuperPartnerColumns]}
-          columns={columns1}
+          columns={PartnerColumns}
           expandable={{
             // eslint-disable-next-line react/no-unstable-nested-components
             expandedRowRender: (record: any) => (
-              <p key={record?.key} style={{margin: 0}}>
-                {record.description}
-              </p>
+              <OsTable
+                columns={partnerProgramColumns}
+                // dataSource={allApprovedObjects}
+                dataSource={record?.PartnerPrograms}
+                scroll
+                locale={locale}
+                loading={false}
+              />
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
           }}
           // dataSource={allApprovedObjects}
-          dataSource={data123}
+          dataSource={allPartnerFilterData}
           scroll
           locale={locale}
           loading={false}
@@ -200,10 +301,25 @@ const Partners: React.FC = () => {
       children: (
         <OsTable
           columns={PartnerColumns}
-          dataSource={partnerObjects}
+          expandable={{
+            // eslint-disable-next-line react/no-unstable-nested-components
+            expandedRowRender: (record: any) => (
+              <OsTable
+                columns={partnerProgramColumns}
+                // dataSource={allApprovedObjects}
+                dataSource={record?.PartnerPrograms}
+                scroll
+                locale={locale}
+                loading={false}
+              />
+            ),
+            rowExpandable: (record: any) => record.name !== 'Not Expandable',
+          }}
+          // dataSource={allApprovedObjects}
+          dataSource={allPartnerFilterData}
           scroll
           locale={locale}
-          loading={AssignPartnerProgramDataloading}
+          loading={false}
         />
       ),
     },
@@ -223,10 +339,25 @@ const Partners: React.FC = () => {
       children: (
         <OsTable
           columns={PartnerColumns}
-          dataSource={partnerRequestedObjects}
+          expandable={{
+            // eslint-disable-next-line react/no-unstable-nested-components
+            expandedRowRender: (record: any) => (
+              <OsTable
+                columns={partnerProgramColumns}
+                // dataSource={allApprovedObjects}
+                dataSource={record?.PartnerPrograms}
+                scroll
+                locale={locale}
+                loading={false}
+              />
+            ),
+            rowExpandable: (record: any) => record.name !== 'Not Expandable',
+          }}
+          // dataSource={allApprovedObjects}
+          dataSource={allPartnerFilterData}
           scroll
           locale={locale}
-          loading={AssignPartnerProgramDataloading}
+          loading={false}
         />
       ),
     },
