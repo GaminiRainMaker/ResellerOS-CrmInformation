@@ -199,6 +199,7 @@ const CommonFields: FC<any> = (data) => {
                 setPartnerValue={setPartnerValue}
                 form={form}
                 partnerProgramName="partner_program_id"
+                isSuperAdmin={false}
               />
             </Col>
 
