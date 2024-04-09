@@ -34,6 +34,7 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
     const partnerProgramObj = {
       ...value,
       organization: userInformation?.organization,
+      user_id: userInformation?.id,
       partner: partnerValue ?? partnerId,
     };
     if (drawer) {
