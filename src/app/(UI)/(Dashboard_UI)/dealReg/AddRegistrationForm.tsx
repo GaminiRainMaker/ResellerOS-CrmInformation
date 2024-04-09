@@ -252,7 +252,7 @@ const AddRegistrationForm: FC<any> = ({setShowModal}) => {
                   width: '100%',
                 }}
               >
-                <Typography name="Body 4/Medium">Partner Programm</Typography>
+                <Typography name="Body 4/Medium">Partner Program</Typography>
                 <CommonSelect placeholder="Select" style={{width: '100%'}} />
               </Space>
             </Col>

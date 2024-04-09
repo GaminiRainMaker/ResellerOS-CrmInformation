@@ -5,8 +5,9 @@ export interface RequestPartnerInterface {
   form: FormInstance;
 }
 export interface AddPartnerInterface {
-  setOpen: (B: boolean) => void;
+  setOpen?: (B: boolean) => void;
   form: FormInstance;
   drawer?: boolean;
   formPartnerData?: any;
+  partnerId?: number;
 }

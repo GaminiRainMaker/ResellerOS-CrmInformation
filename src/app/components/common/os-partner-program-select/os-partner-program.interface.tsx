@@ -6,4 +6,6 @@ export interface OsPartnerProgramSelectInterface {
   value?: number;
   partnerId?: number;
   isRequired?: boolean;
+  isAddNewProgram?: boolean;
+  notApprovedData?: boolean;
 }

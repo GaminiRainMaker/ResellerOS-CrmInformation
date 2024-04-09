@@ -1,25 +1,25 @@
 'use client';
 
-import {Row} from '@/app/components/common/antd/Grid';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
+import {useState} from 'react';
 import {
-  getAllPartnerTemp,
-  insertPartner,
-} from '../../../../../redux/actions/partner';
+  getAssignPartnerProgramByOrganization,
+  insertAssignPartnerProgram,
+} from '../../../../../redux/actions/assignPartnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import OsPartnerProgramSelect from '../os-partner-program-select';
+import OsPartnerSelect from '../os-partner-select';
 import {RequestPartnerInterface} from './os-add-partner.interface';
-import {insertPartnerProgram} from '../../../../../redux/actions/partnerProgram';
-import {getAssignPartnerProgramByOrganization, insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
 
 const RequestPartner: React.FC<RequestPartnerInterface> = ({form, setOpen}) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
-
+  const [partnerValue, setPartnerValue] = useState<number>();
 
   const onFinish = async (value: any) => {
     try {
@@ -27,31 +27,12 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({form, setOpen}) => {
         ...value,
         organization: userInformation?.organization,
         requested_by: userInformation?.id,
-        user_id: userInformation?.id,
+        is_request: true,
       };
-
-      const partnerInsertResult = await dispatch(insertPartner(partnerObj));
-      const partnerId = partnerInsertResult?.payload?.id;
-
-      if (partnerId) {
-        const partnerProgramInsertResult = await dispatch(
-          insertPartnerProgram({...partnerObj, partner: partnerId}),
-        );
-
-        const partnerProgramId = partnerProgramInsertResult?.payload?.id;
-
-        if (partnerProgramId) {
-          await dispatch(
-            insertAssignPartnerProgram({
-              ...partnerObj,
-              partner_program_id: partnerProgramId,
-              is_request: true,
-            }),
-          );
-        }
+      if (partnerObj) {
+        await dispatch(insertAssignPartnerProgram(partnerObj));
       }
-
-      form?.resetFields(['partner', 'partner_program']);
+      form?.resetFields();
       dispatch(
         getAssignPartnerProgramByOrganization({
           organization: userInformation?.organization,
@@ -91,26 +72,36 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({form, setOpen}) => {
         style={{width: '100%', padding: '24px 40px 20px 40px'}}
       >
         <Form
+          layout="vertical"
           form={form}
           onFinish={onFinish}
-          layout="vertical"
           requiredMark={false}
         >
-          <Form.Item
-            label="Partner Name"
-            name="partner"
-            rules={[{required: true, message: 'Please Enter Partner!'}]}
-          >
-            <OsInput placeholder="Enter Partner" />
-          </Form.Item>
+          <Row justify="space-between" gutter={[24, 24]}>
+            <Col sm={24} md={12}>
+              <OsPartnerSelect
+                name="partner_id"
+                setPartnerValue={setPartnerValue}
+                // form={form}
+                partnerProgramName="partner_program_id"
+                isRequired
+                isSuperAdmin={false}
+                notApprovedData
+                isAddNewPartner
+              />
+            </Col>
 
-          <Form.Item
-            label="Partner Program Name"
-            name="partner_program"
-            rules={[{required: true, message: 'Please Enter Partner Program!'}]}
-          >
-            <OsInput placeholder="Enter Partner Program" />
-          </Form.Item>
+            <Col sm={24} md={12}>
+              <OsPartnerProgramSelect
+                name="partner_program_id"
+                partnerId={partnerValue}
+                form={form}
+                isRequired
+                isAddNewProgram
+                notApprovedData
+              />
+            </Col>
+          </Row>
         </Form>
       </Space>
     </>

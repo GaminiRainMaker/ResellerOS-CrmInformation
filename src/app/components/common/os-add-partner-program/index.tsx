@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -21,17 +23,18 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
   setOpen,
   drawer = false,
   formPartnerData,
+  partnerId,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
-  const [partnerValue, setPartnerValue] = useState<number>(0);
+  const [partnerValue, setPartnerValue] = useState<number>();
 
   const onFinish = (value: any) => {
     const partnerProgramObj = {
       ...value,
       organization: userInformation?.organization,
-      partner: partnerValue,
+      partner: partnerValue ?? partnerId,
     };
     if (drawer) {
       dispatch(
@@ -48,7 +51,7 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
     setTimeout(() => {
       dispatch(getAllPartnerProgram());
     }, 1000);
-    setOpen(false);
+    setOpen && setOpen(false);
   };
 
   useEffect(() => {
@@ -89,7 +92,13 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
           requiredMark={false}
           initialValues={formPartnerData}
         >
-          <OsPartnerSelect name='partner' form={form} setPartnerValue={setPartnerValue} />
+          {!partnerId && (
+            <OsPartnerSelect
+              name="partner"
+              // form={form}
+              setPartnerValue={setPartnerValue}
+            />
+          )}
           <Form.Item
             label="Partner Program"
             name="partner_program"

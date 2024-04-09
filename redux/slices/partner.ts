@@ -15,12 +15,14 @@ type PartnerState = {
   error: string | null;
   data: any;
   partner: any;
+  partnerRequestData: any;
 };
 const initialState: PartnerState = {
   loading: false,
   error: null,
   data: [],
   partner: [],
+  partnerRequestData: {},
 };
 
 const partnerSlice = createSlice({
@@ -29,6 +31,9 @@ const partnerSlice = createSlice({
   reducers: {
     setPartner: (state, action) => {
       state.partner = action.payload;
+    },
+    setPartnerRequestData: (state, action) => {
+      state.partnerRequestData = action.payload;
     },
   },
   extraReducers(builder) {
@@ -126,5 +131,5 @@ const partnerSlice = createSlice({
   },
 });
 
-export const {setPartner} = partnerSlice.actions;
+export const {setPartner, setPartnerRequestData} = partnerSlice.actions;
 export default partnerSlice?.reducer;
