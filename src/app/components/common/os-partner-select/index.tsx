@@ -2,11 +2,10 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react/no-unstable-nested-components */
+import {partnerProgramFilter} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {FC, useEffect, useState} from 'react';
-import {partnerProgramFilter} from '@/app/utils/base';
-import {getAssignPartnerProgramByOrganization} from '../../../../../redux/actions/assignPartnerProgram';
 import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setPartnerRequestData} from '../../../../../redux/slices/partner';
@@ -40,7 +39,9 @@ const OsPartnerSelect: FC<{
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
-  const {userInformation} = useAppSelector((state) => state.user);
+  const {userInformation, allResellerRecord} = useAppSelector(
+    (state) => state.user,
+  );
   const {data: AssignPartnerProgramData} = useAppSelector(
     (state) => state.assignPartnerProgram,
   );
@@ -50,7 +51,7 @@ const OsPartnerSelect: FC<{
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
 
   useEffect(() => {
-    if (isSuperAdmin) {
+    if (isSuperAdmin || notApprovedData) {
       dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
         setAllPartnerData(payload?.payload);
       });
@@ -60,26 +61,13 @@ const OsPartnerSelect: FC<{
   useEffect(() => {
     const FilterArrayDataa = partnerProgramFilter(
       'user',
-      userInformation,
+      isSuperAdmin ? allResellerRecord : userInformation,
       allPartnerData,
       1,
       true,
     );
-
     setAllFilterPartnerData(FilterArrayDataa);
   }, [allPartnerData]);
-
-  useEffect(() => {
-    if (notApprovedData) {
-      dispatch(getAllPartnerandProgram(''));
-    } else {
-      dispatch(
-        getAssignPartnerProgramByOrganization({
-          organization: userInformation?.organization,
-        }),
-      );
-    }
-  }, [userInformation]);
 
   const partnerApprovedObjects: any[] = [];
   AssignPartnerProgramData?.approved?.forEach((entry: any) => {
@@ -87,12 +75,8 @@ const OsPartnerSelect: FC<{
     partnerApprovedObjects?.push(partner);
   });
 
-  const partnerOptions = isSuperAdmin
-    ? allPartnerFilterData?.map((partner: any) => ({
-        label: partner?.partner,
-        value: partner?.id,
-      }))
-    : notApprovedData
+  const partnerOptions =
+    isSuperAdmin || notApprovedData
       ? allPartnerFilterData?.map((partner: any) => ({
           label: partner?.partner,
           value: partner?.id,
@@ -131,7 +115,7 @@ const OsPartnerSelect: FC<{
               name: e,
             });
             form?.resetFields([partnerProgramName]);
-             setFinalData(e);
+            setFinalData(e);
           }}
           onClear={() => {
             form?.resetFields([partnerProgramName]);

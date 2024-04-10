@@ -15,6 +15,7 @@ import {getAdminUserOfAllOrganization} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AssignPartnerProgram from './AssignPartnerProgram';
 import {insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
+import { setAllResellerRecord } from '../../../../../redux/slices/user';
 
 const UserManagement = () => {
   const dispatch = useAppDispatch();
@@ -104,6 +105,7 @@ const UserManagement = () => {
             onClick={() => {
               setSelectedRecordData(record);
               setShowPartnerProgramAssignModal(true);
+              dispatch(setAllResellerRecord(record));
             }}
           />
         </Space>
@@ -166,7 +168,7 @@ const UserManagement = () => {
 
       <OsModal
         loading={AssignPartnerProgramLoading}
-        title='Assign Partner Program'
+        title="Assign Partner Program"
         body={<AssignPartnerProgram form={form} onFinish={onFinish} />}
         bodyPadding={40}
         width={638}
