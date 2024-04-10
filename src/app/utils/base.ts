@@ -11,7 +11,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import axios from 'axios';
 import moment from 'moment';
-import {ServerStackIcon} from '@heroicons/react/24/outline';
 import {getContractProductByProductCode} from '../../../redux/actions/contractProduct';
 import {insertProfitability} from '../../../redux/actions/profitability';
 import {quoteFileVerification} from '../../../redux/actions/quoteFile';
@@ -497,6 +496,8 @@ export const partnerProgramFilter = (
 
   let allNotRequestedIds: any = [];
   allNotRequestedIds = aprovedIds?.concat(allRequestedIds);
+
+  console.log('435435435435', superAdminAllApprovedIds);
 
   if (activeTab === 1) {
     allPartnerData?.map((item: any) => {
