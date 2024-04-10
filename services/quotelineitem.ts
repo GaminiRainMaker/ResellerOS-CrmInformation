@@ -40,8 +40,8 @@ export const QUOTE_LINE_ITEM_API = {
     patch(API.QUOTE_LINE_ITEM.UpdateQuoteLineItemVerified, data) as Promise<
       AxiosResponse<[]>
     >,
-  deleteQuoteLineByQuoteID: (id: number) =>
-    get(`${API.QUOTE_LINE_ITEM.deleteQuoteLineByQuoteId}/${id}`) as Promise<
+  deleteQuoteLineByQuoteID: (data: any) =>
+    post(API.QUOTE_LINE_ITEM.deleteQuoteLineByQuoteId, data) as Promise<
       AxiosResponse<any>
     >,
 

@@ -14,12 +14,8 @@ import CommonSelect from '@/app/components/common/os-select';
 import {formatStatus, quoteLineItemColumnForSync} from '@/app/utils/CONSTANTS';
 import {Col, Row, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {updateTables} from '@/app/utils/base';
-import {
-  ChevronDownIcon,
-  CursorArrowRaysIcon,
-} from '@heroicons/react/24/outline';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import {Libre_Caslon_Display} from 'next/font/google';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {insertProduct} from '../../../../../redux/actions/product';
@@ -61,9 +57,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
   const mergeedColumn: any = [];
   const keys = mergedValue?.length > 0 && Object.keys(mergedValue?.[0]);
+
   if (keys) {
     keys?.map((item: any) => {
-      if (item) {
+      if (item && !item?.toLowerCase()?.includes('line')) {
         mergeedColumn?.push(item);
       }
     });
@@ -74,8 +71,11 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       syncedNewValue?.length > 0 ? [...syncedNewValue] : [];
     let newSyncOptionChecks = syncTableQuoteLItemValues;
     mergeedColumn?.map((mergeItem: string, indexMerge: number) => {
-      const NewFilterOption = newSyncOptionChecks?.find(
-        (item: any) => item?.label == mergeItem,
+      const NewFilterOption = newSyncOptionChecks?.find((item: any) =>
+        item?.label
+          ?.toString()
+          ?.toLowerCase()
+          ?.includes(mergeItem?.toLowerCase()),
       );
 
       if (NewFilterOption) {
@@ -166,7 +166,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       });
       return;
     }
-    dispatch(deleteQuoteLineItemsByQuoteId(Number(getQuoteID)));
+    const dataaa = {id: Number(getQuoteID), fileId: Number(getQuoteFileId)};
+    dispatch(deleteQuoteLineItemsByQuoteId(dataaa));
     mergedValue?.map((obj: any) => {
       const newObj: any = {};
       syncedNewValue?.forEach((mapping: any) => {
@@ -199,6 +200,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             organization: userInformation.organization,
           }),
         );
+
         if (insertedProduct?.payload?.id) {
           const obj1: any = {
             quote_file_id: quoteFileById?.[0]?.id
@@ -211,10 +213,11 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             list_price: insertedProduct?.payload?.list_price,
             description: insertedProduct?.payload?.description,
             quantity: insertedProduct?.payload?.quantity,
-            adjusted_price: insertedProduct?.payload?.adjusted_price,
+            // adjusted_price: insertedProduct?.payload?.adjusted_price,
             line_number: insertedProduct?.payload?.line_number,
             organization: userInformation.organization,
           };
+
           const RebatesByProductCodData = await dispatch(
             getRebatesByProductCode(insertedProduct?.payload?.product_code),
           );
@@ -238,6 +241,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               // quote_file_id:
             });
           }
+
           newrrLineItems?.push(obj1);
         }
       }
@@ -284,6 +288,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         finalOpportunityArray?.push(singleObjects);
       });
     }
+
     if (newrrLineItems && newrrLineItems.length > 0) {
       dispatch(insertQuoteLineItem(newrrLineItems)).then((d) => {
         if (rebateDataArray && rebateDataArray.length > 0) {
