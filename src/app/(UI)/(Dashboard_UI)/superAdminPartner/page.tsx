@@ -531,7 +531,7 @@ const SuperAdminPartner: React.FC = () => {
   useEffect(() => {
     if (activeTab === 2) {
       const newArr = [...PartnerProgramColumns];
-      newArr?.push({
+      const newObj: any = {
         title: (
           <Typography name="Body 4/Medium" className="dragHandler">
             Action
@@ -558,7 +558,8 @@ const SuperAdminPartner: React.FC = () => {
             />
           </Space>
         ),
-      });
+      };
+      newArr?.push(newObj);
       setPartnerProgramColumns(newArr);
     } else {
       setPartnerProgramColumns(PartnerProgramColumns);
