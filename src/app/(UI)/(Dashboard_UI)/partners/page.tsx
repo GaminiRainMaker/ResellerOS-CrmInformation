@@ -377,35 +377,7 @@ const Partners: React.FC = () => {
         <Row
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
-          <OsTabs
-            tabBarExtraContent={
-              <Form layout="vertical">
-                <Space size={12}>
-                  <Form.Item label="Order Filter">
-                    <CommonSelect
-                      style={{width: '180px'}}
-                      placeholder="Search Here"
-                    />
-                  </Form.Item>
-
-                  <Form.Item label="Order Filter">
-                    <CommonSelect
-                      style={{width: '180px'}}
-                      placeholder="Search Here"
-                    />
-                  </Form.Item>
-
-                  <Form.Item label="Order Filter">
-                    <CommonSelect
-                      style={{width: '180px'}}
-                      placeholder="Search Here"
-                    />
-                  </Form.Item>
-                </Space>
-              </Form>
-            }
-            items={tabItems}
-          />
+          <OsTabs items={tabItems} />
         </Row>
       </Space>
 

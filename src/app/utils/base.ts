@@ -476,7 +476,7 @@ export const partnerProgramFilter = (
             itemProgram?.AssignPartnerProgram?.is_approved
           ) {
             superAdminAllApprovedIds?.push(
-              itemProgram?.AssignPartnerProgram?.partner_program_id,
+              itemProgram?.AssignPartnerProgram?.partner_program_id ??  itemProgram?.id,
             );
           } else if (
             // Requested but not approved or decliend
@@ -497,6 +497,8 @@ export const partnerProgramFilter = (
 
   let allNotRequestedIds: any = [];
   allNotRequestedIds = aprovedIds?.concat(allRequestedIds);
+
+  console.log(superAdminAllApprovedIds, 'superAdminAllApprovedIds');
 
   if (activeTab === 1) {
     allPartnerData?.map((item: any) => {
