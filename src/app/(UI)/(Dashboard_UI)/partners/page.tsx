@@ -417,6 +417,7 @@ const Partners: React.FC = () => {
         open={showModal}
         onCancel={() => {
           setShowModal((p) => !p);
+          form.resetFields();
         }}
         footer
         primaryButtonText="Request"
