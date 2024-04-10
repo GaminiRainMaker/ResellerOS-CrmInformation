@@ -48,6 +48,7 @@ const Partners: React.FC = () => {
       allPartnerData,
       activeTab,
     );
+    
 
     setAllFilterPartnerData(FilterArrayDataa);
   }, [allPartnerData, activeTab]);
