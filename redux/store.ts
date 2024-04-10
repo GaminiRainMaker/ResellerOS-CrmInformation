@@ -29,6 +29,7 @@ import distributor from './slices/distributor';
 import oem from './slices/oem';
 import quoteFile from './slices/quoteFile';
 import assignPartnerProgram from './slices/assignPartnerProgram';
+import auth from './slices/auth';
 
 // Configure redux store
 const store = configureStore({
@@ -61,6 +62,7 @@ const store = configureStore({
     oem,
     quoteFile,
     assignPartnerProgram,
+    auth,
   },
   middleware: [thunk],
   devTools: true,

@@ -12,7 +12,7 @@ import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/Al
 import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
 import {signUpAuth, verifyAuth} from '../../../../../redux/actions/auth';
 import {getUserByTokenAccess} from '../../../../../redux/actions/user';
-import {useAppDispatch} from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setUserInformation} from '../../../../../redux/slices/user';
 import {Space} from '../../common/antd/Space';
 import useThemeToken from '../../common/hooks/useThemeToken';
@@ -36,11 +36,9 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
-
   const [signUpData, setSignUpData] = useState<any>();
-  // const onSubmitForm = (values: any) => {
-  //   onClick(values);
-  // };
+
+  const {loading} = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     const tokendata: any = Cookies.get('token');
@@ -53,6 +51,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
             setUserInformation({
               id: dataaa?.id,
               user_name: dataaa?.user_name,
+              Role: dataaa?.role,
               email: dataaa?.email,
               organization: dataaa?.organization,
               Admin: dataaa?.is_admin,
@@ -60,7 +59,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
               DealReg: dataaa?.is_dealReg,
               OrderAI: dataaa?.is_order,
               username: dataaa?.email,
-              SuperAdmin: dataaa?.super_admin,
+              master_admin: dataaa?.master_admin,
             }),
           );
           router.push(
@@ -70,9 +69,8 @@ const ContentSection: FC<AuthLayoutInterface> = ({
       });
     }
   }, []);
-  const tokendata: any = Cookies.get('token');
+
   const onSubmitForm = (formValues: any, type: any) => {
-    // formValues?.email
     const validateEmail = (email: any) =>
       String(email)
         .toLowerCase()
@@ -146,13 +144,14 @@ const ContentSection: FC<AuthLayoutInterface> = ({
             setUserInformation({
               id: payload?.payload?.id,
               organization: payload?.payload?.organization,
+              Role: payload?.payload?.role,
               Admin: payload?.payload?.is_admin,
               QuoteAI: payload?.payload?.is_quote,
               DealReg: payload?.payload?.is_dealReg,
               OrderAI: payload?.payload?.is_order,
               username: payload?.payload?.user_name,
               email: payload?.payload?.email,
-              SuperAdmin: payload?.payload?.super_admin,
+              master_admin: payload?.payload?.master_admin,
             }),
           );
 
@@ -196,7 +195,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
             type: 'error',
           });
         } else {
-          // router.push('/login');
+          router.push('/login');
         }
       });
     }
@@ -337,6 +336,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
 
             <Form.Item style={{marginTop: '80px'}}>
               <OsButton
+                loading={loading}
                 style={{marginTop: '80px'}}
                 text={buttonText}
                 buttontype="PRIMARY"

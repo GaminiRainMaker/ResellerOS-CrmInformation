@@ -8,12 +8,11 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsAvatar from '@/app/components/common/os-avatar';
 import Typography from '@/app/components/common/typography';
-import {ChevronRightIcon, LifebuoyIcon} from '@heroicons/react/20/solid';
+import {ChevronRightIcon} from '@heroicons/react/20/solid';
 import {
   AdjustmentsHorizontalIcon,
   BoltIcon,
   CurrencyDollarIcon,
-  PhoneArrowDownLeftIcon,
   ReceiptPercentIcon,
   ShoppingBagIcon,
   Squares2X2Icon,
@@ -21,15 +20,15 @@ import {
   UsersIcon,
 } from '@heroicons/react/24/outline';
 import {Layout, MenuProps} from 'antd';
+import Image from 'next/image';
 import {usePathname, useRouter} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
-import Image from 'next/image';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {LayoutMenuStyle} from './styled-components';
-import {getUserByTokenAccess} from '../../../../../redux/actions/user';
-import {setUserInformation} from '../../../../../redux/slices/user';
-import InActiveCrmIcon from '../../../../../public/assets/static/inActiveCrmIcon.svg';
 import ActiveCrmIcon from '../../../../../public/assets/static/activeCrmIcon.svg';
+import InActiveCrmIcon from '../../../../../public/assets/static/inActiveCrmIcon.svg';
+import {getUserByTokenAccess} from '../../../../../redux/actions/user';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {setUserInformation} from '../../../../../redux/slices/user';
+import {LayoutMenuStyle} from './styled-components';
 
 const {Sider} = Layout;
 
@@ -58,7 +57,8 @@ const SideBar = () => {
             OrderAI: payload?.payload?.is_order,
             username: payload?.payload?.user_name,
             email: payload?.payload?.email,
-            SuperAdmin: payload?.payload?.super_admin,
+            MasterAdmin: payload?.payload?.master_admin,
+            Role: payload?.payload?.role,
           }),
         );
       });
@@ -83,7 +83,8 @@ const SideBar = () => {
   const isQuoteAI = userInformation?.QuoteAI;
   const isDealReg = userInformation?.DealReg;
   const isOrderAI = userInformation?.OrderAI;
-  const isSuperAdmin = userInformation?.SuperAdmin;
+  const Role = userInformation?.Role;
+
   const pathname = usePathname();
 
   useEffect(() => {
@@ -152,7 +153,8 @@ const SideBar = () => {
       </Typography>,
       '1',
     ),
-    isSuperAdmin &&
+    isAdmin &&
+      Role === 'superAdmin' &&
       getItem(
         <Typography
           onClick={() => {
@@ -281,7 +283,7 @@ const SideBar = () => {
         ],
       ),
     isQuoteAI &&
-      !isSuperAdmin &&
+      Role === 'reseller' &&
       getItem(
         <Space
           size={12}
@@ -320,7 +322,7 @@ const SideBar = () => {
         '2',
       ),
     isDealReg &&
-      !isSuperAdmin &&
+      Role === 'reseller' &&
       getItem(
         <Typography
           onClick={() => {
@@ -364,7 +366,7 @@ const SideBar = () => {
         '3',
       ),
     isDealReg &&
-      isSuperAdmin &&
+      Role === 'superAdmin' &&
       getItem(
         <Typography
           onClick={() => {
@@ -454,7 +456,11 @@ const SideBar = () => {
         onClick={() => {
           setSelectedKey(5);
           setCrmChildKey(0);
-          router?.push(isSuperAdmin ? 'superAdminPartner' : '/partners');
+          router?.push(
+            isAdmin && Role === 'superAdmin'
+              ? 'superAdminPartner'
+              : '/partners',
+          );
         }}
         name="Button 1"
         color={token?.colorTextSecondary}
@@ -489,7 +495,8 @@ const SideBar = () => {
       </Typography>,
       '5',
     ),
-    !isSuperAdmin &&
+    !isAdmin &&
+      Role === 'reseller' &&
       getItem(
         <Typography
           onClick={() => {
@@ -530,7 +537,8 @@ const SideBar = () => {
         </Typography>,
         '6',
       ),
-    !isSuperAdmin &&
+    !isAdmin &&
+      Role === 'reseller' &&
       getItem(
         <Typography
           onClick={() => {
@@ -702,7 +710,7 @@ const SideBar = () => {
         ],
       ),
     isAdmin &&
-      !isSuperAdmin &&
+      Role === 'reseller' &&
       getItem(
         <Space
           size={12}
@@ -740,7 +748,8 @@ const SideBar = () => {
         </Space>,
         '11',
       ),
-    isSuperAdmin &&
+    isAdmin &&
+      Role === 'superAdmin' &&
       getItem(
         <Space
           size={12}

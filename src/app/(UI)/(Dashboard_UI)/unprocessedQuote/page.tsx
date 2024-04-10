@@ -101,9 +101,6 @@ const AllQuote: React.FC = () => {
     }),
   };
 
-  const editQuote = (quoteId: string) => {
-    router.push(`/generateQuote?id=${quoteId}`);
-  };
   const deleteQuote = async () => {
     const data = {Ids: deleteIds};
     await dispatch(deleteQuoteById(data));
@@ -121,7 +118,6 @@ const AllQuote: React.FC = () => {
   const Quotecolumns = getSuperAdminQuoteColumns(
     token,
     statusWrapper,
-    editQuote,
     setDeleteIds,
     setShowModalDelete,
     actionEye,
