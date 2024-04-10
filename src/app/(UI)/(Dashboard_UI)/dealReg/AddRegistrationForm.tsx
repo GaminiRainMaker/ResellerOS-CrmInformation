@@ -17,11 +17,15 @@ import AddCustomer from '@/app/components/common/os-add-customer';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import {partnerProgramFilter} from '@/app/utils/base';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {insertDealReg} from '../../../../../redux/actions/dealReg';
 import {insertDealRegAddress} from '../../../../../redux/actions/dealRegAddress';
 import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
-import {getAllPartnerTemp} from '../../../../../redux/actions/partner';
+import {
+  getAllPartnerTemp,
+  getAllPartnerandProgram,
+} from '../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
 
@@ -41,22 +45,60 @@ const AddRegistrationForm: FC<any> = ({setShowModal}) => {
   const [updatedDealRegData, setUpdatedDealRegData] = useState<any>();
   const [opportunityFilterOption, setOpportunityFilterOption] = useState<any>();
 
+  const [allPartnerData, setAllPartnerData] = useState<any>();
+  const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
+
+  useEffect(() => {
+    // if (isSuperAdmin) {
+    dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
+      setAllPartnerData(payload?.payload);
+    });
+    // }
+  }, []);
+
+  useEffect(() => {
+    const FilterArrayDataa = partnerProgramFilter(
+      'user',
+      userInformation,
+      allPartnerData,
+      1,
+      true,
+    );
+
+    setAllFilterPartnerData(FilterArrayDataa);
+  }, [allPartnerData]);
+
+
   useEffect(() => {
     dispatch(getAllPartnerTemp());
   }, []);
 
-  const partnerOptions = partnerData?.approved?.map((partner: any) => ({
-    value: partner.id,
-    label: partner.partner,
+  const partnerOptions = allPartnerFilterData?.map((partner: any) => ({
+    label: partner?.partner,
+    value: partner?.id,
   }));
 
   const findPartnerProgramsById = (chosenId: number) => {
-    const selectedData = partnerData?.approved?.find((item: any) => item.id === chosenId);
-    if (selectedData) {
-      const partnerPrograms = selectedData.PartnerPrograms.map(
+    const filteredData = allPartnerFilterData?.filter(
+      (item: any) => item?.id === chosenId,
+    );
+    // const selectedData = partnerData?.approved?.find(
+    //   (item: any) => item.id === chosenId,
+    // );
+    // if (selectedData) {
+    //   const partnerPrograms = selectedData.PartnerPrograms.map(
+    //     (program: any) => ({
+    //       label: program.partner_program,
+    //       value: program.id,
+    //     }),
+    //   );
+    //   return partnerPrograms;
+    // }
+    if (filteredData) {
+      const partnerPrograms = filteredData?.[0]?.PartnerPrograms?.map(
         (program: any) => ({
-          label: program.partner_program,
-          value: program.id,
+          label: program?.partner_program,
+          value: program?.id,
         }),
       );
       return partnerPrograms;
@@ -377,9 +419,7 @@ const AddRegistrationForm: FC<any> = ({setShowModal}) => {
         };
         newarr.push(obj);
       });
-      // console.log('dealRegFormData', newarr, userInformation);
-      setUpdatedDealRegData(newarr);
-
+      setUpdatedDealRegData(newarr);      
       dispatch(insertDealReg(newarr)).then((d: any) => {
         if (d?.payload) {
           d?.payload?.map(async (DataItem: any) => {

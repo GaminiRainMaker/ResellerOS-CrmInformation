@@ -197,7 +197,7 @@ const CommonFields: FC<any> = (data) => {
               <OsPartnerSelect
                 name="partner_id"
                 setPartnerValue={setPartnerValue}
-                form={form}
+                // form={form}
                 partnerProgramName="partner_program_id"
                 isSuperAdmin={false}
               />

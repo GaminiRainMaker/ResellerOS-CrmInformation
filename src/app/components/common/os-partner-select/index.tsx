@@ -43,7 +43,6 @@ const OsPartnerSelect: FC<{
   const {data: AssignPartnerProgramData} = useAppSelector(
     (state) => state.assignPartnerProgram,
   );
-  const {data: partnerData} = useAppSelector((state) => state.partner);
   const [openAddPartnerModal, setOpenAddPartnerModal] =
     useState<boolean>(false);
   const [allPartnerData, setAllPartnerData] = useState<any>();
