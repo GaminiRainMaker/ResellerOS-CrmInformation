@@ -338,7 +338,7 @@ export const updateTables = async (
         list_price: item.list_price,
         description: item.description,
         quantity: item.quantity,
-        adjusted_price: item.adjusted_price,
+        // adjusted_price: item.adjusted_price,
         line_number: item.line_number,
         organization: userInformation.organization,
         quote_config_id: item.quote_config_id,

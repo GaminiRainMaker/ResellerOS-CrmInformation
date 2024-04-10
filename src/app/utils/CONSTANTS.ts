@@ -157,7 +157,6 @@ export const quoteLineItemColumn = [
 ];
 
 export const quoteLineItemColumnForSync = [
-  {value: 'line_number', label: 'Line'},
   {value: 'product_code', label: 'SKU'},
   {value: 'quantity', label: 'Qty'},
   {value: 'list_price', label: 'MSRP'},

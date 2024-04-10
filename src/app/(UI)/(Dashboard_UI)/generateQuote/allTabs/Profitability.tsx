@@ -195,7 +195,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
             }}
             // type="number"
             disabled={renderEditableInput('Cost')}
-            value={text}
+            value={text ?? 0.0}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
                 prev.map((prevItem: any) => {
@@ -395,7 +395,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
           id: profitabilityDataItem?.id,
           line_number: profitabilityDataItem?.line_number,
           quantity: profitabilityDataItem?.quantity,
-          adjusted_price: profitabilityDataItem?.adjusted_price,
+          // adjusted_price: profitabilityDataItem?.adjusted_price,
           pricing_method: profitabilityDataItem?.pricing_method,
           line_amount: profitabilityDataItem?.line_amount,
           list_price: profitabilityDataItem?.list_price,

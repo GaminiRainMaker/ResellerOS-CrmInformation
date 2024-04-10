@@ -26,6 +26,7 @@ const OsPartnerSelect: FC<{
   isSuperAdmin?: boolean;
   isAddNewPartner?: boolean;
   notApprovedData?: boolean;
+  form?: any;
 }> = ({
   name = 'partner',
   setPartnerValue,

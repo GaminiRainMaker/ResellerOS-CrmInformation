@@ -209,7 +209,7 @@ const Partners: React.FC = () => {
   useEffect(() => {
     if (activeTab === 1) {
       const newArr = [...PartnerProgramColumns];
-      newArr?.push({
+      const newObj: any = {
         title: (
           <Typography name="Body 4/Medium" className="dragHandler">
             Action
@@ -226,7 +226,8 @@ const Partners: React.FC = () => {
             }}
           />
         ),
-      });
+      };
+      newArr?.push(newObj);
       setPartnerProgramColumns(newArr);
     } else {
       setPartnerProgramColumns(PartnerProgramColumns);
