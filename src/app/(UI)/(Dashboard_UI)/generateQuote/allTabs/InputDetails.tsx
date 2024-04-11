@@ -279,7 +279,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         const value = useRemoveDollarAndCommahook(text);
         return (
           <Typography name="Body 4/Medium">
-            {`$ ${abbreviate(value ?? 0.00)}`}
+            {`$ ${abbreviate(value ?? 0.0)}`}
           </Typography>
         );
       },
@@ -518,6 +518,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
             'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
             finalFile,
           );
+
           const newArrrrAll: any = [];
           if (response) {
             for (let i = 0; i < response?.data?.result?.length; i++) {

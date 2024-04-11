@@ -144,14 +144,14 @@ const FieldDisplayConfiguration: FC<any> = () => {
       dataIndex: 'id',
       key: 'id',
       width: 80,
-      render: (text: any, record: any) => {
+      render: (text: any, record: any, index: number) => {
         const sno =
           record?.id -
           tableColumnDataShow?.[
             tableColumnDataShow?.length - tableColumnDataShow?.length
           ]?.id +
           1;
-        return <>{sno}</>;
+        return <>{index + 1}</>;
       },
     },
     {

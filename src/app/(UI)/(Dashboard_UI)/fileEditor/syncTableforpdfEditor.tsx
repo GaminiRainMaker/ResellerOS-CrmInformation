@@ -357,27 +357,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                 }}
                 allowClear
                 onClear={() => handleChange(item?.newVal)}
-                // }}
-                // onClear={}
-
-                // suffixIcon={
-                //   item?.newVal ? (
-                //     <div
-                //       // width={24}
-                //       style={{width: '34px', color: 'red'}}
-                //       color={token?.colorInfoBorder}
-                //       onClick={() => HandleClearOptions(item?.newVal)}
-                //     >
-                //       x
-                //     </div>
-                //   ) : (
-                //     <ChevronDownIcon
-                //       width={24}
-                //       color={token?.colorInfoBorder}
-                //     />
-                //   )
-                // }
-                defaultValue={item?.newVal}
+                defaultValue={item?.newVal?.toString()?.toUpperCase()}
                 style={{width: '250px'}}
                 options={syncTableQuoteLItemValues}
               />
