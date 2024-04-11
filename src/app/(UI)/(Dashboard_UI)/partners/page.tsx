@@ -16,7 +16,7 @@ import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {partnerProgramFilter} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form} from 'antd';
+import {Checkbox, Form} from 'antd';
 import {useEffect, useState} from 'react';
 import {insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
 import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
@@ -50,10 +50,25 @@ const Partners: React.FC = () => {
       allPartnerData,
       activeTab,
     );
-
-    setAllFilterPartnerData(FilterArrayDataa);
+    const newArrForTab3: any = [];
+    if (activeTab === 3) {
+      FilterArrayDataa?.map((items: any) => {
+        items?.PartnerPrograms?.map((itemInner: any) => {
+          const newObj: any = {
+            ...itemInner,
+            partner_email: items?.email,
+            partner_name: items?.partner,
+          };
+          newArrForTab3?.push(newObj);
+        });
+      });
+    }
+    if (activeTab === 3) {
+      setAllFilterPartnerData(newArrForTab3);
+    } else {
+      setAllFilterPartnerData(FilterArrayDataa);
+    }
   }, [allPartnerData, activeTab]);
-
   const locale = {
     emptyText: (
       <EmptyContainer
@@ -185,6 +200,116 @@ const Partners: React.FC = () => {
     },
   ];
 
+  const PartnerProgramColumnsTab3 = [
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Partner Name
+        </Typography>
+      ),
+      dataIndex: 'partner_program',
+      key: 'partner_program',
+      render: (text: any, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.partner_name ?? '--'}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Partner Email
+        </Typography>
+      ),
+      dataIndex: 'description',
+      key: 'description',
+      render: (text: any, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.partner_email ?? '--'}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Partner Program Name
+        </Typography>
+      ),
+      dataIndex: 'partner_program',
+      key: 'partner_program',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Partner Program Description
+        </Typography>
+      ),
+      dataIndex: 'description',
+      key: 'description',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Partner Program New
+        </Typography>
+      ),
+      dataIndex: 'description',
+      key: 'description',
+      render: (text: any, record: any) => (
+        <Checkbox
+          checked={record?.AssignPartnerProgram?.new_request}
+          disabled
+        />
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Requested User
+        </Typography>
+      ),
+      dataIndex: 'description',
+      key: 'description',
+      render: (text: any, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.AssignPartnerProgram?.User?.user_name ?? '--'}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Template
+        </Typography>
+      ),
+      dataIndex: 'template',
+      key: 'template',
+      render: (text: string, record: any) => (
+        <Typography
+          name="Body 4/Medium"
+          hoverOnText
+          color={token?.colorLink}
+          onClick={() => {
+            if (record?.form_data) {
+              setOpenPreviewModal(true);
+              const formDataObject = JSON?.parse(record?.form_data);
+              setformData({formObject: formDataObject, Id: record?.id});
+              // open modal to view form
+              // console.log(record?.form_data, 'formData');
+            }
+          }}
+        >
+          {record?.form_data ? 'View' : 'No Template'}
+        </Typography>
+      ),
+    },
+  ];
   const handleAddNewAssignedPartnerProgramRequest = async (id: number) => {
     const partnerObj = {
       organization: userInformation?.organization,
@@ -318,21 +443,21 @@ const Partners: React.FC = () => {
       key: '3',
       children: (
         <OsTable
-          columns={PartnerColumns}
-          expandable={{
-            // eslint-disable-next-line react/no-unstable-nested-components
-            expandedRowRender: (record: any) => (
-              <OsTable
-                columns={partnerProgramColumns}
-                // dataSource={allApprovedObjects}
-                dataSource={record?.PartnerPrograms}
-                scroll
-                locale={locale}
-                loading={false}
-              />
-            ),
-            rowExpandable: (record: any) => record.name !== 'Not Expandable',
-          }}
+          columns={PartnerProgramColumnsTab3}
+          // expandable={{
+          //   // eslint-disable-next-line react/no-unstable-nested-components
+          //   expandedRowRender: (record: any) => (
+          //     <OsTable
+          //       columns={partnerProgramColumns}
+          //       // dataSource={allApprovedObjects}
+          //       dataSource={record?.PartnerPrograms}
+          //       scroll
+          //       locale={locale}
+          //       loading={false}
+          //     />
+          //   ),
+          //   rowExpandable: (record: any) => record.name !== 'Not Expandable',
+          // }}
           // dataSource={allApprovedObjects}
           dataSource={allPartnerFilterData}
           scroll
