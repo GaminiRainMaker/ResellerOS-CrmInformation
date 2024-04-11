@@ -181,4 +181,18 @@ export const API = {
     UpdateAssignPartnerProgramById:
       '/assignPartnerProgram/updateAssignPartnerProgramById',
   },
+  ATTRIBUTE_SECTION: {
+    INDEX: '/attributeSection',
+    QUERY: 'attributeSection/query',
+    DeleteById: '/attributeSection/deleteById',
+    UpdateAttributeSectionById:
+      '/attributeSection/updateAttributeSectionById',
+  },
+  ATTRIBUTE_FIELD: {
+    INDEX: '/attributeField',
+    QUERY: 'attributeField/query',
+    DeleteById: '/attributeField/deleteById',
+    UpdateAttributeFieldById:
+      '/attributeField/updateAttributeFieldById',
+  },
 };
