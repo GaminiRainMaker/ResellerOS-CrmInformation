@@ -5,36 +5,27 @@
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
-import {Switch} from '@/app/components/common/antd/Switch';
 import FormBuilderMain from '@/app/components/common/formBuilder/page';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import AddPartner from '@/app/components/common/os-add-partner';
 import AddPartnerProgram from '@/app/components/common/os-add-partner-program';
 import OsButton from '@/app/components/common/os-button';
-import OsCollapse from '@/app/components/common/os-collapse';
 import OsDrawer from '@/app/components/common/os-drawer';
-import OsDropdown from '@/app/components/common/os-dropdown';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
-import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {
-  PencilSquareIcon,
-  PlusIcon,
-  TrashIcon,
-} from '@heroicons/react/24/outline';
-import {Form, MenuProps} from 'antd';
+import {partnerProgramFilter} from '@/app/utils/base';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import {Form} from 'antd';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import {partnerProgramFilter} from '@/app/utils/base';
+import {updateAssignPartnerProgramById} from '../../../../../redux/actions/assignPartnerProgram';
 import {
   deletePartner,
-  getAllPartner,
   getAllPartnerandProgram,
-  updatePartnerById,
 } from '../../../../../redux/actions/partner';
 import {
   deletePartnerProgram,
@@ -43,10 +34,6 @@ import {
 } from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import PartnerAnalytics from '../partners/partnerAnalytics';
-import {
-  getAllAssignPartnerProgram,
-  updateAssignPartnerProgramById,
-} from '../../../../../redux/actions/assignPartnerProgram';
 
 export interface SeparatedData {
   [partnerId: number]: {
@@ -77,10 +64,8 @@ const SuperAdminPartner: React.FC = () => {
   const [deletePartnerIds, setDeletePartnerIds] = useState<[]>();
   const [deletePartnerProgramIds, setDeletePartnerProgramIds] = useState<[]>();
   const [activeTab, setActiveTab] = useState<number>(1);
-  const {data: PartnerData, loading} = useAppSelector((state) => state.partner);
-  const {data: PartnerProgramData, loading: partnerProgramLoading} =
-    useAppSelector((state) => state.partnerProgram);
-  const [finalPartnerProgramData, setFinalPartnerProgramData] = useState<any>();
+  const {loading} = useAppSelector((state) => state.partner);
+
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
   const [formData, setformData] = useState<any>();
   const [allPartnerData, setAllPartnerData] = useState<any>();
@@ -89,7 +74,6 @@ const SuperAdminPartner: React.FC = () => {
   const {userInformation} = useAppSelector((state) => state.user);
 
   useEffect(() => {
-    dispatch(getAllPartner());
     dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
       setAllPartnerData(payload?.payload);
     });
@@ -117,18 +101,6 @@ const SuperAdminPartner: React.FC = () => {
     });
   };
 
-  const onRowUpdate = (type: string, recordId: number, value: boolean) => {
-    const updateField = type === 'Active' ? 'is_active' : 'is_approved';
-
-    const partnerObj = {
-      id: recordId,
-      [updateField]: value,
-    };
-    dispatch(updatePartnerById(partnerObj)).then(() => {
-      dispatch(getAllPartner());
-    });
-  };
-
   const deleteSelectedPartnerProgramIds = async () => {
     const data = {id: deletePartnerProgramIds};
     await dispatch(deletePartnerProgram(data)).then(() => {
@@ -141,21 +113,12 @@ const SuperAdminPartner: React.FC = () => {
   const deleteSelectedPartnerIds = async () => {
     const data = {id: deletePartnerIds};
     await dispatch(deletePartner(data)).then(() => {
-      dispatch(getAllPartner());
+      dispatch(getAllPartnerandProgram(''));
     });
     setDeletePartnerIds([]);
     setShowPartnerDeleteModal(false);
   };
 
-  const rowSelection = {
-    onChange: (selectedRowKeys: any) => {
-      if (activeTab === 1) {
-        setDeletePartnerIds(selectedRowKeys);
-      } else if (activeTab === 2) {
-        setDeletePartnerProgramIds(selectedRowKeys);
-      }
-    },
-  };
   const deletePartnerProgramFormDa = async (id: number) => {
     dispatch(deletePartnerProgramFormData(id));
     setOpenPreviewModal(false);
@@ -163,26 +126,6 @@ const SuperAdminPartner: React.FC = () => {
       dispatch(getAllPartnerProgram());
     }, 1000);
   };
-
-  useEffect(() => {
-    const separatedData: SeparatedData = {};
-    if (PartnerProgramData && PartnerProgramData?.length > 0) {
-      PartnerProgramData?.forEach((item: any) => {
-        const partnerId = item.partner;
-        const partnerName = item.Partner?.partner;
-        if (!separatedData[partnerId]) {
-          separatedData[partnerId] = {
-            partner_id: partnerId,
-            title: partnerName,
-            data: [],
-          };
-        }
-        separatedData[partnerId]?.data.push(item);
-      });
-    }
-
-    setFinalPartnerProgramData(Object.values(separatedData));
-  }, [PartnerProgramData]);
 
   const locale = {
     emptyText: (
@@ -314,77 +257,6 @@ const SuperAdminPartner: React.FC = () => {
     },
   ];
 
-  const secondSuperPartnerColumns = [
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Approved
-        </Typography>
-      ),
-      dataIndex: 'is_approved',
-      key: 'is_approved',
-      render: (text: string, record: any) => (
-        <Switch
-          size="default"
-          value={record?.is_approved}
-          onChange={(e) => {
-            onRowUpdate('Approved', record?.id, e);
-          }}
-        />
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Reject
-        </Typography>
-      ),
-      dataIndex: 'is_approved',
-      key: 'is_approved',
-      render: (text: string, record: any) => (
-        <Switch
-          size="default"
-          value={record?.is_approved}
-          onChange={(e) => {
-            onRowUpdate('Approved', record?.id, false);
-          }}
-        />
-      ),
-    },
-  ];
-
-  const thirdSuperPartnerColumns = [
-    {
-      title: ' ',
-      dataIndex: 'action',
-      key: 'action',
-      render: (text: string, record: any) => (
-        <Space size={18}>
-          <PencilSquareIcon
-            height={24}
-            width={24}
-            color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              setShowPartnerDrawer(true);
-              setFormPartnerData(record);
-            }}
-          />
-          <TrashIcon
-            height={24}
-            width={24}
-            color={token.colorError}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              setDeletePartnerIds(record?.id);
-              setShowPartnerDeleteModal(true);
-            }}
-          />
-        </Space>
-      ),
-    },
-  ];
-
   const superAdmintabItems = [
     {
       label: (
@@ -401,16 +273,15 @@ const SuperAdminPartner: React.FC = () => {
             expandedRowRender: (record: any) => (
               <OsTable
                 columns={partnerProgramColumns}
-                // dataSource={allApprovedObjects}
                 dataSource={record?.PartnerPrograms}
                 scroll
                 locale={locale}
                 loading={false}
+                paginationProps={false}
               />
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
           }}
-          // dataSource={allApprovedObjects}
           dataSource={allPartnerFilterData}
           scroll
           locale={locale}
@@ -485,39 +356,6 @@ const SuperAdminPartner: React.FC = () => {
     },
   ];
 
-  const dropDownItemss: MenuProps['items'] = [
-    {
-      key: '1',
-      label: <Typography name="Body 3/Regular">Download Selected</Typography>,
-    },
-    {
-      key: '2',
-      label: (
-        <Typography
-          name="Body 3/Regular"
-          color={token?.colorError}
-          onClick={() => {
-            if (
-              deletePartnerIds &&
-              deletePartnerIds?.length > 0 &&
-              activeTab === 1
-            ) {
-              setShowPartnerDeleteModal(true);
-            } else if (
-              deletePartnerProgramIds &&
-              deletePartnerProgramIds?.length > 0 &&
-              activeTab === 2
-            ) {
-              setShowPartnerProgramDeleteModal(true);
-            }
-          }}
-        >
-          Delete Selected
-        </Typography>
-      ),
-    },
-  ];
-
   useEffect(() => {
     if (activeTab === 2) {
       const newArr = [...PartnerProgramColumns];
@@ -580,7 +418,6 @@ const SuperAdminPartner: React.FC = () => {
                 icon={<PlusIcon />}
                 clickHandler={() => setShowAddPartnerModal((p) => !p)}
               />
-              <OsDropdown menu={{items: dropDownItemss}} />
             </Space>
           </Col>
         </Row>
@@ -588,35 +425,7 @@ const SuperAdminPartner: React.FC = () => {
         <Row
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
-          <OsTabs
-            tabBarExtraContent={
-              <Form layout="vertical">
-                <Space size={12}>
-                  <Form.Item label="Order Filter">
-                    <CommonSelect
-                      style={{width: '180px'}}
-                      placeholder="Search Here"
-                    />
-                  </Form.Item>
-
-                  <Form.Item label="Order Filter">
-                    <CommonSelect
-                      style={{width: '180px'}}
-                      placeholder="Search Here"
-                    />
-                  </Form.Item>
-
-                  <Form.Item label="Order Filter">
-                    <CommonSelect
-                      style={{width: '180px'}}
-                      placeholder="Search Here"
-                    />
-                  </Form.Item>
-                </Space>
-              </Form>
-            }
-            items={superAdmintabItems}
-          />
+          <OsTabs items={superAdmintabItems} />
         </Row>
       </Space>
 

@@ -72,19 +72,6 @@ const AddProduct = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Product name
-        </Typography>
-      ),
-      dataIndex: 'product_code',
-      key: 'product_code',
-      width: 173,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
           Product Code
         </Typography>
       ),
@@ -201,33 +188,21 @@ const AddProduct = () => {
             </Typography>
           </Col>
           <Col>
-            <div
-              style={{
-                display: 'flex',
-                width: '40%',
-                gap: '8px',
+            <OsButton
+              text="Add New Product"
+              buttontype="PRIMARY"
+              icon={<PlusIcon />}
+              clickHandler={() => {
+                setAddProductType('insert');
+                setShowAddProductModal((p) => !p);
               }}
-            >
-              <OsButton
-                text="Add New Product"
-                buttontype="PRIMARY"
-                icon={<PlusIcon />}
-                clickHandler={() => {
-                  setAddProductType('insert');
-                  setShowAddProductModal((p) => !p);
-                }}
-              />
-              <Space>
-                <OsDropdown menu={{items: dropDownItemss}} />
-              </Space>
-            </div>
+            />
           </Col>
         </Row>
 
         <OsTable
           columns={ProductColumns}
           dataSource={ProductData}
-          // rowSelection={rowSelection}
           scroll
           loading={loading}
         />

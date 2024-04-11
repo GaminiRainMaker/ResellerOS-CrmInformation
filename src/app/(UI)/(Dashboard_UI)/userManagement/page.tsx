@@ -15,7 +15,7 @@ import {getAdminUserOfAllOrganization} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AssignPartnerProgram from './AssignPartnerProgram';
 import {insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
-import { setAllResellerRecord } from '../../../../../redux/slices/user';
+import {setAllResellerRecord} from '../../../../../redux/slices/user';
 
 const UserManagement = () => {
   const dispatch = useAppDispatch();
@@ -26,14 +26,11 @@ const UserManagement = () => {
   const {loading: AssignPartnerProgramLoading} = useAppSelector(
     (state) => state.assignPartnerProgram,
   );
-  const [query, setQuery] = useState<{
-    organization: string | null;
-  }>({
-    organization: null,
-  });
   const [showPartnerProgramAssignModal, setShowPartnerProgramAssignModal] =
     useState<boolean>(false);
   const [selectedRecordData, setSelectedRecordData] = useState<any>();
+  const updatedResellerData =  userData?.filter((d: any) => d?.organization !== 'rainmakercloud');
+
 
   const UserDataColumns = [
     {
@@ -114,7 +111,7 @@ const UserManagement = () => {
   ];
 
   useEffect(() => {
-    dispatch(getAdminUserOfAllOrganization(query));
+    dispatch(getAdminUserOfAllOrganization(''));
   }, []);
 
   const locale = {
@@ -159,7 +156,7 @@ const UserManagement = () => {
           <OsTable
             locale={locale}
             columns={UserDataColumns}
-            dataSource={userData}
+            dataSource={updatedResellerData}
             scroll
             loading={loading}
           />
