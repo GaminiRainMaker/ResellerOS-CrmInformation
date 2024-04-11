@@ -48,7 +48,6 @@ const Partners: React.FC = () => {
       allPartnerData,
       activeTab,
     );
-    
 
     setAllFilterPartnerData(FilterArrayDataa);
   }, [allPartnerData, activeTab]);
@@ -198,7 +197,7 @@ const Partners: React.FC = () => {
     const partnerObj = {
       organization: userInformation?.organization,
       requested_by: userInformation?.id,
-      is_request: true,
+      new_request: false,
       partner_program_id: id,
     };
     await dispatch(insertAssignPartnerProgram(partnerObj));
