@@ -5,12 +5,12 @@
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
+import FormBuilderMain from '@/app/components/common/formBuilder/page';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import RequestPartner from '@/app/components/common/os-add-partner/RequestPartner';
 import OsButton from '@/app/components/common/os-button';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
-import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
@@ -33,6 +33,8 @@ const Partners: React.FC = () => {
   const [allPartnerData, setAllPartnerData] = useState<any>();
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
+  const [formData, setformData] = useState<any>();
+  const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
 
   useEffect(() => {
     dispatch(getUnassignedProgram());
@@ -80,51 +82,41 @@ const Partners: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Created Date
+          Description
         </Typography>
       ),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'description',
+      key: 'description',
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Organization
-        </Typography>
-      ),
-      dataIndex: 'organization',
-      key: 'organization',
 
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Email
+          Template
         </Typography>
       ),
-      dataIndex: 'email',
-      key: 'email',
-
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Website
+      dataIndex: 'template',
+      key: 'template',
+      render: (text: string, record: any) => (
+        <Typography
+          name="Body 4/Medium"
+          hoverOnText
+          color={token?.colorLink}
+          onClick={() => {
+            if (record?.form_data) {
+              setOpenPreviewModal(true);
+              const formDataObject = JSON?.parse(record?.form_data);
+              setformData({formObject: formDataObject, Id: record?.id});
+              // open modal to view form
+              // console.log(record?.form_data, 'formData');
+            }
+          }}
+        >
+          {record?.form_data ? 'View' : 'No Template'}
         </Typography>
-      ),
-      dataIndex: 'website',
-      key: 'website',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
   ];
@@ -377,35 +369,7 @@ const Partners: React.FC = () => {
         <Row
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
-          <OsTabs
-            tabBarExtraContent={
-              <Form layout="vertical">
-                <Space size={12}>
-                  <Form.Item label="Order Filter">
-                    <CommonSelect
-                      style={{width: '180px'}}
-                      placeholder="Search Here"
-                    />
-                  </Form.Item>
-
-                  <Form.Item label="Order Filter">
-                    <CommonSelect
-                      style={{width: '180px'}}
-                      placeholder="Search Here"
-                    />
-                  </Form.Item>
-
-                  <Form.Item label="Order Filter">
-                    <CommonSelect
-                      style={{width: '180px'}}
-                      placeholder="Search Here"
-                    />
-                  </Form.Item>
-                </Space>
-              </Form>
-            }
-            items={tabItems}
-          />
+          <OsTabs items={tabItems} />
         </Row>
       </Space>
 
@@ -416,11 +380,56 @@ const Partners: React.FC = () => {
         open={showModal}
         onCancel={() => {
           setShowModal((p) => !p);
+          form.resetFields();
         }}
         footer
         primaryButtonText="Request"
         onOk={form?.submit}
         footerPadding={30}
+      />
+
+      <OsModal
+        bodyPadding={22}
+        loading={false}
+        body={
+          <>
+            {' '}
+            <FormBuilderMain
+              cartItems={formData?.formObject}
+              form={form}
+              // eslint-disable-next-line react/jsx-boolean-value
+              previewFile
+            />
+            {/* <Space
+              align="end"
+              size={8}
+              style={{display: 'flex', justifyContent: 'end'}}
+            >
+              <OsButton
+                buttontype="PRIMARY"
+                text="Delete"
+                clickHandler={() => {
+                  deletePartnerProgramFormDa(formData?.Id);
+                }}
+              />
+              <OsButton
+                buttontype="SECONDARY"
+                text="EDIT"
+                color="red"
+                clickHandler={() => {
+                  router?.push(`/formBuilder?id=${formData?.Id}`);
+                }}
+              />{' '}
+            </Space> */}
+          </>
+        }
+        width={900}
+        // primaryButtonText="Edit"
+        open={openPreviewModal}
+        // onOk={() => form.submit()}
+        onCancel={() => {
+          setOpenPreviewModal(false);
+        }}
       />
     </>
   );

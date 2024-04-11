@@ -17,6 +17,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {AddPartnerInterface} from '../os-add-partner/os-add-partner.interface';
 import OsPartnerSelect from '../os-partner-select';
+import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
 
 const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
   form,
@@ -50,8 +51,9 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
       });
     }
     setTimeout(() => {
-      dispatch(getAllPartnerProgram());
-    }, 1000);
+      dispatch(getAllPartnerandProgram(''));
+    }, 500);
+
     setOpen && setOpen(false);
   };
 

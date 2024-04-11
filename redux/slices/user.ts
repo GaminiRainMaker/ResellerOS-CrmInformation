@@ -20,6 +20,7 @@ type UserState = {
   user: any;
   userInformation: any;
   loginUserInformation: any;
+  allResellerRecord: any;
 };
 const initialState: UserState = {
   loading: false,
@@ -28,6 +29,7 @@ const initialState: UserState = {
   user: [],
   userInformation: [],
   loginUserInformation: {},
+  allResellerRecord: {},
 };
 
 const userSlice = createSlice({
@@ -39,6 +41,9 @@ const userSlice = createSlice({
     },
     setUserInformation: (state, action) => {
       state.userInformation = action.payload;
+    },
+    setAllResellerRecord: (state, action) => {
+      state.allResellerRecord = action.payload;
     },
   },
   extraReducers(builder) {
@@ -181,5 +186,5 @@ const userSlice = createSlice({
   },
 });
 
-export const {setUser, setUserInformation} = userSlice.actions;
+export const {setUser, setUserInformation, setAllResellerRecord} = userSlice.actions;
 export default userSlice?.reducer;

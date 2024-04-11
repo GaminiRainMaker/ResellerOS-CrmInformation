@@ -2,15 +2,14 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react/no-unstable-nested-components */
-import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form} from 'antd';
-import {FC, useEffect, useState} from 'react';
-import {partnerProgramFilter} from '@/app/utils/base';
-import {getAssignPartnerProgramByOrganization} from '../../../../../redux/actions/assignPartnerProgram';
-import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {setPartnerRequestData} from '../../../../../redux/slices/partner';
-import {Space} from '../antd/Space';
+import { partnerProgramFilter } from '@/app/utils/base';
+import { PlusIcon } from '@heroicons/react/24/outline';
+import { Form } from 'antd';
+import { FC, useEffect, useState } from 'react';
+import { getAllPartnerandProgram } from '../../../../../redux/actions/partner';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { setPartnerRequestData } from '../../../../../redux/slices/partner';
+import { Space } from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import AddPartner from '../os-add-partner';
 import OsModal from '../os-modal';
@@ -40,46 +39,36 @@ const OsPartnerSelect: FC<{
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
-  const {userInformation} = useAppSelector((state) => state.user);
+  const {userInformation, allResellerRecord} = useAppSelector(
+    (state) => state.user,
+  );
+  const {data: PartnerData} = useAppSelector((state) => state.partner);
   const {data: AssignPartnerProgramData} = useAppSelector(
     (state) => state.assignPartnerProgram,
   );
   const [openAddPartnerModal, setOpenAddPartnerModal] =
     useState<boolean>(false);
-  const [allPartnerData, setAllPartnerData] = useState<any>();
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
+  const [selectedPartnerId, setSelectedPartnerId] = useState<number>();
 
   useEffect(() => {
-    if (isSuperAdmin) {
-      dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
-        setAllPartnerData(payload?.payload);
-      });
+    if (isSuperAdmin || notApprovedData) {
+      dispatch(getAllPartnerandProgram(''));
     }
   }, []);
 
   useEffect(() => {
-    const FilterArrayDataa = partnerProgramFilter(
-      'user',
-      userInformation,
-      allPartnerData,
-      1,
-      true,
-    );
-
-    setAllFilterPartnerData(FilterArrayDataa);
-  }, [allPartnerData]);
-
-  useEffect(() => {
-    if (notApprovedData) {
-      dispatch(getAllPartnerandProgram(''));
-    } else {
-      dispatch(
-        getAssignPartnerProgramByOrganization({
-          organization: userInformation?.organization,
-        }),
+    if (PartnerData) {
+      const FilterArrayDataa = partnerProgramFilter(
+        'user',
+        isSuperAdmin ? allResellerRecord : userInformation,
+        PartnerData,
+        1,
+        true,
       );
+      setAllFilterPartnerData(FilterArrayDataa);
     }
-  }, [userInformation]);
+  }, [PartnerData]);
 
   const partnerApprovedObjects: any[] = [];
   AssignPartnerProgramData?.approved?.forEach((entry: any) => {
@@ -87,12 +76,8 @@ const OsPartnerSelect: FC<{
     partnerApprovedObjects?.push(partner);
   });
 
-  const partnerOptions = isSuperAdmin
-    ? allPartnerFilterData?.map((partner: any) => ({
-        label: partner?.partner,
-        value: partner?.id,
-      }))
-    : notApprovedData
+  const partnerOptions =
+    isSuperAdmin || notApprovedData
       ? allPartnerFilterData?.map((partner: any) => ({
           label: partner?.partner,
           value: partner?.id,
@@ -113,6 +98,13 @@ const OsPartnerSelect: FC<{
     dispatch(setPartnerRequestData(filteredData));
   };
 
+  useEffect(() => {
+    const filteredData = allPartnerFilterData?.filter(
+      (item: any) => item?.id === selectedPartnerId,
+    );
+    dispatch(setPartnerRequestData(filteredData));
+  }, [PartnerData]);
+
   return (
     <>
       <Form.Item
@@ -131,7 +123,8 @@ const OsPartnerSelect: FC<{
               name: e,
             });
             form?.resetFields([partnerProgramName]);
-             setFinalData(e);
+            setFinalData(e);
+            setSelectedPartnerId(e);
           }}
           onClear={() => {
             form?.resetFields([partnerProgramName]);

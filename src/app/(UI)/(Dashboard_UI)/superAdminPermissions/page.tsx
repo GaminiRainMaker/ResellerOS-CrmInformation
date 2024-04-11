@@ -49,24 +49,6 @@ const SuperAdminRolesAndPermission = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Super Admin Access
-        </Typography>
-      ),
-      dataIndex: 'super_admin',
-      key: 'super_admin',
-      width: 173,
-      render: (text: any, record: any) => (
-        <Checkbox
-          checked={text}
-          onChange={(e) => {
-            onUpdate(record, 'super_admin', e?.target?.checked);
-          }}
-        />
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
           Admin Access
         </Typography>
       ),

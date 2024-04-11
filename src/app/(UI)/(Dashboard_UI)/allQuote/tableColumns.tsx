@@ -143,7 +143,6 @@ function getColumns(
 function getSuperAdminQuoteColumns(
   token: GlobalToken,
   statusWrapper: {(item: any): JSX.Element; (arg0: any): any},
-  editQuote: {(quoteId: string): void; (arg0: any): void},
   setDeleteIds: {(value: any): void; (arg0: any[]): void},
   setShowModalDelete: {
     (value: SetStateAction<boolean>): void;
@@ -176,25 +175,6 @@ function getSuperAdminQuoteColumns(
           className="dragHandler"
           color={token?.colorPrimaryText}
         >
-          Created Date
-        </Typography>
-      ),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      width: 180,
-      render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular" hoverOnText>
-          {formatDate(record?.createdAt)}
-        </Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography
-          name="Body 4/Medium"
-          className="dragHandler"
-          color={token?.colorPrimaryText}
-        >
           Quote
         </Typography>
       ),
@@ -202,14 +182,8 @@ function getSuperAdminQuoteColumns(
       key: 'file_name',
       width: 230,
       render: (text: string, record: any) => (
-        <Typography
-          name="Body 4/Regular"
-          onClick={() => {
-            editQuote(record.id);
-          }}
-          hoverOnText
-        >
-          {text ?? formatDate(record?.createdAt)}
+        <Typography name="Body 4/Regular">
+          {text ?? formatDate(record?.createdAt, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },
@@ -270,34 +244,6 @@ function getSuperAdminQuoteColumns(
           className="dragHandler"
           color={token?.colorPrimaryText}
         >
-          Site Links
-        </Typography>
-      ),
-      dataIndex: 'customer_name',
-      key: 'customer_name',
-      width: 187,
-      render: (text: string, record: any) => (
-        <Typography
-          color={token?.colorInfo}
-          name="Body 4/Medium"
-          onClick={() => {
-            window.open(
-              `https://app.nanonets.com/#/ocr/test/${record?.model_id}/${record?.id}`,
-            );
-          }}
-          hoverOnText
-        >
-          {record?.User?.user_name ?? '--'}
-        </Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography
-          name="Body 4/Medium"
-          className="dragHandler"
-          color={token?.colorPrimaryText}
-        >
           Status
         </Typography>
       ),
@@ -320,16 +266,6 @@ function getSuperAdminQuoteColumns(
             style={{cursor: 'pointer'}}
             onClick={() => {
               actionEye(record.id);
-            }}
-          />
-          <TrashIcon
-            height={24}
-            width={24}
-            color={token.colorError}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              setDeleteIds([record?.id]);
-              setShowModalDelete(true);
             }}
           />
         </Space>

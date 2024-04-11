@@ -61,7 +61,7 @@ const AddRegistrationForm: FC<any> = ({setShowModal}) => {
       'user',
       userInformation,
       allPartnerData,
-      1,
+      2,
       true,
     );
 
@@ -419,7 +419,7 @@ const AddRegistrationForm: FC<any> = ({setShowModal}) => {
         };
         newarr.push(obj);
       });
-      setUpdatedDealRegData(newarr);      
+      setUpdatedDealRegData(newarr);
       dispatch(insertDealReg(newarr)).then((d: any) => {
         if (d?.payload) {
           d?.payload?.map(async (DataItem: any) => {

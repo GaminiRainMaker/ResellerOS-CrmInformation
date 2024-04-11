@@ -34,7 +34,6 @@ const CustomHeader = () => {
   const {loading, userInformation} = useAppSelector((state) => state.user);
   const [userRole, setUserRole] = useState<string>('');
 
-
   const items: MenuProps['items'] = [
     {
       key: '1',
@@ -86,13 +85,18 @@ const CustomHeader = () => {
     margin: '0px',
   };
 
+
   useEffect(() => {
     setUserRole(
-      userInformation?.SuperAdmin
-        ? 'Super Admin'
-        : userInformation?.Admin
-          ? 'Reseller Admin'
-          : 'Reseller',
+      userInformation?.MasterAdmin && userInformation?.Role === 'superAdmin'
+        ? 'Master Super Admin'
+        : userInformation?.Role === 'superAdmin'
+          ? 'Super Admin'
+          : userInformation?.Admin && userInformation?.Role === 'reseller'
+            ? 'Reseller Admin'
+            : userInformation?.Role === 'reseller'
+              ? 'Reseller'
+              : '',
     );
   }, [userInformation]);
 
@@ -206,10 +210,7 @@ const CustomHeader = () => {
                     >
                       {userInformation?.username || '--'}
                     </Typography>
-                    <Typography
-                      name="Body 3/Bold"
-                      color={token?.colorLink}
-                    >
+                    <Typography name="Body 3/Bold" color={token?.colorLink}>
                       {userRole || '--'}
                     </Typography>
                   </Space>

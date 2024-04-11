@@ -11,7 +11,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import axios from 'axios';
 import moment from 'moment';
-import {ServerStackIcon} from '@heroicons/react/24/outline';
 import {getContractProductByProductCode} from '../../../redux/actions/contractProduct';
 import {insertProfitability} from '../../../redux/actions/profitability';
 import {quoteFileVerification} from '../../../redux/actions/quoteFile';
@@ -476,7 +475,7 @@ export const partnerProgramFilter = (
             itemProgram?.AssignPartnerProgram?.is_approved
           ) {
             superAdminAllApprovedIds?.push(
-              itemProgram?.AssignPartnerProgram?.partner_program_id,
+              itemProgram?.AssignPartnerProgram?.partner_program_id ??  itemProgram?.id,
             );
           } else if (
             // Requested but not approved or decliend

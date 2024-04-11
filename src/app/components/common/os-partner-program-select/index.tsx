@@ -2,15 +2,14 @@
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {FC, useEffect, useState} from 'react';
-import {getAllPartnerProgram} from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
+import AddPartnerProgram from '../os-add-partner-program';
+import OsModal from '../os-modal';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
 import {OsPartnerProgramSelectInterface} from './os-partner-program.interface';
-import OsModal from '../os-modal';
-import AddPartnerProgram from '../os-add-partner-program';
 
 const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
   name = 'partner_program',
@@ -20,36 +19,22 @@ const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
   notApprovedData = false,
 }) => {
   const [token] = useThemeToken();
-  const dispatch = useAppDispatch();
   const [form] = Form.useForm();
   const [openAddProgramModal, setOpenAddProgramModal] =
     useState<boolean>(false);
-  const {data: partnerProgramData} = useAppSelector(
-    (state) => state.partnerProgram,
-  );
+
   const {partnerRequestData} = useAppSelector((state) => state.partner);
 
-  const partnerProgramsRequestOptions =
-    partnerRequestData?.[0]?.PartnerPrograms?.map((program: any) => ({
-      label: program?.partner_program,
-      value: program?.id,
-    }));
-
+  const [finalProgramOptions, setFinalProgramOptions] = useState<any>();
 
   useEffect(() => {
-    dispatch(getAllPartnerProgram());
-  }, []);
-
-  const filteredData = partnerProgramData?.filter(
-    (item: any) => item?.partner === partnerId,
-  );
-
-  const partnerProgramsOptions = (
-    partnerId ? filteredData : partnerProgramData
-  )?.map((program: any) => ({
-    label: program?.partner_program,
-    value: program?.id,
-  }));
+    const partnerProgramsRequestOptions =
+      partnerRequestData?.[0]?.PartnerPrograms?.map((program: any) => ({
+        label: program?.partner_program,
+        value: program?.id,
+      }));
+    setFinalProgramOptions(partnerProgramsRequestOptions);
+  }, [partnerRequestData]);
 
   return (
     <>
@@ -65,11 +50,7 @@ const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
           disabled={!partnerId}
           allowClear
           style={{width: '100%'}}
-          options={
-            notApprovedData
-              ? partnerProgramsRequestOptions
-              : partnerProgramsOptions
-          }
+          options={finalProgramOptions}
           dropdownRender={(menu) => (
             <>
               {isAddNewProgram && (
