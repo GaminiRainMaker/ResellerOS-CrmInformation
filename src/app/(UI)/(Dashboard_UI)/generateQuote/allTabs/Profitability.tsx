@@ -10,7 +10,7 @@ import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
-import {pricingMethod} from '@/app/utils/CONSTANTS';
+import {pricingMethod, selectDataForProduct} from '@/app/utils/CONSTANTS';
 import {
   calculateProfitabilityData,
   convertDataToText,
@@ -25,6 +25,8 @@ import {
 } from '../../../../../../redux/actions/profitability';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
+import {updateProductFamily} from '../../../../../../redux/actions/product';
+import ConverSationProcess from '../../admin/quote-AI/configuration/configuration-tabs/ConversationProcess';
 
 const Profitability: FC<any> = ({tableColumnDataShow}) => {
   const dispatch = useAppDispatch();
@@ -216,6 +218,49 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       dataIndex: 'description',
       key: 'description',
       width: 277,
+    },
+    {
+      title: 'Product Family',
+      dataIndex: 'product_family',
+      key: 'product_family',
+      width: 285,
+      render(text: any, record: any) {
+        return {
+          // props: {
+          //   style: {
+          //     background: selectTedRowIds?.includes(record?.id)
+          //       ? '#E8EBEE'
+          //       : ' ',
+          //   },
+          // },
+          children: (
+            <Form.Item
+              className="formmarginBottom"
+              name={`product_family ${record?.id}`}
+              rules={[
+                {
+                  required: renderRequiredInput('Product Family'),
+                  message: 'This Field id Required',
+                },
+              ]}
+              initialValue={text}
+            >
+              <CommonSelect
+                disabled={renderEditableInput('Product Family')}
+                allowClear
+                style={{width: '200px'}}
+                placeholder="Select"
+                defaultValue={record?.Product?.product_family}
+                options={selectDataForProduct}
+                onChange={(e) => {
+                  const data = {id: record?.product_id, product_family: e};
+                  dispatch(updateProductFamily(data));
+                }}
+              />
+            </Form.Item>
+          ),
+        };
+      },
     },
     {
       title: 'Pricing Method',

@@ -32,6 +32,7 @@ import {
 import {getQuoteLineItemByQuoteIdForEditTable} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
+import {del} from '../../../../../services';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
@@ -54,6 +55,9 @@ const EditorFile = () => {
       quoteItems?.map((itemsss: any) => {
         if (itemsss) {
           const newObj: any = {...itemsss};
+          newObj.cost = itemsss?.list_price;
+          delete newObj?.list_price;
+
           newArrr?.push(newObj);
         }
       });
@@ -292,9 +296,12 @@ const EditorFile = () => {
       >
         {ExistingQuoteItemss === 'true' ? (
           <>
-            {' '}
             <Space
-              size={50}
+              onClick={(e) => {
+                e?.preventDefault();
+                setShowModal(true);
+              }}
+              size={25}
               style={{
                 display: 'flex',
                 justifyContent: 'end',
@@ -307,13 +314,17 @@ const EditorFile = () => {
                 marginBottom: '20px',
               }}
             >
-              {' '}
+              <OsButton
+                text="Cancel"
+                buttontype="SECONDARY"
+                clickHandler={CancelEditing}
+              />{' '}
               <OsButton
                 text="Save LineItems"
                 buttontype="PRIMARY"
                 clickHandler={updateData}
               />
-            </Space>
+            </Space>{' '}
             <HotTable
               data={updateLineItemsValue}
               colWidths={200}
