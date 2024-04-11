@@ -88,7 +88,6 @@ const SuperAdminPartner: React.FC = () => {
   const [partnerProgramColumns, setPartnerProgramColumns] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
 
-
   useEffect(() => {
     dispatch(getAllPartner());
     dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
@@ -211,11 +210,11 @@ const SuperAdminPartner: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Created Date
+          Description
         </Typography>
       ),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'description',
+      key: 'description',
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
@@ -223,39 +222,30 @@ const SuperAdminPartner: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Organization
+          Template
         </Typography>
       ),
-      dataIndex: 'organization',
-      key: 'organization',
-
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Email
+      dataIndex: 'template',
+      key: 'template',
+      render: (text: string, record: any) => (
+        <Typography
+          name="Body 4/Medium"
+          hoverOnText
+          color={token?.colorLink}
+          onClick={() => {
+            if (record?.form_data) {
+              setOpenPreviewModal(true);
+              const formDataObject = JSON?.parse(record?.form_data);
+              setformData({formObject: formDataObject, Id: record?.id});
+              // open modal to view form
+              // console.log(record?.form_data, 'formData');
+            } else {
+              router?.push(`/formBuilder?id=${record?.id}`);
+            }
+          }}
+        >
+          {record?.form_data ? 'View' : 'Create Template'}
         </Typography>
-      ),
-      dataIndex: 'email',
-      key: 'email',
-
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Website
-        </Typography>
-      ),
-      dataIndex: 'website',
-      key: 'website',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
   ];
@@ -746,7 +736,6 @@ const SuperAdminPartner: React.FC = () => {
                   form={form}
                   // eslint-disable-next-line react/jsx-boolean-value
                   previewFile
-                  // previewFile={true}
                 />
                 <Space
                   align="end"
@@ -772,9 +761,7 @@ const SuperAdminPartner: React.FC = () => {
               </>
             }
             width={900}
-            // primaryButtonText="Edit"
             open={openPreviewModal}
-            // onOk={() => form.submit()}
             onCancel={() => {
               setOpenPreviewModal(false);
             }}

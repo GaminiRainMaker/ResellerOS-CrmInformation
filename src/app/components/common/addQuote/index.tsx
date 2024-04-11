@@ -131,7 +131,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           quoteObj = {
             ...quoteItem,
             nanonets_id: result?.id,
-            quote_config_id: updatedArr[i]?.quote_config_id ?? 22,
+            quote_config_id: updatedArr[i]?.quote_config_id ?? 18,
             pdf_url: updatedArr[i]?.pdf_url,
             user_id: userInformation.id,
             customer_id: customerId,
@@ -142,7 +142,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
               {
                 file_name: updatedArr[i]?.file?.name,
                 pdf_url: updatedArr[i]?.pdf_url,
-                quote_config_id: updatedArr[i]?.quote_config_id ?? 22,
+                quote_config_id: updatedArr[i]?.quote_config_id ?? 18,
                 nanonets_id: result?.id,
                 lineItems: lineItems.length > 0 ? lineItems : [],
               },
