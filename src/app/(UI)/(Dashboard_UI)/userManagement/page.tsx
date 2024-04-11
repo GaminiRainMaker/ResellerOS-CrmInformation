@@ -26,11 +26,6 @@ const UserManagement = () => {
   const {loading: AssignPartnerProgramLoading} = useAppSelector(
     (state) => state.assignPartnerProgram,
   );
-  const [query, setQuery] = useState<{
-    organization: string | null;
-  }>({
-    organization: null,
-  });
   const [showPartnerProgramAssignModal, setShowPartnerProgramAssignModal] =
     useState<boolean>(false);
   const [selectedRecordData, setSelectedRecordData] = useState<any>();
@@ -116,7 +111,7 @@ const UserManagement = () => {
   ];
 
   useEffect(() => {
-    dispatch(getAdminUserOfAllOrganization(query));
+    dispatch(getAdminUserOfAllOrganization(''));
   }, []);
 
   const locale = {
