@@ -63,7 +63,9 @@ const ContentSection: FC<AuthLayoutInterface> = ({
             }),
           );
           router.push(
-            dataaa?.super_admin ? '/userManagement' : '/crmInAccount',
+            payload?.payload?.role === 'superAdmin'
+              ? '/userManagement'
+              : '/crmInAccount',
           );
         }
       });
@@ -161,7 +163,9 @@ const ContentSection: FC<AuthLayoutInterface> = ({
             sameSite: 'strict',
           });
           router.push(
-            payload?.payload?.super_admin ? '/userManagement' : '/crmInAccount',
+            payload?.payload?.role === 'superAdmin'
+              ? '/userManagement'
+              : '/crmInAccount',
           );
         } else {
           notification?.open({
