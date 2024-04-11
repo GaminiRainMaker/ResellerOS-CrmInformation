@@ -5,6 +5,7 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsDropdown from '@/app/components/common/os-dropdown';
+import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
@@ -14,16 +15,22 @@ import {standardAttributesData, templateDummyData} from '@/app/utils/CONSTANTS';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useState} from 'react';
+import AddStandardAttributeField from './AddStandardAttributeField';
 import SuperAdminDealRegAnalytic from './superAdminDealRegAnalytic';
 import {standardAttributes, templateColumns} from './templateColumns';
+import AddNewStandardAttributeSection from './AddNewStandardAttributeSection';
 
 const SuperAdminDealReg = () => {
   const [token] = useThemeToken();
-  const [showModalDelete, setShowModalDelete] = useState<any>();
+  const [form] = Form.useForm();
+  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+  const [showStandardAttributeField, setshowStandardAttributeField] =
+    useState<boolean>(false);
+  const [showStandardAttributeSection, setShowStandardAttributeSection] =
+    useState<boolean>(false);
 
   const statusWrapper = (item: any) => {
     const getStatus = () => item;
-
     return <OsStatusWrapper value={getStatus()} />;
   };
   const editQuote = () => {};
@@ -73,16 +80,20 @@ const SuperAdminDealReg = () => {
         />
       ),
     },
-    {
-      label: (
-        <Typography name="Body 4/Regular">
-          Standard Attributes Sections
-        </Typography>
-      ),
-      key: '3',
-      children: <>In Development Phase....</>,
-    },
+    // {
+    //   label: (
+    //     <Typography name="Body 4/Regular">
+    //       Standard Attributes Sections
+    //     </Typography>
+    //   ),
+    //   key: '3',
+    //   children: <>In Development Phase....</>,
+    // },
   ];
+
+  const onFinish = () => {
+    console.log('formData', form?.getFieldsValue());
+  };
 
   return (
     <>
@@ -100,12 +111,18 @@ const SuperAdminDealReg = () => {
                 text="New Standard Attribute Section"
                 buttontype="SECONDARY"
                 icon={<PlusIcon color={token?.colorPrimary} />}
+                clickHandler={() => {
+                  setShowStandardAttributeSection(true);
+                }}
               />
 
               <OsButton
-                text="New Template"
+                text="New Attribute Fields"
                 buttontype="PRIMARY"
                 icon={<PlusIcon />}
+                clickHandler={() => {
+                  setshowStandardAttributeField(true);
+                }}
               />
 
               <OsDropdown menu={{items: []}} />
@@ -147,6 +164,40 @@ const SuperAdminDealReg = () => {
           />
         </Row>
       </Space>
+
+      <OsModal
+        loading={false}
+        body={<AddStandardAttributeField form={form} onFinish={onFinish} />}
+        width={700}
+        open={showStandardAttributeField}
+        onCancel={() => {
+          setshowStandardAttributeField(false);
+        }}
+        onOk={() => {
+          form?.submit();
+        }}
+        thirdButtonText="Create"
+        primaryButtonText="Save and Create New"
+        footerPadding={40}
+      />
+
+      <OsModal
+        loading={false}
+        body={
+          <AddNewStandardAttributeSection form={form} onFinish={onFinish} />
+        }
+        width={700}
+        open={showStandardAttributeSection}
+        onCancel={() => {
+          setShowStandardAttributeSection(false);
+        }}
+        onOk={() => {
+          form?.submit();
+        }}
+        secondaryButtonText="Cancel"
+        primaryButtonText="Save"
+        footerPadding={40}
+      />
     </>
   );
 };
