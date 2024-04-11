@@ -11,9 +11,10 @@ import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {standardAttributesData, templateDummyData} from '@/app/utils/CONSTANTS';
+import {templateDummyData} from '@/app/utils/CONSTANTS';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
+import {Option} from 'antd/es/mentions';
 import {useEffect, useState} from 'react';
 import {
   insertAttributeField,
@@ -42,13 +43,13 @@ const SuperAdminDealReg = () => {
     useState<boolean>(false);
 
   const [query, setQuery] = useState<{
-    fieldName: string | null;
+    fieldLabel: string | null;
     sectionName: string | null;
   }>({
-    fieldName: null,
+    fieldLabel: null,
     sectionName: null,
   });
-  const searchQuery = useDebounceHook(query, 500);
+  const searchQuery = useDebounceHook(query, 400);
 
   useEffect(() => {
     dispatch(queryAttributeField(searchQuery));
@@ -132,7 +133,16 @@ const SuperAdminDealReg = () => {
     });
   };
 
-  console.log('attributeFieldData', attributeFieldData);
+  const uniqueAttributeSection = Array.from(
+    new Set(
+      attributeFieldData?.map(
+        (customer: any) => customer?.AttributeSection?.name,
+      ),
+    ),
+  );
+  const uniqueAttributeLabel = Array.from(
+    new Set(attributeFieldData?.map((customer: any) => customer?.label)),
+  );
 
   return (
     <>
@@ -181,17 +191,23 @@ const SuperAdminDealReg = () => {
                       onSearch={(e) => {
                         setQuery({
                           ...query,
-                          fieldName: e,
+                          fieldLabel: e,
                         });
                       }}
                       onChange={(e) => {
                         setQuery({
                           ...query,
-                          fieldName: e,
+                          fieldLabel: e,
                         });
                       }}
-                      value={query?.fieldName}
-                    />
+                      value={query?.fieldLabel}
+                    >
+                      {uniqueAttributeLabel?.map((customer: any) => (
+                        <Option key={customer} value={customer}>
+                          {customer}
+                        </Option>
+                      ))}
+                    </CommonSelect>
                   </Form.Item>
 
                   <Form.Item label="Attribute Section">
@@ -212,13 +228,24 @@ const SuperAdminDealReg = () => {
                         });
                       }}
                       value={query?.sectionName}
-                    />
+                    >
+                      {uniqueAttributeSection?.map((customer: any) => (
+                        <Option key={customer} value={customer}>
+                          {customer}
+                        </Option>
+                      ))}
+                    </CommonSelect>
                   </Form.Item>
                   <Typography
                     cursor="pointer"
                     name="Button 1"
                     color="#C6CDD5"
-                    onClick={() => {}}
+                    onClick={() => {
+                      setQuery({
+                        fieldLabel: null,
+                        sectionName: null,
+                      });
+                    }}
                   >
                     Reset
                   </Typography>

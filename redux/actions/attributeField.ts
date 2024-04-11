@@ -54,7 +54,7 @@ export const queryAttributeField = createAsyncThunk(
   async (query: any, thunkApi) => {
     try {
       const obj = {
-        fieldName: query?.fieldName,
+        fieldLabel: query?.fieldLabel,
         sectionName: query?.sectionName,
       };
       const res = await ATTRIBUTE_FIELD_API.query(obj);
