@@ -6,6 +6,7 @@ import useThemeToken from '../hooks/useThemeToken';
 import OsInput from '../os-input';
 import Typography from '../typography';
 import {OsAddProductInterface} from './os-add-products.interface';
+import CommonSelect from '../os-select';
 
 const AddProducts: FC<OsAddProductInterface> = ({
   isDrawer = false,
@@ -54,14 +55,9 @@ const AddProducts: FC<OsAddProductInterface> = ({
           initialValues={productData}
         >
           <Row gutter={[16, 16]}>
-            <Col sm={24} md={12}>
-              <Form.Item label="Product Name" name="product_code1">
-                <OsInput placeholder="Write here!" />
-              </Form.Item>
-            </Col>
-            <Col sm={24} md={12}>
+            <Col span={24}>
               <Form.Item label="Product Family" name="product_family">
-                <OsInput placeholder="Write here!" />
+                <CommonSelect style={{width: '100%'}} placeholder="Select" />
               </Form.Item>
             </Col>
           </Row>
