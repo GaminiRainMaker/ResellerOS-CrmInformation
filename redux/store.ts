@@ -30,6 +30,8 @@ import oem from './slices/oem';
 import quoteFile from './slices/quoteFile';
 import assignPartnerProgram from './slices/assignPartnerProgram';
 import auth from './slices/auth';
+import attributeSection from './slices/attributeSection';
+import attributeField from './slices/attributeField';
 
 // Configure redux store
 const store = configureStore({
@@ -63,6 +65,8 @@ const store = configureStore({
     quoteFile,
     assignPartnerProgram,
     auth,
+    attributeSection,
+    attributeField,
   },
   middleware: [thunk],
   devTools: true,

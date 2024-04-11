@@ -2,9 +2,9 @@
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import OsDropdown from '@/app/components/common/os-dropdown';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
@@ -14,20 +14,45 @@ import Typography from '@/app/components/common/typography';
 import {standardAttributesData, templateDummyData} from '@/app/utils/CONSTANTS';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
+import {
+  insertAttributeField,
+  queryAttributeField,
+} from '../../../../../redux/actions/attributeField';
+import {insertAttributeSection} from '../../../../../redux/actions/attributeSection';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import AddNewStandardAttributeSection from './AddNewStandardAttributeSection';
 import AddStandardAttributeField from './AddStandardAttributeField';
 import SuperAdminDealRegAnalytic from './superAdminDealRegAnalytic';
 import {standardAttributes, templateColumns} from './templateColumns';
-import AddNewStandardAttributeSection from './AddNewStandardAttributeSection';
 
 const SuperAdminDealReg = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
+  const dispatch = useAppDispatch();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+  const {loading: attributeSectionLoading} = useAppSelector(
+    (state) => state.attributeSection,
+  );
+  const {loading: attributeFieldLoading, data: attributeFieldData} =
+    useAppSelector((state) => state.attributeField);
   const [showStandardAttributeField, setshowStandardAttributeField] =
     useState<boolean>(false);
   const [showStandardAttributeSection, setShowStandardAttributeSection] =
     useState<boolean>(false);
+
+  const [query, setQuery] = useState<{
+    fieldName: string | null;
+    sectionName: string | null;
+  }>({
+    fieldName: null,
+    sectionName: null,
+  });
+  const searchQuery = useDebounceHook(query, 500);
+
+  useEffect(() => {
+    dispatch(queryAttributeField(searchQuery));
+  }, [searchQuery]);
 
   const statusWrapper = (item: any) => {
     const getStatus = () => item;
@@ -62,7 +87,7 @@ const SuperAdminDealReg = () => {
           // rowSelection={rowSelection}
           scroll
           locale={[]}
-          loading={false}
+          loading={attributeFieldLoading}
         />
       ),
     },
@@ -72,8 +97,7 @@ const SuperAdminDealReg = () => {
       children: (
         <OsTable
           columns={StandardAttributesColumns}
-          dataSource={standardAttributesData}
-          // rowSelection={rowSelection}
+          dataSource={attributeFieldData}
           scroll
           locale={[]}
           loading={false}
@@ -92,8 +116,23 @@ const SuperAdminDealReg = () => {
   ];
 
   const onFinish = () => {
-    console.log('formData', form?.getFieldsValue());
+    const attributeSectionData = form?.getFieldsValue();
+    dispatch(insertAttributeSection(attributeSectionData))?.then((d) => {
+      if (d?.payload) {
+        setShowStandardAttributeSection(false);
+      }
+    });
   };
+  const onFinish2 = () => {
+    const attributeFiledData = form?.getFieldsValue();
+    dispatch(insertAttributeField(attributeFiledData))?.then((d) => {
+      if (d?.payload) {
+        setshowStandardAttributeField(false);
+      }
+    });
+  };
+
+  console.log('attributeFieldData', attributeFieldData);
 
   return (
     <>
@@ -124,8 +163,6 @@ const SuperAdminDealReg = () => {
                   setshowStandardAttributeField(true);
                 }}
               />
-
-              <OsDropdown menu={{items: []}} />
             </Space>
           </Col>
         </Row>
@@ -140,6 +177,20 @@ const SuperAdminDealReg = () => {
                     <CommonSelect
                       style={{width: '180px'}}
                       placeholder="Search Here"
+                      showSearch
+                      onSearch={(e) => {
+                        setQuery({
+                          ...query,
+                          fieldName: e,
+                        });
+                      }}
+                      onChange={(e) => {
+                        setQuery({
+                          ...query,
+                          fieldName: e,
+                        });
+                      }}
+                      value={query?.fieldName}
                     />
                   </Form.Item>
 
@@ -147,6 +198,20 @@ const SuperAdminDealReg = () => {
                     <CommonSelect
                       style={{width: '180px'}}
                       placeholder="Search Here"
+                      showSearch
+                      onSearch={(e) => {
+                        setQuery({
+                          ...query,
+                          sectionName: e,
+                        });
+                      }}
+                      onChange={(e) => {
+                        setQuery({
+                          ...query,
+                          sectionName: e,
+                        });
+                      }}
+                      value={query?.sectionName}
                     />
                   </Form.Item>
                   <Typography
@@ -166,23 +231,7 @@ const SuperAdminDealReg = () => {
       </Space>
 
       <OsModal
-        loading={false}
-        body={<AddStandardAttributeField form={form} onFinish={onFinish} />}
-        width={700}
-        open={showStandardAttributeField}
-        onCancel={() => {
-          setshowStandardAttributeField(false);
-        }}
-        onOk={() => {
-          form?.submit();
-        }}
-        thirdButtonText="Create"
-        primaryButtonText="Save and Create New"
-        footerPadding={40}
-      />
-
-      <OsModal
-        loading={false}
+        loading={attributeSectionLoading}
         body={
           <AddNewStandardAttributeSection form={form} onFinish={onFinish} />
         }
@@ -190,12 +239,32 @@ const SuperAdminDealReg = () => {
         open={showStandardAttributeSection}
         onCancel={() => {
           setShowStandardAttributeSection(false);
+          form?.resetFields();
         }}
         onOk={() => {
           form?.submit();
         }}
         secondaryButtonText="Cancel"
         primaryButtonText="Save"
+        footerPadding={40}
+      />
+
+      <OsModal
+        loading={false}
+        thirdLoading={attributeFieldLoading}
+        body={<AddStandardAttributeField form={form} onFinish={onFinish2} />}
+        width={700}
+        open={showStandardAttributeField}
+        onCancel={() => {
+          setshowStandardAttributeField(false);
+          form?.resetFields();
+        }}
+        onOk={() => {}}
+        thirdButtonfunction={() => {
+          form?.submit();
+        }}
+        thirdButtonText="Create"
+        primaryButtonText="Save and Create New"
         footerPadding={40}
       />
     </>

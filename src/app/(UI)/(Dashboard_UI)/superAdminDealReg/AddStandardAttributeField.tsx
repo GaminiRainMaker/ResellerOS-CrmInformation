@@ -1,11 +1,22 @@
+'use client';
+
+import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import OsInput from '@/app/components/common/os-input';
+import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
+import {
+  attributeFieldDataTypeOptions,
+  attributeFieldMapToOptions,
+} from '@/app/utils/CONSTANTS';
 import {Form} from 'antd';
-import {FC} from 'react';
+import {FC, useEffect} from 'react';
+import {getAllAttributeSection} from '../../../../../redux/actions/attributeSection';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {AddStandardAttributeFieldInterface} from './superAdminDealReg.interface';
 
 const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
@@ -13,6 +24,24 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
   onFinish,
 }) => {
   const [token] = useThemeToken();
+  const dispatch = useAppDispatch();
+  const {data: attributeSectionData} = useAppSelector(
+    (state) => state.attributeSection,
+  );
+
+  useEffect(() => {
+    dispatch(getAllAttributeSection(''));
+  }, []);
+
+  const attributeSectionOption = attributeSectionData?.map(
+    (attributeSectionItem: any) => ({
+      label: attributeSectionItem?.name,
+      value: attributeSectionItem?.id,
+    }),
+  );
+
+  console.log('attributeSectionData', attributeSectionData);
+
   return (
     <>
       <Row
@@ -54,9 +83,9 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
                     Standard Attribute Name
                   </Typography>
                 }
-                name="standard_attribute_name"
+                name="name"
               >
-                <CommonSelect placeholder="Select" style={{width: '100%'}} />
+                <OsInput placeholder="Select" style={{width: '100%'}} />
               </SelectFormItem>
             </Col>
             <Col span={24}>
@@ -64,29 +93,38 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
                 label={
                   <Typography name="Body 4/Medium">Attribute Label</Typography>
                 }
-                name="attribute_label"
+                name="label"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please Fill Label!',
+                  },
+                ]}
               >
-                <CommonSelect placeholder="Select" style={{width: '100%'}} />
+                <OsInput placeholder="Select" style={{width: '100%'}} />
               </SelectFormItem>
             </Col>
-            <Col span={12}>
+            <Col span={24}>
               <SelectFormItem
                 label={
                   <Typography name="Body 4/Medium">
                     Attribute Data Type
                   </Typography>
                 }
-                name="attribute_data_type"
+                name="data_type"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please Select Data Type!',
+                  },
+                ]}
               >
-                <CommonSelect placeholder="Select" style={{width: '100%'}} />
-              </SelectFormItem>
-            </Col>
-            <Col span={12}>
-              <SelectFormItem
-                label={<Typography name="Body 4/Medium">Order</Typography>}
-                name="order"
-              >
-                <CommonSelect placeholder="Select" style={{width: '100%'}} />
+                <CommonSelect
+                  allowClear
+                  placeholder="Select"
+                  style={{width: '100%'}}
+                  options={attributeFieldDataTypeOptions}
+                />
               </SelectFormItem>
             </Col>
 
@@ -97,9 +135,13 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
                     Map from Attribute Field
                   </Typography>
                 }
-                name="map_from_attribute_field"
+                name="map_from"
               >
-                <CommonSelect placeholder="Select" style={{width: '100%'}} />
+                <CommonSelect
+                  placeholder="Select"
+                  style={{width: '100%'}}
+                  options={attributeFieldMapToOptions}
+                />
               </SelectFormItem>
             </Col>
             <Col span={12}>
@@ -109,17 +151,25 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
                     Map to Attribute Field
                   </Typography>
                 }
-                name="map_to_attribute_field"
+                name="map_to"
               >
                 <CommonSelect placeholder="Select" style={{width: '100%'}} />
               </SelectFormItem>
             </Col>
-            <Col span={12}>
+            <Col span={24}>
               <SelectFormItem
                 label={<Typography name="Body 4/Medium">Help Text</Typography>}
                 name="help_text"
               >
-                <CommonSelect placeholder="Select" style={{width: '100%'}} />
+                <OsInput placeholder="Select" style={{width: '100%'}} />
+              </SelectFormItem>
+            </Col>
+            <Col span={12}>
+              <SelectFormItem
+                label={<Typography name="Body 4/Medium">Order</Typography>}
+                name="order"
+              >
+                <OsInputNumber placeholder="Select" style={{width: '100%'}} />
               </SelectFormItem>
             </Col>
             <Col span={12}>
@@ -129,9 +179,43 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
                     Standard Attribute Section
                   </Typography>
                 }
-                name="standard_attribute_section"
+                name="attribute_section_id"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please Select Standard Attribute Section!',
+                  },
+                ]}
               >
-                <CommonSelect placeholder="Select" style={{width: '100%'}} />
+                <CommonSelect
+                  allowClear
+                  placeholder="Select"
+                  style={{width: '100%'}}
+                  options={attributeSectionOption}
+                />
+              </SelectFormItem>
+            </Col>
+            <Col span={24}>
+              <SelectFormItem
+                label={<Typography name="Body 4/Medium">Active</Typography>}
+                name="is_active"
+                valuePropName="checked"
+              >
+                <Checkbox name="is_active" />
+              </SelectFormItem>
+              <SelectFormItem
+                label={<Typography name="Body 4/Medium">Required</Typography>}
+                name="is_required"
+                valuePropName="checked"
+              >
+                <Checkbox name="is_required" />
+              </SelectFormItem>
+              <SelectFormItem
+                label={<Typography name="Body 4/Medium">View Only</Typography>}
+                name="is_view"
+                valuePropName="checked"
+              >
+                <Checkbox name="is_view" />
               </SelectFormItem>
             </Col>
           </Row>

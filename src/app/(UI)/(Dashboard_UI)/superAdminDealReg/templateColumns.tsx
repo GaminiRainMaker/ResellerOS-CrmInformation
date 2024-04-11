@@ -160,17 +160,16 @@ function standardAttributes(
           className="dragHandler"
           color={token?.colorPrimaryText}
         >
-          Standard Attributes
+          Attribute Label
         </Typography>
       ),
-      dataIndex: 'attributes',
-      key: 'attributes',
-      width: 180,
+      dataIndex: 'label',
+      key: 'label',
+      width: 187,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text}</Typography>
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
-
     {
       title: (
         <Typography
@@ -190,23 +189,7 @@ function standardAttributes(
         </Typography>
       ),
     },
-    {
-      title: (
-        <Typography
-          name="Body 4/Medium"
-          className="dragHandler"
-          color={token?.colorPrimaryText}
-        >
-          Attribute Label
-        </Typography>
-      ),
-      dataIndex: 'attribute_label',
-      key: 'attribute_label',
-      width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
+
     {
       title: (
         <Typography
@@ -217,8 +200,8 @@ function standardAttributes(
           Attribute Data Type
         </Typography>
       ),
-      dataIndex: 'attribute_data_type',
-      key: 'attribute_data_type',
+      dataIndex: 'data_type',
+      key: 'data_type',
       width: 187,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -254,8 +237,8 @@ function standardAttributes(
       dataIndex: 'standard_attribute_section',
       key: 'standard_attribute_section',
       width: 230,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">{record?.AttributeSection?.name ?? '--'}</Typography>
       ),
     },
     {
@@ -272,7 +255,6 @@ function standardAttributes(
       key: 'is_active',
       width: 187,
       render: (text: boolean) => <Checkbox checked={text} />,
-
     },
     {
       title: (

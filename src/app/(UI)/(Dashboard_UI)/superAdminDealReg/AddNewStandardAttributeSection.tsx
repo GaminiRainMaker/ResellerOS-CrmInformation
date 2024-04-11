@@ -55,7 +55,7 @@ const AddNewStandardAttributeSection: FC<
                     Standard Attribute Section Name
                   </Typography>
                 }
-                name="section_name"
+                name="name"
               >
                 <OsInput placeholder="Write Text" style={{width: '100%'}} />
               </SelectFormItem>
@@ -74,23 +74,23 @@ const AddNewStandardAttributeSection: FC<
               <SelectFormItem
                 label={<Typography name="Body 4/Medium">Active</Typography>}
                 name="is_active"
-                labelAlign="right"
+                valuePropName="checked"
               >
-                <Checkbox />
+                <Checkbox name="is_active" />
               </SelectFormItem>
               <SelectFormItem
                 label={<Typography name="Body 4/Medium">Required</Typography>}
                 name="is_required"
-                labelAlign="right"
+                valuePropName="checked"
               >
-                <Checkbox />
+                <Checkbox name="is_required" />
               </SelectFormItem>
               <SelectFormItem
                 label={<Typography name="Body 4/Medium">View Only</Typography>}
                 name="is_view"
-                labelAlign="right"
+                valuePropName="checked"
               >
-                <Checkbox />
+                <Checkbox name="is_view" />
               </SelectFormItem>
             </Col>
           </Row>

@@ -6,6 +6,7 @@ import {
   getAllAttributeField,
   insertAttributeField,
   updateAttributeFieldById,
+  queryAttributeField,
 } from '../actions/attributeField';
 
 type AttributeFieldState = {
@@ -98,6 +99,24 @@ const attributeFieldSlice = createSlice({
       )
       .addCase(
         getAllAttributeField.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(queryAttributeField.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        queryAttributeField.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        queryAttributeField.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

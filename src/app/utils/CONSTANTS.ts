@@ -483,3 +483,72 @@ export const affectedColumns = [
     value: 'description',
   },
 ];
+
+export const attributeFieldDataTypeOptions = [
+  {
+    label: 'DropDown',
+    value: 'dropdown',
+  },
+  {
+    label: 'Text',
+    value: 'text',
+  },
+  {
+    label: 'Email',
+    value: 'email',
+  },
+  {
+    label: 'Contact',
+    value: 'contact',
+  },
+  {
+    label: 'Textarea',
+    value: 'textarea',
+  },
+  {
+    label: 'Date',
+    value: 'date',
+  },
+  {
+    label: 'Time',
+    value: 'time',
+  },
+  {
+    label: 'Currency',
+    value: 'currency',
+  },
+  {
+    label: 'Table',
+    value: 'table',
+  },
+  {
+    label: 'Checkbox',
+    value: 'checkbox',
+  },
+  {
+    label: 'Radio',
+    value: 'radio',
+  },
+  {
+    label: 'Toggle',
+    value: 'toggle',
+  },
+];
+
+
+
+
+export const attributeFieldMapToOptions = [
+  {
+    label: 'Account',
+    value: 'account',
+  },
+  {
+    label: 'Opportunity',
+    value: 'opportunity',
+  },
+  {
+    label: 'Partner Registration',
+    value: 'partner_registration',
+  },
+];
