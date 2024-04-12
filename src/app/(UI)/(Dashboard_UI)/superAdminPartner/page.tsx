@@ -361,26 +361,15 @@ const SuperAdminPartner: React.FC = () => {
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
+
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Created Date
+          Industry
         </Typography>
       ),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Organization
-        </Typography>
-      ),
-      dataIndex: 'organization',
-      key: 'organization',
+      dataIndex: 'industry',
+      key: 'industry',
 
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
