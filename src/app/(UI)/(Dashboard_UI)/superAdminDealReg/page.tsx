@@ -251,6 +251,7 @@ const SuperAdminDealReg = () => {
       if (d?.payload) {
         dispatch(queryAttributeSection(sectionSearchQuery));
         setShowStandardAttributeSection(false);
+        form?.resetFields();
       }
     });
   };
@@ -287,10 +288,12 @@ const SuperAdminDealReg = () => {
 
   const onFinish2 = () => {
     const attributeFiledData = form?.getFieldsValue();
+    attributeFiledData.label = attributeFiledData.label.toLowerCase();
     dispatch(insertAttributeField(attributeFiledData))?.then((d) => {
       if (d?.payload) {
         dispatch(queryAttributeField(searchQuery));
         setshowStandardAttributeField(false);
+        form?.resetFields();
       }
     });
   };

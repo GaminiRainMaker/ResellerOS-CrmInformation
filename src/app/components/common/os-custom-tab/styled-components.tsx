@@ -7,7 +7,7 @@ export const DealRegCustomTabHeaderStyle = styled(Col)<{
   token: GlobalToken;
 }>`
   display: flex;
-  width: 228px;
+  width: fit-content;
   // height: 78px;
   padding: 12px 24px;
   justify-content: center;
