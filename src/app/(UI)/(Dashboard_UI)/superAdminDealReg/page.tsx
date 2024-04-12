@@ -19,15 +19,21 @@ import {Form} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import OsDrawer from '@/app/components/common/os-drawer';
 import {
   insertAttributeField,
   queryAttributeField,
+  updateAttributeFieldById,
 } from '../../../../../redux/actions/attributeField';
 import {
   insertAttributeSection,
   queryAttributeSection,
+  updateAttributeSectionById,
 } from '../../../../../redux/actions/attributeSection';
-import {getFormDataProgram} from '../../../../../redux/actions/partnerProgram';
+import {
+  getFormDataProgram,
+  updatePartnerProgramById,
+} from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddNewStandardAttributeSection from './AddNewStandardAttributeSection';
 import AddStandardAttributeField from './AddStandardAttributeField';
@@ -56,8 +62,11 @@ const SuperAdminDealReg = () => {
   const [showStandardAttributeSection, setShowStandardAttributeSection] =
     useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<number>();
+  const [recordId, setRecordId] = useState<number>();
   const [formData, setformData] = useState<any>();
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
+  const [showSectionDrawer, setShowSectionDrawer] = useState<boolean>(false);
+  const [showFieldDrawer, setShowFieldDrawer] = useState<boolean>(false);
 
   const [query, setQuery] = useState<{
     fieldLabel: string | null;
@@ -101,6 +110,7 @@ const SuperAdminDealReg = () => {
   };
 
   const editAttributeSection = (record: any) => {
+    setRecordId(record?.id);
     form.setFieldsValue({
       name: record?.name,
       order: record?.order,
@@ -108,10 +118,11 @@ const SuperAdminDealReg = () => {
       is_required: record?.is_required,
       is_view: record?.is_view,
     });
-    setShowStandardAttributeSection(true);
+    setShowSectionDrawer(true);
   };
 
   const editAttributeField = (record: any) => {
+    setRecordId(record?.id);
     form.setFieldsValue({
       name: record?.name,
       label: record?.label,
@@ -125,17 +136,28 @@ const SuperAdminDealReg = () => {
       is_required: record?.is_required,
       is_view: record?.is_view,
     });
-    setshowStandardAttributeField(true);
+    setShowFieldDrawer(true);
   };
   const setDeleteIds = () => {};
+  const updateTemplate = (recordid: number, value: boolean) => {
+    dispatch(
+      updatePartnerProgramById({id: recordid, form_data_active: value}),
+    ).then((d) => {
+      if (d?.payload) {
+        dispatch(getFormDataProgram());
+      }
+    });
+  };
 
   const TemplateColumns = templateColumns(
     token,
     statusWrapper,
     editTemplate,
+    updateTemplate,
     setDeleteIds,
     setShowModalDelete,
   );
+
   const StandardAttributesFieldsColumns = standardAttributes(
     token,
     statusWrapper,
@@ -232,6 +254,37 @@ const SuperAdminDealReg = () => {
       }
     });
   };
+
+  const onUpdateSection = () => {
+    const Data = form?.getFieldsValue();
+    const obj = {
+      id: recordId,
+      ...Data,
+    };
+    dispatch(updateAttributeSectionById(obj))?.then((d) => {
+      if (d?.payload) {
+        dispatch(queryAttributeSection(sectionSearchQuery));
+        setShowSectionDrawer(false);
+        form?.resetFields();
+      }
+    });
+  };
+
+  const onUpdateField = () => {
+    const Data = form?.getFieldsValue();
+    const obj = {
+      id: recordId,
+      ...Data,
+    };
+    dispatch(updateAttributeFieldById(obj))?.then((d) => {
+      if (d?.payload) {
+        dispatch(queryAttributeField(searchQuery));
+        setShowFieldDrawer(false);
+        form?.resetFields();
+      }
+    });
+  };
+
   const onFinish2 = () => {
     const attributeFiledData = form?.getFieldsValue();
     dispatch(insertAttributeField(attributeFiledData))?.then((d) => {
@@ -492,6 +545,84 @@ const SuperAdminDealReg = () => {
           setOpenPreviewModal(false);
         }}
       />
+
+      <OsDrawer
+        title={
+          <Typography
+            name="Body 1/Regular"
+            align="left"
+            color={token?.colorLinkHover}
+          >
+            Edit Standard Attribute Section
+          </Typography>
+        }
+        placement="right"
+        onClose={() => {
+          setShowSectionDrawer(false);
+          form?.resetFields();
+        }}
+        open={showSectionDrawer}
+        width={450}
+        footer={
+          <Row style={{width: '100%', float: 'right'}}>
+            {' '}
+            <OsButton
+              loading={attributeSectionLoading}
+              btnStyle={{width: '100%'}}
+              buttontype="PRIMARY"
+              text="UPDATE CHANGES"
+              clickHandler={() => {
+                form.submit();
+              }}
+            />
+          </Row>
+        }
+      >
+        <AddNewStandardAttributeSection
+          form={form}
+          onFinish={onUpdateSection}
+          isDrawer
+        />
+      </OsDrawer>
+
+      <OsDrawer
+        title={
+          <Typography
+            name="Body 1/Regular"
+            align="left"
+            color={token?.colorLinkHover}
+          >
+            Edit Standard Attribute Fields
+          </Typography>
+        }
+        placement="right"
+        onClose={() => {
+          setShowFieldDrawer(false);
+          form?.resetFields();
+        }}
+        open={showFieldDrawer}
+        width={450}
+        footer={
+          <Row style={{width: '100%', float: 'right'}}>
+            {' '}
+            <OsButton
+              loading={attributeFieldLoading}
+              btnStyle={{width: '100%'}}
+              buttontype="PRIMARY"
+              text="UPDATE CHANGES"
+              clickHandler={() => {
+                form?.submit();
+              }}
+            />
+          </Row>
+        }
+      >
+        <AddStandardAttributeField
+          form={form}
+          onFinish={onUpdateField}
+          isDrawer
+        />
+      </OsDrawer>
     </>
   );
 };

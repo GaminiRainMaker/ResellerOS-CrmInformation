@@ -22,6 +22,7 @@ import {AddStandardAttributeFieldInterface} from './superAdminDealReg.interface'
 const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
   form,
   onFinish,
+  isDrawer,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -41,33 +42,33 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
     }),
   );
 
-
-  
   return (
     <>
-      <Row
-        justify="space-between"
-        style={{
-          padding: '24px 40px 20px 40px',
-          backgroundColor: '#F0F4F7',
-          borderRadius: '10px 10px 0px 0px',
-        }}
-        gutter={[0, 16]}
-      >
-        <Typography
-          name="Body 1/Regular"
-          align="left"
-          color={token?.colorLinkHover}
+      {!isDrawer && (
+        <Row
+          justify="space-between"
+          style={{
+            padding: '24px 40px 20px 40px',
+            backgroundColor: '#F0F4F7',
+            borderRadius: '10px 10px 0px 0px',
+          }}
+          gutter={[0, 16]}
         >
-          New Standard Attribute Fields
-        </Typography>
-      </Row>
+          <Typography
+            name="Body 1/Regular"
+            align="left"
+            color={token?.colorLinkHover}
+          >
+            New Standard Attribute Fields
+          </Typography>
+        </Row>
+      )}
       <Space
         size={0}
         direction="vertical"
         style={{
           width: '100%',
-          padding: '24px 40px 20px 40px',
+          padding: !isDrawer ? '24px 40px 20px 40px' : '',
         }}
       >
         <Form

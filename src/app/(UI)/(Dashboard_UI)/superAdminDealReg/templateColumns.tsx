@@ -11,6 +11,7 @@ function templateColumns(
   token: GlobalToken,
   statusWrapper: {(item: any): JSX.Element; (arg0: any): any},
   editQuote: {(quoteId: string): void; (arg0: any): void},
+  updateTemplate: any,
   setDeleteIds: {(value: any): void; (arg0: any[]): void},
   setShowModalDelete: {
     (value: SetStateAction<boolean>): void;
@@ -109,7 +110,14 @@ function templateColumns(
       dataIndex: 'is_active',
       key: 'is_active',
       width: 187,
-      render: (text: string, record: any) => <Switch />,
+      render: (text: string, record: any) => (
+        <Switch
+          onClick={(e) => {
+            updateTemplate(record?.id, e);
+          }}
+          value={record?.form_data_active}
+        />
+      ),
     },
     {
       title: ' ',
