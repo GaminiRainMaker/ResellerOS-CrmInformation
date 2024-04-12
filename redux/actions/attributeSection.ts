@@ -49,3 +49,18 @@ export const updateAttributeSectionById = createAsyncThunk(
     }
   },
 );
+
+export const queryAttributeSection = createAsyncThunk(
+  'attributeSection/queryAttributeSection',
+  async (query: any, thunkApi) => {
+    try {
+      const obj = {
+        sectionName: query?.sectionName,
+      };
+      const res = await ATTRIBUTE_SECTION_API.query(obj);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

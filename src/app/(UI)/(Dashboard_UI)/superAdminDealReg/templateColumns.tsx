@@ -320,4 +320,146 @@ function standardAttributes(
   return columns;
 }
 
-export {standardAttributes, templateColumns};
+function standardAttributesSection(
+  token: GlobalToken,
+  editQuote: {(quoteId: string): void; (arg0: any): void},
+  setDeleteIds: {(value: any): void; (arg0: any[]): void},
+  setShowModalDelete: {
+    (value: SetStateAction<boolean>): void;
+    (arg0: boolean): void;
+  },
+) {
+  const columns = [
+    {
+      title: (
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
+          Attribute Section
+        </Typography>
+      ),
+      dataIndex: 'name',
+      key: 'name',
+      width: 187,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
+          Generated Date
+        </Typography>
+      ),
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      width: 187,
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {text ?? formatDate(record?.createdAt)}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
+          Order
+        </Typography>
+      ),
+      dataIndex: 'order',
+      key: 'order',
+      width: 187,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
+          Active
+        </Typography>
+      ),
+      dataIndex: 'is_active',
+      key: 'is_active',
+      width: 187,
+      render: (text: boolean) => <Checkbox checked={text} />,
+    },
+    {
+      title: (
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
+          Required
+        </Typography>
+      ),
+      dataIndex: 'is_required',
+      key: 'is_required',
+      width: 187,
+      render: (text: boolean) => <Checkbox checked={text} />,
+    },
+    {
+      title: (
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
+          View Only
+        </Typography>
+      ),
+      dataIndex: 'is_view',
+      key: 'is_view',
+      width: 187,
+      render: (text: boolean) => <Checkbox checked={text} />,
+    },
+    {
+      title: ' ',
+      dataIndex: 'actions',
+      key: 'actions',
+      width: 94,
+      render: (text: string, record: any) => (
+        <Space size={18}>
+          <PencilSquareIcon
+            height={24}
+            width={24}
+            color={token.colorInfoBorder}
+            style={{cursor: 'pointer'}}
+            onClick={() => {
+              editQuote(record.id);
+            }}
+          />
+          <TrashIcon
+            height={24}
+            width={24}
+            color={token.colorError}
+            style={{cursor: 'pointer'}}
+            onClick={() => {
+              setDeleteIds([record?.id]);
+              setShowModalDelete(true);
+            }}
+          />
+        </Space>
+      ),
+    },
+  ];
+
+  return columns;
+}
+
+export {standardAttributes, templateColumns, standardAttributesSection};

@@ -1,3 +1,5 @@
+/* eslint-disable no-nested-ternary */
+
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -20,21 +22,27 @@ import {
   insertAttributeField,
   queryAttributeField,
 } from '../../../../../redux/actions/attributeField';
-import {insertAttributeSection} from '../../../../../redux/actions/attributeSection';
+import {
+  insertAttributeSection,
+  queryAttributeSection,
+} from '../../../../../redux/actions/attributeSection';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddNewStandardAttributeSection from './AddNewStandardAttributeSection';
 import AddStandardAttributeField from './AddStandardAttributeField';
 import SuperAdminDealRegAnalytic from './superAdminDealRegAnalytic';
-import {standardAttributes, templateColumns} from './templateColumns';
+import {
+  standardAttributes,
+  standardAttributesSection,
+  templateColumns,
+} from './templateColumns';
 
 const SuperAdminDealReg = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
-  const {loading: attributeSectionLoading} = useAppSelector(
-    (state) => state.attributeSection,
-  );
+  const {data: attributeSectionData, loading: attributeSectionLoading} =
+    useAppSelector((state) => state.attributeSection);
   const {loading: attributeFieldLoading, data: attributeFieldData} =
     useAppSelector((state) => state.attributeField);
   const [showStandardAttributeField, setshowStandardAttributeField] =
@@ -50,11 +58,22 @@ const SuperAdminDealReg = () => {
     fieldLabel: null,
     sectionName: null,
   });
+
+  const [attributeSectionQuery, setAttributeSectionQuery] = useState<{
+    sectionName: string | null;
+  }>({
+    sectionName: null,
+  });
   const searchQuery = useDebounceHook(query, 400);
+  const sectionSearchQuery = useDebounceHook(attributeSectionQuery, 400);
 
   useEffect(() => {
     dispatch(queryAttributeField(searchQuery));
   }, [searchQuery]);
+
+  useEffect(() => {
+    dispatch(queryAttributeSection(sectionSearchQuery));
+  }, [sectionSearchQuery]);
 
   const statusWrapper = (item: any) => {
     const getStatus = () => item;
@@ -70,9 +89,16 @@ const SuperAdminDealReg = () => {
     setDeleteIds,
     setShowModalDelete,
   );
-  const StandardAttributesColumns = standardAttributes(
+  const StandardAttributesFieldsColumns = standardAttributes(
     token,
     statusWrapper,
+    editQuote,
+    setDeleteIds,
+    setShowModalDelete,
+  );
+
+  const StandardAttributesSectionColumns = standardAttributesSection(
+    token,
     editQuote,
     setDeleteIds,
     setShowModalDelete,
@@ -96,7 +122,6 @@ const SuperAdminDealReg = () => {
         <OsTable
           columns={TemplateColumns}
           dataSource={templateDummyData}
-          // rowSelection={rowSelection}
           scroll
           locale={[]}
           loading={attributeFieldLoading}
@@ -112,13 +137,13 @@ const SuperAdminDealReg = () => {
           }}
           name="Body 4/Regular"
         >
-          Standard Attributes
+          Standard Attributes Fields
         </Typography>
       ),
       key: '2',
       children: (
         <OsTable
-          columns={StandardAttributesColumns}
+          columns={StandardAttributesFieldsColumns}
           dataSource={attributeFieldData}
           scroll
           locale={[]}
@@ -139,13 +164,21 @@ const SuperAdminDealReg = () => {
         </Typography>
       ),
       key: '3',
-      children: <>In Development Phase....</>,
+      children: (
+        <OsTable
+          columns={StandardAttributesSectionColumns}
+          dataSource={attributeSectionData}
+          scroll
+          locale={[]}
+          loading={attributeSectionLoading}
+        />
+      ),
     },
   ];
 
   const onFinish = () => {
-    const attributeSectionData = form?.getFieldsValue();
-    dispatch(insertAttributeSection(attributeSectionData))?.then((d) => {
+    const attributeSectionFormData = form?.getFieldsValue();
+    dispatch(insertAttributeSection(attributeSectionFormData))?.then((d) => {
       if (d?.payload) {
         setShowStandardAttributeSection(false);
       }
@@ -169,6 +202,14 @@ const SuperAdminDealReg = () => {
   );
   const uniqueAttributeLabel = Array.from(
     new Set(attributeFieldData?.map((customer: any) => customer?.label)),
+  );
+
+  const uniqueAttributeSectionOptions = Array.from(
+    new Set(
+      attributeSectionData?.map(
+        (attributeSectionIndex: any) => attributeSectionIndex?.name,
+      ),
+    ),
   );
 
   return (
@@ -208,71 +249,121 @@ const SuperAdminDealReg = () => {
         >
           <OsTabs
             tabBarExtraContent={
-              activeTab === 2 && (
-                <Space size={12}>
-                  <CommonSelect
-                    style={{width: '180px'}}
-                    placeholder="Search Here"
-                    showSearch
-                    onSearch={(e) => {
-                      setQuery({
-                        ...query,
-                        fieldLabel: e,
-                      });
-                    }}
-                    onChange={(e) => {
-                      setQuery({
-                        ...query,
-                        fieldLabel: e,
-                      });
-                    }}
-                    value={query?.fieldLabel}
-                  >
-                    {uniqueAttributeLabel?.map((customer: any) => (
-                      <Option key={customer} value={customer}>
-                        {customer}
-                      </Option>
-                    ))}
-                  </CommonSelect>
-                  <CommonSelect
-                    style={{width: '180px'}}
-                    placeholder="Search Here"
-                    showSearch
-                    onSearch={(e) => {
-                      setQuery({
-                        ...query,
-                        sectionName: e,
-                      });
-                    }}
-                    onChange={(e) => {
-                      setQuery({
-                        ...query,
-                        sectionName: e,
-                      });
-                    }}
-                    value={query?.sectionName}
-                  >
-                    {uniqueAttributeSection?.map((customer: any) => (
-                      <Option key={customer} value={customer}>
-                        {customer}
-                      </Option>
-                    ))}
-                  </CommonSelect>
-                  <Typography
-                    cursor="pointer"
-                    name="Button 1"
-                    color="#C6CDD5"
-                    onClick={() => {
-                      setQuery({
-                        fieldLabel: null,
-                        sectionName: null,
-                      });
-                    }}
-                  >
-                    Reset
-                  </Typography>
-                </Space>
-              )
+              <Form layout="vertical">
+                {activeTab === 2 ? (
+                  <Space size={12}>
+                    <Form.Item label="Attribute Label">
+                      <CommonSelect
+                        style={{width: '180px'}}
+                        placeholder="Search Here"
+                        showSearch
+                        onSearch={(e) => {
+                          setQuery({
+                            ...query,
+                            fieldLabel: e,
+                          });
+                        }}
+                        onChange={(e) => {
+                          setQuery({
+                            ...query,
+                            fieldLabel: e,
+                          });
+                        }}
+                        value={query?.fieldLabel}
+                      >
+                        {uniqueAttributeLabel?.map((customer: any) => (
+                          <Option key={customer} value={customer}>
+                            {customer}
+                          </Option>
+                        ))}
+                      </CommonSelect>
+                    </Form.Item>
+
+                    <Form.Item label="Attribute Section">
+                      <CommonSelect
+                        style={{width: '180px'}}
+                        placeholder="Search Here"
+                        showSearch
+                        onSearch={(e) => {
+                          setQuery({
+                            ...query,
+                            sectionName: e,
+                          });
+                        }}
+                        onChange={(e) => {
+                          setQuery({
+                            ...query,
+                            sectionName: e,
+                          });
+                        }}
+                        value={query?.sectionName}
+                      >
+                        {uniqueAttributeSection?.map((customer: any) => (
+                          <Option key={customer} value={customer}>
+                            {customer}
+                          </Option>
+                        ))}
+                      </CommonSelect>
+                    </Form.Item>
+                    <Typography
+                      cursor="pointer"
+                      name="Button 1"
+                      color="#C6CDD5"
+                      onClick={() => {
+                        setQuery({
+                          fieldLabel: null,
+                          sectionName: null,
+                        });
+                      }}
+                    >
+                      Reset
+                    </Typography>
+                  </Space>
+                ) : activeTab === 3 ? (
+                  <Space size={12}>
+                    <Form.Item label="Attribute Section">
+                      <CommonSelect
+                        style={{width: '180px'}}
+                        placeholder="Search Here"
+                        showSearch
+                        onSearch={(e) => {
+                          setAttributeSectionQuery({
+                            ...attributeSectionQuery,
+                            sectionName: e,
+                          });
+                        }}
+                        onChange={(e) => {
+                          setAttributeSectionQuery({
+                            ...attributeSectionQuery,
+                            sectionName: e,
+                          });
+                        }}
+                        value={attributeSectionQuery?.sectionName}
+                      >
+                        {uniqueAttributeSectionOptions?.map((data: any) => (
+                          <Option key={data} value={data}>
+                            {data}
+                          </Option>
+                        ))}
+                      </CommonSelect>
+                    </Form.Item>
+                    <Typography
+                      cursor="pointer"
+                      name="Button 1"
+                      color="#C6CDD5"
+                      onClick={() => {
+                        setAttributeSectionQuery({
+                          sectionName: null,
+                        });
+                      }}
+                    >
+                      Reset
+                    </Typography>
+                  </Space>
+                ) : (
+                  <></>
+                )}
+              </Form>
             }
             items={superAdmintabItems}
           />
