@@ -32,6 +32,7 @@ import DealRegAnalytics from './dealRegAnalytics';
 interface SeparatedData {
   [opportunityId: number]: {
     opportunity_id: number;
+    dealReg_id: number;
     data: any[];
     title: string;
   };
@@ -91,7 +92,7 @@ const DealReg: React.FC = () => {
       dataIndex: 'type',
       key: 'type',
       width: 187,
-      render: (text: string, record: any) => (
+      render: () => (
         <Typography name="Body 4/Regular">Registered</Typography>
       ),
     },
@@ -155,7 +156,7 @@ const DealReg: React.FC = () => {
       dataIndex: 'status',
       key: 'status',
       width: 187,
-      render: (text: string, record: any) => <OsStatusWrapper value={text} />,
+      render: (text: string) => <OsStatusWrapper value={text} />,
     },
   ];
 
@@ -172,11 +173,13 @@ const DealReg: React.FC = () => {
   useEffect(() => {
     const separatedData: SeparatedData = {};
     DealRegData?.forEach((item: any) => {
-      const opportunityId = item.opportunity_id;
-      const opportunityTitle = item.Opportunity?.title;
+      const opportunityId = item?.opportunity_id;
+      const dealRegId = item?.id;
+      const opportunityTitle = item?.Opportunity?.title;
       if (!separatedData[opportunityId]) {
         separatedData[opportunityId] = {
           opportunity_id: opportunityId,
+          dealReg_id: dealRegId,
           title: opportunityTitle,
           data: [],
         };
@@ -208,7 +211,7 @@ const DealReg: React.FC = () => {
                           <p
                             onClick={(e) => {
                               router?.push(
-                                `/dealRegDetail?id=${itemDeal?.opportunity_id}`,
+                                `/dealRegDetail?id=${itemDeal?.dealReg_id}&opportunityId=${itemDeal?.opportunity_id}`,
                               );
                               e?.stopPropagation();
                             }}

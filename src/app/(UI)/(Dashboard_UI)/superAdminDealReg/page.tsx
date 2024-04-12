@@ -41,6 +41,7 @@ const SuperAdminDealReg = () => {
     useState<boolean>(false);
   const [showStandardAttributeSection, setShowStandardAttributeSection] =
     useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<number>();
 
   const [query, setQuery] = useState<{
     fieldLabel: string | null;
@@ -79,7 +80,17 @@ const SuperAdminDealReg = () => {
 
   const superAdmintabItems = [
     {
-      label: <Typography name="Body 4/Regular">Templates</Typography>,
+      label: (
+        <Typography
+          onClick={() => {
+            setActiveTab(1);
+          }}
+          cursor="pointer"
+          name="Body 4/Regular"
+        >
+          Templates
+        </Typography>
+      ),
       key: '1',
       children: (
         <OsTable
@@ -93,7 +104,17 @@ const SuperAdminDealReg = () => {
       ),
     },
     {
-      label: <Typography name="Body 4/Regular">Standard Attributes</Typography>,
+      label: (
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setActiveTab(2);
+          }}
+          name="Body 4/Regular"
+        >
+          Standard Attributes
+        </Typography>
+      ),
       key: '2',
       children: (
         <OsTable
@@ -105,15 +126,21 @@ const SuperAdminDealReg = () => {
         />
       ),
     },
-    // {
-    //   label: (
-    //     <Typography name="Body 4/Regular">
-    //       Standard Attributes Sections
-    //     </Typography>
-    //   ),
-    //   key: '3',
-    //   children: <>In Development Phase....</>,
-    // },
+    {
+      label: (
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setActiveTab(3);
+          }}
+          name="Body 4/Regular"
+        >
+          Standard Attributes Sections
+        </Typography>
+      ),
+      key: '3',
+      children: <>In Development Phase....</>,
+    },
   ];
 
   const onFinish = () => {
@@ -181,61 +208,56 @@ const SuperAdminDealReg = () => {
         >
           <OsTabs
             tabBarExtraContent={
-              <Form layout="vertical">
+              activeTab === 2 && (
                 <Space size={12}>
-                  <Form.Item label="Attribute Label">
-                    <CommonSelect
-                      style={{width: '180px'}}
-                      placeholder="Search Here"
-                      showSearch
-                      onSearch={(e) => {
-                        setQuery({
-                          ...query,
-                          fieldLabel: e,
-                        });
-                      }}
-                      onChange={(e) => {
-                        setQuery({
-                          ...query,
-                          fieldLabel: e,
-                        });
-                      }}
-                      value={query?.fieldLabel}
-                    >
-                      {uniqueAttributeLabel?.map((customer: any) => (
-                        <Option key={customer} value={customer}>
-                          {customer}
-                        </Option>
-                      ))}
-                    </CommonSelect>
-                  </Form.Item>
-
-                  <Form.Item label="Attribute Section">
-                    <CommonSelect
-                      style={{width: '180px'}}
-                      placeholder="Search Here"
-                      showSearch
-                      onSearch={(e) => {
-                        setQuery({
-                          ...query,
-                          sectionName: e,
-                        });
-                      }}
-                      onChange={(e) => {
-                        setQuery({
-                          ...query,
-                          sectionName: e,
-                        });
-                      }}
-                      value={query?.sectionName}
-                    >
-                      {uniqueAttributeSection?.map((customer: any) => (
-                        <Option key={customer} value={customer}>
-                          {customer}
-                        </Option>
-                      ))}
-                    </CommonSelect>
-                  </Form.Item>
+                  <CommonSelect
+                    style={{width: '180px'}}
+                    placeholder="Search Here"
+                    showSearch
+                    onSearch={(e) => {
+                      setQuery({
+                        ...query,
+                        fieldLabel: e,
+                      });
+                    }}
+                    onChange={(e) => {
+                      setQuery({
+                        ...query,
+                        fieldLabel: e,
+                      });
+                    }}
+                    value={query?.fieldLabel}
+                  >
+                    {uniqueAttributeLabel?.map((customer: any) => (
+                      <Option key={customer} value={customer}>
+                        {customer}
+                      </Option>
+                    ))}
+                  </CommonSelect>
+                  <CommonSelect
+                    style={{width: '180px'}}
+                    placeholder="Search Here"
+                    showSearch
+                    onSearch={(e) => {
+                      setQuery({
+                        ...query,
+                        sectionName: e,
+                      });
+                    }}
+                    onChange={(e) => {
+                      setQuery({
+                        ...query,
+                        sectionName: e,
+                      });
+                    }}
+                    value={query?.sectionName}
+                  >
+                    {uniqueAttributeSection?.map((customer: any) => (
+                      <Option key={customer} value={customer}>
+                        {customer}
+                      </Option>
+                    ))}
+                  </CommonSelect>
                   <Typography
                     cursor="pointer"
                     name="Button 1"
@@ -250,7 +272,7 @@ const SuperAdminDealReg = () => {
                     Reset
                   </Typography>
                 </Space>
-              </Form>
+              )
             }
             items={superAdmintabItems}
           />
@@ -292,6 +314,7 @@ const SuperAdminDealReg = () => {
         }}
         thirdButtonText="Create"
         primaryButtonText="Save and Create New"
+        // secondaryButtonText='Cancel'
         footerPadding={40}
       />
     </>

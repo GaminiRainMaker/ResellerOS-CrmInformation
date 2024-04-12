@@ -113,23 +113,6 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
           <Form.Item label="Description" name="description">
             <OsInput placeholder="Partner name here" />
           </Form.Item>
-
-          <Row justify="space-between" gutter={[16, 16]}>
-            <Col span={drawer ? 24 : 12}>
-              <Form.Item
-                label="Email"
-                name="email"
-                rules={[{required: true, message: 'Please Enter email!'}]}
-              >
-                <OsInput placeholder="info@email.com" />
-              </Form.Item>
-            </Col>
-            <Col span={drawer ? 24 : 12}>
-              <Form.Item label="Website" name="website">
-                <OsInput placeholder="www.website.com" />
-              </Form.Item>
-            </Col>
-          </Row>
         </Form>
       </Space>
     </>

@@ -39,7 +39,7 @@ const DealRegDetail = () => {
   } = useAppSelector((state) => state.dealReg);
   const [open, setOpen] = useState(false);
   const searchParams = useSearchParams();
-  const getOpportunityId = searchParams.get('id');
+  const getOpportunityId = searchParams.get('opportunityId');
   const getPartnerProgramId = searchParams.get('program_id');
 
   const [selectedUserId, setSelectedUserId] = useState<any>();

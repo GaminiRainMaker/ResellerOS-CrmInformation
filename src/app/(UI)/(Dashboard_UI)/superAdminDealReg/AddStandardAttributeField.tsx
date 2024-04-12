@@ -76,19 +76,30 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
           requiredMark={false}
         >
           <Row gutter={[16, 16]}>
-            <Col span={24}>
+            <Col span={12}>
               <SelectFormItem
                 label={
                   <Typography name="Body 4/Medium">
-                    Standard Attribute Name
+                    Standard Attribute Section
                   </Typography>
                 }
-                name="name"
+                name="attribute_section_id"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please Select Standard Attribute Section!',
+                  },
+                ]}
               >
-                <OsInput placeholder="Select" style={{width: '100%'}} />
+                <CommonSelect
+                  allowClear
+                  placeholder="Select"
+                  style={{width: '100%'}}
+                  options={attributeSectionOption}
+                />
               </SelectFormItem>
             </Col>
-            <Col span={24}>
+            <Col span={12}>
               <SelectFormItem
                 label={
                   <Typography name="Body 4/Medium">Attribute Label</Typography>
@@ -104,7 +115,7 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
                 <OsInput placeholder="Select" style={{width: '100%'}} />
               </SelectFormItem>
             </Col>
-            <Col span={24}>
+            <Col span={12}>
               <SelectFormItem
                 label={
                   <Typography name="Body 4/Medium">
@@ -127,7 +138,14 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
                 />
               </SelectFormItem>
             </Col>
-
+            <Col span={12}>
+              <SelectFormItem
+                label={<Typography name="Body 4/Medium">Order</Typography>}
+                name="order"
+              >
+                <OsInputNumber placeholder="Select" style={{width: '100%'}} />
+              </SelectFormItem>
+            </Col>
             <Col span={12}>
               <SelectFormItem
                 label={
@@ -164,38 +182,19 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
                 <OsInput placeholder="Select" style={{width: '100%'}} />
               </SelectFormItem>
             </Col>
-            <Col span={12}>
-              <SelectFormItem
-                label={<Typography name="Body 4/Medium">Order</Typography>}
-                name="order"
-              >
-                <OsInputNumber placeholder="Select" style={{width: '100%'}} />
-              </SelectFormItem>
-            </Col>
-            <Col span={12}>
+            <Col span={24}>
               <SelectFormItem
                 label={
                   <Typography name="Body 4/Medium">
-                    Standard Attribute Section
+                    Standard Attribute Name
                   </Typography>
                 }
-                name="attribute_section_id"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please Select Standard Attribute Section!',
-                  },
-                ]}
+                name="name"
               >
-                <CommonSelect
-                  allowClear
-                  placeholder="Select"
-                  style={{width: '100%'}}
-                  options={attributeSectionOption}
-                />
+                <OsInput placeholder="Select" style={{width: '100%'}} />
               </SelectFormItem>
             </Col>
-            <Col span={24}>
+            <Col span={24} style={{display: 'flex'}}>
               <SelectFormItem
                 label={<Typography name="Body 4/Medium">Active</Typography>}
                 name="is_active"

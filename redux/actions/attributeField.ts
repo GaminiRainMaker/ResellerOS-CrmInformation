@@ -49,6 +49,7 @@ export const updateAttributeFieldById = createAsyncThunk(
     }
   },
 );
+
 export const queryAttributeField = createAsyncThunk(
   'attributeField/queryAttributeField',
   async (query: any, thunkApi) => {
