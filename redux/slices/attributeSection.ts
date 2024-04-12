@@ -6,6 +6,7 @@ import {
   getAllAttributeSection,
   deleteAttributeSection,
   updateAttributeSectionById,
+  queryAttributeSection,
 } from '../actions/attributeSection';
 
 type AttributeSectionState = {
@@ -98,6 +99,24 @@ const attributeSectionSlice = createSlice({
       )
       .addCase(
         getAllAttributeSection.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(queryAttributeSection.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        queryAttributeSection.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        queryAttributeSection.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

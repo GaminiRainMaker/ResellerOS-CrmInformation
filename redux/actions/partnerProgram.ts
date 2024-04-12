@@ -25,6 +25,17 @@ export const getAllPartnerProgram = createAsyncThunk(
     }
   },
 );
+export const getFormDataProgram = createAsyncThunk(
+  'partnerProgram/getFormDataProgram',
+  async (data, thunkApi) => {
+    try {
+      const res = await PARTNER_PROGRAM_API.getFormDataProgram();
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
 
 export const getUnassignedProgram = createAsyncThunk(
   'partnerProgram/getUnassignedProgram',

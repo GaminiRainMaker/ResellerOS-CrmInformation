@@ -7,7 +7,7 @@ import {
   getAllPartnerProgram,
   getPartnerProgramById,
   insertPartnerProgram,
-  updatePartnerProgramById,getUnassignedProgram
+  updatePartnerProgramById,getUnassignedProgram, getFormDataProgram
 } from '../actions/partnerProgram';
 
 type PartnerProgramState = {
@@ -15,12 +15,14 @@ type PartnerProgramState = {
   error: string | null;
   data: any;
   partnerProgram: any;
+  getFormDataProgramData: any;
 };
 const initialState: PartnerProgramState = {
   loading: false,
   error: null,
   data: [],
   partnerProgram: [],
+  getFormDataProgramData: [],
 };
 
 const partnerProgramSlice = createSlice({
@@ -154,6 +156,24 @@ const partnerProgramSlice = createSlice({
       )
       .addCase(
         getUnassignedProgram.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getFormDataProgram.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getFormDataProgram.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.getFormDataProgramData = action.payload;
+        },
+      )
+      .addCase(
+        getFormDataProgram.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
