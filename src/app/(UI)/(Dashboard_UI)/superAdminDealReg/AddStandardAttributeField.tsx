@@ -25,6 +25,7 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
+
   const {data: attributeSectionData} = useAppSelector(
     (state) => state.attributeSection,
   );
@@ -40,8 +41,8 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
     }),
   );
 
-  console.log('attributeSectionData', attributeSectionData);
 
+  
   return (
     <>
       <Row

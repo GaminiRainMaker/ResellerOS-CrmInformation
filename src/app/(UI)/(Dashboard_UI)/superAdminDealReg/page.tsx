@@ -4,6 +4,7 @@
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
+import FormBuilderMain from '@/app/components/common/formBuilder/page';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
@@ -13,10 +14,10 @@ import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {templateDummyData} from '@/app/utils/CONSTANTS';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {Option} from 'antd/es/mentions';
+import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {
   insertAttributeField,
@@ -26,6 +27,7 @@ import {
   insertAttributeSection,
   queryAttributeSection,
 } from '../../../../../redux/actions/attributeSection';
+import {getFormDataProgram} from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddNewStandardAttributeSection from './AddNewStandardAttributeSection';
 import AddStandardAttributeField from './AddStandardAttributeField';
@@ -39,17 +41,23 @@ import {
 const SuperAdminDealReg = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const {data: attributeSectionData, loading: attributeSectionLoading} =
     useAppSelector((state) => state.attributeSection);
   const {loading: attributeFieldLoading, data: attributeFieldData} =
     useAppSelector((state) => state.attributeField);
+  const {data: getFormDataProgramData} = useAppSelector(
+    (state) => state.partnerProgram,
+  );
   const [showStandardAttributeField, setshowStandardAttributeField] =
     useState<boolean>(false);
   const [showStandardAttributeSection, setShowStandardAttributeSection] =
     useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<number>();
+  const [formData, setformData] = useState<any>();
+  const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
 
   const [query, setQuery] = useState<{
     fieldLabel: string | null;
@@ -68,6 +76,10 @@ const SuperAdminDealReg = () => {
   const sectionSearchQuery = useDebounceHook(attributeSectionQuery, 400);
 
   useEffect(() => {
+    dispatch(getFormDataProgram());
+  }, []);
+
+  useEffect(() => {
     dispatch(queryAttributeField(searchQuery));
   }, [searchQuery]);
 
@@ -80,12 +92,20 @@ const SuperAdminDealReg = () => {
     return <OsStatusWrapper value={getStatus()} />;
   };
   const editQuote = () => {};
+
+  const editTemplate = (record: any) => {
+    if (record?.form_data) {
+      setOpenPreviewModal(true);
+      const formDataObject = JSON?.parse(record?.form_data);
+      setformData({formObject: formDataObject, Id: record?.id});
+    }
+  };
   const setDeleteIds = () => {};
 
   const TemplateColumns = templateColumns(
     token,
     statusWrapper,
-    editQuote,
+    editTemplate,
     setDeleteIds,
     setShowModalDelete,
   );
@@ -121,7 +141,7 @@ const SuperAdminDealReg = () => {
       children: (
         <OsTable
           columns={TemplateColumns}
-          dataSource={templateDummyData}
+          dataSource={getFormDataProgramData}
           scroll
           locale={[]}
           loading={attributeFieldLoading}
@@ -211,6 +231,8 @@ const SuperAdminDealReg = () => {
       ),
     ),
   );
+
+  console.log('getFormDataProgramData', getFormDataProgramData);
 
   return (
     <>
@@ -407,6 +429,41 @@ const SuperAdminDealReg = () => {
         primaryButtonText="Save and Create New"
         // secondaryButtonText='Cancel'
         footerPadding={40}
+      />
+
+      <OsModal
+        bodyPadding={22}
+        loading={false}
+        body={
+          <>
+            {' '}
+            <FormBuilderMain
+              cartItems={formData?.formObject}
+              form={form}
+              // eslint-disable-next-line react/jsx-boolean-value
+              previewFile
+            />
+            <Space
+              align="end"
+              size={8}
+              style={{display: 'flex', justifyContent: 'end'}}
+            >
+              <OsButton
+                buttontype="PRIMARY"
+                text="EDIT"
+                color="red"
+                clickHandler={() => {
+                  router?.push(`/formBuilder?id=${formData?.Id}`);
+                }}
+              />{' '}
+            </Space>
+          </>
+        }
+        width={900}
+        open={openPreviewModal}
+        onCancel={() => {
+          setOpenPreviewModal(false);
+        }}
       />
     </>
   );

@@ -146,6 +146,7 @@ export const API = {
     GetPartnerProgramById: '/partnerProgram/getPartnerProgramById',
     deletePartnerFormData: '/partnerProgram/deletePartnerProgramFormData',
     GetUnassignedProgram: '/partnerProgram/getUnassignedProgram',
+    GetFormDataProgram: '/partnerProgram/getFormDataProgram',
   },
   DISTRIBUTOR: {
     INDEX: '/distributor',

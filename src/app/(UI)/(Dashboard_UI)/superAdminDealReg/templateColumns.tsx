@@ -31,8 +31,10 @@ function templateColumns(
       dataIndex: 'partner',
       key: 'partner',
       width: 130,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text}</Typography>
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.Partner?.partner}
+        </Typography>
       ),
     },
     {
@@ -122,7 +124,7 @@ function templateColumns(
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              editQuote(record.id);
+              editQuote(record);
             }}
           />
           <TrashIcon
@@ -238,7 +240,9 @@ function standardAttributes(
       key: 'standard_attribute_section',
       width: 230,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">{record?.AttributeSection?.name ?? '--'}</Typography>
+        <Typography name="Body 4/Regular">
+          {record?.AttributeSection?.name ?? '--'}
+        </Typography>
       ),
     },
     {
