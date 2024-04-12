@@ -48,7 +48,7 @@ const SuperAdminDealReg = () => {
     useAppSelector((state) => state.attributeSection);
   const {loading: attributeFieldLoading, data: attributeFieldData} =
     useAppSelector((state) => state.attributeField);
-  const {data: getFormDataProgramData} = useAppSelector(
+  const {getFormDataProgramData} = useAppSelector(
     (state) => state.partnerProgram,
   );
   const [showStandardAttributeField, setshowStandardAttributeField] =
@@ -91,7 +91,6 @@ const SuperAdminDealReg = () => {
     const getStatus = () => item;
     return <OsStatusWrapper value={getStatus()} />;
   };
-  const editQuote = () => {};
 
   const editTemplate = (record: any) => {
     if (record?.form_data) {
@@ -99,6 +98,34 @@ const SuperAdminDealReg = () => {
       const formDataObject = JSON?.parse(record?.form_data);
       setformData({formObject: formDataObject, Id: record?.id});
     }
+  };
+
+  const editAttributeSection = (record: any) => {
+    form.setFieldsValue({
+      name: record?.name,
+      order: record?.order,
+      is_active: record?.is_active,
+      is_required: record?.is_required,
+      is_view: record?.is_view,
+    });
+    setShowStandardAttributeSection(true);
+  };
+
+  const editAttributeField = (record: any) => {
+    form.setFieldsValue({
+      name: record?.name,
+      label: record?.label,
+      data_type: record?.data_type,
+      order: record?.order,
+      map_from: record?.map_from,
+      map_to: record?.map_to,
+      help_text: record?.help_text,
+      attribute_section_id: record?.attribute_section_id,
+      is_active: record?.is_active,
+      is_required: record?.is_required,
+      is_view: record?.is_view,
+    });
+    setshowStandardAttributeField(true);
   };
   const setDeleteIds = () => {};
 
@@ -112,14 +139,14 @@ const SuperAdminDealReg = () => {
   const StandardAttributesFieldsColumns = standardAttributes(
     token,
     statusWrapper,
-    editQuote,
+    editAttributeField,
     setDeleteIds,
     setShowModalDelete,
   );
 
   const StandardAttributesSectionColumns = standardAttributesSection(
     token,
-    editQuote,
+    editAttributeSection,
     setDeleteIds,
     setShowModalDelete,
   );
@@ -200,6 +227,7 @@ const SuperAdminDealReg = () => {
     const attributeSectionFormData = form?.getFieldsValue();
     dispatch(insertAttributeSection(attributeSectionFormData))?.then((d) => {
       if (d?.payload) {
+        dispatch(queryAttributeSection(sectionSearchQuery));
         setShowStandardAttributeSection(false);
       }
     });
@@ -208,6 +236,7 @@ const SuperAdminDealReg = () => {
     const attributeFiledData = form?.getFieldsValue();
     dispatch(insertAttributeField(attributeFiledData))?.then((d) => {
       if (d?.payload) {
+        dispatch(queryAttributeField(searchQuery));
         setshowStandardAttributeField(false);
       }
     });
@@ -231,8 +260,6 @@ const SuperAdminDealReg = () => {
       ),
     ),
   );
-
-  console.log('getFormDataProgramData', getFormDataProgramData);
 
   return (
     <>

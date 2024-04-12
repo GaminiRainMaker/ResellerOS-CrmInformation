@@ -303,7 +303,7 @@ function standardAttributes(
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              editQuote(record.id);
+              editQuote(record);
             }}
           />
           <TrashIcon
@@ -445,7 +445,7 @@ function standardAttributesSection(
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              editQuote(record.id);
+              editQuote(record);
             }}
           />
           <TrashIcon

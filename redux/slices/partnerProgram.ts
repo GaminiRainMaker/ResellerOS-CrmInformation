@@ -15,12 +15,14 @@ type PartnerProgramState = {
   error: string | null;
   data: any;
   partnerProgram: any;
+  getFormDataProgramData: any;
 };
 const initialState: PartnerProgramState = {
   loading: false,
   error: null,
   data: [],
   partnerProgram: [],
+  getFormDataProgramData: [],
 };
 
 const partnerProgramSlice = createSlice({
@@ -167,7 +169,7 @@ const partnerProgramSlice = createSlice({
         getFormDataProgram.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.getFormDataProgramData = action.payload;
         },
       )
       .addCase(
