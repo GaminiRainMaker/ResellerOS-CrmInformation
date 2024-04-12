@@ -446,9 +446,10 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
           list_price: profitabilityDataItem?.list_price,
           unit_price: profitabilityDataItem?.unit_price,
           exit_price: profitabilityDataItem?.exit_price,
-          gross_profit: profitabilityDataItem?.gross_profit,
+          gross_profit: profitabilityDataItem?.adjusted_price,
           gross_profit_percentage:
             profitabilityDataItem?.gross_profit_percentage,
+          adjusted_price: profitabilityDataItem?.adjusted_price,
         };
         dispatch(updateProfitabilityById({...obj}));
       }
