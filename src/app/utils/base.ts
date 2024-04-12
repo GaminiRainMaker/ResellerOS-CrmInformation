@@ -471,7 +471,8 @@ export const partnerProgramFilter = (
         } else {
           // Approved for organization
           if (
-            itemProgram?.user_id === userInformation?.id ||
+            (itemProgram?.user_id === userInformation?.id &&
+              !itemProgram?.AssignPartnerProgram) ||
             itemProgram?.AssignPartnerProgram?.is_approved
           ) {
             superAdminAllApprovedIds?.push(
@@ -497,7 +498,7 @@ export const partnerProgramFilter = (
 
   let allNotRequestedIds: any = [];
   allNotRequestedIds = aprovedIds?.concat(allRequestedIds);
-
+  console.log('allRequestedIdsallRequestedIds', requestIdsForSuperAdmin);
   if (activeTab === 1) {
     allPartnerData?.map((item: any) => {
       const newArrForPrograms: any = [];

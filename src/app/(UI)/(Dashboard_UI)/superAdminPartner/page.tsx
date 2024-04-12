@@ -86,6 +86,8 @@ const SuperAdminPartner: React.FC = () => {
       allPartnerData,
       activeTab,
     );
+
+    console.log('FilterArrayDataaFilterArrayDataa', FilterArrayDataa);
     const newArrForTab3: any = [];
     if (activeTab === 2) {
       FilterArrayDataa?.map((items: any) => {
