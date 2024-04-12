@@ -475,7 +475,8 @@ export const partnerProgramFilter = (
             itemProgram?.AssignPartnerProgram?.is_approved
           ) {
             superAdminAllApprovedIds?.push(
-              itemProgram?.AssignPartnerProgram?.partner_program_id ??  itemProgram?.id,
+              itemProgram?.AssignPartnerProgram?.partner_program_id ??
+                itemProgram?.id,
             );
           } else if (
             // Requested but not approved or decliend
@@ -515,14 +516,14 @@ export const partnerProgramFilter = (
           });
         }
       }
-      if (newArrForPrograms?.length > 0 || superAdminSide) {
-        const newObj: any = {...item};
-        delete newObj.PartnerPrograms;
-        if (newArrForPrograms?.length > 0) {
-          newObj.PartnerPrograms = newArrForPrograms;
-        }
-        FilterArrayDataa?.push(newObj);
+      // if (newArrForPrograms?.length > 0 || superAdminSide) {
+      const newObj: any = {...item};
+      delete newObj.PartnerPrograms;
+      if (newArrForPrograms?.length > 0) {
+        newObj.PartnerPrograms = newArrForPrograms;
       }
+      FilterArrayDataa?.push(newObj);
+      // }
     });
   } else if (activeTab === 2) {
     allPartnerData?.map((item: any) => {

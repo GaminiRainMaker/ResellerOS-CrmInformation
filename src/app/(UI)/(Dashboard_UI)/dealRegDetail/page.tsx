@@ -43,6 +43,7 @@ const DealRegDetail = () => {
   const getPartnerProgramId = searchParams.get('program_id');
 
   const [selectedUserId, setSelectedUserId] = useState<any>();
+  const [formDataValues, setFormDataValues] = useState<any>();
 
   useEffect(() => {
     if (getOpportunityId) {
@@ -154,7 +155,12 @@ const DealRegDetail = () => {
         </Col>
       </Row>
 
-      <DealRegCustomTabs tabs={DealRegData} selectedUserId={selectedUserId} form={form} />
+      <DealRegCustomTabs
+        tabs={DealRegData}
+        selectedUserId={selectedUserId}
+        form={form}
+        setFormDataValues={setFormDataValues}
+      />
 
       <OsDrawer
         title={<Typography name="Body 1/Regular">Form Settings</Typography>}
