@@ -6,13 +6,12 @@ import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import Typography from '@/app/components/common/typography';
 import {FC, useEffect, useState} from 'react';
 // eslint-disable-next-line import/no-named-as-default
-import {useSearchParams} from 'next/navigation';
+import {queryAttributeField} from '../../../../../../redux/actions/attributeField';
+import {getAllCustomer} from '../../../../../../redux/actions/customer';
+import {getAllOpportunity} from '../../../../../../redux/actions/opportunity';
+import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import CommonFields from './CommonField';
 import UniqueFields from './UniqueField';
-import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
-import {getAllOpportunity} from '../../../../../../redux/actions/opportunity';
-import {getAllCustomer} from '../../../../../../redux/actions/customer';
-import {queryAttributeField} from '../../../../../../redux/actions/attributeField';
 
 const DealRegDetailForm: FC<any> = (data, form) => {
   const [token] = useThemeToken();
@@ -86,6 +85,7 @@ const DealRegDetailForm: FC<any> = (data, form) => {
     });
     dispatch(getAllCustomer({}));
   }, []);
+
   return (
     <Row>
       <Space style={{width: '100%'}} size={24} direction="vertical">

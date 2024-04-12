@@ -1,41 +1,29 @@
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
-import OsCustomerSelect from '@/app/components/common/os-customer-select';
-import CommonDatePicker from '@/app/components/common/os-date-picker';
 import OsInput from '@/app/components/common/os-input';
-import OsInputNumber from '@/app/components/common/os-input/InputNumber';
-import OsOpportunitySelect from '@/app/components/common/os-opportunity-select';
-import OsPartnerProgramSelect from '@/app/components/common/os-partner-program-select';
-import OsPartnerSelect from '@/app/components/common/os-partner-select';
-import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {formatDate} from '@/app/utils/base';
 import {Form} from 'antd';
 import {FC, useEffect, useState} from 'react';
-import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
-import {setDealRegUpdateData} from '../../../../../../redux/slices/dealReg';
 import {CollapseSpaceStyle} from './styled-components';
 
 const CommonFields: FC<any> = (data) => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const [form] = Form.useForm();
-  const {dealReg, submitDealRegData} = useAppSelector((state) => state.dealReg);
-  const [partnerValue, setPartnerValue] = useState<number>();
   const [formDataValues, setFormDataValues] = useState<any>();
-  const [commonFieldData, setCommonFieldData] = useState<{
-    status: '';
-    date_submitted: '';
-    expiration_date: '';
-    partner_deal_id: '';
-    partner_approval_id: '';
-    customer_account: '';
-    account_contact: '';
-    industry: '';
-    account_website: '';
-    opportunity_description: '';
-    opportunity_id: 0;
-  }>();
+  // const [commonFieldData, setCommonFieldData] = useState<{
+  //   status: '';
+  //   date_submitted: '';
+  //   expiration_date: '';
+  //   partner_deal_id: '';
+  //   partner_approval_id: '';
+  //   customer_account: '';
+  //   account_contact: '';
+  //   industry: '';
+  //   account_website: '';
+  //   opportunity_description: '';
+  //   opportunity_id: 0;
+  // }>();
 
   const updateValuesFOrFOrmCommonMethod = (newObj: any) => {
     const newArr: any = formDataValues?.length > 0 ? [...formDataValues] : [];
@@ -59,130 +47,13 @@ const CommonFields: FC<any> = (data) => {
     // setFormDataValues
   };
 
-  const handleDealRegInformationChange = (field: string, value: any) => {
-    setCommonFieldData((prevData: any) => ({
-      ...prevData,
-      id: dealReg?.id,
-      [field]: value,
-    }));
-  };
-
-  const ResponseDetailItem = [
-    {
-      key: '1',
-      label: <Typography name="Body 2/Medium">Response Detail</Typography>,
-      children: (
-        <Space
-          size={36}
-          direction="vertical"
-          style={{
-            width: '100%',
-          }}
-        >
-          <Space
-            size={4}
-            direction="vertical"
-            style={{
-              width: '100%',
-            }}
-          >
-            <Typography name="Body 4/Medium">Status</Typography>
-            <CommonSelect placeholder="Select" style={{width: '100%'}} />
-          </Space>
-
-          <Row justify="space-between" gutter={[24, 24]}>
-            <Col sm={24} md={12}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">Date Submitted </Typography>
-                <CommonDatePicker
-                  // value={data?.data?.date_submitted}
-                  onChange={(value: any) =>
-                    handleDealRegInformationChange(
-                      'date_submitted',
-                      formatDate(value),
-                    )
-                  }
-                />
-              </Space>
-            </Col>
-            <Col sm={24} md={12}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">Expiration Date</Typography>
-                <CommonDatePicker
-                  // value={data?.data?.expiration_date}
-                  onChange={(value: any) =>
-                    handleDealRegInformationChange(
-                      'expiration_date',
-                      formatDate(value),
-                    )
-                  }
-                />
-              </Space>
-            </Col>
-          </Row>
-
-          <Row justify="space-between" gutter={[24, 24]}>
-            <Col sm={24} md={12}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">Partner Deal ID</Typography>
-                <OsInput
-                  placeholder="Enter ID"
-                  defaultValue={data?.data?.partner_deal_id}
-                  onChange={(e) =>
-                    handleDealRegInformationChange(
-                      'partner_deal_id',
-                      e?.target?.value,
-                    )
-                  }
-                />
-              </Space>
-            </Col>
-            <Col sm={24} md={12}>
-              <Space
-                size={4}
-                direction="vertical"
-                style={{
-                  width: '100%',
-                }}
-              >
-                <Typography name="Body 4/Medium">
-                  Partner Approval ID
-                </Typography>
-                <OsInput
-                  placeholder="Enter ID"
-                  defaultValue={data?.data?.partner_approval_id}
-                  onChange={(e) =>
-                    handleDealRegInformationChange(
-                      'partner_approval_id',
-                      e?.target?.value,
-                    )
-                  }
-                />
-              </Space>
-            </Col>
-          </Row>
-        </Space>
-      ),
-    },
-  ];
+  // const handleDealRegInformationChange = (field: string, value: any) => {
+  //   setCommonFieldData((prevData: any) => ({
+  //     ...prevData,
+  //     id: dealReg?.id,
+  //     [field]: value,
+  //   }));
+  // };
 
   useEffect(() => {
     form?.setFieldsValue({
@@ -197,173 +68,71 @@ const CommonFields: FC<any> = (data) => {
     });
   }, [data]);
 
-  const onFinish = (values: any) => {
-    console.log('valuesvalues', values);
-  };
-
-  const OpportunityInformationItem = [
-    {
-      key: '1',
-      label: (
-        <Typography name="Body 2/Medium">Opportunity Information</Typography>
-      ),
-      children: (
-        <Form
-          layout="vertical"
-          form={form}
-          // onFinish={onFinish}
-          requiredMark={false}
-          // onCanPlayCapture={onChange}
-        >
-          <Row justify="space-between" gutter={[24, 24]}>
-            <Col sm={24} md={12}>
-              <OsPartnerSelect
-                name="partner_id"
-                setPartnerValue={setPartnerValue}
-                // form={form}
-                partnerProgramName="partner_program_id"
-                isSuperAdmin={false}
-              />
-            </Col>
-
-            <Col sm={24} md={12}>
-              <OsPartnerProgramSelect
-                name="partner_program_id"
-                partnerId={partnerValue}
-                form={form}
-              />
-            </Col>
-          </Row>
-
-          <Row justify="space-between" gutter={[24, 24]}>
-            <Col sm={24} md={12}>
-              <OsOpportunitySelect
-                form={form}
-                customerValue={data?.data?.customer_id}
-              />
-            </Col>
-            <Col sm={24} md={12}>
-              <Form.Item
-                name="opportunity_description"
-                label="Opportunity Description"
-              >
-                <OsInput placeholder="Write text here!" />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row justify="space-between" gutter={[24, 24]}>
-            <Col sm={24} md={12}>
-              <Form.Item name="amount" label="Opportunity Value">
-                <OsInput placeholder="Write text here!" />
-              </Form.Item>
-            </Col>
-            <Col sm={24} md={12}>
-              <Form.Item name="probability" label="Probability">
-                <OsInputNumber
-                  min={0}
-                  formatter={(value) => `${value}%`}
-                  parser={(value) => value!.replace('%', '')}
-                  max={100}
-                  style={{width: '100%'}}
-                  placeholder="0.00%"
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row justify="space-between" gutter={[24, 24]}>
-            <Col sm={24} md={12}>
-              <Form.Item
-                name="estimated_close_date"
-                label="Estimated Close Date"
-              >
-                <CommonDatePicker />
-              </Form.Item>
-            </Col>
-            <Col sm={24} md={12}>
-              <OsCustomerSelect isRequired={false} />
-            </Col>
-          </Row>
-        </Form>
-      ),
-    },
-  ];
+  // const onFinish = (values: any) => {
+  //   console.log('valuesvalues', values);
+  // };
 
   return (
     <Row>
-      {/* <button onClick={}>dsfdwfdsfdsfs</button> */}
       <CollapseSpaceStyle size={24} direction="vertical">
-        {data?.data?.map((itemData: any, indexData: number) => (
-          <OsCollapseAdmin
-            // items={ResponseDetailItem}
-            items={[
-              {
-                key: itemData?.attributesHeaderId,
-                label: (
-                  <>
-                    <Space
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'start',
-                      }}
-                    >
-                      <Typography name="Body 2/Medium">
-                        {itemData?.attributesHeaderName}
-                      </Typography>
-                    </Space>
-                  </>
-                ),
-                children: (
-                  <>
-                    {itemData?.optionsValues?.map(
-                      (optionsItemValue: any, indexOfOptions: number) => (
-                        <Row
-                          justify="space-between"
-                          gutter={[24, 24]}
-                          style={{marginTop: '10px'}}
-                        >
-                          <Col span={8}>
-                            <Typography name="Body 4/Medium">
-                              {optionsItemValue?.label}
-                              {optionsItemValue?.is_required && (
-                                <span style={{color: 'red'}}>*</span>
-                              )}
-                            </Typography>
-                            <OsInput
-                              type={optionsItemValue?.data_type}
-                              onChange={(e: any) => {
-                                const newObj = {
-                                  label: optionsItemValue?.label,
-                                  value: e?.target?.value,
-                                  AttributeSection_id:
-                                    optionsItemValue?.attribute_section_id,
-                                  attributeFiled_id: optionsItemValue?.id,
-                                  indexForattributeFiled: indexOfOptions,
-                                  help_text: optionsItemValue?.help_text,
-                                };
-                                updateValuesFOrFOrmCommonMethod(newObj);
-                              }}
-                            />
+        {data?.data?.map((itemData: any, index: number) => (
+          <div key={Number(index)} style={{marginBottom: '16px'}}>
+            <OsCollapseAdmin
+              items={[
+                {
+                  key: itemData?.attributesHeaderId,
+                  label: (
+                    <>
+                      <Space
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'start',
+                        }}
+                      >
+                        <Typography name="Body 2/Medium">
+                          {itemData?.attributesHeaderName}
+                        </Typography>
+                      </Space>
+                    </>
+                  ),
+                  children: (
+                    <Row gutter={[16, 16]}>
+                      {itemData?.optionsValues?.map(
+                        (optionsItemValue: any, indexOfOptions: number) => (
+                          <Col span={8} key={Number(indexOfOptions)}>
+                            <div>
+                              <Typography name="Body 4/Medium">
+                                {optionsItemValue?.label}
+                                {optionsItemValue?.is_required && (
+                                  <span style={{color: 'red'}}>*</span>
+                                )}
+                              </Typography>
+                              <OsInput
+                                type={optionsItemValue?.data_type}
+                                onChange={(e: any) => {
+                                  const newObj = {
+                                    label: optionsItemValue?.label,
+                                    value: e?.target?.value,
+                                    AttributeSection_id:
+                                      optionsItemValue?.attribute_section_id,
+                                    attributeFiled_id: optionsItemValue?.id,
+                                    indexForattributeFiled: indexOfOptions,
+                                    help_text: optionsItemValue?.help_text,
+                                  };
+                                  updateValuesFOrFOrmCommonMethod(newObj);
+                                }}
+                              />
+                            </div>
                           </Col>
-                        </Row>
-                      ),
-                    )}
-                  </>
-                ),
-              },
-            ]}
-          />
+                        ),
+                      )}
+                    </Row>
+                  ),
+                },
+              ]}
+            />
+          </div>
         ))}
-      </CollapseSpaceStyle>
-      <CollapseSpaceStyle
-        size={24}
-        direction="vertical"
-        style={{
-          marginTop: '30px',
-        }}
-      >
-        <OsCollapseAdmin items={OpportunityInformationItem} />
       </CollapseSpaceStyle>
     </Row>
   );
