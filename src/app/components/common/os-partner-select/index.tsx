@@ -2,14 +2,14 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react/no-unstable-nested-components */
-import { partnerProgramFilter } from '@/app/utils/base';
-import { PlusIcon } from '@heroicons/react/24/outline';
-import { Form } from 'antd';
-import { FC, useEffect, useState } from 'react';
-import { getAllPartnerandProgram } from '../../../../../redux/actions/partner';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { setPartnerRequestData } from '../../../../../redux/slices/partner';
-import { Space } from '../antd/Space';
+import {partnerProgramFilter} from '@/app/utils/base';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import {Form} from 'antd';
+import {FC, useEffect, useState} from 'react';
+import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {setPartnerRequestData} from '../../../../../redux/slices/partner';
+import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import AddPartner from '../os-add-partner';
 import OsModal from '../os-modal';
@@ -66,7 +66,7 @@ const OsPartnerSelect: FC<{
         1,
         true,
       );
-      setAllFilterPartnerData(FilterArrayDataa);
+      setAllFilterPartnerData(FilterArrayDataa?.filterData);
     }
   }, [PartnerData]);
 
