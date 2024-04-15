@@ -120,10 +120,12 @@ const OsTable: FC<any> = ({
         selectedRowsKeys={[]}
         tableInModal={tableInModal}
         rowKey={(record: any) => record?.id}
-        rowSelection={{
-          type: tableSelectionType,
-          ...rowSelection,
-        }}
+        rowSelection={
+          rowSelection && {
+            type: tableSelectionType,
+            ...rowSelection,
+          }
+        }
         loading={{
           indicator: <GlobalLoader loading={loading} />,
           spinning: loading,

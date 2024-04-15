@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-undef */
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-else-return */
 /* eslint-disable consistent-return */
@@ -18,24 +19,26 @@
 import Typography from '@/app/components/common/typography';
 // eslint-disable-next-line import/no-extraneous-dependencies
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
-import { Form } from 'antd';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import {Form} from 'antd';
+import {useRouter} from 'next/navigation';
+import {useEffect, useState} from 'react';
+import {Option} from 'antd/es/mentions';
 import {
   deleteQuoteById,
-  getQuoteByManualUpdated,
+  queryAllManualQuotes,
 } from '../../../../../redux/actions/quote';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import QuoteAnalytics from '../allQuote/analytics';
-import { getSuperAdminQuoteColumns } from '../allQuote/tableColumns';
+import {getSuperAdminQuoteColumns} from '../allQuote/tableColumns';
 import ConcernDetail from './ConcernDetail';
 
 const AllQuote: React.FC = () => {
@@ -52,10 +55,19 @@ const AllQuote: React.FC = () => {
     visible: boolean;
     quoteId?: string;
   }>();
+  const [query, setQuery] = useState<{
+    organizationName: string | null;
+    createdBy: string | null;
+  }>({
+    organizationName: null,
+    createdBy: null,
+  });
+
+  const searchQuery = useDebounceHook(query, 400);
 
   useEffect(() => {
-    dispatch(getQuoteByManualUpdated());
-  }, []);
+    dispatch(queryAllManualQuotes(searchQuery));
+  }, [searchQuery]);
 
   const filteredData = data?.filter((item: any) =>
     item.QuoteFiles.some((quoteFile: any) => quoteFile.issue_type !== null),
@@ -105,7 +117,7 @@ const AllQuote: React.FC = () => {
     const data = {Ids: deleteIds};
     await dispatch(deleteQuoteById(data));
     setTimeout(() => {
-      dispatch(getQuoteByManualUpdated());
+      dispatch(queryAllManualQuotes({}));
     }, 1000);
     setDeleteIds([]);
     setShowModalDelete(false);
@@ -121,6 +133,13 @@ const AllQuote: React.FC = () => {
     setDeleteIds,
     setShowModalDelete,
     actionEye,
+  );
+
+  const uniqueCreatedBy = Array?.from(
+    new Set(data?.map((dataItem: any) => dataItem?.User?.user_name)),
+  );
+  const uniqueOrganization = Array?.from(
+    new Set(data?.map((dataItem: any) => dataItem?.organization)),
   );
 
   return (
@@ -152,25 +171,25 @@ const AllQuote: React.FC = () => {
                   style={{width: '200px'}}
                   placeholder="Search here"
                   showSearch
-                  // onSearch={(e) => {
-                  //   setQuery({
-                  //     ...query,
-                  //     customer: e,
-                  //   });
-                  // }}
-                  // onChange={(e) => {
-                  //   setQuery({
-                  //     ...query,
-                  //     customer: e,
-                  //   });
-                  // }}
-                  // value={query?.customer}
+                  onSearch={(e) => {
+                    setQuery({
+                      ...query,
+                      organizationName: e,
+                    });
+                  }}
+                  onChange={(e) => {
+                    setQuery({
+                      ...query,
+                      organizationName: e,
+                    });
+                  }}
+                  value={query?.organizationName}
                 >
-                  {/* {uniqueCustomer?.map((customer: any) => (
+                  {uniqueOrganization?.map((customer: any) => (
                     <Option key={customer} value={customer}>
                       {customer}
                     </Option>
-                  ))} */}
+                  ))}
                 </CommonSelect>
               </Space>
               <Space direction="vertical" size={0}>
@@ -180,25 +199,25 @@ const AllQuote: React.FC = () => {
                   placeholder="Search here"
                   showSearch
                   optionFilterProp="children"
-                  // onSearch={(e) => {
-                  //   setQuery({
-                  //     ...query,
-                  //     contact: e,
-                  //   });
-                  // }}
-                  // onChange={(e) => {
-                  //   setQuery({
-                  //     ...query,
-                  //     contact: e,
-                  //   });
-                  // }}
-                  // value={query?.contact}
+                  onSearch={(e) => {
+                    setQuery({
+                      ...query,
+                      createdBy: e,
+                    });
+                  }}
+                  onChange={(e) => {
+                    setQuery({
+                      ...query,
+                      createdBy: e,
+                    });
+                  }}
+                  value={query?.createdBy}
                 >
-                  {/* {uniqueBillingNames?.map((billingName: any) => (
-                    <Option key={billingName} value={billingName}>
-                      {billingName}
+                  {uniqueCreatedBy?.map((data: any) => (
+                    <Option key={data} value={data}>
+                      {data}
                     </Option>
-                  ))} */}
+                  ))}
                 </CommonSelect>
               </Space>
               <div
@@ -210,12 +229,12 @@ const AllQuote: React.FC = () => {
                   cursor="pointer"
                   name="Button 1"
                   color="#C6CDD5"
-                  // onClick={() => {
-                  //   setQuery({
-                  //     customer: null,
-                  //     contact: null,
-                  //   });
-                  // }}
+                  onClick={() => {
+                    setQuery({
+                      organizationName: null,
+                      createdBy: null,
+                    });
+                  }}
                 >
                   Reset
                 </Typography>
@@ -228,7 +247,7 @@ const AllQuote: React.FC = () => {
             dataSource={filteredData}
             scroll
             loading={loading}
-            rowSelection={rowSelection}
+            // rowSelection={rowSelection}
           />
         </div>
       </Space>
@@ -242,18 +261,16 @@ const AllQuote: React.FC = () => {
         heading="Delete Quote"
         description="Are you sure you want to delete this Quote?"
       />
-        <OsModal
-          width={700}
-          bodyPadding={40}
-          open={showConcernDetailModal?.visible}
-          onCancel={() => {
-            setShowConcernDetailModal({visible: false});
-          }}
-          title="Concern & Documents"
-          body={
-            <ConcernDetail showConcernDetailModal={showConcernDetailModal} />
-          }
-        />
+      <OsModal
+        width={700}
+        bodyPadding={40}
+        open={showConcernDetailModal?.visible}
+        onCancel={() => {
+          setShowConcernDetailModal({visible: false});
+        }}
+        title="Concern & Documents"
+        body={<ConcernDetail showConcernDetailModal={showConcernDetailModal} />}
+      />
     </>
   );
 };

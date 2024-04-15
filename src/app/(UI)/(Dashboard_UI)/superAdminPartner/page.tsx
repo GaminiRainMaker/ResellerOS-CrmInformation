@@ -148,8 +148,8 @@ const SuperAdminPartner: React.FC = () => {
     emptyText: (
       <EmptyContainer
         title="No Files"
-        actionButton="Request Partner"
-        // onClick={() => setShowModal((p) => !p)}
+        actionButton="New Partner"
+        onClick={() => setShowAddPartnerModal((p) => !p)}
       />
     ),
   };
