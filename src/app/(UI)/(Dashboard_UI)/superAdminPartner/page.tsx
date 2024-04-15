@@ -110,7 +110,7 @@ const SuperAdminPartner: React.FC = () => {
     } else {
       setAllFilterPartnerData(FilterArrayDataa);
     }
-  }, [allPartnerData, activeTab, PartnerData]);
+  }, [allPartnerData, activeTab, JSON.stringify(PartnerData)]);
 
   const updateRequest = async (type: boolean, id: number) => {
     const Data = {
