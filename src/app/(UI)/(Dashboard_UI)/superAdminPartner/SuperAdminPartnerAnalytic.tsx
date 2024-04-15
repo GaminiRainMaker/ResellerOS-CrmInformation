@@ -5,18 +5,21 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
+import { partnerProgramFilter } from '@/app/utils/base';
 import {
   CheckCircleIcon,
   ClipboardDocumentCheckIcon,
   UserGroupIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import {FC} from 'react';
+import {FC, useEffect} from 'react';
 
 const SuperAdminPartnerAnalytics: FC<any> = ({data}) => {
   const [token] = useThemeToken();
 
   console.log('PartnerAnalytics', data);
+
+
 
   const analyticsData = [
     {

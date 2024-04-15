@@ -431,6 +431,13 @@ export const partnerProgramFilter = (
   activeTab: number,
   superAdminSide?: boolean,
 ) => {
+  // console.log(
+  //   'queryQuoteFile',
+  //   userInformation,
+  //   allPartnerData,
+  //   activeTab,
+  //   FilterArrayDataa,
+  // );
   const FilterArrayDataa: any = [];
   // Used for case of User
   const aprovedIds: any = [];
@@ -497,6 +504,13 @@ export const partnerProgramFilter = (
 
   let allNotRequestedIds: any = [];
   allNotRequestedIds = aprovedIds?.concat(allRequestedIds);
+
+  console.log(
+    'werwewqeqe',
+    superAdminAllApprovedIds,
+    requestIdsForSuperAdmin,
+    rejectedIdsForSuperAdmin,
+  );
 
   if (activeTab === 1) {
     allPartnerData?.map((item: any) => {
