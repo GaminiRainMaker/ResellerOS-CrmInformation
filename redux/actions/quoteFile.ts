@@ -95,3 +95,19 @@ export const updateFileForQuoteJson = createAsyncThunk(
     }
   },
 );
+
+export const queryQuoteFile = createAsyncThunk(
+  'quoteFile/queryQuoteFile',
+  async (query: any, thunkApi) => {
+    try {
+      const obj = {
+        organizationName: query?.organizationName,
+        createdBy: query?.createdBy,
+      };
+      const res = await QUOTE_FILE_API.query(obj);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

@@ -33,7 +33,7 @@ import {
   getAllPartnerProgram,
 } from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import PartnerAnalytics from '../partners/partnerAnalytics';
+import SuperAdminPartnerAnalytics from './SuperAdminPartnerAnalytic';
 
 export interface SeparatedData {
   [partnerId: number]: {
@@ -87,7 +87,14 @@ const SuperAdminPartner: React.FC = () => {
       activeTab,
     );
 
-    console.log('FilterArrayDataaFilterArrayDataa', FilterArrayDataa);
+    console.log(
+      'queryQuoteFile',
+      userInformation,
+      allPartnerData,
+      activeTab,
+      FilterArrayDataa,
+    );
+
     const newArrForTab3: any = [];
     if (activeTab === 2) {
       FilterArrayDataa?.map((items: any) => {
@@ -150,8 +157,8 @@ const SuperAdminPartner: React.FC = () => {
     emptyText: (
       <EmptyContainer
         title="No Files"
-        actionButton="Request Partner"
-        // onClick={() => setShowModal((p) => !p)}
+        actionButton="New Partner"
+        onClick={() => setShowAddPartnerModal((p) => !p)}
       />
     ),
   };
@@ -436,7 +443,6 @@ const SuperAdminPartner: React.FC = () => {
         />
       ),
     },
-
     {
       label: (
         <Typography name="Body 4/Regular" onClick={() => setActiveTab(2)}>
@@ -447,21 +453,6 @@ const SuperAdminPartner: React.FC = () => {
       children: (
         <OsTable
           columns={PartnerProgramColumnsTab3}
-          // expandable={{
-          //   // eslint-disable-next-line react/no-unstable-nested-components
-          //   expandedRowRender: (record: any) => (
-          //     <OsTable
-          //       columns={partnerProgramColumns}
-          //       // dataSource={allApprovedObjects}
-          //       dataSource={record?.PartnerPrograms}
-          //       scroll
-          //       locale={locale}
-          //       loading={false}
-          //     />
-          //   ),
-          //   rowExpandable: (record: any) => record.name !== 'Not Expandable',
-          // }}
-          // dataSource={allApprovedObjects}
           dataSource={allPartnerFilterData}
           scroll
           locale={locale}
@@ -541,10 +532,11 @@ const SuperAdminPartner: React.FC = () => {
     }
   }, [activeTab]);
 
+  console.log('allPartnerFilterData', allPartnerFilterData);
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <PartnerAnalytics />
+        <SuperAdminPartnerAnalytics data={allPartnerFilterData} />
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>

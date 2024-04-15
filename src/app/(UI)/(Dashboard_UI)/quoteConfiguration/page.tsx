@@ -120,9 +120,6 @@ const AllQuote: React.FC = () => {
                   handleButtonClick();
                 }}
               />
-              <Space>
-                <OsDropdown menu={{items: []}} />
-              </Space>
             </Space>
           </Col>
         </Row>

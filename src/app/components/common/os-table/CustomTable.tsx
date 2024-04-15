@@ -39,10 +39,12 @@ const OsTableWithOutDrag: FC<any> = ({
       tableInModal={tableInModal}
       token={token}
       rowKey={(record: any) => record?.id}
-      rowSelection={{
-        type: tableSelectionType,
-        ...rowSelection,
-      }}
+      rowSelection={
+        rowSelection && {
+          type: tableSelectionType,
+          ...rowSelection,
+        }
+      }
       bordered
       loading={{
         indicator: <GlobalLoader loading={rest.loading} />,

@@ -26,25 +26,6 @@ const RolesAndPermission = () => {
   const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
   const [recordId, setRecordId] = useState<number>();
 
-  const dropDownItemss = [
-    {
-      key: '1',
-      label: <Typography name="Body 3/Regular">Select All</Typography>,
-    },
-    {
-      key: '2',
-      label: <Typography name="Body 3/Regular">Edit Selected</Typography>,
-    },
-    {
-      key: '3',
-      label: (
-        <Typography name="Body 3/Regular" color="#EB445A">
-          Delete Selected
-        </Typography>
-      ),
-    },
-  ];
-
   const providePermissions = () => {
     setUserRules((prev: any) =>
       prev.map((prevItem: any) => {
@@ -215,12 +196,6 @@ const RolesAndPermission = () => {
     }, 1000);
   };
 
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, record: any) => {
-      console.log('selectedRowKeys', selectedRowKeys, record);
-    },
-  };
-
   return (
     <>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
@@ -231,23 +206,14 @@ const RolesAndPermission = () => {
             </Typography>
           </Col>
           <Col>
-            <div
-              style={{
-                display: 'flex',
-                width: '40%',
-                gap: '8px',
-              }}
-            >
+            <Space size={8}>
               <OsButton text="CANCEL" buttontype="SECONDARY" />
               <OsButton
                 text="SAVE"
                 buttontype="PRIMARY"
                 clickHandler={onFinish}
               />
-              <Space>
-                <OsDropdown menu={{items: dropDownItemss}} />
-              </Space>
-            </div>
+            </Space>
           </Col>
         </Row>
 
@@ -256,7 +222,6 @@ const RolesAndPermission = () => {
           dataSource={userRules}
           scroll
           loading={loading}
-          rowSelection={rowSelection}
         />
       </Space>
 

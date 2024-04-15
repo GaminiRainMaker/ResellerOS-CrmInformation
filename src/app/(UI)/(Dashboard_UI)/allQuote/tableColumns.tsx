@@ -164,8 +164,10 @@ function getSuperAdminQuoteColumns(
       dataIndex: 'organization',
       key: 'organization',
       width: 220,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text}</Typography>
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.Quote?.organization}
+        </Typography>
       ),
     },
     {
@@ -204,11 +206,13 @@ function getSuperAdminQuoteColumns(
         <Typography
           name="Body 4/Regular"
           onClick={() => {
-            window.open(`/opportunityDetail?id=${record?.Opportunity?.id}`);
+            window.open(
+              `/opportunityDetail?id=${record?.Quote?.Opportunity?.id}`,
+            );
           }}
           hoverOnText
         >
-          {record?.Opportunity?.title ?? '--'}
+          {record?.Quote?.Opportunity?.title ?? '--'}
         </Typography>
       ),
     },
@@ -229,11 +233,11 @@ function getSuperAdminQuoteColumns(
         <Typography
           name="Body 4/Regular"
           onClick={() => {
-            window.open(`/accountInfo?id=${record?.User?.id}`);
+            window.open(`/accountInfo?id=${record?.Quote?.User?.id}`);
           }}
           hoverOnText
         >
-          {record?.User?.user_name ?? '--'}
+          {record?.Quote?.User?.user_name ?? '--'}
         </Typography>
       ),
     },
@@ -250,7 +254,7 @@ function getSuperAdminQuoteColumns(
       dataIndex: 'status',
       key: 'status',
       width: 187,
-      render: (text: string, record: any) => statusWrapper(record),
+      render: (text: string, record: any) => statusWrapper(record?.Quote?.status),
     },
     {
       title: ' ',
@@ -265,7 +269,7 @@ function getSuperAdminQuoteColumns(
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              actionEye(record.id);
+              actionEye(record?.Quote?.id);
             }}
           />
         </Space>
