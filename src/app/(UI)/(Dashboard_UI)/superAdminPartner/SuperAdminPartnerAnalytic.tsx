@@ -6,31 +6,28 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
 import {
-  CheckCircleIcon,
   ClipboardDocumentCheckIcon,
   UserGroupIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
-import {FC, useEffect} from 'react';
+import {FC} from 'react';
 
 const SuperAdminPartnerAnalytics: FC<any> = ({data}) => {
   const [token] = useThemeToken();
 
-  console.log('PartnerAnalytics', data);
-
-
-
   const analyticsData = [
     {
       key: 1,
-      primary: <Typography name="Heading 3/Medium">{data?.length}</Typography>,
+      primary: <Typography name="Heading 3/Medium">{6}</Typography>,
       secondry: 'Partners',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
+      primary: (
+        <Typography name="Heading 3/Medium">{data?.superAllPartner}</Typography>
+      ),
       secondry: 'Partner Programs',
       icon: (
         <ClipboardDocumentCheckIcon width={24} color={token?.colorSuccess} />
@@ -39,21 +36,23 @@ const SuperAdminPartnerAnalytics: FC<any> = ({data}) => {
     },
     {
       key: 3,
-      primary: <Typography name="Heading 3/Medium">{0}</Typography>,
+      primary: (
+        <Typography name="Heading 3/Medium">
+          {data?.superRequestedPartner}
+        </Typography>
+      ),
       secondry: 'In Request',
       icon: <ClipboardDocumentCheckIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
-    {
-      key: 4,
-      primary: <Typography name="Heading 3/Medium">{0}</Typography>,
-      secondry: 'Accepted',
-      icon: <CheckCircleIcon width={24} color={token?.colorWarning} />,
-      iconBg: token?.colorWarningBg,
-    },
+
     {
       key: 5,
-      primary: <Typography name="Heading 3/Medium">{0}</Typography>,
+      primary: (
+        <Typography name="Heading 3/Medium">
+          {data?.superRejectedPartner}
+        </Typography>
+      ),
       secondry: 'Rejected',
       icon: <XMarkIcon width={24} color={token?.colorError} />,
       iconBg: token?.colorErrorBg,

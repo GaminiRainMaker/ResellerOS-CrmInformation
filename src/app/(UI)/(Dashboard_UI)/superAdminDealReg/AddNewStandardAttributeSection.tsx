@@ -72,7 +72,7 @@ const AddNewStandardAttributeSection: FC<
               </SelectFormItem>
             </Col>
 
-            <Col span={24}>
+            <Col span={24} style={{display: 'flex'}}>
               <SelectFormItem
                 label={<Typography name="Body 4/Medium">Active</Typography>}
                 name="is_active"

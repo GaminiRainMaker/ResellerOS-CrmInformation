@@ -14,10 +14,10 @@ import {
   TrashIcon,
   UserGroupIcon,
 } from '@heroicons/react/24/outline';
-import {useEffect, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {useAppSelector} from '../../../../../redux/hook';
 
-const PartnerAnalytics = () => {
+const PartnerAnalytics: FC<any> = ({data}) => {
   const [token] = useThemeToken();
   const {data: PartnerData} = useAppSelector((state) => state.partner);
   const {data: PartnerProgramData} = useAppSelector(
@@ -26,6 +26,8 @@ const PartnerAnalytics = () => {
   const {userInformation} = useAppSelector((state) => state.user);
   const [activeCount, setActiveCount] = useState<number>(0);
   const [inActiveCount, setInActiveCount] = useState<number>(0);
+
+  console.log('allPartnerAnalyticData', data);
 
   useEffect(() => {
     if (PartnerData && PartnerData?.approved) {
@@ -46,45 +48,41 @@ const PartnerAnalytics = () => {
     }
   }, [PartnerData]);
 
-
   const analyticsData = [
     {
       key: 1,
-      primary: <Typography name="Heading 3/Medium">{0}</Typography>,
+      primary: (
+        <Typography name="Heading 3/Medium">{data?.userAllPartner}</Typography>
+      ),
       secondry: 'All Partners',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
-      primary: <Typography name="Heading 3/Medium">{0}</Typography>,
+      primary: (
+        <Typography name="Heading 3/Medium">
+          {data?.userActivePartner}
+        </Typography>
+      ),
       secondry: 'Active Partners',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
-      key: 3,
-      primary: (
-        <Typography name="Heading 3/Medium">
-          {PartnerProgramData?.length}
-        </Typography>
-      ),
-      secondry: 'All Partner Programs',
-      icon: (
-        <ClipboardDocumentCheckIcon width={24} color={token?.colorSuccess} />
-      ),
-      iconBg: token?.colorSuccessBg,
-    },
-    {
       key: 4,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
+      primary: <Typography name="Heading 3/Medium">1</Typography>,
       secondry: 'Active Partner Programs',
       icon: <PencilIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
     {
       key: 5,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
+      primary: (
+        <Typography name="Heading 3/Medium">
+          {data?.userRequestedPartner}
+        </Typography>
+      ),
       secondry: 'Requested',
       icon: <TagIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,

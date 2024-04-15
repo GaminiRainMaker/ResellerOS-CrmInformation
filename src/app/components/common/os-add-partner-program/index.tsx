@@ -2,22 +2,21 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
 import {useEffect, useState} from 'react';
+import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
 import {
-  getAllPartnerProgram,
   insertPartnerProgram,
   updatePartnerProgramById,
 } from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {AddPartnerInterface} from '../os-add-partner/os-add-partner.interface';
 import OsPartnerSelect from '../os-partner-select';
-import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
 
 const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
   form,
@@ -44,17 +43,22 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
           ...partnerProgramObj,
           id: formPartnerData?.id,
         }),
-      );
+      ).then((d: any) => {
+        if (d?.payload) {
+          form?.resetFields();
+          dispatch(getAllPartnerandProgram(''));
+          setOpen && setOpen(false);
+        }
+      });
     } else {
-      dispatch(insertPartnerProgram(partnerProgramObj)).then(() => {
-        form?.resetFields();
+      dispatch(insertPartnerProgram(partnerProgramObj)).then((d: any) => {
+        if (d?.payload) {
+          form?.resetFields();
+          dispatch(getAllPartnerandProgram(''));
+          setOpen && setOpen(false);
+        }
       });
     }
-    setTimeout(() => {
-      dispatch(getAllPartnerandProgram(''));
-    }, 500);
-
-    setOpen && setOpen(false);
   };
 
   useEffect(() => {

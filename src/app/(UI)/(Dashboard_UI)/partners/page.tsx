@@ -32,6 +32,7 @@ const Partners: React.FC = () => {
   const [activeTab, setActiveTab] = useState<number>(1);
   const [allPartnerData, setAllPartnerData] = useState<any>();
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
+  const [allPartnerAnalyticData, setAllAnalyticPartnerData] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
   const [formData, setformData] = useState<any>();
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
@@ -50,6 +51,7 @@ const Partners: React.FC = () => {
       allPartnerData,
       activeTab,
     );
+    setAllAnalyticPartnerData(FilterArrayDataa);
     const newArrForTab3: any = [];
     if (activeTab === 3) {
       FilterArrayDataa?.filterData?.map((items: any) => {
@@ -471,7 +473,7 @@ const Partners: React.FC = () => {
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <PartnerAnalytics />
+        <PartnerAnalytics data={allPartnerAnalyticData} />
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
