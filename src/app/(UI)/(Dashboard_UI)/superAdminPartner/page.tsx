@@ -78,6 +78,8 @@ const SuperAdminPartner: React.FC = () => {
   const {insertProgramLoading} = useAppSelector(
     (state) => state.partnerProgram,
   );
+  const [superAdminPartnerAnalyticData, setSuperAdminPartnerAnalyticData] =
+    useState<any>();
 
   useEffect(() => {
     dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
@@ -92,6 +94,7 @@ const SuperAdminPartner: React.FC = () => {
       allPartnerData,
       activeTab,
     );
+    setSuperAdminPartnerAnalyticData(FilterArrayDataa);
     const newArrForTab3: any = [];
     if (activeTab === 2) {
       FilterArrayDataa?.filterData?.map((items: any) => {
@@ -533,7 +536,7 @@ const SuperAdminPartner: React.FC = () => {
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <SuperAdminPartnerAnalytics data={allPartnerFilterData} />
+        <SuperAdminPartnerAnalytics data={superAdminPartnerAnalyticData} />
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
