@@ -431,6 +431,13 @@ export const partnerProgramFilter = (
   activeTab: number,
   superAdminSide?: boolean,
 ) => {
+  // console.log(
+  //   'queryQuoteFile',
+  //   userInformation,
+  //   allPartnerData,
+  //   activeTab,
+  //   FilterArrayDataa,
+  // );
   const FilterArrayDataa: any = [];
   // Used for case of User
   const aprovedIds: any = [];
@@ -471,6 +478,15 @@ export const partnerProgramFilter = (
         } else {
           // Approved for organization
           if (
+            (itemProgram?.user_id === userInformation?.id &&
+              !itemProgram?.AssignPartnerProgram) ||
+            itemProgram?.AssignPartnerProgram?.is_approved
+          ) {
+            superAdminAllApprovedIds?.push(
+              itemProgram?.AssignPartnerProgram?.partner_program_id ??
+                itemProgram?.id,
+            );
+          } else if (
             // Requested but not approved or decliend
             itemProgram?.AssignPartnerProgram?.is_approved === null
           ) {
@@ -504,6 +520,12 @@ export const partnerProgramFilter = (
   );
   let allNotRequestedIds: any = [];
   allNotRequestedIds = aprovedIds?.concat(allRequestedIds);
+  console.log(
+    'werwewqeqe',
+    superAdminAllApprovedIds,
+    requestIdsForSuperAdmin,
+    rejectedIdsForSuperAdmin,
+  );
 
   if (activeTab === 1) {
     allPartnerData?.map((item: any) => {

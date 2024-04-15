@@ -108,11 +108,15 @@ export const getQuotesByDateFilter = createAsyncThunk(
   },
 );
 
-export const getQuoteByManualUpdated = createAsyncThunk(
-  'quote/getQuoteByManualUpdated',
-  async (data, thunkApi) => {
+export const queryAllManualQuotes = createAsyncThunk(
+  'quote/queryAllManualQuotes',
+  async (query: any, thunkApi) => {
     try {
-      const res = await QUOTEAPI.getQuoteByManual();
+      const obj = {
+        organizationName: query?.organizationName,
+        createdBy: query?.createdBy,
+      };
+      const res = await QUOTEAPI.queryAllManualQuotes(obj);
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error?.message);
@@ -142,7 +146,6 @@ export const updateQuoteConcern = createAsyncThunk(
     }
   },
 );
-
 
 export const updateQuoteStatusById = createAsyncThunk(
   'quote/updateQuoteStatusById',

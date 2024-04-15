@@ -232,26 +232,15 @@ const AddUser = () => {
             </Typography>
           </Col>
           <Col>
-            <div
-              style={{
-                display: 'flex',
-                width: '40%',
-                gap: '8px',
+            <OsButton
+              text="Add New User"
+              buttontype="PRIMARY"
+              icon={<PlusIcon />}
+              clickHandler={() => {
+                setAddUserType('insert');
+                setShowAddUserModal((p) => !p);
               }}
-            >
-              <OsButton
-                text="Add New User"
-                buttontype="PRIMARY"
-                icon={<PlusIcon />}
-                clickHandler={() => {
-                  setAddUserType('insert');
-                  setShowAddUserModal((p) => !p);
-                }}
-              />
-              <Space>
-                <OsDropdown menu={{items: dropDownItemss}} />
-              </Space>
-            </div>
+            />
           </Col>
         </Row>
 

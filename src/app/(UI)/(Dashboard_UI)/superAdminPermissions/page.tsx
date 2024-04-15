@@ -128,11 +128,7 @@ const SuperAdminRolesAndPermission = () => {
     dispatch(getUserByOrganization(userInformation?.organization));
   }, []);
 
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, record: any) => {
-      console.log('selectedRowKeys', selectedRowKeys, record);
-    },
-  };
+
 
   return (
     <>
@@ -150,7 +146,6 @@ const SuperAdminRolesAndPermission = () => {
           dataSource={userRules}
           scroll
           loading={loading}
-          rowSelection={rowSelection}
         />
       </Space>
     </>

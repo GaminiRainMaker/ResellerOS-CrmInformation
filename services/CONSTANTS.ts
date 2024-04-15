@@ -17,6 +17,7 @@ export const API = {
     updateQuoteJson: '/quote/updateQuoteJsonAndManual',
     ConcernUpdate: '/quote/updateQuoteConcern',
     UpdateQuoteStatusById: '/quote/updateQuoteStatusById',
+    QueryAllManualQuotes: '/quote/queryAllManualQuotes',
   },
   QUOTE_LINE_ITEM: {
     INDEX: '/quoteLineItem',

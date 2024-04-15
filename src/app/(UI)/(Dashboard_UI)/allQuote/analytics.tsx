@@ -2,6 +2,7 @@ import {
   CheckBadgeIcon,
   ClipboardDocumentCheckIcon,
   ClockIcon,
+  DocumentPlusIcon,
   QueueListIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
@@ -12,46 +13,53 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 const QuoteAnalytics = (props: any) => {
   const {quoteData, deletedQuote} = props;
   const [token] = useThemeToken();
-  const completedQuote = quoteData?.filter((item: any) => item?.is_completed);
-  const draftedQuote = quoteData?.filter((item: any) => item?.is_drafted);
-  const recentQuote = quoteData?.filter(
-    (item: any) => !item?.is_drafted && !item?.is_completed,
+  const editedQuotes = quoteData?.filter((d: any) => d?.issue_type !== null);
+
+  const completedQuote = editedQuotes?.filter(
+    (item: any) => item?.status === 'Completed',
   );
+  const draftedQuote = editedQuotes?.filter(
+    (item: any) => item?.Quote?.status === 'Drafts',
+  );
+  const inProgressQuote = editedQuotes?.filter(
+    (item: any) => item?.Quote?.status === 'In Progress',
+  );
+
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{quoteData?.length}</div>,
-      secondry: 'Total Quotes',
+      primary: <div>{editedQuotes?.length}</div>,
+      secondry: 'Edited Quotes',
       icon: <QueueListIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
+      primary: <div>{quoteData?.length}</div>,
+      secondry: 'Edited Files',
+      icon: <DocumentPlusIcon width={24} color={token?.colorLink} />,
+      iconBg: token?.colorLinkActive,
+    },
+    {
+      key: 3,
       primary: <div>{completedQuote?.length}</div>,
       secondry: 'Completed',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
     },
     {
-      key: 3,
-      primary: <div>{recentQuote?.length}</div>,
+      key: 4,
+      primary: <div>{draftedQuote?.length}</div>,
       secondry: 'Drafts',
       icon: <ClipboardDocumentCheckIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
     {
-      key: 4,
-      primary: <div>{draftedQuote?.length}</div>,
+      key: 5,
+      primary: <div>{inProgressQuote?.length}</div>,
       secondry: 'In Progress',
       icon: <ClockIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
-    },
-    {
-      key: 5,
-      primary: <div>{deletedQuote?.length}</div>,
-      secondry: 'Deleted',
-      icon: <TrashIcon width={24} color={token?.colorError} />,
-      iconBg: token?.colorErrorBg,
     },
   ];
 

@@ -5,8 +5,8 @@ import {get, patch, post} from './index';
 
 export const QUOTEAPI = {
   get: () => get(API.QUOTE.INDEX) as Promise<AxiosResponse<[]>>,
-  getQuoteByManual: () =>
-    get(API.QUOTE.GetQuoteByManual) as Promise<AxiosResponse<[]>>,
+  queryAllManualQuotes: (data: any) =>
+    post(API.QUOTE.QueryAllManualQuotes, data) as Promise<AxiosResponse<[]>>,
   post: (data: any) => post(API.QUOTE.INDEX, data),
   query: (data: any) =>
     post(API.QUOTE.QUERY, data) as Promise<AxiosResponse<[]>>,

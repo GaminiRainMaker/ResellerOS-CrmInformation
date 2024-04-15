@@ -537,8 +537,7 @@ const SideBar = () => {
         </Typography>,
         '6',
       ),
-    !isAdmin &&
-      Role === 'reseller' &&
+    Role === 'reseller' &&
       getItem(
         <Typography
           onClick={() => {

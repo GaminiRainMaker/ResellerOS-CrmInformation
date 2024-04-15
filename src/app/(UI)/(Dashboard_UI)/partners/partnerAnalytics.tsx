@@ -27,7 +27,6 @@ const PartnerAnalytics = () => {
   const [activeCount, setActiveCount] = useState<number>(0);
   const [inActiveCount, setInActiveCount] = useState<number>(0);
 
-
   useEffect(() => {
     if (PartnerData && PartnerData?.approved) {
       const {active, inactive} = PartnerData?.approved.reduce(
@@ -47,71 +46,48 @@ const PartnerAnalytics = () => {
     }
   }, [PartnerData]);
 
+
   const analyticsData = [
     {
       key: 1,
-      primary: (
-        <Typography name="Heading 3/Medium">
-          {PartnerData?.approved?.length}
-        </Typography>
-      ),
-      secondry: 'Partners',
+      primary: <Typography name="Heading 3/Medium">{0}</Typography>,
+      secondry: 'All Partners',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
+      primary: <Typography name="Heading 3/Medium">{0}</Typography>,
+      secondry: 'Active Partners',
+      icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
+      iconBg: token?.colorInfoBgHover,
+    },
+    {
+      key: 3,
       primary: (
         <Typography name="Heading 3/Medium">
           {PartnerProgramData?.length}
         </Typography>
       ),
-      secondry: 'Partner Programs',
+      secondry: 'All Partner Programs',
       icon: (
         <ClipboardDocumentCheckIcon width={24} color={token?.colorSuccess} />
       ),
       iconBg: token?.colorSuccessBg,
     },
-    userInformation?.SuperAdmin
-      ? {
-          key: 3,
-          primary: (
-            <Typography name="Heading 3/Medium">{activeCount}</Typography>
-          ),
-          secondry: 'Active',
-          icon: <CheckCircleIcon width={24} color={token?.colorLink} />,
-          iconBg: token?.colorLinkActive,
-        }
-      : {
-          key: 3,
-          primary: <Typography name="Heading 3/Medium">20</Typography>,
-          secondry: 'Deal Registrations',
-          icon: <PencilIcon width={24} color={token?.colorLink} />,
-          iconBg: token?.colorLinkActive,
-        },
-    userInformation?.SuperAdmin
-      ? {
-          key: 4,
-          primary: (
-            <Typography name="Heading 3/Medium">{inActiveCount}</Typography>
-          ),
-          secondry: 'InActive',
-          icon: <ClockIcon width={24} color={token?.colorWarning} />,
-          iconBg: token?.colorWarningBg,
-        }
-      : {
-          key: 4,
-          primary: <Typography name="Heading 3/Medium">05</Typography>,
-          secondry: 'Quotes',
-          icon: <TagIcon width={24} color={token?.colorWarning} />,
-          iconBg: token?.colorWarningBg,
-        },
+    {
+      key: 4,
+      primary: <Typography name="Heading 3/Medium">0</Typography>,
+      secondry: 'Active Partner Programs',
+      icon: <PencilIcon width={24} color={token?.colorLink} />,
+      iconBg: token?.colorLinkActive,
+    },
     {
       key: 5,
-      primary: <Typography name="Heading 3/Medium">{0}</Typography>,
-      secondry: 'Deleted',
-      icon: <TrashIcon width={24} color={token?.colorError} />,
-      iconBg: token?.colorErrorBg,
+      primary: <Typography name="Heading 3/Medium">0</Typography>,
+      secondry: 'Requested',
+      icon: <TagIcon width={24} color={token?.colorWarning} />,
+      iconBg: token?.colorWarningBg,
     },
   ];
 
