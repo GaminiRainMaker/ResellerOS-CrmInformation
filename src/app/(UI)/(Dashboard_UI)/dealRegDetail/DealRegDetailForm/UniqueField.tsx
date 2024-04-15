@@ -20,7 +20,9 @@ const UniqueFields: React.FC<any> = ({
   // const formDataObject = JSON?.parse(dealReg?.PartnerProgram?.form_data);
 
   useEffect(() => {
-    setCartItems(JSON?.parse(data?.form_data));
+    if (!cartItems) {
+      setCartItems(JSON?.parse(data?.form_data));
+    }
   }, [data]);
 
   const updateUniqueFiledData = () => {
