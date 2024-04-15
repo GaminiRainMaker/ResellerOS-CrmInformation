@@ -52,7 +52,7 @@ const Partners: React.FC = () => {
     );
     const newArrForTab3: any = [];
     if (activeTab === 3) {
-      FilterArrayDataa?.map((items: any) => {
+      FilterArrayDataa?.filterData?.map((items: any) => {
         items?.PartnerPrograms?.map((itemInner: any) => {
           const newObj: any = {
             ...itemInner,
@@ -66,7 +66,7 @@ const Partners: React.FC = () => {
     if (activeTab === 3) {
       setAllFilterPartnerData(newArrForTab3);
     } else {
-      setAllFilterPartnerData(FilterArrayDataa);
+      setAllFilterPartnerData(FilterArrayDataa?.filterData);
     }
   }, [allPartnerData, activeTab]);
   const locale = {

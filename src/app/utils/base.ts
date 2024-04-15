@@ -431,13 +431,6 @@ export const partnerProgramFilter = (
   activeTab: number,
   superAdminSide?: boolean,
 ) => {
-  // console.log(
-  //   'queryQuoteFile',
-  //   userInformation,
-  //   allPartnerData,
-  //   activeTab,
-  //   FilterArrayDataa,
-  // );
   const FilterArrayDataa: any = [];
   // Used for case of User
   const aprovedIds: any = [];
@@ -512,20 +505,19 @@ export const partnerProgramFilter = (
     }
   });
 
-  console.log(
-    '324234234',
-    superAdminAllApprovedIds,
-    requestIdsForSuperAdmin,
-    rejectedIdsForSuperAdmin,
-  );
   let allNotRequestedIds: any = [];
   allNotRequestedIds = aprovedIds?.concat(allRequestedIds);
-  console.log(
-    'werwewqeqe',
-    superAdminAllApprovedIds,
-    requestIdsForSuperAdmin,
-    rejectedIdsForSuperAdmin,
-  );
+
+  // Case for User active only
+  const userActivePartner: any = [];
+
+  allPartnerData?.map((item: any) => {
+    item?.PartnerPrograms?.filter((itemProgramD: any) => {
+      if (!allNotRequestedIds?.includes(itemProgramD?.id)) {
+        userActivePartner?.push(itemProgramD?.id);
+      }
+    });
+  });
 
   if (activeTab === 1) {
     allPartnerData?.map((item: any) => {
@@ -610,7 +602,16 @@ export const partnerProgramFilter = (
     });
   }
 
-  return FilterArrayDataa;
+  return {
+    filterData: FilterArrayDataa,
+    superRequestedPartner: requestIdsForSuperAdmin?.length,
+    superRejectedPartner: rejectedIdsForSuperAdmin?.length,
+    superAllPartner: superAdminAllApprovedIds?.length,
+    userActivePartner: aprovedIds?.length,
+    userRequestedPartner: allRequestedIds?.length,
+    userAllPartner: userActivePartner?.length,
+  };
+  // return FilterArrayDataa;
 };
 
 export const formatStatus = (str: string) => {

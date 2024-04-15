@@ -89,7 +89,7 @@ const SuperAdminPartner: React.FC = () => {
 
     const newArrForTab3: any = [];
     if (activeTab === 2) {
-      FilterArrayDataa?.map((items: any) => {
+      FilterArrayDataa?.filterData?.map((items: any) => {
         items?.PartnerPrograms?.map((itemInner: any) => {
           const newObj: any = {
             ...itemInner,
@@ -103,7 +103,7 @@ const SuperAdminPartner: React.FC = () => {
     if (activeTab === 2) {
       setAllFilterPartnerData(newArrForTab3);
     } else {
-      setAllFilterPartnerData(FilterArrayDataa);
+      setAllFilterPartnerData(FilterArrayDataa?.filterData);
     }
   }, [allPartnerData, activeTab]);
 
