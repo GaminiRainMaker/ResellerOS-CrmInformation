@@ -39,11 +39,12 @@ const DealRegDetail = () => {
   } = useAppSelector((state) => state.dealReg);
   const [open, setOpen] = useState(false);
   const searchParams = useSearchParams();
+  const [activeKey, setActiveKey] = useState('');
   const getOpportunityId = searchParams.get('opportunityId');
   const getPartnerProgramId = searchParams.get('program_id');
 
   const [selectedUserId, setSelectedUserId] = useState<any>();
-  const [formDataValues, setFormDataValues] = useState<any>();
+  const [formDataValues, setFormDataValues] = useState<any>([]);
   const [cartItems, setCartItems] = useState<any>();
 
   useEffect(() => {
@@ -96,6 +97,16 @@ const DealRegDetail = () => {
     // },
   ];
 
+  useEffect(() => {
+    if (!activeKey) {
+      if (DealRegData?.length > 0) {
+        const program_id = DealRegData[0]?.partner_program_id;
+        setActiveKey(program_id as string);
+        setFormDataValues(DealRegData);
+      }
+    }
+  }, [DealRegData]);
+
   const onFinish = async () => {
     const dealRegNewData = form.getFieldsValue();
     try {
@@ -113,7 +124,7 @@ const DealRegDetail = () => {
       console.error('Error:', error);
     }
   };
-
+  console.log(formDataValues, 'shdgshagdhsgfghsdgfh', DealRegData);
   return (
     <div>
       <Row justify="space-between" align="middle">
@@ -160,9 +171,12 @@ const DealRegDetail = () => {
         tabs={DealRegData}
         selectedUserId={selectedUserId}
         form={form}
+        activeKey={activeKey}
         setFormDataValues={setFormDataValues}
         setCartItems={setCartItems}
         cartItems={cartItems}
+        setActiveKey={setActiveKey}
+        formDataValues={formDataValues}
       />
 
       <OsDrawer

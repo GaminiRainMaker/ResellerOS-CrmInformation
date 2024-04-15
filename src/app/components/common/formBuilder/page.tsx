@@ -176,7 +176,6 @@ const FormBuilderMain: React.FC<any> = ({
     setCartItems(newTempArr);
   };
 
-  // console.log('cartItems', cartItems);
   return (
     <>
       {!previewFile && (

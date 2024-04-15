@@ -12,13 +12,17 @@ import {CollapseSpaceStyle} from './styled-components';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {updateDealRegById} from '../../../../../../redux/actions/dealReg';
 
-const CommonFields: FC<any> = (data) => {
+const CommonFields: FC<any> = ({
+  data,
+  formDataValues,
+  setFormDataValues,
+  activeKey,
+}) => {
   // const dispatch = useAppDispatch();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const getDealId = searchParams.get('id');
-  const [formDataValues, setFormDataValues] = useState<any>();
   const {dealReg} = useAppSelector((state) => state.dealReg);
   const [formDataa, setFormData] = useState<any>();
 
@@ -39,23 +43,21 @@ const CommonFields: FC<any> = (data) => {
 
   const updateValuesFOrFOrmCommonMethod = (newObj: any) => {
     const newArr: any = formDataValues?.length > 0 ? [...formDataValues] : [];
+    const index = newArr.findIndex(
+      (item: any) => item.partner_program_id === activeKey,
+    );
+    if (index > -1) {
+      const obj = {...newArr[index]};
+      const common_values: any = obj?.common_formData
+        ? obj?.common_formData
+        : {};
+      common_values[newObj.label] = newObj.value;
+      obj.common_formData = common_values;
+      newArr[index] = obj;
 
-    if (newArr?.length > 0) {
-      const FindIndexOfObject = newArr?.findIndex(
-        (item: any) =>
-          item?.AttributeSection_id === newObj?.AttributeSection_id &&
-          item?.attributeFiled_id === newObj?.attributeFiled_id &&
-          item?.indexForattributeFiled === newObj?.indexForattributeFiled,
-      );
-      if (FindIndexOfObject !== -1) {
-        newArr[FindIndexOfObject || 0].value = newObj?.value;
-      } else {
-        newArr?.push(newObj);
-      }
-    } else {
-      newArr?.push(newObj);
+      setFormDataValues(newArr);
     }
-    setFormDataValues(newArr);
+
     // setFormDataValues
   };
 
@@ -83,11 +85,11 @@ const CommonFields: FC<any> = (data) => {
   // const onFinish = (values: any) => {
   //   console.log('valuesvalues', values);
   // };
-
+  console.log(data, 'sjsajdjsdhf');
   return (
     <Row>
       <CollapseSpaceStyle size={24} direction="vertical">
-        {data?.data?.map((itemData: any, index: number) => (
+        {data?.map((itemData: any, index: number) => (
           <div key={Number(index)} style={{marginBottom: '16px'}}>
             <OsCollapseAdmin
               items={[
@@ -143,13 +145,8 @@ const CommonFields: FC<any> = (data) => {
                                   defaultValue={dataaForItem?.value}
                                   onChange={(e: any) => {
                                     const newObj = {
-                                      label: optionsItemValue?.label,
                                       value: e?.target?.value,
-                                      AttributeSection_id:
-                                        optionsItemValue?.attribute_section_id,
-                                      attributeFiled_id: optionsItemValue?.id,
-                                      indexForattributeFiled: indexOfOptions,
-                                      help_text: optionsItemValue?.help_text,
+                                      label: optionsItemValue?.id,
                                     };
                                     updateValuesFOrFOrmCommonMethod(newObj);
                                   }}
