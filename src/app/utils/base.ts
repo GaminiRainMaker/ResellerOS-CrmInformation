@@ -496,6 +496,12 @@ export const partnerProgramFilter = (
     }
   });
 
+  console.log(
+    '324234234',
+    superAdminAllApprovedIds,
+    requestIdsForSuperAdmin,
+    rejectedIdsForSuperAdmin,
+  );
   let allNotRequestedIds: any = [];
   allNotRequestedIds = aprovedIds?.concat(allRequestedIds);
 
