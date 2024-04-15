@@ -33,7 +33,7 @@ import {
   getAllPartnerProgram,
 } from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import PartnerAnalytics from '../partners/partnerAnalytics';
+import SuperAdminPartnerAnalytics from './SuperAdminPartnerAnalytic';
 
 export interface SeparatedData {
   [partnerId: number]: {
@@ -542,7 +542,7 @@ const SuperAdminPartner: React.FC = () => {
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <PartnerAnalytics />
+        <SuperAdminPartnerAnalytics data={allPartnerFilterData} />
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
