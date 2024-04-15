@@ -44,6 +44,7 @@ const DealRegDetail = () => {
 
   const [selectedUserId, setSelectedUserId] = useState<any>();
   const [formDataValues, setFormDataValues] = useState<any>();
+  const [cartItems, setCartItems] = useState<any>();
 
   useEffect(() => {
     if (getOpportunityId) {
@@ -160,6 +161,8 @@ const DealRegDetail = () => {
         selectedUserId={selectedUserId}
         form={form}
         setFormDataValues={setFormDataValues}
+        setCartItems={setCartItems}
+        cartItems={cartItems}
       />
 
       <OsDrawer

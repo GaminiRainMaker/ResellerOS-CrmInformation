@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable array-callback-return */
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
@@ -5,25 +7,36 @@ import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
 import {FC, useEffect, useState} from 'react';
+import {useSearchParams} from 'next/navigation';
 import {CollapseSpaceStyle} from './styled-components';
+import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+import {updateDealRegById} from '../../../../../../redux/actions/dealReg';
 
 const CommonFields: FC<any> = (data) => {
   // const dispatch = useAppDispatch();
   const [form] = Form.useForm();
+  const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
+  const getDealId = searchParams.get('id');
   const [formDataValues, setFormDataValues] = useState<any>();
-  // const [commonFieldData, setCommonFieldData] = useState<{
-  //   status: '';
-  //   date_submitted: '';
-  //   expiration_date: '';
-  //   partner_deal_id: '';
-  //   partner_approval_id: '';
-  //   customer_account: '';
-  //   account_contact: '';
-  //   industry: '';
-  //   account_website: '';
-  //   opportunity_description: '';
-  //   opportunity_id: 0;
-  // }>();
+  const {dealReg} = useAppSelector((state) => state.dealReg);
+  const [formDataa, setFormData] = useState<any>();
+
+  useEffect(() => {
+    if (dealReg && dealReg?.form_data) {
+      setFormData(JSON?.parse(dealReg?.form_data?.[0]));
+    }
+  }, [dealReg]);
+  console.log('dealReg', formDataa);
+
+  const updateTheFormValuess = () => {
+    const dataaa: any = {
+      id: getDealId,
+      form_data: [JSON?.stringify(formDataValues)],
+    };
+
+    dispatch(updateDealRegById(dataaa));
+  };
 
   const updateValuesFOrFOrmCommonMethod = (newObj: any) => {
     const newArr: any = formDataValues?.length > 0 ? [...formDataValues] : [];
@@ -89,6 +102,9 @@ const CommonFields: FC<any> = (data) => {
                           justifyContent: 'start',
                         }}
                       >
+                        {/* <button onClick={updateTheFormValuess}>
+                          updateTheFormValuess
+                        </button> */}
                         <Typography name="Body 2/Medium">
                           {itemData?.attributesHeaderName}
                         </Typography>
@@ -98,33 +114,51 @@ const CommonFields: FC<any> = (data) => {
                   children: (
                     <Row gutter={[16, 16]}>
                       {itemData?.optionsValues?.map(
-                        (optionsItemValue: any, indexOfOptions: number) => (
-                          <Col span={8} key={Number(indexOfOptions)}>
-                            <div>
-                              <Typography name="Body 4/Medium">
-                                {optionsItemValue?.label}
-                                {optionsItemValue?.is_required && (
-                                  <span style={{color: 'red'}}>*</span>
-                                )}
-                              </Typography>
-                              <OsInput
-                                type={optionsItemValue?.data_type}
-                                onChange={(e: any) => {
-                                  const newObj = {
-                                    label: optionsItemValue?.label,
-                                    value: e?.target?.value,
-                                    AttributeSection_id:
-                                      optionsItemValue?.attribute_section_id,
-                                    attributeFiled_id: optionsItemValue?.id,
-                                    indexForattributeFiled: indexOfOptions,
-                                    help_text: optionsItemValue?.help_text,
-                                  };
-                                  updateValuesFOrFOrmCommonMethod(newObj);
-                                }}
-                              />
-                            </div>
-                          </Col>
-                        ),
+                        (optionsItemValue: any, indexOfOptions: number) => {
+                          console.log('435435', formDataa);
+
+                          const dataaForItem = formDataa?.find((items: any) => {
+                            if (
+                              optionsItemValue?.label === items?.label &&
+                              indexOfOptions ===
+                                items?.indexForattributeFiled &&
+                              optionsItemValue?.attribute_section_id ===
+                                items?.AttributeSection_id &&
+                              optionsItemValue?.id === items?.attributeFiled_id
+                            ) {
+                              return items;
+                            }
+                          });
+                          console.log('43543535', dataaForItem);
+                          return (
+                            <Col span={8} key={Number(indexOfOptions)}>
+                              <div>
+                                <Typography name="Body 4/Medium">
+                                  {optionsItemValue?.label}
+                                  {optionsItemValue?.is_required && (
+                                    <span style={{color: 'red'}}>*</span>
+                                  )}
+                                </Typography>
+                                <OsInput
+                                  type={optionsItemValue?.data_type}
+                                  defaultValue={dataaForItem?.value}
+                                  onChange={(e: any) => {
+                                    const newObj = {
+                                      label: optionsItemValue?.label,
+                                      value: e?.target?.value,
+                                      AttributeSection_id:
+                                        optionsItemValue?.attribute_section_id,
+                                      attributeFiled_id: optionsItemValue?.id,
+                                      indexForattributeFiled: indexOfOptions,
+                                      help_text: optionsItemValue?.help_text,
+                                    };
+                                    updateValuesFOrFOrmCommonMethod(newObj);
+                                  }}
+                                />
+                              </div>
+                            </Col>
+                          );
+                        },
                       )}
                     </Row>
                   ),
