@@ -25,7 +25,6 @@ import {
 } from '../../../../../redux/actions/dealRegAddress';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
-import {setSubmitDealRegData} from '../../../../../redux/slices/dealReg';
 
 const DealRegDetail = () => {
   const [form] = Form.useForm();
@@ -106,6 +105,23 @@ const DealRegDetail = () => {
       }
     }
   }, [DealRegData]);
+
+  useEffect(() => {
+    if (cartItems) {
+      const newArr = [...formDataValues];
+      const index = newArr.findIndex(
+        (item: any) => item.partner_program_id === activeKey,
+      );
+
+      if (index > -1) {
+        const obj = {...newArr[index]};
+        obj.unique_form_data = cartItems;
+        newArr[index] = obj;
+
+        setFormDataValues(newArr);
+      }
+    }
+  }, [cartItems]);
 
   const onFinish = async () => {
     const dealRegNewData = form.getFieldsValue();

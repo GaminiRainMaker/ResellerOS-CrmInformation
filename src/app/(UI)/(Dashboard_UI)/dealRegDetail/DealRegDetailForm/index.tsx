@@ -20,12 +20,13 @@ const DealRegDetailForm: FC<any> = ({
   activeKey,
   setFormDataValues,
   formDataValues,
+  cartItems,
+  setCartItems,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {dealReg} = useAppSelector((state) => state.dealReg);
   const [commonFiledData, setCommonFiledData] = useState<any>();
-  const [cartItems, setCartItems] = useState<any>();
 
   const [sectionIndexActive, setSectionIndexAactive] = useState<any>();
 
@@ -49,23 +50,6 @@ const DealRegDetailForm: FC<any> = ({
       ),
     },
   ];
-
-  useEffect(() => {
-    if (cartItems) {
-      const newArr = [...formDataValues];
-      const index = newArr.findIndex(
-        (item: any) => item.partner_program_id === activeKey,
-      );
-
-      if (index > -1) {
-        const obj = {...newArr[index]};
-        obj.unique_form_data = cartItems;
-        newArr[index] = obj;
-
-        setFormDataValues(newArr);
-      }
-    }
-  }, [cartItems]);
 
   const UniqueFieldsItems = [
     {
