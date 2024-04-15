@@ -48,6 +48,7 @@ const CommonFields: FC<any> = ({
     );
     if (index > -1) {
       const obj = {...newArr[index]};
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       const common_values: any = obj?.common_formData
         ? obj?.common_formData
         : {};

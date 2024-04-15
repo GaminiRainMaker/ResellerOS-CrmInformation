@@ -440,7 +440,6 @@ const AddRegistrationForm: FC<any> = ({setShowModal, isDealRegDetail}) => {
     }
   };
 
-
   return (
     <>
       {!toggle ? (

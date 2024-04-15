@@ -1,20 +1,20 @@
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
 import DealRegCustomTabs from '@/app/components/common/os-custom-tab/DealRegCustomTab';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
-import Typography from '@/app/components/common/typography';
-import {ArrowDownTrayIcon, PlusIcon} from '@heroicons/react/24/outline';
-import {MenuProps} from 'antd';
-import Form from 'antd/es/form';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
 import OsModal from '@/app/components/common/os-modal';
+import Typography from '@/app/components/common/typography';
+import { ArrowDownTrayIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { MenuProps } from 'antd';
+import Form from 'antd/es/form';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
   getDealRegByOpportunityId,
   getDealRegByPartnerProgramId,
@@ -24,10 +24,9 @@ import {
   getDealRegAddressById,
   updateDealRegAddressById,
 } from '../../../../../redux/actions/dealRegAddress';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
-import {setSubmitDealRegData} from '../../../../../redux/slices/dealReg';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import AddRegistrationForm from '../dealReg/AddRegistrationForm';
+import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
 
 const DealRegDetail = () => {
   const [form] = Form.useForm();

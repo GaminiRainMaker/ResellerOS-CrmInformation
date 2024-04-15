@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable consistent-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {sendDataToNanonets} from '@/app/utils/base';
