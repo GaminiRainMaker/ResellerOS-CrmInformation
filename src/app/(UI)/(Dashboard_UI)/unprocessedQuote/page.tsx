@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable arrow-body-style */
 /* eslint-disable no-else-return */
@@ -29,13 +30,14 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import {Form} from 'antd';
+import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import {Option} from 'antd/es/mentions';
 import {
   deleteQuoteById,
   queryAllManualQuotes,
 } from '../../../../../redux/actions/quote';
+import {queryQuoteFile} from '../../../../../redux/actions/quoteFile';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import QuoteAnalytics from '../allQuote/analytics';
 import {getSuperAdminQuoteColumns} from '../allQuote/tableColumns';
@@ -46,7 +48,7 @@ const AllQuote: React.FC = () => {
   const router = useRouter();
   const [form] = Form.useForm();
   const [token] = useThemeToken();
-  const {loading, data} = useAppSelector((state) => state.quote);
+  const {loading, data} = useAppSelector((state) => state.quoteFile);
   const {userInformation} = useAppSelector((state) => state.user);
   const [deletedQuote, setDeletedQuote] = useState<React.Key[]>([]);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
@@ -66,41 +68,13 @@ const AllQuote: React.FC = () => {
   const searchQuery = useDebounceHook(query, 400);
 
   useEffect(() => {
-    dispatch(queryAllManualQuotes(searchQuery));
+    dispatch(queryQuoteFile(searchQuery));
   }, [searchQuery]);
 
-  const filteredData = data?.filter((item: any) =>
-    item.QuoteFiles.some((quoteFile: any) => quoteFile.issue_type !== null),
-  );
-  const statusWrapper = (item: any) => {
-    const getStatus = () => {
-      if (!item.is_completed && !item.is_drafted) {
-        return 'Drafts';
-      }
-      if (item.is_drafted) {
-        return 'In Progress';
-      }
-      if (item?.approver_id === userInformation?.id) {
-        return 'In Review';
-      }
-      if (item?.rejected_request) {
-        return 'Rejected';
-      }
-      if (item?.approved_request) {
-        return 'Approved';
-      }
-      if (
-        item.is_completed &&
-        item?.approver_id !== userInformation?.id &&
-        !item?.approved_request &&
-        !item?.rejected_request
-      ) {
-        return 'Needs Review';
-      }
-      return '--';
-    };
+  const filteredData = data?.filter((d: any) => d?.issue_type !== null);
 
-    return <OsStatusWrapper value={getStatus()} />;
+  const statusWrapper = (item: any) => {
+    return <OsStatusWrapper value={item} />;
   };
 
   const rowSelection = {
@@ -136,11 +110,13 @@ const AllQuote: React.FC = () => {
   );
 
   const uniqueCreatedBy = Array?.from(
-    new Set(data?.map((dataItem: any) => dataItem?.User?.user_name)),
+    new Set(data?.map((dataItem: any) => dataItem?.Quote?.User?.user_name)),
   );
   const uniqueOrganization = Array?.from(
-    new Set(data?.map((dataItem: any) => dataItem?.organization)),
+    new Set(data?.map((dataItem: any) => dataItem?.Quote?.organization)),
   );
+
+  console.log('Organization1234', data, filteredData);
 
   return (
     <>
@@ -166,7 +142,9 @@ const AllQuote: React.FC = () => {
           <Row justify="end">
             <Space size={12} align="center">
               <Space direction="vertical" size={0}>
-                <Typography name="Body 4/Medium">Reseller</Typography>
+                <Typography name="Body 4/Medium">
+                  Reseller Organization
+                </Typography>
                 <CommonSelect
                   style={{width: '200px'}}
                   placeholder="Search here"
@@ -193,7 +171,7 @@ const AllQuote: React.FC = () => {
                 </CommonSelect>
               </Space>
               <Space direction="vertical" size={0}>
-                <Typography name="Body 4/Medium">Quote Name</Typography>
+                <Typography name="Body 4/Medium">Created By</Typography>
                 <CommonSelect
                   style={{width: '200px'}}
                   placeholder="Search here"
