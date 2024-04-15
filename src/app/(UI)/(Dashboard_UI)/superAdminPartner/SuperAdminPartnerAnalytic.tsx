@@ -21,7 +21,7 @@ const SuperAdminPartnerAnalytics: FC<any> = ({data}) => {
   const analyticsData = [
     {
       key: 1,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
+      primary: <Typography name="Heading 3/Medium">{data?.length}</Typography>,
       secondry: 'Partners',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,

@@ -92,9 +92,7 @@ const DealReg: React.FC = () => {
       dataIndex: 'type',
       key: 'type',
       width: 187,
-      render: () => (
-        <Typography name="Body 4/Regular">Registered</Typography>
-      ),
+      render: () => <Typography name="Body 4/Regular">Registered</Typography>,
     },
     {
       title: (
@@ -307,16 +305,12 @@ const DealReg: React.FC = () => {
             </Typography>
           </Col>
           <Col style={{display: 'flex', alignItems: 'center'}}>
-            <Space size={12} style={{height: '48px'}}>
-              <OsButton
-                text="New Registration Form"
-                buttontype="PRIMARY"
-                icon={<PlusIcon />}
-                clickHandler={() => setShowModal((p) => !p)}
-              />
-
-              <OsDropdown menu={{items: dropDownItemss}} />
-            </Space>
+            <OsButton
+              text="New Registration Form"
+              buttontype="PRIMARY"
+              icon={<PlusIcon />}
+              clickHandler={() => setShowModal((p) => !p)}
+            />
           </Col>
         </Row>
         <Row

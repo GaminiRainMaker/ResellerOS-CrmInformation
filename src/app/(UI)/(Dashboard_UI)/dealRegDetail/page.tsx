@@ -89,10 +89,10 @@ const DealRegDetail = () => {
         </Typography>
       ),
     },
-    {
-      key: '2',
-      label: <Typography name="Body 3/Regular">Mark as Complete</Typography>,
-    },
+    // {
+    //   key: '2',
+    //   label: <Typography name="Body 3/Regular">Mark as Complete</Typography>,
+    // },
   ];
 
   const onFinish = async () => {

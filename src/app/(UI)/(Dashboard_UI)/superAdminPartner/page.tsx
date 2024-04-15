@@ -86,6 +86,15 @@ const SuperAdminPartner: React.FC = () => {
       allPartnerData,
       activeTab,
     );
+
+    console.log(
+      'queryQuoteFile',
+      userInformation,
+      allPartnerData,
+      activeTab,
+      FilterArrayDataa,
+    );
+
     const newArrForTab3: any = [];
     if (activeTab === 2) {
       FilterArrayDataa?.map((items: any) => {
@@ -434,7 +443,6 @@ const SuperAdminPartner: React.FC = () => {
         />
       ),
     },
-
     {
       label: (
         <Typography name="Body 4/Regular" onClick={() => setActiveTab(2)}>
@@ -445,21 +453,6 @@ const SuperAdminPartner: React.FC = () => {
       children: (
         <OsTable
           columns={PartnerProgramColumnsTab3}
-          // expandable={{
-          //   // eslint-disable-next-line react/no-unstable-nested-components
-          //   expandedRowRender: (record: any) => (
-          //     <OsTable
-          //       columns={partnerProgramColumns}
-          //       // dataSource={allApprovedObjects}
-          //       dataSource={record?.PartnerPrograms}
-          //       scroll
-          //       locale={locale}
-          //       loading={false}
-          //     />
-          //   ),
-          //   rowExpandable: (record: any) => record.name !== 'Not Expandable',
-          // }}
-          // dataSource={allApprovedObjects}
           dataSource={allPartnerFilterData}
           scroll
           locale={locale}
@@ -539,6 +532,7 @@ const SuperAdminPartner: React.FC = () => {
     }
   }, [activeTab]);
 
+  console.log('allPartnerFilterData', allPartnerFilterData);
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
