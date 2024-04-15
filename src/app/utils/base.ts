@@ -478,7 +478,8 @@ export const partnerProgramFilter = (
         } else {
           // Approved for organization
           if (
-            itemProgram?.user_id === userInformation?.id ||
+            (itemProgram?.user_id === userInformation?.id &&
+              !itemProgram?.AssignPartnerProgram) ||
             itemProgram?.AssignPartnerProgram?.is_approved
           ) {
             superAdminAllApprovedIds?.push(
@@ -496,15 +497,29 @@ export const partnerProgramFilter = (
             rejectedIdsForSuperAdmin?.push(
               itemProgram?.AssignPartnerProgram?.partner_program_id,
             );
+          } else if (
+            (itemProgram?.user_id === userInformation?.id &&
+              itemProgram?.AssignPartnerProgram) ||
+            itemProgram?.AssignPartnerProgram?.is_approved
+          ) {
+            superAdminAllApprovedIds?.push(
+              itemProgram?.AssignPartnerProgram?.partner_program_id ??
+                itemProgram?.id,
+            );
           }
         }
       });
     }
   });
 
+  console.log(
+    '324234234',
+    superAdminAllApprovedIds,
+    requestIdsForSuperAdmin,
+    rejectedIdsForSuperAdmin,
+  );
   let allNotRequestedIds: any = [];
   allNotRequestedIds = aprovedIds?.concat(allRequestedIds);
-
   console.log(
     'werwewqeqe',
     superAdminAllApprovedIds,
@@ -596,4 +611,22 @@ export const partnerProgramFilter = (
   }
 
   return FilterArrayDataa;
+};
+
+export const formatStatus = (str: string) => {
+  // if (str === 'inprogress') {
+  //   return 'In Progress';
+  // }
+  // if (str === 'ro_closed') {
+  //   return 'RO Closed';
+  // }
+  // if (str === 'require_customer_authorization') {
+  //   return 'Requires Customer Authorization';
+  // }
+  const frags = str?.toString()?.split('_');
+  const fragLength = frags?.length;
+  for (let i = 0; i < fragLength; i++) {
+    frags[i] = frags[i]?.charAt(0).toUpperCase() + frags[i].slice(1);
+  }
+  return frags?.join(' ');
 };
