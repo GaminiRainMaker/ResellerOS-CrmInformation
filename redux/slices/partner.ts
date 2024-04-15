@@ -12,6 +12,7 @@ import {
 
 type PartnerState = {
   loading: boolean;
+  insertPartnerLoading: boolean;
   error: string | null;
   data: any;
   partner: any;
@@ -19,6 +20,7 @@ type PartnerState = {
 };
 const initialState: PartnerState = {
   loading: false,
+  insertPartnerLoading: false,
   error: null,
   data: [],
   partner: [],
@@ -39,15 +41,15 @@ const partnerSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(insertPartner.pending, (state) => {
-        state.loading = true;
+        state.insertPartnerLoading = true;
         state.error = null;
       })
       .addCase(insertPartner.fulfilled, (state, action: PayloadAction<any>) => {
-        state.loading = false;
+        state.insertPartnerLoading = false;
         state.data = [action.payload];
       })
       .addCase(insertPartner.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
+        state.insertPartnerLoading = false;
         state.error = action.payload;
       })
       .addCase(getAllPartner.pending, (state) => {

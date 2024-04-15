@@ -2,22 +2,22 @@
 
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
-import { industryOptions } from '@/app/utils/CONSTANTS';
-import { Form } from 'antd';
-import { useEffect } from 'react';
+import {industryOptions} from '@/app/utils/CONSTANTS';
+import {Form} from 'antd';
+import {useEffect} from 'react';
 import {
   getAllPartnerandProgram,
   insertPartner,
-  updatePartnerById
+  updatePartnerById,
 } from '../../../../../redux/actions/partner';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import CommonSelect from '../os-select';
-import { AddPartnerInterface } from './os-add-partner.interface';
+import {AddPartnerInterface} from './os-add-partner.interface';
 
 const AddPartner: React.FC<AddPartnerInterface> = ({
   form,
@@ -38,14 +38,14 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
     if (drawer) {
       dispatch(updatePartnerById({...partnerObj, id: formPartnerData?.id}));
     } else {
-      dispatch(insertPartner(partnerObj)).then((d) => {
-        form?.resetFields();
+      dispatch(insertPartner(partnerObj)).then((d: any) => {
         if (d?.payload) {
           dispatch(getAllPartnerandProgram(''));
+          form?.resetFields();
+          setOpen && setOpen(false);
         }
       });
     }
-    setOpen && setOpen(false);
   };
 
   useEffect(() => {
