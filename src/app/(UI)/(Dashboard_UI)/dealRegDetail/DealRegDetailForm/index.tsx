@@ -12,12 +12,18 @@ import {getAllOpportunity} from '../../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import CommonFields from './CommonField';
 import UniqueFields from './UniqueField';
+import ConverSationProcess from '../../admin/quote-AI/configuration/configuration-tabs/ConversationProcess';
 
 const DealRegDetailForm: FC<any> = (data, form) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {dealReg} = useAppSelector((state) => state.dealReg);
   const [commonFiledData, setCommonFiledData] = useState<any>();
+  const [cartItems, setCartItems] = useState<any>();
+
+  const [formDataValues, setFormDataValues] = useState<any>();
+  const [sectionIndexActive, setSectionIndexAactive] = useState<any>();
+
   const CommonFieldsItems = [
     {
       key: '1',
@@ -44,7 +50,14 @@ const DealRegDetailForm: FC<any> = (data, form) => {
           Unique Fields{' '}
         </Typography>
       ),
-      children: <UniqueFields />,
+      children: (
+        <UniqueFields
+          setCartItems={setCartItems}
+          cartItems={cartItems}
+          setSectionIndexAactive={setSectionIndexAactive}
+          sectionIndexActive={sectionIndexActive}
+        />
+      ),
     },
   ];
 

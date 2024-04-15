@@ -37,6 +37,7 @@ import {formbuildernewObject} from '@/app/utils/base';
 import {Checkbox, MenuProps, Radio, Switch, TimePicker} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
+import moment from 'moment';
 import {
   getPartnerProgramById,
   updatePartnerProgramById,
@@ -58,6 +59,8 @@ const FormBuilderMain: React.FC<any> = ({
   setSelectedColumnIndex,
   setContentActiveIndex,
   previewFile,
+  sectionIndexActive,
+  setNewValue,
 }) => {
   const dropDownItemss: MenuProps['items'] = [];
   const dispatch = useAppDispatch();
@@ -147,6 +150,33 @@ const FormBuilderMain: React.FC<any> = ({
     router.push(`/superAdminPartner`);
   };
 
+  const updateTheValues = (
+    changedValue: any,
+    sectionIndex: number,
+    itemIndex: number,
+  ) => {
+    const newTempArr = cartItems.map((sectItem: any, sectioIndex: number) => {
+      if (sectioIndex === sectionIndex) {
+        return {
+          ...sectItem,
+          content: sectItem.content.map((contItem: any, contInde: number) => {
+            if (contInde === itemIndex) {
+              return {
+                ...contItem,
+                value: changedValue,
+              };
+            }
+            return contItem;
+          }),
+        };
+      }
+      return sectItem;
+    });
+
+    setCartItems(newTempArr);
+  };
+
+  // console.log('cartItems', cartItems);
   return (
     <>
       {!previewFile && (
@@ -186,13 +216,17 @@ const FormBuilderMain: React.FC<any> = ({
             {cartItems?.map((item: any, Sectidx: number) => (
               <div
                 onClick={() => {
-                  setSectionIndexActive(Sectidx);
+                  if (!previewFile) {
+                    setSectionIndexActive(Sectidx);
+                  }
                 }}
                 key={Sectidx}
               >
-                <Typography name="Body 1/Medium" color={token?.colorInfo}>
-                  {item?.section}
-                </Typography>
+                {!previewFile && (
+                  <Typography name="Body 1/Medium" color={token?.colorInfo}>
+                    {item?.section}
+                  </Typography>
+                )}
                 <SectionRowStyled gutter={[16, 16]} justify="space-between">
                   <>
                     {item?.content?.map((itemCon: any, ItemConindex: any) => {
@@ -307,6 +341,9 @@ const FormBuilderMain: React.FC<any> = ({
                         itemCon?.name === 'Add Section' ||
                         itemCon?.name === 'Date'
                       ) {
+                        const newDateeDaTa: any = moment(itemCon?.value).format(
+                          'MM-DD-YYYY',
+                        );
                         return (
                           <Col
                             span={12}
@@ -314,22 +351,27 @@ const FormBuilderMain: React.FC<any> = ({
                               ...commonDraggableProps(ItemConindex, Sectidx),
                             })}
                           >
-                            <ItemName
-                              itemName={
-                                itemCon?.name === 'Text'
-                                  ? 'Text Field'
-                                  : itemCon?.name
-                              }
-                              cartItems={cartItems}
-                              setCartItems={setCartItems}
-                              isPreview={!previewFile}
-                              onClick={() => {
-                                setCollapsed((p: boolean) => !p);
-                                setActiveContentIndex(ItemConindex);
-                                setActiveSectionIndex(Sectidx);
-                                form.resetFields();
-                              }}
-                            />
+                            {!previewFile && (
+                              <ItemName
+                                itemName={
+                                  itemCon?.name === 'Text'
+                                    ? 'Text Field'
+                                    : itemCon?.name
+                                }
+                                cartItems={cartItems}
+                                setCartItems={setCartItems}
+                                isPreview={!previewFile}
+                                onClick={() => {
+                                  setCollapsed((p: boolean) => !p);
+                                  setActiveContentIndex(ItemConindex);
+                                  setActiveSectionIndex(Sectidx);
+                                  form.resetFields();
+                                }}
+                                ItemConindex={ItemConindex}
+                                Sectidx={Sectidx}
+                              />
+                            )}
+
                             <Typography name="Body 4/Medium">
                               {itemCon?.requiredLabel && itemCon?.label}{' '}
                               {itemCon?.required && (
@@ -349,6 +391,14 @@ const FormBuilderMain: React.FC<any> = ({
                                     width: '100%',
                                     height: '44px',
                                   }}
+                                  value={itemCon?.value}
+                                  onChange={(e: any) => {
+                                    updateTheValues(
+                                      e?.target?.value,
+                                      Sectidx,
+                                      ItemConindex,
+                                    );
+                                  }}
                                 />
                               ) : itemCon?.name === 'Currency' ? (
                                 <>
@@ -357,14 +407,32 @@ const FormBuilderMain: React.FC<any> = ({
                                     suffix={itemCon?.currency}
                                     type={itemCon?.type}
                                     value={
-                                      itemCon?.deciamlHide ? '12' : '12.00'
+                                      itemCon?.deciamlHide
+                                        ? itemCon?.value?.split('.'[0])
+                                        : itemCon?.value
                                     }
+                                    onChange={(e: any) => {
+                                      updateTheValues(
+                                        e?.target?.value,
+                                        Sectidx,
+                                        ItemConindex,
+                                      );
+                                    }}
                                   />
                                 </>
                               ) : itemCon?.name === 'Date' ? (
                                 <>
                                   <CommonDatePicker
                                     format={itemCon?.dateformat}
+                                    // value={newDateeDaTa}
+                                    onChange={(e: any) => {
+                                      updateTheValues(
+                                        // moment(e).format('MM-DD-YYYY'),
+                                        e,
+                                        Sectidx,
+                                        ItemConindex,
+                                      );
+                                    }}
                                   />
                                 </>
                               ) : itemCon?.name === 'Contact' ? (
@@ -372,22 +440,47 @@ const FormBuilderMain: React.FC<any> = ({
                                   <ContactInput
                                     name="Contact"
                                     id="Contact"
-                                    value=""
+                                    value={itemCon?.value}
+                                    onChange={(e: any) => {
+                                      updateTheValues(
+                                        e?.target?.value,
+                                        Sectidx,
+                                        ItemConindex,
+                                      );
+                                    }}
                                     mask={itemCon?.dataformat}
                                     limitMaxLength
                                     defaultCountry={itemCon?.defaultcountry}
                                     max={11}
-                                    onChange={(e: any) => {}}
                                     // countryCallingCodeEditable={false}
                                   />
                                 </>
-                              ) : itemCon?.name === 'Email' ? (
+                              ) : itemCon?.name === 'Email' ||
+                                itemCon?.label === 'Email' ? (
                                 <OsInput
                                   type={itemCon?.type}
                                   suffix={<MailOutlined />}
+                                  value={itemCon?.value}
+                                  onChange={(e: any) => {
+                                    updateTheValues(
+                                      e?.target?.value,
+                                      Sectidx,
+                                      ItemConindex,
+                                    );
+                                  }}
                                 />
                               ) : (
-                                <OsInput type={itemCon?.type} />
+                                <OsInput
+                                  type={itemCon?.type}
+                                  value={itemCon?.value}
+                                  onChange={(e: any) => {
+                                    updateTheValues(
+                                      e?.target?.value,
+                                      Sectidx,
+                                      ItemConindex,
+                                    );
+                                  }}
+                                />
                               )}{' '}
                               {item?.content?.length - 1 === ItemConindex &&
                                 !previewFile && (
@@ -425,18 +518,22 @@ const FormBuilderMain: React.FC<any> = ({
                               ...commonDraggableProps(ItemConindex, Sectidx),
                             })}
                           >
-                            <ItemName
-                              itemName={itemCon?.name}
-                              cartItems={cartItems}
-                              setCartItems={setCartItems}
-                              isPreview={!previewFile}
-                              onClick={() => {
-                                setCollapsed((p: boolean) => !p);
-                                setActiveContentIndex(ItemConindex);
-                                setActiveSectionIndex(Sectidx);
-                                form.resetFields();
-                              }}
-                            />
+                            {!previewFile && (
+                              <ItemName
+                                itemName={itemCon?.name}
+                                cartItems={cartItems}
+                                ItemConindex={ItemConindex}
+                                Sectidx={Sectidx}
+                                setCartItems={setCartItems}
+                                isPreview={!previewFile}
+                                onClick={() => {
+                                  setCollapsed((p: boolean) => !p);
+                                  setActiveContentIndex(ItemConindex);
+                                  setActiveSectionIndex(Sectidx);
+                                  form.resetFields();
+                                }}
+                              />
+                            )}
                             <Typography name="Body 4/Medium">
                               {itemCon?.requiredLabel && itemCon?.label}{' '}
                               {itemCon?.required && (
@@ -450,6 +547,10 @@ const FormBuilderMain: React.FC<any> = ({
                                   width: '100%',
                                 }}
                                 mode={itemCon?.type}
+                                value={itemCon?.value}
+                                onChange={(e: any) => {
+                                  updateTheValues(e, Sectidx, ItemConindex);
+                                }}
                               />
                               {item?.content?.length - 1 === ItemConindex &&
                                 !previewFile && (
@@ -477,18 +578,22 @@ const FormBuilderMain: React.FC<any> = ({
                               ...commonDraggableProps(ItemConindex, Sectidx),
                             })}
                           >
-                            <ItemName
-                              itemName={itemCon?.name}
-                              cartItems={cartItems}
-                              setCartItems={setCartItems}
-                              isPreview={!previewFile}
-                              onClick={() => {
-                                setCollapsed((p: boolean) => !p);
-                                setActiveContentIndex(ItemConindex);
-                                setActiveSectionIndex(Sectidx);
-                                form.resetFields();
-                              }}
-                            />
+                            {!previewFile && (
+                              <ItemName
+                                itemName={itemCon?.name}
+                                ItemConindex={ItemConindex}
+                                Sectidx={Sectidx}
+                                cartItems={cartItems}
+                                setCartItems={setCartItems}
+                                isPreview={!previewFile}
+                                onClick={() => {
+                                  setCollapsed((p: boolean) => !p);
+                                  setActiveContentIndex(ItemConindex);
+                                  setActiveSectionIndex(Sectidx);
+                                  form.resetFields();
+                                }}
+                              />
+                            )}
                             <SectionDivStyled1>
                               <>
                                 {itemCon?.FontSize === 'h1' ? (
@@ -542,6 +647,9 @@ const FormBuilderMain: React.FC<any> = ({
                         itemCon?.name === 'Radio Button' ||
                         itemCon?.name === 'Toggle'
                       ) {
+                        // if (itemCon?.name === 'Checkbox') {
+                        //   setHoldSelectedValue(itemCon?.value);
+                        // }
                         return (
                           <Col
                             span={12}
@@ -549,18 +657,22 @@ const FormBuilderMain: React.FC<any> = ({
                               ...commonDraggableProps(ItemConindex, Sectidx),
                             })}
                           >
-                            <ItemName
-                              itemName={itemCon?.name}
-                              cartItems={cartItems}
-                              setCartItems={setCartItems}
-                              isPreview={!previewFile}
-                              onClick={() => {
-                                setCollapsed((p: boolean) => !p);
-                                setActiveContentIndex(ItemConindex);
-                                setActiveSectionIndex(Sectidx);
-                                form.resetFields();
-                              }}
-                            />
+                            {!previewFile && (
+                              <ItemName
+                                itemName={itemCon?.name}
+                                ItemConindex={ItemConindex}
+                                Sectidx={Sectidx}
+                                cartItems={cartItems}
+                                setCartItems={setCartItems}
+                                isPreview={!previewFile}
+                                onClick={() => {
+                                  setCollapsed((p: boolean) => !p);
+                                  setActiveContentIndex(ItemConindex);
+                                  setActiveSectionIndex(Sectidx);
+                                  form.resetFields();
+                                }}
+                              />
+                            )}
                             <Typography name="Body 4/Medium">
                               {itemCon?.requiredLabel &&
                                 itemCon?.placeholdertext}{' '}
@@ -616,15 +728,30 @@ const FormBuilderMain: React.FC<any> = ({
                                                       ? [...holdelSelectedValue]
                                                       : [];
                                                   temp?.push(e?.[0]);
+                                                  updateTheValues(
+                                                    temp,
+                                                    Sectidx,
+                                                    ItemConindex,
+                                                  );
+
                                                   setHoldSelectedValue(temp);
                                                 } else {
                                                   setHoldSelectedValue(e?.[0]);
+                                                  updateTheValues(
+                                                    e?.[0],
+                                                    Sectidx,
+                                                    ItemConindex,
+                                                  );
                                                 }
                                               }}
                                               value={holdelSelectedValue}
+                                              defaultValue={itemCon?.value}
                                             >
                                               {' '}
-                                              <Checkbox value={itemLabelOp}>
+                                              <Checkbox
+                                                value={itemLabelOp}
+                                                checked
+                                              >
                                                 {' '}
                                                 {itemLabelOp}
                                               </Checkbox>
@@ -649,19 +776,22 @@ const FormBuilderMain: React.FC<any> = ({
                               ...commonDraggableProps(ItemConindex, Sectidx),
                             })}
                           >
-                            <ItemName
-                              itemName={itemCon?.name}
-                              cartItems={cartItems}
-                              setCartItems={setCartItems}
-                              isPreview={!previewFile}
-                              onClick={() => {
-                                setCollapsed((p: boolean) => !p);
-                                setActiveContentIndex(ItemConindex);
-                                setActiveSectionIndex(Sectidx);
-                                form.resetFields();
-                              }}
-                            />
-
+                            {!previewFile && (
+                              <ItemName
+                                itemName={itemCon?.name}
+                                ItemConindex={ItemConindex}
+                                Sectidx={Sectidx}
+                                cartItems={cartItems}
+                                setCartItems={setCartItems}
+                                isPreview={!previewFile}
+                                onClick={() => {
+                                  setCollapsed((p: boolean) => !p);
+                                  setActiveContentIndex(ItemConindex);
+                                  setActiveSectionIndex(Sectidx);
+                                  form.resetFields();
+                                }}
+                              />
+                            )}
                             {itemCon?.pdfUrl ? (
                               <FormUploadCard
                                 uploadFileData={itemCon?.pdfUrl}

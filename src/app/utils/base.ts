@@ -597,3 +597,21 @@ export const partnerProgramFilter = (
 
   return FilterArrayDataa;
 };
+
+export const formatStatus = (str: string) => {
+  // if (str === 'inprogress') {
+  //   return 'In Progress';
+  // }
+  // if (str === 'ro_closed') {
+  //   return 'RO Closed';
+  // }
+  // if (str === 'require_customer_authorization') {
+  //   return 'Requires Customer Authorization';
+  // }
+  const frags = str?.toString()?.split('_');
+  const fragLength = frags?.length;
+  for (let i = 0; i < fragLength; i++) {
+    frags[i] = frags[i]?.charAt(0).toUpperCase() + frags[i].slice(1);
+  }
+  return frags?.join(' ');
+};

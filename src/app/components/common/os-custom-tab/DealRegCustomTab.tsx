@@ -3,6 +3,7 @@
 import DealRegDetailForm from '@/app/(UI)/(Dashboard_UI)/dealRegDetail/DealRegDetailForm';
 import {FormInstance} from 'antd';
 import {useEffect, useState} from 'react';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 import {useAppDispatch} from '../../../../../redux/hook';
 import {setDealReg} from '../../../../../redux/slices/dealReg';
 import {Row} from '../antd/Grid';
@@ -20,12 +21,16 @@ interface DealRegCustomTabsInterface {
   selectedUserId: any;
   form: FormInstance;
   setFormDataValues?: any;
+  setCartItems?: any;
+  cartItems?: any;
 }
 const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
   tabs,
   selectedUserId,
   form,
   setFormDataValues,
+  setCartItems,
+  cartItems,
 }) => {
   const dispatch = useAppDispatch();
   const [activeKey, setActiveKey] = useState<any>(0);
@@ -100,7 +105,7 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
                     cursor="pointer"
                     name="Button 1"
                   >
-                    {element?.PartnerProgram?.partner_program}
+                    {formatStatus(element?.PartnerProgram?.partner_program)}
                   </Typography>
                 </Space>
               </DealRegCustomTabHeaderStyle>
@@ -113,6 +118,8 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
                 data={element}
                 selectedUserId={selectedUserId}
                 form={form}
+                setCartItems={setCartItems}
+                cartItems={cartItems}
               />
             </div>
           ),
