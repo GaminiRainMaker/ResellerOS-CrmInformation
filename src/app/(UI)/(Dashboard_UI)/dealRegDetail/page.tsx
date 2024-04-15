@@ -14,6 +14,7 @@ import {MenuProps} from 'antd';
 import Form from 'antd/es/form';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import OsModal from '@/app/components/common/os-modal';
 import {
   getDealRegByOpportunityId,
   getDealRegByPartnerProgramId,
@@ -26,6 +27,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
 import {setSubmitDealRegData} from '../../../../../redux/slices/dealReg';
+import AddRegistrationForm from '../dealReg/AddRegistrationForm';
 
 const DealRegDetail = () => {
   const [form] = Form.useForm();
@@ -38,6 +40,7 @@ const DealRegDetail = () => {
     dealRegUpdateData,
   } = useAppSelector((state) => state.dealReg);
   const [open, setOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const searchParams = useSearchParams();
   const [activeKey, setActiveKey] = useState('');
   const getOpportunityId = searchParams.get('opportunityId');
@@ -100,6 +103,7 @@ const DealRegDetail = () => {
   useEffect(() => {
     if (!activeKey) {
       if (DealRegData?.length > 0) {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         const program_id = DealRegData[0]?.partner_program_id;
         setActiveKey(program_id as string);
         setFormDataValues(DealRegData);
@@ -160,6 +164,9 @@ const DealRegDetail = () => {
               text="Add New Form"
               buttontype="PRIMARY"
               icon={<PlusIcon width={24} />}
+              // clickHandler={() => {
+              //   setShowModal(true);
+              // }}
             />
 
             <OsDropdown menu={{items: dropDownItemss}} />
@@ -202,6 +209,18 @@ const DealRegDetail = () => {
           onFinish={onFinish}
         />
       </OsDrawer>
+
+      <OsModal
+        bodyPadding={22}
+        body={<AddRegistrationForm setShowModal={setShowModal} />}
+        width={583}
+        open={showModal}
+        onOk={() => {}}
+        onCancel={() => {
+          setShowModal((p) => !p);
+        }}
+        footer={false}
+      />
     </div>
   );
 };

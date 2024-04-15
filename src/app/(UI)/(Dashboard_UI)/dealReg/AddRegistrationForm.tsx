@@ -29,7 +29,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
 
-const AddRegistrationForm: FC<any> = ({setShowModal}) => {
+const AddRegistrationForm: FC<any> = ({setShowModal, isDealRegDetail}) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -440,26 +440,6 @@ const AddRegistrationForm: FC<any> = ({setShowModal}) => {
     }
   };
 
-  // useEffect(() => {
-  //   dispatch(insertDealReg(updatedDealRegData)).then((d: any) => {
-  //     if (d?.payload) {
-  //       d?.payload?.map(async (DataItem: any) => {
-  //         if (DataItem?.id) {
-  //           const obj12 = {
-  //             dealRegId: DataItem?.id,
-  //             ...updatedDealRegData[0],
-  //           };
-  //           // eslint-disable-next-line @typescript-eslint/no-shadow
-  //           await dispatch(insertDealRegAddress(obj12)).then((d: any) => {
-  //             if (d) {
-  //               router.push(`/dealRegDetail`);
-  //             }
-  //           });
-  //         }
-  //       });
-  //     }
-  //   });
-  // }, [updatedDealRegData]);
 
   return (
     <>
