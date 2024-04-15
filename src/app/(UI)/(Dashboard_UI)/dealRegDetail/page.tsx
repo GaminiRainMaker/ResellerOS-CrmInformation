@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+
 'use client';
 
 import { Col, Row } from '@/app/components/common/antd/Grid';
@@ -58,6 +60,23 @@ const DealRegDetail = () => {
     }
   }, []);
 
+  const updateTheDealReg = async () => {
+    const newObj = {
+      ...formDataValues?.[0],
+      unique_form_data: [
+        JSON?.stringify(formDataValues?.[0]?.unique_form_data),
+      ],
+      common_form_data: [JSON?.stringify(formDataValues?.[0]?.common_formData)],
+    };
+
+    await dispatch(updateDealRegById(newObj));
+    if (getOpportunityId) {
+      dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+    }
+    if (getPartnerProgramId) {
+      dispatch(getDealRegByPartnerProgramId(Number(getPartnerProgramId)));
+    }
+  };
   const OsBreadCrumbItems = [
     {
       key: '1',
@@ -110,6 +129,23 @@ const DealRegDetail = () => {
     }
   }, [DealRegData]);
 
+  useEffect(() => {
+    if (cartItems) {
+      const newArr = [...formDataValues];
+      const index = newArr.findIndex(
+        (item: any) => item.partner_program_id === activeKey,
+      );
+
+      if (index > -1) {
+        const obj = {...newArr[index]};
+        obj.unique_form_data = cartItems;
+        newArr[index] = obj;
+
+        setFormDataValues(newArr);
+      }
+    }
+  }, [cartItems]);
+
   const onFinish = async () => {
     const dealRegNewData = form.getFieldsValue();
     try {
@@ -127,7 +163,7 @@ const DealRegDetail = () => {
       console.error('Error:', error);
     }
   };
-  console.log(formDataValues, 'shdgshagdhsgfghsdgfh', DealRegData);
+  console.log(formDataValues, 'ewrewrwe', DealRegData);
   return (
     <div>
       <Row justify="space-between" align="middle">
@@ -139,14 +175,7 @@ const DealRegDetail = () => {
             <OsButton
               text="Save"
               buttontype="SECONDARY"
-              clickHandler={() => {
-                // dispatch(updateDealRegById(dealRegUpdateData)).then(() => {
-                //   // dispatch(getAllDealReg());
-                //   dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-                // });
-                // dispatch(setSubmitDealRegData((p: boolean) => !p));
-                console.log('SECONDARY', form.submit());
-              }}
+              clickHandler={updateTheDealReg}
             />
             <OsButton
               text="Download"
