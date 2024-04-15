@@ -471,14 +471,6 @@ export const partnerProgramFilter = (
         } else {
           // Approved for organization
           if (
-            itemProgram?.user_id === userInformation?.id ||
-            itemProgram?.AssignPartnerProgram?.is_approved
-          ) {
-            superAdminAllApprovedIds?.push(
-              itemProgram?.AssignPartnerProgram?.partner_program_id ??
-                itemProgram?.id,
-            );
-          } else if (
             // Requested but not approved or decliend
             itemProgram?.AssignPartnerProgram?.is_approved === null
           ) {
@@ -488,6 +480,15 @@ export const partnerProgramFilter = (
           } else if (!itemProgram?.AssignPartnerProgram?.is_approved) {
             rejectedIdsForSuperAdmin?.push(
               itemProgram?.AssignPartnerProgram?.partner_program_id,
+            );
+          } else if (
+            (itemProgram?.user_id === userInformation?.id &&
+              itemProgram?.AssignPartnerProgram) ||
+            itemProgram?.AssignPartnerProgram?.is_approved
+          ) {
+            superAdminAllApprovedIds?.push(
+              itemProgram?.AssignPartnerProgram?.partner_program_id ??
+                itemProgram?.id,
             );
           }
         }

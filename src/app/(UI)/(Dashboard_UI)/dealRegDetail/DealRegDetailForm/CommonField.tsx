@@ -27,7 +27,6 @@ const CommonFields: FC<any> = (data) => {
       setFormData(JSON?.parse(dealReg?.form_data?.[0]));
     }
   }, [dealReg]);
-  console.log('dealReg', formDataa);
 
   const updateTheFormValuess = () => {
     const dataaa: any = {
