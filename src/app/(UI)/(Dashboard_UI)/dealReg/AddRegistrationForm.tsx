@@ -65,9 +65,8 @@ const AddRegistrationForm: FC<any> = ({setShowModal}) => {
       true,
     );
 
-    setAllFilterPartnerData(FilterArrayDataa);
+    setAllFilterPartnerData(FilterArrayDataa?.filterData);
   }, [allPartnerData]);
-
 
   useEffect(() => {
     dispatch(getAllPartnerTemp());

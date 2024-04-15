@@ -5,7 +5,6 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
-import { partnerProgramFilter } from '@/app/utils/base';
 import {
   CheckCircleIcon,
   ClipboardDocumentCheckIcon,
