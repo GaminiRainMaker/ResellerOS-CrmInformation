@@ -8,7 +8,10 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Divider} from '@/app/components/common/antd/Divider';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import SearchInput from '@/app/components/common/os-input/SearchInput';
+import {
+  SearchInput,
+  SearchInput2,
+} from '@/app/components/common/os-input/SearchInput';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {
@@ -85,7 +88,6 @@ const CustomHeader = () => {
     margin: '0px',
   };
 
-
   useEffect(() => {
     setUserRole(
       userInformation?.MasterAdmin && userInformation?.Role === 'superAdmin'
@@ -115,11 +117,18 @@ const CustomHeader = () => {
           <Space size={136} direction="horizontal">
             <Image src={HeaderLogo} alt="HeaderLogo" />
 
-            <SearchInput
+            {/* <SearchInput
               style={{width: '550px'}}
               placeholder="Search"
               allowClear
               prefix={<Image src={SearchImg} alt="SearchImg" />}
+            /> */}
+            <SearchInput2
+              showSearch
+              style={{width: '550px'}}
+              placeholder="Search"
+              allowClear
+              prefixIcon={<Image src={SearchImg} alt="SearchImg" />}
             />
           </Space>
         </Col>
