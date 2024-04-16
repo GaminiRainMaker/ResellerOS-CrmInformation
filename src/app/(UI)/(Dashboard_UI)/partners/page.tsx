@@ -71,6 +71,7 @@ const Partners: React.FC = () => {
       setAllFilterPartnerData(FilterArrayDataa?.filterData);
     }
   }, [allPartnerData, activeTab]);
+
   const locale = {
     emptyText: (
       <EmptyContainer
@@ -378,7 +379,6 @@ const Partners: React.FC = () => {
                 // dataSource={allApprovedObjects}
                 dataSource={record?.PartnerPrograms}
                 scroll
-                locale={locale}
                 loading={false}
               />
             ),
@@ -416,7 +416,6 @@ const Partners: React.FC = () => {
                 // dataSource={allApprovedObjects}
                 dataSource={record?.PartnerPrograms}
                 scroll
-                locale={locale}
                 loading={false}
               />
             ),
@@ -446,21 +445,6 @@ const Partners: React.FC = () => {
       children: (
         <OsTable
           columns={PartnerProgramColumnsTab3}
-          // expandable={{
-          //   // eslint-disable-next-line react/no-unstable-nested-components
-          //   expandedRowRender: (record: any) => (
-          //     <OsTable
-          //       columns={partnerProgramColumns}
-          //       // dataSource={allApprovedObjects}
-          //       dataSource={record?.PartnerPrograms}
-          //       scroll
-          //       locale={locale}
-          //       loading={false}
-          //     />
-          //   ),
-          //   rowExpandable: (record: any) => record.name !== 'Not Expandable',
-          // }}
-          // dataSource={allApprovedObjects}
           dataSource={allPartnerFilterData}
           scroll
           locale={locale}
