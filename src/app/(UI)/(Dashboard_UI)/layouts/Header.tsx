@@ -51,7 +51,8 @@ const CustomHeader = () => {
   } = useAppSelector((state) => state.notification);
   const [userRole, setUserRole] = useState<string>('');
   const dispatch = useAppDispatch();
-  
+  const [searchVlaue, setSearchValue] = useState();
+
   const readAllNotifications = async () => {
     await dispatch(ReadNotificationById(''));
     dispatch(getAllNewNotification(''));
@@ -61,8 +62,6 @@ const CustomHeader = () => {
   useEffect(() => {
     dispatch(getCountOfNotification(''));
   }, []);
-
-
 
   const items: MenuProps['items'] = [
     {
