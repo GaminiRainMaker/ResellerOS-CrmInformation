@@ -33,6 +33,8 @@ interface SeparatedData {
   [opportunityId: number]: {
     opportunity_id: number;
     dealReg_id: number;
+    contact_id: number;
+    customer_id: number;
     data: any[];
     title: string;
   };
@@ -172,11 +174,15 @@ const DealReg: React.FC = () => {
     const separatedData: SeparatedData = {};
     DealRegData?.forEach((item: any) => {
       const opportunityId = item?.opportunity_id;
+      const contactId = item?.contact_id;
+      const customerId = item?.customer_id;
       const dealRegId = item?.id;
       const opportunityTitle = item?.Opportunity?.title;
       if (!separatedData[opportunityId]) {
         separatedData[opportunityId] = {
           opportunity_id: opportunityId,
+          contact_id: contactId,
+          customer_id: customerId,
           dealReg_id: dealRegId,
           title: opportunityTitle,
           data: [],
@@ -209,7 +215,7 @@ const DealReg: React.FC = () => {
                           <p
                             onClick={(e) => {
                               router?.push(
-                                `/dealRegDetail?id=${itemDeal?.dealReg_id}&opportunityId=${itemDeal?.opportunity_id}`,
+                                `/dealRegDetail?id=${itemDeal?.dealReg_id}&opportunityId=${itemDeal?.opportunity_id}&customerId=${itemDeal?.customer_id}&contactId=${itemDeal?.contact_id}`,
                               );
                               e?.stopPropagation();
                             }}
@@ -267,28 +273,6 @@ const DealReg: React.FC = () => {
     },
   ];
 
-  const dropDownItemss: MenuProps['items'] = [
-    {
-      key: '1',
-      label: <Typography name="Body 3/Regular">Select All</Typography>,
-    },
-    {
-      key: '2',
-      label: <Typography name="Body 3/Regular">Edit Selected</Typography>,
-    },
-    {
-      key: '3',
-      label: <Typography name="Body 3/Regular">Download Selected</Typography>,
-    },
-    {
-      key: '4',
-      label: (
-        <Typography name="Body 3/Regular" color={token?.colorError}>
-          Delete Selected{' '}
-        </Typography>
-      ),
-    },
-  ];
 
   useEffect(() => {
     dispatch(getAllDealReg());

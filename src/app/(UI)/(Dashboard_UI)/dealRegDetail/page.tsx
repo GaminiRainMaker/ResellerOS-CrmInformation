@@ -2,8 +2,8 @@
 
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
@@ -12,11 +12,11 @@ import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
-import { ArrowDownTrayIcon, PlusIcon } from '@heroicons/react/24/outline';
-import { MenuProps } from 'antd';
+import {ArrowDownTrayIcon, PlusIcon} from '@heroicons/react/24/outline';
+import {MenuProps} from 'antd';
 import Form from 'antd/es/form';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {useEffect, useState} from 'react';
 import {
   getDealRegByOpportunityId,
   getDealRegByPartnerProgramId,
@@ -26,7 +26,7 @@ import {
   getDealRegAddressById,
   updateDealRegAddressById,
 } from '../../../../../redux/actions/dealRegAddress';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddRegistrationForm from '../dealReg/AddRegistrationForm';
 import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
 
@@ -192,9 +192,9 @@ const DealRegDetail = () => {
               text="Add New Form"
               buttontype="PRIMARY"
               icon={<PlusIcon width={24} />}
-              // clickHandler={() => {
-              //   setShowModal(true);
-              // }}
+              clickHandler={() => {
+                setShowModal(true);
+              }}
             />
 
             <OsDropdown menu={{items: dropDownItemss}} />
@@ -240,7 +240,9 @@ const DealRegDetail = () => {
 
       <OsModal
         bodyPadding={22}
-        body={<AddRegistrationForm setShowModal={setShowModal} />}
+        body={
+          <AddRegistrationForm setShowModal={setShowModal} isDealRegDetail />
+        }
         width={583}
         open={showModal}
         onOk={() => {}}

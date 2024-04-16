@@ -14,28 +14,34 @@ import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 
 import AddCustomer from '@/app/components/common/os-add-customer';
-import {PlusIcon} from '@heroicons/react/24/outline';
-import {useRouter} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
 import {partnerProgramFilter} from '@/app/utils/base';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import {useSearchParams} from 'next/navigation';
+import {FC, useEffect, useState} from 'react';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
-import {insertDealReg} from '../../../../../redux/actions/dealReg';
+import {
+  getAllDealReg,
+  getDealRegByOpportunityId,
+  insertDealReg,
+} from '../../../../../redux/actions/dealReg';
 import {insertDealRegAddress} from '../../../../../redux/actions/dealRegAddress';
 import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
-import {
-  getAllPartnerTemp,
-  getAllPartnerandProgram,
-} from '../../../../../redux/actions/partner';
+import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
 
-const AddRegistrationForm: FC<any> = ({setShowModal, isDealRegDetail}) => {
+const AddRegistrationForm: FC<any> = ({
+  setShowModal,
+  isDealRegDetail = false,
+}) => {
   const [token] = useThemeToken();
+  const searchParams = useSearchParams();
+  const getOpportunityId = searchParams.get('opportunityId');
+  const getContactId = searchParams.get('contactId');
+  const getCustomerId = searchParams.get('customerId');
   const dispatch = useAppDispatch();
-  const router = useRouter();
   const {data: dataAddress} = useAppSelector((state) => state.customer);
   const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
-  const {data: partnerData} = useAppSelector((state) => state.partner);
   const {loading} = useAppSelector((state) => state.dealReg);
   const {userInformation} = useAppSelector((state) => state.user);
   const [toggle, setToggle] = useState(false);
@@ -67,10 +73,6 @@ const AddRegistrationForm: FC<any> = ({setShowModal, isDealRegDetail}) => {
 
     setAllFilterPartnerData(FilterArrayDataa?.filterData);
   }, [allPartnerData]);
-
-  useEffect(() => {
-    dispatch(getAllPartnerTemp());
-  }, []);
 
   const partnerOptions = allPartnerFilterData?.map((partner: any) => ({
     label: partner?.partner,
@@ -398,13 +400,20 @@ const AddRegistrationForm: FC<any> = ({setShowModal, isDealRegDetail}) => {
   }, [customerValue]);
 
   const insertDealRegData = () => {
+    // return;
     const newarr: any = [];
-    if (toggle) {
+    if (toggle || isDealRegDetail) {
       dealRegFormData?.forEach(async (dealRegFormDataItem) => {
         const obj = {
-          contact_id: dealRegFormDataItem?.contact_id || null,
-          customer_id: dealRegFormDataItem?.customer_id || null,
-          opportunity_id: dealRegFormDataItem?.opportunity_id || null,
+          contact_id: !isDealRegDetail
+            ? dealRegFormDataItem?.contact_id
+            : getContactId,
+          customer_id: !isDealRegDetail
+            ? dealRegFormDataItem?.customer_id
+            : getCustomerId,
+          opportunity_id: !isDealRegDetail
+            ? dealRegFormDataItem?.opportunity_id
+            : getOpportunityId,
           partner_id: dealRegFormDataItem?.partner_id || null,
           partner_program_id: dealRegFormDataItem?.partner_program_id || null,
           street_1: dealRegFormDataItem?.street_1 || null,
@@ -431,6 +440,13 @@ const AddRegistrationForm: FC<any> = ({setShowModal, isDealRegDetail}) => {
               await dispatch(insertDealRegAddress(obj12)).then((d: any) => {
                 if (d) {
                   setShowModal(false);
+                  if (isDealRegDetail) {
+                    dispatch(
+                      getDealRegByOpportunityId(Number(getOpportunityId)),
+                    );
+                  } else {
+                    dispatch(getAllDealReg());
+                  }
                 }
               });
             }
@@ -442,7 +458,7 @@ const AddRegistrationForm: FC<any> = ({setShowModal, isDealRegDetail}) => {
 
   return (
     <>
-      {!toggle ? (
+      {!toggle || isDealRegDetail ? (
         <Space style={{width: '100%'}} direction="vertical" size={0}>
           <CollapseSpaceStyle size={24} direction="vertical">
             <OsCollapseAdmin items={RegisteredPartnersItem} />
@@ -451,7 +467,7 @@ const AddRegistrationForm: FC<any> = ({setShowModal, isDealRegDetail}) => {
             <OsCollapseAdmin items={SelfRegisteredItem} />
           </CollapseSpaceStyle>
         </Space>
-      ) : (
+      ) : toggle && !isDealRegDetail ? (
         <Space style={{width: '100%'}} direction="vertical" size={24}>
           <Typography name="Body 2/Medium" color={token?.colorPrimaryText}>
             Fill Details
@@ -549,15 +565,21 @@ const AddRegistrationForm: FC<any> = ({setShowModal, isDealRegDetail}) => {
             />
           </Space>
         </Space>
+      ) : (
+        <></>
       )}
 
       <Row justify="end" style={{marginTop: toggle ? '25px' : ''}}>
         <OsButton
           loading={loading}
-          text={!toggle ? 'Next' : 'Create Form'}
+          text={
+            !toggle ? (isDealRegDetail ? 'Create Form' : 'Next') : 'Create Form'
+          }
           buttontype="PRIMARY"
           clickHandler={() => {
-            setToggle(true);
+            if (!isDealRegDetail) {
+              setToggle(true);
+            }
             insertDealRegData();
           }}
         />
