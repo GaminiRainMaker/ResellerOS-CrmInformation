@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable no-nested-ternary */
 
 'use client';
@@ -8,13 +9,14 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Divider} from '@/app/components/common/antd/Divider';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import SearchInput from '@/app/components/common/os-input/SearchInput';
+import GlobalLoader from '@/app/components/common/os-global-loader';
+import SearchSelect from '@/app/components/common/os-select/SearchSelect';
+import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {
   ArrowLeftStartOnRectangleIcon,
   BellIcon,
-  WrenchScrewdriverIcon,
 } from '@heroicons/react/24/outline';
 import {Badge, Layout} from 'antd';
 import {MenuProps} from 'antd/es/menu';
@@ -22,45 +24,40 @@ import Cookies from 'js-cookie';
 import Image from 'next/image';
 import {useRouter} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
-import SearchSelect from '@/app/components/common/os-select/SearchSelect';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
 import UserIcon from '../../../../../public/assets/static/userIcon.svg';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {
   ReadNotificationById,
   getAllNewNotification,
   getCountOfNotification,
 } from '../../../../../redux/actions/notifications';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 const CustomHeader = () => {
   const [token] = useThemeToken();
   const router = useRouter();
   const {loading, userInformation} = useAppSelector((state) => state.user);
+  const {
+    notificationCount,
+    data: notificationData,
+    loading: notificationLoading,
+  } = useAppSelector((state) => state.notification);
   const [userRole, setUserRole] = useState<string>('');
   const dispatch = useAppDispatch();
-  const [allNewNotification, setAllNewNotifications] = useState<any>();
-  const [newNotificationsCount, setNewNotificationCount] = useState<number>();
-  const getAllNewNotifications = async () => {
-    dispatch(getAllNewNotification('')).then((payload) => {
-      setAllNewNotifications(payload?.payload?.data);
-    });
-  };
+
   const readAllNotifications = async () => {
     await dispatch(ReadNotificationById(''));
-    setNewNotificationCount(0);
-
-    getAllNewNotifications();
+    dispatch(getAllNewNotification(''));
+    dispatch(getCountOfNotification(''));
   };
 
   useEffect(() => {
-    dispatch(getCountOfNotification(''))?.then((payload) => {
-      setNewNotificationCount(payload?.payload?.data);
-    });
+    dispatch(getCountOfNotification(''));
   }, []);
 
-  console.log('allNewNotificationallNewNotification', allNewNotification);
+
 
   const items: MenuProps['items'] = [
     {
@@ -106,6 +103,13 @@ const CustomHeader = () => {
     borderRadius: '12px',
     boxShadow: token.boxShadowSecondary,
     padding: '12px',
+  };
+  const dropDownStyle: React.CSSProperties = {
+    backgroundColor: 'white',
+    borderRadius: '12px',
+    boxShadow: token.boxShadowSecondary,
+    padding: '12px',
+    width: '450px',
   };
   const menuStyle: React.CSSProperties = {
     boxShadow: 'none',
@@ -169,13 +173,54 @@ const CustomHeader = () => {
                 />
               }
             /> */}
-            <Badge count={newNotificationsCount}>
-              <AvatarStyled
-                onClick={readAllNotifications}
-                background={token?.colorInfoBg}
-                icon={<BellIcon width={24} color={token?.colorInfoBorder} />}
-              />
-            </Badge>
+
+            <Dropdown
+              trigger={['click']}
+              overlayStyle={{
+                marginLeft: 200,
+                marginTop: 20,
+              }}
+              menu={{items}}
+              // eslint-disable-next-line react/no-unstable-nested-components
+              dropdownRender={() => (
+                <div style={dropDownStyle}>
+                  {notificationData?.map((notificationDataItem: any) => {
+                    console.log(
+                      'notificationDataItem superAdminPartner partner',
+                      notificationDataItem,
+                    );
+                    return (
+                      <GlobalLoader loading={notificationLoading}>
+                        <TableNameColumn
+                          key={notificationDataItem?.id}
+                          primaryText={notificationDataItem?.title}
+                          secondaryText={notificationDataItem?.description}
+                          primaryTextTypography="Body 1/Medium"
+                          // logo={UserIcon}
+                          cursor="pointer"
+                          secondaryEllipsis
+                          onClick={() => {
+                            router.push(
+                              userInformation?.Role === 'superAdmin'
+                                ? `/superAdminPartner`
+                                : 'partner',
+                            );
+                          }}
+                        />
+                      </GlobalLoader>
+                    );
+                  })}
+                </div>
+              )}
+            >
+              <Badge count={notificationCount}>
+                <AvatarStyled
+                  onClick={readAllNotifications}
+                  background={token?.colorInfoBg}
+                  icon={<BellIcon width={24} color={token?.colorInfoBorder} />}
+                />
+              </Badge>
+            </Dropdown>
 
             <Dropdown
               menu={{items}}

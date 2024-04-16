@@ -11,12 +11,14 @@ type NotificationsSetting = {
   loading: boolean;
   error: string | null;
   data: any;
+  notificationCount: number;
   product: any;
   filteredData: any;
 };
 const initialState: NotificationsSetting = {
   loading: false,
   error: null,
+  notificationCount: 0,
   data: [],
   product: [],
   filteredData: [],
@@ -76,7 +78,7 @@ const notificationSlice = createSlice({
         getCountOfNotification.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.notificationCount = action.payload;
         },
       )
       .addCase(

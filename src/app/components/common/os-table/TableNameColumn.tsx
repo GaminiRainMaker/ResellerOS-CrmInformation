@@ -19,6 +19,7 @@ const TableNameColumn: FC<any> = ({
   maxWidth,
   tooltip = false,
   iconBg,
+  secondaryEllipsis = false,
 }) => {
   const imgUrl = logo && ``;
 
@@ -32,6 +33,7 @@ const TableNameColumn: FC<any> = ({
         marginLeft: `${avtarLeftMargin}px`,
         display: 'flex',
         justifyContent: 'center',
+        textAlign: 'start',
       }}
     >
       <AvatarStyled background={iconBg} src={imgUrl} icon={fallbackIcon} />
@@ -50,9 +52,9 @@ const TableNameColumn: FC<any> = ({
         <Typography
           // tooltip={tooltip ? secondaryText : ''}
           maxWidth={maxWidth}
-          onClick={onClick}
+          // onClick={onClick}
           align="left"
-          ellipsis
+          ellipsis={secondaryEllipsis}
           as="div"
           name={secondaryTextTypography}
           color={token.colorPrimaryText}

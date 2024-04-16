@@ -32,6 +32,7 @@ import assignPartnerProgram from './slices/assignPartnerProgram';
 import auth from './slices/auth';
 import attributeSection from './slices/attributeSection';
 import attributeField from './slices/attributeField';
+import notification from './slices/notificatios';
 
 // Configure redux store
 const store = configureStore({
@@ -67,6 +68,7 @@ const store = configureStore({
     auth,
     attributeSection,
     attributeField,
+    notification,
   },
   middleware: [thunk],
   devTools: true,
