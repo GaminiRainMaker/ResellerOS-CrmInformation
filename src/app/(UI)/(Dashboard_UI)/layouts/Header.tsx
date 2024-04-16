@@ -8,6 +8,9 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {Divider} from '@/app/components/common/antd/Divider';
 import {Space} from '@/app/components/common/antd/Space';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import _debounce from 'lodash/debounce';
+
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import SearchSelect from '@/app/components/common/os-select/SearchSelect';
@@ -23,7 +26,7 @@ import {MenuProps} from 'antd/es/menu';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 import {useRouter} from 'next/navigation';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
@@ -33,10 +36,12 @@ import {
   getAllNewNotification,
   getCountOfNotification,
 } from '../../../../../redux/actions/notifications';
+import {getGloabalySearchDataa} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 const CustomHeader = () => {
   const [token] = useThemeToken();
+
   const router = useRouter();
   const {loading, userInformation} = useAppSelector((state) => state.user);
   const {
@@ -46,7 +51,7 @@ const CustomHeader = () => {
   } = useAppSelector((state) => state.notification);
   const [userRole, setUserRole] = useState<string>('');
   const dispatch = useAppDispatch();
-
+  
   const readAllNotifications = async () => {
     await dispatch(ReadNotificationById(''));
     dispatch(getAllNewNotification(''));
@@ -131,6 +136,29 @@ const CustomHeader = () => {
     );
   }, [userInformation]);
 
+  const OnSearchVauee = async (value: any) => {
+    if (value?.length > 0) {
+      dispatch(getGloabalySearchDataa(value)).then((payload) => {
+        if (payload?.payload?.data && payload?.payload?.data?.length > 0) {
+          const allDataArr: any = [];
+          payload?.payload?.data?.map((itemGlob: any) => {
+            const newObj = {...itemGlob, typeRoute: payload?.payload?.type};
+            console.log('payload?.payload?.data', newObj);
+
+            allDataArr?.push(newObj);
+          });
+          console.log('allDataArr', allDataArr);
+        }
+      });
+    }
+  };
+
+  const debouncedApiCall = useCallback(_debounce(OnSearchVauee, 500), []);
+
+  useEffect(() => {
+    debouncedApiCall(searchVlaue);
+  }, [searchVlaue]);
+
   return (
     <Layout>
       <Row
@@ -146,7 +174,11 @@ const CustomHeader = () => {
           <Space size={136} direction="horizontal">
             <Image src={HeaderLogo} alt="HeaderLogo" />
             <SearchSelect
+              onSearch={(e: any) => {
+                setSearchValue(e);
+              }}
               showSearch
+              value={searchVlaue}
               style={{width: '550px'}}
               placeholder="Search"
               allowClear
