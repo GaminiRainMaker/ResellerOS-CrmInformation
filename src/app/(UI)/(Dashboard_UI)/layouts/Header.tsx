@@ -49,9 +49,8 @@ const CustomHeader = () => {
   };
   const readAllNotifications = async () => {
     await dispatch(ReadNotificationById(''));
-    dispatch(getCountOfNotification(''))?.then((payload) => {
-      setNewNotificationCount(payload?.payload?.data);
-    });
+    setNewNotificationCount(0);
+
     getAllNewNotifications();
   };
 
