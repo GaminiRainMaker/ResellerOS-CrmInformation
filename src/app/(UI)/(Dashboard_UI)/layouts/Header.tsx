@@ -46,6 +46,7 @@ const CustomHeader = () => {
   const dispatch = useAppDispatch();
   const [allNewNotification, setAllNewNotifications] = useState<any>();
   const [newNotificationsCount, setNewNotificationCount] = useState<number>();
+  const [searchVlaue, setSearchValue] = useState<any>();
   const getAllNewNotifications = async () => {
     dispatch(getAllNewNotification('')).then((payload) => {
       setAllNewNotifications(payload?.payload?.data);
@@ -150,6 +151,10 @@ const CustomHeader = () => {
 
   const debouncedApiCall = useCallback(_debounce(OnSearchVauee, 500), []);
 
+  useEffect(() => {
+    debouncedApiCall(searchVlaue);
+  }, [searchVlaue]);
+
   return (
     <Layout>
       <Row
@@ -166,9 +171,10 @@ const CustomHeader = () => {
             <Image src={HeaderLogo} alt="HeaderLogo" />
             <SearchSelect
               onSearch={(e: any) => {
-                debouncedApiCall(e);
+                setSearchValue(e);
               }}
               showSearch
+              value={searchVlaue}
               style={{width: '550px'}}
               placeholder="Search"
               allowClear
