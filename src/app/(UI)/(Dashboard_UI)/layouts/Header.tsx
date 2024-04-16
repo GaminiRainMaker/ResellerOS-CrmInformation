@@ -143,7 +143,6 @@ const CustomHeader = () => {
 
             allDataArr?.push(newObj);
           });
-          console.log('allDataArr', allDataArr);
         }
       });
     }
