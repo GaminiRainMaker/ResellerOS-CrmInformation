@@ -71,7 +71,6 @@ const SuperAdminPartner: React.FC = () => {
   } = useAppSelector((state) => state.partner);
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
   const [formData, setformData] = useState<any>();
-  const [allPartnerData, setAllPartnerData] = useState<any>();
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [partnerProgramColumns, setPartnerProgramColumns] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -82,16 +81,14 @@ const SuperAdminPartner: React.FC = () => {
     useState<any>();
 
   useEffect(() => {
-    dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
-      setAllPartnerData(payload?.payload);
-    });
+    dispatch(getAllPartnerandProgram(''));
   }, []);
 
   useEffect(() => {
     const FilterArrayDataa = partnerProgramFilter(
       'super',
       userInformation,
-      allPartnerData,
+      PartnerData,
       activeTab,
     );
     setSuperAdminPartnerAnalyticData(FilterArrayDataa);
@@ -113,7 +110,7 @@ const SuperAdminPartner: React.FC = () => {
     } else {
       setAllFilterPartnerData(FilterArrayDataa?.filterData);
     }
-  }, [allPartnerData, activeTab, JSON.stringify(PartnerData)]);
+  }, [JSON.stringify(PartnerData), activeTab]);
 
   const updateRequest = async (type: boolean, id: number, requesId: number) => {
     const Data = {
@@ -122,10 +119,7 @@ const SuperAdminPartner: React.FC = () => {
       requested_by: requesId,
     };
     await dispatch(updateAssignPartnerProgramById(Data));
-
-    dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
-      setAllPartnerData(payload?.payload);
-    });
+    dispatch(getAllPartnerandProgram(''));
   };
 
   const deleteSelectedPartnerProgramIds = async () => {
