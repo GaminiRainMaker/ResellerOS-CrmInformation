@@ -187,14 +187,17 @@ export const API = {
     INDEX: '/attributeSection',
     QUERY: 'attributeSection/query',
     DeleteById: '/attributeSection/deleteById',
-    UpdateAttributeSectionById:
-      '/attributeSection/updateAttributeSectionById',
+    UpdateAttributeSectionById: '/attributeSection/updateAttributeSectionById',
   },
   ATTRIBUTE_FIELD: {
     INDEX: '/attributeField',
     QUERY: 'attributeField/query',
     DeleteById: '/attributeField/deleteById',
-    UpdateAttributeFieldById:
-      '/attributeField/updateAttributeFieldById',
+    UpdateAttributeFieldById: '/attributeField/updateAttributeFieldById',
+  },
+  NOTIFICATION: {
+    INDEX: '/notification',
+    NEWNOTIFICATION: '/notification/getAllNewNotification',
+    DeleteById: '/notification/deleteNotificationById',
   },
 };

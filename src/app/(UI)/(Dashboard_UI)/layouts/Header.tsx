@@ -16,7 +16,7 @@ import {
   BellIcon,
   WrenchScrewdriverIcon,
 } from '@heroicons/react/24/outline';
-import {Layout} from 'antd';
+import {Badge, Layout} from 'antd';
 import {MenuProps} from 'antd/es/menu';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
@@ -26,13 +26,41 @@ import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
 import UserIcon from '../../../../../public/assets/static/userIcon.svg';
-import {useAppSelector} from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {
+  ReadNotificationById,
+  getAllNewNotification,
+  getCountOfNotification,
+} from '../../../../../redux/actions/notifications';
 
 const CustomHeader = () => {
   const [token] = useThemeToken();
   const router = useRouter();
   const {loading, userInformation} = useAppSelector((state) => state.user);
   const [userRole, setUserRole] = useState<string>('');
+  const dispatch = useAppDispatch();
+  const [allNewNotification, setAllNewNotifications] = useState<any>();
+  const [newNotificationsCount, setNewNotificationCount] = useState<number>();
+  const getAllNewNotifications = async () => {
+    dispatch(getAllNewNotification('')).then((payload) => {
+      setAllNewNotifications(payload?.payload?.data);
+    });
+  };
+  const readAllNotifications = async () => {
+    await dispatch(ReadNotificationById(''));
+    dispatch(getCountOfNotification(''))?.then((payload) => {
+      setNewNotificationCount(payload?.payload?.data);
+    });
+    getAllNewNotifications();
+  };
+
+  useEffect(() => {
+    dispatch(getCountOfNotification(''))?.then((payload) => {
+      setNewNotificationCount(payload?.payload?.data);
+    });
+  }, []);
+
+  console.log('allNewNotificationallNewNotification', allNewNotification);
 
   const items: MenuProps['items'] = [
     {
@@ -133,7 +161,7 @@ const CustomHeader = () => {
               alignItems: 'center',
             }}
           >
-            <AvatarStyled
+            {/* <AvatarStyled
               background={token?.colorInfoBg}
               icon={
                 <WrenchScrewdriverIcon
@@ -141,11 +169,15 @@ const CustomHeader = () => {
                   color={token?.colorInfoBorder}
                 />
               }
-            />
-            <AvatarStyled
-              background={token?.colorInfoBg}
-              icon={<BellIcon width={24} color={token?.colorInfoBorder} />}
-            />
+            /> */}
+            <Badge count={newNotificationsCount}>
+              <AvatarStyled
+                onClick={readAllNotifications}
+                background={token?.colorInfoBg}
+                icon={<BellIcon width={24} color={token?.colorInfoBorder} />}
+              />
+            </Badge>
+
             <Dropdown
               menu={{items}}
               // eslint-disable-next-line react/no-unstable-nested-components

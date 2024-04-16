@@ -45,6 +45,7 @@ const DealRegDetail = () => {
   const [selectedUserId, setSelectedUserId] = useState<any>();
   const [formDataValues, setFormDataValues] = useState<any>();
   const [cartItems, setCartItems] = useState<any>();
+  const [activeKey, setActiveKey] = useState<any>();
 
   useEffect(() => {
     if (getOpportunityId) {
@@ -95,6 +96,43 @@ const DealRegDetail = () => {
     //   label: <Typography name="Body 3/Regular">Mark as Complete</Typography>,
     // },
   ];
+
+  useEffect(() => {
+    if (!activeKey) {
+      if (DealRegData?.length > 0) {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        const program_id = DealRegData[0]?.partner_program_id;
+        setActiveKey(program_id as string);
+        const newObj = {...DealRegData?.[0]};
+
+        delete newObj?.unique_form_data;
+        newObj.unique_form_data =
+          DealRegData?.[0]?.unique_form_data &&
+          JSON?.parse(DealRegData?.[0]?.unique_form_data);
+        newObj.common_formData = JSON?.parse(
+          DealRegData?.[0]?.common_form_data,
+        );
+        setFormDataValues([newObj]);
+      }
+    }
+  }, [DealRegData]);
+
+  useEffect(() => {
+    if (cartItems) {
+      const newArr = [...formDataValues];
+      const index = newArr.findIndex(
+        (item: any) => item.partner_program_id === activeKey,
+      );
+
+      if (index > -1) {
+        const obj = {...newArr[index]};
+        obj.unique_form_data = cartItems;
+        newArr[index] = obj;
+
+        setFormDataValues(newArr);
+      }
+    }
+  }, [cartItems]);
 
   const onFinish = async () => {
     const dealRegNewData = form.getFieldsValue();

@@ -3,10 +3,9 @@ import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
 import {useEffect} from 'react';
+import {updatePartnerProgramById} from '../../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {CollapseSpaceStyle} from './styled-components';
-import {updatePartnerProgramById} from '../../../../../../redux/actions/partnerProgram';
-import {updateAssignPartnerProgramById} from '../../../../../../redux/actions/assignPartnerProgram';
 
 const UniqueFields: React.FC<any> = ({
   cartItems,
@@ -17,11 +16,12 @@ const UniqueFields: React.FC<any> = ({
   const [form] = Form.useForm();
   const {dealReg} = useAppSelector((state) => state.dealReg);
   const dispatch = useAppDispatch();
-  // const formDataObject = JSON?.parse(dealReg?.PartnerProgram?.form_data);
 
-  useEffect(() => {
-    setCartItems(JSON?.parse(dealReg?.PartnerProgram?.form_data));
-  }, [dealReg]);
+  // useEffect(() => {
+  //   // if (!cartItems && data?.form_data && data?.form_data?.length > 0) {
+  //   //   // setCartItems(JSON?.parse(data?.form_data));
+  //   // }
+  // }, [data]);
 
   const updateUniqueFiledData = () => {
     const dataa = {
@@ -31,7 +31,6 @@ const UniqueFields: React.FC<any> = ({
 
     dispatch(updatePartnerProgramById(dataa));
   };
-  console.log('3454353242', JSON?.parse(dealReg?.PartnerProgram?.form_data));
   const AccountInformationItem = [
     {
       key: '1',

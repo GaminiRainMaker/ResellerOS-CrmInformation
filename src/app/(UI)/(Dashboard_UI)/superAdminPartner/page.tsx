@@ -107,10 +107,11 @@ const SuperAdminPartner: React.FC = () => {
     }
   }, [allPartnerData, activeTab]);
 
-  const updateRequest = async (type: boolean, id: number) => {
+  const updateRequest = async (type: boolean, id: number, requesId: number) => {
     const Data = {
       id,
       is_approved: type,
+      requested_by: requesId,
     };
     await dispatch(updateAssignPartnerProgramById(Data));
 
@@ -280,14 +281,22 @@ const SuperAdminPartner: React.FC = () => {
             buttontype="PRIMARY"
             text="Approve"
             clickHandler={() => {
-              updateRequest(true, record?.AssignPartnerProgram?.id);
+              updateRequest(
+                true,
+                record?.AssignPartnerProgram?.id,
+                record?.AssignPartnerProgram?.requested_by,
+              );
             }}
           />{' '}
           <OsButton
             buttontype="SECONDARY"
             text="Decline"
             clickHandler={() => {
-              updateRequest(false, record?.AssignPartnerProgram?.id);
+              updateRequest(
+                false,
+                record?.AssignPartnerProgram?.id,
+                record?.AssignPartnerProgram?.requested_by,
+              );
             }}
           />
         </Space>
@@ -504,14 +513,22 @@ const SuperAdminPartner: React.FC = () => {
               buttontype="PRIMARY"
               text="Approve"
               clickHandler={() => {
-                updateRequest(true, record?.AssignPartnerProgram?.id);
+                updateRequest(
+                  true,
+                  record?.AssignPartnerProgram?.id,
+                  record?.AssignPartnerProgram?.requested_by,
+                );
               }}
             />{' '}
             <OsButton
               buttontype="SECONDARY"
               text="Decline"
               clickHandler={() => {
-                updateRequest(false, record?.AssignPartnerProgram?.id);
+                updateRequest(
+                  false,
+                  record?.AssignPartnerProgram?.id,
+                  record?.AssignPartnerProgram?.requested_by,
+                );
               }}
             />
           </Space>

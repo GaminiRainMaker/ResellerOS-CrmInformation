@@ -310,6 +310,7 @@ const Partners: React.FC = () => {
       ),
     },
   ];
+  console.log('userInformation', userInformation);
   const handleAddNewAssignedPartnerProgramRequest = async (id: number) => {
     const partnerObj = {
       organization: userInformation?.organization,
