@@ -22,6 +22,7 @@ type UserState = {
   userInformation: any;
   loginUserInformation: any;
   allResellerRecord: any;
+  searchDataa: any;
 };
 const initialState: UserState = {
   loading: false,
@@ -31,6 +32,7 @@ const initialState: UserState = {
   userInformation: [],
   loginUserInformation: {},
   allResellerRecord: {},
+  searchDataa: [],
 };
 
 const userSlice = createSlice({
@@ -192,7 +194,7 @@ const userSlice = createSlice({
         getGloabalySearchDataa.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.searchDataa = action.payload;
         },
       )
       .addCase(

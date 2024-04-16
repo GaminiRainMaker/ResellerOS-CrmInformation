@@ -9,8 +9,8 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Divider} from '@/app/components/common/antd/Divider';
 import {Space} from '@/app/components/common/antd/Space';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import _debounce from 'lodash/debounce';
 
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import SearchSelect from '@/app/components/common/os-select/SearchSelect';
@@ -21,12 +21,12 @@ import {
   ArrowLeftStartOnRectangleIcon,
   BellIcon,
 } from '@heroicons/react/24/outline';
-import {Badge, Layout} from 'antd';
+import {Badge, Layout, Select} from 'antd';
 import {MenuProps} from 'antd/es/menu';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 import {useRouter} from 'next/navigation';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
@@ -41,17 +41,26 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 const CustomHeader = () => {
   const [token] = useThemeToken();
-
+  const {Option} = Select;
   const router = useRouter();
-  const {loading, userInformation} = useAppSelector((state) => state.user);
+  const dispatch = useAppDispatch();
+  const {userInformation, searchDataa} = useAppSelector((state) => state.user);
   const {
     notificationCount,
     data: notificationData,
     loading: notificationLoading,
   } = useAppSelector((state) => state.notification);
   const [userRole, setUserRole] = useState<string>('');
-  const dispatch = useAppDispatch();
-  const [searchVlaue, setSearchValue] = useState();
+  const [searchFinalData, setSearchFinalData] = useState<any>();
+  const [query, setQuery] = useState<{
+    searchText: string | null;
+  }>({
+    searchText: null,
+  });
+  const searchQuery = useDebounceHook(query, 400);
+  useEffect(() => {
+    dispatch(getGloabalySearchDataa(searchQuery));
+  }, [searchQuery]);
 
   const readAllNotifications = async () => {
     await dispatch(ReadNotificationById(''));
@@ -135,27 +144,34 @@ const CustomHeader = () => {
     );
   }, [userInformation]);
 
-  const OnSearchVauee = async (value: any) => {
-    if (value?.length > 0) {
-      dispatch(getGloabalySearchDataa(value)).then((payload) => {
-        if (payload?.payload?.data && payload?.payload?.data?.length > 0) {
-          const allDataArr: any = [];
-          payload?.payload?.data?.map((itemGlob: any) => {
-            const newObj = {...itemGlob, typeRoute: payload?.payload?.type};
-            console.log('payload?.payload?.data', newObj);
-
-            allDataArr?.push(newObj);
-          });
-        }
+  useEffect(() => {
+    if (searchDataa) {
+      const allDataArr: any = [];
+      searchDataa?.data?.map((itemGlob: any) => {
+        const newObj = {...itemGlob, typeRoute: searchDataa?.type};
+        allDataArr?.push(newObj);
       });
+      setSearchFinalData(allDataArr);
+    }
+  }, [searchDataa]);
+
+  console.log('searchFinalData', searchDataa, searchFinalData);
+
+  // const searchDataOptions = searchFinalData?.map((dataItem: any)=>{
+  //   label: dataItem?.name;
+  //   key: dataItem?.id,
+  // })
+
+  const handleOptionClick = (typeRoute: string) => {
+    console.log('typeRoute', typeRoute);
+    // Redirect based on the typeRoute value
+    // Example redirection logic
+    if (typeRoute === 'Account') {
+      // Redirect to account route
+    } else if (typeRoute === 'AnotherType') {
+      // Redirect to another route
     }
   };
-
-  const debouncedApiCall = useCallback(_debounce(OnSearchVauee, 500), []);
-
-  useEffect(() => {
-    debouncedApiCall(searchVlaue);
-  }, [searchVlaue]);
 
   return (
     <Layout>
@@ -173,15 +189,24 @@ const CustomHeader = () => {
             <Image src={HeaderLogo} alt="HeaderLogo" />
             <SearchSelect
               onSearch={(e: any) => {
-                setSearchValue(e);
+                setQuery(e);
               }}
               showSearch
-              value={searchVlaue}
+              value={query?.searchText}
               style={{width: '550px'}}
               placeholder="Search"
               allowClear
               prefixIcon={<Image src={SearchImg} alt="SearchImg" />}
-            />
+            >
+              {searchFinalData?.map((item: any) => (
+                <Option
+                  key={item?.id}
+                  onClick={() => handleOptionClick(item?.typeRoute)}
+                >
+                  {item?.name}
+                </Option>
+              ))}
+            </SearchSelect>
           </Space>
         </Col>
         <Col>
@@ -236,6 +261,7 @@ const CustomHeader = () => {
                                 : 'partner',
                             );
                           }}
+                          maxWidth={300}
                         />
                       </GlobalLoader>
                     );

@@ -108,9 +108,9 @@ export const getAdminUserOfAllOrganization = createAsyncThunk(
 );
 export const getGloabalySearchDataa = createAsyncThunk(
   'user/globalSearchApi',
-  async (search: string, thunkApi) => {
+  async (query: any, thunkApi) => {
     try {
-      const res = await USERAPI.getForGlobalSearch(search);
+      const res = await USERAPI.getForGlobalSearch(query);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);
