@@ -33,3 +33,17 @@ export const SelectStyled = styled(Select)`
   //     cursor: pointer !important;
   //   }
 `;
+
+export const SearchSelectStyle = styled(Select)`
+  background: #edeff2;
+  border: none;
+  &.ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
+    background: none;
+    border: none;
+  }
+  height: 52px;
+  border-radius: 50px;
+  &.ant-select-focused .ant-select-selector {
+    box-shadow: none !important;
+  }
+`;

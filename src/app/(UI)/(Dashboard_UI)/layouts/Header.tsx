@@ -8,10 +8,7 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Divider} from '@/app/components/common/antd/Divider';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import {
-  SearchInput,
-  SearchInput2,
-} from '@/app/components/common/os-input/SearchInput';
+import SearchInput from '@/app/components/common/os-input/SearchInput';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {
@@ -25,6 +22,7 @@ import Cookies from 'js-cookie';
 import Image from 'next/image';
 import {useRouter} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
+import SearchSelect from '@/app/components/common/os-select/SearchSelect';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
@@ -116,14 +114,7 @@ const CustomHeader = () => {
         <Col>
           <Space size={136} direction="horizontal">
             <Image src={HeaderLogo} alt="HeaderLogo" />
-
-            {/* <SearchInput
-              style={{width: '550px'}}
-              placeholder="Search"
-              allowClear
-              prefix={<Image src={SearchImg} alt="SearchImg" />}
-            /> */}
-            <SearchInput2
+            <SearchSelect
               showSearch
               style={{width: '550px'}}
               placeholder="Search"
