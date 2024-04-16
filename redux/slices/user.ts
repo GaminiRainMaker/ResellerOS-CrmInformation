@@ -11,6 +11,7 @@ import {
   getUserByIdLogin,
   queryAllUsers,
   getAdminUserOfAllOrganization,
+  getGloabalySearchDataa,
 } from '../actions/user';
 
 type UserState = {
@@ -182,9 +183,28 @@ const userSlice = createSlice({
           state.loading = false;
           state.error = action.payload;
         },
+      )
+      .addCase(getGloabalySearchDataa.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getGloabalySearchDataa.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getGloabalySearchDataa.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
       );
   },
 });
 
-export const {setUser, setUserInformation, setAllResellerRecord} = userSlice.actions;
+export const {setUser, setUserInformation, setAllResellerRecord} =
+  userSlice.actions;
 export default userSlice?.reducer;

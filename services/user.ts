@@ -22,4 +22,8 @@ export const USERAPI = {
     post(API.USER.AddUser, data) as Promise<AxiosResponse<any>>,
   deleteById: (data: any) =>
     patch(API.USER.DeleteById, data) as Promise<AxiosResponse<any>>,
+  getForGlobalSearch: (search: any) =>
+    get(`${API.USER.GetGlobalSearchData}/${search}`) as Promise<
+      AxiosResponse<any>
+    >,
 };

@@ -45,6 +45,7 @@ export const API = {
     DeleteById: '/user/deleteById',
     USERBYID: '/user/getUserById',
     GetAdminUserOfAllOrganization: '/user/getAdminUserOfAllOrganization',
+    GetGlobalSearchData: '/user/globalSearchApi',
   },
   PRODUCT: {
     INDEX: '/product',

@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable no-nested-ternary */
 
 'use client';
@@ -7,35 +8,38 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {Divider} from '@/app/components/common/antd/Divider';
 import {Space} from '@/app/components/common/antd/Space';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import _debounce from 'lodash/debounce';
+
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import SearchInput from '@/app/components/common/os-input/SearchInput';
+import SearchSelect from '@/app/components/common/os-select/SearchSelect';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {
   ArrowLeftStartOnRectangleIcon,
   BellIcon,
-  WrenchScrewdriverIcon,
 } from '@heroicons/react/24/outline';
 import {Badge, Layout} from 'antd';
 import {MenuProps} from 'antd/es/menu';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 import {useRouter} from 'next/navigation';
-import React, {useEffect, useState} from 'react';
-import SearchSelect from '@/app/components/common/os-select/SearchSelect';
+import React, {useCallback, useEffect, useState} from 'react';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
 import UserIcon from '../../../../../public/assets/static/userIcon.svg';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {
   ReadNotificationById,
   getAllNewNotification,
   getCountOfNotification,
 } from '../../../../../redux/actions/notifications';
+import {getGloabalySearchDataa} from '../../../../../redux/actions/user';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 const CustomHeader = () => {
   const [token] = useThemeToken();
+
   const router = useRouter();
   const {loading, userInformation} = useAppSelector((state) => state.user);
   const [userRole, setUserRole] = useState<string>('');
@@ -127,6 +131,25 @@ const CustomHeader = () => {
     );
   }, [userInformation]);
 
+  const OnSearchVauee = async (value: any) => {
+    if (value?.length > 0) {
+      dispatch(getGloabalySearchDataa(value)).then((payload) => {
+        if (payload?.payload?.data && payload?.payload?.data?.length > 0) {
+          const allDataArr: any = [];
+          payload?.payload?.data?.map((itemGlob: any) => {
+            const newObj = {...itemGlob, typeRoute: payload?.payload?.type};
+            console.log('payload?.payload?.data', newObj);
+
+            allDataArr?.push(newObj);
+          });
+          console.log('allDataArr', allDataArr);
+        }
+      });
+    }
+  };
+
+  const debouncedApiCall = useCallback(_debounce(OnSearchVauee, 500), []);
+
   return (
     <Layout>
       <Row
@@ -142,6 +165,9 @@ const CustomHeader = () => {
           <Space size={136} direction="horizontal">
             <Image src={HeaderLogo} alt="HeaderLogo" />
             <SearchSelect
+              onSearch={(e: any) => {
+                debouncedApiCall(e);
+              }}
               showSearch
               style={{width: '550px'}}
               placeholder="Search"

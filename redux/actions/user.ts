@@ -106,3 +106,14 @@ export const getAdminUserOfAllOrganization = createAsyncThunk(
     }
   },
 );
+export const getGloabalySearchDataa = createAsyncThunk(
+  'user/globalSearchApi',
+  async (search: string, thunkApi) => {
+    try {
+      const res = await USERAPI.getForGlobalSearch(search);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
