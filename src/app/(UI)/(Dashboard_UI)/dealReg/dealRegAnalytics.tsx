@@ -24,7 +24,9 @@ const DealRegAnalytics = (props: any) => {
     },
     {
       key: 2,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
+      primary: (
+        <Typography name="Heading 3/Medium">{props?.data?.length}</Typography>
+      ),
       secondry: 'Partners',
       icon: <ClipboardDocumentCheckIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,

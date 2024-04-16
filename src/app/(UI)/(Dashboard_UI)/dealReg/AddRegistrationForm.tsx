@@ -36,9 +36,9 @@ const AddRegistrationForm: FC<any> = ({
 }) => {
   const [token] = useThemeToken();
   const searchParams = useSearchParams();
-  const getOpportunityId = searchParams.get('opportunityId');
-  const getContactId = searchParams.get('contactId');
-  const getCustomerId = searchParams.get('customerId');
+  const getOpportunityId = Number(searchParams.get('opportunityId'));
+  const getContactId = Number(searchParams.get('contactId'));
+  const getCustomerId = Number(searchParams.get('customerId'));
   const dispatch = useAppDispatch();
   const {data: dataAddress} = useAppSelector((state) => state.customer);
   const {data: opportunityData} = useAppSelector((state) => state.Opportunity);

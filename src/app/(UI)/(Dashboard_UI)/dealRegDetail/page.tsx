@@ -163,7 +163,6 @@ const DealRegDetail = () => {
       console.error('Error:', error);
     }
   };
-  console.log(formDataValues, 'ewrewrwe', DealRegData);
   return (
     <div>
       <Row justify="space-between" align="middle">
@@ -176,17 +175,6 @@ const DealRegDetail = () => {
               text="Save"
               buttontype="SECONDARY"
               clickHandler={updateTheDealReg}
-            />
-            <OsButton
-              text="Download"
-              buttontype="SECONDARY"
-              icon={
-                <ArrowDownTrayIcon
-                  width={24}
-                  height={24}
-                  color={token?.colorPrimary}
-                />
-              }
             />
             <OsButton
               text="Add New Form"
