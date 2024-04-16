@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable no-multi-str */
 /* eslint-disable no-unsafe-optional-chaining */
 export const selectDataForProduct = [

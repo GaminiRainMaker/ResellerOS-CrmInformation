@@ -64,14 +64,22 @@ const SuperAdminPartner: React.FC = () => {
   const [deletePartnerIds, setDeletePartnerIds] = useState<[]>();
   const [deletePartnerProgramIds, setDeletePartnerProgramIds] = useState<[]>();
   const [activeTab, setActiveTab] = useState<number>(1);
-  const {loading} = useAppSelector((state) => state.partner);
-
+  const {
+    loading,
+    insertPartnerLoading,
+    data: PartnerData,
+  } = useAppSelector((state) => state.partner);
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
   const [formData, setformData] = useState<any>();
   const [allPartnerData, setAllPartnerData] = useState<any>();
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [partnerProgramColumns, setPartnerProgramColumns] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
+  const {insertProgramLoading} = useAppSelector(
+    (state) => state.partnerProgram,
+  );
+  const [superAdminPartnerAnalyticData, setSuperAdminPartnerAnalyticData] =
+    useState<any>();
 
   useEffect(() => {
     dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
@@ -86,7 +94,7 @@ const SuperAdminPartner: React.FC = () => {
       allPartnerData,
       activeTab,
     );
-
+    setSuperAdminPartnerAnalyticData(FilterArrayDataa);
     const newArrForTab3: any = [];
     if (activeTab === 2) {
       FilterArrayDataa?.filterData?.map((items: any) => {
@@ -105,7 +113,7 @@ const SuperAdminPartner: React.FC = () => {
     } else {
       setAllFilterPartnerData(FilterArrayDataa?.filterData);
     }
-  }, [allPartnerData, activeTab]);
+  }, [allPartnerData, activeTab, JSON.stringify(PartnerData)]);
 
   const updateRequest = async (type: boolean, id: number, requesId: number) => {
     const Data = {
@@ -155,6 +163,7 @@ const SuperAdminPartner: React.FC = () => {
       />
     ),
   };
+
   const PartnerProgramColumnsTab3 = [
     {
       title: (
@@ -303,6 +312,7 @@ const SuperAdminPartner: React.FC = () => {
       ),
     },
   ];
+
   const PartnerProgramColumns = [
     {
       title: (
@@ -358,6 +368,7 @@ const SuperAdminPartner: React.FC = () => {
       ),
     },
   ];
+
   const PartnerColumns = [
     {
       title: (
@@ -430,7 +441,6 @@ const SuperAdminPartner: React.FC = () => {
                 columns={partnerProgramColumns}
                 dataSource={record?.PartnerPrograms}
                 scroll
-                locale={locale}
                 loading={false}
                 paginationProps={false}
               />
@@ -479,7 +489,6 @@ const SuperAdminPartner: React.FC = () => {
                 // dataSource={allApprovedObjects}
                 dataSource={record?.PartnerPrograms}
                 scroll
-                locale={locale}
                 loading={false}
               />
             ),
@@ -541,11 +550,10 @@ const SuperAdminPartner: React.FC = () => {
     }
   }, [activeTab]);
 
-  console.log('allPartnerFilterData', allPartnerFilterData);
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <SuperAdminPartnerAnalytics data={allPartnerFilterData} />
+        <SuperAdminPartnerAnalytics data={superAdminPartnerAnalyticData} />
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
@@ -578,7 +586,7 @@ const SuperAdminPartner: React.FC = () => {
       </Space>
 
       <OsModal
-        loading={loading}
+        loading={insertPartnerLoading}
         body={<AddPartner form={form} setOpen={setShowAddPartnerModal} />}
         width={800}
         open={showAddPartnerModal}
@@ -592,7 +600,7 @@ const SuperAdminPartner: React.FC = () => {
       />
 
       <OsModal
-        loading={loading}
+        loading={insertProgramLoading}
         body={
           <AddPartnerProgram form={form} setOpen={setShowAddProgramModal} />
         }

@@ -14,14 +14,20 @@ import CommonFields from './CommonField';
 import UniqueFields from './UniqueField';
 import ConverSationProcess from '../../admin/quote-AI/configuration/configuration-tabs/ConversationProcess';
 
-const DealRegDetailForm: FC<any> = (data, form) => {
+const DealRegDetailForm: FC<any> = ({
+  data,
+  form,
+  activeKey,
+  setFormDataValues,
+  formDataValues,
+  cartItems,
+  setCartItems,
+}) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {dealReg} = useAppSelector((state) => state.dealReg);
   const [commonFiledData, setCommonFiledData] = useState<any>();
-  const [cartItems, setCartItems] = useState<any>();
 
-  const [formDataValues, setFormDataValues] = useState<any>();
   const [sectionIndexActive, setSectionIndexAactive] = useState<any>();
 
   const CommonFieldsItems = [
@@ -37,6 +43,9 @@ const DealRegDetailForm: FC<any> = (data, form) => {
           data={commonFiledData}
           selectedUserId={data?.selectedUserId}
           form={form}
+          formDataValues={formDataValues}
+          setFormDataValues={setFormDataValues}
+          activeKey={activeKey}
         />
       ),
     },
@@ -56,6 +65,7 @@ const DealRegDetailForm: FC<any> = (data, form) => {
           cartItems={cartItems}
           setSectionIndexAactive={setSectionIndexAactive}
           sectionIndexActive={sectionIndexActive}
+          data={data?.PartnerProgram}
         />
       ),
     },
@@ -98,6 +108,7 @@ const DealRegDetailForm: FC<any> = (data, form) => {
     });
     dispatch(getAllCustomer({}));
   }, []);
+  console.log(commonFiledData, 'commonFiledDatacommonFiledData', data);
 
   return (
     <Row>
@@ -105,7 +116,7 @@ const DealRegDetailForm: FC<any> = (data, form) => {
         <OsCollapseAdmin items={CommonFieldsItems} />
       </Space>
       <>
-        {dealReg?.PartnerProgram?.form_data && (
+        {data?.PartnerProgram?.form_data && (
           <Space
             size={24}
             direction="vertical"

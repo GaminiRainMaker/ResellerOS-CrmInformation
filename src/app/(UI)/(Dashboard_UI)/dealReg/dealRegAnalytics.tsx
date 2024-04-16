@@ -7,12 +7,10 @@ import {
   ClipboardDocumentCheckIcon,
   ClockIcon,
   QueueListIcon,
-  TrashIcon,
 } from '@heroicons/react/24/outline';
 
 const DealRegAnalytics = (props: any) => {
   const [token] = useThemeToken();
-  console.log('props', props?.data);
 
   const analyticsData = [
     {
@@ -26,7 +24,9 @@ const DealRegAnalytics = (props: any) => {
     },
     {
       key: 2,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
+      primary: (
+        <Typography name="Heading 3/Medium">{props?.data?.length}</Typography>
+      ),
       secondry: 'Partners',
       icon: <ClipboardDocumentCheckIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
@@ -44,13 +44,6 @@ const DealRegAnalytics = (props: any) => {
       secondry: 'In Progress',
       icon: <ClockIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
-    },
-    {
-      key: 5,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
-      secondry: 'Deleted',
-      icon: <TrashIcon width={24} color={token?.colorError} />,
-      iconBg: token?.colorErrorBg,
     },
   ];
 

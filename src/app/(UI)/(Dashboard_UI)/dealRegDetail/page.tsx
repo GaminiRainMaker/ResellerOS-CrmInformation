@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -8,6 +10,7 @@ import OsButton from '@/app/components/common/os-button';
 import DealRegCustomTabs from '@/app/components/common/os-custom-tab/DealRegCustomTab';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
+import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
 import {ArrowDownTrayIcon, PlusIcon} from '@heroicons/react/24/outline';
 import {MenuProps} from 'antd';
@@ -24,8 +27,8 @@ import {
   updateDealRegAddressById,
 } from '../../../../../redux/actions/dealRegAddress';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import AddRegistrationForm from '../dealReg/AddRegistrationForm';
 import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
-import {setSubmitDealRegData} from '../../../../../redux/slices/dealReg';
 
 const DealRegDetail = () => {
   const [form] = Form.useForm();
@@ -38,14 +41,15 @@ const DealRegDetail = () => {
     dealRegUpdateData,
   } = useAppSelector((state) => state.dealReg);
   const [open, setOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const searchParams = useSearchParams();
+  const [activeKey, setActiveKey] = useState('');
   const getOpportunityId = searchParams.get('opportunityId');
   const getPartnerProgramId = searchParams.get('program_id');
 
   const [selectedUserId, setSelectedUserId] = useState<any>();
-  const [formDataValues, setFormDataValues] = useState<any>();
+  const [formDataValues, setFormDataValues] = useState<any>([]);
   const [cartItems, setCartItems] = useState<any>();
-  const [activeKey, setActiveKey] = useState<any>();
 
   useEffect(() => {
     if (getOpportunityId) {
@@ -56,6 +60,23 @@ const DealRegDetail = () => {
     }
   }, []);
 
+  const updateTheDealReg = async () => {
+    const newObj = {
+      ...formDataValues?.[0],
+      unique_form_data: [
+        JSON?.stringify(formDataValues?.[0]?.unique_form_data),
+      ],
+      common_form_data: [JSON?.stringify(formDataValues?.[0]?.common_formData)],
+    };
+
+    await dispatch(updateDealRegById(newObj));
+    if (getOpportunityId) {
+      dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+    }
+    if (getPartnerProgramId) {
+      dispatch(getDealRegByPartnerProgramId(Number(getPartnerProgramId)));
+    }
+  };
   const OsBreadCrumbItems = [
     {
       key: '1',
@@ -151,7 +172,6 @@ const DealRegDetail = () => {
       console.error('Error:', error);
     }
   };
-
   return (
     <div>
       <Row justify="space-between" align="middle">
@@ -163,30 +183,15 @@ const DealRegDetail = () => {
             <OsButton
               text="Save"
               buttontype="SECONDARY"
-              clickHandler={() => {
-                // dispatch(updateDealRegById(dealRegUpdateData)).then(() => {
-                //   // dispatch(getAllDealReg());
-                //   dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-                // });
-                // dispatch(setSubmitDealRegData((p: boolean) => !p));
-                console.log('SECONDARY', form.submit());
-              }}
-            />
-            <OsButton
-              text="Download"
-              buttontype="SECONDARY"
-              icon={
-                <ArrowDownTrayIcon
-                  width={24}
-                  height={24}
-                  color={token?.colorPrimary}
-                />
-              }
+              clickHandler={updateTheDealReg}
             />
             <OsButton
               text="Add New Form"
               buttontype="PRIMARY"
               icon={<PlusIcon width={24} />}
+              clickHandler={() => {
+                setShowModal(true);
+              }}
             />
 
             <OsDropdown menu={{items: dropDownItemss}} />
@@ -198,9 +203,12 @@ const DealRegDetail = () => {
         tabs={DealRegData}
         selectedUserId={selectedUserId}
         form={form}
+        activeKey={activeKey}
         setFormDataValues={setFormDataValues}
         setCartItems={setCartItems}
         cartItems={cartItems}
+        setActiveKey={setActiveKey}
+        formDataValues={formDataValues}
       />
 
       <OsDrawer
@@ -226,6 +234,20 @@ const DealRegDetail = () => {
           onFinish={onFinish}
         />
       </OsDrawer>
+
+      <OsModal
+        bodyPadding={22}
+        body={
+          <AddRegistrationForm setShowModal={setShowModal} isDealRegDetail />
+        }
+        width={583}
+        open={showModal}
+        onOk={() => {}}
+        onCancel={() => {
+          setShowModal((p) => !p);
+        }}
+        footer={false}
+      />
     </div>
   );
 };

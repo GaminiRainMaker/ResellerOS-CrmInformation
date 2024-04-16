@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable no-dupe-else-if */
 /* eslint-disable no-lonely-if */
 /* eslint-disable array-callback-return */

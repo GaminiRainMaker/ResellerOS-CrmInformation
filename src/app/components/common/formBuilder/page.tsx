@@ -85,17 +85,6 @@ const FormBuilderMain: React.FC<any> = ({
     setCartItems(temp);
   };
 
-  useEffect(() => {
-    dispatch(getPartnerProgramById(Number(getPartnerProgramID)))?.then(
-      (payload) => {
-        if (payload?.payload?.form_data) {
-          const JsonParsedObject = JSON?.parse(payload?.payload?.form_data);
-          setCartItems(JsonParsedObject);
-        }
-      },
-    );
-  }, []);
-
   // save reference for dragItem and dragOverItem
   const dragItem = React.useRef<any>(null);
   const dragOverItem = React.useRef<any>(null);
@@ -176,7 +165,6 @@ const FormBuilderMain: React.FC<any> = ({
     setCartItems(newTempArr);
   };
 
-  // console.log('cartItems', cartItems);
   return (
     <>
       {!previewFile && (

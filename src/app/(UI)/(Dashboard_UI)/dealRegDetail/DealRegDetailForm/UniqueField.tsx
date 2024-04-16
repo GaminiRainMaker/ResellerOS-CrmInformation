@@ -12,25 +12,26 @@ const UniqueFields: React.FC<any> = ({
   setCartItems,
   sectionIndexActive,
   setSectionIndexActive,
+  data,
 }) => {
   const [form] = Form.useForm();
-  const {dealReg} = useAppSelector((state) => state.dealReg);
   const dispatch = useAppDispatch();
 
-  // useEffect(() => {
-  //   // if (!cartItems && data?.form_data && data?.form_data?.length > 0) {
-  //   //   // setCartItems(JSON?.parse(data?.form_data));
-  //   // }
-  // }, [data]);
+  useEffect(() => {
+    if (!cartItems) {
+      setCartItems(JSON?.parse(data?.form_data));
+    }
+  }, [data]);
 
   const updateUniqueFiledData = () => {
     const dataa = {
-      id: dealReg?.PartnerProgram?.id,
+      id: data?.id,
       form_data: JSON?.stringify(cartItems),
     };
 
     dispatch(updatePartnerProgramById(dataa));
   };
+  console.log('3454353242', JSON?.parse(data?.form_data));
   const AccountInformationItem = [
     {
       key: '1',

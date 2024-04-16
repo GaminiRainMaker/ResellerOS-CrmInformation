@@ -23,6 +23,9 @@ interface DealRegCustomTabsInterface {
   setFormDataValues?: any;
   setCartItems?: any;
   cartItems?: any;
+  activeKey?: string;
+  setActiveKey?: any;
+  formDataValues?: any;
 }
 const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
   tabs,
@@ -31,9 +34,11 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
   setFormDataValues,
   setCartItems,
   cartItems,
+  activeKey,
+  setActiveKey,
+  formDataValues,
 }) => {
   const dispatch = useAppDispatch();
-  const [activeKey, setActiveKey] = useState<any>(0);
   const [token] = useThemeToken();
   const [tabItems, setTabItems] = useState([]);
 
@@ -46,7 +51,7 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
     if (tabs) {
       tabs?.forEach((element: any, index: number) => {
         tempItems.push({
-          key: index,
+          key: element?.partner_program_id,
           label: (
             <Row
               key={element?.id}
@@ -112,7 +117,7 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
             </Row>
           ),
           children: (
-            <div key={element.id}>
+            <div key={element?.id}>
               <DealRegDetailForm
                 // setFormDataValues={setFormDataValues}
                 data={element}
@@ -120,6 +125,9 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
                 form={form}
                 setCartItems={setCartItems}
                 cartItems={cartItems}
+                formDataValues={formDataValues}
+                setFormDataValues={setFormDataValues}
+                activeKey={activeKey}
               />
             </div>
           ),
@@ -133,7 +141,6 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
     <CustmDealRegTab
       token={token}
       activeKey={activeKey}
-      defaultActiveKey="0"
       items={tabItems}
       onChange={handleTabChange}
     />
