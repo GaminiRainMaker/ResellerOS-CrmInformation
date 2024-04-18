@@ -18,10 +18,10 @@ const UniqueFields: React.FC<any> = ({
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!cartItems) {
+    if (cartItems && cartItems.length === 0 && data && data?.form_data) {
       setCartItems(JSON?.parse(data?.form_data));
     }
-  }, [data]);
+  }, [cartItems, data, setCartItems]);
 
   const updateUniqueFiledData = () => {
     const dataa = {
@@ -31,6 +31,7 @@ const UniqueFields: React.FC<any> = ({
 
     dispatch(updatePartnerProgramById(dataa));
   };
+
   const AccountInformationItem = [
     {
       key: '1',

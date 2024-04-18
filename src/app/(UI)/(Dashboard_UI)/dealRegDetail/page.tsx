@@ -49,7 +49,7 @@ const DealRegDetail = () => {
 
   const [selectedUserId, setSelectedUserId] = useState<any>();
   const [formDataValues, setFormDataValues] = useState<any>([]);
-  const [cartItems, setCartItems] = useState<any>();
+  const [cartItems, setCartItems] = useState<any>([]);
 
   useEffect(() => {
     if (getOpportunityId) {
@@ -172,6 +172,7 @@ const DealRegDetail = () => {
       console.error('Error:', error);
     }
   };
+  console.log(formDataValues, 'fjsdjhfjdhfj');
   return (
     <div>
       <Row justify="space-between" align="middle">
