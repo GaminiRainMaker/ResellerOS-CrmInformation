@@ -218,6 +218,11 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       dataIndex: 'description',
       key: 'description',
       width: 277,
+      render: (text: number) => (
+        <Typography name="Body 4/Medium" style={{color: '#0D0D0D'}}>
+          {text}
+        </Typography>
+      ),
     },
     {
       title: 'Product Family',

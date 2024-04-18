@@ -52,10 +52,12 @@ import BundleSection from './bundleSection';
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
+
   const [form] = Form.useForm();
   const router = useRouter();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
+  const activeTabRoute = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState<any>('1');
   const {quoteLineItemByQuoteID, loading} = useAppSelector(
     (state) => state.quoteLineItem,
@@ -87,6 +89,11 @@ const GenerateQuote: React.FC = () => {
     dispatch(getAllContractSetting(''));
   }, []);
 
+  useEffect(() => {
+    if (activeTabRoute === '2') {
+      setActiveTab('2');
+    }
+  }, [activeTabRoute]);
   useEffect(() => {
     let tabsname: any;
     if (activeTab == '1') {
@@ -236,7 +243,7 @@ const GenerateQuote: React.FC = () => {
           Edit Selected
         </Typography>
       ),
-    }, 
+    },
     {
       key: '3',
       label: (

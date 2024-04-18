@@ -50,6 +50,7 @@ const CustomHeader = () => {
     data: notificationData,
     loading: notificationLoading,
   } = useAppSelector((state) => state.notification);
+  const [openNotifications, setOpenNotifications] = useState<boolean>(false);
   const [userRole, setUserRole] = useState<string>('');
   const [searchFinalData, setSearchFinalData] = useState<any>();
   const [query, setQuery] = useState<{
@@ -235,6 +236,7 @@ const CustomHeader = () => {
                 marginLeft: 200,
                 marginTop: 20,
               }}
+              open={openNotifications}
               menu={{items}}
               // eslint-disable-next-line react/no-unstable-nested-components
               dropdownRender={() => (
@@ -255,10 +257,11 @@ const CustomHeader = () => {
                           cursor="pointer"
                           secondaryEllipsis
                           onClick={() => {
+                            setOpenNotifications(false);
                             router.push(
                               userInformation?.Role === 'superAdmin'
                                 ? `/superAdminPartner`
-                                : 'partner',
+                                : 'partners',
                             );
                           }}
                           maxWidth={300}
@@ -271,7 +274,10 @@ const CustomHeader = () => {
             >
               <Badge count={notificationCount}>
                 <AvatarStyled
-                  onClick={readAllNotifications}
+                  onClick={() => {
+                    setOpenNotifications(!openNotifications);
+                    readAllNotifications();
+                  }}
                   background={token?.colorInfoBg}
                   icon={<BellIcon width={24} color={token?.colorInfoBorder} />}
                 />

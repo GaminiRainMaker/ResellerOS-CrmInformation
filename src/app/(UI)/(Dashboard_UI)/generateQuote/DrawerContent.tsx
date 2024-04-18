@@ -192,7 +192,10 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
               }
               name="status"
             >
-              <CommonSelect options={quoteStatusOptions} />
+              <CommonSelect
+                style={{width: '150px'}}
+                options={quoteStatusOptions}
+              />
             </Form.Item>
           </Col>
 

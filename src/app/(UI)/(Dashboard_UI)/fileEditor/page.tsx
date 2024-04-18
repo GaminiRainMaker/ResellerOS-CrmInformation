@@ -32,7 +32,6 @@ import {
 import {getQuoteLineItemByQuoteIdForEditTable} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
-import {del} from '../../../../../services';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
@@ -262,6 +261,10 @@ const EditorFile = () => {
   }
 
   const updateData = async () => {
+    notification.open({
+      message: 'Kindly wait a moment while we wrap things up.',
+      type: 'info',
+    });
     await updateTables(
       quoteFileById,
       updateLineItemsValue,
@@ -271,7 +274,7 @@ const EditorFile = () => {
       true,
       Number(getQUoteId),
     );
-    router?.push(`/generateQuote?id=${getQUoteId}`);
+    router?.push(`/generateQuote?id=${getQUoteId}&tab=2`);
   };
 
   const CancelEditing = () => {
@@ -284,6 +287,14 @@ const EditorFile = () => {
     router?.push(`/generateQuote?id=${getQUoteId}`);
   };
 
+  const syncShow = (value: string) => {
+    if (value === 'sync') {
+      setShowModal(true);
+    }
+    if (value === 'cancel') {
+      CancelEditing();
+    }
+  };
   return (
     <>
       <div
@@ -392,13 +403,15 @@ const EditorFile = () => {
                   <OsButton
                     text="Cancel"
                     buttontype="SECONDARY"
-                    clickHandler={CancelEditing}
+                    clickHandler={() => {
+                      syncShow('cancel');
+                    }}
                   />{' '}
                   <OsButton
                     text="Sync Table"
                     buttontype="PRIMARY"
                     clickHandler={() => {
-                      setShowModal(true);
+                      syncShow('sync');
                     }}
                   />
                 </Space>
@@ -464,7 +477,13 @@ const EditorFile = () => {
                   <OsButton
                     text="Cancel"
                     buttontype="SECONDARY"
-                    clickHandler={CancelEditing}
+                    // clickHandler={(e: any) => {
+                    //   e?.preventDefault();
+                    //   CancelEditing();
+                    // }}
+                    clickHandler={(e: void) => {
+                      CancelEditing();
+                    }}
                   />
                   <OsButton
                     text="Merge Table"

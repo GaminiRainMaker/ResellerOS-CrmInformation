@@ -32,7 +32,11 @@ function getColumns(
       width: 130,
       render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
-          {text ?? formatDateWithTime(record?.createdAt)}
+          {formatDate(record?.createdAt)}
+          <span style={{marginLeft: '8px'}}>
+            {' '}
+            {formatDateWithTime(record?.createdAt)}
+          </span>
         </Typography>
       ),
     },
@@ -254,7 +258,8 @@ function getSuperAdminQuoteColumns(
       dataIndex: 'status',
       key: 'status',
       width: 187,
-      render: (text: string, record: any) => statusWrapper(record?.Quote?.status),
+      render: (text: string, record: any) =>
+        statusWrapper(record?.Quote?.status),
     },
     {
       title: ' ',

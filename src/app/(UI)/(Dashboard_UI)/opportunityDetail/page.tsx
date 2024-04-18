@@ -77,8 +77,7 @@ const OpportunityDetails = () => {
           name="Heading 3/Medium"
           cursor="pointer"
           color={token?.colorPrimaryText}
-          onClick={() => {
-          }}
+          onClick={() => {}}
         >
           {OpportunityData?.title}
         </Typography>

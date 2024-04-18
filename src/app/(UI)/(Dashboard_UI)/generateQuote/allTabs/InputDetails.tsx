@@ -279,7 +279,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         const value = useRemoveDollarAndCommahook(text);
         return (
           <Typography name="Body 4/Medium">
-            {`$ ${abbreviate(value ?? 0.0)}`}
+            {text === null ? 0.0 : `$ ${abbreviate(value ?? 0.0)}`}
           </Typography>
         );
       },
@@ -806,7 +806,10 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                         <Col>
                                           <p>
                                             Total Cost: $
-                                            {item?.totalAdjustedPrice}
+                                            {item?.totalAdjustedPrice?.length >
+                                            0
+                                              ? item?.totalAdjustedPrice
+                                              : 0.0}
                                           </p>
                                         </Col>
                                         <Col>
