@@ -6,7 +6,7 @@ import Image from 'next/image';
 import {FC, useEffect, useState} from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Cookies from 'js-cookie';
-import {useRouter} from 'next/navigation';
+import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import OSResellerLogo from '../../../../../public/assets/static/ResellerOsText.svg';
 import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
 import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
@@ -36,6 +36,8 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const pathName = usePathname();
+
   const [signUpData, setSignUpData] = useState<any>();
 
   const {loading} = useAppSelector((state) => state.auth);
@@ -79,13 +81,13 @@ const ContentSection: FC<AuthLayoutInterface> = ({
         .match(
           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         );
-    // if (!formValues?.username) {
-    //   notification?.open({
-    //     message: 'Please enter the User name',
-    //     type: 'error',
-    //   });
-    //   return;
-    // }
+    if (!formValues?.username && pathName !== '/login') {
+      notification?.open({
+        message: 'Please enter the User name',
+        type: 'error',
+      });
+      return;
+    }
     if (!formValues?.email) {
       notification?.open({
         message: 'Please enter the email',

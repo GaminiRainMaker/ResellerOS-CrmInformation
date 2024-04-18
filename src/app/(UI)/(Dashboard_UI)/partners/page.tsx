@@ -18,6 +18,7 @@ import {partnerProgramFilter} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Checkbox, Form} from 'antd';
 import {useEffect, useState} from 'react';
+import {useSearchParams} from 'next/navigation';
 import {insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
 import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
 import {getUnassignedProgram} from '../../../../../redux/actions/partnerProgram';
@@ -27,6 +28,8 @@ import PartnerAnalytics from './partnerAnalytics';
 const Partners: React.FC = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
+  const searchParams = useSearchParams();
+  const getTabId = searchParams.get('tab');
   const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<number>(1);
@@ -44,6 +47,11 @@ const Partners: React.FC = () => {
     });
   }, []);
 
+  useEffect(() => {
+    if (getTabId) {
+      setActiveTab(Number(getTabId));
+    }
+  }, [getTabId]);
   useEffect(() => {
     const FilterArrayDataa = partnerProgramFilter(
       'user',

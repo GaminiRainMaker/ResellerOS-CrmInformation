@@ -20,7 +20,7 @@ import Typography from '@/app/components/common/typography';
 import {partnerProgramFilter} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Checkbox, Form} from 'antd';
-import {useRouter} from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {updateAssignPartnerProgramById} from '../../../../../redux/actions/assignPartnerProgram';
 import {
@@ -47,6 +47,8 @@ const SuperAdminPartner: React.FC = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
+  const getTabId = searchParams.get('tab');
   const router = useRouter();
   const [formPartnerData, setFormPartnerData] = useState<any>();
   const [formPartnerProgramData, setFormPartnerProgramData] = useState<any>();
@@ -83,6 +85,12 @@ const SuperAdminPartner: React.FC = () => {
   useEffect(() => {
     dispatch(getAllPartnerandProgram(''));
   }, []);
+
+  useEffect(() => {
+    if (getTabId) {
+      setActiveTab(Number(getTabId));
+    }
+  }, [getTabId]);
 
   useEffect(() => {
     const FilterArrayDataa = partnerProgramFilter(

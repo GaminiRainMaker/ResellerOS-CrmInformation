@@ -270,34 +270,28 @@ const CustomHeader = () => {
               // eslint-disable-next-line react/no-unstable-nested-components
               dropdownRender={() => (
                 <div style={dropDownStyle}>
-                  {notificationData?.map((notificationDataItem: any) => {
-                    console.log(
-                      'notificationDataItem superAdminPartner partner',
-                      notificationDataItem,
-                    );
-                    return (
-                      <GlobalLoader loading={notificationLoading}>
-                        <TableNameColumn
-                          key={notificationDataItem?.id}
-                          primaryText={notificationDataItem?.title}
-                          secondaryText={notificationDataItem?.description}
-                          primaryTextTypography="Body 1/Medium"
-                          // logo={UserIcon}
-                          cursor="pointer"
-                          secondaryEllipsis
-                          onClick={() => {
-                            setOpenNotifications(false);
-                            router.push(
-                              userInformation?.Role === 'superAdmin'
-                                ? `/superAdminPartner`
-                                : 'partners',
-                            );
-                          }}
-                          maxWidth={300}
-                        />
-                      </GlobalLoader>
-                    );
-                  })}
+                  {notificationData?.map((notificationDataItem: any) => (
+                    <GlobalLoader loading={notificationLoading}>
+                      <TableNameColumn
+                        key={notificationDataItem?.id}
+                        primaryText={notificationDataItem?.title}
+                        secondaryText={notificationDataItem?.description}
+                        primaryTextTypography="Body 1/Medium"
+                        // logo={UserIcon}
+                        cursor="pointer"
+                        secondaryEllipsis
+                        onClick={() => {
+                          setOpenNotifications(false);
+                          router.push(
+                            userInformation?.Role === 'superAdmin'
+                              ? `/superAdminPartner?tab=2`
+                              : '/partners?tab=2',
+                          );
+                        }}
+                        maxWidth={300}
+                      />
+                    </GlobalLoader>
+                  ))}
                 </div>
               )}
             >
