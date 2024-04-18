@@ -31,7 +31,6 @@ const UniqueFields: React.FC<any> = ({
 
     dispatch(updatePartnerProgramById(dataa));
   };
-  console.log('3454353242', JSON?.parse(data?.form_data));
   const AccountInformationItem = [
     {
       key: '1',
