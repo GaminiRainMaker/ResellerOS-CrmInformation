@@ -47,11 +47,11 @@ const Partners: React.FC = () => {
     });
   }, []);
 
-  useEffect(() => {
-    if (getTabId) {
-      setActiveTab(Number(getTabId));
-    }
-  }, [getTabId]);
+  // useEffect(() => {
+  //   if (getTabId) {
+  //     setActiveTab(Number(getTabId));
+  //   }
+  // }, [getTabId]);
   useEffect(() => {
     const FilterArrayDataa = partnerProgramFilter(
       'user',

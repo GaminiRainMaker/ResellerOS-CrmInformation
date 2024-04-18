@@ -86,11 +86,11 @@ const SuperAdminPartner: React.FC = () => {
     dispatch(getAllPartnerandProgram(''));
   }, []);
 
-  useEffect(() => {
-    if (getTabId) {
-      setActiveTab(Number(getTabId));
-    }
-  }, [getTabId]);
+  // useEffect(() => {
+  //   if (getTabId) {
+  //     setActiveTab(Number(getTabId));
+  //   }
+  // }, [getTabId]);
 
   useEffect(() => {
     const FilterArrayDataa = partnerProgramFilter(

@@ -283,7 +283,8 @@ const CustomHeader = () => {
                         onClick={() => {
                           setOpenNotifications(false);
                           router.push(
-                            userInformation?.Role === 'superAdmin'
+                            userInformation?.Role === 'superAdmin' &&
+                              userInformation?.isAdmin
                               ? `/superAdminPartner?tab=2`
                               : '/partners?tab=2',
                           );
