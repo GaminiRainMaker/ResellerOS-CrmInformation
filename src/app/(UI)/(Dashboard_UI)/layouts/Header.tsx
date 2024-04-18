@@ -145,34 +145,62 @@ const CustomHeader = () => {
     );
   }, [userInformation]);
 
-  useEffect(() => {
-    if (searchDataa) {
-      const allDataArr: any = [];
-      searchDataa?.data?.map((itemGlob: any) => {
-        const newObj = {...itemGlob, typeRoute: searchDataa?.type};
-        allDataArr?.push(newObj);
-      });
-      setSearchFinalData(allDataArr);
-    }
-  }, [searchDataa]);
-
-  console.log('searchFinalData', searchDataa, searchFinalData);
-
-  // const searchDataOptions = searchFinalData?.map((dataItem: any)=>{
-  //   label: dataItem?.name;
-  //   key: dataItem?.id,
-  // })
-
   const handleOptionClick = (typeRoute: string) => {
     console.log('typeRoute', typeRoute);
     // Redirect based on the typeRoute value
     // Example redirection logic
     if (typeRoute === 'Account') {
       // Redirect to account route
-    } else if (typeRoute === 'AnotherType') {
+      router?.push('/crmInAccount');
+    } else if (typeRoute === 'Partner') {
       // Redirect to another route
+      router?.push('/partners');
+    } else if (typeRoute === 'Contact') {
+      router?.push('/crmContact');
+    } else if (typeRoute === 'Opportunity') {
+      router?.push('/crmOpportunity');
     }
   };
+
+  useEffect(() => {
+    if (searchDataa) {
+      const allDataArr: any = [];
+      const optionsForSearch: any = [];
+      searchDataa?.data?.map((itemGlob: any) => {
+        const newObj = {...itemGlob, typeRoute: searchDataa?.type};
+
+        const optionObj = {
+          label: (
+            <div
+              onClick={() => {
+                handleOptionClick(searchDataa?.type);
+              }}
+            >
+              {itemGlob?.name
+                ? itemGlob?.name
+                : itemGlob?.partner
+                  ? itemGlob?.partner
+                  : itemGlob?.billing_first_name
+                    ? itemGlob?.billing_first_name
+                    : itemGlob?.title
+                      ? itemGlob?.title
+                      : searchDataa?.type}
+            </div>
+          ),
+          value: <div>{searchDataa?.type}</div>,
+        };
+        optionsForSearch?.push(optionObj);
+        allDataArr?.push(newObj);
+      });
+
+      setSearchFinalData(optionsForSearch);
+    }
+  }, [searchDataa]);
+
+  // const searchDataOptions = searchFinalData?.map((dataItem: any)=>{
+  //   label: dataItem?.name;
+  //   key: dataItem?.id,
+  // })
 
   return (
     <Layout>
@@ -198,15 +226,16 @@ const CustomHeader = () => {
               placeholder="Search"
               allowClear
               prefixIcon={<Image src={SearchImg} alt="SearchImg" />}
+              options={searchFinalData}
             >
-              {searchFinalData?.map((item: any) => (
-                <Option
-                  key={item?.id}
-                  onClick={() => handleOptionClick(item?.typeRoute)}
-                >
-                  {item?.name}
+              {/* {searchFinalData?.map((item: any) => (
+                <Option key={item?.id}>
+                  <div onClick={() => handleOptionClick(item?.typeRoute)}>
+                    {' '}
+                    {item?.name}
+                  </div>
                 </Option>
-              ))}
+              ))} */}
             </SearchSelect>
           </Space>
         </Col>
