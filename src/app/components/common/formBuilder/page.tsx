@@ -131,7 +131,7 @@ const FormBuilderMain: React.FC<any> = ({
 
   const addFormData = async () => {
     const objNew = {
-      form_data: JSON?.stringify(cartItems),
+      form_data: [JSON?.stringify(cartItems)],
       id: Number(getPartnerProgramID),
     };
 

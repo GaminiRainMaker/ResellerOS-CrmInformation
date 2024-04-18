@@ -135,7 +135,18 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
       });
     }
     setTabItems(tempItems);
-  }, [tabs, activeKey, selectedUserId]);
+  }, [
+    tabs,
+    activeKey,
+    selectedUserId,
+    token,
+    form,
+    setCartItems,
+    cartItems,
+    formDataValues,
+    setFormDataValues,
+    dispatch,
+  ]);
 
   return (
     <CustmDealRegTab
