@@ -117,7 +117,7 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
             </Row>
           ),
           children: (
-            <div key={element?.id}>
+            <div key={element?.partner_program_id}>
               <DealRegDetailForm
                 // setFormDataValues={setFormDataValues}
                 data={element}

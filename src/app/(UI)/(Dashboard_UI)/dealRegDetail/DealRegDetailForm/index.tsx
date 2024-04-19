@@ -66,6 +66,7 @@ const DealRegDetailForm: FC<any> = ({
           setSectionIndexAactive={setSectionIndexAactive}
           sectionIndexActive={sectionIndexActive}
           data={data?.PartnerProgram}
+          activeKey={activeKey}
         />
       ),
     },
