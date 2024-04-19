@@ -28,8 +28,6 @@ import PartnerAnalytics from './partnerAnalytics';
 const Partners: React.FC = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
-  const searchParams = useSearchParams();
-  const getTabId = searchParams.get('tab');
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const getTabId = searchParams.get('tab');
@@ -49,11 +47,11 @@ const Partners: React.FC = () => {
     });
   }, []);
 
-  // useEffect(() => {
-  //   if (getTabId) {
-  //     setActiveTab(Number(getTabId));
-  //   }
-  // }, [getTabId]);
+  useEffect(() => {
+    if (getTabId) {
+      setActiveTab(Number(getTabId));
+    }
+  }, [getTabId]);
   useEffect(() => {
     if (getTabId) {
       setActiveTab(Number(getTabId));

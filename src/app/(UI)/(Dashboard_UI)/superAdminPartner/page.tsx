@@ -71,8 +71,6 @@ const SuperAdminPartner: React.FC = () => {
     insertPartnerLoading,
     data: PartnerData,
   } = useAppSelector((state) => state.partner);
-  const searchParams = useSearchParams();
-  const getTabId = searchParams.get('tab');
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
   const [formData, setformData] = useState<any>();
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
@@ -88,11 +86,11 @@ const SuperAdminPartner: React.FC = () => {
     dispatch(getAllPartnerandProgram(''));
   }, []);
 
-  // useEffect(() => {
-  //   if (getTabId) {
-  //     setActiveTab(Number(getTabId));
-  //   }
-  // }, [getTabId]);
+  useEffect(() => {
+    if (getTabId) {
+      setActiveTab(Number(getTabId));
+    }
+  }, [getTabId]);
 
   useEffect(() => {
     if (getTabId) {
