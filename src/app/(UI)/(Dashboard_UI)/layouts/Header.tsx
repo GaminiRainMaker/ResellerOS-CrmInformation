@@ -27,6 +27,7 @@ import Cookies from 'js-cookie';
 import Image from 'next/image';
 import {useRouter} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
+import OsButton from '@/app/components/common/os-button';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
@@ -62,15 +63,19 @@ const CustomHeader = () => {
   useEffect(() => {
     dispatch(getGloabalySearchDataa(searchQuery));
   }, [searchQuery]);
+  const [notificationCounts, setNotificationCounts] = useState<number>(0);
 
   const readAllNotifications = async () => {
     await dispatch(ReadNotificationById(''));
     dispatch(getAllNewNotification(''));
-    dispatch(getCountOfNotification(''));
+    setNotificationCounts(0);
+    // dispatch(getCountOfNotification(''));
   };
 
   useEffect(() => {
-    dispatch(getCountOfNotification(''));
+    dispatch(getCountOfNotification(''))?.then((payload) => {
+      setNotificationCounts(payload?.payload?.length);
+    });
   }, []);
 
   const items: MenuProps['items'] = [
@@ -202,6 +207,7 @@ const CustomHeader = () => {
   //   key: dataItem?.id,
   // })
 
+  console.log('userInformation?.isAdmin', userInformation?.isAdmin);
   return (
     <Layout>
       <Row
@@ -270,33 +276,61 @@ const CustomHeader = () => {
               // eslint-disable-next-line react/no-unstable-nested-components
               dropdownRender={() => (
                 <div style={dropDownStyle}>
-                  {notificationData?.map((notificationDataItem: any) => (
-                    <GlobalLoader loading={notificationLoading}>
-                      <TableNameColumn
-                        key={notificationDataItem?.id}
-                        primaryText={notificationDataItem?.title}
-                        secondaryText={notificationDataItem?.description}
-                        primaryTextTypography="Body 1/Medium"
-                        // logo={UserIcon}
-                        cursor="pointer"
-                        secondaryEllipsis
-                        onClick={() => {
-                          setOpenNotifications(false);
-                          router.push(
-                            userInformation?.Role === 'superAdmin' &&
-                              userInformation?.isAdmin
-                              ? `/superAdminPartner?tab=2`
-                              : '/partners?tab=2',
-                          );
-                        }}
-                        maxWidth={300}
-                      />
-                    </GlobalLoader>
-                  ))}
+                  {notificationCount?.length > 0 ? (
+                    <>
+                      {notificationCount?.map((notificationDataItem: any) => (
+                        <GlobalLoader loading={notificationLoading}>
+                          <TableNameColumn
+                            key={notificationDataItem?.id}
+                            primaryText={notificationDataItem?.title}
+                            secondaryText={notificationDataItem?.description}
+                            primaryTextTypography="Body 1/Medium"
+                            // logo={UserIcon}
+                            cursor="pointer"
+                            secondaryEllipsis
+                            onClick={() => {
+                              setOpenNotifications(false);
+                              router.push(
+                                userInformation?.Admin
+                                  ? `/superAdminPartner?tab=2`
+                                  : '/partners?tab=2',
+                              );
+                            }}
+                            maxWidth={300}
+                          />
+                        </GlobalLoader>
+                      ))}
+                    </>
+                  ) : (
+                    <Typography
+                      name="Body 3/Medium"
+                      style={{display: 'flex', justifyContent: 'center'}}
+                    >
+                      No New Notifications
+                    </Typography>
+                  )}
+                  <div
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      marginTop: '10px',
+                    }}
+                  >
+                    {' '}
+                    <OsButton
+                      text="See All"
+                      buttontype="PRIMARY"
+                      clickHandler={() => {
+                        router?.push('/notification');
+                        setOpenNotifications(false);
+                      }}
+                    />
+                  </div>
                 </div>
               )}
             >
-              <Badge count={notificationCount}>
+              <Badge count={notificationCounts}>
                 <AvatarStyled
                   onClick={() => {
                     setOpenNotifications(!openNotifications);

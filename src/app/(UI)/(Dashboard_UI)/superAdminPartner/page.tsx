@@ -71,6 +71,8 @@ const SuperAdminPartner: React.FC = () => {
     insertPartnerLoading,
     data: PartnerData,
   } = useAppSelector((state) => state.partner);
+  const searchParams = useSearchParams();
+  const getTabId = searchParams.get('tab');
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
   const [formData, setformData] = useState<any>();
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
@@ -91,6 +93,12 @@ const SuperAdminPartner: React.FC = () => {
   //     setActiveTab(Number(getTabId));
   //   }
   // }, [getTabId]);
+
+  useEffect(() => {
+    if (getTabId) {
+      setActiveTab(Number(getTabId));
+    }
+  }, [getTabId]);
 
   useEffect(() => {
     const FilterArrayDataa = partnerProgramFilter(
@@ -583,7 +591,10 @@ const SuperAdminPartner: React.FC = () => {
         <Row
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
-          <OsTabs items={superAdmintabItems} />
+          <OsTabs
+            activeKey={activeTab?.toString()}
+            items={superAdmintabItems}
+          />
         </Row>
       </Space>
 

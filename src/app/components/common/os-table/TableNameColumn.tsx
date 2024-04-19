@@ -5,6 +5,7 @@ import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
 import {AvatarStyled} from './styled-components';
+import OsButton from '../os-button';
 
 const TableNameColumn: FC<any> = ({
   logo,
@@ -25,45 +26,47 @@ const TableNameColumn: FC<any> = ({
 
   const [token] = useThemeToken();
   return (
-    <Space
-      size={12}
-      align="center"
-      style={{
-        width: '100%',
-        marginLeft: `${avtarLeftMargin}px`,
-        display: 'flex',
-        justifyContent: 'center',
-        textAlign: 'start',
-        marginTop: '20px',
-      }}
-    >
-      <AvatarStyled background={iconBg} src={imgUrl} icon={fallbackIcon} />
-      <span style={{cursor}}>
-        <Typography
-          cursor={cursor}
-          onClick={onClick}
-          align="left"
-          ellipsis
-          as="div"
-          name={primaryTextTypography}
-          color={token.colorPrimaryText}
-        >
-          {primaryText}
-        </Typography>
-        <Typography
-          // tooltip={tooltip ? secondaryText : ''}
-          maxWidth={maxWidth}
-          // onClick={onClick}
-          align="left"
-          ellipsis={secondaryEllipsis}
-          as="div"
-          name={secondaryTextTypography}
-          color={token.colorPrimaryText}
-        >
-          {secondaryText}
-        </Typography>
-      </span>
-    </Space>
+    <>
+      <Space
+        size={12}
+        align="center"
+        style={{
+          width: '100%',
+          marginLeft: `${avtarLeftMargin}px`,
+          display: 'flex',
+          justifyContent: 'center',
+          textAlign: 'start',
+          marginTop: '20px',
+        }}
+      >
+        <AvatarStyled background={iconBg} src={imgUrl} icon={fallbackIcon} />
+        <span style={{cursor}}>
+          <Typography
+            cursor={cursor}
+            onClick={onClick}
+            align="left"
+            ellipsis
+            as="div"
+            name={primaryTextTypography}
+            color={token.colorPrimaryText}
+          >
+            {primaryText}
+          </Typography>
+          <Typography
+            // tooltip={tooltip ? secondaryText : ''}
+            maxWidth={maxWidth}
+            // onClick={onClick}
+            align="left"
+            ellipsis={secondaryEllipsis}
+            as="div"
+            name={secondaryTextTypography}
+            color={token.colorPrimaryText}
+          >
+            {secondaryText}
+          </Typography>
+        </span>
+      </Space>
+    </>
   );
 };
 

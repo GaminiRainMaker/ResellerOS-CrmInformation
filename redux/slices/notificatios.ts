@@ -11,7 +11,7 @@ type NotificationsSetting = {
   loading: boolean;
   error: string | null;
   data: any;
-  notificationCount: number;
+  notificationCount: any;
   product: any;
   filteredData: any;
 };

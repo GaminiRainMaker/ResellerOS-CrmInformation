@@ -38,6 +38,8 @@ import {Checkbox, MenuProps, Radio, Switch, TimePicker} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
 import moment from 'moment';
+import {formatStatus} from '@/app/utils/CONSTANTS';
+import {TrashIcon} from '@heroicons/react/24/outline';
 import {
   getPartnerProgramById,
   updatePartnerProgramById,
@@ -61,6 +63,7 @@ const FormBuilderMain: React.FC<any> = ({
   previewFile,
   sectionIndexActive,
   setNewValue,
+  collapsed,
 }) => {
   const dropDownItemss: MenuProps['items'] = [];
   const dispatch = useAppDispatch();
@@ -73,11 +76,15 @@ const FormBuilderMain: React.FC<any> = ({
   const [token] = useThemeToken();
   const {data: partnerData} = useAppSelector((state) => state.partnerProgram);
 
-  const deleteSelectedIntem = (sectionInde: number, contentIn: number) => {
+  const deleteSelectedIntem = (sectionInde: number) => {
     const temp: any = [...cartItems];
-    temp?.[sectionInde || 0]?.content?.splice(contentIn, 1);
+    temp?.splice(sectionInde, 1);
     setCartItems(temp);
   };
+
+  useEffect(() => {
+    dispatch(getPartnerProgramById(Number(getPartnerProgramID)));
+  }, []);
   const updateSection = (sectionInd: number, itemCont: string) => {
     const addnewField = formbuildernewObject(itemCont);
     const temp = [...cartItems];
@@ -166,12 +173,29 @@ const FormBuilderMain: React.FC<any> = ({
   };
 
   return (
-    <>
+    <div
+    // onClick={(e: any) => {
+    //   e?.preventDefault();
+
+    //   if (collapsed) {
+    //     setCollapsed(false);
+    //   }
+    // }}
+    >
       {!previewFile && (
-        <Row justify="space-between">
+        <Row
+          justify="space-between"
+          onClick={(e: any) => {
+            e?.preventDefault();
+            if (collapsed) {
+              setCollapsed(false);
+            }
+          }}
+        >
           <Space size={10} direction="horizontal">
             <Typography name="Heading 3/Medium">
-              Cisco- Cisco Hardware
+              {formatStatus(partnerData?.Partner?.partner)}-{' '}
+              {formatStatus(partnerData?.partner_program)}
             </Typography>
           </Space>
           <Space size={10}>
@@ -198,7 +222,13 @@ const FormBuilderMain: React.FC<any> = ({
           </Space>
         </Row>
       )}
-      <div ref={setNodeRef}>
+      <div
+        ref={setNodeRef}
+        onClick={(e: any) => {
+          e?.preventDefault();
+          // setCollapsed(false);
+        }}
+      >
         {cartItems && cartItems?.length > 0 ? (
           <>
             {cartItems?.map((item: any, Sectidx: number) => (
@@ -212,7 +242,16 @@ const FormBuilderMain: React.FC<any> = ({
               >
                 {!previewFile && (
                   <Typography name="Body 1/Medium" color={token?.colorInfo}>
-                    {item?.section}
+                    Section {Sectidx + 1}
+                    <TrashIcon
+                      cursor="pointer"
+                      style={{marginLeft: '20px'}}
+                      width={18}
+                      onClick={() => {
+                        deleteSelectedIntem(Sectidx);
+                      }}
+                      color={token?.colorError}
+                    />
                   </Typography>
                 )}
                 <SectionRowStyled gutter={[16, 16]} justify="space-between">
@@ -231,8 +270,9 @@ const FormBuilderMain: React.FC<any> = ({
                               cartItems={cartItems}
                               setCartItems={setCartItems}
                               isPreview={!previewFile}
-                              onClick={() => {
-                                setCollapsed((p: boolean) => !p);
+                              onClick={(e: any) => {
+                                e?.preventDefault();
+                                setCollapsed(true);
                                 setActiveContentIndex(ItemConindex);
                                 setActiveSectionIndex(Sectidx);
                                 form.resetFields();
@@ -349,8 +389,9 @@ const FormBuilderMain: React.FC<any> = ({
                                 cartItems={cartItems}
                                 setCartItems={setCartItems}
                                 isPreview={!previewFile}
-                                onClick={() => {
-                                  setCollapsed((p: boolean) => !p);
+                                onClick={(e: any) => {
+                                  e?.preventDefault();
+                                  setCollapsed(true);
                                   setActiveContentIndex(ItemConindex);
                                   setActiveSectionIndex(Sectidx);
                                   form.resetFields();
@@ -514,8 +555,9 @@ const FormBuilderMain: React.FC<any> = ({
                                 Sectidx={Sectidx}
                                 setCartItems={setCartItems}
                                 isPreview={!previewFile}
-                                onClick={() => {
-                                  setCollapsed((p: boolean) => !p);
+                                onClick={(e: any) => {
+                                  e?.preventDefault();
+                                  setCollapsed(true);
                                   setActiveContentIndex(ItemConindex);
                                   setActiveSectionIndex(Sectidx);
                                   form.resetFields();
@@ -574,8 +616,9 @@ const FormBuilderMain: React.FC<any> = ({
                                 cartItems={cartItems}
                                 setCartItems={setCartItems}
                                 isPreview={!previewFile}
-                                onClick={() => {
-                                  setCollapsed((p: boolean) => !p);
+                                onClick={(e: any) => {
+                                  e?.preventDefault();
+                                  setCollapsed(true);
                                   setActiveContentIndex(ItemConindex);
                                   setActiveSectionIndex(Sectidx);
                                   form.resetFields();
@@ -653,8 +696,9 @@ const FormBuilderMain: React.FC<any> = ({
                                 cartItems={cartItems}
                                 setCartItems={setCartItems}
                                 isPreview={!previewFile}
-                                onClick={() => {
-                                  setCollapsed((p: boolean) => !p);
+                                onClick={(e: any) => {
+                                  e?.preventDefault();
+                                  setCollapsed(true);
                                   setActiveContentIndex(ItemConindex);
                                   setActiveSectionIndex(Sectidx);
                                   form.resetFields();
@@ -772,8 +816,9 @@ const FormBuilderMain: React.FC<any> = ({
                                 cartItems={cartItems}
                                 setCartItems={setCartItems}
                                 isPreview={!previewFile}
-                                onClick={() => {
-                                  setCollapsed((p: boolean) => !p);
+                                onClick={(e: any) => {
+                                  e?.preventDefault();
+                                  setCollapsed(true);
                                   setActiveContentIndex(ItemConindex);
                                   setActiveSectionIndex(Sectidx);
                                   form.resetFields();
@@ -802,7 +847,7 @@ const FormBuilderMain: React.FC<any> = ({
           <RowStyledForForm>+ Drop Filed</RowStyledForForm>
         )}
       </div>
-    </>
+    </div>
   );
 };
 export default FormBuilderMain;

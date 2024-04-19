@@ -31,6 +31,8 @@ const Partners: React.FC = () => {
   const searchParams = useSearchParams();
   const getTabId = searchParams.get('tab');
   const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
+  const getTabId = searchParams.get('tab');
   const [showModal, setShowModal] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<number>(1);
   const [allPartnerData, setAllPartnerData] = useState<any>();
@@ -52,6 +54,11 @@ const Partners: React.FC = () => {
   //     setActiveTab(Number(getTabId));
   //   }
   // }, [getTabId]);
+  useEffect(() => {
+    if (getTabId) {
+      setActiveTab(Number(getTabId));
+    }
+  }, [getTabId]);
   useEffect(() => {
     const FilterArrayDataa = partnerProgramFilter(
       'user',
@@ -489,7 +496,7 @@ const Partners: React.FC = () => {
         <Row
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
-          <OsTabs items={tabItems} />
+          <OsTabs activeKey={activeTab?.toString()} items={tabItems} />
         </Row>
       </Space>
 
