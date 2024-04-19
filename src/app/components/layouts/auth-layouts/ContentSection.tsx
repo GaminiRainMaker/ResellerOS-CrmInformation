@@ -39,10 +39,11 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   const [signUpData, setSignUpData] = useState<any>();
 
   const {loading} = useAppSelector((state) => state.auth);
+  const rememberPass: any = Cookies.get('remeber');
 
   useEffect(() => {
     const tokendata: any = Cookies.get('token');
-    if (tokendata) {
+    if (tokendata && rememberPass === 'true') {
       dispatch(getUserByTokenAccess('')).then((payload: any) => {
         if (payload?.type?.split('/')?.[2]?.toString()?.includes('fulfilled')) {
           const dataaa: any = payload?.payload;
@@ -215,6 +216,15 @@ const ContentSection: FC<AuthLayoutInterface> = ({
     }
   };
 
+  const handleRember = (value: boolean) => {
+    console.log('353453', value);
+    if (value) {
+      Cookies.set('remeber', 'true');
+    } else {
+      Cookies.set('remeber', 'false');
+    }
+  };
+  console.log('rememberPass', rememberPass);
   return (
     <ContentSectionWrapper direction="vertical" size={72}>
       <Image src={OSResellerLogo} alt="OSResellerLogo" />
@@ -332,7 +342,13 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                   justifyContent: 'space-between',
                 }}
               >
-                <CustomCheckbox token={token}>
+                <CustomCheckbox
+                  token={token}
+                  onChange={(e: any) => {
+                    handleRember(e?.target.checked);
+                  }}
+                  defaultChecked={rememberPass === 'true' || false}
+                >
                   <Typography name="Body 3/Regular">
                     Remember Password
                   </Typography>

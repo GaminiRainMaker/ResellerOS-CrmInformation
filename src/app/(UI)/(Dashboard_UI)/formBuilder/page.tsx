@@ -10,6 +10,7 @@ import {SiderDivStyled} from '@/app/components/common/os-div-row-col/styled-comp
 import {formbuildernewObject} from '@/app/utils/base';
 import {Form, Layout, Modal} from 'antd';
 import React, {useEffect, useState} from 'react';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import EditFiledDetails from './detailsFieldEdit';
 
 import FieldCard from './FieldCard';
@@ -18,6 +19,7 @@ import {getPartnerProgramById} from '../../../../../redux/actions/partnerProgram
 const {Sider, Content} = Layout;
 
 const FormBuilder = () => {
+  const [token] = useThemeToken();
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const [isOpenDrawer, setIsOpenDrawer] = useState<boolean>(false);
   const [activeContentIndex, setActiveContentIndex] = useState<number>(0);
@@ -86,6 +88,7 @@ const FormBuilder = () => {
               setOpenPreviewModal={setOpenPreviewModal}
               openPreviewModal={openPreviewModal}
               setCollapsed={setCollapsed}
+              collapsed={collapsed}
               setActiveContentIndex={setActiveContentIndex}
               setActiveSectionIndex={setActiveSectionIndex}
               setSelectedColumnIndex={setSelectedColumnIndex}
@@ -98,6 +101,24 @@ const FormBuilder = () => {
 
       {collapsed && (
         <SiderDivStyled>
+          <div
+            color={token?.colorError}
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              background: 'red',
+              color: 'white',
+              height: '30px',
+              padding: '5px',
+              fontSize: '20px',
+              fontWeight: 'bold',
+            }}
+            onClick={() => {
+              setCollapsed(false);
+            }}
+          >
+            Close
+          </div>
           <EditFiledDetails
             setIsOpenDrawer={openEditDrawer}
             isOpenDrawer={isOpenDrawer}
@@ -128,6 +149,7 @@ const FormBuilder = () => {
               setOpenPreviewModal={setOpenPreviewModal}
               openPreviewModal={openPreviewModal}
               setCollapsed={setCollapsed}
+              collapsed={collapsed}
               setActiveContentIndex={setActiveContentIndex}
               setActiveSectionIndex={setActiveSectionIndex}
               setSelectedColumnIndex={setSelectedColumnIndex}

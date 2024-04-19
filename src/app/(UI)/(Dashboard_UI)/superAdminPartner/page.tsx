@@ -20,7 +20,7 @@ import Typography from '@/app/components/common/typography';
 import {partnerProgramFilter} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Checkbox, Form} from 'antd';
-import {useRouter} from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {updateAssignPartnerProgramById} from '../../../../../redux/actions/assignPartnerProgram';
 import {
@@ -69,6 +69,8 @@ const SuperAdminPartner: React.FC = () => {
     insertPartnerLoading,
     data: PartnerData,
   } = useAppSelector((state) => state.partner);
+  const searchParams = useSearchParams();
+  const getTabId = searchParams.get('tab');
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
   const [formData, setformData] = useState<any>();
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
@@ -83,6 +85,12 @@ const SuperAdminPartner: React.FC = () => {
   useEffect(() => {
     dispatch(getAllPartnerandProgram(''));
   }, []);
+
+  useEffect(() => {
+    if (getTabId) {
+      setActiveTab(Number(getTabId));
+    }
+  }, [getTabId]);
 
   useEffect(() => {
     const FilterArrayDataa = partnerProgramFilter(
@@ -575,7 +583,10 @@ const SuperAdminPartner: React.FC = () => {
         <Row
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
-          <OsTabs items={superAdmintabItems} />
+          <OsTabs
+            activeKey={activeTab?.toString()}
+            items={superAdmintabItems}
+          />
         </Row>
       </Space>
 

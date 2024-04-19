@@ -1,3 +1,4 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable array-callback-return */
 import {Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
@@ -22,6 +23,8 @@ const DealRegDetailForm: FC<any> = ({
   formDataValues,
   cartItems,
   setCartItems,
+  setCountOfFields,
+  setCountUniFiled,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -29,6 +32,25 @@ const DealRegDetailForm: FC<any> = ({
   const [commonFiledData, setCommonFiledData] = useState<any>();
 
   const [sectionIndexActive, setSectionIndexAactive] = useState<any>();
+
+  useEffect(() => {
+    let totalUni: any = 0;
+    let valueUni: any = 0;
+    if (cartItems) {
+      cartItems?.map((itemsCrat: any) => {
+        itemsCrat?.content?.map((itemCOnt: any) => {
+          totalUni += itemsCrat?.content?.length;
+          if (itemCOnt?.value) {
+            valueUni += 1;
+          }
+        });
+      });
+    }
+    setCountUniFiled({
+      uniTotal: totalUni,
+      uniValue: valueUni,
+    });
+  }, [cartItems]);
 
   const CommonFieldsItems = [
     {
@@ -103,12 +125,29 @@ const DealRegDetailForm: FC<any> = ({
             }
           });
         }
+        let totalCount: any = 0;
+        let valueCount: any = 0;
+        if (finalArrForCommon) {
+          finalArrForCommon?.map((itemsForCommon: any) => {
+            if (itemsForCommon?.optionsValues) {
+              totalCount += itemsForCommon?.optionsValues?.length;
+              itemsForCommon?.optionsValues?.map((items: any) => {
+                if (items?.value && items?.value?.length > 0) {
+                  valueCount += 1;
+                }
+              });
+            }
+          });
+        }
+
+        setCountOfFields({commonTotal: totalCount, commonValue: valueCount});
         setCommonFiledData(finalArrForCommon);
       }
     });
     dispatch(getAllCustomer({}));
   }, []);
-  console.log(commonFiledData, 'commonFiledDatacommonFiledData', data);
+
+  // console.log(commonFiledData, 'commonFiledDatacommonFiledData', data);
 
   return (
     <Row>

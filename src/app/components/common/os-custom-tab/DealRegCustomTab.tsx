@@ -1,9 +1,11 @@
+/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable no-nested-ternary */
 import DealRegDetailForm from '@/app/(UI)/(Dashboard_UI)/dealRegDetail/DealRegDetailForm';
 import {FormInstance} from 'antd';
 import {useEffect, useState} from 'react';
 import {formatStatus} from '@/app/utils/CONSTANTS';
+import {checkDomainOfScale} from 'recharts/types/util/ChartUtils';
 import {useAppDispatch} from '../../../../../redux/hook';
 import {setDealReg} from '../../../../../redux/slices/dealReg';
 import {Row} from '../antd/Grid';
@@ -41,10 +43,18 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [tabItems, setTabItems] = useState([]);
+  const [countOfFileds, setCountOfFields] = useState<any>();
+  const [countUniFiled, setCountUniFiled] = useState<any>();
 
   const handleTabChange = (key: any) => {
     setActiveKey(key);
   };
+
+  const totalPercentage: any =
+    (countOfFileds?.commonValue +
+      countUniFiled?.uniValue / countOfFileds?.commonTotal +
+      countUniFiled?.uniTotal) *
+    100;
 
   useEffect(() => {
     const tempItems: any = [];
@@ -65,7 +75,8 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
                 token={token}
                 style={{
                   background:
-                    activeKey?.toString() === index?.toString()
+                    activeKey?.toString() ===
+                    element?.partner_program_id?.toString()
                       ? token.colorInfo
                       : token.colorInfoBg,
                 }}
@@ -74,17 +85,24 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
                   dispatch(setDealReg(element))
                 }
               >
-                <Space size={10}>
+                <Space>
                   <OsProgress
                     type="circle"
-                    percent={30}
-                    trailColor={
-                      activeKey?.toString() === index?.toString()
+                    percent={
+                      activeKey?.toString() ===
+                      element?.partner_program_id?.toString()
+                        ? 0
+                        : 0
+                    }
+                    strokeColor={
+                      activeKey?.toString() ===
+                      element?.partner_program_id?.toString()
                         ? token.colorBgContainer
                         : token?.colorTextDisabled
                     }
-                    strokeColor={
-                      activeKey?.toString() === index?.toString()
+                    trailColor={
+                      activeKey?.toString() ===
+                      element?.partner_program_id?.toString()
                         ? token.colorTextDisabled
                         : token?.colorBorderSecondary
                     }
@@ -92,7 +110,8 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
                       <span
                         style={{
                           color:
-                            activeKey?.toString() === index?.toString()
+                            activeKey?.toString() ===
+                            element?.partner_program_id?.toString()
                               ? token.colorBgContainer
                               : token?.colorTextDisabled,
                         }}
@@ -103,7 +122,8 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
                   <Typography
                     style={{
                       color:
-                        activeKey?.toString() === index?.toString()
+                        activeKey?.toString() ===
+                        element?.partner_program_id?.toString()
                           ? token.colorBgContainer
                           : token?.colorTextDisabled,
                     }}
@@ -128,6 +148,8 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
                 formDataValues={formDataValues}
                 setFormDataValues={setFormDataValues}
                 activeKey={activeKey}
+                setCountUniFiled={setCountUniFiled}
+                setCountOfFields={setCountOfFields}
               />
             </div>
           ),
