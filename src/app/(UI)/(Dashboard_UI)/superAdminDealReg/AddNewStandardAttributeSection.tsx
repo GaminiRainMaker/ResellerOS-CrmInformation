@@ -52,6 +52,12 @@ const AddNewStandardAttributeSection: FC<
           <Row gutter={[16, 16]}>
             <Col span={24}>
               <SelectFormItem
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please Enter Section Name!',
+                  },
+                ]}
                 label={
                   <Typography name="Body 4/Medium">
                     Standard Attribute Section Name
@@ -59,7 +65,7 @@ const AddNewStandardAttributeSection: FC<
                 }
                 name="name"
               >
-                <OsInput placeholder="Write Text" style={{width: '100%'}} />
+                <OsInput placeholder="Write Attribute Section here" style={{width: '100%'}} />
               </SelectFormItem>
             </Col>
 
@@ -67,8 +73,14 @@ const AddNewStandardAttributeSection: FC<
               <SelectFormItem
                 label={<Typography name="Body 4/Medium">Order</Typography>}
                 name="order"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please Write the Order in number!',
+                  },
+                ]}
               >
-                <OsInputNumber placeholder="Write" style={{width: '100%'}} />
+                <OsInputNumber placeholder="Write the Order here" style={{width: '100%'}} />
               </SelectFormItem>
             </Col>
 

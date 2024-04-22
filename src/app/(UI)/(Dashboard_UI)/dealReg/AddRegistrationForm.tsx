@@ -16,6 +16,7 @@ import Typography from '@/app/components/common/typography';
 import AddCustomer from '@/app/components/common/os-add-customer';
 import {partnerProgramFilter} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
+import {notification} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
@@ -53,14 +54,21 @@ const AddRegistrationForm: FC<any> = ({
 
   const [allPartnerData, setAllPartnerData] = useState<any>();
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
+  const [api, contextHolder] = notification.useNotification();
 
   useEffect(() => {
-    // if (isSuperAdmin) {
     dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
       setAllPartnerData(payload?.payload);
     });
-    // }
   }, []);
+
+  const openNotificationWithIcon = () => {
+    api.warning({
+      message: 'Please Select Fields!',
+      description:
+        'We are here to assist you! Please select the all fields value.',
+    });
+  };
 
   useEffect(() => {
     const FilterArrayDataa = partnerProgramFilter(
@@ -428,36 +436,47 @@ const AddRegistrationForm: FC<any> = ({
         newarr.push(obj);
       });
       setUpdatedDealRegData(newarr);
-      dispatch(insertDealReg(newarr)).then((d: any) => {
-        if (d?.payload) {
-          d?.payload?.map(async (DataItem: any) => {
-            if (DataItem?.id) {
-              const obj12 = {
-                dealRegId: DataItem?.id,
-                ...newarr[0],
-              };
-              // eslint-disable-next-line @typescript-eslint/no-shadow
-              await dispatch(insertDealRegAddress(obj12)).then((d: any) => {
-                if (d) {
-                  setShowModal(false);
-                  if (isDealRegDetail) {
-                    dispatch(
-                      getDealRegByOpportunityId(Number(getOpportunityId)),
-                    );
-                  } else {
-                    dispatch(getAllDealReg());
+
+      if (
+        (newarr?.[0]?.contact_id,
+        newarr?.[0]?.customer_id,
+        newarr?.[0]?.opportunity_id)
+      ) {
+        dispatch(insertDealReg(newarr)).then((d: any) => {
+          if (d?.payload) {
+            d?.payload?.map(async (DataItem: any) => {
+              if (DataItem?.id) {
+                const obj12 = {
+                  dealRegId: DataItem?.id,
+                  ...newarr[0],
+                };
+                // eslint-disable-next-line @typescript-eslint/no-shadow
+                await dispatch(insertDealRegAddress(obj12)).then((d: any) => {
+                  if (d) {
+                    setShowModal(false);
+                    if (isDealRegDetail) {
+                      dispatch(
+                        getDealRegByOpportunityId(Number(getOpportunityId)),
+                      );
+                    } else {
+                      dispatch(getAllDealReg());
+                    }
                   }
-                }
-              });
-            }
-          });
-        }
-      });
+                });
+              }
+            });
+          }
+        });
+      } else {
+        console.log('organization1234');
+        openNotificationWithIcon();
+      }
     }
   };
 
   return (
     <>
+      {contextHolder}
       {!toggle || isDealRegDetail ? (
         <Space style={{width: '100%'}} direction="vertical" size={0}>
           <CollapseSpaceStyle size={24} direction="vertical">
@@ -577,7 +596,11 @@ const AddRegistrationForm: FC<any> = ({
           }
           buttontype="PRIMARY"
           clickHandler={() => {
-            if (!isDealRegDetail) {
+            if (
+              !isDealRegDetail &&
+              dealRegFormData?.[0]?.partner_id &&
+              dealRegFormData?.[0]?.partner_program_id
+            ) {
               setToggle(true);
             }
             insertDealRegData();

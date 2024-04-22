@@ -95,7 +95,7 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
               >
                 <CommonSelect
                   allowClear
-                  placeholder="Select"
+                  placeholder="Select Attribute Section"
                   style={{width: '100%'}}
                   options={attributeSectionOption}
                 />
@@ -114,7 +114,7 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
                   },
                 ]}
               >
-                <OsInput placeholder="Select" style={{width: '100%'}} />
+                <OsInput placeholder="Select Label" style={{width: '100%'}} />
               </SelectFormItem>
             </Col>
             <Col span={12}>
@@ -134,7 +134,7 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
               >
                 <CommonSelect
                   allowClear
-                  placeholder="Select"
+                  placeholder="Select Type"
                   style={{width: '100%'}}
                   options={attributeFieldDataTypeOptions}
                 />
@@ -145,7 +145,7 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
                 label={<Typography name="Body 4/Medium">Order</Typography>}
                 name="order"
               >
-                <OsInputNumber placeholder="Select" style={{width: '100%'}} />
+                <OsInputNumber placeholder="Write the Order here" style={{width: '100%'}} />
               </SelectFormItem>
             </Col>
             <Col span={12}>
@@ -181,7 +181,7 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
                 label={<Typography name="Body 4/Medium">Help Text</Typography>}
                 name="help_text"
               >
-                <OsInput placeholder="Select" style={{width: '100%'}} />
+                <OsInput placeholder="Write Help Text here" style={{width: '100%'}} />
               </SelectFormItem>
             </Col>
             <Col span={24}>
@@ -193,7 +193,7 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
                 }
                 name="name"
               >
-                <OsInput placeholder="Select" style={{width: '100%'}} />
+                <OsInput placeholder="Write Attribute Name" style={{width: '100%'}} />
               </SelectFormItem>
             </Col>
             <Col span={24} style={{display: 'flex'}}>

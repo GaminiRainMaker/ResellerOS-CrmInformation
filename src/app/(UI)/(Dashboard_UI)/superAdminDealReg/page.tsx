@@ -202,29 +202,6 @@ const SuperAdminDealReg = () => {
         <Typography
           cursor="pointer"
           onClick={() => {
-            setActiveTab(2);
-          }}
-          name="Body 4/Regular"
-        >
-          Standard Attributes Fields
-        </Typography>
-      ),
-      key: '2',
-      children: (
-        <OsTable
-          columns={StandardAttributesFieldsColumns}
-          dataSource={attributeFieldData}
-          scroll
-          locale={[]}
-          loading={false}
-        />
-      ),
-    },
-    {
-      label: (
-        <Typography
-          cursor="pointer"
-          onClick={() => {
             setActiveTab(3);
           }}
           name="Body 4/Regular"
@@ -240,6 +217,29 @@ const SuperAdminDealReg = () => {
           scroll
           locale={[]}
           loading={attributeSectionLoading}
+        />
+      ),
+    },
+    {
+      label: (
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setActiveTab(2);
+          }}
+          name="Body 4/Regular"
+        >
+          Standard Attributes Fields
+        </Typography>
+      ),
+      key: '2',
+      children: (
+        <OsTable
+          columns={StandardAttributesFieldsColumns}
+          dataSource={attributeFieldData}
+          scroll
+          locale={[]}
+          loading={false}
         />
       ),
     },

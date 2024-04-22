@@ -388,7 +388,6 @@ const Partners: React.FC = () => {
             expandedRowRender: (record: any) => (
               <OsTable
                 columns={partnerProgramColumns}
-                // dataSource={allApprovedObjects}
                 dataSource={record?.PartnerPrograms}
                 scroll
                 loading={false}
@@ -396,11 +395,11 @@ const Partners: React.FC = () => {
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
           }}
-          // dataSource={allApprovedObjects}
           dataSource={allPartnerFilterData}
           scroll
           locale={locale}
           loading={false}
+          drag
         />
       ),
     },
@@ -420,12 +419,12 @@ const Partners: React.FC = () => {
       children: (
         <OsTable
           columns={PartnerColumns}
+          drag
           expandable={{
             // eslint-disable-next-line react/no-unstable-nested-components
             expandedRowRender: (record: any) => (
               <OsTable
                 columns={partnerProgramColumns}
-                // dataSource={allApprovedObjects}
                 dataSource={record?.PartnerPrograms}
                 scroll
                 loading={false}
@@ -433,7 +432,6 @@ const Partners: React.FC = () => {
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
           }}
-          // dataSource={allApprovedObjects}
           dataSource={allPartnerFilterData}
           scroll
           locale={locale}
@@ -461,6 +459,7 @@ const Partners: React.FC = () => {
           scroll
           locale={locale}
           loading={false}
+          drag
         />
       ),
     },

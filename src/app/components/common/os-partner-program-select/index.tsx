@@ -24,7 +24,6 @@ const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
     useState<boolean>(false);
 
   const {partnerRequestData} = useAppSelector((state) => state.partner);
-
   const [finalProgramOptions, setFinalProgramOptions] = useState<any>();
 
   useEffect(() => {

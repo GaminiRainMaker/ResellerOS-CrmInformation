@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable @typescript-eslint/indent */
@@ -48,6 +49,7 @@ const OsTable: FC<any> = ({
   loading = false,
   scrolly = 1000,
   tablePageSize = 10,
+  drag = false,
   ...rest
 }) => {
   const [token] = useThemeToken();
@@ -68,8 +70,15 @@ const OsTable: FC<any> = ({
     onDragEnd: useCallback(
       (fromIndex: any, toIndex: any) => {
         const updatedColumns = [...columns];
-        const item = updatedColumns.splice(fromIndex - 1, 1)[0];
-        updatedColumns.splice(toIndex - 1, 0, item);
+        const item = updatedColumns.splice(
+          drag || rowSelection ? fromIndex - 1 : fromIndex,
+          1,
+        )[0];
+        updatedColumns.splice(
+          drag || rowSelection ? toIndex - 1 : toIndex,
+          0,
+          item,
+        );
         setColumns(updatedColumns);
       },
       [columns],
@@ -108,8 +117,11 @@ const OsTable: FC<any> = ({
     }),
   }));
 
+
   return (
-    <ReactDragListView.DragColumn {...dragProps}>
+    <ReactDragListView.DragColumn
+      {...dragProps }
+    >
       <CustomTable
         components={components}
         bordered

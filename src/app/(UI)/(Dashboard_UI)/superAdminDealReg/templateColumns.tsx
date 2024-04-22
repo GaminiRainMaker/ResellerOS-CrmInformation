@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {Space} from '@/app/components/common/antd/Space';
 import {Switch} from '@/app/components/common/antd/Switch';
+import CustomTableCell from '@/app/components/common/hooks/CustomTableCell';
 import Typography from '@/app/components/common/typography';
 import {formatDate} from '@/app/utils/base';
 import {PencilSquareIcon, TrashIcon} from '@heroicons/react/24/outline';
@@ -55,9 +57,9 @@ function templateColumns(
         <Typography
           name="Body 4/Regular"
           onClick={() => {
-            window.open(`/opportunityDetail?id=${record?.Partner?.id}`);
+            // window.open(`/opportunityDetail?id=${record?.Partner?.id}`);
           }}
-          hoverOnText
+          // hoverOnText
         >
           {text ?? record?.Partner?.partner_program}
         </Typography>
@@ -76,9 +78,9 @@ function templateColumns(
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 187,
-      render: (text: string, record: any) => (
+      render: (text: string) => (
         <Typography name="Body 4/Regular">
-          {text ?? formatDate(record?.createdAt)}
+          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },
@@ -170,15 +172,30 @@ function standardAttributes(
           className="dragHandler"
           color={token?.colorPrimaryText}
         >
+          Standard Attribute Section
+        </Typography>
+      ),
+      dataIndex: 'standard_attribute_section',
+      key: 'standard_attribute_section',
+      width: 230,
+      render: (text: string, record: any) => (
+        <CustomTableCell text={record?.AttributeSection?.name} />
+      ),
+    },
+    {
+      title: (
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
           Attribute Label
         </Typography>
       ),
       dataIndex: 'label',
       key: 'label',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
+      render: (text: string) => <CustomTableCell text={text} />,
     },
     {
       title: (
@@ -193,9 +210,9 @@ function standardAttributes(
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 187,
-      render: (text: string, record: any) => (
+      render: (text: string) => (
         <Typography name="Body 4/Regular">
-          {text ?? formatDate(record?.createdAt)}
+          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },
@@ -234,25 +251,7 @@ function standardAttributes(
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
-    {
-      title: (
-        <Typography
-          name="Body 4/Medium"
-          className="dragHandler"
-          color={token?.colorPrimaryText}
-        >
-          Standard Attribute Section
-        </Typography>
-      ),
-      dataIndex: 'standard_attribute_section',
-      key: 'standard_attribute_section',
-      width: 230,
-      render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
-          {record?.AttributeSection?.name ?? '--'}
-        </Typography>
-      ),
-    },
+
     {
       title: (
         <Typography
@@ -355,9 +354,7 @@ function standardAttributesSection(
       dataIndex: 'name',
       key: 'name',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
+      render: (text: string) => <CustomTableCell text={text} />,
     },
     {
       title: (
@@ -372,9 +369,9 @@ function standardAttributesSection(
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 187,
-      render: (text: string, record: any) => (
+      render: (text: string) => (
         <Typography name="Body 4/Regular">
-          {text ?? formatDate(record?.createdAt)}
+          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },
@@ -474,4 +471,4 @@ function standardAttributesSection(
   return columns;
 }
 
-export {standardAttributes, templateColumns, standardAttributesSection};
+export {standardAttributes, standardAttributesSection, templateColumns};

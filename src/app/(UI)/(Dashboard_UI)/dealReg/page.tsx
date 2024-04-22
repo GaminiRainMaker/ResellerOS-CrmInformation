@@ -6,14 +6,13 @@
 'use client';
 
 import Typography from '@/app/components/common/typography';
-import {PlusIcon} from '@heroicons/react/24/outline';
+import { PlusIcon } from '@heroicons/react/24/outline';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapse from '@/app/components/common/os-collapse';
-import OsDropdown from '@/app/components/common/os-dropdown';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
@@ -21,11 +20,11 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import {MenuProps, TabsProps} from 'antd';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {getAllDealReg} from '../../../../../redux/actions/dealReg';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { TabsProps } from 'antd';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getAllDealReg } from '../../../../../redux/actions/dealReg';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import AddRegistrationForm from './AddRegistrationForm';
 import DealRegAnalytics from './dealRegAnalytics';
 
@@ -272,7 +271,6 @@ const DealReg: React.FC = () => {
       ),
     },
   ];
-
 
   useEffect(() => {
     dispatch(getAllDealReg());
