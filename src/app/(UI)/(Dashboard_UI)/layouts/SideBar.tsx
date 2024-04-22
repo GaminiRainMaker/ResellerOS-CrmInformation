@@ -118,6 +118,7 @@ const SideBar = () => {
   const items: MenuItem[] = [
     getItem(
       <Typography
+        cursor="pointer"
         onClick={() => {
           setSelectedKey(1);
           setCrmChildKey(0);
@@ -139,6 +140,7 @@ const SideBar = () => {
             }
           />
           <Typography
+            cursor="pointer"
             name="Button 1"
             style={{
               marginTop: '1px',
@@ -157,6 +159,7 @@ const SideBar = () => {
       Role === 'superAdmin' &&
       getItem(
         <Typography
+          cursor="pointer"
           onClick={() => {
             setSelectedKey(7);
           }}
@@ -180,6 +183,7 @@ const SideBar = () => {
               }
             />
             <Typography
+              cursor="pointer"
               name="Button 1"
               style={{
                 marginTop: '1px',
@@ -325,6 +329,7 @@ const SideBar = () => {
       Role === 'reseller' &&
       getItem(
         <Typography
+          cursor="pointer"
           onClick={() => {
             setSelectedKey(3);
             setCrmChildKey(0);
@@ -348,6 +353,7 @@ const SideBar = () => {
             />
 
             <Typography
+              cursor="pointer"
               name="Button 1"
               style={{
                 marginTop: '1px',
@@ -369,6 +375,7 @@ const SideBar = () => {
       Role === 'superAdmin' &&
       getItem(
         <Typography
+          cursor="pointer"
           onClick={() => {
             setSelectedKey(3);
             setCrmChildKey(0);
@@ -392,6 +399,7 @@ const SideBar = () => {
             />
 
             <Typography
+              cursor="pointer"
               name="Button 1"
               style={{
                 marginTop: '1px',
@@ -412,6 +420,7 @@ const SideBar = () => {
     isOrderAI &&
       getItem(
         <Typography
+          cursor="pointer"
           onClick={() => {
             setSelectedKey(4);
             setCrmChildKey(0);
@@ -434,6 +443,7 @@ const SideBar = () => {
             />
 
             <Typography
+              cursor="pointer"
               name="Button 1"
               style={{
                 marginTop: '1px',
@@ -453,6 +463,7 @@ const SideBar = () => {
       ),
     getItem(
       <Typography
+        cursor="pointer"
         onClick={() => {
           setSelectedKey(5);
           setCrmChildKey(0);
@@ -479,6 +490,7 @@ const SideBar = () => {
             }
           />
           <Typography
+            cursor="pointer"
             name="Button 1"
             style={{
               marginTop: '1px',
@@ -499,6 +511,7 @@ const SideBar = () => {
       Role === 'reseller' &&
       getItem(
         <Typography
+          cursor="pointer"
           onClick={() => {
             setSelectedKey(6);
             setCrmChildKey(0);
@@ -520,6 +533,7 @@ const SideBar = () => {
               }
             />
             <Typography
+              cursor="pointer"
               name="Button 1"
               style={{
                 marginTop: '1px',
@@ -540,6 +554,7 @@ const SideBar = () => {
     Role === 'reseller' &&
       getItem(
         <Typography
+          cursor="pointer"
           onClick={() => {
             setSelectedKey(7);
           }}
@@ -563,6 +578,7 @@ const SideBar = () => {
               }
             />
             <Typography
+              cursor="pointer"
               name="Button 1"
               style={{
                 marginTop: '1px',
