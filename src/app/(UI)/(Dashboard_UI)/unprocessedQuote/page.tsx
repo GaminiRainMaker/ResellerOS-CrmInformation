@@ -116,7 +116,7 @@ const AllQuote: React.FC = () => {
     new Set(data?.map((dataItem: any) => dataItem?.Quote?.organization)),
   );
 
-  console.log('Organization1234', data, filteredData);
+
 
   return (
     <>

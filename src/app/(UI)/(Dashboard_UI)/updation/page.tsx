@@ -33,8 +33,6 @@ const UpdateGenerateQuote = () => {
   const router = useRouter();
   const hotRef = useRef(null);
 
-  console.log('concernQuoteLineItemData', concernQuoteLineItemData);
-
   useEffect(() => {
     dispatch(getQuoteById(Number(getUserID)));
   }, []);
@@ -391,7 +389,6 @@ const UpdateGenerateQuote = () => {
             //   deleteRowsItems(source, change);
             // }}
             // afterChange={(change: any, source) => {
-            //   console.log('433223423', change, source);
             //   if (change) {
             //     updateRowsValue(
             //       change?.[0]?.[0],

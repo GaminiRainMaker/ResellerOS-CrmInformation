@@ -113,7 +113,6 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
   }, [open]);
 
   // const onSubmit = async (values: FormDataProps) => {
-  //   console.log('values123', values)
   // if (
   //   generalSettingData?.attach_doc_type === 'opportunity' ||
   //   syncTableData?.length > 0

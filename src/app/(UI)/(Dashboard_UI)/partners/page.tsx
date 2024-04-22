@@ -142,7 +142,6 @@ const Partners: React.FC = () => {
               const formDataObject = JSON?.parse(record?.form_data);
               setformData({formObject: formDataObject, Id: record?.id});
               // open modal to view form
-              // console.log(record?.form_data, 'formData');
             }
           }}
         >
@@ -317,7 +316,6 @@ const Partners: React.FC = () => {
               const formDataObject = JSON?.parse(record?.form_data);
               setformData({formObject: formDataObject, Id: record?.id});
               // open modal to view form
-              // console.log(record?.form_data, 'formData');
             }
           }}
         >
@@ -326,7 +324,7 @@ const Partners: React.FC = () => {
       ),
     },
   ];
-  console.log('userInformation', userInformation);
+
   const handleAddNewAssignedPartnerProgramRequest = async (id: number) => {
     const partnerObj = {
       organization: userInformation?.organization,

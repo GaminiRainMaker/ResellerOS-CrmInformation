@@ -219,14 +219,12 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   };
 
   const handleRember = (value: boolean) => {
-    console.log('353453', value);
     if (value) {
       Cookies.set('remeber', 'true');
     } else {
       Cookies.set('remeber', 'false');
     }
   };
-  console.log('rememberPass', rememberPass);
   return (
     <ContentSectionWrapper direction="vertical" size={72}>
       <Image src={OSResellerLogo} alt="OSResellerLogo" />

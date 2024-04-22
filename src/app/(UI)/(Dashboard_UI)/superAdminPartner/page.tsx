@@ -273,7 +273,7 @@ const SuperAdminPartner: React.FC = () => {
               const formDataObject = JSON?.parse(record?.form_data);
               setformData({formObject: formDataObject, Id: record?.id});
               // open modal to view form
-              // console.log(record?.form_data, 'formData');
+
             } else {
               router?.push(`/formBuilder?id=${record?.id}`);
             }
@@ -365,7 +365,7 @@ const SuperAdminPartner: React.FC = () => {
               const formDataObject = JSON?.parse(record?.form_data);
               setformData({formObject: formDataObject, Id: record?.id});
               // open modal to view form
-              // console.log(record?.form_data, 'formData');
+
             } else {
               router?.push(`/formBuilder?id=${record?.id}`);
             }

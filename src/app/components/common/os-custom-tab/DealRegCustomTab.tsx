@@ -81,7 +81,6 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
                       : token.colorInfoBg,
                 }}
                 onClick={() =>
-                  // console.log("elementelement",element)
                   dispatch(setDealReg(element))
                 }
               >

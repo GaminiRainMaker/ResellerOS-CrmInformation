@@ -151,7 +151,6 @@ const CustomHeader = () => {
   }, [userInformation]);
 
   const handleOptionClick = (typeRoute: string) => {
-    console.log('typeRoute', typeRoute);
     // Redirect based on the typeRoute value
     // Example redirection logic
     if (typeRoute === 'Account') {
@@ -207,7 +206,6 @@ const CustomHeader = () => {
   //   key: dataItem?.id,
   // })
 
-  console.log('userInformation?.isAdmin', userInformation?.isAdmin);
   return (
     <Layout>
       <Row

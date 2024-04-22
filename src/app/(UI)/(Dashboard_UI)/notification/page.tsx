@@ -34,7 +34,7 @@ const SuperAdminPartner: React.FC = () => {
   const {data: notificationData, loading: notificationLoading} = useAppSelector(
     (state) => state.notification,
   );
-  console.log('notificationData', userInformation?.Admin);
+
   useEffect(() => {
     dispatch(getAllNewNotification(''));
   }, []);
