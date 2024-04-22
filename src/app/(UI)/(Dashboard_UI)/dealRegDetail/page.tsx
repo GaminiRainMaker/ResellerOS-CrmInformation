@@ -68,7 +68,9 @@ const DealRegDetail = () => {
       unique_form_data: [
         JSON?.stringify(formDataValues?.[0]?.unique_form_data),
       ],
-      common_form_data: [JSON?.stringify(formDataValues?.[0]?.common_formData)],
+      common_form_data: [
+        JSON?.stringify(formDataValues?.[0]?.common_form_data),
+      ],
     };
     // console.log('formDataValues', newObj, formDataValues);
     // return;
@@ -123,20 +125,24 @@ const DealRegDetail = () => {
 
   useEffect(() => {
     if (!activeKey) {
+      const finalArr = [];
       if (DealRegData?.length > 0) {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         const program_id = DealRegData[0]?.partner_program_id;
         setActiveKey(program_id as string);
-        const newObj = {...DealRegData?.[0]};
+        for (let i = 0; i < DealRegData.length; i++) {
+          const newObj = {...DealRegData?.[i]};
 
-        delete newObj?.unique_form_data;
-        newObj.unique_form_data =
-          DealRegData?.[0]?.unique_form_data &&
-          JSON?.parse(DealRegData?.[0]?.unique_form_data);
-        newObj.common_formData = JSON?.parse(
-          DealRegData?.[0]?.common_form_data,
-        );
-        setFormDataValues([newObj]);
+          newObj.unique_form_data = DealRegData?.[i]?.unique_form_data
+            ? JSON?.parse(DealRegData?.[i]?.unique_form_data)
+            : [];
+
+          newObj.common_form_data = DealRegData?.[i]?.common_form_data
+            ? JSON?.parse(DealRegData?.[i]?.common_form_data)
+            : {};
+          finalArr.push(newObj);
+        }
+        setFormDataValues(finalArr);
       }
     }
   }, [DealRegData]);
@@ -175,7 +181,7 @@ const DealRegDetail = () => {
       console.error('Error:', error);
     }
   };
-
+  console.log(formDataValues, 'dgfhgshfghsdgh');
   return (
     <div>
       <Row justify="space-between" align="middle">

@@ -26,12 +26,6 @@ const CommonFields: FC<any> = ({
   const {dealReg} = useAppSelector((state) => state.dealReg);
   const [formDataa, setFormData] = useState<any>();
 
-  useEffect(() => {
-    if (dealReg && dealReg?.form_data) {
-      setFormData(JSON?.parse(dealReg?.form_data?.[0]));
-    }
-  }, [dealReg]);
-
   const updateTheFormValuess = () => {
     const dataaa: any = {
       id: getDealId,
@@ -49,11 +43,11 @@ const CommonFields: FC<any> = ({
     if (index > -1) {
       const obj = {...newArr[index]};
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      const common_values: any = obj?.common_formData
-        ? obj?.common_formData
+      const common_values: any = obj?.common_form_data
+        ? obj?.common_form_data
         : {};
       common_values[newObj.label] = newObj.value;
-      obj.common_formData = common_values;
+      obj.common_form_data = common_values;
       newArr[index] = obj;
 
       setFormDataValues(newArr);

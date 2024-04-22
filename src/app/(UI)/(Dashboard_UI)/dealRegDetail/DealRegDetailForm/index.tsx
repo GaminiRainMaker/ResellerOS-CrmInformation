@@ -29,8 +29,7 @@ const DealRegDetailForm: FC<any> = ({
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {dealReg} = useAppSelector((state) => state.dealReg);
-  const [commonFiledData, setCommonFiledData] = useState<any>();
-
+  const [commonFields, setCommonFields] = useState([]);
   const [sectionIndexActive, setSectionIndexAactive] = useState<any>();
 
   useEffect(() => {
@@ -62,7 +61,7 @@ const DealRegDetailForm: FC<any> = ({
       ),
       children: (
         <CommonFields
-          data={commonFiledData}
+          data={commonFields}
           selectedUserId={data?.selectedUserId}
           form={form}
           formDataValues={formDataValues}
@@ -140,9 +139,8 @@ const DealRegDetailForm: FC<any> = ({
             }
           });
         }
-
+        setCommonFields(finalArrForCommon);
         setCountOfFields({commonTotal: totalCount, commonValue: valueCount});
-        setCommonFiledData(finalArrForCommon);
       }
     });
     dispatch(getAllCustomer({}));

@@ -48,6 +48,7 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
 
   const handleTabChange = (key: any) => {
     setActiveKey(key);
+    setCartItems([]);
   };
 
   const totalPercentage: any =
