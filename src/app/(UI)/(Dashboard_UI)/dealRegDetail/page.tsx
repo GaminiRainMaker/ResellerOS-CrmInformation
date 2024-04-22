@@ -60,6 +60,8 @@ const DealRegDetail = () => {
     }
   }, []);
 
+  console.log('formDataValues', formDataValues);
+
   const updateTheDealReg = async () => {
     const newObj = {
       ...formDataValues?.[0],
@@ -68,7 +70,8 @@ const DealRegDetail = () => {
       ],
       common_form_data: [JSON?.stringify(formDataValues?.[0]?.common_formData)],
     };
-
+    // console.log('formDataValues', newObj, formDataValues);
+    // return;
     await dispatch(updateDealRegById(newObj));
     if (getOpportunityId) {
       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));

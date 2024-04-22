@@ -362,8 +362,8 @@ const SuperAdminPartner: React.FC = () => {
           onClick={() => {
             if (record?.form_data) {
               setOpenPreviewModal(true);
-              const formDataObject = JSON?.parse(record?.form_data);
-              setformData({formObject: formDataObject, Id: record?.id});
+              // const formDataObject = JSON?.parse(record?.form_data);
+              // setformData({formObject: formDataObject, Id: record?.id});
               // open modal to view form
               // console.log(record?.form_data, 'formData');
             } else {

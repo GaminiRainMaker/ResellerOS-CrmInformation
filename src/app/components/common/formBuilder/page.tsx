@@ -420,7 +420,7 @@ const FormBuilderMain: React.FC<any> = ({
                                     width: '100%',
                                     height: '44px',
                                   }}
-                                  value={itemCon?.value}
+                                  defaultValue={itemCon?.value}
                                   onChange={(e: any) => {
                                     updateTheValues(
                                       e?.target?.value,
@@ -435,7 +435,7 @@ const FormBuilderMain: React.FC<any> = ({
                                   <OsInput
                                     suffix={itemCon?.currency}
                                     type={itemCon?.type}
-                                    value={
+                                    defaultValue={
                                       itemCon?.deciamlHide
                                         ? itemCon?.value?.split('.'[0])
                                         : itemCon?.value
@@ -489,7 +489,7 @@ const FormBuilderMain: React.FC<any> = ({
                                 <OsInput
                                   type={itemCon?.type}
                                   suffix={<MailOutlined />}
-                                  value={itemCon?.value}
+                                  defaultValue={itemCon?.value}
                                   onChange={(e: any) => {
                                     updateTheValues(
                                       e?.target?.value,
@@ -501,7 +501,7 @@ const FormBuilderMain: React.FC<any> = ({
                               ) : (
                                 <OsInput
                                   type={itemCon?.type}
-                                  value={itemCon?.value}
+                                  defaultValue={itemCon?.value}
                                   onChange={(e: any) => {
                                     updateTheValues(
                                       e?.target?.value,
@@ -577,7 +577,7 @@ const FormBuilderMain: React.FC<any> = ({
                                   width: '100%',
                                 }}
                                 mode={itemCon?.type}
-                                value={itemCon?.value}
+                                defaultValue={itemCon?.value}
                                 onChange={(e: any) => {
                                   updateTheValues(e, Sectidx, ItemConindex);
                                 }}
@@ -733,7 +733,7 @@ const FormBuilderMain: React.FC<any> = ({
                                             onChange={(e: any) => {
                                               setRadioValue(e.target.value);
                                             }}
-                                            value={radioValue}
+                                            defaultValue={radioValue}
                                           >
                                             <Radio value={itemLabelInde}>
                                               {' '}
