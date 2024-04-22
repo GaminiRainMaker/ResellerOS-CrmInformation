@@ -3,19 +3,15 @@
 
 'use client';
 
-import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import {Col, Form, Row} from 'antd';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect} from 'react';
-import {useDispatch} from 'react-redux';
 import {Space} from '@/app/components/common/antd/Space';
+import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
+import {ArrowTopRightOnSquareIcon} from '@heroicons/react/24/outline';
+import {Col, Row} from 'antd';
 import moment from 'moment';
-import {SelectOutlined} from '@ant-design/icons';
-import {
-  getAllNewNotification,
-  getCountOfNotification,
-} from '../../../../../redux/actions/notifications';
+import {useRouter} from 'next/navigation';
+import {useEffect} from 'react';
+import {getAllNewNotification} from '../../../../../redux/actions/notifications';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 export interface SeparatedData {
@@ -31,7 +27,7 @@ const SuperAdminPartner: React.FC = () => {
   const dispatch = useAppDispatch();
   const {userInformation, searchDataa} = useAppSelector((state) => state.user);
 
-  const {data: notificationData, loading: notificationLoading} = useAppSelector(
+  const {data: notificationData} = useAppSelector(
     (state) => state.notification,
   );
 
@@ -43,55 +39,47 @@ const SuperAdminPartner: React.FC = () => {
     <>
       <Space size={2} direction="vertical" style={{width: '100%'}}>
         <Typography name="Body 1/Medium">All Notifications</Typography>
-        {notificationData?.map((itemNoti: any, itemIndex: number) => (
+        {notificationData?.map((itemNoti: any) => (
           <Row
             style={{
-              marginTop: '20px',
+              marginTop: '10px',
               background: 'white',
-              padding: '10px',
-              width: '100%',
-              borderRadius: '0px 10px 0px 10px',
-              display: 'flex',
-              justifyContent: 'space-between',
+              padding: '24px',
+              borderRadius: '10px',
             }}
+            align="middle"
+            justify="space-between"
           >
             <Col>
-              {' '}
-              <Row style={{marginBottom: '10px', alignContent: 'center'}}>
-                <Typography name="Body 3/Medium">
-                  {' '}
-                  {itemNoti?.title}{' '}
-                </Typography>{' '}
-              </Row>{' '}
-              <Row>
-                {' '}
-                <Typography name="Body 4/Medium">
-                  {itemNoti?.description}{' '}
-                </Typography>
-              </Row>
+              <TableNameColumn
+                key={itemNoti?.id}
+                primaryText={itemNoti?.title}
+                secondaryText={itemNoti?.description}
+                primaryTextTypography="Body 1/Medium"
+                cursor="pointer"
+                secondaryEllipsis
+              />
             </Col>
             <Col>
-              {' '}
-              {moment(itemNoti?.createdAt)?.format('MM-DD-YYYY')}{' '}
-              {moment(itemNoti?.createdAt)?.format('hh: mm A')}
-              <SelectOutlined
-                onClick={() => {
-                  router.push(
-                    userInformation?.Admin
-                      ? `/superAdminPartner?tab=2`
-                      : '/partners?tab=2',
-                  );
-                }}
-                rotate={90}
-                style={{
-                  fontSize: '18px',
-                  cursor: 'pointer',
-                  marginLeft: '10px',
-                }}
-                // onClick={() =>
+              <Space size={20}>
+                <Space size={5}>
+                  {moment(itemNoti?.createdAt)?.format('MM-DD-YYYY')}
+                  {moment(itemNoti?.createdAt)?.format('hh: mm A')}
+                </Space>
 
-                // }
-              />
+                <ArrowTopRightOnSquareIcon
+                  cursor="pointer"
+                  width={22}
+                  height={22}
+                  onClick={() => {
+                    router.push(
+                      userInformation?.Admin
+                        ? `/superAdminPartner?tab=2`
+                        : '/partners?tab=2',
+                    );
+                  }}
+                />
+              </Space>
             </Col>
           </Row>
         ))}
