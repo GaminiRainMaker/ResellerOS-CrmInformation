@@ -86,7 +86,6 @@ const CommonFields: FC<any> = ({
   // const onFinish = (values: any) => {
   //   console.log('valuesvalues', values);
   // };
-  console.log(data, 'sjsajdjsdhf');
   return (
     <Row>
       <CollapseSpaceStyle size={24} direction="vertical">
@@ -117,8 +116,6 @@ const CommonFields: FC<any> = ({
                     <Row gutter={[16, 16]}>
                       {itemData?.optionsValues?.map(
                         (optionsItemValue: any, indexOfOptions: number) => {
-                          console.log('435435', formDataa);
-
                           const dataaForItem = formDataa?.find((items: any) => {
                             if (
                               optionsItemValue?.label === items?.label &&
@@ -131,7 +128,6 @@ const CommonFields: FC<any> = ({
                               return items;
                             }
                           });
-                          console.log('43543535', dataaForItem);
                           return (
                             <Col span={8} key={Number(indexOfOptions)}>
                               <div>

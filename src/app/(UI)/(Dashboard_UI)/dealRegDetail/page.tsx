@@ -172,7 +172,6 @@ const DealRegDetail = () => {
       console.error('Error:', error);
     }
   };
-  console.log(formDataValues, 'fjsdjhfjdhfj');
   return (
     <div>
       <Row justify="space-between" align="middle">

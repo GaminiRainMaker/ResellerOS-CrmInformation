@@ -51,7 +51,6 @@ const uploadImage = async (base64: any, type: any, file: any) => {
       const {data} = await UPLOAD_API.post({
         document: base64,
       });
-      console.log('4354354', data);
       // // const {data} = await API.BLACKWORKS.post(UPLOAD_DOCUMENT_TO_S3, {
       //   document: base64,
       // });
