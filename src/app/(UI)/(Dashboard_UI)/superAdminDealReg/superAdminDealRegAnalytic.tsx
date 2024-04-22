@@ -11,42 +11,62 @@ import {
   UserGroupIcon,
 } from '@heroicons/react/24/outline';
 
-const SuperAdminDealRegAnalytic = (props: any) => {
+const SuperAdminDealRegAnalytic = ({data}: any) => {
   const [token] = useThemeToken();
+  console.log('propsprops1234', data);
+
+  const activeTemplateCount: any = data?.getFormDataProgram?.filter(
+    (getFormDataProgramItem: any) => getFormDataProgramItem?.form_data_active,
+  );
 
   const analyticsData = [
     {
       key: 1,
       primary: (
-        <Typography name="Heading 3/Medium">{props?.data?.length}</Typography>
+        <Typography name="Heading 3/Medium">
+          {data?.getFormDataProgram?.length}
+        </Typography>
       ),
-      secondry: 'Partners',
+      secondry: 'Templates',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
-      secondry: 'Partner Programs',
+      primary: (
+        <Typography name="Heading 3/Medium">
+          {activeTemplateCount?.length}
+        </Typography>
+      ),
+      secondry: 'Active Templates',
+      icon: <PencilIcon width={24} color={token?.colorLink} />,
+      iconBg: token?.colorLinkActive,
+    },
+    {
+      key: 3,
+      primary: (
+        <Typography name="Heading 3/Medium">
+          {data?.attributeSection?.length}
+        </Typography>
+      ),
+      secondry: 'Attributes Sections',
       icon: (
         <ClipboardDocumentCheckIcon width={24} color={token?.colorSuccess} />
       ),
       iconBg: token?.colorSuccessBg,
     },
     {
-      key: 3,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
-      secondry: 'Active Templates',
-      icon: <PencilIcon width={24} color={token?.colorLink} />,
-      iconBg: token?.colorLinkActive,
-    },
-    {
       key: 4,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
-      secondry: 'In Progress',
+      primary: (
+        <Typography name="Heading 3/Medium">
+          {data?.attributeField?.length}
+        </Typography>
+      ),
+      secondry: 'Attributes Fields',
       icon: <ClockIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
     },
+
     {
       key: 5,
       primary: <Typography name="Heading 3/Medium">0</Typography>,
@@ -57,9 +77,9 @@ const SuperAdminDealRegAnalytic = (props: any) => {
     {
       key: 6,
       primary: <Typography name="Heading 3/Medium">0</Typography>,
-      secondry: 'Deleted',
-      icon: <TrashIcon width={24} color={token?.colorError} />,
-      iconBg: token?.colorErrorBg,
+      secondry: 'In Progress',
+      icon: <ClockIcon width={24} color={token?.colorWarning} />,
+      iconBg: token?.colorWarningBg,
     },
   ];
 

@@ -8,6 +8,7 @@ import FormBuilderMain from '@/app/components/common/formBuilder/page';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
+import OsDrawer from '@/app/components/common/os-drawer';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
@@ -19,7 +20,6 @@ import {Form} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import OsDrawer from '@/app/components/common/os-drawer';
 import {
   insertAttributeField,
   queryAttributeField,
@@ -317,10 +317,16 @@ const SuperAdminDealReg = () => {
     ),
   );
 
+  const analyticData = {
+    attributeSection: attributeSectionData,
+    attributeField: attributeFieldData,
+    getFormDataProgram: getFormDataProgramData,
+  };
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <SuperAdminDealRegAnalytic data={[]} />
+        <SuperAdminDealRegAnalytic data={analyticData} />
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
