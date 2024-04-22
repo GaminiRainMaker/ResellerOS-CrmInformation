@@ -24,13 +24,11 @@ const FormUpload: React.FC<FormUploadInterface> = ({setCollapsed}) => {
     setFileData([...fileData, file]);
     convertFileToBase64(file)
       .then((base64String) => {
-        console.log('base64String', base64String);
 
         // if (base64String) {
         //   dispatch(uploadToAws({document: base64String})).then(
         //     (payload: any) => {
         //       const pdfUrl = payload?.payload?.data?.Location;
-        //       console.log('pdfUrl', pdfUrl);
         //     },
         //   );
         // }

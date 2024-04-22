@@ -366,7 +366,6 @@ const EditorFile = () => {
                 deleteRowsItemsForLineItemsa(source, change);
               }}
               afterChange={(change: any, source) => {
-                console.log('56456456', change);
                 if (change) {
                   updateRowsValueForLineItems(
                     change?.[0]?.[0],

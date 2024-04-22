@@ -36,7 +36,6 @@ const TableNameColumn: FC<any> = ({
           display: 'flex',
           justifyContent: 'center',
           textAlign: 'start',
-          marginTop: '20px',
         }}
       >
         <AvatarStyled background={iconBg} src={imgUrl} icon={fallbackIcon} />

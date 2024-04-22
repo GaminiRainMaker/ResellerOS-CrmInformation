@@ -83,9 +83,8 @@ const CommonFields: FC<any> = ({
     });
   }, [data]);
 
-  // const onFinish = (values: any) => {
-  //   console.log('valuesvalues', values);
-  // };
+
+  
   return (
     <Row>
       <CollapseSpaceStyle size={24} direction="vertical">

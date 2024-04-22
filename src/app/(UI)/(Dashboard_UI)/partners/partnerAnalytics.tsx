@@ -27,7 +27,6 @@ const PartnerAnalytics: FC<any> = ({data}) => {
   const [activeCount, setActiveCount] = useState<number>(0);
   const [inActiveCount, setInActiveCount] = useState<number>(0);
 
-  console.log('allPartnerAnalyticData', data);
 
   useEffect(() => {
     if (PartnerData && PartnerData?.approved) {

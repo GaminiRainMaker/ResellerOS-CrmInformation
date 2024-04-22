@@ -148,7 +148,6 @@ const DealRegDetailForm: FC<any> = ({
     dispatch(getAllCustomer({}));
   }, []);
 
-  // console.log(commonFiledData, 'commonFiledDatacommonFiledData', data);
 
   return (
     <Row>

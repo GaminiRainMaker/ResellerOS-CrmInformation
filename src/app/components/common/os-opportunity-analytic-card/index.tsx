@@ -19,12 +19,6 @@ const OpportunityAnalyticCard: FC<OsOpportunityAnalyicCardInterface> = ({
   const [token] = useThemeToken();
   const {abbreviate} = useAbbreviationHook(0);
 
-  console.log(
-    'OpportunityData',
-    OpportunityData,
-    OpportunityData?.opportunity?.[0],
-  );
-
   return (
     <Row
       gutter={[16, 16]}
