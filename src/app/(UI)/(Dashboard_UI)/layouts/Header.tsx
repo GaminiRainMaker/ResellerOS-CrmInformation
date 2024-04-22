@@ -61,7 +61,10 @@ const CustomHeader = () => {
   });
   const searchQuery = useDebounceHook(query, 400);
   useEffect(() => {
-    dispatch(getGloabalySearchDataa(searchQuery));
+    console.log('searchQuery', searchQuery);
+    if (searchQuery && searchQuery?.length > 0) {
+      dispatch(getGloabalySearchDataa(searchQuery));
+    }
   }, [searchQuery]);
   const [notificationCounts, setNotificationCounts] = useState<number>(0);
 
