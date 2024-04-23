@@ -20,12 +20,15 @@ import {Form} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import {
+  deleteAttributeField,
   insertAttributeField,
   queryAttributeField,
   updateAttributeFieldById,
 } from '../../../../../redux/actions/attributeField';
 import {
+  deleteAttributeSection,
   insertAttributeSection,
   queryAttributeSection,
   updateAttributeSectionById,
@@ -49,7 +52,6 @@ const SuperAdminDealReg = () => {
   const [form] = Form.useForm();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const {data: attributeSectionData, loading: attributeSectionLoading} =
     useAppSelector((state) => state.attributeSection);
   const {loading: attributeFieldLoading, data: attributeFieldData} =
@@ -67,6 +69,15 @@ const SuperAdminDealReg = () => {
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
   const [showSectionDrawer, setShowSectionDrawer] = useState<boolean>(false);
   const [showFieldDrawer, setShowFieldDrawer] = useState<boolean>(false);
+  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+
+  const [sectionDeleteId, setSectionDeleteId] = useState<any>();
+  const [showSectionDeleteModal, setShowSectionDeleteModal] =
+    useState<boolean>(false);
+
+  const [fieldDeleteId, setFieldDeleteId] = useState<any>();
+  const [showFieldDeleteModal, setShowFieldDeleteModal] =
+    useState<boolean>(false);
 
   const [query, setQuery] = useState<{
     fieldLabel: string | null;
@@ -139,6 +150,29 @@ const SuperAdminDealReg = () => {
     setShowFieldDrawer(true);
   };
   const setDeleteIds = () => {};
+
+  const deleteSelectedSection = async () => {
+    const data = {Ids: sectionDeleteId};
+    await dispatch(deleteAttributeSection(data)).then((d) => {
+      if (d?.payload) {
+        dispatch(queryAttributeSection(sectionSearchQuery));
+        dispatch(queryAttributeField(searchQuery));
+        setSectionDeleteId([]);
+        setShowSectionDeleteModal(false);
+      }
+    });
+  };
+  const deleteSelectedField = async () => {
+    const data = {Ids: fieldDeleteId};
+    await dispatch(deleteAttributeField(data)).then((d) => {
+      if (d?.payload) {
+        dispatch(queryAttributeField(searchQuery));
+        setFieldDeleteId([]);
+        setShowFieldDeleteModal(false);
+      }
+    });
+  };
+
   const updateTemplate = (recordid: number, value: boolean) => {
     dispatch(
       updatePartnerProgramById({id: recordid, form_data_active: value}),
@@ -162,15 +196,15 @@ const SuperAdminDealReg = () => {
     token,
     statusWrapper,
     editAttributeField,
-    setDeleteIds,
-    setShowModalDelete,
+    setFieldDeleteId,
+    setShowFieldDeleteModal,
   );
 
   const StandardAttributesSectionColumns = standardAttributesSection(
     token,
     editAttributeSection,
-    setDeleteIds,
-    setShowModalDelete,
+    setSectionDeleteId,
+    setShowSectionDeleteModal,
   );
 
   const superAdmintabItems = [
@@ -632,6 +666,26 @@ const SuperAdminDealReg = () => {
           isDrawer
         />
       </OsDrawer>
+
+      <DeleteModal
+        loading={attributeSectionLoading}
+        setShowModalDelete={setShowSectionDeleteModal}
+        setDeleteIds={setSectionDeleteId}
+        showModalDelete={showSectionDeleteModal}
+        deleteSelectedIds={deleteSelectedSection}
+        heading="Delete Atrribute Section"
+        description="Are you sure you want to delete this section?"
+      />
+
+      <DeleteModal
+        loading={attributeFieldLoading}
+        setShowModalDelete={setShowFieldDeleteModal}
+        setDeleteIds={setFieldDeleteId}
+        showModalDelete={showFieldDeleteModal}
+        deleteSelectedIds={deleteSelectedField}
+        heading="Delete Atrribute Fields"
+        description="Are you sure you want to delete this field?"
+      />
     </>
   );
 };

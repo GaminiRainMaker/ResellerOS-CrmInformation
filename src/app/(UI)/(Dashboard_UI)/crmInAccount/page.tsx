@@ -291,13 +291,13 @@ const CrmInformation: React.FC = () => {
     },
   ];
 
-  const uniqueBillingNames = Array.from(
-    new Set(
-      filteredData?.map(
-        (customer: any) => customer?.BillingContacts[0]?.billing_first_name,
-      ),
-    ),
-  );
+  // const uniqueBillingNames = Array.from(
+  //   new Set(
+  //     filteredData?.map(
+  //       (customer: any) => customer?.BillingContacts[0]?.billing_first_name,
+  //     ),
+  //   ),
+  // );
   const uniqueCustomer = Array.from(
     new Set(filteredData?.map((customer: any) => customer.name)),
   );
