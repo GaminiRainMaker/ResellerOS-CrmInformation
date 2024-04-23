@@ -6,15 +6,15 @@ import {DndContext, DragEndEvent} from '@dnd-kit/core';
 import 'react-phone-number-input/style.css';
 
 import FormBuilderMain from '@/app/components/common/formBuilder/page';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import {SiderDivStyled} from '@/app/components/common/os-div-row-col/styled-component';
 import {formbuildernewObject} from '@/app/utils/base';
 import {Form, Layout, Modal} from 'antd';
-import React, {useEffect, useState} from 'react';
-import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import React, {useState} from 'react';
+import {XMarkIcon} from '@heroicons/react/24/solid';
 import EditFiledDetails from './detailsFieldEdit';
 
 import FieldCard from './FieldCard';
-import {getPartnerProgramById} from '../../../../../redux/actions/partnerProgram';
 
 const {Sider, Content} = Layout;
 
@@ -71,7 +71,7 @@ const FormBuilder = () => {
     margin: '24px',
     borderRadius: 12,
   };
-
+  console.log('cartItemscartItems', cartItems);
   return (
     <Layout style={layoutStyle}>
       <DndContext onDragEnd={addItemsToCart}>
@@ -102,22 +102,20 @@ const FormBuilder = () => {
       {collapsed && (
         <SiderDivStyled>
           <div
-            color={token?.colorError}
             style={{
               display: 'flex',
-              justifyContent: 'center',
-              background: 'red',
-              color: 'white',
-              height: '30px',
-              padding: '5px',
-              fontSize: '20px',
-              fontWeight: 'bold',
-            }}
-            onClick={() => {
-              setCollapsed(false);
+              justifyContent: 'end',
+              padding: '10px',
             }}
           >
-            Close
+            <XMarkIcon
+              onClick={() => {
+                setCollapsed(false);
+              }}
+              width={24}
+              color={token?.colorError}
+              cursor="pointer"
+            />
           </div>
           <EditFiledDetails
             setIsOpenDrawer={openEditDrawer}

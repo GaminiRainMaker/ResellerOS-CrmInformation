@@ -11,7 +11,6 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import OsDropdown from '@/app/components/common/os-dropdown';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
@@ -33,20 +32,19 @@ import {
 } from '@/app/components/common/os-div-row-col/styled-component';
 import FormUpload from '@/app/components/common/os-upload/FormUpload';
 import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 import {formbuildernewObject} from '@/app/utils/base';
-import {Checkbox, MenuProps, Radio, Switch, TimePicker} from 'antd';
+import {TrashIcon} from '@heroicons/react/24/outline';
+import {Checkbox, Radio, Switch, TimePicker, notification} from 'antd';
+import moment from 'moment';
 import {useRouter, useSearchParams} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
-import moment from 'moment';
-import {formatStatus} from '@/app/utils/CONSTANTS';
-import {TrashIcon} from '@heroicons/react/24/outline';
 import {
   getPartnerProgramById,
   updatePartnerProgramById,
 } from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import ItemName from './ItemName';
-// import { FormBuilderInterFaceCheck } from './formBuilder.interface';
 
 const FormBuilderMain: React.FC<any> = ({
   cartItems,
@@ -65,16 +63,25 @@ const FormBuilderMain: React.FC<any> = ({
   setNewValue,
   collapsed,
 }) => {
-  const dropDownItemss: MenuProps['items'] = [];
   const dispatch = useAppDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();
   const getPartnerProgramID = searchParams.get('id');
   const [holdelSelectedValue, setHoldSelectedValue] = useState<any>();
   const [radioValue, setRadioValue] = useState<any>();
-  //   const [previewFile, setPreviewFile] = useState<boolean>(true);
   const [token] = useThemeToken();
-  const {data: partnerData} = useAppSelector((state) => state.partnerProgram);
+  const {data: partnerData, loading: partnerProgramLoading} = useAppSelector(
+    (state) => state.partnerProgram,
+  );
+  const [api, contextHolder] = notification.useNotification();
+
+  const openNotificationWithIcon = () => {
+    api.warning({
+      message: 'Please Add the Fields!',
+      description:
+        'We are here to assist you! Please select the fields.',
+    });
+  };
 
   const deleteSelectedIntem = (sectionInde: number) => {
     const temp: any = [...cartItems];
@@ -83,8 +90,21 @@ const FormBuilderMain: React.FC<any> = ({
   };
 
   useEffect(() => {
-    dispatch(getPartnerProgramById(Number(getPartnerProgramID)));
+    if (!openPreviewModal && getPartnerProgramID) {
+      dispatch(getPartnerProgramById(Number(getPartnerProgramID)))?.then(
+        (payload: any) => {
+          if (payload?.payload?.form_data?.[0]?.[0]) {
+            const formData: any = JSON?.parse(
+              payload?.payload?.form_data?.[0]?.[0],
+            );
+            setCartItems(formData);
+            console.log('eewweeww', formData);
+          }
+        },
+      );
+    }
   }, []);
+
   const updateSection = (sectionInd: number, itemCont: string) => {
     const addnewField = formbuildernewObject(itemCont);
     const temp = [...cartItems];
@@ -141,9 +161,12 @@ const FormBuilderMain: React.FC<any> = ({
       form_data: [JSON?.stringify(cartItems)],
       id: Number(getPartnerProgramID),
     };
-
-    dispatch(updatePartnerProgramById(objNew));
-    router.push(`/superAdminPartner`);
+    if (cartItems?.[0]?.content?.length > 0) {
+      dispatch(updatePartnerProgramById(objNew));
+      router.push(`/superAdminPartner`);
+    } else {
+      openNotificationWithIcon();
+    }
   };
 
   const updateTheValues = (
@@ -172,16 +195,15 @@ const FormBuilderMain: React.FC<any> = ({
     setCartItems(newTempArr);
   };
 
-  return (
-    <div
-    // onClick={(e: any) => {
-    //   e?.preventDefault();
+  useEffect(() => {
+    if (cartItems?.[0]?.content?.length === 0) {
+      setCollapsed(false);
+    }
+  }, [cartItems]);
 
-    //   if (collapsed) {
-    //     setCollapsed(false);
-    //   }
-    // }}
-    >
+  return (
+    <>
+      {contextHolder}
       {!previewFile && (
         <Row
           justify="space-between"
@@ -200,25 +222,20 @@ const FormBuilderMain: React.FC<any> = ({
           </Space>
           <Space size={10}>
             <OsButton
+              loading={partnerProgramLoading}
               buttontype="PRIMARY"
               text="Save"
               clickHandler={addFormData}
             />
             <OsButton
               buttontype="PRIMARY_ICON"
-              onClick={() => {
+              clickHandler={() => {
                 setOpenPreviewModal(!openPreviewModal);
               }}
               text=""
-              icon={
-                <PlayCircleOutlined
-                  onClick={() => {
-                    setOpenPreviewModal(!openPreviewModal);
-                  }}
-                />
-              }
+              icon={<PlayCircleOutlined />}
             />
-            <OsDropdown menu={{items: dropDownItemss}} />
+            {/* <OsDropdown menu={{items: dropDownItemss}} /> */}
           </Space>
         </Row>
       )}
@@ -270,6 +287,8 @@ const FormBuilderMain: React.FC<any> = ({
                               cartItems={cartItems}
                               setCartItems={setCartItems}
                               isPreview={!previewFile}
+                              ItemConindex={ItemConindex}
+                              Sectidx={Sectidx}
                               onClick={(e: any) => {
                                 e?.preventDefault();
                                 setCollapsed(true);
@@ -847,7 +866,7 @@ const FormBuilderMain: React.FC<any> = ({
           <RowStyledForForm>+ Drop Filed</RowStyledForForm>
         )}
       </div>
-    </div>
+    </>
   );
 };
 export default FormBuilderMain;

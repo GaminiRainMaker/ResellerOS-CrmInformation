@@ -273,7 +273,6 @@ const SuperAdminPartner: React.FC = () => {
               const formDataObject = JSON?.parse(record?.form_data);
               setformData({formObject: formDataObject, Id: record?.id});
               // open modal to view form
-
             } else {
               router?.push(`/formBuilder?id=${record?.id}`);
             }
@@ -360,12 +359,12 @@ const SuperAdminPartner: React.FC = () => {
           hoverOnText
           color={token?.colorLink}
           onClick={() => {
-            if (record?.form_data) {
+            if (record?.form_data && record?.form_data?.length > 0) {
               setOpenPreviewModal(true);
-              // const formDataObject = JSON?.parse(record?.form_data);
-              // setformData({formObject: formDataObject, Id: record?.id});
-              // open modal to view form
-
+              setformData({
+                formObject: JSON?.parse(record?.form_data),
+                Id: record?.id,
+              });
             } else {
               router?.push(`/formBuilder?id=${record?.id}`);
             }
@@ -699,51 +698,48 @@ const SuperAdminPartner: React.FC = () => {
         heading="Delete Partner"
         description="Are you sure you want to delete this partner?"
       />
-      {openPreviewModal && (
-        <>
-          <OsModal
-            bodyPadding={22}
-            loading={loading}
-            body={
-              <>
-                {' '}
-                <FormBuilderMain
-                  cartItems={formData?.formObject}
-                  form={form}
-                  // eslint-disable-next-line react/jsx-boolean-value
-                  previewFile
-                />
-                <Space
-                  align="end"
-                  size={8}
-                  style={{display: 'flex', justifyContent: 'end'}}
-                >
-                  <OsButton
-                    buttontype="PRIMARY"
-                    text="Delete"
-                    clickHandler={() => {
-                      deletePartnerProgramFormDa(formData?.Id);
-                    }}
-                  />
-                  <OsButton
-                    buttontype="SECONDARY"
-                    text="EDIT"
-                    color="red"
-                    clickHandler={() => {
-                      router?.push(`/formBuilder?id=${formData?.Id}`);
-                    }}
-                  />{' '}
-                </Space>
-              </>
-            }
-            width={900}
-            open={openPreviewModal}
-            onCancel={() => {
-              setOpenPreviewModal(false);
-            }}
-          />
-        </>
-      )}
+
+      <OsModal
+        bodyPadding={22}
+        loading={loading}
+        body={
+          <>
+            {' '}
+            <FormBuilderMain
+              cartItems={formData?.formObject}
+              form={form}
+              // eslint-disable-next-line react/jsx-boolean-value
+              previewFile
+            />
+            <Space
+              align="end"
+              size={8}
+              style={{display: 'flex', justifyContent: 'end'}}
+            >
+              <OsButton
+                buttontype="PRIMARY"
+                text="Delete"
+                clickHandler={() => {
+                  deletePartnerProgramFormDa(formData?.Id);
+                }}
+              />
+              <OsButton
+                buttontype="SECONDARY"
+                text="EDIT"
+                color="red"
+                clickHandler={() => {
+                  router?.push(`/formBuilder?id=${formData?.Id}`);
+                }}
+              />{' '}
+            </Space>
+          </>
+        }
+        width={900}
+        open={openPreviewModal}
+        onCancel={() => {
+          setOpenPreviewModal(false);
+        }}
+      />
     </>
   );
 };
