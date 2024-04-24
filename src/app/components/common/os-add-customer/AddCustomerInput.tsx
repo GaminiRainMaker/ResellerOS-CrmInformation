@@ -30,8 +30,11 @@ import {
   insertbillingContact,
   updateBillingContact,
 } from '../../../../../redux/actions/billingContact';
-import {insertCustomer} from '../../../../../redux/actions/customer';
-import {useAppDispatch} from '../../../../../redux/hook';
+import {
+  getAllCustomer,
+  insertCustomer,
+} from '../../../../../redux/actions/customer';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CustomerAccountInterface} from './os-add-customer-interface';
 
 const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
@@ -48,6 +51,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
   const [activeTab, setActiveTab] = useState<any>('1');
   const [editBillingAddress, setEditBillingAddress] = useState<Boolean>(false);
   const [newAdd, setNewAdd] = useState<Boolean>(false);
+  const {loading} = useAppSelector(state=>state.customer)
 
   const addCustomerAndAddress = async () => {
     try {
@@ -67,6 +71,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
           dispatch(insertbillingContact(newAddressObj));
         }
       });
+      dispatch(getAllCustomer({}));
       setShowModal((p: boolean) => !p);
       setEditBillingAddress(false);
     } catch (error) {
@@ -640,6 +645,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
             }}
           >
             <OsButton
+            loading={loading}
               buttontype="PRIMARY"
               clickHandler={() => {
                 // eslint-disable-next-line @typescript-eslint/no-unused-expressions

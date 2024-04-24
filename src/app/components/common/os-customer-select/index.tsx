@@ -17,21 +17,25 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
   setCustomerValue,
   customerValue,
   isAddNewCustomer = false,
-  isRequired =true
+  isRequired = true,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {data: dataAddress} = useAppSelector((state) => state?.customer);
   const [open, setOpen] = useState<boolean>(false);
+  const [customerOptions, setCustomerOptions] = useState<any>();
 
-  const customerOptions = dataAddress?.map((dataAddressItem: any) => ({
-    value: dataAddressItem?.id,
-    label: (
-      <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-        {dataAddressItem?.name}
-      </Typography>
-    ),
-  }));
+  useEffect(() => {
+    const customerOptionData = dataAddress?.map((dataAddressItem: any) => ({
+      value: dataAddressItem?.id,
+      label: (
+        <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+          {dataAddressItem?.name}
+        </Typography>
+      ),
+    }));
+    setCustomerOptions(customerOptionData);
+  }, [dataAddress]);
 
   useEffect(() => {
     dispatch(getAllCustomer({}));
