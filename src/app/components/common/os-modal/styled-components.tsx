@@ -12,7 +12,7 @@ export const OSModalStyle = styled(Modal)<{
     }
   }
   &.ant-modal .ant-modal-close {
-    top: -18px;
+    top: -12px;
     inset-inline-end: -10px;
     padding: 0px;
     margin: 0px;

@@ -122,7 +122,7 @@ const UpdateGenerateQuote = () => {
       ),
     },
     {
-      title: 'Qty',
+      title: 'Quantity',
       dataIndex: 'quantity',
       key: 'quantity',
       render: (text: any, record: any) => (

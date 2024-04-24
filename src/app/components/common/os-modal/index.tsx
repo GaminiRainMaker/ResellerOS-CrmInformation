@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import {XCircleIcon} from '@heroicons/react/20/solid';
+import Image from 'next/image';
 import {FC} from 'react';
+import ModalCloseIcon from '../../../../../public/assets/static/modalCloseIcon.svg';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import OsButton from '../os-button';
+import Typography from '../typography';
 import {OSModalPropsInterface} from './os-modal.interface';
 import {OSModalStyle} from './styled-components';
-import Typography from '../typography';
 
 const OsModal: FC<OSModalPropsInterface> = ({
   body,
@@ -41,7 +42,13 @@ const OsModal: FC<OSModalPropsInterface> = ({
       }}
       onOk={onOk}
       mask
-      closeIcon={<XCircleIcon width={30} color={token?.colorIcon} />}
+      closeIcon={
+        <Image
+          src={ModalCloseIcon}
+          alt="ModalCloseIcon"
+          style={{cursor: 'pointer'}}
+        />
+      }
       footer={
         footer && (
           <Space

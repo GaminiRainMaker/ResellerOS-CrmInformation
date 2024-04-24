@@ -3,30 +3,28 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
-import {Button} from '@/app/components/common/antd/Button';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
+import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
 import {pricingMethod, selectDataForProduct} from '@/app/utils/CONSTANTS';
 import {
   calculateProfitabilityData,
-  convertDataToText,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import {updateProductFamily} from '../../../../../../redux/actions/product';
 import {
   getProfitabilityByQuoteId,
   updateProfitabilityById,
 } from '../../../../../../redux/actions/profitability';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
-import {updateProductFamily} from '../../../../../../redux/actions/product';
-import ConverSationProcess from '../../admin/quote-AI/configuration/configuration-tabs/ConversationProcess';
 
 const Profitability: FC<any> = ({tableColumnDataShow}) => {
   const dispatch = useAppDispatch();
@@ -99,7 +97,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       width: 120,
     },
     {
-      title: 'Qty',
+      title: 'Quantity',
       dataIndex: 'quantity',
       key: 'quantity',
       render: (text: string, record: any) => (
@@ -108,24 +106,25 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
           name={`quantity ${record?.id}`}
           rules={[
             {
-              required: renderRequiredInput('Qty'),
+              required: renderRequiredInput('Quantity'),
               message: 'This Field id Required',
             },
           ]}
           initialValue={text}
         >
-          <OsInput
-            disabled={renderEditableInput('Qty')}
+          <OsInputNumber
+            disabled={renderEditableInput('Quantity')}
             style={{
               height: '36px',
             }}
-            // type="number"
+            type="number"
+            min={1}
             value={text}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
                 prev.map((prevItem: any) => {
                   if (prevItem.id === record?.id) {
-                    return {...prevItem, quantity: v.target.value};
+                    return {...prevItem, quantity: v};
                   }
                   return prevItem;
                 }),
@@ -305,7 +304,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
                   if (record?.id === prevItem?.id) {
                     const rowId = record?.id;
                     const result: any = calculateProfitabilityData(
-                      useRemoveDollarAndCommahook(prevItem?.quantity),
+                      prevItem?.quantity,
                       prevItem?.pricing_method,
                       useRemoveDollarAndCommahook(prevItem?.line_amount),
                       useRemoveDollarAndCommahook(prevItem?.adjusted_price),
@@ -397,7 +396,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       width: 130,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
-          {text ? `$${abbreviate(text ?? 0)}` : 0}
+          {text ? `$${abbreviate(text ?? '--')}` : '--'}
         </Typography>
       ),
     },
@@ -408,7 +407,7 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       width: 120,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
-          {text ? `${abbreviate(text ?? 0)} %` : 0}
+          {text ? `${abbreviate(text ?? '--')} %` : '--'}
         </Typography>
       ),
     },

@@ -12,8 +12,8 @@ const CommonDatePicker: FC<DatePickerProps> = (props) => {
       suffixIcon={
         <CalendarDaysIcon width={24} color={token?.colorInfoBorder} />
       }
-      format="MM/DD/YYYY"
-      placeholder="MM/DD/YYYY"
+      placeholder={props?.placeholder ?? 'MM/DD/YYYY'}
+      format={props?.format ?? 'MM/DD/YYYY'}
     />
   );
 };

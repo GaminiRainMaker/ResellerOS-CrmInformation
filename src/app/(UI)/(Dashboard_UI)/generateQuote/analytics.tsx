@@ -20,7 +20,7 @@ import {useAppSelector} from '../../../../../redux/hook';
 
 const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
   const [token] = useThemeToken();
-  const [totalGrossValue, setTotalGrossValue] = useState<any>();
+  const [totalValues, setTotalValues] = useState<any>();
   const [totalRebateAmount, setTotalRebateAmount] = useState<any>();
   // const [totalCost, setTotalCost] = useState<number>(0);
   const {profitability} = useAppSelector((state) => state.profitability);
@@ -47,6 +47,7 @@ const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
   useEffect(() => {
     let grossProfit: any = 0;
     let grossProfitPercentage: any = 0;
+    let exitPrice: number = 0;
     profitability?.map((item: any) => {
       if (item?.gross_profit) {
         grossProfit += item?.gross_profit ? item?.gross_profit : 0;
@@ -56,30 +57,17 @@ const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
           ? item?.gross_profit_percentage
           : 0;
       }
+      if (item?.exit_price) {
+        exitPrice += item?.exit_price ? item?.exit_price : 0;
+        console.log('totalValues', item);
+      }
     });
-    setTotalGrossValue({
+    setTotalValues({
       GrossProfit: grossProfit,
       GrossProfitPercentage: grossProfitPercentage,
+      ExitPrice: exitPrice,
     });
   }, [JSON.stringify(profitability)]);
-
-  // useEffect(() => {
-  //   if (Array.isArray(quoteLineItemByQuoteID)) {
-  //     const totalAdjustedPrice = quoteLineItemByQuoteID.reduce(
-  //       (total, item) => {
-  //         const adjustedPrice = parseFloat(
-  //           item.adjusted_price.replace('$', '').replace(',', ''),
-  //         );
-
-  //         return total + adjustedPrice;
-  //       },
-  //       0,
-  //     );
-
-  //     // Update totalCost state
-  //     setTotalCost(totalAdjustedPrice);
-  //   }
-  // }, [quoteLineItemByQuoteID]);
 
   const analyticsData = [
     {
@@ -91,7 +79,7 @@ const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
     },
     {
       key: 2,
-      primary: `$${abbreviate(amountData?.AdjustPrice ?? 0)}`,
+      primary: `$${abbreviate(totalValues?.ExitPrice ?? 0)}`,
       secondry: 'Quote Total',
       icon: <TagIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
@@ -105,7 +93,7 @@ const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
     },
     {
       key: 4,
-      primary: `$${abbreviate(totalGrossValue?.GrossProfit ?? 0)}`,
+      primary: `$${abbreviate(totalValues?.GrossProfit ?? 0)}`,
       secondry: 'Total GP',
       icon: (
         <Image
@@ -118,7 +106,7 @@ const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
     },
     {
       key: 5,
-      primary: `${abbreviate(totalGrossValue?.GrossProfitPercentage ?? 0)} %`,
+      primary: `${abbreviate(totalValues?.GrossProfitPercentage ?? 0)} %`,
       secondry: 'Total GP%',
       icon: <ReceiptPercentIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,

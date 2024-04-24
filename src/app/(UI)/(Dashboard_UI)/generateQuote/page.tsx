@@ -236,31 +236,31 @@ const GenerateQuote: React.FC = () => {
         </Typography>
       ),
     },
-    {
-      key: '2',
-      label: (
-        <Typography name="Body 3/Regular" cursor="pointer">
-          Edit Selected
-        </Typography>
-      ),
-    },
-    {
-      key: '3',
-      label: (
-        <Typography
-          name="Body 3/Regular"
-          color={token?.colorError}
-          cursor="pointer"
-          onClick={() => {
-            if (activeTab === '1') {
-              setIsDeleteInputDetailModal(true);
-            }
-          }}
-        >
-          Delete Selected
-        </Typography>
-      ),
-    },
+    // {
+    //   key: '2',
+    //   label: (
+    //     <Typography name="Body 3/Regular" cursor="pointer">
+    //       Edit Selected
+    //     </Typography>
+    //   ),
+    // },
+    // {
+    //   key: '3',
+    //   label: (
+    //     <Typography
+    //       name="Body 3/Regular"
+    //       color={token?.colorError}
+    //       cursor="pointer"
+    //       onClick={() => {
+    //         if (activeTab === '1') {
+    //           setIsDeleteInputDetailModal(true);
+    //         }
+    //       }}
+    //     >
+    //       Delete Selected
+    //     </Typography>
+    //   ),
+    // },
   ];
 
   const TabPaneData = [
@@ -381,7 +381,7 @@ const GenerateQuote: React.FC = () => {
           {quoteLineItemByQuoteID?.[0]?.Quote?.file_name ??
             formatDate(
               quoteLineItemByQuoteID?.[0]?.Quote?.createdAt,
-              'MM/DD/YYYY',
+              'MM/DD/YYYY | HH:MM',
             )}
         </Typography>
       ),

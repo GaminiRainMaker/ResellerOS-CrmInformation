@@ -151,7 +151,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           password: formValues?.password,
         }),
       ).then((payload) => {
-        if (payload?.payload) {
+        if (payload?.payload?.status) {
           dispatch(
             setUserInformation({
               id: payload?.payload?.id,
@@ -166,7 +166,6 @@ const ContentSection: FC<AuthLayoutInterface> = ({
               master_admin: payload?.payload?.master_admin,
             }),
           );
-
           Cookies.set('token', payload.payload?.token, {
             expires: 0.8,
             secure: true,
@@ -179,7 +178,8 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           );
         } else {
           notification?.open({
-            message: 'Invaild credentials! Please try again',
+            message:
+              payload?.payload ?? 'Invaild credentials! Please try again',
             type: 'error',
           });
         }

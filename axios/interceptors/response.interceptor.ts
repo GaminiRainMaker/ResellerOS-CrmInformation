@@ -16,6 +16,12 @@ export const errorResponseInterceptor = (error: AxiosError) => {
     Cookies.remove('token');
     window.location.href = '/' as string;
   }
+  if (error?.response?.status == 400) {
+    return Promise.resolve({
+      success: false,
+      message: error,
+    });
+  }
   return Promise.resolve({
     success: false,
     message: 'Something went wrong',

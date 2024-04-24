@@ -203,7 +203,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       width: 187,
     },
     {
-      title: 'Qty',
+      title: 'Quantity',
       dataIndex: 'quantity',
       key: 'quantity',
       render: (text: any, record: any) => (
@@ -212,7 +212,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
           name={`Quantity ${record?.id}`}
           rules={[
             {
-              required: renderRequiredInput('Qty'),
+              required: renderRequiredInput('Quantity'),
               message: 'This Field id Required',
             },
           ]}
@@ -223,7 +223,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
               height: '36px',
             }}
             placeholder="0"
-            disabled={renderEditableInput('Qty')}
+            disabled={renderEditableInput('Quantity')}
             type="number"
             value={
               !selectTedRowIds?.includes(record?.id)

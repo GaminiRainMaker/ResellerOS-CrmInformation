@@ -27,11 +27,10 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import OsTabs from '@/app/components/common/os-tabs';
-import {MenuProps, TabsProps} from 'antd';
+import {MenuProps} from 'antd';
 import {Option} from 'antd/es/mentions';
-import {useEffect, useState} from 'react';
 import {useRouter} from 'next/navigation';
+import {useEffect, useState} from 'react';
 import {
   deleteBillingContact,
   queryContact,
@@ -252,6 +251,7 @@ const CrmAccount: React.FC = () => {
         <Typography
           onClick={() => setShowModalEdit((p) => !p)}
           name="Body 3/Regular"
+          cursor="pointer"
         >
           Edit
         </Typography>
@@ -263,6 +263,7 @@ const CrmAccount: React.FC = () => {
         <Typography
           name="Body 3/Regular"
           color="#EB445A"
+          cursor="pointer"
           onClick={() => setShowModalDelete(true)}
         >
           Delete Selected

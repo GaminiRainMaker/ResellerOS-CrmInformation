@@ -43,7 +43,7 @@ import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import RecentSection from './RecentSection';
 import QuoteAnalytics from './analytics';
-import {dropDownItems, tabItems} from './constants';
+import {tabItems} from './constants';
 import {getColumns} from './tableColumns';
 
 const AllQuote: React.FC = () => {
@@ -214,6 +214,31 @@ const AllQuote: React.FC = () => {
     ),
   };
 
+  const dropDownItems = [
+    {
+      key: '1',
+      label: (
+        <Typography name="Body 3/Regular" cursor="pointer">
+          Download Selected
+        </Typography>
+      ),
+    },
+    {
+      key: '2',
+      label: (
+        <Typography
+          name="Body 3/Regular"
+          color={token?.colorError}
+          cursor="pointer"
+          onClick={() => setShowModalDelete(true)}
+
+        >
+          Delete Selected
+        </Typography>
+      ),
+    },
+  ];
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -270,7 +295,8 @@ const AllQuote: React.FC = () => {
                   <Typography name="Body 4/Medium">From Date</Typography>
                   <CommonDatePicker
                     value={fromToDates?.afterDays}
-                    placeholder="MM/DD/YYYY"
+                    placeholder="MM-DD-YYYY"
+                    format="MM-DD-YYYY"
                     onChange={(v: any) => {
                       const obj: any = {...fromToDates};
                       obj.afterDays = v;
@@ -282,7 +308,8 @@ const AllQuote: React.FC = () => {
                   <Typography name="Body 4/Medium">To Date</Typography>
                   <CommonDatePicker
                     value={fromToDates?.beforeDays}
-                    placeholder="MM/DD/YYYY"
+                    placeholder="MM-DD-YYYY"
+                    format="MM-DD-YYYY"
                     onChange={(v: any) => {
                       const obj: any = {...fromToDates};
                       obj.beforeDays = v;

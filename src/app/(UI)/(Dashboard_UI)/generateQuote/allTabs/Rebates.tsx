@@ -234,7 +234,7 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
       width: 130,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
-          {text ? `${abbreviate(text ?? 0)} %` : 0}
+          {text ? `${abbreviate(text ?? '--')} %` : '--'}
         </Typography>
       ),
     },

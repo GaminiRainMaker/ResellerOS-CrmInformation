@@ -4,7 +4,6 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import OsDropdown from '@/app/components/common/os-dropdown';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {
@@ -31,7 +30,9 @@ const AddProduct = () => {
   const [token] = useThemeToken();
   const [showAddProductModal, setShowAddProductModal] =
     useState<boolean>(false);
-  const {data: ProductData, loading} = useAppSelector((state) => state.product);
+  const {data: ProductData, loading: productLoading} = useAppSelector(
+    (state) => state.product,
+  );
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [addProductType, setAddProductType] = useState<string>('');
   const [open, setOpen] = useState<boolean>(false);
@@ -161,12 +162,15 @@ const AddProduct = () => {
 
   const onFinish = () => {
     const productNewData = form.getFieldsValue();
-    if (addProductType === 'insert') {
-      dispatch(insertProduct(productNewData)).then(() => {
-        dispatch(getAllProduct());
-        setShowAddProductModal(false);
+    if (addProductType === 'insert' && productNewData) {
+      dispatch(insertProduct(productNewData)).then((d: any) => {
+        if (d?.payload) {
+          dispatch(getAllProduct());
+          setShowAddProductModal(false);
+        }
       });
-    } else if (addProductType === 'update') {
+    }
+    if (addProductType === 'update' && productNewData) {
       const obj: any = {
         id: productData?.id,
         ...productNewData,
@@ -204,12 +208,12 @@ const AddProduct = () => {
           columns={ProductColumns}
           dataSource={ProductData}
           scroll
-          loading={loading}
+          loading={productLoading}
         />
       </Space>
 
       <DeleteModal
-        loading={loading}
+        loading={productLoading}
         setShowModalDelete={setShowModalDelete}
         setDeleteIds={setDeleteIds}
         showModalDelete={showModalDelete}
@@ -219,13 +223,14 @@ const AddProduct = () => {
       />
 
       <OsModal
-        body={<AddProducts form={form} />}
+        loading={productLoading}
+        body={<AddProducts form={form} onFinish={onFinish} />}
         width={696}
         open={showAddProductModal}
         onCancel={() => {
           setShowAddProductModal((p) => !p);
         }}
-        onOk={onFinish}
+        onOk={() => form.submit()}
         primaryButtonText="ADD"
         footerPadding={24}
       />
@@ -241,6 +246,7 @@ const AddProduct = () => {
         footer={
           <Row style={{width: '100%', float: 'right'}}>
             <OsButton
+              loading={productLoading}
               btnStyle={{width: '100%'}}
               buttontype="PRIMARY"
               text="UPDATE"
