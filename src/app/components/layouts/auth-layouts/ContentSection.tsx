@@ -8,7 +8,7 @@ import {FC, useEffect, useState} from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {CheckCircleIcon} from '@heroicons/react/24/outline';
 import Cookies from 'js-cookie';
-import {usePathname, useRouter} from 'next/navigation';
+import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import OSResellerLogo from '../../../../../public/assets/static/ResellerOsText.svg';
 import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
 import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
@@ -47,7 +47,8 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathName = usePathname();
-
+  const searchParams = useSearchParams();
+  const getUserId = searchParams.get('id');
   const [signUpData, setSignUpData] = useState<any>();
   const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
 
@@ -87,8 +88,6 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   }, []);
 
   const onSubmitForm = (formValues: any, type: any) => {
-    console.log('Register1234', formValues?.email, 'type', type);
-
     const validateEmail = (email: any) =>
       String(email)
         .toLowerCase()
@@ -158,10 +157,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
       return;
     }
     validatePassword(formValues?.confirm_password);
-    if (
-      // (!formValues?.confirm_password && type === 'Log In') ||
-      (!formValues?.confirm_password && type === 'Update Password')
-    ) {
+    if (!formValues?.confirm_password && type === 'Update Password') {
       notification?.open({
         message: 'Please Enter the Confirm Password',
         type: 'error',
@@ -234,7 +230,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
     } else if (type === 'Update Password') {
       dispatch(
         updateUserById({
-          id: 2,
+          id: getUserId,
           password: formValues?.confirm_password,
           is_email_invite: false,
         }),
@@ -247,7 +243,6 @@ const ContentSection: FC<AuthLayoutInterface> = ({
       ).then((d: any) => {
         if (d?.payload) {
           setShowDailogModal(true);
-
         }
       });
     } else if (
@@ -501,8 +496,11 @@ const ContentSection: FC<AuthLayoutInterface> = ({
         icon={
           <CheckCircleIcon width={35} height={35} color={token?.colorSuccess} />
         }
-        secondaryButtonText="Done"
-        secondryButtontype="PRIMARY"
+        primaryButtonText="Done"
+        onOk={() => {
+          setShowDailogModal(false);
+          router.push('/');
+        }}
       />
     </>
   );

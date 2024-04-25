@@ -194,11 +194,12 @@ const AddUser = () => {
         dispatch(createUser({...userDataobj, is_email_invite: true})).then(
           (d: any) => {
             if (d?.payload) {
-              console.log('payload1234', d?.payload);
               const obj = {
                 id: d?.payload?.id,
-                recipientEmail: 'nagrawal@rainmakercloud.com',
-                username: d?.payload?.username,
+                // for Testing Purpose
+                // recipientEmail: 'yesip63374@idsho.com',
+                recipientEmail: d?.payload?.email,
+                username: d?.payload?.user_name,
                 password: d?.payload?.password,
               };
               dispatch(sendNewUserEmail(obj));
@@ -234,13 +235,13 @@ const AddUser = () => {
 
   return (
     <>
-      {/* <div
+      <div
         onClick={() => {
           sss();
         }}
       >
         Done
-      </div> */}
+      </div>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
         <Row justify="space-between" align="middle">
           <Col>
