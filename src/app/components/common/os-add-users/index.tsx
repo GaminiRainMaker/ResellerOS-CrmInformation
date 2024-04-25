@@ -28,6 +28,7 @@ import DeleteModal from '../os-modal/DeleteModal';
 import DailogModal from '../os-modal/DialogModal';
 import OsStatusWrapper from '../os-status';
 import AddUsers from './AddUser';
+import {sendNewUserEmail} from '../../../../../redux/actions/auth';
 
 const AddUser = () => {
   const dispatch = useAppDispatch();
@@ -46,24 +47,6 @@ const AddUser = () => {
   const [addUserType, setAddUserType] = useState<string>('');
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
 
-  const dropDownItemss = [
-    {
-      key: '1',
-      label: <Typography name="Body 3/Regular">Select All</Typography>,
-    },
-    {
-      key: '1',
-      label: (
-        <Typography
-          name="Body 3/Regular"
-          color="#EB445A"
-          // onClick={deleteSelectedIds}
-        >
-          Delete Selected
-        </Typography>
-      ),
-    },
-  ];
   const deleteSelectedIds = async () => {
     const dataa = {id: deleteIds};
     await dispatch(deleteUser(dataa));
@@ -73,6 +56,7 @@ const AddUser = () => {
     setDeleteIds([]);
     setShowModalDelete(false);
   };
+
   const UserColumns = [
     {
       title: (
@@ -200,13 +184,29 @@ const AddUser = () => {
     const userDataobj: any = {
       ...userNewData,
       organization: userInformation?.organization,
+      role: 'resellor',
+      password: `${userNewData?.first_name}@123`,
     };
+
+    // return;
     if (userNewData) {
       if (addUserType === 'insert') {
-        dispatch(createUser(userDataobj)).then(() => {
-          setShowAddUserModal(false);
-          setShowDailogModal(true);
-        });
+        dispatch(createUser({...userDataobj, is_email_invite: true})).then(
+          (d: any) => {
+            if (d?.payload) {
+              console.log('payload1234', d?.payload);
+              const obj = {
+                id: d?.payload?.id,
+                recipientEmail: 'nagrawal@rainmakercloud.com',
+                username: d?.payload?.username,
+                password: d?.payload?.password,
+              };
+              dispatch(sendNewUserEmail(obj));
+            }
+            setShowAddUserModal(false);
+            setShowDailogModal(true);
+          },
+        );
       } else if (addUserType === 'update') {
         const obj: any = {
           id: userData?.id,
@@ -222,8 +222,25 @@ const AddUser = () => {
     }, 1000);
   };
 
+  const sss = () => {
+    const obj = {
+      id: 2,
+      recipientEmail: 'nagrawal@rainmakercloud.com',
+      username: 'Naman',
+      password: 'Naman@123',
+    };
+    dispatch(sendNewUserEmail(obj));
+  };
+
   return (
     <>
+      <div
+        onClick={() => {
+          sss();
+        }}
+      >
+        Done
+      </div>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
         <Row justify="space-between" align="middle">
           <Col>

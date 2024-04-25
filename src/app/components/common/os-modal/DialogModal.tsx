@@ -16,8 +16,10 @@ const DailogModal: FC<OSDailogInterface> = ({
   secondaryButtonText,
   icon,
   onOk,
+  secondryButtontype = 'SECONDARY',
 }) => (
   <OsModal
+    destroyOnClose
     body={
       <Row style={{width: '100%', padding: '15px'}}>
         <Space
@@ -45,7 +47,7 @@ const DailogModal: FC<OSDailogInterface> = ({
             {secondaryButtonText && (
               <OsButton
                 text={secondaryButtonText}
-                buttontype="SECONDARY"
+                buttontype={secondryButtontype}
                 clickHandler={() => {
                   setShowDailogModal(false);
                 }}

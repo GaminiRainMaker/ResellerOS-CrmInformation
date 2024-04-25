@@ -2,6 +2,8 @@ export const API = {
   AUTH: {
     INDEX: '/auth',
     VERIFY: '/auth/verify',
+    SEND_EMAIL: '/auth/sendNewUserEmail',
+    Send_Forgot_Password_Email: '/auth/sendForgotPasswordEmail',
   },
   QUOTE: {
     INDEX: '/quote',
