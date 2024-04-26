@@ -59,9 +59,6 @@ const DealRegDetail = () => {
       dispatch(getDealRegByPartnerProgramId(Number(getPartnerProgramId)));
     }
   }, []);
-
-  console.log('formDataValues', formDataValues);
-
   const updateTheDealReg = async () => {
     const newObj = {
       ...formDataValues?.[0],
@@ -72,8 +69,7 @@ const DealRegDetail = () => {
         JSON?.stringify(formDataValues?.[0]?.common_form_data),
       ],
     };
-    // console.log('formDataValues', newObj, formDataValues);
-    // return;
+
     await dispatch(updateDealRegById(newObj));
     if (getOpportunityId) {
       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
@@ -117,10 +113,6 @@ const DealRegDetail = () => {
         </Typography>
       ),
     },
-    // {
-    //   key: '2',
-    //   label: <Typography name="Body 3/Regular">Mark as Complete</Typography>,
-    // },
   ];
 
   useEffect(() => {
@@ -181,7 +173,6 @@ const DealRegDetail = () => {
       console.error('Error:', error);
     }
   };
-  console.log(formDataValues, 'dgfhgshfghsdgh');
   return (
     <div>
       <Row justify="space-between" align="middle">

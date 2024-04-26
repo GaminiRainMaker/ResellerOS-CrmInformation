@@ -107,11 +107,11 @@ const AllQuote: React.FC = () => {
 
           <Col>
             <Space size={8} direction="horizontal">
-              <OsButton
+              {/* <OsButton
                 text="Cancel"
                 buttontype="SECONDARY"
                 clickHandler={() => {}}
-              />
+              /> */}
 
               <OsButton
                 text="Save"

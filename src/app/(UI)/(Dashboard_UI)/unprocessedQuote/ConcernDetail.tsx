@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import Typography from '@/app/components/common/typography';
@@ -9,15 +9,15 @@ import {
   ArrowDownTrayIcon,
   ArrowTopRightOnSquareIcon,
 } from '@heroicons/react/24/outline';
-import { Carousel } from 'antd';
+import {Carousel} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
 import Image from 'next/image';
-import { FC, useEffect, useState } from 'react';
+import {FC, useEffect, useState} from 'react';
 import PdfImg from '../../../../../public/assets/static/pdf.svg';
-import { getQuoteById } from '../../../../../redux/actions/quote';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { ConcernDetailInterface } from './editedQuote.interface';
-import { CardStyle, IconWrapper } from './styled-components';
+import {getQuoteById} from '../../../../../redux/actions/quote';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {ConcernDetailInterface} from './editedQuote.interface';
+import {CardStyle, IconWrapper} from './styled-components';
 
 const ConcernDetail: FC<ConcernDetailInterface> = ({
   showConcernDetailModal,
@@ -78,7 +78,7 @@ const ConcernDetail: FC<ConcernDetailInterface> = ({
     <div>
       <br />
       <GlobalLoader loading={loading}>
-        <Carousel autoplay arrows>
+        <Carousel arrows>
           {concernData?.map((item: any) => (
             <div key={item.issue_type}>
               <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>

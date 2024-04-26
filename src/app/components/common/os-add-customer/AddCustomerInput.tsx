@@ -372,7 +372,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
                 justify="space-between"
               >
                 <Col style={{width: '47%'}}>
-                  <Typography name="Body 4/Regular">Pin Code</Typography>
+                  <Typography name="Body 4/Regular">Zip Code</Typography>
                   <SelectFormItem
                     label=""
                     name="pin_code"
@@ -504,7 +504,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
                 justify="space-between"
               >
                 <Col style={{width: '47%'}}>
-                  <Typography name="Body 4/Regular">Pin Code</Typography>
+                  <Typography name="Body 4/Regular">Zip Code</Typography>
                   <OsInput
                     placeholder="pin code"
                     value={formValue?.billing_pin_code}
