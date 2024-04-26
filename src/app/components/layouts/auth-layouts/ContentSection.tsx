@@ -489,10 +489,11 @@ const ContentSection: FC<AuthLayoutInterface> = ({
       </ContentSectionWrapper>
 
       <DailogModal
+        width={700}
         setShowDailogModal={setShowDailogModal}
         showDailogModal={showDailogModal}
-        title="Your Forgot Password request sucessfully"
-        subTitle="Invite has been sent on email to create the new password."
+        title="Your Forgot Password request raised sucessfully"
+        subTitle="Check your inbox for instructions to create a new password."
         icon={
           <CheckCircleIcon width={35} height={35} color={token?.colorSuccess} />
         }

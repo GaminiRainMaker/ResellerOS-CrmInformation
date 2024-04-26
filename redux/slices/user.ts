@@ -23,6 +23,7 @@ type UserState = {
   loginUserInformation: any;
   allResellerRecord: any;
   searchDataa: any;
+  createUserData: any
 };
 const initialState: UserState = {
   loading: false,
@@ -33,6 +34,7 @@ const initialState: UserState = {
   loginUserInformation: {},
   allResellerRecord: {},
   searchDataa: [],
+  createUserData: {},
 };
 
 const userSlice = createSlice({
@@ -57,7 +59,7 @@ const userSlice = createSlice({
       })
       .addCase(createUser.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.data = action.payload;
+        state.createUserData = action.payload;
       })
       .addCase(createUser.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;

@@ -4,7 +4,6 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import OsDropdown from '@/app/components/common/os-dropdown';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {CheckCircleIcon} from '@heroicons/react/20/solid';
@@ -15,6 +14,7 @@ import {
 } from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useEffect, useState} from 'react';
+import {sendNewUserEmail} from '../../../../../redux/actions/auth';
 import {
   createUser,
   deleteUser,
@@ -28,7 +28,6 @@ import DeleteModal from '../os-modal/DeleteModal';
 import DailogModal from '../os-modal/DialogModal';
 import OsStatusWrapper from '../os-status';
 import AddUsers from './AddUser';
-import {sendNewUserEmail} from '../../../../../redux/actions/auth';
 
 const AddUser = () => {
   const dispatch = useAppDispatch();
@@ -133,7 +132,9 @@ const AddUser = () => {
       key: 'status',
       width: 173,
       render: (text: string, record: any) => (
-        <OsStatusWrapper value={text ?? 'Invite Sent'} />
+        <OsStatusWrapper
+          value={record?.is_email_invite ? 'Invite Sent' : 'Verified'}
+        />
       ),
     },
     {
@@ -184,7 +185,7 @@ const AddUser = () => {
     const userDataobj: any = {
       ...userNewData,
       organization: userInformation?.organization,
-      role: 'resellor',
+      role: 'reseller',
       password: `${userNewData?.first_name}@123`,
     };
 
@@ -223,25 +224,8 @@ const AddUser = () => {
     }, 1000);
   };
 
-  const sss = () => {
-    const obj = {
-      id: 2,
-      recipientEmail: 'nagrawal@rainmakercloud.com',
-      username: 'Naman',
-      password: 'Naman@123',
-    };
-    dispatch(sendNewUserEmail(obj));
-  };
-
   return (
     <>
-      <div
-        onClick={() => {
-          sss();
-        }}
-      >
-        Done
-      </div>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
         <Row justify="space-between" align="middle">
           <Col>
@@ -288,10 +272,13 @@ const AddUser = () => {
         showDailogModal={showDailogModal}
         title="Invite Sent"
         subTitle="Invite has been sent on email with auto-generated password"
-        primaryButtonText="Send Again"
+        primaryButtonText="Done"
         icon={
           <CheckCircleIcon width={35} height={35} color={token?.colorSuccess} />
         }
+        onOk={() => {
+          setShowDailogModal(false);
+        }}
       />
       <DeleteModal
         loading={loading}

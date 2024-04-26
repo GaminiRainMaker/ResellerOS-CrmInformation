@@ -17,8 +17,10 @@ const DailogModal: FC<OSDailogInterface> = ({
   icon,
   onOk,
   secondryButtontype = 'SECONDARY',
+  width = 600,
 }) => (
   <OsModal
+    width={width}
     destroyOnClose
     body={
       <Row style={{width: '100%', padding: '15px'}}>
@@ -28,7 +30,14 @@ const DailogModal: FC<OSDailogInterface> = ({
           direction="vertical"
           align="center"
         >
-          <Space direction="vertical" align="center" size={12}>
+          <Space
+            direction="vertical"
+            align="center"
+            size={12}
+            style={{
+              textAlign: 'center',
+            }}
+          >
             <span
               style={{
                 display: 'flex',
@@ -67,7 +76,6 @@ const DailogModal: FC<OSDailogInterface> = ({
         </Space>
       </Row>
     }
-    width={600}
     open={showDailogModal}
     onCancel={() => {
       setShowDailogModal((p: boolean) => !p);

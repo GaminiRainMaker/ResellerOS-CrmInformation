@@ -39,4 +39,5 @@ export interface OSDailogInterface extends ModalProps {
   icon?: React.ReactNode;
   onOk?: any;
   secondryButtontype?: string;
+  width?: number;
 }
