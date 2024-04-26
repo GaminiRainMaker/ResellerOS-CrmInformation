@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/indent */
 /* eslint-disable react-hooks/exhaustive-deps */
 
 'use client';
@@ -273,22 +274,19 @@ const CrmInformation: React.FC = () => {
   };
 
   const dropDownItemss: MenuProps['items'] = [
-    {
-      key: '1',
-      label: <Typography name="Body 3/Regular">Select All</Typography>,
-    },
-    {
-      key: '1',
-      label: (
-        <Typography
-          name="Body 3/Regular"
-          color="#EB445A"
-          onClick={deleteSelectedIds}
-        >
-          Delete Selected
-        </Typography>
-      ),
-    },
+    deleteIds &&
+      deleteIds.length > 0 && {
+        key: '1',
+        label: (
+          <Typography
+            name="Body 3/Regular"
+            color="#EB445A"
+            onClick={deleteSelectedIds}
+          >
+            Delete Selected
+          </Typography>
+        ),
+      },
   ];
 
   // const uniqueBillingNames = Array.from(

@@ -1,28 +1,27 @@
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import {
   CheckBadgeIcon,
   ClipboardDocumentCheckIcon,
   ClockIcon,
   DocumentPlusIcon,
   QueueListIcon,
-  TrashIcon,
 } from '@heroicons/react/24/outline';
-import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 
 const QuoteAnalytics = (props: any) => {
   const {quoteData, deletedQuote} = props;
   const [token] = useThemeToken();
   const editedQuotes = quoteData?.filter((d: any) => d?.issue_type !== null);
 
-  const completedQuote = editedQuotes?.filter(
+  const completedQuote = quoteData?.filter(
     (item: any) => item?.status === 'Completed',
   );
-  const draftedQuote = editedQuotes?.filter(
-    (item: any) => item?.Quote?.status === 'Drafts',
+  const draftedQuote = quoteData?.filter(
+    (item: any) => item?.status === 'Drafts',
   );
-  const inProgressQuote = editedQuotes?.filter(
-    (item: any) => item?.Quote?.status === 'In Progress',
+  const inProgressQuote = quoteData?.filter(
+    (item: any) => item?.status === 'In Progress',
   );
 
   const analyticsData = [

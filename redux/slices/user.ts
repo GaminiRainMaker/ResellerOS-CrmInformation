@@ -11,7 +11,7 @@ import {
   getUserByIdLogin,
   queryAllUsers,
   getAdminUserOfAllOrganization,
-  getGloabalySearchDataa,
+  getGloabalySearchDataa,updateUserPassword
 } from '../actions/user';
 
 type UserState = {
@@ -23,6 +23,7 @@ type UserState = {
   loginUserInformation: any;
   allResellerRecord: any;
   searchDataa: any;
+  createUserData: any
 };
 const initialState: UserState = {
   loading: false,
@@ -33,6 +34,7 @@ const initialState: UserState = {
   loginUserInformation: {},
   allResellerRecord: {},
   searchDataa: [],
+  createUserData: {},
 };
 
 const userSlice = createSlice({
@@ -57,7 +59,7 @@ const userSlice = createSlice({
       })
       .addCase(createUser.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.data = action.payload;
+        state.createUserData = action.payload;
       })
       .addCase(createUser.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
@@ -87,6 +89,21 @@ const userSlice = createSlice({
         },
       )
       .addCase(updateUserById.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateUserPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateUserPassword.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(updateUserPassword.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       })

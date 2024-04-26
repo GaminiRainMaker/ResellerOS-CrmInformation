@@ -4,7 +4,6 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import OsDropdown from '@/app/components/common/os-dropdown';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {CheckCircleIcon} from '@heroicons/react/20/solid';
@@ -15,6 +14,7 @@ import {
 } from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useEffect, useState} from 'react';
+import {sendNewUserEmail} from '../../../../../redux/actions/auth';
 import {
   createUser,
   deleteUser,
@@ -46,24 +46,6 @@ const AddUser = () => {
   const [addUserType, setAddUserType] = useState<string>('');
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
 
-  const dropDownItemss = [
-    {
-      key: '1',
-      label: <Typography name="Body 3/Regular">Select All</Typography>,
-    },
-    {
-      key: '1',
-      label: (
-        <Typography
-          name="Body 3/Regular"
-          color="#EB445A"
-          // onClick={deleteSelectedIds}
-        >
-          Delete Selected
-        </Typography>
-      ),
-    },
-  ];
   const deleteSelectedIds = async () => {
     const dataa = {id: deleteIds};
     await dispatch(deleteUser(dataa));
@@ -73,6 +55,7 @@ const AddUser = () => {
     setDeleteIds([]);
     setShowModalDelete(false);
   };
+
   const UserColumns = [
     {
       title: (
@@ -149,7 +132,9 @@ const AddUser = () => {
       key: 'status',
       width: 173,
       render: (text: string, record: any) => (
-        <OsStatusWrapper value={text ?? 'Invite Sent'} />
+        <OsStatusWrapper
+          value={record?.is_email_invite ? 'Invite Sent' : 'Verified'}
+        />
       ),
     },
     {
@@ -200,13 +185,30 @@ const AddUser = () => {
     const userDataobj: any = {
       ...userNewData,
       organization: userInformation?.organization,
+      role: 'reseller',
+      password: `${userNewData?.first_name}@123`,
     };
+
+    // return;
     if (userNewData) {
       if (addUserType === 'insert') {
-        dispatch(createUser(userDataobj)).then(() => {
-          setShowAddUserModal(false);
-          setShowDailogModal(true);
-        });
+        dispatch(createUser({...userDataobj, is_email_invite: true})).then(
+          (d: any) => {
+            if (d?.payload) {
+              const obj = {
+                id: d?.payload?.id,
+                // for Testing Purpose
+                // recipientEmail: 'yesip63374@idsho.com',
+                recipientEmail: d?.payload?.email,
+                username: d?.payload?.user_name,
+                password: d?.payload?.password,
+              };
+              dispatch(sendNewUserEmail(obj));
+            }
+            setShowAddUserModal(false);
+            setShowDailogModal(true);
+          },
+        );
       } else if (addUserType === 'update') {
         const obj: any = {
           id: userData?.id,
@@ -270,10 +272,13 @@ const AddUser = () => {
         showDailogModal={showDailogModal}
         title="Invite Sent"
         subTitle="Invite has been sent on email with auto-generated password"
-        primaryButtonText="Send Again"
+        primaryButtonText="Done"
         icon={
           <CheckCircleIcon width={35} height={35} color={token?.colorSuccess} />
         }
+        onOk={() => {
+          setShowDailogModal(false);
+        }}
       />
       <DeleteModal
         loading={loading}

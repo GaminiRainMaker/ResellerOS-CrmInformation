@@ -2,6 +2,8 @@ export const API = {
   AUTH: {
     INDEX: '/auth',
     VERIFY: '/auth/verify',
+    SEND_EMAIL: '/auth/sendNewUserEmail',
+    Send_Forgot_Password_Email: '/auth/sendForgotPasswordEmail',
   },
   QUOTE: {
     INDEX: '/quote',
@@ -40,6 +42,7 @@ export const API = {
     LOGIN: '/user/login',
     QUERY: '/user/query',
     UpdateUserById: '/user/updateUserById',
+    UpdateUserPassword: '/user/updateUserPassword',
     AddUser: '/user/addUser',
     TOKEN: '/user/getUserByToken',
     DeleteById: '/user/deleteById',

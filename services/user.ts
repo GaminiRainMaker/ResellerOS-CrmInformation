@@ -18,6 +18,8 @@ export const USERAPI = {
     get(`${API.USER.INDEX}/${id}`) as Promise<AxiosResponse<any>>,
   updateUserById: (data: any) =>
     patch(API.USER.UpdateUserById, data) as Promise<AxiosResponse<any>>,
+  updateUserPassword: (data: any) =>
+    patch(API.USER.UpdateUserPassword, data) as Promise<AxiosResponse<any>>,
   addUser: (data: any) =>
     post(API.USER.AddUser, data) as Promise<AxiosResponse<any>>,
   deleteById: (data: any) =>

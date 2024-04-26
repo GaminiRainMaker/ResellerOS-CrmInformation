@@ -17,8 +17,12 @@ const LogIn = () => {
           email: formValues?.email,
           password: formValues?.password,
         }),
-      ).then(() => {
-        router.push('/');
+      ).then((d: any) => {
+        if (d?.is_email_active) {
+          router.push('/');
+        } else {
+          router.push('/');
+        }
       });
     }
   };

@@ -38,6 +38,18 @@ export const updateUserById = createAsyncThunk(
   },
 );
 
+export const updateUserPassword = createAsyncThunk(
+  'user/updateUserPassword',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await USERAPI.updateUserPassword(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+
 export const getUserByOrganization = createAsyncThunk(
   'user/getUserByOrganization',
   async (organization: string, thunkApi) => {

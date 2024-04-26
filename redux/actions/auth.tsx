@@ -28,3 +28,25 @@ export const verifyAuth = createAsyncThunk(
     }
   },
 );
+export const sendNewUserEmail = createAsyncThunk(
+  'auth/sendNewUserEmail',
+  async (data: any, thunkApi) => {
+    try {
+      const res: any = await AUTH_API.SendEmail(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+export const sendForgotPasswordEmail = createAsyncThunk(
+  'auth/sendForgotPasswordEmail',
+  async (data: any, thunkApi) => {
+    try {
+      const res: any = await AUTH_API.SendForgotPasswordEmail(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
