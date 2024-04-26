@@ -613,6 +613,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     setShowVerificationFileModal(false);
   };
 
+  console.log('quoteLineItemByQuoteData1', quoteLineItemByQuoteData1);
+
   return (
     <>
       {contextHolder}

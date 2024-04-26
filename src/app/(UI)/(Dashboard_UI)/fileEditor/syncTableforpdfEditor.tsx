@@ -16,6 +16,8 @@ import {Col, Row, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import {Libre_Caslon_Display} from 'next/font/google';
+import Typography from '@/app/components/common/typography';
+import {Divider} from '@/app/components/common/antd/Divider';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {insertProduct} from '../../../../../redux/actions/product';
@@ -341,6 +343,17 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         }}
       >
         <Col>
+          <Row style={{marginTop: '6px'}}>
+            {' '}
+            <Typography
+              style={{marginLeft: '10px'}}
+              align="center"
+              name="Body 3/Medium"
+            >
+              Your Pdf Header
+            </Typography>
+          </Row>
+          <Divider />
           {mergeedColumn?.map((item: any) => (
             <Row style={{marginTop: '6px'}}>
               <OsInput disabled value={formatStatus(item)} />
@@ -349,6 +362,17 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         </Col>
 
         <Col>
+          <Row style={{marginTop: '6px'}}>
+            {' '}
+            <Typography
+              style={{marginLeft: '10px'}}
+              align="center"
+              name="Body 3/Medium"
+            >
+              Quote LineItem Header
+            </Typography>
+          </Row>
+          <Divider />
           {syncedNewValue?.map((item: any, indexOfCol: number) => (
             <Row style={{marginTop: '6px'}}>
               <CommonSelect

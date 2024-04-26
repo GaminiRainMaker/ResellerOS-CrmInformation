@@ -116,7 +116,7 @@ const CrmInformation: React.FC = () => {
     },
     {
       key: 2,
-      primary: <div>{3}</div>,
+      primary: <div>{0}</div>,
       secondry: 'Opportunities',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,

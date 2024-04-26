@@ -69,10 +69,28 @@ const SyncQuoteLineItemField = () => {
   }, [updateColumn]);
 
   const deleteRowSync = (id: any) => {
+    const newArrr: any = updateColumn?.length > 0 ? [...updateColumn] : [];
+    const findIndexOfKey = newArrr?.findIndex(
+      (item: any) => Number(item?.id) === id,
+    );
+
+    newArrr?.splice(findIndexOfKey, 1);
+
+    setUpdateColumn(newArrr);
     dispatch(deleteSyncTableRow(id));
-    setTimeout(() => {
-      dispatch(getAllSyncTable('QuoteLineItem'));
-    }, 1000);
+    // setTimeout(() => {
+    //   dispatch(getAllSyncTable('QuoteLineItem'));
+    // }, 1000);
+  };
+
+  const removeEmptyRow = (keyVal: number) => {
+    const newArrr: any = updateColumn?.length > 0 ? [...updateColumn] : [];
+    const findIndexOfKey = newArrr?.findIndex(
+      (item: any) => Number(item?.key) === keyVal,
+    );
+    newArrr?.splice(findIndexOfKey, 1);
+
+    setUpdateColumn(newArrr);
   };
 
   useEffect(() => {
@@ -290,7 +308,13 @@ const SyncQuoteLineItemField = () => {
           color={token.colorError}
           style={{cursor: 'pointer'}}
           onClick={() => {
-            deleteRowSync(record?.id);
+            console.log('436435353', record);
+
+            if (record?.id) {
+              deleteRowSync(record?.id);
+            } else {
+              removeEmptyRow(record?.key);
+            }
           }}
         />
       ),

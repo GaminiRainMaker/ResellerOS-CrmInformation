@@ -60,7 +60,7 @@ const FieldDisplayConfiguration: FC<any> = () => {
     }
 
     setTableColumnDataShow(filteredArray);
-  }, [selectedTable]);
+  }, [selectedTable, tableColumnData]);
 
   const commonMethodForChecks = (ids: any, names: any, valuess: any) => {
     const previousArray = updateColumn?.length > 0 ? [...updateColumn] : [];
@@ -243,12 +243,12 @@ const FieldDisplayConfiguration: FC<any> = () => {
                           borderRadius: '12px',
                         }}
                       >
-                        <Typography name="Body 4/Medium">Select Tab</Typography>
+                        {/* <Typography name="Body 4/Medium">Select Tab</Typography> */}
                         <CommonSelect
                           placeholder="Select"
                           options={[
                             {
-                              label: 'Input Details',
+                              label: 'Review Quotes',
                               value: 'Input Details',
                             },
                             {

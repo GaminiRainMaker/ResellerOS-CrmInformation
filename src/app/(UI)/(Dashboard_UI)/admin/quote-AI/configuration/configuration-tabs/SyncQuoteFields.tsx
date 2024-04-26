@@ -64,10 +64,34 @@ const SyncQuoteField = () => {
   }, [updatedColumnforQuoteSync]);
 
   const deleteRowSync = (id: any) => {
+    const newArrr: any =
+      updatedColumnforQuoteSync?.length > 0
+        ? [...updatedColumnforQuoteSync]
+        : [];
+    const findIndexOfKey = newArrr?.findIndex(
+      (item: any) => Number(item?.id) === id,
+    );
+
+    newArrr?.splice(findIndexOfKey, 1);
+
     dispatch(deleteSyncTableRow(id));
-    setTimeout(() => {
-      dispatch(getAllSyncTable('Quote'));
-    }, 1000);
+    setUpdatedColumnforQuoteSync(newArrr);
+    // setTimeout(() => {
+    //   dispatch(getAllSyncTable('Quote'));
+    // }, 1000);
+  };
+  const removeEmptyRow = (keyVal: number) => {
+    const newArrr: any =
+      updatedColumnforQuoteSync?.length > 0
+        ? [...updatedColumnforQuoteSync]
+        : [];
+    const findIndexOfKey = newArrr?.findIndex(
+      (item: any) => Number(item?.key) === keyVal,
+    );
+
+    newArrr?.splice(findIndexOfKey, 1);
+
+    setUpdatedColumnforQuoteSync(newArrr);
   };
 
   useEffect(() => {
@@ -290,7 +314,11 @@ const SyncQuoteField = () => {
           color={token.colorError}
           style={{cursor: 'pointer'}}
           onClick={() => {
-            deleteRowSync(record?.id);
+            if (record?.id) {
+              deleteRowSync(record?.id);
+            } else {
+              removeEmptyRow(record?.key);
+            }
           }}
         />
       ),
