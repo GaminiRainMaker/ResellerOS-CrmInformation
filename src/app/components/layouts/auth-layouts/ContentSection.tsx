@@ -325,6 +325,9 @@ const ContentSection: FC<AuthLayoutInterface> = ({
                 console.log('item');
                 return (
                   <Form.Item
+                    style={{
+                      width: item?.type === 'password' ? '' : '456px',
+                    }}
                     key={item?.name}
                     rules={[
                       {
