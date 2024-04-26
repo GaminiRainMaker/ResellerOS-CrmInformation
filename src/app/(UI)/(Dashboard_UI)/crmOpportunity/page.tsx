@@ -45,6 +45,8 @@ import {
 } from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import EditOpportunity from './EditOpportunity';
+import {queryContact} from '../../../../../redux/actions/billingContact';
+import {queryCustomer} from '../../../../../redux/actions/customer';
 
 const CrmOpportunity: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -59,9 +61,12 @@ const CrmOpportunity: React.FC = () => {
     loading,
     deletedCount: countDeletedOpp,
   } = useAppSelector((state) => state.Opportunity);
+  const {filteredData: customerData} = useAppSelector(
+    (state) => state.customer,
+  );
+  const {filteredData} = useAppSelector((state) => state.billingContact);
   const [formValue, setFormValue] = useState<any>();
   const [activeOpportunity, setActiveOpportunity] = useState<any>();
-
   const {abbreviate} = useAbbreviationHook(0);
   const router = useRouter();
 
@@ -76,6 +81,8 @@ const CrmOpportunity: React.FC = () => {
 
   useEffect(() => {
     dispatch(queryOpportunity(searchQuery));
+    dispatch(queryContact(''));
+    dispatch(queryCustomer(''));
   }, [searchQuery]);
 
   const deleteSelectedIds = async () => {
@@ -104,7 +111,7 @@ const CrmOpportunity: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{opportunityData?.length}</div>,
+      primary: <div>{customerData?.length}</div>,
       secondry: 'Customers',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
@@ -118,14 +125,14 @@ const CrmOpportunity: React.FC = () => {
     },
     {
       key: 3,
-      primary: <div>{opportunityData?.length}</div>,
+      primary: <div>{filteredData?.length}</div>,
       secondry: 'Contacts',
       icon: <PhoneIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
     {
       key: 4,
-      primary: <div>{opportunityData?.length}</div>,
+      primary: <div>{0}</div>,
       secondry: 'Recents',
       icon: <ClockIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,

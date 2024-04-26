@@ -19,7 +19,7 @@ import {
 } from '../../../../../redux/actions/auth';
 import {
   getUserByTokenAccess,
-  updateUserById,
+  updateUserPassword,
 } from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setUserInformation} from '../../../../../redux/slices/user';
@@ -229,7 +229,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
       });
     } else if (type === 'Update Password') {
       dispatch(
-        updateUserById({
+        updateUserPassword({
           id: getUserId,
           password: formValues?.confirm_password,
           is_email_invite: false,

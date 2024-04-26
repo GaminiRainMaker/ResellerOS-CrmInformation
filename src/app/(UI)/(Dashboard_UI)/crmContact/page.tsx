@@ -36,10 +36,11 @@ import {
   queryContact,
   updateBillingContact,
 } from '../../../../../redux/actions/billingContact';
-import {getAllCustomer} from '../../../../../redux/actions/customer';
+import {getAllCustomer, queryCustomer} from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddContact from './addContact';
 import EditContactModal from './editContact';
+import { queryOpportunity } from '../../../../../redux/actions/opportunity';
 
 const CrmAccount: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -52,7 +53,10 @@ const CrmAccount: React.FC = () => {
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
-  const {data: dataAddress} = useAppSelector((state) => state.customer);
+  const {filteredData: customerData} = useAppSelector((state) => state.customer);
+  const {
+    data: opportunityData,
+  } = useAppSelector((state) => state.Opportunity);
   const {loading, filteredData} = useAppSelector(
     (state) => state.billingContact,
   );
@@ -68,6 +72,8 @@ const CrmAccount: React.FC = () => {
 
   useEffect(() => {
     dispatch(queryContact(searchQuery));
+    dispatch(queryCustomer(''));
+    dispatch(queryOpportunity(''));
   }, [searchQuery]);
 
   useEffect(() => {
@@ -111,14 +117,14 @@ const CrmAccount: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{dataAddress.length}</div>,
+      primary: <div>{customerData?.length}</div>,
       secondry: 'Customers',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
-      primary: <div>{0}</div>,
+      primary: <div>{opportunityData?.length}</div>,
       secondry: 'Opportunities',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
@@ -132,7 +138,7 @@ const CrmAccount: React.FC = () => {
     },
     {
       key: 4,
-      primary: <div>--</div>,
+      primary: <div>{0}</div>,
       secondry: 'Recents',
       icon: <ClockIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,

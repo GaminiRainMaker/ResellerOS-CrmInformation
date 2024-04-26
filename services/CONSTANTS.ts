@@ -42,6 +42,7 @@ export const API = {
     LOGIN: '/user/login',
     QUERY: '/user/query',
     UpdateUserById: '/user/updateUserById',
+    UpdateUserPassword: '/user/updateUserPassword',
     AddUser: '/user/addUser',
     TOKEN: '/user/getUserByToken',
     DeleteById: '/user/deleteById',

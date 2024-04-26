@@ -11,7 +11,7 @@ import {
   getUserByIdLogin,
   queryAllUsers,
   getAdminUserOfAllOrganization,
-  getGloabalySearchDataa,
+  getGloabalySearchDataa,updateUserPassword
 } from '../actions/user';
 
 type UserState = {
@@ -89,6 +89,21 @@ const userSlice = createSlice({
         },
       )
       .addCase(updateUserById.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(updateUserPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateUserPassword.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(updateUserPassword.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       })

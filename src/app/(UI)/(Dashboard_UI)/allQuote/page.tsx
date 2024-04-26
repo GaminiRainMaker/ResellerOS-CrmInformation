@@ -1,22 +1,7 @@
-/* eslint-disable arrow-body-style */
-/* eslint-disable no-else-return */
-/* eslint-disable consistent-return */
-/* eslint-disable no-debugger */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-nested-ternary */
-/* eslint-disable no-await-in-loop */
-/* eslint-disable @typescript-eslint/no-loop-func */
-/* eslint-disable eqeqeq */
-/* eslint-disable array-callback-return */
-/* eslint-disable import/no-extraneous-dependencies */
 
 'use client';
-
-import Typography from '@/app/components/common/typography';
-// eslint-disable-next-line import/no-extraneous-dependencies
 
 import AddQuote from '@/app/components/common/addQuote';
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -30,6 +15,7 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
+import Typography from '@/app/components/common/typography';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 
@@ -104,7 +90,7 @@ const AllQuote: React.FC = () => {
               ? quoteData?.filter((item: any) =>
                   item?.status?.includes('Needs Review'),
                 )
-              : activeTab == '1'
+              : activeTab === '1'
                 ? quoteData
                 : activeTab === '6'
                   ? quoteData?.filter((item: any) =>
@@ -231,7 +217,6 @@ const AllQuote: React.FC = () => {
           color={token?.colorError}
           cursor="pointer"
           onClick={() => setShowModalDelete(true)}
-
         >
           Delete Selected
         </Typography>
@@ -257,7 +242,7 @@ const AllQuote: React.FC = () => {
                 gap: '8px',
               }}
             >
-              {activeTab == 3 && deleteIds && deleteIds?.length > 0 && (
+              {activeTab === 3 && deleteIds && deleteIds?.length > 0 && (
                 <OsButton
                   text="Mark as Complete"
                   buttontype="PRIMARY"
