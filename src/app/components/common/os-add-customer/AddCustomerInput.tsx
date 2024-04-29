@@ -170,14 +170,17 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
             {drawer ? (
               <>
                 {' '}
-                <Space style={{marginBottom: '10px'}}>
-                  <Avatar shape="circle" size="large" />
-                  <Space direction="vertical" size={0}>
-                    <Typography name="Body 3/Regular">
-                      {customerValue?.name}
-                    </Typography>
+                <div>
+                  {' '}
+                  <Space style={{marginBottom: '10px'}}>
+                    <Avatar shape="circle" size="large" />
+                    <Space direction="vertical" size={0}>
+                      <Typography name="Body 3/Regular">
+                        {customerValue?.name}
+                      </Typography>
+                    </Space>
                   </Space>
-                </Space>
+                </div>
                 <Typography
                   name="Body 4/Medium"
                   color={token?.colorPrimaryText}
