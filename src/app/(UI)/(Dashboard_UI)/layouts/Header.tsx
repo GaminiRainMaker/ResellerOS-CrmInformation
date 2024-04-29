@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-nested-ternary */
 
@@ -9,7 +10,8 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Divider} from '@/app/components/common/antd/Divider';
 import {Space} from '@/app/components/common/antd/Space';
 // eslint-disable-next-line import/no-extraneous-dependencies
-
+import _debounce from 'lodash/debounce';
+import styled from '@emotion/styled';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import GlobalLoader from '@/app/components/common/os-global-loader';
@@ -17,17 +19,19 @@ import SearchSelect from '@/app/components/common/os-select/SearchSelect';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
+import ImgCrop from 'antd-img-crop';
 import {
   ArrowLeftStartOnRectangleIcon,
   BellIcon,
 } from '@heroicons/react/24/outline';
-import {Badge, Layout, Select} from 'antd';
+import {Avatar, Badge, Layout, Select, Upload, notification} from 'antd';
 import {MenuProps} from 'antd/es/menu';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
 import {useRouter} from 'next/navigation';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import OsButton from '@/app/components/common/os-button';
+import {getBase64, uploadImage} from '@/app/utils/upload';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
@@ -37,8 +41,50 @@ import {
   getAllNewNotification,
   getCountOfNotification,
 } from '../../../../../redux/actions/notifications';
-import {getGloabalySearchDataa} from '../../../../../redux/actions/user';
+import {
+  getGloabalySearchDataa,
+  getUserProfileData,
+} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+
+export const CustomUpload = styled(Upload)`
+  .ant-upload-list-text {
+    display: none;
+  }
+  .ant-upload.ant-upload-select-picture-card {
+    border-radius: 0px;
+  }
+  &.ant-upload-wrapper.ant-upload-picture-card-wrapper
+    .ant-upload.ant-upload-select {
+    border-top: none;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    background-color: transparent;
+    width: 100%;
+    height: fit-content;
+  }
+  .ant-upload-list.ant-upload-list-picture-card .ant-upload-list-item {
+    height: 0px;
+    border-top: none;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    visibility: hidden;
+    background-color: red;
+    display: none;
+  }
+  &.ant-upload-wrapper.ant-upload-picture-card-wrapper
+    .ant-upload-list.ant-upload-list-picture-card
+    .ant-upload-list-item {
+    height: 0px;
+  }
+  &.ant-upload-wrapper.ant-upload-picture-card-wrapper
+    .ant-upload-list.ant-upload-list-picture-card
+    .ant-upload-list-item-container {
+    height: 0px;
+  }
+`;
 
 const CustomHeader = () => {
   const [token] = useThemeToken();
@@ -54,6 +100,7 @@ const CustomHeader = () => {
   const [openNotifications, setOpenNotifications] = useState<boolean>(false);
   const [userRole, setUserRole] = useState<string>('');
   const [searchFinalData, setSearchFinalData] = useState<any>();
+  const [profileImg, setProfileImg] = useState<any>();
   const [query, setQuery] = useState<{
     searchText: string | null;
   }>({
@@ -78,6 +125,9 @@ const CustomHeader = () => {
   useEffect(() => {
     dispatch(getCountOfNotification(''))?.then((payload) => {
       setNotificationCounts(payload?.payload?.length);
+    });
+    dispatch(getUserProfileData(''))?.then((payload: any) => {
+      setProfileImg(payload?.payload?.profile_image);
     });
   }, []);
 
@@ -209,6 +259,80 @@ const CustomHeader = () => {
   //   key: dataItem?.id,
   // })
 
+  const uploadImagesToBackend = async (newFileList: any, index: any) => {
+    //     console.log("435433",newFileList)
+    // return
+    if (newFileList) {
+      notification.open({
+        message: `Image is uploading. Please wait`,
+        type: 'info',
+      });
+    }
+
+    const data = await getBase64(newFileList);
+
+    const mediaType = newFileList?.type.split('/')[0];
+
+    const loaction = await uploadImage(data, mediaType, newFileList);
+
+    dispatch(getUserProfileData(''))?.then((payload: any) => {
+      setProfileImg(payload?.payload?.profile_image);
+    });
+  };
+
+  const handleNotification = (list: any) => {
+    let count = 0;
+    if (count === 1) {
+      return;
+    }
+    if (
+      list?.file?.size > 100000000 &&
+      (list?.file?.originFileObj?.name?.includes('webm') ||
+        list?.file?.originFileObj?.name?.includes('WEBM') ||
+        list?.file?.originFileObj?.name?.includes('mp4') ||
+        list?.file?.originFileObj?.name?.includes('MP4') ||
+        list?.file?.originFileObj?.name?.includes('mov') ||
+        list?.file?.originFileObj?.name?.includes('MOV') ||
+        list?.file?.originFileObj?.name?.includes('avchd') ||
+        list?.file?.originFileObj?.name?.includes('AVCHD') ||
+        list?.file?.originFileObj?.name?.includes('avi') ||
+        list?.file?.originFileObj?.name?.includes('AVI') ||
+        list?.file?.originFileObj?.name?.includes('flv') ||
+        list?.file?.originFileObj?.name?.includes('FLV') ||
+        list?.file?.originFileObj?.name?.includes('wmv') ||
+        list?.file?.originFileObj?.name?.includes('WMV'))
+    ) {
+      count += 1;
+      notification.open({
+        message: `Video exceeded size limit. Please upload an Video less than 100MB/100000KB`,
+      });
+    } else if (
+      list?.file?.size > 5000000 &&
+      !list?.file?.originFileObj?.name?.includes('webm') &&
+      !list?.file?.originFileObj?.name?.includes('WEBM') &&
+      !list?.file?.originFileObj?.name?.includes('mp4') &&
+      !list?.file?.originFileObj?.name?.includes('MP4') &&
+      !list?.file?.originFileObj?.name?.includes('mov') &&
+      !list?.file?.originFileObj?.name?.includes('MOV') &&
+      !list?.file?.originFileObj?.name?.includes('avchd') &&
+      !list?.file?.originFileObj?.name?.includes('AVCHD') &&
+      !list?.file?.originFileObj?.name?.includes('avi') &&
+      !list?.file?.originFileObj?.name?.includes('AVI') &&
+      !list?.file?.originFileObj?.name?.includes('flv') &&
+      !list?.file?.originFileObj?.name?.includes('FLV') &&
+      !list?.file?.originFileObj?.name?.includes('wmv') &&
+      !list?.file?.originFileObj?.name?.includes('WMV')
+    ) {
+      count += 1;
+      notification.open({
+        message: `Image exceeded size limit. Please upload an image less than 5MB/500KB`,
+      });
+    } else {
+      uploadImagesToBackend(list, '');
+    }
+  };
+  console.log('profileImg', profileImg);
+  const debounceFn = useCallback(_debounce(handleNotification, 500), []);
   return (
     <Layout>
       <Row
@@ -349,11 +473,34 @@ const CustomHeader = () => {
               dropdownRender={(menu: any) => (
                 <div style={contentStyle}>
                   <Space>
-                    <Image
-                      src={UserIcon}
-                      alt="UserIcon"
-                      style={{cursor: 'pointer'}}
-                    />
+                    <ImgCrop
+                      onModalOk={(list: any) => {
+                        debounceFn(list);
+                        //
+                      }}
+                    >
+                      <CustomUpload showUploadList={false}>
+                        {/* <Image
+                          src={UserIcon}
+                          alt="UserIcon"
+                          style={{cursor: 'pointer'}}
+                        /> */}
+                        <Avatar
+                          // icon={icon}
+                          src={profileImg ?? UserIcon}
+                          shape="circle"
+                          size="large"
+                          style={
+                            {
+                              // background: 'none',
+                              // display: 'flex',
+                              // alignItems: 'center',
+                              // justifyContent: 'center',
+                            }
+                          }
+                        />
+                      </CustomUpload>
+                    </ImgCrop>
                     <Space direction="vertical" size={0}>
                       <Typography name="Body 3/Regular">
                         {userInformation?.username || 'Josh Walker'}
@@ -395,10 +542,19 @@ const CustomHeader = () => {
             >
               <a onClick={(e) => e.preventDefault()}>
                 <Space>
-                  <Image
-                    src={UserIcon}
-                    alt="UserIcon"
-                    style={{cursor: 'pointer'}}
+                  <Avatar
+                    // icon={icon}
+                    src={profileImg ?? UserIcon}
+                    shape="circle"
+                    size="large"
+                    style={
+                      {
+                        // background: 'none',
+                        // display: 'flex',
+                        // alignItems: 'center',
+                        // justifyContent: 'center',
+                      }
+                    }
                   />
                   <Space direction="vertical" size={0}>
                     <Typography

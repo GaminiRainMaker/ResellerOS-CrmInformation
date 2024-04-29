@@ -28,4 +28,6 @@ export const USERAPI = {
     get(`${API.USER.GetGlobalSearchData}/${search}`) as Promise<
       AxiosResponse<any>
     >,
+  getUserProfile: () =>
+    get(API.USER.profileImage) as Promise<AxiosResponse<[]>>,
 };

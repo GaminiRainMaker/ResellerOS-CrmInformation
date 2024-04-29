@@ -11,7 +11,9 @@ import {
   getUserByIdLogin,
   queryAllUsers,
   getAdminUserOfAllOrganization,
-  getGloabalySearchDataa,updateUserPassword
+  getGloabalySearchDataa,
+  updateUserPassword,
+  getUserProfileData,
 } from '../actions/user';
 
 type UserState = {
@@ -23,7 +25,7 @@ type UserState = {
   loginUserInformation: any;
   allResellerRecord: any;
   searchDataa: any;
-  createUserData: any
+  createUserData: any;
 };
 const initialState: UserState = {
   loading: false,
@@ -103,10 +105,13 @@ const userSlice = createSlice({
           state.data = action.payload;
         },
       )
-      .addCase(updateUserPassword.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+      .addCase(
+        updateUserPassword.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
       .addCase(getUserByOrganization.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -216,6 +221,24 @@ const userSlice = createSlice({
       )
       .addCase(
         getGloabalySearchDataa.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getUserProfileData.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getUserProfileData.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.searchDataa = action.payload;
+        },
+      )
+      .addCase(
+        getUserProfileData.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

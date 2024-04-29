@@ -129,3 +129,14 @@ export const getGloabalySearchDataa = createAsyncThunk(
     }
   },
 );
+export const getUserProfileData = createAsyncThunk(
+  'user/getUserProfile',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await USERAPI.getUserProfile();
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

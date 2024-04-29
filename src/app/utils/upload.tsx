@@ -56,7 +56,12 @@ const uploadImage = async (base64: any, type: any, file: any) => {
       // });
       return data.Location;
     }
-
+    if (type === 'image') {
+      const {data} = await UPLOAD_API.postIMage({
+        image: base64,
+      });
+      return data.Location;
+    }
     // return data.Location;
   } catch (error) {
     console.log(error);

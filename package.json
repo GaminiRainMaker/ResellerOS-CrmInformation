@@ -31,6 +31,7 @@
     "@heroicons/react": "^2.0.18",
     "@reduxjs/toolkit": "^1.9.7",
     "antd": "^5.11.0",
+    "antd-img-crop": "^4.21.0",
     "aws": "^0.0.3-2",
     "aws-amplify": "^6.0.5",
     "axios": "^1.6.1",
