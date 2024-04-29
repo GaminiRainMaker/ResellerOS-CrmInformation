@@ -30,7 +30,6 @@ const ProfileCard: FC<OSProfileInterface> = ({
   const [showAllContactModal, setShowAllContactModal] =
     useState<boolean>(false);
 
-
   return (
     <>
       <DetailCardStyle>

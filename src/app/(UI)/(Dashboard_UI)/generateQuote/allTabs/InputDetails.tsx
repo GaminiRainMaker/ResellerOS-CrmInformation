@@ -365,6 +365,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       let unassignedArr: any = [];
 
       if (dataNullForBundle?.[0] && dataNullForBundle?.[0]?.length > 0) {
+        console.log('finalFamilyArrfinalFamilyArr', dataNullForBundle);
         productsArr = dataNullForBundle?.[0]?.filter(
           (item: any) => item?.Product?.product_family === 'Products',
         );
@@ -382,6 +383,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
           (item: any) => item?.Product?.product_family == null,
         );
       }
+
       if (productsArr && productsArr?.length > 0) {
         const obj: any = {
           name: 'Products',
@@ -417,6 +419,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         };
         finalFamilyArr?.push(obj);
       }
+
       setFamilyFilter(finalFamilyArr);
     } else if (!selectedFilter) {
       setDefaultDataShow(false);
@@ -612,9 +615,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     }
     setShowVerificationFileModal(false);
   };
-
-  console.log('quoteLineItemByQuoteData1', quoteLineItemByQuoteData1);
-
+  console.log('35345343', familyFilter);
   return (
     <>
       {contextHolder}
@@ -767,7 +768,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                     justifyContent: 'start',
                                   }}
                                 >
-                                  <p>{item?.name}</p>
+                                  <p>item?.name</p>
                                 </Space>
                               </>
                             ),

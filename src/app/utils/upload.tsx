@@ -8,7 +8,7 @@ const getBase64 = async (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
     if (file) {
-      reader.readAsDataURL(file);
+      reader?.readAsDataURL(file);
       // eslint-disable-next-line no-promise-executor-return, no-return-assign
       return (reader.onload = () => resolve(reader.result as string));
     }
@@ -56,7 +56,12 @@ const uploadImage = async (base64: any, type: any, file: any) => {
       // });
       return data.Location;
     }
-
+    if (type === 'image') {
+      const {data} = await UPLOAD_API.postIMage({
+        image: base64,
+      });
+      return data.Location;
+    }
     // return data.Location;
   } catch (error) {
     console.log(error);

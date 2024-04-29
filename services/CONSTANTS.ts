@@ -49,6 +49,7 @@ export const API = {
     USERBYID: '/user/getUserById',
     GetAdminUserOfAllOrganization: '/user/getAdminUserOfAllOrganization',
     GetGlobalSearchData: '/user/globalSearchApi',
+    profileImage: '/user/getUserProfileImage',
   },
   PRODUCT: {
     INDEX: '/product',
@@ -121,6 +122,7 @@ export const API = {
   },
   UPLOADAWS: {
     INDEX: '/upload/uploadDocument',
+    IMAGE: '/upload/imageUpload',
   },
   OPPORLINEITEM: {
     INDEX: '/opportunityLineItem',
