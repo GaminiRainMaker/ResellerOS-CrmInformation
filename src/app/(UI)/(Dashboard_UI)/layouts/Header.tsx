@@ -10,28 +10,28 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Divider} from '@/app/components/common/antd/Divider';
 import {Space} from '@/app/components/common/antd/Space';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import _debounce from 'lodash/debounce';
-import styled from '@emotion/styled';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import SearchSelect from '@/app/components/common/os-select/SearchSelect';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
-import ImgCrop from 'antd-img-crop';
+import {getBase64, uploadImage} from '@/app/utils/upload';
+import styled from '@emotion/styled';
 import {
   ArrowLeftStartOnRectangleIcon,
   BellIcon,
 } from '@heroicons/react/24/outline';
 import {Avatar, Badge, Layout, Select, Upload, notification} from 'antd';
+import ImgCrop from 'antd-img-crop';
 import {MenuProps} from 'antd/es/menu';
 import Cookies from 'js-cookie';
+import _debounce from 'lodash/debounce';
 import Image from 'next/image';
 import {useRouter} from 'next/navigation';
 import React, {useCallback, useEffect, useState} from 'react';
-import OsButton from '@/app/components/common/os-button';
-import {getBase64, uploadImage} from '@/app/utils/upload';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
@@ -332,8 +332,11 @@ const CustomHeader = () => {
       uploadImagesToBackend(list, '');
     }
   };
+
   console.log('profileImg', profileImg);
+
   const debounceFn = useCallback(_debounce(handleNotification, 500), []);
+
   return (
     <Layout>
       <Row
@@ -477,14 +480,26 @@ const CustomHeader = () => {
                     <ImgCrop
                       onModalOk={(list: any) => {
                         debounceFn(list);
-                        //
                       }}
                     >
                       <CustomUpload showUploadList={false}>
                         <Avatar
-                          src={profileImg ?? UserIcon}
+                          src={profileImg}
+                          icon={
+                            <Image
+                              src={UserIcon}
+                              alt="UserIcon"
+                              style={{cursor: 'pointer'}}
+                            />
+                          }
                           shape="circle"
                           size="large"
+                          style={{
+                            background: 'none',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
                         />
                       </CustomUpload>
                     </ImgCrop>
@@ -530,18 +545,16 @@ const CustomHeader = () => {
               <a onClick={(e) => e.preventDefault()}>
                 <Space>
                   <Avatar
-                    // icon={icon}
-                    src={profileImg ?? UserIcon}
+                    src={profileImg}
+                    icon={
+                      <Image
+                        src={UserIcon}
+                        alt="UserIcon"
+                        style={{cursor: 'pointer'}}
+                      />
+                    }
                     shape="circle"
                     size="large"
-                    style={
-                      {
-                        // background: 'none',
-                        // display: 'flex',
-                        // alignItems: 'center',
-                        // justifyContent: 'center',
-                      }
-                    }
                   />
                   <Space direction="vertical" size={0}>
                     <Typography
