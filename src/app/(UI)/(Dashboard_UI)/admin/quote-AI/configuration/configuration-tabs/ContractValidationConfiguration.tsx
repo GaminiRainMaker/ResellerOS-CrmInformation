@@ -240,7 +240,7 @@ const ContractValidationConfiguration = () => {
                         loading={false}
                         tableSelectionType="checkbox"
                         columns={ContractConfigurationFields}
-                        dataSource={dummyData}
+                        dataSource={[]}
                         scroll
                         tablePageSize={50}
                         scrolly={165}

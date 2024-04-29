@@ -424,7 +424,9 @@ const CrmAccount: React.FC = () => {
                 <Typography
                   cursor="pointer"
                   name="Button 1"
-                  color="#C6CDD5"
+                  color={
+                    query?.contact || query?.customer ? '#0D0D0D' : '#C6CDD5'
+                  }
                   onClick={() => {
                     setQuery({
                       contact: null,

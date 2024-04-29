@@ -50,7 +50,9 @@ const CrmInformation: React.FC = () => {
   const [customerValue, setCustomerValue] = useState<any>();
   const [showModal, setShowModal] = useState<boolean>(false);
   const {loading, filteredData} = useAppSelector((state) => state.customer);
-  const {filteredData: billingData} = useAppSelector((state) => state.billingContact);
+  const {filteredData: billingData} = useAppSelector(
+    (state) => state.billingContact,
+  );
   const {data: OpportunityData} = useAppSelector((state) => state.Opportunity);
   const [open, setOpen] = useState(false);
   const [deleteIds, setDeleteIds] = useState<any>();
@@ -441,7 +443,7 @@ const CrmInformation: React.FC = () => {
                 <Typography
                   cursor="pointer"
                   name="Button 1"
-                  color="#C6CDD5"
+                  color={query?.customer ? '#0D0D0D' : '#C6CDD5'}
                   onClick={() => {
                     setQuery({
                       customer: null,
