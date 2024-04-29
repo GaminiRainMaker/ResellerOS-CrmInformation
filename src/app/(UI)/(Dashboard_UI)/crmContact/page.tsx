@@ -36,11 +36,14 @@ import {
   queryContact,
   updateBillingContact,
 } from '../../../../../redux/actions/billingContact';
-import {getAllCustomer, queryCustomer} from '../../../../../redux/actions/customer';
+import {
+  getAllCustomer,
+  queryCustomer,
+} from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddContact from './addContact';
 import EditContactModal from './editContact';
-import { queryOpportunity } from '../../../../../redux/actions/opportunity';
+import {queryOpportunity} from '../../../../../redux/actions/opportunity';
 
 const CrmAccount: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -53,10 +56,10 @@ const CrmAccount: React.FC = () => {
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [open, setOpen] = useState(false);
-  const {filteredData: customerData} = useAppSelector((state) => state.customer);
-  const {
-    data: opportunityData,
-  } = useAppSelector((state) => state.Opportunity);
+  const {filteredData: customerData} = useAppSelector(
+    (state) => state.customer,
+  );
+  const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
   const {loading, filteredData} = useAppSelector(
     (state) => state.billingContact,
   );
@@ -214,7 +217,11 @@ const CrmAccount: React.FC = () => {
       ),
     },
     {
-      title: ' ',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Action
+        </Typography>
+      ),
       dataIndex: 'actions',
       key: 'actions',
       width: 94,

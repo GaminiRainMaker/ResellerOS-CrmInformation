@@ -225,7 +225,11 @@ const CrmOpportunity: React.FC = () => {
       ),
     },
     {
-      title: ' ',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Action
+        </Typography>
+      ),
       dataIndex: 'actions',
       key: 'actions',
       render: (text: string, record: any) => (

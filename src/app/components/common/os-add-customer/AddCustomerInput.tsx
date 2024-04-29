@@ -40,7 +40,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
 }) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const [activeTab, setActiveTab] = useState<any>('1');
+  const [activeTab, setActiveTab] = useState<number>(1);
   const [editBillingAddress, setEditBillingAddress] = useState<Boolean>(false);
   const [newAdd, setNewAdd] = useState<Boolean>(false);
   const {loading} = useAppSelector((state) => state.customer);
@@ -102,6 +102,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
           <Typography
             name="Body 4/Regular"
             color={activeTab === 1 ? '#1C3557' : '#666666'}
+            cursor="pointer"
           >
             Shipping Address
           </Typography>
@@ -121,6 +122,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
           <Typography
             name="Body 4/Regular"
             color={activeTab === 2 ? '#1C3557' : '#666666'}
+            cursor="pointer"
           >
             Billing Address
           </Typography>
@@ -140,6 +142,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
           <Typography
             name="Body 4/Regular"
             color={activeTab === 3 ? '#1C3557' : '#666666'}
+            cursor="pointer"
           >
             Contact
           </Typography>
@@ -253,7 +256,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
             <Col span={8}>
               <Typography
                 onClick={() => {
-                  setActiveTab(item?.key);
+                  setActiveTab(Number(item?.key));
                   setEditBillingAddress(false);
                 }}
                 name="Heading 3/Medium"
@@ -679,7 +682,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
                 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
                 activeTab === 3
                   ? addCustomerAndAddress()
-                  : setActiveTab(+activeTab + 1);
+                  : setActiveTab(Number(+activeTab + 1));
               }}
               text={activeTab === 3 ? 'Add' : 'Next'}
             />

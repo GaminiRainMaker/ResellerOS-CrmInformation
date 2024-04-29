@@ -28,8 +28,7 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import OsTabs from '@/app/components/common/os-tabs';
-import {MenuProps, TabsProps} from 'antd';
+import {MenuProps} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -39,6 +38,8 @@ import {
 } from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import EditCustomer from './EditCustomer';
+import {queryOpportunity} from '../../../../../redux/actions/opportunity';
+import {queryContact} from '../../../../../redux/actions/billingContact';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -49,7 +50,8 @@ const CrmInformation: React.FC = () => {
   const [customerValue, setCustomerValue] = useState<any>();
   const [showModal, setShowModal] = useState<boolean>(false);
   const {loading, filteredData} = useAppSelector((state) => state.customer);
-  const {data: billingData} = useAppSelector((state) => state.billingContact);
+  const {filteredData: billingData} = useAppSelector((state) => state.billingContact);
+  const {data: OpportunityData} = useAppSelector((state) => state.Opportunity);
   const [open, setOpen] = useState(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
@@ -65,6 +67,8 @@ const CrmInformation: React.FC = () => {
 
   useEffect(() => {
     dispatch(queryCustomer(searchQuery));
+    dispatch(queryOpportunity(''));
+    dispatch(queryContact(''));
   }, [searchQuery]);
 
   useEffect(() => {
@@ -117,14 +121,14 @@ const CrmInformation: React.FC = () => {
     },
     {
       key: 2,
-      primary: <div>{0}</div>,
+      primary: <div>{OpportunityData?.length}</div>,
       secondry: 'Opportunities',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
     },
     {
       key: 3,
-      primary: <div>{filteredData?.length}</div>,
+      primary: <div>{billingData?.length}</div>,
       secondry: 'Contacts',
       icon: <PhoneIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
