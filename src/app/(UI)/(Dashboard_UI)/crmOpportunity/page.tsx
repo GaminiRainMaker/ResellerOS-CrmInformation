@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable eqeqeq */
 /* eslint-disable @typescript-eslint/indent */
@@ -337,16 +338,13 @@ const CrmOpportunity: React.FC = () => {
   const dropDownItemss: MenuProps['items'] = [
     {
       key: '1',
-      label: <Typography name="Body 3/Regular">Select All</Typography>,
-    },
-    {
-      key: '1',
       label: (
         <Typography
           name="Body 3/Regular"
           color="#EB445A"
+          cursor="pointer"
           onClick={() => {
-            setShowModalDelete(true);
+            deleteIds && deleteIds?.length > 0 && setShowModalDelete(true);
           }}
         >
           Delete Selected
@@ -486,7 +484,11 @@ const CrmOpportunity: React.FC = () => {
                   <Typography
                     cursor="pointer"
                     name="Button 1"
-                    color="#C6CDD5"
+                    color={
+                      query?.opportunity || query?.customer
+                        ? '#0D0D0D'
+                        : '#C6CDD5'
+                    }
                     onClick={() => {
                       setQuery({
                         opportunity: null,
