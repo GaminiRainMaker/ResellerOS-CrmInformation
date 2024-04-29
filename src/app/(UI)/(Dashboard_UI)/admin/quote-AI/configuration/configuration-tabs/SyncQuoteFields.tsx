@@ -8,7 +8,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {opportunityOptions, quoteOptions} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {Row, Space} from 'antd';
+import {Row, Space, notification} from 'antd';
 import {useEffect, useState} from 'react';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {Col} from '@/app/components/common/antd/Grid';
@@ -103,6 +103,16 @@ const SyncQuoteField = () => {
   }, [syncTableData]);
 
   const updateTableColumnValues = async () => {
+    const isEmptyFiled = updatedColumnforQuoteSync?.find(
+      (itemss: any) => !itemss?.sender_table_col || !itemss?.reciver_table_col,
+    );
+    if (isEmptyFiled) {
+      notification?.open({
+        message: 'Please Add the values for All the Rows',
+        type: 'error',
+      });
+      return;
+    }
     for (let i = 0; i < updatedColumnforQuoteSync?.length; i++) {
       const dataItems = updatedColumnforQuoteSync[i];
       dispatch(insertUpdateSyncTable(dataItems));
@@ -203,6 +213,9 @@ const SyncQuoteField = () => {
       dataIndex: 'id',
       key: 'id',
       width: 80,
+      render: (text: string, record: any, index: number) => (
+        <div> {index + 1}</div>
+      ),
     },
     {
       title: (
