@@ -230,7 +230,7 @@ const CrmInformation: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          {' '}
+          Action
         </Typography>
       ),
       dataIndex: 'actions',
@@ -350,9 +350,9 @@ const CrmInformation: React.FC = () => {
               }}
             >
               <OsButton
-                text="Add Customer"
+                text="Add Customer Account"
                 buttontype="PRIMARY"
-                icon={<PlusIcon />}
+                icon={<PlusIcon width={25} />}
                 clickHandler={() => setShowModal((p) => !p)}
               />
               <Space>

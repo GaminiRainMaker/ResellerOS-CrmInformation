@@ -149,7 +149,7 @@ const ProfileCard: FC<OSProfileInterface> = ({
             </Row>
           ) : (
             <Row gutter={[16, 16]} style={{width: '100%'}}>
-              <Col span={12}>
+              {/* <Col span={12}>
                 <Space direction="vertical">
                   <Typography
                     name="Body 4/Medium"
@@ -161,7 +161,7 @@ const ProfileCard: FC<OSProfileInterface> = ({
                     {customerData?.id ?? '--'}
                   </Typography>
                 </Space>
-              </Col>
+              </Col> */}
               <Col span={12}>
                 <Space direction="vertical">
                   <Typography

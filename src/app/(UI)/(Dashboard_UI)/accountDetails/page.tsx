@@ -26,6 +26,7 @@ import {Space} from 'antd';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
+import {formatDate} from '@/app/utils/base';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect} from 'react';
 import {getCustomerBYId} from '../../../../../redux/actions/customer';
@@ -48,36 +49,6 @@ const AccountDetails = () => {
   useEffect(() => {
     dispatch(getCustomerBYId(getCustomerID));
   }, [getCustomerID]);
-
-  const statusWrapper = (item: any) => {
-    const getStatus = () => {
-      if (!item.is_completed && !item.is_drafted) {
-        return 'Drafts';
-      }
-      if (item.is_drafted) {
-        return 'In Progress';
-      }
-      if (item?.approver_id === userInformation?.id) {
-        return 'In Review';
-      }
-      if (item?.rejected_request) {
-        return 'Rejected';
-      }
-      if (item?.approved_request) {
-        return 'Approved';
-      }
-      if (
-        item.is_completed &&
-        item?.approver_id !== userInformation?.id &&
-        !item?.approved_request &&
-        !item?.rejected_request
-      ) {
-        return 'Needs Review';
-      }
-      return '--';
-    };
-    return <OsStatusWrapper value={getStatus()} />;
-  };
 
   const analyticsData = [
     {
@@ -108,6 +79,8 @@ const AccountDetails = () => {
       iconBg: token?.colorSuccessBg,
     },
   ];
+
+  console.log('customerData', customerData);
 
   const menuItems = [
     {
@@ -166,7 +139,9 @@ const AccountDetails = () => {
       key: 'createdAt',
       width: 130,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+        <Typography name="Body 4/Regular">
+          {formatDate(text, 'MM/DD/YYYY | HH:MM') ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -208,13 +183,17 @@ const AccountDetails = () => {
       dataIndex: 'status',
       key: 'status',
       width: 187,
-      render: (text: string, record: any) => statusWrapper(record),
+      render: (text: string, record: any) => (
+        <span style={{display: 'flex', justifyContent: 'center'}}>
+          <OsStatusWrapper value={text} />
+        </span>
+      ),
     },
     {
       title: ' ',
       dataIndex: 'actions',
       key: 'actions',
-      width: 94,
+      width: 139,
       render: (text: string, record: any) => (
         <Space size={18}>
           <PencilSquareIcon
@@ -260,21 +239,21 @@ const AccountDetails = () => {
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Customer Account
-        </Typography>
-      ),
-      dataIndex: 'customer_name',
-      key: 'customer_name',
-      width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">
-          {customerData?.name ?? '--'}
-        </Typography>
-      ),
-    },
+    // {
+    //   title: (
+    //     <Typography name="Body 4/Medium" className="dragHandler">
+    //       Customer Account
+    //     </Typography>
+    //   ),
+    //   dataIndex: 'customer_name',
+    //   key: 'customer_name',
+    //   width: 187,
+    //   render: (text: string) => (
+    //     <Typography name="Body 4/Regular">
+    //       {customerData?.name ?? '--'}
+    //     </Typography>
+    //   ),
+    // },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -320,8 +299,7 @@ const AccountDetails = () => {
             width={24}
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
-            onClick={() => {
-            }}
+            onClick={() => {}}
           />
           <TrashIcon
             height={24}
