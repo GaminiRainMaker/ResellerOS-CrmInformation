@@ -268,7 +268,7 @@ const CustomHeader = () => {
         type: 'info',
       });
     }
-
+    console.log('newFileListnewFileList', newFileList);
     const data = await getBase64(newFileList);
 
     const mediaType = newFileList?.type.split('/')[0];
@@ -281,6 +281,7 @@ const CustomHeader = () => {
   };
 
   const handleNotification = (list: any) => {
+    console.log('435435345', list);
     let count = 0;
     if (count === 1) {
       return;
@@ -479,7 +480,14 @@ const CustomHeader = () => {
                         //
                       }}
                     >
-                      <CustomUpload showUploadList={false}>
+                      <CustomUpload
+                        showUploadList={false}
+                        // onChange={(list: any) => {
+                        //   debounceFn(list?.file);
+                        //   console.log('4354364353', list);
+                        //   //
+                        // }}
+                      >
                         {/* <Image
                           src={UserIcon}
                           alt="UserIcon"

@@ -8,7 +8,7 @@ const getBase64 = async (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
     if (file) {
-      reader.readAsDataURL(file);
+      reader?.readAsDataURL(file);
       // eslint-disable-next-line no-promise-executor-return, no-return-assign
       return (reader.onload = () => resolve(reader.result as string));
     }
