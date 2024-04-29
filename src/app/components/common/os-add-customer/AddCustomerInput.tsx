@@ -1,24 +1,15 @@
 /* eslint-disable react/no-array-index-key */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/no-unstable-nested-components */
-/* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-nested-ternary */
-/* eslint-disable no-await-in-loop */
-/* eslint-disable @typescript-eslint/no-loop-func */
-/* eslint-disable eqeqeq */
-/* eslint-disable array-callback-return */
-/* eslint-disable import/no-extraneous-dependencies */
 
 'use client';
-
-import Typography from '@/app/components/common/typography';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
+import Typography from '@/app/components/common/typography';
 import {MailOutlined} from '@ant-design/icons';
 import {PencilSquareIcon} from '@heroicons/react/24/outline';
 import {Checkbox, Space, TabsProps} from 'antd';
@@ -109,13 +100,13 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
         <div>
           <Typography
             name="Body 4/Regular"
-            color={activeTab == 1 ? '#1C3557' : '#666666'}
+            color={activeTab === 1 ? '#1C3557' : '#666666'}
           >
             Shipping Address
           </Typography>
           <div
             style={{
-              border: activeTab == 1 ? '1px solid #1C3557' : '',
+              border: activeTab === 1 ? '1px solid #1C3557' : '',
               marginTop: '10px',
             }}
           />
@@ -128,13 +119,13 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
         <div>
           <Typography
             name="Body 4/Regular"
-            color={activeTab == 2 ? '#1C3557' : '#666666'}
+            color={activeTab === 2 ? '#1C3557' : '#666666'}
           >
             Billing Address
           </Typography>
           <div
             style={{
-              border: activeTab == 2 ? '1px solid #1C3557' : '',
+              border: activeTab === 2 ? '1px solid #1C3557' : '',
               marginTop: '10px',
             }}
           />
@@ -147,14 +138,14 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
         <div>
           <Typography
             name="Body 4/Regular"
-            color={activeTab == 3 ? '#1C3557' : '#666666'}
+            color={activeTab === 3 ? '#1C3557' : '#666666'}
           >
             Contact
           </Typography>
           <div
             style={{
               marginTop: '10px',
-              border: activeTab == 3 ? '1px solid #1C3557' : '',
+              border: activeTab === 3 ? '1px solid #1C3557' : '',
             }}
           />
         </div>
@@ -264,7 +255,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
             </Col>
           ))}
         </Row>
-        {activeTab == 1 ? (
+        {activeTab === 1 ? (
           <Row>
             <Row style={{marginTop: '20px', width: '100%'}}>
               <Typography name="Body 4/Regular">Address Line</Typography>
@@ -346,7 +337,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
               </Col>
             </Row>
           </Row>
-        ) : activeTab == 2 ? (
+        ) : activeTab === 2 ? (
           <Row>
             <Row style={{marginTop: '20px', marginBottom: '5px'}}>
               <Checkbox
@@ -567,7 +558,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
                 {formValue?.BillingContacts?.map((item: any, index: number) => (
                   <Col key={item?.key} span={24}>
                     <Row
-                      key={`${index}`}
+                      key={index}
                       style={{
                         background: '#F6F7F8',
                         padding: '12px',
@@ -639,27 +630,27 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
               </Row>
               // <OsContactCard data={formValue?.BillingContacts} />
             )}
-            {/* {drawer && (
-                <Row
-                  style={{marginTop: '20px'}}
-                  onClick={() => {
-                    setNewAdd(true);
-                    setFormValue({
-                      ...formValue,
-                      billing_email: '',
-                      billing_last_name: '',
-                      billing_first_name: '',
-                      billing_role: '',
-                      customer_id: formValue?.id,
-                    });
-                  }}
-                >
-                  <Typography name="Body 3/Bold" color="#3DA5D9">
-                    {' '}
-                    + Add New Contact
-                  </Typography>
-                </Row>
-              )} */}
+            {drawer && (
+              <Row
+                style={{marginTop: '20px'}}
+                onClick={() => {
+                  setNewAdd(true);
+                  setFormValue({
+                    ...formValue,
+                    billing_email: '',
+                    billing_last_name: '',
+                    billing_first_name: '',
+                    billing_role: '',
+                    customer_id: formValue?.id,
+                  });
+                }}
+              >
+                <Typography name="Body 3/Bold" color="#3DA5D9">
+                  {' '}
+                  + Add New Contact
+                </Typography>
+              </Row>
+            )}
           </Row>
         )}
         {!drawer && (
@@ -676,11 +667,11 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
               buttontype="PRIMARY"
               clickHandler={() => {
                 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-                activeTab == 3
+                activeTab === 3
                   ? addCustomerAndAddress()
                   : setActiveTab(+activeTab + 1);
               }}
-              text={activeTab == 3 ? 'Add' : 'Next'}
+              text={activeTab === 3 ? 'Add' : 'Next'}
             />
           </Row>
         )}
