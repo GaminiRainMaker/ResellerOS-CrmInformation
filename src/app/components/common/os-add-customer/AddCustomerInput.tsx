@@ -12,9 +12,10 @@ import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
 import {MailOutlined} from '@ant-design/icons';
 import {PencilSquareIcon} from '@heroicons/react/24/outline';
-import {Checkbox, Space, TabsProps} from 'antd';
+import {Avatar, Checkbox, Space, TabsProps} from 'antd';
 import Image from 'next/image';
 import {useState} from 'react';
+import UserIcon from '../../../../../public/assets/static/userIcon.svg';
 import uploadGallery from '../../../../../public/assets/static/uploadGallery.svg';
 import {insertAddAddress} from '../../../../../redux/actions/address';
 import {
@@ -153,7 +154,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
       key: '3',
     },
   ];
-
+  console.log('customerValuecustomerValue', customerValue?.name);
   return (
     <>
       <Space
@@ -166,6 +167,14 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
             {drawer ? (
               <>
                 {' '}
+                <Space style={{marginBottom: '10px'}}>
+                  <Avatar shape="circle" size="large" />
+                  <Space direction="vertical" size={0}>
+                    <Typography name="Body 3/Regular">
+                      {customerValue?.name}
+                    </Typography>
+                  </Space>
+                </Space>
                 <Typography
                   name="Body 4/Medium"
                   color={token?.colorPrimaryText}
@@ -245,6 +254,7 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
               <Typography
                 onClick={() => {
                   setActiveTab(item?.key);
+                  setEditBillingAddress(false);
                 }}
                 name="Heading 3/Medium"
                 color={token?.colorPrimaryText}
