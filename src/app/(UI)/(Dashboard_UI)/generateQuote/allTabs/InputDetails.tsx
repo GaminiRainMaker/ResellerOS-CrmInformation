@@ -77,6 +77,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     loading,
     data: dataNullForBundle,
   } = useAppSelector((state) => state.quoteLineItem);
+  const [dataForQuoteLineItemsAll, setDataForQuoteLineItemsAll] =
+    useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
   const {loading: quoteFileDataLoading, data: quoteFileData} = useAppSelector(
     (state) => state.quoteFile,
@@ -364,22 +366,22 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       let subscriptionArr: any = [];
       let unassignedArr: any = [];
 
-      if (dataNullForBundle?.[0] && dataNullForBundle?.[0]?.length > 0) {
+      if (dataForQuoteLineItemsAll && dataForQuoteLineItemsAll?.length > 0) {
         console.log('finalFamilyArrfinalFamilyArr', dataNullForBundle);
-        productsArr = dataNullForBundle?.[0]?.filter(
+        productsArr = dataForQuoteLineItemsAll?.filter(
           (item: any) => item?.Product?.product_family === 'Products',
         );
-        professionalServiceArr = dataNullForBundle?.[0]?.filter(
+        professionalServiceArr = dataForQuoteLineItemsAll?.filter(
           (item: any) =>
             item?.Product?.product_family === 'Professional Services',
         );
-        maintenanceArr = dataNullForBundle?.[0]?.filter(
+        maintenanceArr = dataForQuoteLineItemsAll?.filter(
           (item: any) => item?.Product?.product_family === 'Maintenance',
         );
-        subscriptionArr = dataNullForBundle?.[0]?.filter(
+        subscriptionArr = dataForQuoteLineItemsAll?.filter(
           (item: any) => item?.Product?.product_family === 'Subscriptions',
         );
-        unassignedArr = dataNullForBundle?.[0]?.filter(
+        unassignedArr = dataForQuoteLineItemsAll?.filter(
           (item: any) => item?.Product?.product_family == null,
         );
       }
@@ -481,6 +483,17 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     });
 
     const result = Object.values(separatedData);
+    // console.log('3453453', result);
+    const combinedArr: any = [];
+    if (quoteFileData && quoteFileData?.length > 0) {
+      quoteFileData?.forEach((itemOut: any) => {
+        itemOut?.QuoteLineItems?.map((itemss: any) => {
+          combinedArr?.push(itemss);
+        });
+      });
+    }
+    setDataForQuoteLineItemsAll(combinedArr);
+
     setQuoteLineItemByQuoteData1(result);
   }, [quoteFileData, defaultDataShow]);
 
@@ -616,6 +629,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     setShowVerificationFileModal(false);
   };
   console.log('35345343', familyFilter);
+
   return (
     <>
       {contextHolder}
@@ -713,8 +727,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                   </>
                 ) : (
                   <>
-                    {dataNullForBundle?.[0]?.length > 0 &&
-                      dataNullForBundle?.[0] && (
+                    {dataForQuoteLineItemsAll?.length > 0 &&
+                      dataForQuoteLineItemsAll && (
                         <OsCollapse
                           items={[
                             {
@@ -736,7 +750,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                 <OsTableWithOutDrag
                                   loading={loading}
                                   columns={finalInputColumn}
-                                  dataSource={dataNullForBundle?.[0] || []}
+                                  dataSource={dataForQuoteLineItemsAll || []}
                                   scroll
                                   rowSelection={rowSelection}
                                   locale={locale}
@@ -768,7 +782,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                     justifyContent: 'start',
                                   }}
                                 >
-                                  <p>item?.name</p>
+                                  <p>{item?.name}</p>
                                 </Space>
                               </>
                             ),

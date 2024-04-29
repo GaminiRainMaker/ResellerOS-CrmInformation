@@ -480,32 +480,11 @@ const CustomHeader = () => {
                         //
                       }}
                     >
-                      <CustomUpload
-                        showUploadList={false}
-                        // onChange={(list: any) => {
-                        //   debounceFn(list?.file);
-                        //   console.log('4354364353', list);
-                        //   //
-                        // }}
-                      >
-                        {/* <Image
-                          src={UserIcon}
-                          alt="UserIcon"
-                          style={{cursor: 'pointer'}}
-                        /> */}
+                      <CustomUpload showUploadList={false}>
                         <Avatar
-                          // icon={icon}
                           src={profileImg ?? UserIcon}
                           shape="circle"
                           size="large"
-                          style={
-                            {
-                              // background: 'none',
-                              // display: 'flex',
-                              // alignItems: 'center',
-                              // justifyContent: 'center',
-                            }
-                          }
                         />
                       </CustomUpload>
                     </ImgCrop>
