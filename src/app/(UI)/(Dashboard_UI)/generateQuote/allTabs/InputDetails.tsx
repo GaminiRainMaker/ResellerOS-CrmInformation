@@ -328,6 +328,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                 onChange={(e) => {
                   const data = {id: record?.product_id, product_family: e};
                   dispatch(updateProductFamily(data));
+                  // window?.location?.reload();
+                  dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
                 }}
               />
             </Form.Item>
