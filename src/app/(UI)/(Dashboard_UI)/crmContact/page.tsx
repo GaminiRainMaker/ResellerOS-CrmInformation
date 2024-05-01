@@ -27,7 +27,7 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import {MenuProps} from 'antd';
+import {MenuProps, notification} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -261,7 +261,16 @@ const CrmAccount: React.FC = () => {
           name="Body 3/Regular"
           color="#EB445A"
           cursor="pointer"
-          onClick={() => setShowModalDelete(true)}
+          onClick={() => {
+            if (deleteIds?.length > 0) {
+              setShowModalDelete(true);
+            } else {
+              notification?.open({
+                message: 'Please select contact you want to delete',
+                type: 'info',
+              });
+            }
+          }}
         >
           Delete Selected
         </Typography>
@@ -331,7 +340,10 @@ const CrmAccount: React.FC = () => {
                 text="Add Contact"
                 buttontype="PRIMARY"
                 icon={<PlusIcon />}
-                clickHandler={() => setShowModal((p) => !p)}
+                clickHandler={() => {
+                  setFormValue({});
+                  setShowModal((p) => !p);
+                }}
               />
               <Space>
                 <OsDropdown menu={{items: dropDownItemss}} />
@@ -470,7 +482,11 @@ const CrmAccount: React.FC = () => {
       />
 
       <OsDrawer
-        title={<Typography name="Body 1/Regular">Contact Details</Typography>}
+        title={
+          <Typography name="Body 1/Regular" color="#0D0D0D">
+            Customer Details
+          </Typography>
+        }
         placement="right"
         onClose={() => setOpen((p) => !p)}
         open={open}
@@ -481,7 +497,7 @@ const CrmAccount: React.FC = () => {
             <OsButton
               btnStyle={{width: '100%'}}
               buttontype="PRIMARY"
-              text="UPDATE CHANGES"
+              text="Update Changes"
               clickHandler={updatebillDetails}
             />
           </Row>

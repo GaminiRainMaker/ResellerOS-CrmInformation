@@ -46,7 +46,7 @@ const EditOpportunity: FC<EditOpportunityInterface> = ({
           <OsButton
             btnStyle={{width: '100%'}}
             buttontype="PRIMARY"
-            text="UPDATE CHANGES"
+            text="Update Changes"
             clickHandler={updateOpportunityData}
           />
         </Row>

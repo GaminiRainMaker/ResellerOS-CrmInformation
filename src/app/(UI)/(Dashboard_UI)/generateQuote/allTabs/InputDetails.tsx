@@ -599,11 +599,13 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                 newArrrrAll?.push(formattedArray1);
               });
             }
-
+            console.log('43535343', newArrrrAll, response);
+            return;
             const jsonDataa = {
               id: fileLineItemIds,
               quote_json: [JSON?.stringify(newArrrrAll)],
             };
+
             dispatch(updateFileForQuoteJson(jsonDataa));
             setNanonetsLoading(false);
             router?.push(
