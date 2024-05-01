@@ -256,22 +256,6 @@ const CrmAccount: React.FC = () => {
   const dropDownItemss: MenuProps['items'] = [
     {
       key: '1',
-      label: <Typography name="Body 3/Regular">Select All</Typography>,
-    },
-    {
-      key: '2',
-      label: (
-        <Typography
-          onClick={() => setShowModalEdit((p) => !p)}
-          name="Body 3/Regular"
-          cursor="pointer"
-        >
-          Edit
-        </Typography>
-      ),
-    },
-    {
-      key: '3',
       label: (
         <Typography
           name="Body 3/Regular"
