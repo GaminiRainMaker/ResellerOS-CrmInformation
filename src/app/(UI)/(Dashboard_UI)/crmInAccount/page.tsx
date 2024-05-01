@@ -68,6 +68,10 @@ const CrmInformation: React.FC = () => {
   const searchQuery = useDebounceHook(query, 500);
 
   useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
     dispatch(queryCustomer(searchQuery));
     dispatch(queryOpportunity(''));
     dispatch(queryContact(''));

@@ -326,7 +326,7 @@ const AllQuote: React.FC = () => {
             }
             items={
               tabItems &&
-              tabItems.map((tabItem: any, index: number) => ({
+              tabItems?.map((tabItem: any, index: number) => ({
                 key: `${index + 1}`,
                 label: (
                   <Typography
@@ -338,39 +338,15 @@ const AllQuote: React.FC = () => {
                   </Typography>
                 ),
                 children: (
-                  <>
-                    {tabItem.label === 'Drafts' ? (
-                      activeQuotes?.length > 0 ? (
-                        <OsTable
-                          columns={Quotecolumns}
-                          dataSource={activeQuotes}
-                          scroll
-                          loading={loading}
-                          locale={locale}
-                          rowSelection={rowSelection}
-                        />
-                      ) : (
-                        <RecentSection
-                          uploadFileData={uploadFileData}
-                          setUploadFileData={setUploadFileData}
-                          Quotecolumns={Quotecolumns}
-                          setShowToggleTable={setShowToggleTable}
-                          showToggleTable={showToggleTable}
-                          rowSelection={rowSelection}
-                        />
-                      )
-                    ) : (
-                      <OsTable
-                        key={tabItem?.key}
-                        columns={Quotecolumns}
-                        dataSource={activeQuotes}
-                        scroll
-                        loading={loading}
-                        locale={locale}
-                        rowSelection={rowSelection}
-                      />
-                    )}
-                  </>
+                  <OsTable
+                    key={tabItem?.key}
+                    columns={Quotecolumns}
+                    dataSource={activeQuotes}
+                    scroll
+                    loading={loading}
+                    locale={locale}
+                    rowSelection={rowSelection}
+                  />
                 ),
                 ...tabItem,
               }))

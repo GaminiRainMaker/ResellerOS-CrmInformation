@@ -288,8 +288,8 @@ const SuperAdminPartner: React.FC = () => {
           Action
         </Typography>
       ),
-      dataIndex: 'website',
-      key: 'website',
+      dataIndex: 'action',
+      key: 'action',
       render: (text: string, record: any) => (
         <Space direction="horizontal">
           {' '}
@@ -425,7 +425,15 @@ const SuperAdminPartner: React.FC = () => {
       dataIndex: 'website',
       key: 'website',
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => {
+            window.open(`http://${text}`);
+          }}
+          hoverOnText
+        >
+          {text ?? '--'}
+        </Typography>
       ),
     },
   ];
@@ -520,8 +528,8 @@ const SuperAdminPartner: React.FC = () => {
             Action
           </Typography>
         ),
-        dataIndex: 'website',
-        key: 'website',
+        dataIndex: 'action',
+        key: 'action',
         render: (text: string, record: any) => (
           <Space direction="horizontal">
             {' '}

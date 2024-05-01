@@ -29,8 +29,9 @@ const UserManagement = () => {
   const [showPartnerProgramAssignModal, setShowPartnerProgramAssignModal] =
     useState<boolean>(false);
   const [selectedRecordData, setSelectedRecordData] = useState<any>();
-  const updatedResellerData =  userData?.filter((d: any) => d?.organization !== 'rainmakercloud');
-
+  const updatedResellerData = userData?.filter(
+    (d: any) => d?.organization !== 'rainmakercloud',
+  );
 
   const UserDataColumns = [
     {
@@ -111,6 +112,10 @@ const UserManagement = () => {
   ];
 
   useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
     dispatch(getAdminUserOfAllOrganization(''));
   }, []);
 

@@ -111,13 +111,29 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
               <Form.Item
                 label="Email"
                 name="email"
-                rules={[{required: true, message: 'Please Enter email!'}]}
+                rules={[
+                  {required: true, message: 'Please Enter email!'},
+                  {
+                    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: 'Please enter valid email.',
+                  },
+                ]}
               >
                 <OsInput placeholder="info@email.com" />
               </Form.Item>
             </Col>
             <Col span={drawer ? 24 : 12}>
-              <Form.Item label="Website" name="website">
+              <Form.Item
+                label="Website"
+                name="website"
+                rules={[
+                  {
+                    pattern:
+                      /^((https?|ftp):\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/\S*)?$/,
+                    message: 'Please enter valid website.',
+                  },
+                ]}
+              >
                 <OsInput placeholder="www.website.com" />
               </Form.Item>
             </Col>

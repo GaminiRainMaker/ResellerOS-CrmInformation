@@ -82,6 +82,10 @@ const ContentSection: FC<AuthLayoutInterface> = ({
               ? '/userManagement'
               : '/crmInAccount',
           );
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+          });
         }
       });
     }

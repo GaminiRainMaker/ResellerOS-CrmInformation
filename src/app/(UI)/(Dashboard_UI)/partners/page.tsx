@@ -14,7 +14,7 @@ import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {partnerProgramFilter} from '@/app/utils/base';
+import {formatDate, partnerProgramFilter} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Checkbox, Form} from 'antd';
 import {useEffect, useState} from 'react';
@@ -172,7 +172,9 @@ const Partners: React.FC = () => {
       dataIndex: 'createdAt',
       key: 'createdAt',
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+        <Typography name="Body 4/Regular">
+          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
+        </Typography>
       ),
     },
     {
@@ -210,7 +212,15 @@ const Partners: React.FC = () => {
       dataIndex: 'website',
       key: 'website',
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => {
+            window.open(`http://${text}`);
+          }}
+          hoverOnText
+        >
+          {text ?? '--'}
+        </Typography>
       ),
     },
   ];
@@ -347,8 +357,8 @@ const Partners: React.FC = () => {
             Action
           </Typography>
         ),
-        dataIndex: 'website',
-        key: 'website',
+        dataIndex: 'Action',
+        key: 'Action',
         render: (_: string, record: any) => (
           <OsButton
             buttontype="PRIMARY"
@@ -391,6 +401,7 @@ const Partners: React.FC = () => {
                 dataSource={record?.PartnerPrograms}
                 scroll
                 loading={false}
+                paginationProps={false}
               />
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
@@ -428,6 +439,7 @@ const Partners: React.FC = () => {
                 dataSource={record?.PartnerPrograms}
                 scroll
                 loading={false}
+                paginationProps={false}
               />
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',

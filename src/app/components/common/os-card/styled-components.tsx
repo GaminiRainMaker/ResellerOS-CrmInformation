@@ -12,5 +12,5 @@ export const OsContactCardStyle = styled(Card)`
   }
   border: none;
   width: 100%;
-  max-width: 333px;
+  // max-width: 333px;
 `;

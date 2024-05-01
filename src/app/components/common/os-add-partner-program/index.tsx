@@ -104,6 +104,7 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
               name="partner"
               // form={form}
               setPartnerValue={setPartnerValue}
+              isRequired
             />
           )}
           <Form.Item

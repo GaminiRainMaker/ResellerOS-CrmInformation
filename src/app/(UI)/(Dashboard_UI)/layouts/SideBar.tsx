@@ -37,7 +37,7 @@ const SideBar = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [collapsed, setCollapsed] = useState<boolean>(true);
   const [selectedKey, setSelectedKey] = useState<number>(1);
 
   const [crmChildKey, setCrmChildKey] = useState<number>(0);
@@ -891,8 +891,9 @@ const SideBar = () => {
       width={316}
       collapsible
       collapsed={collapsed}
-      onCollapse={(value) => setCollapsed(value)}
+      onCollapse={() => setCollapsed((p) => !p)}
       theme="light"
+      defaultCollapsed
     >
       <LayoutMenuStyle
         theme="light"

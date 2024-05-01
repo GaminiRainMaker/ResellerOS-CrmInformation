@@ -142,7 +142,7 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
               <OsInput
                 disabled={drawer}
                 prefix="$"
-                placeholder="$ 00.00"
+                placeholder="00.00"
                 value={formValue?.amount}
                 onChange={(e) => {
                   setFormValue({

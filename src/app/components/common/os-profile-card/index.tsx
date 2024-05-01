@@ -1,23 +1,25 @@
+/* eslint-disable @typescript-eslint/indent */
+
 'use client';
 
-import {Avatar} from '@/app/components/common/antd/Avatar';
-import {Divider} from '@/app/components/common/antd/Divider';
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Avatar } from '@/app/components/common/antd/Avatar';
+import { Divider } from '@/app/components/common/antd/Divider';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import {OsContactCard} from '@/app/components/common/os-card/OsContactCard';
+import { OsContactCard } from '@/app/components/common/os-card/OsContactCard';
 import OsModal from '@/app/components/common/os-modal';
-import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
+import { AvatarStyled } from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
-import {FC, useState} from 'react';
 import {
   BriefcaseIcon,
   EnvelopeIcon,
   PhoneIcon,
 } from '@heroicons/react/24/outline';
-import {DetailCardStyle} from './styled-components';
-import {OSProfileInterface} from './os-profile.interface';
-import DeleteModal from '../os-modal/DeleteModal';
+import { Badge } from 'antd';
+import { FC, useState } from 'react';
+import { OSProfileInterface } from './os-profile.interface';
+import { DetailCardStyle } from './styled-components';
 
 const ProfileCard: FC<OSProfileInterface> = ({
   contactCardData,
@@ -29,6 +31,8 @@ const ProfileCard: FC<OSProfileInterface> = ({
   const [token] = useThemeToken();
   const [showAllContactModal, setShowAllContactModal] =
     useState<boolean>(false);
+
+  console.log('contactCardData', contactCardData);
 
   return (
     <>
@@ -204,10 +208,15 @@ const ProfileCard: FC<OSProfileInterface> = ({
                   Shipping Address
                 </Typography>
                 <Typography name="Body 3/Regular">
-                  {customerData?.shiping_address_line},{' '}
-                  {customerData?.shiping_city}, {customerData?.shiping_state},{' '}
-                  {customerData?.shiping_pin_code},{' '}
-                  {customerData?.shiping_country}
+                  {customerData.shiping_address_line}
+                  {customerData.shiping_city &&
+                    `, ${customerData.shiping_city}`}
+                  {customerData.shiping_state &&
+                    `, ${customerData.shiping_state}`}
+                  {customerData.shiping_pin_code &&
+                    `, ${customerData.shiping_pin_code}`}
+                  {customerData.shiping_country &&
+                    `, ${customerData.shiping_country}`}
                 </Typography>
               </Space>
             </Col>
@@ -217,10 +226,15 @@ const ProfileCard: FC<OSProfileInterface> = ({
                   Billing Address
                 </Typography>
                 <Typography name="Body 3/Regular">
-                  {customerData?.billing_address_line},{' '}
-                  {customerData?.billing_city}, {customerData?.billing_state},{' '}
-                  {customerData?.billing_pin_code},{' '}
-                  {customerData?.billing_country}
+                  {customerData.billing_address_line}
+                  {customerData.billing_city &&
+                    `, ${customerData.billing_city}`}
+                  {customerData.billing_state &&
+                    `, ${customerData.billing_state}`}
+                  {customerData.billing_pin_code &&
+                    `, ${customerData.billing_pin_code}`}
+                  {customerData.billing_country &&
+                    `, ${customerData.billing_country}`}
                 </Typography>
               </Space>
             </Col>
@@ -238,14 +252,25 @@ const ProfileCard: FC<OSProfileInterface> = ({
                     >
                       Contacts{' '}
                     </Typography>
-                    <Typography
-                      name="Body 4/Bold"
-                      color={token?.colorLink}
-                      onClick={() => setShowAllContactModal((p) => !p)}
-                      cursor="pointer"
+
+                    <Badge
+                      count={
+                        customerData?.BillingContacts?.length > 1
+                          ? // eslint-disable-next-line no-unsafe-optional-chaining
+                            customerData?.BillingContacts?.length - 1
+                          : ''
+                      }
+                      style={{backgroundColor: '#1EB159'}}
                     >
-                      View all{' '}
-                    </Typography>
+                      <Typography
+                        name="Body 4/Bold"
+                        onClick={() => setShowAllContactModal((p) => !p)}
+                        color={token?.colorLink}
+                        cursor="pointer"
+                      >
+                        View all{' '}
+                      </Typography>
+                    </Badge>
                   </Space>
                   <OsContactCard data={contactCardData} />
                 </Space>
