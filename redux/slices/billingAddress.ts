@@ -29,7 +29,7 @@ const billingContactSlice = createSlice({
   name: 'billingcontact',
   initialState,
   reducers: {
-    setBillingcontact: (state, action) => {
+    setBillingContact: (state, action) => {
       state.billingContact = action.payload;
     },
   },
@@ -140,5 +140,5 @@ const billingContactSlice = createSlice({
   },
 });
 
-export const {setBillingcontact} = billingContactSlice.actions;
+export const {setBillingContact} = billingContactSlice.actions;
 export default billingContactSlice?.reducer;

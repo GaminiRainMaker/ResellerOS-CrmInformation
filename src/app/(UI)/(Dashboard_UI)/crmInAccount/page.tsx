@@ -21,6 +21,7 @@ import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import AddCustomer from '@/app/components/common/os-add-customer';
 import OsButton from '@/app/components/common/os-button';
+import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
@@ -28,26 +29,34 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import {MenuProps} from 'antd';
+import {Form, MenuProps} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {
+  insertAddAddress,
+  updateAddress,
+} from '../../../../../redux/actions/address';
+import {
+  insertbillingContact,
+  queryContact,
+} from '../../../../../redux/actions/billingContact';
+import {
   deleteCustomers,
+  insertCustomer,
   queryCustomer,
+  updateCustomer,
 } from '../../../../../redux/actions/customer';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import EditCustomer from './EditCustomer';
 import {queryOpportunity} from '../../../../../redux/actions/opportunity';
-import {queryContact} from '../../../../../redux/actions/billingContact';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {setBillingContact} from '../../../../../redux/slices/billingAddress';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [token] = useThemeToken();
+  const [form] = Form.useForm();
   const [activeTab, setActiveTab] = useState<any>('1');
-  const [formValue, setFormValue] = useState<any>();
-  const [customerValue, setCustomerValue] = useState<any>();
   const [showModal, setShowModal] = useState<boolean>(false);
   const {loading, filteredData} = useAppSelector((state) => state.customer);
   const {filteredData: billingData} = useAppSelector(
@@ -58,6 +67,8 @@ const CrmInformation: React.FC = () => {
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deletedData, setDeletedData] = useState<any>();
+  const [showDrawer, setShowDrawer] = useState<boolean>(false);
+  const [editRecordData, setEditRecordData] = useState<any>();
   const [query, setQuery] = useState<{
     customer: string | null;
     contact: string | null;
@@ -100,9 +111,8 @@ const CrmInformation: React.FC = () => {
   };
 
   const editCustomerFileds = (record: any) => {
-    setCustomerValue(record);
-    setFormValue({
-      ...record,
+    console.log('recordDataaa', record);
+    form.setFieldsValue({
       billing_address_line: record?.Addresses?.[0]?.billing_address_line,
       billing_city: record?.Addresses?.[0]?.billing_city,
       billing_state: record?.Addresses?.[0]?.billing_state,
@@ -114,7 +124,12 @@ const CrmInformation: React.FC = () => {
       shiping_pin_code: record?.Addresses?.[0]?.shiping_pin_code,
       shiping_country: record?.Addresses?.[0]?.shiping_country,
       shipping_id: record?.Addresses?.[0]?.id,
+      name: record?.name,
+      currency: record?.currency,
+      industry: record?.industry,
+      website: record?.website,
     });
+    dispatch(setBillingContact(record?.BillingContacts));
   };
 
   const analyticsData = [
@@ -207,23 +222,6 @@ const CrmInformation: React.FC = () => {
         </Typography>
       ),
     },
-
-    // for Billing Contact
-    // {
-    //   title: (
-    //     <Typography name="Body 4/Medium" className="dragHandler">
-    //       Contact
-    //     </Typography>
-    //   ),
-    //   dataIndex: 'name',
-    //   key: 'name',
-    //   width: 187,
-    //   render: (text: any, record: any) => (
-    //     <Typography name="Body 4/Regular">
-    //       {record?.BillingContacts?.[0]?.billing_first_name ?? '--'}
-    //     </Typography>
-    //   ),
-    // },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -254,8 +252,9 @@ const CrmInformation: React.FC = () => {
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              setOpen((p) => !p);
+              setShowDrawer(true);
               editCustomerFileds(record);
+              setEditRecordData(record);
             }}
           />
           <TrashIcon
@@ -299,13 +298,6 @@ const CrmInformation: React.FC = () => {
       },
   ];
 
-  // const uniqueBillingNames = Array.from(
-  //   new Set(
-  //     filteredData?.map(
-  //       (customer: any) => customer?.BillingContacts[0]?.billing_first_name,
-  //     ),
-  //   ),
-  // );
   const uniqueCustomer = Array.from(
     new Set(filteredData?.map((customer: any) => customer.name)),
   );
@@ -320,6 +312,47 @@ const CrmInformation: React.FC = () => {
         }}
       />
     ),
+  };
+
+  const onFinish = () => {
+    const FormData = form.getFieldsValue();
+    try {
+      dispatch(insertCustomer(FormData)).then((data) => {
+        const newAddressObj: any = {
+          ...FormData,
+          customer_id: data?.payload?.id,
+        };
+
+        if (newAddressObj) {
+          dispatch(insertAddAddress(newAddressObj));
+        }
+        if (newAddressObj) {
+          dispatch(insertbillingContact(newAddressObj));
+        }
+      });
+      dispatch(queryCustomer(searchQuery));
+      form.resetFields();
+      setShowModal(false);
+    } catch (error) {
+      console.log(error);
+      form.resetFields();
+      setShowModal(false);
+    }
+  };
+
+  const updateCustomerDetails = async () => {
+    const FormData = form.getFieldsValue();
+    await dispatch(
+      updateAddress({...FormData, shipping_id: editRecordData?.id}),
+    );
+    await dispatch(updateCustomer({...FormData, id: editRecordData?.id}));
+    dispatch(
+      queryCustomer({
+        customer: null,
+        contact: null,
+      }),
+    );
+    setShowDrawer(false);
   };
 
   return (
@@ -411,34 +444,7 @@ const CrmInformation: React.FC = () => {
                   ))}
                 </CommonSelect>
               </Space>
-              {/* <Space direction="vertical" size={0}>
-                <Typography name="Body 4/Medium">Contact</Typography>
-                <CommonSelect
-                  style={{width: '200px'}}
-                  placeholder="Search here"
-                  showSearch
-                  optionFilterProp="children"
-                  onSearch={(e) => {
-                    setQuery({
-                      ...query,
-                      contact: e,
-                    });
-                  }}
-                  onChange={(e) => {
-                    setQuery({
-                      ...query,
-                      contact: e,
-                    });
-                  }}
-                  value={query?.contact}
-                >
-                  {uniqueBillingNames?.map((billingName: any) => (
-                    <Option key={billingName} value={billingName}>
-                      {billingName}
-                    </Option>
-                  ))}
-                </CommonSelect>
-              </Space> */}
+
               <div
                 style={{
                   marginTop: '15px',
@@ -473,19 +479,37 @@ const CrmInformation: React.FC = () => {
       </Space>
 
       <OsModal
-        body={
-          <AddCustomer
-            setShowModal={setShowModal}
-            open={open}
-            setOpen={setOpen}
-          />
-        }
-        width={800}
+        body={<AddCustomer form={form} onFinish={onFinish} />}
+        width={700}
         open={showModal}
         onCancel={() => {
           setShowModal((p) => !p);
+          form.resetFields();
         }}
+        onOk={form.submit}
+        primaryButtonText="Save"
+        footerPadding={20}
       />
+
+      <OsDrawer
+        title={<Typography name="Body 1/Regular">Customer Details</Typography>}
+        placement="right"
+        onClose={() => setShowDrawer((p: boolean) => !p)}
+        open={showDrawer}
+        width={450}
+        footer={
+          <Row style={{width: '100%', float: 'right'}}>
+            <OsButton
+              btnStyle={{width: '100%'}}
+              buttontype="PRIMARY"
+              text="UPDATE"
+              clickHandler={form.submit}
+            />
+          </Row>
+        }
+      >
+        <AddCustomer form={form} onFinish={updateCustomerDetails} drawer />
+      </OsDrawer>
 
       <DeleteModal
         setShowModalDelete={setShowModalDelete}
@@ -494,15 +518,6 @@ const CrmInformation: React.FC = () => {
         deleteSelectedIds={deleteSelectedIds}
         heading="Delete Account"
         description="Are you sure you want to delete this account?"
-      />
-
-      <EditCustomer
-        setOpen={setOpen}
-        open={open}
-        formValue={formValue}
-        setFormValue={setFormValue}
-        customerValue={customerValue}
-        setCustomerValue={setCustomerValue}
       />
     </>
   );

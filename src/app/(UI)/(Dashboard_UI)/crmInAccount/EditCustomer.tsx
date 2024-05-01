@@ -26,8 +26,6 @@ const EditCustomer: FC<any> = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const getCustomerID = searchParams.get('id');
-
-
   
   const updateCustomerDetails = async () => {
     await dispatch(updateAddress(formValue));

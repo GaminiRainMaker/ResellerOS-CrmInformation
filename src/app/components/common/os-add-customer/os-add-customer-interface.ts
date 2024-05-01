@@ -1,7 +1,9 @@
+import {FormInstance} from 'antd';
+
 export interface AddCustomertInterface {
-  setShowModal: any;
-  setOpen?: any;
-  open?: any;
+  drawer?: boolean;
+  form: FormInstance;
+  onFinish: any;
 }
 export interface CustomerAccountInterface {
   formValue: any;
