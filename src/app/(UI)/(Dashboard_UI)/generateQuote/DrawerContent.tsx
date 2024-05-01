@@ -1,24 +1,23 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-nested-ternary */
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 import OsCustomerSelect from '@/app/components/common/os-customer-select';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsInput from '@/app/components/common/os-input';
 import OsOpportunitySelect from '@/app/components/common/os-opportunity-select';
 import CommonSelect from '@/app/components/common/os-select';
-import OsStatusWrapper from '@/app/components/common/os-status';
 import Typography from '@/app/components/common/typography';
-import {quoteStatusOptions} from '@/app/utils/CONSTANTS';
-import {formatDate} from '@/app/utils/base';
-import {Form} from 'antd';
-import {useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
-import {getAllCustomer} from '../../../../../redux/actions/customer';
-import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
-import {getQuoteById} from '../../../../../redux/actions/quote';
-import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { quoteStatusOptions } from '@/app/utils/CONSTANTS';
+import { formatDate } from '@/app/utils/base';
+import { Form } from 'antd';
+import { useSearchParams } from 'next/navigation';
+import { FC, useEffect, useState } from 'react';
+import { getAllCustomer } from '../../../../../redux/actions/customer';
+import { getAllOpportunity } from '../../../../../redux/actions/opportunity';
+import { getQuoteById } from '../../../../../redux/actions/quote';
+import { getAllSyncTable } from '../../../../../redux/actions/syncTable';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 
 const DrawerContent: FC<any> = ({open, form, onFinish}) => {
   const dispatch = useAppDispatch();

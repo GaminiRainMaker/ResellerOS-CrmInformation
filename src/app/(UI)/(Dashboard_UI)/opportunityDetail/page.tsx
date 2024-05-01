@@ -16,6 +16,7 @@ import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
+import {formatDate} from '@/app/utils/base';
 import {EyeIcon, PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -92,8 +93,8 @@ const OpportunityDetails = () => {
           File Name
         </Typography>
       ),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'file_name',
+      key: 'file_name',
       width: 130,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -109,7 +110,9 @@ const OpportunityDetails = () => {
       key: 'createdAt',
       width: 130,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+        <Typography name="Body 4/Regular">
+          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
+        </Typography>
       ),
     },
     {

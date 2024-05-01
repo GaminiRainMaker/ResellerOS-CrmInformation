@@ -78,7 +78,7 @@ const AuthLayout: FC<AuthLayoutInterface> = ({
         >
           <div
             style={{
-              height: '40vh',
+              height: '50vh',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -120,7 +120,7 @@ const AuthLayout: FC<AuthLayoutInterface> = ({
               </div>
             </Space>
           </div>
-          <div style={{height: '60vh'}}>
+          <div style={{height: '50vh'}}>
             <div
               style={{
                 position: 'relative',
@@ -133,7 +133,7 @@ const AuthLayout: FC<AuthLayoutInterface> = ({
                 style={{
                   position: 'absolute',
                   bottom: '0px',
-                  left: '-10%',
+                  left: '-20%',
                   height: '100%',
                   width: '100%',
                 }}

@@ -48,6 +48,7 @@ const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
     let grossProfit: any = 0;
     let grossProfitPercentage: any = 0;
     let exitPrice: number = 0;
+    let adjustedPrice: number = 0;
     profitability?.map((item: any) => {
       if (item?.gross_profit) {
         grossProfit += item?.gross_profit ? item?.gross_profit : 0;
@@ -59,13 +60,16 @@ const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
       }
       if (item?.exit_price) {
         exitPrice += item?.exit_price ? item?.exit_price : 0;
-        console.log('totalValues', item);
+      }
+      if (item?.adjusted_price) {
+        adjustedPrice += item?.adjusted_price ? Number(item?.adjusted_price) : 0;
       }
     });
     setTotalValues({
       GrossProfit: grossProfit,
       GrossProfitPercentage: grossProfitPercentage,
       ExitPrice: exitPrice,
+      AdjustedPrice: adjustedPrice,
     });
   }, [JSON.stringify(profitability)]);
 
@@ -86,7 +90,7 @@ const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
     },
     {
       key: 3,
-      primary: `$${abbreviate(amountData?.LineAmount ?? 0)}`,
+      primary: `$${abbreviate(totalValues?.AdjustedPrice ?? 0)}`,
       secondry: 'Total Cost',
       icon: <CurrencyDollarIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
@@ -113,7 +117,7 @@ const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
     },
     {
       key: 6,
-      primary: `${abbreviate(totalRebateAmount?.totalRebateAmountData ?? 0)} %`,
+      primary: `$${abbreviate(totalRebateAmount?.totalRebateAmountData ?? 0)}`,
       secondry: 'Rebate Total',
       icon: (
         <Image

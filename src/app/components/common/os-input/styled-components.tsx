@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import {Input, InputNumber, InputNumberPassword} from '../antd/Input';
-import { Select } from '../antd/Select';
+import {Select} from '../antd/Select';
 
 export const InputStyled = styled(Input)`
   display: flex;
@@ -10,12 +10,15 @@ export const InputStyled = styled(Input)`
   gap: var(--Corners, 8px);
   align-self: stretch;
   border-radius: 12px;
+  background: none !important;
+
   border: 1px solid var(--foundation-neutrals-black-n-70, #a3a3a3);
   &.ant-input:focus-visible {
     border-color: none;
     box-shadow: none;
     border: 4px solid var(--foundation-secondary-21-secondary-21200, #a6d6ee);
     outline: none;
+    background: none !important;
   }
 `;
 export const SearchInputStyled = styled(Input)`

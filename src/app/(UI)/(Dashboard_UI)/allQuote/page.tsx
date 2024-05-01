@@ -216,7 +216,7 @@ const AllQuote: React.FC = () => {
           name="Body 3/Regular"
           color={token?.colorError}
           cursor="pointer"
-          onClick={() => setShowModalDelete(true)}
+          onClick={() => deleteIds?.length > 0 && setShowModalDelete(true)}
         >
           Delete Selected
         </Typography>
