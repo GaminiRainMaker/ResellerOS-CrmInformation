@@ -351,6 +351,7 @@ const CrmInformation: React.FC = () => {
       }),
     );
     setShowDrawer(false);
+    form.resetFields(); 
   };
 
   return (
@@ -492,7 +493,10 @@ const CrmInformation: React.FC = () => {
       <OsDrawer
         title={<Typography name="Body 1/Regular">Customer Details</Typography>}
         placement="right"
-        onClose={() => setShowDrawer((p: boolean) => !p)}
+        onClose={() => {
+          setShowDrawer((p: boolean) => !p);
+          form.resetFields();
+        }}
         open={showDrawer}
         width={450}
         footer={

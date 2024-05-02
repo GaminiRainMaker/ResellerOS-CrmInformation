@@ -92,11 +92,15 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
       >
         <Row justify="space-between">
           <Col
-            span={drawer ? 12 : 4}
-            style={{marginBottom: drawer ? '5px' : ''}}
+            span={drawer ? 24 : 4}
+            style={{
+              marginBottom: drawer ? '5px' : '',
+            }}
           >
             {drawer ? (
               <TableNameColumn
+                justifyContent="start"
+                secondaryTextColor={token?.colorPrimary}
                 primaryText={
                   <Typography name="Body 4/Regular">
                     {billingContact?.name}
@@ -107,7 +111,10 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                     ID: {billingContact?.id}
                   </Typography>
                 }
-                fallbackIcon={`${'A'}${'B'}`}
+                fallbackIcon={`${
+                  billingContact?.name?.toString()?.charAt(0)?.toUpperCase() ??
+                  billingContact?.name?.toString()?.charAt(0)?.toUpperCase()
+                }`}
                 iconBg="#1EB159"
               />
             ) : (
