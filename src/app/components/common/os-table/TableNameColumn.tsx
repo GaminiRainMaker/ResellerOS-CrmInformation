@@ -5,7 +5,6 @@ import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
 import {AvatarStyled} from './styled-components';
-import OsButton from '../os-button';
 
 const TableNameColumn: FC<any> = ({
   logo,
@@ -21,6 +20,8 @@ const TableNameColumn: FC<any> = ({
   tooltip = false,
   iconBg,
   secondaryEllipsis = false,
+  justifyContent = 'center',
+  secondaryTextColor = '#0D0D0D',
 }) => {
   const imgUrl = logo && ``;
 
@@ -34,7 +35,7 @@ const TableNameColumn: FC<any> = ({
           width: '100%',
           marginLeft: `${avtarLeftMargin}px`,
           display: 'flex',
-          justifyContent: 'center',
+          justifyContent,
           textAlign: 'start',
         }}
       >
@@ -59,7 +60,7 @@ const TableNameColumn: FC<any> = ({
             ellipsis={secondaryEllipsis}
             as="div"
             name={secondaryTextTypography}
-            color={token.colorPrimaryText}
+            color={secondaryTextColor}
           >
             {secondaryText}
           </Typography>
