@@ -21,7 +21,7 @@ const initialState: BillingContactState = {
   loading: false,
   error: null,
   data: [],
-  billingContact: [],
+  billingContact: {},
   filteredData: [],
 };
 

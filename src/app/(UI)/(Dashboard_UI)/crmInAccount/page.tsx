@@ -63,7 +63,6 @@ const CrmInformation: React.FC = () => {
     (state) => state.billingContact,
   );
   const {data: OpportunityData} = useAppSelector((state) => state.Opportunity);
-  const [open, setOpen] = useState(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deletedData, setDeletedData] = useState<any>();
@@ -94,12 +93,6 @@ const CrmInformation: React.FC = () => {
     setDeletedData(setDeleted);
   }, [billingData, activeTab]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      dispatch(queryCustomer(query));
-    }, 1000);
-  }, [!open, showModal]);
-
   const deleteSelectedIds = async () => {
     const data = {Ids: deleteIds};
     await dispatch(deleteCustomers(data));
@@ -111,7 +104,6 @@ const CrmInformation: React.FC = () => {
   };
 
   const editCustomerFileds = (record: any) => {
-    console.log('recordDataaa', record);
     form.setFieldsValue({
       billing_address_line: record?.Addresses?.[0]?.billing_address_line,
       billing_city: record?.Addresses?.[0]?.billing_city,
@@ -129,7 +121,13 @@ const CrmInformation: React.FC = () => {
       industry: record?.industry,
       website: record?.website,
     });
-    dispatch(setBillingContact(record?.BillingContacts));
+    dispatch(
+      setBillingContact({
+        BillingContacts: record?.BillingContacts,
+        name: record?.name,
+        id: record?.id,
+      }),
+    );
   };
 
   const analyticsData = [
@@ -498,14 +496,12 @@ const CrmInformation: React.FC = () => {
         open={showDrawer}
         width={450}
         footer={
-          <Row style={{width: '100%', float: 'right'}}>
-            <OsButton
-              btnStyle={{width: '100%'}}
-              buttontype="PRIMARY"
-              text="UPDATE"
-              clickHandler={form.submit}
-            />
-          </Row>
+          <OsButton
+            btnStyle={{width: '100%'}}
+            buttontype="PRIMARY"
+            text="UPDATE"
+            clickHandler={form.submit}
+          />
         }
       >
         <AddCustomer form={form} onFinish={updateCustomerDetails} drawer />

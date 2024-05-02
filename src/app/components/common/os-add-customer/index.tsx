@@ -61,18 +61,20 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
       >
         <Row justify="space-between">
           <Col
-            span={drawer ? 13 : 4}
+            span={drawer ? 12 : 4}
             style={{marginBottom: drawer ? '5px' : ''}}
           >
             {drawer ? (
               <TableNameColumn
                 primaryText={
-                  <SelectFormItem name="name">
-                    <OsInput placeholder="Enter here" />
-                  </SelectFormItem>
+                  <Typography name="Body 4/Regular">
+                    {billingContact?.name}
+                  </Typography>
                 }
                 secondaryText={
-                  <Typography name="Body 4/Regular">ID: 59afd544</Typography>
+                  <Typography name="Body 4/Regular">
+                    ID: {billingContact?.id}
+                  </Typography>
                 }
                 fallbackIcon={`${'A'}${'B'}`}
                 iconBg="#1EB159"
@@ -123,7 +125,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                     },
                   ]}
                 >
-                  <OsInput placeholder="Enter here" />
+                  <OsInput placeholder="Enter here" defaultValue="Dollar" />
                 </SelectFormItem>
               </Col>
               <Col span={drawer ? 24 : 12}>
@@ -375,7 +377,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
               key: '3',
               children: (
                 <>
-                  {drawer && billingContact?.length > 0 ? (
+                  {drawer && billingContact?.BillingContacts?.length > 0 ? (
                     // <Row
                     //   style={{
                     //     display: 'flex',
