@@ -44,6 +44,20 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
   const [editBillingAddress, setEditBillingAddress] = useState<Boolean>(false);
   const [newAdd, setNewAdd] = useState<Boolean>(false);
   const {loading} = useAppSelector((state) => state.customer);
+  const [contactDetail, setContactDetail] = useState<[]>();
+  const [objectValuesForContact, setObjectValueForContact] = useState<any>();
+  const [editContactOIndex, setEditContactIndex] = useState<number>();
+
+  const updateValues = (type: string, indexofupdate: number) => {
+    const newArrOfContact: any = [];
+
+    if (type === 'update') {
+      newArrOfContact[indexofupdate] = objectValuesForContact;
+    } else {
+      newArrOfContact?.push(objectValuesForContact);
+    }
+    setContactDetail(newArrOfContact);
+  };
 
   const addCustomerAndAddress = async () => {
     try {
@@ -157,7 +171,6 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
       key: '3',
     },
   ];
-  console.log('customerValuecustomerValue', customerValue?.name);
   return (
     <>
       <Space
@@ -465,7 +478,93 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
           </Row>
         ) : (
           <Row>
-            {editBillingAddress || !drawer || newAdd ? (
+            <Row
+              style={{
+                display: 'flex',
+                marginTop: '10px',
+                width: '100%',
+              }}
+            >
+              {drawer && (
+                <>
+                  {' '}
+                  {contactDetail?.map((item: any, index: number) => (
+                    <Col key={item?.key} span={24}>
+                      <Row
+                        key={index}
+                        style={{
+                          background: '#F6F7F8',
+                          padding: '12px',
+                          borderRadius: '12px',
+                          margin: '5px',
+                        }}
+                        justify="space-between"
+                      >
+                        <Col>
+                          <Space direction="vertical" size={12}>
+                            <TableNameColumn
+                              primaryText={
+                                <Typography name="Body 3/Regular">
+                                  {item?.billing_first_name}{' '}
+                                  {item?.billing_last_name}
+                                </Typography>
+                              }
+                              secondaryText={
+                                <Typography name="Body 4/Regular">
+                                  {item?.billing_role}
+                                </Typography>
+                              }
+                              fallbackIcon={`${item?.billing_first_name
+                                ?.toString()
+                                ?.charAt(0)
+                                ?.toUpperCase()}${item?.billing_last_name
+                                ?.toString()
+                                ?.charAt(0)
+                                ?.toUpperCase()}`}
+                              iconBg="#1EB159"
+                            />
+                            <Typography name="Body 4/Regular">
+                              {' '}
+                              <MailOutlined
+                                size={24}
+                                style={{marginRight: '5px'}}
+                              />
+                              {item?.billing_email}
+                            </Typography>
+                          </Space>
+                        </Col>
+                        <Col>
+                          {' '}
+                          <Row
+                            justify="center"
+                            align="middle"
+                            style={{height: '100%'}}
+                          >
+                            <PencilSquareIcon
+                              onClick={() => {
+                                setEditBillingAddress(true);
+
+                                setFormValue({
+                                  ...formValue,
+                                  billing_email: item?.billing_email,
+                                  billing_last_name: item?.billing_last_name,
+                                  billing_first_name: item?.billing_first_name,
+                                  billing_role: item?.billing_role,
+                                  billing_id: item?.id,
+                                });
+                              }}
+                              width={24}
+                              style={{color: '#949494'}}
+                            />
+                          </Row>
+                        </Col>
+                      </Row>
+                    </Col>
+                  ))}
+                </>
+              )}
+            </Row>
+            {(editBillingAddress || !drawer || newAdd) && (
               <>
                 <Row
                   style={{
@@ -484,10 +583,10 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
 
                       <OsInput
                         placeholder="First Name"
-                        value={formValue?.billing_first_name}
+                        value={objectValuesForContact?.billing_first_name}
                         onChange={(e) => {
-                          setFormValue({
-                            ...formValue,
+                          setObjectValueForContact({
+                            ...objectValuesForContact,
                             billing_first_name: e.target.value,
                           });
                         }}
@@ -497,10 +596,10 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
                       <Typography name="Body 4/Regular">Last Name</Typography>
                       <OsInput
                         placeholder="Last Name"
-                        value={formValue?.billing_last_name}
+                        value={objectValuesForContact?.billing_last_name}
                         onChange={(e) => {
-                          setFormValue({
-                            ...formValue,
+                          setObjectValueForContact({
+                            ...objectValuesForContact,
                             billing_last_name: e.target.value,
                           });
                         }}
@@ -517,10 +616,10 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
 
                       <OsInput
                         placeholder="Role"
-                        value={formValue?.billing_role}
+                        value={objectValuesForContact?.billing_role}
                         onChange={(e) => {
-                          setFormValue({
-                            ...formValue,
+                          setObjectValueForContact({
+                            ...objectValuesForContact,
                             billing_role: e.target.value,
                           });
                         }}
@@ -531,17 +630,15 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
 
                       <OsInput
                         placeholder="Email"
-                        value={formValue?.billing_email}
+                        value={objectValuesForContact?.billing_email}
                         onChange={(e) => {
-                          setFormValue({
-                            ...formValue,
+                          setObjectValueForContact({
+                            ...objectValuesForContact,
                             billing_email: e.target.value,
                           });
                         }}
                       />
                     </Col>
-                  </Row>
-                  {drawer && (
                     <Row
                       style={{
                         marginTop: '20px',
@@ -560,91 +657,12 @@ const AddCustomerInputVale: React.FC<CustomerAccountInterface> = ({
                         text={formValue?.customer_id ? 'ADD' : 'UPDATE'}
                       />
                     </Row>
-                  )}
+                  </Row>
+                  {/* {drawer && (
+            
+                  )} */}
                 </Row>
               </>
-            ) : (
-              <Row
-                style={{
-                  display: 'flex',
-                  marginTop: '10px',
-                  width: '100%',
-                }}
-              >
-                {formValue?.BillingContacts?.map((item: any, index: number) => (
-                  <Col key={item?.key} span={24}>
-                    <Row
-                      key={index}
-                      style={{
-                        background: '#F6F7F8',
-                        padding: '12px',
-                        borderRadius: '12px',
-                        margin: '5px',
-                      }}
-                      justify="space-between"
-                    >
-                      <Col>
-                        <Space direction="vertical" size={12}>
-                          <TableNameColumn
-                            primaryText={
-                              <Typography name="Body 3/Regular">
-                                {item?.billing_first_name}{' '}
-                                {item?.billing_last_name}
-                              </Typography>
-                            }
-                            secondaryText={
-                              <Typography name="Body 4/Regular">
-                                {item?.billing_role}
-                              </Typography>
-                            }
-                            fallbackIcon={`${item?.billing_first_name
-                              ?.toString()
-                              ?.charAt(0)
-                              ?.toUpperCase()}${item?.billing_last_name
-                              ?.toString()
-                              ?.charAt(0)
-                              ?.toUpperCase()}`}
-                            iconBg="#1EB159"
-                          />
-                          <Typography name="Body 4/Regular">
-                            {' '}
-                            <MailOutlined
-                              size={24}
-                              style={{marginRight: '5px'}}
-                            />
-                            {item?.billing_email}
-                          </Typography>
-                        </Space>
-                      </Col>
-                      <Col>
-                        {' '}
-                        <Row
-                          justify="center"
-                          align="middle"
-                          style={{height: '100%'}}
-                        >
-                          <PencilSquareIcon
-                            onClick={() => {
-                              setEditBillingAddress(true);
-                              setFormValue({
-                                ...formValue,
-                                billing_email: item?.billing_email,
-                                billing_last_name: item?.billing_last_name,
-                                billing_first_name: item?.billing_first_name,
-                                billing_role: item?.billing_role,
-                                billing_id: item?.id,
-                              });
-                            }}
-                            width={24}
-                            style={{color: '#949494'}}
-                          />
-                        </Row>
-                      </Col>
-                    </Row>
-                  </Col>
-                ))}
-              </Row>
-              // <OsContactCard data={formValue?.BillingContacts} />
             )}
             {drawer && (
               <Row

@@ -2,24 +2,24 @@
 
 'use client';
 
-import { Avatar } from '@/app/components/common/antd/Avatar';
-import { Divider } from '@/app/components/common/antd/Divider';
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Avatar} from '@/app/components/common/antd/Avatar';
+import {Divider} from '@/app/components/common/antd/Divider';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import { OsContactCard } from '@/app/components/common/os-card/OsContactCard';
+import {OsContactCard} from '@/app/components/common/os-card/OsContactCard';
 import OsModal from '@/app/components/common/os-modal';
-import { AvatarStyled } from '@/app/components/common/os-table/styled-components';
+import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {
   BriefcaseIcon,
   EnvelopeIcon,
   PhoneIcon,
 } from '@heroicons/react/24/outline';
-import { Badge } from 'antd';
-import { FC, useState } from 'react';
-import { OSProfileInterface } from './os-profile.interface';
-import { DetailCardStyle } from './styled-components';
+import {Badge} from 'antd';
+import {FC, useState} from 'react';
+import {OSProfileInterface} from './os-profile.interface';
+import {DetailCardStyle} from './styled-components';
 
 const ProfileCard: FC<OSProfileInterface> = ({
   contactCardData,
