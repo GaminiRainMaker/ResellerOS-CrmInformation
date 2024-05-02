@@ -1,6 +1,11 @@
+/* eslint-disable import/no-cycle */
+
 'use client';
 
+import {CustomUpload} from '@/app/(UI)/(Dashboard_UI)/layouts/Header';
+import ImgCrop from 'antd-img-crop';
 import {FC} from 'react';
+import {Avatar} from '../antd/Avatar';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
@@ -22,10 +27,14 @@ const TableNameColumn: FC<any> = ({
   secondaryEllipsis = false,
   justifyContent = 'center',
   secondaryTextColor = '#0D0D0D',
+  imageUpload = false,
+  debounceFn,
+  size = 50,
+  imgCursor = 'pointer',
 }) => {
   const imgUrl = logo && ``;
-
   const [token] = useThemeToken();
+
   return (
     <>
       <Space
@@ -39,7 +48,26 @@ const TableNameColumn: FC<any> = ({
           textAlign: 'start',
         }}
       >
-        <AvatarStyled background={iconBg} src={imgUrl} icon={fallbackIcon} />
+        {imageUpload ? (
+          <ImgCrop
+            onModalOk={(list: any) => {
+              debounceFn(list);
+            }}
+          >
+            <CustomUpload showUploadList={false}>
+              <Avatar
+                src={logo}
+                icon={fallbackIcon}
+                shape="circle"
+                size={size}
+                style={{cursor: imgCursor}}
+              />
+            </CustomUpload>
+          </ImgCrop>
+        ) : (
+          <AvatarStyled background={iconBg} src={imgUrl} icon={fallbackIcon} />
+        )}
+
         <span style={{cursor}}>
           <Typography
             cursor={cursor}

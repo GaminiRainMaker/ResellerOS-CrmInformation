@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import {RcFile} from 'antd/es/upload';
 import {Upload as Uploader} from '@aws-sdk/lib-storage';
 import {S3Client} from '@aws-sdk/client-s3';
@@ -16,7 +17,13 @@ const getBase64 = async (file: RcFile): Promise<string> =>
   });
 
 // eslint-disable-next-line consistent-return
-const uploadImage = async (base64: any, type: any, file: any) => {
+const uploadImage = async (
+  base64: any,
+  type: any,
+  file: any,
+  userTypes: string,
+  userIds: number,
+) => {
   try {
     if (type === 'video') {
       const config: any = {
@@ -57,9 +64,12 @@ const uploadImage = async (base64: any, type: any, file: any) => {
       return data.Location;
     }
     if (type === 'image') {
-      const {data} = await UPLOAD_API.postIMage({
+      const obj = {
         image: base64,
-      });
+        userType: userTypes,
+        userId: userIds,
+      };
+      const {data} = await UPLOAD_API.postIMage(obj);
       return data.Location;
     }
     // return data.Location;

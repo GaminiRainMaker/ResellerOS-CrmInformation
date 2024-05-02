@@ -50,6 +50,7 @@ import {
 import {queryOpportunity} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';
+import { setCustomerProfile } from '../../../../../redux/slices/customer';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -58,7 +59,9 @@ const CrmInformation: React.FC = () => {
   const [form] = Form.useForm();
   const [activeTab, setActiveTab] = useState<any>('1');
   const [showModal, setShowModal] = useState<boolean>(false);
-  const {loading, filteredData} = useAppSelector((state) => state.customer);
+  const {loading, filteredData, customerProfile} = useAppSelector(
+    (state) => state.customer,
+  );
   const {filteredData: billingData} = useAppSelector(
     (state) => state.billingContact,
   );
@@ -104,6 +107,7 @@ const CrmInformation: React.FC = () => {
   };
 
   const editCustomerFileds = (record: any) => {
+    console.log('recordrecord', record);
     form.setFieldsValue({
       billing_address_line: record?.Addresses?.[0]?.billing_address_line,
       billing_city: record?.Addresses?.[0]?.billing_city,
@@ -125,6 +129,7 @@ const CrmInformation: React.FC = () => {
       setBillingContact({
         BillingContacts: record?.BillingContacts,
         name: record?.name,
+        image: record?.profile_image,
         id: record?.id,
       }),
     );
@@ -315,7 +320,9 @@ const CrmInformation: React.FC = () => {
   const onFinish = () => {
     const FormData = form.getFieldsValue();
     try {
-      dispatch(insertCustomer(FormData)).then((data) => {
+      dispatch(
+        insertCustomer({...FormData, profile_image: customerProfile}),
+      ).then((data) => {
         const newAddressObj: any = {
           ...FormData,
           customer_id: data?.payload?.id,
@@ -327,6 +334,7 @@ const CrmInformation: React.FC = () => {
         if (newAddressObj) {
           dispatch(insertbillingContact(newAddressObj));
         }
+        dispatch(setCustomerProfile(''));
       });
       dispatch(queryCustomer(searchQuery));
       form.resetFields();
@@ -351,7 +359,8 @@ const CrmInformation: React.FC = () => {
       }),
     );
     setShowDrawer(false);
-    form.resetFields(); 
+    dispatch(setBillingContact({}));
+    form.resetFields();
   };
 
   return (
@@ -496,6 +505,7 @@ const CrmInformation: React.FC = () => {
         onClose={() => {
           setShowDrawer((p: boolean) => !p);
           form.resetFields();
+          dispatch(setBillingContact({}));
         }}
         open={showDrawer}
         width={450}

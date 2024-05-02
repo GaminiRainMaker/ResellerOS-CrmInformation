@@ -92,6 +92,7 @@ export const API = {
     SEARCH: '/customer/search',
     QUERYCUSTOMER: '/customer/query',
     GETBYID: '/customer/getAllCustomerById',
+    GetCustomerProfileById: '/customer/getCustomerProfileById',
   },
   ADDRESS: {
     INDEX: '/address',
