@@ -8,6 +8,7 @@ import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import CommonSelect from '@/app/components/common/os-select';
+import OsCollapse from '@/app/components/common/os-collapse';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
 import {pricingMethod, selectDataForProduct} from '@/app/utils/CONSTANTS';
@@ -18,6 +19,11 @@ import {
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import {Space} from '@/app/components/common/antd/Space';
+import {
+  getAllBundle,
+  updateBundleQuantity,
+} from '../../../../../../redux/actions/bundle';
 import {updateProductFamily} from '../../../../../../redux/actions/product';
 import {
   getProfitabilityByQuoteId,
@@ -26,21 +32,27 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
 
-const Profitability: FC<any> = ({tableColumnDataShow}) => {
+const Profitability: FC<any> = ({tableColumnDataShow, setSelectedRowIds}) => {
   const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
+  const {data: bundleData} = useAppSelector((state) => state.bundle);
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
     (state) => state.profitability,
   );
-  const [profitabilityData, setProfitabilityData] = useState<any>(
-    profitabilityDataByQuoteId,
-  );
-
+  const [profitabilityData, setProfitabilityData] = useState<any>();
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Profitability" />,
   };
+
+  useEffect(() => {
+    const filteredDataa = profitabilityDataByQuoteId?.filter(
+      (item: any) => item?.bundle_id === null,
+    );
+
+    setProfitabilityData(filteredDataa);
+  }, [profitabilityDataByQuoteId]);
 
   const updateAmountValue = (pricingMethods: string) => {
     if (
@@ -53,6 +65,10 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
     return `$`;
   };
 
+  useEffect(() => {
+    dispatch(getAllBundle(getQuoteID));
+  }, [getQuoteID]);
+
   const renderEditableInput = (field: string) => {
     const editableField = tableColumnDataShow.find(
       (item: any) => item.field_name === field,
@@ -61,6 +77,11 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       return false;
     }
     return true;
+  };
+  const rowSelection = {
+    onChange: (selectedRowKeys: any) => {
+      setSelectedRowIds(selectedRowKeys);
+    },
   };
 
   const renderRequiredInput = (field: string) => {
@@ -412,7 +433,10 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       ),
     },
   ];
-
+  const updateBundleQuantityData = async (data: any) => {
+    await dispatch(updateBundleQuantity(data));
+    dispatch(getAllBundle(getQuoteID));
+  };
   const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>();
 
   useEffect(() => {
@@ -466,9 +490,59 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
       setProfitabilityData(d?.payload);
     });
   }, [getQuoteID]);
-
+  console.log('bundleData', bundleData);
   return (
     <>
+      {bundleData?.map((item: any) => (
+        <OsCollapse
+          key={item?.id}
+          items={[
+            {
+              key: '1',
+              label: (
+                <>
+                  <Space
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <p>{item?.name}</p>
+                    <p>Lines:{item?.QuoteLineItems?.length}</p>
+                    <p>Desc: {item?.description}</p>
+                    <p>
+                      Quantity:
+                      <OsInput
+                        defaultValue={item?.quantity}
+                        style={{width: '60px'}}
+                        onChange={(e: any) => {
+                          const data = {
+                            id: item?.id,
+                            quantity: e.target.value,
+                          };
+                          updateBundleQuantityData(data);
+                        }}
+                      />
+                    </p>
+                  </Space>
+                </>
+              ),
+              // children: item?.children,
+              children: (
+                <OsTableWithOutDrag
+                  loading={loading}
+                  // rowSelection={rowSelection}
+                  columns={finalProfitTableCol}
+                  dataSource={item?.Profitabilities || []}
+                  scroll
+                  rowSelection={rowSelection}
+                  locale={locale}
+                />
+              ),
+            },
+          ]}
+        />
+      ))}{' '}
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         <>
           {/* <Button
@@ -488,8 +562,11 @@ const Profitability: FC<any> = ({tableColumnDataShow}) => {
             <OsTableWithOutDrag
               loading={loading}
               columns={finalProfitTableCol}
-              dataSource={profitabilityData}
+              dataSource={profitabilityData?.filter(
+                (item: any) => !item?.bundle_id,
+              )}
               scroll
+              rowSelection={rowSelection}
               locale={locale}
             />
           </Form>

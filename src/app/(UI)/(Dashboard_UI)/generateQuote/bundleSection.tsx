@@ -55,12 +55,14 @@ const BundleSection: FC<any> = ({selectTedRowIds, setShowBundleModal}) => {
   useEffect(() => {
     const bundleArray: any = [];
     if (bundleData) {
-      bundleData?.map(
-        (item: any) => bundleArray?.push({label: item?.name, value: item?.id}),
+      bundleData?.map((item: any) =>
+        bundleArray?.push({label: item?.name, value: item?.id}),
       );
     }
     setBundleOptions(bundleArray);
   }, [bundleData]);
+
+  console.log('34543543543', selectTedRowIds);
   return (
     <Space
       direction="vertical"

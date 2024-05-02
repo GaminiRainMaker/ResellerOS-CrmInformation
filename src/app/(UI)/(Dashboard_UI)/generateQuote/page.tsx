@@ -304,7 +304,12 @@ const GenerateQuote: React.FC = () => {
           Profitability
         </Typography>
       ),
-      children: <Profitability tableColumnDataShow={tableColumnDataShow} />,
+      children: (
+        <Profitability
+          tableColumnDataShow={tableColumnDataShow}
+          setSelectedRowIds={setSelectedRowIds}
+        />
+      ),
     },
     {
       key: 3,
@@ -352,7 +357,7 @@ const GenerateQuote: React.FC = () => {
     },
   ].filter(Boolean);
 
-  const menuItems = [
+   const menuItems = [
     {
       key: '1',
       title: (

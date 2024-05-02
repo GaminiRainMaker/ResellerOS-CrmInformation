@@ -638,7 +638,136 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         <>
           <Form>
-            {bundleData && bundleData?.length > 0 ? (
+            <>
+              {selectedFilter && selectedFilter !== 'File Name' ? (
+                <>
+                  {' '}
+                  {familyFilter?.map((item: any, index: any) => (
+                    <OsCollapse
+                      key={item?.id}
+                      items={[
+                        {
+                          key: item.id,
+                          label: (
+                            <>
+                              <Space
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'start',
+                                }}
+                              >
+                                <p>{item?.name}</p>
+                              </Space>
+                            </>
+                          ),
+                          children: (
+                            <OsTableWithOutDrag
+                              loading={loading}
+                              columns={finalInputColumn}
+                              dataSource={item?.QuoteLineItem || []}
+                              scroll
+                              rowSelection={rowSelection}
+                              locale={locale}
+                            />
+                          ),
+                        },
+                      ]}
+                    />
+                  ))}
+                </>
+              ) : (
+                <>
+                  {defaultDataShow ? (
+                    <GlobalLoader loading={quoteFileDataLoading}>
+                      {quoteLineItemByQuoteData1?.length > 0 ? (
+                        quoteLineItemByQuoteData1?.map((item: any) => (
+                          <OsCollapse
+                            items={[
+                              {
+                                key: '1',
+                                label: (
+                                  <>
+                                    <Row justify="space-between">
+                                      <Col>
+                                        <p>{item?.title}</p>
+                                      </Col>
+                                      <Col>
+                                        <p>Line Items: {item?.totalCount}</p>
+                                      </Col>
+                                      <Col>
+                                        <p>
+                                          Total Cost: $
+                                          {item?.totalAdjustedPrice?.length > 0
+                                            ? item?.totalAdjustedPrice
+                                            : 0.0}
+                                        </p>
+                                      </Col>
+                                      <Col>
+                                        <Space>
+                                          <CheckIcon
+                                            width={25}
+                                            color={token?.colorSuccess}
+                                            onClick={(e) => {
+                                              e?.stopPropagation();
+                                              setShowVerificationFileModal(
+                                                true,
+                                              );
+                                              setFileLineItemIds(item?.id);
+                                              setFileData(item);
+                                            }}
+                                          />
+                                          <XMarkIcon
+                                            width={25}
+                                            color={token?.colorError}
+                                            onClick={(e) => {
+                                              e?.stopPropagation();
+                                              setShowRaiseConcernModal(true);
+                                              setFileLineItemIds(item?.id);
+                                              setFileData(item);
+                                            }}
+                                          />
+                                        </Space>
+                                      </Col>
+                                    </Row>
+                                  </>
+                                ),
+                                children: (
+                                  <OsTableWithOutDrag
+                                    columns={finalInputColumn}
+                                    dataSource={item?.quoteLineItems || []}
+                                    rowSelection={rowSelection}
+                                    scroll
+                                    loading={false}
+                                    locale={locale}
+                                  />
+                                ),
+                              },
+                            ]}
+                          />
+                        ))
+                      ) : (
+                        <OsTableWithOutDrag
+                          columns={finalInputColumn}
+                          scroll
+                          loading={false}
+                          locale={locale}
+                        />
+                      )}
+                    </GlobalLoader>
+                  ) : (
+                    <OsTableWithOutDrag
+                      columns={finalInputColumn}
+                      dataSource={quoteLineItemByQuoteData || []}
+                      rowSelection={rowSelection}
+                      scroll
+                      loading={false}
+                      locale={locale}
+                    />
+                  )}
+                </>
+              )}{' '}
+            </>
+            {/* {bundleData && bundleData?.length > 0 ? (
               <>
                 {' '}
                 {bundleData?.map((item: any) => (
@@ -896,7 +1025,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                   </>
                 )}{' '}
               </>
-            )}
+            )} */}
           </Form>
         </>
       ) : (

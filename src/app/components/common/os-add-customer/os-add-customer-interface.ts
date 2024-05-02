@@ -6,11 +6,11 @@ export interface AddCustomertInterface {
   onFinish: any;
 }
 export interface CustomerAccountInterface {
-  formValue: any;
-  setFormValue: any;
-  setCustomerValue: any;
-  customerValue: any;
-  setShowModal: any;
+  formValue?: any;
+  setFormValue?: any;
+  setCustomerValue?: any;
+  customerValue?: any;
+  setShowModal?: any;
   drawer?: any;
   setOpen?: any;
 }
