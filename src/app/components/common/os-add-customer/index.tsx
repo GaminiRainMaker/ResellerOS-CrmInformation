@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
@@ -8,22 +9,29 @@
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import Typography from '@/app/components/common/typography';
+import {getBase64} from '@/app/utils/upload';
 import {MailOutlined} from '@ant-design/icons';
-import {PencilSquareIcon} from '@heroicons/react/24/outline';
-import {Form} from 'antd';
-import Image from 'next/image';
-import {useState} from 'react';
-import uploadGallery from '../../../../../public/assets/static/uploadGallery.svg';
-import {useAppSelector} from '../../../../../redux/hook';
+import {PencilSquareIcon, UserCircleIcon} from '@heroicons/react/24/outline';
+import {Form, notification} from 'antd';
+import _debounce from 'lodash/debounce';
+import {useCallback, useState} from 'react';
+import {
+  getCustomerProfileById,
+  queryCustomer,
+} from '../../../../../redux/actions/customer';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {setBillingContact} from '../../../../../redux/slices/billingAddress';
+import {uploadToAwsForUserImage} from '../../../../../redux/actions/upload';
+import {setCustomerProfile} from '../../../../../redux/slices/customer';
 import {Checkbox} from '../antd/Checkbox';
 import {Divider} from '../antd/Divider';
-import {Space} from '../antd/Space';
+import OsButton from '../os-button';
 import OsInput from '../os-input';
 import {SelectFormItem} from '../os-oem-select/oem-select-styled';
 import TableNameColumn from '../os-table/TableNameColumn';
 import {AddCustomertInterface} from './os-add-customer-interface';
 import {CustomerTabsStyle} from './styled-components';
-import OsButton from '../os-button';
+import { Space } from '../antd/Space';
 
 const AddCustomer: React.FC<AddCustomertInterface> = ({
   drawer,
@@ -33,7 +41,8 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
 }) => {
   const [token] = useThemeToken();
   const {billingContact} = useAppSelector((state) => state.billingContact);
-
+  const {customerProfile} = useAppSelector((state) => state.customer);
+  const dispatch = useAppDispatch();
   const [contactDetail, setContactDetail] = useState<any>();
   const [objectValuesForContact, setObjectValueForContact] = useState<any>();
   const [editContactOIndex, setEditContactIndex] = useState<any>(null);
@@ -57,6 +66,83 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
     setErrorFileds(false);
     setNewAdd(false);
   };
+
+  const uploadImagesToBackend = async (newFileList: any, index: any) => {
+    if (newFileList) {
+      notification.open({
+        message: `Image is uploading. Please wait`,
+        type: 'info',
+      });
+    }
+    const datas = await getBase64(newFileList);
+
+    const mediaType = newFileList?.type.split('/')[0];
+
+    const data = {
+      base64: datas,
+      type: mediaType,
+      file: newFileList,
+      userTypes: 'customer',
+      userIds: billingContact?.id,
+    };
+    dispatch(uploadToAwsForUserImage(data)).then((d: any) => {
+      if (d?.payload && !drawer) {
+        dispatch(setCustomerProfile(d?.payload));
+      } else if (d?.payload) {
+        dispatch(getCustomerProfileById({id: billingContact?.id})).then(
+          (d: any) => {
+            if (d?.payload) {
+              console.log('drawer123', drawer, d?.payload);
+              dispatch(
+                setBillingContact({
+                  BillingContacts: d?.payload?.BillingContacts,
+                  name: d?.payload?.name,
+                  image: d?.payload?.profile_image,
+                  id: d?.payload?.id,
+                }),
+              );
+            }
+          },
+        );
+        dispatch(queryCustomer(null));
+      }
+    });
+  };
+
+  const handleNotification = (list: any) => {
+    let count = 0;
+    if (count === 1) {
+      return;
+    }
+    if (
+      list?.file?.size > 5000000 &&
+      !list?.file?.originFileObj?.name?.includes('webm') &&
+      !list?.file?.originFileObj?.name?.includes('WEBM') &&
+      !list?.file?.originFileObj?.name?.includes('mp4') &&
+      !list?.file?.originFileObj?.name?.includes('MP4') &&
+      !list?.file?.originFileObj?.name?.includes('mov') &&
+      !list?.file?.originFileObj?.name?.includes('MOV') &&
+      !list?.file?.originFileObj?.name?.includes('avchd') &&
+      !list?.file?.originFileObj?.name?.includes('AVCHD') &&
+      !list?.file?.originFileObj?.name?.includes('avi') &&
+      !list?.file?.originFileObj?.name?.includes('AVI') &&
+      !list?.file?.originFileObj?.name?.includes('flv') &&
+      !list?.file?.originFileObj?.name?.includes('FLV') &&
+      !list?.file?.originFileObj?.name?.includes('wmv') &&
+      !list?.file?.originFileObj?.name?.includes('WMV')
+    ) {
+      count += 1;
+      notification.open({
+        message: `Image exceeded size limit. Please upload an image less than 5MB/500KB`,
+      });
+    } else {
+      uploadImagesToBackend(list, '');
+    }
+  };
+
+  const debounceFn = useCallback(_debounce(handleNotification, 500), [
+    billingContact,
+  ]);
 
   const AlphabetsRegex = /^[a-zA-Z]+$/;
   const emailRegex =
@@ -98,33 +184,40 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
               marginBottom: drawer ? '5px' : '',
             }}
           >
-            {drawer ? (
-              <TableNameColumn
-                justifyContent="start"
-                secondaryTextColor={token?.colorPrimary}
-                primaryText={
-                  <Typography name="Body 4/Regular">
-                    {billingContact?.name}
-                  </Typography>
-                }
-                secondaryText={
-                  <Typography name="Body 4/Regular">
-                    ID: {billingContact?.id}
-                  </Typography>
-                }
-                fallbackIcon={`${
-                  billingContact?.name?.toString()?.charAt(0)?.toUpperCase() ??
-                  billingContact?.name?.toString()?.charAt(0)?.toUpperCase()
-                }`}
-                iconBg="#1EB159"
-              />
-            ) : (
-              <Image
-                src={uploadGallery}
-                alt="uploadGallery"
-                style={{cursor: 'pointer'}}
-              />
-            )}
+            <TableNameColumn
+              imageUpload
+              debounceFn={debounceFn}
+              recordId={billingContact?.id}
+              justifyContent="start"
+              secondaryTextColor={token?.colorPrimary}
+              primaryText={
+                <Typography name="Body 4/Regular">
+                  {billingContact?.name}
+                </Typography>
+              }
+              secondaryText={
+                <Typography name="Body 4/Regular">
+                  {drawer && `ID: ${billingContact?.id}`}
+                </Typography>
+              }
+              fallbackIcon={
+                drawer ? (
+                  `${
+                    billingContact?.name
+                      ?.toString()
+                      ?.charAt(0)
+                      ?.toUpperCase() ??
+                    billingContact?.name?.toString()?.charAt(0)?.toUpperCase()
+                  }`
+                ) : (
+                  <UserCircleIcon />
+                )
+              }
+              logo={drawer ? billingContact?.image : customerProfile}
+              iconBg="#1EB159"
+              size={drawer ? 50 : 85}
+              imgCursor
+            />
           </Col>
 
           <Col span={drawer ? 24 : 20}>

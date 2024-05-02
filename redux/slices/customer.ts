@@ -10,29 +10,37 @@ import {
   queryCustomer,
   searchCustomer,
   updateCustomer,
+  getCustomerProfileById,
 } from '../actions/customer';
 
-type ProductState = {
+type CustomerState = {
   loading: boolean;
   error: string | null;
   data: any;
-  product: any;
+  customer: any;
   filteredData: any;
+  customerProfileByIdData: any;
+  customerProfile: string;
 };
-const initialState: ProductState = {
+const initialState: CustomerState = {
   loading: false,
   error: null,
   data: [],
-  product: [],
+  customer: [],
   filteredData: [],
+  customerProfileByIdData: {},
+  customerProfile: '',
 };
 
-const productSlice = createSlice({
-  name: 'product',
+const customerSlice = createSlice({
+  name: 'customer',
   initialState,
   reducers: {
-    setProduct: (state, action) => {
-      state.product = action.payload;
+    setCustomer: (state, action) => {
+      state.customer = action.payload;
+    },
+    setCustomerProfile: (state, action) => {
+      state.customerProfile = action.payload;
     },
   },
   extraReducers(builder) {
@@ -159,9 +167,24 @@ const productSlice = createSlice({
           state.loading = false;
           state.error = action.payload;
         },
+      )
+      .addCase(getCustomerProfileById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getCustomerProfileById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.customerProfileByIdData = action.payload;
+      })
+      .addCase(
+        getCustomerProfileById.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
       );
   },
 });
 
-export const {setProduct} = productSlice.actions;
-export default productSlice?.reducer;
+export const {setCustomer, setCustomerProfile} = customerSlice.actions;
+export default customerSlice?.reducer;

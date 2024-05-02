@@ -96,3 +96,15 @@ export const getCustomerBYId = createAsyncThunk(
     }
   },
 );
+
+export const getCustomerProfileById = createAsyncThunk(
+  'customer/getCustomerProfileById',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await CUSTOMER_API.getCustomerProfileById(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

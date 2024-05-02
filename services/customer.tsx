@@ -17,4 +17,8 @@ export const CUSTOMER_API = {
     post(API.CUSTOMER.QUERYCUSTOMER, data) as Promise<AxiosResponse<[]>>,
   getCsutomerById: (id: any) =>
     get(`${API.CUSTOMER.GETBYID}/${id}`) as Promise<AxiosResponse<any>>,
+  getCustomerProfileById: (data: any) =>
+    post(API.CUSTOMER.GetCustomerProfileById, data) as Promise<
+      AxiosResponse<any>
+    >,
 };

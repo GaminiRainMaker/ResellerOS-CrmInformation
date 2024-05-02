@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-nested-ternary */
@@ -18,7 +19,7 @@ import SearchSelect from '@/app/components/common/os-select/SearchSelect';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
-import {getBase64, uploadImage} from '@/app/utils/upload';
+import {getBase64} from '@/app/utils/upload';
 import styled from '@emotion/styled';
 import {
   ArrowLeftStartOnRectangleIcon,
@@ -41,6 +42,7 @@ import {
   getAllNewNotification,
   getCountOfNotification,
 } from '../../../../../redux/actions/notifications';
+import {uploadToAwsForUserImage} from '../../../../../redux/actions/upload';
 import {
   getGloabalySearchDataa,
   getUserProfileData,
@@ -123,7 +125,7 @@ const CustomHeader = () => {
   };
 
   useEffect(() => {
-    dispatch(getCountOfNotification(''))?.then((payload) => {
+    dispatch(getCountOfNotification(''))?.then((payload: any) => {
       setNotificationCounts(payload?.payload?.length);
     });
     dispatch(getUserProfileData(''))?.then((payload: any) => {
@@ -260,28 +262,32 @@ const CustomHeader = () => {
   // })
 
   const uploadImagesToBackend = async (newFileList: any, index: any) => {
-    //     console.log("435433",newFileList)
-    // return
     if (newFileList) {
       notification.open({
         message: `Image is uploading. Please wait`,
         type: 'info',
       });
     }
-    console.log('newFileListnewFileList', newFileList);
-    const data = await getBase64(newFileList);
-
+    const datas = await getBase64(newFileList);
     const mediaType = newFileList?.type.split('/')[0];
 
-    const loaction = await uploadImage(data, mediaType, newFileList);
-
-    dispatch(getUserProfileData(''))?.then((payload: any) => {
-      setProfileImg(payload?.payload?.profile_image);
+    const data = {
+      base64: datas,
+      type: mediaType,
+      file: newFileList,
+      userTypes: 'user',
+      userIds: userInformation?.id,
+    };
+    dispatch(uploadToAwsForUserImage(data)).then((d: any) => {
+      if (d?.payload) {
+        dispatch(getUserProfileData(''))?.then((payload: any) => {
+          setProfileImg(payload?.payload?.profile_image);
+        });
+      }
     });
   };
 
   const handleNotification = (list: any) => {
-    console.log('435435345', list);
     let count = 0;
     if (count === 1) {
       return;
@@ -332,8 +338,6 @@ const CustomHeader = () => {
       uploadImagesToBackend(list, '');
     }
   };
-
-  console.log('profileImg', profileImg);
 
   const debounceFn = useCallback(_debounce(handleNotification, 500), []);
 
