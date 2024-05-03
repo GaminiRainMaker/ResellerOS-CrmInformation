@@ -9,4 +9,13 @@ export const NOTIFICATIONS_API = {
     get(`${API.NOTIFICATION.NEWNOTIFICATION}`) as Promise<AxiosResponse<any>>,
   delete: () =>
     get(`${API.NOTIFICATION.DeleteById}`) as Promise<AxiosResponse<any>>,
+
+  getRecentNotifications: () =>
+    get(`${API.NOTIFICATION.GetRecentNotifications}`) as Promise<
+      AxiosResponse<any>
+    >,
+  getEarlierNotifications: () =>
+    get(`${API.NOTIFICATION.GetEarlierNotifications}`) as Promise<
+      AxiosResponse<any>
+    >,
 };

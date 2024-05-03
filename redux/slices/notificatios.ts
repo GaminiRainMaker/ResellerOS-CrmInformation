@@ -5,6 +5,8 @@ import {
   ReadNotificationById,
   getAllNewNotification,
   getCountOfNotification,
+  getEarlierNotifications,
+  getRecentNotifications,
 } from '../actions/notifications';
 
 type NotificationsSetting = {
@@ -12,16 +14,20 @@ type NotificationsSetting = {
   error: string | null;
   data: any;
   notificationCount: any;
-  product: any;
+  notification: any;
   filteredData: any;
+  recentNotification: any;
+  earlierNotification: any;
 };
 const initialState: NotificationsSetting = {
   loading: false,
   error: null,
   notificationCount: 0,
   data: [],
-  product: [],
+  notification: [],
   filteredData: [],
+  recentNotification: [],
+  earlierNotification: [],
 };
 
 const notificationSlice = createSlice({
@@ -29,7 +35,7 @@ const notificationSlice = createSlice({
   initialState,
   reducers: {
     setnotification: (state, action) => {
-      state.product = action.payload;
+      state.notification = action.payload;
     },
   },
   extraReducers(builder) {
@@ -83,6 +89,42 @@ const notificationSlice = createSlice({
       )
       .addCase(
         getCountOfNotification.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getRecentNotifications.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getRecentNotifications.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.recentNotification = action.payload;
+        },
+      )
+      .addCase(
+        getRecentNotifications.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getEarlierNotifications.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getEarlierNotifications.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.earlierNotification = action.payload;
+        },
+      )
+      .addCase(
+        getEarlierNotifications.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

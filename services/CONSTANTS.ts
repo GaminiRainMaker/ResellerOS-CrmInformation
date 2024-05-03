@@ -206,5 +206,7 @@ export const API = {
     INDEX: '/notification',
     NEWNOTIFICATION: '/notification/getAllNewNotification',
     DeleteById: '/notification/deleteNotificationById',
+    GetRecentNotifications: '/notification/getRecentNotifications',
+    GetEarlierNotifications: '/notification/getEarlierNotifications',
   },
 };

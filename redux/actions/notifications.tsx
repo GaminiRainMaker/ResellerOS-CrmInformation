@@ -36,3 +36,25 @@ export const ReadNotificationById = createAsyncThunk(
     }
   },
 );
+export const getRecentNotifications = createAsyncThunk(
+  'notification/getRecentNotifications',
+  async (id: any, thunkApi) => {
+    try {
+      const res = await NOTIFICATIONS_API.getRecentNotifications();
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);
+export const getEarlierNotifications = createAsyncThunk(
+  'notification/getEarlierNotifications',
+  async (id: any, thunkApi) => {
+    try {
+      const res = await NOTIFICATIONS_API.getEarlierNotifications();
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);

@@ -1,13 +1,13 @@
 import {Row} from '@/app/components/common/antd/Grid';
 import styled from '@emotion/styled';
 
-export const CustomNotificationCard = styled(Row)`
+export const CustomNotificationCard = styled(Row)<{isRead?: boolean}>`
   width: 100%;
   height: Hug (82px) px;
   gap: 0px;
   border-radius: 12px;
   border: 0px 0px 1px 0px;
-  background: #ffffff;
+  background: ${(props) => (props.isRead ? '#ffffff' : '#e9f0f7')};
   padding: 18px;
   cursor: pointer;
   :hover {
