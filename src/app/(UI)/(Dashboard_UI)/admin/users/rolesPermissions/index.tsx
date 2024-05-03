@@ -189,12 +189,12 @@ const RolesAndPermission = () => {
   const onFinish = () => {
     for (let i = 0; i < userRules.length; i++) {
       const items = userRules[i];
-      dispatch(updateUserById(items))
+      dispatch(updateUserById(items)).then((d: any) => {
+        if (d?.payload) {
+          dispatch(getUserByOrganization(userInformation?.organization));
+        }
+      });
     }
-    // window?.location?.reload();
-    setTimeout(() => {
-      dispatch(getUserByOrganization(userInformation?.organization));
-    }, 1000);
   };
 
   return (
