@@ -607,14 +607,15 @@ const AddRegistrationForm: FC<any> = ({
           }}
         />
       </Row>
-      <OsModal
-        body={<AddCustomer setShowModal={setShowCustomerModal} />}
+      {/* <OsModal
+      //in Progress
+        body={<AddCustomer />}
         width={800}
         open={showCustomerModal}
         onCancel={() => {
           setShowCustomerModal((p) => !p);
         }}
-      />
+      /> */}
     </>
   );
 };

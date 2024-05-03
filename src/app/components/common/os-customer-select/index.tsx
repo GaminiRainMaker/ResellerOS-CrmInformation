@@ -85,7 +85,20 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
       </Form.Item>
 
       <OsModal
-        body={<AddCustomer setShowModal={setOpen} />}
+        body={
+          // <AddCustomer
+          //   form={form}
+          //   onFinish={updateCustomerDetails}
+          //   drawer
+          //   objectValuesForContact={objectValuesForContact}
+          //   setObjectValueForContact={setObjectValueForContact}
+          //   contactDetail={contactDetail}
+          //   setContactDetail={setContactDetail}
+          //   shipppingAddress={shipppingAddress}
+          //   setShippingAddress={setShippingAddress}
+          // />
+          <></>
+        }
         width={800}
         open={open}
         onCancel={() => {
