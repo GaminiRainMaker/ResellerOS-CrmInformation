@@ -85,6 +85,7 @@ const TableNameColumn: FC<any> = ({
 
         <span style={{cursor}}>
           <Typography
+            maxWidth={maxWidth}
             cursor={cursor}
             onClick={onClick}
             align="left"

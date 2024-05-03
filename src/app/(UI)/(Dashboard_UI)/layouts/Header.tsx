@@ -467,7 +467,7 @@ const CustomHeader = () => {
                 <AvatarStyled
                   onClick={() => {
                     setOpenNotifications(!openNotifications);
-                    readAllNotifications();
+                    // readAllNotifications();
                   }}
                   background={token?.colorInfoBg}
                   icon={<BellIcon width={24} color={token?.colorInfoBorder} />}
