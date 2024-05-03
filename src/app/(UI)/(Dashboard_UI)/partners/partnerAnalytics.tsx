@@ -1,21 +1,17 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-param-reassign */
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
 import {
-  CheckCircleIcon,
-  ClipboardDocumentCheckIcon,
-  ClockIcon,
   PencilIcon,
   TagIcon,
-  TrashIcon,
-  UserGroupIcon,
+  UserGroupIcon
 } from '@heroicons/react/24/outline';
-import {FC, useEffect, useState} from 'react';
-import {useAppSelector} from '../../../../../redux/hook';
+import { FC, useEffect, useState } from 'react';
+import { useAppSelector } from '../../../../../redux/hook';
 
 const PartnerAnalytics: FC<any> = ({data}) => {
   const [token] = useThemeToken();
