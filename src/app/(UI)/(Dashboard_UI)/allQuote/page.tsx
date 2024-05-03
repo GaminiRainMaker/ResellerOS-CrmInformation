@@ -27,7 +27,6 @@ import {
 
 import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import RecentSection from './RecentSection';
 import QuoteAnalytics from './analytics';
 import {tabItems} from './constants';
 import {getColumns} from './tableColumns';

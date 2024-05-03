@@ -33,15 +33,22 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
   const [loading, setLoading] = useState(false);
 
   const addOpportunity = async () => {
-    setLoading(true);
-    dispatch(insertOpportunity(formValue)).then((d) => {
-      if (d?.payload) {
-        dispatch(getAllOpportunity());
-      }
-    });
-    setLoading(false);
-    setShowModal((p: boolean) => !p);
-    setFormValue('');
+    if (
+      formValue?.customer_id &&
+      formValue?.title &&
+      formValue?.amount &&
+      formValue?.stages
+    ) {
+      setLoading(true);
+      dispatch(insertOpportunity(formValue)).then((d) => {
+        if (d?.payload) {
+          dispatch(getAllOpportunity());
+        }
+      });
+      setLoading(false);
+      setShowModal((p: boolean) => !p);
+      setFormValue('');
+    }
   };
 
   useEffect(() => {
@@ -173,8 +180,14 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
           <Row justify="end">
             <OsButton
               loading={loading}
-              disabled={!formValue}
-              buttontype={formValue ? 'PRIMARY' : 'PRIMARY_DISABLED'}
+              buttontype={
+                formValue?.customer_id &&
+                formValue?.title &&
+                formValue?.amount &&
+                formValue?.stages
+                  ? 'PRIMARY'
+                  : 'PRIMARY_DISABLED'
+              }
               clickHandler={addOpportunity}
               text="Add"
             />{' '}

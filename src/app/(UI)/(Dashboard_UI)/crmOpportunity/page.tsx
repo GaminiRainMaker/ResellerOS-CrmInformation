@@ -38,6 +38,8 @@ import {MenuProps, TabsProps} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import {queryContact} from '../../../../../redux/actions/billingContact';
+import {queryCustomer} from '../../../../../redux/actions/customer';
 import {
   deleteOpportunity,
   getdeleteOpportunity,
@@ -46,8 +48,6 @@ import {
 } from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import EditOpportunity from './EditOpportunity';
-import {queryContact} from '../../../../../redux/actions/billingContact';
-import {queryCustomer} from '../../../../../redux/actions/customer';
 
 const CrmOpportunity: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -533,6 +533,7 @@ const CrmOpportunity: React.FC = () => {
         open={showModal}
         onCancel={() => {
           setShowModal((p) => !p);
+          setFormValue('');
         }}
       />
 

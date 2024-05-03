@@ -20,6 +20,7 @@ import {formatDate} from '@/app/utils/base';
 import {EyeIcon, PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import AddQuote from '@/app/components/common/addQuote';
 import {
   deleteOpportunity,
   getOpportunityById,
@@ -40,7 +41,11 @@ const OpportunityDetails = () => {
   const [open, setOpen] = useState(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
-
+  const [uploadFileData, setUploadFileData] = useState<any>([]);
+  const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
+  const {loading: QuoteLoading} = useAppSelector(
+    (state) => state.quote,
+  );
   useEffect(() => {
     dispatch(getOpportunityById(opportunityId));
   }, []);
@@ -118,7 +123,7 @@ const OpportunityDetails = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Customer
+          Customer Name
         </Typography>
       ),
       dataIndex: 'customer_name',
@@ -126,7 +131,7 @@ const OpportunityDetails = () => {
       width: 187,
       render: (text: string) => (
         <Typography name="Body 4/Regular">
-          {opportunityData?.customer ?? '--'}
+          {OpportunityData?.customer ?? '--'}
         </Typography>
       ),
     },
@@ -176,7 +181,19 @@ const OpportunityDetails = () => {
   ];
 
   const locale = {
-    emptyText: <EmptyContainer title="No Files" actionButton="Add Quote" />,
+    emptyText: (
+      <EmptyContainer
+        title="No Files"
+        buttonContainer={
+          <AddQuote
+            uploadFileData={uploadFileData}
+            setUploadFileData={setUploadFileData}
+            loading={QuoteLoading}
+            buttonText="Add Quote"
+          />
+        }
+      />
+    ),
   };
 
   const tabItems = [
@@ -200,15 +217,6 @@ const OpportunityDetails = () => {
     {
       label: <Typography name="Body 4/Regular">Completed</Typography>,
       key: '3',
-    },
-  ];
-
-  const dropDownItemss = [
-    {
-      key: '1',
-      label: (
-        <Typography name="Body 3/Regular">Bundle Configuration</Typography>
-      ),
     },
   ];
 
@@ -242,52 +250,21 @@ const OpportunityDetails = () => {
             <Typography name="Heading 3/Medium">Quotes</Typography>
           </Col>
           <Col style={{float: 'right'}}>
-            <div
-              style={{
-                display: 'flex',
-                width: '40%',
-                gap: '8px',
-              }}
-            >
-              <OsButton
-                text="Add Quote"
-                buttontype="PRIMARY"
-                icon={<PlusIcon />}
-              />
-              <Space>
-                <OsDropdown menu={{items: dropDownItemss}} />
-              </Space>
-            </div>
+            <AddQuote
+              uploadFileData={uploadFileData}
+              setUploadFileData={setUploadFileData}
+              loading={QuoteLoading}
+              buttonText="Add Quote"
+              setShowToggleTable={setShowToggleTable}
+              showToggleTable={showToggleTable}
+              Quotecolumns={Quotecolumns}
+            />
           </Col>
         </Row>
         <Row
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
-          <OsTabs
-            tabBarExtraContent={
-              <Space size={12} align="center">
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">
-                    Registration Form
-                  </Typography>
-                  <OsInput style={{width: '180px'}} placeholder="Search Here" />
-                </Space>
-
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginTop: '15px',
-                  }}
-                >
-                  <Typography cursor="pointer" name="Button 1" color="#C6CDD5">
-                    Apply
-                  </Typography>
-                </div>
-              </Space>
-            }
-            items={tabItems}
-          />
+          <OsTabs items={tabItems} />
         </Row>
       </Space>
 

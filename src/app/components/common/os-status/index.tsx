@@ -21,6 +21,16 @@ const OsStatusWrapper: FC<OsStatusWrapperProps> = ({value}) => {
       textColor: `${token?.colorInfo}`,
       border: `${token?.colorInfo}`,
     },
+    Commit: {
+      color: `${token?.colorInfoBgHover}`,
+      textColor: `${token?.colorInfo}`,
+      border: `${token?.colorInfo}`,
+    },
+    Develop: {
+      color: `${token?.colorInfoHover}`,
+      textColor: `${token?.colorLinkHover}`,
+      border: `${token?.colorLinkHover}`,
+    },
     'In Progress': {
       color: `${token?.colorWarningBg}`,
       textColor: `${token?.colorWarning}`,
@@ -37,6 +47,11 @@ const OsStatusWrapper: FC<OsStatusWrapperProps> = ({value}) => {
       border: `${token?.colorSuccess}`,
     },
     Verified: {
+      color: `${token?.colorSuccessBg}`,
+      textColor: `${token?.colorSuccess}`,
+      border: `${token?.colorSuccess}`,
+    },
+    Qualify: {
       color: `${token?.colorSuccessBg}`,
       textColor: `${token?.colorSuccess}`,
       border: `${token?.colorSuccess}`,
@@ -70,6 +85,16 @@ const OsStatusWrapper: FC<OsStatusWrapperProps> = ({value}) => {
       color: `${token?.colorWarningBg}`,
       textColor: `${token?.colorWarning}`,
       border: `${token?.colorWarning}`,
+    },
+    Negotiate: {
+      color: `${token?.colorWarningBg}`,
+      textColor: `${token?.colorWarning}`,
+      border: `${token?.colorWarning}`,
+    },
+    Prove: {
+      color: `${token?.colorErrorBg}`,
+      textColor: `${token?.colorError}`,
+      border: `${token?.colorError}`,
     },
   };
   const finalValue: StatusProp = Status[value as keyof OsStatusType];
