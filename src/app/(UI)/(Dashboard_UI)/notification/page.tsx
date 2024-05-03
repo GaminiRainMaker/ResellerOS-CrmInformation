@@ -202,7 +202,8 @@ const SuperAdminPartner: React.FC = () => {
                         fallbackIcon={fallBackIconsss}
                         iconBg={fallBackBg}
                         logo={
-                          itemNoti?.type === 'subscription'
+                          itemNoti?.type === 'subscription' ||
+                          itemNoti?.type === 'quote'
                             ? null
                             : itemNoti?.User?.profile_image
                         }
@@ -281,7 +282,8 @@ const SuperAdminPartner: React.FC = () => {
                         fallbackIcon={fallBackIconsss}
                         iconBg={fallBackBg}
                         logo={
-                          itemNoti?.type === 'subscription'
+                          itemNoti?.type === 'subscription' ||
+                          itemNoti?.type === 'quote'
                             ? null
                             : itemNoti?.User?.profile_image
                         }
@@ -302,7 +304,10 @@ const SuperAdminPartner: React.FC = () => {
         ) : (
           <>
             <br />
-            <EmptyContainer title="There are no Notification For this User." />
+            <EmptyContainer
+              title="There are no Notification For this User."
+              subTitle="Please perform some action to get the notifications."
+            />
           </>
         )}
       </GlobalLoader>
