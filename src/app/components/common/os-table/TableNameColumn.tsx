@@ -10,6 +10,7 @@ import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
 import {AvatarStyled} from './styled-components';
+import OsButton from '../os-button';
 
 const TableNameColumn: FC<any> = ({
   logo,
@@ -31,9 +32,23 @@ const TableNameColumn: FC<any> = ({
   debounceFn,
   size = 50,
   imgCursor = 'pointer',
+  isBoldRequired = false,
+  isSubscription,
 }) => {
-  const imgUrl = logo && ``;
   const [token] = useThemeToken();
+
+  const getStyledText = (text: string, requiredValue: boolean) => {
+    if (requiredValue) {
+      const tempValue: string = text.split(' ')?.[0];
+      const remainingText = text.split(' ').slice(1).join(' ');
+      return (
+        <span style={{cursor}}>
+          <span style={{fontWeight: 800}}>{tempValue}</span> {remainingText}
+        </span>
+      );
+    }
+    return <span style={{cursor}}>{text}</span>;
+  };
 
   return (
     <>
@@ -65,7 +80,7 @@ const TableNameColumn: FC<any> = ({
             </CustomUpload>
           </ImgCrop>
         ) : (
-          <AvatarStyled background={iconBg} src={imgUrl} icon={fallbackIcon} />
+          <AvatarStyled background={iconBg} src={logo} icon={fallbackIcon} />
         )}
 
         <span style={{cursor}}>
@@ -90,10 +105,16 @@ const TableNameColumn: FC<any> = ({
             name={secondaryTextTypography}
             color={secondaryTextColor}
           >
-            {secondaryText}
+            {getStyledText(secondaryText, isBoldRequired)}
           </Typography>
         </span>
       </Space>
+      {isSubscription && (
+        <Space size={12} style={{marginLeft: '60px'}}>
+          <OsButton buttontype="SECONDARY" text="Renew Subscription" />
+          <OsButton buttontype="PRIMARY" text="Change Plan" />
+        </Space>
+      )}
     </>
   );
 };
