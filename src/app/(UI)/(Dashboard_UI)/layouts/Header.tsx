@@ -132,6 +132,10 @@ const CustomHeader = () => {
       setProfileImg(payload?.payload?.profile_image);
     });
   }, []);
+  
+  useEffect(() => {
+    setNotificationCounts(0);
+  }, [notificationData]);
 
   const items: MenuProps['items'] = [
     {
