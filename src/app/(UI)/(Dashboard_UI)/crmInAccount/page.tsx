@@ -17,6 +17,7 @@ import {
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
+import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import AddCustomer from '@/app/components/common/os-add-customer';
@@ -57,6 +58,7 @@ const CrmInformation: React.FC = () => {
   const router = useRouter();
   const [token] = useThemeToken();
   const [form] = Form.useForm();
+  const {abbreviate} = useAbbreviationHook(0);
   const [activeTab, setActiveTab] = useState<any>('1');
   const [showModal, setShowModal] = useState<boolean>(false);
   const [objectValuesForContact, setObjectValueForContact] = useState<any>();

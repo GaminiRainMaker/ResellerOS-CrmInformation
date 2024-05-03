@@ -112,19 +112,6 @@ const AddUser = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          One Time Password
-        </Typography>
-      ),
-      dataIndex: 'one_time_password',
-      key: 'one_time_password',
-      width: 173,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
           Status
         </Typography>
       ),

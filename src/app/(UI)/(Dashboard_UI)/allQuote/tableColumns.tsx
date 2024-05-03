@@ -31,7 +31,13 @@ function getColumns(
       key: 'file_name',
       width: 130,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
+        <Typography
+          hoverOnText
+          name="Body 4/Regular"
+          onClick={() => {
+            editQuote(record.id);
+          }}
+        >
           {formatDate(record?.createdAt)}
           <span style={{marginLeft: '8px'}}>
             {' '}
