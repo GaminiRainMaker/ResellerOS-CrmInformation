@@ -189,9 +189,9 @@ const RolesAndPermission = () => {
   const onFinish = () => {
     for (let i = 0; i < userRules.length; i++) {
       const items = userRules[i];
-      dispatch(updateUserById(items)).then(() => {});
+      dispatch(updateUserById(items))
     }
-    window?.location?.reload();
+    // window?.location?.reload();
     setTimeout(() => {
       dispatch(getUserByOrganization(userInformation?.organization));
     }, 1000);
