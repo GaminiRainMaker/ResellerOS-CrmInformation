@@ -17,6 +17,7 @@ import _debounce from 'lodash/debounce';
 import {useCallback, useState} from 'react';
 import {
   getCustomerProfileById,
+  insertCustomer,
   queryCustomer,
 } from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -31,20 +32,25 @@ import {SelectFormItem} from '../os-oem-select/oem-select-styled';
 import TableNameColumn from '../os-table/TableNameColumn';
 import {AddCustomertInterface} from './os-add-customer-interface';
 import {CustomerTabsStyle} from './styled-components';
-import { Space } from '../antd/Space';
+import {Space} from '../antd/Space';
+import {insertAddAddress} from '../../../../../redux/actions/address';
+import {insertbillingContact} from '../../../../../redux/actions/billingContact';
 
 const AddCustomer: React.FC<AddCustomertInterface> = ({
   drawer,
   form,
-  
   onFinish,
+  objectValuesForContact,
+  setObjectValueForContact,
+  contactDetail,
+  setContactDetail,
 }) => {
   const [token] = useThemeToken();
   const {billingContact} = useAppSelector((state) => state.billingContact);
   const {customerProfile} = useAppSelector((state) => state.customer);
   const dispatch = useAppDispatch();
-  const [contactDetail, setContactDetail] = useState<any>();
-  const [objectValuesForContact, setObjectValueForContact] = useState<any>();
+
+  // const [objectValuesForContact, setObjectValueForContact] = useState<any>();
   const [editContactOIndex, setEditContactIndex] = useState<any>(null);
   const [editBillingAddress, setEditBillingAddress] = useState<Boolean>(false);
   const [newAdd, setNewAdd] = useState<Boolean>(false);
@@ -58,6 +64,15 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
       newArrOfContact[indexofupdate] = objectValuesForContact;
     } else {
       newArrOfContact?.push(objectValuesForContact);
+    }
+
+    const newBillingObject: any = {
+      ...objectValuesForContact,
+      customer_id: billingContact?.id,
+    };
+
+    if (newBillingObject) {
+      dispatch(insertbillingContact(newBillingObject));
     }
     setContactDetail(newArrOfContact);
     setObjectValueForContact({});
@@ -90,15 +105,14 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
         dispatch(setCustomerProfile(d?.payload));
       } else if (d?.payload) {
         dispatch(getCustomerProfileById({id: billingContact?.id})).then(
-          (d: any) => {
-            if (d?.payload) {
-              console.log('drawer123', drawer, d?.payload);
+          (payload: any) => {
+            if (payload?.payload) {
               dispatch(
                 setBillingContact({
-                  BillingContacts: d?.payload?.BillingContacts,
-                  name: d?.payload?.name,
-                  image: d?.payload?.profile_image,
-                  id: d?.payload?.id,
+                  BillingContacts: payload?.payload?.BillingContacts,
+                  name: payload?.payload?.name,
+                  image: payload?.payload?.profile_image,
+                  id: payload?.payload?.id,
                 }),
               );
             }
@@ -147,7 +161,8 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
   const AlphabetsRegex = /^[a-zA-Z]+$/;
   const emailRegex =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  console.log('43543543', objectValuesForContact);
+
+  console.log('billingContact?.id', billingContact);
   return (
     <>
       {!drawer && (
@@ -393,6 +408,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                       onChange={(e) => {
                         if (e.target.checked) {
                           const data = form.getFieldsValue();
+
                           form.setFieldsValue({
                             billing_address_line: data?.shiping_address_line,
                             billing_city: data?.shiping_city,
@@ -588,6 +604,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                                 item?.billing_first_name,
                                               billing_role: item?.billing_role,
                                               billing_id: item?.id,
+                                              id: item?.id,
                                             });
                                           }}
                                           width={24}
@@ -744,40 +761,44 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                   </div>
                                 )}
                             </Col>
-                            <Row
-                              style={{
-                                marginTop: '20px',
-                                width: '100%',
-                                display: 'flex',
-                                justifyContent: 'end',
-                              }}
-                            >
-                              <OsButton
-                                buttontype="PRIMARY"
-                                clickHandler={() => {
-                                  if (
-                                    !objectValuesForContact?.billing_email ||
-                                    !objectValuesForContact?.billing_first_name ||
-                                    !objectValuesForContact?.billing_last_name ||
-                                    !objectValuesForContact?.billing_role
-                                  ) {
-                                    setErrorFileds(true);
-                                    return;
-                                  }
-                                  if (
-                                    objectValuesForContact?.customer_id ||
-                                    editBillingAddress
-                                  ) {
-                                    updateValues('update', editContactOIndex);
-                                  } else {
-                                    updateValues('add', editContactOIndex);
-                                  }
+                            {drawer && (
+                              <Row
+                                style={{
+                                  marginTop: '20px',
+                                  width: '100%',
+                                  display: 'flex',
+                                  justifyContent: 'end',
                                 }}
-                                text={
-                                  editBillingAddress === true ? 'Update' : 'Add'
-                                }
-                              />
-                            </Row>
+                              >
+                                <OsButton
+                                  buttontype="PRIMARY"
+                                  clickHandler={() => {
+                                    if (
+                                      !objectValuesForContact?.billing_email ||
+                                      !objectValuesForContact?.billing_first_name ||
+                                      !objectValuesForContact?.billing_last_name ||
+                                      !objectValuesForContact?.billing_role
+                                    ) {
+                                      setErrorFileds(true);
+                                      return;
+                                    }
+                                    if (
+                                      objectValuesForContact?.customer_id ||
+                                      editBillingAddress
+                                    ) {
+                                      updateValues('update', editContactOIndex);
+                                    } else {
+                                      updateValues('add', editContactOIndex);
+                                    }
+                                  }}
+                                  text={
+                                    editBillingAddress === true
+                                      ? 'Update'
+                                      : 'Add'
+                                  }
+                                />
+                              </Row>
+                            )}
                           </Row>
                           {/* {drawer && (
             
