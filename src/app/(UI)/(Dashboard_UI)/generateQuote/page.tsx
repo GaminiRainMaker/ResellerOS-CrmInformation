@@ -528,7 +528,7 @@ const GenerateQuote: React.FC = () => {
             <OsButton
               btnStyle={{width: '100%'}}
               buttontype="PRIMARY"
-              text="UPDATE CHANGES"
+              text="Update Changes"
               clickHandler={() => form.submit()}
             />
           </Row>

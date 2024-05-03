@@ -44,8 +44,22 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [customerValue, setCustomerValue] = useState();
+  const [showError, setShowError] = useState<boolean>(false);
 
   const addNewContact = async () => {
+    if (
+      !formValue?.billing_email ||
+      !formValue?.billing_first_name ||
+      !formValue?.billing_last_name ||
+      !formValue?.billing_role ||
+      !formValue?.customer_id ||
+      formValue?.customer_id === undefined
+    ) {
+      setShowError(true);
+      return;
+    }
+    setShowError(false);
+
     dispatch(insertbillingContact(formValue));
     setShowModal((p: boolean) => !p);
   };
@@ -56,7 +70,6 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
       customer_id: customerValue,
     });
   }, [customerValue]);
-
   return (
     <>
       {!drawer && (
@@ -96,6 +109,11 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
                 setCustomerValue={setCustomerValue}
                 customerValue={customerValue}
               />
+              {showError && !formValue?.customer_id && (
+                <div style={{marginTop: '-15px', color: 'red'}}>
+                  please select customer
+                </div>
+              )}
             </Form>
 
             <div
@@ -115,21 +133,36 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
             justify="space-between"
           >
             <Col style={{width: '47%'}}>
-              <Typography name="Body 4/Regular">First Name</Typography>
+              <Typography name="Body 4/Regular" color="#0D0D0D">
+                First Name
+              </Typography>
               <OsInput
                 placeholder="First Name"
+                style={{
+                  borderColor:
+                    showError && !formValue?.billing_first_name ? 'red' : '',
+                }}
                 value={formValue?.billing_first_name}
                 onChange={(e) => {
+                  // const regex = /^[A-Za-z]+$/;
+                  // if (regex.test(e?.target?.value)) {
                   setFormValue({
                     ...formValue,
                     billing_first_name: e.target.value,
                   });
+                  // }
                 }}
               />
             </Col>
             <Col style={{width: '47%'}}>
-              <Typography name="Body 4/Regular">Last Name</Typography>
+              <Typography name="Body 4/Regular" color="#0D0D0D">
+                Last Name
+              </Typography>
               <OsInput
+                style={{
+                  borderColor:
+                    showError && !formValue?.billing_last_name ? 'red' : '',
+                }}
                 placeholder="Last Name"
                 value={formValue?.billing_last_name}
                 onChange={(e) => {
@@ -142,8 +175,13 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
             </Col>
           </Row>
           <Row style={{marginTop: '20px', width: '100%'}}>
-            <Typography name="Body 4/Regular">Role</Typography>
+            <Typography name="Body 4/Regular" color="#0D0D0D">
+              Role
+            </Typography>
             <OsInput
+              style={{
+                borderColor: showError && !formValue?.billing_role ? 'red' : '',
+              }}
               placeholder="Role"
               value={formValue?.billing_role}
               onChange={(e) => {
@@ -155,8 +193,14 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
             />
           </Row>
           <Row style={{marginTop: '20px', width: '100%'}}>
-            <Typography name="Body 4/Regular">Email</Typography>
+            <Typography name="Body 4/Regular" color="#0D0D0D">
+              Email
+            </Typography>
             <OsInput
+              style={{
+                borderColor:
+                  showError && !formValue?.billing_email ? 'red' : '',
+              }}
               placeholder="Email"
               value={formValue?.billing_email}
               onChange={(e) => {

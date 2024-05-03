@@ -604,6 +604,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
               id: fileLineItemIds,
               quote_json: [JSON?.stringify(newArrrrAll)],
             };
+
             dispatch(updateFileForQuoteJson(jsonDataa));
             setNanonetsLoading(false);
             router?.push(
