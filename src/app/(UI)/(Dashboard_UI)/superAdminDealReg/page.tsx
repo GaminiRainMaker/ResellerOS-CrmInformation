@@ -613,7 +613,7 @@ const SuperAdminDealReg = () => {
               loading={attributeSectionLoading}
               btnStyle={{width: '100%'}}
               buttontype="PRIMARY"
-              text="UPDATE CHANGES"
+              text="Update Changes"
               clickHandler={() => {
                 form.submit();
               }}
@@ -652,7 +652,7 @@ const SuperAdminDealReg = () => {
               loading={attributeFieldLoading}
               btnStyle={{width: '100%'}}
               buttontype="PRIMARY"
-              text="UPDATE CHANGES"
+              text="Update Changes"
               clickHandler={() => {
                 form?.submit();
               }}

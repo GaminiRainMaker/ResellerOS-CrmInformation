@@ -490,7 +490,6 @@ const Profitability: FC<any> = ({tableColumnDataShow, setSelectedRowIds}) => {
       setProfitabilityData(d?.payload);
     });
   }, [getQuoteID]);
-  console.log('bundleData', bundleData);
   return (
     <>
       {bundleData?.map((item: any) => (

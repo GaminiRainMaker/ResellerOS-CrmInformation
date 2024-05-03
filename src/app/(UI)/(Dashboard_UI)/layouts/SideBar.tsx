@@ -112,8 +112,23 @@ const SideBar = () => {
       setSelectedKey(11);
     } else if (pathname?.includes('userManagement')) {
       setSelectedKey(12);
+    } else if (
+      ![
+        'dashboard',
+        'allQuote',
+        'dealReg',
+        'partners',
+        'crmInAccount',
+        'accountDetails',
+        'crmContact',
+        'crmOpportunity',
+        'admin',
+        'userManagement',
+      ]?.includes(pathname)
+    ) {
+      setSelectedKey(0);
     }
-  }, []);
+  }, [pathname]);
 
   const items: MenuItem[] = [
     getItem(
@@ -568,7 +583,7 @@ const SideBar = () => {
                   color={
                     selectedKey?.toString()?.includes('7') ||
                     selectedKey?.toString()?.includes('8') ||
-                    selectedKey?.toString()?.includes('0') ||
+                    // selectedKey?.toString()?.includes('0') ||
                     selectedKey?.toString()?.includes('9')
                       ? token?.colorLink
                       : token?.colorTextSecondary
@@ -587,7 +602,7 @@ const SideBar = () => {
               color={
                 selectedKey?.toString()?.includes('7') ||
                 selectedKey?.toString()?.includes('8') ||
-                selectedKey?.toString()?.includes('0') ||
+                // selectedKey?.toString()?.includes('0') ||
                 selectedKey?.toString()?.includes('9')
                   ? token?.colorLink
                   : token?.colorTextSecondary

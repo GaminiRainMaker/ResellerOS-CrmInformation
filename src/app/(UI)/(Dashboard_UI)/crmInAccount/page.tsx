@@ -50,7 +50,7 @@ import {
 import {queryOpportunity} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';
-import { setCustomerProfile } from '../../../../../redux/slices/customer';
+import {setCustomerProfile} from '../../../../../redux/slices/customer';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -59,6 +59,10 @@ const CrmInformation: React.FC = () => {
   const [form] = Form.useForm();
   const [activeTab, setActiveTab] = useState<any>('1');
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [objectValuesForContact, setObjectValueForContact] = useState<any>();
+  const [contactDetail, setContactDetail] = useState<any>();
+  const [shipppingAddress, setShippingAddress] = useState<any>();
+
   const {loading, filteredData, customerProfile} = useAppSelector(
     (state) => state.customer,
   );
@@ -255,6 +259,9 @@ const CrmInformation: React.FC = () => {
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
+              setContactDetail(record?.BillingContacts);
+              setShippingAddress(record?.Addresses?.[0]);
+              console.log('setContactDetail', record);
               setShowDrawer(true);
               editCustomerFileds(record);
               setEditRecordData(record);
@@ -327,12 +334,15 @@ const CrmInformation: React.FC = () => {
           ...FormData,
           customer_id: data?.payload?.id,
         };
-
+        const newBillingObject: any = {
+          ...objectValuesForContact,
+          customer_id: data?.payload?.id,
+        };
         if (newAddressObj) {
           dispatch(insertAddAddress(newAddressObj));
         }
         if (newAddressObj) {
-          dispatch(insertbillingContact(newAddressObj));
+          dispatch(insertbillingContact(newBillingObject));
         }
         dispatch(setCustomerProfile(''));
       });
@@ -348,8 +358,9 @@ const CrmInformation: React.FC = () => {
 
   const updateCustomerDetails = async () => {
     const FormData = form.getFieldsValue();
+
     await dispatch(
-      updateAddress({...FormData, shipping_id: editRecordData?.id}),
+      updateAddress({...FormData, shipping_id: shipppingAddress?.id}),
     );
     await dispatch(updateCustomer({...FormData, id: editRecordData?.id}));
     dispatch(
@@ -487,7 +498,18 @@ const CrmInformation: React.FC = () => {
       </Space>
 
       <OsModal
-        body={<AddCustomer form={form} onFinish={onFinish} />}
+        body={
+          <AddCustomer
+            form={form}
+            onFinish={onFinish}
+            objectValuesForContact={objectValuesForContact}
+            setObjectValueForContact={setObjectValueForContact}
+            contactDetail={contactDetail}
+            setContactDetail={setContactDetail}
+            shipppingAddress={shipppingAddress}
+            setShippingAddress={setShippingAddress}
+          />
+        }
         width={700}
         open={showModal}
         onCancel={() => {
@@ -518,7 +540,17 @@ const CrmInformation: React.FC = () => {
           />
         }
       >
-        <AddCustomer form={form} onFinish={updateCustomerDetails} drawer />
+        <AddCustomer
+          form={form}
+          onFinish={updateCustomerDetails}
+          drawer
+          objectValuesForContact={objectValuesForContact}
+          setObjectValueForContact={setObjectValueForContact}
+          contactDetail={contactDetail}
+          setContactDetail={setContactDetail}
+          shipppingAddress={shipppingAddress}
+          setShippingAddress={setShippingAddress}
+        />
       </OsDrawer>
 
       <DeleteModal
