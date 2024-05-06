@@ -2,7 +2,7 @@
 import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {Space} from '@/app/components/common/antd/Space';
 import {Switch} from '@/app/components/common/antd/Switch';
-import CustomTableCell from '@/app/components/common/hooks/CustomTableCell';
+import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import Typography from '@/app/components/common/typography';
 import {formatDate} from '@/app/utils/base';
 import {PencilSquareIcon, TrashIcon} from '@heroicons/react/24/outline';
@@ -179,7 +179,7 @@ function standardAttributes(
       key: 'standard_attribute_section',
       width: 230,
       render: (text: string, record: any) => (
-        <CustomTableCell text={record?.AttributeSection?.name} />
+        <CustomTextCapitalization text={record?.AttributeSection?.name} />
       ),
     },
     {
@@ -195,7 +195,7 @@ function standardAttributes(
       dataIndex: 'label',
       key: 'label',
       width: 187,
-      render: (text: string) => <CustomTableCell text={text} />,
+      render: (text: string) => <CustomTextCapitalization text={text} />,
     },
     {
       title: (
@@ -354,7 +354,7 @@ function standardAttributesSection(
       dataIndex: 'name',
       key: 'name',
       width: 187,
-      render: (text: string) => <CustomTableCell text={text} />,
+      render: (text: string) => <CustomTextCapitalization text={text} />,
     },
     {
       title: (

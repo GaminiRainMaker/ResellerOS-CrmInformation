@@ -34,7 +34,7 @@ const OpportunityDetails = () => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const opportunityId = searchParams.get('id');
-  const {loading, data: opportunityData} = useAppSelector(
+  const {loading, opportunityById: opportunityData} = useAppSelector(
     (state) => state.Opportunity,
   );
   const [formValue, setFormValue] = useState<any>();
@@ -43,22 +43,21 @@ const OpportunityDetails = () => {
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
-  const {loading: QuoteLoading} = useAppSelector(
-    (state) => state.quote,
-  );
+  const {loading: QuoteLoading} = useAppSelector((state) => state.quote);
   useEffect(() => {
     dispatch(getOpportunityById(opportunityId));
   }, []);
 
   const OpportunityData = {
-    id: opportunityData?.[0]?.id,
-    title: opportunityData?.[0]?.title,
-    amount: opportunityData?.[0]?.amount,
-    customer: opportunityData?.[0]?.Customer?.name,
-    quotes: opportunityData?.[0]?.Quotes,
-    stages: opportunityData?.[0]?.stages,
+    id: opportunityData?.id,
+    title: opportunityData?.title,
+    amount: opportunityData?.amount,
+    customer: opportunityData?.Customer?.name,
+    quotes: opportunityData?.Quotes,
+    stages: opportunityData?.stages,
     opportunity: opportunityData,
   };
+
 
   const menuItems = [
     {
@@ -91,6 +90,34 @@ const OpportunityDetails = () => {
     },
   ];
 
+  const locale = {
+    emptyText: (
+      <EmptyContainer
+        title="No Files"
+        buttonContainer={
+          <AddQuote
+            uploadFileData={uploadFileData}
+            setUploadFileData={setUploadFileData}
+            loading={QuoteLoading}
+            buttonText="Add Quote"
+          />
+        }
+      />
+    ),
+  };
+
+  const deleteSelectedIds = async () => {
+    const data = {Ids: deleteIds};
+    await dispatch(deleteOpportunity(data));
+    // setTimeout(() => {
+    //   dispatch(getAllOpportunity());
+    //   dispatch(getdeleteOpportunity(''));
+    // }, 1000);
+    router.push('/crmOpportunity');
+    setDeleteIds([]);
+    setShowModalDelete(false);
+  };
+
   const Quotecolumns = [
     {
       title: (
@@ -101,8 +128,16 @@ const OpportunityDetails = () => {
       dataIndex: 'file_name',
       key: 'file_name',
       width: 130,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (text: string, record: any) => (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => {
+            router.push(`/generateQuote?id=${record.id}`);
+          }}
+          hoverOnText
+        >
+          {text ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -144,14 +179,11 @@ const OpportunityDetails = () => {
       dataIndex: 'status',
       key: 'status',
       width: 187,
-      render: (text: string, record: any) => {
-        const statusValue = record.is_completed
-          ? 'Completed'
-          : record?.is_drafted
-            ? 'In Progress'
-            : 'Drafts';
-        return <OsStatusWrapper value={statusValue} />;
-      },
+      render: (text: string, record: any) => (
+        <span style={{display: 'flex', justifyContent: 'center'}}>
+          <OsStatusWrapper value={text} />
+        </span>
+      ),
     },
     {
       title: ' ',
@@ -180,34 +212,22 @@ const OpportunityDetails = () => {
     },
   ];
 
-  const locale = {
-    emptyText: (
-      <EmptyContainer
-        title="No Files"
-        buttonContainer={
-          <AddQuote
-            uploadFileData={uploadFileData}
-            setUploadFileData={setUploadFileData}
-            loading={QuoteLoading}
-            buttonText="Add Quote"
-          />
-        }
-      />
-    ),
-  };
-
   const tabItems = [
     {
       label: <Typography name="Body 4/Regular">All</Typography>,
       key: '1',
       children: (
-        <OsTable
-          columns={Quotecolumns}
-          dataSource={OpportunityData?.quotes}
-          scroll
-          loading={loading}
-          locale={locale}
-        />
+        <>
+          {OpportunityData?.customer && (
+            <OsTable
+              columns={Quotecolumns}
+              dataSource={OpportunityData?.quotes}
+              scroll
+              loading={loading}
+              locale={locale}
+            />
+          )}
+        </>
       ),
     },
     {
@@ -219,18 +239,6 @@ const OpportunityDetails = () => {
       key: '3',
     },
   ];
-
-  const deleteSelectedIds = async () => {
-    const data = {Ids: deleteIds};
-    await dispatch(deleteOpportunity(data));
-    // setTimeout(() => {
-    //   dispatch(getAllOpportunity());
-    //   dispatch(getdeleteOpportunity(''));
-    // }, 1000);
-    router.push('/crmOpportunity');
-    setDeleteIds([]);
-    setShowModalDelete(false);
-  };
 
   return (
     <>
