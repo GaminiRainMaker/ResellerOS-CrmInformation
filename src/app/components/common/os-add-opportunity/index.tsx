@@ -2,78 +2,28 @@
 
 import {Divider} from '@/app/components/common/antd/Divider';
 import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
-import CommonSelect from '@/app/components/common/os-select';
 import CommonStageSelect from '@/app/components/common/os-stage-select';
 import Typography from '@/app/components/common/typography';
 import {StageValue} from '@/app/utils/CONSTANTS';
-import {useEffect, useState} from 'react';
-import {getAllCustomer} from '../../../../../redux/actions/customer';
-import {
-  getAllOpportunity,
-  insertOpportunity,
-} from '../../../../../redux/actions/opportunity';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {Form} from 'antd';
+import {useState} from 'react';
+import OsCustomerSelect from '../os-customer-select';
+import {SelectFormItem} from '../os-oem-select/oem-select-styled';
 import {AddOpportunityInterface} from './os-add-opportunity-interface';
 
 const AddOpportunity: React.FC<AddOpportunityInterface> = ({
-  formValue,
-  setFormValue,
-  setShowModal,
+  onFinish,
   drawer,
+  form,
   customerValue,
+  setCustomerValue,
+  showCustomerSelect,
 }) => {
   const [token] = useThemeToken();
-  const dispatch = useAppDispatch();
-  const {data: customerData} = useAppSelector((state) => state.customer);
-  const [customerOptions, setCustomerOptions] = useState<any>();
-  const [loading, setLoading] = useState(false);
 
-  const addOpportunity = async () => {
-    if (
-      formValue?.customer_id &&
-      formValue?.title &&
-      formValue?.amount &&
-      formValue?.stages
-    ) {
-      setLoading(true);
-      dispatch(insertOpportunity(formValue)).then((d) => {
-        if (d?.payload) {
-          dispatch(getAllOpportunity());
-        }
-      });
-      setLoading(false);
-      setShowModal((p: boolean) => !p);
-      setFormValue('');
-    }
-  };
-
-  useEffect(() => {
-    const customerDataArray: any = [];
-    if (customerData?.length > 0) {
-      // eslint-disable-next-line array-callback-return
-      customerData?.map((item: any) => {
-        customerDataArray?.push({label: item?.name, value: item?.id});
-      });
-    }
-    setCustomerOptions(customerDataArray);
-  }, [customerData]);
-
-  useEffect(() => {
-    dispatch(getAllCustomer(''));
-  }, []);
-
-  useEffect(() => {
-    if (customerValue) {
-      setFormValue({
-        ...formValue,
-        customer_id: customerValue,
-      });
-    }
-  }, [customerValue]);
+  const [stageValue, setStageValue] = useState<string>();
 
   return (
     <>
@@ -83,7 +33,7 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
           style={{
             padding: '24px 40px 20px 40px',
             backgroundColor: '#F0F4F7',
-            borderRadius: '10px 0px 10px 0px',
+            borderRadius: '10px 10px 0px 0px',
           }}
           gutter={[0, 0]}
         >
@@ -97,103 +47,90 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
         </Row>
       )}
 
-      <Space
-        size={18}
-        direction="vertical"
+      <Form
+        layout="vertical"
+        requiredMark={false}
         style={{
-          width: '100%',
           padding: drawer ? '0px' : '40px',
         }}
+        form={form}
+        onFinish={onFinish}
       >
-        {!customerValue && (
+        {!showCustomerSelect && (
           <>
-            <Row>
-              <Typography name="Body 4/Regular">
-                Select Customer Account
-              </Typography>
-              <CommonSelect
-                placeholder="Select Customer Account"
-                style={{width: '100%', marginTop: '5px'}}
-                value={formValue?.customer_id}
-                options={customerOptions}
-                onChange={(e) => {
-                  setFormValue({
-                    ...formValue,
-                    customer_id: e,
-                  });
-                }}
-              />
-            </Row>
-
+            <OsCustomerSelect
+              setCustomerValue={setCustomerValue}
+              customerValue={customerValue}
+              isAddNewCustomer
+              isRequired
+            />
             <Divider style={{border: '1px solid #C7CDD5'}} />
           </>
         )}
 
-        <Space direction="vertical" style={{width: '100%'}} size={16}>
-          <Row>
-            <Typography name="Body 4/Regular">Opportunity Title</Typography>
-            <OsInput
-              placeholder="Opportunity Title"
-              value={formValue?.title}
-              onChange={(e) => {
-                setFormValue({
-                  ...formValue,
-                  title: e.target.value,
-                });
-              }}
-            />
-          </Row>
-          <Row justify="space-between" gutter={[16, 0]}>
-            <Col span={12}>
-              <Typography name="Body 4/Regular">Amount</Typography>
-              <OsInput
-                disabled={drawer}
-                prefix="$"
-                placeholder="00.00"
-                value={formValue?.amount}
-                onChange={(e) => {
-                  setFormValue({
-                    ...formValue,
-                    amount: e.target.value,
-                  });
-                }}
-              />
-            </Col>
-            <Col span={12}>
-              <Typography name="Body 4/Regular">Stages</Typography>
+        <Row gutter={[16, 24]} justify="space-between">
+          <Col span={24}>
+            <SelectFormItem
+              label={
+                <Typography name="Body 4/Medium">Opportunity Title</Typography>
+              }
+              name="title"
+              rules={[
+                {
+                  required: true,
+                  message: 'Opportunity Title is required!',
+                },
+                {
+                  pattern: /^[A-Za-z\s]+$/,
+                  message: 'Please enter valid opportunity.',
+                },
+              ]}
+            >
+              <OsInput placeholder="Enter Text" />
+            </SelectFormItem>
+          </Col>
+
+          <Col span={12}>
+            <SelectFormItem
+              label={<Typography name="Body 4/Medium">Amount</Typography>}
+              name="amount"
+              rules={[
+                {
+                  required: true,
+                  message: 'Amount is required!',
+                },
+                {
+                  pattern: /^[0-9]+$/,
+                  message: 'Please enter valid amount.',
+                },
+              ]}
+            >
+              <OsInput prefix="$" placeholder="00.00" disabled={drawer} />
+            </SelectFormItem>
+          </Col>
+          <Col span={12}>
+            <SelectFormItem
+              label={<Typography name="Body 4/Medium">Stages</Typography>}
+              name="stages"
+              rules={[
+                {
+                  required: true,
+                  message: 'Stages is required!',
+                },
+              ]}
+            >
               <CommonStageSelect
                 style={{width: '100%', marginTop: '10px'}}
                 options={StageValue}
-                currentStage={formValue?.stages}
-                onChange={(e: any) => {
-                  setFormValue({
-                    ...formValue,
-                    stages: e,
-                  });
+                onChange={(e: string) => {
+                  setStageValue(e);
                 }}
+                currentStage={stageValue}
               />
-            </Col>
-          </Row>
-        </Space>
-
-        {!drawer && (
-          <Row justify="end">
-            <OsButton
-              loading={loading}
-              buttontype={
-                formValue?.customer_id &&
-                formValue?.title &&
-                formValue?.amount &&
-                formValue?.stages
-                  ? 'PRIMARY'
-                  : 'PRIMARY_DISABLED'
-              }
-              clickHandler={addOpportunity}
-              text="Add"
-            />{' '}
-          </Row>
-        )}
-      </Space>
+            </SelectFormItem>
+          </Col>
+        </Row>
+      </Form>
     </>
   );
 };

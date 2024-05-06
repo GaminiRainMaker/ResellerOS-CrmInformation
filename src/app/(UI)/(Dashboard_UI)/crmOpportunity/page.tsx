@@ -24,6 +24,7 @@ import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import AddOpportunity from '@/app/components/common/os-add-opportunity';
 import OsButton from '@/app/components/common/os-button';
+import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
@@ -34,7 +35,7 @@ import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
 import {StageValue} from '@/app/utils/CONSTANTS';
-import {MenuProps, TabsProps} from 'antd';
+import {Form, MenuProps, TabsProps} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -42,21 +43,22 @@ import {queryContact} from '../../../../../redux/actions/billingContact';
 import {queryCustomer} from '../../../../../redux/actions/customer';
 import {
   deleteOpportunity,
+  getAllOpportunity,
   getdeleteOpportunity,
+  insertOpportunity,
   queryOpportunity,
   updateOpportunity,
 } from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import EditOpportunity from './EditOpportunity';
 
 const CrmOpportunity: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showDrawer, setShowDrawer] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
-  const [open, setOpen] = useState(false);
   const {
     data: opportunityData,
     loading,
@@ -66,11 +68,12 @@ const CrmOpportunity: React.FC = () => {
     (state) => state.customer,
   );
   const {filteredData} = useAppSelector((state) => state.billingContact);
-  const [formValue, setFormValue] = useState<any>();
   const [activeOpportunity, setActiveOpportunity] = useState<any>();
+  const [customerValue, setCustomerValue] = useState<number>();
+  const [recordId, setRecordId] = useState<number>();
   const {abbreviate} = useAbbreviationHook(0);
   const router = useRouter();
-
+  const [form] = Form.useForm();
   const [query, setQuery] = useState<{
     opportunity: string | null;
     customer: string | null;
@@ -241,8 +244,14 @@ const CrmOpportunity: React.FC = () => {
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              setOpen(true);
-              setFormValue(record);
+              setRecordId(record?.id);
+              form.setFieldsValue({
+                stages: record?.stages,
+                customer_id: record?.customer_id,
+                title: record?.title,
+                amount: record?.amount,
+              });
+              setShowDrawer(true);
             }}
           />
           <TrashIcon
@@ -361,6 +370,37 @@ const CrmOpportunity: React.FC = () => {
   const uniqueCustomer = Array.from(
     new Set(opportunityData?.map((contact: any) => contact.Customer?.name)),
   );
+
+  const onFinish = () => {
+    const FormDAta = form.getFieldsValue();
+    const finalData = {
+      ...FormDAta,
+      customer_id: customerValue,
+    };
+    dispatch(insertOpportunity(finalData)).then((d: any) => {
+      if (d?.payload) {
+        dispatch(getAllOpportunity());
+        setShowModal(false);
+        form.resetFields();
+      }
+    });
+  };
+
+  const updateOpportunityData = () => {
+    const FormDAta = form.getFieldsValue();
+    const finalData = {
+      ...FormDAta,
+      customer_id: customerValue,
+      id: recordId,
+    };
+    dispatch(updateOpportunity(finalData))?.then((d: any) => {
+      if (d?.payload) {
+        dispatch(getAllOpportunity());
+        setShowDrawer(false);
+        form.resetFields();
+      }
+    });
+  };
 
   return (
     <>
@@ -522,20 +562,55 @@ const CrmOpportunity: React.FC = () => {
       </Space>
 
       <OsModal
+        loading={loading}
         body={
           <AddOpportunity
-            setFormValue={setFormValue}
-            formValue={formValue}
-            setShowModal={setShowModal}
+            form={form}
+            onFinish={onFinish}
+            setCustomerValue={setCustomerValue}
+            customerValue={customerValue}
           />
         }
         width={600}
         open={showModal}
         onCancel={() => {
-          setShowModal((p) => !p);
-          setFormValue('');
+          setShowModal(false);
+          form.resetFields();
         }}
+        onOk={form.submit}
+        primaryButtonText="Save"
+        footerPadding={30}
       />
+
+      <OsDrawer
+        title={
+          <Typography name="Body 1/Regular">Opportunity Details</Typography>
+        }
+        placement="right"
+        onClose={() => {
+          setShowDrawer(false);
+          form.resetFields();
+        }}
+        open={showDrawer}
+        width={450}
+        footer={
+          <OsButton
+            loading={loading}
+            btnStyle={{width: '100%'}}
+            buttontype="PRIMARY"
+            text="Update Changes"
+            clickHandler={form.submit}
+          />
+        }
+      >
+        <AddOpportunity
+          form={form}
+          onFinish={updateOpportunityData}
+          setCustomerValue={setCustomerValue}
+          customerValue={customerValue}
+          drawer
+        />
+      </OsDrawer>
 
       <DeleteModal
         setShowModalDelete={setShowModalDelete}
@@ -544,12 +619,6 @@ const CrmOpportunity: React.FC = () => {
         deleteSelectedIds={deleteSelectedIds}
         description="Are you sure you want to delete this opportunity?"
         heading="Delete Opportunity"
-      />
-      <EditOpportunity
-        setFormValue={setFormValue}
-        formValue={formValue}
-        open={open}
-        setOpen={setOpen}
       />
     </>
   );

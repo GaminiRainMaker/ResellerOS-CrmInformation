@@ -27,12 +27,13 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import {MenuProps, notification} from 'antd';
+import {Form, MenuProps, notification} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {
   deleteBillingContact,
+  insertbillingContact,
   queryContact,
   updateBillingContact,
 } from '../../../../../redux/actions/billingContact';
@@ -40,21 +41,22 @@ import {
   getAllCustomer,
   queryCustomer,
 } from '../../../../../redux/actions/customer';
+import {queryOpportunity} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddContact from './addContact';
-import EditContactModal from './editContact';
-import {queryOpportunity} from '../../../../../redux/actions/opportunity';
 
 const CrmAccount: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
+  const [form] = Form.useForm();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<any>('1');
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [showModalEdit, setShowModalEdit] = useState<boolean>(false);
-  const [formValue, setFormValue] = useState<any>();
+  const [showDrawer, setShowDrawer] = useState<boolean>(false);
+  const [recordId, setRecordId] = useState<any>();
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+  const [customerValue, setCustomerValue] = useState();
   const [open, setOpen] = useState(false);
   const {filteredData: customerData} = useAppSelector(
     (state) => state.customer,
@@ -90,15 +92,6 @@ const CrmAccount: React.FC = () => {
       dispatch(queryContact(query));
     }, 1000);
   }, [showModal, open]);
-
-  const updatebillDetails = async () => {
-    dispatch(updateBillingContact(formValue));
-    setOpen((p) => !p);
-    setTimeout(() => {
-      dispatch(getAllCustomer(''));
-      dispatch(queryContact(''));
-    }, 1000);
-  };
 
   const deleteSelectedIds = async () => {
     const data = {Ids: deleteIds};
@@ -233,8 +226,15 @@ const CrmAccount: React.FC = () => {
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              setOpen(true);
-              setFormValue(record);
+              setShowDrawer(true);
+              setRecordId(record?.id);
+              form.setFieldsValue({
+                customer_id: record?.customer_id,
+                billing_first_name: record?.billing_first_name,
+                billing_last_name: record?.billing_last_name,
+                billing_role: record?.billing_role,
+                billing_email: record?.billing_email,
+              });
             }}
           />
 
@@ -298,6 +298,32 @@ const CrmAccount: React.FC = () => {
     ),
   };
 
+  const onFinish = () => {
+    const FormData = form?.getFieldsValue();
+    dispatch(insertbillingContact(FormData)).then((d: any) => {
+      if (d?.payload) {
+        dispatch(queryContact(searchQuery));
+        form.resetFields();
+        setShowModal(false);
+      }
+    });
+  };
+
+  const updatebillDetails = async () => {
+    const FormData = form?.getFieldsValue();
+    const finalDAta = {
+      ...FormData,
+      id: recordId,
+    };
+    dispatch(updateBillingContact(finalDAta))?.then((d: any) => {
+      if (d?.payload) {
+        dispatch(queryContact(searchQuery));
+        form.resetFields();
+        setShowDrawer(false);
+      }
+    });
+  };
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -341,7 +367,6 @@ const CrmAccount: React.FC = () => {
                 buttontype="PRIMARY"
                 icon={<PlusIcon />}
                 clickHandler={() => {
-                  setFormValue({});
                   setShowModal((p) => !p);
                 }}
               />
@@ -449,36 +474,23 @@ const CrmAccount: React.FC = () => {
 
       <OsModal
         loading={loading}
-        body={<EditContactModal />}
-        width={1110}
-        open={showModalEdit}
-        onCancel={() => {
-          setShowModalEdit((p) => !p);
-        }}
-      />
-      <OsModal
-        loading={loading}
         body={
           <AddContact
-            setFormValue={setFormValue}
-            formValue={formValue}
-            setShowModal={setShowModal}
+            form={form}
+            onFinish={onFinish}
+            setCustomerValue={setCustomerValue}
+            customerValue={customerValue}
           />
         }
         width={600}
         open={showModal}
         onCancel={() => {
-          setShowModal((p) => !p);
+          setShowModal(false);
+          form.resetFields();
         }}
-      />
-
-      <DeleteModal
-        setShowModalDelete={setShowModalDelete}
-        setDeleteIds={setDeleteIds}
-        showModalDelete={showModalDelete}
-        deleteSelectedIds={deleteSelectedIds}
-        description="Are you sure you want to delete this contact?"
-        heading="Delete Contact"
+        onOk={form.submit}
+        primaryButtonText="Save"
+        footerPadding={30}
       />
 
       <OsDrawer
@@ -488,28 +500,38 @@ const CrmAccount: React.FC = () => {
           </Typography>
         }
         placement="right"
-        onClose={() => setOpen((p) => !p)}
-        open={open}
+        onClose={() => {
+          setShowDrawer(false);
+          form.resetFields();
+        }}
+        open={showDrawer}
         width={450}
         footer={
-          <Row style={{width: '100%', float: 'right'}}>
-            {' '}
-            <OsButton
-              btnStyle={{width: '100%'}}
-              buttontype="PRIMARY"
-              text="Update Changes"
-              clickHandler={updatebillDetails}
-            />
-          </Row>
+          <OsButton
+            btnStyle={{width: '100%'}}
+            buttontype="PRIMARY"
+            text="Update Changes"
+            clickHandler={form.submit}
+          />
         }
       >
         <AddContact
-          setFormValue={setFormValue}
-          formValue={formValue}
-          setShowModal={setShowModal}
-          drawer="drawer"
+          form={form}
+          onFinish={updatebillDetails}
+          setCustomerValue={setCustomerValue}
+          customerValue={customerValue}
+          drawer
         />
       </OsDrawer>
+
+      <DeleteModal
+        setShowModalDelete={setShowModalDelete}
+        setDeleteIds={setDeleteIds}
+        showModalDelete={showModalDelete}
+        deleteSelectedIds={deleteSelectedIds}
+        description="Are you sure you want to delete this contact?"
+        heading="Delete Contact"
+      />
     </>
   );
 };
