@@ -185,6 +185,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       alllArrayValue?.push(newObj);
     });
 
+   
     const newrrLineItems: any = [];
     const rebateDataArray: any = [];
     const contractProductArray: any = [];
