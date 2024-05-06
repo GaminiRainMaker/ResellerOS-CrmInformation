@@ -19,6 +19,7 @@ type OpportunityState = {
   opportunityById: any;
   filteredData: any;
   deletedCount?: any;
+  stageValue?: string;
 };
 const initialState: OpportunityState = {
   loading: false,
@@ -28,6 +29,7 @@ const initialState: OpportunityState = {
   opportunityById: {},
   filteredData: [],
   deletedCount: null,
+  stageValue: '',
 };
 
 const opportunitySlice = createSlice({
@@ -36,6 +38,9 @@ const opportunitySlice = createSlice({
   reducers: {
     setOpportunity: (state, action) => {
       state.opportunity = action.payload;
+    },
+    setStageValue: (state, action) => {
+      state.stageValue = action.payload;
     },
   },
   extraReducers(builder) {
@@ -169,5 +174,5 @@ const opportunitySlice = createSlice({
   },
 });
 
-export const {setOpportunity} = opportunitySlice.actions;
+export const {setOpportunity, setStageValue} = opportunitySlice.actions;
 export default opportunitySlice?.reducer;

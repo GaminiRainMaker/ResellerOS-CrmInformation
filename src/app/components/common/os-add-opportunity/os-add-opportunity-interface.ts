@@ -1,8 +1,10 @@
+import {FormInstance} from 'antd';
+
 export interface AddOpportunityInterface {
-  formValue: any;
-  setFormValue: any;
-  setShowModal?: any;
-  tableData?: any;
-  drawer?: any;
+  onFinish?: any;
+  drawer?: boolean;
+  form?: FormInstance;
   customerValue?: number;
+  setCustomerValue?: any;
+  showCustomerSelect?: boolean;
 }

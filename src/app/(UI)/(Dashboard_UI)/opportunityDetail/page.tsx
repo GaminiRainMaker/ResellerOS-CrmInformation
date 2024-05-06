@@ -21,16 +21,21 @@ import {EyeIcon, PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import AddQuote from '@/app/components/common/addQuote';
+import OsDrawer from '@/app/components/common/os-drawer';
+import {Form} from 'antd';
+import AddOpportunity from '@/app/components/common/os-add-opportunity';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {
   deleteOpportunity,
   getOpportunityById,
+  updateOpportunity,
 } from '../../../../../redux/actions/opportunity';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import EditOpportunity from '../crmOpportunity/EditOpportunity';
+import {setStageValue} from '../../../../../redux/slices/opportunity';
 
 const OpportunityDetails = () => {
   const [token] = useThemeToken();
   const router = useRouter();
+  const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const opportunityId = searchParams.get('id');
@@ -38,11 +43,13 @@ const OpportunityDetails = () => {
     (state) => state.Opportunity,
   );
   const [formValue, setFormValue] = useState<any>();
-  const [open, setOpen] = useState(false);
+  const [showDrawer, setShowDrawer] = useState(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
+  const [customerValue, setCustomerValue] = useState<number>();
+
   const {loading: QuoteLoading} = useAppSelector((state) => state.quote);
   useEffect(() => {
     dispatch(getOpportunityById(opportunityId));
@@ -58,6 +65,16 @@ const OpportunityDetails = () => {
     opportunity: opportunityData,
   };
 
+  useEffect(() => {
+    if (showDrawer) {
+      form.setFieldsValue({
+        stages: opportunityData?.stages,
+        customer_id: opportunityData?.customer_id,
+        title: opportunityData?.title,
+        amount: opportunityData?.amount,
+      });
+    }
+  }, [showDrawer]);
 
   const menuItems = [
     {
@@ -240,6 +257,22 @@ const OpportunityDetails = () => {
     },
   ];
 
+  const updateOpportunityData = () => {
+    const FormDAta = form.getFieldsValue();
+    const finalData = {
+      ...FormDAta,
+      customer_id: customerValue,
+      id: opportunityId,
+    };
+    dispatch(updateOpportunity(finalData))?.then((d: any) => {
+      if (d?.payload) {
+        dispatch(getOpportunityById(opportunityId));
+        setShowDrawer(false);
+        form.resetFields();
+      }
+    });
+  };
+
   return (
     <>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
@@ -247,7 +280,7 @@ const OpportunityDetails = () => {
 
         <OpportunityAnalyticCard
           setFormValue={setFormValue}
-          setOpen={setOpen}
+          setOpen={setShowDrawer}
           OpportunityData={OpportunityData}
           setDeleteIds={setDeleteIds}
           setShowModalDelete={setShowModalDelete}
@@ -276,12 +309,35 @@ const OpportunityDetails = () => {
         </Row>
       </Space>
 
-      <EditOpportunity
-        setFormValue={setFormValue}
-        formValue={formValue}
-        open={open}
-        setOpen={setOpen}
-      />
+      <OsDrawer
+        title={
+          <Typography name="Body 1/Regular">Opportunity Details</Typography>
+        }
+        placement="right"
+        onClose={() => {
+          setShowDrawer(false);
+          form.resetFields();
+        }}
+        open={showDrawer}
+        width={450}
+        footer={
+          <OsButton
+            loading={loading}
+            btnStyle={{width: '100%'}}
+            buttontype="PRIMARY"
+            text="Update Changes"
+            clickHandler={form.submit}
+          />
+        }
+      >
+        <AddOpportunity
+          form={form}
+          onFinish={updateOpportunityData}
+          setCustomerValue={setCustomerValue}
+          customerValue={customerValue}
+          drawer
+        />
+      </OsDrawer>
 
       <DeleteModal
         setShowModalDelete={setShowModalDelete}
