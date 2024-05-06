@@ -525,95 +525,100 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       setShowRaiseConcernModal(false);
       form?.resetFields();
     } else {
-      setNanonetsLoading(true);
-      fetch(fileData?.pdfUrl)
-        .then((res) => res.blob())
-        .then(async (file) => {
-          const finalFile = new File([file], fileData?.file_name, {
-            type: file.type,
-          });
-          const response = await sendDataToNanonets(
-            'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
-            finalFile,
-          );
+      setShowRaiseConcernModal(false);
+      form?.resetFields();
+      router?.push(
+        `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=false`,
+      );
+      // setNanonetsLoading(true);
+      // fetch(fileData?.pdfUrl)
+      //   .then((res) => res.blob())
+      //   .then(async (file) => {
+      //     const finalFile = new File([file], fileData?.file_name, {
+      //       type: file.type,
+      //     });
+      //     const response = await sendDataToNanonets(
+      //       'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
+      //       finalFile,
+      //     );
 
-          const newArrrrAll: any = [];
-          if (response) {
-            for (let i = 0; i < response?.data?.result?.length; i++) {
-              const itemss: any = response?.data?.result[i];
+      //     const newArrrrAll: any = [];
+      //     if (response) {
+      //       for (let i = 0; i < response?.data?.result?.length; i++) {
+      //         const itemss: any = response?.data?.result[i];
 
-              const newItemsssadsd = itemss?.prediction?.filter(
-                (item: any) => item,
-              );
-              const newAllgetOArr: any = [];
-              newItemsssadsd?.map((itemNew: any) => {
-                let formattedArray1: any = [];
+      //         const newItemsssadsd = itemss?.prediction?.filter(
+      //           (item: any) => item,
+      //         );
+      //         const newAllgetOArr: any = [];
+      //         newItemsssadsd?.map((itemNew: any) => {
+      //           let formattedArray1: any = [];
 
-                const formattedData1: any = {};
-                if (itemNew?.cells) {
-                  const titles = itemNew?.cells.filter(
-                    (innerCell: any) => innerCell.row === 1,
-                  );
-                  const strifndfs = (str: any) => {
-                    const losadsd = str
-                      ?.toString()
-                      .match(/\d+(\.\d+)?/g)
-                      ?.map(Number)
-                      ?.toString()
-                      .match(/\d+(\.\d+)?/g)
-                      ?.map(Number);
-                  };
+      //           const formattedData1: any = {};
+      //           if (itemNew?.cells) {
+      //             const titles = itemNew?.cells.filter(
+      //               (innerCell: any) => innerCell.row === 1,
+      //             );
+      //             const strifndfs = (str: any) => {
+      //               const losadsd = str
+      //                 ?.toString()
+      //                 .match(/\d+(\.\d+)?/g)
+      //                 ?.map(Number)
+      //                 ?.toString()
+      //                 .match(/\d+(\.\d+)?/g)
+      //                 ?.map(Number);
+      //             };
 
-                  itemNew?.cells.forEach((item: any) => {
-                    const rowNum = item.row;
-                    if (rowNum === 1) {
-                      return;
-                    }
-                    if (!formattedData1[rowNum]) {
-                      formattedData1[rowNum] = {};
-                    }
-                    formattedData1[rowNum][
-                      item.label?.toLowerCase()
-                        ? item.label?.toLowerCase()
-                        : titles.find(
-                            (titleRow: any) => titleRow.col === item.col,
-                          ).text
-                    ] = item.label?.toLowerCase()
-                      ? item.label?.toLowerCase()?.includes('Price')
-                      : titles
-                            .find((titleRow: any) => titleRow.col === item.col)
-                            .text?.includes('Price')
-                        ? item?.text
-                            ?.toString()
-                            .match(/\d+(\.\d+)?/g)
-                            ?.map(Number)
-                            ?.toString()
-                            .match(/\d+(\.\d+)?/g)
-                            ?.map(Number)
-                            ?.toString()
-                        : item.text;
-                  });
-                }
-                formattedArray1 = Object.values(formattedData1);
-                newAllgetOArr?.push(formattedArray1);
-                newArrrrAll?.push(formattedArray1);
-              });
-            }
+      //             itemNew?.cells.forEach((item: any) => {
+      //               const rowNum = item.row;
+      //               if (rowNum === 1) {
+      //                 return;
+      //               }
+      //               if (!formattedData1[rowNum]) {
+      //                 formattedData1[rowNum] = {};
+      //               }
+      //               formattedData1[rowNum][
+      //                 item.label?.toLowerCase()
+      //                   ? item.label?.toLowerCase()
+      //                   : titles.find(
+      //                       (titleRow: any) => titleRow.col === item.col,
+      //                     ).text
+      //               ] = item.label?.toLowerCase()
+      //                 ? item.label?.toLowerCase()?.includes('Price')
+      //                 : titles
+      //                       .find((titleRow: any) => titleRow.col === item.col)
+      //                       .text?.includes('Price')
+      //                   ? item?.text
+      //                       ?.toString()
+      //                       .match(/\d+(\.\d+)?/g)
+      //                       ?.map(Number)
+      //                       ?.toString()
+      //                       .match(/\d+(\.\d+)?/g)
+      //                       ?.map(Number)
+      //                       ?.toString()
+      //                   : item.text;
+      //             });
+      //           }
+      //           formattedArray1 = Object.values(formattedData1);
+      //           newAllgetOArr?.push(formattedArray1);
+      //           newArrrrAll?.push(formattedArray1);
+      //         });
+      //       }
 
-            const jsonDataa = {
-              id: fileLineItemIds,
-              quote_json: [JSON?.stringify(newArrrrAll)],
-            };
+      //       const jsonDataa = {
+      //         id: fileLineItemIds,
+      //         quote_json: [JSON?.stringify(newArrrrAll)],
+      //       };
 
-            dispatch(updateFileForQuoteJson(jsonDataa));
-            setNanonetsLoading(false);
-            router?.push(
-              `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=false`,
-            );
-            setShowRaiseConcernModal(false);
-            form?.resetFields();
-          }
-        });
+      //       dispatch(updateFileForQuoteJson(jsonDataa));
+      //       setNanonetsLoading(false);
+      //       router?.push(
+      //         `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=false`,
+      //       );
+      //       setShowRaiseConcernModal(false);
+      //       form?.resetFields();
+      //     }
+      //   });
     }
   };
 

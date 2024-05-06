@@ -1,3 +1,6 @@
+/* eslint-disable import/order */
+/* eslint-disable @typescript-eslint/indent */
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-no-duplicate-props */
 /* eslint-disable consistent-return */
 /* eslint-disable react/no-unstable-nested-components */
@@ -17,7 +20,7 @@ import {Space} from '@/app/components/common/antd/Space';
 import OsButton from '@/app/components/common/os-button';
 import OsModal from '@/app/components/common/os-modal';
 import {formatStatus} from '@/app/utils/CONSTANTS';
-import {updateTables} from '@/app/utils/base';
+import {sendDataToNanonets, updateTables} from '@/app/utils/base';
 import {TrashIcon} from '@heroicons/react/24/outline';
 import {notification} from 'antd';
 import Typography from 'antd/es/typography/Typography';
@@ -32,6 +35,7 @@ import {
 import {getQuoteLineItemByQuoteIdForEditTable} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
@@ -47,6 +51,103 @@ const EditorFile = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [updateLineItemsValue, setUpdateLineItemsValue] = useState<any>();
   const [missingId, setMissingId] = useState<number[]>([]);
+
+  const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
+
+  // ==============================SalesForce Implementations ======================================
+
+  useEffect(() => {
+    if (ExistingQuoteItemss === 'true') {
+      dispatch(getQuoteLineItemByQuoteIdForEditTable(Number(getQUoteId))).then(
+        (d: any) => {
+          if (d?.payload) {
+            // const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
+            setQuoteItems(d?.payload);
+            const allHeaderValue: any = [];
+          }
+        },
+      );
+    } else if (quoteFileById?.pdf_url) {
+      setNanonetsLoading(true);
+      fetch(quoteFileById?.pdf_url)
+        .then((res) => res.blob())
+        .then(async (file) => {
+          const finalFile = new File([file], quoteFileById?.file_name, {
+            type: file.type,
+          });
+          const response = await sendDataToNanonets(
+            'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
+            finalFile,
+          );
+
+          const newArrrrAll: any = [];
+          if (response) {
+            for (let i = 0; i < response?.data?.result?.length; i++) {
+              const itemss: any = response?.data?.result[i];
+
+              const newItemsssadsd = itemss?.prediction?.filter(
+                (item: any) => item,
+              );
+              const newAllgetOArr: any = [];
+              newItemsssadsd?.map((itemNew: any) => {
+                let formattedArray1: any = [];
+
+                const formattedData1: any = {};
+                if (itemNew?.cells) {
+                  const titles = itemNew?.cells.filter(
+                    (innerCell: any) => innerCell.row === 1,
+                  );
+                  const strifndfs = (str: any) => {
+                    const losadsd = str
+                      ?.toString()
+                      .match(/\d+(\.\d+)?/g)
+                      ?.map(Number)
+                      ?.toString()
+                      .match(/\d+(\.\d+)?/g)
+                      ?.map(Number);
+                  };
+
+                  itemNew?.cells.forEach((item: any) => {
+                    const rowNum = item.row;
+                    if (rowNum === 1) {
+                      return;
+                    }
+                    if (!formattedData1[rowNum]) {
+                      formattedData1[rowNum] = {};
+                    }
+                    formattedData1[rowNum][
+                      item.label?.toLowerCase()
+                        ? item.label?.toLowerCase()
+                        : titles.find(
+                            (titleRow: any) => titleRow.col === item.col,
+                          ).text
+                    ] = item.label?.toLowerCase()
+                      ? item.label?.toLowerCase()?.includes('Price')
+                      : titles
+                            .find((titleRow: any) => titleRow.col === item.col)
+                            .text?.includes('Price')
+                        ? item?.text
+                            ?.toString()
+                            .match(/\d+(\.\d+)?/g)
+                            ?.map(Number)
+                            ?.toString()
+                            .match(/\d+(\.\d+)?/g)
+                            ?.map(Number)
+                            ?.toString()
+                        : item.text;
+                  });
+                }
+                formattedArray1 = Object.values(formattedData1);
+                newAllgetOArr?.push(formattedArray1);
+                newArrrrAll?.push(formattedArray1);
+                setQuoteItems(newArrrrAll);
+                setNanonetsLoading(false);
+              });
+            }
+          }
+        });
+    }
+  }, [ExistingQuoteItemss, quoteFileById]);
 
   useEffect(() => {
     const newArrr: any = [];
@@ -73,29 +174,6 @@ const EditorFile = () => {
       setMissingId(missingIds);
     }
   }, [updateLineItemsValue]);
-
-  useEffect(() => {
-    if (ExistingQuoteItemss === 'true') {
-      dispatch(getQuoteLineItemByQuoteIdForEditTable(Number(getQUoteId))).then(
-        (d: any) => {
-          if (d?.payload) {
-            // const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
-            setQuoteItems(d?.payload);
-            const allHeaderValue: any = [];
-          }
-        },
-      );
-    } else {
-      const quoteJson = quoteFileById?.quote_json;
-
-      if (quoteJson) {
-        const dataa: any = JSON.parse(quoteJson?.[0]);
-        const newArray = dataa?.length > 0 ? [...dataa] : [];
-        setQuoteItems(newArray);
-        const allHeaderValue: any = [];
-      }
-    }
-  }, [ExistingQuoteItemss, quoteFileById]);
 
   useEffect(() => {
     dispatch(getQuoteFileById(Number(getQuoteFileId)));
@@ -296,7 +374,7 @@ const EditorFile = () => {
     }
   };
   return (
-    <>
+    <GlobalLoader loading={nanonetsLoading}>
       <div
         style={{
           background: 'white',
@@ -458,38 +536,40 @@ const EditorFile = () => {
               </>
             ) : (
               <>
-                <Space
-                  size={25}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'end',
-                    marginRight: '50px',
-                    // top: '10',
-                    position: 'fixed',
+                {quoteItems && (
+                  <Space
+                    size={25}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'end',
+                      marginRight: '50px',
+                      // top: '10',
+                      position: 'fixed',
 
-                    right: '0',
-                    bottom: '0',
-                    marginBottom: '20px',
-                  }}
-                >
-                  {' '}
-                  <OsButton
-                    text="Cancel"
-                    buttontype="SECONDARY"
-                    // clickHandler={(e: any) => {
-                    //   e?.preventDefault();
-                    //   CancelEditing();
-                    // }}
-                    clickHandler={(e: void) => {
-                      CancelEditing();
+                      right: '0',
+                      bottom: '0',
+                      marginBottom: '20px',
                     }}
-                  />
-                  <OsButton
-                    text="Merge Table"
-                    buttontype="PRIMARY"
-                    clickHandler={() => mergeTableData(quoteItems)}
-                  />
-                </Space>
+                  >
+                    {' '}
+                    <OsButton
+                      text="Cancel"
+                      buttontype="SECONDARY"
+                      // clickHandler={(e: any) => {
+                      //   e?.preventDefault();
+                      //   CancelEditing();
+                      // }}
+                      clickHandler={(e: void) => {
+                        CancelEditing();
+                      }}
+                    />
+                    <OsButton
+                      text="Merge Table"
+                      buttontype="PRIMARY"
+                      clickHandler={() => mergeTableData(quoteItems)}
+                    />
+                  </Space>
+                )}
                 {quoteItems &&
                   quoteItems?.map((itemss: any, indexOFTable: number) => {
                     const allHeaderValue: any = [];
@@ -593,7 +673,7 @@ const EditorFile = () => {
           setShowModal((p) => !p);
         }}
       />
-    </>
+    </GlobalLoader>
   );
 };
 export default EditorFile;
