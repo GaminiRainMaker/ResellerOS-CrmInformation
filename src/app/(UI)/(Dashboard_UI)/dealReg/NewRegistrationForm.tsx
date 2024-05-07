@@ -73,7 +73,7 @@ const NewRegistrationForm: FC<any> = ({
     );
 
     setAllFilterPartnerData(FilterArrayDataa?.filterData);
-  }, []);
+  }, [partnerData]);
 
   const partnerOptions = allPartnerFilterData?.map((partner: any) => ({
     label: <CustomTextCapitalization text={partner?.partner} />,
