@@ -35,9 +35,7 @@ function templateColumns(
       key: 'partner',
       width: 130,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
-          {record?.Partner?.partner}
-        </Typography>
+        <CustomTextCapitalization text={record?.Partner?.partner} />
       ),
     },
     {
@@ -54,15 +52,9 @@ function templateColumns(
       key: 'partner_program',
       width: 187,
       render: (text: string, record: any) => (
-        <Typography
-          name="Body 4/Regular"
-          onClick={() => {
-            // window.open(`/opportunityDetail?id=${record?.Partner?.id}`);
-          }}
-          // hoverOnText
-        >
-          {text ?? record?.Partner?.partner_program}
-        </Typography>
+        <CustomTextCapitalization
+          text={text ?? record?.Partner?.partner_program}
+        />
       ),
     },
     {
@@ -230,9 +222,8 @@ function standardAttributes(
       dataIndex: 'data_type',
       key: 'data_type',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
+      render: (text: string) => <CustomTextCapitalization text={text} />,
+
     },
     {
       title: (

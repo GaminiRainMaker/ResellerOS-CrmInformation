@@ -10,6 +10,7 @@ import OsModal from '../os-modal';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
 import {OsPartnerProgramSelectInterface} from './os-partner-program.interface';
+import CustomTextCapitalization from '../hooks/CustomTextCapitalizationHook';
 
 const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
   name = 'partner_program',
@@ -29,7 +30,7 @@ const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
   useEffect(() => {
     const partnerProgramsRequestOptions =
       partnerRequestData?.[0]?.PartnerPrograms?.map((program: any) => ({
-        label: program?.partner_program,
+        label: <CustomTextCapitalization text={program?.partner_program} />,
         value: program?.id,
       }));
     setFinalProgramOptions(partnerProgramsRequestOptions);

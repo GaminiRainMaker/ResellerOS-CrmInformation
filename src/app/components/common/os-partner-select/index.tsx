@@ -15,6 +15,7 @@ import AddPartner from '../os-add-partner';
 import OsModal from '../os-modal';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
+import CustomTextCapitalization from '../hooks/CustomTextCapitalizationHook';
 
 const OsPartnerSelect: FC<{
   // form: FormInstance;
@@ -79,16 +80,12 @@ const OsPartnerSelect: FC<{
   const partnerOptions =
     isSuperAdmin || notApprovedData
       ? allPartnerFilterData?.map((partner: any) => ({
-          label: partner?.partner,
+          label: <CustomTextCapitalization text={partner?.partner} />,
           value: partner?.id,
         }))
       : partnerApprovedObjects?.map((dataAddressItem: any) => ({
           value: dataAddressItem.id,
-          label: (
-            <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-              {dataAddressItem.partner}
-            </Typography>
-          ),
+          label: <CustomTextCapitalization text={dataAddressItem.partner} />,
         }));
 
   const setFinalData = (e: any) => {

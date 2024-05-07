@@ -9,11 +9,10 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
-import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 
-import AddCustomer from '@/app/components/common/os-add-customer';
+import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import {partnerProgramFilter} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {notification} from 'antd';
@@ -83,7 +82,7 @@ const AddRegistrationForm: FC<any> = ({
   }, [allPartnerData]);
 
   const partnerOptions = allPartnerFilterData?.map((partner: any) => ({
-    label: partner?.partner,
+    label: <CustomTextCapitalization text={partner?.partner} />,
     value: partner?.id,
   }));
 
@@ -106,7 +105,7 @@ const AddRegistrationForm: FC<any> = ({
     if (filteredData) {
       const partnerPrograms = filteredData?.[0]?.PartnerPrograms?.map(
         (program: any) => ({
-          label: program?.partner_program,
+          label: <CustomTextCapitalization text={program?.partner_program} />,
           value: program?.id,
         }),
       );
@@ -408,7 +407,6 @@ const AddRegistrationForm: FC<any> = ({
   }, [customerValue]);
 
   const insertDealRegData = () => {
-    // return;
     const newarr: any = [];
     if (toggle || isDealRegDetail) {
       dealRegFormData?.forEach(async (dealRegFormDataItem) => {
@@ -468,7 +466,6 @@ const AddRegistrationForm: FC<any> = ({
           }
         });
       } else {
-        console.log('organization1234');
         openNotificationWithIcon();
       }
     }

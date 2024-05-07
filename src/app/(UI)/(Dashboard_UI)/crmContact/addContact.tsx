@@ -106,7 +106,7 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
               rules={[
                 {
                   pattern: /^[A-Za-z\s]+$/,
-                  message: 'Please enter valid text.',
+                  message: 'Please enter valid role.',
                 },
                 {
                   required: true,
@@ -124,7 +124,7 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
               rules={[
                 {
                   pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                  message: 'Please enter valid text.',
+                  message: 'Please enter valid email.',
                 },
                 {
                   required: true,

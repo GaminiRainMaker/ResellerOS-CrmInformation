@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-nested-ternary */
 
 'use client';
@@ -10,6 +11,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsModal from '@/app/components/common/os-modal';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
@@ -20,7 +22,6 @@ import {Form} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import {
   deleteAttributeField,
   insertAttributeField,
@@ -70,11 +71,9 @@ const SuperAdminDealReg = () => {
   const [showSectionDrawer, setShowSectionDrawer] = useState<boolean>(false);
   const [showFieldDrawer, setShowFieldDrawer] = useState<boolean>(false);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
-
   const [sectionDeleteId, setSectionDeleteId] = useState<any>();
   const [showSectionDeleteModal, setShowSectionDeleteModal] =
     useState<boolean>(false);
-
   const [fieldDeleteId, setFieldDeleteId] = useState<any>();
   const [showFieldDeleteModal, setShowFieldDeleteModal] =
     useState<boolean>(false);
@@ -123,7 +122,10 @@ const SuperAdminDealReg = () => {
   const editAttributeSection = (record: any) => {
     setRecordId(record?.id);
     form.setFieldsValue({
-      name: record?.name,
+      name: record?.name
+        .split(/[\s_]+/)
+        .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' '),
       order: record?.order,
       is_active: record?.is_active,
       is_required: record?.is_required,
@@ -135,8 +137,14 @@ const SuperAdminDealReg = () => {
   const editAttributeField = (record: any) => {
     setRecordId(record?.id);
     form.setFieldsValue({
-      name: record?.name,
-      label: record?.label,
+      name: record?.name
+        ?.split(/[\s_]+/)
+        ?.map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+        ?.join(' '),
+      label: record?.label
+        ?.split(/[\s_]+/)
+        ?.map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+        ?.join(' '),
       data_type: record?.data_type,
       order: record?.order,
       map_from: record?.map_from,

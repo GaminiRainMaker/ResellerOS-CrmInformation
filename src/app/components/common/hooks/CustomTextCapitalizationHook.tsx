@@ -4,7 +4,11 @@ import useCustomCapitaliationLabel from './useCustomCapitaliationLabel';
 
 const CustomTextCapitalization = (text: any) => {
   const customCapitalizationLabel = useCustomCapitaliationLabel(text);
-  return <Typography name="Body 4/Regular">{customCapitalizationLabel ?? '--'}</Typography>;
+  return (
+    <Typography name="Body 4/Regular">
+      {customCapitalizationLabel ?? '--'}
+    </Typography>
+  );
 };
 
 export default CustomTextCapitalization;
