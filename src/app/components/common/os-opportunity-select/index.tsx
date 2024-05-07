@@ -20,6 +20,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
   isAddNewOpportunity = false,
   form,
   value,
+  isRequired = true,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -72,7 +73,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
       <Form.Item
         label="Opportunity"
         name="opportunity_id"
-        rules={[{required: true, message: 'Please Select Opportunity!'}]}
+        rules={[{required: isRequired, message: 'Please Select Opportunity!'}]}
       >
         <CommonSelect
           placeholder="Select"

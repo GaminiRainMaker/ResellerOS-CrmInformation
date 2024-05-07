@@ -29,6 +29,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddRegistrationForm from '../dealReg/AddRegistrationForm';
 import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
+import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 
 const DealRegDetail = () => {
   const [form] = Form.useForm();
@@ -238,8 +239,11 @@ const DealRegDetail = () => {
 
       <OsModal
         bodyPadding={22}
+        // body={
+        //   <AddRegistrationForm setShowModal={setShowModal} isDealRegDetail />
+        // }
         body={
-          <AddRegistrationForm setShowModal={setShowModal} isDealRegDetail />
+          <NewRegistrationForm  isDealRegDetail />
         }
         width={583}
         open={showModal}

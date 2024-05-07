@@ -11,7 +11,6 @@ import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import {partnerProgramFilter} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
@@ -90,18 +89,7 @@ const AddRegistrationForm: FC<any> = ({
     const filteredData = allPartnerFilterData?.filter(
       (item: any) => item?.id === chosenId,
     );
-    // const selectedData = partnerData?.approved?.find(
-    //   (item: any) => item.id === chosenId,
-    // );
-    // if (selectedData) {
-    //   const partnerPrograms = selectedData.PartnerPrograms.map(
-    //     (program: any) => ({
-    //       label: program.partner_program,
-    //       value: program.id,
-    //     }),
-    //   );
-    //   return partnerPrograms;
-    // }
+
     if (filteredData) {
       const partnerPrograms = filteredData?.[0]?.PartnerPrograms?.map(
         (program: any) => ({
