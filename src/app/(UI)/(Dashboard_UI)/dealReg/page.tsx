@@ -10,6 +10,7 @@ import {PlusIcon} from '@heroicons/react/24/outline';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
+import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapse from '@/app/components/common/os-collapse';
@@ -93,7 +94,7 @@ const DealReg: React.FC = () => {
       dataIndex: 'type',
       key: 'type',
       width: 187,
-      render: () => <Typography name="Body 4/Regular">Registered</Typography>,
+      render: (text: string) => <CustomTextCapitalization text={text} />,
     },
     {
       title: (

@@ -12,7 +12,7 @@ import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
-import {ArrowDownTrayIcon, PlusIcon} from '@heroicons/react/24/outline';
+import {PlusIcon} from '@heroicons/react/24/outline';
 import {MenuProps} from 'antd';
 import Form from 'antd/es/form';
 import {useRouter, useSearchParams} from 'next/navigation';
@@ -27,9 +27,8 @@ import {
   updateDealRegAddressById,
 } from '../../../../../redux/actions/dealRegAddress';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import AddRegistrationForm from '../dealReg/AddRegistrationForm';
-import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
+import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
 
 const DealRegDetail = () => {
   const [form] = Form.useForm();
@@ -239,11 +238,8 @@ const DealRegDetail = () => {
 
       <OsModal
         bodyPadding={22}
-        // body={
-        //   <AddRegistrationForm setShowModal={setShowModal} isDealRegDetail />
-        // }
         body={
-          <NewRegistrationForm  isDealRegDetail />
+          <NewRegistrationForm isDealRegDetail setShowModal={setShowModal} />
         }
         width={583}
         open={showModal}

@@ -97,9 +97,18 @@ const NewRegistrationForm: FC<any> = ({
   };
 
   useEffect(() => {
-    const customerWithAddresses = dataAddress?.find((customer: any) =>
-      customer?.id === !isDealRegDetail ? customerValue : getCustomerId,
-    );
+    let customerWithAddresses: any;
+
+    if (isDealRegDetail) {
+      customerWithAddresses = dataAddress?.find(
+        (customer: any) => customer?.id === getCustomerId,
+      );
+    } else {
+      customerWithAddresses = dataAddress?.find(
+        (customer: any) => customer?.id === customerValue,
+      );
+    }
+
     const addresses = customerWithAddresses?.Addresses;
     const {
       billing_address_line,
@@ -120,6 +129,31 @@ const NewRegistrationForm: FC<any> = ({
 
   const registeredFormFinish = () => {
     const data = form.getFieldsValue();
+    let combinedData: any = [];
+
+    if (registeredPartnerData) {
+      combinedData = [
+        ...registeredPartnerData.registeredPartners.map((obj: any) => ({
+          ...obj,
+          type: 'registered',
+        })),
+        ...registeredPartnerData.selfRegisteredPartners.map((obj: any) => ({
+          ...obj,
+          type: 'self registered',
+        })),
+      ];
+    } else {
+      combinedData = [
+        ...data.registeredPartners.map((obj: any) => ({
+          ...obj,
+          type: 'Registered',
+        })),
+        ...data.selfRegisteredPartners.map((obj: any) => ({
+          ...obj,
+          type: 'Self Registered',
+        })),
+      ];
+    }
 
     if (formStep === 0 && !isDealRegDetail) {
       setRegisteredPartnerData(data);
@@ -128,12 +162,9 @@ const NewRegistrationForm: FC<any> = ({
       (registeredPartnerData && formStep === 1) ||
       (data && isDealRegDetail)
     ) {
-      const dataArray = isDealRegDetail
-        ? [data]?.[0]?.registeredPartners
-        : [registeredPartnerData]?.[0]?.registeredPartners;
       let newData: any;
       if (isDealRegDetail) {
-        newData = dataArray?.map((obj: any) => ({
+        newData = combinedData?.map((obj: any) => ({
           ...obj,
           ...addressData,
           organization: userInformation?.organization,
@@ -142,13 +173,14 @@ const NewRegistrationForm: FC<any> = ({
           customer_id: getCustomerId,
         }));
       } else {
-        newData = dataArray?.map((obj: any) => ({
+        newData = combinedData?.map((obj: any) => ({
           ...obj,
           ...data,
           ...addressData,
           organization: userInformation?.organization,
         }));
       }
+
       dispatch(insertDealReg(newData)).then((d: any) => {
         if (d?.payload) {
           d?.payload?.map(async (DataItem: any) => {
@@ -189,123 +221,246 @@ const NewRegistrationForm: FC<any> = ({
         requiredMark={false}
       >
         {formStep === 0 ? (
-          <CollapseSpaceStyle size={24} direction="vertical">
-            <OsCollapseAdmin
-              items={[
-                {
-                  key: '1',
-                  label: (
-                    <Typography name="Body 2/Medium">
-                      Registered Partners
-                    </Typography>
-                  ),
-                  children: (
-                    <Form.List name="registeredPartners" initialValue={[{}]}>
-                      {(fields, {add, remove}) => (
-                        <>
-                          {fields?.map(({key, name, ...restField}) => (
-                            <Row
-                              justify="space-between"
-                              align="middle"
-                              gutter={[16, 16]}
-                              key={key}
-                              style={{
-                                marginBottom: '8px',
-                              }}
-                            >
-                              <Col span={10}>
-                                <SelectFormItem
-                                  label={
-                                    <Typography name="Body 4/Medium">
-                                      Partner
-                                    </Typography>
-                                  }
-                                  {...restField}
-                                  name={[name, 'partner_id']}
-                                  rules={[
-                                    {
-                                      required: true,
-                                      message: 'Partner is required!',
-                                    },
-                                  ]}
-                                >
-                                  <CommonSelect
-                                    placeholder="Select"
-                                    style={{width: '100%'}}
-                                    options={partnerOptions}
-                                    onChange={(value) => {
-                                      findPartnerProgramsById(value);
-                                    }}
-                                  />
-                                </SelectFormItem>
-                              </Col>
-                              <Col span={10}>
-                                <SelectFormItem
-                                  label={
-                                    <Typography name="Body 4/Medium">
-                                      Partner Program
-                                    </Typography>
-                                  }
-                                  {...restField}
-                                  name={[name, 'partner_program_id']}
-                                  rules={[
-                                    {
-                                      required: true,
-                                      message: 'Partner Program is required!',
-                                    },
-                                  ]}
-                                >
-                                  <CommonSelect
-                                    placeholder="Select"
-                                    options={partnerProgramOptions}
-                                    style={{width: '100%'}}
-                                  />
-                                </SelectFormItem>
-                              </Col>
-                              <Col span={4}>
-                                <TrashIcon
-                                  width={25}
-                                  color={token?.colorError}
-                                  onClick={() => remove(name)}
-                                  style={{paddingTop: '10px'}}
-                                  cursor="pointer"
-                                />
-                              </Col>
-                            </Row>
-                          ))}
-                          <Form.Item>
-                            <Space
-                              size={4}
-                              style={{
-                                width: '100%',
-                                cursor: 'pointer',
-                              }}
-                              onClick={() => {
-                                add();
-                              }}
-                            >
-                              <PlusIcon
-                                width={24}
-                                color={token?.colorLink}
-                                style={{marginTop: '5px'}}
-                              />
-                              <Typography
-                                name="Body 3/Bold"
-                                color={token?.colorLink}
-                                cursor="pointer"
+          <>
+            <CollapseSpaceStyle size={24} direction="vertical">
+              <OsCollapseAdmin
+                items={[
+                  {
+                    key: '1',
+                    label: (
+                      <Typography name="Body 2/Medium">
+                        Registered Partners
+                      </Typography>
+                    ),
+                    children: (
+                      <Form.List name="registeredPartners" initialValue={[{}]}>
+                        {(fields, {add, remove}) => (
+                          <>
+                            {fields?.map(({key, name, ...restField}) => (
+                              <Row
+                                justify="space-between"
+                                align="middle"
+                                gutter={[16, 16]}
+                                key={key}
+                                style={{
+                                  marginBottom: '8px',
+                                }}
                               >
-                                Add Partner
-                              </Typography>
-                            </Space>
-                          </Form.Item>
-                        </>
-                      )}
-                    </Form.List>
-                  ),
-                },
-              ]}
-            />
-          </CollapseSpaceStyle>
+                                <Col span={10}>
+                                  <SelectFormItem
+                                    label={
+                                      <Typography name="Body 4/Medium">
+                                        Partner
+                                      </Typography>
+                                    }
+                                    {...restField}
+                                    name={[name, 'partner_id']}
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: 'Partner is required!',
+                                      },
+                                    ]}
+                                  >
+                                    <CommonSelect
+                                      placeholder="Select"
+                                      style={{width: '100%'}}
+                                      options={partnerOptions}
+                                      onChange={(value) => {
+                                        findPartnerProgramsById(value);
+                                      }}
+                                    />
+                                  </SelectFormItem>
+                                </Col>
+                                <Col span={10}>
+                                  <SelectFormItem
+                                    label={
+                                      <Typography name="Body 4/Medium">
+                                        Partner Program
+                                      </Typography>
+                                    }
+                                    {...restField}
+                                    name={[name, 'partner_program_id']}
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: 'Partner Program is required!',
+                                      },
+                                    ]}
+                                  >
+                                    <CommonSelect
+                                      placeholder="Select"
+                                      options={partnerProgramOptions}
+                                      style={{width: '100%'}}
+                                    />
+                                  </SelectFormItem>
+                                </Col>
+                                <Col span={4}>
+                                  <TrashIcon
+                                    width={25}
+                                    color={token?.colorError}
+                                    onClick={() => remove(name)}
+                                    style={{paddingTop: '10px'}}
+                                    cursor="pointer"
+                                  />
+                                </Col>
+                              </Row>
+                            ))}
+                            <Form.Item>
+                              <Space
+                                size={4}
+                                style={{
+                                  width: '100%',
+                                  cursor: 'pointer',
+                                }}
+                                onClick={() => {
+                                  add();
+                                }}
+                              >
+                                <PlusIcon
+                                  width={24}
+                                  color={token?.colorLink}
+                                  style={{marginTop: '5px'}}
+                                />
+                                <Typography
+                                  name="Body 3/Bold"
+                                  color={token?.colorLink}
+                                  cursor="pointer"
+                                >
+                                  Add Partner
+                                </Typography>
+                              </Space>
+                            </Form.Item>
+                          </>
+                        )}
+                      </Form.List>
+                    ),
+                  },
+                ]}
+              />
+            </CollapseSpaceStyle>
+
+            <CollapseSpaceStyle size={24} direction="vertical">
+              <OsCollapseAdmin
+                items={[
+                  {
+                    key: '1',
+                    label: (
+                      <Typography name="Body 2/Medium">
+                        Self Registered Partners
+                      </Typography>
+                    ),
+                    children: (
+                      <Form.List
+                        name="selfRegisteredPartners"
+                        initialValue={[{}]}
+                      >
+                        {(fields, {add, remove}) => (
+                          <>
+                            {fields?.map(({key, name, ...restField}) => (
+                              <Row
+                                justify="space-between"
+                                align="middle"
+                                gutter={[16, 16]}
+                                key={key}
+                                style={{
+                                  marginBottom: '8px',
+                                }}
+                              >
+                                <Col span={10}>
+                                  <SelectFormItem
+                                    label={
+                                      <Typography name="Body 4/Medium">
+                                        Partner
+                                      </Typography>
+                                    }
+                                    {...restField}
+                                    name={[name, 'partner_id']}
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: 'Partner is required!',
+                                      },
+                                    ]}
+                                  >
+                                    <CommonSelect
+                                      placeholder="Select"
+                                      style={{width: '100%'}}
+                                      options={partnerOptions}
+                                      onChange={(value) => {
+                                        findPartnerProgramsById(value);
+                                      }}
+                                    />
+                                  </SelectFormItem>
+                                </Col>
+                                <Col span={10}>
+                                  <SelectFormItem
+                                    label={
+                                      <Typography name="Body 4/Medium">
+                                        Partner Program
+                                      </Typography>
+                                    }
+                                    {...restField}
+                                    name={[name, 'partner_program_id']}
+                                    rules={[
+                                      {
+                                        required: true,
+                                        message: 'Partner Program is required!',
+                                      },
+                                    ]}
+                                  >
+                                    <CommonSelect
+                                      placeholder="Select"
+                                      options={partnerProgramOptions}
+                                      style={{width: '100%'}}
+                                    />
+                                  </SelectFormItem>
+                                </Col>
+                                <Col span={4}>
+                                  <TrashIcon
+                                    width={25}
+                                    color={token?.colorError}
+                                    onClick={() => remove(name)}
+                                    style={{paddingTop: '10px'}}
+                                    cursor="pointer"
+                                  />
+                                </Col>
+                              </Row>
+                            ))}
+                            <Form.Item>
+                              <Space
+                                size={4}
+                                style={{
+                                  width: '100%',
+                                  cursor: 'pointer',
+                                }}
+                                onClick={() => {
+                                  add();
+                                }}
+                              >
+                                <PlusIcon
+                                  width={24}
+                                  color={token?.colorLink}
+                                  style={{marginTop: '5px'}}
+                                />
+                                <Typography
+                                  name="Body 3/Bold"
+                                  color={token?.colorLink}
+                                  cursor="pointer"
+                                >
+                                  Add Partner
+                                </Typography>
+                              </Space>
+                            </Form.Item>
+                          </>
+                        )}
+                      </Form.List>
+                    ),
+                  },
+                ]}
+              />
+            </CollapseSpaceStyle>
+          </>
         ) : (
           <>
             <Typography name="Body 2/Medium" color={token?.colorPrimaryText}>
