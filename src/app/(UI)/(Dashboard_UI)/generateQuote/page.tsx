@@ -308,6 +308,7 @@ const GenerateQuote: React.FC = () => {
         <Profitability
           tableColumnDataShow={tableColumnDataShow}
           setSelectedRowIds={setSelectedRowIds}
+          selectedFilter={selectedFilter}
         />
       ),
     },
@@ -357,7 +358,7 @@ const GenerateQuote: React.FC = () => {
     },
   ].filter(Boolean);
 
-   const menuItems = [
+  const menuItems = [
     {
       key: '1',
       title: (

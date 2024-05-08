@@ -54,7 +54,17 @@ const EditorFile = () => {
 
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
 
-  // ==============================SalesForce Implementations ======================================
+  // ============================== SalesForce Implementations ======================================
+  // const fetechData = async () => {
+  //   const response = await fetch('https://dummyjson.com/todo');
+  //   if (response) {
+  //     const responseData = await response?.json();
+  //     console.log('responseresponse', responseData?.todos);
+  //   }
+  // };
+  // useEffect(() => {
+  //   fetechData();
+  // }, []);
 
   useEffect(() => {
     if (ExistingQuoteItemss === 'true') {
@@ -63,7 +73,6 @@ const EditorFile = () => {
           if (d?.payload) {
             // const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
             setQuoteItems(d?.payload);
-            const allHeaderValue: any = [];
           }
         },
       );
@@ -665,6 +674,8 @@ const EditorFile = () => {
           <SyncTableData
             mergedValue={mergedValue}
             setMergedVaalues={setMergedVaalues}
+            setNanonetsLoading={setNanonetsLoading}
+            nanonetsLoading={nanonetsLoading}
           />
         }
         width={600}
