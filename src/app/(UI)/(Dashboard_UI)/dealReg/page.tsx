@@ -203,47 +203,59 @@ const DealReg: React.FC = () => {
       key: '1',
       children: (
         <>
-          {finalDealRegData?.map((itemDeal: any) => (
-            <OsCollapse
-              defaultActiveKey={['1']}
-              items={[
-                {
-                  key: '1',
-                  label: (
-                    <>
-                      <Row justify="space-between">
-                        <Col>
-                          <p>{itemDeal?.title}</p>
-                        </Col>
-                        <Col>
-                          <p
-                            onClick={(e) => {
-                              router?.push(
-                                `/dealRegDetail?id=${itemDeal?.dealReg_id}&opportunityId=${itemDeal?.opportunity_id}&customerId=${itemDeal?.customer_id}&contactId=${itemDeal?.contact_id}`,
-                              );
-                              e?.stopPropagation();
-                            }}
-                          >
-                            Deal Registration
-                          </p>
-                        </Col>
-                      </Row>
-                    </>
-                  ),
-                  children: (
-                    <OsTable
-                      columns={DealRegColumns}
-                      dataSource={itemDeal?.data}
-                      rowSelection={rowSelection}
-                      scroll
-                      loading={dealLoading}
-                      locale={locale}
-                    />
-                  ),
-                },
-              ]}
+          {finalDealRegData?.length > 0 ? (
+            <>
+              {finalDealRegData?.map((itemDeal: any) => (
+                <OsCollapse
+                  defaultActiveKey={['1']}
+                  items={[
+                    {
+                      key: '1',
+                      label: (
+                        <>
+                          <Row justify="space-between">
+                            <Col>
+                              <p>{itemDeal?.title}</p>
+                            </Col>
+                            <Col>
+                              <p
+                                onClick={(e) => {
+                                  router?.push(
+                                    `/dealRegDetail?id=${itemDeal?.dealReg_id}&opportunityId=${itemDeal?.opportunity_id}&customerId=${itemDeal?.customer_id}&contactId=${itemDeal?.contact_id}`,
+                                  );
+                                  e?.stopPropagation();
+                                }}
+                              >
+                                Deal Registration
+                              </p>
+                            </Col>
+                          </Row>
+                        </>
+                      ),
+                      children: (
+                        <OsTable
+                          columns={DealRegColumns}
+                          dataSource={itemDeal?.data}
+                          rowSelection={rowSelection}
+                          scroll
+                          loading={dealLoading}
+                          locale={locale}
+                        />
+                      ),
+                    },
+                  ]}
+                />
+              ))}
+            </>
+          ) : (
+            <OsTable
+              columns={[]}
+              dataSource={[]}
+              scroll
+              loading={false}
+              locale={locale}
             />
-          ))}
+          )}
         </>
       ),
     },
@@ -276,8 +288,6 @@ const DealReg: React.FC = () => {
       ),
     },
   ];
-
-  useEffect(() => {}, []);
 
   useEffect(() => {
     dispatch(queryDealReg(searchQuery));

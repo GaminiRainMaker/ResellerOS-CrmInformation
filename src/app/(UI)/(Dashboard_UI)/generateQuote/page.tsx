@@ -88,7 +88,6 @@ const GenerateQuote: React.FC = () => {
     dispatch(getAllTableColumn(''));
     dispatch(getAllContractSetting(''));
   }, []);
-  console.log('tableColumnDataShow', tableColumnDataShow);
   useEffect(() => {
     if (activeTabRoute === '2') {
       setActiveTab('2');

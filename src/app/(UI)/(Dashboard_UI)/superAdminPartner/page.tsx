@@ -571,16 +571,16 @@ const SuperAdminPartner: React.FC = () => {
           <Col style={{display: 'flex', alignItems: 'center'}}>
             <Space size={12} style={{height: '48px'}}>
               <OsButton
-                icon={<PlusIcon color={token?.colorPrimary} />}
-                text="New Partner Program"
-                buttontype="SECONDARY"
-                clickHandler={() => setShowAddProgramModal((p) => !p)}
-              />
-              <OsButton
                 text="New Partner"
                 buttontype="PRIMARY"
                 icon={<PlusIcon />}
                 clickHandler={() => setShowAddPartnerModal((p) => !p)}
+              />
+              <OsButton
+                icon={<PlusIcon color={token?.colorPrimary} />}
+                text="New Partner Program"
+                buttontype="SECONDARY"
+                clickHandler={() => setShowAddProgramModal((p) => !p)}
               />
             </Space>
           </Col>

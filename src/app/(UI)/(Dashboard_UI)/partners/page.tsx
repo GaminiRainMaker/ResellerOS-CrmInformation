@@ -90,7 +90,7 @@ const Partners: React.FC = () => {
     emptyText: (
       <EmptyContainer
         title="No Files"
-        actionButton="Request Partner"
+        actionButton={activeTab === 1 ? 'Request Partner' : ''}
         onClick={() => setShowModal((p) => !p)}
       />
     ),

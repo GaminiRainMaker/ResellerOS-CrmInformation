@@ -8,6 +8,7 @@ import {
   getDealRegByPartnerProgramId,
   insertDealReg,
   updateDealRegById,
+  queryDealReg,
 } from '../actions/dealReg';
 
 type DealRegState = {
@@ -79,6 +80,18 @@ const dealRegSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(getAllDealReg.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(queryDealReg.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(queryDealReg.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(queryDealReg.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       })

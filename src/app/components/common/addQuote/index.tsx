@@ -49,7 +49,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
       const dddd = existingQuoteId ?? existingGenerateQuoteId;
       form?.setFieldValue('existingQuoteId', dddd);
     }
-    setExistingQuoteId(existingGenerateQuoteId);
+    if (existingGenerateQuoteId) {
+      setExistingQuoteId(existingGenerateQuoteId);
+    }
   }, [existingQuoteId, existingGenerateQuoteId]);
 
   useEffect(() => {
