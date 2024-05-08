@@ -24,6 +24,7 @@ import styled from '@emotion/styled';
 import {
   ArrowLeftStartOnRectangleIcon,
   BellIcon,
+  WrenchScrewdriverIcon,
 } from '@heroicons/react/24/outline';
 import {Avatar, Badge, Layout, Select, Upload, notification} from 'antd';
 import ImgCrop from 'antd-img-crop';
@@ -132,7 +133,7 @@ const CustomHeader = () => {
       setProfileImg(payload?.payload?.profile_image);
     });
   }, []);
-  
+
   useEffect(() => {
     setNotificationCounts(0);
   }, [notificationData]);
@@ -355,33 +356,30 @@ const CustomHeader = () => {
           background: 'white',
         }}
         align="middle"
+        gutter={[0, 16]}
       >
-        <Col>
-          <Space size={136} direction="horizontal">
-            <Image src={HeaderLogo} alt="HeaderLogo" />
-            <SearchSelect
-              onSearch={(e: any) => {
-                setQuery(e);
-              }}
-              showSearch
-              value={query?.searchText}
-              style={{width: '550px'}}
-              placeholder="Search"
-              allowClear
-              prefixIcon={<Image src={SearchImg} alt="SearchImg" />}
-              options={searchFinalData}
-            >
-              {/* {searchFinalData?.map((item: any) => (
-                <Option key={item?.id}>
-                  <div onClick={() => handleOptionClick(item?.typeRoute)}>
-                    {' '}
-                    {item?.name}
-                  </div>
-                </Option>
-              ))} */}
-            </SearchSelect>
-          </Space>
+        <Col span={12}>
+          <Row justify="space-between" gutter={[0, 16]}>
+            <Col>
+              <Image src={HeaderLogo} alt="HeaderLogo" />
+            </Col>
+            <Col span={15}>
+              <SearchSelect
+                onSearch={(e: any) => {
+                  setQuery(e);
+                }}
+                showSearch
+                value={query?.searchText}
+                style={{width: '100%'}}
+                placeholder="Search"
+                allowClear
+                prefixIcon={<Image src={SearchImg} alt="SearchImg" />}
+                options={searchFinalData}
+              />
+            </Col>
+          </Row>
         </Col>
+
         <Col>
           <Space
             direction="horizontal"

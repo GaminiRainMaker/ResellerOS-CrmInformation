@@ -1,16 +1,11 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable import/no-named-as-default */
-/* eslint-disable array-callback-return */
-/* eslint-disable react-hooks/exhaustive-deps */
 
 'use client';
-
-import Typography from '@/app/components/common/typography';
-import {PlusIcon} from '@heroicons/react/24/outline';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapse from '@/app/components/common/os-collapse';
@@ -21,10 +16,13 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
+import Typography from '@/app/components/common/typography';
+import {PlusIcon} from '@heroicons/react/24/outline';
 import {TabsProps} from 'antd';
+import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import {getAllDealReg} from '../../../../../redux/actions/dealReg';
+import {queryDealReg} from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import NewRegistrationForm from './NewRegistrationForm';
 import DealRegAnalytics from './dealRegAnalytics';
@@ -51,6 +49,12 @@ const DealReg: React.FC = () => {
     (state) => state.dealReg,
   );
   const [finalDealRegData, setFinalDealRegData] = useState<any>();
+  const [query, setQuery] = useState<{
+    customer: string | null;
+  }>({
+    customer: null,
+  });
+  const searchQuery = useDebounceHook(query, 500);
 
   const rowSelection = {
     onChange: (selectedRowKeys: any) => {
@@ -273,9 +277,15 @@ const DealReg: React.FC = () => {
     },
   ];
 
+  useEffect(() => {}, []);
+
   useEffect(() => {
-    dispatch(getAllDealReg());
-  }, []);
+    dispatch(queryDealReg(searchQuery));
+  }, [searchQuery]);
+
+  const uniqueCustomer = Array.from(
+    new Set(DealRegData?.map((contact: any) => contact.Customer?.name)),
+  );
 
   return (
     <>
@@ -300,7 +310,7 @@ const DealReg: React.FC = () => {
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
           <OsTabs
-            onChange={(e) => {
+            onChange={(e: any) => {
               setActiveTab(e);
             }}
             activeKey={activeTab}
@@ -315,19 +325,46 @@ const DealReg: React.FC = () => {
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Customer Account</Typography>
                   <CommonSelect
-                    style={{width: '180px'}}
-                    placeholder="Search Here"
-                  />
+                    style={{width: '200px'}}
+                    placeholder="Search here"
+                    showSearch
+                    onSearch={(e: any) => {
+                      setQuery({
+                        ...query,
+                        customer: e,
+                      });
+                    }}
+                    onChange={(e: any) => {
+                      setQuery({
+                        ...query,
+                        customer: e,
+                      });
+                    }}
+                    value={query?.customer}
+                  >
+                    {uniqueCustomer?.map((customer: any) => (
+                      <Option key={customer} value={customer}>
+                        {customer}
+                      </Option>
+                    ))}
+                  </CommonSelect>
                 </Space>
                 <div
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
                     marginTop: '15px',
                   }}
                 >
-                  <Typography cursor="pointer" name="Button 1" color="#C6CDD5">
-                    Apply
+                  <Typography
+                    cursor="pointer"
+                    name="Button 1"
+                    color={query?.customer ? '#0D0D0D' : '#C6CDD5'}
+                    onClick={() => {
+                      setQuery({
+                        customer: null,
+                      });
+                    }}
+                  >
+                    Reset
                   </Typography>
                 </div>
               </Space>

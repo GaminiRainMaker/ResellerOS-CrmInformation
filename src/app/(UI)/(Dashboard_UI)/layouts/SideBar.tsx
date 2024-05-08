@@ -94,7 +94,10 @@ const SideBar = () => {
       setSelectedKey(2);
     } else if (pathname?.includes('dealReg')) {
       setSelectedKey(3);
-    } else if (pathname?.includes('partners')) {
+    } else if (
+      pathname?.includes('partners') ||
+      pathname?.includes('superAdminPartner')
+    ) {
       setSelectedKey(5);
     } else if (
       pathname?.includes('crmInAccount') ||
@@ -112,18 +115,30 @@ const SideBar = () => {
       setSelectedKey(11);
     } else if (pathname?.includes('userManagement')) {
       setSelectedKey(12);
+      setCrmChildKey(4);
+    } else if (pathname?.includes('superAdminPermissions')) {
+      setSelectedKey(12);
+      setCrmChildKey(5);
+    } else if (pathname?.includes('unprocessedQuote')) {
+      setSelectedKey(2);
+      setCrmChildKey(6);
+    } else if (pathname?.includes('quoteConfiguration')) {
+      setSelectedKey(2);
+      setCrmChildKey(7);
     } else if (
       ![
         'dashboard',
         'allQuote',
         'dealReg',
         'partners',
+        'superAdminPartner',
         'crmInAccount',
         'accountDetails',
         'crmContact',
         'crmOpportunity',
         'admin',
         'userManagement',
+        'superAdminPermissions',
       ]?.includes(pathname)
     ) {
       setSelectedKey(0);
@@ -176,7 +191,7 @@ const SideBar = () => {
         <Typography
           cursor="pointer"
           onClick={() => {
-            setSelectedKey(7);
+            setSelectedKey(2);
           }}
           name="Button 1"
           color={token?.colorTextSecondary}
@@ -186,11 +201,8 @@ const SideBar = () => {
               icon={
                 <CurrencyDollarIcon
                   color={
-                    selectedKey?.toString()?.includes('7') ||
-                    selectedKey?.toString()?.includes('8') ||
-                    selectedKey?.toString()?.includes('0') ||
-                    selectedKey?.toString()?.includes('9')
-                      ? token?.colorPrimary
+                    selectedKey?.toString()?.includes('2')
+                      ? token?.colorLink
                       : token?.colorTextSecondary
                   }
                   width={24}
@@ -205,11 +217,8 @@ const SideBar = () => {
                 marginRight: '60px',
               }}
               color={
-                selectedKey?.toString()?.includes('7') ||
-                selectedKey?.toString()?.includes('8') ||
-                selectedKey?.toString()?.includes('0') ||
-                selectedKey?.toString()?.includes('9')
-                  ? token?.colorPrimary
+                selectedKey?.toString()?.includes('2')
+                  ? token?.colorLink
                   : token?.colorTextSecondary
               }
             >
@@ -217,6 +226,7 @@ const SideBar = () => {
             </Typography>
           </Space>
         </Typography>,
+
         'Quote',
         '',
         [
@@ -224,13 +234,14 @@ const SideBar = () => {
             <Space
               size={12}
               onClick={() => {
-                setSelectedKey(8);
+                setSelectedKey(2);
+                setCrmChildKey(6);
                 router?.push('/unprocessedQuote');
               }}
             >
               <OsAvatar
                 icon={
-                  selectedKey?.toString()?.includes('8') ? (
+                  crmChildKey === 6 ? (
                     <Image
                       src={ActiveCrmIcon}
                       alt="ActiveCrmIcon"
@@ -249,7 +260,7 @@ const SideBar = () => {
                 name="Button 1"
                 cursor="pointer"
                 color={
-                  selectedKey?.toString()?.includes('8')
+                  crmChildKey === 6
                     ? token.colorPrimaryBorder
                     : token?.colorTextSecondary
                 }
@@ -257,20 +268,21 @@ const SideBar = () => {
                 Edited Quotes
               </Typography>
             </Space>,
-            '8',
+            '22',
           ),
           getItem(
             <Space
               size={12}
               onClick={() => {
-                setSelectedKey(9);
+                setSelectedKey(2);
+                setCrmChildKey(7);
                 router?.push('/quoteConfiguration');
               }}
               color={token?.colorTextSecondary}
             >
               <OsAvatar
                 icon={
-                  selectedKey?.toString()?.includes('9') ? (
+                  crmChildKey === 7 ? (
                     <Image
                       src={ActiveCrmIcon}
                       alt="ActiveCrmIcon"
@@ -289,15 +301,15 @@ const SideBar = () => {
                 cursor="pointer"
                 name="Button 1"
                 color={
-                  selectedKey?.toString()?.includes('9')
+                  crmChildKey === 7
                     ? token.colorPrimaryBorder
                     : token?.colorTextSecondary
                 }
               >
-                Quote Configuration
+                Super Admin Permissions
               </Typography>
             </Space>,
-            '9',
+            '23',
           ),
         ],
       ),
@@ -583,7 +595,6 @@ const SideBar = () => {
                   color={
                     selectedKey?.toString()?.includes('7') ||
                     selectedKey?.toString()?.includes('8') ||
-                    // selectedKey?.toString()?.includes('0') ||
                     selectedKey?.toString()?.includes('9')
                       ? token?.colorLink
                       : token?.colorTextSecondary
@@ -781,40 +792,45 @@ const SideBar = () => {
     isAdmin &&
       Role === 'superAdmin' &&
       getItem(
-        <Space
-          size={12}
+        <Typography
+          cursor="pointer"
           onClick={() => {
             setSelectedKey(12);
-            setCrmChildKey(0);
-            router?.push('/userManagement');
           }}
+          name="Button 1"
           color={token?.colorTextSecondary}
         >
-          <OsAvatar
-            icon={
-              <UserGroupIcon
-                color={
-                  selectedKey?.toString()?.includes('12')
-                    ? token?.colorPrimary
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
+          <Space size={12}>
+            <OsAvatar
+              icon={
+                <UserGroupIcon
+                  color={
+                    selectedKey == 12
+                      ? token?.colorLink
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+                marginRight: '60px',
+              }}
+              color={
+                selectedKey == 12
+                  ? token?.colorLink
+                  : token?.colorTextSecondary
+              }
+            >
+              User Management
+            </Typography>
+          </Space>
+        </Typography>,
 
-          <Typography
-            cursor="pointer"
-            name="Button 1"
-            color={
-              selectedKey?.toString()?.includes('12')
-                ? token?.colorPrimary
-                : token?.colorTextSecondary
-            }
-          >
-            User Management
-          </Typography>
-        </Space>,
         'User Management',
         '',
         [
@@ -822,13 +838,14 @@ const SideBar = () => {
             <Space
               size={12}
               onClick={() => {
-                // setSelectedKey(8);
+                setCrmChildKey(12);
+                setSelectedKey(4);
                 router?.push('/userManagement');
               }}
             >
               <OsAvatar
                 icon={
-                  selectedKey?.toString()?.includes('8') ? (
+                  crmChildKey === 4 ? (
                     <Image
                       src={ActiveCrmIcon}
                       alt="ActiveCrmIcon"
@@ -847,7 +864,7 @@ const SideBar = () => {
                 name="Button 1"
                 cursor="pointer"
                 color={
-                  selectedKey?.toString()?.includes('8')
+                  crmChildKey === 4
                     ? token.colorPrimaryBorder
                     : token?.colorTextSecondary
                 }
@@ -855,20 +872,21 @@ const SideBar = () => {
                 All Resellers
               </Typography>
             </Space>,
-            '8',
+            '18',
           ),
           getItem(
             <Space
               size={12}
               onClick={() => {
-                setSelectedKey(9);
+                setCrmChildKey(5);
+                setSelectedKey(12);
                 router?.push('/superAdminPermissions');
               }}
               color={token?.colorTextSecondary}
             >
               <OsAvatar
                 icon={
-                  selectedKey?.toString()?.includes('9') ? (
+                  crmChildKey === 5 ? (
                     <Image
                       src={ActiveCrmIcon}
                       alt="ActiveCrmIcon"
@@ -887,7 +905,7 @@ const SideBar = () => {
                 cursor="pointer"
                 name="Button 1"
                 color={
-                  selectedKey?.toString()?.includes('9')
+                  crmChildKey === 5
                     ? token.colorPrimaryBorder
                     : token?.colorTextSecondary
                 }
@@ -895,7 +913,7 @@ const SideBar = () => {
                 Super Admin Permissions
               </Typography>
             </Space>,
-            '9',
+            '19',
           ),
         ],
       ),
