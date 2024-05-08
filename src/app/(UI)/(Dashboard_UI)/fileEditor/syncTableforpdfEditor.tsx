@@ -18,6 +18,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import {Libre_Caslon_Display} from 'next/font/google';
 import Typography from '@/app/components/common/typography';
 import {Divider} from '@/app/components/common/antd/Divider';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {insertProduct} from '../../../../../redux/actions/product';
@@ -36,10 +37,14 @@ import {quoteFileVerification} from '../../../../../redux/actions/quoteFile';
 interface EditPdfDataInterface {
   setMergedVaalues?: any;
   mergedValue?: any;
+  setNanonetsLoading?: any;
+  nanonetsLoading?: any;
 }
 const SyncTableData: FC<EditPdfDataInterface> = ({
   setMergedVaalues,
   mergedValue,
+  setNanonetsLoading,
+  nanonetsLoading,
 }) => {
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -168,6 +173,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       });
       return;
     }
+    setNanonetsLoading(true);
     const dataaa = {id: Number(getQuoteID), fileId: Number(getQuoteFileId)};
     dispatch(deleteQuoteLineItemsByQuoteId(dataaa));
     mergedValue?.map((obj: any) => {
@@ -185,7 +191,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       alllArrayValue?.push(newObj);
     });
 
-   
     const newrrLineItems: any = [];
     const rebateDataArray: any = [];
     const contractProductArray: any = [];
@@ -316,6 +321,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         id: quoteFileById?.[0]?.id ? quoteFileById?.[0]?.id : getQuoteFileId,
       }),
     );
+    setNanonetsLoading(false);
     router?.push(`/generateQuote?id=${Number(getQuoteID)}`);
   };
   const handleChange = (value: string) => {
@@ -336,77 +342,79 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
   return (
     <>
-      <Row
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          padding: '20px',
-        }}
-      >
-        <Col>
-          <Row style={{marginTop: '6px'}}>
-            {' '}
-            <Typography
-              style={{marginLeft: '10px'}}
-              align="center"
-              name="Body 3/Medium"
-            >
-              Your Pdf Header
-            </Typography>
-          </Row>
-          <Divider />
-          {mergeedColumn?.map((item: any) => (
+      <GlobalLoader loading={nanonetsLoading}>
+        <Row
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            padding: '20px',
+          }}
+        >
+          <Col>
             <Row style={{marginTop: '6px'}}>
-              <OsInput disabled value={formatStatus(item)} />
+              {' '}
+              <Typography
+                style={{marginLeft: '10px'}}
+                align="center"
+                name="Body 3/Medium"
+              >
+                Your Pdf Header
+              </Typography>
             </Row>
-          ))}
-        </Col>
+            <Divider />
+            {mergeedColumn?.map((item: any) => (
+              <Row style={{marginTop: '6px'}}>
+                <OsInput disabled value={formatStatus(item)} />
+              </Row>
+            ))}
+          </Col>
 
-        <Col>
-          <Row style={{marginTop: '6px'}}>
-            {' '}
-            <Typography
-              style={{marginLeft: '10px'}}
-              align="center"
-              name="Body 3/Medium"
-            >
-              Quote LineItem Header
-            </Typography>
-          </Row>
-          <Divider />
-          {syncedNewValue?.map((item: any, indexOfCol: number) => (
+          <Col>
             <Row style={{marginTop: '6px'}}>
-              <CommonSelect
-                onChange={(e) => {
-                  syncTableToLineItems(item, e, indexOfCol);
-                }}
-                allowClear
-                onClear={() => handleChange(item?.newVal)}
-                defaultValue={item?.newVal?.toString()?.toUpperCase()}
-                style={{width: '250px'}}
-                options={syncTableQuoteLItemValues}
-              />
+              {' '}
+              <Typography
+                style={{marginLeft: '10px'}}
+                align="center"
+                name="Body 3/Medium"
+              >
+                Quote LineItem Header
+              </Typography>
             </Row>
-          ))}
-        </Col>
-      </Row>
-      <Row
-        style={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-        }}
-      >
-        <OsButton
-          loading={syncDataLoading}
-          text="Sync And Save"
+            <Divider />
+            {syncedNewValue?.map((item: any, indexOfCol: number) => (
+              <Row style={{marginTop: '6px'}}>
+                <CommonSelect
+                  onChange={(e) => {
+                    syncTableToLineItems(item, e, indexOfCol);
+                  }}
+                  allowClear
+                  onClear={() => handleChange(item?.newVal)}
+                  defaultValue={item?.newVal?.toString()?.toUpperCase()}
+                  style={{width: '250px'}}
+                  options={syncTableQuoteLItemValues}
+                />
+              </Row>
+            ))}
+          </Col>
+        </Row>
+        <Row
           style={{
             width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
           }}
-          buttontype="PRIMARY"
-          clickHandler={syncTableDataNew}
-        />
-      </Row>
+        >
+          <OsButton
+            loading={syncDataLoading}
+            text="Sync And Save"
+            style={{
+              width: '100%',
+            }}
+            buttontype="PRIMARY"
+            clickHandler={syncTableDataNew}
+          />
+        </Row>
+      </GlobalLoader>
     </>
   );
 };

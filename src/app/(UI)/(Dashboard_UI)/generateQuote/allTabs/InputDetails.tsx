@@ -729,6 +729,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                               e?.stopPropagation();
                                               setShowRaiseConcernModal(true);
                                               setFileLineItemIds(item?.id);
+
                                               setFileData(item);
                                             }}
                                           />
@@ -1067,6 +1068,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         open={showRaiseConcernModal}
         onCancel={() => {
           setShowRaiseConcernModal(false);
+          form?.resetFields();
         }}
         destroyOnClose
         thirdButtonText="Export File to Tables"

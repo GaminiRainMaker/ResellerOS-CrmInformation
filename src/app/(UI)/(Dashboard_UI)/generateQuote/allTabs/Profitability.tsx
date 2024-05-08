@@ -32,12 +32,17 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
 
-const Profitability: FC<any> = ({tableColumnDataShow, setSelectedRowIds}) => {
+const Profitability: FC<any> = ({
+  tableColumnDataShow,
+  setSelectedRowIds,
+  selectedFilter,
+}) => {
   const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
   const {data: bundleData} = useAppSelector((state) => state.bundle);
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
+  const [familyFilter, setFamilyFilter] = useState<any>([]);
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
     (state) => state.profitability,
   );
@@ -53,6 +58,83 @@ const Profitability: FC<any> = ({tableColumnDataShow, setSelectedRowIds}) => {
 
     setProfitabilityData(filteredDataa);
   }, [profitabilityDataByQuoteId]);
+  console.log('familyFilterfamilyFilter', familyFilter);
+  useEffect(() => {
+    if (selectedFilter === 'Product Family') {
+      const finalFamilyArr: any = [];
+      let productsArr: any = [];
+      let professionalServiceArr: any = [];
+      let maintenanceArr: any = [];
+      let subscriptionArr: any = [];
+      let unassignedArr: any = [];
+
+      if (
+        profitabilityDataByQuoteId &&
+        profitabilityDataByQuoteId?.length > 0
+      ) {
+        console.log('finalFamilyArrfinalFamilyArr', profitabilityDataByQuoteId);
+        productsArr = profitabilityDataByQuoteId?.filter(
+          (item: any) => item?.Product?.product_family === 'Products',
+        );
+        professionalServiceArr = profitabilityDataByQuoteId?.filter(
+          (item: any) =>
+            item?.Product?.product_family === 'Professional Services',
+        );
+        maintenanceArr = profitabilityDataByQuoteId?.filter(
+          (item: any) => item?.Product?.product_family === 'Maintenance',
+        );
+        subscriptionArr = profitabilityDataByQuoteId?.filter(
+          (item: any) => item?.Product?.product_family === 'Subscriptions',
+        );
+        unassignedArr = profitabilityDataByQuoteId?.filter(
+          (item: any) => item?.Product?.product_family == null,
+        );
+      }
+
+      if (productsArr && productsArr?.length > 0) {
+        const obj: any = {
+          name: 'Products',
+          QuoteLineItem: productsArr,
+        };
+        finalFamilyArr?.push(obj);
+      }
+      if (professionalServiceArr && professionalServiceArr?.length > 0) {
+        const obj: any = {
+          name: 'Professional Services',
+          QuoteLineItem: professionalServiceArr,
+        };
+        finalFamilyArr?.push(obj);
+      }
+      if (maintenanceArr && maintenanceArr?.length > 0) {
+        const obj: any = {
+          name: 'Maintenances',
+          QuoteLineItem: maintenanceArr,
+        };
+        finalFamilyArr?.push(obj);
+      }
+      if (unassignedArr && subscriptionArr?.length > 0) {
+        const obj: any = {
+          name: 'Subscriptions',
+          QuoteLineItem: subscriptionArr,
+        };
+        finalFamilyArr?.push(obj);
+      }
+      if (unassignedArr && unassignedArr?.length > 0) {
+        const obj: any = {
+          name: 'Unassigned',
+          QuoteLineItem: unassignedArr,
+        };
+        finalFamilyArr?.push(obj);
+      }
+
+      setFamilyFilter(finalFamilyArr);
+    }
+    // else if (!selectedFilter) {
+    //   setDefaultDataShow(false);
+    // } else if (selectedFilter === 'File Name') {
+    //   setDefaultDataShow(true);
+    // }
+  }, [selectedFilter]);
 
   const updateAmountValue = (pricingMethods: string) => {
     if (
@@ -544,6 +626,61 @@ const Profitability: FC<any> = ({tableColumnDataShow, setSelectedRowIds}) => {
       ))}{' '}
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         <>
+          {selectedFilter === 'Product Family' ? (
+            <>
+              {familyFilter?.map((item: any, index: any) => (
+                <OsCollapse
+                  key={item?.id || index}
+                  items={[
+                    {
+                      key: item.id,
+                      label: (
+                        <>
+                          <Space
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'start',
+                            }}
+                          >
+                            <p>{item?.name}</p>
+                          </Space>
+                        </>
+                      ),
+                      children: (
+                        <OsTableWithOutDrag
+                          loading={loading}
+                          columns={finalProfitTableCol}
+                          dataSource={
+                            item?.QuoteLineItem?.filter(
+                              (itemss: any) => !itemss?.bundle_id,
+                            ) || []
+                          }
+                          scroll
+                          rowSelection={rowSelection}
+                          locale={locale}
+                        />
+                      ),
+                    },
+                  ]}
+                />
+              ))}
+            </>
+          ) : (
+            <>
+              <Form>
+                <OsTableWithOutDrag
+                  loading={loading}
+                  columns={finalProfitTableCol}
+                  dataSource={profitabilityData?.filter(
+                    (item: any) => !item?.bundle_id,
+                  )}
+                  scroll
+                  rowSelection={rowSelection}
+                  locale={locale}
+                />
+              </Form>
+            </>
+          )}
           {/* <Button
             onClick={() => {
               const textResult = convertDataToText(
@@ -557,18 +694,6 @@ const Profitability: FC<any> = ({tableColumnDataShow, setSelectedRowIds}) => {
           >
             Copy Data
           </Button> */}
-          <Form>
-            <OsTableWithOutDrag
-              loading={loading}
-              columns={finalProfitTableCol}
-              dataSource={profitabilityData?.filter(
-                (item: any) => !item?.bundle_id,
-              )}
-              scroll
-              rowSelection={rowSelection}
-              locale={locale}
-            />
-          </Form>
         </>
       ) : (
         <EmptyContainer
