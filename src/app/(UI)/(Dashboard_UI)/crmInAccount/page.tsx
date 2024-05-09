@@ -321,6 +321,7 @@ const CrmInformation: React.FC = () => {
         actionButton="Add Customer"
         onClick={() => {
           setShowModal(true);
+          setObjectValueForContact({});
         }}
       />
     ),
@@ -351,6 +352,7 @@ const CrmInformation: React.FC = () => {
       dispatch(queryCustomer(searchQuery));
       form.resetFields();
       setShowModal(false);
+      setShowModal((p) => !p);
     } catch (error) {
       console.log(error);
       form.resetFields();
@@ -417,7 +419,10 @@ const CrmInformation: React.FC = () => {
                 text="Add Customer Account"
                 buttontype="PRIMARY"
                 icon={<PlusIcon width={25} />}
-                clickHandler={() => setShowModal((p) => !p)}
+                clickHandler={() => {
+                  setShowModal((p) => !p);
+                  setObjectValueForContact({});
+                }}
               />
               <Space>
                 <OsDropdown menu={{items: dropDownItemss}} />
