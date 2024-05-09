@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable eqeqeq */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
@@ -8,22 +9,23 @@
 
 import {FC, useEffect, useState} from 'react';
 
+import {Divider} from '@/app/components/common/antd/Divider';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
+import Typography from '@/app/components/common/typography';
 import {formatStatus, quoteLineItemColumnForSync} from '@/app/utils/CONSTANTS';
+import {useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {Col, Row, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
-import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import {Libre_Caslon_Display} from 'next/font/google';
-import Typography from '@/app/components/common/typography';
-import {Divider} from '@/app/components/common/antd/Divider';
-import GlobalLoader from '@/app/components/common/os-global-loader';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {insertProduct} from '../../../../../redux/actions/product';
 import {insertProfitability} from '../../../../../redux/actions/profitability';
 import {updateQuoteJsonAndManual} from '../../../../../redux/actions/quote';
+import {quoteFileVerification} from '../../../../../redux/actions/quoteFile';
 import {
   deleteQuoteLineItemsByQuoteId,
   insertQuoteLineItem,
@@ -32,8 +34,6 @@ import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
 import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
 import {insertValidation} from '../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {quoteFileVerification} from '../../../../../redux/actions/quoteFile';
-import { useRemoveDollarAndCommahook } from '@/app/utils/base';
 
 interface EditPdfDataInterface {
   setMergedVaalues?: any;
@@ -218,10 +218,16 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             quote_id: Number(getQuoteID),
             product_id: insertedProduct?.payload?.id,
             product_code: insertedProduct?.payload?.product_code,
-            line_amount: useRemoveDollarAndCommahook(insertedProduct?.payload?.line_amount),
-            list_price: useRemoveDollarAndCommahook(insertedProduct?.payload?.list_price),
+            line_amount: useRemoveDollarAndCommahook(
+              insertedProduct?.payload?.line_amount,
+            ),
+            list_price: useRemoveDollarAndCommahook(
+              insertedProduct?.payload?.list_price,
+            ),
             description: insertedProduct?.payload?.description,
-            quantity: useRemoveDollarAndCommahook(insertedProduct?.payload?.quantity),
+            quantity: useRemoveDollarAndCommahook(
+              insertedProduct?.payload?.quantity,
+            ),
             // adjusted_price: insertedProduct?.payload?.adjusted_price,
             line_number: insertedProduct?.payload?.line_number,
             organization: userInformation.organization,
