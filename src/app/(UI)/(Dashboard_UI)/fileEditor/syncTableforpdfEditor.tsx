@@ -33,6 +33,7 @@ import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuot
 import {insertValidation} from '../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {quoteFileVerification} from '../../../../../redux/actions/quoteFile';
+import { useRemoveDollarAndCommahook } from '@/app/utils/base';
 
 interface EditPdfDataInterface {
   setMergedVaalues?: any;
@@ -217,10 +218,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             quote_id: Number(getQuoteID),
             product_id: insertedProduct?.payload?.id,
             product_code: insertedProduct?.payload?.product_code,
-            line_amount: insertedProduct?.payload?.line_amount,
-            list_price: insertedProduct?.payload?.list_price,
+            line_amount: useRemoveDollarAndCommahook(insertedProduct?.payload?.line_amount),
+            list_price: useRemoveDollarAndCommahook(insertedProduct?.payload?.list_price),
             description: insertedProduct?.payload?.description,
-            quantity: insertedProduct?.payload?.quantity,
+            quantity: useRemoveDollarAndCommahook(insertedProduct?.payload?.quantity),
             // adjusted_price: insertedProduct?.payload?.adjusted_price,
             line_number: insertedProduct?.payload?.line_number,
             organization: userInformation.organization,

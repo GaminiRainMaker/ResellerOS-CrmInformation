@@ -1,15 +1,10 @@
-/* eslint-disable no-plusplus */
-/* eslint-disable no-dupe-else-if */
-/* eslint-disable no-lonely-if */
-/* eslint-disable array-callback-return */
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-unsafe-optional-chaining */
+/* eslint-disable array-callback-return */
+/* eslint-disable no-lonely-if */
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
-/* eslint-disable eqeqeq */
-/* eslint-disable consistent-return */
-/* eslint-disable implicit-arrow-linebreak */
-// eslint-disable-next-line import/no-extraneous-dependencies
+/* eslint-disable react-hooks/rules-of-hooks */
+
 import axios from 'axios';
 import moment from 'moment';
 import {getContractProductByProductCode} from '../../../redux/actions/contractProduct';
@@ -143,7 +138,7 @@ export const formbuildernewObject = (newItem: string) => {
     newObjAddedon = {
       name: newItem,
     };
-  } else if (newItem == 'Time') {
+  } else if (newItem === 'Time') {
     newObjAddedon = {
       name: newItem,
       label: 'Label',
@@ -155,7 +150,7 @@ export const formbuildernewObject = (newItem: string) => {
       timeformat: 'HH:mm',
       use12hours: true,
     };
-  } else if (newItem == 'Date') {
+  } else if (newItem === 'Date') {
     newObjAddedon = {
       name: newItem,
       label: 'Label',
@@ -169,7 +164,7 @@ export const formbuildernewObject = (newItem: string) => {
       StartDate: '',
       enddate: '',
     };
-  } else if (newItem == 'Contact') {
+  } else if (newItem === 'Contact') {
     newObjAddedon = {
       name: newItem,
       label: 'Label',
@@ -181,7 +176,7 @@ export const formbuildernewObject = (newItem: string) => {
       defaultcountry: 'US',
       dataformat: '333-333-3333',
     };
-  } else if (newItem == 'Currency') {
+  } else if (newItem === 'Currency') {
     newObjAddedon = {
       name: newItem,
       label: 'Label',
@@ -193,7 +188,7 @@ export const formbuildernewObject = (newItem: string) => {
       currency: 'USB',
       deciamlHide: false,
     };
-  } else if (newItem == 'Radio Button' || newItem == 'Toggle') {
+  } else if (newItem === 'Radio Button' || newItem === 'Toggle') {
     newObjAddedon = {
       name: newItem,
       label: 'Label',
@@ -204,14 +199,14 @@ export const formbuildernewObject = (newItem: string) => {
       hintTextValue: 'Hint Value',
       labelOptions: [],
     };
-  } else if (newItem == 'Text Content') {
+  } else if (newItem === 'Text Content') {
     newObjAddedon = {
       name: newItem,
       sectionTitle: 'Section Title',
       Alignemnt: 'left',
       FontSize: 'Heading 2',
     };
-  } else if (newItem == 'Checkbox') {
+  } else if (newItem === 'Checkbox') {
     newObjAddedon = {
       name: newItem,
       placeholdertext: 'placeholder text',
@@ -221,7 +216,7 @@ export const formbuildernewObject = (newItem: string) => {
       requiredLabel: true,
       filedType: 'multiple',
     };
-  } else if (newItem == 'Text' || newItem == 'Email') {
+  } else if (newItem === 'Text' || newItem === 'Email') {
     newObjAddedon = {
       name: newItem,
       label: 'Label',
@@ -231,7 +226,7 @@ export const formbuildernewObject = (newItem: string) => {
       hintext: false,
       hintTextValue: 'hint Vlaue',
     };
-  } else if (newItem == 'Attachment') {
+  } else if (newItem === 'Attachment') {
     newObjAddedon = {
       pdfUrl: null,
       required: false,
