@@ -332,11 +332,11 @@ export const updateTables = async (
         quote_id: item.quote_id ?? getQuoteId,
         product_id: item.product_id,
         product_code: item.product_code,
-        line_amount: item.line_amount,
-        list_price: item.list_price,
+        line_amount: useRemoveDollarAndCommahook(item?.line_amount),
+        list_price: useRemoveDollarAndCommahook(item?.list_price),
         description: item.description,
-        quantity: item.quantity,
-        // adjusted_price: item.adjusted_price,
+        quantity: useRemoveDollarAndCommahook(item?.quantity),
+        // adjusted_price: useRemoveDollarAndCommahook(item?.adjusted_price),
         line_number: item.line_number,
         organization: userInformation.organization,
         quote_config_id: item.quote_config_id,
@@ -344,7 +344,6 @@ export const updateTables = async (
         file_name: fileData?.title || fileData?.file_name,
         nanonets_id: item.nanonets_id,
       };
-
       const RebatesByProductCodData = await dispatch(
         getRebatesByProductCode(obj1.product_code),
       );

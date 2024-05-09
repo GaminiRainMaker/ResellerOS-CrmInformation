@@ -13,7 +13,6 @@ import {getAllOpportunity} from '../../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import CommonFields from './CommonField';
 import UniqueFields from './UniqueField';
-import ConverSationProcess from '../../admin/quote-AI/configuration/configuration-tabs/ConversationProcess';
 
 const DealRegDetailForm: FC<any> = ({
   data,
@@ -145,7 +144,6 @@ const DealRegDetailForm: FC<any> = ({
     });
     dispatch(getAllCustomer({}));
   }, []);
-
 
   return (
     <Row>

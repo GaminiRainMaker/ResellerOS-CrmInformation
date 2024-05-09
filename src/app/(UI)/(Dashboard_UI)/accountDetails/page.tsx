@@ -36,7 +36,6 @@ import DetailCard from './DetailCard';
 const AccountDetails = () => {
   const [token] = useThemeToken();
   const router = useRouter();
-  const {userInformation} = useAppSelector((state) => state.user);
   const {abbreviate} = useAbbreviationHook(0);
 
   const {loading, data: customerData} = useAppSelector(
@@ -80,8 +79,6 @@ const AccountDetails = () => {
     },
   ];
 
-  console.log('customerData', customerData);
-
   const menuItems = [
     {
       key: '1',
@@ -124,23 +121,11 @@ const AccountDetails = () => {
       ),
       dataIndex: 'file_name',
       key: 'file_name',
-      width: 130,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Generated Date
-        </Typography>
-      ),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      width: 130,
-      render: (text: string) => (
+      width: 250,
+      render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
-          {formatDate(text, 'MM/DD/YYYY | HH:MM') ?? '--'}
+          {record?.file_name ??
+            formatDate(record?.createdAt, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },

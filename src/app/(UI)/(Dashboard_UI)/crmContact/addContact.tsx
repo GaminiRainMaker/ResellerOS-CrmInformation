@@ -33,7 +33,7 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
           style={{
             padding: '24px 40px 20px 40px',
             backgroundColor: '#F0F4F7',
-            borderRadius: '10px 0px 10px 0px',
+            borderRadius: '10px 10px 0px 0px',
           }}
           gutter={[0, 0]}
         >
