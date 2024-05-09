@@ -510,10 +510,12 @@ const Profitability: FC<any> = ({
       ),
     },
   ];
+
   const updateBundleQuantityData = async (data: any) => {
     await dispatch(updateBundleQuantity(data));
     dispatch(getAllBundle(getQuoteID));
   };
+
   const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>();
 
   useEffect(() => {
@@ -575,7 +577,7 @@ const Profitability: FC<any> = ({
 
   return (
     <>
-      {/* {bundleData?.map((item: any) => (
+      {bundleData?.map((item: any) => (
         <OsCollapse
           key={item?.id}
           items={[
@@ -624,8 +626,8 @@ const Profitability: FC<any> = ({
             },
           ]}
         />
-      ))}{' '} */}
-      {/* {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
+      ))}{' '}
+      {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         <>
           {selectedFilter === 'Product Family' ? (
             <>
@@ -681,29 +683,14 @@ const Profitability: FC<any> = ({
                 />
               </Form>
             </>
-          )} */}
-
-      {/* </> */}
-      <Form>
-        <OsTableWithOutDrag
-          loading={loading}
-          columns={finalProfitTableCol}
-          // dataSource={profitabilityData?.filter(
-          //   (item: any) => !item?.bundle_id,
-          // )}
-          dataSource={profitabilityData}
-          scroll
-          rowSelection={rowSelection}
-          locale={locale}
-        />
-      </Form>
-
-      {/* ) : (
+          )}
+        </>
+      ) : (
         <EmptyContainer
           title="There is no columns for Profitability"
           subTitle="Please Update from admin Configuration Tab or Request to admin to update the columns."
         />
-      )} */}
+      )}
     </>
   );
 };

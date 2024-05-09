@@ -15,26 +15,24 @@ import {PencilSquareIcon, UserCircleIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import _debounce from 'lodash/debounce';
 import {useCallback, useState} from 'react';
+import {insertbillingContact} from '../../../../../redux/actions/billingContact';
 import {
   getCustomerProfileById,
-  insertCustomer,
   queryCustomer,
 } from '../../../../../redux/actions/customer';
+import {uploadToAwsForUserImage} from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';
-import {uploadToAwsForUserImage} from '../../../../../redux/actions/upload';
 import {setCustomerProfile} from '../../../../../redux/slices/customer';
 import {Checkbox} from '../antd/Checkbox';
 import {Divider} from '../antd/Divider';
+import {Space} from '../antd/Space';
 import OsButton from '../os-button';
 import OsInput from '../os-input';
 import {SelectFormItem} from '../os-oem-select/oem-select-styled';
 import TableNameColumn from '../os-table/TableNameColumn';
 import {AddCustomertInterface} from './os-add-customer-interface';
 import {CustomerTabsStyle} from './styled-components';
-import {Space} from '../antd/Space';
-import {insertAddAddress} from '../../../../../redux/actions/address';
-import {insertbillingContact} from '../../../../../redux/actions/billingContact';
 
 const AddCustomer: React.FC<AddCustomertInterface> = ({
   drawer,

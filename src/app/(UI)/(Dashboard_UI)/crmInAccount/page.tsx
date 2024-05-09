@@ -263,7 +263,6 @@ const CrmInformation: React.FC = () => {
             onClick={() => {
               setContactDetail(record?.BillingContacts);
               setShippingAddress(record?.Addresses?.[0]);
-              console.log('setContactDetail', record);
               setShowDrawer(true);
               editCustomerFileds(record);
               setEditRecordData(record);

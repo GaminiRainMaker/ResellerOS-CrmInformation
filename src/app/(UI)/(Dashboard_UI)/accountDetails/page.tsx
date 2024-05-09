@@ -28,7 +28,7 @@ import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {formatDate} from '@/app/utils/base';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import {getCustomerBYId} from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DetailCard from './DetailCard';
@@ -37,6 +37,7 @@ const AccountDetails = () => {
   const [token] = useThemeToken();
   const router = useRouter();
   const {abbreviate} = useAbbreviationHook(0);
+
 
   const {loading, data: customerData} = useAppSelector(
     (state) => state.customer,
@@ -175,7 +176,7 @@ const AccountDetails = () => {
       ),
     },
     {
-      title: ' ',
+      title: 'Actions',
       dataIndex: 'actions',
       key: 'actions',
       width: 139,
@@ -307,7 +308,7 @@ const AccountDetails = () => {
 
       <Row justify="space-between" gutter={[16, 16]}>
         <Col xs={24} sm={8} md={8} lg={6}>
-          <DetailCard />
+          <DetailCard  />
         </Col>
         <Col xs={24} sm={16} md={16} lg={18}>
           <div style={{display: 'flex', flexDirection: 'column', gap: 24}}>
