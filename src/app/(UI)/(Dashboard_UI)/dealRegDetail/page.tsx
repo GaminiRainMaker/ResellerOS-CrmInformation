@@ -109,7 +109,7 @@ const DealRegDetail = () => {
       key: '1',
       label: (
         <Typography onClick={() => setOpen(true)} name="Body 3/Regular">
-          Edit Quote Header
+          Edit Form Details
         </Typography>
       ),
     },

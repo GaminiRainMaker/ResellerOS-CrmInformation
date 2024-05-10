@@ -54,6 +54,9 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 const CrmOpportunity: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
+  const {abbreviate} = useAbbreviationHook(0);
+  const router = useRouter();
+  const [form] = Form.useForm();
   const [activeTab, setActiveTab] = useState<any>('1');
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
@@ -71,9 +74,9 @@ const CrmOpportunity: React.FC = () => {
   const [activeOpportunity, setActiveOpportunity] = useState<any>();
   const [customerValue, setCustomerValue] = useState<number>();
   const [recordId, setRecordId] = useState<number>();
-  const {abbreviate} = useAbbreviationHook(0);
-  const router = useRouter();
-  const [form] = Form.useForm();
+  const [deleteModalDescription, setDeleteModalDescription] =
+    useState<string>('');
+
   const [query, setQuery] = useState<{
     opportunity: string | null;
     customer: string | null;
@@ -353,6 +356,15 @@ const CrmOpportunity: React.FC = () => {
           color="#EB445A"
           cursor="pointer"
           onClick={() => {
+            if (deleteIds?.length > 1) {
+              setDeleteModalDescription(
+                `Are you sure you want to delete these opportunity?`,
+              );
+            } else {
+              setDeleteModalDescription(
+                `Are you sure you want to delete this opportunity?`,
+              );
+            }
             deleteIds && deleteIds?.length > 0 && setShowModalDelete(true);
           }}
         >
@@ -617,7 +629,8 @@ const CrmOpportunity: React.FC = () => {
         setDeleteIds={setDeleteIds}
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteSelectedIds}
-        description="Are you sure you want to delete this opportunity?"
+        description={deleteModalDescription}
+        // description="Are you sure you want to delete this opportunity?"
         heading="Delete Opportunity"
       />
     </>

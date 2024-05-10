@@ -219,7 +219,7 @@ const AllQuote: React.FC = () => {
           color={token?.colorError}
           cursor="pointer"
           onClick={() => {
-            if (deleteIds.length > 1) {
+            if (deleteIds?.length > 1) {
               setDeleteModalDescription(
                 `Are you sure you want to delete these Quote?`,
               );
