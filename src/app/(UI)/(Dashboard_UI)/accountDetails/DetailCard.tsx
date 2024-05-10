@@ -172,7 +172,7 @@ const DetailCard = () => {
           <OsButton
             btnStyle={{width: '100%'}}
             buttontype="PRIMARY"
-            text="UPDATE"
+            text="Update Changes"
             clickHandler={form.submit}
           />
         }

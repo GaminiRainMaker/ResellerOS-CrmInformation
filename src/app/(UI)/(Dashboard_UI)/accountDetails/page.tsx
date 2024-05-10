@@ -55,6 +55,9 @@ const AccountDetails = () => {
       dispatch(
         setBillingContact({
           image: customerData?.profile_image,
+          BillingContacts: customerData?.BillingContacts,
+          name: customerData?.name,
+          id: customerData?.id,
         }),
       );
     }
