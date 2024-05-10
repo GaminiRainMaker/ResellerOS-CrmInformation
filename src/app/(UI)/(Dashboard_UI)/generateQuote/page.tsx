@@ -490,6 +490,7 @@ const GenerateQuote: React.FC = () => {
                 <Space size={12}>
                   <CommonSelect
                     style={{width: '319px'}}
+                    disabled={activeTab !== '2'}
                     placeholder="Select Grouping here"
                     options={selectData}
                     onChange={(e) => {

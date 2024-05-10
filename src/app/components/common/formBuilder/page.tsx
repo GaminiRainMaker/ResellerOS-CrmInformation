@@ -78,8 +78,7 @@ const FormBuilderMain: React.FC<any> = ({
   const openNotificationWithIcon = () => {
     api.warning({
       message: 'Please Add the Fields!',
-      description:
-        'We are here to assist you! Please select the fields.',
+      description: 'We are here to assist you! Please select the fields.',
     });
   };
 
@@ -282,21 +281,23 @@ const FormBuilderMain: React.FC<any> = ({
                               ...commonDraggableProps(ItemConindex, Sectidx),
                             })}
                           >
-                            <ItemName
-                              itemName={itemCon?.name}
-                              cartItems={cartItems}
-                              setCartItems={setCartItems}
-                              isPreview={!previewFile}
-                              ItemConindex={ItemConindex}
-                              Sectidx={Sectidx}
-                              onClick={(e: any) => {
-                                e?.preventDefault();
-                                setCollapsed(true);
-                                setActiveContentIndex(ItemConindex);
-                                setActiveSectionIndex(Sectidx);
-                                form.resetFields();
-                              }}
-                            />
+                            {!previewFile && (
+                              <ItemName
+                                itemName={itemCon?.name}
+                                cartItems={cartItems}
+                                setCartItems={setCartItems}
+                                isPreview={!previewFile}
+                                ItemConindex={ItemConindex}
+                                Sectidx={Sectidx}
+                                onClick={(e: any) => {
+                                  e?.preventDefault();
+                                  setCollapsed(true);
+                                  setActiveContentIndex(ItemConindex);
+                                  setActiveSectionIndex(Sectidx);
+                                  form.resetFields();
+                                }}
+                              />
+                            )}
                             <SectionRowStyledInner>
                               {itemCon?.ColumnsData?.length > 0 &&
                                 itemCon?.ColumnsData?.map(
@@ -815,7 +816,7 @@ const FormBuilderMain: React.FC<any> = ({
                                 )}
                               </Row>
                             </SectionDivStyled1>
-                            {itemCon?.hintTextValue}
+                            {itemCon?.hintext && <> {itemCon?.hintTextValue}</>}
                           </Col>
                         );
                       }

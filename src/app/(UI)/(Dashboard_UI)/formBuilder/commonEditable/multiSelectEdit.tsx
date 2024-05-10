@@ -137,54 +137,15 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
       ),
       children: (
         <Form layout="vertical">
-          {cartItems?.[sectionIndex || 0]?.content?.[
-            contentIndex || 0
-          ]?.options?.map((itemOption: any, indexOp: number) => (
-            <Row style={{width: '100%'}}>
-              <Col
-                key={indexOp}
-                className="list-item"
-                draggable
-                onDragStart={(e) => {
-                  dragItem.current = indexOp;
-                }}
-                onDragEnter={(e) => {
-                  dragOverItem.current = indexOp;
-                }}
-                onDragEnd={() => handleSort('options')}
-                onDragOver={(e) => e.preventDefault()}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  width: '100%',
-                  marginBottom: '25px',
-                  gap: '12px',
-                }}
-              >
-                {/* <div>{itemOption}</div> */}
-                <OsInput
-                  key={indexOp}
-                  // defaultValue={itemOption}
-                  value={itemOption}
-                  onChange={(e: any) => {
-                    changeFiellOptionsValue(
-                      e?.target?.value,
-                      indexOp,
-                      'options',
-                    );
-                  }}
-                />{' '}
-                <TrashIcon
-                  color="#EB445A"
-                  width={35}
-                  onClick={() => deleteOption(indexOp, 'options')}
-                />{' '}
-                <ArrowsPointingOutIcon
-                  color="#2364AA"
-                  width={35}
+          <div style={{height: '20vh', overflow: 'auto'}}>
+            {cartItems?.[sectionIndex || 0]?.content?.[
+              contentIndex || 0
+            ]?.options?.map((itemOption: any, indexOp: number) => (
+              <Row style={{width: '100%'}}>
+                <Col
                   key={indexOp}
                   className="list-item"
-                  // draggable
+                  draggable
                   onDragStart={(e) => {
                     dragItem.current = indexOp;
                   }}
@@ -193,19 +154,60 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
                   }}
                   onDragEnd={() => handleSort('options')}
                   onDragOver={(e) => e.preventDefault()}
-                />
-              </Col>
-            </Row>
-          ))}
-          <Typography
-            name="Body 3/Bold"
-            color={token?.colorInfo}
-            onClick={() => addnewOptions('options')}
-            cursor="pointer"
-            style={{cursor: 'pointer'}}
-          >
-            + Add New
-          </Typography>
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    marginBottom: '25px',
+                    gap: '12px',
+                  }}
+                >
+                  {/* <div>{itemOption}</div> */}
+                  <OsInput
+                    key={indexOp}
+                    // defaultValue={itemOption}
+                    value={itemOption}
+                    onChange={(e: any) => {
+                      changeFiellOptionsValue(
+                        e?.target?.value,
+                        indexOp,
+                        'options',
+                      );
+                    }}
+                  />{' '}
+                  <TrashIcon
+                    color="#EB445A"
+                    width={35}
+                    onClick={() => deleteOption(indexOp, 'options')}
+                  />{' '}
+                  <ArrowsPointingOutIcon
+                    color="#2364AA"
+                    width={35}
+                    key={indexOp}
+                    className="list-item"
+                    // draggable
+                    onDragStart={(e) => {
+                      dragItem.current = indexOp;
+                    }}
+                    onDragEnter={(e) => {
+                      dragOverItem.current = indexOp;
+                    }}
+                    onDragEnd={() => handleSort('options')}
+                    onDragOver={(e) => e.preventDefault()}
+                  />
+                </Col>
+              </Row>
+            ))}
+            <Typography
+              name="Body 3/Bold"
+              color={token?.colorInfo}
+              onClick={() => addnewOptions('options')}
+              cursor="pointer"
+              style={{cursor: 'pointer'}}
+            >
+              + Add New
+            </Typography>
+          </div>
         </Form>
       ),
     },

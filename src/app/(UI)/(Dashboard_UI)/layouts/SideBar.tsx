@@ -777,7 +777,7 @@ const SideBar = () => {
             name="Button 1"
             color={
               selectedKey?.toString()?.includes('13')
-                ? token?.colorPrimary
+                ? `#1C3557 !important`
                 : token?.colorTextSecondary
             }
           >

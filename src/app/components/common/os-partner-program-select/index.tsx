@@ -49,7 +49,15 @@ const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
           disabled={!partnerId}
           allowClear
           style={{width: '100%'}}
-          options={finalProgramOptions}
+          options={finalProgramOptions?.sort((a: any, b: any) => {
+            if (a.label < b.label) {
+              return -1;
+            }
+            if (a.label > b.label) {
+              return 1;
+            }
+            return 0;
+          })}
           dropdownRender={(menu) => (
             <>
               {isAddNewProgram && (

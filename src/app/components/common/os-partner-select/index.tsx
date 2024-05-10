@@ -116,7 +116,15 @@ const OsPartnerSelect: FC<{
           placeholder="Select"
           allowClear
           style={{width: '100%'}}
-          options={partnerOptions}
+          options={partnerOptions?.sort((a: any, b: any) => {
+            if (a.label < b.label) {
+              return -1;
+            }
+            if (a.label > b.label) {
+              return 1;
+            }
+            return 0;
+          })}
           onChange={(e) => {
             setPartnerValue && setPartnerValue(e);
             form?.setFieldsValue({

@@ -19,11 +19,15 @@ const UniqueFields: React.FC<any> = ({
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (cartItems.length === 0 && data && data?.form_data) {
+    if (
+      cartItems.length === 0 &&
+      data &&
+      data?.form_data &&
+      !data?.form_data?.includes(null)
+    ) {
       setCartItems(JSON?.parse(data?.form_data));
     }
   }, [cartItems, data, setCartItems, activeKey]);
-  console.log('43543534', data);
   const updateUniqueFiledData = () => {
     const dataa = {
       id: data?.id,

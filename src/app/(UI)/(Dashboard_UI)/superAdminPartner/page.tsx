@@ -359,7 +359,11 @@ const SuperAdminPartner: React.FC = () => {
           hoverOnText
           color={token?.colorLink}
           onClick={() => {
-            if (record?.form_data && record?.form_data?.length > 0) {
+            if (
+              record?.form_data &&
+              record?.form_data?.length > 0 &&
+              !record?.form_data?.includes(null)
+            ) {
               setOpenPreviewModal(true);
               setformData({
                 formObject: JSON?.parse(record?.form_data),

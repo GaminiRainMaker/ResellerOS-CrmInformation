@@ -137,15 +137,23 @@ const Partners: React.FC = () => {
           hoverOnText
           color={token?.colorLink}
           onClick={() => {
-            if (record?.form_data) {
+            if (
+              record?.form_data &&
+              record?.form_data?.length > 0 &&
+              !record?.form_data?.includes(null)
+            ) {
               setOpenPreviewModal(true);
-              const formDataObject = JSON?.parse(record?.form_data);
+              const formDataObject = record?.form_data
+                ? JSON?.parse(record?.form_data)
+                : '';
               setformData({formObject: formDataObject, Id: record?.id});
               // open modal to view form
             }
           }}
         >
-          {record?.form_data ? 'View' : 'No Template'}
+          {record?.form_data && !record?.form_data?.includes(null)
+            ? 'View'
+            : 'No Template'}
         </Typography>
       ),
     },

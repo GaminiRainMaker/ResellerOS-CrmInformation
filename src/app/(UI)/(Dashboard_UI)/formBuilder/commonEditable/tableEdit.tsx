@@ -296,68 +296,70 @@ const EditTableFields: React.FC<EditableFiledsCommonInterface> = ({
       ),
       children: (
         <Form layout="vertical">
-          {cartItems?.[sectionIndex || 0]?.content?.[
-            contentIndex || 0
-          ]?.ColumnsData?.[selectedColumnIndex || 0]?.options?.map(
-            (itemOption: any, indexOp: number) => (
-              <Row style={{width: '100%'}}>
-                <Col
-                  key={indexOp}
-                  className="list-item"
-                  draggable
-                  onDragStart={(e) => {
-                    dragItem.current = indexOp;
-                  }}
-                  onDragEnter={(e) => {
-                    dragOverItem.current = indexOp;
-                  }}
-                  onDragEnd={() => handleSortfortable('options')}
-                  onDragOver={(e) => e.preventDefault()}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                    marginBottom: '25px',
-                    gap: '12px',
-                  }}
-                >
-                  {/* <div>{itemOption}</div> */}
-                  <Input
+          <div style={{height: '20vh', overflow: 'auto'}}>
+            {cartItems?.[sectionIndex || 0]?.content?.[
+              contentIndex || 0
+            ]?.ColumnsData?.[selectedColumnIndex || 0]?.options?.map(
+              (itemOption: any, indexOp: number) => (
+                <Row style={{width: '100%'}}>
+                  <Col
                     key={indexOp}
-                    // defaultValue={itemOption}
-                    type="text"
-                    value={itemOption}
-                    onChange={(e: any) => {
-                      changeFiellOptionsValueForTable(
-                        e?.target?.value,
-                        indexOp,
-                        'options',
-                      );
+                    className="list-item"
+                    draggable
+                    onDragStart={(e) => {
+                      dragItem.current = indexOp;
                     }}
-                  />{' '}
-                  <TrashIcon
-                    color="#EB445A"
-                    width={35}
-                    onClick={() => deleteOption(indexOp, 'options')}
-                  />{' '}
-                  <ArrowsPointingOutIcon
-                    color="#2364AA"
-                    width={35}
-                    key={indexOp}
-                  />
-                </Col>
-              </Row>
-            ),
-          )}
-          <Typography
-            name="Body 3/Bold"
-            color={token?.colorInfo}
-            onClick={() => addnewOptionsForTable('options')}
-            cursor="pointer"
-            style={{cursor: 'pointer'}}
-          >
-            + Add New
-          </Typography>
+                    onDragEnter={(e) => {
+                      dragOverItem.current = indexOp;
+                    }}
+                    onDragEnd={() => handleSortfortable('options')}
+                    onDragOver={(e) => e.preventDefault()}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                      marginBottom: '25px',
+                      gap: '12px',
+                    }}
+                  >
+                    {/* <div>{itemOption}</div> */}
+                    <Input
+                      key={indexOp}
+                      // defaultValue={itemOption}
+                      type="text"
+                      value={itemOption}
+                      onChange={(e: any) => {
+                        changeFiellOptionsValueForTable(
+                          e?.target?.value,
+                          indexOp,
+                          'options',
+                        );
+                      }}
+                    />{' '}
+                    <TrashIcon
+                      color="#EB445A"
+                      width={35}
+                      onClick={() => deleteOption(indexOp, 'options')}
+                    />{' '}
+                    <ArrowsPointingOutIcon
+                      color="#2364AA"
+                      width={35}
+                      key={indexOp}
+                    />
+                  </Col>
+                </Row>
+              ),
+            )}
+            <Typography
+              name="Body 3/Bold"
+              color={token?.colorInfo}
+              onClick={() => addnewOptionsForTable('options')}
+              cursor="pointer"
+              style={{cursor: 'pointer'}}
+            >
+              + Add New
+            </Typography>
+          </div>
         </Form>
       ),
     },
