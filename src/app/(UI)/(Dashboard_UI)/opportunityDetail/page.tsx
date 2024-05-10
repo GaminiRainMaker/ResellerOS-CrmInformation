@@ -149,25 +149,26 @@ const OpportunityDetails = () => {
           }}
           hoverOnText
         >
-          {text ?? '--'}
+          {record?.file_name ??
+            formatDate(record?.createdAt, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Generated Date
-        </Typography>
-      ),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      width: 130,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">
-          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
-        </Typography>
-      ),
-    },
+    // {
+    //   title: (
+    //     <Typography name="Body 4/Medium" className="dragHandler">
+    //       Generated Date
+    //     </Typography>
+    //   ),
+    //   dataIndex: 'createdAt',
+    //   key: 'createdAt',
+    //   width: 130,
+    //   render: (text: string) => (
+    //     <Typography name="Body 4/Regular">
+    //       {formatDate(text, 'MM/DD/YYYY | HH:MM')}
+    //     </Typography>
+    //   ),
+    // },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -199,7 +200,11 @@ const OpportunityDetails = () => {
       ),
     },
     {
-      title: ' ',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Actions
+        </Typography>
+      ),
       dataIndex: 'actions',
       key: 'actions',
       width: 94,
@@ -284,7 +289,7 @@ const OpportunityDetails = () => {
 
         <Row justify="space-between">
           <Col>
-            <Typography name="Heading 3/Medium">Quotes</Typography>
+            <Typography name="Heading 3/Medium">All Quotes</Typography>
           </Col>
           <Col style={{float: 'right'}}>
             <AddQuote

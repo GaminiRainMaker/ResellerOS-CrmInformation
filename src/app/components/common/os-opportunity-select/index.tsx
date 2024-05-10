@@ -77,6 +77,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
       >
         <CommonSelect
           placeholder="Select"
+          disabled={!customerValue}
           allowClear
           defaultValue={value}
           style={{width: '100%'}}
