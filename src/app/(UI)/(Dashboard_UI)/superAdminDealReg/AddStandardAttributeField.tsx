@@ -3,6 +3,7 @@
 import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
+import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
@@ -37,7 +38,7 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
 
   const attributeSectionOption = attributeSectionData?.map(
     (attributeSectionItem: any) => ({
-      label: attributeSectionItem?.name,
+      label: <CustomTextCapitalization text={attributeSectionItem?.name} />,
       value: attributeSectionItem?.id,
     }),
   );
@@ -145,7 +146,10 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
                 label={<Typography name="Body 4/Medium">Order</Typography>}
                 name="order"
               >
-                <OsInputNumber placeholder="Write the Order here" style={{width: '100%'}} />
+                <OsInputNumber
+                  placeholder="Write the Order here"
+                  style={{width: '100%'}}
+                />
               </SelectFormItem>
             </Col>
             <Col span={12}>
@@ -181,7 +185,10 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
                 label={<Typography name="Body 4/Medium">Help Text</Typography>}
                 name="help_text"
               >
-                <OsInput placeholder="Write Help Text here" style={{width: '100%'}} />
+                <OsInput
+                  placeholder="Write Help Text here"
+                  style={{width: '100%'}}
+                />
               </SelectFormItem>
             </Col>
             <Col span={24}>
@@ -193,7 +200,10 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
                 }
                 name="name"
               >
-                <OsInput placeholder="Write Attribute Name" style={{width: '100%'}} />
+                <OsInput
+                  placeholder="Write Attribute Name"
+                  style={{width: '100%'}}
+                />
               </SelectFormItem>
             </Col>
             <Col span={24} style={{display: 'flex'}}>

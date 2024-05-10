@@ -130,12 +130,14 @@ const SideBar = () => {
         'allQuote',
         'dealReg',
         'partners',
+        'superAdminPartner',
         'crmInAccount',
         'accountDetails',
         'crmContact',
         'crmOpportunity',
         'admin',
         'userManagement',
+        'superAdminPermissions',
       ]?.includes(pathname)
     ) {
       setSelectedKey(0);
@@ -302,7 +304,7 @@ const SideBar = () => {
                     : token?.colorTextSecondary
                 }
               >
-                Quote Configuration
+                Super Admin Permissions
               </Typography>
             </Space>,
             '3',
@@ -789,40 +791,43 @@ const SideBar = () => {
     isAdmin &&
       Role === 'superAdmin' &&
       getItem(
-        <Space
-          size={12}
-          onClick={() => {
-            setSelectedKey(14);
-            setCrmChildKey(0);
-            router?.push('/userManagement');
-          }}
-          color={token?.colorTextSecondary}
-        >
-          <OsAvatar
-            icon={
-              <UserGroupIcon
-                color={
-                  selectedKey?.toString()?.includes('14') ||
-                  selectedKey?.toString()?.includes('15')
-                    ? token?.colorPrimary
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
-
+        <Space>
           <Typography
             cursor="pointer"
+            onClick={() => {
+              setSelectedKey(14);
+              setCrmChildKey(0);
+              router?.push('/userManagement');
+            }}
             name="Button 1"
-            color={
-              selectedKey?.toString()?.includes('14') ||
-              selectedKey?.toString()?.includes('15')
-                ? token?.colorPrimary
-                : token?.colorTextSecondary
-            }
+            color={token?.colorTextSecondary}
           >
-            User Management
+            <OsAvatar
+              icon={
+                <UserGroupIcon
+                  color={
+                    selectedKey?.toString()?.includes('14') ||
+                    selectedKey?.toString()?.includes('15')
+                      ? token?.colorPrimary
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              color={
+                selectedKey?.toString()?.includes('14') ||
+                selectedKey?.toString()?.includes('15')
+                  ? token?.colorPrimary
+                  : token?.colorTextSecondary
+              }
+            >
+              User Management
+            </Typography>
           </Typography>
         </Space>,
         '14',

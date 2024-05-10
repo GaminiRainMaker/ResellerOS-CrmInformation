@@ -2,7 +2,7 @@
 import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {Space} from '@/app/components/common/antd/Space';
 import {Switch} from '@/app/components/common/antd/Switch';
-import CustomTableCell from '@/app/components/common/hooks/CustomTableCell';
+import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import Typography from '@/app/components/common/typography';
 import {formatDate} from '@/app/utils/base';
 import {PencilSquareIcon, TrashIcon} from '@heroicons/react/24/outline';
@@ -35,9 +35,7 @@ function templateColumns(
       key: 'partner',
       width: 130,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
-          {record?.Partner?.partner}
-        </Typography>
+        <CustomTextCapitalization text={record?.Partner?.partner} />
       ),
     },
     {
@@ -54,15 +52,9 @@ function templateColumns(
       key: 'partner_program',
       width: 187,
       render: (text: string, record: any) => (
-        <Typography
-          name="Body 4/Regular"
-          onClick={() => {
-            // window.open(`/opportunityDetail?id=${record?.Partner?.id}`);
-          }}
-          // hoverOnText
-        >
-          {text ?? record?.Partner?.partner_program}
-        </Typography>
+        <CustomTextCapitalization
+          text={text ?? record?.Partner?.partner_program}
+        />
       ),
     },
     {
@@ -179,7 +171,7 @@ function standardAttributes(
       key: 'standard_attribute_section',
       width: 230,
       render: (text: string, record: any) => (
-        <CustomTableCell text={record?.AttributeSection?.name} />
+        <CustomTextCapitalization text={record?.AttributeSection?.name} />
       ),
     },
     {
@@ -195,7 +187,7 @@ function standardAttributes(
       dataIndex: 'label',
       key: 'label',
       width: 187,
-      render: (text: string) => <CustomTableCell text={text} />,
+      render: (text: string) => <CustomTextCapitalization text={text} />,
     },
     {
       title: (
@@ -230,9 +222,8 @@ function standardAttributes(
       dataIndex: 'data_type',
       key: 'data_type',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
+      render: (text: string) => <CustomTextCapitalization text={text} />,
+
     },
     {
       title: (
@@ -354,7 +345,7 @@ function standardAttributesSection(
       dataIndex: 'name',
       key: 'name',
       width: 187,
-      render: (text: string) => <CustomTableCell text={text} />,
+      render: (text: string) => <CustomTextCapitalization text={text} />,
     },
     {
       title: (

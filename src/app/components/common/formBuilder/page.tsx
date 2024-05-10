@@ -97,7 +97,6 @@ const FormBuilderMain: React.FC<any> = ({
               payload?.payload?.form_data?.[0]?.[0],
             );
             setCartItems(formData);
-            console.log('eewweeww', formData);
           }
         },
       );
@@ -215,7 +214,7 @@ const FormBuilderMain: React.FC<any> = ({
         >
           <Space size={10} direction="horizontal">
             <Typography name="Heading 3/Medium">
-              {formatStatus(partnerData?.Partner?.partner)}-{' '}
+              {formatStatus(partnerData?.Partner?.partner)} -{' '}
               {formatStatus(partnerData?.partner_program)}
             </Typography>
           </Space>

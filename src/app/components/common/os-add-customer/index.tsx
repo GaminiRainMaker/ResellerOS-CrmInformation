@@ -15,26 +15,24 @@ import {PencilSquareIcon, UserCircleIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import _debounce from 'lodash/debounce';
 import {useCallback, useState} from 'react';
+import {insertbillingContact} from '../../../../../redux/actions/billingContact';
 import {
   getCustomerProfileById,
-  insertCustomer,
   queryCustomer,
 } from '../../../../../redux/actions/customer';
+import {uploadToAwsForUserImage} from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';
-import {uploadToAwsForUserImage} from '../../../../../redux/actions/upload';
 import {setCustomerProfile} from '../../../../../redux/slices/customer';
 import {Checkbox} from '../antd/Checkbox';
 import {Divider} from '../antd/Divider';
+import {Space} from '../antd/Space';
 import OsButton from '../os-button';
 import OsInput from '../os-input';
 import {SelectFormItem} from '../os-oem-select/oem-select-styled';
 import TableNameColumn from '../os-table/TableNameColumn';
 import {AddCustomertInterface} from './os-add-customer-interface';
 import {CustomerTabsStyle} from './styled-components';
-import {Space} from '../antd/Space';
-import {insertAddAddress} from '../../../../../redux/actions/address';
-import {insertbillingContact} from '../../../../../redux/actions/billingContact';
 
 const AddCustomer: React.FC<AddCustomertInterface> = ({
   drawer,
@@ -49,8 +47,6 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
   const {billingContact} = useAppSelector((state) => state.billingContact);
   const {customerProfile} = useAppSelector((state) => state.customer);
   const dispatch = useAppDispatch();
-
-  // const [objectValuesForContact, setObjectValueForContact] = useState<any>();
   const [editContactOIndex, setEditContactIndex] = useState<any>(null);
   const [editBillingAddress, setEditBillingAddress] = useState<Boolean>(false);
   const [newAdd, setNewAdd] = useState<Boolean>(false);
@@ -158,11 +154,10 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
     billingContact,
   ]);
 
-  const AlphabetsRegex = /^[a-zA-Z]+$/;
+  const AlphabetsRegex =  /^[A-Za-z\s]+$/;
   const emailRegex =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-  console.log('billingContact?.id', billingContact);
   return (
     <>
       {!drawer && (
@@ -191,6 +186,9 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
         form={form}
         requiredMark={false}
         style={{width: '100%', padding: drawer ? '' : '40px'}}
+        initialValues={{
+          currency: '$', // Set default value here
+        }}
       >
         <Row justify="space-between">
           <Col
@@ -265,10 +263,6 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                     {
                       required: true,
                       message: 'currency is required!',
-                    },
-                    {
-                      pattern: /^[A-Za-z\s]+$/,
-                      message: 'Please enter valid currency.',
                     },
                   ]}
                 >
@@ -716,12 +710,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                   });
                                 }}
                               />
-                              {errorFileds &&
-                                !objectValuesForContact?.billing_role && (
-                                  <div style={{color: 'red'}}>
-                                    This filed is required!
-                                  </div>
-                                )}
+                            
                               {!AlphabetsRegex?.test(
                                 objectValuesForContact?.billing_role,
                               ) && (
@@ -745,12 +734,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                   });
                                 }}
                               />
-                              {errorFileds &&
-                                !objectValuesForContact?.billing_email && (
-                                  <div style={{color: 'red'}}>
-                                    This filed is required!
-                                  </div>
-                                )}
+                             
                               {errorFileds &&
                                 !emailRegex?.test(
                                   objectValuesForContact?.billing_email,

@@ -1,41 +1,38 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-nested-ternary */
-import { Col, Row } from '@/app/components/common/antd/Grid';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import OsCustomerSelect from '@/app/components/common/os-customer-select';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsInput from '@/app/components/common/os-input';
 import OsOpportunitySelect from '@/app/components/common/os-opportunity-select';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import { quoteStatusOptions } from '@/app/utils/CONSTANTS';
-import { formatDate } from '@/app/utils/base';
-import { Form } from 'antd';
-import { useSearchParams } from 'next/navigation';
-import { FC, useEffect, useState } from 'react';
-import { getAllCustomer } from '../../../../../redux/actions/customer';
-import { getAllOpportunity } from '../../../../../redux/actions/opportunity';
-import { getQuoteById } from '../../../../../redux/actions/quote';
-import { getAllSyncTable } from '../../../../../redux/actions/syncTable';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {quoteStatusOptions} from '@/app/utils/CONSTANTS';
+import {formatDate} from '@/app/utils/base';
+import {Form} from 'antd';
+import {useSearchParams} from 'next/navigation';
+import {FC, useEffect, useState} from 'react';
+import {getAllCustomer} from '../../../../../redux/actions/customer';
+import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
+import {getQuoteById} from '../../../../../redux/actions/quote';
+import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 const DrawerContent: FC<any> = ({open, form, onFinish}) => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const getQuoteId = searchParams.get('id');
   const {data: dataAddress} = useAppSelector((state) => state.customer);
-  const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
-  const {data: generalSettingData} = useAppSelector(
-    (state) => state.gereralSetting,
-  );
   const {quoteById, quoteByIdLoading} = useAppSelector((state) => state.quote);
   const [customerValue, setCustomerValue] = useState<number>(0);
   const [quoteData, setQuoteData] = useState<any>();
   const [billingOptionsData, setBillingOptionData] = useState<any>();
   const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const [opportunityObject, setOpportunityObject] = useState<any>();
-  const {userInformation} = useAppSelector((state) => state.user);
-
+  const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
+    (state) => state.profitability,
+  );
   // BillingContacts
   useEffect(() => {
     const customerOptions: any = [];
@@ -191,6 +188,8 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
               name="status"
             >
               <CommonSelect
+                // eslint-disable-next-line no-unneeded-ternary
+                disabled={profitabilityDataByQuoteId?.length > 0 ? false : true}
                 style={{width: '150px'}}
                 options={quoteStatusOptions}
               />

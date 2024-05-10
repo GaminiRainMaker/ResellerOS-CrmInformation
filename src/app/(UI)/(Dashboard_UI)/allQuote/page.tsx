@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-nested-ternary */
 
@@ -49,6 +50,8 @@ const AllQuote: React.FC = () => {
     afterDays: null,
   });
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+  const [deleteModalDescription, setDeleteModalDescription] =
+    useState<string>('');
   const [deleteIds, setDeleteIds] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
 
@@ -215,7 +218,18 @@ const AllQuote: React.FC = () => {
           name="Body 3/Regular"
           color={token?.colorError}
           cursor="pointer"
-          onClick={() => deleteIds?.length > 0 && setShowModalDelete(true)}
+          onClick={() => {
+            if (deleteIds?.length > 1) {
+              setDeleteModalDescription(
+                `Are you sure you want to delete these Quote?`,
+              );
+            } else {
+              setDeleteModalDescription(
+                `Are you sure you want to delete this Quote?`,
+              );
+            }
+            deleteIds?.length > 0 && setShowModalDelete(true);
+          }}
         >
           Delete Selected
         </Typography>
@@ -360,7 +374,7 @@ const AllQuote: React.FC = () => {
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteQuote}
         heading="Delete Quote"
-        description="Are you sure you want to delete this Quote?"
+        description={deleteModalDescription}
       />
     </>
   );

@@ -2,7 +2,10 @@
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {FC, useEffect, useState} from 'react';
-import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
+import {
+  getAllOpportunity,
+  insertOpportunity,
+} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
@@ -17,22 +20,23 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
   isAddNewOpportunity = false,
   form,
   value,
+  isRequired = true,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {data: opportunityData, loading} = useAppSelector(
     (state) => state.Opportunity,
   );
-  const [open, setOpen] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
   const [opportunityFilterOption, setOpportunityFilterOption] = useState<any>();
-  const [formValue, setFormValue] = useState<any>();
+  const [form1] = Form.useForm();
 
   useEffect(() => {
     dispatch(getAllOpportunity());
   }, []);
 
   useEffect(() => {
-    form?.resetFields(['opportunity_id','contact_id']);
+    form?.resetFields(['opportunity_id', 'contact_id']);
     const filterUsers = opportunityData?.filter((item: any) =>
       item?.customer_id?.toString()?.includes(customerValue),
     );
@@ -49,15 +53,31 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
     setOpportunityFilterOption(opportunityOptions);
   }, [JSON.stringify(opportunityData), customerValue]);
 
+  const onFinish = () => {
+    const FormDAta = form1.getFieldsValue();
+    const finalData = {
+      ...FormDAta,
+      customer_id: customerValue,
+    };
+    dispatch(insertOpportunity(finalData)).then((d: any) => {
+      if (d?.payload) {
+        dispatch(getAllOpportunity());
+        setShowModal(false);
+        form1.resetFields();
+      }
+    });
+  };
+
   return (
     <>
       <Form.Item
         label="Opportunity"
         name="opportunity_id"
-        rules={[{required: true, message: 'Please Select Opportunity!'}]}
+        rules={[{required: isRequired, message: 'Please Select Opportunity!'}]}
       >
         <CommonSelect
           placeholder="Select"
+          disabled={!customerValue}
           allowClear
           defaultValue={value}
           style={{width: '100%'}}
@@ -68,7 +88,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
                 <Space
                   style={{cursor: 'pointer'}}
                   size={8}
-                  onClick={() => setOpen(true)}
+                  onClick={() => setShowModal(true)}
                 >
                   <PlusIcon
                     width={24}
@@ -93,17 +113,21 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
         loading={loading}
         body={
           <AddOpportunity
-            setFormValue={setFormValue}
-            formValue={formValue}
-            setShowModal={setOpen}
+            form={form1}
+            onFinish={onFinish}
             customerValue={customerValue}
+            showCustomerSelect
           />
         }
         width={600}
-        open={open}
+        open={showModal}
         onCancel={() => {
-          setOpen((p) => !p);
+          setShowModal(false);
+          form1.resetFields();
         }}
+        onOk={form1.submit}
+        primaryButtonText="Save"
+        footerPadding={30}
       />
     </>
   );

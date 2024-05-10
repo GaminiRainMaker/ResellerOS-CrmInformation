@@ -112,11 +112,11 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
             name="partner_program"
             rules={[{required: true, message: 'Please Enter Partner Program!'}]}
           >
-            <OsInput placeholder="Partner name here" />
+            <OsInput placeholder="Partner Program here" />
           </Form.Item>
 
           <Form.Item label="Description" name="description">
-            <OsInput placeholder="Partner name here" />
+            <OsInput placeholder="Write Description here" />
           </Form.Item>
         </Form>
       </Space>

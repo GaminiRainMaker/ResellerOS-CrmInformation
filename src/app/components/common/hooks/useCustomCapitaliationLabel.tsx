@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 
-const useCustomLabel = (input: any) => {
+const useCustomCapitaliationLabel = (input: any) => {
   const [label, setLabel] = useState('');
 
   useEffect(() => {
@@ -23,4 +23,4 @@ const useCustomLabel = (input: any) => {
   return label;
 };
 
-export default useCustomLabel;
+export default useCustomCapitaliationLabel;

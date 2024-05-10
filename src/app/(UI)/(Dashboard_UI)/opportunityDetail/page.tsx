@@ -21,44 +21,60 @@ import {EyeIcon, PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import AddQuote from '@/app/components/common/addQuote';
+import OsDrawer from '@/app/components/common/os-drawer';
+import {Form} from 'antd';
+import AddOpportunity from '@/app/components/common/os-add-opportunity';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {
   deleteOpportunity,
   getOpportunityById,
+  updateOpportunity,
 } from '../../../../../redux/actions/opportunity';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import EditOpportunity from '../crmOpportunity/EditOpportunity';
+import {setStageValue} from '../../../../../redux/slices/opportunity';
 
 const OpportunityDetails = () => {
   const [token] = useThemeToken();
   const router = useRouter();
+  const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const opportunityId = searchParams.get('id');
-  const {loading, data: opportunityData} = useAppSelector(
+  const {loading, opportunityById: opportunityData} = useAppSelector(
     (state) => state.Opportunity,
   );
   const [formValue, setFormValue] = useState<any>();
-  const [open, setOpen] = useState(false);
+  const [showDrawer, setShowDrawer] = useState(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
-  const {loading: QuoteLoading} = useAppSelector(
-    (state) => state.quote,
-  );
+  const [customerValue, setCustomerValue] = useState<number>();
+
+  const {loading: QuoteLoading} = useAppSelector((state) => state.quote);
   useEffect(() => {
     dispatch(getOpportunityById(opportunityId));
   }, []);
 
   const OpportunityData = {
-    id: opportunityData?.[0]?.id,
-    title: opportunityData?.[0]?.title,
-    amount: opportunityData?.[0]?.amount,
-    customer: opportunityData?.[0]?.Customer?.name,
-    quotes: opportunityData?.[0]?.Quotes,
-    stages: opportunityData?.[0]?.stages,
+    id: opportunityData?.id,
+    title: opportunityData?.title,
+    amount: opportunityData?.amount,
+    customer: opportunityData?.Customer?.name,
+    quotes: opportunityData?.Quotes,
+    stages: opportunityData?.stages,
     opportunity: opportunityData,
   };
+
+  useEffect(() => {
+    if (showDrawer) {
+      form.setFieldsValue({
+        stages: opportunityData?.stages,
+        customer_id: opportunityData?.customer_id,
+        title: opportunityData?.title,
+        amount: opportunityData?.amount,
+      });
+    }
+  }, [showDrawer]);
 
   const menuItems = [
     {
@@ -91,6 +107,30 @@ const OpportunityDetails = () => {
     },
   ];
 
+  const locale = {
+    emptyText: (
+      <EmptyContainer
+        title="No Files"
+        buttonContainer={
+          <AddQuote
+            uploadFileData={uploadFileData}
+            setUploadFileData={setUploadFileData}
+            loading={QuoteLoading}
+            buttonText="Add Quote"
+          />
+        }
+      />
+    ),
+  };
+
+  const deleteSelectedIds = async () => {
+    const data = {Ids: deleteIds};
+    await dispatch(deleteOpportunity(data));
+    router.push('/crmOpportunity');
+    setDeleteIds([]);
+    setShowModalDelete(false);
+  };
+
   const Quotecolumns = [
     {
       title: (
@@ -101,25 +141,34 @@ const OpportunityDetails = () => {
       dataIndex: 'file_name',
       key: 'file_name',
       width: 130,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Generated Date
-        </Typography>
-      ),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      width: 130,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">
-          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
+      render: (text: string, record: any) => (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => {
+            router.push(`/generateQuote?id=${record.id}`);
+          }}
+          hoverOnText
+        >
+          {record?.file_name ??
+            formatDate(record?.createdAt, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },
+    // {
+    //   title: (
+    //     <Typography name="Body 4/Medium" className="dragHandler">
+    //       Generated Date
+    //     </Typography>
+    //   ),
+    //   dataIndex: 'createdAt',
+    //   key: 'createdAt',
+    //   width: 130,
+    //   render: (text: string) => (
+    //     <Typography name="Body 4/Regular">
+    //       {formatDate(text, 'MM/DD/YYYY | HH:MM')}
+    //     </Typography>
+    //   ),
+    // },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -144,17 +193,18 @@ const OpportunityDetails = () => {
       dataIndex: 'status',
       key: 'status',
       width: 187,
-      render: (text: string, record: any) => {
-        const statusValue = record.is_completed
-          ? 'Completed'
-          : record?.is_drafted
-            ? 'In Progress'
-            : 'Drafts';
-        return <OsStatusWrapper value={statusValue} />;
-      },
+      render: (text: string, record: any) => (
+        <span style={{display: 'flex', justifyContent: 'center'}}>
+          <OsStatusWrapper value={text} />
+        </span>
+      ),
     },
     {
-      title: ' ',
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Actions
+        </Typography>
+      ),
       dataIndex: 'actions',
       key: 'actions',
       width: 94,
@@ -180,34 +230,22 @@ const OpportunityDetails = () => {
     },
   ];
 
-  const locale = {
-    emptyText: (
-      <EmptyContainer
-        title="No Files"
-        buttonContainer={
-          <AddQuote
-            uploadFileData={uploadFileData}
-            setUploadFileData={setUploadFileData}
-            loading={QuoteLoading}
-            buttonText="Add Quote"
-          />
-        }
-      />
-    ),
-  };
-
   const tabItems = [
     {
       label: <Typography name="Body 4/Regular">All</Typography>,
       key: '1',
       children: (
-        <OsTable
-          columns={Quotecolumns}
-          dataSource={OpportunityData?.quotes}
-          scroll
-          loading={loading}
-          locale={locale}
-        />
+        <>
+          {OpportunityData?.customer && (
+            <OsTable
+              columns={Quotecolumns}
+              dataSource={OpportunityData?.quotes}
+              scroll
+              loading={loading}
+              locale={locale}
+            />
+          )}
+        </>
       ),
     },
     {
@@ -220,16 +258,20 @@ const OpportunityDetails = () => {
     },
   ];
 
-  const deleteSelectedIds = async () => {
-    const data = {Ids: deleteIds};
-    await dispatch(deleteOpportunity(data));
-    // setTimeout(() => {
-    //   dispatch(getAllOpportunity());
-    //   dispatch(getdeleteOpportunity(''));
-    // }, 1000);
-    router.push('/crmOpportunity');
-    setDeleteIds([]);
-    setShowModalDelete(false);
+  const updateOpportunityData = () => {
+    const FormDAta = form.getFieldsValue();
+    const finalData = {
+      ...FormDAta,
+      customer_id: customerValue,
+      id: opportunityId,
+    };
+    dispatch(updateOpportunity(finalData))?.then((d: any) => {
+      if (d?.payload) {
+        dispatch(getOpportunityById(opportunityId));
+        setShowDrawer(false);
+        form.resetFields();
+      }
+    });
   };
 
   return (
@@ -239,7 +281,7 @@ const OpportunityDetails = () => {
 
         <OpportunityAnalyticCard
           setFormValue={setFormValue}
-          setOpen={setOpen}
+          setOpen={setShowDrawer}
           OpportunityData={OpportunityData}
           setDeleteIds={setDeleteIds}
           setShowModalDelete={setShowModalDelete}
@@ -247,7 +289,7 @@ const OpportunityDetails = () => {
 
         <Row justify="space-between">
           <Col>
-            <Typography name="Heading 3/Medium">Quotes</Typography>
+            <Typography name="Heading 3/Medium">All Quotes</Typography>
           </Col>
           <Col style={{float: 'right'}}>
             <AddQuote
@@ -268,12 +310,35 @@ const OpportunityDetails = () => {
         </Row>
       </Space>
 
-      <EditOpportunity
-        setFormValue={setFormValue}
-        formValue={formValue}
-        open={open}
-        setOpen={setOpen}
-      />
+      <OsDrawer
+        title={
+          <Typography name="Body 1/Regular">Opportunity Details</Typography>
+        }
+        placement="right"
+        onClose={() => {
+          setShowDrawer(false);
+          form.resetFields();
+        }}
+        open={showDrawer}
+        width={450}
+        footer={
+          <OsButton
+            loading={loading}
+            btnStyle={{width: '100%'}}
+            buttontype="PRIMARY"
+            text="Update Changes"
+            clickHandler={form.submit}
+          />
+        }
+      >
+        <AddOpportunity
+          form={form}
+          onFinish={updateOpportunityData}
+          setCustomerValue={setCustomerValue}
+          customerValue={customerValue}
+          drawer
+        />
+      </OsDrawer>
 
       <DeleteModal
         setShowModalDelete={setShowModalDelete}

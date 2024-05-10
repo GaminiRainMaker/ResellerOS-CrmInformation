@@ -22,6 +22,7 @@ import {PlusIcon} from '@heroicons/react/24/outline';
 import {Checkbox, Form} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import {updateAssignPartnerProgramById} from '../../../../../redux/actions/assignPartnerProgram';
 import {
   deletePartner,
@@ -181,10 +182,8 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'partner_program',
       key: 'partner_program',
-      render: (text: any, record: any) => (
-        <Typography name="Body 4/Regular">
-          {record?.partner_name ?? '--'}
-        </Typography>
+      render: (text: string, record: any) => (
+        <CustomTextCapitalization text={record?.partner_name} />
       ),
     },
     {
@@ -209,9 +208,7 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'partner_program',
       key: 'partner_program',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
+      render: (text: string) => <CustomTextCapitalization text={text} />,
     },
     {
       title: (
@@ -329,9 +326,7 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'partner_program',
       key: 'partner_program',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
+      render: (text: string) => <CustomTextCapitalization text={text} />,
     },
     {
       title: (
@@ -389,9 +384,7 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'partner',
       key: 'partner',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
+      render: (text: string) => <CustomTextCapitalization text={text} />,
     },
 
     {
@@ -582,16 +575,16 @@ const SuperAdminPartner: React.FC = () => {
           <Col style={{display: 'flex', alignItems: 'center'}}>
             <Space size={12} style={{height: '48px'}}>
               <OsButton
-                icon={<PlusIcon color={token?.colorPrimary} />}
-                text="New Partner Program"
-                buttontype="SECONDARY"
-                clickHandler={() => setShowAddProgramModal((p) => !p)}
-              />
-              <OsButton
                 text="New Partner"
                 buttontype="PRIMARY"
                 icon={<PlusIcon />}
                 clickHandler={() => setShowAddPartnerModal((p) => !p)}
+              />
+              <OsButton
+                icon={<PlusIcon color={token?.colorPrimary} />}
+                text="New Partner Program"
+                buttontype="SECONDARY"
+                clickHandler={() => setShowAddProgramModal((p) => !p)}
               />
             </Space>
           </Col>

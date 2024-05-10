@@ -27,7 +27,6 @@ const FormBuilder = () => {
   const [form] = Form.useForm();
   const [sectionIndexActive, setSectionIndexActive] = useState<any>(0);
   const [contentActiveIndex, setContentActiveIndex] = useState<number>(0);
-
   const [cartItems, setCartItems] = useState<any>([]);
   const [selectedColumnIndex, setSelectedColumnIndex] = useState<number>(0);
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
@@ -71,7 +70,6 @@ const FormBuilder = () => {
     margin: '24px',
     borderRadius: 12,
   };
-  console.log('cartItemscartItems', cartItems);
   return (
     <Layout style={layoutStyle}>
       <DndContext onDragEnd={addItemsToCart}>

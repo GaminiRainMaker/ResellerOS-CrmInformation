@@ -1,5 +1,5 @@
 import {ChevronDownIcon} from '@heroicons/react/24/outline';
-import {FC, useState} from 'react';
+import {FC, memo} from 'react';
 import useThemeToken from '../hooks/useThemeToken';
 import {OsStageType} from './os-stage-interface';
 import {StageSelectStyle} from './styled-components';
@@ -20,8 +20,6 @@ const CommonStageSelect: FC<CommonStageSelectProps> = ({
   ...rest
 }) => {
   const [token] = useThemeToken();
-  const [value, setValue] = useState<string>(currentStage as string);
-
   const Stage: OsStageType = {
     Commit: {
       color: `${token?.colorInfoBgHover}`,
@@ -109,11 +107,7 @@ const CommonStageSelect: FC<CommonStageSelectProps> = ({
       border: `${token?.colorInfo}`,
     },
   };
-
-  const handleChange = (values: string) => {
-    setValue(values);
-  };
-  const selectedStage = Stage[value];
+  const selectedStage = Stage[currentStage as string];
 
   return (
     <StageSelectStyle

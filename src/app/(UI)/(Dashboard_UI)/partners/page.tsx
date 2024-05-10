@@ -19,6 +19,7 @@ import {PlusIcon} from '@heroicons/react/24/outline';
 import {Checkbox, Form} from 'antd';
 import {useEffect, useState} from 'react';
 import {useSearchParams} from 'next/navigation';
+import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import {insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
 import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
 import {getUnassignedProgram} from '../../../../../redux/actions/partnerProgram';
@@ -89,7 +90,7 @@ const Partners: React.FC = () => {
     emptyText: (
       <EmptyContainer
         title="No Files"
-        actionButton="Request Partner"
+        actionButton={activeTab === 1 ? 'Request Partner' : ''}
         onClick={() => setShowModal((p) => !p)}
       />
     ),
@@ -106,10 +107,9 @@ const Partners: React.FC = () => {
       ),
       dataIndex: 'partner_program',
       key: 'partner_program',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
+      render: (text: string) => <CustomTextCapitalization text={text} />,
     },
+
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -167,9 +167,7 @@ const Partners: React.FC = () => {
       ),
       dataIndex: 'partner',
       key: 'partner',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
+      render: (text: string) => <CustomTextCapitalization text={text} />,
     },
     {
       title: (
@@ -242,10 +240,8 @@ const Partners: React.FC = () => {
       ),
       dataIndex: 'partner_program',
       key: 'partner_program',
-      render: (text: any, record: any) => (
-        <Typography name="Body 4/Regular">
-          {record?.partner_name ?? '--'}
-        </Typography>
+      render: (text: string, record: any) => (
+        <CustomTextCapitalization text={record?.partner_name} />
       ),
     },
     {
@@ -270,9 +266,7 @@ const Partners: React.FC = () => {
       ),
       dataIndex: 'partner_program',
       key: 'partner_program',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
+      render: (text: string) => <CustomTextCapitalization text={text} />,
     },
     {
       title: (

@@ -269,15 +269,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       key: 'adjusted_price',
       width: 187,
       render: (text: any) => {
-        // const totalAddedPrice = record?.Product?.adjusted_price
-        //   ?.slice(1, record?.Product?.adjusted_price?.length)
-        //   .replace(',', '');
-        // // eslint-disable-next-line no-unsafe-optional-chaining
-        // const ExactPriceForOne = totalAddedPrice / record?.Product?.quantity;
-        // let bundleQuantity: any = 1;
-        // bundleQuantity = record?.Bundle ? record?.Bundle?.quantity : 1;
-        // const totalQuantity = record?.quantity * bundleQuantity;
-        // const TotalPrice = totalQuantity * ExactPriceForOne;
         const value = useRemoveDollarAndCommahook(text);
         return (
           <Typography name="Body 4/Medium">
@@ -337,26 +328,26 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         };
       },
     },
-    {
-      title: 'Actions',
-      dataIndex: 'actions',
-      key: 'actions',
-      width: 94,
-      render: (text: string, record: any) => (
-        <Space size={18}>
-          <TrashIcon
-            height={24}
-            width={24}
-            color={token.colorError}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              setSelectedRowIds([record?.id]);
-              setIsDeleteInputDetailModal(true);
-            }}
-          />
-        </Space>
-      ),
-    },
+    // {
+    //   title: 'Actions',
+    //   dataIndex: 'actions',
+    //   key: 'actions',
+    //   width: 94,
+    //   render: (text: string, record: any) => (
+    //     <Space size={18}>
+    //       <TrashIcon
+    //         height={24}
+    //         width={24}
+    //         color={token.colorError}
+    //         style={{cursor: 'pointer'}}
+    //         onClick={() => {
+    //           setSelectedRowIds([record?.id]);
+    //           setIsDeleteInputDetailModal(true);
+    //         }}
+    //       />
+    //     </Space>
+    //   ),
+    // },
   ];
 
   useEffect(() => {
@@ -636,7 +627,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     }
     setShowVerificationFileModal(false);
   };
-  console.log('35345343', familyFilter);
 
   return (
     <>

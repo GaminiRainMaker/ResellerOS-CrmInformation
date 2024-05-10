@@ -38,11 +38,8 @@ function getColumns(
             editQuote(record.id);
           }}
         >
-          {formatDate(record?.createdAt)}
-          <span style={{marginLeft: '8px'}}>
-            {' '}
-            {formatDateWithTime(record?.createdAt)}
-          </span>
+          {record?.file_name ??
+            formatDate(record?.createdAt, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },

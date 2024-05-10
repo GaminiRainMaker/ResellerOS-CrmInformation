@@ -73,3 +73,17 @@ export const getDealRegByPartnerProgramId = createAsyncThunk(
     }
   },
 );
+export const queryDealReg = createAsyncThunk(
+  'dealReg/queryDealReg',
+  async (query: any, thunkApi) => {
+    try {
+      const obj = {
+        customer: query?.customer,
+      };
+      const res = await DEALREG_API.query(obj);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

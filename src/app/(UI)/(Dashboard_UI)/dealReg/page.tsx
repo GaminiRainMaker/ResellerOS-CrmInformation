@@ -1,15 +1,11 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-/* eslint-disable import/no-named-as-default */
-/* eslint-disable array-callback-return */
-/* eslint-disable react-hooks/exhaustive-deps */
 
 'use client';
 
-import Typography from '@/app/components/common/typography';
-import { PlusIcon } from '@heroicons/react/24/outline';
-
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
+import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapse from '@/app/components/common/os-collapse';
@@ -20,12 +16,15 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
-import { TabsProps } from 'antd';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { getAllDealReg } from '../../../../../redux/actions/dealReg';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import AddRegistrationForm from './AddRegistrationForm';
+import Typography from '@/app/components/common/typography';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import {TabsProps} from 'antd';
+import {Option} from 'antd/es/mentions';
+import {useRouter} from 'next/navigation';
+import {useEffect, useState} from 'react';
+import {queryDealReg} from '../../../../../redux/actions/dealReg';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import NewRegistrationForm from './NewRegistrationForm';
 import DealRegAnalytics from './dealRegAnalytics';
 
 interface SeparatedData {
@@ -50,6 +49,12 @@ const DealReg: React.FC = () => {
     (state) => state.dealReg,
   );
   const [finalDealRegData, setFinalDealRegData] = useState<any>();
+  const [query, setQuery] = useState<{
+    customer: string | null;
+  }>({
+    customer: null,
+  });
+  const searchQuery = useDebounceHook(query, 500);
 
   const rowSelection = {
     onChange: (selectedRowKeys: any) => {
@@ -93,7 +98,7 @@ const DealReg: React.FC = () => {
       dataIndex: 'type',
       key: 'type',
       width: 187,
-      render: () => <Typography name="Body 4/Regular">Registered</Typography>,
+      render: (text: string) => <CustomTextCapitalization text={text} />,
     },
     {
       title: (
@@ -198,47 +203,59 @@ const DealReg: React.FC = () => {
       key: '1',
       children: (
         <>
-          {finalDealRegData?.map((itemDeal: any) => (
-            <OsCollapse
-              defaultActiveKey={['1']}
-              items={[
-                {
-                  key: '1',
-                  label: (
-                    <>
-                      <Row justify="space-between">
-                        <Col>
-                          <p>{itemDeal?.title}</p>
-                        </Col>
-                        <Col>
-                          <p
-                            onClick={(e) => {
-                              router?.push(
-                                `/dealRegDetail?id=${itemDeal?.dealReg_id}&opportunityId=${itemDeal?.opportunity_id}&customerId=${itemDeal?.customer_id}&contactId=${itemDeal?.contact_id}`,
-                              );
-                              e?.stopPropagation();
-                            }}
-                          >
-                            Deal Registration
-                          </p>
-                        </Col>
-                      </Row>
-                    </>
-                  ),
-                  children: (
-                    <OsTable
-                      columns={DealRegColumns}
-                      dataSource={itemDeal?.data}
-                      rowSelection={rowSelection}
-                      scroll
-                      loading={dealLoading}
-                      locale={locale}
-                    />
-                  ),
-                },
-              ]}
+          {finalDealRegData?.length > 0 ? (
+            <>
+              {finalDealRegData?.map((itemDeal: any) => (
+                <OsCollapse
+                  defaultActiveKey={['1']}
+                  items={[
+                    {
+                      key: '1',
+                      label: (
+                        <>
+                          <Row justify="space-between">
+                            <Col>
+                              <p>{itemDeal?.title}</p>
+                            </Col>
+                            <Col>
+                              <p
+                                onClick={(e) => {
+                                  router?.push(
+                                    `/dealRegDetail?id=${itemDeal?.dealReg_id}&opportunityId=${itemDeal?.opportunity_id}&customerId=${itemDeal?.customer_id}&contactId=${itemDeal?.contact_id}`,
+                                  );
+                                  e?.stopPropagation();
+                                }}
+                              >
+                                Deal Registration
+                              </p>
+                            </Col>
+                          </Row>
+                        </>
+                      ),
+                      children: (
+                        <OsTable
+                          columns={DealRegColumns}
+                          dataSource={itemDeal?.data}
+                          rowSelection={rowSelection}
+                          scroll
+                          loading={dealLoading}
+                          locale={locale}
+                        />
+                      ),
+                    },
+                  ]}
+                />
+              ))}
+            </>
+          ) : (
+            <OsTable
+              columns={[]}
+              dataSource={[]}
+              scroll
+              loading={false}
+              locale={locale}
             />
-          ))}
+          )}
         </>
       ),
     },
@@ -273,8 +290,12 @@ const DealReg: React.FC = () => {
   ];
 
   useEffect(() => {
-    dispatch(getAllDealReg());
-  }, []);
+    dispatch(queryDealReg(searchQuery));
+  }, [searchQuery]);
+
+  const uniqueCustomer = Array.from(
+    new Set(DealRegData?.map((contact: any) => contact.Customer?.name)),
+  );
 
   return (
     <>
@@ -299,7 +320,7 @@ const DealReg: React.FC = () => {
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
           <OsTabs
-            onChange={(e) => {
+            onChange={(e: any) => {
               setActiveTab(e);
             }}
             activeKey={activeTab}
@@ -314,19 +335,46 @@ const DealReg: React.FC = () => {
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Customer Account</Typography>
                   <CommonSelect
-                    style={{width: '180px'}}
-                    placeholder="Search Here"
-                  />
+                    style={{width: '200px'}}
+                    placeholder="Search here"
+                    showSearch
+                    onSearch={(e: any) => {
+                      setQuery({
+                        ...query,
+                        customer: e,
+                      });
+                    }}
+                    onChange={(e: any) => {
+                      setQuery({
+                        ...query,
+                        customer: e,
+                      });
+                    }}
+                    value={query?.customer}
+                  >
+                    {uniqueCustomer?.map((customer: any) => (
+                      <Option key={customer} value={customer}>
+                        {customer}
+                      </Option>
+                    ))}
+                  </CommonSelect>
                 </Space>
                 <div
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
                     marginTop: '15px',
                   }}
                 >
-                  <Typography cursor="pointer" name="Button 1" color="#C6CDD5">
-                    Apply
+                  <Typography
+                    cursor="pointer"
+                    name="Button 1"
+                    color={query?.customer ? '#0D0D0D' : '#C6CDD5'}
+                    onClick={() => {
+                      setQuery({
+                        customer: null,
+                      });
+                    }}
+                  >
+                    Reset
                   </Typography>
                 </div>
               </Space>
@@ -338,7 +386,7 @@ const DealReg: React.FC = () => {
 
       <OsModal
         bodyPadding={22}
-        body={<AddRegistrationForm setShowModal={setShowModal} />}
+        body={<NewRegistrationForm setShowModal={setShowModal} />}
         width={583}
         open={showModal}
         onOk={() => {}}

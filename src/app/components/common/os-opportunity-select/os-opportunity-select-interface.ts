@@ -5,4 +5,5 @@ export interface OsOpportunitySelectInterface {
   isAddNewOpportunity?: boolean;
   customerValue?: number
   value?: number
+  isRequired?: boolean;
 }

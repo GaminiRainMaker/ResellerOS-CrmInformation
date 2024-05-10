@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable react-hooks/exhaustive-deps */
 
@@ -113,7 +114,6 @@ const CrmInformation: React.FC = () => {
   };
 
   const editCustomerFileds = (record: any) => {
-    console.log('recordrecord', record);
     form.setFieldsValue({
       billing_address_line: record?.Addresses?.[0]?.billing_address_line,
       billing_city: record?.Addresses?.[0]?.billing_city,
@@ -263,7 +263,6 @@ const CrmInformation: React.FC = () => {
             onClick={() => {
               setContactDetail(record?.BillingContacts);
               setShippingAddress(record?.Addresses?.[0]);
-              console.log('setContactDetail', record);
               setShowDrawer(true);
               editCustomerFileds(record);
               setEditRecordData(record);
@@ -302,7 +301,9 @@ const CrmInformation: React.FC = () => {
           <Typography
             name="Body 3/Regular"
             color="#EB445A"
-            onClick={deleteSelectedIds}
+            onClick={() => {
+              deleteIds && deleteIds?.length > 0 && setShowModalDelete(true);
+            }}
           >
             Delete Selected
           </Typography>
@@ -561,6 +562,7 @@ const CrmInformation: React.FC = () => {
       </OsDrawer>
 
       <DeleteModal
+        loading={loading}
         setShowModalDelete={setShowModalDelete}
         setDeleteIds={setDeleteIds}
         showModalDelete={showModalDelete}
