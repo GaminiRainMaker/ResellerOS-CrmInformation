@@ -214,7 +214,7 @@ const GenerateQuote: React.FC = () => {
 
     if (getQuoteID) {
       const obj = {
-        id: getQuoteID,
+        ids: getQuoteID,
         status,
       };
       dispatch(updateQuoteStatusById(obj));

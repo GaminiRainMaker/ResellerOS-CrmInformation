@@ -19,7 +19,7 @@ import Typography from '@/app/components/common/typography';
 import {formatStatus, quoteLineItemColumnForSync} from '@/app/utils/CONSTANTS';
 import {useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {Col, Row, notification} from 'antd';
-import {useRouter, useSearchParams} from 'next/navigation';
+import {RedirectType, useRouter, useSearchParams} from 'next/navigation';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {insertProduct} from '../../../../../redux/actions/product';
@@ -192,6 +192,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       alllArrayValue?.push(newObj);
     });
 
+    console.log('alllArrayValuealllArrayValue', alllArrayValue);
+
+    return;
     const newrrLineItems: any = [];
     const rebateDataArray: any = [];
     const contractProductArray: any = [];
