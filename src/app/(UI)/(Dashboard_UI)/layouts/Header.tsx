@@ -24,7 +24,8 @@ import styled from '@emotion/styled';
 import {
   ArrowLeftStartOnRectangleIcon,
   BellIcon,
-  WrenchScrewdriverIcon,
+  ExclamationCircleIcon,
+  UsersIcon,
 } from '@heroicons/react/24/outline';
 import {Avatar, Badge, Layout, Select, Upload, notification} from 'antd';
 import ImgCrop from 'antd-img-crop';
@@ -34,6 +35,7 @@ import _debounce from 'lodash/debounce';
 import Image from 'next/image';
 import {useRouter} from 'next/navigation';
 import React, {useCallback, useEffect, useState} from 'react';
+import creditCard from '../../../../../public/assets/static/card-pos.svg';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
@@ -433,28 +435,68 @@ const CustomHeader = () => {
                 <div style={dropDownStyle}>
                   {notificationCount?.length > 0 ? (
                     <GlobalLoader loading={notificationLoading}>
-                      {notificationCount?.map((notificationDataItem: any) => (
-                        <TableNameColumn
-                          key={notificationDataItem?.id}
-                          primaryText={notificationDataItem?.title}
-                          secondaryText={notificationDataItem?.description}
-                          primaryTextTypography="Body 1/Medium"
-                          // logo={UserIcon}
-                          cursor="pointer"
-                          secondaryEllipsis
-                          onClick={() => {
-                            setOpenNotifications(false);
-                            router.push(
-                              userInformation?.Admin
-                                ? `/superAdminPartner?tab=2`
-                                : '/partners?tab=2',
-                            );
-                          }}
-                          justifyContent="start"
-                          maxWidth={320}
-                          marginBottom={10}
-                        />
-                      ))}
+                      {notificationCount?.map((notificationDataItem: any) => {
+                        let fallBackIconsss;
+                        let fallBackBg;
+                        if (notificationDataItem?.type === 'quote') {
+                          fallBackIconsss = (
+                            <ExclamationCircleIcon
+                              color={token?.colorError}
+                              width={24}
+                            />
+                          );
+                          fallBackBg = token?.colorErrorBg;
+                        } else if (
+                          notificationDataItem?.type === 'subscription'
+                        ) {
+                          fallBackIconsss = (
+                            <Image
+                              src={creditCard}
+                              alt="creditCard"
+                              style={{
+                                cursor: 'pointer',
+                                width: '24px',
+                                height: '24px',
+                              }}
+                            />
+                          );
+                          fallBackBg = ' #E6E7EE';
+                        } else if (notificationDataItem?.type === 'partner') {
+                          fallBackIconsss = (
+                            <UsersIcon color={token?.colorInfo} width={24} />
+                          );
+                          fallBackBg = token?.colorInfoBgHover;
+                        }
+                        return (
+                          <TableNameColumn
+                            key={notificationDataItem?.id}
+                            primaryText={notificationDataItem?.title}
+                            secondaryText={notificationDataItem?.description}
+                            primaryTextTypography="Body 1/Medium"
+                            logo={
+                              notificationDataItem?.type === 'subscription' ||
+                              notificationDataItem?.type === 'quote'
+                                ? null
+                                : notificationDataItem?.User?.profile_image
+                            }
+                            fallbackIcon={fallBackIconsss}
+                            iconBg={fallBackBg}
+                            cursor="pointer"
+                            secondaryEllipsis
+                            onClick={() => {
+                              setOpenNotifications(false);
+                              router.push(
+                                userInformation?.Admin
+                                  ? `/superAdminPartner?tab=2`
+                                  : '/partners?tab=2',
+                              );
+                            }}
+                            justifyContent="start"
+                            maxWidth={320}
+                            marginBottom={10}
+                          />
+                        );
+                      })}
                     </GlobalLoader>
                   ) : (
                     <Typography
