@@ -218,9 +218,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             quote_id: Number(getQuoteID),
             product_id: insertedProduct?.payload?.id,
             product_code: insertedProduct?.payload?.product_code,
-            line_amount: useRemoveDollarAndCommahook(
-              insertedProduct?.payload?.line_amount,
-            ),
+            // line_amount: useRemoveDollarAndCommahook(
+            // ),
             list_price: useRemoveDollarAndCommahook(
               insertedProduct?.payload?.list_price,
             ),
