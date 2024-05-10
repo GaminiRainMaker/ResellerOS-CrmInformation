@@ -48,7 +48,7 @@ const DetailCard = () => {
       iconBg: '#1EB159',
     },
   ];
-  
+
   const customerUpdatedData = {
     id: customerData?.id,
     name: customerData?.name,
@@ -84,14 +84,6 @@ const DetailCard = () => {
       industry: record?.industry,
       website: record?.website,
     });
-    dispatch(
-      setBillingContact({
-        BillingContacts: record?.BillingContacts,
-        name: record?.name,
-        image: record?.profile_image,
-        id: record?.id,
-      }),
-    );
   };
 
   const headerIcons = [

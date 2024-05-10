@@ -20,6 +20,8 @@ import {Badge} from 'antd';
 import {FC, useState} from 'react';
 import {OSProfileInterface} from './os-profile.interface';
 import {DetailCardStyle} from './styled-components';
+import {useAppSelector} from '../../../../../redux/hook';
+import TableNameColumn from '../os-table/TableNameColumn';
 
 const ProfileCard: FC<OSProfileInterface> = ({
   contactCardData,
@@ -31,8 +33,7 @@ const ProfileCard: FC<OSProfileInterface> = ({
   const [token] = useThemeToken();
   const [showAllContactModal, setShowAllContactModal] =
     useState<boolean>(false);
-
-  console.log('contactCardData', contactCardData);
+  const {billingContact} = useAppSelector((state) => state.billingContact);
 
   return (
     <>
@@ -47,19 +48,16 @@ const ProfileCard: FC<OSProfileInterface> = ({
           }}
         >
           <Space direction="vertical" align="center" size={16}>
-            <Avatar
-              style={{
-                backgroundColor: token?.colorInfo,
-                height: '94px',
-                width: '94px',
-                display: 'flex',
-                alignItems: 'center',
-              }}
-            >
-              <Typography name="Heading 3/Medium" color="white">
-                IT
-              </Typography>
-            </Avatar>
+            <AvatarStyled
+              src={billingContact?.image}
+              icon={`${
+                customerData?.name?.toString()?.charAt(0)?.toUpperCase() ??
+                customerData?.name?.toString()?.charAt(0)?.toUpperCase()
+              }`}
+              background={billingContact?.image ? '' : '#1EB159'}
+              size={80}
+            />
+
             <Typography name="Heading 3/Medium" style={{textAlign: 'center'}}>
               {(customerData?.user_name || customerData?.name) ?? '--'}
               <Typography

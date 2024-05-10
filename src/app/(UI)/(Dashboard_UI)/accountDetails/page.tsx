@@ -32,12 +32,12 @@ import {useEffect, useState} from 'react';
 import {getCustomerBYId} from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DetailCard from './DetailCard';
+import {setBillingContact} from '../../../../../redux/slices/billingAddress';
 
 const AccountDetails = () => {
   const [token] = useThemeToken();
   const router = useRouter();
   const {abbreviate} = useAbbreviationHook(0);
-
 
   const {loading, data: customerData} = useAppSelector(
     (state) => state.customer,
@@ -49,6 +49,16 @@ const AccountDetails = () => {
   useEffect(() => {
     dispatch(getCustomerBYId(getCustomerID));
   }, [getCustomerID]);
+
+  useEffect(() => {
+    if (customerData?.profile_image) {
+      dispatch(
+        setBillingContact({
+          image: customerData?.profile_image,
+        }),
+      );
+    }
+  }, [customerData]);
 
   const analyticsData = [
     {
@@ -308,7 +318,7 @@ const AccountDetails = () => {
 
       <Row justify="space-between" gutter={[16, 16]}>
         <Col xs={24} sm={8} md={8} lg={6}>
-          <DetailCard  />
+          <DetailCard />
         </Col>
         <Col xs={24} sm={16} md={16} lg={18}>
           <div style={{display: 'flex', flexDirection: 'column', gap: 24}}>

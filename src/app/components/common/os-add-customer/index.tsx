@@ -47,8 +47,6 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
   const {billingContact} = useAppSelector((state) => state.billingContact);
   const {customerProfile} = useAppSelector((state) => state.customer);
   const dispatch = useAppDispatch();
-
-  // const [objectValuesForContact, setObjectValueForContact] = useState<any>();
   const [editContactOIndex, setEditContactIndex] = useState<any>(null);
   const [editBillingAddress, setEditBillingAddress] = useState<Boolean>(false);
   const [newAdd, setNewAdd] = useState<Boolean>(false);
@@ -160,7 +158,6 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
   const emailRegex =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-  console.log('billingContact?.id', billingContact);
   return (
     <>
       {!drawer && (

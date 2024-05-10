@@ -183,13 +183,33 @@ const CustomHeader = () => {
     boxShadow: token.boxShadowSecondary,
     padding: '12px',
   };
-  const dropDownStyle: React.CSSProperties = {
+
+  const dropDownStyle: any = {
     backgroundColor: 'white',
     borderRadius: '12px',
     boxShadow: token.boxShadowSecondary,
     padding: '12px',
     width: '450px',
+    maxHeight: '50vh',
+    overflowY: 'scroll',
+    scrollbarWidth: 'thin', // For Firefox
+    scrollbarColor: 'rgba(0, 0, 0, 0.5) rgba(345, 543, 533, 0.2)', // For Firefox
+    WebkitOverflowScrolling: 'touch', // For iOS momentum scrolling
+
+    // Type assertion to avoid TypeScript error
+    '&::-webkit-scrollbar': {
+      width: '8px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'red',
+      borderRadius: '12px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: '#888',
+      borderRadius: '12px',
+    },
   };
+
   const menuStyle: React.CSSProperties = {
     boxShadow: 'none',
     padding: '0px',
@@ -412,30 +432,30 @@ const CustomHeader = () => {
               dropdownRender={() => (
                 <div style={dropDownStyle}>
                   {notificationCount?.length > 0 ? (
-                    <>
+                    <GlobalLoader loading={notificationLoading}>
                       {notificationCount?.map((notificationDataItem: any) => (
-                        <GlobalLoader loading={notificationLoading}>
-                          <TableNameColumn
-                            key={notificationDataItem?.id}
-                            primaryText={notificationDataItem?.title}
-                            secondaryText={notificationDataItem?.description}
-                            primaryTextTypography="Body 1/Medium"
-                            // logo={UserIcon}
-                            cursor="pointer"
-                            secondaryEllipsis
-                            onClick={() => {
-                              setOpenNotifications(false);
-                              router.push(
-                                userInformation?.Admin
-                                  ? `/superAdminPartner?tab=2`
-                                  : '/partners?tab=2',
-                              );
-                            }}
-                            maxWidth={300}
-                          />
-                        </GlobalLoader>
+                        <TableNameColumn
+                          key={notificationDataItem?.id}
+                          primaryText={notificationDataItem?.title}
+                          secondaryText={notificationDataItem?.description}
+                          primaryTextTypography="Body 1/Medium"
+                          // logo={UserIcon}
+                          cursor="pointer"
+                          secondaryEllipsis
+                          onClick={() => {
+                            setOpenNotifications(false);
+                            router.push(
+                              userInformation?.Admin
+                                ? `/superAdminPartner?tab=2`
+                                : '/partners?tab=2',
+                            );
+                          }}
+                          justifyContent="start"
+                          maxWidth={320}
+                          marginBottom={10}
+                        />
                       ))}
-                    </>
+                    </GlobalLoader>
                   ) : (
                     <Typography
                       name="Body 3/Medium"
