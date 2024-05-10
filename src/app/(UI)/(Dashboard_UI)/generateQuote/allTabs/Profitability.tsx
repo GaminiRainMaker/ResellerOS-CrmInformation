@@ -3,12 +3,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
+import {Space} from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
+import OsCollapse from '@/app/components/common/os-collapse';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import CommonSelect from '@/app/components/common/os-select';
-import OsCollapse from '@/app/components/common/os-collapse';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
 import {pricingMethod, selectDataForProduct} from '@/app/utils/CONSTANTS';
@@ -19,7 +20,6 @@ import {
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
-import {Space} from '@/app/components/common/antd/Space';
 import {
   getAllBundle,
   updateBundleQuantity,
@@ -47,6 +47,7 @@ const Profitability: FC<any> = ({
     (state) => state.profitability,
   );
   const [profitabilityData, setProfitabilityData] = useState<any>();
+
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Profitability" />,
   };
@@ -58,7 +59,7 @@ const Profitability: FC<any> = ({
 
     setProfitabilityData(filteredDataa);
   }, [profitabilityDataByQuoteId]);
-  console.log('familyFilterfamilyFilter', familyFilter);
+
   useEffect(() => {
     if (selectedFilter === 'Product Family') {
       const finalFamilyArr: any = [];
@@ -72,7 +73,6 @@ const Profitability: FC<any> = ({
         profitabilityDataByQuoteId &&
         profitabilityDataByQuoteId?.length > 0
       ) {
-        console.log('finalFamilyArrfinalFamilyArr', profitabilityDataByQuoteId);
         productsArr = profitabilityDataByQuoteId?.filter(
           (item: any) => item?.Product?.product_family === 'Products',
         );
@@ -129,11 +129,6 @@ const Profitability: FC<any> = ({
 
       setFamilyFilter(finalFamilyArr);
     }
-    // else if (!selectedFilter) {
-    //   setDefaultDataShow(false);
-    // } else if (selectedFilter === 'File Name') {
-    //   setDefaultDataShow(true);
-    // }
   }, [selectedFilter]);
 
   const updateAmountValue = (pricingMethods: string) => {
@@ -515,10 +510,12 @@ const Profitability: FC<any> = ({
       ),
     },
   ];
+
   const updateBundleQuantityData = async (data: any) => {
     await dispatch(updateBundleQuantity(data));
     dispatch(getAllBundle(getQuoteID));
   };
+
   const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>();
 
   useEffect(() => {
@@ -550,20 +547,24 @@ const Profitability: FC<any> = ({
           id: profitabilityDataItem?.id,
           line_number: profitabilityDataItem?.line_number,
           quantity: profitabilityDataItem?.quantity,
-          // adjusted_price: profitabilityDataItem?.adjusted_price,
           pricing_method: profitabilityDataItem?.pricing_method,
           line_amount: profitabilityDataItem?.line_amount,
           list_price: profitabilityDataItem?.list_price,
           unit_price: profitabilityDataItem?.unit_price,
           exit_price: profitabilityDataItem?.exit_price,
-          gross_profit: profitabilityDataItem?.adjusted_price,
+          gross_profit: profitabilityDataItem?.gross_profit,
           gross_profit_percentage:
             profitabilityDataItem?.gross_profit_percentage,
           adjusted_price: profitabilityDataItem?.adjusted_price,
         };
-        dispatch(updateProfitabilityById({...obj}));
+        dispatch(updateProfitabilityById({...obj})).then((d: any) => {
+          if (d?.payload) {
+            dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+          }
+        });
       }
     });
+
     dispatch(setProfitability(profitabilityData));
   }, [profitabilityData]);
 
@@ -572,6 +573,7 @@ const Profitability: FC<any> = ({
       setProfitabilityData(d?.payload);
     });
   }, [getQuoteID]);
+
   return (
     <>
       {bundleData?.map((item: any) => (
@@ -681,19 +683,6 @@ const Profitability: FC<any> = ({
               </Form>
             </>
           )}
-          {/* <Button
-            onClick={() => {
-              const textResult = convertDataToText(
-                ProfitabilityQuoteLineItemcolumns,
-                profitabilityData,
-              );
-              if (textResult) {
-                navigator.clipboard.writeText(textResult);
-              }
-            }}
-          >
-            Copy Data
-          </Button> */}
         </>
       ) : (
         <EmptyContainer

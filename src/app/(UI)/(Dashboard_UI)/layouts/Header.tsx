@@ -24,7 +24,8 @@ import styled from '@emotion/styled';
 import {
   ArrowLeftStartOnRectangleIcon,
   BellIcon,
-  WrenchScrewdriverIcon,
+  ExclamationCircleIcon,
+  UsersIcon,
 } from '@heroicons/react/24/outline';
 import {Avatar, Badge, Layout, Select, Upload, notification} from 'antd';
 import ImgCrop from 'antd-img-crop';
@@ -34,6 +35,7 @@ import _debounce from 'lodash/debounce';
 import Image from 'next/image';
 import {useRouter} from 'next/navigation';
 import React, {useCallback, useEffect, useState} from 'react';
+import creditCard from '../../../../../public/assets/static/card-pos.svg';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
@@ -183,13 +185,33 @@ const CustomHeader = () => {
     boxShadow: token.boxShadowSecondary,
     padding: '12px',
   };
-  const dropDownStyle: React.CSSProperties = {
+
+  const dropDownStyle: any = {
     backgroundColor: 'white',
     borderRadius: '12px',
     boxShadow: token.boxShadowSecondary,
     padding: '12px',
     width: '450px',
+    maxHeight: '50vh',
+    overflowY: 'scroll',
+    scrollbarWidth: 'thin', // For Firefox
+    scrollbarColor: 'rgba(0, 0, 0, 0.5) rgba(345, 543, 533, 0.2)', // For Firefox
+    WebkitOverflowScrolling: 'touch', // For iOS momentum scrolling
+
+    // Type assertion to avoid TypeScript error
+    '&::-webkit-scrollbar': {
+      width: '8px',
+    },
+    '&::-webkit-scrollbar-track': {
+      background: 'red',
+      borderRadius: '12px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      background: '#888',
+      borderRadius: '12px',
+    },
   };
+
   const menuStyle: React.CSSProperties = {
     boxShadow: 'none',
     padding: '0px',
@@ -412,15 +434,53 @@ const CustomHeader = () => {
               dropdownRender={() => (
                 <div style={dropDownStyle}>
                   {notificationCount?.length > 0 ? (
-                    <>
-                      {notificationCount?.map((notificationDataItem: any) => (
-                        <GlobalLoader loading={notificationLoading}>
+                    <GlobalLoader loading={notificationLoading}>
+                      {notificationCount?.map((notificationDataItem: any) => {
+                        let fallBackIconsss;
+                        let fallBackBg;
+                        if (notificationDataItem?.type === 'quote') {
+                          fallBackIconsss = (
+                            <ExclamationCircleIcon
+                              color={token?.colorError}
+                              width={24}
+                            />
+                          );
+                          fallBackBg = token?.colorErrorBg;
+                        } else if (
+                          notificationDataItem?.type === 'subscription'
+                        ) {
+                          fallBackIconsss = (
+                            <Image
+                              src={creditCard}
+                              alt="creditCard"
+                              style={{
+                                cursor: 'pointer',
+                                width: '24px',
+                                height: '24px',
+                              }}
+                            />
+                          );
+                          fallBackBg = ' #E6E7EE';
+                        } else if (notificationDataItem?.type === 'partner') {
+                          fallBackIconsss = (
+                            <UsersIcon color={token?.colorInfo} width={24} />
+                          );
+                          fallBackBg = token?.colorInfoBgHover;
+                        }
+                        return (
                           <TableNameColumn
                             key={notificationDataItem?.id}
                             primaryText={notificationDataItem?.title}
                             secondaryText={notificationDataItem?.description}
                             primaryTextTypography="Body 1/Medium"
-                            // logo={UserIcon}
+                            logo={
+                              notificationDataItem?.type === 'subscription' ||
+                              notificationDataItem?.type === 'quote'
+                                ? null
+                                : notificationDataItem?.User?.profile_image
+                            }
+                            fallbackIcon={fallBackIconsss}
+                            iconBg={fallBackBg}
                             cursor="pointer"
                             secondaryEllipsis
                             onClick={() => {
@@ -431,11 +491,13 @@ const CustomHeader = () => {
                                   : '/partners?tab=2',
                               );
                             }}
-                            maxWidth={300}
+                            justifyContent="start"
+                            maxWidth={320}
+                            marginBottom={10}
                           />
-                        </GlobalLoader>
-                      ))}
-                    </>
+                        );
+                      })}
+                    </GlobalLoader>
                   ) : (
                     <Typography
                       name="Body 3/Medium"

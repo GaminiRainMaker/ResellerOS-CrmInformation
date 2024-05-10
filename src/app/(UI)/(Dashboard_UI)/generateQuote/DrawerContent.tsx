@@ -24,10 +24,6 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
   const searchParams = useSearchParams();
   const getQuoteId = searchParams.get('id');
   const {data: dataAddress} = useAppSelector((state) => state.customer);
-  const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
-  const {data: generalSettingData} = useAppSelector(
-    (state) => state.gereralSetting,
-  );
   const {quoteById, quoteByIdLoading} = useAppSelector((state) => state.quote);
   const [customerValue, setCustomerValue] = useState<number>(0);
   const [quoteData, setQuoteData] = useState<any>();

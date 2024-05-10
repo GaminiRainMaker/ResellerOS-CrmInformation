@@ -34,6 +34,8 @@ const TableNameColumn: FC<any> = ({
   imgCursor = 'pointer',
   isBoldRequired = false,
   isSubscription,
+  secondarySize,
+  marginBottom = 0,
 }) => {
   const [token] = useThemeToken();
 
@@ -61,6 +63,7 @@ const TableNameColumn: FC<any> = ({
           display: 'flex',
           justifyContent,
           textAlign: 'start',
+          marginBottom: `${marginBottom}px`,
         }}
       >
         {imageUpload ? (
@@ -80,7 +83,12 @@ const TableNameColumn: FC<any> = ({
             </CustomUpload>
           </ImgCrop>
         ) : (
-          <AvatarStyled background={iconBg} src={logo} icon={fallbackIcon} />
+          <AvatarStyled
+            background={iconBg}
+            src={logo}
+            icon={fallbackIcon}
+            size={secondarySize}
+          />
         )}
 
         <span style={{cursor}}>

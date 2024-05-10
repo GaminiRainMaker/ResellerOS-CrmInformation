@@ -126,10 +126,6 @@ const OpportunityDetails = () => {
   const deleteSelectedIds = async () => {
     const data = {Ids: deleteIds};
     await dispatch(deleteOpportunity(data));
-    // setTimeout(() => {
-    //   dispatch(getAllOpportunity());
-    //   dispatch(getdeleteOpportunity(''));
-    // }, 1000);
     router.push('/crmOpportunity');
     setDeleteIds([]);
     setShowModalDelete(false);
