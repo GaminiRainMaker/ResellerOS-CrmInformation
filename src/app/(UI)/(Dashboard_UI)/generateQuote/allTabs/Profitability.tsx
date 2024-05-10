@@ -250,7 +250,7 @@ const Profitability: FC<any> = ({
           initialValue={text}
         >
           <OsInput
-            // type="number"
+            type="number"
             disabled={renderEditableInput('MSRP')}
             style={{
               height: '36px',
@@ -270,7 +270,7 @@ const Profitability: FC<any> = ({
           />
         </Form.Item>
       ),
-      width: 120,
+      width: 150,
     },
     {
       title: 'Cost',
@@ -292,7 +292,7 @@ const Profitability: FC<any> = ({
             style={{
               height: '36px',
             }}
-            // type="number"
+            type="number"
             disabled={renderEditableInput('Cost')}
             value={text ?? 0.0}
             onChange={(v) => {
@@ -314,7 +314,7 @@ const Profitability: FC<any> = ({
       title: 'Product Description',
       dataIndex: 'description',
       key: 'description',
-      width: 277,
+      width: 290,
       render: (text: number) => (
         <Typography name="Body 4/Medium" style={{color: '#0D0D0D'}}>
           {text}
@@ -679,6 +679,7 @@ const Profitability: FC<any> = ({
                   scroll
                   rowSelection={rowSelection}
                   locale={locale}
+                  
                 />
               </Form>
             </>

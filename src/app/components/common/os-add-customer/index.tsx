@@ -154,7 +154,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
     billingContact,
   ]);
 
-  const AlphabetsRegex = /^[a-zA-Z]+$/;
+  const AlphabetsRegex =  /^[A-Za-z\s]+$/;
   const emailRegex =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -186,6 +186,9 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
         form={form}
         requiredMark={false}
         style={{width: '100%', padding: drawer ? '' : '40px'}}
+        initialValues={{
+          currency: '$', // Set default value here
+        }}
       >
         <Row justify="space-between">
           <Col
@@ -260,10 +263,6 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                     {
                       required: true,
                       message: 'currency is required!',
-                    },
-                    {
-                      pattern: /^[A-Za-z\s]+$/,
-                      message: 'Please enter valid currency.',
                     },
                   ]}
                 >
@@ -711,12 +710,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                   });
                                 }}
                               />
-                              {errorFileds &&
-                                !objectValuesForContact?.billing_role && (
-                                  <div style={{color: 'red'}}>
-                                    This filed is required!
-                                  </div>
-                                )}
+                            
                               {!AlphabetsRegex?.test(
                                 objectValuesForContact?.billing_role,
                               ) && (
@@ -740,12 +734,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                   });
                                 }}
                               />
-                              {errorFileds &&
-                                !objectValuesForContact?.billing_email && (
-                                  <div style={{color: 'red'}}>
-                                    This filed is required!
-                                  </div>
-                                )}
+                             
                               {errorFileds &&
                                 !emailRegex?.test(
                                   objectValuesForContact?.billing_email,

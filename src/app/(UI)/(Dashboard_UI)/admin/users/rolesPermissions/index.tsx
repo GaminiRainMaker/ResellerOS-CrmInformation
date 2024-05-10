@@ -192,6 +192,7 @@ const RolesAndPermission = () => {
       dispatch(updateUserById(items)).then((d: any) => {
         if (d?.payload) {
           dispatch(getUserByOrganization(userInformation?.organization));
+          window.location.reload();
         }
       });
     }

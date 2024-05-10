@@ -327,7 +327,7 @@ export const updateTables = async (
         quote_id: item.quote_id ?? getQuoteId,
         product_id: item.product_id,
         product_code: item.product_code,
-        line_amount: useRemoveDollarAndCommahook(item?.line_amount),
+        // line_amount: useRemoveDollarAndCommahook(item?.line_amount),
         list_price: useRemoveDollarAndCommahook(item?.list_price),
         description: item.description,
         quantity: useRemoveDollarAndCommahook(item?.quantity),

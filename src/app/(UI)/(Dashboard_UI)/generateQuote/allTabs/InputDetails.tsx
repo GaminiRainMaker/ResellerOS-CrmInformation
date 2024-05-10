@@ -328,26 +328,26 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         };
       },
     },
-    {
-      title: 'Actions',
-      dataIndex: 'actions',
-      key: 'actions',
-      width: 94,
-      render: (text: string, record: any) => (
-        <Space size={18}>
-          <TrashIcon
-            height={24}
-            width={24}
-            color={token.colorError}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              setSelectedRowIds([record?.id]);
-              setIsDeleteInputDetailModal(true);
-            }}
-          />
-        </Space>
-      ),
-    },
+    // {
+    //   title: 'Actions',
+    //   dataIndex: 'actions',
+    //   key: 'actions',
+    //   width: 94,
+    //   render: (text: string, record: any) => (
+    //     <Space size={18}>
+    //       <TrashIcon
+    //         height={24}
+    //         width={24}
+    //         color={token.colorError}
+    //         style={{cursor: 'pointer'}}
+    //         onClick={() => {
+    //           setSelectedRowIds([record?.id]);
+    //           setIsDeleteInputDetailModal(true);
+    //         }}
+    //       />
+    //     </Space>
+    //   ),
+    // },
   ];
 
   useEffect(() => {
@@ -627,7 +627,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     }
     setShowVerificationFileModal(false);
   };
-  console.log('35345343', familyFilter);
 
   return (
     <>
