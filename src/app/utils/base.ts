@@ -331,7 +331,7 @@ export const updateTables = async (
         list_price: useRemoveDollarAndCommahook(item?.list_price),
         description: item.description,
         quantity: useRemoveDollarAndCommahook(item?.quantity),
-        // adjusted_price: useRemoveDollarAndCommahook(item?.adjusted_price),
+        adjusted_price: useRemoveDollarAndCommahook(item?.adjusted_price),
         line_number: item.line_number,
         organization: userInformation.organization,
         quote_config_id: item.quote_config_id,
