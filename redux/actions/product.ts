@@ -72,3 +72,15 @@ export const updateProductById = createAsyncThunk(
     }
   },
 );
+
+export const insertProductsInBulk = createAsyncThunk(
+  'product/addProductInBulk',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PRODUCT_API.postBulk(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);

@@ -8,7 +8,7 @@ import {Form, message} from 'antd';
 import {useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
-import {insertProduct} from '../../../../../redux/actions/product';
+import {insertProductsInBulk} from '../../../../../redux/actions/product';
 import {
   getQuoteById,
   getQuotesByDateFilter,
@@ -189,37 +189,44 @@ const AddQuote: FC<AddQuoteInterface> = ({
             quote_id: quotesArr[i]?.id,
           };
           const insertedQuoteFile = await dispatch(insertQuoteFile(quoteFile));
-          for (
-            let j = 0;
-            j < quotesArr[i].quoteFileObj[k]?.lineItems.length;
-            j++
-          ) {
-            const lineItem = quotesArr[i].quoteFileObj[k]?.lineItems[j];
-            let insertedProduct;
-            if (lineItem?.product_code) {
-              insertedProduct = await dispatch(insertProduct(lineItem));
-            }
 
-            if (insertedProduct?.payload?.id) {
+          let newArrValues: any = [];
+          quotesArr[i].quoteFileObj[k]?.lineItems.forEach((itemsPro: any) => {
+            newArrValues?.push({
+              ...itemsPro,
+              product_code: itemsPro?.product_code?.replace(/\s/g, ''),
+            });
+          });
+
+          const lineItem = quotesArr[i].quoteFileObj[k]?.lineItems;
+
+          let insertedProduct: any;
+          if (lineItem) {
+            insertedProduct = await dispatch(
+              insertProductsInBulk(newArrValues),
+            );
+          }
+
+          if (insertedProduct?.payload) {
+            insertedProduct?.payload?.map((itemssProduct: any) => {
               const obj1: any = {
                 quote_id: quotesArr[i]?.id,
                 quote_file_id: insertedQuoteFile?.payload?.id,
-                product_id: insertedProduct?.payload?.id,
-                product_code: insertedProduct?.payload?.product_code,
-                line_amount: insertedProduct?.payload?.line_amount,
-                list_price: insertedProduct?.payload?.list_price,
-                description: insertedProduct?.payload?.description,
-                quantity: insertedProduct?.payload?.quantity,
-                adjusted_price: insertedProduct?.payload?.adjusted_price,
-                line_number: insertedProduct?.payload?.line_number,
+                product_id: itemssProduct?.id,
+                product_code: itemssProduct?.product_code,
+                line_amount: itemssProduct?.line_amount,
+                list_price: itemssProduct?.list_price,
+                description: itemssProduct?.description,
+                quantity: itemssProduct?.quantity,
+                adjusted_price: itemssProduct?.adjusted_price,
+                line_number: itemssProduct?.line_number,
                 organization: userInformation.organization,
               };
               finalLineItems?.push(obj1);
-            }
+            });
           }
         }
       }
-
       const finalOpportunityArray: any = [];
       if (finalLineItems && syncTableData?.length > 0) {
         const newRequiredArray: any = [];

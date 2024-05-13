@@ -8,6 +8,7 @@ import {
   updateProductFamily,
   deleteProduct,
   updateProductById,
+  insertProductsInBulk,
 } from '../actions/product';
 
 type ProductState = {
@@ -45,6 +46,24 @@ const productSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      .addCase(insertProductsInBulk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        insertProductsInBulk.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = [action.payload];
+        },
+      )
+      .addCase(
+        insertProductsInBulk.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
       .addCase(getAllProduct.pending, (state) => {
         state.loading = true;
         state.error = null;

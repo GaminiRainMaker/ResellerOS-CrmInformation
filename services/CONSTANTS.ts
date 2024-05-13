@@ -57,6 +57,7 @@ export const API = {
     QUERY: '/product/query',
     DeleteById: '/product/deleteById',
     UpdateProductById: '/product/updateProductById',
+    BULKINSERT: '/product/addProductInBulk',
   },
   PROFITABALITY: {
     INDEX: '/profitability',

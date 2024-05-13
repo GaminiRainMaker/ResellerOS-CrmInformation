@@ -635,394 +635,93 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         <>
           <Form>
             <>
-              {selectedFilter && selectedFilter !== 'File Name' ? (
-                <>
-                  {' '}
-                  {familyFilter?.map((item: any, index: any) => (
-                    <OsCollapse
-                      key={item?.id}
-                      items={[
-                        {
-                          key: item.id,
-                          label: (
-                            <>
-                              <Space
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'start',
-                                }}
-                              >
-                                <p>{item?.name}</p>
-                              </Space>
-                            </>
-                          ),
-                          children: (
-                            <OsTableWithOutDrag
-                              loading={loading}
-                              columns={finalInputColumn}
-                              dataSource={item?.QuoteLineItem || []}
-                              scroll
-                              rowSelection={rowSelection}
-                              locale={locale}
-                            />
-                          ),
-                        },
-                      ]}
-                    />
-                  ))}
-                </>
-              ) : (
-                <>
-                  {defaultDataShow ? (
-                    <GlobalLoader loading={quoteFileDataLoading}>
-                      {quoteLineItemByQuoteData1?.length > 0 ? (
-                        quoteLineItemByQuoteData1?.map((item: any) => (
-                          <OsCollapse
-                            items={[
-                              {
-                                key: '1',
-                                label: (
-                                  <>
-                                    <Row justify="space-between">
-                                      <Col>
-                                        <p>{item?.title}</p>
-                                      </Col>
-                                      <Col>
-                                        <p>Line Items: {item?.totalCount}</p>
-                                      </Col>
-                                      <Col>
-                                        <p>
-                                          Total Cost: $
-                                          {item?.totalAdjustedPrice?.length > 0
-                                            ? item?.totalAdjustedPrice
-                                            : 0.0}
-                                        </p>
-                                      </Col>
-                                      <Col>
-                                        <Space>
-                                          <CheckIcon
-                                            width={25}
-                                            color={token?.colorSuccess}
-                                            onClick={(e) => {
-                                              e?.stopPropagation();
-                                              setShowVerificationFileModal(
-                                                true,
-                                              );
-                                              setFileLineItemIds(item?.id);
-                                              setFileData(item);
-                                            }}
-                                          />
-                                          <XMarkIcon
-                                            width={25}
-                                            color={token?.colorError}
-                                            onClick={(e) => {
-                                              e?.stopPropagation();
-                                              setShowRaiseConcernModal(true);
-                                              setFileLineItemIds(item?.id);
+              {defaultDataShow ? (
+                <GlobalLoader loading={quoteFileDataLoading}>
+                  {quoteLineItemByQuoteData1?.length > 0 ? (
+                    quoteLineItemByQuoteData1?.map((item: any) => (
+                      <OsCollapse
+                        items={[
+                          {
+                            key: '1',
+                            label: (
+                              <>
+                                <Row justify="space-between">
+                                  <Col>
+                                    <p>{item?.title}</p>
+                                  </Col>
+                                  <Col>
+                                    <p>Line Items: {item?.totalCount}</p>
+                                  </Col>
+                                  <Col>
+                                    <p>
+                                      Total Cost: $
+                                      {item?.totalAdjustedPrice?.length > 0
+                                        ? item?.totalAdjustedPrice
+                                        : 0.0}
+                                    </p>
+                                  </Col>
+                                  <Col>
+                                    <Space>
+                                      <CheckIcon
+                                        width={25}
+                                        color={token?.colorSuccess}
+                                        onClick={(e) => {
+                                          e?.stopPropagation();
+                                          setShowVerificationFileModal(true);
+                                          setFileLineItemIds(item?.id);
+                                          setFileData(item);
+                                        }}
+                                      />
+                                      <XMarkIcon
+                                        width={25}
+                                        color={token?.colorError}
+                                        onClick={(e) => {
+                                          e?.stopPropagation();
+                                          setShowRaiseConcernModal(true);
+                                          setFileLineItemIds(item?.id);
 
-                                              setFileData(item);
-                                            }}
-                                          />
-                                        </Space>
-                                      </Col>
-                                    </Row>
-                                  </>
-                                ),
-                                children: (
-                                  <OsTableWithOutDrag
-                                    columns={finalInputColumn}
-                                    dataSource={item?.quoteLineItems || []}
-                                    rowSelection={rowSelection}
-                                    scroll
-                                    loading={false}
-                                    locale={locale}
-                                  />
-                                ),
-                              },
-                            ]}
-                          />
-                        ))
-                      ) : (
-                        <OsTableWithOutDrag
-                          columns={finalInputColumn}
-                          scroll
-                          loading={false}
-                          locale={locale}
-                        />
-                      )}
-                    </GlobalLoader>
+                                          setFileData(item);
+                                        }}
+                                      />
+                                    </Space>
+                                  </Col>
+                                </Row>
+                              </>
+                            ),
+                            children: (
+                              <OsTableWithOutDrag
+                                columns={finalInputColumn}
+                                dataSource={item?.quoteLineItems || []}
+                                rowSelection={rowSelection}
+                                scroll
+                                loading={false}
+                                locale={locale}
+                              />
+                            ),
+                          },
+                        ]}
+                      />
+                    ))
                   ) : (
                     <OsTableWithOutDrag
                       columns={finalInputColumn}
-                      dataSource={quoteLineItemByQuoteData || []}
-                      rowSelection={rowSelection}
                       scroll
                       loading={false}
                       locale={locale}
                     />
                   )}
-                </>
-              )}{' '}
+                </GlobalLoader>
+              ) : (
+                <OsTableWithOutDrag
+                  columns={finalInputColumn}
+                  dataSource={quoteLineItemByQuoteData || []}
+                  rowSelection={rowSelection}
+                  scroll
+                  loading={false}
+                  locale={locale}
+                />
+              )}
             </>
-            {/* {bundleData && bundleData?.length > 0 ? (
-              <>
-                {' '}
-                {bundleData?.map((item: any) => (
-                  <OsCollapse
-                    key={item?.id}
-                    items={[
-                      {
-                        key: '1',
-                        label: (
-                          <>
-                            <Space
-                              style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                              }}
-                            >
-                              <p>{item?.name}</p>
-                              <p>Lines:{item?.QuoteLineItems?.length}</p>
-                              <p>Desc: {item?.description}</p>
-                              <p>
-                                Quantity:
-                                <OsInput
-                                  defaultValue={item?.quantity}
-                                  style={{width: '60px'}}
-                                  onChange={(e: any) => {
-                                    const data = {
-                                      id: item?.id,
-                                      quantity: e.target.value,
-                                    };
-                                    updateBundleQuantityData(data);
-                                  }}
-                                />
-                              </p>
-                            </Space>
-                          </>
-                        ),
-                        // children: item?.children,
-                        children: (
-                          <OsTableWithOutDrag
-                            loading={loading}
-                            // rowSelection={rowSelection}
-                            columns={finalInputColumn}
-                            dataSource={item?.QuoteLineItems || []}
-                            scroll
-                            rowSelection={rowSelection}
-                            locale={locale}
-                          />
-                        ),
-                      },
-                    ]}
-                  />
-                ))}{' '}
-                {selectedFilter ? (
-                  <>
-                    {familyFilter?.map((item: any, index: any) => (
-                      <OsCollapse
-                        key={item?.id}
-                        items={[
-                          {
-                            key: item?.id,
-                            label: (
-                              <>
-                                <Space
-                                  style={{
-                                    display: 'flex',
-                                    justifyContent: 'start',
-                                  }}
-                                >
-                                  <p>{item?.name}</p>
-                                </Space>
-                              </>
-                            ),
-                            // children: item?.children,
-                            children: (
-                              <OsTableWithOutDrag
-                                loading={loading}
-                                columns={finalInputColumn}
-                                dataSource={item?.QuoteLineItem || []}
-                                scroll
-                                rowSelection={rowSelection}
-                                locale={locale}
-                              />
-                            ),
-                          },
-                        ]}
-                      />
-                    ))}
-                  </>
-                ) : (
-                  <>
-                    {dataForQuoteLineItemsAll?.length > 0 &&
-                      dataForQuoteLineItemsAll && (
-                        <OsCollapse
-                          items={[
-                            {
-                              key: '1',
-                              label: (
-                                <>
-                                  <Space
-                                    style={{
-                                      display: 'flex',
-                                      justifyContent: 'start',
-                                    }}
-                                  >
-                                    <p>Unassigned</p>
-                                  </Space>
-                                </>
-                              ),
-                              // children: item?.children,
-                              children: (
-                                <OsTableWithOutDrag
-                                  loading={loading}
-                                  columns={finalInputColumn}
-                                  dataSource={dataForQuoteLineItemsAll || []}
-                                  scroll
-                                  rowSelection={rowSelection}
-                                  locale={locale}
-                                />
-                              ),
-                            },
-                          ]}
-                        />
-                      )}
-                  </>
-                )}{' '}
-              </>
-            ) : (
-              <>
-                {selectedFilter && selectedFilter !== 'File Name' ? (
-                  <>
-                    {' '}
-                    {familyFilter?.map((item: any, index: any) => (
-                      <OsCollapse
-                        key={item?.id}
-                        items={[
-                          {
-                            key: item.id,
-                            label: (
-                              <>
-                                <Space
-                                  style={{
-                                    display: 'flex',
-                                    justifyContent: 'start',
-                                  }}
-                                >
-                                  <p>{item?.name}</p>
-                                </Space>
-                              </>
-                            ),
-                            children: (
-                              <OsTableWithOutDrag
-                                loading={loading}
-                                columns={finalInputColumn}
-                                dataSource={item?.QuoteLineItem || []}
-                                scroll
-                                rowSelection={rowSelection}
-                                locale={locale}
-                              />
-                            ),
-                          },
-                        ]}
-                      />
-                    ))}
-                  </>
-                ) : (
-                  <>
-                    {defaultDataShow ? (
-                      <GlobalLoader loading={quoteFileDataLoading}>
-                        {quoteLineItemByQuoteData1?.length > 0 ? (
-                          quoteLineItemByQuoteData1?.map((item: any) => (
-                            <OsCollapse
-                              items={[
-                                {
-                                  key: '1',
-                                  label: (
-                                    <>
-                                      <Row justify="space-between">
-                                        <Col>
-                                          <p>{item?.title}</p>
-                                        </Col>
-                                        <Col>
-                                          <p>Line Items: {item?.totalCount}</p>
-                                        </Col>
-                                        <Col>
-                                          <p>
-                                            Total Cost: $
-                                            {item?.totalAdjustedPrice?.length >
-                                            0
-                                              ? item?.totalAdjustedPrice
-                                              : 0.0}
-                                          </p>
-                                        </Col>
-                                        <Col>
-                                          <Space>
-                                            <CheckIcon
-                                              width={25}
-                                              color={token?.colorSuccess}
-                                              onClick={(e) => {
-                                                e?.stopPropagation();
-                                                setShowVerificationFileModal(
-                                                  true,
-                                                );
-                                                setFileLineItemIds(item?.id);
-                                                setFileData(item);
-                                              }}
-                                            />
-                                            <XMarkIcon
-                                              width={25}
-                                              color={token?.colorError}
-                                              onClick={(e) => {
-                                                e?.stopPropagation();
-                                                setShowRaiseConcernModal(true);
-                                                setFileLineItemIds(item?.id);
-                                                setFileData(item);
-                                              }}
-                                            />
-                                          </Space>
-                                        </Col>
-                                      </Row>
-                                    </>
-                                  ),
-                                  children: (
-                                    <OsTableWithOutDrag
-                                      columns={finalInputColumn}
-                                      dataSource={item?.quoteLineItems || []}
-                                      rowSelection={rowSelection}
-                                      scroll
-                                      loading={false}
-                                      locale={locale}
-                                    />
-                                  ),
-                                },
-                              ]}
-                            />
-                          ))
-                        ) : (
-                          <OsTableWithOutDrag
-                            columns={finalInputColumn}
-                            scroll
-                            loading={false}
-                            locale={locale}
-                          />
-                        )}
-                      </GlobalLoader>
-                    ) : (
-                      <OsTableWithOutDrag
-                        columns={finalInputColumn}
-                        dataSource={quoteLineItemByQuoteData || []}
-                        rowSelection={rowSelection}
-                        scroll
-                        loading={false}
-                        locale={locale}
-                      />
-                    )}
-                  </>
-                )}{' '}
-              </>
-            )} */}
           </Form>
         </>
       ) : (

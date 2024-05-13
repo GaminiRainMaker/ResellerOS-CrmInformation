@@ -6,6 +6,7 @@ import {get, post, patch} from './index';
 export const PRODUCT_API = {
   get: () => get(API.PRODUCT.INDEX) as Promise<AxiosResponse<[]>>,
   post: (data: any) => post(API.PRODUCT.INDEX, data),
+  postBulk: (data: any) => post(API.PRODUCT.BULKINSERT, data),
   query: (data: any) =>
     post(API.PRODUCT.QUERY, data) as Promise<AxiosResponse<[]>>,
   getById: (id: number) =>
