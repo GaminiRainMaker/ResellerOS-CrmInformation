@@ -13,7 +13,6 @@ import CommonDatePicker from '@/app/components/common/os-date-picker';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
-import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
@@ -53,7 +52,6 @@ const AllQuote: React.FC = () => {
   const [deleteModalDescription, setDeleteModalDescription] =
     useState<string>('');
   const [deleteIds, setDeleteIds] = useState<any>();
-  const {userInformation} = useAppSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(getAllSyncTable('QuoteLineItem'));
@@ -113,37 +111,6 @@ const AllQuote: React.FC = () => {
     }
   }, [activeTab, quoteData]);
 
-  const statusWrapper = (item: any) => {
-    const getStatus = () => {
-      if (!item.is_completed && !item.is_drafted) {
-        return 'Drafts';
-      }
-      if (item.is_drafted) {
-        return 'In Progress';
-      }
-      if (item?.approver_id === userInformation?.id) {
-        return 'In Review';
-      }
-      if (item?.rejected_request) {
-        return 'Rejected';
-      }
-      if (item?.approved_request) {
-        return 'Approved';
-      }
-      if (
-        item.is_completed &&
-        item?.approver_id !== userInformation?.id &&
-        !item?.approved_request &&
-        !item?.rejected_request
-      ) {
-        return 'Needs Review';
-      }
-      return '--';
-    };
-
-    return <OsStatusWrapper value={getStatus()} />;
-  };
-
   const rowSelection = {
     onChange: (selectedRowKeys: any) => {
       setDeleteIds(selectedRowKeys);
@@ -157,6 +124,7 @@ const AllQuote: React.FC = () => {
   const editQuote = (quoteId: string) => {
     router.push(`/generateQuote?id=${quoteId}`);
   };
+
   const deleteQuote = async () => {
     const data = {Ids: deleteIds};
     await dispatch(deleteQuoteById(data));
@@ -166,9 +134,9 @@ const AllQuote: React.FC = () => {
     setDeleteIds([]);
     setShowModalDelete(false);
   };
+
   const Quotecolumns = getColumns(
     token,
-    statusWrapper,
     editQuote,
     setDeleteIds,
     setShowModalDelete,
@@ -240,7 +208,7 @@ const AllQuote: React.FC = () => {
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <QuoteAnalytics quoteData={quoteData} deletedQuote={deletedQuote} />
+        <QuoteAnalytics />
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>

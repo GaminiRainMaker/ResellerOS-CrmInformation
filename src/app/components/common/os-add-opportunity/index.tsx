@@ -100,7 +100,7 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
                   message: 'Amount is required!',
                 },
                 {
-                  pattern: /^[0-9]+$/,
+                  pattern: /^\d+(?:\.\d+)?$/,
                   message: 'Please enter valid amount.',
                 },
               ]}

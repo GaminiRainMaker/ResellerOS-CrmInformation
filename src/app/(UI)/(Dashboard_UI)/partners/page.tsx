@@ -40,6 +40,7 @@ const Partners: React.FC = () => {
   const {userInformation} = useAppSelector((state) => state.user);
   const [formData, setformData] = useState<any>();
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
+  const [requestPartnerLoading, setRequestPartnerLoading] = useState<boolean>(false)
 
   useEffect(() => {
     dispatch(getUnassignedProgram());
@@ -510,8 +511,8 @@ const Partners: React.FC = () => {
       </Space>
 
       <OsModal
-        loading={false}
-        body={<RequestPartner form={form} setOpen={setShowModal} />}
+        loading={requestPartnerLoading}
+        body={<RequestPartner form={form} setOpen={setShowModal} setRequestPartnerLoading={setRequestPartnerLoading} />}
         width={800}
         open={showModal}
         onCancel={() => {

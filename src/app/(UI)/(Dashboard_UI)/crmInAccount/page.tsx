@@ -78,6 +78,8 @@ const CrmInformation: React.FC = () => {
   const [deletedData, setDeletedData] = useState<any>();
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
   const [editRecordData, setEditRecordData] = useState<any>();
+  const [deleteModalDescription, setDeleteModalDescription] =
+    useState<string>('');
   const [query, setQuery] = useState<{
     customer: string | null;
     contact: string | null;
@@ -294,21 +296,29 @@ const CrmInformation: React.FC = () => {
   };
 
   const dropDownItemss: MenuProps['items'] = [
-    deleteIds &&
-      deleteIds.length > 0 && {
-        key: '1',
-        label: (
-          <Typography
-            name="Body 3/Regular"
-            color="#EB445A"
-            onClick={() => {
-              deleteIds && deleteIds?.length > 0 && setShowModalDelete(true);
-            }}
-          >
-            Delete Selected
-          </Typography>
-        ),
-      },
+    {
+      key: '1',
+      label: (
+        <Typography
+          name="Body 3/Regular"
+          color="#EB445A"
+          onClick={() => {
+            if (deleteIds?.length > 1) {
+              setDeleteModalDescription(
+                `Are you sure you want to delete these account?`,
+              );
+            } else {
+              setDeleteModalDescription(
+                `Are you sure you want to delete this account?`,
+              );
+            }
+            deleteIds && deleteIds?.length > 0 && setShowModalDelete(true);
+          }}
+        >
+          Delete Selected
+        </Typography>
+      ),
+    },
   ];
 
   const uniqueCustomer = Array.from(
@@ -354,6 +364,7 @@ const CrmInformation: React.FC = () => {
       form.resetFields();
       setShowModal(false);
       setShowModal((p) => !p);
+      window?.location?.reload();
     } catch (error) {
       console.log(error);
       form.resetFields();
@@ -568,7 +579,7 @@ const CrmInformation: React.FC = () => {
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteSelectedIds}
         heading="Delete Account"
-        description="Are you sure you want to delete this account?"
+        description={deleteModalDescription}
       />
     </>
   );

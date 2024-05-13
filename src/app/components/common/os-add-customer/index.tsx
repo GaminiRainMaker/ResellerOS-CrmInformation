@@ -266,7 +266,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                     },
                   ]}
                 >
-                  <OsInput placeholder="Enter here" defaultValue="Dollar" />
+                  <OsInput placeholder="Enter here" defaultValue="Dollar" disabled/>
                 </SelectFormItem>
               </Col>
               <Col span={drawer ? 24 : 12}>
