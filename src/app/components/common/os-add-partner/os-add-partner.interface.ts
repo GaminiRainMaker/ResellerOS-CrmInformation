@@ -2,6 +2,7 @@ import {FormInstance} from 'antd';
 
 export interface RequestPartnerInterface {
   setOpen: (B: boolean) => void;
+  setRequestPartnerLoading: (B: boolean) => void;
   form: FormInstance;
 }
 export interface AddPartnerInterface {

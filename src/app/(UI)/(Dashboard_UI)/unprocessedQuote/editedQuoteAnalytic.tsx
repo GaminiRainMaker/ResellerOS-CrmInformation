@@ -10,38 +10,40 @@ import {
 } from '@heroicons/react/24/outline';
 import {useAppSelector} from '../../../../../redux/hook';
 
-const QuoteAnalytics = () => {
-  const {filteredByDate: filteredData} = useAppSelector((state) => state.quote);
+const EditedQuoteAnalytics = () => {
+  const {data} = useAppSelector((state) => state.quoteFile);
   const [token] = useThemeToken();
+  const editedQuotes = data?.filter((d: any) => d?.issue_type !== null);
 
-  const completedQuote = filteredData?.filter(
-    (item: any) => item?.status === 'Completed',
+  const completedQuote = data?.filter(
+    (item: any) => item?.Quote?.status === 'Completed',
   );
-  const needsReviewQuote = filteredData?.filter(
-    (item: any) => item?.status === 'Needs Review',
+  const draftedQuote = data?.filter(
+    (item: any) => item?.Quote?.status === 'Drafts',
   );
-  const draftedQuote = filteredData?.filter(
-    (item: any) => item?.status === 'Drafts',
+  const inProgressQuote = data?.filter(
+    (item: any) => item?.Quote?.status === 'In Progress',
   );
-  const inProgressQuote = filteredData?.filter(
-    (item: any) => item?.status === 'In Progress',
+  const needsReviewsQuote = data?.filter(
+    (item: any) => item?.Quote?.status === 'Needs Review',
   );
 
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{filteredData?.length}</div>,
-      secondry: 'Total Quotes',
+      primary: <div>{editedQuotes?.length}</div>,
+      secondry: 'Edited Quotes',
       icon: <QueueListIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
-      primary: <div>{needsReviewQuote?.length}</div>,
-      secondry: 'Needs Review',
+      primary: <div>{data?.length}</div>,
+      secondry: 'Edited Files',
       icon: <DocumentPlusIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
+
     {
       key: 3,
       primary: <div>{completedQuote?.length}</div>,
@@ -58,6 +60,13 @@ const QuoteAnalytics = () => {
     },
     {
       key: 5,
+      primary: <div>{needsReviewsQuote?.length}</div>,
+      secondry: 'Needs Review',
+      icon: <DocumentPlusIcon width={24} color={token?.colorLink} />,
+      iconBg: token?.colorLinkActive,
+    },
+    {
+      key: 6,
       primary: <div>{inProgressQuote?.length}</div>,
       secondry: 'In Progress',
       icon: <ClockIcon width={24} color={token?.colorWarning} />,
@@ -89,4 +98,4 @@ const QuoteAnalytics = () => {
   );
 };
 
-export default QuoteAnalytics;
+export default EditedQuoteAnalytics;

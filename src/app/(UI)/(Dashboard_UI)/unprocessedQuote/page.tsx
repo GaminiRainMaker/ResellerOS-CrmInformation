@@ -39,7 +39,7 @@ import {
 } from '../../../../../redux/actions/quote';
 import {queryQuoteFile} from '../../../../../redux/actions/quoteFile';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import QuoteAnalytics from '../allQuote/analytics';
+import EditedQuoteAnalytics from './editedQuoteAnalytic';
 import {getSuperAdminQuoteColumns} from '../allQuote/tableColumns';
 import ConcernDetail from './ConcernDetail';
 
@@ -73,20 +73,6 @@ const AllQuote: React.FC = () => {
 
   const filteredData = data?.filter((d: any) => d?.issue_type !== null);
 
-  const statusWrapper = (item: any) => {
-    return <OsStatusWrapper value={item} />;
-  };
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: any) => {
-      setDeleteIds(selectedRowKeys);
-    },
-    getCheckboxProps: (record: any) => ({
-      disabled: record.name === 'Disabled User',
-      name: record.name,
-    }),
-  };
-
   const deleteQuote = async () => {
     const data = {Ids: deleteIds};
     await dispatch(deleteQuoteById(data));
@@ -101,13 +87,7 @@ const AllQuote: React.FC = () => {
     setShowConcernDetailModal({visible: true, quoteId: value});
   };
 
-  const Quotecolumns = getSuperAdminQuoteColumns(
-    token,
-    statusWrapper,
-    setDeleteIds,
-    setShowModalDelete,
-    actionEye,
-  );
+  const Quotecolumns = getSuperAdminQuoteColumns(token, actionEye);
 
   const uniqueCreatedBy = Array?.from(
     new Set(data?.map((dataItem: any) => dataItem?.Quote?.User?.user_name)),
@@ -117,11 +97,10 @@ const AllQuote: React.FC = () => {
   );
 
 
-
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <QuoteAnalytics quoteData={data} deletedQuote={deletedQuote} />
+        <EditedQuoteAnalytics  />
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
@@ -225,7 +204,6 @@ const AllQuote: React.FC = () => {
             dataSource={filteredData}
             scroll
             loading={loading}
-            // rowSelection={rowSelection}
           />
         </div>
       </Space>

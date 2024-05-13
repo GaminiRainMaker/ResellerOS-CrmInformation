@@ -8,7 +8,6 @@ import {JSX, SetStateAction} from 'react';
 
 function getColumns(
   token: GlobalToken,
-  statusWrapper: {(item: any): JSX.Element; (arg0: any): any},
   editQuote: {(quoteId: string): void; (arg0: any): void},
   setDeleteIds: {(value: any): void; (arg0: any[]): void},
   setShowModalDelete: {
@@ -106,7 +105,6 @@ function getColumns(
       dataIndex: 'status',
       key: 'status',
       width: 187,
-      // render: (text: string, record: any) => statusWrapper(record),
       render: (text: string) => (
         <div style={{display: 'flex', justifyContent: 'center'}}>
           <OsStatusWrapper value={text} />
@@ -149,12 +147,6 @@ function getColumns(
 
 function getSuperAdminQuoteColumns(
   token: GlobalToken,
-  statusWrapper: {(item: any): JSX.Element; (arg0: any): any},
-  setDeleteIds: {(value: any): void; (arg0: any[]): void},
-  setShowModalDelete: {
-    (value: SetStateAction<boolean>): void;
-    (arg0: boolean): void;
-  },
   actionEye: {(value: string): void; (arg0: any): void},
 ) {
   const columns = [
@@ -261,8 +253,11 @@ function getSuperAdminQuoteColumns(
       dataIndex: 'status',
       key: 'status',
       width: 187,
-      render: (text: string, record: any) =>
-        statusWrapper(record?.Quote?.status),
+      render: (text: string, record: any) => (
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+          <OsStatusWrapper value={record?.Quote?.status} />
+        </div>
+      ),
     },
     {
       title: ' ',

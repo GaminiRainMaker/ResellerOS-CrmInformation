@@ -10,12 +10,12 @@ import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setPartnerRequestData} from '../../../../../redux/slices/partner';
 import {Space} from '../antd/Space';
+import CustomTextCapitalization from '../hooks/CustomTextCapitalizationHook';
 import useThemeToken from '../hooks/useThemeToken';
 import AddPartner from '../os-add-partner';
 import OsModal from '../os-modal';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
-import CustomTextCapitalization from '../hooks/CustomTextCapitalizationHook';
 
 const OsPartnerSelect: FC<{
   // form: FormInstance;
@@ -43,7 +43,9 @@ const OsPartnerSelect: FC<{
   const {userInformation, allResellerRecord} = useAppSelector(
     (state) => state.user,
   );
-  const {data: PartnerData} = useAppSelector((state) => state.partner);
+  const {data: PartnerData, insertPartnerLoading} = useAppSelector(
+    (state) => state.partner,
+  );
   const {data: AssignPartnerProgramData} = useAppSelector(
     (state) => state.assignPartnerProgram,
   );
@@ -100,7 +102,7 @@ const OsPartnerSelect: FC<{
       (item: any) => item?.id === selectedPartnerId,
     );
     dispatch(setPartnerRequestData(filteredData));
-  }, [PartnerData]);
+  }, [PartnerData, allPartnerFilterData]);
 
   return (
     <>
@@ -150,6 +152,7 @@ const OsPartnerSelect: FC<{
                   <Typography
                     color={token?.colorPrimaryText}
                     name="Body 3/Regular"
+                    cursor="pointer"
                   >
                     Request Partner
                   </Typography>
@@ -160,9 +163,8 @@ const OsPartnerSelect: FC<{
           )}
         />
       </Form.Item>
-
       <OsModal
-        // loading={loading}
+        loading={insertPartnerLoading}
         body={<AddPartner form={form} setOpen={setOpenAddPartnerModal} />}
         width={600}
         open={openAddPartnerModal}

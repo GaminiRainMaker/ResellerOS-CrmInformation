@@ -15,7 +15,11 @@ import OsPartnerProgramSelect from '../os-partner-program-select';
 import OsPartnerSelect from '../os-partner-select';
 import {RequestPartnerInterface} from './os-add-partner.interface';
 
-const RequestPartner: React.FC<RequestPartnerInterface> = ({form, setOpen}) => {
+const RequestPartner: React.FC<RequestPartnerInterface> = ({
+  form,
+  setOpen,
+  setRequestPartnerLoading,
+}) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -23,6 +27,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({form, setOpen}) => {
 
   const onFinish = async (value: any) => {
     try {
+      setRequestPartnerLoading(true);
       const partnerObj = {
         ...value,
         organization: userInformation?.organization,
@@ -38,10 +43,13 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({form, setOpen}) => {
           organization: userInformation?.organization,
         }),
       );
+      setRequestPartnerLoading(false);
     } catch (error) {
       // Handle errors here
+      setRequestPartnerLoading(false);
       console.error('Error occurred:', error);
     } finally {
+      setRequestPartnerLoading(false);
       setOpen(false);
     }
   };

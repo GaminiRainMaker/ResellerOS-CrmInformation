@@ -216,14 +216,8 @@ const OpportunityDetails = () => {
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              // router.push(`/generateQuote?id=${record?.id}`);
+              router.push(`/generateQuote?id=${record?.id}`);
             }}
-          />
-          <TrashIcon
-            height={24}
-            width={24}
-            color={token.colorError}
-            style={{cursor: 'pointer'}}
           />
         </Space>
       ),

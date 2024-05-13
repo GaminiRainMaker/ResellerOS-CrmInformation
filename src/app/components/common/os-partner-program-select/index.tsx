@@ -23,7 +23,9 @@ const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
   const [form] = Form.useForm();
   const [openAddProgramModal, setOpenAddProgramModal] =
     useState<boolean>(false);
-
+  const {insertProgramLoading} = useAppSelector(
+    (state) => state.partnerProgram,
+  );
   const {partnerRequestData} = useAppSelector((state) => state.partner);
   const [finalProgramOptions, setFinalProgramOptions] = useState<any>();
 
@@ -88,7 +90,7 @@ const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
       </Form.Item>
 
       <OsModal
-        // loading={loading}
+        loading={insertProgramLoading}
         body={
           <AddPartnerProgram
             form={form}

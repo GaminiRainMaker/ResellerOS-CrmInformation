@@ -26,6 +26,7 @@ import {queryDealReg} from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import NewRegistrationForm from './NewRegistrationForm';
 import DealRegAnalytics from './dealRegAnalytics';
+import {formatDate} from '@/app/utils/base';
 
 interface SeparatedData {
   [opportunityId: number]: {
@@ -63,19 +64,19 @@ const DealReg: React.FC = () => {
   };
 
   const DealRegColumns = [
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Registration Forms
-        </Typography>
-      ),
-      dataIndex: 'title',
-      key: 'title',
-      width: 266,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
+    // {
+    //   title: (
+    //     <Typography name="Body 4/Medium" className="dragHandler">
+    //       Registration Forms
+    //     </Typography>
+    //   ),
+    //   dataIndex: 'title',
+    //   key: 'title',
+    //   width: 266,
+    //   render: (text: string) => (
+    //     <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+    //   ),
+    // },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -86,7 +87,9 @@ const DealReg: React.FC = () => {
       key: 'createdAt',
       width: 187,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+        <Typography name="Body 4/Regular">
+          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
+        </Typography>
       ),
     },
     {
@@ -131,9 +134,7 @@ const DealReg: React.FC = () => {
       key: 'partner_id',
       width: 187,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
-          {record?.Partner?.partner ?? '--'}
-        </Typography>
+        <CustomTextCapitalization text={record?.Partner?.partner} />
       ),
     },
     {
@@ -146,9 +147,9 @@ const DealReg: React.FC = () => {
       key: 'partner_program_id',
       width: 187,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
-          {record?.PartnerProgram?.partner_program ?? '--'}
-        </Typography>
+        <CustomTextCapitalization
+          text={record?.PartnerProgram?.partner_program}
+        />
       ),
     },
     {
