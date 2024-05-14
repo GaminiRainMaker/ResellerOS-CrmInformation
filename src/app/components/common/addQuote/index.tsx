@@ -194,7 +194,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
           quotesArr[i].quoteFileObj[k]?.lineItems.forEach((itemsPro: any) => {
             newArrValues?.push({
               ...itemsPro,
-              product_code: itemsPro?.product_code?.replace(/\s/g, ''),
+              product_code: itemsPro?.product_code
+                ? itemsPro?.product_code?.replace(/\s/g, '')
+                : 'CODENOTFOUND1',
             });
           });
 

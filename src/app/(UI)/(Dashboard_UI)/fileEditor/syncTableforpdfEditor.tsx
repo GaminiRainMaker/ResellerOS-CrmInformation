@@ -208,7 +208,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       alllArrayValue.forEach((itemsPro: any) => {
         newArrValues?.push({
           ...itemsPro,
-          product_code: itemsPro?.product_code?.replace(/\s/g, ''),
+          product_code: itemsPro?.product_code
+            ? itemsPro?.product_code?.replace(/\s/g, '')
+            : 'CODENOTFOUND1',
           organization: userInformation.organization,
         });
       });
