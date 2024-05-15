@@ -84,3 +84,15 @@ export const insertProductsInBulk = createAsyncThunk(
     }
   },
 );
+
+export const getBulkProductIsExisting = createAsyncThunk(
+  'product/getBulkProductBYProductCode',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PRODUCT_API.getBulkProduct(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);

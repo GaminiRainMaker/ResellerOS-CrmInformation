@@ -825,6 +825,7 @@ const SideBar = () => {
                   ? token?.colorPrimary
                   : token?.colorTextSecondary
               }
+              style={{marginLeft: '12px'}}
             >
               User Management
             </Typography>

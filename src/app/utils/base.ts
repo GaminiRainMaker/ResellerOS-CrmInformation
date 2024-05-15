@@ -394,7 +394,7 @@ export const updateTables = async (
 
 export const sendDataToNanonets = async (model_id: string, file: File) => {
   let API_ENDPOINT = '';
-
+  console.log('3454353', file);
   if (file?.type.includes('spreadsheetml')) {
     API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/0ba764d3-bfd5-4756-bdb1-0e5bc427bdda/LabelFile/`;
   } else {
@@ -403,6 +403,7 @@ export const sendDataToNanonets = async (model_id: string, file: File) => {
   const API_KEY = '198c15fd-9680-11ed-82f6-7a0abc6e8cc8';
   const formData = new FormData();
   formData?.append('file', file);
+  console.log('3454353', formData);
   try {
     const response = await axios.post(API_ENDPOINT, formData, {
       headers: {
@@ -623,4 +624,66 @@ export const formatStatus = (str: string) => {
     frags[i] = frags[i]?.charAt(0).toUpperCase() + frags[i].slice(1);
   }
   return frags?.join(' ');
+};
+
+export const getLineItemsWithNonRepitive = (arrayValue: any) => {
+  let newArrValues: any = [];
+  arrayValue.forEach((itemsPro: any) => {
+    let checkAlreadyExist: any =
+      newArrValues?.length > 0 ? [...newArrValues] : [];
+
+    let finIndexForAlreadyPushed = checkAlreadyExist?.findIndex(
+      (checkExistItem: any) =>
+        checkExistItem?.product_code?.replace(/\s/g, '') ===
+        itemsPro?.product_code?.replace(/\s/g, ''),
+    );
+    let nulllProductAdded: boolean = false;
+
+    if (finIndexForAlreadyPushed === -1 && !nulllProductAdded) {
+      newArrValues?.push({
+        ...itemsPro,
+        product_code: itemsPro?.product_code
+          ? itemsPro?.product_code?.replace(/\s/g, '')
+          : 'NEWCODE0123',
+      });
+    }
+    if (!itemsPro?.product_code) {
+      nulllProductAdded = true;
+    }
+  });
+
+  let finalArrr: any = [];
+
+  newArrValues?.map((itemss: any) => {
+    let findIndexValues = finalArrr?.findIndex(
+      (itemsInner: any) => itemsInner?.product_code === itemss?.product_code,
+    );
+    if (findIndexValues === -1) {
+      finalArrr?.push(itemss);
+    }
+  });
+
+  return finalArrr;
+};
+
+export const getValuesOFLineItemsThoseNotAddedBefore = (
+  lineItem: any,
+  allProductCodeDataa: any,
+) => {
+  let newInsertionData: any = [];
+  for (let i = 0; i < lineItem?.length; i++) {
+    let allLineItems = lineItem[i];
+    let productCode = allLineItems?.product_code
+      ? allLineItems?.product_code.replace(/\s/g, '')
+      : 'NEWCODE0123';
+    let finIndexOfItem = allProductCodeDataa?.findIndex(
+      (itemIndex: any) =>
+        itemIndex?.product_code?.replace(/\s/g, '') === productCode,
+    );
+    if (finIndexOfItem === -1) {
+      newInsertionData?.push(allLineItems);
+    }
+  }
+
+  return newInsertionData;
 };

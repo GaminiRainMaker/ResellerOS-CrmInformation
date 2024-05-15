@@ -9,6 +9,7 @@ import {
   deleteProduct,
   updateProductById,
   insertProductsInBulk,
+  getBulkProductIsExisting,
 } from '../actions/product';
 
 type ProductState = {
@@ -59,6 +60,24 @@ const productSlice = createSlice({
       )
       .addCase(
         insertProductsInBulk.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getBulkProductIsExisting.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getBulkProductIsExisting.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = [action.payload];
+        },
+      )
+      .addCase(
+        getBulkProductIsExisting.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

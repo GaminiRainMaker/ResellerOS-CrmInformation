@@ -21,8 +21,8 @@ import OsButton from '@/app/components/common/os-button';
 import OsModal from '@/app/components/common/os-modal';
 import {formatStatus} from '@/app/utils/CONSTANTS';
 import {sendDataToNanonets, updateTables} from '@/app/utils/base';
-import {TrashIcon} from '@heroicons/react/24/outline';
-import {notification} from 'antd';
+import {TrashIcon, XCircleIcon} from '@heroicons/react/24/outline';
+import {Row, notification} from 'antd';
 import Typography from 'antd/es/typography/Typography';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {addClassesToRows, alignHeaders} from './hooksCallbacks';
@@ -36,6 +36,7 @@ import {getQuoteLineItemByQuoteIdForEditTable} from '../../../../../redux/action
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
 import GlobalLoader from '@/app/components/common/os-global-loader';
+import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
@@ -51,7 +52,7 @@ const EditorFile = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [updateLineItemsValue, setUpdateLineItemsValue] = useState<any>();
   const [missingId, setMissingId] = useState<number[]>([]);
-
+  const [returnBackModal, setReturnModalBack] = useState<boolean>(false);
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
 
   // ============================== SalesForce Implementations ======================================
@@ -84,6 +85,7 @@ const EditorFile = () => {
           const finalFile = new File([file], quoteFileById?.file_name, {
             type: file.type,
           });
+
           const response = await sendDataToNanonets(
             'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
             finalFile,
@@ -185,7 +187,11 @@ const EditorFile = () => {
   }, [updateLineItemsValue]);
 
   useEffect(() => {
-    dispatch(getQuoteFileById(Number(getQuoteFileId)));
+    dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then((payload: any) => {
+      if (payload?.payload === null) {
+        setReturnModalBack(true);
+      }
+    });
   }, [getQuoteFileId]);
 
   const updateRowsValueforTable = (
@@ -382,6 +388,7 @@ const EditorFile = () => {
       CancelEditing();
     }
   };
+  console.log('returnBackModal', returnBackModal);
   return (
     <GlobalLoader loading={nanonetsLoading}>
       <div
@@ -683,6 +690,43 @@ const EditorFile = () => {
         onCancel={() => {
           setShowModal((p) => !p);
         }}
+      />
+
+      <OsModal
+        body={
+          <Row style={{width: '100%', padding: '15px'}}>
+            <Space
+              style={{width: '100%'}}
+              size={24}
+              direction="vertical"
+              align="center"
+            >
+              <Space direction="vertical" align="center" size={1}>
+                <Typography style={{fontSize: '20px', textAlign: 'center'}}>
+                  {
+                    'This file is already updated. Please review the other file on Review Quotes'
+                  }
+                </Typography>
+              </Space>
+
+              <Space size={12}>
+                <OsButton
+                  // loading={loading}
+                  text="Return to Review Quotes"
+                  buttontype="PRIMARY"
+                  clickHandler={() => {
+                    router?.push(`/generateQuote?id=${Number(getQUoteId)}`);
+                  }}
+                />
+              </Space>
+            </Space>
+          </Row>
+        }
+        width={600}
+        onCancel={() => {
+          router?.push(`/generateQuote?id=${Number(getQUoteId)}`);
+        }}
+        open={returnBackModal}
       />
     </GlobalLoader>
   );

@@ -159,10 +159,10 @@ export const quoteLineItemColumn = [
 
 export const quoteLineItemColumnForSync = [
   {value: 'product_code', label: 'SKU'},
-  {value: 'quantity', label: 'Quantity'},
+  {value: 'quantity', label: 'QUANTITY'},
   {value: 'list_price', label: 'MSRP'},
-  {value: 'adjusted_price', label: 'Cost'},
-  {value: 'description', label: 'Description'},
+  {value: 'adjusted_price', label: 'COST'},
+  {value: 'description', label: 'DESCRIPTION'},
 ];
 
 export const quoteColumns = [
@@ -535,7 +535,6 @@ export const attributeFieldDataTypeOptions = [
     value: 'toggle',
   },
 ];
-
 
 export const attributeFieldMapToOptions = [
   {

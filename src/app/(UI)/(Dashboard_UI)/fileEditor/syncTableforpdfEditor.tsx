@@ -210,7 +210,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           ...itemsPro,
           product_code: itemsPro?.product_code
             ? itemsPro?.product_code?.replace(/\s/g, '')
-            : 'CODENOTFOUND1',
+            : 'NEWCODE0123',
           organization: userInformation.organization,
         });
       });

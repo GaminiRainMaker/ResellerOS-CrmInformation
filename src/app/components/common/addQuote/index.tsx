@@ -2,13 +2,20 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable no-await-in-loop */
 import OsModal from '@/app/components/common/os-modal';
-import {convertFileToBase64} from '@/app/utils/base';
+import {
+  convertFileToBase64,
+  getLineItemsWithNonRepitive,
+  getValuesOFLineItemsThoseNotAddedBefore,
+} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form, message} from 'antd';
 import {useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
-import {insertProductsInBulk} from '../../../../../redux/actions/product';
+import {
+  getBulkProductIsExisting,
+  insertProductsInBulk,
+} from '../../../../../redux/actions/product';
 import {
   getQuoteById,
   getQuotesByDateFilter,
@@ -22,6 +29,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '../os-button';
 import OsUpload from '../os-upload';
 import {AddQuoteInterface, FormattedData} from './types';
+import ConverSationProcess from '@/app/(UI)/(Dashboard_UI)/admin/quote-AI/configuration/configuration-tabs/ConversationProcess';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
@@ -189,39 +197,72 @@ const AddQuote: FC<AddQuoteInterface> = ({
             quote_id: quotesArr[i]?.id,
           };
           const insertedQuoteFile = await dispatch(insertQuoteFile(quoteFile));
-
-          let newArrValues: any = [];
-          quotesArr[i].quoteFileObj[k]?.lineItems.forEach((itemsPro: any) => {
-            newArrValues?.push({
-              ...itemsPro,
-              product_code: itemsPro?.product_code
-                ? itemsPro?.product_code?.replace(/\s/g, '')
-                : 'CODENOTFOUND1',
-            });
-          });
+          // ===============To get LineItems WIth non- repeative objects
+          let newArrValues = getLineItemsWithNonRepitive(
+            quotesArr[i].quoteFileObj[k]?.lineItems,
+          );
 
           const lineItem = quotesArr[i].quoteFileObj[k]?.lineItems;
+          let allProductCodes: any = [];
+          let allProductCodeDataa: any = [];
+          lineItem?.map((itemsPro: any) => {
+            allProductCodes?.push(
+              itemsPro?.product_code
+                ? itemsPro?.product_code?.replace(/\s/g, '')
+                : 'NEWCODE0123',
+            );
+          });
+          let valuessOfAlreayExist = await dispatch(
+            getBulkProductIsExisting(allProductCodes),
+          );
 
-          let insertedProduct: any;
-          if (lineItem) {
-            insertedProduct = await dispatch(
-              insertProductsInBulk(newArrValues),
+          if (valuessOfAlreayExist?.payload?.length > 0) {
+            // ======To get items that are  non added Values==============
+            let newInsertionData = getValuesOFLineItemsThoseNotAddedBefore(
+              lineItem,
+              allProductCodeDataa,
+            );
+
+            if (newInsertionData?.length > 0) {
+              await dispatch(insertProductsInBulk(newInsertionData))?.then(
+                (payload: any) => {
+                  payload?.payload?.map((itemsBulk: any) => {
+                    allProductCodeDataa?.push(itemsBulk);
+                  });
+                },
+              );
+            }
+          } else {
+            await dispatch(insertProductsInBulk(newArrValues))?.then(
+              (payload: any) => {
+                payload?.payload?.map((itemsBulk: any) => {
+                  allProductCodeDataa?.push(itemsBulk);
+                });
+              },
             );
           }
 
-          if (insertedProduct?.payload) {
-            insertedProduct?.payload?.map((itemssProduct: any) => {
+          if (lineItem) {
+            lineItem?.map((itemssProduct: any) => {
+              let productCode = itemssProduct?.product_code
+                ? itemssProduct?.product_code?.replace(/\s/g, '')
+                : 'NEWCODE0123';
+              let itemsToAdd = allProductCodeDataa?.find(
+                (productItemFind: any) =>
+                  productItemFind?.product_code?.replace(/\s/g, '') ===
+                  productCode,
+              );
               const obj1: any = {
                 quote_id: quotesArr[i]?.id,
                 quote_file_id: insertedQuoteFile?.payload?.id,
-                product_id: itemssProduct?.id,
-                product_code: itemssProduct?.product_code,
-                line_amount: itemssProduct?.line_amount,
-                list_price: itemssProduct?.list_price,
-                description: itemssProduct?.description,
-                quantity: itemssProduct?.quantity,
-                adjusted_price: itemssProduct?.adjusted_price,
-                line_number: itemssProduct?.line_number,
+                product_id: itemsToAdd?.id,
+                product_code: itemsToAdd?.product_code,
+                line_amount: itemsToAdd?.line_amount,
+                list_price: itemsToAdd?.list_price,
+                description: itemsToAdd?.description,
+                quantity: itemsToAdd?.quantity,
+                adjusted_price: itemsToAdd?.adjusted_price,
+                line_number: itemsToAdd?.line_number,
                 organization: userInformation.organization,
               };
               finalLineItems?.push(obj1);
@@ -229,6 +270,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           }
         }
       }
+
       const finalOpportunityArray: any = [];
       if (finalLineItems && syncTableData?.length > 0) {
         const newRequiredArray: any = [];
