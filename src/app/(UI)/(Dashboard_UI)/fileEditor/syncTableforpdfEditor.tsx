@@ -17,12 +17,17 @@ import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {formatStatus, quoteLineItemColumnForSync} from '@/app/utils/CONSTANTS';
-import {useRemoveDollarAndCommahook} from '@/app/utils/base';
+import {
+  getLineItemsWithNonRepitive,
+  getValuesOFLineItemsThoseNotAddedBefore,
+  useRemoveDollarAndCommahook,
+} from '@/app/utils/base';
 import {Col, Row, notification} from 'antd';
 import {RedirectType, useRouter, useSearchParams} from 'next/navigation';
 import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {
+  getBulkProductIsExisting,
   insertProduct,
   insertProductsInBulk,
 } from '../../../../../redux/actions/product';
@@ -177,7 +182,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       });
       return;
     }
-    setNanonetsLoading(true);
+    // setNanonetsLoading(true);
     const dataaa = {id: Number(getQuoteID), fileId: Number(getQuoteFileId)};
     dispatch(deleteQuoteLineItemsByQuoteId(dataaa));
     mergedValue?.map((obj: any) => {
@@ -204,50 +209,105 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         id: Number(getQuoteID),
       };
       await dispatch(updateQuoteJsonAndManual(data));
-      let newArrValues: any = [];
-      alllArrayValue.forEach((itemsPro: any) => {
-        newArrValues?.push({
-          ...itemsPro,
-          product_code: itemsPro?.product_code
+      // let newArrValues: any = [];
+      // alllArrayValue.forEach((itemsPro: any) => {
+      //   newArrValues?.push({
+      //     ...itemsPro,
+      //     product_code: itemsPro?.product_code
+      //       ? itemsPro?.product_code?.replace(/\s/g, '')
+      //       : 'NEWCODE0123',
+      //     organization: userInformation.organization,
+      //   });
+      // });
+
+      // let insertedProduct: any;
+      // if (newArrValues) {
+      //   insertedProduct = await dispatch(insertProductsInBulk(newArrValues));
+      // }
+      let newArrValues = getLineItemsWithNonRepitive(alllArrayValue);
+
+      const lineItem = alllArrayValue;
+      let allProductCodes: any = [];
+      let allProductCodeDataa: any = [];
+      lineItem?.map((itemsPro: any) => {
+        allProductCodes?.push(
+          itemsPro?.product_code
             ? itemsPro?.product_code?.replace(/\s/g, '')
             : 'NEWCODE0123',
-          organization: userInformation.organization,
-        });
+        );
       });
+      let valuessOfAlreayExist = await dispatch(
+        getBulkProductIsExisting(allProductCodes),
+      );
 
-      let insertedProduct: any;
-      if (newArrValues) {
-        insertedProduct = await dispatch(insertProductsInBulk(newArrValues));
+      if (valuessOfAlreayExist?.payload) {
+        allProductCodeDataa = valuessOfAlreayExist?.payload;
       }
 
-      if (insertedProduct?.payload) {
-        for (let i = 0; i < insertedProduct?.payload?.length; i++) {
-          let itemsOfProduct = insertedProduct?.payload[i];
+      if (valuessOfAlreayExist?.payload?.length > 0) {
+        // ======To get items that are  non added Values==============
+        let newInsertionData = getValuesOFLineItemsThoseNotAddedBefore(
+          lineItem,
+          allProductCodeDataa,
+        );
+
+        if (newInsertionData?.length > 0) {
+          await dispatch(insertProductsInBulk(newInsertionData))?.then(
+            (payload: any) => {
+              console.log('43534543', payload);
+              payload?.payload?.map((itemsBulk: any) => {
+                allProductCodeDataa?.push(itemsBulk);
+              });
+            },
+          );
+        }
+      } else {
+        await dispatch(insertProductsInBulk(newArrValues))?.then(
+          (payload: any) => {
+            payload?.payload?.map((itemsBulk: any) => {
+              allProductCodeDataa?.push(itemsBulk);
+            });
+          },
+        );
+      }
+      console.log('43534543', valuessOfAlreayExist, allProductCodeDataa);
+
+      return;
+
+      if (alllArrayValue) {
+        for (let i = 0; i < alllArrayValue?.length; i++) {
+          let itemsOfProduct = alllArrayValue[i];
           if (itemsOfProduct) {
+            let productCode = alllArrayValue?.product_code
+              ? alllArrayValue?.product_code?.replace(/\s/g, '')
+              : 'NEWCODE0123';
+            let itemsToAdd = allProductCodeDataa?.find(
+              (productItemFind: any) =>
+                productItemFind?.product_code?.replace(/\s/g, '') ===
+                productCode,
+            );
             const obj1: any = {
               quote_file_id: quoteFileById?.[0]?.id
                 ? quoteFileById?.[0]?.id
                 : getQuoteFileId,
               quote_id: Number(getQuoteID),
-              product_id: itemsOfProduct?.id,
-              product_code: itemsOfProduct?.product_code,
+              product_id: itemsToAdd?.id,
+              product_code: itemsToAdd?.product_code,
               // line_amount: useRemoveDollarAndCommahook(
               //   itemsOfProduct?.line_amount,
               // ),
-              list_price: useRemoveDollarAndCommahook(
-                itemsOfProduct?.list_price,
-              ),
-              description: itemsOfProduct?.description,
-              quantity: useRemoveDollarAndCommahook(itemsOfProduct?.quantity),
+              list_price: useRemoveDollarAndCommahook(itemsToAdd?.list_price),
+              description: itemsToAdd?.description,
+              quantity: useRemoveDollarAndCommahook(itemsToAdd?.quantity),
               adjusted_price: useRemoveDollarAndCommahook(
-                itemsOfProduct?.adjusted_price,
+                itemsToAdd?.adjusted_price,
               ),
-              line_number: itemsOfProduct?.line_number,
+              line_number: itemsToAdd?.line_number,
               organization: userInformation.organization,
             };
 
             const RebatesByProductCodData = await dispatch(
-              getRebatesByProductCode(itemsOfProduct?.product_code),
+              getRebatesByProductCode(itemsToAdd?.product_code),
             );
             if (RebatesByProductCodData?.payload?.id) {
               rebateDataArray?.push({
@@ -258,7 +318,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               });
             }
             const contractProductByProductCode = await dispatch(
-              getContractProductByProductCode(itemsOfProduct?.product_code),
+              getContractProductByProductCode(itemsToAdd?.product_code),
             );
             if (contractProductByProductCode?.payload?.id) {
               contractProductArray?.push({
