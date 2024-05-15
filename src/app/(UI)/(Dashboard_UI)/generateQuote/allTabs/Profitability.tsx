@@ -36,6 +36,7 @@ const Profitability: FC<any> = ({
   tableColumnDataShow,
   setSelectedRowIds,
   selectedFilter,
+  setSelectedRowData,
 }) => {
   const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
@@ -43,14 +44,17 @@ const Profitability: FC<any> = ({
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const [familyFilter, setFamilyFilter] = useState<any>([]);
-  const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
-    (state) => state.profitability,
-  );
+  const {
+    data: profitabilityDataByQuoteId,
+    loading,
+    isProfitabilityCall,
+  } = useAppSelector((state) => state.profitability);
   const [profitabilityData, setProfitabilityData] = useState<any>();
 
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Profitability" />,
   };
+  console.log('profitabilityDataByQuoteId', profitabilityDataByQuoteId);
 
   useEffect(() => {
     const filteredDataa = profitabilityDataByQuoteId?.filter(
@@ -155,8 +159,10 @@ const Profitability: FC<any> = ({
     }
     return true;
   };
+
   const rowSelection = {
-    onChange: (selectedRowKeys: any) => {
+    onChange: (selectedRowKeys: any, record: any) => {
+      setSelectedRowData(record);
       setSelectedRowIds(selectedRowKeys);
     },
   };
@@ -227,6 +233,30 @@ const Profitability: FC<any> = ({
                   return prevItem;
                 }),
               );
+
+              setProfitabilityData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (record?.id === prevItem?.id) {
+                    const rowId = record?.id;
+                    const result: any = calculateProfitabilityData(
+                      prevItem?.quantity,
+                      prevItem?.pricing_method,
+                      useRemoveDollarAndCommahook(prevItem?.line_amount),
+                      useRemoveDollarAndCommahook(prevItem?.adjusted_price),
+                      useRemoveDollarAndCommahook(prevItem?.list_price),
+                    );
+                    return {
+                      ...prevItem,
+                      unit_price: result.unitPrice,
+                      exit_price: result.exitPrice,
+                      gross_profit: result.grossProfit,
+                      gross_profit_percentage: result.grossProfitPercentage,
+                      rowId,
+                    };
+                  }
+                  return prevItem;
+                }),
+              );
             }}
           />
         </Form.Item>
@@ -234,7 +264,7 @@ const Profitability: FC<any> = ({
       width: 120,
     },
     {
-      title: 'MSRP',
+      title: 'MSRP ($)',
       dataIndex: 'list_price',
       key: 'list_price',
       render: (text: string, record: any) => (
@@ -243,7 +273,7 @@ const Profitability: FC<any> = ({
           name={`list_price ${record?.id}`}
           rules={[
             {
-              required: renderRequiredInput('MSRP'),
+              required: renderRequiredInput('MSRP ($)'),
               message: 'This Field id Required',
             },
           ]}
@@ -251,7 +281,7 @@ const Profitability: FC<any> = ({
         >
           <OsInput
             type="number"
-            disabled={renderEditableInput('MSRP')}
+            disabled={renderEditableInput('MSRP ($)')}
             style={{
               height: '36px',
               borderRadius: '10px',
@@ -266,6 +296,30 @@ const Profitability: FC<any> = ({
                   return prevItem;
                 }),
               );
+
+              setProfitabilityData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (record?.id === prevItem?.id) {
+                    const rowId = record?.id;
+                    const result: any = calculateProfitabilityData(
+                      prevItem?.quantity,
+                      prevItem?.pricing_method,
+                      useRemoveDollarAndCommahook(prevItem?.line_amount),
+                      useRemoveDollarAndCommahook(prevItem?.adjusted_price),
+                      useRemoveDollarAndCommahook(prevItem?.list_price),
+                    );
+                    return {
+                      ...prevItem,
+                      unit_price: result.unitPrice,
+                      exit_price: result.exitPrice,
+                      gross_profit: result.grossProfit,
+                      gross_profit_percentage: result.grossProfitPercentage,
+                      rowId,
+                    };
+                  }
+                  return prevItem;
+                }),
+              );
             }}
           />
         </Form.Item>
@@ -273,7 +327,7 @@ const Profitability: FC<any> = ({
       width: 150,
     },
     {
-      title: 'Cost',
+      title: 'Cost ($)',
       dataIndex: 'adjusted_price',
       key: 'adjusted_price ',
       render: (text: string, record: any) => (
@@ -282,7 +336,7 @@ const Profitability: FC<any> = ({
           name={`adjusted_price ${record?.id}`}
           rules={[
             {
-              required: renderRequiredInput('Cost'),
+              required: renderRequiredInput('Cost ($)'),
               message: 'This Field id Required',
             },
           ]}
@@ -293,13 +347,37 @@ const Profitability: FC<any> = ({
               height: '36px',
             }}
             type="number"
-            disabled={renderEditableInput('Cost')}
+            disabled={renderEditableInput('Cost ($)')}
             value={text ?? 0.0}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
                 prev.map((prevItem: any) => {
                   if (prevItem.id === record?.id) {
                     return {...prevItem, adjusted_price: v.target.value};
+                  }
+                  return prevItem;
+                }),
+              );
+
+              setProfitabilityData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (record?.id === prevItem?.id) {
+                    const rowId = record?.id;
+                    const result: any = calculateProfitabilityData(
+                      prevItem?.quantity,
+                      prevItem?.pricing_method,
+                      useRemoveDollarAndCommahook(prevItem?.line_amount),
+                      useRemoveDollarAndCommahook(prevItem?.adjusted_price),
+                      useRemoveDollarAndCommahook(prevItem?.list_price),
+                    );
+                    return {
+                      ...prevItem,
+                      unit_price: result.unitPrice,
+                      exit_price: result.exitPrice,
+                      gross_profit: result.grossProfit,
+                      gross_profit_percentage: result.grossProfitPercentage,
+                      rowId,
+                    };
                   }
                   return prevItem;
                 }),
@@ -448,14 +526,37 @@ const Profitability: FC<any> = ({
             style={{
               height: '36px',
             }}
-            // type="number"
+            type="number"
             prefix={updateAmountValue(record?.pricing_method)}
-            value={text ? useRemoveDollarAndCommahook(text) : 0}
+            value={text ? useRemoveDollarAndCommahook(text) : 0.0}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
                 prev.map((prevItem: any) => {
                   if (prevItem.id === record?.id) {
                     return {...prevItem, line_amount: v.target.value};
+                  }
+                  return prevItem;
+                }),
+              );
+              setProfitabilityData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (record?.id === prevItem?.id) {
+                    const rowId = record?.id;
+                    const result: any = calculateProfitabilityData(
+                      prevItem?.quantity,
+                      prevItem?.pricing_method,
+                      useRemoveDollarAndCommahook(prevItem?.line_amount),
+                      useRemoveDollarAndCommahook(prevItem?.adjusted_price),
+                      useRemoveDollarAndCommahook(prevItem?.list_price),
+                    );
+                    return {
+                      ...prevItem,
+                      unit_price: result.unitPrice,
+                      exit_price: result.exitPrice,
+                      gross_profit: result.grossProfit,
+                      gross_profit_percentage: result.grossProfitPercentage,
+                      rowId,
+                    };
                   }
                   return prevItem;
                 }),
@@ -466,10 +567,10 @@ const Profitability: FC<any> = ({
       ),
     },
     {
-      title: 'Unit Price',
+      title: 'Unit Price ($)',
       dataIndex: 'unit_price',
       key: 'unit_price',
-      width: 130,
+      width: 150,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
           {text ? `$${abbreviate(text ?? 0)}` : 0}
@@ -477,10 +578,10 @@ const Profitability: FC<any> = ({
       ),
     },
     {
-      title: 'Exit Price',
+      title: 'Exit Price ($)',
       dataIndex: 'exit_price',
       key: 'exit_price',
-      width: 130,
+      width: 150,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
           {text ? `$${abbreviate(text ?? 0)}` : 0}
@@ -488,10 +589,10 @@ const Profitability: FC<any> = ({
       ),
     },
     {
-      title: 'Gross Profit',
+      title: 'Gross Profit ($)',
       dataIndex: 'gross_profit',
       key: 'gross_profit',
-      width: 130,
+      width: 150,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
           {text ? `$${abbreviate(text ?? '--')}` : '--'}
@@ -679,7 +780,6 @@ const Profitability: FC<any> = ({
                   scroll
                   rowSelection={rowSelection}
                   locale={locale}
-                  
                 />
               </Form>
             </>

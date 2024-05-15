@@ -12,12 +12,14 @@ type ProfitabilityState = {
   error: string | null;
   data: any;
   profitability: any;
+  isProfitabilityCall: boolean;
 };
 const initialState: ProfitabilityState = {
   loading: false,
   error: null,
   data: [],
   profitability: [],
+  isProfitabilityCall: false,
 };
 
 const profitabilitySlice = createSlice({
@@ -26,6 +28,9 @@ const profitabilitySlice = createSlice({
   reducers: {
     setProfitability: (state, action) => {
       state.profitability = action.payload;
+    },
+    setIsProfitabilityCall: (state, action) => {
+      state.isProfitabilityCall = action.payload;
     },
   },
   extraReducers(builder) {
@@ -87,5 +92,6 @@ const profitabilitySlice = createSlice({
   },
 });
 
-export const {setProfitability} = profitabilitySlice.actions;
+export const {setProfitability, setIsProfitabilityCall} =
+  profitabilitySlice.actions;
 export default profitabilitySlice?.reducer;

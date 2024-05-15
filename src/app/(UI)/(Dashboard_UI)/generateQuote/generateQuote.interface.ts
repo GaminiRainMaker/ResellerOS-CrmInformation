@@ -1,4 +1,5 @@
 import {FormInstance} from 'antd';
+import {Dispatch, SetStateAction} from 'react';
 
 export interface FormDataProps {
   file_name: string;
@@ -34,4 +35,23 @@ export interface UploadFileInterface {
   showToggleTable?: boolean;
   Quotecolumns?: any;
   existingQuoteId?: number;
+}
+
+export interface UpdateLineItemsInterFace {
+  form?: FormInstance;
+  onFinish?: any;
+  setProfabilityUpdationState: Dispatch<
+    SetStateAction<
+      {
+        id: number;
+        value: string | number;
+        field: string | null;
+      }[]
+    >
+  >;
+  profabilityUpdationState: {
+    id: number;
+    value: string | number;
+    field: string | null;
+  }[];
 }

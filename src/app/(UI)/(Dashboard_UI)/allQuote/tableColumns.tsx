@@ -23,7 +23,7 @@ function getColumns(
           className="dragHandler"
           color={token?.colorPrimaryText}
         >
-          File Name
+          Quote Name
         </Typography>
       ),
       dataIndex: 'file_name',
