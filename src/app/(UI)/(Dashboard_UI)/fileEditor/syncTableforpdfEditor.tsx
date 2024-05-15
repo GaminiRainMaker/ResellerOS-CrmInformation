@@ -182,7 +182,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       });
       return;
     }
-    // setNanonetsLoading(true);
+    setNanonetsLoading(true);
     const dataaa = {id: Number(getQuoteID), fileId: Number(getQuoteFileId)};
     dispatch(deleteQuoteLineItemsByQuoteId(dataaa));
     mergedValue?.map((obj: any) => {
@@ -262,13 +262,15 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           allProductCodeDataa = newArrrForConcat;
         }
       } else {
+        let newArrrForConcat: any = [...allProductCodeDataa];
         await dispatch(insertProductsInBulk(newArrValues))?.then(
           (payload: any) => {
             payload?.payload?.map((itemsBulk: any) => {
-              allProductCodeDataa?.push(itemsBulk);
+              newArrrForConcat?.push(itemsBulk);
             });
           },
         );
+        allProductCodeDataa = newArrrForConcat;
       }
 
       if (alllArrayValue) {
