@@ -388,7 +388,6 @@ const EditorFile = () => {
       CancelEditing();
     }
   };
-  console.log('returnBackModal', returnBackModal);
   return (
     <GlobalLoader loading={nanonetsLoading}>
       <div

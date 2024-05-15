@@ -658,7 +658,7 @@ export const getLineItemsWithNonRepitive = (arrayValue: any) => {
     let findIndexValues = finalArrr?.findIndex(
       (itemsInner: any) => itemsInner?.product_code === itemss?.product_code,
     );
-    if (findIndexValues === -1) {
+    if (findIndexValues === -1 && itemss?.product_code) {
       finalArrr?.push(itemss);
     }
   });
@@ -684,6 +684,16 @@ export const getValuesOFLineItemsThoseNotAddedBefore = (
       newInsertionData?.push(allLineItems);
     }
   }
+  let finalArrr: any = [];
 
-  return newInsertionData;
+  newInsertionData?.map((itemss: any) => {
+    let findIndexValues = finalArrr?.findIndex(
+      (itemsInner: any) => itemsInner?.product_code === itemss?.product_code,
+    );
+    if (findIndexValues === -1 && itemss?.product_code) {
+      finalArrr?.push(itemss);
+    }
+  });
+
+  return finalArrr;
 };
