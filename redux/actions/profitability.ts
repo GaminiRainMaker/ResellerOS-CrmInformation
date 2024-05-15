@@ -37,3 +37,15 @@ export const updateProfitabilityById = createAsyncThunk(
     }
   },
 );
+
+export const deleteProfitabilityById = createAsyncThunk(
+  'profitability/deleteProfitabilityById',
+  async (Ids: any, thunkApi) => {
+    try {
+      const res = await PROFITABILITY_API.deleteById(Ids);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

@@ -197,7 +197,7 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
           </Col>
 
           <Col span={24}>
-            <Form.Item label="File Name" name="file_name">
+            <Form.Item label="Quote Name" name="file_name">
               <OsInput />
             </Form.Item>
 

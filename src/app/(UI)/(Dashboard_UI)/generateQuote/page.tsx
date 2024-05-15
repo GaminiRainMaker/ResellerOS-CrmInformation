@@ -52,8 +52,8 @@ import BundleSection from './bundleSection';
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-
   const [form] = Form.useForm();
+  const [updationForm] = Form.useForm();
   const router = useRouter();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
@@ -63,11 +63,14 @@ const GenerateQuote: React.FC = () => {
     (state) => state.quoteLineItem,
   );
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
+  const [selectTedRowData, setSelectedRowData] = useState<React.Key[]>([]);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [amountData, setAmountData] = useState<any>();
   const [open, setOpen] = useState(false);
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
   const [isDeleteInputDetailModal, setIsDeleteInputDetailModal] =
+    useState<boolean>(false);
+  const [isDeleteProfitabilityModal, setIsDeleteProfitabilityModal] =
     useState<boolean>(false);
   const [selectedFilter, setSelectedFilter] = useState<string>('File Name');
   const [familyFilter, setFamilyFilter] = useState<any>([]);
@@ -78,12 +81,12 @@ const GenerateQuote: React.FC = () => {
     (state) => state.contractSetting,
   );
   const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
+  const [profitabilityData, setProfitabilityData] = useState<any>();
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
   const [quoteLineItemExist, setQuoteLineItemExist] = useState<boolean>(false);
-
-  const {loading: quoteFileDataLoading, data: quoteFileData} = useAppSelector(
-    (state) => state.quoteFile,
-  );
+  const {data: quoteFileData} = useAppSelector((state) => state.quoteFile);
+  const [showUpdateLineItemModal, setShowUpdateLineItemModal] =
+    useState<boolean>(false);
   useEffect(() => {
     dispatch(getAllTableColumn(''));
     dispatch(getAllContractSetting(''));
@@ -235,31 +238,39 @@ const GenerateQuote: React.FC = () => {
         </Typography>
       ),
     },
-    // {
-    //   key: '2',
-    //   label: (
-    //     <Typography name="Body 3/Regular" cursor="pointer">
-    //       Edit Selected
-    //     </Typography>
-    //   ),
-    // },
-    // {
-    //   key: '3',
-    //   label: (
-    //     <Typography
-    //       name="Body 3/Regular"
-    //       color={token?.colorError}
-    //       cursor="pointer"
-    //       onClick={() => {
-    //         if (activeTab === '1') {
-    //           setIsDeleteInputDetailModal(true);
-    //         }
-    //       }}
-    //     >
-    //       Delete Selected
-    //     </Typography>
-    //   ),
-    // },
+    {
+      key: '2',
+      label: (
+        <Typography
+          name="Body 3/Regular"
+          cursor="pointer"
+          onClick={() => {
+            if (selectTedRowData?.length > 0) {
+              setShowUpdateLineItemModal(true);
+            }
+          }}
+        >
+          Edit Selected
+        </Typography>
+      ),
+    },
+    {
+      key: '3',
+      label: (
+        <Typography
+          name="Body 3/Regular"
+          color={token?.colorError}
+          cursor="pointer"
+          onClick={() => {
+            if (selectTedRowIds?.length > 0) {
+              setIsDeleteProfitabilityModal(true);
+            }
+          }}
+        >
+          Delete Selected
+        </Typography>
+      ),
+    },
   ];
 
   const TabPaneData = [
@@ -305,9 +316,18 @@ const GenerateQuote: React.FC = () => {
       ),
       children: (
         <Profitability
+          profitabilityData={profitabilityData}
+          setProfitabilityData={setProfitabilityData}
           tableColumnDataShow={tableColumnDataShow}
           setSelectedRowIds={setSelectedRowIds}
+          selectTedRowIds={selectTedRowIds}
           selectedFilter={selectedFilter}
+          setSelectedRowData={setSelectedRowData}
+          setShowUpdateLineItemModal={setShowUpdateLineItemModal}
+          showUpdateLineItemModal={showUpdateLineItemModal}
+          selectTedRowData={selectTedRowData}
+          isDeleteProfitabilityModal={isDeleteProfitabilityModal}
+          setIsDeleteProfitabilityModal={setIsDeleteProfitabilityModal}
         />
       ),
     },

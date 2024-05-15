@@ -12,4 +12,6 @@ export const PROFITABILITY_API = {
     get(`${API.PROFITABALITY.INDEX}/${id}`) as Promise<AxiosResponse<any>>,
   patch: (data: any) =>
     patch(API.PROFITABALITY.INDEX, data) as Promise<AxiosResponse<any>>,
+  deleteById: (data: any) =>
+    post(API.PROFITABALITY.DeleteById, data) as Promise<AxiosResponse<any>>,
 };

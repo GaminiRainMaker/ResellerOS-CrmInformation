@@ -49,8 +49,9 @@ const AllQuote: React.FC = () => {
     afterDays: null,
   });
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
-  const [deleteModalDescription, setDeleteModalDescription] =
-    useState<string>('');
+  const [deleteModalDescription, setDeleteModalDescription] = useState<string>(
+    'Are you sure you want to delete this Quote?',
+  );
   const [deleteIds, setDeleteIds] = useState<any>();
 
   useEffect(() => {

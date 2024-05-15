@@ -61,8 +61,12 @@ const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
       if (item?.exit_price) {
         exitPrice += item?.exit_price ? item?.exit_price : 0;
       }
-      if (item?.adjusted_price) {
-        adjustedPrice += item?.adjusted_price ? Number(item?.adjusted_price) : 0;
+      if (item?.adjusted_price !== undefined && item?.quantity !== undefined) {
+        let temp: any;
+        temp =
+          Number(item?.adjusted_price) *
+          (item?.quantity ? Number(item?.quantity) : 1);
+        adjustedPrice += temp;
       }
     });
     setTotalValues({
