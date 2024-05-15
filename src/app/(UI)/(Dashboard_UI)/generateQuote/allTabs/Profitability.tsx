@@ -753,12 +753,14 @@ const Profitability: FC<any> = ({
       ]);
       setShowUpdateLineItemModal(false);
       dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
+        setSelectedRowData([]);
+        setSelectedRowIds([]);
         setProfitabilityData(d?.payload);
-        // window.location.reload();
       });
     }
   }, [updatedData]);
-  
+
+
   return (
     <>
       {bundleData?.map((item: any) => (
