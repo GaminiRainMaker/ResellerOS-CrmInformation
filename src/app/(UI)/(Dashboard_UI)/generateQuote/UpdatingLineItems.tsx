@@ -43,8 +43,6 @@ const fieldOption = [
 ];
 
 const UpdatingLineItems: FC<UpdateLineItemsInterFace> = ({
-  form,
-  onFinish,
   profabilityUpdationState,
   setProfabilityUpdationState,
 }) => {
@@ -64,9 +62,7 @@ const UpdatingLineItems: FC<UpdateLineItemsInterFace> = ({
   return (
     <Form
       name="dynamic_form_nest_item"
-      onFinish={onFinish}
       style={{maxWidth: 600}}
-      form={form}
       autoComplete="off"
       layout="vertical"
       requiredMark={false}

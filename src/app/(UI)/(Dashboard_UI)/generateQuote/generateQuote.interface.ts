@@ -38,8 +38,6 @@ export interface UploadFileInterface {
 }
 
 export interface UpdateLineItemsInterFace {
-  form?: FormInstance;
-  onFinish?: any;
   setProfabilityUpdationState: Dispatch<
     SetStateAction<
       {
