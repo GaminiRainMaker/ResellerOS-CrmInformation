@@ -603,7 +603,7 @@ const Profitability: FC<any> = ({
       title: 'Gross Profit %',
       dataIndex: 'gross_profit_percentage',
       key: 'gross_profit_percentage',
-      width: 120,
+      width: 150,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
           {text ? `${abbreviate(text ?? '--')} %` : '--'}
