@@ -83,6 +83,8 @@ const GenerateQuote: React.FC = () => {
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
   const [isDeleteInputDetailModal, setIsDeleteInputDetailModal] =
     useState<boolean>(false);
+  const [isDeleteProfitabilityModal, setIsDeleteProfitabilityModal] =
+    useState<boolean>(false);
   const [selectedFilter, setSelectedFilter] = useState<string>('File Name');
   const [familyFilter, setFamilyFilter] = useState<any>([]);
   const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] =
@@ -103,12 +105,18 @@ const GenerateQuote: React.FC = () => {
   );
 
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
-    Array<{id: number; value: string | number; field: string | null}>
+    Array<{
+      id: number;
+      value: string | number;
+      field: string | null;
+      label: string;
+    }>
   >([
     {
       id: 1,
       field: null,
       value: '',
+      label: '',
     },
   ]);
   const [showUpdateLineItemModal, setShowUpdateLineItemModal] =
@@ -271,30 +279,32 @@ const GenerateQuote: React.FC = () => {
           name="Body 3/Regular"
           cursor="pointer"
           onClick={() => {
-            setShowUpdateLineItemModal(true);
+            if (selectTedRowData?.length > 0) {
+              setShowUpdateLineItemModal(true);
+            }
           }}
         >
           Edit Selected
         </Typography>
       ),
     },
-    // {
-    //   key: '3',
-    //   label: (
-    //     <Typography
-    //       name="Body 3/Regular"
-    //       color={token?.colorError}
-    //       cursor="pointer"
-    //       onClick={() => {
-    //         if (activeTab === '1') {
-    //           setIsDeleteInputDetailModal(true);
-    //         }
-    //       }}
-    //     >
-    //       Delete Selected
-    //     </Typography>
-    //   ),
-    // },
+    {
+      key: '3',
+      label: (
+        <Typography
+          name="Body 3/Regular"
+          color={token?.colorError}
+          cursor="pointer"
+          onClick={() => {
+            if (selectTedRowIds?.length > 0) {
+              setIsDeleteProfitabilityModal(true);
+            }
+          }}
+        >
+          Delete Selected
+        </Typography>
+      ),
+    },
   ];
 
   const TabPaneData = [
@@ -342,8 +352,11 @@ const GenerateQuote: React.FC = () => {
         <Profitability
           tableColumnDataShow={tableColumnDataShow}
           setSelectedRowIds={setSelectedRowIds}
+          selectTedRowIds={selectTedRowIds}
           selectedFilter={selectedFilter}
           setSelectedRowData={setSelectedRowData}
+          isDeleteProfitabilityModal={isDeleteProfitabilityModal}
+          setIsDeleteProfitabilityModal={setIsDeleteProfitabilityModal}
         />
       ),
     },
@@ -471,7 +484,7 @@ const GenerateQuote: React.FC = () => {
 
   const updateLineItems = () => {
     const finalData = selectTedRowData?.map((obj: any) => {
-      const newObj = {...obj}; 
+      const newObj = {...obj};
       profabilityUpdationState?.forEach((update: any) => {
         if (newObj.hasOwnProperty(update?.field)) {
           newObj[update?.field] = update?.value;
@@ -496,7 +509,6 @@ const GenerateQuote: React.FC = () => {
     setUpdatedData(finalData);
   };
 
-
   useEffect(() => {
     if (updatedData?.length > 0) {
       console.log('updatedData', updatedData);
@@ -511,6 +523,7 @@ const GenerateQuote: React.FC = () => {
           id: 1,
           field: null,
           value: '',
+          label: '',
         },
       ]);
       setShowUpdateLineItemModal(false);
@@ -679,6 +692,14 @@ const GenerateQuote: React.FC = () => {
           updateLineItems();
         }}
         onCancel={() => {
+          setProfabilityUpdationState([
+            {
+              id: 1,
+              field: null,
+              value: '',
+              label: '',
+            },
+          ]);
           setShowUpdateLineItemModal(false);
         }}
         bodyPadding={20}

@@ -46,6 +46,7 @@ export interface UpdateLineItemsInterFace {
         id: number;
         value: string | number;
         field: string | null;
+        label: string;
       }[]
     >
   >;
@@ -53,5 +54,6 @@ export interface UpdateLineItemsInterFace {
     id: number;
     value: string | number;
     field: string | null;
+    label: string;
   }[];
 }

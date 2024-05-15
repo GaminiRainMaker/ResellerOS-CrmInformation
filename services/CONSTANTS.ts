@@ -62,6 +62,7 @@ export const API = {
   PROFITABALITY: {
     INDEX: '/profitability',
     QUERY: '/profitability/query',
+    DeleteById: '/profitability/deleteProfitabilityById',
   },
   BUNDLE: {
     INDEX: '/bundle',

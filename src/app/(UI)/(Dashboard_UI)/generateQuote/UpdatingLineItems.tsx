@@ -1,15 +1,15 @@
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
-import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
+import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import { pricingMethod } from '@/app/utils/CONSTANTS';
-import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { Form } from 'antd';
-import { FC, useState } from 'react';
-import { UpdateLineItemsInterFace } from './generateQuote.interface';
+import {pricingMethod} from '@/app/utils/CONSTANTS';
+import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {Form} from 'antd';
+import {FC, useState} from 'react';
+import {UpdateLineItemsInterFace} from './generateQuote.interface';
 
 const fieldOption = [
   {
@@ -58,10 +58,15 @@ const UpdatingLineItems: FC<UpdateLineItemsInterFace> = ({
           (data: any) => data?.field === item?.value,
         ),
     );
-    console.log('updatedOptions', updatedOptions);
     setFinalFieldOption(updatedOptions);
+    // console.log(
+    //   'profabilityUpdationState',
+    //   profabilityUpdationState,
+    //   updatedOptions,
+    // );
   };
 
+  console.log('profabilityUpdationStateqwe', profabilityUpdationState);
   return (
     <Form
       name="dynamic_form_nest_item"
@@ -99,13 +104,17 @@ const UpdatingLineItems: FC<UpdateLineItemsInterFace> = ({
                 style={{width: '100%'}}
                 options={finalFieldOption}
                 value={field}
-                onChange={(value) => {
-                  console.log('value123', value);
+                onChange={(value: string, option: any) => {
+                  console.log('value123', value, option);
                   setProfabilityUpdationState((prev) =>
                     prev.map((prevItem) => {
                       if (prevItem.id === id) {
                         console.log('value123 idsddssd', value);
-                        return {...prevItem, field: value};
+                        return {
+                          ...prevItem,
+                          field: value,
+                          label: option?.label,
+                        };
                       }
                       return prevItem;
                     }),
@@ -173,11 +182,22 @@ const UpdatingLineItems: FC<UpdateLineItemsInterFace> = ({
               width={25}
               color={token?.colorError}
               onClick={(e: any) => {
-                console.log('updateFieldOptions', e, e?.target?.value);
-                updateFieldOptions();
+                let tempArrayElement = {value: '', label: ''};
                 setProfabilityUpdationState((prev) =>
-                  prev.filter((prevItem) => prevItem.id !== id),
+                  prev.filter((prevItem) => {
+                    if (prevItem.id === id) {
+                      tempArrayElement = {
+                        value: prevItem.field || '',
+                        label: prevItem.label,
+                      };
+                    }
+                    return prevItem.id !== id;
+                  }),
                 );
+                setFinalFieldOption((prevOptions: any) => [
+                  ...prevOptions,
+                  ...[tempArrayElement],
+                ]);
               }}
               style={{paddingTop: '10px'}}
               cursor="pointer"
@@ -196,7 +216,14 @@ const UpdatingLineItems: FC<UpdateLineItemsInterFace> = ({
           onClick={() => {
             setProfabilityUpdationState((prev) => [
               ...prev,
-              ...[{id: prev.length + 1, value: '', field: null}],
+              ...[
+                {
+                  id: Math.floor(Math.random() * 10000000 + 10),
+                  value: '',
+                  field: null,
+                  label: '',
+                },
+              ],
             ]);
             updateFieldOptions();
           }}

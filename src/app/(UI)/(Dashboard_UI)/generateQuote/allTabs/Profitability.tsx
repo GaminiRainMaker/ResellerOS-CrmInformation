@@ -26,17 +26,22 @@ import {
 } from '../../../../../../redux/actions/bundle';
 import {updateProductFamily} from '../../../../../../redux/actions/product';
 import {
+  deleteProfitabilityById,
   getProfitabilityByQuoteId,
   updateProfitabilityById,
 } from '../../../../../../redux/actions/profitability';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 
 const Profitability: FC<any> = ({
   tableColumnDataShow,
   setSelectedRowIds,
   selectedFilter,
   setSelectedRowData,
+  setIsDeleteProfitabilityModal,
+  isDeleteProfitabilityModal,
+  selectTedRowIds,
 }) => {
   const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
@@ -675,6 +680,19 @@ const Profitability: FC<any> = ({
     });
   }, [getQuoteID]);
 
+  const deleteProfitabityData = () => {
+    dispatch(deleteProfitabilityById({Ids: selectTedRowIds})).then((d) => {
+      if (d?.payload) {
+        dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then(
+          (d: any) => {
+            setProfitabilityData(d?.payload);
+            setIsDeleteProfitabilityModal(false);
+          },
+        );
+      }
+    });
+  };
+
   return (
     <>
       {bundleData?.map((item: any) => (
@@ -791,6 +809,14 @@ const Profitability: FC<any> = ({
           subTitle="Please Update from admin Configuration Tab or Request to admin to update the columns."
         />
       )}
+      <DeleteModal
+        setShowModalDelete={setIsDeleteProfitabilityModal}
+        setDeleteIds={setSelectedRowIds}
+        showModalDelete={isDeleteProfitabilityModal}
+        deleteSelectedIds={deleteProfitabityData}
+        description="Are you sure you want to delete this Profitability?"
+        heading="Delete Profitability"
+      />
     </>
   );
 };
