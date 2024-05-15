@@ -9,6 +9,8 @@ import OsCollapse from '@/app/components/common/os-collapse';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
+import OsModal from '@/app/components/common/os-modal';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
@@ -32,7 +34,7 @@ import {
 } from '../../../../../../redux/actions/profitability';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
-import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import UpdatingLineItems from '../UpdatingLineItems';
 
 const Profitability: FC<any> = ({
   tableColumnDataShow,
@@ -42,6 +44,11 @@ const Profitability: FC<any> = ({
   setIsDeleteProfitabilityModal,
   isDeleteProfitabilityModal,
   selectTedRowIds,
+  profitabilityData,
+  setProfitabilityData,
+  setShowUpdateLineItemModal,
+  showUpdateLineItemModal,
+  selectTedRowData,
 }) => {
   const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
@@ -49,17 +56,29 @@ const Profitability: FC<any> = ({
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const [familyFilter, setFamilyFilter] = useState<any>([]);
-  const {
-    data: profitabilityDataByQuoteId,
-    loading,
-    isProfitabilityCall,
-  } = useAppSelector((state) => state.profitability);
-  const [profitabilityData, setProfitabilityData] = useState<any>();
+  const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
+    (state) => state.profitability,
+  );
+  const [profabilityUpdationState, setProfabilityUpdationState] = useState<
+    Array<{
+      id: number;
+      value: string | number;
+      field: string | null;
+      label: string;
+    }>
+  >([
+    {
+      id: 1,
+      field: null,
+      value: '',
+      label: '',
+    },
+  ]);
+  const [updatedData, setUpdatedData] = useState<any>([]);
 
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Profitability" />,
   };
-  console.log('profitabilityDataByQuoteId', profitabilityDataByQuoteId);
 
   useEffect(() => {
     const filteredDataa = profitabilityDataByQuoteId?.filter(
@@ -693,6 +712,53 @@ const Profitability: FC<any> = ({
     });
   };
 
+  const updateLineItems = () => {
+    const finalData = selectTedRowData?.map((obj: any) => {
+      const newObj = {...obj};
+      profabilityUpdationState?.forEach((update: any) => {
+        if (newObj.hasOwnProperty(update?.field)) {
+          newObj[update?.field] = update?.value;
+        }
+      });
+      const profitabilityData = calculateProfitabilityData(
+        newObj.quantity,
+        newObj.pricing_method,
+        useRemoveDollarAndCommahook(newObj?.line_amount),
+        useRemoveDollarAndCommahook(newObj?.adjusted_price),
+        useRemoveDollarAndCommahook(newObj?.list_price),
+      );
+      newObj.unit_price = profitabilityData?.unitPrice;
+      newObj.exit_price = profitabilityData?.exitPrice;
+      newObj.gross_profit = profitabilityData?.grossProfit;
+      newObj.gross_profit_percentage = profitabilityData?.grossProfitPercentage;
+      delete newObj?.profitabilityData;
+
+      return newObj;
+    });
+
+    setUpdatedData(finalData);
+  };
+
+  useEffect(() => {
+    if (updatedData?.length > 0) {
+      updatedData?.forEach((item: any) => {
+        dispatch(updateProfitabilityById(item));
+      });
+      setProfabilityUpdationState([
+        {
+          id: 1,
+          field: null,
+          value: '',
+          label: '',
+        },
+      ]);
+      setShowUpdateLineItemModal(false);
+      dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
+        setProfitabilityData(d?.payload);
+        // window.location.reload();
+      });
+    }
+  }, [updatedData]);
   return (
     <>
       {bundleData?.map((item: any) => (
@@ -816,6 +882,34 @@ const Profitability: FC<any> = ({
         deleteSelectedIds={deleteProfitabityData}
         description="Are you sure you want to delete this Profitability?"
         heading="Delete Profitability"
+      />
+      <OsModal
+        title={'Update LineItems'}
+        loading={loading}
+        body={
+          <UpdatingLineItems
+            profabilityUpdationState={profabilityUpdationState}
+            setProfabilityUpdationState={setProfabilityUpdationState}
+          />
+        }
+        width={700}
+        open={showUpdateLineItemModal}
+        onOk={() => {
+          updateLineItems();
+        }}
+        onCancel={() => {
+          setProfabilityUpdationState([
+            {
+              id: 1,
+              field: null,
+              value: '',
+              label: '',
+            },
+          ]);
+          setShowUpdateLineItemModal(false);
+        }}
+        bodyPadding={20}
+        primaryButtonText={'Save'}
       />
     </>
   );

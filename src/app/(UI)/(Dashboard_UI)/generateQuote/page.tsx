@@ -26,12 +26,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {selectData} from '@/app/utils/CONSTANTS';
-import {
-  calculateProfitabilityData,
-  formatDate,
-  updateTables,
-  useRemoveDollarAndCommahook,
-} from '@/app/utils/base';
+import {formatDate, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
 import {Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
@@ -53,13 +48,6 @@ import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
 import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
-import UpdatingLineItems from './UpdatingLineItems';
-import {updateQuoteLineItemById} from '../../../../../redux/actions/quotelineitem';
-import {
-  getProfitabilityByQuoteId,
-  updateProfitabilityById,
-} from '../../../../../redux/actions/profitability';
-import {setIsProfitabilityCall} from '../../../../../redux/slices/profitability';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -76,7 +64,6 @@ const GenerateQuote: React.FC = () => {
   );
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [selectTedRowData, setSelectedRowData] = useState<React.Key[]>([]);
-  const [updatedData, setUpdatedData] = useState<any>([]);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [amountData, setAmountData] = useState<any>();
   const [open, setOpen] = useState(false);
@@ -93,32 +80,11 @@ const GenerateQuote: React.FC = () => {
   const {data: contractSettingData} = useAppSelector(
     (state) => state.contractSetting,
   );
-  const {userInformation} = useAppSelector((state) => state.user);
   const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
+  const [profitabilityData, setProfitabilityData] = useState<any>();
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
   const [quoteLineItemExist, setQuoteLineItemExist] = useState<boolean>(false);
-  const {loading: quoteFileDataLoading, data: quoteFileData} = useAppSelector(
-    (state) => state.quoteFile,
-  );
-  const {loading: profitabilityLoading} = useAppSelector(
-    (state) => state.profitability,
-  );
-
-  const [profabilityUpdationState, setProfabilityUpdationState] = useState<
-    Array<{
-      id: number;
-      value: string | number;
-      field: string | null;
-      label: string;
-    }>
-  >([
-    {
-      id: 1,
-      field: null,
-      value: '',
-      label: '',
-    },
-  ]);
+  const {data: quoteFileData} = useAppSelector((state) => state.quoteFile);
   const [showUpdateLineItemModal, setShowUpdateLineItemModal] =
     useState<boolean>(false);
   useEffect(() => {
@@ -350,11 +316,16 @@ const GenerateQuote: React.FC = () => {
       ),
       children: (
         <Profitability
+          profitabilityData={profitabilityData}
+          setProfitabilityData={setProfitabilityData}
           tableColumnDataShow={tableColumnDataShow}
           setSelectedRowIds={setSelectedRowIds}
           selectTedRowIds={selectTedRowIds}
           selectedFilter={selectedFilter}
           setSelectedRowData={setSelectedRowData}
+          setShowUpdateLineItemModal={setShowUpdateLineItemModal}
+          showUpdateLineItemModal={showUpdateLineItemModal}
+          selectTedRowData={selectTedRowData}
           isDeleteProfitabilityModal={isDeleteProfitabilityModal}
           setIsDeleteProfitabilityModal={setIsDeleteProfitabilityModal}
         />
@@ -456,79 +427,6 @@ const GenerateQuote: React.FC = () => {
       console.error('Error:', error);
     }
   };
-
-  // const updateLineItems = () => {
-  //   const updated = selectTedRowData?.map((obj: any) => {
-  //     return profabilityUpdationState?.reduce(
-  //       (acc: any, update: any) => {
-  //         if (obj?.hasOwnProperty(update?.field)) {
-  //           acc[update?.field] = update?.value;
-  //         }
-  //         return acc;
-  //       },
-  //       {...obj},
-  //     );
-  //   });
-  //   updated?.map((updatedItem: any) => {
-  //     const result: any = calculateProfitabilityData(
-  //       updatedItem?.quantity,
-  //       updatedItem?.pricing_method,
-  //       useRemoveDollarAndCommahook(updatedItem?.line_amount),
-  //       useRemoveDollarAndCommahook(updatedItem?.adjusted_price),
-  //       useRemoveDollarAndCommahook(updatedItem?.list_price),
-  //     );
-  //     console.log('result', result);
-  //   });
-  //   setUpdatedData(updated);
-  // };
-
-  const updateLineItems = () => {
-    const finalData = selectTedRowData?.map((obj: any) => {
-      const newObj = {...obj};
-      profabilityUpdationState?.forEach((update: any) => {
-        if (newObj.hasOwnProperty(update?.field)) {
-          newObj[update?.field] = update?.value;
-        }
-      });
-      const profitabilityData = calculateProfitabilityData(
-        newObj.quantity,
-        newObj.pricing_method,
-        useRemoveDollarAndCommahook(newObj?.line_amount),
-        useRemoveDollarAndCommahook(newObj?.adjusted_price),
-        useRemoveDollarAndCommahook(newObj?.list_price),
-      );
-      newObj.unit_price = profitabilityData?.unitPrice;
-      newObj.exit_price = profitabilityData?.exitPrice;
-      newObj.gross_profit = profitabilityData?.grossProfit;
-      newObj.gross_profit_percentage = profitabilityData?.grossProfitPercentage;
-      delete newObj?.profitabilityData;
-
-      return newObj;
-    });
-
-    setUpdatedData(finalData);
-  };
-
-  useEffect(() => {
-    if (updatedData?.length > 0) {
-      console.log('updatedData', updatedData);
-      updatedData?.forEach((item: any) => {
-        dispatch(updateProfitabilityById(item));
-      });
-
-      // dispatch(setIsProfitabilityCall(true));
-      // dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
-      setProfabilityUpdationState([
-        {
-          id: 1,
-          field: null,
-          value: '',
-          label: '',
-        },
-      ]);
-      setShowUpdateLineItemModal(false);
-    }
-  }, [updatedData]);
 
   return (
     <>
@@ -676,35 +574,6 @@ const GenerateQuote: React.FC = () => {
           }}
         />
       )}
-
-      <OsModal
-        title={'Update LineItems'}
-        loading={profitabilityLoading}
-        body={
-          <UpdatingLineItems
-            profabilityUpdationState={profabilityUpdationState}
-            setProfabilityUpdationState={setProfabilityUpdationState}
-          />
-        }
-        width={700}
-        open={showUpdateLineItemModal}
-        onOk={() => {
-          updateLineItems();
-        }}
-        onCancel={() => {
-          setProfabilityUpdationState([
-            {
-              id: 1,
-              field: null,
-              value: '',
-              label: '',
-            },
-          ]);
-          setShowUpdateLineItemModal(false);
-        }}
-        bodyPadding={20}
-        primaryButtonText={'Save'}
-      />
     </>
   );
 };
