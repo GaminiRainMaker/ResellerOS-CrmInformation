@@ -226,10 +226,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       // }
       let newArrValues = getLineItemsWithNonRepitive(alllArrayValue);
 
-      const lineItem = alllArrayValue;
       let allProductCodes: any = [];
       let allProductCodeDataa: any = [];
-      lineItem?.map((itemsPro: any) => {
+      alllArrayValue?.map((itemsPro: any) => {
         allProductCodes?.push(
           itemsPro?.product_code
             ? itemsPro?.product_code?.replace(/\s/g, '')
@@ -247,19 +246,20 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       if (valuessOfAlreayExist?.payload?.length > 0) {
         // ======To get items that are  non added Values==============
         let newInsertionData = getValuesOFLineItemsThoseNotAddedBefore(
-          lineItem,
+          alllArrayValue,
           allProductCodeDataa,
         );
 
         if (newInsertionData?.length > 0) {
+          let newArrrForConcat: any = [...allProductCodeDataa];
           await dispatch(insertProductsInBulk(newInsertionData))?.then(
             (payload: any) => {
-              console.log('43534543', payload);
               payload?.payload?.map((itemsBulk: any) => {
-                allProductCodeDataa?.push(itemsBulk);
+                newArrrForConcat?.push(itemsBulk);
               });
             },
           );
+          allProductCodeDataa = newArrrForConcat;
         }
       } else {
         await dispatch(insertProductsInBulk(newArrValues))?.then(
@@ -270,16 +270,13 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           },
         );
       }
-      console.log('43534543', valuessOfAlreayExist, allProductCodeDataa);
-
-      return;
 
       if (alllArrayValue) {
         for (let i = 0; i < alllArrayValue?.length; i++) {
           let itemsOfProduct = alllArrayValue[i];
           if (itemsOfProduct) {
-            let productCode = alllArrayValue?.product_code
-              ? alllArrayValue?.product_code?.replace(/\s/g, '')
+            let productCode = itemsOfProduct?.product_code
+              ? itemsOfProduct?.product_code?.replace(/\s/g, '')
               : 'NEWCODE0123';
             let itemsToAdd = allProductCodeDataa?.find(
               (productItemFind: any) =>
