@@ -59,14 +59,8 @@ const UpdatingLineItems: FC<UpdateLineItemsInterFace> = ({
         ),
     );
     setFinalFieldOption(updatedOptions);
-    // console.log(
-    //   'profabilityUpdationState',
-    //   profabilityUpdationState,
-    //   updatedOptions,
-    // );
   };
 
-  console.log('profabilityUpdationStateqwe', profabilityUpdationState);
   return (
     <Form
       name="dynamic_form_nest_item"
@@ -109,7 +103,6 @@ const UpdatingLineItems: FC<UpdateLineItemsInterFace> = ({
                   setProfabilityUpdationState((prev) =>
                     prev.map((prevItem) => {
                       if (prevItem.id === id) {
-                        console.log('value123 idsddssd', value);
                         return {
                           ...prevItem,
                           field: value,
