@@ -735,7 +735,6 @@ const Profitability: FC<any> = ({
 
       return newObj;
     });
-
     setUpdatedData(finalData);
   };
 
@@ -759,6 +758,7 @@ const Profitability: FC<any> = ({
       });
     }
   }, [updatedData]);
+  
   return (
     <>
       {bundleData?.map((item: any) => (
