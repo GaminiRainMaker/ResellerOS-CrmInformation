@@ -187,7 +187,7 @@ const EditorFile = () => {
   }, [updateLineItemsValue]);
 
   useEffect(() => {
-    dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then((payload: any) => {
+    dispatch(getQuoteFileById(Number(getQUoteId)))?.then((payload: any) => {
       if (payload?.payload === null) {
         setReturnModalBack(true);
       }
