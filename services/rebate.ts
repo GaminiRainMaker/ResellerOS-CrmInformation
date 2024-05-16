@@ -16,4 +16,5 @@ export const REBATE_API = {
     >,
   patch: (data: any) =>
     patch(API.REBATE.INDEX, data) as Promise<AxiosResponse<any>>,
+  getRebatesInBulk: (data: any) => post(API.REBATE.RebatesInBul, data),
 };

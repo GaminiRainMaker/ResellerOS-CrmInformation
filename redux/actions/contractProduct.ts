@@ -40,3 +40,15 @@ export const getContractProductByProductCode = createAsyncThunk(
     }
   },
 );
+
+export const getContractInBulkByProductCode = createAsyncThunk(
+  'contractProduct/getContractInBulkByProductCode',
+  async (product_code: string, thunkApi) => {
+    try {
+      const res = await CONTRACT_PRODUCT_API.getContractInBulk(product_code);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

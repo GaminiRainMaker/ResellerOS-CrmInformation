@@ -56,16 +56,6 @@ const EditorFile = () => {
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
 
   // ============================== SalesForce Implementations ======================================
-  // const fetechData = async () => {
-  //   const response = await fetch('https://dummyjson.com/todo');
-  //   if (response) {
-  //     const responseData = await response?.json();
-  //     console.log('responseresponse', responseData?.todos);
-  //   }
-  // };
-  // useEffect(() => {
-  //   fetechData();
-  // }, []);
 
   useEffect(() => {
     if (ExistingQuoteItemss === 'true') {

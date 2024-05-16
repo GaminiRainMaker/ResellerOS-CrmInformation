@@ -7,14 +7,20 @@
 
 import axios from 'axios';
 import moment from 'moment';
-import {getContractProductByProductCode} from '../../../redux/actions/contractProduct';
+import {
+  getContractInBulkByProductCode,
+  getContractProductByProductCode,
+} from '../../../redux/actions/contractProduct';
 import {insertProfitability} from '../../../redux/actions/profitability';
 import {quoteFileVerification} from '../../../redux/actions/quoteFile';
 import {
   DeleteQuoteLineItemById,
   updateQuoteLineItemById,
 } from '../../../redux/actions/quotelineitem';
-import {getRebatesByProductCode} from '../../../redux/actions/rebate';
+import {
+  getRebatesByProductCode,
+  getRebatesInBulkByProductCode,
+} from '../../../redux/actions/rebate';
 import {insertRebateQuoteLineItem} from '../../../redux/actions/rebateQuoteLineitem';
 import {insertValidation} from '../../../redux/actions/validation';
 
@@ -315,13 +321,35 @@ export const updateTables = async (
     const contractProductArray: any[] = [];
     const profitabilityArray: any[] = [];
     const finalLineItems: any[] = [];
+    const allProductCodes: any = [];
+    const allReabatesWithProductCodeData: any = [];
+    const allContractWithProductCodeData: any = [];
     if (edited) {
       quoteLineItemData?.forEach((item: any) => {
         dispatch(updateQuoteLineItemById(item));
       });
       dispatch(DeleteQuoteLineItemById({Ids: missingId}));
     }
+    quoteLineItemData?.map((productItems: any) => {
+      allProductCodes?.push(productItems.product_code);
+    });
 
+    // allProductCodes
+    await dispatch(getRebatesInBulkByProductCode(allProductCodes))?.then(
+      (payload: any) => {
+        payload?.payload?.map((items: any) => {
+          allReabatesWithProductCodeData?.push(items);
+        });
+      },
+    );
+
+    await dispatch(getContractInBulkByProductCode(allProductCodes))?.then(
+      (payload: any) => {
+        payload?.payload?.map((items: any) => {
+          allContractWithProductCodeData?.push(items);
+        });
+      },
+    );
     for (const item of quoteLineItemData) {
       const obj1: any = {
         quote_id: item.quote_id ?? getQuoteId,
@@ -339,28 +367,34 @@ export const updateTables = async (
         file_name: fileData?.title || fileData?.file_name,
         nanonets_id: item.nanonets_id,
       };
-      const RebatesByProductCodData = await dispatch(
-        getRebatesByProductCode(obj1.product_code),
+
+      // getRebatesInBulkByProductCode
+      // getContractInBulkByProductCode
+      let findRebateIndex = allReabatesWithProductCodeData?.findIndex(
+        (itemReb: any) => item.product_code === itemReb.product_code,
       );
-      if (RebatesByProductCodData?.payload?.id) {
+      if (findRebateIndex !== -1) {
         rebateDataArray.push({
           ...obj1,
           quote_line_item_id: item?.id,
-          rebate_id: RebatesByProductCodData.payload.id,
-          percentage_payout: RebatesByProductCodData.payload.percentage_payout,
+          rebate_id: allReabatesWithProductCodeData?.[findRebateIndex]?.id,
+          percentage_payout:
+            allReabatesWithProductCodeData?.[findRebateIndex]
+              ?.percentage_payout,
         });
       }
-
-      const contractProductByProductCode = await dispatch(
-        getContractProductByProductCode(obj1.product_code),
+      let findContractIndex = allContractWithProductCodeData?.findIndex(
+        (itemReb: any) => item.product_code === itemReb.product_code,
       );
-      if (contractProductByProductCode?.payload?.id) {
+      if (findContractIndex !== -1) {
         contractProductArray.push({
           ...obj1,
           quote_line_item_id: item?.id,
-          contract_product_id: contractProductByProductCode.payload.id,
+          contract_product_id:
+            allContractWithProductCodeData?.[findContractIndex]?.payload.id,
         });
       }
+
       if (item?.id) {
         profitabilityArray.push({
           ...obj1,
