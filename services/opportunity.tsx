@@ -17,4 +17,8 @@ export const OPPORTUNITY_API = {
     del(`${API.OPPORTUNITY.INDEX}`) as Promise<AxiosResponse<any>>,
   query: (data: any) =>
     post(API.OPPORTUNITY.QUERYOPPORTUNITY, data) as Promise<AxiosResponse<[]>>,
+  getAllOpportunityByOrganization: (data: any) =>
+    post(API.OPPORTUNITY.GetAllOpportunityByOrganization, data) as Promise<
+      AxiosResponse<[]>
+    >,
 };

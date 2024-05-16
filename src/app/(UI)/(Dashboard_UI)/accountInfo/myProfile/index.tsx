@@ -8,9 +8,7 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
-import OsInput from '@/app/components/common/os-input';
-import ProfileCard from '@/app/components/common/os-profile-card';
+import MyProfileCard from '@/app/components/common/os-profile-card/MyProfileCard';
 import DetailAnalyticCard from '@/app/components/common/os-table/DetailAnalyticCard';
 import Typography from '@/app/components/common/typography';
 import {
@@ -20,125 +18,119 @@ import {
 } from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
-import {useEffect} from 'react';
-import {getUserByIdLogin} from '../../../../../../redux/actions/user';
+import {useEffect, useState} from 'react';
+import {getAllOpportunityByOrganization} from '../../../../../../redux/actions/opportunity';
+import {getAllQuotesByOrganization} from '../../../../../../redux/actions/quote';
+import {
+  getUserByIdLogin,
+  updateUserById,
+} from '../../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
-import {CollapseSpaceStyle} from '../../dealRegDetail/DealRegDetailForm/styled-components';
+import ChangePassword from './ChangePassword';
+import EditUserDetails from './EditUserDetails';
+import {CustomMyProfileContentDiv} from './styled-components';
 
 const MyProfile = () => {
   const [token] = useThemeToken();
-  const {loginUserInformation: loginUserData, data} = useAppSelector(
-    (state) => state.user,
-  );
+  const [userDetailForm] = Form.useForm();
+  const [changePasswordForm] = Form.useForm();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const getUserID = searchParams.get('id');
+  const getOrganization = searchParams.get('organization');
+  const [profileDetailEditable, setProfileDetailEditable] =
+    useState<boolean>(true);
+  const [changePasswordEditable, setChangePasswordEditable] =
+    useState<boolean>(true);
+  const {loginUserInformation: UserDataById, loading} = useAppSelector(
+    (state) => state.user,
+  );
+  const {getAllOpportunityDataByOrganization} = useAppSelector(
+    (state) => state.Opportunity,
+  );
+  const {getAllQuotesDataByOrganization} = useAppSelector(
+    (state) => state.quote,
+  );
+
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{30}</div>,
-      secondry: 'Completed DealReg',
+      primary: <div>{getAllOpportunityDataByOrganization?.length ?? 0}</div>,
+      secondry: 'Total Opportunities',
       icon: <CheckCircleIcon width={36} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
     },
     {
       key: 2,
-      primary: <div>{125}</div>,
-      secondry: 'Completed Quotes',
+      primary: <div>{getAllQuotesDataByOrganization?.length}</div>,
+      secondry: 'Total Quotes',
       icon: <TagIcon width={36} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 3,
-      primary: <div>{45}</div>,
-      secondry: 'Completed Orders',
+      primary: (
+        <div>
+          {getAllQuotesDataByOrganization?.filter(
+            (getAllQuotesDataByOrganizationItem: any) =>
+              getAllQuotesDataByOrganizationItem?.status === 'Completed',
+          ).length ?? 0}
+        </div>
+      ),
+      secondry: 'Completed Quotes',
       icon: <CheckCircleIcon width={36} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
     },
   ];
-  const customerUpdatedData = {
-    id: 1,
-    name: 'gamini',
-    currency: 'Dollar',
-    shiping_address_line: '32-A',
-    shiping_city: 'B2 Sebiz',
-    shiping_state: 'California',
-    shiping_pin_code: '4241421',
-    shiping_country: 'California',
-    billing_address_line: '32-A',
-    billing_city: 'B2 Sebiz',
-    billing_state: 'California',
-    billing_pin_code: '4241421',
-    billing_country: 'California',
-    BillingContacts: '',
-  };
+
+  console.log('UserDataById', UserDataById);
+
+  useEffect(() => {
+    if (UserDataById) {
+      userDetailForm.setFieldsValue({
+        first_name: UserDataById?.first_name,
+        last_name: UserDataById?.last_name,
+        phone_number: UserDataById?.phone_number,
+        job_title: UserDataById?.job_title,
+        email: UserDataById?.email,
+      });
+    }
+  }, [UserDataById]);
+
   useEffect(() => {
     if (getUserID) {
       dispatch(getUserByIdLogin(getUserID));
+      dispatch(
+        getAllOpportunityByOrganization({organization: getOrganization}),
+      );
+      dispatch(getAllQuotesByOrganization({organization: getOrganization}));
     }
   }, [getUserID]);
 
-  const headerButtons = (
-    <OsButton
-      text="Edit"
-      buttontype="PRIMARY"
-      icon={<PencilSquareIcon width={24} />}
-    />
-  );
-
-  const ResponseDetailItem = [
-    {
-      key: '1',
-      label: <Typography name="Body 2/Medium">Change Password</Typography>,
-      children: (
-        <Form layout="vertical">
-          <Row>
-            <Col sm={24}>
-              <Form.Item
-                label={
-                  <Typography name="Body 4/Medium">Old Password</Typography>
-                }
-                name="customer_id"
-              >
-                <OsInput placeholder="Write text here!" />
-              </Form.Item>
-            </Col>
-            <Col sm={24}>
-              <Form.Item
-                label={
-                  <Typography name="Body 4/Medium">New Password</Typography>
-                }
-                name="contact_id"
-              >
-                <OsInput placeholder="Write text here!" />
-              </Form.Item>
-            </Col>
-            <Col sm={24}>
-              <Form.Item
-                label={
-                  <Typography name="Body 4/Medium">Confirm Password</Typography>
-                }
-                name="industry_id"
-              >
-                <OsInput placeholder="Write text here!" />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
-      ),
-    },
-  ];
+  const updateUserDetail = () => {
+    const userData = userDetailForm?.getFieldsValue();
+    if (userData) {
+      dispatch(updateUserById({...userData, id: Number(getUserID)})).then(
+        (d) => {
+          if (d?.payload) {
+            dispatch(getUserByIdLogin(getUserID));
+          }
+        },
+      );
+    }
+    console.log('userDetailForm', userData);
+    setProfileDetailEditable(true);
+  };
+  const changePasswordValue = () => {
+    const changePasswordFormData = changePasswordForm?.getFieldsValue();
+    console.log('changePasswordFormData', changePasswordFormData);
+    setChangePasswordEditable(true);
+  };
 
   return (
-    <Row justify="space-between" style={{width: '100%'}} gutter={[16, 16]}>
-      <Col sm={24} md={8} span={8}>
-        <ProfileCard
-          headerButtons={headerButtons}
-          customerData={loginUserData}
-          myProfile
-        />
-      </Col>
-      <Col sm={24} md={16} span={16}>
+    <>
+      <Row justify="space-between" style={{width: '100%'}} gutter={[16, 16]}>
+        <MyProfileCard data={UserDataById} />
         <Space direction="vertical" size={24} style={{width: '100%'}}>
           <Row gutter={[16, 16]} justify="center">
             {analyticsData?.map((item: any) => (
@@ -152,14 +144,102 @@ const MyProfile = () => {
               </Col>
             ))}
           </Row>
-          <Row justify="center">
-            <CollapseSpaceStyle size={24} direction="vertical">
-              <OsCollapseAdmin items={ResponseDetailItem} />
-            </CollapseSpaceStyle>
-          </Row>
+          <CustomMyProfileContentDiv>
+            <Row justify="space-between">
+              <Col>
+                <Typography
+                  name="Body 2/Medium"
+                  color={token?.colorPrimaryText}
+                >
+                  Profile Details
+                </Typography>
+              </Col>
+              <Col>
+                {!profileDetailEditable ? (
+                  <Space size={5}>
+                    <OsButton
+                      text="Cancel"
+                      buttontype="SECONDARY"
+                      clickHandler={() => {
+                        setProfileDetailEditable(true);
+                      }}
+                    />
+                    <OsButton
+                      text="Save"
+                      buttontype="PRIMARY"
+                      clickHandler={userDetailForm?.submit}
+                    />
+                  </Space>
+                ) : (
+                  <OsButton
+                    text="Edit"
+                    buttontype="PRIMARY"
+                    icon={<PencilSquareIcon width={20} />}
+                    clickHandler={() => {
+                      setProfileDetailEditable(false);
+                    }}
+                  />
+                )}
+              </Col>
+            </Row>
+            <br />
+            <br />
+            <EditUserDetails
+              onFinish={updateUserDetail}
+              form={userDetailForm}
+              isEditable={profileDetailEditable}
+            />
+          </CustomMyProfileContentDiv>
+
+          <CustomMyProfileContentDiv>
+            <Row justify="space-between">
+              <Col>
+                <Typography
+                  name="Body 2/Medium"
+                  color={token?.colorPrimaryText}
+                >
+                  Change Password
+                </Typography>
+              </Col>
+              <Col>
+                {!changePasswordEditable ? (
+                  <Space size={5}>
+                    <OsButton
+                      text="Cancel"
+                      buttontype="SECONDARY"
+                      clickHandler={() => {
+                        setChangePasswordEditable(true);
+                      }}
+                    />
+                    <OsButton
+                      text="Save"
+                      buttontype="PRIMARY"
+                      clickHandler={changePasswordForm?.submit}
+                    />
+                  </Space>
+                ) : (
+                  <OsButton
+                    text="Edit"
+                    buttontype="PRIMARY"
+                    icon={<PencilSquareIcon width={20} />}
+                    clickHandler={() => {
+                      setChangePasswordEditable(false);
+                    }}
+                  />
+                )}
+              </Col>
+            </Row>
+            <br />
+            <br />
+            <ChangePassword
+              onFinish={changePasswordValue}
+              form={changePasswordForm}
+              isEditable={changePasswordEditable}
+            />
+          </CustomMyProfileContentDiv>
         </Space>
-      </Col>
-    </Row>
+      </Row>
+    </>
   );
 };
 export default MyProfile;

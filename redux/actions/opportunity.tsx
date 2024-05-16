@@ -85,3 +85,14 @@ export const queryOpportunity = createAsyncThunk(
     }
   },
 );
+export const getAllOpportunityByOrganization = createAsyncThunk(
+  'opportunity/getAllOpportunityByOrganization',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await OPPORTUNITY_API.getAllOpportunityByOrganization(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

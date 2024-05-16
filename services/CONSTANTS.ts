@@ -20,6 +20,7 @@ export const API = {
     ConcernUpdate: '/quote/updateQuoteConcern',
     UpdateQuoteStatusById: '/quote/updateQuoteStatusById',
     QueryAllManualQuotes: '/quote/queryAllManualQuotes',
+    GetAllQuotesByOrganization: '/quote/getAllQuotesByOrganization',
   },
   QUOTE_LINE_ITEM: {
     INDEX: '/quoteLineItem',
@@ -111,6 +112,8 @@ export const API = {
     QUERY: '/opportunity/getOpportunityById',
     DELETE: '/opportunity/deleteOpportunityById',
     QUERYOPPORTUNITY: '/opportunity/query',
+    GetAllOpportunityByOrganization:
+      '/opportunity/getAllOpportunityByOrganization',
   },
   TABLECOLUMN: {
     INDEX: '/TableColumn',

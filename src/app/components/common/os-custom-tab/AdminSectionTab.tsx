@@ -18,7 +18,13 @@ const AdminCustomTabs: FC<any> = (tabs) => {
   useEffect(() => {
     if (tabs?.tabs?.length > 0) {
       const initialChild = tabs?.tabs[0]?.childitem?.[0]?.superChild;
+      // console.log(
+      //   'initialChild',
+      //   initialChild,
+      //   3,
+      // );
       setTempChild(initialChild);
+      // setActivekeysall(7);
       setActivekeysall(tabs?.tabs[0]?.childitem?.[0]?.key);
     }
   }, [tabs]);

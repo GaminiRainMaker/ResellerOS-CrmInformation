@@ -139,7 +139,7 @@ const CustomHeader = () => {
   useEffect(() => {
     setNotificationCounts(0);
   }, [notificationData]);
-
+  console.log('userInformation', userInformation);
   const items: MenuProps['items'] = [
     {
       key: '1',
@@ -147,7 +147,11 @@ const CustomHeader = () => {
         <Typography
           name="Body 3/Regular"
           cursor="pointer"
-          onClick={() => router.push(`/accountInfo`)}
+          onClick={() =>
+            router.push(
+              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}`,
+            )
+          }
         >
           My Account{' '}
         </Typography>
