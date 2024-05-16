@@ -37,3 +37,14 @@ export const getRebatesByProductCode = createAsyncThunk(
     }
   },
 );
+export const getRebatesInBulkByProductCode = createAsyncThunk(
+  'rebate/getRebatesInBulkByProductCode',
+  async (data: string, thunkApi) => {
+    try {
+      const res = await REBATE_API.getRebatesInBulk(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

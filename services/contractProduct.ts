@@ -16,4 +16,6 @@ export const CONTRACT_PRODUCT_API = {
     >,
   patch: (data: any) =>
     patch(API.CONTRACT_PRODUCT.INDEX, data) as Promise<AxiosResponse<any>>,
+  getContractInBulk: (data: any) =>
+    post(API.CONTRACT_PRODUCT.getContractInBulk, data),
 };

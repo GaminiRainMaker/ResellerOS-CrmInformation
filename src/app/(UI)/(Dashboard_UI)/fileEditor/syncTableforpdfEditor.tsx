@@ -24,7 +24,10 @@ import {
 } from '@/app/utils/base';
 import {Col, Row, notification} from 'antd';
 import {RedirectType, useRouter, useSearchParams} from 'next/navigation';
-import {getContractProductByProductCode} from '../../../../../redux/actions/contractProduct';
+import {
+  getContractInBulkByProductCode,
+  getContractProductByProductCode,
+} from '../../../../../redux/actions/contractProduct';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {
   getBulkProductIsExisting,
@@ -38,7 +41,10 @@ import {
   deleteQuoteLineItemsByQuoteId,
   insertQuoteLineItem,
 } from '../../../../../redux/actions/quotelineitem';
-import {getRebatesByProductCode} from '../../../../../redux/actions/rebate';
+import {
+  getRebatesByProductCode,
+  getRebatesInBulkByProductCode,
+} from '../../../../../redux/actions/rebate';
 import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
 import {insertValidation} from '../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -209,25 +215,13 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         id: Number(getQuoteID),
       };
       await dispatch(updateQuoteJsonAndManual(data));
-      // let newArrValues: any = [];
-      // alllArrayValue.forEach((itemsPro: any) => {
-      //   newArrValues?.push({
-      //     ...itemsPro,
-      //     product_code: itemsPro?.product_code
-      //       ? itemsPro?.product_code?.replace(/\s/g, '')
-      //       : 'NEWCODE0123',
-      //     organization: userInformation.organization,
-      //   });
-      // });
 
-      // let insertedProduct: any;
-      // if (newArrValues) {
-      //   insertedProduct = await dispatch(insertProductsInBulk(newArrValues));
-      // }
       let newArrValues = getLineItemsWithNonRepitive(alllArrayValue);
 
       let allProductCodes: any = [];
       let allProductCodeDataa: any = [];
+      const allReabatesWithProductCodeData: any = [];
+      const allContractWithProductCodeData: any = [];
       alllArrayValue?.map((itemsPro: any) => {
         allProductCodes?.push(
           itemsPro?.product_code
@@ -273,6 +267,22 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         allProductCodeDataa = newArrrForConcat;
       }
 
+      await dispatch(getRebatesInBulkByProductCode(allProductCodes))?.then(
+        (payload: any) => {
+          payload?.payload?.map((items: any) => {
+            allReabatesWithProductCodeData?.push(items);
+          });
+        },
+      );
+
+      await dispatch(getContractInBulkByProductCode(allProductCodes))?.then(
+        (payload: any) => {
+          payload?.payload?.map((items: any) => {
+            allContractWithProductCodeData?.push(items);
+          });
+        },
+      );
+
       if (alllArrayValue) {
         for (let i = 0; i < alllArrayValue?.length; i++) {
           let itemsOfProduct = alllArrayValue[i];
@@ -305,24 +315,28 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               organization: userInformation.organization,
             };
 
-            const RebatesByProductCodData = await dispatch(
-              getRebatesByProductCode(itemsToAdd?.product_code),
+            let findRebateIndex = allReabatesWithProductCodeData?.findIndex(
+              (itemReb: any) =>
+                itemsToAdd.product_code === itemReb.product_code,
             );
-            if (RebatesByProductCodData?.payload?.id) {
+            if (findRebateIndex !== -1) {
               rebateDataArray?.push({
                 ...obj1,
-                rebate_id: RebatesByProductCodData?.payload?.id,
+                rebate_id: allReabatesWithProductCodeData?.[findRebateIndex].id,
                 percentage_payout:
-                  RebatesByProductCodData?.payload?.percentage_payout,
+                  allReabatesWithProductCodeData?.[findRebateIndex]
+                    ?.percentage_payout,
               });
             }
-            const contractProductByProductCode = await dispatch(
-              getContractProductByProductCode(itemsToAdd?.product_code),
+            let findContractIndex = allContractWithProductCodeData?.findIndex(
+              (itemReb: any) =>
+                itemsToAdd.product_code === itemReb.product_code,
             );
-            if (contractProductByProductCode?.payload?.id) {
+            if (findContractIndex !== -1) {
               contractProductArray?.push({
                 ...obj1,
-                contract_product_id: contractProductByProductCode?.payload?.id,
+                contract_product_id:
+                  allContractWithProductCodeData?.[findContractIndex]?.id,
                 // quote_file_id:
               });
             }
@@ -331,68 +345,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           }
         }
       }
-
-      // for (let i = 0; i < alllArrayValue?.length; i++) {
-      //   const items = alllArrayValue[i];
-      //   const insertedProduct = await dispatch(
-      //     insertProduct({
-      //       ...items,
-      //       organization: userInformation.organization,
-      //     }),
-      //   );
-
-      //   if (insertedProduct?.payload?.id) {
-      //     const obj1: any = {
-      //       quote_file_id: quoteFileById?.[0]?.id
-      //         ? quoteFileById?.[0]?.id
-      //         : getQuoteFileId,
-      //       quote_id: Number(getQuoteID),
-      //       product_id: insertedProduct?.payload?.id,
-      //       product_code: insertedProduct?.payload?.product_code,
-      //       // line_amount: useRemoveDollarAndCommahook(
-      //       //   insertedProduct?.payload?.line_amount,
-      //       // ),
-      //       list_price: useRemoveDollarAndCommahook(
-      //         insertedProduct?.payload?.list_price,
-      //       ),
-      //       description: insertedProduct?.payload?.description,
-      //       quantity: useRemoveDollarAndCommahook(
-      //         insertedProduct?.payload?.quantity,
-      //       ),
-      //       adjusted_price: useRemoveDollarAndCommahook(
-      //         insertedProduct?.payload?.adjusted_price,
-      //       ),
-      //       line_number: insertedProduct?.payload?.line_number,
-      //       organization: userInformation.organization,
-      //     };
-
-      //     const RebatesByProductCodData = await dispatch(
-      //       getRebatesByProductCode(insertedProduct?.payload?.product_code),
-      //     );
-      //     if (RebatesByProductCodData?.payload?.id) {
-      //       rebateDataArray?.push({
-      //         ...obj1,
-      //         rebate_id: RebatesByProductCodData?.payload?.id,
-      //         percentage_payout:
-      //           RebatesByProductCodData?.payload?.percentage_payout,
-      //       });
-      //     }
-      //     const contractProductByProductCode = await dispatch(
-      //       getContractProductByProductCode(
-      //         insertedProduct?.payload?.product_code,
-      //       ),
-      //     );
-      //     if (contractProductByProductCode?.payload?.id) {
-      //       contractProductArray?.push({
-      //         ...obj1,
-      //         contract_product_id: contractProductByProductCode?.payload?.id,
-      //         // quote_file_id:
-      //       });
-      //     }
-
-      //     newrrLineItems?.push(obj1);
-      //   }
-      // }
     }
 
     const finalOpportunityArray: any = [];
