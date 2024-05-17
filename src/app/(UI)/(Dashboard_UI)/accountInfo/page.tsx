@@ -17,7 +17,7 @@ const AccountInfo = () => {
       key: 2,
       title: 'Settings',
       childitem: [
-        {key: 7, name: 'Change Password'},
+        {key: 7, name: 'General Settings', superChild: 'fsfdasdfasdf'},
         {key: 4, name: 'Partner Passwords'},
       ],
     },

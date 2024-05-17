@@ -2,32 +2,43 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable arrow-body-style */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import {FC, useEffect, useState} from 'react';
-import Row from 'antd/es/grid/row';
 import Col from 'antd/es/grid/col';
+import Row from 'antd/es/grid/row';
+import {useSearchParams} from 'next/navigation';
+import {FC, useEffect, useState} from 'react';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
 import {CustomTabStyle} from './styled-components';
 
 const AdminCustomTabs: FC<any> = (tabs) => {
+  const searchParams = useSearchParams();
+  const getTab = searchParams.get('tab');
   const [activekeysall, setActivekeysall] = useState<number>(1);
   const [token] = useThemeToken();
   const [tempChild, setTempChild] = useState<any>();
 
   useEffect(() => {
     if (tabs?.tabs?.length > 0) {
-      const initialChild = tabs?.tabs[0]?.childitem?.[0]?.superChild;
-      // console.log(
-      //   'initialChild',
-      //   initialChild,
-      //   3,
-      // );
+      let tabIndex;
+      switch (getTab) {
+        case 'account':
+          tabIndex = 0;
+          break;
+        case 'settings':
+          tabIndex = 1;
+          break;
+        case 'support':
+          tabIndex = 2;
+          break;
+        default:
+          tabIndex = 0;
+      }
+      const initialChild = tabs.tabs[tabIndex]?.childitem?.[0]?.superChild;
       setTempChild(initialChild);
-      // setActivekeysall(7);
-      setActivekeysall(tabs?.tabs[0]?.childitem?.[0]?.key);
+      setActivekeysall(tabs.tabs[tabIndex]?.childitem?.[0]?.key);
     }
-  }, [tabs]);
+  }, [tabs, getTab]);
 
   const getSuperChild = () => {
     return (

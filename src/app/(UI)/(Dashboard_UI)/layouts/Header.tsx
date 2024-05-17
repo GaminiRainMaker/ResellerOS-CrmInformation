@@ -149,7 +149,7 @@ const CustomHeader = () => {
           cursor="pointer"
           onClick={() =>
             router.push(
-              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}`,
+              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=account`,
             )
           }
         >
@@ -163,7 +163,11 @@ const CustomHeader = () => {
         <Typography
           name="Body 3/Regular"
           cursor="pointer"
-          onClick={() => router.push(`/accountInfo`)}
+          onClick={() =>
+            router.push(
+              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=settings`,
+            )
+          }
         >
           Settings{' '}
         </Typography>
@@ -175,7 +179,11 @@ const CustomHeader = () => {
         <Typography
           name="Body 3/Regular"
           cursor="pointer"
-          onClick={() => router.push(`/accountInfo`)}
+          onClick={() =>
+            router.push(
+              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=support`,
+            )
+          }
         >
           Help & Support{' '}
         </Typography>
