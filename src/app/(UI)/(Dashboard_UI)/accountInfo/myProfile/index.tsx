@@ -84,8 +84,6 @@ const MyProfile = () => {
     },
   ];
 
-  console.log('UserDataById', UserDataById);
-
   useEffect(() => {
     if (UserDataById) {
       userDetailForm.setFieldsValue({
@@ -122,7 +120,7 @@ const MyProfile = () => {
     console.log('userDetailForm', userData);
     setProfileDetailEditable(true);
   };
-  
+
   const changePasswordValue = () => {
     const changePasswordFormData = changePasswordForm?.getFieldsValue();
     if (changePasswordFormData) {

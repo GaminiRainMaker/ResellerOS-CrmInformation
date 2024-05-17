@@ -105,7 +105,7 @@ const OrganizationUsers = () => {
             style={{cursor: 'pointer'}}
             onClick={() => {
               router.push(
-                `/accountInfo?id=${record?.id}&organization=${getOrganization}&role=admin`,
+                `/accountInfo?id=${record?.id}&organization=${getOrganization}&role=superAdmin`,
               );
             }}
           />

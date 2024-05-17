@@ -98,9 +98,13 @@ export const getUserByIdLogin = createAsyncThunk(
 
 export const queryAllUsers = createAsyncThunk(
   'user/queryAllUsers',
-  async (organization: any, thunkApi) => {
+  async (query: any, thunkApi) => {
     try {
-      const res = await USERAPI.query(organization);
+      let obj = {
+        organization: query?.organization,
+        name: query?.name,
+      };
+      const res = await USERAPI.query(obj);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);
