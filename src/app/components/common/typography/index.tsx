@@ -3,6 +3,7 @@ import useTypographyMappingHook from '../hooks/useTypographyMappingHook';
 import {TypographyInterface} from './typography.interface';
 import {DynamicDiv} from './styled-components';
 import useThemeToken from '../hooks/useThemeToken';
+import {Tooltip} from 'antd';
 
 const Typography: FC<TypographyInterface> = ({
   children,
@@ -17,6 +18,7 @@ const Typography: FC<TypographyInterface> = ({
   style,
   hoverOnText,
   className,
+  tooltip = false,
 }) => {
   const {typographyMap} = useTypographyMappingHook(name);
 
@@ -27,21 +29,23 @@ const Typography: FC<TypographyInterface> = ({
   }
 
   return (
-    <DynamicDiv
-      cursor={cursor ?? 'default'}
-      maxWidth={maxWidth}
-      style={style}
-      onClick={onClick}
-      ellipsis={ellipsis}
-      align={align}
-      styles={typographyMap[name]}
-      color={color ?? token.colorText}
-      as={DynamicTag}
-      hoverOnText={hoverOnText}
-      className={className}
-    >
-      {children}
-    </DynamicDiv>
+    <Tooltip title={tooltip ? children : ''}>
+      <DynamicDiv
+        cursor={cursor ?? 'default'}
+        maxWidth={maxWidth}
+        style={style}
+        onClick={onClick}
+        ellipsis={ellipsis}
+        align={align}
+        styles={typographyMap[name]}
+        color={color ?? token.colorText}
+        as={DynamicTag}
+        hoverOnText={hoverOnText}
+        className={className}
+      >
+        {children}
+      </DynamicDiv>
+    </Tooltip>
   );
 };
 // export default memo(

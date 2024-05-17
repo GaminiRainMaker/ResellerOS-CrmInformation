@@ -51,84 +51,93 @@ const MyProfileCard: FC<any> = ({data}) => {
   ];
 
   return (
-    <MyProfileCardStyle
-      justify="space-between"
-      align="middle"
-      style={{width: '100%'}}
-      gutter={[8, 16]}
-    >
-      <Col xs={24} sm={24} md={12} lg={12} xl={7}>
-        <Space size={10}>
-          <AvatarStyled
-            src={data?.profile_image}
-            icon={`${
-              data?.user_name?.toString()?.charAt(0)?.toUpperCase() ??
-              data?.user_name?.toString()?.charAt(0)?.toUpperCase()
-            }`}
-            background={data?.profile_image ? '' : '#1EB159'}
-            size={94}
-          />
-          <Space direction="vertical" size={5}>
-            <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              {data?.first_name && data?.last_name
-                ? `${data.first_name} ${data.last_name}`
-                : data?.first_name
-                  ? data.first_name
-                  : data?.user_name}
-            </Typography>
-            <Typography name="Body 4/Bold" color={token?.colorInfo}>
-              {data?.job_title ?? '--'}
-            </Typography>
-            <span
-              style={{
-                padding: '4px 12px',
-                borderRadius: '50px',
-                background: token?.colorInfoHover,
-              }}
-            >
-              <Typography name="Body 3/Regular" color={token?.colorLinkHover}>
-                {userRole ?? '--'}
+    <>
+      <MyProfileCardStyle
+        justify="space-between"
+        align="middle"
+        style={{width: '100%'}}
+        gutter={[0, 16]}
+      >
+        <Col xs={24} sm={24} md={24} lg={12} xl={7} xxl={7}>
+          <Space size={10}>
+            <AvatarStyled
+              src={data?.profile_image}
+              icon={`${
+                data?.user_name?.toString()?.charAt(0)?.toUpperCase() ??
+                data?.user_name?.toString()?.charAt(0)?.toUpperCase()
+              }`}
+              background={data?.profile_image ? '' : '#1EB159'}
+              size={94}
+            />
+            <Space direction="vertical" size={5}>
+              <Typography
+                name="Heading 3/Medium"
+                color={token?.colorPrimaryText}
+              >
+                {data?.first_name && data?.last_name
+                  ? `${data.first_name} ${data.last_name}`
+                  : data?.first_name
+                    ? data.first_name
+                    : data?.user_name}
               </Typography>
-            </span>
-          </Space>
-        </Space>
-      </Col>
-
-      {proileDetailData?.map((proileDetailDataItem) => {
-        return (
-          <Col
-            xs={24}
-            sm={24}
-            md={12}
-            lg={12}
-            xl={5}
-            key={proileDetailDataItem?.key}
-          >
-            <Space direction="vertical" size={4}>
-              <Typography name="Body 4/Medium" color={token?.colorLinkHover}>
-                {proileDetailDataItem?.title}
+              <Typography name="Body 4/Bold" color={token?.colorInfo}>
+                {data?.job_title ?? '--'}
               </Typography>
-              <Space align="center">
-                <AvatarStyled
-                  icon={proileDetailDataItem?.icon}
-                  background={token?.colorInfoHover}
-                  size={36}
-                />
-
-                <Typography
-                  name="Body 4/Medium"
-                  color={token?.colorPrimaryText}
-                  ellipsis
-                  maxWidth={20}
-                >
-                  {proileDetailDataItem?.data}
+              <span
+                style={{
+                  padding: '4px 12px',
+                  borderRadius: '50px',
+                  background: token?.colorInfoHover,
+                }}
+              >
+                <Typography name="Body 3/Regular" color={token?.colorLinkHover}>
+                  {userRole ?? '--'}
                 </Typography>
-              </Space>
+              </span>
             </Space>
-          </Col>
-        );
-      })}
-    </MyProfileCardStyle>
+          </Space>
+        </Col>
+
+        {proileDetailData?.map((proileDetailDataItem) => {
+          return (
+            <Col
+              xs={24}
+              sm={24}
+              md={24}
+              lg={12}
+              xl={5}
+              xxl={5}
+              key={proileDetailDataItem?.key}
+            >
+              <Space direction="vertical" size={4}>
+                <Typography name="Body 4/Medium" color={token?.colorLinkHover}>
+                  {proileDetailDataItem?.title}
+                </Typography>
+                <Space align="center">
+                  <AvatarStyled
+                    icon={proileDetailDataItem?.icon}
+                    background={token?.colorInfoHover}
+                    size={36}
+                  />
+
+                  <Typography
+                    key={proileDetailDataItem?.key}
+                    name="Body 4/Medium"
+                    color={token?.colorPrimaryText}
+                    ellipsis
+                    maxWidth={190}
+                    as="div"
+                    tooltip
+                  >
+                    {proileDetailDataItem?.data}
+                  </Typography>
+                </Space>
+              </Space>
+            </Col>
+          );
+        })}
+      </MyProfileCardStyle>
+    </>
   );
 };
 
