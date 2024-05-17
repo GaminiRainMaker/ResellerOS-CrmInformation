@@ -29,6 +29,10 @@ const EditUserDetails: FC<UserProfileInterface> = ({
                 pattern: /^[A-Za-z\s]+$/,
                 message: 'Please enter valid text.',
               },
+              {
+                required: true,
+                message: 'This field is required.',
+              },
             ]}
           >
             <OsInput disabled={isEditable} />
@@ -52,12 +56,16 @@ const EditUserDetails: FC<UserProfileInterface> = ({
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Email</Typography>}
             name="email"
-            // rules={[
-            //   {
-            //     pattern: /^[A-Za-z\s]+$/,
-            //     message: 'Please enter valid text.',
-            //   },
-            // ]}
+            rules={[
+              {
+                pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                message: 'Please enter valid text.',
+              },
+              {
+                required: true,
+                message: 'This field is required.',
+              },
+            ]}
           >
             <OsInput disabled={isEditable} />
           </SelectFormItem>
@@ -66,12 +74,6 @@ const EditUserDetails: FC<UserProfileInterface> = ({
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Contact No.</Typography>}
             name="phone_number"
-            // rules={[
-            //   {
-            //     pattern: /^[A-Za-z\s]+$/,
-            //     message: 'Please enter valid text.',
-            //   },
-            // ]}
           >
             <ContactInput
               disabled={isEditable}
@@ -86,12 +88,12 @@ const EditUserDetails: FC<UserProfileInterface> = ({
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Job Title</Typography>}
             name="job_title"
-            // rules={[
-            //   {
-            //     pattern: /^[A-Za-z\s]+$/,
-            //     message: 'Please enter valid text.',
-            //   },
-            // ]}
+            rules={[
+              {
+                pattern: /^[A-Za-z\s]+$/,
+                message: 'Please enter valid text.',
+              },
+            ]}
           >
             <OsInput disabled={isEditable} />
           </SelectFormItem>

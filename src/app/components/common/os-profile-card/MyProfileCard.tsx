@@ -70,7 +70,11 @@ const MyProfileCard: FC<any> = ({data}) => {
           />
           <Space direction="vertical" size={5}>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              {data?.user_name ?? '--'}
+              {data?.first_name && data?.last_name
+                ? `${data.first_name} ${data.last_name}`
+                : data?.first_name
+                  ? data.first_name
+                  : data?.user_name}
             </Typography>
             <Typography name="Body 4/Bold" color={token?.colorInfo}>
               {data?.job_title ?? '--'}

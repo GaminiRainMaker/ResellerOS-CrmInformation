@@ -65,7 +65,17 @@ const ChangePassword: FC<UserProfileInterface> = ({
             rules={[
               {
                 required: true,
-                message: 'This field is required.',
+                message: 'New Password is required.',
+              },
+              {
+                min: 8,
+                message: 'New Password must be at least 8 characters long.',
+              },
+              {
+                pattern:
+                  /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+                message:
+                  'New Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.',
               },
             ]}
           >
@@ -106,6 +116,20 @@ const ChangePassword: FC<UserProfileInterface> = ({
                 required: true,
                 message: 'This field is required.',
               },
+              {
+                required: true,
+                message: 'Please confirm your password.',
+              },
+              ({getFieldValue}) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue('new_password') === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error('The two passwords do not match.'),
+                  );
+                },
+              }),
             ]}
           >
             <OsInputPassword
