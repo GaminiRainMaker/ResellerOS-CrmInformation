@@ -148,7 +148,7 @@ const CustomHeader = () => {
           name="Body 3/Regular"
           cursor="pointer"
           onClick={() =>
-            router.push(
+            window.open(
               `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=account`,
             )
           }
@@ -164,7 +164,7 @@ const CustomHeader = () => {
           name="Body 3/Regular"
           cursor="pointer"
           onClick={() =>
-            router.push(
+            window.open(
               `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=settings`,
             )
           }
@@ -180,7 +180,7 @@ const CustomHeader = () => {
           name="Body 3/Regular"
           cursor="pointer"
           onClick={() =>
-            router.push(
+            window.open(
               `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=support`,
             )
           }

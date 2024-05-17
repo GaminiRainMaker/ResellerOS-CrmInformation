@@ -2,8 +2,14 @@
 
 import CustomTabs from '@/app/components/common/os-custom-tab/AdminSectionTab';
 import MyProfile from './myProfile';
+import {useSearchParams} from 'next/navigation';
+import {useEffect, useState} from 'react';
 
 const AccountInfo = () => {
+  const searchParams = useSearchParams();
+  const getRole = searchParams.get('role');
+  console.log('getRole', getRole);
+
   const tabs = [
     {
       key: 1,
@@ -31,7 +37,21 @@ const AccountInfo = () => {
     },
   ];
 
-  return <CustomTabs tabs={tabs} />;
+  const [tabsData, setTabsData] = useState(tabs);
+
+  useEffect(() => {
+    if (getRole === 'admin') {
+      setTabsData([
+        {
+          key: 1,
+          title: 'Account',
+          childitem: [{key: 1, name: 'My Profile', superChild: <MyProfile />}],
+        },
+      ]);
+    }
+  }, [getRole]);
+
+  return <CustomTabs tabs={tabsData} />;
 };
 
 export default AccountInfo;

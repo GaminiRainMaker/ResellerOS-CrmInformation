@@ -104,7 +104,9 @@ const OrganizationUsers = () => {
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              router.push(`/accountInfo?id=${record?.id}`);
+              router.push(
+                `/accountInfo?id=${record?.id}&organization=${getOrganization}&role=admin`,
+              );
             }}
           />
         </Space>

@@ -145,45 +145,45 @@ const SideBar = () => {
   }, [pathname]);
 
   const items: MenuItem[] = [
-    getItem(
-      <Typography
-        cursor="pointer"
-        onClick={() => {
-          setSelectedKey(1);
-          setCrmChildKey(0);
-          router?.push('/dashboard');
-        }}
-        name="Button 1"
-      >
-        <Space size={12}>
-          <OsAvatar
-            icon={
-              <Squares2X2Icon
-                color={
-                  selectedKey == 1
-                    ? token?.colorPrimary
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
-          <Typography
-            cursor="pointer"
-            name="Button 1"
-            style={{
-              marginTop: '1px',
-            }}
-            color={
-              selectedKey == 1 ? token?.colorPrimary : token?.colorTextSecondary
-            }
-          >
-            Dashboard
-          </Typography>
-        </Space>
-      </Typography>,
-      '1',
-    ),
+    // getItem(
+    //   <Typography
+    //     cursor="pointer"
+    //     onClick={() => {
+    //       setSelectedKey(1);
+    //       setCrmChildKey(0);
+    //       router?.push('/dashboard');
+    //     }}
+    //     name="Button 1"
+    //   >
+    //     <Space size={12}>
+    //       <OsAvatar
+    //         icon={
+    //           <Squares2X2Icon
+    //             color={
+    //               selectedKey == 1
+    //                 ? token?.colorPrimary
+    //                 : token?.colorTextSecondary
+    //             }
+    //             width={24}
+    //           />
+    //         }
+    //       />
+    //       <Typography
+    //         cursor="pointer"
+    //         name="Button 1"
+    //         style={{
+    //           marginTop: '1px',
+    //         }}
+    //         color={
+    //           selectedKey == 1 ? token?.colorPrimary : token?.colorTextSecondary
+    //         }
+    //       >
+    //         Dashboard
+    //       </Typography>
+    //     </Space>
+    //   </Typography>,
+    //   '1',
+    // ),
     isAdmin &&
       Role === 'superAdmin' &&
       getItem(
@@ -442,50 +442,50 @@ const SideBar = () => {
         </Typography>,
         '6',
       ),
-    isOrderAI &&
-      getItem(
-        <Typography
-          cursor="pointer"
-          onClick={() => {
-            setSelectedKey(7);
-            setCrmChildKey(0);
-          }}
-          name="Button 1"
-          color={token?.colorTextSecondary}
-        >
-          <Space size={12}>
-            <OsAvatar
-              icon={
-                <ShoppingBagIcon
-                  color={
-                    selectedKey?.toString()?.includes('7')
-                      ? token?.colorPrimary
-                      : token?.colorTextSecondary
-                  }
-                  width={24}
-                />
-              }
-            />
+    // isOrderAI &&
+    //   getItem(
+    //     <Typography
+    //       cursor="pointer"
+    //       onClick={() => {
+    //         setSelectedKey(7);
+    //         setCrmChildKey(0);
+    //       }}
+    //       name="Button 1"
+    //       color={token?.colorTextSecondary}
+    //     >
+    //       <Space size={12}>
+    //         <OsAvatar
+    //           icon={
+    //             <ShoppingBagIcon
+    //               color={
+    //                 selectedKey?.toString()?.includes('7')
+    //                   ? token?.colorPrimary
+    //                   : token?.colorTextSecondary
+    //               }
+    //               width={24}
+    //             />
+    //           }
+    //         />
 
-            <Typography
-              cursor="pointer"
-              name="Button 1"
-              style={{
-                marginTop: '1px',
-              }}
-              color={
-                selectedKey?.toString()?.includes('7')
-                  ? token?.colorPrimary
-                  : token?.colorTextSecondary
-              }
-            >
-              {' '}
-              Orders AI
-            </Typography>
-          </Space>
-        </Typography>,
-        '7',
-      ),
+    //         <Typography
+    //           cursor="pointer"
+    //           name="Button 1"
+    //           style={{
+    //             marginTop: '1px',
+    //           }}
+    //           color={
+    //             selectedKey?.toString()?.includes('7')
+    //               ? token?.colorPrimary
+    //               : token?.colorTextSecondary
+    //           }
+    //         >
+    //           {' '}
+    //           Orders AI
+    //         </Typography>
+    //       </Space>
+    //     </Typography>,
+    //     '7',
+    //   ),
     getItem(
       <Typography
         cursor="pointer"
