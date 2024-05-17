@@ -274,7 +274,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
           }
         }
       }
-      return;
       const finalOpportunityArray: any = [];
       if (finalLineItems && syncTableData?.length > 0) {
         const newRequiredArray: any = [];
