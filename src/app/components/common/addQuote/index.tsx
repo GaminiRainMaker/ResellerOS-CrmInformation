@@ -94,7 +94,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
     const quoteId = form.getFieldValue('existingQuoteId');
     const quotesArr: any = [];
     try {
-      setFinalLoading(true);
+      // setFinalLoading(true);
+
       for (let i = 0; i < updatedArr.length; i++) {
         let quoteLineItemArr: any = [];
         const lineItemData: FormattedData = {};
@@ -273,7 +274,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           }
         }
       }
-
+      return;
       const finalOpportunityArray: any = [];
       if (finalLineItems && syncTableData?.length > 0) {
         const newRequiredArray: any = [];
@@ -330,9 +331,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
     setShowModal(false);
     setUploadFileData([]);
 
-    if (singleQuote || updatedArr?.length === 1) {
-      router.push(`/generateQuote?id=${quotesArr[0]?.id}`);
-    }
+    // if (singleQuote || updatedArr?.length === 1) {
+    //   router.push(`/generateQuote?id=${quotesArr[0]?.id}`);
+    // }
     form.resetFields(['customer_id', 'opportunity_id']);
   };
 
