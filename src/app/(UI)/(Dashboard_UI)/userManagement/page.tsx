@@ -43,8 +43,18 @@ const UserManagement = () => {
       dataIndex: 'user_name',
       key: 'user_name',
       width: 173,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (text: string, record: any) => (
+        <Typography
+          hoverOnText
+          name="Body 4/Regular"
+          onClick={() => {
+            router.push(
+              `/organizationUsers?organization=${record?.organization}`,
+            );
+          }}
+        >
+          {text ?? '--'}
+        </Typography>
       ),
     },
     {

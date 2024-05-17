@@ -48,38 +48,21 @@ const AccountInfo = () => {
 
   const [tabsData, setTabsData] = useState(tabs);
 
+
   useEffect(() => {
-    if (getRole === 'admin' || getRole === 'superAdmin') {
+    if (isSuperAdminProfile === 'SuperAdminProfile') {
       setTabsData([
         {
           key: 1,
-          title: getRole === 'admin' ? 'User Account' : 'Reseller Account',
+          title: 'Account',
           childitem: [
-            {
-              key: 1,
-              name: getRole === 'admin' ? 'User Profile' : 'Reseller Profile',
-              superChild: <MyProfile />,
-            },
+            {key: 1, name: 'My Profile', superChild: <MyProfile />},
+            {key: 2, name: 'My Team', superChild: <MyTeam />},
           ],
         },
       ]);
     }
-    //  else if (isSuperAdminProfile) {
-    //   setTabsData([
-    //     {
-    //       key: 1,
-    //       title: 'Account',
-    //       childitem: [
-    //         {
-    //           key: 1,
-    //           name: 'My Profile',
-    //           superChild: <MyProfile />,
-    //         },
-    //       ],
-    //     },
-    //   ]);
-    // }
-  }, [getRole]);
+  }, [isSuperAdminProfile]);
 
   // Resellers
 

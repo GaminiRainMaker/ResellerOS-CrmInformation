@@ -59,7 +59,7 @@ const AdminCustomTabs: FC<any> = (tabs) => {
     <Row>
       <Col xs={24} sm={8} md={5} span={5}>
         <CustomTabStyle token={token}>
-          <div>
+          <div style={{width: '100%'}}>
             {tabs?.tabs?.map((itemtab: any) => {
               return (
                 <Space

@@ -139,7 +139,9 @@ const CustomHeader = () => {
   useEffect(() => {
     setNotificationCounts(0);
   }, [notificationData]);
-  console.log('userInformation', userInformation?.master_admin);
+  const isSuperAdminProfile = userInformation?.MasterAdmin
+    ? 'SuperAdminProfile'
+    : 'reseller';
   const items: MenuProps['items'] = [
     {
       key: '1',
@@ -147,11 +149,11 @@ const CustomHeader = () => {
         <Typography
           name="Body 3/Regular"
           cursor="pointer"
-          onClick={() =>
+          onClick={() => {
             window.open(
-              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=account&isSuperAdminProfile=${userInformation?.master_admin}`,
-            )
-          }
+              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=account&isSuperAdminProfile=${isSuperAdminProfile}`,
+            );
+          }}
         >
           My Account{' '}
         </Typography>
@@ -165,7 +167,7 @@ const CustomHeader = () => {
           cursor="pointer"
           onClick={() =>
             window.open(
-              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=settings&isSuperAdminProfile=${userInformation?.master_admin}`,
+              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=settings&isSuperAdminProfile=${isSuperAdminProfile}`,
             )
           }
         >
@@ -181,7 +183,7 @@ const CustomHeader = () => {
           cursor="pointer"
           onClick={() =>
             window.open(
-              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=support&isSuperAdminProfile=${userInformation?.master_admin}`,
+              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=support&isSuperAdminProfile=${isSuperAdminProfile}`,
             )
           }
         >
@@ -543,7 +545,6 @@ const CustomHeader = () => {
                 <AvatarStyled
                   onClick={() => {
                     setOpenNotifications(!openNotifications);
-                    // readAllNotifications();
                   }}
                   background={token?.colorInfoBg}
                   icon={<BellIcon width={24} color={token?.colorInfoBorder} />}
