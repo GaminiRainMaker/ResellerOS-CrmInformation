@@ -119,7 +119,6 @@ const MyProfile = () => {
         },
       );
     }
-    console.log('userDetailForm', userData);
     setProfileDetailEditable(true);
   };
 
@@ -149,7 +148,8 @@ const MyProfile = () => {
         <Row justify="space-between" style={{width: '100%'}} gutter={[16, 16]}>
           <MyProfileCard data={UserDataById} />
           <Space direction="vertical" size={24} style={{width: '100%'}}>
-            {UserDataById?.master_admin ? (
+            {UserDataById?.master_admin &&
+            UserDataById?.organization === 'rainmakercloud' ? (
               <></>
             ) : (
               <Row gutter={[16, 16]} justify="center">
@@ -235,6 +235,7 @@ const MyProfile = () => {
                             buttontype="SECONDARY"
                             clickHandler={() => {
                               setChangePasswordEditable(true);
+                              changePasswordForm?.resetFields();
                             }}
                           />
                           <OsButton

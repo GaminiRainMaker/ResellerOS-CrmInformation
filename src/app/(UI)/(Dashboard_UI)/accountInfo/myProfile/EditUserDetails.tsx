@@ -90,7 +90,7 @@ const EditUserDetails: FC<UserProfileInterface> = ({
             name="job_title"
             rules={[
               {
-                pattern: /^[A-Za-z\s]+$/,
+                pattern: /^[A-Za-z\s.]+$/,
                 message: 'Please enter valid text.',
               },
             ]}
