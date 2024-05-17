@@ -15,6 +15,7 @@ const AccountInfo = () => {
   const [token] = useThemeToken();
   const router = useRouter();
   const getRole = searchParams.get('role');
+  const isSuperAdminProfile = searchParams.get('isSuperAdminProfile');
   const getOrganization = searchParams.get('organization');
 
   const tabs = [
@@ -62,6 +63,21 @@ const AccountInfo = () => {
         },
       ]);
     }
+    //  else if (isSuperAdminProfile) {
+    //   setTabsData([
+    //     {
+    //       key: 1,
+    //       title: 'Account',
+    //       childitem: [
+    //         {
+    //           key: 1,
+    //           name: 'My Profile',
+    //           superChild: <MyProfile />,
+    //         },
+    //       ],
+    //     },
+    //   ]);
+    // }
   }, [getRole]);
 
   // Resellers
@@ -100,15 +116,18 @@ const AccountInfo = () => {
 
   return (
     <>
-      {getRole && (
-        <Row justify="space-between" align="middle">
-          <Col>
-            <OsBreadCrumb items={menuItems} />
-          </Col>
-        </Row>
+      {getRole === 'admin' || getRole === 'superAdmin' ? (
+        <>
+          <Row justify="space-between" align="middle">
+            <Col>
+              <OsBreadCrumb items={menuItems} />
+            </Col>
+          </Row>
+          <MyProfile />
+        </>
+      ) : (
+        <CustomTabs tabs={tabsData} />
       )}
-
-      <CustomTabs tabs={tabsData} />
     </>
   );
 };

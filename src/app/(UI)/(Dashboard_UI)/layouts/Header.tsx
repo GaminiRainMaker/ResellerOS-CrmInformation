@@ -139,7 +139,7 @@ const CustomHeader = () => {
   useEffect(() => {
     setNotificationCounts(0);
   }, [notificationData]);
-  console.log('userInformation', userInformation);
+  console.log('userInformation', userInformation?.master_admin);
   const items: MenuProps['items'] = [
     {
       key: '1',
@@ -149,7 +149,7 @@ const CustomHeader = () => {
           cursor="pointer"
           onClick={() =>
             window.open(
-              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=account`,
+              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=account&isSuperAdminProfile=${userInformation?.master_admin}`,
             )
           }
         >
@@ -165,7 +165,7 @@ const CustomHeader = () => {
           cursor="pointer"
           onClick={() =>
             window.open(
-              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=settings`,
+              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=settings&isSuperAdminProfile=${userInformation?.master_admin}`,
             )
           }
         >
@@ -181,7 +181,7 @@ const CustomHeader = () => {
           cursor="pointer"
           onClick={() =>
             window.open(
-              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=support`,
+              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=support&isSuperAdminProfile=${userInformation?.master_admin}`,
             )
           }
         >

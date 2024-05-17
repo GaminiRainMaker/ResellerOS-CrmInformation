@@ -59,7 +59,15 @@ const MyProfileCard: FC<any> = ({data}) => {
     >
       <Col xs={24} sm={24} md={12} lg={12} xl={7}>
         <Space size={10}>
-          <AvatarStyled size={94} />
+          <AvatarStyled
+            src={data?.profile_image}
+            icon={`${
+              data?.user_name?.toString()?.charAt(0)?.toUpperCase() ??
+              data?.user_name?.toString()?.charAt(0)?.toUpperCase()
+            }`}
+            background={data?.profile_image ? '' : '#1EB159'}
+            size={94}
+          />
           <Space direction="vertical" size={5}>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
               {data?.user_name ?? '--'}
