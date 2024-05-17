@@ -9,6 +9,7 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import MyProfile from './myProfile';
 import MyTeam from './myTeam';
+import PartnerPassword from './partnerPassword';
 
 const AccountInfo = () => {
   const searchParams = useSearchParams();
@@ -31,8 +32,8 @@ const AccountInfo = () => {
       key: 2,
       title: 'Settings',
       childitem: [
-        {key: 7, name: 'General Settings', superChild: 'fsfdasdfasdf'},
-        {key: 4, name: 'Partner Passwords'},
+        {key: 7, name: 'General Settings', superChild: 'No Data'},
+        {key: 4, name: 'Partner Passwords', superChild: <PartnerPassword />},
       ],
     },
     {
