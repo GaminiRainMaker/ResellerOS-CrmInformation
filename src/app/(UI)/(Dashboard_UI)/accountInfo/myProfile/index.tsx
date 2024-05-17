@@ -134,8 +134,8 @@ const MyProfile = () => {
         .then((d) => {
           changePasswordForm?.resetFields();
         })
-        .catch((err: any) => {
-          console.log('err', err);
+        .catch((error: any) => {
+          console.log('err12345', error);
           changePasswordForm?.resetFields();
         });
     }
