@@ -51,6 +51,7 @@ export const API = {
     GetAdminUserOfAllOrganization: '/user/getAdminUserOfAllOrganization',
     GetGlobalSearchData: '/user/globalSearchApi',
     profileImage: '/user/getUserProfileImage',
+    UpdateUserPasswordForNew: '/user/updateUserPasswordForNew',
   },
   PRODUCT: {
     INDEX: '/product',

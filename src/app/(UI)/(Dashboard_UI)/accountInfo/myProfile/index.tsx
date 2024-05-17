@@ -24,6 +24,7 @@ import {getAllQuotesByOrganization} from '../../../../../../redux/actions/quote'
 import {
   getUserByIdLogin,
   updateUserById,
+  updateUserPasswordForNew,
 } from '../../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import ChangePassword from './ChangePassword';
@@ -121,9 +122,24 @@ const MyProfile = () => {
     console.log('userDetailForm', userData);
     setProfileDetailEditable(true);
   };
+  
   const changePasswordValue = () => {
     const changePasswordFormData = changePasswordForm?.getFieldsValue();
-    console.log('changePasswordFormData', changePasswordFormData);
+    if (changePasswordFormData) {
+      dispatch(
+        updateUserPasswordForNew({
+          ...changePasswordFormData,
+          id: Number(getUserID),
+        }),
+      )
+        .then((d) => {
+          changePasswordForm?.resetFields();
+        })
+        .catch((err: any) => {
+          console.log('err', err);
+          changePasswordForm?.resetFields();
+        });
+    }
     setChangePasswordEditable(true);
   };
 

@@ -22,6 +22,10 @@ export const USERAPI = {
     patch(API.USER.UpdateUserPassword, data) as Promise<AxiosResponse<any>>,
   addUser: (data: any) =>
     post(API.USER.AddUser, data) as Promise<AxiosResponse<any>>,
+  updateUserPasswordForNew: (data: any) =>
+    post(API.USER.UpdateUserPasswordForNew, data) as Promise<
+      AxiosResponse<any>
+    >,
   deleteById: (data: any) =>
     patch(API.USER.DeleteById, data) as Promise<AxiosResponse<any>>,
   getForGlobalSearch: (search: any) =>

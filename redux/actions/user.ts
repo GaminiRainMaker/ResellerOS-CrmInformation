@@ -140,3 +140,14 @@ export const getUserProfileData = createAsyncThunk(
     }
   },
 );
+export const updateUserPasswordForNew = createAsyncThunk(
+  'user/updateUserPasswordForNew',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await USERAPI.updateUserPasswordForNew(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

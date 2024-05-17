@@ -14,6 +14,7 @@ import {
   getGloabalySearchDataa,
   updateUserPassword,
   getUserProfileData,
+  updateUserPasswordForNew,
 } from '../actions/user';
 
 type UserState = {
@@ -26,6 +27,7 @@ type UserState = {
   allResellerRecord: any;
   searchDataa: any;
   createUserData: any;
+  updateUserPasswordData: any;
 };
 const initialState: UserState = {
   loading: false,
@@ -37,6 +39,7 @@ const initialState: UserState = {
   allResellerRecord: {},
   searchDataa: [],
   createUserData: {},
+  updateUserPasswordData: {},
 };
 
 const userSlice = createSlice({
@@ -239,6 +242,24 @@ const userSlice = createSlice({
       )
       .addCase(
         getUserProfileData.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(updateUserPasswordForNew.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateUserPasswordForNew.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.updateUserPasswordData = action.payload;
+        },
+      )
+      .addCase(
+        updateUserPasswordForNew.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

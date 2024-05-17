@@ -24,7 +24,7 @@ const ChangePassword: FC<UserProfileInterface> = ({
         <Col span={24}>
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Old Password</Typography>}
-            name="password"
+            name="oldPassword"
             rules={[
               {
                 required: true,
