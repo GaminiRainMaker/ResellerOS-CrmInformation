@@ -78,6 +78,7 @@ export const API = {
     INDEX: '/rebates',
     QUERY: '/rebates/query',
     GetRebatesByProductCode: '/rebates/getRebatesByProductCode',
+    RebatesInBul: '/rebates/getRebatesInBulkByProductCode',
   },
   VALIDATION: {
     INDEX: '/validation',
@@ -90,6 +91,7 @@ export const API = {
   CONTRACT_PRODUCT: {
     INDEX: '/contractProduct',
     QUERY: '/contractProduct/query',
+    getContractInBulk: '/contractProduct/getContractInBulkByProductCode',
   },
   CUSTOMER: {
     INDEX: '/customer',

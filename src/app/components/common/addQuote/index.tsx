@@ -94,7 +94,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
     const quoteId = form.getFieldValue('existingQuoteId');
     const quotesArr: any = [];
     try {
-      setFinalLoading(true);
+      // setFinalLoading(true);
+
       for (let i = 0; i < updatedArr.length; i++) {
         let quoteLineItemArr: any = [];
         const lineItemData: FormattedData = {};
@@ -273,7 +274,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
           }
         }
       }
-
       const finalOpportunityArray: any = [];
       if (finalLineItems && syncTableData?.length > 0) {
         const newRequiredArray: any = [];
