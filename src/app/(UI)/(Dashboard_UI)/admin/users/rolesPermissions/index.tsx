@@ -12,10 +12,15 @@ import Typography from '@/app/components/common/typography';
 import {ShieldCheckIcon} from '@heroicons/react/20/solid';
 import {useEffect, useState} from 'react';
 import {
+  getOranizationSeats,
   getUserByOrganization,
   updateUserById,
 } from '../../../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
+import {
+  getAllCacheFLowProposal,
+  getCacheFLowProposalById,
+} from '../../../../../../../redux/actions/cacheFlow';
 
 const RolesAndPermission = () => {
   const dispatch = useAppDispatch();
@@ -25,6 +30,9 @@ const RolesAndPermission = () => {
   const [userRules, setUserRules] = useState<any>(data);
   const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
   const [recordId, setRecordId] = useState<number>();
+  const [proposalData, setProPosalData] = useState<any>();
+  const [seatOccupied, setSeatOccuiped] = useState<any>();
+  const [purchasedProposal, setPurchasedProposal] = useState<boolean>(false);
 
   const providePermissions = () => {
     setUserRules((prev: any) =>
@@ -197,7 +205,51 @@ const RolesAndPermission = () => {
       });
     }
   };
+  useEffect(() => {
+    dispatch(getAllCacheFLowProposal(''))?.then((payload: any) => {
+      if (payload?.payload?.sucess) {
+        let allProPosalData = payload?.payload?.sucess;
+        let itemWithSameOrg = allProPosalData?.find(
+          (items: any) =>
+            items?.name?.replace(/\s/g, '') === userInformation?.organization,
+        );
+        if (itemWithSameOrg) {
+          let proposalArrayL: any = [];
+          dispatch(getCacheFLowProposalById(itemWithSameOrg?.id))?.then(
+            (payloadDtaa) => {
+              if (payloadDtaa?.payload?.sucess) {
+                setPurchasedProposal(true);
+                let ProposalItems = payloadDtaa?.payload?.sucess?.proposalItems;
+                ProposalItems?.map((itemspro: any) => {
+                  let newObj: any;
+                  if (
+                    itemspro?.name === 'QuoteAI' ||
+                    itemspro?.name === 'DealRegAI Bundle'
+                  ) {
+                    proposalArrayL?.push({
+                      [itemspro?.name]: itemspro?.quantity,
+                    });
+                  }
+                });
 
+                // "QuoteAI"
+                // "DealRegAI Bundle"
+              }
+            },
+          );
+
+          setProPosalData(proposalArrayL);
+        }
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    dispatch(getOranizationSeats(''))?.then((payload) => {
+      setSeatOccuiped(payload?.payload);
+    });
+  }, []);
+  // ?.replace(/\s/g, '')
   return (
     <>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
@@ -205,6 +257,21 @@ const RolesAndPermission = () => {
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
               Roles and Permissions
+            </Typography>
+          </Col>
+          <Col>
+            <Row>
+              <Typography
+                style={{marginRight: '10px'}}
+                name="Body 3/Regular"
+                color={token?.colorPrimaryText}
+              >
+                DealRegSeats : {seatOccupied?.DealRegAIBundle}/{3}
+              </Typography>
+            </Row>
+
+            <Typography name="Body 3/Regular" color={token?.colorPrimaryText}>
+              QuoteAiSeats : {seatOccupied?.QuoteAI}/{3}
             </Typography>
           </Col>
           <Col>

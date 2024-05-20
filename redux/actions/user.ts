@@ -140,3 +140,15 @@ export const getUserProfileData = createAsyncThunk(
     }
   },
 );
+
+export const getOranizationSeats = createAsyncThunk(
+  'user/getOranizationSeats',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await USERAPI.getSeat();
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

@@ -30,4 +30,5 @@ export const USERAPI = {
     >,
   getUserProfile: () =>
     get(API.USER.profileImage) as Promise<AxiosResponse<[]>>,
+  getSeat: () => get(API.USER.GetSeats) as Promise<AxiosResponse<[]>>,
 };

@@ -14,6 +14,7 @@ import {
   getGloabalySearchDataa,
   updateUserPassword,
   getUserProfileData,
+  getOranizationSeats,
 } from '../actions/user';
 
 type UserState = {
@@ -239,6 +240,24 @@ const userSlice = createSlice({
       )
       .addCase(
         getUserProfileData.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getOranizationSeats.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getOranizationSeats.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.searchDataa = action.payload;
+        },
+      )
+      .addCase(
+        getOranizationSeats.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

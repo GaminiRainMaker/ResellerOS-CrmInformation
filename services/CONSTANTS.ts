@@ -50,6 +50,7 @@ export const API = {
     GetAdminUserOfAllOrganization: '/user/getAdminUserOfAllOrganization',
     GetGlobalSearchData: '/user/globalSearchApi',
     profileImage: '/user/getUserProfileImage',
+    GetSeats: '/user/getOranizationSeats',
   },
   PRODUCT: {
     INDEX: '/product',
@@ -67,6 +68,10 @@ export const API = {
   },
   BUNDLE: {
     INDEX: '/bundle',
+  },
+  CACHEFLOW: {
+    INDEX: '/chacheFlow',
+    GETBYID: '/chacheFlow/getProposalDataById',
   },
   REBATE_QUOTE_LINE_ITEM: {
     INDEX: '/rebatesQuoteLineItem',
