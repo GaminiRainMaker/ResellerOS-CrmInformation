@@ -1,8 +1,10 @@
 import {Space} from '@/app/components/common/antd/Space';
 import Typography from '@/app/components/common/typography';
+import {CopyOutlined} from '@ant-design/icons';
 import {ShareIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {GlobalToken} from 'antd';
+import {GlobalToken, notification} from 'antd';
 import {SetStateAction} from 'react';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 export function getMyTeamColumns(token: GlobalToken) {
   const columns = [
@@ -355,12 +357,33 @@ export function getSharedPasswordColumns(token: GlobalToken) {
           Password
         </Typography>
       ),
+
       dataIndex: 'password',
       key: 'password',
       width: 187,
       render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
           {record?.PartnerPassword?.password ?? '--'}
+          <CopyToClipboard text={record?.PartnerPassword?.password}>
+            <CopyOutlined
+              style={{
+                marginLeft: '10px',
+              }}
+              onClick={() => {
+                notification.open({
+                  message: 'Password Copied',
+                  type: 'success',
+                  placement: 'top',
+                });
+              }}
+            />
+          </CopyToClipboard>{' '}
+          {/* <CopyToClipboard
+            text={record?.PartnerPassword?.password}
+            onCopy={record?.PartnerPassword?.password}
+          >
+            copy
+          </CopyToClipboard> */}
         </Typography>
       ),
     },
