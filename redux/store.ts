@@ -33,6 +33,8 @@ import auth from './slices/auth';
 import attributeSection from './slices/attributeSection';
 import attributeField from './slices/attributeField';
 import notification from './slices/notificatios';
+import partnerPassword from './slices/partnerPassword';
+import sharedPartnerPassword from './slices/sharedPartnerPassword';
 
 // Configure redux store
 const store = configureStore({
@@ -69,6 +71,8 @@ const store = configureStore({
     attributeSection,
     attributeField,
     notification,
+    partnerPassword,
+    sharedPartnerPassword,
   },
   middleware: [thunk],
   devTools: true,

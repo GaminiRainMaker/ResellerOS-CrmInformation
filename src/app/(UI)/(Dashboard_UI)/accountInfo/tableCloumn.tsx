@@ -2,6 +2,7 @@ import {Space} from '@/app/components/common/antd/Space';
 import Typography from '@/app/components/common/typography';
 import {ShareIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {GlobalToken} from 'antd';
+import {SetStateAction} from 'react';
 
 export function getMyTeamColumns(token: GlobalToken) {
   const columns = [
@@ -157,10 +158,18 @@ export function getMyTeamAdminColumns(token: GlobalToken) {
   return columns;
 }
 
-export function getSharedPartnerColumns(
+export function getMyPartnerColumns(
   token: GlobalToken,
-  isShared: any,
-  deleteData: any,
+  setShowShareCredentialModal: {
+    (value: SetStateAction<boolean>): void;
+    (arg0: boolean): void;
+  },
+  setPartnerPasswordId: {(value: any): void; (arg0: any[]): void},
+  setDeleteIds: {(value: any): void; (arg0: any[]): void},
+  setShowModalDelete: {
+    (value: SetStateAction<boolean>): void;
+    (arg0: boolean): void;
+  },
 ) {
   const columns = [
     {
@@ -176,9 +185,9 @@ export function getSharedPartnerColumns(
       dataIndex: 'partner',
       key: 'partner',
       width: 130,
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <Typography hoverOnText name="Body 4/Regular">
-          {text ?? '--'}
+          {record?.Partner?.partner ?? '--'}
         </Typography>
       ),
     },
@@ -192,8 +201,8 @@ export function getSharedPartnerColumns(
           Username
         </Typography>
       ),
-      dataIndex: 'user_name',
-      key: 'user_name',
+      dataIndex: 'username',
+      key: 'username',
       width: 187,
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -254,16 +263,18 @@ export function getSharedPartnerColumns(
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              // isShared(record?.Quote?.id);
+              setPartnerPasswordId(record?.id);
+              setShowShareCredentialModal(true);
             }}
           />
           <TrashIcon
             height={24}
             width={24}
-            color={token.colorInfoBorder}
+            color={token.colorError}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              // deleteData(record?.Quote?.id);
+              setDeleteIds([record?.id]);
+              setShowModalDelete(true);
             }}
           />
         </Space>
@@ -273,11 +284,7 @@ export function getSharedPartnerColumns(
 
   return columns;
 }
-export function getMyPasswordColumns(
-  token: GlobalToken,
-  isShared: any,
-  deleteData: any,
-) {
+export function getSharedPasswordColumns(token: GlobalToken) {
   const columns = [
     {
       title: (
@@ -292,9 +299,9 @@ export function getMyPasswordColumns(
       dataIndex: 'partner',
       key: 'partner',
       width: 130,
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <Typography hoverOnText name="Body 4/Regular">
-          {text ?? '--'}
+          {record?.PartnerPassword?.Partner?.partner ?? '--'}
         </Typography>
       ),
     },
@@ -311,8 +318,11 @@ export function getMyPasswordColumns(
       dataIndex: 'user_name',
       key: 'user_name',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {' '}
+          {record?.PartnerPassword?.username ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -328,8 +338,11 @@ export function getMyPasswordColumns(
       dataIndex: 'email',
       key: 'email',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {' '}
+          {record?.PartnerPassword?.email ?? '--'}
+        </Typography>
       ),
     },
     {
@@ -345,48 +358,13 @@ export function getMyPasswordColumns(
       dataIndex: 'password',
       key: 'password',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography
-          name="Body 4/Medium"
-          className="dragHandler"
-          color={token?.colorPrimaryText}
-        >
-          Action
-        </Typography>
-      ),
-      dataIndex: 'action',
-      key: 'action',
-      width: 187,
       render: (text: string, record: any) => (
-        <Space size={18}>
-          <ShareIcon
-            height={24}
-            width={24}
-            color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              // isShared(record?.Quote?.id);
-            }}
-          />
-          <TrashIcon
-            height={24}
-            width={24}
-            color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              // deleteData(record?.Quote?.id);
-            }}
-          />
-        </Space>
+        <Typography name="Body 4/Regular">
+          {record?.PartnerPassword?.password ?? '--'}
+        </Typography>
       ),
     },
   ];
 
   return columns;
 }
-

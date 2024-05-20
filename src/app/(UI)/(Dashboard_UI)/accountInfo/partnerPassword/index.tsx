@@ -4,46 +4,106 @@ import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import EmptyContainer from '@/app/components/common/os-empty-container';
+import OsModal from '@/app/components/common/os-modal';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {PlusIcon} from '@heroicons/react/24/outline';
-import {TabsProps} from 'antd';
-import {useSearchParams} from 'next/navigation';
+import {Form, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
-import {queryAllUsers} from '../../../../../../redux/actions/user';
+import {
+  deletePartnerPassword,
+  insertPartnerPassword,
+  queryPartnerPassword,
+} from '../../../../../../redux/actions/partnerPassword';
+import {
+  insertSharedPartnerPassword,
+  querySharedPartnerPassword,
+} from '../../../../../../redux/actions/sharedPartnerPassword';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
-import {getMyPasswordColumns, getSharedPartnerColumns} from '../tableCloumn';
+import AddPartnerPassword from './AddPartnerPassword';
+import ShareCredential from './ShareCredential';
+import {getMyPartnerColumns, getSharedPasswordColumns} from '../tableCloumn';
 
 const PartnerPassword = () => {
   const [token] = useThemeToken();
+  const [partnerPasswordForm] = Form.useForm();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
-  const getOrganization = searchParams.get('organization');
-  const {data: userData, loading} = useAppSelector((state) => state.user);
+  const {data: partnerPasswordData, loading} = useAppSelector(
+    (state) => state.partnerPassword,
+  );
+  const {loading: sharedPartnerPassword, data: sharedPasswordData} =
+    useAppSelector((state) => state.sharedPartnerPassword);
   const [activeKey, setActiveKey] = useState<number>(1);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+  const [showShareCredentialModal, setShowShareCredentialModal] =
+    useState<boolean>(false);
+  const [deleteIds, setDeleteIds] = useState<any>();
+  const [partnerPasswordId, setPartnerPasswordId] = useState<any>();
+  const [finalSharedPasswordData, setFinalSharedPasswordData] = useState<any>();
+  const {userInformation} = useAppSelector((state) => state.user);
+  const [shareCredentialsIds, setShareCredentialsIds] = useState<
+    {shareBy: number; shareWith: number}[]
+  >([]);
   const [query, setQuery] = useState<{
-    organization: string | null;
     partner_name: string | null;
   }>({
-    organization: getOrganization,
     partner_name: '',
   });
+  const [sharedQuery, setSharedQuery] = useState<{
+    partner_name: string | null;
+  }>({
+    partner_name: '',
+  });
+  const sharedSearchQuery = useDebounceHook(sharedQuery, 500);
   const searchQuery = useDebounceHook(query, 500);
 
-  const isShared = () => {};
-  const deleteData = () => {};
-  const SharedPartnerColumns = getSharedPartnerColumns(
+  const deleteSelectedIds = () => {
+    const data = {Ids: deleteIds};
+    dispatch(deletePartnerPassword(data)).then((d) => {
+      if (d?.payload) {
+        dispatch(queryPartnerPassword(searchQuery));
+        setDeleteIds([]);
+        setShowModalDelete(false);
+      }
+    });
+  };
+
+  const MyPartnerColumns = getMyPartnerColumns(
     token,
-    deleteData,
-    isShared,
+    setShowShareCredentialModal,
+    setPartnerPasswordId,
+    setDeleteIds,
+    setShowModalDelete,
   );
-  const MyPartnerColumns = getMyPasswordColumns(token, deleteData, isShared);
+  const SharedPartnerColumns = getSharedPasswordColumns(token);
 
   useEffect(() => {
-    dispatch(queryAllUsers(searchQuery));
+    dispatch(queryPartnerPassword(searchQuery));
   }, [searchQuery]);
+
+  useEffect(() => {
+    dispatch(querySharedPartnerPassword(sharedSearchQuery));
+  }, [sharedSearchQuery]);
+
+  useEffect(() => {
+    if (partnerPasswordData) {
+      let filteredData = sharedPasswordData?.filter(
+        (partnerPasswordDataItem: any) =>
+          partnerPasswordDataItem?.shared_with === userInformation?.id,
+      );
+      setFinalSharedPasswordData(filteredData);
+    }
+  }, [partnerPasswordData]);
+
+  console.log(
+    'finalSharedPasswordData',
+    finalSharedPasswordData,
+    sharedPasswordData,
+  );
 
   const locale = {
     emptyText: <EmptyContainer title="No Data" />,
@@ -91,7 +151,7 @@ const PartnerPassword = () => {
       children: (
         <OsTable
           columns={SharedPartnerColumns}
-          dataSource={[]}
+          dataSource={finalSharedPasswordData}
           scroll
           loading={loading}
           locale={locale}
@@ -113,7 +173,7 @@ const PartnerPassword = () => {
       children: (
         <OsTable
           columns={MyPartnerColumns}
-          dataSource={[]}
+          dataSource={partnerPasswordData}
           scroll
           loading={loading}
           locale={locale}
@@ -122,81 +182,162 @@ const PartnerPassword = () => {
     },
   ];
 
-  return (
-    <Space size={5} direction="vertical" style={{width: '100%'}}>
-      <Row justify="space-between" align="middle">
-        <Col>
-          <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-            Partner Passwords
-          </Typography>
-        </Col>
-        <Col>
-          <OsButton
-            text="Add new credentials"
-            buttontype="PRIMARY"
-            icon={<PlusIcon />}
-            //   clickHandler={markAsComplete}
-          />
-        </Col>
-      </Row>
+  const onFinish = () => {
+    const formData = partnerPasswordForm.getFieldsValue();
+    if (formData) {
+      let obj = {
+        ...formData,
+        created_by: userInformation?.id,
+      };
+      dispatch(insertPartnerPassword(obj)).then((d) => {
+        if (d?.payload) {
+          dispatch(queryPartnerPassword(query));
+          setShowModal(false);
+        }
+      });
+    }
+    console.log('formDataformData', formData);
+  };
 
-      <OsTabs
-        style={{
-          background: 'white',
-          padding: '24px',
-          paddingTop: '56px',
-          borderRadius: '12px',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-        tabBarExtraContent={
-          <Space size={12} align="center">
-            <Space direction="vertical" size={0}>
-              <Typography name="Body 4/Medium">Partner Name</Typography>
-              <CommonSelect
-                style={{width: '200px'}}
-                placeholder="Search here"
-                showSearch
-                onSearch={(e: any) => {
-                  setQuery({
-                    ...query,
-                    partner_name: e,
-                  });
-                }}
-                onChange={(e: any) => {
-                  setQuery({
-                    ...query,
-                    partner_name: e,
-                  });
-                }}
-                value={query?.partner_name}
-                // options={activeKey === 1 ? nameOptions : nameAdminOptions}
-              />
-            </Space>
-            <div
-              style={{
-                marginTop: '15px',
+  const shareCredential = () => {
+    if (shareCredentialsIds) {
+      dispatch(insertSharedPartnerPassword(shareCredentialsIds)).then((d) => {
+        if (d?.payload) {
+          setShareCredentialsIds([]);
+          setPartnerPasswordId([]);
+          setShowShareCredentialModal(false);
+        }
+      });
+    }
+  };
+
+  return (
+    <>
+      <Space size={5} direction="vertical" style={{width: '100%'}}>
+        <Row justify="space-between" align="middle">
+          <Col>
+            <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
+              Partner Passwords
+            </Typography>
+          </Col>
+          <Col>
+            <OsButton
+              text="Add new credentials"
+              buttontype="PRIMARY"
+              icon={<PlusIcon />}
+              clickHandler={() => {
+                setShowModal(true);
               }}
-            >
-              <Typography
-                cursor="pointer"
-                name="Button 1"
-                color={query?.partner_name ? '#0D0D0D' : '#C6CDD5'}
-                onClick={() => {
-                  setQuery({
-                    ...query,
-                    partner_name: null,
-                  });
+            />
+          </Col>
+        </Row>
+
+        <OsTabs
+          style={{
+            background: 'white',
+            padding: '24px',
+            paddingTop: '56px',
+            borderRadius: '12px',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+          tabBarExtraContent={
+            <Space size={12} align="center">
+              <Space direction="vertical" size={0}>
+                <Typography name="Body 4/Medium">Partner Name</Typography>
+                <CommonSelect
+                  style={{width: '200px'}}
+                  placeholder="Search here"
+                  showSearch
+                  onSearch={(e: any) => {
+                    setQuery({
+                      ...query,
+                      partner_name: e,
+                    });
+                  }}
+                  onChange={(e: any) => {
+                    setQuery({
+                      ...query,
+                      partner_name: e,
+                    });
+                  }}
+                  value={query?.partner_name}
+                  // options={activeKey === 1 ? nameOptions : nameAdminOptions}
+                />
+              </Space>
+              <div
+                style={{
+                  marginTop: '15px',
                 }}
               >
-                Reset
-              </Typography>
-            </div>
-          </Space>
+                <Typography
+                  cursor="pointer"
+                  name="Button 1"
+                  color={query?.partner_name ? '#0D0D0D' : '#C6CDD5'}
+                  onClick={() => {
+                    setQuery({
+                      ...query,
+                      partner_name: null,
+                    });
+                  }}
+                >
+                  Reset
+                </Typography>
+              </div>
+            </Space>
+          }
+          items={tabItems}
+        />
+      </Space>
+
+      <OsModal
+        loading={loading}
+        body={
+          <AddPartnerPassword
+            partnerPasswordForm={partnerPasswordForm}
+            onFinish={onFinish}
+          />
         }
-        items={tabItems}
+        width={600}
+        open={showModal}
+        onCancel={() => {
+          setShowModal(false);
+          partnerPasswordForm.resetFields();
+        }}
+        onOk={partnerPasswordForm.submit}
+        primaryButtonText="Save"
+        footerPadding={30}
       />
-    </Space>
+      <OsModal
+        title={'Share Credentials in Team'}
+        loading={sharedPartnerPassword}
+        body={
+          <ShareCredential
+            setShareCredentialsIds={setShareCredentialsIds}
+            shareCredentialsIds={shareCredentialsIds}
+            partnerPasswordId={partnerPasswordId}
+          />
+        }
+        width={1100}
+        open={showShareCredentialModal}
+        onCancel={() => {
+          setShowShareCredentialModal(false);
+        }}
+        onOk={shareCredential}
+        primaryButtonText="Share"
+        bodyPadding={40}
+      />
+
+      <DeleteModal
+        loading={loading}
+        setShowModalDelete={setShowModalDelete}
+        setDeleteIds={setDeleteIds}
+        showModalDelete={showModalDelete}
+        deleteSelectedIds={deleteSelectedIds}
+        description="Are you sure you want to delete this partner Password?"
+        heading="Delete Partner Password"
+      />
+    </>
   );
 };
 

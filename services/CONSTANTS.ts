@@ -218,4 +218,16 @@ export const API = {
     GetRecentNotifications: '/notification/getRecentNotifications',
     GetEarlierNotifications: '/notification/getEarlierNotifications',
   },
+  PARTNER_PASSWORD: {
+    INDEX: '/partnerPassword',
+    QUERY: 'partnerPassword/query',
+    DeleteById: '/partnerPassword/deleteById',
+    UpdateById: '/partnerPassword/updateById',
+  },
+  SHARED_PARTNER_PASSWORD: {
+    INDEX: '/sharedPartnerPassword',
+    QUERY: 'sharedPartnerPassword/query',
+    DeleteById: '/sharedPartnerPassword/deleteById',
+    UpdateById: '/sharedPartnerPassword/updateById',
+  },
 };
