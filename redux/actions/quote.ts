@@ -158,3 +158,15 @@ export const updateQuoteStatusById = createAsyncThunk(
     }
   },
 );
+
+export const getAllQuotesByOrganization = createAsyncThunk(
+  'quote/getAllQuotesByOrganization',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await QUOTEAPI.getAllQuotesByOrganization(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

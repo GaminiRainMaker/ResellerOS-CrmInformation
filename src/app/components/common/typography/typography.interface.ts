@@ -92,4 +92,5 @@ export interface TypographyInterface {
   maxWidth?: number;
   cursor?: string;
   className?: string;
+  tooltip?: boolean;
 }

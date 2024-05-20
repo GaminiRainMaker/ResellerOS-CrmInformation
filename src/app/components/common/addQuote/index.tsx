@@ -330,9 +330,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
     setShowModal(false);
     setUploadFileData([]);
 
-    // if (singleQuote || updatedArr?.length === 1) {
-    //   router.push(`/generateQuote?id=${quotesArr[0]?.id}`);
-    // }
+    if (singleQuote || updatedArr?.length === 1) {
+      router.push(`/generateQuote?id=${quotesArr[0]?.id}`);
+    }
     form.resetFields(['customer_id', 'opportunity_id']);
   };
 

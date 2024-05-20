@@ -36,6 +36,8 @@ export const QUOTEAPI = {
     post(API.QUOTE.updateQuoteJson, data) as Promise<AxiosResponse<any>>,
   updateQuoteConcern: (data: any) =>
     post(API.QUOTE.ConcernUpdate, data) as Promise<AxiosResponse<any>>,
+    getAllQuotesByOrganization: (data: any) =>
+    post(API.QUOTE.GetAllQuotesByOrganization, data) as Promise<AxiosResponse<any>>,
   // put: (id: number, data: any) => put(API.QUOTE.INDEX + "/" + id, data),
   // delete: (id: number) => del(API.QUOTE.INDEX + "/" + id),
 };

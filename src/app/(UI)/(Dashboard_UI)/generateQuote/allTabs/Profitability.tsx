@@ -629,18 +629,19 @@ const Profitability: FC<any> = ({
           newObj[update?.field] = update?.value;
         }
       });
-      const profitabilityData = calculateProfitabilityData(
+      const profitabilityCalculationData = calculateProfitabilityData(
         newObj.quantity,
         newObj.pricing_method,
         useRemoveDollarAndCommahook(newObj?.line_amount),
         useRemoveDollarAndCommahook(newObj?.adjusted_price),
         useRemoveDollarAndCommahook(newObj?.list_price),
       );
-      newObj.unit_price = profitabilityData?.unitPrice;
-      newObj.exit_price = profitabilityData?.exitPrice;
-      newObj.gross_profit = profitabilityData?.grossProfit;
-      newObj.gross_profit_percentage = profitabilityData?.grossProfitPercentage;
-      delete newObj?.profitabilityData;
+      newObj.unit_price = profitabilityCalculationData?.unitPrice;
+      newObj.exit_price = profitabilityCalculationData?.exitPrice;
+      newObj.gross_profit = profitabilityCalculationData?.grossProfit;
+      newObj.gross_profit_percentage =
+        profitabilityCalculationData?.grossProfitPercentage;
+      delete newObj?.profitabilityCalculationData;
 
       return newObj;
     });
@@ -662,9 +663,11 @@ const Profitability: FC<any> = ({
       ]);
       setShowUpdateLineItemModal(false);
       dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
-        setSelectedRowData([]);
-        setSelectedRowIds([]);
-        setProfitabilityData(d?.payload);
+        if (d?.payload) {
+          setSelectedRowData([]);
+          setSelectedRowIds([]);
+          setProfitabilityData(d?.payload);
+        }
       });
     }
   }, [updatedData]);

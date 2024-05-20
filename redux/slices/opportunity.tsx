@@ -9,6 +9,7 @@ import {
   deleteOpportunity,
   getdeleteOpportunity,
   queryOpportunity,
+  getAllOpportunityByOrganization,
 } from '../actions/opportunity';
 
 type OpportunityState = {
@@ -20,6 +21,7 @@ type OpportunityState = {
   filteredData: any;
   deletedCount?: any;
   stageValue?: string;
+  getAllOpportunityDataByOrganization: any;
 };
 const initialState: OpportunityState = {
   loading: false,
@@ -28,6 +30,7 @@ const initialState: OpportunityState = {
   opportunity: [],
   opportunityById: {},
   filteredData: [],
+  getAllOpportunityDataByOrganization: [],
   deletedCount: null,
   stageValue: '',
 };
@@ -166,6 +169,24 @@ const opportunitySlice = createSlice({
       )
       .addCase(
         queryOpportunity.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getAllOpportunityByOrganization.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getAllOpportunityByOrganization.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.getAllOpportunityDataByOrganization = action.payload;
+        },
+      )
+      .addCase(
+        getAllOpportunityByOrganization.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

@@ -11,6 +11,7 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect} from 'react';
 import {queryAllUsers} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 
 const OrganizationUsers = () => {
   const dispatch = useAppDispatch();
@@ -103,7 +104,9 @@ const OrganizationUsers = () => {
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              router.push(`/accountInfo?id=${record?.id}`);
+              router.push(
+                `/accountInfo?id=${record?.id}&organization=${getOrganization}&role=superAdmin`,
+              );
             }}
           />
         </Space>
@@ -118,15 +121,38 @@ const OrganizationUsers = () => {
   const locale = {
     emptyText: <EmptyContainer title="No Users" />,
   };
+  const menuItems = [
+    {
+      key: '1',
+      title: (
+        <Typography
+          name="Body 2/Medium"
+          color={token?.colorInfoBorder}
+          cursor="pointer"
+          onClick={() => {
+            router?.push('/userManagement');
+          }}
+        >
+          All Resellers
+        </Typography>
+      ),
+    },
+    {
+      key: '2',
+      title: (
+        <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
+          {getOrganization}
+        </Typography>
+      ),
+    },
+  ];
 
   return (
     <>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
         <Row justify="space-between" align="middle">
           <Col>
-            <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              {getOrganization} Resellers
-            </Typography>
+            <OsBreadCrumb items={menuItems} />
           </Col>
         </Row>
 
@@ -144,7 +170,6 @@ const OrganizationUsers = () => {
             locale={locale}
             columns={UserDataColumns}
             dataSource={userData}
-            // rowSelection={rowSelection}
             scroll
             loading={loading}
           />

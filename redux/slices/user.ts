@@ -14,6 +14,7 @@ import {
   getGloabalySearchDataa,
   updateUserPassword,
   getUserProfileData,
+  updateUserPasswordForNew,
   getOranizationSeats,
 } from '../actions/user';
 
@@ -27,6 +28,7 @@ type UserState = {
   allResellerRecord: any;
   searchDataa: any;
   createUserData: any;
+  updateUserPasswordData: any;
 };
 const initialState: UserState = {
   loading: false,
@@ -38,6 +40,7 @@ const initialState: UserState = {
   allResellerRecord: {},
   searchDataa: [],
   createUserData: {},
+  updateUserPasswordData: {},
 };
 
 const userSlice = createSlice({
@@ -245,6 +248,24 @@ const userSlice = createSlice({
           state.error = action.payload;
         },
       )
+      .addCase(updateUserPasswordForNew.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateUserPasswordForNew.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.updateUserPasswordData = action.payload;
+        },
+      )
+      .addCase(
+        updateUserPasswordForNew.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
       .addCase(getOranizationSeats.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -253,7 +274,7 @@ const userSlice = createSlice({
         getOranizationSeats.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.searchDataa = action.payload;
+          state.updateUserPasswordData = action.payload;
         },
       )
       .addCase(
@@ -269,3 +290,8 @@ const userSlice = createSlice({
 export const {setUser, setUserInformation, setAllResellerRecord} =
   userSlice.actions;
 export default userSlice?.reducer;
+
+// console.log(
+//   'error12345',
+//   action.payload?.message?.response?.data?.message,
+// );

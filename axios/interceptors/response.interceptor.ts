@@ -22,6 +22,12 @@ export const errorResponseInterceptor = (error: AxiosError) => {
       message: error,
     });
   }
+  if (error?.response?.status == 601) {
+    return Promise.reject({
+      success: false,
+      message: error,
+    });
+  }
   return Promise.resolve({
     success: false,
     message: 'Something went wrong',

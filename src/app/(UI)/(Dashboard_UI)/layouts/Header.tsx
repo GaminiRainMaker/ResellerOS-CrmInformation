@@ -139,7 +139,9 @@ const CustomHeader = () => {
   useEffect(() => {
     setNotificationCounts(0);
   }, [notificationData]);
-
+  const isSuperAdminProfile = userInformation?.MasterAdmin
+    ? 'SuperAdminProfile'
+    : 'reseller';
   const items: MenuProps['items'] = [
     {
       key: '1',
@@ -147,7 +149,11 @@ const CustomHeader = () => {
         <Typography
           name="Body 3/Regular"
           cursor="pointer"
-          onClick={() => router.push(`/accountInfo`)}
+          onClick={() => {
+            window.open(
+              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=account&isSuperAdminProfile=${isSuperAdminProfile}`,
+            );
+          }}
         >
           My Account{' '}
         </Typography>
@@ -159,7 +165,11 @@ const CustomHeader = () => {
         <Typography
           name="Body 3/Regular"
           cursor="pointer"
-          onClick={() => router.push(`/accountInfo`)}
+          onClick={() =>
+            window.open(
+              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=settings&isSuperAdminProfile=${isSuperAdminProfile}`,
+            )
+          }
         >
           Settings{' '}
         </Typography>
@@ -171,7 +181,11 @@ const CustomHeader = () => {
         <Typography
           name="Body 3/Regular"
           cursor="pointer"
-          onClick={() => router.push(`/accountInfo`)}
+          onClick={() =>
+            window.open(
+              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=support&isSuperAdminProfile=${isSuperAdminProfile}`,
+            )
+          }
         >
           Help & Support{' '}
         </Typography>
@@ -531,7 +545,6 @@ const CustomHeader = () => {
                 <AvatarStyled
                   onClick={() => {
                     setOpenNotifications(!openNotifications);
-                    // readAllNotifications();
                   }}
                   background={token?.colorInfoBg}
                   icon={<BellIcon width={24} color={token?.colorInfoBorder} />}

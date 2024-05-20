@@ -28,9 +28,11 @@ import DeleteModal from '../os-modal/DeleteModal';
 import DailogModal from '../os-modal/DialogModal';
 import OsStatusWrapper from '../os-status';
 import AddUsers from './AddUser';
+import {useRouter} from 'next/navigation';
 
 const AddUser = () => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [token] = useThemeToken();
   const [showAddUserModal, setShowAddUserModal] = useState<boolean>(false);
   const {
@@ -66,8 +68,18 @@ const AddUser = () => {
       dataIndex: 'user_name',
       key: 'user_name',
       width: 173,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (text: string, record: any) => (
+        <Typography
+          name="Body 4/Regular"
+          hoverOnText
+          onClick={() => {
+            router.push(
+              `/accountInfo?id=${record?.id}&organization=${record?.organization}&role=admin`,
+            );
+          }}
+        >
+          {text ?? '--'}
+        </Typography>
       ),
     },
     {
