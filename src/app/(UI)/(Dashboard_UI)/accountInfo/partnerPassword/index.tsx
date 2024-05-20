@@ -23,9 +23,9 @@ import {
   querySharedPartnerPassword,
 } from '../../../../../../redux/actions/sharedPartnerPassword';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+import {getMyPartnerColumns, getSharedPasswordColumns} from '../tableCloumn';
 import AddPartnerPassword from './AddPartnerPassword';
 import ShareCredential from './ShareCredential';
-import {getMyPartnerColumns, getSharedPasswordColumns} from '../tableCloumn';
 
 const PartnerPassword = () => {
   const [token] = useThemeToken();
@@ -44,6 +44,7 @@ const PartnerPassword = () => {
   const [deleteIds, setDeleteIds] = useState<any>();
   const [partnerPasswordId, setPartnerPasswordId] = useState<any>();
   const [finalSharedPasswordData, setFinalSharedPasswordData] = useState<any>();
+  const [finalMyPasswordData, setFinalMyPasswordData] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
   const [shareCredentialsIds, setShareCredentialsIds] = useState<
     {shareBy: number; shareWith: number}[]
@@ -71,8 +72,6 @@ const PartnerPassword = () => {
       }
     });
   };
-
-  const [copiedPassword, setCopiedPassword] = useState('');
 
   const handleCopyPassword = (password: string) => {
     navigator.clipboard.writeText(password);
@@ -108,6 +107,16 @@ const PartnerPassword = () => {
       setFinalSharedPasswordData(filteredData);
     }
   }, [sharedPasswordData]);
+
+  useEffect(() => {
+    if (partnerPasswordData) {
+      let filteredData = partnerPasswordData?.filter(
+        (partnerPasswordDataItem: any) =>
+          partnerPasswordDataItem?.created_by === userInformation?.id,
+      );
+      setFinalMyPasswordData(filteredData);
+    }
+  }, [partnerPasswordData]);
 
   const locale = {
     emptyText: <EmptyContainer title="No Data" />,
@@ -164,7 +173,7 @@ const PartnerPassword = () => {
       children: (
         <OsTable
           columns={MyPartnerColumns}
-          dataSource={partnerPasswordData}
+          dataSource={finalMyPasswordData}
           scroll
           loading={loading}
           locale={locale}
