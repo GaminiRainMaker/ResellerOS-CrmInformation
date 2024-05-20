@@ -11,7 +11,7 @@ import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form, TabsProps} from 'antd';
+import {Form, TabsProps, message} from 'antd';
 import {useEffect, useState} from 'react';
 import {
   deletePartnerPassword,
@@ -72,6 +72,13 @@ const PartnerPassword = () => {
     });
   };
 
+  const [copiedPassword, setCopiedPassword] = useState('');
+
+  const handleCopyPassword = (password: string) => {
+    navigator.clipboard.writeText(password);
+    message.success('Password copied to clipboard');
+  };
+
   const MyPartnerColumns = getMyPartnerColumns(
     token,
     setShowShareCredentialModal,
@@ -79,7 +86,10 @@ const PartnerPassword = () => {
     setDeleteIds,
     setShowModalDelete,
   );
-  const SharedPartnerColumns = getSharedPasswordColumns(token);
+  const SharedPartnerColumns = getSharedPasswordColumns(
+    token,
+    handleCopyPassword,
+  );
 
   useEffect(() => {
     dispatch(queryPartnerPassword(searchQuery));
@@ -90,37 +100,20 @@ const PartnerPassword = () => {
   }, [sharedSearchQuery]);
 
   useEffect(() => {
-    if (partnerPasswordData) {
+    if (sharedPasswordData) {
       let filteredData = sharedPasswordData?.filter(
-        (partnerPasswordDataItem: any) =>
-          partnerPasswordDataItem?.shared_with === userInformation?.id,
+        (sharedPasswordDataItem: any) =>
+          sharedPasswordDataItem?.shared_with === userInformation?.id,
       );
       setFinalSharedPasswordData(filteredData);
     }
-  }, [partnerPasswordData]);
-
-  console.log(
-    'finalSharedPasswordData',
-    finalSharedPasswordData,
-    sharedPasswordData,
-  );
+  }, [sharedPasswordData]);
 
   const locale = {
     emptyText: <EmptyContainer title="No Data" />,
   };
 
-  //   const nameAdminOptions = userData?.reduce(
-  //     (accumulator: any, userDataItem: any) => {
-  //       if (userDataItem?.is_admin === true) {
-  //         accumulator.push({
-  //           label: userDataItem?.user_name,
-  //           value: userDataItem?.user_name,
-  //         });
-  //       }
-  //       return accumulator;
-  //     },
-  //     [],
-  //   );
+
 
   //   const nameOptions = userData?.reduce(
   //     (accumulator: any, userDataItem: any) => {
@@ -245,25 +238,46 @@ const PartnerPassword = () => {
             <Space size={12} align="center">
               <Space direction="vertical" size={0}>
                 <Typography name="Body 4/Medium">Partner Name</Typography>
-                <CommonSelect
-                  style={{width: '200px'}}
-                  placeholder="Search here"
-                  showSearch
-                  onSearch={(e: any) => {
-                    setQuery({
-                      ...query,
-                      partner_name: e,
-                    });
-                  }}
-                  onChange={(e: any) => {
-                    setQuery({
-                      ...query,
-                      partner_name: e,
-                    });
-                  }}
-                  value={query?.partner_name}
-                  // options={activeKey === 1 ? nameOptions : nameAdminOptions}
-                />
+                {activeKey === 1 ? (
+                  <CommonSelect
+                    style={{width: '200px'}}
+                    placeholder="Search here"
+                    showSearch
+                    onSearch={(e: any) => {
+                      setSharedQuery({
+                        ...sharedQuery,
+                        partner_name: e,
+                      });
+                    }}
+                    onChange={(e: any) => {
+                      setSharedQuery({
+                        ...sharedQuery,
+                        partner_name: e,
+                      });
+                    }}
+                    value={sharedQuery?.partner_name}
+                  />
+                ) : (
+                  <CommonSelect
+                    style={{width: '200px'}}
+                    placeholder="Search here"
+                    showSearch
+                    onSearch={(e: any) => {
+                      setQuery({
+                        ...query,
+                        partner_name: e,
+                      });
+                    }}
+                    onChange={(e: any) => {
+                      setQuery({
+                        ...query,
+                        partner_name: e,
+                      });
+                    }}
+                    value={query?.partner_name}
+                    // options={activeKey === 1 ? nameOptions : nameAdminOptions}
+                  />
+                )}
               </Space>
               <div
                 style={{
@@ -273,10 +287,11 @@ const PartnerPassword = () => {
                 <Typography
                   cursor="pointer"
                   name="Button 1"
-                  color={query?.partner_name ? '#0D0D0D' : '#C6CDD5'}
+                  color={sharedQuery?.partner_name ? '#0D0D0D' : '#C6CDD5'}
                   onClick={() => {
                     setQuery({
                       ...query,
+                      ...sharedQuery,
                       partner_name: null,
                     });
                   }}

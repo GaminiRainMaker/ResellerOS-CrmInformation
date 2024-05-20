@@ -286,7 +286,10 @@ export function getMyPartnerColumns(
 
   return columns;
 }
-export function getSharedPasswordColumns(token: GlobalToken) {
+export function getSharedPasswordColumns(
+  token: GlobalToken,
+  handleCopyPassword: any,
+) {
   const columns = [
     {
       title: (
@@ -363,7 +366,7 @@ export function getSharedPasswordColumns(token: GlobalToken) {
       width: 187,
       render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
-          {record?.PartnerPassword?.password ?? '--'}
+          {Array(10).fill('*').join('')}
           <CopyToClipboard text={record?.PartnerPassword?.password}>
             <CopyOutlined
               style={{
