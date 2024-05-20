@@ -241,7 +241,23 @@ export function getMyPartnerColumns(
       key: 'password',
       width: 187,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+        <Typography name="Body 4/Regular">
+          {Array(10).fill('*').join('')}
+          <CopyToClipboard text={text}>
+            <CopyOutlined
+              style={{
+                marginLeft: '10px',
+              }}
+              onClick={() => {
+                notification.open({
+                  message: 'Password Copied',
+                  type: 'success',
+                  placement: 'top',
+                });
+              }}
+            />
+          </CopyToClipboard>{' '}
+        </Typography>
       ),
     },
     {
@@ -381,12 +397,6 @@ export function getSharedPasswordColumns(
               }}
             />
           </CopyToClipboard>{' '}
-          {/* <CopyToClipboard
-            text={record?.PartnerPassword?.password}
-            onCopy={record?.PartnerPassword?.password}
-          >
-            copy
-          </CopyToClipboard> */}
         </Typography>
       ),
     },

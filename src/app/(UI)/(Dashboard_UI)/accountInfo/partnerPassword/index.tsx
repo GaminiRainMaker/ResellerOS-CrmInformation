@@ -113,8 +113,6 @@ const PartnerPassword = () => {
     emptyText: <EmptyContainer title="No Data" />,
   };
 
-
-
   //   const nameOptions = userData?.reduce(
   //     (accumulator: any, userDataItem: any) => {
   //       if (userDataItem?.is_admin !== true) {
@@ -196,6 +194,7 @@ const PartnerPassword = () => {
     if (shareCredentialsIds) {
       dispatch(insertSharedPartnerPassword(shareCredentialsIds)).then((d) => {
         if (d?.payload) {
+          dispatch(querySharedPartnerPassword(sharedSearchQuery));
           setShareCredentialsIds([]);
           setPartnerPasswordId([]);
           setShowShareCredentialModal(false);
