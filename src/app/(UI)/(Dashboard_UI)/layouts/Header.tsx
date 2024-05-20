@@ -113,7 +113,6 @@ const CustomHeader = () => {
   });
   const searchQuery = useDebounceHook(query, 400);
   useEffect(() => {
-    console.log('searchQuery', searchQuery);
     if (searchQuery && searchQuery?.length > 0) {
       dispatch(getGloabalySearchDataa(searchQuery));
     }
@@ -139,9 +138,11 @@ const CustomHeader = () => {
   useEffect(() => {
     setNotificationCounts(0);
   }, [notificationData]);
-  const isSuperAdminProfile = userInformation?.MasterAdmin
-    ? 'SuperAdminProfile'
-    : 'reseller';
+  console.log('userInformation', userInformation);
+  const isSuperAdminProfile =
+    userInformation?.MasterAdmin && userInformation?.Role === 'superAdmin'
+      ? 'SuperAdminProfile'
+      : 'reseller';
   const items: MenuProps['items'] = [
     {
       key: '1',

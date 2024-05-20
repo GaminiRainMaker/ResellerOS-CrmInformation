@@ -28,6 +28,7 @@ type UserState = {
   searchDataa: any;
   createUserData: any;
   updateUserPasswordData: any;
+  userProfile: string;
 };
 const initialState: UserState = {
   loading: false,
@@ -40,6 +41,7 @@ const initialState: UserState = {
   searchDataa: [],
   createUserData: {},
   updateUserPasswordData: {},
+  userProfile: '',
 };
 
 const userSlice = createSlice({
@@ -54,6 +56,9 @@ const userSlice = createSlice({
     },
     setAllResellerRecord: (state, action) => {
       state.allResellerRecord = action.payload;
+    },
+    setUserProfile: (state, action) => {
+      state.userProfile = action.payload;
     },
   },
   extraReducers(builder) {
@@ -268,8 +273,12 @@ const userSlice = createSlice({
   },
 });
 
-export const {setUser, setUserInformation, setAllResellerRecord} =
-  userSlice.actions;
+export const {
+  setUser,
+  setUserInformation,
+  setAllResellerRecord,
+  setUserProfile,
+} = userSlice.actions;
 export default userSlice?.reducer;
 
 // console.log(
