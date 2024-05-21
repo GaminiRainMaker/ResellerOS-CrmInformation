@@ -233,12 +233,11 @@ const SideBar = () => {
 
   useEffect(() => {
     dispatch(getOranizationSeats(''))?.then((payload: any) => {
-      const {DealRegAIBundle, QuoteAI} = payload?.payload;
       dispatch(
         setCache({
           ...cache,
-          DealRegSeats: DealRegAIBundle,
-          QuoteAISeats: QuoteAI,
+          DealRegSeats: payload?.payload?.DealRegAIBundle,
+          QuoteAISeats: payload?.payload?.QuoteAI,
         }),
       );
     });
