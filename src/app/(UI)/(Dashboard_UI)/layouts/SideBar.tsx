@@ -25,10 +25,18 @@ import {usePathname, useRouter} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
 import ActiveCrmIcon from '../../../../../public/assets/static/activeCrmIcon.svg';
 import InActiveCrmIcon from '../../../../../public/assets/static/inActiveCrmIcon.svg';
-import {getUserByTokenAccess} from '../../../../../redux/actions/user';
+import {
+  getOranizationSeats,
+  getUserByTokenAccess,
+} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setUserInformation} from '../../../../../redux/slices/user';
 import {LayoutMenuStyle} from './styled-components';
+import {
+  getAllCacheFLowProposal,
+  getCacheFLowProposalById,
+} from '../../../../../redux/actions/cacheFlow';
+import {setCache} from '../../../../../redux/slices/cacheFLow';
 
 const {Sider} = Layout;
 
@@ -36,12 +44,11 @@ const SideBar = () => {
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
-
   const [collapsed, setCollapsed] = useState<boolean>(true);
   const [selectedKey, setSelectedKey] = useState<number>(1);
-
   const [crmChildKey, setCrmChildKey] = useState<number>(0);
   const {userInformation} = useAppSelector((state) => state.user);
+  const {cache} = useAppSelector((state) => state.cacheFLow);
   type MenuItem = Required<MenuProps>['items'][number];
 
   useEffect(() => {
@@ -144,46 +151,104 @@ const SideBar = () => {
     }
   }, [pathname]);
 
+  useEffect(() => {
+    dispatch(getAllCacheFLowProposal(''))?.then((payload: any) => {
+      if (payload?.payload?.sucess) {
+        let allProPosalData = payload?.payload?.sucess;
+        let itemWithSameOrg = allProPosalData?.find(
+          (items: any) =>
+            items?.name?.replace(/\s/g, '') === userInformation?.organization,
+        );
+        if (itemWithSameOrg) {
+          let proposalArrayL: any = [];
+          dispatch(getCacheFLowProposalById(itemWithSameOrg?.id))?.then(
+            (payloadDtaa) => {
+              if (payloadDtaa?.payload?.sucess) {
+                // setPurchasedProposal(true);
+                dispatch(
+                  setCache({
+                    ...cache,
+                    isSubscribed: true,
+                  }),
+                );
+                let ProposalItems = payloadDtaa?.payload?.sucess?.proposalItems;
+                ProposalItems?.map((itemspro: any) => {
+                  let newObj: any;
+                  if (
+                    itemspro?.name === 'QuoteAI' ||
+                    itemspro?.name === 'DealRegAI Bundle'
+                  ) {
+                    proposalArrayL?.push({
+                      [itemspro?.name]: itemspro?.quantity,
+                    });
+                  }
+                });
+
+                // "QuoteAI"
+                // "DealRegAI Bundle"
+              }
+            },
+          );
+
+          // setProPosalData(proposalArrayL);
+        }
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    dispatch(getOranizationSeats(''))?.then((payload: any) => {
+      const {DealRegAIBundle, QuoteAI} = payload?.payload;
+      dispatch(
+        setCache({
+          ...cache,
+          DealRegSeats: DealRegAIBundle,
+          QuoteAISeats: QuoteAI,
+        }),
+      );
+    });
+  }, []);
+
   const items: MenuItem[] = [
-    // getItem(
-    //   <Typography
-    //     cursor="pointer"
-    //     onClick={() => {
-    //       setSelectedKey(1);
-    //       setCrmChildKey(0);
-    //       router?.push('/dashboard');
-    //     }}
-    //     name="Button 1"
-    //   >
-    //     <Space size={12}>
-    //       <OsAvatar
-    //         icon={
-    //           <Squares2X2Icon
-    //             color={
-    //               selectedKey == 1
-    //                 ? token?.colorPrimary
-    //                 : token?.colorTextSecondary
-    //             }
-    //             width={24}
-    //           />
-    //         }
-    //       />
-    //       <Typography
-    //         cursor="pointer"
-    //         name="Button 1"
-    //         style={{
-    //           marginTop: '1px',
-    //         }}
-    //         color={
-    //           selectedKey == 1 ? token?.colorPrimary : token?.colorTextSecondary
-    //         }
-    //       >
-    //         Dashboard
-    //       </Typography>
-    //     </Space>
-    //   </Typography>,
-    //   '1',
-    // ),
+    getItem(
+      <Typography
+        cursor="pointer"
+        onClick={() => {
+          setSelectedKey(1);
+          setCrmChildKey(0);
+          router?.push('/dashboard');
+        }}
+        name="Button 1"
+      >
+        <Space size={12}>
+          <OsAvatar
+            icon={
+              <Squares2X2Icon
+                color={
+                  selectedKey == 1
+                    ? token?.colorPrimary
+                    : token?.colorTextSecondary
+                }
+                width={24}
+              />
+            }
+          />
+          <Typography
+            cursor="pointer"
+            name="Button 1"
+            style={{
+              marginTop: '1px',
+            }}
+            color={
+              selectedKey == 1 ? token?.colorPrimary : token?.colorTextSecondary
+            }
+          >
+            Dashboard
+          </Typography>
+        </Space>
+      </Typography>,
+      '1',
+    ),
     isAdmin &&
       Role === 'superAdmin' &&
       getItem(
