@@ -381,12 +381,6 @@ export function getSharedPasswordColumns(
               }}
             />
           </CopyToClipboard>{' '}
-          {/* <CopyToClipboard
-            text={record?.PartnerPassword?.password}
-            onCopy={record?.PartnerPassword?.password}
-          >
-            copy
-          </CopyToClipboard> */}
         </Typography>
       ),
     },

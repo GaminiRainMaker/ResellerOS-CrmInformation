@@ -3,7 +3,7 @@ import {createAsyncThunk} from '@reduxjs/toolkit';
 import {CACHE_FLOW} from '../../services/cacheFlow';
 
 export const getAllCacheFLowProposal = createAsyncThunk(
-  'chacheFlow',
+  'cacheFlow',
   async (data: any, thunkApi) => {
     try {
       const res = await CACHE_FLOW.get();
@@ -15,7 +15,7 @@ export const getAllCacheFLowProposal = createAsyncThunk(
 );
 
 export const getCacheFLowProposalById = createAsyncThunk(
-  'chacheFlow/getProposalDataById',
+  'cacheFlow/getProposalDataById',
   async (id: any, thunkApi) => {
     try {
       const res = await CACHE_FLOW.getById(id);
