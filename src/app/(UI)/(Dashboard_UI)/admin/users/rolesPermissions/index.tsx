@@ -11,6 +11,7 @@ import Typography from '@/app/components/common/typography';
 import {ShieldCheckIcon} from '@heroicons/react/20/solid';
 import {InformationCircleIcon} from '@heroicons/react/24/outline';
 import {Tooltip} from 'antd';
+import Cryptr from 'cryptr';
 import {useEffect, useState} from 'react';
 import {
   getOranizationSeats,
@@ -18,12 +19,6 @@ import {
   updateUserById,
 } from '../../../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
-import {
-  getAllCacheFLowProposal,
-  getCacheFLowProposalById,
-  getSubscriptionDetails,
-} from '../../../../../../../redux/actions/cacheFlow';
-import Cryptr from 'cryptr';
 
 const RolesAndPermission = () => {
   const dispatch = useAppDispatch();
@@ -220,91 +215,8 @@ const RolesAndPermission = () => {
     }
   };
 
-  const getAllCacheFlowProposalData = async (subscription: any) => {
-    try {
-      let allProposalDataa = await dispatch(getAllCacheFLowProposal(''))?.then(
-        (payload: any) => {
-          return payload?.payload?.sucess;
-        },
-      );
-
-      let proposalItem = allProposalDataa?.find(
-        (itemsPro: any) =>
-          itemsPro?.proposalNumber === subscription?.proposalNumber,
-      );
-      let matchDataaValue: any;
-      if (proposalItem?.id) {
-        matchDataaValue = await dispatch(
-          getCacheFLowProposalById(proposalItem?.id),
-        ).then((payload: any) => {
-          return payload?.payload?.sucess;
-        });
-      }
-      console.log('allProposalDataa', matchDataaValue);
-    } catch (error) {
-      console.log('error', error);
-    }
-  };
-  const getSubsCription = async () => {
-    try {
-      let subscriptionData = await dispatch(getSubscriptionDetails(''))?.then(
-        (subScriptionPayload: any) => {
-          if (subScriptionPayload?.payload) {
-            return subScriptionPayload?.payload?.sucess?.[0];
-          }
-        },
-      );
-      if (subscriptionData) {
-        getAllCacheFlowProposalData(subscriptionData);
-      }
-    } catch (error: any) {
-      console.log('error', error.message);
-    }
-  };
   useEffect(() => {
-    getSubsCription();
-
-    dispatch(getAllCacheFLowProposal(''))?.then((payload: any) => {
-      if (payload?.payload?.sucess) {
-        let allProPosalData = payload?.payload?.sucess;
-
-        // let itemWithSameOrg = allProPosalData?.find(
-        //   (items: any) =>
-        //     items?.name?.replace(/\s/g, '') === userInformation?.organization,
-        // );
-        // if (itemWithSameOrg) {
-        //   let proposalArrayL: any = [];
-        //   dispatch(getCacheFLowProposalById(itemWithSameOrg?.id))?.then(
-        //     (payloadDtaa) => {
-        //       if (payloadDtaa?.payload?.sucess) {
-        //         setPurchasedProposal(true);
-        //         let ProposalItems = payloadDtaa?.payload?.sucess?.proposalItems;
-        //         ProposalItems?.map((itemspro: any) => {
-        //           let newObj: any;
-        //           if (
-        //             itemspro?.name === 'QuoteAI' ||
-        //             itemspro?.name === 'DealRegAI Bundle'
-        //           ) {
-        //             proposalArrayL?.push({
-        //               [itemspro?.name]: itemspro?.quantity,
-        //             });
-        //           }
-        //         });
-
-        //         // "QuoteAI"
-        //         // "DealRegAI Bundle"
-        //       }
-        //     },
-        //   );
-
-        //   setProPosalData(proposalArrayL);
-        // }
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    dispatch(getOranizationSeats(''))?.then((payload) => {
+    dispatch(getOranizationSeats(''))?.then((payload: any) => {
       setSeatOccuiped(payload?.payload);
     });
   }, []);
@@ -324,7 +236,7 @@ const RolesAndPermission = () => {
           Quote AI:{' '}
           <Typography color={token?.colorBgContainer} name="Body 3/Bold">
             {' '}
-            {cache?.QuoteAISeats}/30
+            {cache?.QuoteAISeats}/{cache?.TotalQuoteSeats}
           </Typography>
         </Typography>
 
@@ -332,12 +244,14 @@ const RolesAndPermission = () => {
           DealReg AI:{' '}
           <Typography color={token?.colorBgContainer} name="Body 3/Bold">
             {' '}
-            {cache?.DealRegSeats}/09
+            {cache?.DealRegSeats}/{cache?.TotalDealRegSeats}
           </Typography>
         </Typography>
       </span>
     </Space>
   );
+
+  console.log('34545453', cache);
   return (
     <>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
