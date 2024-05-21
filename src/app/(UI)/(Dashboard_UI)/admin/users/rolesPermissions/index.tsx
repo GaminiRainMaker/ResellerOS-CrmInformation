@@ -20,7 +20,9 @@ import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
 import {
   getAllCacheFLowProposal,
   getCacheFLowProposalById,
+  getSubscriptionDetails,
 } from '../../../../../../../redux/actions/cacheFlow';
+import Cryptr from 'cryptr';
 
 const RolesAndPermission = () => {
   const dispatch = useAppDispatch();
@@ -33,7 +35,16 @@ const RolesAndPermission = () => {
   const [proposalData, setProPosalData] = useState<any>();
   const [seatOccupied, setSeatOccuiped] = useState<any>();
   const [purchasedProposal, setPurchasedProposal] = useState<boolean>(false);
+  const cryptr = new Cryptr('myTotallySecretKey', {
+    encoding: 'base64',
+    pbkdf2Iterations: 10000,
+    saltLength: 10,
+  });
 
+  const encryptedString = cryptr?.encrypt('bacon');
+
+  console.log(encryptedString, '1111111'); // CPbKO/FFLQ8lVKxV+jYJcLcpTU0ZvW3D+JVfUecmJmLYY10UxYEa/wf8PWDQqhw=
+  // console.log(decryptedString, '1111111'); // bacon
   const providePermissions = () => {
     setUserRules((prev: any) =>
       prev.map((prevItem: any) => {
@@ -205,41 +216,86 @@ const RolesAndPermission = () => {
       });
     }
   };
+
+  const getAllCacheFlowProposalData = async (subscription: any) => {
+    try {
+      let allProposalDataa = await dispatch(getAllCacheFLowProposal(''))?.then(
+        (payload: any) => {
+          return payload?.payload?.sucess;
+        },
+      );
+
+      let proposalItem = allProposalDataa?.find(
+        (itemsPro: any) =>
+          itemsPro?.proposalNumber === subscription?.proposalNumber,
+      );
+      let matchDataaValue: any;
+      if (proposalItem?.id) {
+        matchDataaValue = await dispatch(
+          getCacheFLowProposalById(proposalItem?.id),
+        ).then((payload: any) => {
+          return payload?.payload?.sucess;
+        });
+      }
+      console.log('allProposalDataa', matchDataaValue);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+  const getSubsCription = async () => {
+    try {
+      let subscriptionData = await dispatch(getSubscriptionDetails(''))?.then(
+        (subScriptionPayload: any) => {
+          if (subScriptionPayload?.payload) {
+            return subScriptionPayload?.payload?.sucess?.[0];
+          }
+        },
+      );
+      if (subscriptionData) {
+        getAllCacheFlowProposalData(subscriptionData);
+      }
+    } catch (error: any) {
+      console.log('error', error.message);
+    }
+  };
   useEffect(() => {
+    getSubsCription();
+
     dispatch(getAllCacheFLowProposal(''))?.then((payload: any) => {
       if (payload?.payload?.sucess) {
         let allProPosalData = payload?.payload?.sucess;
-        let itemWithSameOrg = allProPosalData?.find(
-          (items: any) =>
-            items?.name?.replace(/\s/g, '') === userInformation?.organization,
-        );
-        if (itemWithSameOrg) {
-          let proposalArrayL: any = [];
-          dispatch(getCacheFLowProposalById(itemWithSameOrg?.id))?.then(
-            (payloadDtaa) => {
-              if (payloadDtaa?.payload?.sucess) {
-                setPurchasedProposal(true);
-                let ProposalItems = payloadDtaa?.payload?.sucess?.proposalItems;
-                ProposalItems?.map((itemspro: any) => {
-                  let newObj: any;
-                  if (
-                    itemspro?.name === 'QuoteAI' ||
-                    itemspro?.name === 'DealRegAI Bundle'
-                  ) {
-                    proposalArrayL?.push({
-                      [itemspro?.name]: itemspro?.quantity,
-                    });
-                  }
-                });
 
-                // "QuoteAI"
-                // "DealRegAI Bundle"
-              }
-            },
-          );
+        // let itemWithSameOrg = allProPosalData?.find(
+        //   (items: any) =>
+        //     items?.name?.replace(/\s/g, '') === userInformation?.organization,
+        // );
+        // if (itemWithSameOrg) {
+        //   let proposalArrayL: any = [];
+        //   dispatch(getCacheFLowProposalById(itemWithSameOrg?.id))?.then(
+        //     (payloadDtaa) => {
+        //       if (payloadDtaa?.payload?.sucess) {
+        //         setPurchasedProposal(true);
+        //         let ProposalItems = payloadDtaa?.payload?.sucess?.proposalItems;
+        //         ProposalItems?.map((itemspro: any) => {
+        //           let newObj: any;
+        //           if (
+        //             itemspro?.name === 'QuoteAI' ||
+        //             itemspro?.name === 'DealRegAI Bundle'
+        //           ) {
+        //             proposalArrayL?.push({
+        //               [itemspro?.name]: itemspro?.quantity,
+        //             });
+        //           }
+        //         });
 
-          setProPosalData(proposalArrayL);
-        }
+        //         // "QuoteAI"
+        //         // "DealRegAI Bundle"
+        //       }
+        //     },
+        //   );
+
+        //   setProPosalData(proposalArrayL);
+        // }
       }
     });
   }, []);

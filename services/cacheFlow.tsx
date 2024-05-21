@@ -8,4 +8,5 @@ export const CACHE_FLOW = {
   get: () => get(API.CACHEFLOW.INDEX),
   getById: (id: number) =>
     get(`${API.CACHEFLOW.GETBYID}/${id}`) as Promise<AxiosResponse<any>>,
+  getSubscription: () => get(API.CACHEFLOW.Subscription),
 };

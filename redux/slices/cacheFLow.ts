@@ -4,6 +4,7 @@ import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
   getAllCacheFLowProposal,
   getCacheFLowProposalById,
+  getSubscriptionDetails,
 } from '../actions/cacheFlow';
 
 type chacheFlowState = {
@@ -61,6 +62,24 @@ const cacheSlice = createSlice({
       )
       .addCase(
         getCacheFLowProposalById.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getSubscriptionDetails.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getSubscriptionDetails.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getSubscriptionDetails.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
