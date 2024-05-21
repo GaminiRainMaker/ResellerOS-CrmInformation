@@ -10,14 +10,22 @@ type chacheFlowState = {
   loading: boolean;
   error: string | null;
   data: any;
-  cache: any;
+  cache: {
+    isSubscribed: boolean;
+    DealRegSeats: number;
+    QuoteAISeats: number;
+  };
 };
 
 const initialState: chacheFlowState = {
   loading: false,
   error: null,
   data: [],
-  cache: [],
+  cache: {
+    isSubscribed: false,
+    DealRegSeats: 0,
+    QuoteAISeats: 0,
+  },
 };
 
 const cacheSlice = createSlice({

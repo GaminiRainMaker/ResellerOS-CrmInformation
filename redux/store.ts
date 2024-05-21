@@ -35,6 +35,7 @@ import attributeField from './slices/attributeField';
 import notification from './slices/notificatios';
 import partnerPassword from './slices/partnerPassword';
 import sharedPartnerPassword from './slices/sharedPartnerPassword';
+import cacheFLow from './slices/cacheFLow';
 
 // Configure redux store
 const store = configureStore({
@@ -73,6 +74,7 @@ const store = configureStore({
     notification,
     partnerPassword,
     sharedPartnerPassword,
+    cacheFLow,
   },
   middleware: [thunk],
   devTools: true,
