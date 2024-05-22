@@ -4,6 +4,7 @@ export const API = {
     VERIFY: '/auth/verify',
     SEND_EMAIL: '/auth/sendNewUserEmail',
     Send_Forgot_Password_Email: '/auth/sendForgotPasswordEmail',
+    Contact_Sales: '/auth/contactSales',
   },
   QUOTE: {
     INDEX: '/quote',
