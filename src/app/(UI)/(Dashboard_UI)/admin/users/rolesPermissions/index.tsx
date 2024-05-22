@@ -29,6 +29,9 @@ const RolesAndPermission = () => {
   const [userRules, setUserRules] = useState<any>(data);
   const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
   const [recordId, setRecordId] = useState<number>();
+  const [quoteDisable, setQuoteDisable] = useState<any>(null);
+  const [dealRegDisable, setDealRegDisable] = useState<any>(null);
+  const [rolesAndPermissionsData, setRolesAndPermissionsData] = useState<any>();
 
   const providePermissions = () => {
     setUserRules((prev: any) =>
@@ -48,143 +51,168 @@ const RolesAndPermission = () => {
     setShowDailogModal(false);
   };
 
-  const RolesAndPermissionsColumns = [
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          User Name
-        </Typography>
-      ),
-      dataIndex: 'user_name',
-      key: 'user_name',
-      width: 173,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Admin Access
-        </Typography>
-      ),
-      dataIndex: 'is_admin',
-      key: 'is_admin',
-      width: 173,
-      render: (text: any, record: any) => (
-        <Checkbox
-          defaultChecked={text}
-          onClick={(d: any) => {
-            if (d?.target?.checked) {
-              setShowDailogModal(true);
-              setRecordId(record?.id);
-            }
-          }}
-          onChange={(e) => {
-            setUserRules((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {
-                    ...prevItem,
-                    is_admin: e?.target?.checked,
-                  };
-                }
-                return prevItem;
-              }),
-            );
-          }}
-        />
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Quote AI
-        </Typography>
-      ),
-      dataIndex: 'is_quote',
-      key: 'is_quote',
-      width: 173,
-      render: (text: any, record: any) => (
-        <Checkbox
-          checked={text}
-          onChange={(e) => {
-            setUserRules((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {
-                    ...prevItem,
-                    is_quote: e?.target?.checked,
-                  };
-                }
-                return prevItem;
-              }),
-            );
-          }}
-        />
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Deal Reg
-        </Typography>
-      ),
-      dataIndex: 'is_dealReg',
-      key: 'is_dealReg',
-      width: 173,
-      render: (text: any, record: any) => (
-        <Checkbox
-          checked={text}
-          onChange={(e) => {
-            setUserRules((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {
-                    ...prevItem,
-                    is_dealReg: e?.target?.checked,
-                  };
-                }
-                return prevItem;
-              }),
-            );
-          }}
-        />
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Orders AI
-        </Typography>
-      ),
-      dataIndex: 'is_order',
-      key: 'is_order',
-      width: 173,
-      render: (text: any, record: any) => (
-        <Checkbox
-          checked={text}
-          onChange={(e) => {
-            setUserRules((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {
-                    ...prevItem,
-                    is_order: e?.target?.checked,
-                  };
-                }
-                return prevItem;
-              }),
-            );
-          }}
-        />
-      ),
-    },
-  ];
+  useEffect(() => {
+    if (
+      cacheAvailableSeats?.QuoteAISeats ===
+      cacheTotalQuoteSeats?.TotalQuoteSeats
+    ) {
+      setQuoteDisable(true);
+    } else {
+      setQuoteDisable(false);
+    }
+    if (
+      cacheAvailableSeats?.DealRegSeats ===
+      cacheTotalDealRegSeats?.TotalDealRegSeats
+    ) {
+      setDealRegDisable(true);
+    } else {
+      setDealRegDisable(false);
+    }
+  }, [cacheAvailableSeats, cacheTotalQuoteSeats, cacheTotalDealRegSeats]);
+
+  useEffect(() => {
+    const RolesAndPermissionsColumns = [
+      {
+        title: (
+          <Typography name="Body 4/Medium" className="dragHandler">
+            User Name
+          </Typography>
+        ),
+        dataIndex: 'user_name',
+        key: 'user_name',
+        width: 173,
+        render: (text: string) => (
+          <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+        ),
+      },
+      {
+        title: (
+          <Typography name="Body 4/Medium" className="dragHandler">
+            Admin Access
+          </Typography>
+        ),
+        dataIndex: 'is_admin',
+        key: 'is_admin',
+        width: 173,
+        render: (text: any, record: any) => (
+          <Checkbox
+            defaultChecked={text}
+            onClick={(d: any) => {
+              if (d?.target?.checked) {
+                setShowDailogModal(true);
+                setRecordId(record?.id);
+              }
+            }}
+            onChange={(e) => {
+              setUserRules((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (prevItem.id === record?.id) {
+                    return {
+                      ...prevItem,
+                      is_admin: e?.target?.checked,
+                    };
+                  }
+                  return prevItem;
+                }),
+              );
+            }}
+          />
+        ),
+      },
+      {
+        title: (
+          <Typography name="Body 4/Medium" className="dragHandler">
+            Quote AI
+          </Typography>
+        ),
+        dataIndex: 'is_quote',
+        key: 'is_quote',
+        width: 173,
+        render: (text: any, record: any) => (
+          <Checkbox
+            disabled={quoteDisable}
+            checked={text}
+            onChange={(e) => {
+              setUserRules((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (prevItem.id === record?.id) {
+                    return {
+                      ...prevItem,
+                      is_quote: e?.target?.checked,
+                    };
+                  }
+                  return prevItem;
+                }),
+              );
+            }}
+          />
+        ),
+      },
+      {
+        title: (
+          <Typography name="Body 4/Medium" className="dragHandler">
+            Deal Reg
+          </Typography>
+        ),
+        dataIndex: 'is_dealReg',
+        key: 'is_dealReg',
+        width: 173,
+        render: (text: any, record: any) => (
+          <Checkbox
+            checked={text}
+            onChange={(e) => {
+              setUserRules((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (prevItem.id === record?.id) {
+                    return {
+                      ...prevItem,
+                      is_dealReg: e?.target?.checked,
+                    };
+                  }
+                  return prevItem;
+                }),
+              );
+            }}
+          />
+        ),
+      },
+      // {
+      //   title: (
+      //     <Typography name="Body 4/Medium" className="dragHandler">
+      //       Orders AI
+      //     </Typography>
+      //   ),
+      //   dataIndex: 'is_order',
+      //   key: 'is_order',
+      //   width: 173,
+      //   render: (text: any, record: any) => (
+      //     <Checkbox
+      //       checked={text}
+      //       onChange={(e) => {
+      //         setUserRules((prev: any) =>
+      //           prev.map((prevItem: any) => {
+      //             if (prevItem.id === record?.id) {
+      //               return {
+      //                 ...prevItem,
+      //                 is_order: e?.target?.checked,
+      //               };
+      //             }
+      //             return prevItem;
+      //           }),
+      //         );
+      //       }}
+      //     />
+      //   ),
+      // },
+    ];
+    setRolesAndPermissionsData(RolesAndPermissionsColumns);
+  }, [quoteDisable, dealRegDisable]);
 
   useEffect(() => {
     setUserRules(data);
   }, [data]);
+
+  console.log('quoteDisable', quoteDisable, dealRegDisable);
 
   useEffect(() => {
     dispatch(getUserByOrganization(userInformation?.organization));
@@ -216,7 +244,8 @@ const RolesAndPermission = () => {
           Quote AI:{' '}
           <Typography color={token?.colorBgContainer} name="Body 3/Bold">
             {' '}
-            {cacheAvailableSeats?.QuoteAISeats}/{cacheTotalQuoteSeats?.TotalQuoteSeats}
+            {cacheAvailableSeats?.QuoteAISeats}/
+            {cacheTotalQuoteSeats?.TotalQuoteSeats}
           </Typography>
         </Typography>
 
@@ -224,7 +253,8 @@ const RolesAndPermission = () => {
           DealReg AI:{' '}
           <Typography color={token?.colorBgContainer} name="Body 3/Bold">
             {' '}
-            {cacheAvailableSeats?.DealRegSeats}/{cacheTotalDealRegSeats?.TotalDealRegSeats}
+            {cacheAvailableSeats?.DealRegSeats}/
+            {cacheTotalDealRegSeats?.TotalDealRegSeats}
           </Typography>
         </Typography>
       </span>
@@ -267,7 +297,7 @@ const RolesAndPermission = () => {
         </Row>
 
         <OsTable
-          columns={RolesAndPermissionsColumns}
+          columns={rolesAndPermissionsData}
           dataSource={userRules}
           scroll
           loading={loading}
