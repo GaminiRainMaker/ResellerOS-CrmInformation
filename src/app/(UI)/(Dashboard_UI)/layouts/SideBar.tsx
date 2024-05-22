@@ -220,7 +220,7 @@ const SideBar = () => {
       );
 
       if (loggedInOrganization) {
-        getSubsCriptionForCustomer(loggedInOrganization?.id);
+        getSubsCriptionForCustomer(Number(loggedInOrganization?.id));
       }
     } catch (error: any) {
       console.log('error', error.message);
