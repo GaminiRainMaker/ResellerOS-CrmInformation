@@ -159,7 +159,7 @@ const SideBar = () => {
   }, [pathname]);
 
   const getSubsCriptionForCustomer = async (SubId: any) => {
-    console.log('52343224')
+    console.log('52343224');
 
     try {
       let allSubscriptionForCustomer = await dispatch(
@@ -181,7 +181,7 @@ const SideBar = () => {
           return payload?.payload?.sucess;
         });
         let arrayOfProposal: any = [];
-
+        console.log('445645545', allProposalData?.[0]?.proposalItems);
         if (allProposalData) {
           allProposalData?.[0]?.proposalItems?.map((items: any) => {
             if (items?.name === 'QuoteAI') {
@@ -223,7 +223,7 @@ const SideBar = () => {
             ?.toLowerCase() == userInformation?.organization?.toLowerCase(),
       );
       if (CustomerData) {
-        getSubsCriptionForCustomer(CustomerData?.[0]?.id);
+        getSubsCriptionForCustomer(CustomerData?.[1]?.id);
       }
     } catch (error: any) {
       console.log('error', error.message);
