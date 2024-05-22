@@ -159,8 +159,6 @@ const SideBar = () => {
   }, [pathname]);
 
   const getSubsCriptionForCustomer = async (SubId: any) => {
-    console.log('52343224');
-
     try {
       let allSubscriptionForCustomer = await dispatch(
         getSubsvriptionForCustomer(SubId),
@@ -181,11 +179,9 @@ const SideBar = () => {
           return payload?.payload?.sucess;
         });
         let arrayOfProposal: any = [];
-        console.log('445645545', allProposalData?.[0]?.proposalItems);
         if (allProposalData) {
           allProposalData?.[0]?.proposalItems?.map((items: any) => {
             if (items?.name === 'QuoteAI') {
-              console.log('quantity1234', items?.quantity);
               dispatch(
                 setCacheTotalQuoteSeats({
                   TotalQuoteSeats: items?.quantity,
@@ -193,8 +189,6 @@ const SideBar = () => {
               );
             }
             if (items?.name === 'DealRegAI Bundle') {
-              console.log('quantity1234456', items?.quantity);
-
               dispatch(
                 setCacheTotalDealRegSeats({TotalDealRegSeats: items?.quantity}),
               );
@@ -206,6 +200,7 @@ const SideBar = () => {
       console.log('error', error);
     }
   };
+  
   const getAllCustomerByCache = async () => {
     try {
       let CustomerData = await dispatch(getAllCustomerOfCacheFlow(''))?.then(
