@@ -218,13 +218,9 @@ const SideBar = () => {
             ?.replace(/[^\w\s]/gi, '')
             ?.toLowerCase() == userInformation?.organization?.toLowerCase(),
       );
-      console.log(
-        'loggedInOrganization',
-        loggedInOrganization,
-        userInformation?.organization?.toLowerCase(),
-      );
+
       if (CustomerData) {
-        getSubsCriptionForCustomer(CustomerData?.[1]?.id);
+        getSubsCriptionForCustomer(loggedInOrganization?.id);
       }
     } catch (error: any) {
       console.log('error', error.message);
@@ -232,7 +228,7 @@ const SideBar = () => {
   };
   useEffect(() => {
     getAllCustomerByCache();
-  }, []);
+  }, [userInformation]);
 
   useEffect(() => {
     dispatch(getOranizationSeats(''))?.then((payload: any) => {
