@@ -95,7 +95,7 @@ const ContactInput: React.FunctionComponent<InputProps> = ({
         }}
         limitMaxLength={limitMaxLength}
         onBlur={onBlur}
-        value={value}
+        // value={value}
         onKeyDown={onKeyDown}
         disabled={disabled}
         name={name}
