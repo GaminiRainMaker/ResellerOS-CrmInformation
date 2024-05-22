@@ -10,8 +10,9 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
+import {encrypt} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form, TabsProps, message} from 'antd';
+import {Form, TabsProps} from 'antd';
 import {useEffect, useState} from 'react';
 import {
   deletePartnerPassword,
@@ -36,6 +37,7 @@ const PartnerPassword = () => {
   );
   const {loading: sharedPartnerPassword, data: sharedPasswordData} =
     useAppSelector((state) => state.sharedPartnerPassword);
+  const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
   const [activeKey, setActiveKey] = useState<number>(1);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
@@ -73,11 +75,6 @@ const PartnerPassword = () => {
     });
   };
 
-  const handleCopyPassword = (password: string) => {
-    navigator.clipboard.writeText(password);
-    message.success('Password copied to clipboard');
-  };
-
   const MyPartnerColumns = getMyPartnerColumns(
     token,
     setShowShareCredentialModal,
@@ -85,10 +82,7 @@ const PartnerPassword = () => {
     setDeleteIds,
     setShowModalDelete,
   );
-  const SharedPartnerColumns = getSharedPasswordColumns(
-    token,
-    handleCopyPassword,
-  );
+  const SharedPartnerColumns = getSharedPasswordColumns(token);
 
   useEffect(() => {
     dispatch(queryPartnerPassword(searchQuery));
@@ -182,12 +176,19 @@ const PartnerPassword = () => {
     },
   ];
 
-  const onFinish = () => {
+  const onFinish = async () => {
     const formData = partnerPasswordForm.getFieldsValue();
     if (formData) {
+      const {iv, data} = await encrypt(
+        formData?.password,
+        SECRET_KEY as string,
+      );
       let obj = {
-        ...formData,
         created_by: userInformation?.id,
+        email: formData?.email,
+        partner_id: formData?.partner_id,
+        username: formData?.username,
+        password: `${iv}:${data}`,
       };
       dispatch(insertPartnerPassword(obj)).then((d) => {
         if (d?.payload) {
@@ -196,7 +197,6 @@ const PartnerPassword = () => {
         }
       });
     }
-    console.log('formDataformData', formData);
   };
 
   const shareCredential = () => {

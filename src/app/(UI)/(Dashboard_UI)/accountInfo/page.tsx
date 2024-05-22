@@ -32,7 +32,7 @@ const AccountInfo = () => {
       key: 2,
       title: 'Settings',
       childitem: [
-        {key: 7, name: 'General Settings', superChild: 'No Data'},
+        // {key: 7, name: 'General Settings', superChild: 'No Data'},
         {key: 4, name: 'Partner Passwords', superChild: <PartnerPassword />},
       ],
     },
