@@ -213,6 +213,7 @@ const SideBar = () => {
           }
         },
       );
+
       let loggedInOrganization = CustomerData?.find(
         (items: any) =>
           items?.name
@@ -221,7 +222,7 @@ const SideBar = () => {
             ?.toLowerCase() == userInformation?.organization?.toLowerCase(),
       );
       if (CustomerData) {
-        getSubsCriptionForCustomer(CustomerData?.[0]?.id);
+        getSubsCriptionForCustomer(CustomerData?.[1]?.id);
       }
     } catch (error: any) {
       console.log('error', error.message);
