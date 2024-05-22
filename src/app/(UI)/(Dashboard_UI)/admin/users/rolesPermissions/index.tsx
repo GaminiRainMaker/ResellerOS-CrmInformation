@@ -37,7 +37,14 @@ const RolesAndPermission = () => {
   const [quoteDisable, setQuoteDisable] = useState<any>(null);
   const [dealRegDisable, setDealRegDisable] = useState<any>(null);
   const [rolesAndPermissionsData, setRolesAndPermissionsData] = useState<any>();
+
+  const [quoteCount, setQuoteCount] = useState<number>(0);
+  const [dealCount, setDealCount] = useState<number>(0);
   const [visible, setVisible] = useState(true);
+  useEffect(() => {
+    setDealCount(cacheAvailableSeats?.DealRegSeats);
+    setQuoteCount(cacheAvailableSeats?.QuoteAISeats);
+  }, [cacheAvailableSeats]);
 
   const providePermissions = () => {
     setUserRules((prev: any) =>
@@ -77,7 +84,7 @@ const RolesAndPermission = () => {
   }, [cacheAvailableSeats, cacheTotalQuoteSeats, cacheTotalDealRegSeats]);
 
   useEffect(() => {
-    const RolesAndPermissionsColumns = [
+    let RolesAndPermissionsColumns = [
       {
         title: (
           <Typography name="Body 4/Medium" className="dragHandler">
@@ -271,9 +278,19 @@ const RolesAndPermission = () => {
     setVisible(false);
   };
 
+  let StatementForExpired =
+    quoteCount === cacheTotalQuoteSeats?.TotalQuoteSeats &&
+    cacheTotalDealRegSeats?.TotalDealRegSeats === dealCount
+      ? 'Quote AI and Deal Reg'
+      : quoteCount === cacheTotalQuoteSeats?.TotalQuoteSeats
+        ? 'Quote AI'
+        : cacheTotalDealRegSeats?.TotalDealRegSeats === dealCount
+          ? 'Deal Reg'
+          : '';
   return (
     <>
-      {visible && (
+      {(quoteCount === cacheTotalQuoteSeats?.TotalQuoteSeats ||
+        cacheTotalDealRegSeats?.TotalDealRegSeats === dealCount) && (
         <Tag
           style={{
             padding: '4px',
@@ -297,8 +314,8 @@ const RolesAndPermission = () => {
                 />
 
                 <Typography name="Body 4/Medium" color={token?.colorError}>
-                  The Limit for Quote AI permissions has completed. You cannot
-                  assign this permission to anyone else.
+                  {`The Limit for ${StatementForExpired} permissions has completed. You cannot
+                  assign this permission to anyone else.`}
                 </Typography>
               </Space>
             </Col>
@@ -354,13 +371,14 @@ const RolesAndPermission = () => {
             </Space>
           </Col>
         </Row>
-
-        <OsTable
-          columns={rolesAndPermissionsData}
-          dataSource={userRules}
-          scroll
-          loading={loading}
-        />
+        {rolesAndPermissionsData && (
+          <OsTable
+            columns={rolesAndPermissionsData}
+            dataSource={userRules}
+            scroll
+            loading={loading}
+          />
+        )}
       </Space>
 
       <DailogModal

@@ -200,7 +200,7 @@ const SideBar = () => {
       console.log('error', error);
     }
   };
-  
+
   const getAllCustomerByCache = async () => {
     try {
       let CustomerData = await dispatch(getAllCustomerOfCacheFlow(''))?.then(
@@ -216,6 +216,11 @@ const SideBar = () => {
             ?.replace(/\s/g, '')
             ?.replace(/[^\w\s]/gi, '')
             ?.toLowerCase() == userInformation?.organization?.toLowerCase(),
+      );
+      console.log(
+        'loggedInOrganization',
+        loggedInOrganization,
+        userInformation?.organization?.toLowerCase(),
       );
       if (CustomerData) {
         getSubsCriptionForCustomer(CustomerData?.[1]?.id);
