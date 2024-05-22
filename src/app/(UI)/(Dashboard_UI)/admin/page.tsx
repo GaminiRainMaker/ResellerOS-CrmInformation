@@ -5,8 +5,11 @@ import CustomTabs from '@/app/components/common/os-custom-tab/AdminSectionTab';
 import Products from '../../../components/common/os-add-products';
 import Users from '../../../components/common/os-add-users';
 import Configuration from './quote-AI/configuration';
+import {useRouter} from 'next/navigation';
 
 const AdminPage = () => {
+  const router = useRouter();
+
   const tabs = [
     {
       key: 1,
@@ -16,8 +19,14 @@ const AdminPage = () => {
           key: 1,
           name: 'Configuration',
           superChild: <Configuration />,
+          // route: `/admin?tab=Configuration`,
         },
-        {key: 2, name: 'Add Products', superChild: <Products />},
+        {
+          key: 2,
+          name: 'Add Products',
+          superChild: <Products />,
+          // route: `/admin?tab=AddProducts`,
+        },
       ],
     },
     // {
@@ -37,14 +46,20 @@ const AdminPage = () => {
     //   ],
     // },
     {
-      key: 4,
+      key: 1,
       title: 'Users',
       childitem: [
-        {key: 7, name: 'All users', superChild: <Users />},
+        {
+          key: 7,
+          name: 'All users',
+          superChild: <Users />,
+          // route: `/admin?tab=allUsers`,
+        },
         {
           key: 8,
           name: 'Roles and Permissions',
           superChild: <RolesAndPermission />,
+          // route: `/admin?tab=rolesAndPermission`,
         },
       ],
     },
