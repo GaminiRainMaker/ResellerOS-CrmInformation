@@ -11,6 +11,7 @@ import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {ShieldCheckIcon} from '@heroicons/react/20/solid';
 import {
+  CheckBadgeIcon,
   InformationCircleIcon,
   XCircleIcon,
   XMarkIcon,
@@ -37,6 +38,7 @@ const RolesAndPermission = () => {
   const [quoteDisable, setQuoteDisable] = useState<any>(null);
   const [dealRegDisable, setDealRegDisable] = useState<any>(null);
   const [rolesAndPermissionsData, setRolesAndPermissionsData] = useState<any>();
+  const {isSubscribed} = useAppSelector((state) => state.cacheFLow);
 
   const [quoteCount, setQuoteCount] = useState<number>(0);
   const [dealCount, setDealCount] = useState<number>(0);
@@ -346,38 +348,108 @@ const RolesAndPermission = () => {
               Roles and Permissions
             </Typography>
           </Col>
+          {isSubscribed && (
+            <Col>
+              <Space size={8}>
+                <Tooltip
+                  placement="leftBottom"
+                  title={toolTipData}
+                  overlayInnerStyle={{
+                    background: '#19304f',
+                  }}
+                >
+                  <InformationCircleIcon
+                    width={24}
+                    cursor={'pointer'}
+                    color={'#A0AAB8'}
+                  />
+                </Tooltip>
+                <OsButton text="CANCEL" buttontype="SECONDARY" />
+                <OsButton
+                  text="SAVE"
+                  buttontype="PRIMARY"
+                  clickHandler={onFinish}
+                />
+              </Space>
+            </Col>
+          )}
+        </Row>
+        {isSubscribed ? (
+          <>
+            {' '}
+            {rolesAndPermissionsData && (
+              <OsTable
+                columns={rolesAndPermissionsData}
+                dataSource={userRules}
+                scroll
+                loading={loading}
+              />
+            )}
+          </>
+        ) : (
+          <Tag
+            style={{
+              display: 'flex',
+              padding: '20px',
+              borderRadius: '4px',
+              border: `1px solid ${token?.colorError}`,
+            }}
+            color="error"
+          >
+            <Row justify="space-between" style={{width: '100%'}} align="middle">
+              <Col span={12}>
+                <>
+                  <Avatar
+                    size={24}
+                    style={{
+                      marginTop: '-12px',
+                      marginRight: '5px',
+                      background: 'none',
+                    }}
+                    icon={
+                      <InformationCircleIcon
+                        width={24}
+                        color={token?.colorError}
+                      />
+                    }
+                  />
 
-          <Col>
-            <Space size={8}>
-              <Tooltip
-                placement="leftBottom"
-                title={toolTipData}
-                overlayInnerStyle={{
-                  background: '#19304f',
+                  <Space direction="vertical" size={0}>
+                    <Typography color={token?.colorError} name="Heading 3/Bold">
+                      Unsubscribed User
+                    </Typography>
+
+                    <Typography
+                      color={token?.colorError}
+                      name="Body 3/Medium"
+                      as="span"
+                      // style={{display: 'flex', flexWrap: 'wrap'}}
+                    >
+                      Unlock premium features and exclusive content by
+                      subscribing to our web application today!
+                    </Typography>
+                  </Space>
+                </>
+              </Col>
+              <Col
+                span={12}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'end',
+                  alignItems: 'center',
                 }}
               >
-                <InformationCircleIcon
-                  width={24}
-                  cursor={'pointer'}
-                  color={'#A0AAB8'}
-                />
-              </Tooltip>
-              <OsButton text="CANCEL" buttontype="SECONDARY" />
-              <OsButton
-                text="SAVE"
-                buttontype="PRIMARY"
-                clickHandler={onFinish}
-              />
-            </Space>
-          </Col>
-        </Row>
-        {rolesAndPermissionsData && (
-          <OsTable
-            columns={rolesAndPermissionsData}
-            dataSource={userRules}
-            scroll
-            loading={loading}
-          />
+                <Typography
+                  color={token?.colorLink}
+                  name="Button 1"
+                  style={{fontWeight: 700}}
+                  hoverOnText
+                >
+                  Subscribe Now
+                </Typography>
+              </Col>
+            </Row>
+          </Tag>
         )}
       </Space>
 

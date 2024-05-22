@@ -219,7 +219,7 @@ const SideBar = () => {
             ?.toLowerCase() == userInformation?.organization?.toLowerCase(),
       );
 
-      if (CustomerData) {
+      if (loggedInOrganization) {
         getSubsCriptionForCustomer(loggedInOrganization?.id);
       }
     } catch (error: any) {
