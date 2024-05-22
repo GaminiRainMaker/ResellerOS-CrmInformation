@@ -1,7 +1,13 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {sendForgotPasswordEmail, sendNewUserEmail, signUpAuth, verifyAuth} from '../actions/auth';
+import {
+  contactSales,
+  sendForgotPasswordEmail,
+  sendNewUserEmail,
+  signUpAuth,
+  verifyAuth,
+} from '../actions/auth';
 
 type AuthState = {
   loading: boolean;
@@ -54,23 +60,47 @@ const authSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(sendNewUserEmail.fulfilled, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.data = action.payload;
-      })
-      .addCase(sendNewUserEmail.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
+      .addCase(
+        sendNewUserEmail.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        sendNewUserEmail.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
       .addCase(sendForgotPasswordEmail.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(sendForgotPasswordEmail.fulfilled, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.data = action.payload;
+      .addCase(
+        sendForgotPasswordEmail.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        sendForgotPasswordEmail.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(contactSales.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
-      .addCase(sendForgotPasswordEmail.rejected, (state, action: PayloadAction<any>) => {
+      .addCase(contactSales.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        // state.data = action.payload;
+      })
+      .addCase(contactSales.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       });

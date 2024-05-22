@@ -7,5 +7,7 @@ export const AUTH_API = {
   post: (data: any) => post(API.AUTH.INDEX, data),
   verify: (data: any) => post(API.AUTH.VERIFY, data),
   SendEmail: (data: any) => post(API.AUTH.SEND_EMAIL, data),
-  SendForgotPasswordEmail: (data: any) => post(API.AUTH.Send_Forgot_Password_Email, data),
+  SendForgotPasswordEmail: (data: any) =>
+    post(API.AUTH.Send_Forgot_Password_Email, data),
+  ContactSales: (data: any) => post(API.AUTH.Contact_Sales, data),
 };

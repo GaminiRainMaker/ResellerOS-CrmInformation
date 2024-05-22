@@ -50,3 +50,14 @@ export const sendForgotPasswordEmail = createAsyncThunk(
     }
   },
 );
+export const contactSales = createAsyncThunk(
+  'auth/contactSales',
+  async (data: any, thunkApi) => {
+    try {
+      const res: any = await AUTH_API.ContactSales(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

@@ -1,10 +1,9 @@
 import {Space} from '@/app/components/common/antd/Space';
 import Typography from '@/app/components/common/typography';
-import {CopyOutlined} from '@ant-design/icons';
 import {ShareIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {GlobalToken, notification} from 'antd';
+import {GlobalToken} from 'antd';
 import {SetStateAction} from 'react';
-import {CopyToClipboard} from 'react-copy-to-clipboard';
+import DecryptedPassword from './partnerPassword/DecryptedPassword';
 
 export function getMyTeamColumns(token: GlobalToken) {
   const columns = [
@@ -240,25 +239,9 @@ export function getMyPartnerColumns(
       dataIndex: 'password',
       key: 'password',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">
-          {Array(10).fill('*').join('')}
-          <CopyToClipboard text={text}>
-            <CopyOutlined
-              style={{
-                marginLeft: '10px',
-              }}
-              onClick={() => {
-                notification.open({
-                  message: 'Password Copied',
-                  type: 'success',
-                  placement: 'top',
-                });
-              }}
-            />
-          </CopyToClipboard>{' '}
-        </Typography>
-      ),
+      render: (text: string, record: any) => {
+        return <DecryptedPassword password={record?.password} />;
+      },
     },
     {
       title: (
@@ -302,10 +285,7 @@ export function getMyPartnerColumns(
 
   return columns;
 }
-export function getSharedPasswordColumns(
-  token: GlobalToken,
-  handleCopyPassword: any,
-) {
+export function getSharedPasswordColumns(token: GlobalToken) {
   const columns = [
     {
       title: (
@@ -376,29 +356,14 @@ export function getSharedPasswordColumns(
           Password
         </Typography>
       ),
-
       dataIndex: 'password',
       key: 'password',
       width: 187,
-      render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
-          {Array(10).fill('*').join('')}
-          <CopyToClipboard text={record?.PartnerPassword?.password}>
-            <CopyOutlined
-              style={{
-                marginLeft: '10px',
-              }}
-              onClick={() => {
-                notification.open({
-                  message: 'Password Copied',
-                  type: 'success',
-                  placement: 'top',
-                });
-              }}
-            />
-          </CopyToClipboard>{' '}
-        </Typography>
-      ),
+      render: (text: string, record: any) => {
+        return (
+          <DecryptedPassword password={record?.PartnerPassword?.password} />
+        );
+      },
     },
   ];
 

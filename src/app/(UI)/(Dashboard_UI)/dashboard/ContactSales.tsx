@@ -44,11 +44,15 @@ const ContactSales: React.FC<any> = ({onFinish, form}) => {
           <Col span={12}>
             <SelectFormItem
               label={<Typography name="Body 4/Medium">First Name</Typography>}
-              name="first_name"
+              name="firstname"
               rules={[
                 {
                   pattern: /^[A-Za-z\s]+$/,
                   message: 'Please enter valid text.',
+                },
+                {
+                  required: true,
+                  message: 'This field is required.',
                 },
               ]}
             >
@@ -59,7 +63,7 @@ const ContactSales: React.FC<any> = ({onFinish, form}) => {
           <Col span={12}>
             <SelectFormItem
               label={<Typography name="Body 4/Medium">Last Name</Typography>}
-              name="last_name"
+              name="lastname"
               rules={[
                 {
                   pattern: /^[A-Za-z\s]+$/,
@@ -80,6 +84,10 @@ const ContactSales: React.FC<any> = ({onFinish, form}) => {
                   pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                   message: 'Please enter valid email.',
                 },
+                {
+                  required: true,
+                  message: 'This field is required.',
+                },
               ]}
             >
               <OsInput placeholder="Enter Text" />
@@ -90,6 +98,12 @@ const ContactSales: React.FC<any> = ({onFinish, form}) => {
             <SelectFormItem
               label={<Typography name="Body 4/Medium">Message</Typography>}
               name="message"
+              rules={[
+                {
+                  required: true,
+                  message: 'This field is required.',
+                },
+              ]}
             >
               <TextArea
                 placeholder="Write description here!"

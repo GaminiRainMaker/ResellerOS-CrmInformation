@@ -37,7 +37,12 @@ import {
   getProposalForSubscription,
   getSubsvriptionForCustomer,
 } from '../../../../../redux/actions/cacheFlow';
-import {setCache} from '../../../../../redux/slices/cacheFLow';
+import {
+  setCacheAvailableSeats,
+  setIsSubscribed,
+  setCacheTotalQuoteSeats,
+  setCacheTotalDealRegSeats,
+} from '../../../../../redux/slices/cacheFLow';
 
 const {Sider} = Layout;
 
@@ -49,7 +54,7 @@ const SideBar = () => {
   const [selectedKey, setSelectedKey] = useState<number>(1);
   const [crmChildKey, setCrmChildKey] = useState<number>(0);
   const {userInformation} = useAppSelector((state) => state.user);
-  const {cache} = useAppSelector((state) => state.cacheFLow);
+  const {cacheAvailableSeats} = useAppSelector((state) => state.cacheFLow);
 
   type MenuItem = Required<MenuProps>['items'][number];
 
@@ -152,6 +157,7 @@ const SideBar = () => {
       setSelectedKey(0);
     }
   }, [pathname]);
+
   const getSubsCriptionForCustomer = async (SubId: any) => {
     try {
       let allSubscriptionForCustomer = await dispatch(
@@ -160,12 +166,7 @@ const SideBar = () => {
         return payload?.payload?.sucess;
       });
       if (allSubscriptionForCustomer) {
-        dispatch(
-          setCache({
-            ...cache,
-            isSubscribed: true,
-          }),
-        );
+        dispatch(setIsSubscribed({isSubscribed: true}));
       }
       let activeSubscription = allSubscriptionForCustomer?.find(
         (item: any) => item?.status === 'active',
@@ -178,23 +179,18 @@ const SideBar = () => {
           return payload?.payload?.sucess;
         });
         let arrayOfProposal: any = [];
-
         if (allProposalData) {
           allProposalData?.[0]?.proposalItems?.map((items: any) => {
             if (items?.name === 'QuoteAI') {
               dispatch(
-                setCache({
-                  ...cache,
+                setCacheTotalQuoteSeats({
                   TotalQuoteSeats: items?.quantity,
                 }),
               );
             }
             if (items?.name === 'DealRegAI Bundle') {
               dispatch(
-                setCache({
-                  ...cache,
-                  TotalDealRegSeats: items?.quantity,
-                }),
+                setCacheTotalDealRegSeats({TotalDealRegSeats: items?.quantity}),
               );
             }
           });
@@ -204,6 +200,7 @@ const SideBar = () => {
       console.log('error', error);
     }
   };
+
   const getAllCustomerByCache = async () => {
     try {
       let CustomerData = await dispatch(getAllCustomerOfCacheFlow(''))?.then(
@@ -221,6 +218,11 @@ const SideBar = () => {
             ?.replace(/[^\w\s]/gi, '')
             ?.toLowerCase() == userInformation?.organization?.toLowerCase(),
       );
+      console.log(
+        'loggedInOrganization',
+        loggedInOrganization,
+        userInformation?.organization?.toLowerCase(),
+      );
       if (CustomerData) {
         getSubsCriptionForCustomer(CustomerData?.[1]?.id);
       }
@@ -235,8 +237,8 @@ const SideBar = () => {
   useEffect(() => {
     dispatch(getOranizationSeats(''))?.then((payload: any) => {
       dispatch(
-        setCache({
-          ...cache,
+        setCacheAvailableSeats({
+          ...cacheAvailableSeats,
           DealRegSeats: payload?.payload?.DealRegAIBundle,
           QuoteAISeats: payload?.payload?.QuoteAI,
         }),

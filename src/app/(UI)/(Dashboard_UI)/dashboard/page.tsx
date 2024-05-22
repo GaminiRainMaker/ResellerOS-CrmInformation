@@ -1,32 +1,33 @@
 'use client';
 
-import Image from 'next/image';
-// import DashboardImage from '../../../../../public/assets/static/Dashboard1.PNG';
+import {Avatar} from '@/app/components/common/antd/Avatar';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
+import OsModal from '@/app/components/common/os-modal';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {
+  CheckBadgeIcon,
   EnvelopeIcon,
   InformationCircleIcon,
   MapPinIcon,
   PhoneIcon,
 } from '@heroicons/react/24/outline';
 import {Form, Tag} from 'antd';
-import DashboardImage from '../../../../../public/assets/static/Dashboard.svg';
-import {useAppSelector} from '../../../../../redux/hook';
-import {CustomCardStyle} from './styled-components';
-import OsModal from '@/app/components/common/os-modal';
 import {useState} from 'react';
+import {contactSales} from '../../../../../redux/actions/auth';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import ContactSales from './ContactSales';
-import {Avatar} from '@/app/components/common/antd/Avatar';
+import {CustomCardStyle} from './styled-components';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
-  const {cache} = useAppSelector((state) => state.cacheFLow);
+  const dispatch = useAppDispatch();
+  const {isSubscribed} = useAppSelector((state) => state.cacheFLow);
+  const {loading} = useAppSelector((state) => state.auth);
   const {userInformation} = useAppSelector((state) => state.user);
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -55,24 +56,56 @@ const Dashboard = () => {
 
   const onFinish = () => {
     const data = form?.getFieldsValue();
-    console.log('formformData', data);
+    dispatch(contactSales(data)).then((d) => {
+      if (d?.payload) {
+        setShowModal(false);
+        form.resetFields();
+      }
+    });
   };
 
   return (
     <>
-      {cache?.isSubscribed || userInformation?.Role === 'superAdmin' ? (
-        <Image
-          src={DashboardImage as any}
-          alt="DashboardImage"
-          style={{cursor: 'pointer', width: '100%', height: '100%'}}
-        />
+      {isSubscribed || userInformation?.Role === 'superAdmin' ? (
+        <Tag
+          style={{
+            display: 'flex',
+            padding: '20px',
+            borderRadius: '4px',
+            border: `1px solid ${token?.colorSuccess}`,
+          }}
+          color="success"
+        >
+          <Row justify="space-between" style={{width: '100%'}} align="middle">
+            <Col span={12}>
+              <>
+                <Avatar
+                  size={24}
+                  style={{
+                    marginTop: '-12px',
+                    marginRight: '5px',
+                    background: 'none',
+                  }}
+                  icon={
+                    <CheckBadgeIcon width={24} color={token?.colorSuccess} />
+                  }
+                />
+
+                <Space direction="vertical" size={0}>
+                  <Typography color={token?.colorSuccess} name="Heading 3/Bold">
+                    Subscribed User
+                  </Typography>
+                </Space>
+              </>
+            </Col>
+          </Row>
+        </Tag>
       ) : (
         <>
-          <Space direction="vertical" size={24} style={{width: '100%'}}>
+          <Space direction="vertical" size={24}>
             <Tag
               style={{
                 display: 'flex',
-                width: '100%',
                 padding: '20px',
                 borderRadius: '4px',
                 border: `1px solid ${token?.colorError}`,
@@ -112,6 +145,8 @@ const Dashboard = () => {
                       <Typography
                         color={token?.colorError}
                         name="Body 3/Medium"
+                        as="span"
+                        // style={{display: 'flex', flexWrap: 'wrap'}}
                       >
                         Unlock premium features and exclusive content by
                         subscribing to our web application today!
@@ -260,7 +295,7 @@ const Dashboard = () => {
       )}
 
       <OsModal
-        // loading={loading}
+        loading={loading}
         body={<ContactSales form={form} onFinish={onFinish} />}
         width={600}
         open={showModal}

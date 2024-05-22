@@ -11,34 +11,51 @@ type chacheFlowState = {
   loading: boolean;
   error: string | null;
   data: any;
-  cache: {
-    isSubscribed: boolean;
+  cacheAvailableSeats: {
     DealRegSeats: number;
     QuoteAISeats: number;
-    TotalDealRegSeats: number;
+  };
+  cacheTotalQuoteSeats: {
     TotalQuoteSeats: number;
   };
+  cacheTotalDealRegSeats: {
+    TotalDealRegSeats: number;
+  };
+  isSubscribed: boolean;
 };
 
 const initialState: chacheFlowState = {
   loading: false,
   error: null,
   data: [],
-  cache: {
-    isSubscribed: false,
+  cacheAvailableSeats: {
     DealRegSeats: 0,
     QuoteAISeats: 0,
-    TotalDealRegSeats: 0,
+  },
+  cacheTotalQuoteSeats: {
     TotalQuoteSeats: 0,
   },
+  cacheTotalDealRegSeats: {
+    TotalDealRegSeats: 0,
+  },
+  isSubscribed: false,
 };
 
 const cacheSlice = createSlice({
   name: 'cache',
   initialState,
   reducers: {
-    setCache: (state, action) => {
-      state.cache = action.payload;
+    setCacheAvailableSeats: (state, action) => {
+      state.cacheAvailableSeats = action.payload;
+    },
+    setCacheTotalQuoteSeats: (state, action) => {
+      state.cacheTotalQuoteSeats = action.payload;
+    },
+    setCacheTotalDealRegSeats: (state, action) => {
+      state.cacheTotalDealRegSeats = action.payload;
+    },
+    setIsSubscribed: (state, action) => {
+      state.isSubscribed = action.payload;
     },
   },
   extraReducers(builder) {
@@ -100,5 +117,10 @@ const cacheSlice = createSlice({
   },
 });
 
-export const {setCache} = cacheSlice.actions;
+export const {
+  setCacheAvailableSeats,
+  setCacheTotalDealRegSeats,
+  setCacheTotalQuoteSeats,
+  setIsSubscribed,
+} = cacheSlice.actions;
 export default cacheSlice?.reducer;
