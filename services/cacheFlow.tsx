@@ -6,6 +6,8 @@ import {get} from './index';
 export const CACHE_FLOW = {
   // get: () => get(API.BUNDLE.INDEX) as Promise<AxiosResponse<[]>>,
   get: () => get(API.CACHEFLOW.INDEX),
-  getById: (id: number) =>
+  getByCusId: (id: number) =>
     get(`${API.CACHEFLOW.GETBYID}/${id}`) as Promise<AxiosResponse<any>>,
+  getProposalBySub: (id: number) =>
+    get(`${API.CACHEFLOW.ProposalSub}/${id}`) as Promise<AxiosResponse<any>>,
 };

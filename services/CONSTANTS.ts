@@ -74,7 +74,8 @@ export const API = {
   },
   CACHEFLOW: {
     INDEX: '/cacheFlow',
-    GETBYID: '/cacheFlow/getProposalDataById',
+    GETBYID: '/cacheFlow/getSubscriptionByCutomerId',
+    ProposalSub: '/cacheFlow/getProposalBySubscription',
   },
   REBATE_QUOTE_LINE_ITEM: {
     INDEX: '/rebatesQuoteLineItem',

@@ -2,8 +2,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
-  getAllCacheFLowProposal,
-  getCacheFLowProposalById,
+  getAllCustomerOfCacheFlow,
+  getSubsvriptionForCustomer,
+  getProposalForSubscription,
 } from '../actions/cacheFlow';
 
 type chacheFlowState = {
@@ -14,6 +15,8 @@ type chacheFlowState = {
     isSubscribed: boolean;
     DealRegSeats: number;
     QuoteAISeats: number;
+    TotalDealRegSeats: number;
+    TotalQuoteSeats: number;
   };
 };
 
@@ -25,6 +28,8 @@ const initialState: chacheFlowState = {
     isSubscribed: false,
     DealRegSeats: 0,
     QuoteAISeats: 0,
+    TotalDealRegSeats: 0,
+    TotalQuoteSeats: 0,
   },
 };
 
@@ -38,37 +43,55 @@ const cacheSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(getAllCacheFLowProposal.pending, (state) => {
+      .addCase(getAllCustomerOfCacheFlow.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        getAllCacheFLowProposal.fulfilled,
+        getAllCustomerOfCacheFlow.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.data = [action.payload];
         },
       )
       .addCase(
-        getAllCacheFLowProposal.rejected,
+        getAllCustomerOfCacheFlow.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
         },
       )
-      .addCase(getCacheFLowProposalById.pending, (state) => {
+      .addCase(getSubsvriptionForCustomer.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        getCacheFLowProposalById.fulfilled,
+        getSubsvriptionForCustomer.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.data = action.payload;
         },
       )
       .addCase(
-        getCacheFLowProposalById.rejected,
+        getSubsvriptionForCustomer.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getProposalForSubscription.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getProposalForSubscription.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getProposalForSubscription.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

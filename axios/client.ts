@@ -7,7 +7,8 @@ import {
 
 const client = axios.create({
   // baseURL: 'http://localhost:4000',
-  baseURL: 'https://api.reselleros.com',
+  // baseURL: 'https://api.reselleros.com',
+  baseURL: 'https://3.218.195.191',
   withCredentials: false,
 });
 

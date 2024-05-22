@@ -33,8 +33,9 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setUserInformation} from '../../../../../redux/slices/user';
 import {LayoutMenuStyle} from './styled-components';
 import {
-  getAllCacheFLowProposal,
-  getCacheFLowProposalById,
+  getAllCustomerOfCacheFlow,
+  getProposalForSubscription,
+  getSubsvriptionForCustomer,
 } from '../../../../../redux/actions/cacheFlow';
 import {setCache} from '../../../../../redux/slices/cacheFLow';
 
@@ -49,6 +50,7 @@ const SideBar = () => {
   const [crmChildKey, setCrmChildKey] = useState<number>(0);
   const {userInformation} = useAppSelector((state) => state.user);
   const {cache} = useAppSelector((state) => state.cacheFLow);
+
   type MenuItem = Required<MenuProps>['items'][number];
 
   useEffect(() => {
@@ -150,60 +152,92 @@ const SideBar = () => {
       setSelectedKey(0);
     }
   }, [pathname]);
-
-  useEffect(() => {
-    dispatch(getAllCacheFLowProposal(''))?.then((payload: any) => {
-      if (payload?.payload?.sucess) {
-        let allProPosalData = payload?.payload?.sucess;
-        let itemWithSameOrg = allProPosalData?.find(
-          (items: any) =>
-            items?.name?.replace(/\s/g, '') === userInformation?.organization,
+  const getSubsCriptionForCustomer = async (SubId: any) => {
+    try {
+      let allSubscriptionForCustomer = await dispatch(
+        getSubsvriptionForCustomer(SubId),
+      )?.then((payload: any) => {
+        return payload?.payload?.sucess;
+      });
+      if (allSubscriptionForCustomer) {
+        dispatch(
+          setCache({
+            ...cache,
+            isSubscribed: true,
+          }),
         );
-        if (itemWithSameOrg) {
-          let proposalArrayL: any = [];
-          dispatch(getCacheFLowProposalById(itemWithSameOrg?.id))?.then(
-            (payloadDtaa) => {
-              if (payloadDtaa?.payload?.sucess) {
-                // setPurchasedProposal(true);
-                dispatch(
-                  setCache({
-                    ...cache,
-                    isSubscribed: true,
-                  }),
-                );
-                let ProposalItems = payloadDtaa?.payload?.sucess?.proposalItems;
-                ProposalItems?.map((itemspro: any) => {
-                  let newObj: any;
-                  if (
-                    itemspro?.name === 'QuoteAI' ||
-                    itemspro?.name === 'DealRegAI Bundle'
-                  ) {
-                    proposalArrayL?.push({
-                      [itemspro?.name]: itemspro?.quantity,
-                    });
-                  }
-                });
+      }
+      let activeSubscription = allSubscriptionForCustomer?.find(
+        (item: any) => item?.status === 'active',
+      );
 
-                // "QuoteAI"
-                // "DealRegAI Bundle"
-              }
-            },
-          );
+      if (activeSubscription) {
+        let allProposalData = await dispatch(
+          getProposalForSubscription(activeSubscription?.id),
+        )?.then((payload: any) => {
+          return payload?.payload?.sucess;
+        });
+        let arrayOfProposal: any = [];
 
-          // setProPosalData(proposalArrayL);
+        if (allProposalData) {
+          allProposalData?.[0]?.proposalItems?.map((items: any) => {
+            if (items?.name === 'QuoteAI') {
+              dispatch(
+                setCache({
+                  ...cache,
+                  TotalQuoteSeats: items?.quantity,
+                }),
+              );
+            }
+            if (items?.name === 'DealRegAI Bundle') {
+              dispatch(
+                setCache({
+                  ...cache,
+                  TotalDealRegSeats: items?.quantity,
+                }),
+              );
+            }
+          });
         }
       }
-    });
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+  const getAllCustomerByCache = async () => {
+    try {
+      let CustomerData = await dispatch(getAllCustomerOfCacheFlow(''))?.then(
+        (customerPayload: any) => {
+          if (customerPayload?.payload) {
+            return customerPayload?.payload?.sucess;
+          }
+        },
+      );
+      let loggedInOrganization = CustomerData?.find(
+        (items: any) =>
+          items?.name
+            ?.replace(/\s/g, '')
+            ?.replace(/[^\w\s]/gi, '')
+            ?.toLowerCase() == userInformation?.organization?.toLowerCase(),
+      );
+      if (CustomerData) {
+        getSubsCriptionForCustomer(CustomerData?.[0]?.id);
+      }
+    } catch (error: any) {
+      console.log('error', error.message);
+    }
+  };
+  useEffect(() => {
+    getAllCustomerByCache();
   }, []);
 
   useEffect(() => {
     dispatch(getOranizationSeats(''))?.then((payload: any) => {
-      const {DealRegAIBundle, QuoteAI} = payload?.payload;
       dispatch(
         setCache({
           ...cache,
-          DealRegSeats: DealRegAIBundle,
-          QuoteAISeats: QuoteAI,
+          DealRegSeats: payload?.payload?.DealRegAIBundle,
+          QuoteAISeats: payload?.payload?.QuoteAI,
         }),
       );
     });
