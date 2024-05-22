@@ -11,10 +11,8 @@ import Typography from '@/app/components/common/typography';
 import {ShieldCheckIcon} from '@heroicons/react/20/solid';
 import {InformationCircleIcon} from '@heroicons/react/24/outline';
 import {Tooltip} from 'antd';
-import Cryptr from 'cryptr';
 import {useEffect, useState} from 'react';
 import {
-  getOranizationSeats,
   getUserByOrganization,
   updateUserById,
 } from '../../../../../../../redux/actions/user';
@@ -26,23 +24,12 @@ const RolesAndPermission = () => {
   const {data, loading, userInformation} = useAppSelector(
     (state) => state.user,
   );
-  const {cache} = useAppSelector((state) => state.cacheFLow);
+  const {cacheAvailableSeats, cacheTotalDealRegSeats, cacheTotalQuoteSeats} =
+    useAppSelector((state) => state.cacheFLow);
   const [userRules, setUserRules] = useState<any>(data);
   const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
   const [recordId, setRecordId] = useState<number>();
-  const [proposalData, setProPosalData] = useState<any>();
-  const [seatOccupied, setSeatOccuiped] = useState<any>();
-  const [purchasedProposal, setPurchasedProposal] = useState<boolean>(false);
-  const cryptr = new Cryptr('myTotallySecretKey', {
-    encoding: 'base64',
-    pbkdf2Iterations: 10000,
-    saltLength: 10,
-  });
 
-  const encryptedString = cryptr?.encrypt('bacon');
-
-  console.log(encryptedString, '1111111'); // CPbKO/FFLQ8lVKxV+jYJcLcpTU0ZvW3D+JVfUecmJmLYY10UxYEa/wf8PWDQqhw=
-  // console.log(decryptedString, '1111111'); // bacon
   const providePermissions = () => {
     setUserRules((prev: any) =>
       prev.map((prevItem: any) => {
@@ -215,13 +202,6 @@ const RolesAndPermission = () => {
     }
   };
 
-  useEffect(() => {
-    dispatch(getOranizationSeats(''))?.then((payload: any) => {
-      setSeatOccuiped(payload?.payload);
-    });
-  }, []);
-  // ?.replace(/\s/g, '')
-
   const toolTipData = (
     <Space direction="vertical" size={6}>
       <Typography color={token?.colorBgContainer} name="Body 3/Medium">
@@ -236,7 +216,7 @@ const RolesAndPermission = () => {
           Quote AI:{' '}
           <Typography color={token?.colorBgContainer} name="Body 3/Bold">
             {' '}
-            {cache?.QuoteAISeats}/{cache?.TotalQuoteSeats}
+            {cacheAvailableSeats?.QuoteAISeats}/{cacheTotalQuoteSeats?.TotalQuoteSeats}
           </Typography>
         </Typography>
 
@@ -244,14 +224,13 @@ const RolesAndPermission = () => {
           DealReg AI:{' '}
           <Typography color={token?.colorBgContainer} name="Body 3/Bold">
             {' '}
-            {cache?.DealRegSeats}/{cache?.TotalDealRegSeats}
+            {cacheAvailableSeats?.DealRegSeats}/{cacheTotalDealRegSeats?.TotalDealRegSeats}
           </Typography>
         </Typography>
       </span>
     </Space>
   );
 
-  console.log('34545453', cache);
   return (
     <>
       <Space direction="vertical" size={24} style={{width: '100%'}}>

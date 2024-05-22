@@ -28,7 +28,8 @@ const Dashboard = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const {cache} = useAppSelector((state) => state.cacheFLow);
+  const {isSubscribed} = useAppSelector((state) => state.cacheFLow);
+  const {loading} = useAppSelector((state) => state.auth);
   const {userInformation} = useAppSelector((state) => state.user);
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -57,7 +58,6 @@ const Dashboard = () => {
 
   const onFinish = () => {
     const data = form?.getFieldsValue();
-    console.log('formformData', data);
     dispatch(contactSales(data)).then((d) => {
       if (d?.payload) {
         setShowModal(false);
@@ -68,7 +68,7 @@ const Dashboard = () => {
 
   return (
     <>
-      {cache?.isSubscribed || userInformation?.Role === 'superAdmin' ? (
+      {isSubscribed || userInformation?.Role === 'superAdmin' ? (
         <Image
           src={DashboardImage as any}
           alt="DashboardImage"
@@ -80,7 +80,6 @@ const Dashboard = () => {
             <Tag
               style={{
                 display: 'flex',
-                // width: '100%',
                 padding: '20px',
                 borderRadius: '4px',
                 border: `1px solid ${token?.colorError}`,
@@ -270,7 +269,7 @@ const Dashboard = () => {
       )}
 
       <OsModal
-        // loading={loading}
+        loading={loading}
         body={<ContactSales form={form} onFinish={onFinish} />}
         width={600}
         open={showModal}
