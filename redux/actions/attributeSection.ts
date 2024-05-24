@@ -14,17 +14,6 @@ export const insertAttributeSection = createAsyncThunk(
   },
 );
 
-export const getAllAttributeSection = createAsyncThunk(
-  'attributeSection/getAllAttributeSection',
-  async (organization: any, thunkApi) => {
-    try {
-      const res = await ATTRIBUTE_SECTION_API.get();
-      return res.data;
-    } catch (error: any) {
-      return thunkApi.rejectWithValue(error?.message);
-    }
-  },
-);
 
 export const deleteAttributeSection = createAsyncThunk(
   'attributeSection/deleteAttributeSection',

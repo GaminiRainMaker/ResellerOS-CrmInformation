@@ -13,18 +13,6 @@ export const getCountOfNotification = createAsyncThunk(
     }
   },
 );
-
-export const getAllNewNotification = createAsyncThunk(
-  'notification/getAllNewNotification',
-  async (data: any, thunkApi) => {
-    try {
-      const res = await NOTIFICATIONS_API.getNEWNotifications();
-      return res.data;
-    } catch (error: any) {
-      return thunkApi.rejectWithValue(error.message);
-    }
-  },
-);
 export const ReadNotificationById = createAsyncThunk(
   'notification/deleteNotificationById',
   async (id: any, thunkApi) => {
