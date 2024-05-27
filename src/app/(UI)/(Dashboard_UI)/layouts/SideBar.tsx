@@ -584,52 +584,100 @@ const SideBar = () => {
     //     </Typography>,
     //     '7',
     //   ),
-    getItem(
-      <Typography
-        cursor="pointer"
-        onClick={() => {
-          setSelectedKey(8);
-          setCrmChildKey(0);
-          router?.push(
-            isAdmin && Role === 'superAdmin'
-              ? 'superAdminPartner'
-              : '/partners',
-          );
-        }}
-        name="Button 1"
-        color={token?.colorTextSecondary}
-      >
-        <Space size={12}>
-          <OsAvatar
-            icon={
-              <UsersIcon
-                color={
-                  selectedKey?.toString()?.includes('8')
-                    ? token?.colorPrimary
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
-          <Typography
-            cursor="pointer"
-            name="Button 1"
-            style={{
-              marginTop: '1px',
-            }}
-            color={
-              selectedKey?.toString()?.includes('8')
-                ? token?.colorPrimary
-                : token?.colorTextSecondary
-            }
-          >
-            Partners & Partners Program
-          </Typography>
-        </Space>
-      </Typography>,
-      '8',
-    ),
+
+    isDealReg &&
+      Role === 'reseller' &&
+      getItem(
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setSelectedKey(8);
+            setCrmChildKey(0);
+            router?.push(
+              isAdmin && Role === 'superAdmin'
+                ? 'superAdminPartner'
+                : '/partners',
+            );
+          }}
+          name="Button 1"
+          color={token?.colorTextSecondary}
+        >
+          <Space size={12}>
+            <OsAvatar
+              icon={
+                <UsersIcon
+                  color={
+                    selectedKey?.toString()?.includes('8')
+                      ? token?.colorPrimary
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+              }}
+              color={
+                selectedKey?.toString()?.includes('8')
+                  ? token?.colorPrimary
+                  : token?.colorTextSecondary
+              }
+            >
+              Partners & Partners Program
+            </Typography>
+          </Space>
+        </Typography>,
+        '8',
+      ),
+    isAdmin &&
+      Role === 'superAdmin' &&
+      getItem(
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setSelectedKey(8);
+            setCrmChildKey(0);
+            router?.push('superAdminPartner');
+          }}
+          name="Button 1"
+          color={token?.colorTextSecondary}
+        >
+          <Space size={12}>
+            <OsAvatar
+              icon={
+                <UsersIcon
+                  color={
+                    selectedKey?.toString()?.includes('8')
+                      ? token?.colorPrimary
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+              }}
+              color={
+                selectedKey?.toString()?.includes('8')
+                  ? token?.colorPrimary
+                  : token?.colorTextSecondary
+              }
+            >
+              Partners & Partners Program
+            </Typography>
+          </Space>
+        </Typography>,
+        '8',
+      ),
+
     !isAdmin &&
       Role === 'reseller' &&
       getItem(
@@ -674,7 +722,8 @@ const SideBar = () => {
         </Typography>,
         '9',
       ),
-    Role === 'reseller' &&
+    isQuoteAI &&
+      Role === 'reseller' &&
       getItem(
         <Typography
           cursor="pointer"

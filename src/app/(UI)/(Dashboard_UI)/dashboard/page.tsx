@@ -66,7 +66,7 @@ const Dashboard = () => {
 
   return (
     <>
-      {isSubscribed || userInformation?.Role === 'superAdmin' ? (
+      {isSubscribed && userInformation?.Role === 'reseller' ? (
         <Tag
           style={{
             display: 'flex',
@@ -100,6 +100,8 @@ const Dashboard = () => {
             </Col>
           </Row>
         </Tag>
+      ) : userInformation?.Role === 'superAdmin' ? (
+        <> Dashboard</>
       ) : (
         <>
           <Space direction="vertical" size={24}>
