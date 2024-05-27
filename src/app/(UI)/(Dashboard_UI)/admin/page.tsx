@@ -19,13 +19,13 @@ const AdminPage = () => {
           key: 1,
           name: 'Configuration',
           superChild: <Configuration />,
-          // route: `/admin?tab=Configuration`,
+          route: `/admin?tab=Configuration`,
         },
         {
           key: 2,
           name: 'Add Products',
           superChild: <Products />,
-          // route: `/admin?tab=AddProducts`,
+          route: `/admin?tab=AddProducts`,
         },
       ],
     },
@@ -34,7 +34,7 @@ const AdminPage = () => {
     //   title: 'DealReg AI',
     //   childitem: [
     //     {key: 3, name: 'Standard Attributes'},
-    //     {key: 4, name: 'Common Fields'},
+        // {key: 4, name: 'Common Fields'},
     //   ],
     // },
     // {
@@ -46,20 +46,20 @@ const AdminPage = () => {
     //   ],
     // },
     {
-      key: 1,
+      key: 2,
       title: 'Users',
       childitem: [
         {
-          key: 7,
+          key: 3,
           name: 'All users',
           superChild: <Users />,
-          // route: `/admin?tab=allUsers`,
+          route: `/admin?tab=allUsers`,
         },
         {
-          key: 8,
+          key: 4,
           name: 'Roles and Permissions',
           superChild: <RolesAndPermission />,
-          // route: `/admin?tab=rolesAndPermission`,
+          route: `/admin?tab=rolesAndPermission`,
         },
       ],
     },

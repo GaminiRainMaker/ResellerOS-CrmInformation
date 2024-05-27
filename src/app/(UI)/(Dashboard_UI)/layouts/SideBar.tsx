@@ -677,51 +677,50 @@ const SideBar = () => {
         </Typography>,
         '8',
       ),
-
-    !isAdmin &&
-      Role === 'reseller' &&
-      getItem(
-        <Typography
-          cursor="pointer"
-          onClick={() => {
-            setSelectedKey(9);
-            setCrmChildKey(0);
-          }}
-          name="Button 1"
-          color={token?.colorTextSecondary}
-        >
-          <Space size={12}>
-            <OsAvatar
-              icon={
-                <BoltIcon
-                  color={
-                    selectedKey?.toString()?.includes('9')
-                      ? token?.colorPrimary
-                      : token?.colorTextSecondary
-                  }
-                  width={24}
-                />
-              }
-            />
-            <Typography
-              cursor="pointer"
-              name="Button 1"
-              style={{
-                marginTop: '1px',
-              }}
-              color={
-                selectedKey?.toString()?.includes('9')
-                  ? token?.colorPrimary
-                  : token?.colorTextSecondary
-              }
-            >
-              {' '}
-              Renewals and Upgrades
-            </Typography>
-          </Space>
-        </Typography>,
-        '9',
-      ),
+    // !isAdmin &&
+    //   Role === 'reseller' &&
+    //   getItem(
+    //     <Typography
+    //       cursor="pointer"
+    //       onClick={() => {
+    //         setSelectedKey(9);
+    //         setCrmChildKey(0);
+    //       }}
+    //       name="Button 1"
+    //       color={token?.colorTextSecondary}
+    //     >
+    //       <Space size={12}>
+    //         <OsAvatar
+    //           icon={
+    //             <BoltIcon
+    //               color={
+    //                 selectedKey?.toString()?.includes('9')
+    //                   ? token?.colorPrimary
+    //                   : token?.colorTextSecondary
+    //               }
+    //               width={24}
+    //             />
+    //           }
+    //         />
+    //         <Typography
+    //           cursor="pointer"
+    //           name="Button 1"
+    //           style={{
+    //             marginTop: '1px',
+    //           }}
+    //           color={
+    //             selectedKey?.toString()?.includes('9')
+    //               ? token?.colorPrimary
+    //               : token?.colorTextSecondary
+    //           }
+    //         >
+    //           {' '}
+    //           Renewals and Upgrades
+    //         </Typography>
+    //       </Space>
+    //     </Typography>,
+    //     '9',
+    //   ),
     isQuoteAI &&
       Role === 'reseller' &&
       getItem(

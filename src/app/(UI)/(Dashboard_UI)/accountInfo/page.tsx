@@ -16,6 +16,8 @@ const AccountInfo = () => {
   const [token] = useThemeToken();
   const router = useRouter();
   const getRole = searchParams.get('role');
+  const getId = searchParams.get('id');
+  const organization = searchParams.get('organization');
   const isSuperAdminProfile = searchParams.get('isSuperAdminProfile');
   const getOrganization = searchParams.get('organization');
 
@@ -24,8 +26,18 @@ const AccountInfo = () => {
       key: 1,
       title: 'Account',
       childitem: [
-        {key: 1, name: 'My Profile', superChild: <MyProfile />},
-        {key: 2, name: 'My Team', superChild: <MyTeam />},
+        {
+          key: 1,
+          name: 'My Profile',
+          superChild: <MyProfile />,
+          route: `/accountInfo?id=${getId}&organization=${organization}&tab=myProfile&isSuperAdminProfile=${isSuperAdminProfile}`,
+        },
+        {
+          key: 2,
+          name: 'My Team',
+          superChild: <MyTeam />,
+          route: `/accountInfo?id=${getId}&organization=${organization}&tab=myTeam&isSuperAdminProfile=${isSuperAdminProfile}`,
+        },
       ],
     },
     {
@@ -33,21 +45,33 @@ const AccountInfo = () => {
       title: 'Settings',
       childitem: [
         // {key: 7, name: 'General Settings', superChild: 'No Data'},
-        {key: 4, name: 'Partner Passwords', superChild: <PartnerPassword />},
+        {
+          key: 4,
+          name: 'Partner Passwords',
+          superChild: <PartnerPassword />,
+          route: `/accountInfo?id=${getId}&organization=${organization}&tab=partnerPassword&isSuperAdminProfile=${isSuperAdminProfile}`,
+        },
       ],
     },
     {
       key: 3,
       title: 'Support',
       childitem: [
-        {key: 5, name: 'Help & Support'},
-        {key: 6, name: 'FAQ'},
+        {
+          key: 5,
+          name: 'Help & Support',
+          route: `/accountInfo?id=${getId}&organization=${organization}&tab=support&isSuperAdminProfile=${isSuperAdminProfile}`,
+        },
+        {
+          key: 6,
+          name: 'FAQ',
+          route: `/accountInfo?id=${getId}&organization=${organization}&tab=faq&isSuperAdminProfile=${isSuperAdminProfile}`,
+        },
       ],
     },
   ];
 
   const [tabsData, setTabsData] = useState(tabs);
-
 
   useEffect(() => {
     if (isSuperAdminProfile === 'SuperAdminProfile') {
@@ -56,8 +80,18 @@ const AccountInfo = () => {
           key: 1,
           title: 'Account',
           childitem: [
-            {key: 1, name: 'My Profile', superChild: <MyProfile />},
-            {key: 2, name: 'My Team', superChild: <MyTeam />},
+            {
+              key: 1,
+              name: 'My Profile',
+              superChild: <MyProfile />,
+              route: `/accountInfo?id=${getId}&organization=${organization}&tab=myProfile&isSuperAdminProfile=${isSuperAdminProfile}`,
+            },
+            {
+              key: 2,
+              name: 'My Team',
+              superChild: <MyTeam />,
+              route: `/accountInfo?id=${getId}&organization=${organization}&tab=myTeam&isSuperAdminProfile=${isSuperAdminProfile}`,
+            },
           ],
         },
       ]);
