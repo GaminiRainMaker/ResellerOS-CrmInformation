@@ -168,6 +168,8 @@ const SideBar = () => {
       if (allSubscriptionForCustomer) {
         dispatch(setIsSubscribed({isSubscribed: true}));
       }
+
+      console.log('allSubscriptionForCustomer', allSubscriptionForCustomer);
       let activeSubscription = allSubscriptionForCustomer?.find(
         (item: any) => item?.status === 'active',
       );
@@ -220,7 +222,7 @@ const SideBar = () => {
       );
 
       if (loggedInOrganization) {
-        getSubsCriptionForCustomer(Number(loggedInOrganization?.id));
+        getSubsCriptionForCustomer(loggedInOrganization?.id);
       }
     } catch (error: any) {
       console.log('error', error.message);
