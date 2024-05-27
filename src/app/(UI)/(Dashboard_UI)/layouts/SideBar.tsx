@@ -169,7 +169,6 @@ const SideBar = () => {
         dispatch(setIsSubscribed({isSubscribed: true}));
       }
 
-      console.log('allSubscriptionForCustomer', allSubscriptionForCustomer);
       let activeSubscription = allSubscriptionForCustomer?.find(
         (item: any) => item?.status === 'active',
       );
