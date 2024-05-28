@@ -16,7 +16,9 @@ import {
 } from '@/app/utils/CONSTANTS';
 import {Form} from 'antd';
 import {FC, useEffect} from 'react';
-import {getAllAttributeSection} from '../../../../../redux/actions/attributeSection';
+import {
+  queryAttributeSection,
+} from '../../../../../redux/actions/attributeSection';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {AddStandardAttributeFieldInterface} from './superAdminDealReg.interface';
 
@@ -33,7 +35,7 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
   );
 
   useEffect(() => {
-    dispatch(getAllAttributeSection(''));
+    dispatch(queryAttributeSection(null));
   }, []);
 
   const attributeSectionOption = attributeSectionData?.map(

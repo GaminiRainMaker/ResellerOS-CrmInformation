@@ -3,7 +3,6 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
   ReadNotificationById,
-  getAllNewNotification,
   getCountOfNotification,
   getEarlierNotifications,
   getRecentNotifications,
@@ -53,24 +52,6 @@ const notificationSlice = createSlice({
       )
       .addCase(
         ReadNotificationById.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.error = action.payload;
-        },
-      )
-      .addCase(getAllNewNotification.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        getAllNewNotification.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.data = action.payload;
-        },
-      )
-      .addCase(
-        getAllNewNotification.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

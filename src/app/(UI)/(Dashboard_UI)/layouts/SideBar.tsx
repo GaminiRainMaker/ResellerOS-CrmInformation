@@ -168,6 +168,7 @@ const SideBar = () => {
       if (allSubscriptionForCustomer) {
         dispatch(setIsSubscribed({isSubscribed: true}));
       }
+
       let activeSubscription = allSubscriptionForCustomer?.find(
         (item: any) => item?.status === 'active',
       );
@@ -210,6 +211,7 @@ const SideBar = () => {
           }
         },
       );
+
       let loggedInOrganization = CustomerData?.find(
         (items: any) =>
           items?.name
@@ -217,13 +219,9 @@ const SideBar = () => {
             ?.replace(/[^\w\s]/gi, '')
             ?.toLowerCase() == userInformation?.organization?.toLowerCase(),
       );
-      console.log(
-        'loggedInOrganization',
-        loggedInOrganization,
-        userInformation?.organization?.toLowerCase(),
-      );
-      if (CustomerData) {
-        getSubsCriptionForCustomer(CustomerData?.[1]?.id);
+
+      if (loggedInOrganization) {
+        getSubsCriptionForCustomer(loggedInOrganization?.id);
       }
     } catch (error: any) {
       console.log('error', error.message);
@@ -231,7 +229,7 @@ const SideBar = () => {
   };
   useEffect(() => {
     getAllCustomerByCache();
-  }, []);
+  }, [userInformation]);
 
   useEffect(() => {
     dispatch(getOranizationSeats(''))?.then((payload: any) => {

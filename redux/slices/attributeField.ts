@@ -3,7 +3,6 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
   deleteAttributeField,
-  getAllAttributeField,
   insertAttributeField,
   updateAttributeFieldById,
   queryAttributeField,
@@ -81,24 +80,6 @@ const attributeFieldSlice = createSlice({
       )
       .addCase(
         updateAttributeFieldById.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.error = action.payload;
-        },
-      )
-      .addCase(getAllAttributeField.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        getAllAttributeField.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.data = action.payload;
-        },
-      )
-      .addCase(
-        getAllAttributeField.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

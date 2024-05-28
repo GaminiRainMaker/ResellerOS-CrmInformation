@@ -5,11 +5,11 @@
 
 'use client';
 
-import {Dropdown} from '@/app/components/common/antd/DropDown';
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Dropdown } from '@/app/components/common/antd/DropDown';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {Divider} from '@/app/components/common/antd/Divider';
-import {Space} from '@/app/components/common/antd/Space';
+import { Divider } from '@/app/components/common/antd/Divider';
+import { Space } from '@/app/components/common/antd/Space';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -17,9 +17,9 @@ import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import SearchSelect from '@/app/components/common/os-select/SearchSelect';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
+import { AvatarStyled } from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
-import {getBase64} from '@/app/utils/upload';
+import { getBase64 } from '@/app/utils/upload';
 import styled from '@emotion/styled';
 import {
   ArrowLeftStartOnRectangleIcon,
@@ -27,30 +27,28 @@ import {
   ExclamationCircleIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
-import {Avatar, Badge, Layout, Select, Upload, notification} from 'antd';
+import { Avatar, Badge, Layout, Select, Upload, notification } from 'antd';
 import ImgCrop from 'antd-img-crop';
-import {MenuProps} from 'antd/es/menu';
+import { MenuProps } from 'antd/es/menu';
 import Cookies from 'js-cookie';
 import _debounce from 'lodash/debounce';
 import Image from 'next/image';
-import {useRouter} from 'next/navigation';
-import React, {useCallback, useEffect, useState} from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useCallback, useEffect, useState } from 'react';
 import creditCard from '../../../../../public/assets/static/card-pos.svg';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
 import UserIcon from '../../../../../public/assets/static/userIcon.svg';
 import {
-  ReadNotificationById,
-  getAllNewNotification,
   getCountOfNotification,
 } from '../../../../../redux/actions/notifications';
-import {uploadToAwsForUserImage} from '../../../../../redux/actions/upload';
+import { uploadToAwsForUserImage } from '../../../../../redux/actions/upload';
 import {
   getGloabalySearchDataa,
   getUserProfileData,
 } from '../../../../../redux/actions/user';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 
 export const CustomUpload = styled(Upload)`
   .ant-upload-list-text {
@@ -119,12 +117,6 @@ const CustomHeader = () => {
   }, [searchQuery]);
   const [notificationCounts, setNotificationCounts] = useState<number>(0);
 
-  const readAllNotifications = async () => {
-    await dispatch(ReadNotificationById(''));
-    dispatch(getAllNewNotification(''));
-    setNotificationCounts(0);
-    // dispatch(getCountOfNotification(''));
-  };
 
   useEffect(() => {
     dispatch(getCountOfNotification(''))?.then((payload: any) => {

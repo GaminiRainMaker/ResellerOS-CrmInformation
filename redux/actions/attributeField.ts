@@ -14,18 +14,6 @@ export const insertAttributeField = createAsyncThunk(
   },
 );
 
-export const getAllAttributeField = createAsyncThunk(
-  'attributeField/getAllAttributeField',
-  async (organization: any, thunkApi) => {
-    try {
-      const res = await ATTRIBUTE_FIELD_API.get();
-      return res.data;
-    } catch (error: any) {
-      return thunkApi.rejectWithValue(error?.message);
-    }
-  },
-);
-
 export const deleteAttributeField = createAsyncThunk(
   'attributeField/deleteAttributeField',
   async (data: any, thunkApi) => {

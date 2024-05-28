@@ -165,7 +165,6 @@ const DealRegDetail = () => {
           updateDealRegAddressById({...dealRegNewData, dealRegId: dealReg?.id}),
         ),
       ]);
-      // dispatch(getAllDealReg());
       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
       dispatch(getDealRegAddressById(dealReg?.id));
       setOpen(false);

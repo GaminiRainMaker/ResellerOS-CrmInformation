@@ -3,7 +3,6 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
   insertAttributeSection,
-  getAllAttributeSection,
   deleteAttributeSection,
   updateAttributeSectionById,
   queryAttributeSection,
@@ -81,24 +80,6 @@ const attributeSectionSlice = createSlice({
       )
       .addCase(
         updateAttributeSectionById.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.error = action.payload;
-        },
-      )
-      .addCase(getAllAttributeSection.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        getAllAttributeSection.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.data = action.payload;
-        },
-      )
-      .addCase(
-        getAllAttributeSection.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
