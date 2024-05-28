@@ -154,7 +154,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
     billingContact,
   ]);
 
-  const AlphabetsRegex =  /^[A-Za-z\s]+$/;
+  const AlphabetsRegex = /^[A-Za-z\s]+$/;
   const emailRegex =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -266,7 +266,11 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                     },
                   ]}
                 >
-                  <OsInput placeholder="Enter here" defaultValue="Dollar" disabled/>
+                  <OsInput
+                    placeholder="Enter here"
+                    defaultValue="Dollar"
+                    disabled
+                  />
                 </SelectFormItem>
               </Col>
               <Col span={drawer ? 24 : 12}>
@@ -710,7 +714,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                   });
                                 }}
                               />
-                            
+
                               {!AlphabetsRegex?.test(
                                 objectValuesForContact?.billing_role,
                               ) && (
@@ -734,7 +738,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                   });
                                 }}
                               />
-                             
+
                               {errorFileds &&
                                 !emailRegex?.test(
                                   objectValuesForContact?.billing_email,

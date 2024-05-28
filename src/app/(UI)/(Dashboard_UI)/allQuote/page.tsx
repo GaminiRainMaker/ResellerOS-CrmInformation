@@ -343,7 +343,7 @@ const AllQuote: React.FC = () => {
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteQuote}
         heading="Delete Quote"
-        description={deleteModalDescription}
+        description="Are you sure you want to delete this Quote?"
       />
     </>
   );

@@ -189,7 +189,8 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
             >
               <CommonSelect
                 // eslint-disable-next-line no-unneeded-ternary
-                disabled={profitabilityDataByQuoteId?.length > 0 ? false : true}
+                disabled
+                // disabled={profitabilityDataByQuoteId?.length > 0 ? false : true}
                 style={{width: '150px'}}
                 options={quoteStatusOptions}
               />

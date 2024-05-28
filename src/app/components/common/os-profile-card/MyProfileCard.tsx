@@ -197,7 +197,7 @@ const MyProfileCard: FC<any> = ({data}) => {
                     : data?.user_name}
               </Typography>
               <Typography name="Body 4/Bold" color={token?.colorInfo}>
-                {data?.job_title ?? '--'}
+                {data?.job_title ?? ''}
               </Typography>
               <span
                 style={{
@@ -207,7 +207,7 @@ const MyProfileCard: FC<any> = ({data}) => {
                 }}
               >
                 <Typography name="Body 3/Regular" color={token?.colorLinkHover}>
-                  {userRole ?? '--'}
+                  {userRole ?? ''}
                 </Typography>
               </span>
             </Space>
@@ -226,7 +226,10 @@ const MyProfileCard: FC<any> = ({data}) => {
               key={proileDetailDataItem?.key}
             >
               <Space direction="vertical" size={4}>
-                <Typography name="Body 4/Medium" color={token?.colorLinkHover}>
+                <Typography
+                  name="Body 4/Medium"
+                  color={token?.colorPrimaryText}
+                >
                   {proileDetailDataItem?.title}
                 </Typography>
                 <Space align="center">

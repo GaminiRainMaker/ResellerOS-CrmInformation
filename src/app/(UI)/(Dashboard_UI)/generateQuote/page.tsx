@@ -87,10 +87,12 @@ const GenerateQuote: React.FC = () => {
   const {data: quoteFileData} = useAppSelector((state) => state.quoteFile);
   const [showUpdateLineItemModal, setShowUpdateLineItemModal] =
     useState<boolean>(false);
+
   useEffect(() => {
     dispatch(getAllTableColumn(''));
     dispatch(getAllContractSetting(''));
   }, []);
+
   useEffect(() => {
     if (activeTabRoute === '2') {
       setActiveTab('2');
@@ -446,6 +448,9 @@ const GenerateQuote: React.FC = () => {
                 text="Edit Quote Header"
                 buttontype="SECONDARY"
                 clickHandler={() => {
+                  if (quoteFileData?.length > 0) {
+                    return;
+                  }
                   setOpen(true);
                 }}
               />

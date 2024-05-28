@@ -100,6 +100,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
   const [confirmedData, setConfirmedData] = useState<boolean>(false);
   const [defaultDataShow, setDefaultDataShow] = useState<boolean>(true);
+  const [showExportAs, setShowExportAs] = useState<boolean>(true);
+  const [showExportToTable, setShowExportToTable] = useState<boolean>(true);
 
   const openNotificationWithIcon = () => {
     api.warning({
@@ -586,6 +588,18 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                         width={25}
                                         color={token?.colorError}
                                         onClick={(e) => {
+                                          if (
+                                            item?.quoteLineItems?.length === 0
+                                          ) {
+                                            setShowExportAs(false);
+                                          }
+                                          if (
+                                            item?.title?.split('.')[1] !== 'pdf'
+                                          ) {
+                                            setShowExportToTable(false);
+                                          }
+
+                                          // setShowExportAs
                                           e?.stopPropagation();
                                           setShowRaiseConcernModal(true);
                                           setFileLineItemIds(item?.id);
@@ -670,8 +684,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
           form?.resetFields();
         }}
         destroyOnClose
-        thirdButtonText="Export File to Tables"
-        primaryButtonText="Edit Data As-Is"
+        thirdButtonText={showExportToTable ? 'Export File to Tables' : ''}
+        primaryButtonText={showExportAs ? 'Edit Data As-Is' : ''}
         onOk={() => {
           form?.submit();
           setButtonType('primary');
