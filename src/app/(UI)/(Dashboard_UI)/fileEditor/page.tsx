@@ -393,7 +393,7 @@ const EditorFile = () => {
             <Space
               onClick={(e) => {
                 e?.preventDefault();
-                setShowModal(true);
+                // setShowModal(true);
               }}
               size={25}
               style={{
@@ -467,7 +467,7 @@ const EditorFile = () => {
                 <Space
                   onClick={(e) => {
                     e?.preventDefault();
-                    setShowModal(true);
+                    // setShowModal(true);
                   }}
                   size={25}
                   style={{
@@ -664,22 +664,24 @@ const EditorFile = () => {
           </>
         )}
       </div>
-      <OsModal
-        // loading={loading}
-        body={
-          <SyncTableData
-            mergedValue={mergedValue}
-            setMergedVaalues={setMergedVaalues}
-            setNanonetsLoading={setNanonetsLoading}
-            nanonetsLoading={nanonetsLoading}
-          />
-        }
-        width={600}
-        open={showModal}
-        onCancel={() => {
-          setShowModal((p) => !p);
-        }}
-      />
+      {showModal && (
+        <OsModal
+          // loading={loading}
+          body={
+            <SyncTableData
+              mergedValue={mergedValue}
+              setMergedVaalues={setMergedVaalues}
+              setNanonetsLoading={setNanonetsLoading}
+              nanonetsLoading={nanonetsLoading}
+            />
+          }
+          width={600}
+          open={showModal}
+          onCancel={() => {
+            setShowModal((p) => !p);
+          }}
+        />
+      )}
 
       <OsModal
         body={
