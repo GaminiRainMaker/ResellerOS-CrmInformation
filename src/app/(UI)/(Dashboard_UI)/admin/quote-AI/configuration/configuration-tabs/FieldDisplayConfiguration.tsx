@@ -302,14 +302,17 @@ const FieldDisplayConfiguration: FC<any> = () => {
                         direction="vertical"
                         style={{width: '100%'}}
                       >
-                        <OsTableWithOutDrag
-                          loading={false}
-                          tableSelectionType="checkbox"
-                          columns={allColumns}
-                          dataSource={tableColumnDataShow}
-                          tablePageSize={50}
-                          scrolly={165}
-                        />
+                        {tableColumnDataShow && (
+                          <OsTableWithOutDrag
+                            loading={false}
+                            tableSelectionType="checkbox"
+                            columns={allColumns}
+                            dataSource={tableColumnDataShow}
+                            tablePageSize={50}
+                            scrolly={165}
+                          />
+                        )}
+
                         <div style={{width: 'max-content', float: 'right'}}>
                           <OsButton
                             text="Add Field"
