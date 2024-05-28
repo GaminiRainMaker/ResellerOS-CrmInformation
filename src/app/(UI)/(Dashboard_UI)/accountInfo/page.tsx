@@ -98,8 +98,6 @@ const AccountInfo = () => {
     }
   }, [isSuperAdminProfile]);
 
-  // Resellers
-
   const menuItems = [
     {
       key: '1',
