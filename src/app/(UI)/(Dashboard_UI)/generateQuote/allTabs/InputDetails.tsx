@@ -590,7 +590,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                         icon={
                                           <XMarkIcon
                                             width={25}
-                                            color={token?.colorError}
+                                            color={token?.colorBgContainer}
                                             onClick={(e) => {
                                               if (
                                                 item?.quoteLineItems?.length ===
