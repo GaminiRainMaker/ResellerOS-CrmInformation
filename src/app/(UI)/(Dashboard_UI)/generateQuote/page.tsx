@@ -449,6 +449,10 @@ const GenerateQuote: React.FC = () => {
                 buttontype="SECONDARY"
                 clickHandler={() => {
                   if (quoteFileData?.length > 0) {
+                    notification.open({
+                      message: 'Please verify the Files first.',
+                      type: 'info',
+                    });
                     return;
                   }
                   setOpen(true);
@@ -458,6 +462,13 @@ const GenerateQuote: React.FC = () => {
                 text="Save"
                 buttontype="SECONDARY"
                 clickHandler={() => {
+                  if (quoteFileData?.length > 0) {
+                    notification.open({
+                      message: 'Please verify the Files first.',
+                      type: 'info',
+                    });
+                    return;
+                  }
                   commonUpdateCompleteAndDraftMethod('In Progress');
                 }}
               />

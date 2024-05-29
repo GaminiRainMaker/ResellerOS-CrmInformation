@@ -540,6 +540,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     }
     setShowVerificationFileModal(false);
   };
+
   return (
     <>
       {contextHolder}
@@ -558,13 +559,13 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                             label: (
                               <>
                                 <Row justify="space-between">
-                                  <Col>
+                                  <Col span={6}>
                                     <p>{item?.title}</p>
                                   </Col>
-                                  <Col>
+                                  <Col span={6}>
                                     <p>Line Items: {item?.totalCount}</p>
                                   </Col>
-                                  <Col>
+                                  <Col span={6}>
                                     <p>
                                       Total Cost: $
                                       {item?.totalAdjustedPrice?.length > 0
@@ -572,7 +573,13 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                         : 0.0}
                                     </p>
                                   </Col>
-                                  <Col>
+                                  <Col
+                                    span={6}
+                                    style={{
+                                      justifyContent: 'end',
+                                      display: 'flex',
+                                    }}
+                                  >
                                     <Space>
                                       <CheckIcon
                                         width={25}

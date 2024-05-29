@@ -237,7 +237,7 @@ const DealReg: React.FC = () => {
                         <OsTable
                           columns={DealRegColumns}
                           dataSource={itemDeal?.data}
-                          rowSelection={rowSelection}
+                          // rowSelection={rowSelection}
                           scroll
                           loading={dealLoading}
                           locale={locale}
@@ -267,7 +267,7 @@ const DealReg: React.FC = () => {
         <OsTable
           columns={DealRegColumns}
           dataSource={[]}
-          rowSelection={rowSelection}
+          // rowSelection={rowSelection}
           scroll
           loading={dealLoading}
           locale={locale}
@@ -281,7 +281,7 @@ const DealReg: React.FC = () => {
         <OsTable
           columns={DealRegColumns}
           dataSource={[]}
-          rowSelection={rowSelection}
+          // rowSelection={rowSelection}
           scroll
           loading={dealLoading}
           locale={locale}
