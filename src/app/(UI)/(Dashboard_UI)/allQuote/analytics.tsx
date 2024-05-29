@@ -37,31 +37,31 @@ const QuoteAnalytics = () => {
     },
     {
       key: 2,
-      primary: <div>{needsReviewQuote?.length}</div>,
-      secondry: 'Needs Review',
-      icon: <DocumentPlusIcon width={24} color={token?.colorLink} />,
-      iconBg: token?.colorLinkActive,
-    },
-    {
-      key: 3,
-      primary: <div>{completedQuote?.length}</div>,
-      secondry: 'Completed',
-      icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
-      iconBg: token?.colorSuccessBg,
-    },
-    {
-      key: 4,
       primary: <div>{draftedQuote?.length}</div>,
       secondry: 'Drafts',
       icon: <ClipboardDocumentCheckIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
     {
-      key: 5,
+      key: 3,
       primary: <div>{inProgressQuote?.length}</div>,
       secondry: 'In Progress',
       icon: <ClockIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
+    },
+    {
+      key: 4,
+      primary: <div>{needsReviewQuote?.length}</div>,
+      secondry: 'Needs Review',
+      icon: <DocumentPlusIcon width={24} color={token?.colorLink} />,
+      iconBg: token?.colorLinkActive,
+    },
+    {
+      key: 5,
+      primary: <div>{completedQuote?.length}</div>,
+      secondry: 'Completed',
+      icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
+      iconBg: token?.colorSuccessBg,
     },
   ];
 
