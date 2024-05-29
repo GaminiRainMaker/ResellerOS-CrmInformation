@@ -12,7 +12,9 @@ export const InputStyled = styled(Input)`
   border-radius: 12px;
   background: none !important;
 
-  border: 1px solid var(--foundation-neutrals-black-n-70, #a3a3a3);
+  &.ant-input {
+    border: 1px solid #a3a3a3;
+  }
   &.ant-input:focus-visible {
     border-color: none;
     box-shadow: none;

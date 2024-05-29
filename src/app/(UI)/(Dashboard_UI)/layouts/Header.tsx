@@ -144,7 +144,7 @@ const CustomHeader = () => {
           cursor="pointer"
           onClick={() => {
             window.open(
-              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=account&isSuperAdminProfile=${isSuperAdminProfile}`,
+              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=myProfile&isSuperAdminProfile=${isSuperAdminProfile}`,
             );
           }}
         >
@@ -160,7 +160,7 @@ const CustomHeader = () => {
           cursor="pointer"
           onClick={() =>
             window.open(
-              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=settings&isSuperAdminProfile=${isSuperAdminProfile}`,
+              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=partnerPassword&isSuperAdminProfile=${isSuperAdminProfile}`,
             )
           }
         >

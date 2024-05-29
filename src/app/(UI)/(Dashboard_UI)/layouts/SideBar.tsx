@@ -166,7 +166,7 @@ const SideBar = () => {
         return payload?.payload?.sucess;
       });
       if (allSubscriptionForCustomer) {
-        dispatch(setIsSubscribed({isSubscribed: true}));
+        dispatch(setIsSubscribed(true));
       }
 
       let activeSubscription = allSubscriptionForCustomer?.find(
@@ -222,6 +222,8 @@ const SideBar = () => {
 
       if (loggedInOrganization) {
         getSubsCriptionForCustomer(loggedInOrganization?.id);
+      } else if (!loggedInOrganization) {
+        dispatch(setIsSubscribed(false));
       }
     } catch (error: any) {
       console.log('error', error.message);
@@ -585,60 +587,20 @@ const SideBar = () => {
     //     </Typography>,
     //     '7',
     //   ),
-    getItem(
-      <Typography
-        cursor="pointer"
-        onClick={() => {
-          setSelectedKey(8);
-          setCrmChildKey(0);
-          router?.push(
-            isAdmin && Role === 'superAdmin'
-              ? 'superAdminPartner'
-              : '/partners',
-          );
-        }}
-        name="Button 1"
-        color={token?.colorTextSecondary}
-      >
-        <Space size={12}>
-          <OsAvatar
-            icon={
-              <UsersIcon
-                color={
-                  selectedKey?.toString()?.includes('8')
-                    ? token?.colorPrimary
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
-          <Typography
-            cursor="pointer"
-            name="Button 1"
-            style={{
-              marginTop: '1px',
-            }}
-            color={
-              selectedKey?.toString()?.includes('8')
-                ? token?.colorPrimary
-                : token?.colorTextSecondary
-            }
-          >
-            Partners & Partners Program
-          </Typography>
-        </Space>
-      </Typography>,
-      '8',
-    ),
-    !isAdmin &&
+
+    isDealReg &&
       Role === 'reseller' &&
       getItem(
         <Typography
           cursor="pointer"
           onClick={() => {
-            setSelectedKey(9);
+            setSelectedKey(8);
             setCrmChildKey(0);
+            router?.push(
+              isAdmin && Role === 'superAdmin'
+                ? 'superAdminPartner'
+                : '/partners',
+            );
           }}
           name="Button 1"
           color={token?.colorTextSecondary}
@@ -646,9 +608,9 @@ const SideBar = () => {
           <Space size={12}>
             <OsAvatar
               icon={
-                <BoltIcon
+                <UsersIcon
                   color={
-                    selectedKey?.toString()?.includes('9')
+                    selectedKey?.toString()?.includes('8')
                       ? token?.colorPrimary
                       : token?.colorTextSecondary
                   }
@@ -663,19 +625,107 @@ const SideBar = () => {
                 marginTop: '1px',
               }}
               color={
-                selectedKey?.toString()?.includes('9')
+                selectedKey?.toString()?.includes('8')
                   ? token?.colorPrimary
                   : token?.colorTextSecondary
               }
             >
-              {' '}
-              Renewals and Upgrades
+              Partners & Partners Program
             </Typography>
           </Space>
         </Typography>,
-        '9',
+        '8',
       ),
-    Role === 'reseller' &&
+    isAdmin &&
+      Role === 'superAdmin' &&
+      getItem(
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setSelectedKey(8);
+            setCrmChildKey(0);
+            router?.push('superAdminPartner');
+          }}
+          name="Button 1"
+          color={token?.colorTextSecondary}
+        >
+          <Space size={12}>
+            <OsAvatar
+              icon={
+                <UsersIcon
+                  color={
+                    selectedKey?.toString()?.includes('8')
+                      ? token?.colorPrimary
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+              }}
+              color={
+                selectedKey?.toString()?.includes('8')
+                  ? token?.colorPrimary
+                  : token?.colorTextSecondary
+              }
+            >
+              Partners & Partners Program
+            </Typography>
+          </Space>
+        </Typography>,
+        '8',
+      ),
+    // !isAdmin &&
+    //   Role === 'reseller' &&
+    //   getItem(
+    //     <Typography
+    //       cursor="pointer"
+    //       onClick={() => {
+    //         setSelectedKey(9);
+    //         setCrmChildKey(0);
+    //       }}
+    //       name="Button 1"
+    //       color={token?.colorTextSecondary}
+    //     >
+    //       <Space size={12}>
+    //         <OsAvatar
+    //           icon={
+    //             <BoltIcon
+    //               color={
+    //                 selectedKey?.toString()?.includes('9')
+    //                   ? token?.colorPrimary
+    //                   : token?.colorTextSecondary
+    //               }
+    //               width={24}
+    //             />
+    //           }
+    //         />
+    //         <Typography
+    //           cursor="pointer"
+    //           name="Button 1"
+    //           style={{
+    //             marginTop: '1px',
+    //           }}
+    //           color={
+    //             selectedKey?.toString()?.includes('9')
+    //               ? token?.colorPrimary
+    //               : token?.colorTextSecondary
+    //           }
+    //         >
+    //           {' '}
+    //           Renewals and Upgrades
+    //         </Typography>
+    //       </Space>
+    //     </Typography>,
+    //     '9',
+    //   ),
+    isQuoteAI &&
+      Role === 'reseller' &&
       getItem(
         <Typography
           cursor="pointer"

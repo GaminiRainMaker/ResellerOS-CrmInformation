@@ -20,14 +20,11 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import RaiseConcern from '@/app/components/common/os-raise-concern';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
+import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {selectDataForProduct} from '@/app/utils/CONSTANTS';
-import {
-  sendDataToNanonets,
-  updateTables,
-  useRemoveDollarAndCommahook,
-} from '@/app/utils/base';
-import {CheckIcon, TrashIcon, XMarkIcon} from '@heroicons/react/24/outline';
+import {updateTables, useRemoveDollarAndCommahook} from '@/app/utils/base';
+import {CheckIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
@@ -41,7 +38,6 @@ import {updateProductFamily} from '../../../../../../redux/actions/product';
 import {
   UpdateQuoteFileById,
   getQuoteFileByQuoteId,
-  updateFileForQuoteJson,
 } from '../../../../../../redux/actions/quoteFile';
 import {
   DeleteQuoteLineItemById,
@@ -95,7 +91,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   const [fileLineItemIds, setFileLineItemIds] = useState<number[]>([]);
   const [buttonType, setButtonType] = useState<string>('');
   const [fileData, setFileData] = useState<any>();
-  const {data: bundleData} = useAppSelector((state) => state.bundle);
   const [api, contextHolder] = notification.useNotification();
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
   const [confirmedData, setConfirmedData] = useState<boolean>(false);
@@ -134,10 +129,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     return false;
   };
 
-  const updateBundleQuantityData = async (data: any) => {
-    await dispatch(updateBundleQuantity(data));
-    dispatch(getAllBundle(getQuoteID));
-  };
   useEffect(() => {
     dispatch(getAllBundle(getQuoteID));
     dispatch(getQuoteLineItemByQuoteIdandBundleIdNull(Number(getQuoteID)));
@@ -251,7 +242,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       width: 120,
     },
     {
-      title: 'MSRP',
+      title: 'MSRP ($)',
       dataIndex: 'list_price',
       key: 'list_price',
       width: 187,
@@ -266,7 +257,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       },
     },
     {
-      title: 'Cost',
+      title: 'Cost ($)',
       dataIndex: 'adjusted_price',
       key: 'adjusted_price',
       width: 187,
@@ -471,14 +462,13 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       item?.QuoteLineItems?.forEach((quoteLineItem: any) => {
         separatedData[fileName].quoteLineItems.push(quoteLineItem);
         separatedData[fileName].totalCount++;
-        separatedData[fileName].totalAdjustedPrice += parseFloat(
-          quoteLineItem?.adjusted_price?.replace(/[$,]/g, ''),
+        separatedData[fileName].totalAdjustedPrice += Number(
+          quoteLineItem?.adjusted_price,
         );
       });
     });
 
     const result = Object.values(separatedData);
-    // console.log('3453453', result);
     const combinedArr: any = [];
     if (quoteFileData && quoteFileData?.length > 0) {
       quoteFileData?.forEach((itemOut: any) => {
@@ -567,45 +557,63 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                   <Col>
                                     <p>
                                       Total Cost: $
-                                      {item?.totalAdjustedPrice?.length > 0
-                                        ? item?.totalAdjustedPrice
-                                        : 0.0}
+                                      {abbreviate(
+                                        item?.totalAdjustedPrice ?? 0.0,
+                                      )}
                                     </p>
                                   </Col>
                                   <Col>
                                     <Space>
-                                      <CheckIcon
-                                        width={25}
-                                        color={token?.colorSuccess}
-                                        onClick={(e) => {
-                                          e?.stopPropagation();
-                                          setShowVerificationFileModal(true);
-                                          setFileLineItemIds(item?.id);
-                                          setFileData(item);
-                                        }}
+                                      <AvatarStyled
+                                        shape="square"
+                                        background={token?.colorSuccess}
+                                        size={28}
+                                        icon={
+                                          <CheckIcon
+                                            width={25}
+                                            color={token?.colorBgContainer}
+                                            onClick={(e) => {
+                                              e?.stopPropagation();
+                                              setShowVerificationFileModal(
+                                                true,
+                                              );
+                                              setFileLineItemIds(item?.id);
+                                              setFileData(item);
+                                            }}
+                                          />
+                                        }
                                       />
-                                      <XMarkIcon
-                                        width={25}
-                                        color={token?.colorError}
-                                        onClick={(e) => {
-                                          if (
-                                            item?.quoteLineItems?.length === 0
-                                          ) {
-                                            setShowExportAs(false);
-                                          }
-                                          if (
-                                            item?.title?.split('.')[1] !== 'pdf'
-                                          ) {
-                                            setShowExportToTable(false);
-                                          }
+                                      <AvatarStyled
+                                        shape="square"
+                                        background={token?.colorError}
+                                        size={28}
+                                        icon={
+                                          <XMarkIcon
+                                            width={25}
+                                            color={token?.colorError}
+                                            onClick={(e) => {
+                                              if (
+                                                item?.quoteLineItems?.length ===
+                                                0
+                                              ) {
+                                                setShowExportAs(false);
+                                              }
+                                              if (
+                                                item?.title?.split('.')[1] !==
+                                                'pdf'
+                                              ) {
+                                                setShowExportToTable(false);
+                                              }
 
-                                          // setShowExportAs
-                                          e?.stopPropagation();
-                                          setShowRaiseConcernModal(true);
-                                          setFileLineItemIds(item?.id);
+                                              // setShowExportAs
+                                              e?.stopPropagation();
+                                              setShowRaiseConcernModal(true);
+                                              setFileLineItemIds(item?.id);
 
-                                          setFileData(item);
-                                        }}
+                                              setFileData(item);
+                                            }}
+                                          />
+                                        }
                                       />
                                     </Space>
                                   </Col>
@@ -699,7 +707,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         loading={confirmedData}
         body={
           <OSDialog
-            title="Are you sure want to verify this file?"
+            title="Are you sure you want to verify this file?"
             description="Please acknowledge before proceeding."
             image={GreenCheckIcon}
           />

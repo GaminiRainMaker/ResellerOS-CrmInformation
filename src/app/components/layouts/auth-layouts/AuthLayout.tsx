@@ -28,7 +28,7 @@ const AuthLayout: FC<AuthLayoutInterface> = ({
   const [token] = useThemeToken();
   return (
     <Row justify="center" style={{height: '100%'}} gutter={[16, 16]}>
-      <Col xxl={12} xl={12} lg={12} md={24} sm={24} xs={24}>
+      <Col xxl={12} xl={12} lg={24} md={24} sm={24} xs={24}>
         <Content
           style={{
             display: 'flex',
@@ -58,7 +58,7 @@ const AuthLayout: FC<AuthLayoutInterface> = ({
       <Col
         xxl={12}
         xl={12}
-        lg={12}
+        lg={24}
         md={0}
         sm={0}
         xs={0}

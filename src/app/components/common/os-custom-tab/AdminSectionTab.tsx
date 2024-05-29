@@ -4,7 +4,7 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import Col from 'antd/es/grid/col';
 import Row from 'antd/es/grid/row';
-import {useSearchParams} from 'next/navigation';
+import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
@@ -14,31 +14,79 @@ import {CustomTabStyle} from './styled-components';
 const AdminCustomTabs: FC<any> = (tabs) => {
   const searchParams = useSearchParams();
   const getTab = searchParams.get('tab');
+  const pathname = usePathname();
   const [activekeysall, setActivekeysall] = useState<number>(1);
   const [token] = useThemeToken();
   const [tempChild, setTempChild] = useState<any>();
+  const router = useRouter();
 
   useEffect(() => {
     if (tabs?.tabs?.length > 0) {
       let tabIndex;
-      switch (getTab) {
-        case 'account':
-          tabIndex = 0;
-          break;
-        case 'settings':
-          tabIndex = 1;
-          break;
-        case 'support':
-          tabIndex = 2;
-          break;
-        default:
-          tabIndex = 0;
+      let superChildIndex;
+      if (pathname === '/admin') {
+        switch (getTab) {
+          case 'Configuration':
+            tabIndex = 0;
+            superChildIndex = 0;
+            break;
+          case 'AddProducts':
+            tabIndex = 0;
+            superChildIndex = 1;
+            break;
+          case 'allUsers':
+            tabIndex = 1;
+            superChildIndex = 0;
+            break;
+          case 'rolesAndPermission':
+            tabIndex = 1;
+            superChildIndex = 1;
+            break;
+          default:
+            tabIndex = 0;
+            superChildIndex = 0;
+        }
+        const initialChild =
+          tabs.tabs[tabIndex]?.childitem?.[superChildIndex]?.superChild;
+        setTempChild(initialChild);
+        setActivekeysall(
+          tabs.tabs[tabIndex]?.childitem?.[superChildIndex]?.key,
+        );
+      } else {
+        switch (getTab) {
+          case 'myProfile':
+            tabIndex = 0;
+            superChildIndex = 0;
+            break;
+          case 'myTeam':
+            tabIndex = 0;
+            superChildIndex = 1;
+            break;
+          case 'partnerPassword':
+            tabIndex = 1;
+            superChildIndex = 0;
+            break;
+          case 'support':
+            tabIndex = 2;
+            superChildIndex = 0;
+            break;
+          case 'faq':
+            tabIndex = 2;
+            superChildIndex = 1;
+            break;
+          default:
+            tabIndex = 0;
+            superChildIndex = 0;
+        }
+        const initialChild =
+          tabs.tabs[tabIndex]?.childitem?.[superChildIndex]?.superChild;
+        setTempChild(initialChild);
+        setActivekeysall(
+          tabs.tabs[tabIndex]?.childitem?.[superChildIndex]?.key,
+        );
       }
-      const initialChild = tabs.tabs[tabIndex]?.childitem?.[0]?.superChild;
-      setTempChild(initialChild);
-      setActivekeysall(tabs.tabs[tabIndex]?.childitem?.[0]?.key);
     }
-  }, [tabs, getTab]);
+  }, [getTab]);
 
   const getSuperChild = () => {
     return (
@@ -90,6 +138,7 @@ const AdminCustomTabs: FC<any> = (tabs) => {
                             cursor="pointer"
                             name="Button 1"
                             onClick={() => {
+                              router?.push(itemild?.route);
                               setTempChild(itemild?.superChild);
                               setActivekeysall(itemild?.key);
                             }}

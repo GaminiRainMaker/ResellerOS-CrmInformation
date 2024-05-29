@@ -6,7 +6,7 @@ const useAbbreviationHook = (value: number) => {
   );
   const abbreviate = (num: number) => {
     const roundedValue = Math.round(num * 100) / 100;
-    return new Intl.NumberFormat('en-IN', {
+    return new Intl.NumberFormat('ja-JP', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(roundedValue);
