@@ -223,7 +223,7 @@ const PartnerPassword = () => {
           </Col>
           <Col>
             <OsButton
-              text="Add new credentials"
+              text="Add New Credentials"
               buttontype="PRIMARY"
               icon={<PlusIcon />}
               clickHandler={() => {
