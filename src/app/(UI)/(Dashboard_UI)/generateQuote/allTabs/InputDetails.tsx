@@ -51,6 +51,8 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setConcernQuoteLineItemData} from '../../../../../../redux/slices/quotelineitem';
 import {InputDetailTabInterface} from '../generateQuote.interface';
+import {Avatar} from '@/app/components/common/antd/Avatar';
+import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 
 const InputDetails: FC<InputDetailTabInterface> = ({
   tableColumnDataShow,
@@ -572,26 +574,42 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                   </Col>
                                   <Col>
                                     <Space>
-                                      <CheckIcon
-                                        width={25}
-                                        color={token?.colorSuccess}
-                                        onClick={(e) => {
-                                          e?.stopPropagation();
-                                          setShowVerificationFileModal(true);
-                                          setFileLineItemIds(item?.id);
-                                          setFileData(item);
-                                        }}
+                                      <AvatarStyled
+                                        shape="square"
+                                        background={token?.colorSuccess}
+                                        size={28}
+                                        icon={
+                                          <CheckIcon
+                                            width={25}
+                                            color={token?.colorBgContainer}
+                                            onClick={(e) => {
+                                              e?.stopPropagation();
+                                              setShowVerificationFileModal(
+                                                true,
+                                              );
+                                              setFileLineItemIds(item?.id);
+                                              setFileData(item);
+                                            }}
+                                          />
+                                        }
                                       />
-                                      <XMarkIcon
-                                        width={25}
-                                        color={token?.colorError}
-                                        onClick={(e) => {
-                                          e?.stopPropagation();
-                                          setShowRaiseConcernModal(true);
-                                          setFileLineItemIds(item?.id);
+                                      <AvatarStyled
+                                        shape="square"
+                                        background={token?.colorError}
+                                        size={28}
+                                        icon={
+                                          <XMarkIcon
+                                            width={25}
+                                            color={token?.colorBgContainer}
+                                            onClick={(e) => {
+                                              e?.stopPropagation();
+                                              setShowRaiseConcernModal(true);
+                                              setFileLineItemIds(item?.id);
 
-                                          setFileData(item);
-                                        }}
+                                              setFileData(item);
+                                            }}
+                                          />
+                                        }
                                       />
                                     </Space>
                                   </Col>

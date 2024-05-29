@@ -166,7 +166,7 @@ const SideBar = () => {
         return payload?.payload?.sucess;
       });
       if (allSubscriptionForCustomer) {
-        dispatch(setIsSubscribed({isSubscribed: true}));
+        dispatch(setIsSubscribed(true));
       }
       let activeSubscription = allSubscriptionForCustomer?.find(
         (item: any) => item?.status === 'active',
@@ -221,6 +221,8 @@ const SideBar = () => {
 
       if (loggedInOrganization) {
         getSubsCriptionForCustomer(Number(loggedInOrganization?.id));
+      } else if (!loggedInOrganization) {
+        dispatch(setIsSubscribed(false));
       }
     } catch (error: any) {
       console.log('error', error.message);

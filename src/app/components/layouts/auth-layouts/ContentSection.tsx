@@ -51,7 +51,6 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   const getUserId = searchParams.get('id');
   const [signUpData, setSignUpData] = useState<any>();
   const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
-
   const {loading} = useAppSelector((state) => state.auth);
   const rememberPass: any = Cookies.get('remeber');
 
@@ -61,7 +60,6 @@ const ContentSection: FC<AuthLayoutInterface> = ({
       dispatch(getUserByTokenAccess('')).then((payload: any) => {
         if (payload?.type?.split('/')?.[2]?.toString()?.includes('fulfilled')) {
           const dataaa: any = payload?.payload;
-
           dispatch(
             setUserInformation({
               id: dataaa?.id,
@@ -80,7 +78,9 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           router.push(
             payload?.payload?.role === 'superAdmin'
               ? '/userManagement'
-              : '/crmInAccount',
+              : payload?.payload?.role === 'reseller' && dataaa?.is_quote
+                ? '/crmInAccount'
+                : '/dashboard',
           );
           window.scrollTo({
             top: 0,
@@ -221,7 +221,10 @@ const ContentSection: FC<AuthLayoutInterface> = ({
               ? '/userManagement'
               : payload?.payload?.is_email_invite
                 ? `/newPassword?${payload?.payload?.id}`
-                : '/crmInAccount',
+                : payload?.payload?.role === 'reseller' &&
+                    payload?.payload?.is_quote
+                  ? '/crmInAccount'
+                  : '/dashboard',
           );
         } else {
           notification?.open({

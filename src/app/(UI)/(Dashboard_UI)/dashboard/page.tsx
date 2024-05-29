@@ -16,7 +16,7 @@ import {
   PhoneIcon,
 } from '@heroicons/react/24/outline';
 import {Form, Tag} from 'antd';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {contactSales} from '../../../../../redux/actions/auth';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import ContactSales from './ContactSales';
@@ -63,6 +63,13 @@ const Dashboard = () => {
       }
     });
   };
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, []);
 
   return (
     <>

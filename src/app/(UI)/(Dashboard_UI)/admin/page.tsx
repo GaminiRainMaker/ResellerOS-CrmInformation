@@ -8,7 +8,6 @@ import Configuration from './quote-AI/configuration';
 import {useRouter} from 'next/navigation';
 
 const AdminPage = () => {
-  const router = useRouter();
 
   const tabs = [
     {
