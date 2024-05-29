@@ -135,7 +135,7 @@ const OpportunityDetails = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          File Name
+          Quote Name
         </Typography>
       ),
       dataIndex: 'file_name',

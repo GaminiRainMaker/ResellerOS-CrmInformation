@@ -103,7 +103,7 @@ const ContactInput: React.FunctionComponent<InputProps> = ({
         onFocus={onFocus}
         mask={mask}
         international
-        defaultCountry={defaultCountry}
+        defaultCountry="US"
         max={max}
       />
       {(endIcon || showErrorEndIcon) && (

@@ -54,7 +54,7 @@ const MyProfile = () => {
   const {getAllQuotesDataByOrganization} = useAppSelector(
     (state) => state.quote,
   );
-
+  console.log('profileDetailEditable', profileDetailEditable);
   const analyticsData = [
     {
       key: 1,
@@ -94,6 +94,7 @@ const MyProfile = () => {
         phone_number: UserDataById?.phone_number,
         job_title: UserDataById?.job_title,
         email: UserDataById?.email,
+        company_name: UserDataById?.company_name,
       });
     }
   }, [UserDataById]);
