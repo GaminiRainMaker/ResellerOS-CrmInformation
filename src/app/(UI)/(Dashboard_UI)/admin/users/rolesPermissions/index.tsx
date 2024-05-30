@@ -227,8 +227,6 @@ const RolesAndPermission = () => {
     setUserRules(data);
   }, [data]);
 
-  console.log('quoteDisable', quoteDisable, dealRegDisable);
-
   useEffect(() => {
     dispatch(getUserByOrganization(userInformation?.organization));
   }, []);

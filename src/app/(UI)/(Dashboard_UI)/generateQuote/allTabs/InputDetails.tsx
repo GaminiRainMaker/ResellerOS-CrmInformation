@@ -463,7 +463,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         separatedData[fileName].quoteLineItems.push(quoteLineItem);
         separatedData[fileName].totalCount++;
         separatedData[fileName].totalAdjustedPrice += Number(
-          quoteLineItem?.adjusted_price,
+          quoteLineItem?.adjusted_price * quoteLineItem?.quantity,
         );
       });
     });
