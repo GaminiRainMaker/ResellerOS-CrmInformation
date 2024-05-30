@@ -197,14 +197,14 @@ const CrmOpportunity: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Amount{' '}
+          $ Amount{' '}
         </Typography>
       ),
       dataIndex: 'amount',
       key: 'amount',
       render: (text: string) => (
         <Typography name="Body 4/Regular">
-          {`$ ${abbreviate(Number(text ?? 0))}` ?? '--'}
+          {` ${abbreviate(Number(text ?? 0))}` ?? '--'}
         </Typography>
       ),
     },

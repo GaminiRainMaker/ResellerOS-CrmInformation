@@ -46,7 +46,7 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
           if (item.id === customerValue) {
             item.BillingContacts.forEach((itemss: any) => {
               updatedAllBillingContact.push({
-                label: `${itemss.billing_first_name} ${itemss.billing_last_name}`,
+                label: `${itemss.billing_first_name ? itemss.billing_first_name : 'First'} ${itemss.billing_last_name ? itemss.billing_last_name : 'Last'}`,
                 value: itemss.id,
               });
             });
@@ -153,12 +153,11 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
       file_name: quoteById?.file_name,
       opportunity_id: quoteById?.opportunity_id,
       customer_id: quoteById?.customer_id,
-      contact_id: quoteById?.contact_id,
+      contact_id: quoteById?.contact_id && quoteById?.contact_id,
       status: quoteById?.status,
     });
     setCustomerValue(quoteById?.customer_id);
   }, [quoteById]);
-
   return (
     <GlobalLoader loading={quoteByIdLoading}>
       <Form

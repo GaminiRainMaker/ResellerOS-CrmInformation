@@ -214,14 +214,14 @@ const MyProfileCard: FC<any> = ({data}) => {
           </Space>
         </Col>
 
-        {proileDetailData?.map((proileDetailDataItem) => {
+        {proileDetailData?.map((proileDetailDataItem, index) => {
           return (
             <Col
               xs={24}
               sm={24}
               md={24}
               lg={12}
-              xl={5}
+              xl={7}
               xxl={5}
               key={proileDetailDataItem?.key}
             >
