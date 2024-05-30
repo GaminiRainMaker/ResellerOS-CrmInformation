@@ -30,10 +30,7 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import GreenCheckIcon from '../../../../../../public/assets/static/greenCheckIcon.svg';
 import RaiseConcernImg from '../../../../../../public/assets/static/raiseConcern.svg';
-import {
-  getAllBundle,
-  updateBundleQuantity,
-} from '../../../../../../redux/actions/bundle';
+import {getAllBundle} from '../../../../../../redux/actions/bundle';
 import {updateProductFamily} from '../../../../../../redux/actions/product';
 import {
   UpdateQuoteFileById,
