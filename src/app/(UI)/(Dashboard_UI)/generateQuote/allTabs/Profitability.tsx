@@ -6,6 +6,9 @@
 import {Space} from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import OsCollapse from '@/app/components/common/os-collapse';
+import Papa from 'papaparse';
+import * as XLSX from 'xlsx';
+
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
@@ -14,6 +17,7 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
+import readXlsxFile from 'read-excel-file';
 import {pricingMethod, selectDataForProduct} from '@/app/utils/CONSTANTS';
 import {
   calculateProfitabilityData,
@@ -34,6 +38,8 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
 import UpdatingLineItems from '../UpdatingLineItems';
+import {Button, List, Upload} from 'antd';
+import {UploadOutlined} from '@ant-design/icons';
 
 const Profitability: FC<any> = ({
   tableColumnDataShow,
@@ -672,8 +678,88 @@ const Profitability: FC<any> = ({
     }
   }, [updatedData]);
 
+  const [extractedStrings, setExtractedStrings] = useState([]);
+
+  const handleFileUpload = ({file}) => {
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const csvData = e.target.result;
+      processCSVData(csvData);
+    };
+    reader.readAsText(file);
+  };
+
+  const processCSVData = (csvData: any) => {
+    const lines = csvData.split(/\r\n|\n/);
+    const regex = /\{([^}]+)\}/g;
+    const extracted: any = [];
+    lines.forEach((line: any) => {
+      let match;
+      while ((match = regex.exec(line)) !== null) {
+        extracted.push(match[1]);
+      }
+    });
+    
+    setExtractedStrings(extracted);
+  };
+
+  // const handleUpload = (file: any) => {
+  //   const reader = new FileReader();
+  //   reader.onload = (e: any) => {
+  //     const data = new Uint8Array(e.target.result);
+  //     const workbook = XLSX.read(data, {type: 'array'});
+  //     const sheetName = workbook.SheetNames[0];
+  //     const sheet = workbook.Sheets[sheetName];
+  //     // Now you can work with the sheet data
+  //     console.log('343534324234', XLSX.utils.sheet_to_json(sheet));
+  //   };
+  //   reader.readAsArrayBuffer(file);
+  // };
+
   return (
     <>
+      {/* <Upload beforeUpload={handleUpload} showUploadList={false}>
+        <Button icon={<UploadOutlined />}>Upload Excel File</Button>
+      </Upload> */}
+      <div className="App" style={{padding: '20px'}}>
+        {/* <Upload
+          onChange={(e: any) => {
+            Papa.parse(e.fileList[0]?.originFileObj, {
+              header: true,
+              skipEmptyLines: true,
+              complete(results: any) {
+                console.log('435435435', results.data);
+              },
+            });
+          }}
+          // accept=".txt, .csv"
+        >
+          CSV
+        </Upload> */}
+        <h1>CSV Uploader</h1>
+        <Upload
+          // accept=".csv"
+          beforeUpload={() => false} // Prevent automatic upload
+          onChange={handleFileUpload}
+        >
+          <Button icon={<UploadOutlined />}>Upload CSV</Button>
+        </Upload>
+        <div style={{marginTop: '20px'}}>
+          {extractedStrings.length > 0 ? (
+            <List
+              bordered
+              dataSource={extractedStrings}
+              renderItem={(item, index) => (
+                <List.Item key={index}>
+                  <div>{item}</div>
+                </List.Item>
+              )}
+            />
+          ) : (
+            <p>No strings found.</p>
+          )}
+        </div>
+      </div>
       {bundleData?.map((item: any) => (
         <OsCollapse
           key={item?.id}
@@ -714,7 +800,11 @@ const Profitability: FC<any> = ({
                   loading={loading}
                   // rowSelection={rowSelection}
                   columns={finalProfitTableCol}
-                  dataSource={item?.Profitabilities || []}
+                  dataSource={
+                    item?.Profitabilities.sort(
+                      (a: any, b: any) => a.line_number - b.line_number,
+                    ) || []
+                  }
                   scroll
                   rowSelection={rowSelection}
                   locale={locale}
@@ -753,6 +843,8 @@ const Profitability: FC<any> = ({
                           dataSource={
                             item?.QuoteLineItem?.filter(
                               (itemss: any) => !itemss?.bundle_id,
+                            ).sort(
+                              (a: any, b: any) => a.line_number - b.line_number,
                             ) || []
                           }
                           scroll
@@ -770,9 +862,9 @@ const Profitability: FC<any> = ({
               <OsTableWithOutDrag
                 loading={loading}
                 columns={finalProfitTableCol}
-                dataSource={profitabilityData?.filter(
-                  (item: any) => !item?.bundle_id,
-                )}
+                dataSource={profitabilityData
+                  ?.filter((item: any) => !item?.bundle_id)
+                  .sort((a: any, b: any) => a.line_number - b.line_number)}
                 scroll
                 rowSelection={{
                   ...rowSelection,
