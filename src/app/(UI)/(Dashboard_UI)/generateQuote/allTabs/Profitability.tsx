@@ -714,7 +714,11 @@ const Profitability: FC<any> = ({
                   loading={loading}
                   // rowSelection={rowSelection}
                   columns={finalProfitTableCol}
-                  dataSource={item?.Profitabilities || []}
+                  dataSource={
+                    item?.Profitabilities.sort(
+                      (a: any, b: any) => a.line_number - b.line_number,
+                    ) || []
+                  }
                   scroll
                   rowSelection={rowSelection}
                   locale={locale}
@@ -753,6 +757,8 @@ const Profitability: FC<any> = ({
                           dataSource={
                             item?.QuoteLineItem?.filter(
                               (itemss: any) => !itemss?.bundle_id,
+                            ).sort(
+                              (a: any, b: any) => a.line_number - b.line_number,
                             ) || []
                           }
                           scroll
@@ -770,9 +776,9 @@ const Profitability: FC<any> = ({
               <OsTableWithOutDrag
                 loading={loading}
                 columns={finalProfitTableCol}
-                dataSource={profitabilityData?.filter(
-                  (item: any) => !item?.bundle_id,
-                )}
+                dataSource={profitabilityData
+                  ?.filter((item: any) => !item?.bundle_id)
+                  .sort((a: any, b: any) => a.line_number - b.line_number)}
                 scroll
                 rowSelection={{
                   ...rowSelection,

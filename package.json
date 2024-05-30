@@ -44,7 +44,6 @@
     "moment": "^2.30.1",
     "next": "14.0.1",
     "next-auth": "^4.24.5",
-    "papaparse": "^5.4.1",
     "pspdfkit": "^2023.5.4",
     "react": "^18",
     "react-copy-to-clipboard": "^5.1.0",
