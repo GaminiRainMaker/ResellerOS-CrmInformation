@@ -130,7 +130,7 @@ const CustomHeader = () => {
   useEffect(() => {
     setNotificationCounts(0);
   }, [notificationData]);
-  console.log('userInformation', userInformation);
+
   const isSuperAdminProfile =
     userInformation?.MasterAdmin && userInformation?.Role === 'superAdmin'
       ? 'SuperAdminProfile'

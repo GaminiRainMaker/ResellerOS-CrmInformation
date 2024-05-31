@@ -6,16 +6,20 @@ import {OSDraggerStyle} from '@/app/components/common/os-upload/styled-component
 import Typography from '@/app/components/common/typography';
 import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
+import {FC} from 'react';
 
-const AddDocument = () => {
-  const [form] = Form.useForm();
+const AddDocument: FC<any> = ({form}) => {
   const [token] = useThemeToken();
+
+  const onFinish = () => {
+    console.log('onFinish');
+  };
   return (
     <Form
       layout="vertical"
       requiredMark={false}
       form={form}
-      //   onFinish={onFinish}
+      onFinish={onFinish}
     >
       <Row gutter={[16, 24]} justify="space-between">
         <Col span={24}>
@@ -49,6 +53,7 @@ const AddDocument = () => {
                 name="Body 4/Medium"
                 style={{textDecoration: 'underline', cursor: 'pointer'}}
                 color={token?.colorPrimary}
+                hoverOnText
               >
                 Click to Upload
               </Typography>{' '}

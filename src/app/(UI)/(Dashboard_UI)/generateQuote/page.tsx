@@ -54,6 +54,7 @@ const GenerateQuote: React.FC = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const [updationForm] = Form.useForm();
+  const [addDocForm] = Form.useForm();
   const router = useRouter();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
@@ -595,12 +596,14 @@ const GenerateQuote: React.FC = () => {
         title="Add Document"
         bodyPadding={30}
         loading={loading}
-        body={<AddDocument />}
+        body={<AddDocument form={addDocForm} />}
         width={700}
         open={showDocumentModal}
         onCancel={() => {
           setShowDocumentModal(false);
         }}
+        primaryButtonText={'Save'}
+        onOk={addDocForm.submit}
       />
     </>
   );
