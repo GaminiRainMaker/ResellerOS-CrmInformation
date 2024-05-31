@@ -1,5 +1,5 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {getAllDocuments, queryAllDocuments} from '../actions/formstack';
+import {queryAllDocuments} from '../actions/formstack';
 
 type formStackState = {
   loading: boolean;
@@ -25,24 +25,6 @@ const formstackSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(getAllDocuments.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(
-        getAllDocuments.fulfilled,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.data = action.payload?.success;
-        },
-      )
-      .addCase(
-        getAllDocuments.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.error = action.payload;
-        },
-      )
       .addCase(queryAllDocuments.pending, (state) => {
         state.loading = true;
         state.error = null;
