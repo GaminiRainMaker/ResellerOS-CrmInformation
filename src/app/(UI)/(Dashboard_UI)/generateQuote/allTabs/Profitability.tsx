@@ -6,7 +6,6 @@
 import {Space} from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import OsCollapse from '@/app/components/common/os-collapse';
-import * as XLSX from 'xlsx';
 
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
@@ -16,8 +15,11 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
-import readXlsxFile from 'read-excel-file';
-import {pricingMethod, selectDataForProduct} from '@/app/utils/CONSTANTS';
+import {
+  formatStatus,
+  pricingMethod,
+  selectDataForProduct,
+} from '@/app/utils/CONSTANTS';
 import {
   calculateProfitabilityData,
   useRemoveDollarAndCommahook,
@@ -677,106 +679,8 @@ const Profitability: FC<any> = ({
     }
   }, [updatedData]);
 
-  const [extractedStrings, setExtractedStrings] = useState([]);
-
-  const handleFileUpload = (uploadedData: any) => {
-    debugger;
-    if (!uploadedData.file) {
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      const data = new Uint8Array(e.target.result);
-      try {
-        const workbook = XLSX.read(data, {type: 'array'});
-        processWorkbook(workbook);
-      } catch (error) {
-        console.log(
-          'Error reading the file. Please make sure the file is a valid Excel file.',
-        );
-      }
-    };
-    reader.readAsArrayBuffer(uploadedData.file);
-  };
-
-  const processWorkbook = (workbook: any) => {
-    const extracted: any = [];
-    const regex = /\{([^}]+)\}/g;
-
-    workbook.SheetNames.forEach((sheetName: any) => {
-      const sheet = workbook.Sheets[sheetName];
-      const csvData = XLSX.utils.sheet_to_csv(sheet);
-      const lines = csvData.split(/\r\n|\n/);
-
-      lines.forEach((line) => {
-        let match;
-        while ((match = regex.exec(line)) !== null) {
-          extracted.push(match[1].replace('$', '').split(':')[0].split('|')[0]);
-        }
-      });
-    });
-
-    setExtractedStrings(extracted);
-  };
-
-  // const handleUpload = (file: any) => {
-  //   const reader = new FileReader();
-  //   reader.onload = (e: any) => {
-  //     const data = new Uint8Array(e.target.result);
-  //     const workbook = XLSX.read(data, {type: 'array'});
-  //     const sheetName = workbook.SheetNames[0];
-  //     const sheet = workbook.Sheets[sheetName];
-  //     // Now you can work with the sheet data
-  //     console.log('343534324234', XLSX.utils.sheet_to_json(sheet));
-  //   };
-  //   reader.readAsArrayBuffer(file);
-  // };
-
   return (
     <>
-      {/* <Upload beforeUpload={handleUpload} showUploadList={false}>
-        <Button icon={<UploadOutlined />}>Upload Excel File</Button>
-      </Upload> */}
-      <div className="App" style={{padding: '20px'}}>
-        {/* <Upload
-          onChange={(e: any) => {
-            Papa.parse(e.fileList[0]?.originFileObj, {
-              header: true,
-              skipEmptyLines: true,
-              complete(results: any) {
-                console.log('435435435', results.data);
-              },
-            });
-          }}
-          // accept=".txt, .csv"
-        >
-          CSV
-        </Upload> */}
-        <h1>CSV Uploader</h1>
-        <Upload
-          // accept=".csv"
-          beforeUpload={() => false} // Prevent automatic upload
-          onChange={handleFileUpload}
-        >
-          <Button icon={<UploadOutlined />}>Upload CSV</Button>
-        </Upload>
-        <div style={{marginTop: '20px'}}>
-          {extractedStrings.length > 0 ? (
-            <List
-              bordered
-              dataSource={extractedStrings}
-              renderItem={(item, index) => (
-                <List.Item key={index}>
-                  <div>{item}</div>
-                </List.Item>
-              )}
-            />
-          ) : (
-            <p>No strings found.</p>
-          )}
-        </div>
-      </div>
       {bundleData?.map((item: any) => (
         <OsCollapse
           key={item?.id}

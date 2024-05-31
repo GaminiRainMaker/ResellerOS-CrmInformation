@@ -23,12 +23,13 @@ import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
+import * as XLSX from 'xlsx';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {selectData} from '@/app/utils/CONSTANTS';
+import {formatStatus, selectData} from '@/app/utils/CONSTANTS';
 import {formatDate, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
-import {Form, MenuProps, notification} from 'antd';
+import {Button, Divider, Form, MenuProps, Upload, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -48,6 +49,8 @@ import Validation from './allTabs/Validation';
 import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
 import AddDocument from './AddDocument';
+import {UploadOutlined} from '@ant-design/icons';
+import OsInput from '@/app/components/common/os-input';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -89,6 +92,7 @@ const GenerateQuote: React.FC = () => {
   const [showUpdateLineItemModal, setShowUpdateLineItemModal] =
     useState<boolean>(false);
   const [showDocumentModal, setShowDocumentModal] = useState<boolean>(false);
+  const [extractedStrings, setExtractedStrings] = useState([]);
   const [showDocumentModalButton, setShowDocumentModalButton] =
     useState<boolean>(false);
 
@@ -430,6 +434,51 @@ const GenerateQuote: React.FC = () => {
     }
   };
 
+  const handleFileUpload = (uploadedData: any) => {
+    if (!uploadedData.file) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const data = new Uint8Array(e.target.result);
+      try {
+        const workbook = XLSX.read(data, {type: 'array'});
+        processWorkbook(workbook);
+      } catch (error) {
+        console.log(
+          'Error reading the file. Please make sure the file is a valid Excel file.',
+        );
+      }
+    };
+    reader.readAsArrayBuffer(uploadedData.file);
+  };
+
+  const processWorkbook = (workbook: any) => {
+    const extracted: any = [];
+    const regex = /\{([^}]+)\}/g;
+
+    workbook.SheetNames.forEach((sheetName: any) => {
+      const sheet = workbook.Sheets[sheetName];
+      const csvData = XLSX.utils.sheet_to_csv(sheet);
+      const lines = csvData.split(/\r\n|\n/);
+
+      lines.forEach((line) => {
+        let match;
+        while (
+          (match = regex.exec(line)) !== null &&
+          !extracted?.includes(
+            match[1].replace('$', '').split(':')[0].split('|')[0],
+          )
+        ) {
+          extracted.push(match[1].replace('$', '').split(':')[0].split('|')[0]);
+        }
+      });
+    });
+
+    setExtractedStrings(extracted);
+  };
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -598,7 +647,102 @@ const GenerateQuote: React.FC = () => {
         title="Add Template"
         bodyPadding={30}
         loading={loading}
-        body={<AddDocument form={addDocForm} setShowDocumentModalButton={setShowDocumentModalButton} />}
+        body={
+          <>
+            {' '}
+            {extractedStrings?.length > 0 ? (
+              <div style={{height: '50vh', overflow: 'auto'}}>
+                <Row
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    padding: '20px',
+                  }}
+                >
+                  <Col>
+                    <Row style={{marginTop: '6px'}}>
+                      {' '}
+                      <Typography
+                        style={{marginLeft: '10px'}}
+                        align="center"
+                        name="Body 3/Medium"
+                      >
+                        Your File Header
+                      </Typography>
+                    </Row>
+                    <Divider />
+                    {extractedStrings?.map((item: any) => (
+                      <Row style={{marginTop: '6px'}}>
+                        <OsInput disabled value={formatStatus(item)} />
+                      </Row>
+                    ))}
+                  </Col>
+
+                  <Col>
+                    <Row style={{marginTop: '6px'}}>
+                      {' '}
+                      <Typography
+                        style={{marginLeft: '10px'}}
+                        align="center"
+                        name="Body 3/Medium"
+                      >
+                        Quote Header
+                      </Typography>
+                    </Row>
+                    <Divider />
+                    {extractedStrings?.map((item: any, indexOfCol: number) => (
+                      <Row style={{marginTop: '6px'}}>
+                        <CommonSelect
+                          onChange={(e) => {
+                            // syncTableToLineItems(item, e, indexOfCol);
+                          }}
+                          allowClear
+                          // onClear={() => handleChange(item?.newVal)}
+                          defaultValue={item?.newVal?.toString()?.toUpperCase()}
+                          style={{width: '250px'}}
+                          options={[]}
+                        />
+                      </Row>
+                    ))}
+                  </Col>
+                </Row>
+                <Row
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <OsButton
+                    text="Sync And Save"
+                    style={{
+                      width: '100%',
+                    }}
+                    buttontype="PRIMARY"
+                    // clickHandler={syncTableDataNew}
+                  />
+                </Row>
+              </div>
+            ) : (
+              <>
+                {' '}
+                <div className="App" style={{padding: '20px'}}>
+                  <Upload
+                    // accept=".csv"
+                    beforeUpload={() => false} // Prevent automatic upload
+                    onChange={handleFileUpload}
+                  >
+                    <Button icon={<UploadOutlined />}>Upload CSV</Button>
+                  </Upload>
+                </div>
+              </>
+            )}
+            {/* <AddDocument
+              form={addDocForm}
+              setShowDocumentModalButton={setShowDocumentModalButton}
+            /> */}
+          </>
+        }
         width={700}
         open={showDocumentModal}
         onCancel={() => {
