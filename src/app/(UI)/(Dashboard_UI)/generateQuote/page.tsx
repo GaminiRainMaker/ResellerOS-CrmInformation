@@ -89,6 +89,8 @@ const GenerateQuote: React.FC = () => {
   const [showUpdateLineItemModal, setShowUpdateLineItemModal] =
     useState<boolean>(false);
   const [showDocumentModal, setShowDocumentModal] = useState<boolean>(false);
+  const [showDocumentModalButton, setShowDocumentModalButton] =
+    useState<boolean>(false);
 
   useEffect(() => {
     dispatch(getAllTableColumn(''));
@@ -593,16 +595,16 @@ const GenerateQuote: React.FC = () => {
       )}
 
       <OsModal
-        title="Add Document"
+        title="Add Template"
         bodyPadding={30}
         loading={loading}
-        body={<AddDocument form={addDocForm} />}
+        body={<AddDocument form={addDocForm} setShowDocumentModalButton={setShowDocumentModalButton} />}
         width={700}
         open={showDocumentModal}
         onCancel={() => {
           setShowDocumentModal(false);
         }}
-        primaryButtonText={'Save'}
+        primaryButtonText={showDocumentModalButton ? 'Save' : ''}
         onOk={addDocForm.submit}
       />
     </>
