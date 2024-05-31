@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {createAsyncThunk} from '@reduxjs/toolkit';
-import {FORMSTACK_API} from '../../services/formStack';
+import {FORMSTACK_API} from '../../services/formStackSyncTable';
 
 export const insertFormStack = createAsyncThunk(
   'formStackTable/addSyncingForFormStack',
