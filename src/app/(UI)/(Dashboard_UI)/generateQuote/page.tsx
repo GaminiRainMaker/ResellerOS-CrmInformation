@@ -615,6 +615,7 @@ const GenerateQuote: React.FC = () => {
         open={showDocumentModal}
         onCancel={() => {
           setShowDocumentModal(false);
+          addDocForm.resetFields();
         }}
         primaryButtonText={showDocumentModalButton ? 'Save' : ''}
         onOk={addDocForm.submit}
