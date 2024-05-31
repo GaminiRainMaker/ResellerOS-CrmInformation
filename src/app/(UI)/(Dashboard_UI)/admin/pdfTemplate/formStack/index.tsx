@@ -11,16 +11,46 @@ import {Form} from 'antd';
 import Image from 'next/image';
 import eyeSlashIcon from '../../../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
 import eyeIcon from '../../../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
+import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
+import {useEffect} from 'react';
+import {
+  getAllGeneralSetting,
+  insertUpdateGeneralSetting,
+} from '../../../../../../../redux/actions/generalSetting';
 const FormStack = () => {
   const [token] = useThemeToken();
-
+  const dispatch = useAppDispatch();
+  const [form] = Form.useForm();
+  const {data: GeneralSettingData, loading} = useAppSelector(
+    (state) => state.gereralSetting,
+  );
   const onFinish = (values: any) => {
-    console.log('Success:', values);
+    const obj = GeneralSettingData?.id
+      ? {...values, id: GeneralSettingData?.id}
+      : {...values};
+
+    dispatch(insertUpdateGeneralSetting(obj));
   };
+
+  useEffect(() => {
+    dispatch(getAllGeneralSetting(''));
+  }, []);
+
+  useEffect(() => {
+    form.setFieldsValue({
+      api_key: GeneralSettingData?.api_key,
+      secret_key: GeneralSettingData?.secret_key,
+    });
+  }, [GeneralSettingData]);
 
   return (
     <Space direction="vertical" size={24} style={{width: '100%'}}>
-      <Form layout="vertical" requiredMark={false} onFinish={onFinish}>
+      <Form
+        form={form}
+        layout="vertical"
+        requiredMark={false}
+        onFinish={onFinish}
+      >
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
@@ -29,7 +59,12 @@ const FormStack = () => {
           </Col>
           <Col>
             <SelectFormItem>
-              <OsButton text="Save" buttontype="PRIMARY" htmlType="submit" />
+              <OsButton
+                text="Save"
+                buttontype="PRIMARY"
+                htmlType="submit"
+                loading={loading}
+              />
             </SelectFormItem>
           </Col>
         </Row>

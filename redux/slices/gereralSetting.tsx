@@ -2,23 +2,23 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
-  insertUpdateGeneralSetting,
   getAllGeneralSetting,
+  insertUpdateGeneralSetting,
 } from '../actions/generalSetting';
 
 type GeneralSettingState = {
   loading: boolean;
   error: string | null;
   data: any;
-  product: any;
-  filteredData: any;
+  generalSetting: any;
+  insertSetting: any;
 };
 const initialState: GeneralSettingState = {
   loading: false,
   error: null,
   data: [],
-  product: [],
-  filteredData: [],
+  generalSetting: [],
+  insertSetting: [],
 };
 
 const genralSettingSlice = createSlice({
@@ -26,7 +26,7 @@ const genralSettingSlice = createSlice({
   initialState,
   reducers: {
     setGeneralSetting: (state, action) => {
-      state.product = action.payload;
+      state.generalSetting = action.payload;
     },
   },
   extraReducers(builder) {
@@ -39,7 +39,7 @@ const genralSettingSlice = createSlice({
         insertUpdateGeneralSetting.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = [action.payload];
+          state.insertSetting = action.payload;
         },
       )
       .addCase(

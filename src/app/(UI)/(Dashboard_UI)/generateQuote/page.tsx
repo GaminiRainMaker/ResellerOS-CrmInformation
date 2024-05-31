@@ -33,7 +33,6 @@ import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
-import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {
   updateQuoteById,
   updateQuoteStatusById,
@@ -122,10 +121,6 @@ const GenerateQuote: React.FC = () => {
     );
     setTableColumnDataShow(filterRequired);
   }, [activeTab, tableColumnData]);
-
-  useEffect(() => {
-    dispatch(getAllGeneralSetting(''));
-  }, [getQuoteID]);
 
   useEffect(() => {
     setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);
