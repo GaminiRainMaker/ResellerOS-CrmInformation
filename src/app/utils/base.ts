@@ -7,20 +7,14 @@
 
 import axios from 'axios';
 import moment from 'moment';
-import {
-  getContractInBulkByProductCode,
-  getContractProductByProductCode,
-} from '../../../redux/actions/contractProduct';
+import {getContractInBulkByProductCode} from '../../../redux/actions/contractProduct';
 import {insertProfitability} from '../../../redux/actions/profitability';
 import {quoteFileVerification} from '../../../redux/actions/quoteFile';
 import {
   DeleteQuoteLineItemById,
   updateQuoteLineItemById,
 } from '../../../redux/actions/quotelineitem';
-import {
-  getRebatesByProductCode,
-  getRebatesInBulkByProductCode,
-} from '../../../redux/actions/rebate';
+import {getRebatesInBulkByProductCode} from '../../../redux/actions/rebate';
 import {insertRebateQuoteLineItem} from '../../../redux/actions/rebateQuoteLineitem';
 import {insertValidation} from '../../../redux/actions/validation';
 
