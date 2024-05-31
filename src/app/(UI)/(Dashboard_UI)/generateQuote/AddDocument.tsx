@@ -8,7 +8,14 @@ import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-s
 import CommonSelect from '@/app/components/common/os-select';
 import {OSDraggerStyle} from '@/app/components/common/os-upload/styled-components';
 import Typography from '@/app/components/common/typography';
-import {formatStatus} from '@/app/utils/CONSTANTS';
+import {
+  customerColumnsSync,
+  formatStatus,
+  opportunityColumnsSync,
+  quotLineItemsColumnsSync,
+  quoteColumns,
+  quoteLineItemColumnForSync,
+} from '@/app/utils/CONSTANTS';
 import {UploadOutlined} from '@ant-design/icons';
 import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
 import {Button, Form, Upload} from 'antd';
@@ -116,9 +123,25 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
 
     setExtractedStrings(extracted);
   };
+
   useEffect(() => {
-    // setColumnSelectOptions();
-  }, [setSelectDropdownType]);
+    console.log('selectDropdownType', selectDropdownType);
+    switch (selectDropdownType) {
+      case 'Quote Line Item':
+        setColumnSelectOptions(quotLineItemsColumnsSync);
+        break;
+      case 'Customer':
+        setColumnSelectOptions(customerColumnsSync);
+        break;
+      case 'Opportunity':
+        setColumnSelectOptions(opportunityColumnsSync);
+        break;
+      default:
+        setColumnSelectOptions(quoteColumns);
+    }
+  }, [selectDropdownType]);
+
+  console.log('columnSelectOptions', columnSelectOptions);
 
   return (
     <GlobalLoader loading={FormstackLoading || GeneralSettingLoading}>
