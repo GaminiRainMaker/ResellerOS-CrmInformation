@@ -47,6 +47,7 @@ import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
 import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
+import AddDocument from './AddDocument';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -86,6 +87,7 @@ const GenerateQuote: React.FC = () => {
   const {data: quoteFileData} = useAppSelector((state) => state.quoteFile);
   const [showUpdateLineItemModal, setShowUpdateLineItemModal] =
     useState<boolean>(false);
+  const [showDocumentModal, setShowDocumentModal] = useState<boolean>(false);
 
   useEffect(() => {
     dispatch(getAllTableColumn(''));
@@ -493,8 +495,11 @@ const GenerateQuote: React.FC = () => {
 
               <OsButton
                 buttontype="PRIMARY_ICON"
+                // clickHandler={() => {
+                //   window?.open(quoteLineItemByQuoteData?.[0]?.Quote?.pdf_url);
+                // }}
                 clickHandler={() => {
-                  window?.open(quoteLineItemByQuoteData?.[0]?.Quote?.pdf_url);
+                  setShowDocumentModal(true);
                 }}
                 icon={<ArrowDownTrayIcon width={24} />}
               />
@@ -585,6 +590,18 @@ const GenerateQuote: React.FC = () => {
           }}
         />
       )}
+
+      <OsModal
+        title="Add Document"
+        bodyPadding={30}
+        loading={loading}
+        body={<AddDocument />}
+        width={700}
+        open={showDocumentModal}
+        onCancel={() => {
+          setShowDocumentModal(false);
+        }}
+      />
     </>
   );
 };
