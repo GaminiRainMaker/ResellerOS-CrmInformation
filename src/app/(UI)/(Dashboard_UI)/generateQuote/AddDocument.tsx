@@ -14,11 +14,9 @@ import {
   opportunityColumnsSync,
   quotLineItemsColumnsSync,
   quoteColumns,
-  quoteLineItemColumnForSync,
 } from '@/app/utils/CONSTANTS';
-import {UploadOutlined} from '@ant-design/icons';
 import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
-import {Button, Form, Upload} from 'antd';
+import {Button, Form} from 'antd';
 import {useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import * as XLSX from 'xlsx';
@@ -83,7 +81,6 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
     if (!uploadedData.file) {
       return;
     }
-
     const reader = new FileReader();
     reader.onload = (e: any) => {
       const data = new Uint8Array(e.target.result);
@@ -125,7 +122,6 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
   };
 
   useEffect(() => {
-    console.log('selectDropdownType', selectDropdownType);
     switch (selectDropdownType) {
       case 'Quote Line Item':
         setColumnSelectOptions(quotLineItemsColumnsSync);
@@ -140,8 +136,6 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
         setColumnSelectOptions(quoteColumns);
     }
   }, [selectDropdownType]);
-
-  console.log('columnSelectOptions', columnSelectOptions);
 
   return (
     <GlobalLoader loading={FormstackLoading || GeneralSettingLoading}>
@@ -351,18 +345,11 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
                   </Col>
 
                   <Col span={24}>
-                    <Upload
-                      // accept=".csv"
-                      beforeUpload={() => false} // Prevent automatic upload
-                      onChange={handleFileUpload}
-                    >
-                      <Button icon={<UploadOutlined />}>Upload CSV</Button>
-                    </Upload>
                     <OSDraggerStyle
                       showUploadList={false}
                       multiple
                       onChange={handleFileUpload}
-                      disabled
+                      beforeUpload={() => false}
                     >
                       <FolderArrowDownIcon
                         width={24}
