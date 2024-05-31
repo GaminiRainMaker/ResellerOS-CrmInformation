@@ -1,12 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {AxiosResponse} from 'axios';
 import {API} from './CONSTANTS';
-import {get, post, patch} from './index';
+import {get, post} from './index';
 
-export const FORMSTACK_API = {
-  post: (data: any) => post(API.FORMSTACK.INDEX, data),
-  get: () => get(`${API.FORMSTACK.INDEX}`) as Promise<AxiosResponse<any>>,
-  getByDocId: (id: number) =>
-    get(`${API.FORMSTACK.GETBYDOCID}/${id}`) as Promise<AxiosResponse<any>>,
+export const FORMSTACK = {
+  get: () => get(API.FORM_STACK.INDEX),
+  post: (data: any) => post(API.FORM_STACK.INDEX, data),
+  query: (data: any) =>
+    post(API.FORM_STACK.QUERY, data) as Promise<AxiosResponse<[]>>,
+  getById: (id: number) =>
+    get(`${API.FORM_STACK.INDEX}/${id}`) as Promise<AxiosResponse<any>>,
 };
-

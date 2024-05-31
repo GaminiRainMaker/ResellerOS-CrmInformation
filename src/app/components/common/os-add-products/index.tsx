@@ -39,26 +39,6 @@ const AddProduct = () => {
   const [deleteIds, setDeleteIds] = useState<any>();
   const [productData, setProductData] = useState<any>();
   const [form] = Form.useForm();
-
-  const dropDownItemss = [
-    {
-      key: '1',
-      label: <Typography name="Body 3/Regular">Select All</Typography>,
-    },
-    {
-      key: '1',
-      label: (
-        <Typography
-          name="Body 3/Regular"
-          color="#EB445A"
-          // onClick={deleteSelectedIds}
-        >
-          Delete Selected
-        </Typography>
-      ),
-    },
-  ];
-
   const deleteSelectedIds = async () => {
     const data = {id: deleteIds};
     await dispatch(deleteProduct(data));

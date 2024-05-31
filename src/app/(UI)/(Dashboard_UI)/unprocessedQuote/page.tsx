@@ -27,11 +27,9 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
-import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import {Form} from 'antd';
 import {Option} from 'antd/es/mentions';
-import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {
   deleteQuoteById,
@@ -39,18 +37,15 @@ import {
 } from '../../../../../redux/actions/quote';
 import {queryQuoteFile} from '../../../../../redux/actions/quoteFile';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import EditedQuoteAnalytics from './editedQuoteAnalytic';
 import {getSuperAdminQuoteColumns} from '../allQuote/tableColumns';
 import ConcernDetail from './ConcernDetail';
+import EditedQuoteAnalytics from './editedQuoteAnalytic';
 
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
-  const router = useRouter();
   const [form] = Form.useForm();
   const [token] = useThemeToken();
   const {loading, data} = useAppSelector((state) => state.quoteFile);
-  const {userInformation} = useAppSelector((state) => state.user);
-  const [deletedQuote, setDeletedQuote] = useState<React.Key[]>([]);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showConcernDetailModal, setShowConcernDetailModal] = useState<{
@@ -96,11 +91,10 @@ const AllQuote: React.FC = () => {
     new Set(data?.map((dataItem: any) => dataItem?.Quote?.organization)),
   );
 
-
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <EditedQuoteAnalytics  />
+        <EditedQuoteAnalytics />
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
