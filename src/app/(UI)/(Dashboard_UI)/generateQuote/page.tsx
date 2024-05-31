@@ -611,7 +611,7 @@ const GenerateQuote: React.FC = () => {
             />
           </>
         }
-        width={700}
+        width={900}
         open={showDocumentModal}
         onCancel={() => {
           setShowDocumentModal(false);
