@@ -5,7 +5,7 @@ import {
   getAllFormStack,
   getFormStackByDocId,
   insertFormStack,
-} from '../actions/formStack';
+} from '../actions/formStackSync';
 
 type FormStackState = {
   loading: boolean;
