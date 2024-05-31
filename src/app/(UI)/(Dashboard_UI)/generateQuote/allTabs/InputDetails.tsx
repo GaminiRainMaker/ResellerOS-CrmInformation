@@ -627,7 +627,13 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                             children: (
                               <OsTableWithOutDrag
                                 columns={finalInputColumn}
-                                dataSource={item?.quoteLineItems || []}
+                                dataSource={
+                                  item?.quoteLineItems?.sort(
+                                    (a: any, b: any) => {
+                                      return a.line_number - b.line_number;
+                                    },
+                                  ) || []
+                                }
                                 rowSelection={rowSelection}
                                 scroll
                                 loading={false}
@@ -650,7 +656,11 @@ const InputDetails: FC<InputDetailTabInterface> = ({
               ) : (
                 <OsTableWithOutDrag
                   columns={finalInputColumn}
-                  dataSource={quoteLineItemByQuoteData || []}
+                  dataSource={
+                    quoteLineItemByQuoteData?.sort((a: any, b: any) => {
+                      return a.line_number - b.line_number;
+                    }) || []
+                  }
                   rowSelection={rowSelection}
                   scroll
                   loading={false}

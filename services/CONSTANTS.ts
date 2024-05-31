@@ -111,6 +111,10 @@ export const API = {
   ADDRESS: {
     INDEX: '/address',
   },
+  FORMSTACK: {
+    INDEX: '/formStackTable',
+    GETBYDOCID: '/formStackTable/getFormStackByDocId',
+  },
   BILLINGADDRESS: {
     INDEX: '/billingContact',
     QUERY: '/billingContact/deleteBillingContact',
