@@ -680,26 +680,44 @@ const Profitability: FC<any> = ({
 
   const [extractedStrings, setExtractedStrings] = useState([]);
 
-  const handleFileUpload = ({file}) => {
+  const handleFileUpload = (uploadedData: any) => {
+    debugger;
+    if (!uploadedData.file) {
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e: any) => {
-      const csvData = e.target.result;
-      processCSVData(csvData);
+      const data = new Uint8Array(e.target.result);
+      try {
+        const workbook = XLSX.read(data, {type: 'array'});
+        processWorkbook(workbook);
+      } catch (error) {
+        console.log(
+          'Error reading the file. Please make sure the file is a valid Excel file.',
+        );
+      }
     };
-    reader.readAsText(file);
+    reader.readAsArrayBuffer(uploadedData.file);
   };
 
-  const processCSVData = (csvData: any) => {
-    const lines = csvData.split(/\r\n|\n/);
-    const regex = /\{([^}]+)\}/g;
+  const processWorkbook = (workbook: any) => {
     const extracted: any = [];
-    lines.forEach((line: any) => {
-      let match;
-      while ((match = regex.exec(line)) !== null) {
-        extracted.push(match[1]);
-      }
+    const regex = /\{([^}]+)\}/g;
+
+    workbook.SheetNames.forEach((sheetName: any) => {
+      const sheet = workbook.Sheets[sheetName];
+      const csvData = XLSX.utils.sheet_to_csv(sheet);
+      const lines = csvData.split(/\r\n|\n/);
+
+      lines.forEach((line) => {
+        let match;
+        while ((match = regex.exec(line)) !== null) {
+          extracted.push(match[1].replace('$', '').split(':')[0].split('|')[0]);
+        }
+      });
     });
-    
+
     setExtractedStrings(extracted);
   };
 
