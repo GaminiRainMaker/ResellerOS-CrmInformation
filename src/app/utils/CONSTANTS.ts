@@ -34,109 +34,12 @@ export const pricingMethod = [
   {value: 'gp', label: 'GP'},
 ];
 
-export const quoteDummyData = [
-  {
-    id: 7,
-    is_deleted: false,
-    quote_id: 2,
-    product_id: 1,
-    bundle_id: null,
-    line_number: '1',
-    adjusted_price: '$21,114.59',
-    product_code: '422-BRSI',
-    line_amount: '$42,229.18',
-    list_price: '$31,302.32',
-    description:
-      'PowerTower PT549 Server\nDell Federal Systems L.P. c/o Dell USA L.P.\n422-BRSR',
-    quantity: '2',
-    createdAt: '2023-12-14T17:32:49.051Z',
-    updatedAt: '2023-12-14T17:32:49.051Z',
-    Bundle: null,
-    status: 'Reject',
-    name: 'IT Tech sample quote',
-    opportunity: 'Precision 7920 Rack XC...',
-    customer_name: 'Impres Technologies',
-  },
-  {
-    id: 8,
-    is_deleted: false,
-    quote_id: 2,
-    product_id: 2,
-    bundle_id: null,
-    line_number: '2',
-    adjusted_price: '$0.00',
-    product_code: '796-5228',
-    line_amount: '$0.00',
-    list_price: '$0.00',
-    description:
-      'Dell Hardware Limited Warranty Plus On-Site\nService\nDell Federal Systems L.P. c/o Dell USA L.P. -\n796-5225',
-    quantity: '2',
-    createdAt: '2023-12-14T17:32:49.051Z',
-    updatedAt: '2023-12-14T17:32:49.051Z',
-    Bundle: null,
-    status: 'Drafts',
-    name: 'IT Tech sample quote',
-    opportunity: 'Precision 7920 Rack XC...',
-    customer_name: 'Impres Technologies',
-  },
-  {
-    id: 9,
-    is_deleted: false,
-    quote_id: 2,
-    product_id: 3,
-    bundle_id: null,
-    line_number: '3',
-    adjusted_price: '$0.00',
-    product_code: '796-6299',
-    line_amount: '$0.00',
-    list_price: '$0.00',
-    description:
-      'ProSupport: Next Business Day On-Site Service\nAfter Problem Diagnosis, 3 Years\nDell Federal Systems L.P. c/o Dell USA L.P.\n796-6291',
-    quantity: '2',
-    createdAt: '2023-12-14T17:32:49.051Z',
-    updatedAt: '2023-12-14T17:32:49.051Z',
-    Bundle: null,
-    status: 'Completed',
-    name: 'IT Tech sample quote',
-    opportunity: 'Precision 7920 Rack XC...',
-    customer_name: 'Impres Technologies',
-  },
-];
-
 export const StageValue = [
   {value: 'Commit', label: 'Commit'},
   {value: 'Develop', label: 'Develop'},
   {value: 'Negotiate', label: 'Negotiate'},
   {value: 'Qualify', label: 'Qualify'},
   {value: 'Prove', label: 'Prove'},
-];
-
-export const dummyData = [
-  {
-    id: 1,
-    opportunity: 'Precision 7920 Rack XC...',
-    customer_name: 'Impres Technologies',
-  },
-  {
-    id: 2,
-    opportunity: 'Precision 7920 Rack XC...',
-    customer_name: 'Impres Technologies',
-  },
-  {
-    id: 3,
-    opportunity: 'Precision 7920 Rack XC...',
-    customer_name: 'Impres Technologies',
-  },
-  {
-    id: 4,
-    opportunity: 'Precision 7920 Rack XC...',
-    customer_name: 'Impres Technologies',
-  },
-  {
-    id: 5,
-    opportunity: 'Precision 7920 Rack XC...',
-    customer_name: 'Impres Technologies',
-  },
 ];
 
 export const ContractConfigurationColumn = [
@@ -188,6 +91,49 @@ export const quoteColumns = [
   {value: 'file_name', label: 'File Name'},
   {value: 'opportunity', label: 'Opportunity'},
   {value: 'pdf_url', label: 'PDF'},
+];
+export const quotLineItemsColumnsSync = [
+  {value: 'line_number', label: 'Line Number'},
+  {value: 'adjusted_price', label: 'Adjusted Price'},
+  {value: 'product_code', label: 'Product Code'},
+  {value: 'line_amount', label: 'Line Amount'},
+  {value: 'list_price', label: 'List Price'},
+  {value: 'description', label: 'Description'},
+  {value: 'quantity', label: 'Quantity'},
+  {value: 'pdf_url', label: 'Pdf Url'},
+  {value: 'eventId', label: 'EventId'},
+  {value: 'portalId', label: 'PortalId'},
+  {value: 'occurredAt', label: 'OccurredAt'},
+  {value: 'subscriptionType', label: 'Sbscription Type'},
+  {value: 'attemptNumber', label: 'Attempt Number'},
+  {value: 'objectId', label: 'ObjectId'},
+  {value: 'changeSource', label: 'Change Source'},
+  {value: 'changeFlag', label: 'Change Flag'},
+  {value: 'appId', label: 'AppId'},
+  {value: 'quote_file_id', label: 'Quote File Id'},
+  {value: 'customer_id', label: 'Customer Id'},
+  {value: 'user_id', label: 'User Id'},
+  {value: 'organization', label: 'Organization'},
+  {value: 'quote_id', label: 'Quote Id'},
+  {value: 'product_id', label: 'Product Id'},
+  {value: 'bundle_id', label: 'Bundle Id'},
+];
+export const opportunityColumnsSync = [
+  {value: 'user_id', label: 'User Id'},
+  {value: 'organization', label: 'Organization'},
+  {value: 'customer_id', label: 'Customer Id'},
+  {value: 'title', label: 'Title'},
+  {value: 'amount', label: 'Amount'},
+  {value: 'stages', label: 'Stages'},
+  {value: 'pdf_url', label: 'PDF Url'},
+];
+export const customerColumnsSync = [
+  {value: 'name', label: 'Name'},
+  {value: 'currency', label: 'Currency'},
+  {value: 'website', label: 'Website'},
+  {value: 'industry', label: 'Industry'},
+  {value: 'profile_image', label: 'Profile Image'},
+  {value: 'organization', label: 'Organization'},
 ];
 
 export const ContractStatusOptions = [
