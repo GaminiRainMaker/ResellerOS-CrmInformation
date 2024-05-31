@@ -6,7 +6,6 @@
 import {Space} from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import OsCollapse from '@/app/components/common/os-collapse';
-import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 
 import EmptyContainer from '@/app/components/common/os-empty-container';
