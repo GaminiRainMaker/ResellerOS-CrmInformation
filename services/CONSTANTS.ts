@@ -236,4 +236,9 @@ export const API = {
     DeleteById: '/sharedPartnerPassword/deleteById',
     UpdateById: '/sharedPartnerPassword/updateById',
   },
+  FORM_STACK: {
+    INDEX: '/formstack',
+    QUERY: 'formstack/query',
+    UpdateById: '/formstack/updateById',
+  },
 };
