@@ -12,6 +12,7 @@ interface ButtonInterface extends ButtonProps {
   commonIcon?: any;
   color?: string;
   loading?: any;
+  htmlType?: any;
 }
 
 const OsButton: React.FC<ButtonInterface> = ({
@@ -25,6 +26,7 @@ const OsButton: React.FC<ButtonInterface> = ({
   commonIcon,
   color,
   loading,
+  htmlType,
 }) => {
   const buttonTypeTemp: Record<string, string> = {
     PRIMARY: 'PRIMARY',
@@ -45,6 +47,7 @@ const OsButton: React.FC<ButtonInterface> = ({
       onClick={clickHandler}
       style={btnStyle}
       buttontype={buttonTypeTemp[buttontype]}
+      htmlType={htmlType}
     >
       {icon && (
         <Avatar

@@ -33,7 +33,6 @@ import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
-import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {
   updateQuoteById,
   updateQuoteStatusById,
@@ -48,12 +47,14 @@ import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
 import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
+import AddDocument from './AddDocument';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const [updationForm] = Form.useForm();
+  const [addDocForm] = Form.useForm();
   const router = useRouter();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
@@ -86,6 +87,9 @@ const GenerateQuote: React.FC = () => {
   const [quoteLineItemExist, setQuoteLineItemExist] = useState<boolean>(false);
   const {data: quoteFileData} = useAppSelector((state) => state.quoteFile);
   const [showUpdateLineItemModal, setShowUpdateLineItemModal] =
+    useState<boolean>(false);
+  const [showDocumentModal, setShowDocumentModal] = useState<boolean>(false);
+  const [showDocumentModalButton, setShowDocumentModalButton] =
     useState<boolean>(false);
 
   useEffect(() => {
@@ -122,10 +126,6 @@ const GenerateQuote: React.FC = () => {
     );
     setTableColumnDataShow(filterRequired);
   }, [activeTab, tableColumnData]);
-
-  useEffect(() => {
-    dispatch(getAllGeneralSetting(''));
-  }, [getQuoteID]);
 
   useEffect(() => {
     setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);
@@ -498,8 +498,11 @@ const GenerateQuote: React.FC = () => {
 
               <OsButton
                 buttontype="PRIMARY_ICON"
+                // clickHandler={() => {
+                //   window?.open(quoteLineItemByQuoteData?.[0]?.Quote?.pdf_url);
+                // }}
                 clickHandler={() => {
-                  window?.open(quoteLineItemByQuoteData?.[0]?.Quote?.pdf_url);
+                  setShowDocumentModal(true);
                 }}
                 icon={<ArrowDownTrayIcon width={24} />}
               />
@@ -590,6 +593,20 @@ const GenerateQuote: React.FC = () => {
           }}
         />
       )}
+
+      <OsModal
+        title="Add Template"
+        bodyPadding={30}
+        loading={loading}
+        body={<AddDocument form={addDocForm} setShowDocumentModalButton={setShowDocumentModalButton} />}
+        width={700}
+        open={showDocumentModal}
+        onCancel={() => {
+          setShowDocumentModal(false);
+        }}
+        primaryButtonText={showDocumentModalButton ? 'Save' : ''}
+        onOk={addDocForm.submit}
+      />
     </>
   );
 };
