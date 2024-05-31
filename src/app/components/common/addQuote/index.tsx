@@ -7,11 +7,10 @@ import {
   getLineItemsWithNonRepitive,
   getValuesOFLineItemsThoseNotAddedBefore,
 } from '@/app/utils/base';
-import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form, message} from 'antd';
-import {useRouter} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
-import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
+import { PlusIcon } from '@heroicons/react/24/outline';
+import { Form, message } from 'antd';
+import { useRouter } from 'next/navigation';
+import { FC, useEffect, useState } from 'react';
 import {
   getBulkProductIsExisting,
   insertProductsInBulk,
@@ -22,14 +21,13 @@ import {
   insertQuote,
   updateQuoteWithNewlineItemAddByID,
 } from '../../../../../redux/actions/quote';
-import {insertQuoteFile} from '../../../../../redux/actions/quoteFile';
-import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
-import {uploadToAws} from '../../../../../redux/actions/upload';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { insertQuoteFile } from '../../../../../redux/actions/quoteFile';
+import { insertQuoteLineItem } from '../../../../../redux/actions/quotelineitem';
+import { uploadToAws } from '../../../../../redux/actions/upload';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import OsButton from '../os-button';
 import OsUpload from '../os-upload';
-import {AddQuoteInterface, FormattedData} from './types';
-import ConverSationProcess from '@/app/(UI)/(Dashboard_UI)/admin/quote-AI/configuration/configuration-tabs/ConversationProcess';
+import { AddQuoteInterface, FormattedData } from './types';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
@@ -61,10 +59,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
       setExistingQuoteId(existingGenerateQuoteId);
     }
   }, [existingQuoteId, existingGenerateQuoteId]);
-
-  useEffect(() => {
-    dispatch(getAllGeneralSetting(''));
-  }, []);
 
   const beforeUpload = (file: File) => {
     const obj: any = {...file};

@@ -36,6 +36,7 @@ import notification from './slices/notificatios';
 import partnerPassword from './slices/partnerPassword';
 import sharedPartnerPassword from './slices/sharedPartnerPassword';
 import cacheFLow from './slices/cacheFLow';
+import formstack from './slices/formstack';
 
 // Configure redux store
 const store = configureStore({
@@ -75,6 +76,7 @@ const store = configureStore({
     partnerPassword,
     sharedPartnerPassword,
     cacheFLow,
+    formstack,
   },
   middleware: [thunk],
   devTools: true,

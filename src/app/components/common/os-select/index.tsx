@@ -11,8 +11,6 @@ const CommonSelect: FC<OsSelectProps> = ({
   ...rest
 }) => {
   const [token] = useThemeToken();
-
-  console.log('valuevalue', value);
   return (
     <SelectStyled
       {...rest}

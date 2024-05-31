@@ -111,6 +111,10 @@ export const API = {
   ADDRESS: {
     INDEX: '/address',
   },
+  FORMSTACK: {
+    INDEX: '/formStackTable',
+    GETBYDOCID: '/formStackTable/getFormStackByDocId',
+  },
   BILLINGADDRESS: {
     INDEX: '/billingContact',
     QUERY: '/billingContact/deleteBillingContact',
@@ -235,5 +239,10 @@ export const API = {
     QUERY: 'sharedPartnerPassword/query',
     DeleteById: '/sharedPartnerPassword/deleteById',
     UpdateById: '/sharedPartnerPassword/updateById',
+  },
+  FORM_STACK: {
+    INDEX: '/formstack',
+    QUERY: 'formstack/query',
+    UpdateById: '/formstack/updateById',
   },
 };

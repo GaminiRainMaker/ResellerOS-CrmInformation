@@ -6,9 +6,9 @@ import Products from '../../../components/common/os-add-products';
 import Users from '../../../components/common/os-add-users';
 import Configuration from './quote-AI/configuration';
 import {useRouter} from 'next/navigation';
+import FormStack from './pdfTemplate/formStack';
 
 const AdminPage = () => {
-
   const tabs = [
     {
       key: 1,
@@ -33,7 +33,7 @@ const AdminPage = () => {
     //   title: 'DealReg AI',
     //   childitem: [
     //     {key: 3, name: 'Standard Attributes'},
-        // {key: 4, name: 'Common Fields'},
+    // {key: 4, name: 'Common Fields'},
     //   ],
     // },
     // {
@@ -62,14 +62,18 @@ const AdminPage = () => {
         },
       ],
     },
-    // {
-    //   key: 5,
-    //   title: 'Account',
-    //   childitem: [
-    //     {key: 9, name: 'Profiles'},
-    //     {key: 10, name: 'Settings'},
-    //   ],
-    // },
+    {
+      key: 3,
+      title: 'PDF Templates',
+      childitem: [
+        {
+          key: 5,
+          name: 'Formstack',
+          superChild: <FormStack />,
+          route: `/admin?tab=formstack`,
+        },
+      ],
+    },
   ];
 
   return (

@@ -42,6 +42,10 @@ const AdminCustomTabs: FC<any> = (tabs) => {
             tabIndex = 1;
             superChildIndex = 1;
             break;
+          case 'formstack':
+            tabIndex = 2;
+            superChildIndex = 0;
+            break;
           default:
             tabIndex = 0;
             superChildIndex = 0;
