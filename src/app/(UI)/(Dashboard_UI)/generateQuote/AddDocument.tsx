@@ -37,6 +37,7 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
     useAppSelector((state) => state.gereralSetting);
   const [selectDropdownType, setSelectDropdownType] = useState<string>('Quote');
   const [columnSelectOptions, setColumnSelectOptions] = useState<any>([]);
+  const [syncedNewValue, setNewSyncedValue] = useState<any>();
 
   useEffect(() => {
     dispatch(getAllGeneralSetting(''));
@@ -138,9 +139,52 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
     }
   }, [selectDropdownType]);
 
+  const syncTableToLineItems = (
+    preValue: string,
+    newSyncValue: string,
+    keyInd: number,
+  ) => {
+    const newSyncTableData =
+      syncedNewValue?.length > 0 ? [...syncedNewValue] : [];
+
+    const indexOfPre = newSyncTableData?.findIndex(
+      (item: any) => item?.key === keyInd,
+    );
+    // const syncOtions =
+    //   syncTableQuoteLItemValues?.length > 0
+    //     ? [...syncTableQuoteLItemValues]
+    //     : [];
+
+    // const indexOFItem = syncOtions?.findIndex(
+    //   (itemV: any) => itemV?.value === newSyncValue,
+    // );
+    // syncOtions?.splice(indexOFItem, 1);
+
+    // setSyncTableQuoteLItemValues(syncOtions);
+
+    if (indexOfPre === -1) {
+      newSyncTableData?.push({
+        preVal: preValue,
+        newVal: newSyncValue,
+        key: keyInd,
+      });
+    } else {
+      let newObj = newSyncTableData[indexOfPre];
+      newObj = {
+        ...newObj,
+        newVal: newSyncValue,
+      };
+      newSyncTableData[indexOfPre] = newObj;
+    }
+    setNewSyncedValue(newSyncTableData);
+  };
+
+  const addNewSyncValues = () => {
+    console.log('32453242423', syncedNewValue);
+  };
   return (
     <GlobalLoader loading={FormstackLoading || GeneralSettingLoading}>
-      {FormstackDataOptions ? (
+      {!FormstackDataOptions ? (
         <>
           {extractedStrings?.length > 0 ? (
             <>
@@ -192,6 +236,9 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
                         placeholder="Select Columns"
                         allowClear
                         options={columnSelectOptions}
+                        onChange={(e: any) => {
+                          syncTableToLineItems(item, e, indexOfCol);
+                        }}
                         dropdownRender={(menu) => (
                           <>
                             <Space
@@ -312,7 +359,11 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
                   ))}
                 </Col>
                 <Row>
-                  <OsButton buttontype="PRIMARY" text="Save" />
+                  <OsButton
+                    buttontype="PRIMARY"
+                    text="Save"
+                    clickHandler={addNewSyncValues}
+                  />
                 </Row>
               </Row>
             </>
