@@ -80,10 +80,6 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
                   required: true,
                   message: 'Opportunity Title is required!',
                 },
-                {
-                  pattern: /^[A-Za-z\s]+$/,
-                  message: 'Please enter valid opportunity.',
-                },
               ]}
             >
               <OsInput placeholder="Enter Text" />

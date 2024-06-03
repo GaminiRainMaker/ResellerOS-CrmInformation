@@ -35,11 +35,11 @@ export const pricingMethod = [
 ];
 
 export const StageValue = [
-  {value: 'Commit', label: 'Commit'},
-  {value: 'Develop', label: 'Develop'},
-  {value: 'Negotiate', label: 'Negotiate'},
-  {value: 'Qualify', label: 'Qualify'},
   {value: 'Prove', label: 'Prove'},
+  {value: 'Qualify', label: 'Qualify'},
+  {value: 'Negotiate', label: 'Negotiate'},
+  {value: 'Develop', label: 'Develop'},
+  {value: 'Commit', label: 'Commit'},
 ];
 
 export const ContractConfigurationColumn = [
