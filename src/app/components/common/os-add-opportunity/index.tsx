@@ -22,7 +22,6 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
   showCustomerSelect,
 }) => {
   const [token] = useThemeToken();
-
   const [stageValue, setStageValue] = useState<string>();
 
   return (
