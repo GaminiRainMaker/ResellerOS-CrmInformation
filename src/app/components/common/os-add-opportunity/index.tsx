@@ -22,7 +22,6 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
   showCustomerSelect,
 }) => {
   const [token] = useThemeToken();
-
   const [stageValue, setStageValue] = useState<string>();
 
   return (
@@ -79,10 +78,6 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
                 {
                   required: true,
                   message: 'Opportunity Title is required!',
-                },
-                {
-                  pattern: /^[A-Za-z\s]+$/,
-                  message: 'Please enter valid opportunity.',
                 },
               ]}
             >

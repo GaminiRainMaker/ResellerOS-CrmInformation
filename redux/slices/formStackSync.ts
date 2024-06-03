@@ -38,7 +38,7 @@ const formStackSlice = createSlice({
         insertFormStack.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = [action.payload];
+          state.data = action.payload;
         },
       )
       .addCase(

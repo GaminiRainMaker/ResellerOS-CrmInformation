@@ -502,9 +502,6 @@ const GenerateQuote: React.FC = () => {
 
               <OsButton
                 buttontype="PRIMARY_ICON"
-                // clickHandler={() => {
-                //   window?.open(quoteLineItemByQuoteData?.[0]?.Quote?.pdf_url);
-                // }}
                 clickHandler={() => {
                   setShowDocumentModal(true);
                 }}
@@ -617,8 +614,8 @@ const GenerateQuote: React.FC = () => {
           setShowDocumentModal(false);
           addDocForm.resetFields();
         }}
-        primaryButtonText={showDocumentModalButton ? 'Save' : ''}
-        onOk={addDocForm.submit}
+        // primaryButtonText={showDocumentModalButton ? 'Save' : ''}
+        // onOk={addDocForm.submit}
       />
     </>
   );
