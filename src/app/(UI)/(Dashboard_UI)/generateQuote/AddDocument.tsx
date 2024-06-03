@@ -139,7 +139,6 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
 
   return (
     <GlobalLoader loading={FormstackLoading || GeneralSettingLoading}>
-
       {FormstackDataOptions ? (
         <>
           {extractedStrings?.length > 0 ? (
