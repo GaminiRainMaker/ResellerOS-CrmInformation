@@ -113,33 +113,35 @@ const SideBar = () => {
       pathname?.includes('generateQuote')
     ) {
       setSelectedKey(4);
-    }else if (pathname?.includes('formstack')) {
-      setSelectedKey(5);
-    } else if (pathname?.includes('dealReg')) {
+    } else if (pathname?.includes('formstack')) {
       setSelectedKey(5);
     } else if (pathname?.includes('superAdminDealReg')) {
       setSelectedKey(6);
-    } else if (pathname?.includes(' Orders AI')) {
+    } else if (pathname?.includes('dealReg')) {
       setSelectedKey(7);
-    } else if (pathname?.includes('partners')) {
+    } else if (pathname?.includes(' Orders AI')) {
       setSelectedKey(8);
-    } else if (pathname?.includes('Renewals and Upgrades')) {
+    } else if (pathname?.includes('partners')) {
       setSelectedKey(9);
-    } else if (pathname?.includes('crmInAccount')) {
+    } else if (pathname?.includes('superAdminPartner')) {
       setSelectedKey(10);
+    } else if (pathname?.includes('Renewals and Upgrades')) {
+      setSelectedKey(11);
+    } else if (pathname?.includes('crmInAccount')) {
+      setSelectedKey(12);
       setCrmChildKey(1);
     } else if (pathname?.includes('crmContact')) {
-      setSelectedKey(11);
+      setSelectedKey(13);
       setCrmChildKey(2);
     } else if (pathname?.includes('crmOpportunity')) {
-      setSelectedKey(12);
+      setSelectedKey(14);
       setCrmChildKey(3);
     } else if (pathname?.includes('admin')) {
-      setSelectedKey(13);
-    } else if (pathname?.includes('userManagement')) {
-      setSelectedKey(14);
-    } else if (pathname?.includes('superAdminPermissions')) {
       setSelectedKey(15);
+    } else if (pathname?.includes('userManagement')) {
+      setSelectedKey(16);
+    } else if (pathname?.includes('superAdminPermissions')) {
+      setSelectedKey(17);
     } else if (
       ![
         'dashboard',
@@ -303,8 +305,7 @@ const SideBar = () => {
               icon={
                 <CurrencyDollarIcon
                   color={
-                    selectedKey?.toString()?.includes('2') ||
-                    selectedKey?.toString()?.includes('3')
+                    selectedKey === 2 || selectedKey === 3
                       ? token?.colorPrimary
                       : token?.colorTextSecondary
                   }
@@ -320,8 +321,7 @@ const SideBar = () => {
                 marginRight: '60px',
               }}
               color={
-                selectedKey?.toString()?.includes('2') ||
-                selectedKey?.toString()?.includes('3')
+                selectedKey === 2 || selectedKey === 3
                   ? token?.colorPrimary
                   : token?.colorTextSecondary
               }
@@ -343,7 +343,7 @@ const SideBar = () => {
             >
               <OsAvatar
                 icon={
-                  selectedKey?.toString()?.includes('2') ? (
+                  selectedKey === 2 ? (
                     <Image
                       src={ActiveCrmIcon}
                       alt="ActiveCrmIcon"
@@ -383,7 +383,7 @@ const SideBar = () => {
             >
               <OsAvatar
                 icon={
-                  selectedKey?.toString()?.includes('3') ? (
+                  selectedKey === 3 ? (
                     <Image
                       src={ActiveCrmIcon}
                       alt="ActiveCrmIcon"
@@ -432,8 +432,7 @@ const SideBar = () => {
               icon={
                 <CurrencyDollarIcon
                   color={
-                    selectedKey?.toString()?.includes('4') ||
-                    selectedKey?.toString()?.includes('5')
+                    selectedKey === 4 || selectedKey === 5
                       ? token?.colorLink
                       : token?.colorTextSecondary
                   }
@@ -449,8 +448,7 @@ const SideBar = () => {
                 marginRight: '60px',
               }}
               color={
-                selectedKey?.toString()?.includes('4') ||
-                selectedKey?.toString()?.includes('5')
+                selectedKey === 4 || selectedKey === 5
                   ? token?.colorLink
                   : token?.colorTextSecondary
               }
@@ -476,7 +474,7 @@ const SideBar = () => {
                 icon={
                   <CurrencyDollarIcon
                     color={
-                      selectedKey?.toString()?.includes('4')
+                      selectedKey === 4
                         ? token?.colorPrimary
                         : token?.colorTextSecondary
                     }
@@ -505,7 +503,7 @@ const SideBar = () => {
               onClick={() => {
                 setSelectedKey(5);
                 setCrmChildKey(0);
-                router?.push('/allQuote');
+                router?.push('/formstack');
               }}
               color={token?.colorTextSecondary}
             >
@@ -513,7 +511,7 @@ const SideBar = () => {
                 icon={
                   <CurrencyDollarIcon
                     color={
-                      selectedKey?.toString()?.includes('5')
+                      selectedKey === 5
                         ? token?.colorPrimary
                         : token?.colorTextSecondary
                     }
@@ -525,7 +523,7 @@ const SideBar = () => {
                 cursor="pointer"
                 name="Button 1"
                 color={
-                  selectedKey?.toString()?.includes('5')
+                  selectedKey === 5
                     ? token?.colorPrimary
                     : token?.colorTextSecondary
                 }
@@ -557,7 +555,7 @@ const SideBar = () => {
               icon={
                 <ReceiptPercentIcon
                   color={
-                    selectedKey?.toString()?.includes('6')
+                    selectedKey === 6
                       ? token?.colorPrimary
                       : token?.colorTextSecondary
                   }
@@ -573,7 +571,7 @@ const SideBar = () => {
                 marginTop: '1px',
               }}
               color={
-                selectedKey?.toString()?.includes('6')
+                selectedKey === 6
                   ? token?.colorPrimary
                   : token?.colorTextSecondary
               }
@@ -603,7 +601,7 @@ const SideBar = () => {
               icon={
                 <ReceiptPercentIcon
                   color={
-                    selectedKey?.toString()?.includes('7')
+                    selectedKey === 7
                       ? token?.colorPrimary
                       : token?.colorTextSecondary
                   }
@@ -619,7 +617,7 @@ const SideBar = () => {
                 marginTop: '1px',
               }}
               color={
-                selectedKey?.toString()?.includes('7')
+                selectedKey === 7
                   ? token?.colorPrimary
                   : token?.colorTextSecondary
               }
@@ -647,7 +645,7 @@ const SideBar = () => {
     //           icon={
     //             <ShoppingBagIcon
     //               color={
-    //                 selectedKey?.toString()?.includes('8')
+    //                  selectedKey ===8
     //                   ? token?.colorPrimary
     //                   : token?.colorTextSecondary
     //               }
@@ -663,7 +661,7 @@ const SideBar = () => {
     //             marginTop: '1px',
     //           }}
     //           color={
-    //             selectedKey?.toString()?.includes('8')
+    //              selectedKey ===8
     //               ? token?.colorPrimary
     //               : token?.colorTextSecondary
     //           }
@@ -698,7 +696,7 @@ const SideBar = () => {
               icon={
                 <UsersIcon
                   color={
-                    selectedKey?.toString()?.includes('9')
+                    selectedKey === 9
                       ? token?.colorPrimary
                       : token?.colorTextSecondary
                   }
@@ -713,7 +711,7 @@ const SideBar = () => {
                 marginTop: '1px',
               }}
               color={
-                selectedKey?.toString()?.includes('9')
+                selectedKey === 9
                   ? token?.colorPrimary
                   : token?.colorTextSecondary
               }
@@ -742,7 +740,7 @@ const SideBar = () => {
               icon={
                 <UsersIcon
                   color={
-                    selectedKey?.toString()?.includes('10')
+                    selectedKey === 10
                       ? token?.colorPrimary
                       : token?.colorTextSecondary
                   }
@@ -757,7 +755,7 @@ const SideBar = () => {
                 marginTop: '1px',
               }}
               color={
-                selectedKey?.toString()?.includes('10')
+                selectedKey === 10
                   ? token?.colorPrimary
                   : token?.colorTextSecondary
               }
@@ -785,7 +783,7 @@ const SideBar = () => {
     //           icon={
     //             <BoltIcon
     //               color={
-    //                 selectedKey?.toString()?.includes('11')
+    //                 selectedKey === 11
     //                   ? token?.colorPrimary
     //                   : token?.colorTextSecondary
     //               }
@@ -800,7 +798,7 @@ const SideBar = () => {
     //             marginTop: '1px',
     //           }}
     //           color={
-    //             selectedKey?.toString()?.includes('11')
+    //             selectedKey === 11
     //               ? token?.colorPrimary
     //               : token?.colorTextSecondary
     //           }
@@ -828,10 +826,9 @@ const SideBar = () => {
               icon={
                 <UserGroupIcon
                   color={
-                    selectedKey?.toString()?.includes('12') ||
-                    selectedKey?.toString()?.includes('13') ||
-                    // selectedKey?.toString()?.includes('0') ||
-                    selectedKey?.toString()?.includes('14')
+                    selectedKey === 12 ||
+                    selectedKey === 13 ||
+                    selectedKey === 14
                       ? token?.colorLink
                       : token?.colorTextSecondary
                   }
@@ -847,10 +844,7 @@ const SideBar = () => {
                 marginRight: '60px',
               }}
               color={
-                selectedKey?.toString()?.includes('14') ||
-                selectedKey?.toString()?.includes('13') ||
-                // selectedKey?.toString()?.includes('0') ||
-                selectedKey?.toString()?.includes('12')
+                selectedKey === 12 || selectedKey === 13 || selectedKey === 14
                   ? token?.colorLink
                   : token?.colorTextSecondary
               }
@@ -859,7 +853,7 @@ const SideBar = () => {
             </Typography>
           </Space>
         </Typography>,
-        '10',
+        '12',
         '',
         [
           getItem(
@@ -1002,7 +996,7 @@ const SideBar = () => {
             icon={
               <AdjustmentsHorizontalIcon
                 color={
-                  selectedKey?.toString()?.includes('15')
+                  selectedKey === 15
                     ? token?.colorPrimary
                     : token?.colorTextSecondary
                 }
@@ -1015,7 +1009,7 @@ const SideBar = () => {
             cursor="pointer"
             name="Button 1"
             color={
-              selectedKey?.toString()?.includes('15')
+              selectedKey === 15
                 ? `#1C3557 !important`
                 : token?.colorTextSecondary
             }
@@ -1043,8 +1037,7 @@ const SideBar = () => {
               icon={
                 <UserGroupIcon
                   color={
-                    selectedKey?.toString()?.includes('16') ||
-                    selectedKey?.toString()?.includes('17')
+                    selectedKey === 16 || selectedKey === 17
                       ? token?.colorPrimary
                       : token?.colorTextSecondary
                   }
@@ -1057,8 +1050,7 @@ const SideBar = () => {
               cursor="pointer"
               name="Button 1"
               color={
-                selectedKey?.toString()?.includes('16') ||
-                selectedKey?.toString()?.includes('17')
+                selectedKey === 16 || selectedKey === 17
                   ? token?.colorPrimary
                   : token?.colorTextSecondary
               }
@@ -1075,13 +1067,13 @@ const SideBar = () => {
             <Space
               size={12}
               onClick={() => {
-                setSelectedKey(14);
+                setSelectedKey(16);
                 router?.push('/userManagement');
               }}
             >
               <OsAvatar
                 icon={
-                  selectedKey?.toString()?.includes('17') ? (
+                  selectedKey === 16 ? (
                     <Image
                       src={ActiveCrmIcon}
                       alt="ActiveCrmIcon"
@@ -1100,7 +1092,7 @@ const SideBar = () => {
                 name="Button 1"
                 cursor="pointer"
                 color={
-                  selectedKey?.toString()?.includes('17')
+                  selectedKey === 16
                     ? token.colorPrimaryBorder
                     : token?.colorTextSecondary
                 }
@@ -1108,20 +1100,20 @@ const SideBar = () => {
                 All Resellers
               </Typography>
             </Space>,
-            '17',
+            '16',
           ),
           getItem(
             <Space
               size={12}
               onClick={() => {
-                setSelectedKey(18);
+                setSelectedKey(17);
                 router?.push('/superAdminPermissions');
               }}
               color={token?.colorTextSecondary}
             >
               <OsAvatar
                 icon={
-                  selectedKey?.toString()?.includes('18') ? (
+                  selectedKey === 17 ? (
                     <Image
                       src={ActiveCrmIcon}
                       alt="ActiveCrmIcon"
@@ -1140,7 +1132,7 @@ const SideBar = () => {
                 cursor="pointer"
                 name="Button 1"
                 color={
-                  selectedKey?.toString()?.includes('18')
+                  selectedKey === 17
                     ? token.colorPrimaryBorder
                     : token?.colorTextSecondary
                 }
@@ -1148,7 +1140,7 @@ const SideBar = () => {
                 Super Admin Permissions
               </Typography>
             </Space>,
-            '18',
+            '17',
           ),
         ],
       ),
