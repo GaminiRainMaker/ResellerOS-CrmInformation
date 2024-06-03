@@ -5,11 +5,11 @@ import Image from 'next/image';
 import {FC} from 'react';
 import loginAvatar from '../../../../../public/assets/static/AvatarFullImg.svg';
 import {Col, Row} from '../../common/antd/Grid';
+import {Space} from '../../common/antd/Space';
 import useThemeToken from '../../common/hooks/useThemeToken';
 import Typography from '../../common/typography';
 import ContentSection from './ContentSection';
 import {AuthLayoutInterface} from './authLayout.interface';
-import {Space} from '../../common/antd/Space';
 
 const AuthLayout: FC<AuthLayoutInterface> = ({
   heading,
