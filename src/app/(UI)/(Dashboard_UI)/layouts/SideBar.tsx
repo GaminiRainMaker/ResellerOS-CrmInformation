@@ -113,6 +113,8 @@ const SideBar = () => {
       pathname?.includes('generateQuote')
     ) {
       setSelectedKey(4);
+    }else if (pathname?.includes('formstack')) {
+      setSelectedKey(5);
     } else if (pathname?.includes('dealReg')) {
       setSelectedKey(5);
     } else if (pathname?.includes('superAdminDealReg')) {
@@ -415,51 +417,12 @@ const SideBar = () => {
     isQuoteAI &&
       Role === 'reseller' &&
       getItem(
-        <Space
-          size={12}
+        <Typography
+          cursor="pointer"
           onClick={() => {
             setSelectedKey(4);
             setCrmChildKey(0);
             router?.push('/allQuote');
-          }}
-          color={token?.colorTextSecondary}
-        >
-          <OsAvatar
-            icon={
-              <CurrencyDollarIcon
-                color={
-                  selectedKey?.toString()?.includes('4')
-                    ? token?.colorPrimary
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
-          <Typography
-            cursor="pointer"
-            name="Button 1"
-            color={
-              selectedKey?.toString()?.includes('4')
-                ? token?.colorPrimary
-                : token?.colorTextSecondary
-            }
-          >
-            Quote AI
-          </Typography>
-        </Space>,
-
-        '4',
-      ),
-    isDealReg &&
-      Role === 'reseller' &&
-      getItem(
-        <Typography
-          cursor="pointer"
-          onClick={() => {
-            setSelectedKey(5);
-            setCrmChildKey(0);
-            router?.push('/dealReg');
           }}
           name="Button 1"
           color={token?.colorTextSecondary}
@@ -467,45 +430,124 @@ const SideBar = () => {
           <Space size={12}>
             <OsAvatar
               icon={
-                <ReceiptPercentIcon
+                <CurrencyDollarIcon
                   color={
+                    selectedKey?.toString()?.includes('4') ||
                     selectedKey?.toString()?.includes('5')
-                      ? token?.colorPrimary
+                      ? token?.colorLink
                       : token?.colorTextSecondary
                   }
                   width={24}
                 />
               }
             />
-
             <Typography
               cursor="pointer"
               name="Button 1"
               style={{
                 marginTop: '1px',
+                marginRight: '60px',
               }}
               color={
+                selectedKey?.toString()?.includes('4') ||
                 selectedKey?.toString()?.includes('5')
-                  ? token?.colorPrimary
+                  ? token?.colorLink
                   : token?.colorTextSecondary
               }
             >
-              {' '}
-              DealReg AI
+              Quote AI
             </Typography>
           </Space>
         </Typography>,
-        '5',
+        '4',
+        '',
+        [
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(4);
+                setCrmChildKey(0);
+                router?.push('/allQuote');
+              }}
+              color={token?.colorTextSecondary}
+            >
+              <OsAvatar
+                icon={
+                  <CurrencyDollarIcon
+                    color={
+                      selectedKey?.toString()?.includes('4')
+                        ? token?.colorPrimary
+                        : token?.colorTextSecondary
+                    }
+                    width={24}
+                  />
+                }
+              />
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                color={
+                  selectedKey?.toString()?.includes('4')
+                    ? token?.colorPrimary
+                    : token?.colorTextSecondary
+                }
+              >
+                Quotes
+              </Typography>
+            </Space>,
+
+            '4',
+          ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(5);
+                setCrmChildKey(0);
+                router?.push('/allQuote');
+              }}
+              color={token?.colorTextSecondary}
+            >
+              <OsAvatar
+                icon={
+                  <CurrencyDollarIcon
+                    color={
+                      selectedKey?.toString()?.includes('5')
+                        ? token?.colorPrimary
+                        : token?.colorTextSecondary
+                    }
+                    width={24}
+                  />
+                }
+              />
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                color={
+                  selectedKey?.toString()?.includes('5')
+                    ? token?.colorPrimary
+                    : token?.colorTextSecondary
+                }
+              >
+                FormStack
+              </Typography>
+            </Space>,
+
+            '5',
+          ),
+        ],
       ),
+
     isDealReg &&
-      Role === 'superAdmin' &&
+      Role === 'reseller' &&
       getItem(
         <Typography
           cursor="pointer"
           onClick={() => {
             setSelectedKey(6);
             setCrmChildKey(0);
-            router?.push('/superAdminDealReg');
+            router?.push('/dealReg');
           }}
           name="Button 1"
           color={token?.colorTextSecondary}
@@ -543,12 +585,58 @@ const SideBar = () => {
         </Typography>,
         '6',
       ),
+    isDealReg &&
+      Role === 'superAdmin' &&
+      getItem(
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setSelectedKey(7);
+            setCrmChildKey(0);
+            router?.push('/superAdminDealReg');
+          }}
+          name="Button 1"
+          color={token?.colorTextSecondary}
+        >
+          <Space size={12}>
+            <OsAvatar
+              icon={
+                <ReceiptPercentIcon
+                  color={
+                    selectedKey?.toString()?.includes('7')
+                      ? token?.colorPrimary
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+              }}
+              color={
+                selectedKey?.toString()?.includes('7')
+                  ? token?.colorPrimary
+                  : token?.colorTextSecondary
+              }
+            >
+              {' '}
+              DealReg AI
+            </Typography>
+          </Space>
+        </Typography>,
+        '7',
+      ),
     // isOrderAI &&
     //   getItem(
     //     <Typography
     //       cursor="pointer"
     //       onClick={() => {
-    //         setSelectedKey(7);
+    //         setSelectedKey(8);
     //         setCrmChildKey(0);
     //       }}
     //       name="Button 1"
@@ -559,7 +647,7 @@ const SideBar = () => {
     //           icon={
     //             <ShoppingBagIcon
     //               color={
-    //                 selectedKey?.toString()?.includes('7')
+    //                 selectedKey?.toString()?.includes('8')
     //                   ? token?.colorPrimary
     //                   : token?.colorTextSecondary
     //               }
@@ -575,7 +663,7 @@ const SideBar = () => {
     //             marginTop: '1px',
     //           }}
     //           color={
-    //             selectedKey?.toString()?.includes('7')
+    //             selectedKey?.toString()?.includes('8')
     //               ? token?.colorPrimary
     //               : token?.colorTextSecondary
     //           }
@@ -585,7 +673,7 @@ const SideBar = () => {
     //         </Typography>
     //       </Space>
     //     </Typography>,
-    //     '7',
+    //     '8',
     //   ),
 
     isDealReg &&
@@ -594,7 +682,7 @@ const SideBar = () => {
         <Typography
           cursor="pointer"
           onClick={() => {
-            setSelectedKey(8);
+            setSelectedKey(9);
             setCrmChildKey(0);
             router?.push(
               isAdmin && Role === 'superAdmin'
@@ -610,7 +698,7 @@ const SideBar = () => {
               icon={
                 <UsersIcon
                   color={
-                    selectedKey?.toString()?.includes('8')
+                    selectedKey?.toString()?.includes('9')
                       ? token?.colorPrimary
                       : token?.colorTextSecondary
                   }
@@ -625,7 +713,7 @@ const SideBar = () => {
                 marginTop: '1px',
               }}
               color={
-                selectedKey?.toString()?.includes('8')
+                selectedKey?.toString()?.includes('9')
                   ? token?.colorPrimary
                   : token?.colorTextSecondary
               }
@@ -634,7 +722,7 @@ const SideBar = () => {
             </Typography>
           </Space>
         </Typography>,
-        '8',
+        '9',
       ),
     isAdmin &&
       Role === 'superAdmin' &&
@@ -642,7 +730,7 @@ const SideBar = () => {
         <Typography
           cursor="pointer"
           onClick={() => {
-            setSelectedKey(8);
+            setSelectedKey(10);
             setCrmChildKey(0);
             router?.push('superAdminPartner');
           }}
@@ -654,7 +742,7 @@ const SideBar = () => {
               icon={
                 <UsersIcon
                   color={
-                    selectedKey?.toString()?.includes('8')
+                    selectedKey?.toString()?.includes('10')
                       ? token?.colorPrimary
                       : token?.colorTextSecondary
                   }
@@ -669,7 +757,7 @@ const SideBar = () => {
                 marginTop: '1px',
               }}
               color={
-                selectedKey?.toString()?.includes('8')
+                selectedKey?.toString()?.includes('10')
                   ? token?.colorPrimary
                   : token?.colorTextSecondary
               }
@@ -678,7 +766,7 @@ const SideBar = () => {
             </Typography>
           </Space>
         </Typography>,
-        '8',
+        '10',
       ),
     // !isAdmin &&
     //   Role === 'reseller' &&
@@ -686,7 +774,7 @@ const SideBar = () => {
     //     <Typography
     //       cursor="pointer"
     //       onClick={() => {
-    //         setSelectedKey(9);
+    //         setSelectedKey(11);
     //         setCrmChildKey(0);
     //       }}
     //       name="Button 1"
@@ -697,7 +785,7 @@ const SideBar = () => {
     //           icon={
     //             <BoltIcon
     //               color={
-    //                 selectedKey?.toString()?.includes('9')
+    //                 selectedKey?.toString()?.includes('11')
     //                   ? token?.colorPrimary
     //                   : token?.colorTextSecondary
     //               }
@@ -712,7 +800,7 @@ const SideBar = () => {
     //             marginTop: '1px',
     //           }}
     //           color={
-    //             selectedKey?.toString()?.includes('9')
+    //             selectedKey?.toString()?.includes('11')
     //               ? token?.colorPrimary
     //               : token?.colorTextSecondary
     //           }
@@ -722,7 +810,7 @@ const SideBar = () => {
     //         </Typography>
     //       </Space>
     //     </Typography>,
-    //     '9',
+    //     '11',
     //   ),
     isQuoteAI &&
       Role === 'reseller' &&
@@ -730,7 +818,7 @@ const SideBar = () => {
         <Typography
           cursor="pointer"
           onClick={() => {
-            setSelectedKey(10);
+            setSelectedKey(12);
           }}
           name="Button 1"
           color={token?.colorTextSecondary}
@@ -740,10 +828,10 @@ const SideBar = () => {
               icon={
                 <UserGroupIcon
                   color={
-                    selectedKey?.toString()?.includes('10') ||
-                    selectedKey?.toString()?.includes('11') ||
+                    selectedKey?.toString()?.includes('12') ||
+                    selectedKey?.toString()?.includes('13') ||
                     // selectedKey?.toString()?.includes('0') ||
-                    selectedKey?.toString()?.includes('12')
+                    selectedKey?.toString()?.includes('14')
                       ? token?.colorLink
                       : token?.colorTextSecondary
                   }
@@ -759,8 +847,8 @@ const SideBar = () => {
                 marginRight: '60px',
               }}
               color={
-                selectedKey?.toString()?.includes('10') ||
-                selectedKey?.toString()?.includes('11') ||
+                selectedKey?.toString()?.includes('14') ||
+                selectedKey?.toString()?.includes('13') ||
                 // selectedKey?.toString()?.includes('0') ||
                 selectedKey?.toString()?.includes('12')
                   ? token?.colorLink
@@ -778,7 +866,7 @@ const SideBar = () => {
             <Space
               size={12}
               onClick={() => {
-                setCrmChildKey(10);
+                setCrmChildKey(12);
                 setSelectedKey(7);
                 router?.push('/crmInAccount');
               }}
@@ -812,14 +900,14 @@ const SideBar = () => {
                 Accounts
               </Typography>
             </Space>,
-            '10',
+            '12',
           ),
           getItem(
             <Space
               size={12}
               onClick={() => {
                 setCrmChildKey(2);
-                setSelectedKey(11);
+                setSelectedKey(13);
                 router?.push('/crmContact');
               }}
               color={token?.colorTextSecondary}
@@ -853,14 +941,14 @@ const SideBar = () => {
                 Contacts
               </Typography>
             </Space>,
-            '11',
+            '13',
           ),
           getItem(
             <Space
               size={12}
               onClick={() => {
                 setCrmChildKey(3);
-                setSelectedKey(12);
+                setSelectedKey(14);
                 router?.push('/crmOpportunity');
               }}
               color={token?.colorTextSecondary}
@@ -894,7 +982,7 @@ const SideBar = () => {
                 Opportunity
               </Typography>
             </Space>,
-            '12',
+            '14',
           ),
         ],
       ),
@@ -904,7 +992,7 @@ const SideBar = () => {
         <Space
           size={12}
           onClick={() => {
-            setSelectedKey(13);
+            setSelectedKey(15);
             setCrmChildKey(0);
             router?.push('/admin');
           }}
@@ -914,7 +1002,7 @@ const SideBar = () => {
             icon={
               <AdjustmentsHorizontalIcon
                 color={
-                  selectedKey?.toString()?.includes('13')
+                  selectedKey?.toString()?.includes('15')
                     ? token?.colorPrimary
                     : token?.colorTextSecondary
                 }
@@ -927,7 +1015,7 @@ const SideBar = () => {
             cursor="pointer"
             name="Button 1"
             color={
-              selectedKey?.toString()?.includes('13')
+              selectedKey?.toString()?.includes('15')
                 ? `#1C3557 !important`
                 : token?.colorTextSecondary
             }
@@ -935,7 +1023,7 @@ const SideBar = () => {
             Admin
           </Typography>
         </Space>,
-        '13',
+        '15',
       ),
     isAdmin &&
       Role === 'superAdmin' &&
@@ -944,7 +1032,7 @@ const SideBar = () => {
           <Typography
             cursor="pointer"
             onClick={() => {
-              setSelectedKey(14);
+              setSelectedKey(16);
               setCrmChildKey(0);
               router?.push('/userManagement');
             }}
@@ -955,8 +1043,8 @@ const SideBar = () => {
               icon={
                 <UserGroupIcon
                   color={
-                    selectedKey?.toString()?.includes('14') ||
-                    selectedKey?.toString()?.includes('15')
+                    selectedKey?.toString()?.includes('16') ||
+                    selectedKey?.toString()?.includes('17')
                       ? token?.colorPrimary
                       : token?.colorTextSecondary
                   }
@@ -969,8 +1057,8 @@ const SideBar = () => {
               cursor="pointer"
               name="Button 1"
               color={
-                selectedKey?.toString()?.includes('14') ||
-                selectedKey?.toString()?.includes('15')
+                selectedKey?.toString()?.includes('16') ||
+                selectedKey?.toString()?.includes('17')
                   ? token?.colorPrimary
                   : token?.colorTextSecondary
               }
@@ -980,7 +1068,7 @@ const SideBar = () => {
             </Typography>
           </Typography>
         </Space>,
-        '14',
+        '16',
         '',
         [
           getItem(
@@ -993,7 +1081,7 @@ const SideBar = () => {
             >
               <OsAvatar
                 icon={
-                  selectedKey?.toString()?.includes('12') ? (
+                  selectedKey?.toString()?.includes('17') ? (
                     <Image
                       src={ActiveCrmIcon}
                       alt="ActiveCrmIcon"
@@ -1012,7 +1100,7 @@ const SideBar = () => {
                 name="Button 1"
                 cursor="pointer"
                 color={
-                  selectedKey?.toString()?.includes('14')
+                  selectedKey?.toString()?.includes('17')
                     ? token.colorPrimaryBorder
                     : token?.colorTextSecondary
                 }
@@ -1020,20 +1108,20 @@ const SideBar = () => {
                 All Resellers
               </Typography>
             </Space>,
-            '14',
+            '17',
           ),
           getItem(
             <Space
               size={12}
               onClick={() => {
-                setSelectedKey(15);
+                setSelectedKey(18);
                 router?.push('/superAdminPermissions');
               }}
               color={token?.colorTextSecondary}
             >
               <OsAvatar
                 icon={
-                  selectedKey?.toString()?.includes('15') ? (
+                  selectedKey?.toString()?.includes('18') ? (
                     <Image
                       src={ActiveCrmIcon}
                       alt="ActiveCrmIcon"
@@ -1052,7 +1140,7 @@ const SideBar = () => {
                 cursor="pointer"
                 name="Button 1"
                 color={
-                  selectedKey?.toString()?.includes('15')
+                  selectedKey?.toString()?.includes('18')
                     ? token.colorPrimaryBorder
                     : token?.colorTextSecondary
                 }
@@ -1060,7 +1148,7 @@ const SideBar = () => {
                 Super Admin Permissions
               </Typography>
             </Space>,
-            '15',
+            '18',
           ),
         ],
       ),
