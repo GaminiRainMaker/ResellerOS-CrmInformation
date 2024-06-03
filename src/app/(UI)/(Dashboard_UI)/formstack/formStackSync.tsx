@@ -4,24 +4,14 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import OsInputPassword from '@/app/components/common/os-input/InputPassword';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import Typography from '@/app/components/common/typography';
 import {Button, Divider, Form} from 'antd';
-import Image from 'next/image';
-import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
-import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
 
 import {useEffect, useState} from 'react';
 
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {
-  getAllGeneralSetting,
-  insertUpdateGeneralSetting,
-} from '../../../../../redux/actions/generalSetting';
+import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
-import {queryAllDocuments} from '../../../../../redux/actions/formstack';
-import {getFormStackByDocId} from '../../../../../redux/actions/formStackSync';
 import {
   customerColumnsSync,
   formatStatus,
@@ -29,13 +19,17 @@ import {
   quotLineItemsColumnsSync,
   quoteColumns,
 } from '@/app/utils/CONSTANTS';
-import OsInput from '@/app/components/common/os-input';
+import {getFormStackByDocId} from '../../../../../redux/actions/formStackSync';
+import {queryAllDocuments} from '../../../../../redux/actions/formstack';
+import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 const FormStackSync = () => {
   const [token] = useThemeToken();
   const {data: FormstackData, loading: FormstackLoading} = useAppSelector(
     (state) => state.formstack,
   );
   const [syncedValueForDoc, setSyncValueForDoc] = useState<any>();
+  const [documentId, setDocumentId] = useState<number>();
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
   const [selectDropdownType, setSelectDropdownType] = useState<string>('Quote');
@@ -145,6 +139,7 @@ const FormStackSync = () => {
             allowClear
             options={FormstackDataOptions}
             onChange={(e: any) => {
+              setDocumentId(e);
               getDataOfFormStackByDocId(e);
             }}
           />
@@ -328,9 +323,14 @@ const FormStackSync = () => {
         </>
       ) : (
         <>
-          <Typography name="Heading 3/Regular" color={token?.colorPrimaryText}>
-            Mapping or Sync Values are not Available for this Document!
-          </Typography>
+          {documentId && (
+            <Typography
+              name="Heading 3/Regular"
+              color={token?.colorPrimaryText}
+            >
+              Mapping or Sync Values are not Available for this Document!
+            </Typography>
+          )}
         </>
       )}
     </Space>

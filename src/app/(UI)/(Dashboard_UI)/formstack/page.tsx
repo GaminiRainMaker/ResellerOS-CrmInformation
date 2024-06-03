@@ -13,7 +13,7 @@ import {useEffect, useState} from 'react';
 
 import {TabsProps} from 'antd';
 import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
-import {useAppDispatch} from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import FormStackApiKey from './formStackApiKey';
 import FormStackSync from './formStackSync';
 
@@ -22,11 +22,16 @@ const AllQuote: React.FC = () => {
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
   const [tabItem, setTabItem] = useState<any>();
-
+  const {data: GeneralSettingData, loading} = useAppSelector(
+    (state) => state.gereralSetting,
+  );
   useEffect(() => {
     dispatch(getAllSyncTable('QuoteLineItem'));
   }, []);
-
+  console.log(
+    '345435345',
+    GeneralSettingData?.api_key && GeneralSettingData?.secret_key,
+  );
   const tabItems: TabsProps['items'] = [
     {
       label: (
@@ -58,9 +63,9 @@ const AllQuote: React.FC = () => {
     },
   ];
   useEffect(() => {
-    let check: boolean = false;
     let itemss = tabItems;
-    if (check) {
+
+    if (GeneralSettingData?.api_key && GeneralSettingData?.secret_key) {
       itemss = tabItems;
       setTabItem(itemss);
     } else {
@@ -70,7 +75,7 @@ const AllQuote: React.FC = () => {
       newArr?.push(othIndex);
       setTabItem(newArr);
     }
-  }, []);
+  }, [GeneralSettingData]);
 
   return (
     <>
