@@ -75,11 +75,6 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
       ),
     }));
 
-  const onFinish = () => {
-    const values = form.getFieldsValue();
-    console.log('onFinish', values);
-  };
-
   const handleFileUpload = (uploadedData: any) => {
     if (!uploadedData.file) {
       return;
@@ -364,21 +359,13 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
                 <OsButton
                   buttontype="PRIMARY"
                   text="Save"
-                  clickHandler={
-                    addNewSyncValues
-                    // form.submit
-                  }
+                  clickHandler={addNewSyncValues}
                 />
               </Row>
             </>
           ) : (
             <>
-              <Form
-                layout="vertical"
-                requiredMark={false}
-                form={form}
-                onFinish={onFinish}
-              >
+              <Form layout="vertical" requiredMark={false} form={form}>
                 {setShowDocumentModalButton(true)}
                 <Row gutter={[16, 24]} justify="space-between">
                   <Col span={24}>
@@ -400,7 +387,7 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
                         allowClear
                         options={FormstackDataOptions}
                         onChange={(e: any) => {
-                          console.log('setDocumentId',e)
+                          console.log('setDocumentId', e);
                           setDocumentId(e);
                         }}
                       />
