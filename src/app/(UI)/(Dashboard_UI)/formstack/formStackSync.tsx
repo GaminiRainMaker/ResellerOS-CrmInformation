@@ -98,6 +98,8 @@ const FormStackSync = () => {
     dispatch(getFormStackByDocId(id))?.then((payload: any) => {
       if (payload?.payload) {
         setSyncValueForDoc(JSON?.parse(payload?.payload?.syncJson));
+      } else {
+        setSyncValueForDoc([]);
       }
     });
   };
