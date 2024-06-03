@@ -23,6 +23,7 @@ import * as XLSX from 'xlsx';
 import {queryAllDocuments} from '../../../../../redux/actions/formstack';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import OsButton from '@/app/components/common/os-button';
 
 const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
   const [token] = useThemeToken();
@@ -142,174 +143,179 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
       {FormstackDataOptions ? (
         <>
           {extractedStrings?.length > 0 ? (
-            <Row
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '20px',
-                height: '50vh',
-                overflow: 'auto',
-              }}
-            >
-              <Col>
-                <Row style={{marginTop: '6px'}}>
-                  {' '}
-                  <Typography
-                    style={{marginLeft: '10px'}}
-                    align="center"
-                    name="Body 3/Medium"
-                  >
-                    Your File Header
-                  </Typography>
-                </Row>
-                <Divider />
-                {extractedStrings?.map((item: any) => (
+            <>
+              <Row
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  padding: '20px',
+                  height: '50vh',
+                  overflow: 'auto',
+                }}
+              >
+                <Col>
                   <Row style={{marginTop: '6px'}}>
-                    <OsInput disabled value={formatStatus(item)} />
+                    {' '}
+                    <Typography
+                      style={{marginLeft: '10px'}}
+                      align="center"
+                      name="Body 3/Medium"
+                    >
+                      Your File Header
+                    </Typography>
                   </Row>
-                ))}
-              </Col>
+                  <Divider />
+                  {extractedStrings?.map((item: any) => (
+                    <Row style={{marginTop: '6px'}}>
+                      <OsInput disabled value={formatStatus(item)} />
+                    </Row>
+                  ))}
+                </Col>
 
-              <Col span={16}>
-                <Row style={{marginTop: '6px'}}>
-                  {' '}
-                  <Typography
-                    style={{marginLeft: '10px'}}
-                    align="center"
-                    name="Body 3/Medium"
-                  >
-                    Quote Header
-                  </Typography>
-                </Row>
-                <Divider />
-                {extractedStrings?.map((item: any, indexOfCol: number) => (
+                <Col span={16}>
                   <Row style={{marginTop: '6px'}}>
-                    <br />
-                    <CommonSelect
-                      style={{width: '100%'}}
-                      placeholder="Select Columns"
-                      allowClear
-                      options={columnSelectOptions}
-                      dropdownRender={(menu) => (
-                        <>
-                          <Space
-                            direction="vertical"
-                            style={{padding: '9px 0px 0px 16px'}}
-                          >
-                            <Typography
-                              color={token?.colorPrimaryText}
-                              name="Body 3/Regular"
-                            >
-                              Select by:
-                            </Typography>
-                            <Space>
-                              <Button
-                                onClick={() => {
-                                  setSelectDropdownType('Quote');
-                                }}
-                                style={
-                                  selectDropdownType === 'Quote'
-                                    ? buttonActiveStyle
-                                    : buttonInactiveStyle
-                                }
-                              >
-                                <Typography
-                                  name="Body 4/Regular"
-                                  color={
-                                    token[
-                                      selectDropdownType === 'Quote'
-                                        ? 'colorPrimaryHover'
-                                        : 'colorPrimaryBorder'
-                                    ]
-                                  }
-                                  cursor="pointer"
-                                >
-                                  Quote
-                                </Typography>
-                              </Button>
-                              <Button
-                                onClick={() => {
-                                  setSelectDropdownType('Quote Line Item');
-                                }}
-                                style={
-                                  selectDropdownType === 'Quote Line Item'
-                                    ? buttonActiveStyle
-                                    : buttonInactiveStyle
-                                }
-                              >
-                                <Typography
-                                  name="Body 4/Regular"
-                                  color={
-                                    token[
-                                      selectDropdownType === 'Quote Line Item'
-                                        ? 'colorPrimaryHover'
-                                        : 'colorPrimaryBorder'
-                                    ]
-                                  }
-                                  cursor="pointer"
-                                >
-                                  Quote Line Item
-                                </Typography>
-                              </Button>
-                              <Button
-                                onClick={() => {
-                                  setSelectDropdownType('Customer');
-                                }}
-                                style={
-                                  selectDropdownType === 'Customer'
-                                    ? buttonActiveStyle
-                                    : buttonInactiveStyle
-                                }
-                              >
-                                <Typography
-                                  name="Body 4/Regular"
-                                  color={
-                                    token[
-                                      selectDropdownType === 'Customer'
-                                        ? 'colorPrimaryHover'
-                                        : 'colorPrimaryBorder'
-                                    ]
-                                  }
-                                  cursor="pointer"
-                                >
-                                  Customer
-                                </Typography>
-                              </Button>
-                              <Button
-                                onClick={() => {
-                                  setSelectDropdownType('Opportunity');
-                                }}
-                                style={
-                                  selectDropdownType === 'Opportunity'
-                                    ? buttonActiveStyle
-                                    : buttonInactiveStyle
-                                }
-                              >
-                                <Typography
-                                  name="Body 4/Regular"
-                                  color={
-                                    token[
-                                      selectDropdownType === 'Opportunity'
-                                        ? 'colorPrimaryHover'
-                                        : 'colorPrimaryBorder'
-                                    ]
-                                  }
-                                  cursor="pointer"
-                                >
-                                  Opportunity
-                                </Typography>
-                              </Button>
-                            </Space>
-                          </Space>
-                          <Divider style={{margin: '5px'}} />
-                          {menu}
-                        </>
-                      )}
-                    />
+                    {' '}
+                    <Typography
+                      style={{marginLeft: '10px'}}
+                      align="center"
+                      name="Body 3/Medium"
+                    >
+                      Quote Header
+                    </Typography>
                   </Row>
-                ))}
-              </Col>
-            </Row>
+                  <Divider />
+                  {extractedStrings?.map((item: any, indexOfCol: number) => (
+                    <Row style={{marginTop: '6px'}}>
+                      <br />
+                      <CommonSelect
+                        style={{width: '100%'}}
+                        placeholder="Select Columns"
+                        allowClear
+                        options={columnSelectOptions}
+                        dropdownRender={(menu) => (
+                          <>
+                            <Space
+                              direction="vertical"
+                              style={{padding: '9px 0px 0px 16px'}}
+                            >
+                              <Typography
+                                color={token?.colorPrimaryText}
+                                name="Body 3/Regular"
+                              >
+                                Select by:
+                              </Typography>
+                              <Space>
+                                <Button
+                                  onClick={() => {
+                                    setSelectDropdownType('Quote');
+                                  }}
+                                  style={
+                                    selectDropdownType === 'Quote'
+                                      ? buttonActiveStyle
+                                      : buttonInactiveStyle
+                                  }
+                                >
+                                  <Typography
+                                    name="Body 4/Regular"
+                                    color={
+                                      token[
+                                        selectDropdownType === 'Quote'
+                                          ? 'colorPrimaryHover'
+                                          : 'colorPrimaryBorder'
+                                      ]
+                                    }
+                                    cursor="pointer"
+                                  >
+                                    Quote
+                                  </Typography>
+                                </Button>
+                                <Button
+                                  onClick={() => {
+                                    setSelectDropdownType('Quote Line Item');
+                                  }}
+                                  style={
+                                    selectDropdownType === 'Quote Line Item'
+                                      ? buttonActiveStyle
+                                      : buttonInactiveStyle
+                                  }
+                                >
+                                  <Typography
+                                    name="Body 4/Regular"
+                                    color={
+                                      token[
+                                        selectDropdownType === 'Quote Line Item'
+                                          ? 'colorPrimaryHover'
+                                          : 'colorPrimaryBorder'
+                                      ]
+                                    }
+                                    cursor="pointer"
+                                  >
+                                    Quote Line Item
+                                  </Typography>
+                                </Button>
+                                <Button
+                                  onClick={() => {
+                                    setSelectDropdownType('Customer');
+                                  }}
+                                  style={
+                                    selectDropdownType === 'Customer'
+                                      ? buttonActiveStyle
+                                      : buttonInactiveStyle
+                                  }
+                                >
+                                  <Typography
+                                    name="Body 4/Regular"
+                                    color={
+                                      token[
+                                        selectDropdownType === 'Customer'
+                                          ? 'colorPrimaryHover'
+                                          : 'colorPrimaryBorder'
+                                      ]
+                                    }
+                                    cursor="pointer"
+                                  >
+                                    Customer
+                                  </Typography>
+                                </Button>
+                                <Button
+                                  onClick={() => {
+                                    setSelectDropdownType('Opportunity');
+                                  }}
+                                  style={
+                                    selectDropdownType === 'Opportunity'
+                                      ? buttonActiveStyle
+                                      : buttonInactiveStyle
+                                  }
+                                >
+                                  <Typography
+                                    name="Body 4/Regular"
+                                    color={
+                                      token[
+                                        selectDropdownType === 'Opportunity'
+                                          ? 'colorPrimaryHover'
+                                          : 'colorPrimaryBorder'
+                                      ]
+                                    }
+                                    cursor="pointer"
+                                  >
+                                    Opportunity
+                                  </Typography>
+                                </Button>
+                              </Space>
+                            </Space>
+                            <Divider style={{margin: '5px'}} />
+                            {menu}
+                          </>
+                        )}
+                      />
+                    </Row>
+                  ))}
+                </Col>
+                <Row>
+                  <OsButton buttontype="PRIMARY" text="Save" />
+                </Row>
+              </Row>
+            </>
           ) : (
             <>
               <Form
