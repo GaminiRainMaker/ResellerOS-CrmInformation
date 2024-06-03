@@ -38,6 +38,7 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
   const [selectDropdownType, setSelectDropdownType] = useState<string>('Quote');
   const [columnSelectOptions, setColumnSelectOptions] = useState<any>([]);
   const [syncedNewValue, setNewSyncedValue] = useState<any>();
+  const [documentId, setDocumentId] = useState<number>();
 
   useEffect(() => {
     dispatch(getAllGeneralSetting(''));
@@ -180,11 +181,11 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
   };
 
   const addNewSyncValues = () => {
-    console.log('32453242423', syncedNewValue);
+    console.log('syncedNewValue', syncedNewValue, documentId);
   };
   return (
     <GlobalLoader loading={FormstackLoading || GeneralSettingLoading}>
-      {!FormstackDataOptions ? (
+      {FormstackDataOptions ? (
         <>
           {extractedStrings?.length > 0 ? (
             <>
@@ -358,13 +359,16 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
                     </Row>
                   ))}
                 </Col>
-                <Row>
-                  <OsButton
-                    buttontype="PRIMARY"
-                    text="Save"
-                    clickHandler={addNewSyncValues}
-                  />
-                </Row>
+              </Row>
+              <Row justify={'end'} style={{marginTop: '50px'}}>
+                <OsButton
+                  buttontype="PRIMARY"
+                  text="Save"
+                  clickHandler={
+                    addNewSyncValues
+                    // form.submit
+                  }
+                />
               </Row>
             </>
           ) : (
@@ -395,6 +399,10 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
                         placeholder="Select Document"
                         allowClear
                         options={FormstackDataOptions}
+                        onChange={(e: any) => {
+                          console.log('setDocumentId',e)
+                          setDocumentId(e);
+                        }}
                       />
                     </SelectFormItem>
                   </Col>
