@@ -24,6 +24,7 @@ import {queryAllDocuments} from '../../../../../redux/actions/formstack';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '@/app/components/common/os-button';
+import {insertFormStack} from '../../../../../redux/actions/formStackSync';
 
 const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
   const [token] = useThemeToken();
@@ -176,7 +177,13 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
   };
 
   const addNewSyncValues = () => {
-    console.log('syncedNewValue', syncedNewValue, documentId);
+    let obj = {
+      doc_id: documentId,
+      syncJson: [JSON.stringify(syncedNewValue)],
+    };
+    if (obj && documentId) {
+      dispatch(insertFormStack(obj));
+    }
   };
   return (
     <GlobalLoader loading={FormstackLoading || GeneralSettingLoading}>

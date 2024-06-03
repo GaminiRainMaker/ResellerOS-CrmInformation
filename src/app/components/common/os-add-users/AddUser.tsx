@@ -7,6 +7,7 @@ import OsInput from '../os-input';
 import Typography from '../typography';
 import {OsAdduser} from './add-users.interface';
 import ContactInput from '../os-contact';
+import {useAppSelector} from '../../../../../redux/hook';
 
 const AddUser: FC<OsAdduser> = ({
   isDrawer = false,
@@ -16,10 +17,23 @@ const AddUser: FC<OsAdduser> = ({
 }) => {
   const [token] = useThemeToken();
   const [contactValue, setContactValue] = useState<any>();
-
+  const {userInformation} = useAppSelector((state) => state.user);
   useEffect(() => {
     form.resetFields();
   }, [userData]);
+
+  const validateEmail = (_: any, value: any) => {
+    // Regular expression to match emails ending with user's organization domain
+    const emailPattern = new RegExp(
+      `^[^\\s@]+@${userInformation?.organization}\\.com$`,
+    );
+    if (!emailPattern.test(value)) {
+      return Promise.reject(
+        `Email must be from ${userInformation?.organization} domain.`,
+      );
+    }
+    return Promise.resolve();
+  };
 
   return (
     <>
@@ -57,7 +71,11 @@ const AddUser: FC<OsAdduser> = ({
         >
           <Row gutter={[16, 16]}>
             <Col sm={24} md={12}>
-              <Form.Item label="First Name" name="first_name">
+              <Form.Item
+                label="First Name"
+                name="first_name"
+                rules={[{required: true, message: 'This field is required!'}]}
+              >
                 <OsInput placeholder="Enter First Name" />
               </Form.Item>
             </Col>
@@ -74,7 +92,14 @@ const AddUser: FC<OsAdduser> = ({
               </Form.Item>
             </Col>
             <Col sm={24} md={12}>
-              <Form.Item label="Email" name="email">
+              <Form.Item
+                label="Email"
+                name="email"
+                rules={[
+                  {required: true, message: 'This field is required!'},
+                  {validator: validateEmail},
+                ]}
+              >
                 <OsInput placeholder="Enter Email" />
               </Form.Item>
             </Col>
