@@ -185,6 +185,7 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
       dispatch(insertFormStack(obj));
     }
   };
+  
   return (
     <GlobalLoader loading={FormstackLoading || GeneralSettingLoading}>
       {FormstackDataOptions ? (
