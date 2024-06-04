@@ -116,18 +116,27 @@ const PartnerPassword = () => {
     emptyText: <EmptyContainer title="No Data" />,
   };
 
-  //   const nameOptions = userData?.reduce(
-  //     (accumulator: any, userDataItem: any) => {
-  //       if (userDataItem?.is_admin !== true) {
-  //         accumulator.push({
-  //           label: userDataItem?.user_name,
-  //           value: userDataItem?.user_name,
-  //         });
-  //       }
-  //       return accumulator;
-  //     },
-  //     [],
-  //   );
+  const sharedPartnerPasswordOptions = finalSharedPasswordData?.map(
+    (finalSharedPasswordDataItem: any) => ({
+      value: finalSharedPasswordDataItem?.PartnerPassword?.Partner?.partner,
+      label: (
+        <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+          {finalSharedPasswordDataItem?.PartnerPassword?.Partner?.partner}
+        </Typography>
+      ),
+    }),
+  );
+
+  const myPartnerPasswordOptions = finalMyPasswordData?.map(
+    (finalMyPasswordDataItem: any) => ({
+      value: finalMyPasswordDataItem?.Partner?.partner,
+      label: (
+        <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+          {finalMyPasswordDataItem?.Partner?.partner}
+        </Typography>
+      ),
+    }),
+  );
 
   const tabItems: TabsProps['items'] = [
     {
@@ -249,6 +258,7 @@ const PartnerPassword = () => {
                 {activeKey === 1 ? (
                   <CommonSelect
                     style={{width: '200px'}}
+                    options={sharedPartnerPasswordOptions}
                     placeholder="Search here"
                     showSearch
                     onSearch={(e: any) => {
@@ -269,6 +279,7 @@ const PartnerPassword = () => {
                   <CommonSelect
                     style={{width: '200px'}}
                     placeholder="Search here"
+                    options={myPartnerPasswordOptions}
                     showSearch
                     onSearch={(e: any) => {
                       setQuery({
@@ -283,7 +294,6 @@ const PartnerPassword = () => {
                       });
                     }}
                     value={query?.partner_name}
-                    // options={activeKey === 1 ? nameOptions : nameAdminOptions}
                   />
                 )}
               </Space>
@@ -299,6 +309,9 @@ const PartnerPassword = () => {
                   onClick={() => {
                     setQuery({
                       ...query,
+                      partner_name: null,
+                    });
+                    setSharedQuery({
                       ...sharedQuery,
                       partner_name: null,
                     });
