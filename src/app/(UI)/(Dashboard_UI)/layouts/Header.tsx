@@ -27,21 +27,18 @@ import {
   UserCircleIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
-import {Avatar, Badge, Layout, Select, Upload} from 'antd';
+import {Avatar, Badge, Layout, Upload} from 'antd';
 import {MenuProps} from 'antd/es/menu';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
-import {useRouter} from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
 import creditCard from '../../../../../public/assets/static/card-pos.svg';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
 import {getCountOfNotification} from '../../../../../redux/actions/notifications';
-import {
-  getGloabalySearchDataa,
-  getUserProfileData,
-} from '../../../../../redux/actions/user';
+import {getGloabalySearchDataa} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 export const CustomUpload = styled(Upload)`
@@ -87,6 +84,8 @@ const CustomHeader = () => {
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const searchParams = useSearchParams();
+  const loginAccount = searchParams.get('self');
   const {userInformation, searchDataa, loginUserInformation} = useAppSelector(
     (state) => state.user,
   );
@@ -228,6 +227,7 @@ const CustomHeader = () => {
               ? 'Reseller'
               : '',
     );
+    setProfileImg(userInformation?.ProfileImage);
   }, [userInformation]);
 
   const handleOptionClick = (typeRoute: string) => {
@@ -281,7 +281,9 @@ const CustomHeader = () => {
     }
   }, [searchDataa]);
   useEffect(() => {
-    setProfileImg(loginUserInformation?.profile_image);
+    if (loginAccount) {
+      setProfileImg(loginUserInformation?.profile_image);
+    }
   }, [loginUserInformation]);
 
   return (

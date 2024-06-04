@@ -9,6 +9,7 @@ import {
 import {notification} from 'antd';
 import ImgCrop from 'antd-img-crop';
 import _debounce from 'lodash/debounce';
+import {useSearchParams} from 'next/navigation';
 import {FC, useCallback, useEffect, useState} from 'react';
 import {uploadToAwsForUserImage} from '../../../../../redux/actions/upload';
 import {getUserByIdLogin} from '../../../../../redux/actions/user';
@@ -19,7 +20,6 @@ import useThemeToken from '../hooks/useThemeToken';
 import {AvatarStyled} from '../os-table/styled-components';
 import Typography from '../typography';
 import {MyProfileCardStyle} from './styled-components';
-import {useSearchParams} from 'next/navigation';
 
 const MyProfileCard: FC<any> = ({data}) => {
   const [token] = useThemeToken();
