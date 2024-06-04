@@ -49,7 +49,7 @@ const MyProfileCard: FC<any> = ({data}) => {
     },
     {
       key: 2,
-      title: 'Phone No.',
+      title: 'Contact No.',
       data: `${data?.phone_number ?? '--'}`,
       icon: <PhoneIcon width={20} color={token?.colorLinkHover} />,
     },
