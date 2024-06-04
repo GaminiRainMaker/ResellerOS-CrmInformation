@@ -11,7 +11,7 @@ import ImgCrop from 'antd-img-crop';
 import _debounce from 'lodash/debounce';
 import {FC, useCallback, useEffect, useState} from 'react';
 import {uploadToAwsForUserImage} from '../../../../../redux/actions/upload';
-import {getUserProfileData} from '../../../../../redux/actions/user';
+import {getUserByIdLogin} from '../../../../../redux/actions/user';
 import {useAppDispatch} from '../../../../../redux/hook';
 import {Col} from '../antd/Grid';
 import {Space} from '../antd/Space';
@@ -19,13 +19,15 @@ import useThemeToken from '../hooks/useThemeToken';
 import {AvatarStyled} from '../os-table/styled-components';
 import Typography from '../typography';
 import {MyProfileCardStyle} from './styled-components';
-import {setUserProfile} from '../../../../../redux/slices/user';
+import {useSearchParams} from 'next/navigation';
 
 const MyProfileCard: FC<any> = ({data}) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const [userRole, setUserRole] = useState<string>('');
-
+  const searchParams = useSearchParams();
+  const getUserID = searchParams.get('id');
+  const loginAccount = searchParams.get('self');
   useEffect(() => {
     setUserRole(
       data?.master_admin && data?.role === 'superAdmin'
@@ -76,13 +78,11 @@ const MyProfileCard: FC<any> = ({data}) => {
       type: mediaType,
       file: newFileList,
       userTypes: 'user',
-      userIds: data?.id,
+      userIds: getUserID,
     };
     dispatch(uploadToAwsForUserImage(UpdatedData)).then((d: any) => {
       if (d?.payload) {
-        dispatch(getUserProfileData(''))?.then((payload: any) => {
-          dispatch(setUserProfile(payload?.payload?.profile_image));
-        });
+        dispatch(getUserByIdLogin(getUserID));
       }
     });
   };
@@ -153,6 +153,7 @@ const MyProfileCard: FC<any> = ({data}) => {
           <Space size={20}>
             <span style={{position: 'relative'}}>
               <AvatarStyled
+                cursor="unset"
                 src={data?.profile_image}
                 icon={`${
                   data?.user_name?.toString()?.charAt(0)?.toUpperCase() ??
@@ -161,29 +162,34 @@ const MyProfileCard: FC<any> = ({data}) => {
                 background={data?.profile_image ? '' : '#1EB159'}
                 size={94}
               />
-              <span
-                style={{
-                  position: 'absolute',
-                  bottom: -2,
-                  right: -5,
-                }}
-              >
-                <ImgCrop
-                  onModalOk={(list: any) => {
-                    // debounceFn(list);
+              {loginAccount && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    bottom: -2,
+                    right: -5,
                   }}
                 >
-                  <CustomUpload showUploadList={false}>
-                    <AvatarStyled
-                      icon={
-                        <CameraIcon width={20} color={token?.colorLinkHover} />
-                      }
-                      background={token?.colorInfoHover}
-                      size={36}
-                    />
-                  </CustomUpload>
-                </ImgCrop>
-              </span>
+                  <ImgCrop
+                    onModalOk={(list: any) => {
+                      debounceFn(list);
+                    }}
+                  >
+                    <CustomUpload showUploadList={false}>
+                      <AvatarStyled
+                        icon={
+                          <CameraIcon
+                            width={20}
+                            color={token?.colorLinkHover}
+                          />
+                        }
+                        background={token?.colorInfoHover}
+                        size={36}
+                      />
+                    </CustomUpload>
+                  </ImgCrop>
+                </span>
+              )}
             </span>
             <Space direction="vertical" size={5}>
               <Typography
@@ -214,14 +220,14 @@ const MyProfileCard: FC<any> = ({data}) => {
           </Space>
         </Col>
 
-        {proileDetailData?.map((proileDetailDataItem, index) => {
+        {proileDetailData?.map((proileDetailDataItem) => {
           return (
             <Col
               xs={24}
               sm={24}
               md={24}
               lg={12}
-              xl={7}
+              xl={5}
               xxl={5}
               key={proileDetailDataItem?.key}
             >

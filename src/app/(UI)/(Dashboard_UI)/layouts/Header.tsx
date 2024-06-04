@@ -5,11 +5,11 @@
 
 'use client';
 
-import { Dropdown } from '@/app/components/common/antd/DropDown';
-import { Col, Row } from '@/app/components/common/antd/Grid';
+import {Dropdown} from '@/app/components/common/antd/DropDown';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { Divider } from '@/app/components/common/antd/Divider';
-import { Space } from '@/app/components/common/antd/Space';
+import {Divider} from '@/app/components/common/antd/Divider';
+import {Space} from '@/app/components/common/antd/Space';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -17,38 +17,32 @@ import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import SearchSelect from '@/app/components/common/os-select/SearchSelect';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import { AvatarStyled } from '@/app/components/common/os-table/styled-components';
+import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
-import { getBase64 } from '@/app/utils/upload';
 import styled from '@emotion/styled';
 import {
   ArrowLeftStartOnRectangleIcon,
   BellIcon,
   ExclamationCircleIcon,
+  UserCircleIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
-import { Avatar, Badge, Layout, Select, Upload, notification } from 'antd';
-import ImgCrop from 'antd-img-crop';
-import { MenuProps } from 'antd/es/menu';
+import {Avatar, Badge, Layout, Select, Upload} from 'antd';
+import {MenuProps} from 'antd/es/menu';
 import Cookies from 'js-cookie';
-import _debounce from 'lodash/debounce';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import React, { useCallback, useEffect, useState } from 'react';
+import {useRouter} from 'next/navigation';
+import React, {useEffect, useState} from 'react';
 import creditCard from '../../../../../public/assets/static/card-pos.svg';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
-import UserIcon from '../../../../../public/assets/static/userIcon.svg';
-import {
-  getCountOfNotification,
-} from '../../../../../redux/actions/notifications';
-import { uploadToAwsForUserImage } from '../../../../../redux/actions/upload';
+import {getCountOfNotification} from '../../../../../redux/actions/notifications';
 import {
   getGloabalySearchDataa,
   getUserProfileData,
 } from '../../../../../redux/actions/user';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 export const CustomUpload = styled(Upload)`
   .ant-upload-list-text {
@@ -91,7 +85,6 @@ export const CustomUpload = styled(Upload)`
 
 const CustomHeader = () => {
   const [token] = useThemeToken();
-  const {Option} = Select;
   const router = useRouter();
   const dispatch = useAppDispatch();
   const {userInformation, searchDataa} = useAppSelector((state) => state.user);
@@ -117,13 +110,9 @@ const CustomHeader = () => {
   }, [searchQuery]);
   const [notificationCounts, setNotificationCounts] = useState<number>(0);
 
-
   useEffect(() => {
     dispatch(getCountOfNotification(''))?.then((payload: any) => {
       setNotificationCounts(payload?.payload?.length);
-    });
-    dispatch(getUserProfileData(''))?.then((payload: any) => {
-      setProfileImg(payload?.payload?.profile_image);
     });
   }, []);
 
@@ -144,7 +133,7 @@ const CustomHeader = () => {
           cursor="pointer"
           onClick={() => {
             window.open(
-              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=myProfile&isSuperAdminProfile=${isSuperAdminProfile}`,
+              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=myProfile&isSuperAdminProfile=${isSuperAdminProfile}&self=true`,
             );
           }}
         >
@@ -237,6 +226,7 @@ const CustomHeader = () => {
               ? 'Reseller'
               : '',
     );
+    setProfileImg(userInformation?.ProfileImage);
   }, [userInformation]);
 
   const handleOptionClick = (typeRoute: string) => {
@@ -289,91 +279,6 @@ const CustomHeader = () => {
       setSearchFinalData(optionsForSearch);
     }
   }, [searchDataa]);
-
-  // const searchDataOptions = searchFinalData?.map((dataItem: any)=>{
-  //   label: dataItem?.name;
-  //   key: dataItem?.id,
-  // })
-
-  const uploadImagesToBackend = async (newFileList: any, index: any) => {
-    if (newFileList) {
-      notification.open({
-        message: `Image is uploading. Please wait`,
-        type: 'info',
-      });
-    }
-    const datas = await getBase64(newFileList);
-    const mediaType = newFileList?.type.split('/')[0];
-
-    const data = {
-      base64: datas,
-      type: mediaType,
-      file: newFileList,
-      userTypes: 'user',
-      userIds: userInformation?.id,
-    };
-    dispatch(uploadToAwsForUserImage(data)).then((d: any) => {
-      if (d?.payload) {
-        dispatch(getUserProfileData(''))?.then((payload: any) => {
-          setProfileImg(payload?.payload?.profile_image);
-        });
-      }
-    });
-  };
-
-  const handleNotification = (list: any) => {
-    let count = 0;
-    if (count === 1) {
-      return;
-    }
-    if (
-      list?.file?.size > 100000000 &&
-      (list?.file?.originFileObj?.name?.includes('webm') ||
-        list?.file?.originFileObj?.name?.includes('WEBM') ||
-        list?.file?.originFileObj?.name?.includes('mp4') ||
-        list?.file?.originFileObj?.name?.includes('MP4') ||
-        list?.file?.originFileObj?.name?.includes('mov') ||
-        list?.file?.originFileObj?.name?.includes('MOV') ||
-        list?.file?.originFileObj?.name?.includes('avchd') ||
-        list?.file?.originFileObj?.name?.includes('AVCHD') ||
-        list?.file?.originFileObj?.name?.includes('avi') ||
-        list?.file?.originFileObj?.name?.includes('AVI') ||
-        list?.file?.originFileObj?.name?.includes('flv') ||
-        list?.file?.originFileObj?.name?.includes('FLV') ||
-        list?.file?.originFileObj?.name?.includes('wmv') ||
-        list?.file?.originFileObj?.name?.includes('WMV'))
-    ) {
-      count += 1;
-      notification.open({
-        message: `Video exceeded size limit. Please upload an Video less than 100MB/100000KB`,
-      });
-    } else if (
-      list?.file?.size > 5000000 &&
-      !list?.file?.originFileObj?.name?.includes('webm') &&
-      !list?.file?.originFileObj?.name?.includes('WEBM') &&
-      !list?.file?.originFileObj?.name?.includes('mp4') &&
-      !list?.file?.originFileObj?.name?.includes('MP4') &&
-      !list?.file?.originFileObj?.name?.includes('mov') &&
-      !list?.file?.originFileObj?.name?.includes('MOV') &&
-      !list?.file?.originFileObj?.name?.includes('avchd') &&
-      !list?.file?.originFileObj?.name?.includes('AVCHD') &&
-      !list?.file?.originFileObj?.name?.includes('avi') &&
-      !list?.file?.originFileObj?.name?.includes('AVI') &&
-      !list?.file?.originFileObj?.name?.includes('flv') &&
-      !list?.file?.originFileObj?.name?.includes('FLV') &&
-      !list?.file?.originFileObj?.name?.includes('wmv') &&
-      !list?.file?.originFileObj?.name?.includes('WMV')
-    ) {
-      count += 1;
-      notification.open({
-        message: `Image exceeded size limit. Please upload an image less than 5MB/500KB`,
-      });
-    } else {
-      uploadImagesToBackend(list, '');
-    }
-  };
-
-  const debounceFn = useCallback(_debounce(handleNotification, 500), []);
 
   return (
     <Layout>
@@ -547,36 +452,22 @@ const CustomHeader = () => {
 
             <Dropdown
               menu={{items}}
-              // eslint-disable-next-line react/no-unstable-nested-components
               dropdownRender={(menu: any) => (
                 <div style={contentStyle}>
                   <Space>
-                    <ImgCrop
-                      onModalOk={(list: any) => {
-                        debounceFn(list);
+                    <Avatar
+                      src={profileImg}
+                      icon={<UserCircleIcon />}
+                      shape="circle"
+                      size="large"
+                      style={{
+                        background: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                       }}
-                    >
-                      <CustomUpload showUploadList={false}>
-                        <Avatar
-                          src={profileImg}
-                          icon={
-                            <Image
-                              src={UserIcon}
-                              alt="UserIcon"
-                              style={{cursor: 'pointer'}}
-                            />
-                          }
-                          shape="circle"
-                          size="large"
-                          style={{
-                            background: 'none',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        />
-                      </CustomUpload>
-                    </ImgCrop>
+                    />
+
                     <Space direction="vertical" size={0}>
                       <Typography name="Body 3/Regular">
                         {userInformation?.username || 'Josh Walker'}
@@ -620,13 +511,7 @@ const CustomHeader = () => {
                 <Space>
                   <Avatar
                     src={profileImg}
-                    icon={
-                      <Image
-                        src={UserIcon}
-                        alt="UserIcon"
-                        style={{cursor: 'pointer'}}
-                      />
-                    }
+                    icon={<UserCircleIcon />}
                     shape="circle"
                     size="large"
                   />

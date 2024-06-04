@@ -73,6 +73,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
               OrderAI: dataaa?.is_order,
               username: dataaa?.email,
               master_admin: dataaa?.master_admin,
+              ProfileImage: dataaa?.profile_image,
             }),
           );
           router.push(
@@ -209,6 +210,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
               username: payload?.payload?.user_name,
               email: payload?.payload?.email,
               master_admin: payload?.payload?.master_admin,
+              ProfileImage: payload?.payload?.profile_image,
             }),
           );
           Cookies.set('token', payload.payload?.token, {
