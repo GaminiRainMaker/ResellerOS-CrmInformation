@@ -16,7 +16,7 @@ import {
   quoteColumns,
 } from '@/app/utils/CONSTANTS';
 import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
-import {Button, Form} from 'antd';
+import {Button, Form, message} from 'antd';
 import {useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import * as XLSX from 'xlsx';
@@ -25,12 +25,23 @@ import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting'
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '@/app/components/common/os-button';
 import {insertFormStack} from '../../../../../redux/actions/formStackSync';
+import {uploadToAws} from '../../../../../redux/actions/upload';
+import {convertFileToBase64} from '@/app/utils/base';
 
-const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
+const AddDocument: FC<any> = ({
+  form,
+  documentId,
+  setDocumentId,
+  syncedNewValue,
+  setNewSyncedValue,
+  showDoucmentDropDown,
+  pdfUrlForDocument,
+  setPdfUrlForDocument,
+}) => {
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [extractedStrings, setExtractedStrings] = useState([]);
+
   const {data: FormstackData, loading: FormstackLoading} = useAppSelector(
     (state) => state.formstack,
   );
@@ -38,8 +49,7 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
     useAppSelector((state) => state.gereralSetting);
   const [selectDropdownType, setSelectDropdownType] = useState<string>('Quote');
   const [columnSelectOptions, setColumnSelectOptions] = useState<any>([]);
-  const [syncedNewValue, setNewSyncedValue] = useState<any>();
-  const [documentId, setDocumentId] = useState<number>();
+  // const [documentId, setDocumentId] = useState<number>();
 
   useEffect(() => {
     dispatch(getAllGeneralSetting(''));
@@ -54,7 +64,11 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
       dispatch(queryAllDocuments(obj));
     }
   }, [generalSettingData]);
-
+  useEffect(() => {
+    setNewSyncedValue([]);
+    setPdfUrlForDocument();
+  }, [documentId]);
+  console.log('43543532234234', pdfUrlForDocument);
   const buttonActiveStyle = {
     background: token.colorPrimaryBg,
     borderColor: token.colorPrimaryBg,
@@ -76,10 +90,29 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
       ),
     }));
 
+  const beforeUpload = (file: any) => {
+    convertFileToBase64(file)
+      .then((base64String) => {
+        if (base64String) {
+          dispatch(uploadToAws({document: base64String})).then(
+            (payload: any) => {
+              const pdfUrl = payload?.payload?.data?.Location;
+              setPdfUrlForDocument(pdfUrl);
+            },
+          );
+        }
+      })
+      .catch((error: any) => {
+        message.error('Error converting file to base64', error);
+      });
+    return false;
+  };
+
   const handleFileUpload = (uploadedData: any) => {
     if (!uploadedData.file) {
       return;
     }
+    beforeUpload(uploadedData.file);
     const reader = new FileReader();
     reader.onload = (e: any) => {
       const data = new Uint8Array(e.target.result);
@@ -117,7 +150,16 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
       });
     });
 
-    setExtractedStrings(extracted);
+    let newArrrForExtractedValues: any = [];
+    extracted?.map((items: string, index: number) => {
+      let newObj: any = {
+        preVal: items,
+        newVal: '',
+        key: index,
+      };
+      newArrrForExtractedValues?.push(newObj);
+    });
+    setNewSyncedValue(newArrrForExtractedValues);
   };
 
   useEffect(() => {
@@ -180,17 +222,19 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
     let obj = {
       doc_id: documentId,
       syncJson: [JSON.stringify(syncedNewValue)],
+      doc_url: pdfUrlForDocument,
     };
+
     if (obj && documentId) {
       dispatch(insertFormStack(obj));
     }
   };
-  
+
   return (
     <GlobalLoader loading={FormstackLoading || GeneralSettingLoading}>
       {FormstackDataOptions ? (
         <>
-          {extractedStrings?.length > 0 ? (
+          {syncedNewValue?.length > 0 ? (
             <>
               <Row
                 style={{
@@ -213,9 +257,9 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
                     </Typography>
                   </Row>
                   <Divider />
-                  {extractedStrings?.map((item: any) => (
+                  {syncedNewValue?.map((item: any) => (
                     <Row style={{marginTop: '6px'}}>
-                      <OsInput disabled value={formatStatus(item)} />
+                      <OsInput disabled value={formatStatus(item?.preVal)} />
                     </Row>
                   ))}
                 </Col>
@@ -232,7 +276,7 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
                     </Typography>
                   </Row>
                   <Divider />
-                  {extractedStrings?.map((item: any, indexOfCol: number) => (
+                  {syncedNewValue?.map((item: any, indexOfCol: number) => (
                     <Row style={{marginTop: '6px'}}>
                       <br />
                       <CommonSelect
@@ -241,8 +285,9 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
                         allowClear
                         options={columnSelectOptions}
                         onChange={(e: any) => {
-                          syncTableToLineItems(item, e, indexOfCol);
+                          syncTableToLineItems(item?.preVal, e, indexOfCol);
                         }}
+                        value={item?.newVal}
                         dropdownRender={(menu) => (
                           <>
                             <Space
@@ -374,33 +419,34 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
           ) : (
             <>
               <Form layout="vertical" requiredMark={false} form={form}>
-                {setShowDocumentModalButton(true)}
                 <Row gutter={[16, 24]} justify="space-between">
-                  <Col span={24}>
-                    <SelectFormItem
-                      label={
-                        <Typography name="Body 4/Medium">Document</Typography>
-                      }
-                      name="document_id"
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Document is required!',
-                        },
-                      ]}
-                    >
-                      <CommonSelect
-                        style={{width: '100%'}}
-                        placeholder="Select Document"
-                        allowClear
-                        options={FormstackDataOptions}
-                        onChange={(e: any) => {
-                          console.log('setDocumentId', e);
-                          setDocumentId(e);
-                        }}
-                      />
-                    </SelectFormItem>
-                  </Col>
+                  {showDoucmentDropDown && (
+                    <Col span={24}>
+                      <SelectFormItem
+                        label={
+                          <Typography name="Body 4/Medium">Document</Typography>
+                        }
+                        name="document_id"
+                        rules={[
+                          {
+                            required: true,
+                            message: 'Document is required!',
+                          },
+                        ]}
+                      >
+                        <CommonSelect
+                          style={{width: '100%'}}
+                          placeholder="Select Document"
+                          allowClear
+                          options={FormstackDataOptions}
+                          onChange={(e: any) => {
+                            console.log('setDocumentId', e);
+                            setDocumentId(e);
+                          }}
+                        />
+                      </SelectFormItem>
+                    </Col>
+                  )}
 
                   <Col span={24}>
                     <OSDraggerStyle
@@ -446,7 +492,6 @@ const AddDocument: FC<any> = ({form, setShowDocumentModalButton}) => {
         </>
       ) : (
         <>
-          {setShowDocumentModalButton(false)}
           <div style={{display: 'flex', flexDirection: 'column'}}>
             <Typography
               name="Body 3/Bold"

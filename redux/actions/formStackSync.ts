@@ -14,6 +14,18 @@ export const insertFormStack = createAsyncThunk(
   },
 );
 
+export const updateFormStack = createAsyncThunk(
+  'formStackTable/updateSyncingForFormStack',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await FORMSTACK_API.patch(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);
+
 export const getAllFormStack = createAsyncThunk(
   'formStackTable/getAllFormStack',
   async (id: any, thunkApi) => {

@@ -14,14 +14,7 @@ import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/out
 
 import {useEffect, useState} from 'react';
 
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {
-  getAllGeneralSetting,
-  insertUpdateGeneralSetting,
-} from '../../../../../redux/actions/generalSetting';
 import CommonSelect from '@/app/components/common/os-select';
-import {queryAllDocuments} from '../../../../../redux/actions/formstack';
-import {getFormStackByDocId} from '../../../../../redux/actions/formStackSync';
 import {
   customerColumnsSync,
   formatStatus,
@@ -30,15 +23,26 @@ import {
   quoteColumns,
 } from '@/app/utils/CONSTANTS';
 import OsInput from '@/app/components/common/os-input';
+import {getFormStackByDocId} from '../../../../../redux/actions/formStackSync';
+import {queryAllDocuments} from '../../../../../redux/actions/formstack';
+import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import AddDocument from '../generateQuote/AddDocument';
 const FormStackSync = () => {
   const [token] = useThemeToken();
   const {data: FormstackData, loading: FormstackLoading} = useAppSelector(
     (state) => state.formstack,
   );
+  const [addDocForm] = Form.useForm();
   const [syncedValueForDoc, setSyncValueForDoc] = useState<any>();
+  const [documentId, setDocumentId] = useState<number>();
+  const [syncedNewValue, setNewSyncedValue] = useState<any>([]);
+  const [pdfUrlForDocument, setPdfUrlForDocument] = useState<any>();
+
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
   const [selectDropdownType, setSelectDropdownType] = useState<string>('Quote');
+
   const {data: generalSettingData, loading: GeneralSettingLoading} =
     useAppSelector((state) => state.gereralSetting);
 
@@ -103,12 +107,22 @@ const FormStackSync = () => {
   const getDataOfFormStackByDocId = (id: any) => {
     dispatch(getFormStackByDocId(id))?.then((payload: any) => {
       if (payload?.payload) {
-        setSyncValueForDoc(JSON?.parse(payload?.payload?.syncJson));
+        console.log('435435435435', payload?.payload);
+        setPdfUrlForDocument(payload?.payload?.doc_url);
+        let values = JSON?.parse(payload?.payload?.syncJson);
+        let newArrr: any = [];
+
+        values?.map((itemss: any) => {
+          newArrr?.push(itemss);
+        });
+        setNewSyncedValue(newArrr);
+      } else {
+        setNewSyncedValue([]);
+        setPdfUrlForDocument('');
       }
     });
   };
 
-  console.log('payloadpayload', syncedValueForDoc);
   return (
     <Space direction="vertical" size={24} style={{width: '100%'}}>
       <Form
@@ -152,185 +166,35 @@ const FormStackSync = () => {
       </Form>
 
       {syncedValueForDoc?.length > 0 ? (
-        <>
-          <Typography name="Heading 3/Regular" color={token?.colorPrimaryText}>
-            Mapping Available
-          </Typography>
-          <Row
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              padding: '20px',
-              height: '50vh',
-              overflow: 'auto',
-            }}
-          >
-            <Col>
-              <Row style={{marginTop: '6px'}}>
-                {' '}
-                <Typography
-                  style={{marginLeft: '10px'}}
-                  align="center"
-                  name="Body 3/Medium"
-                >
-                  Your File Header
-                </Typography>
-              </Row>
-              <Divider />
-              {syncedValueForDoc?.map((item: any) => (
-                <Row style={{marginTop: '6px'}}>
-                  <OsInput disabled value={formatStatus(item?.preVal)} />
-                </Row>
-              ))}
-            </Col>
-
-            <Col span={16}>
-              <Row style={{marginTop: '6px'}}>
-                {' '}
-                <Typography
-                  style={{marginLeft: '10px'}}
-                  align="center"
-                  name="Body 3/Medium"
-                >
-                  Quote Header
-                </Typography>
-              </Row>
-              <Divider />
-              {syncedValueForDoc?.map((item: any, indexOfCol: number) => (
-                <Row style={{marginTop: '6px'}}>
-                  <br />
-                  <CommonSelect
-                    style={{width: '100%'}}
-                    placeholder="Select Columns"
-                    allowClear
-                    options={columnSelectOptions}
-                    value={item?.newVal}
-                    dropdownRender={(menu) => (
-                      <>
-                        <Space
-                          direction="vertical"
-                          style={{padding: '9px 0px 0px 16px'}}
-                        >
-                          <Typography
-                            color={token?.colorPrimaryText}
-                            name="Body 3/Regular"
-                          >
-                            Select by:
-                          </Typography>
-                          <Space>
-                            <Button
-                              onClick={() => {
-                                setSelectDropdownType('Quote');
-                              }}
-                              style={
-                                selectDropdownType === 'Quote'
-                                  ? buttonActiveStyle
-                                  : buttonInactiveStyle
-                              }
-                            >
-                              <Typography
-                                name="Body 4/Regular"
-                                color={
-                                  token[
-                                    selectDropdownType === 'Quote'
-                                      ? 'colorPrimaryHover'
-                                      : 'colorPrimaryBorder'
-                                  ]
-                                }
-                                cursor="pointer"
-                              >
-                                Quote
-                              </Typography>
-                            </Button>
-                            <Button
-                              onClick={() => {
-                                setSelectDropdownType('Quote Line Item');
-                              }}
-                              style={
-                                selectDropdownType === 'Quote Line Item'
-                                  ? buttonActiveStyle
-                                  : buttonInactiveStyle
-                              }
-                            >
-                              <Typography
-                                name="Body 4/Regular"
-                                color={
-                                  token[
-                                    selectDropdownType === 'Quote Line Item'
-                                      ? 'colorPrimaryHover'
-                                      : 'colorPrimaryBorder'
-                                  ]
-                                }
-                                cursor="pointer"
-                              >
-                                Quote Line Item
-                              </Typography>
-                            </Button>
-                            <Button
-                              onClick={() => {
-                                setSelectDropdownType('Customer');
-                              }}
-                              style={
-                                selectDropdownType === 'Customer'
-                                  ? buttonActiveStyle
-                                  : buttonInactiveStyle
-                              }
-                            >
-                              <Typography
-                                name="Body 4/Regular"
-                                color={
-                                  token[
-                                    selectDropdownType === 'Customer'
-                                      ? 'colorPrimaryHover'
-                                      : 'colorPrimaryBorder'
-                                  ]
-                                }
-                                cursor="pointer"
-                              >
-                                Customer
-                              </Typography>
-                            </Button>
-                            <Button
-                              onClick={() => {
-                                setSelectDropdownType('Opportunity');
-                              }}
-                              style={
-                                selectDropdownType === 'Opportunity'
-                                  ? buttonActiveStyle
-                                  : buttonInactiveStyle
-                              }
-                            >
-                              <Typography
-                                name="Body 4/Regular"
-                                color={
-                                  token[
-                                    selectDropdownType === 'Opportunity'
-                                      ? 'colorPrimaryHover'
-                                      : 'colorPrimaryBorder'
-                                  ]
-                                }
-                                cursor="pointer"
-                              >
-                                Opportunity
-                              </Typography>
-                            </Button>
-                          </Space>
-                        </Space>
-                        <Divider style={{margin: '5px'}} />
-                        {menu}
-                      </>
-                    )}
-                  />
-                </Row>
-              ))}
-            </Col>
-          </Row>
-        </>
+        <AddDocument
+          form={addDocForm}
+          documentId={documentId}
+          setDocumentId={setDocumentId}
+          syncedNewValue={syncedNewValue}
+          setNewSyncedValue={setNewSyncedValue}
+          showDoucmentDropDown={false}
+          pdfUrlForDocument={pdfUrlForDocument}
+          setPdfUrlForDocument={setPdfUrlForDocument}
+        />
       ) : (
         <>
-          <Typography name="Heading 3/Regular" color={token?.colorPrimaryText}>
-            Mapping or Sync Values are not Available for this Document!
-          </Typography>
+          {documentId && (
+            <>
+              <Typography name="Body 3/Regular" color={token?.colorPrimaryText}>
+                Mapping or Sync Values are not Available for this Document!
+              </Typography>
+              <AddDocument
+                form={addDocForm}
+                documentId={documentId}
+                setDocumentId={setDocumentId}
+                syncedNewValue={syncedNewValue}
+                setNewSyncedValue={setNewSyncedValue}
+                showDoucmentDropDown={false}
+                pdfUrlForDocument={pdfUrlForDocument}
+                setPdfUrlForDocument={setPdfUrlForDocument}
+              />
+            </>
+          )}
         </>
       )}
     </Space>

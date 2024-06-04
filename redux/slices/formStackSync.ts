@@ -5,6 +5,7 @@ import {
   getAllFormStack,
   getFormStackByDocId,
   insertFormStack,
+  updateFormStack,
 } from '../actions/formStackSync';
 
 type FormStackState = {
@@ -79,6 +80,24 @@ const formStackSlice = createSlice({
       )
       .addCase(
         getFormStackByDocId.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(updateFormStack.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateFormStack.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        updateFormStack.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

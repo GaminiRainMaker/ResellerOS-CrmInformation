@@ -69,6 +69,7 @@ const GenerateQuote: React.FC = () => {
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [selectTedRowData, setSelectedRowData] = useState<React.Key[]>([]);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
+  const [documentId, setDocumentId] = useState<number>();
   const [amountData, setAmountData] = useState<any>();
   const [open, setOpen] = useState(false);
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
@@ -92,6 +93,8 @@ const GenerateQuote: React.FC = () => {
   const [showUpdateLineItemModal, setShowUpdateLineItemModal] =
     useState<boolean>(false);
   const [showDocumentModal, setShowDocumentModal] = useState<boolean>(false);
+  const [syncedNewValue, setNewSyncedValue] = useState<any>([]);
+  const [pdfUrlForDocument, setPdfUrlForDocument] = useState<any>();
 
   const [showDocumentModalButton, setShowDocumentModalButton] =
     useState<boolean>(false);
@@ -604,7 +607,13 @@ const GenerateQuote: React.FC = () => {
             {' '}
             <AddDocument
               form={addDocForm}
-              setShowDocumentModalButton={setShowDocumentModalButton}
+              documentId={documentId}
+              setDocumentId={setDocumentId}
+              syncedNewValue={syncedNewValue}
+              setNewSyncedValue={setNewSyncedValue}
+              showDoucmentDropDown={true}
+              pdfUrlForDocument={pdfUrlForDocument}
+              setPdfUrlForDocument={setPdfUrlForDocument}
             />
           </>
         }
