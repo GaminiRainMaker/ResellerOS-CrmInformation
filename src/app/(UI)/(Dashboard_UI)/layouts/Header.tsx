@@ -87,7 +87,9 @@ const CustomHeader = () => {
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const {userInformation, searchDataa} = useAppSelector((state) => state.user);
+  const {userInformation, searchDataa, loginUserInformation} = useAppSelector(
+    (state) => state.user,
+  );
   const {
     notificationCount,
     data: notificationData,
@@ -226,7 +228,6 @@ const CustomHeader = () => {
               ? 'Reseller'
               : '',
     );
-    setProfileImg(userInformation?.ProfileImage);
   }, [userInformation]);
 
   const handleOptionClick = (typeRoute: string) => {
@@ -279,6 +280,9 @@ const CustomHeader = () => {
       setSearchFinalData(optionsForSearch);
     }
   }, [searchDataa]);
+  useEffect(() => {
+    setProfileImg(loginUserInformation?.profile_image);
+  }, [loginUserInformation]);
 
   return (
     <Layout>
