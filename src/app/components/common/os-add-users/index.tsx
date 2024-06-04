@@ -177,18 +177,17 @@ const AddUser = () => {
     if (userInformation?.organization) {
       dispatch(getUserByOrganization(userInformation?.organization));
     }
-  }, []);
+  }, [userInformation?.organization]);
 
   const onFinish = () => {
     const userNewData = form.getFieldsValue();
+
     const userDataobj: any = {
       ...userNewData,
       organization: userInformation?.organization,
       role: 'reseller',
       password: `${userNewData?.first_name}@123`,
     };
-
-    // return;
     if (userNewData) {
       if (addUserType === 'insert') {
         dispatch(createUser({...userDataobj, is_email_invite: true})).then(
@@ -276,6 +275,7 @@ const AddUser = () => {
           <CheckCircleIcon width={35} height={35} color={token?.colorSuccess} />
         }
         onOk={() => {
+          window.location.reload();
           setShowDailogModal(false);
         }}
       />
