@@ -17,6 +17,18 @@ export const uploadToAws = createAsyncThunk(
   },
 );
 
+export const uploadExcelFileToAws = createAsyncThunk(
+  'upload/uploadDocument',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await UPLOAD_API.uploadExcel(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);
+
 export const uploadToAwsForUserImage = createAsyncThunk(
   'upload/uploadImage',
   async (data: any, thunkApi) => {

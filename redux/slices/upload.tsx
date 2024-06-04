@@ -1,7 +1,11 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {uploadToAws, uploadToAwsForUserImage} from '../actions/upload';
+import {
+  uploadExcelFileToAws,
+  uploadToAws,
+  uploadToAwsForUserImage,
+} from '../actions/upload';
 
 type UploadState = {
   loading: boolean;
@@ -53,6 +57,24 @@ const uploadSlice = createSlice({
       )
       .addCase(
         uploadToAwsForUserImage.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(uploadExcelFileToAws.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        uploadExcelFileToAws.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = [action.payload];
+        },
+      )
+      .addCase(
+        uploadExcelFileToAws.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

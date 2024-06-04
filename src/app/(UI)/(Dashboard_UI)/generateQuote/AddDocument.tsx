@@ -25,7 +25,10 @@ import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting'
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '@/app/components/common/os-button';
 import {insertFormStack} from '../../../../../redux/actions/formStackSync';
-import {uploadToAws} from '../../../../../redux/actions/upload';
+import {
+  uploadExcelFileToAws,
+  uploadToAws,
+} from '../../../../../redux/actions/upload';
 import {convertFileToBase64} from '@/app/utils/base';
 
 const AddDocument: FC<any> = ({
@@ -68,7 +71,7 @@ const AddDocument: FC<any> = ({
     setNewSyncedValue([]);
     setPdfUrlForDocument();
   }, [documentId]);
-  console.log('43543532234234', pdfUrlForDocument);
+
   const buttonActiveStyle = {
     background: token.colorPrimaryBg,
     borderColor: token.colorPrimaryBg,
@@ -91,15 +94,16 @@ const AddDocument: FC<any> = ({
     }));
 
   const beforeUpload = (file: any) => {
+    let path = file?.type?.split('.')?.includes('spreadsheetml')
+      ? uploadExcelFileToAws
+      : uploadToAws;
     convertFileToBase64(file)
       .then((base64String) => {
         if (base64String) {
-          dispatch(uploadToAws({document: base64String})).then(
-            (payload: any) => {
-              const pdfUrl = payload?.payload?.data?.Location;
-              setPdfUrlForDocument(pdfUrl);
-            },
-          );
+          dispatch(path({document: base64String})).then((payload: any) => {
+            const pdfUrl = payload?.payload?.data?.Location;
+            setPdfUrlForDocument(pdfUrl);
+          });
         }
       })
       .catch((error: any) => {

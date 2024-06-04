@@ -144,6 +144,7 @@ export const API = {
   UPLOADAWS: {
     INDEX: '/upload/uploadDocument',
     IMAGE: '/upload/imageUpload',
+    EXCEL:'/upload/uploadExcelFile',
   },
   OPPORLINEITEM: {
     INDEX: '/opportunityLineItem',

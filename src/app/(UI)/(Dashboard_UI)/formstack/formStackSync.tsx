@@ -4,16 +4,13 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import OsInputPassword from '@/app/components/common/os-input/InputPassword';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import Typography from '@/app/components/common/typography';
 import {Button, Divider, Form} from 'antd';
-import Image from 'next/image';
-import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
-import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
 
 import {useEffect, useState} from 'react';
 
+import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import {
   customerColumnsSync,
@@ -22,7 +19,6 @@ import {
   quotLineItemsColumnsSync,
   quoteColumns,
 } from '@/app/utils/CONSTANTS';
-import OsInput from '@/app/components/common/os-input';
 import {getFormStackByDocId} from '../../../../../redux/actions/formStackSync';
 import {queryAllDocuments} from '../../../../../redux/actions/formstack';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
@@ -107,7 +103,6 @@ const FormStackSync = () => {
   const getDataOfFormStackByDocId = (id: any) => {
     dispatch(getFormStackByDocId(id))?.then((payload: any) => {
       if (payload?.payload) {
-        console.log('435435435435', payload?.payload);
         setPdfUrlForDocument(payload?.payload?.doc_url);
         let values = JSON?.parse(payload?.payload?.syncJson);
         let newArrr: any = [];
@@ -159,6 +154,7 @@ const FormStackSync = () => {
             allowClear
             options={FormstackDataOptions}
             onChange={(e: any) => {
+              setDocumentId(e);
               getDataOfFormStackByDocId(e);
             }}
           />
@@ -180,9 +176,14 @@ const FormStackSync = () => {
         <>
           {documentId && (
             <>
-              <Typography name="Body 3/Regular" color={token?.colorPrimaryText}>
-                Mapping or Sync Values are not Available for this Document!
-              </Typography>
+              {syncedNewValue?.length === 0 && (
+                <Typography
+                  name="Body 3/Regular"
+                  color={token?.colorPrimaryText}
+                >
+                  Mapping or Sync Values are not Available for this Document!
+                </Typography>
+              )}
               <AddDocument
                 form={addDocForm}
                 documentId={documentId}
