@@ -255,13 +255,13 @@ const AddUser = () => {
 
       <OsModal
         loading={loading}
-        body={<AddUsers form={form} />}
+        body={<AddUsers form={form} onFinish={onFinish} />}
         width={696}
         open={showAddUserModal}
         onCancel={() => {
           setShowAddUserModal((p) => !p);
         }}
-        onOk={onFinish}
+        onOk={form.submit}
         primaryButtonText="Save & Send Invite"
         footerPadding={24}
       />

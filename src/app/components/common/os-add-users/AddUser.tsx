@@ -2,12 +2,13 @@
 
 import {Col, Form, Row, Space} from 'antd';
 import {FC, useEffect, useState} from 'react';
+import {useAppSelector} from '../../../../../redux/hook';
 import useThemeToken from '../hooks/useThemeToken';
+import ContactInput from '../os-contact';
 import OsInput from '../os-input';
 import Typography from '../typography';
 import {OsAdduser} from './add-users.interface';
-import ContactInput from '../os-contact';
-import {useAppSelector} from '../../../../../redux/hook';
+import {Checkbox} from '../antd/Checkbox';
 
 const AddUser: FC<OsAdduser> = ({
   isDrawer = false,
@@ -18,12 +19,19 @@ const AddUser: FC<OsAdduser> = ({
   const [token] = useThemeToken();
   const [contactValue, setContactValue] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
+
   useEffect(() => {
-    form.resetFields();
+    form.setFieldsValue({
+      first_name: userData?.first_name,
+      last_name: userData?.last_name,
+      user_name: userData?.user_name,
+      email: userData?.email,
+      phone_number: userData?.phone_number,
+      job_title: userData?.job_title,
+    });
   }, [userData]);
 
   const validateEmail = (_: any, value: any) => {
-    // Regular expression to match emails ending with user's organization domain
     const emailPattern = new RegExp(
       `^[^\\s@]+@${userInformation?.organization}\\.com$`,
     );
@@ -67,7 +75,6 @@ const AddUser: FC<OsAdduser> = ({
           requiredMark={false}
           form={form}
           onFinish={onFinish}
-          initialValues={userData}
         >
           <Row gutter={[16, 16]}>
             <Col sm={24} md={12}>
@@ -122,6 +129,34 @@ const AddUser: FC<OsAdduser> = ({
               <Form.Item label="Job Title" name="job_title">
                 <OsInput placeholder="Enter Job Title" />
               </Form.Item>
+            </Col>
+          </Row>
+
+          <Typography name="Body 3/Medium">Provide Permissions</Typography>
+          <Row gutter={[16, 16]} style={{marginTop: '10px'}}>
+            <Col span={6}>
+              <Space align="start">
+                <Form.Item label="" valuePropName="checked" name="is_quote">
+                  <Checkbox style={{paddingBottom: '10px'}} />
+                </Form.Item>
+                <Typography name="Body 4/Medium">Quote AI</Typography>
+              </Space>
+            </Col>
+            <Col span={6}>
+              <Space align="start">
+                <Form.Item label="" name="is_dealReg" valuePropName="checked">
+                  <Checkbox style={{paddingBottom: '10px'}} />
+                </Form.Item>
+                <Typography name="Body 4/Medium">DealReg AI</Typography>
+              </Space>
+            </Col>
+            <Col span={6}>
+              <Space align="start">
+                <Form.Item label="" name="is_admin" valuePropName="checked">
+                  <Checkbox style={{paddingBottom: '10px'}} />
+                </Form.Item>
+                <Typography name="Body 4/Medium">Admin Access</Typography>
+              </Space>
             </Col>
           </Row>
         </Form>
