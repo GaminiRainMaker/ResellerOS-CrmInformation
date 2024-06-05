@@ -231,6 +231,7 @@ const FormStackSync = () => {
                 showDoucmentDropDown={false}
                 showSyncScreen={true}
                 documentName={documentName}
+                documentKey={documentKey}
               />
             </>
           )}

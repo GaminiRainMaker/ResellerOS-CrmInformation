@@ -5,7 +5,11 @@ import './globals.css';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Providers from './Provider';
 import theme from './style/theme';
+// import {PDFViewer} from '@react-pdf/renderer'; // Import PDFViewer from react-pdf
+// import pdfjs from '@react-pdf/renderer'; // Import pdfjs from react-pdf
 
+// // Set the worker path for react-pdf
+// pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 const jakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
   display: 'swap',
@@ -23,6 +27,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
+    // <PDFViewer>
     <ConfigProvider theme={theme}>
       <html lang="en">
         <body className={`${jakartaSans.variable}`}>
@@ -30,5 +35,6 @@ export default async function RootLayout({
         </body>
       </html>
     </ConfigProvider>
+    // </PDFViewer>
   );
 }

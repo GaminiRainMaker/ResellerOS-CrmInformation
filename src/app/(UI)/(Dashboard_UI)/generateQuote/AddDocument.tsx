@@ -39,7 +39,7 @@ const AddDocument: FC<any> = ({
   showSyncScreen,
   showDoucmentDropDown,
   documentName,
-  documentKey
+  documentKey,
 }) => {
   const [token] = useThemeToken();
   const router = useRouter();
@@ -158,41 +158,8 @@ const AddDocument: FC<any> = ({
       doc_name: documentName,
       doc_key: documentKey,
     };
-
     if (obj && documentId) {
       dispatch(insertFormStack(obj));
-    }
-  };
-
-  const dowloadFunction = async () => {
-    try {
-      const response = await axios.post(
-        fileUrl,
-        {
-          quote_num: '45etrsdgsdf',
-          clientId: clientId,
-          clientSecret: clientSecret,
-        },
-        {
-          responseType: 'blob',
-        },
-      );
-
-      const blob = new Blob([response.data], {
-        type: 'application/octet-stream',
-      });
-
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'downloaded_file.pdf');
-      document.body.appendChild(link);
-      link.click();
-      window.URL.revokeObjectURL(url);
-      link.remove();
-      console.log('File downloaded successfully!');
-    } catch (error) {
-      console.error('Error downloading file:', error);
     }
   };
 
