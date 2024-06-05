@@ -36,7 +36,6 @@ const FormStackSync = () => {
   const [syncedValueForDoc, setSyncValueForDoc] = useState<any>();
   const [documentId, setDocumentId] = useState<number>();
   const [syncedNewValue, setNewSyncedValue] = useState<any>([]);
-  const [pdfUrlForDocument, setPdfUrlForDocument] = useState<any>();
 
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
@@ -204,8 +203,7 @@ const FormStackSync = () => {
           syncedNewValue={syncedNewValue}
           setNewSyncedValue={setNewSyncedValue}
           showDoucmentDropDown={false}
-          pdfUrlForDocument={pdfUrlForDocument}
-          setPdfUrlForDocument={setPdfUrlForDocument}
+         
         />
       ) : (
         <>
@@ -226,8 +224,6 @@ const FormStackSync = () => {
                 syncedNewValue={syncedNewValue}
                 setNewSyncedValue={setNewSyncedValue}
                 showDoucmentDropDown={false}
-                pdfUrlForDocument={pdfUrlForDocument}
-                setPdfUrlForDocument={setPdfUrlForDocument}
               />
             </>
           )}

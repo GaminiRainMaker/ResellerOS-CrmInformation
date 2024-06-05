@@ -29,8 +29,6 @@ const AddDocument: FC<any> = ({
   syncedNewValue,
   setNewSyncedValue,
   showDoucmentDropDown,
-  pdfUrlForDocument,
-  setPdfUrlForDocument,
 }) => {
   const [token] = useThemeToken();
   const router = useRouter();
@@ -50,7 +48,6 @@ const AddDocument: FC<any> = ({
   }, []);
   useEffect(() => {
     setNewSyncedValue([]);
-    setPdfUrlForDocument();
   }, [documentId]);
 
   const buttonActiveStyle = {
