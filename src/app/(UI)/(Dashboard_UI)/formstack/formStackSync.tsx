@@ -78,14 +78,20 @@ const FormStackSync = () => {
     }
   }, [selectDropdownType]);
 
-  const FormstackDataOptions =
-    FormstackData &&
-    FormstackData.length > 0 &&
-    FormstackData?.map((FormstackDataItem: any) => ({
-      value: FormstackDataItem.id,
-      label: FormstackDataItem.name,
-      key: FormstackDataItem.key,
-    }));
+  const [formStackDataOPtions, setFormStackDataOPtions] = useState<any>();
+  useEffect(() => {
+    let newArr: any = [];
+    if (FormstackData && FormstackData?.length > 0) {
+      FormstackData?.map((items: any) => {
+        newArr?.push({
+          value: items.id,
+          label: items.name,
+          key: items.key,
+        });
+      });
+    }
+    setFormStackDataOPtions(newArr);
+  }, [FormstackData]);
 
   const onFinish = () => {};
 
@@ -187,7 +193,7 @@ const FormStackSync = () => {
             placeholder="Select Document"
             allowClear
             labelInValue
-            options={FormstackDataOptions}
+            options={formStackDataOPtions}
             onChange={(e: any) => {
               setDocumentName(e?.label);
               setDocumentKey(e?.key);
