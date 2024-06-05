@@ -2,7 +2,6 @@
 
 'use client';
 
-import {Avatar} from '@/app/components/common/antd/Avatar';
 import {Divider} from '@/app/components/common/antd/Divider';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
@@ -18,10 +17,9 @@ import {
 } from '@heroicons/react/24/outline';
 import {Badge} from 'antd';
 import {FC, useState} from 'react';
+import {useAppSelector} from '../../../../../redux/hook';
 import {OSProfileInterface} from './os-profile.interface';
 import {DetailCardStyle} from './styled-components';
-import {useAppSelector} from '../../../../../redux/hook';
-import TableNameColumn from '../os-table/TableNameColumn';
 
 const ProfileCard: FC<OSProfileInterface> = ({
   contactCardData,

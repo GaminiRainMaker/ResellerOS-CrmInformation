@@ -12,7 +12,7 @@ import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {encrypt} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form, TabsProps} from 'antd';
+import {Form, TabsProps, notification} from 'antd';
 import {useEffect, useState} from 'react';
 import {
   deletePartnerPassword,
@@ -116,18 +116,27 @@ const PartnerPassword = () => {
     emptyText: <EmptyContainer title="No Data" />,
   };
 
-  //   const nameOptions = userData?.reduce(
-  //     (accumulator: any, userDataItem: any) => {
-  //       if (userDataItem?.is_admin !== true) {
-  //         accumulator.push({
-  //           label: userDataItem?.user_name,
-  //           value: userDataItem?.user_name,
-  //         });
-  //       }
-  //       return accumulator;
-  //     },
-  //     [],
-  //   );
+  const sharedPartnerPasswordOptions = finalSharedPasswordData?.map(
+    (finalSharedPasswordDataItem: any) => ({
+      value: finalSharedPasswordDataItem?.PartnerPassword?.Partner?.partner,
+      label: (
+        <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+          {finalSharedPasswordDataItem?.PartnerPassword?.Partner?.partner}
+        </Typography>
+      ),
+    }),
+  );
+
+  const myPartnerPasswordOptions = finalMyPasswordData?.map(
+    (finalMyPasswordDataItem: any) => ({
+      value: finalMyPasswordDataItem?.Partner?.partner,
+      label: (
+        <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+          {finalMyPasswordDataItem?.Partner?.partner}
+        </Typography>
+      ),
+    }),
+  );
 
   const tabItems: TabsProps['items'] = [
     {
@@ -194,6 +203,14 @@ const PartnerPassword = () => {
         if (d?.payload) {
           dispatch(queryPartnerPassword(query));
           setShowModal(false);
+          partnerPasswordForm.resetFields();
+        } else {
+          notification?.open({
+            message: 'Partner Password for this partner is already exist.',
+            type: 'info',
+          });
+          setShowModal(false);
+          partnerPasswordForm.resetFields();
         }
       });
     }
@@ -249,6 +266,7 @@ const PartnerPassword = () => {
                 {activeKey === 1 ? (
                   <CommonSelect
                     style={{width: '200px'}}
+                    options={sharedPartnerPasswordOptions}
                     placeholder="Search here"
                     showSearch
                     onSearch={(e: any) => {
@@ -269,6 +287,7 @@ const PartnerPassword = () => {
                   <CommonSelect
                     style={{width: '200px'}}
                     placeholder="Search here"
+                    options={myPartnerPasswordOptions}
                     showSearch
                     onSearch={(e: any) => {
                       setQuery({
@@ -283,7 +302,6 @@ const PartnerPassword = () => {
                       });
                     }}
                     value={query?.partner_name}
-                    // options={activeKey === 1 ? nameOptions : nameAdminOptions}
                   />
                 )}
               </Space>
@@ -299,6 +317,9 @@ const PartnerPassword = () => {
                   onClick={() => {
                     setQuery({
                       ...query,
+                      partner_name: null,
+                    });
+                    setSharedQuery({
                       ...sharedQuery,
                       partner_name: null,
                     });

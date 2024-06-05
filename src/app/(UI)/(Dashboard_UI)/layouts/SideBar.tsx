@@ -73,6 +73,7 @@ const SideBar = () => {
             email: payload?.payload?.email,
             MasterAdmin: payload?.payload?.master_admin,
             Role: payload?.payload?.role,
+            ProfileImage: payload?.payload?.profile_image,
           }),
         );
       });
@@ -250,45 +251,48 @@ const SideBar = () => {
   }, []);
 
   const items: MenuItem[] = [
-    getItem(
-      <Typography
-        cursor="pointer"
-        onClick={() => {
-          setSelectedKey(1);
-          setCrmChildKey(0);
-          router?.push('/dashboard');
-        }}
-        name="Button 1"
-      >
-        <Space size={12}>
-          <OsAvatar
-            icon={
-              <Squares2X2Icon
-                color={
-                  selectedKey == 1
-                    ? token?.colorPrimary
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
-          <Typography
-            cursor="pointer"
-            name="Button 1"
-            style={{
-              marginTop: '1px',
-            }}
-            color={
-              selectedKey == 1 ? token?.colorPrimary : token?.colorTextSecondary
-            }
-          >
-            Dashboard
-          </Typography>
-        </Space>
-      </Typography>,
-      '1',
-    ),
+    Role !== 'superAdmin' &&
+      getItem(
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setSelectedKey(1);
+            setCrmChildKey(0);
+            router?.push('/dashboard');
+          }}
+          name="Button 1"
+        >
+          <Space size={12}>
+            <OsAvatar
+              icon={
+                <Squares2X2Icon
+                  color={
+                    selectedKey == 1
+                      ? token?.colorPrimary
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+              }}
+              color={
+                selectedKey == 1
+                  ? token?.colorPrimary
+                  : token?.colorTextSecondary
+              }
+            >
+              Dashboard
+            </Typography>
+          </Space>
+        </Typography>,
+        '1',
+      ),
     isAdmin &&
       Role === 'superAdmin' &&
       getItem(

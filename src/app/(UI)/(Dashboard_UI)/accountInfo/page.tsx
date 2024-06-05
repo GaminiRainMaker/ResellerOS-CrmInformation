@@ -30,7 +30,7 @@ const AccountInfo = () => {
           key: 1,
           name: 'My Profile',
           superChild: <MyProfile />,
-          route: `/accountInfo?id=${getId}&organization=${organization}&tab=myProfile&isSuperAdminProfile=${isSuperAdminProfile}`,
+          route: `/accountInfo?id=${getId}&organization=${organization}&tab=myProfile&isSuperAdminProfile=${isSuperAdminProfile}&self=true`,
         },
         {
           key: 2,

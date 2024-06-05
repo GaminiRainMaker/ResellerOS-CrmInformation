@@ -1,14 +1,8 @@
 import {FormInstance} from 'antd/es/form';
 
-type UserData = {
-  name: string;
-  email: string;
-  isAdmin: boolean;
-};
-
 export interface OsAdduser {
   isDrawer?: boolean;
-  userData?: UserData;
+  userData?: any;
   onFinish?: any;
   form: FormInstance;
 }
