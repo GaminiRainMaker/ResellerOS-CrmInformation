@@ -15,7 +15,7 @@ import {
   quotLineItemsColumnsSync,
   quoteColumns,
 } from '@/app/utils/CONSTANTS';
-import {Button, Form} from 'antd';
+import {Button, Form, notification} from 'antd';
 import {useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {
@@ -151,7 +151,7 @@ const AddDocument: FC<any> = ({
     setNewSyncedValue(newSyncTableData);
   };
 
-  const addNewSyncValues = () => {
+  const addNewSyncValues = async () => {
     let obj = {
       doc_id: documentId,
       syncJson: [JSON.stringify(syncedNewValue)],
@@ -159,8 +159,13 @@ const AddDocument: FC<any> = ({
       doc_key: documentKey,
     };
     if (obj && documentId) {
-      dispatch(insertFormStack(obj));
+      await dispatch(insertFormStack(obj));
     }
+
+    notification?.open({
+      message: 'FormStack Syncing added successfully',
+      type: 'success',
+    });
   };
 
   return (
