@@ -57,6 +57,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   setSelectedRowIds,
   selectTedRowIds,
   setQuoteLineItemExist,
+  setActiveTab,
 }) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
@@ -525,6 +526,9 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       setConfirmedData(false);
       dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
     }
+    setTimeout(() => {
+      setActiveTab('2');
+    }, 2000);
     setShowVerificationFileModal(false);
   };
 

@@ -306,6 +306,7 @@ const GenerateQuote: React.FC = () => {
           setSelectedRowIds={setSelectedRowIds}
           selectTedRowIds={selectTedRowIds}
           setQuoteLineItemExist={setQuoteLineItemExist}
+          setActiveTab={setActiveTab}
         />
       ),
     },
