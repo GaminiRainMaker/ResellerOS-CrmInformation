@@ -612,6 +612,7 @@ const GenerateQuote: React.FC = () => {
               setNewSyncedValue={setNewSyncedValue}
               showDoucmentDropDown={true}
               showSyncScreen={false}
+              documentName={''}
             />
           </>
         }

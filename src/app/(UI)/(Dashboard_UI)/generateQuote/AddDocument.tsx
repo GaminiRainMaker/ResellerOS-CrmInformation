@@ -33,6 +33,7 @@ const AddDocument: FC<any> = ({
   setNewSyncedValue,
   showSyncScreen,
   showDoucmentDropDown,
+  documentName,
 }) => {
   const [token] = useThemeToken();
   const router = useRouter();
@@ -148,6 +149,7 @@ const AddDocument: FC<any> = ({
     let obj = {
       doc_id: documentId,
       syncJson: [JSON.stringify(syncedNewValue)],
+      doc_name: documentName,
     };
 
     if (obj && documentId) {
@@ -364,7 +366,6 @@ const AddDocument: FC<any> = ({
                           allowClear
                           options={innerDocOptions}
                           onChange={(e: any) => {
-                            console.log('setDocumentId', e);
                             setDocumentId(e);
                           }}
                         />

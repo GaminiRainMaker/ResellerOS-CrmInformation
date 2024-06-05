@@ -82,11 +82,7 @@ const FormStackSync = () => {
     FormstackData.length > 0 &&
     FormstackData?.map((FormstackDataItem: any) => ({
       value: FormstackDataItem.id,
-      label: (
-        <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-          {FormstackDataItem.name}
-        </Typography>
-      ),
+      label: FormstackDataItem.name,
     }));
 
   const onFinish = () => {};
@@ -154,8 +150,6 @@ const FormStackSync = () => {
     });
   };
 
-  console.log('46454353532', syncedNewValue);
-
   return (
     <Space direction="vertical" size={24} style={{width: '100%'}}>
       <Form
@@ -190,10 +184,13 @@ const FormStackSync = () => {
             style={{width: '100%'}}
             placeholder="Select Document"
             allowClear
+            labelInValue
             options={FormstackDataOptions}
-            onChange={(e: any, label: any) => {
-              setDocumentId(e);
-              getDataOfFormStackByDocId(e);
+            onChange={(e: any) => {
+              setDocumentName(e?.label);
+
+              setDocumentId(e?.value);
+              getDataOfFormStackByDocId(e?.value);
             }}
           />
         </SelectFormItem>
@@ -208,6 +205,7 @@ const FormStackSync = () => {
           setNewSyncedValue={setNewSyncedValue}
           showDoucmentDropDown={false}
           showSyncScreen={true}
+          documentName={documentName}
         />
       ) : (
         <>
@@ -229,6 +227,7 @@ const FormStackSync = () => {
                 setNewSyncedValue={setNewSyncedValue}
                 showDoucmentDropDown={false}
                 showSyncScreen={true}
+                documentName={documentName}
               />
             </>
           )}
