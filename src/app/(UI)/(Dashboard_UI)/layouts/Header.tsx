@@ -466,14 +466,7 @@ const CustomHeader = () => {
                       icon={<UserCircleIcon />}
                       shape="circle"
                       size="large"
-                      style={{
-                        background: 'none',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
                     />
-
                     <Space direction="vertical" size={0}>
                       <Typography name="Body 3/Regular">
                         {userInformation?.username || 'Josh Walker'}
