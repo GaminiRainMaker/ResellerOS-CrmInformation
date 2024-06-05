@@ -19,6 +19,7 @@ export interface InputDetailTabInterface {
   setSelectedRowIds?: any;
   selectTedRowIds?: any;
   setQuoteLineItemExist?: any;
+  setActiveTab?: any;
 }
 
 export interface UploadFileInterface {

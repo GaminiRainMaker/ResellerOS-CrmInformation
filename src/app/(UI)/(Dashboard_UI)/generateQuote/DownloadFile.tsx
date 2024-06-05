@@ -1,28 +1,26 @@
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import GlobalLoader from '@/app/components/common/os-global-loader';
+import OsModal from '@/app/components/common/os-modal';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
 import axios from 'axios';
+import Image from 'next/image';
 import {useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getAllFormStack} from '../../../../../redux/actions/formStackSync';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {Document, Page} from 'react-pdf';
-import OsModal from '@/app/components/common/os-modal';
-import Image from 'next/image';
 const DownloadFile: FC<any> = ({form}) => {
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [pdfUrl, setPdfUrl] = useState<any>(null);
   const [showPreviewModal, setShowPreviewModal] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [selectedDoc, setSelectedDoc] = useState<any>();
-  const [numPages, setNumPages] = useState(null);
-  const [pageNumber, setPageNumber] = useState(1);
   const {loading: GeneralSettingLoading, data: GeneralSettingData} =
     useAppSelector((state) => state.gereralSetting);
   const {loading: formStackSyncLoading, data: formStackSyncData} =
@@ -48,15 +46,14 @@ const DownloadFile: FC<any> = ({form}) => {
 
   const dowloadFunction = async (data: any, type: string) => {
     const dataItem = data?.data && JSON?.parse(data?.data);
-
     const formattedData: Record<string, string> = {};
     dataItem?.forEach((item: any) => {
       if (item.preVal !== 'created_by' && item.preVal !== 'quotelineitem') {
         formattedData[item.preVal] = item.newVal;
       }
     });
-
     try {
+      setLoading(true);
       if (data && GeneralSettingData?.api_key) {
         const response = await axios.post(
           `https://www.webmerge.me/merge/${data?.value}/${data?.key}`,
@@ -91,7 +88,9 @@ const DownloadFile: FC<any> = ({form}) => {
           console.log('File downloaded successfully!');
         }
       }
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error('Error downloading file:', error);
     }
   };
@@ -128,10 +127,11 @@ const DownloadFile: FC<any> = ({form}) => {
     // }
   };
 
-  console.log('pdfUrl', pdfUrl);
   return (
     <>
-      <GlobalLoader loading={formStackSyncLoading || GeneralSettingLoading}>
+      <GlobalLoader
+        loading={formStackSyncLoading || GeneralSettingLoading || loading}
+      >
         {FormstackDataOptions ? (
           <Form
             layout="vertical"
@@ -166,40 +166,38 @@ const DownloadFile: FC<any> = ({form}) => {
             </Row>
           </Form>
         ) : (
-          <>
-            <div style={{display: 'flex', flexDirection: 'column'}}>
-              <Typography
-                name="Body 3/Bold"
-                color={token?.colorLink}
-                style={{marginBottom: '6px'}}
-              >
-                Note:
-              </Typography>
-              <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
-                <ul style={{listStyleType: 'disc', marginLeft: '20px'}}>
-                  <li>
-                    You haven't provided the secret key and API yet, or the
-                    provided keys are invalid. Please verify and update them.
-                  </li>
-                  <li>
-                    You can{' '}
-                    <Typography
-                      name="Body 4/Medium"
-                      color={token?.colorLink}
-                      style={{textDecoration: 'underline'}}
-                      hoverOnText
-                      onClick={() => {
-                        router.push('/admin?tab=formstack');
-                      }}
-                    >
-                      click here
-                    </Typography>{' '}
-                    to update the keys.
-                  </li>
-                </ul>
-              </Typography>
-            </div>
-          </>
+          <div style={{display: 'flex', flexDirection: 'column'}}>
+            <Typography
+              name="Body 3/Bold"
+              color={token?.colorLink}
+              style={{marginBottom: '6px'}}
+            >
+              Note:
+            </Typography>
+            <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
+              <ul style={{listStyleType: 'disc', marginLeft: '20px'}}>
+                <li>
+                  You haven't provided the secret key and API yet, or the
+                  provided keys are invalid. Please verify and update them.
+                </li>
+                <li>
+                  You can{' '}
+                  <Typography
+                    name="Body 4/Medium"
+                    color={token?.colorLink}
+                    style={{textDecoration: 'underline'}}
+                    hoverOnText
+                    onClick={() => {
+                      router.push('/admin?tab=formstack');
+                    }}
+                  >
+                    click here
+                  </Typography>{' '}
+                  to update the keys.
+                </li>
+              </ul>
+            </Typography>
+          </div>
         )}
       </GlobalLoader>
       <OsModal
