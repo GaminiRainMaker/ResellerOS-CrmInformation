@@ -19,8 +19,8 @@ import {
   quotLineItemsColumnsSync,
   quoteColumns,
 } from '@/app/utils/CONSTANTS';
+import {getAllDocuments} from '../../../../../redux/actions/formstack';
 import {getFormStackByDocId} from '../../../../../redux/actions/formStackSync';
-import {queryAllDocuments} from '../../../../../redux/actions/formstack';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddDocument from '../generateQuote/AddDocument';
@@ -39,9 +39,6 @@ const FormStackSync = () => {
   const [form] = Form.useForm();
   const [selectDropdownType, setSelectDropdownType] = useState<string>('Quote');
 
-  const {data: generalSettingData, loading: GeneralSettingLoading} =
-    useAppSelector((state) => state.gereralSetting);
-
   const [columnSelectOptions, setColumnSelectOptions] = useState<any>([]);
 
   useEffect(() => {
@@ -58,18 +55,9 @@ const FormStackSync = () => {
   };
 
   useEffect(() => {
-    let obj = {
-      username: generalSettingData?.api_key,
-      password: generalSettingData?.secret_key,
-    };
-    if (obj) {
-      dispatch(queryAllDocuments(obj));
-    }
-  }, [generalSettingData]);
-
-  useEffect(() => {
-    dispatch(getAllGeneralSetting(''));
+    dispatch(getAllDocuments(''));
   }, []);
+
   useEffect(() => {
     switch (selectDropdownType) {
       case 'Quote Line Item':
