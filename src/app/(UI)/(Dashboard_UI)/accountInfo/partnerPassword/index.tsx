@@ -12,7 +12,7 @@ import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {encrypt} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form, TabsProps} from 'antd';
+import {Form, TabsProps, notification} from 'antd';
 import {useEffect, useState} from 'react';
 import {
   deletePartnerPassword,
@@ -203,6 +203,14 @@ const PartnerPassword = () => {
         if (d?.payload) {
           dispatch(queryPartnerPassword(query));
           setShowModal(false);
+          partnerPasswordForm.resetFields();
+        } else {
+          notification?.open({
+            message: 'Partner Password for this partner is already exist.',
+            type: 'info',
+          });
+          setShowModal(false);
+          partnerPasswordForm.resetFields();
         }
       });
     }
