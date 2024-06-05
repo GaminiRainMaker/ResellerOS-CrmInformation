@@ -39,6 +39,7 @@ const AddDocument: FC<any> = ({
   showSyncScreen,
   showDoucmentDropDown,
   documentName,
+  documentKey
 }) => {
   const [token] = useThemeToken();
   const router = useRouter();
@@ -155,6 +156,7 @@ const AddDocument: FC<any> = ({
       doc_id: documentId,
       syncJson: [JSON.stringify(syncedNewValue)],
       doc_name: documentName,
+      doc_key: documentKey,
     };
 
     if (obj && documentId) {

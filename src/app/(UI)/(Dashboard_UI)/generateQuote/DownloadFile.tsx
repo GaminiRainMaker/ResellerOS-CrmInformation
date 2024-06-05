@@ -29,9 +29,10 @@ const DownloadFile: FC<any> = ({form, documentId}) => {
   const FormstackDataOptions = formStackSyncData?.map(
     (FormstackDataItem: any) => ({
       value: FormstackDataItem.id,
+      key: FormstackDataItem.doc_key,
       label: (
         <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-          {FormstackDataItem.name}
+          {FormstackDataItem.doc_name}
         </Typography>
       ),
     }),
@@ -40,7 +41,7 @@ const DownloadFile: FC<any> = ({form, documentId}) => {
   const dowloadFunction = async (data: any) => {
     dispatch(getAllGeneralSetting(''));
     try {
-      if (data && GeneralSettingData) {
+      if (data && GeneralSettingData?.api_key) {
         const response = await axios.post(
           `https://www.webmerge.me/merge/${data?.value}/${data?.key}`,
           {
