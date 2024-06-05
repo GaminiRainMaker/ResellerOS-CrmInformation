@@ -19,7 +19,10 @@ import {
   quotLineItemsColumnsSync,
   quoteColumns,
 } from '@/app/utils/CONSTANTS';
-import {getAllDocuments} from '../../../../../redux/actions/formstack';
+import {
+  getAllDocuments,
+  getDocumentById,
+} from '../../../../../redux/actions/formstack';
 import {getFormStackByDocId} from '../../../../../redux/actions/formStackSync';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -89,22 +92,66 @@ const FormStackSync = () => {
   const onFinish = () => {};
 
   const getDataOfFormStackByDocId = (id: any) => {
-    dispatch(getFormStackByDocId(id))?.then((payload: any) => {
-      if (payload?.payload) {
-        setPdfUrlForDocument(payload?.payload?.doc_url);
-        let values = JSON?.parse(payload?.payload?.syncJson);
-        let newArrr: any = [];
+    dispatch(getDocumentById(id))?.then((payload: any) => {
+      const keysOfAllFromFormStackApi = Object.keys(
+        payload?.payload?.success?.fields,
+      );
+      console.log('343242432', keysOfAllFromFormStackApi);
+      if (keysOfAllFromFormStackApi) {
+        dispatch(getFormStackByDocId(id))?.then((payload: any) => {
+          if (payload?.payload) {
+            let valuesFromSyncApi = JSON?.parse(payload?.payload?.syncJson);
+            let newArrForSync: any = [];
+            if (
+              keysOfAllFromFormStackApi?.length > 0 &&
+              valuesFromSyncApi?.length > 0
+            ) {
+              keysOfAllFromFormStackApi?.map(
+                (itemsDoc: any, indexDoc: number) => {
+                  let isExistValue = valuesFromSyncApi?.find(
+                    (itemSync: any) => itemSync?.preVal === itemsDoc,
+                  );
 
-        values?.map((itemss: any) => {
-          newArrr?.push(itemss);
+                  let newObj: any;
+                  if (isExistValue) {
+                    newObj = {
+                      preVal: isExistValue?.preVal,
+                      newVal: isExistValue?.newVal,
+                      key: indexDoc,
+                    };
+                  } else {
+                    newObj = {
+                      preVal: itemsDoc,
+                      newVal: '',
+                      key: indexDoc,
+                    };
+                  }
+                  newArrForSync?.push(newObj);
+                },
+              );
+            }
+            setNewSyncedValue(newArrForSync);
+          } else {
+            let newArr: any = [];
+            keysOfAllFromFormStackApi?.map((items: any, index: number) => {
+              let newObj: any = {
+                preVal: items,
+                newVal: '',
+                key: index,
+              };
+              newArr?.push(newObj);
+            });
+            console.log('3454353432', newArr);
+            setNewSyncedValue(newArr);
+          }
         });
-        setNewSyncedValue(newArrr);
       } else {
         setNewSyncedValue([]);
-        setPdfUrlForDocument('');
       }
     });
   };
+
+  console.log('46454353532', syncedNewValue);
 
   return (
     <Space direction="vertical" size={24} style={{width: '100%'}}>

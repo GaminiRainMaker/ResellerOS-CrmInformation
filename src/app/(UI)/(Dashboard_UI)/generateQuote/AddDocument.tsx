@@ -130,6 +130,7 @@ const AddDocument: FC<any> = ({
     setNewSyncedValue(newSyncTableData);
   };
 
+  console.log('4364543543', syncedNewValue);
   const addNewSyncValues = () => {
     let obj = {
       doc_id: documentId,
@@ -140,7 +141,7 @@ const AddDocument: FC<any> = ({
       dispatch(insertFormStack(obj));
     }
   };
-
+  console.log('32453423423', syncedNewValue, FormstackDataOptions);
   return (
     <GlobalLoader loading={FormstackLoading || GeneralSettingLoading}>
       {FormstackDataOptions ? (
