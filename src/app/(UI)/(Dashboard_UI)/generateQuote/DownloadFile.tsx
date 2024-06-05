@@ -58,40 +58,37 @@ const DownloadFile: FC<any> = ({form}) => {
 
     try {
       if (data && GeneralSettingData?.api_key) {
-        await axios
-          .post(
-            `https://www.webmerge.me/merge/${data?.value}/${data?.key}`,
-            {
-              ...formattedData,
-              clientId: GeneralSettingData?.api_key,
-              clientSecret: GeneralSettingData?.secret_key,
-            },
-            {
-              responseType: 'blob',
-            },
-          )
-          .then((res: any) => res.data.blob())
-          .then((blob: any) => {
-            setPdfUrl(URL.createObjectURL(blob));
-            setShowPreviewModal(true);
-          });
+        const response = await axios.post(
+          `https://www.webmerge.me/merge/${data?.value}/${data?.key}`,
+          {
+            ...formattedData,
+            clientId: GeneralSettingData?.api_key,
+            clientSecret: GeneralSettingData?.secret_key,
+          },
+          {
+            responseType: 'blob',
+          },
+        );
+        const blob = new Blob([response.data], {
+          type: 'application/pdf',
+        });
         if (type === 'preview') {
-          //   const url123 = URL.createObjectURL(blob);
-          //   setPdfUrl(url123);
-        //   setShowPreviewModal(true);
+          const url123 = URL.createObjectURL(blob);
+          setPdfUrl(url123);
+          setShowPreviewModal(true);
         } else {
-        //   const blob = new Blob([response.data], {
-        //     type: 'application/octet-stream',
-        //   });
-        //   const url = window.URL.createObjectURL(blob);
-        //   const link = document.createElement('a');
-        //   link.href = url;
-        //   link.setAttribute('download', 'downloaded_file.pdf');
-        //   document.body.appendChild(link);
-        //   link.click();
-        //   window.URL.revokeObjectURL(url);
-        //   link.remove();
-        //   console.log('File downloaded successfully!');
+          const blob = new Blob([response.data], {
+            type: 'application/octet-stream',
+          });
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'downloaded_file.pdf');
+          document.body.appendChild(link);
+          link.click();
+          window.URL.revokeObjectURL(url);
+          link.remove();
+          console.log('File downloaded successfully!');
         }
       }
     } catch (error) {
@@ -210,13 +207,9 @@ const DownloadFile: FC<any> = ({form}) => {
         bodyPadding={30}
         loading={false}
         body={
-          <Image
-            src={pdfUrl}
-            id="myImg"
-            width="100"
-            height="100"
-            alt="pdfurl"
-          />
+          <div>
+            <iframe src={pdfUrl} width="100%" height="500px" />
+          </div>
         }
         width={900}
         open={showPreviewModal}
