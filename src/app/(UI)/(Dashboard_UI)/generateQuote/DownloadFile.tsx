@@ -1,13 +1,12 @@
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
-import OsModal from '@/app/components/common/os-modal';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
 import axios from 'axios';
-import Image from 'next/image';
 import {useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getAllFormStack} from '../../../../../redux/actions/formStackSync';
@@ -55,40 +54,37 @@ const DownloadFile: FC<any> = ({form}) => {
     try {
       setLoading(true);
       if (data && GeneralSettingData?.api_key) {
-        await axios
-          .post(
-            `https://www.webmerge.me/merge/${data?.value}/${data?.key}`,
-            {
-              ...formattedData,
-              clientId: GeneralSettingData?.api_key,
-              clientSecret: GeneralSettingData?.secret_key,
-            },
-            {
-              responseType: 'blob',
-            },
-          )
-          .then((res: any) => res.data.blob())
-          .then((blob: any) => {
-            setPdfUrl(URL.createObjectURL(blob));
-            setShowPreviewModal(true);
-          });
+        const response = await axios.post(
+          `https://www.webmerge.me/merge/${data?.value}/${data?.key}`,
+          {
+            ...formattedData,
+            clientId: GeneralSettingData?.api_key,
+            clientSecret: GeneralSettingData?.secret_key,
+          },
+          {
+            responseType: 'blob',
+          },
+        );
+        const blob = new Blob([response.data], {
+          type: 'application/pdf',
+        });
         if (type === 'preview') {
-          //   const url123 = URL.createObjectURL(blob);
-          //   setPdfUrl(url123);
-          //   setShowPreviewModal(true);
+          const url123 = URL.createObjectURL(blob);
+          setPdfUrl(url123);
+          setShowPreviewModal(true);
         } else {
-          //   const blob = new Blob([response.data], {
-          //     type: 'application/octet-stream',
-          //   });
-          //   const url = window.URL.createObjectURL(blob);
-          //   const link = document.createElement('a');
-          //   link.href = url;
-          //   link.setAttribute('download', 'downloaded_file.pdf');
-          //   document.body.appendChild(link);
-          //   link.click();
-          //   window.URL.revokeObjectURL(url);
-          //   link.remove();
-          //   console.log('File downloaded successfully!');
+          const blob = new Blob([response.data], {
+            type: 'application/octet-stream',
+          });
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'downloaded_file.pdf');
+          document.body.appendChild(link);
+          link.click();
+          window.URL.revokeObjectURL(url);
+          link.remove();
+          console.log('File downloaded successfully!');
         }
       }
       setLoading(false);
@@ -98,37 +94,7 @@ const DownloadFile: FC<any> = ({form}) => {
     }
   };
 
-  const onFinish = () => {
-    const formData = form.getFieldsValue();
-    console.log('Data', formData);
-    // if (data && GeneralSettingData?.api_key) {
-    //     const response = await axios.post(
-    //       `https://www.webmerge.me/merge/${data?.value}/${data?.key}`,
-    //       {
-    //         ...formattedData,
-    //         // quote_num: '45etrsdgsdf',
-    //         clientId: GeneralSettingData?.api_key,
-    //         clientSecret: GeneralSettingData?.secret_key,
-    //       },
-    //       {
-    //         responseType: 'blob',
-    //       },
-    //     );
-    //     const blob = new Blob([response.data], {
-    //       type: 'application/octet-stream',
-    //     });
-    //     const url = window.URL.createObjectURL(blob);
-    //     const link = document.createElement('a');
-    //     link.href = url;
-    //     link.setAttribute('download', 'downloaded_file.pdf');
-    //     document.body.appendChild(link);
-    //     link.click();
-    //     window.URL.revokeObjectURL(url);
-    //     link.remove();
-    //     console.log('File downloaded successfully!');
-    //   }
-    // }
-  };
+  console.log('selectedDoc', selectedDoc);
 
   return (
     <>
@@ -136,12 +102,7 @@ const DownloadFile: FC<any> = ({form}) => {
         loading={formStackSyncLoading || GeneralSettingLoading || loading}
       >
         {FormstackDataOptions ? (
-          <Form
-            layout="vertical"
-            requiredMark={false}
-            form={form}
-            onFinish={onFinish}
-          >
+          <Form layout="vertical" requiredMark={false} form={form}>
             <Row gutter={[16, 24]} justify="space-between">
               <Col span={24}>
                 <SelectFormItem
@@ -167,6 +128,18 @@ const DownloadFile: FC<any> = ({form}) => {
                 </SelectFormItem>
               </Col>
             </Row>
+            <br />
+            {pdfUrl && <iframe src={pdfUrl} width="100%" height="500px" />}
+            <br />
+            {pdfUrl && (
+              <Row justify={'end'}>
+                <OsButton
+                  text="Download"
+                  buttontype="PRIMARY"
+                  clickHandler={() => dowloadFunction(selectedDoc, 'download')}
+                />
+              </Row>
+            )}
           </Form>
         ) : (
           <div style={{display: 'flex', flexDirection: 'column'}}>
@@ -203,29 +176,6 @@ const DownloadFile: FC<any> = ({form}) => {
           </div>
         )}
       </GlobalLoader>
-      <OsModal
-        title="Preview"
-        bodyPadding={30}
-        loading={false}
-        body={
-          <Image
-            src={pdfUrl}
-            id="myImg"
-            width="100"
-            height="100"
-            alt="pdfurl"
-          />
-        }
-        width={900}
-        open={showPreviewModal}
-        onCancel={() => {
-          setShowPreviewModal(false);
-        }}
-        primaryButtonText={'Download'}
-        onOk={() => {
-          dowloadFunction(selectedDoc, 'download');
-        }}
-      />
     </>
   );
 };
