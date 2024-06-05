@@ -28,11 +28,11 @@ import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {formatDate} from '@/app/utils/base';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {useEffect} from 'react';
 import {getCustomerBYId} from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import DetailCard from './DetailCard';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';
+import DetailCard from './DetailCard';
 
 const AccountDetails = () => {
   const [token] = useThemeToken();

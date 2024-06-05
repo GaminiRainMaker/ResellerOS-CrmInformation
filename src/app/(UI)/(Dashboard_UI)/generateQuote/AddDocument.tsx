@@ -2,11 +2,11 @@ import {Divider} from '@/app/components/common/antd/Divider';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsInput from '@/app/components/common/os-input';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
-import {OSDraggerStyle} from '@/app/components/common/os-upload/styled-components';
 import Typography from '@/app/components/common/typography';
 import {
   customerColumnsSync,
@@ -15,21 +15,13 @@ import {
   quotLineItemsColumnsSync,
   quoteColumns,
 } from '@/app/utils/CONSTANTS';
-import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
-import {Button, Form, message} from 'antd';
+import {Button, Form} from 'antd';
 import {useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 
-import {queryAllDocuments} from '../../../../../redux/actions/formstack';
-import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import OsButton from '@/app/components/common/os-button';
 import {insertFormStack} from '../../../../../redux/actions/formStackSync';
-import {
-  uploadExcelFileToAws,
-  uploadToAws,
-} from '../../../../../redux/actions/upload';
-import {convertFileToBase64} from '@/app/utils/base';
+import {getAllDocuments} from '../../../../../redux/actions/formstack';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 const AddDocument: FC<any> = ({
   form,
@@ -54,18 +46,8 @@ const AddDocument: FC<any> = ({
   const [columnSelectOptions, setColumnSelectOptions] = useState<any>([]);
 
   useEffect(() => {
-    dispatch(getAllGeneralSetting(''));
+    dispatch(getAllDocuments(''));
   }, []);
-
-  useEffect(() => {
-    let obj = {
-      username: generalSettingData?.api_key,
-      password: generalSettingData?.secret_key,
-    };
-    if (obj) {
-      dispatch(queryAllDocuments(obj));
-    }
-  }, [generalSettingData]);
   useEffect(() => {
     setNewSyncedValue([]);
     setPdfUrlForDocument();
