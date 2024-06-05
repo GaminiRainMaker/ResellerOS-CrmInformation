@@ -26,11 +26,12 @@ import CommonSelect from '@/app/components/common/os-select';
 
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {formatStatus, selectData} from '@/app/utils/CONSTANTS';
+import {selectData} from '@/app/utils/CONSTANTS';
 import {formatDate, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
-import {Button, Divider, Form, MenuProps, Upload, notification} from 'antd';
+import {Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
+import axios from 'axios';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
@@ -40,6 +41,7 @@ import {
 } from '../../../../../redux/actions/quote';
 import {getAllTableColumn} from '../../../../../redux/actions/tableColumn';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import AddDocument from './AddDocument';
 import DrawerContent from './DrawerContent';
 import InputDetails from './allTabs/InputDetails';
 import Metrics from './allTabs/Metrics';
@@ -48,9 +50,6 @@ import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
 import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
-import AddDocument from './AddDocument';
-import {UploadOutlined} from '@ant-design/icons';
-import OsInput from '@/app/components/common/os-input';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
