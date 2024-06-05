@@ -425,8 +425,6 @@ const SideBar = () => {
           cursor="pointer"
           onClick={() => {
             setSelectedKey(4);
-            setCrmChildKey(0);
-            router?.push('/allQuote');
           }}
           name="Button 1"
           color={token?.colorTextSecondary}
@@ -434,7 +432,7 @@ const SideBar = () => {
           <Space size={12}>
             <OsAvatar
               icon={
-                <CurrencyDollarIcon
+                <UserGroupIcon
                   color={
                     selectedKey === 4 || selectedKey === 5
                       ? token?.colorLink
@@ -465,41 +463,48 @@ const SideBar = () => {
         '',
         [
           getItem(
-            <Space
-              size={12}
+            <Typography
+              cursor="pointer"
               onClick={() => {
                 setSelectedKey(4);
                 setCrmChildKey(0);
                 router?.push('/allQuote');
               }}
+              name="Button 1"
               color={token?.colorTextSecondary}
             >
-              <OsAvatar
-                icon={
-                  <CurrencyDollarIcon
-                    color={
-                      selectedKey === 4
-                        ? token?.colorPrimary
-                        : token?.colorTextSecondary
-                    }
-                    width={24}
-                  />
-                }
-              />
-              <Typography
-                cursor="pointer"
-                name="Button 1"
-                color={
-                  selectedKey?.toString()?.includes('4')
-                    ? token?.colorPrimary
-                    : token?.colorTextSecondary
-                }
-              >
-                Quotes
-              </Typography>
-            </Space>,
-
+              <Space size={12}>
+                <OsAvatar
+                  icon={
+                    <CurrencyDollarIcon
+                      color={
+                        selectedKey === 4
+                          ? token?.colorPrimary
+                          : token?.colorTextSecondary
+                      }
+                      width={24}
+                    />
+                  }
+                />
+                <Typography
+                  cursor="pointer"
+                  name="Button 1"
+                  style={{
+                    marginTop: '1px',
+                    marginRight: '60px',
+                  }}
+                  color={
+                    selectedKey === 4
+                      ? token?.colorPrimary
+                      : token?.colorTextSecondary
+                  }
+                >
+                  Quote
+                </Typography>
+              </Space>
+            </Typography>,
             '4',
+            '',
           ),
           getItem(
             <Space
@@ -820,7 +825,7 @@ const SideBar = () => {
         <Typography
           cursor="pointer"
           onClick={() => {
-            setSelectedKey(12);
+            setSelectedKey(11);
           }}
           name="Button 1"
           color={token?.colorTextSecondary}
@@ -864,8 +869,8 @@ const SideBar = () => {
             <Space
               size={12}
               onClick={() => {
-                setCrmChildKey(12);
-                setSelectedKey(7);
+                setCrmChildKey(1);
+                setSelectedKey(12);
                 router?.push('/crmInAccount');
               }}
             >

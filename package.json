@@ -55,8 +55,7 @@
     "read-excel-file": "^5.8.1",
     "recharts": "^2.10.3",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.4.2",
-    "xlsx": "^0.18.5"
+    "redux-thunk": "^2.4.2"
   },
   "devDependencies": {
     "@aws-amplify/backend": "^0.5.5",

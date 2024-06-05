@@ -7,7 +7,6 @@ import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsInput from '@/app/components/common/os-input';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
-import {OSDraggerStyle} from '@/app/components/common/os-upload/styled-components';
 import Typography from '@/app/components/common/typography';
 import {
   customerColumnsSync,
@@ -16,18 +15,11 @@ import {
   quotLineItemsColumnsSync,
   quoteColumns,
 } from '@/app/utils/CONSTANTS';
-import {convertFileToBase64} from '@/app/utils/base';
-import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
-import {Button, Form, message} from 'antd';
+import {Button, Form} from 'antd';
 import {useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
-import * as XLSX from 'xlsx';
 import {insertFormStack} from '../../../../../redux/actions/formStackSync';
 import {getAllDocuments} from '../../../../../redux/actions/formstack';
-import {
-  uploadExcelFileToAws,
-  uploadToAws,
-} from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 const AddDocument: FC<any> = ({
@@ -52,7 +44,6 @@ const AddDocument: FC<any> = ({
   );
   const [selectDropdownType, setSelectDropdownType] = useState<string>('Quote');
   const [columnSelectOptions, setColumnSelectOptions] = useState<any>([]);
-  // const [documentId, setDocumentId] = useState<number>();
 
   useEffect(() => {
     dispatch(getAllDocuments(''));
@@ -82,79 +73,6 @@ const AddDocument: FC<any> = ({
         </Typography>
       ),
     }));
-
-  const beforeUpload = (file: any) => {
-    let path = file?.type?.split('.')?.includes('spreadsheetml')
-      ? uploadExcelFileToAws
-      : uploadToAws;
-    convertFileToBase64(file)
-      .then((base64String) => {
-        if (base64String) {
-          dispatch(path({document: base64String})).then((payload: any) => {
-            const pdfUrl = payload?.payload?.data?.Location;
-            setPdfUrlForDocument(pdfUrl);
-          });
-        }
-      })
-      .catch((error: any) => {
-        message.error('Error converting file to base64', error);
-      });
-    return false;
-  };
-
-  const handleFileUpload = (uploadedData: any) => {
-    if (!uploadedData.file) {
-      return;
-    }
-    beforeUpload(uploadedData.file);
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      const data = new Uint8Array(e.target.result);
-      try {
-        const workbook = XLSX.read(data, {type: 'array'});
-        processWorkbook(workbook);
-      } catch (error) {
-        console.log(
-          'Error reading the file. Please make sure the file is a valid Excel file.',
-        );
-      }
-    };
-    reader.readAsArrayBuffer(uploadedData.file);
-  };
-
-  const processWorkbook = (workbook: any) => {
-    const extracted: any = [];
-    const regex = /\{([^}]+)\}/g;
-
-    workbook.SheetNames.forEach((sheetName: any) => {
-      const sheet = workbook.Sheets[sheetName];
-      const csvData = XLSX.utils.sheet_to_csv(sheet);
-      const lines = csvData.split(/\r\n|\n/);
-
-      lines.forEach((line) => {
-        let match;
-        while (
-          (match = regex.exec(line)) !== null &&
-          !extracted?.includes(
-            match[1].replace('$', '').split(':')[0].split('|')[0],
-          )
-        ) {
-          extracted.push(match[1].replace('$', '').split(':')[0].split('|')[0]);
-        }
-      });
-    });
-
-    let newArrrForExtractedValues: any = [];
-    extracted?.map((items: string, index: number) => {
-      let newObj: any = {
-        preVal: items,
-        newVal: '',
-        key: index,
-      };
-      newArrrForExtractedValues?.push(newObj);
-    });
-    setNewSyncedValue(newArrrForExtractedValues);
-  };
 
   useEffect(() => {
     switch (selectDropdownType) {
@@ -216,7 +134,6 @@ const AddDocument: FC<any> = ({
     let obj = {
       doc_id: documentId,
       syncJson: [JSON.stringify(syncedNewValue)],
-      doc_url: pdfUrlForDocument,
     };
 
     if (obj && documentId) {
@@ -441,44 +358,6 @@ const AddDocument: FC<any> = ({
                       </SelectFormItem>
                     </Col>
                   )}
-
-                  <Col span={24}>
-                    <OSDraggerStyle
-                      showUploadList={false}
-                      multiple
-                      onChange={handleFileUpload}
-                      beforeUpload={() => false}
-                    >
-                      <FolderArrowDownIcon
-                        width={24}
-                        color={token?.colorInfoBorder}
-                      />
-                      <Typography
-                        name="Body 4/Medium"
-                        color={token?.colorPrimaryText}
-                        as="div"
-                      >
-                        <Typography
-                          name="Body 4/Medium"
-                          style={{
-                            textDecoration: 'underline',
-                            cursor: 'pointer',
-                          }}
-                          color={token?.colorPrimary}
-                          hoverOnText
-                        >
-                          Click to Upload
-                        </Typography>{' '}
-                        or Drag and Drop
-                      </Typography>
-                      <Typography
-                        name="Body 4/Medium"
-                        color={token?.colorPrimaryText}
-                      >
-                        XLS, PDF.
-                      </Typography>
-                    </OSDraggerStyle>
-                  </Col>
                 </Row>
               </Form>
             </>
