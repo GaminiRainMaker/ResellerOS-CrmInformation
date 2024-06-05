@@ -2,11 +2,23 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import {FORMSTACK} from '../../services/formStack';
 
-export const queryAllDocuments = createAsyncThunk(
-  'formStack/queryAllDocuments',
+export const getAllDocuments = createAsyncThunk(
+  'formStack/getAllDocuments',
   async (data: any, thunkApi) => {
     try {
-      const res = await FORMSTACK.query(data);
+      const res = await FORMSTACK.get();
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);
+
+export const getDocumentById = createAsyncThunk(
+  'formStack/getDocumentById',
+  async (documentId: number, thunkApi) => {
+    try {
+      const res = await FORMSTACK.getById(documentId);
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error.message);
