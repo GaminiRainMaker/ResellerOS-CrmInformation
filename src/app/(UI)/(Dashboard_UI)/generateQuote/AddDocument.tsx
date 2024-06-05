@@ -1,13 +1,13 @@
-import { Divider } from '@/app/components/common/antd/Divider';
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Divider} from '@/app/components/common/antd/Divider';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsInput from '@/app/components/common/os-input';
-import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
+import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
-import { OSDraggerStyle } from '@/app/components/common/os-upload/styled-components';
+import {OSDraggerStyle} from '@/app/components/common/os-upload/styled-components';
 import Typography from '@/app/components/common/typography';
 import {
   customerColumnsSync,
@@ -16,19 +16,19 @@ import {
   quotLineItemsColumnsSync,
   quoteColumns,
 } from '@/app/utils/CONSTANTS';
-import { convertFileToBase64 } from '@/app/utils/base';
-import { FolderArrowDownIcon } from '@heroicons/react/24/outline';
-import { Button, Form, message } from 'antd';
-import { useRouter } from 'next/navigation';
-import { FC, useEffect, useState } from 'react';
+import {convertFileToBase64} from '@/app/utils/base';
+import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
+import {Button, Form, message} from 'antd';
+import {useRouter} from 'next/navigation';
+import {FC, useEffect, useState} from 'react';
 import * as XLSX from 'xlsx';
-import { insertFormStack } from '../../../../../redux/actions/formStackSync';
-import { getAllDocuments } from '../../../../../redux/actions/formstack';
+import {insertFormStack} from '../../../../../redux/actions/formStackSync';
+import {getAllDocuments} from '../../../../../redux/actions/formstack';
 import {
   uploadExcelFileToAws,
   uploadToAws,
 } from '../../../../../redux/actions/upload';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 const AddDocument: FC<any> = ({
   form,
@@ -47,8 +47,9 @@ const AddDocument: FC<any> = ({
   const {data: FormstackData, loading: FormstackLoading} = useAppSelector(
     (state) => state.formstack,
   );
-  const {data: generalSettingData, loading: GeneralSettingLoading} =
-    useAppSelector((state) => state.gereralSetting);
+  const {loading: GeneralSettingLoading} = useAppSelector(
+    (state) => state.gereralSetting,
+  );
   const [selectDropdownType, setSelectDropdownType] = useState<string>('Quote');
   const [columnSelectOptions, setColumnSelectOptions] = useState<any>([]);
   // const [documentId, setDocumentId] = useState<number>();
