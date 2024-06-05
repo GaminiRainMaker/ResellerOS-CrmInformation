@@ -141,7 +141,6 @@ const AddDocument: FC<any> = ({
       dispatch(insertFormStack(obj));
     }
   };
-  console.log('32453423423', syncedNewValue, FormstackDataOptions);
   return (
     <GlobalLoader loading={FormstackLoading || GeneralSettingLoading}>
       {FormstackDataOptions ? (
