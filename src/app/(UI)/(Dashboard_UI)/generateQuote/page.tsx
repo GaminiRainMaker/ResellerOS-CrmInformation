@@ -92,7 +92,6 @@ const GenerateQuote: React.FC = () => {
     useState<boolean>(false);
   const [showDocumentModal, setShowDocumentModal] = useState<boolean>(false);
   const [syncedNewValue, setNewSyncedValue] = useState<any>([]);
-  const [pdfUrlForDocument, setPdfUrlForDocument] = useState<any>();
 
   const [showDocumentModalButton, setShowDocumentModalButton] =
     useState<boolean>(false);

@@ -35,8 +35,8 @@ const FormStackSync = () => {
   const [addDocForm] = Form.useForm();
   const [syncedValueForDoc, setSyncValueForDoc] = useState<any>();
   const [documentId, setDocumentId] = useState<number>();
+  const [documentName, setDocumentName] = useState<any>();
   const [syncedNewValue, setNewSyncedValue] = useState<any>([]);
-  const [pdfUrlForDocument, setPdfUrlForDocument] = useState<any>();
 
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
@@ -82,21 +82,20 @@ const FormStackSync = () => {
     FormstackData.length > 0 &&
     FormstackData?.map((FormstackDataItem: any) => ({
       value: FormstackDataItem.id,
-      label: (
-        <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-          {FormstackDataItem.name}
-        </Typography>
-      ),
+      label: FormstackDataItem.name,
     }));
 
   const onFinish = () => {};
 
   const getDataOfFormStackByDocId = (id: any) => {
     dispatch(getDocumentById(id))?.then((payload: any) => {
-      const keysOfAllFromFormStackApi = Object.keys(
-        payload?.payload?.success?.fields,
-      );
-      console.log('343242432', keysOfAllFromFormStackApi);
+      let keysOfAllFromFormStackApi: any;
+      if (payload?.payload?.success?.fields) {
+        keysOfAllFromFormStackApi = Object.keys(
+          payload?.payload?.success?.fields,
+        );
+      }
+
       if (keysOfAllFromFormStackApi) {
         dispatch(getFormStackByDocId(id))?.then((payload: any) => {
           if (payload?.payload) {
@@ -151,8 +150,6 @@ const FormStackSync = () => {
     });
   };
 
-  console.log('46454353532', syncedNewValue);
-
   return (
     <Space direction="vertical" size={24} style={{width: '100%'}}>
       <Form
@@ -187,10 +184,13 @@ const FormStackSync = () => {
             style={{width: '100%'}}
             placeholder="Select Document"
             allowClear
+            labelInValue
             options={FormstackDataOptions}
             onChange={(e: any) => {
-              setDocumentId(e);
-              getDataOfFormStackByDocId(e);
+              setDocumentName(e?.label);
+
+              setDocumentId(e?.value);
+              getDataOfFormStackByDocId(e?.value);
             }}
           />
         </SelectFormItem>
@@ -204,8 +204,8 @@ const FormStackSync = () => {
           syncedNewValue={syncedNewValue}
           setNewSyncedValue={setNewSyncedValue}
           showDoucmentDropDown={false}
-          pdfUrlForDocument={pdfUrlForDocument}
-          setPdfUrlForDocument={setPdfUrlForDocument}
+          showSyncScreen={true}
+          documentName={documentName}
         />
       ) : (
         <>
@@ -226,8 +226,8 @@ const FormStackSync = () => {
                 syncedNewValue={syncedNewValue}
                 setNewSyncedValue={setNewSyncedValue}
                 showDoucmentDropDown={false}
-                pdfUrlForDocument={pdfUrlForDocument}
-                setPdfUrlForDocument={setPdfUrlForDocument}
+                showSyncScreen={true}
+                documentName={documentName}
               />
             </>
           )}

@@ -18,7 +18,10 @@ import {
 import {Button, Form} from 'antd';
 import {useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
-import {insertFormStack} from '../../../../../redux/actions/formStackSync';
+import {
+  getAllFormStack,
+  insertFormStack,
+} from '../../../../../redux/actions/formStackSync';
 import {getAllDocuments} from '../../../../../redux/actions/formstack';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import axios from 'axios';
@@ -33,9 +36,9 @@ const AddDocument: FC<any> = ({
   setDocumentId,
   syncedNewValue,
   setNewSyncedValue,
+  showSyncScreen,
   showDoucmentDropDown,
-  pdfUrlForDocument,
-  setPdfUrlForDocument,
+  documentName,
 }) => {
   const [token] = useThemeToken();
   const router = useRouter();
@@ -49,15 +52,27 @@ const AddDocument: FC<any> = ({
   );
   const [selectDropdownType, setSelectDropdownType] = useState<string>('Quote');
   const [columnSelectOptions, setColumnSelectOptions] = useState<any>([]);
+  const [innerDocOptions, setInnerDocOptions] = useState<any>();
 
   useEffect(() => {
     dispatch(getAllDocuments(''));
   }, []);
   useEffect(() => {
     setNewSyncedValue([]);
-    setPdfUrlForDocument();
   }, [documentId]);
 
+  useEffect(() => {
+    dispatch(getAllFormStack(''))?.then((payload: any) => {
+      let newArrOptions: any = [];
+      if (payload?.payload) {
+        payload?.payload?.map((items: any) => {
+          newArrOptions?.push({label: items?.doc_name, value: items?.doc_id});
+        });
+      }
+
+      setInnerDocOptions(newArrOptions);
+    });
+  }, []);
   const buttonActiveStyle = {
     background: token.colorPrimaryBg,
     borderColor: token.colorPrimaryBg,
@@ -139,6 +154,7 @@ const AddDocument: FC<any> = ({
     let obj = {
       doc_id: documentId,
       syncJson: [JSON.stringify(syncedNewValue)],
+      doc_name: documentName,
     };
 
     if (obj && documentId) {
@@ -182,7 +198,7 @@ const AddDocument: FC<any> = ({
     <GlobalLoader loading={FormstackLoading || GeneralSettingLoading}>
       {FormstackDataOptions ? (
         <>
-          {syncedNewValue?.length > 0 ? (
+          {showSyncScreen && syncedNewValue?.length > 0 ? (
             <>
               <Row
                 style={{
@@ -386,9 +402,8 @@ const AddDocument: FC<any> = ({
                           style={{width: '100%'}}
                           placeholder="Select Document"
                           allowClear
-                          options={FormstackDataOptions}
+                          options={innerDocOptions}
                           onChange={(e: any) => {
-                            console.log('setDocumentId', e);
                             setDocumentId(e);
                           }}
                         />
