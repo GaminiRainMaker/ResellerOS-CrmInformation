@@ -35,6 +35,7 @@ const FormStackSync = () => {
   const [addDocForm] = Form.useForm();
   const [syncedValueForDoc, setSyncValueForDoc] = useState<any>();
   const [documentId, setDocumentId] = useState<number>();
+  const [documentName, setDocumentName] = useState<any>();
   const [syncedNewValue, setNewSyncedValue] = useState<any>([]);
 
   const dispatch = useAppDispatch();
@@ -92,10 +93,13 @@ const FormStackSync = () => {
 
   const getDataOfFormStackByDocId = (id: any) => {
     dispatch(getDocumentById(id))?.then((payload: any) => {
-      const keysOfAllFromFormStackApi = Object.keys(
-        payload?.payload?.success?.fields,
-      );
-      console.log('343242432', keysOfAllFromFormStackApi);
+      let keysOfAllFromFormStackApi: any;
+      if (payload?.payload?.success?.fields) {
+        keysOfAllFromFormStackApi = Object.keys(
+          payload?.payload?.success?.fields,
+        );
+      }
+
       if (keysOfAllFromFormStackApi) {
         dispatch(getFormStackByDocId(id))?.then((payload: any) => {
           if (payload?.payload) {
@@ -187,7 +191,7 @@ const FormStackSync = () => {
             placeholder="Select Document"
             allowClear
             options={FormstackDataOptions}
-            onChange={(e: any) => {
+            onChange={(e: any, label: any) => {
               setDocumentId(e);
               getDataOfFormStackByDocId(e);
             }}
@@ -203,7 +207,7 @@ const FormStackSync = () => {
           syncedNewValue={syncedNewValue}
           setNewSyncedValue={setNewSyncedValue}
           showDoucmentDropDown={false}
-         
+          showSyncScreen={true}
         />
       ) : (
         <>
@@ -224,6 +228,7 @@ const FormStackSync = () => {
                 syncedNewValue={syncedNewValue}
                 setNewSyncedValue={setNewSyncedValue}
                 showDoucmentDropDown={false}
+                showSyncScreen={true}
               />
             </>
           )}
