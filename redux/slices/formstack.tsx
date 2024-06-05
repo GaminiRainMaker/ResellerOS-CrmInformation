@@ -1,5 +1,8 @@
-import {PayloadAction, createSlice} from '@reduxjs/toolkit';
-import {getAllDocuments, getDocumentById} from '../actions/formstack';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import {
+  getAllDocuments,
+  getDocumentById
+} from '../actions/formstack';
 
 type formStackState = {
   loading: boolean;

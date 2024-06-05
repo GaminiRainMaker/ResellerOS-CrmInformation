@@ -21,6 +21,11 @@ import {FC, useEffect, useState} from 'react';
 import {insertFormStack} from '../../../../../redux/actions/formStackSync';
 import {getAllDocuments} from '../../../../../redux/actions/formstack';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import axios from 'axios';
+
+const fileUrl = 'https://www.webmerge.me/merge/1101966/hk14z4';
+const clientId = 'XGWMMMFF5YE7VVDVSA822V5V721I';
+const clientSecret = 'PFGN1J31';
 
 const AddDocument: FC<any> = ({
   form,
@@ -138,6 +143,38 @@ const AddDocument: FC<any> = ({
 
     if (obj && documentId) {
       dispatch(insertFormStack(obj));
+    }
+  };
+
+  const dowloadFunction = async () => {
+    try {
+      const response = await axios.post(
+        fileUrl,
+        {
+          quote_num: '45etrsdgsdf',
+          clientId: clientId,
+          clientSecret: clientSecret,
+        },
+        {
+          responseType: 'blob',
+        },
+      );
+
+      const blob = new Blob([response.data], {
+        type: 'application/octet-stream',
+      });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'downloaded_file.pdf');
+      document.body.appendChild(link);
+      link.click();
+      window.URL.revokeObjectURL(url);
+      link.remove();
+      console.log('File downloaded successfully!');
+    } catch (error) {
+      console.error('Error downloading file:', error);
     }
   };
 
