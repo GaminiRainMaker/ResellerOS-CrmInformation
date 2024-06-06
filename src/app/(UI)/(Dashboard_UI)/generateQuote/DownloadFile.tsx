@@ -106,8 +106,6 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     }
   };
 
-  console.log('selectedDoc', selectedDoc);
-
   return (
     <>
       <GlobalLoader

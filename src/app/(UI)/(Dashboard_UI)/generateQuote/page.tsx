@@ -119,7 +119,6 @@ const GenerateQuote: React.FC = () => {
         setObjectForSyncingValues(newObj);
     });
   }, []);
-  console.log('familyFilterfamilyFilter', quoteFileData);
   useEffect(() => {
     if (activeTabRoute === '2') {
       setActiveTab('2');
