@@ -53,9 +53,13 @@ const DownloadFile: FC<any> = ({form}) => {
     });
     try {
       setLoading(true);
+      let pathName =
+        type === 'download'
+          ? `https://www.webmerge.me/merge/${data?.value}/${data?.key}?downoad=1`
+          : `https://www.webmerge.me/merge/${data?.value}/${data?.key}`;
       if (data && GeneralSettingData?.api_key) {
         const response = await axios.post(
-          `https://www.webmerge.me/merge/${data?.value}/${data?.key}`,
+          pathName,
           {
             ...formattedData,
             clientId: GeneralSettingData?.api_key,

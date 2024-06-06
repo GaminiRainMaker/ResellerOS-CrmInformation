@@ -6,6 +6,7 @@ import Products from '../../../components/common/os-add-products';
 import Users from '../../../components/common/os-add-users';
 import Configuration from './quote-AI/configuration';
 import {useRouter} from 'next/navigation';
+import FormStackMain from '../formstack/page';
 
 const AdminPage = () => {
   const tabs = [
@@ -61,18 +62,18 @@ const AdminPage = () => {
         },
       ],
     },
-    // {
-    //   key: 3,
-    //   title: 'PDF Templates',
-    //   childitem: [
-    //     {
-    //       key: 5,
-    //       name: 'Formstack',
-    //       superChild: <FormStack />,
-    //       route: `/admin?tab=formstack`,
-    //     },
-    //   ],
-    // },
+    {
+      key: 3,
+      title: 'PDF Templates',
+      childitem: [
+        {
+          key: 5,
+          name: 'Formstack',
+          superChild: <FormStackMain />,
+          route: `/admin?tab=formstack`,
+        },
+      ],
+    },
   ];
 
   return (

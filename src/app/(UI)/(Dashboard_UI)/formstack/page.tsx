@@ -17,7 +17,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import FormStackApiKey from './formStackApiKey';
 import FormStackSync from './formStackSync';
 
-const AllQuote: React.FC = () => {
+const FormStackMain: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>();
@@ -95,4 +95,4 @@ const AllQuote: React.FC = () => {
   );
 };
 
-export default AllQuote;
+export default FormStackMain;
