@@ -54,6 +54,7 @@ const AddDocument: FC<any> = ({
   const [selectDropdownType, setSelectDropdownType] = useState<string>('Quote');
   const [columnSelectOptions, setColumnSelectOptions] = useState<any>([]);
   const [innerDocOptions, setInnerDocOptions] = useState<any>();
+  const [optionsForSync, setOptionsForSync] = useState<any>();
 
   useEffect(() => {
     dispatch(getAllDocuments(''));
@@ -95,6 +96,23 @@ const AddDocument: FC<any> = ({
       ),
     }));
 
+  useEffect(() => {
+    if (FormstackData && FormstackData?.length > 0) {
+      let newArr: any = [];
+      FormstackData?.map((FormstackDataItem: any) => {
+        let newObj = {
+          value: FormstackDataItem.id,
+          label: (
+            <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+              {FormstackDataItem.name}
+            </Typography>
+          ),
+        };
+        newArr?.push(newObj);
+      });
+      setOptionsForSync(newArr);
+    }
+  }, [FormstackData]);
   useEffect(() => {
     switch (selectDropdownType) {
       case 'Quote Line Item':
@@ -170,7 +188,7 @@ const AddDocument: FC<any> = ({
 
   return (
     <GlobalLoader loading={FormstackLoading || GeneralSettingLoading}>
-      {FormstackDataOptions ? (
+      {optionsForSync ? (
         <>
           {showSyncScreen && syncedNewValue?.length > 0 ? (
             <>

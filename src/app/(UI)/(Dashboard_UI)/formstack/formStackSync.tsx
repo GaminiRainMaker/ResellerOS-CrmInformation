@@ -80,8 +80,8 @@ const FormStackSync = () => {
 
   const [formStackDataOPtions, setFormStackDataOPtions] = useState<any>();
   useEffect(() => {
-    let newArr: any = [];
     if (FormstackData && FormstackData?.length > 0) {
+      let newArr: any = [];
       FormstackData?.map((items: any) => {
         newArr?.push({
           value: items.id,
@@ -89,8 +89,8 @@ const FormStackSync = () => {
           key: items.key,
         });
       });
+      setFormStackDataOPtions(newArr);
     }
-    setFormStackDataOPtions(newArr);
   }, [FormstackData]);
 
   const onFinish = () => {};
