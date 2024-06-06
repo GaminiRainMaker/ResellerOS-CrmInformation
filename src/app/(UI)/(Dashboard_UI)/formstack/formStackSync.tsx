@@ -43,6 +43,7 @@ const FormStackSync = () => {
   const [selectDropdownType, setSelectDropdownType] = useState<string>('Quote');
 
   const [columnSelectOptions, setColumnSelectOptions] = useState<any>([]);
+  const [fieldExist, setFieldExist] = useState<boolean>(true);
 
   useEffect(() => {
     dispatch(getAllGeneralSetting(''));
@@ -93,6 +94,9 @@ const FormStackSync = () => {
   }, [FormstackData]);
 
   const onFinish = () => {};
+  useEffect(() => {
+    setFieldExist(true);
+  }, [documentId]);
 
   const getDataOfFormStackByDocId = (id: any) => {
     dispatch(getDocumentById(id))?.then((payload: any) => {
@@ -101,6 +105,10 @@ const FormStackSync = () => {
         keysOfAllFromFormStackApi = Object.keys(
           payload?.payload?.success?.fields,
         );
+      }
+
+      if (payload?.payload?.success?.fields?.length === 0) {
+        setFieldExist(false);
       }
 
       if (keysOfAllFromFormStackApi) {
@@ -156,6 +164,8 @@ const FormStackSync = () => {
       }
     });
   };
+
+  console.log('fieldExistfieldExist', fieldExist);
 
   return (
     <Space direction="vertical" size={24} style={{width: '100%'}}>
@@ -218,12 +228,12 @@ const FormStackSync = () => {
         <>
           {documentId && (
             <>
-              {syncedNewValue?.length === 0 && (
+              {!fieldExist && (
                 <Typography
                   name="Body 3/Regular"
                   color={token?.colorPrimaryText}
                 >
-                  Mapping or Sync Values are not Available for this Document!
+                  Feild values not available for this document!
                 </Typography>
               )}
               <AddDocument
