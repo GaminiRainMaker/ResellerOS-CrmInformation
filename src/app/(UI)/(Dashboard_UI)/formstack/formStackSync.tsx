@@ -36,6 +36,7 @@ const FormStackSync = () => {
   const [syncedValueForDoc, setSyncValueForDoc] = useState<any>();
   const [documentId, setDocumentId] = useState<number>();
   const [documentName, setDocumentName] = useState<any>();
+  const [documentKey, setDocumentKey] = useState<any>();
   const [syncedNewValue, setNewSyncedValue] = useState<any>([]);
 
   const dispatch = useAppDispatch();
@@ -205,7 +206,7 @@ const FormStackSync = () => {
             options={formStackDataOPtions}
             onChange={(e: any) => {
               setDocumentName(e?.label);
-
+              setDocumentKey(e?.key);
               setDocumentId(e?.value);
               getDataOfFormStackByDocId(e?.value);
             }}
@@ -223,6 +224,7 @@ const FormStackSync = () => {
           showDoucmentDropDown={false}
           showSyncScreen={true}
           documentName={documentName}
+          documentKey={documentKey}
         />
       ) : (
         <>
@@ -245,6 +247,7 @@ const FormStackSync = () => {
                 showDoucmentDropDown={false}
                 showSyncScreen={true}
                 documentName={documentName}
+                documentKey={documentKey}
               />
             </>
           )}

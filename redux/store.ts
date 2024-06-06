@@ -37,6 +37,7 @@ import partnerPassword from './slices/partnerPassword';
 import sharedPartnerPassword from './slices/sharedPartnerPassword';
 import cacheFLow from './slices/cacheFLow';
 import formstack from './slices/formstack';
+import formStackSync from './slices/formStackSync';
 
 // Configure redux store
 const store = configureStore({
@@ -77,6 +78,7 @@ const store = configureStore({
     sharedPartnerPassword,
     cacheFLow,
     formstack,
+    formStackSync
   },
   middleware: [thunk],
   devTools: true,

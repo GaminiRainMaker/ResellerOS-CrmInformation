@@ -31,7 +31,6 @@ import {formatDate, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
 import {Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
-import axios from 'axios';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
@@ -41,7 +40,7 @@ import {
 } from '../../../../../redux/actions/quote';
 import {getAllTableColumn} from '../../../../../redux/actions/tableColumn';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import AddDocument from './AddDocument';
+import DownloadFile from './DownloadFile';
 import DrawerContent from './DrawerContent';
 import InputDetails from './allTabs/InputDetails';
 import Metrics from './allTabs/Metrics';
@@ -601,28 +600,14 @@ const GenerateQuote: React.FC = () => {
         title="Add Template"
         bodyPadding={30}
         loading={loading}
-        body={
-          <>
-            {' '}
-            <AddDocument
-              form={addDocForm}
-              documentId={documentId}
-              setDocumentId={setDocumentId}
-              syncedNewValue={syncedNewValue}
-              setNewSyncedValue={setNewSyncedValue}
-              showDoucmentDropDown={true}
-              showSyncScreen={false}
-              documentName={''}
-            />
-          </>
-        }
+        body={<DownloadFile form={addDocForm} />}
         width={900}
         open={showDocumentModal}
         onCancel={() => {
           setShowDocumentModal(false);
           addDocForm.resetFields();
         }}
-        // primaryButtonText={showDocumentModalButton ? 'Save' : ''}
+        // primaryButtonText={'Save'}
         // onOk={addDocForm.submit}
       />
     </>

@@ -15,7 +15,7 @@ import {
   quotLineItemsColumnsSync,
   quoteColumns,
 } from '@/app/utils/CONSTANTS';
-import {Button, Form} from 'antd';
+import {Button, Form, notification} from 'antd';
 import {useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {
@@ -39,6 +39,7 @@ const AddDocument: FC<any> = ({
   showSyncScreen,
   showDoucmentDropDown,
   documentName,
+  documentKey,
 }) => {
   const [token] = useThemeToken();
   const router = useRouter();
@@ -168,48 +169,21 @@ const AddDocument: FC<any> = ({
     setNewSyncedValue(newSyncTableData);
   };
 
-  const addNewSyncValues = () => {
+  const addNewSyncValues = async () => {
     let obj = {
       doc_id: documentId,
       syncJson: [JSON.stringify(syncedNewValue)],
       doc_name: documentName,
+      doc_key: documentKey,
     };
-
     if (obj && documentId) {
-      dispatch(insertFormStack(obj));
+      await dispatch(insertFormStack(obj));
     }
-  };
 
-  const dowloadFunction = async () => {
-    try {
-      const response = await axios.post(
-        fileUrl,
-        {
-          quote_num: '45etrsdgsdf',
-          clientId: clientId,
-          clientSecret: clientSecret,
-        },
-        {
-          responseType: 'blob',
-        },
-      );
-
-      const blob = new Blob([response.data], {
-        type: 'application/octet-stream',
-      });
-
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'downloaded_file.pdf');
-      document.body.appendChild(link);
-      link.click();
-      window.URL.revokeObjectURL(url);
-      link.remove();
-      console.log('File downloaded successfully!');
-    } catch (error) {
-      console.error('Error downloading file:', error);
-    }
+    notification?.open({
+      message: 'FormStack Syncing added successfully',
+      type: 'success',
+    });
   };
 
   return (
