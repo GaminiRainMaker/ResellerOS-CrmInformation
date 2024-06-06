@@ -423,6 +423,7 @@ const SideBar = () => {
           cursor="pointer"
           onClick={() => {
             setSelectedKey(4);
+            router?.push('/allQuote');
           }}
           name="Button 1"
           color={token?.colorTextSecondary}

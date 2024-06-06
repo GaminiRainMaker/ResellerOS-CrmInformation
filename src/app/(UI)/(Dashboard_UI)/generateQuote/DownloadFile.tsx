@@ -12,7 +12,7 @@ import {FC, useEffect, useState} from 'react';
 import {getAllFormStack} from '../../../../../redux/actions/formStackSync';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-const DownloadFile: FC<any> = ({form}) => {
+const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -51,6 +51,14 @@ const DownloadFile: FC<any> = ({form}) => {
         formattedData[item.preVal] = item.newVal;
       }
     });
+
+    let resultValues: any = {};
+    for (let key in formattedData) {
+      resultValues[key] = objectForSyncingValues[formattedData[key]]
+        ? objectForSyncingValues[formattedData[key]]
+        : 'empty';
+    }
+
     try {
       setLoading(true);
       let pathName =
@@ -61,7 +69,7 @@ const DownloadFile: FC<any> = ({form}) => {
         const response = await axios.post(
           pathName,
           {
-            ...formattedData,
+            ...resultValues,
             clientId: GeneralSettingData?.api_key,
             clientSecret: GeneralSettingData?.secret_key,
           },

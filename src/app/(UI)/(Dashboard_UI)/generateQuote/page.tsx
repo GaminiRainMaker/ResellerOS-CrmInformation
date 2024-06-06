@@ -35,6 +35,7 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {
+  getQuoteById,
   updateQuoteById,
   updateQuoteStatusById,
 } from '../../../../../redux/actions/quote';
@@ -91,16 +92,34 @@ const GenerateQuote: React.FC = () => {
   const [showUpdateLineItemModal, setShowUpdateLineItemModal] =
     useState<boolean>(false);
   const [showDocumentModal, setShowDocumentModal] = useState<boolean>(false);
-  const [syncedNewValue, setNewSyncedValue] = useState<any>([]);
 
-  const [showDocumentModalButton, setShowDocumentModalButton] =
-    useState<boolean>(false);
+  const [objectForSyncingValues, setObjectForSyncingValues] = useState<any>([]);
 
   useEffect(() => {
     dispatch(getAllTableColumn(''));
     dispatch(getAllContractSetting(''));
   }, []);
 
+  useEffect(() => {
+    dispatch(getQuoteById(getQuoteID))?.then((payload: any) => {
+      let newObj = {
+        ...payload?.payload?.Customer,
+        ...payload?.payload?.Opportunity,
+        ...payload?.payload?.QuoteLineItems?.[0],
+        ...payload?.payload,
+      };
+      delete newObj?.Customer;
+      delete newObj?.Opportunity,
+        delete newObj?.Profitabilities,
+        delete newObj?.QuoteFiles,
+        delete newObj?.QuoteLineItems,
+        delete newObj?.RebatesQuoteLineItems,
+        delete newObj?.User,
+        delete newObj?.Validations,
+        setObjectForSyncingValues(newObj);
+    });
+  }, []);
+  console.log('familyFilterfamilyFilter', quoteFileData);
   useEffect(() => {
     if (activeTabRoute === '2') {
       setActiveTab('2');
@@ -600,7 +619,12 @@ const GenerateQuote: React.FC = () => {
         title="Add Template"
         bodyPadding={30}
         loading={loading}
-        body={<DownloadFile form={addDocForm} />}
+        body={
+          <DownloadFile
+            form={addDocForm}
+            objectForSyncingValues={objectForSyncingValues}
+          />
+        }
         width={900}
         open={showDocumentModal}
         onCancel={() => {
