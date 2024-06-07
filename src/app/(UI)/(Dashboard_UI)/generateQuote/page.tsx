@@ -50,6 +50,7 @@ import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
 import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
+import AttachmentDocument from './allTabs/attachmentDoc';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -91,6 +92,9 @@ const GenerateQuote: React.FC = () => {
   const {data: quoteFileData} = useAppSelector((state) => state.quoteFile);
   const [showUpdateLineItemModal, setShowUpdateLineItemModal] =
     useState<boolean>(false);
+
+  const [typeForAttachmentFilter, setTypeForAttachmentFilter] =
+    useState<any>('all');
   const [showDocumentModal, setShowDocumentModal] = useState<boolean>(false);
 
   const [objectForSyncingValues, setObjectForSyncingValues] = useState<any>([]);
@@ -400,6 +404,22 @@ const GenerateQuote: React.FC = () => {
         <Metrics familyFilter={familyFilter} selectedFilter={selectedFilter} />
       ),
     },
+    {
+      key: 6,
+      name: (
+        <Typography
+          name="Body 4/Regular"
+          cursor="pointer"
+          color={token?.colorTextBase}
+          onClick={() => setActiveTab('1')}
+        >
+          Attachments
+        </Typography>
+      ),
+      children: (
+        <AttachmentDocument typeForAttachmentFilter={typeForAttachmentFilter} />
+      ),
+    },
   ].filter(Boolean);
 
   const menuItems = [
@@ -452,6 +472,8 @@ const GenerateQuote: React.FC = () => {
       console.error('Error:', error);
     }
   };
+
+  let defaultValue = activeTab === '6' ? 'all' : 'File Name';
 
   return (
     <>
@@ -543,23 +565,39 @@ const GenerateQuote: React.FC = () => {
                   name="Body 4/Medium"
                   color={token?.colorPrimaryText}
                 >
-                  Select Grouping
+                  {activeTab === '6' ? 'Select Type' : 'Select Grouping'}
                 </Typography>
                 <Space size={12}>
                   <CommonSelect
                     style={{width: '319px'}}
-                    disabled={activeTab !== '2'}
+                    disabled={
+                      activeTab == '2' || activeTab == '6' ? false : true
+                    }
                     placeholder="Select Grouping here"
-                    options={selectData}
+                    options={
+                      activeTab === '6'
+                        ? [
+                            {label: 'ALL', value: 'all'},
+                            {label: 'Uploaded', value: 'Uploaded'},
+                            {label: 'Downloaded', value: 'Downloaded'},
+                          ]
+                        : selectData
+                    }
                     onChange={(e) => {
-                      setSelectedFilter(e);
+                      if (activeTab === '6') {
+                        setTypeForAttachmentFilter(e);
+                      } else {
+                        setSelectedFilter(e);
+                      }
                     }}
                     allowClear
-                    defaultValue="File Name"
+                    defaultValue={defaultValue}
                   />
-                  <Space>
-                    <OsDropdown menu={{items}} />
-                  </Space>
+                  {activeTab !== 6 && (
+                    <Space>
+                      <OsDropdown menu={{items}} />
+                    </Space>
+                  )}
                 </Space>
               </Space>
             }

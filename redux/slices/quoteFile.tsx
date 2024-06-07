@@ -11,6 +11,7 @@ import {
   quoteFileVerification,
   updateFileForQuoteJson,
   queryQuoteFile,
+  getQuoteFileByQuoteIdAll,
 } from '../actions/quoteFile';
 
 type QuoteFileState = {
@@ -196,7 +197,25 @@ const quoteFileSlice = createSlice({
       .addCase(queryQuoteFile.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(getQuoteFileByQuoteIdAll.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getQuoteFileByQuoteIdAll.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getQuoteFileByQuoteIdAll.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      );
   },
 });
 

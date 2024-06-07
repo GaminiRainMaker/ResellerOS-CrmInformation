@@ -111,6 +111,9 @@ export const API = {
   ADDRESS: {
     INDEX: '/address',
   },
+  ATTACHMENTDOCUMENT: {
+    INDEX: '/AttachmentDocument',
+  },
   FORMSTACK: {
     INDEX: '/formStackTable',
     GETBYDOCID: '/formStackTable/getFormStackByDocId',
@@ -144,7 +147,7 @@ export const API = {
   UPLOADAWS: {
     INDEX: '/upload/uploadDocument',
     IMAGE: '/upload/imageUpload',
-    EXCEL:'/upload/uploadExcelFile',
+    EXCEL: '/upload/uploadExcelFile',
   },
   OPPORLINEITEM: {
     INDEX: '/opportunityLineItem',
@@ -202,6 +205,7 @@ export const API = {
     GetQuoteFileByQuoteId: '/quoteFile/getQuoteFileByQuoteId',
     QuoteFileVerification: '/quoteFile/quoteFileVerification',
     GetQuoteFileById: '/quoteFile/getQuoteFileById',
+    getQuoteFileByQuoteIdAll: '/quoteFile/getQuoteFileByQuoteIdAll',
     postJson: '/quoteFile/updateQuoteFileByIdForQuoteJson',
   },
   ASSIGN_PARTNER_PROGRAM: {
