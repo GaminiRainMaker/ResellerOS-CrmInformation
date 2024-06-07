@@ -131,9 +131,21 @@ const ConcernDetail: FC<ConcernDetailInterface> = ({
                         />
                       </IconWrapper>
                     </Row>
-                    <Space direction="vertical" style={{textAlign: 'center'}}>
+                    <Space
+                      direction="vertical"
+                      style={{
+                        textAlign: 'center',
+                      }}
+                    >
                       {/* {item?.file?.type.split('/')[1] === 'pdf' ? ( */}
-                      <Image src={PdfImg} alt="PdfImg" />
+                      <Image
+                        src={PdfImg}
+                        alt="PdfImg"
+                        style={{
+                          textAlign: 'center',
+                          width: '100%',
+                        }}
+                      />
                       {/* ) : (
                       <Image src={XlsImg} alt="XlsImg" />
                     )} */}

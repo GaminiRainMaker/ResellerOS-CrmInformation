@@ -218,6 +218,7 @@ const CrmOpportunity: React.FC = () => {
       key: 'stages',
       render: (text: string, record: any) => (
         <CommonStageSelect
+          disabled={false}
           options={StageValue}
           onChange={(e: any) => {
             const dataa = {id: record?.id, stages: e};

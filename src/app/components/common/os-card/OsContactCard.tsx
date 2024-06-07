@@ -19,7 +19,7 @@ export const OsContactCard: React.FC<any> = ({
   return (
     <Row gutter={[16, 16]}>
       {data?.map((item: any, index: number) => (
-        <Col key={item?.id} style={{width: '100%'}} span={8}>
+        <Col key={item?.id} style={{width: '100%'}} span={24}>
           <OsContactCardStyle key={`${index}`}>
             <Row justify="space-between" align="middle">
               <Col>

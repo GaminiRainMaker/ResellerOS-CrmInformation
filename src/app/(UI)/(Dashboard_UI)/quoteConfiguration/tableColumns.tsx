@@ -137,7 +137,7 @@ function getColumns(
       ),
     },
     {
-      title: ' ',
+      title: 'Action',
       dataIndex: 'actions',
       key: 'actions',
       width: 54,

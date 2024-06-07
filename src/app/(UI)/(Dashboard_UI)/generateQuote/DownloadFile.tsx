@@ -1,21 +1,19 @@
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
-import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {Form, message} from 'antd';
+import { Form } from 'antd';
 import axios from 'axios';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
-import {getAllFormStack} from '../../../../../redux/actions/formStackSync';
-import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {convertFileToBase64} from '@/app/utils/base';
-import {uploadExcelFileToAws} from '../../../../../redux/actions/upload';
-import ConverSationProcess from '../admin/quote-AI/configuration/configuration-tabs/ConversationProcess';
-import {insertAttachmentDocument} from '../../../../../redux/actions/attachmentDocument';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { FC, useEffect, useState } from 'react';
+import { insertAttachmentDocument } from '../../../../../redux/actions/attachmentDocument';
+import { getAllFormStack } from '../../../../../redux/actions/formStackSync';
+import { getAllGeneralSetting } from '../../../../../redux/actions/generalSetting';
+import { uploadExcelFileToAws } from '../../../../../redux/actions/upload';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
   const [token] = useThemeToken();
   const router = useRouter();
@@ -64,7 +62,6 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
         ? objectForSyncingValues[formattedData[key]]
         : 'empty';
     }
-
     try {
       setLoading(true);
       let pathName =
@@ -98,39 +95,31 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
 
           let obj: any;
 
-          // const blobToFile = (blob: Blob, fileName: string): File => {
-          //   const file = new File([blob], fileName, {
-          //     type: blob.type,
-          //     lastModified: Date.now(),
-          //   });
-
-          //   return file;
-          // };
-
-          // const fileName = 'example.txt';
-          // const file: any = blobToFile(blob, fileName);
-          // convertFileToBase64(file)
-          //   .then((base64String: string) => {
-          //     obj.base64 = base64String;
-          //     obj.file = file;
-          //     setLoading(true);
-          //     dispatch(uploadExcelFileToAws({document: base64String})).then(
-          //       (payload: any) => {
-          //         const pdfUrl = payload?.payload?.data?.Location;
-          //         obj.pdf_url = pdfUrl;
-          //         setLoading(false);
-          //       },
-          //     );
-          //   })
-          //   .catch((error) => {
-          //     message.error('Error converting file to base64', error);
-          //   });
-          let newObjForAttach: any = {
-            doc_url: '',
-            quote_id: getQuoteID,
-            type: 'Downloaded',
+          const blobToBase64 = (blobs: any) => {
+            return new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result);
+              reader.onerror = (error) => {
+                reject(error);
+              };
+              reader.readAsDataURL(blobs);
+            });
           };
-          dispatch(insertAttachmentDocument(newObjForAttach));
+
+          const base64String = await blobToBase64(blob);
+          dispatch(uploadExcelFileToAws({document: base64String})).then(
+            (payload: any) => {
+              const pdfUrl = payload?.payload?.data?.Location;
+              if (pdfUrl) {
+                let newObjForAttach: any = {
+                  doc_url: pdfUrl,
+                  quote_id: getQuoteID,
+                  type: 'Downloaded',
+                };
+                dispatch(insertAttachmentDocument(newObjForAttach));
+              }
+            },
+          );
           const url = window.URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = url;
@@ -235,3 +224,4 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
 };
 
 export default DownloadFile;
+

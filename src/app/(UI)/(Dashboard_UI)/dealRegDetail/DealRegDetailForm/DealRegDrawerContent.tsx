@@ -83,6 +83,7 @@ const DealDrawerContent: FC<any> = ({form, onFinish, setSelectedUserId}) => {
               name="status"
             >
               <CommonStageSelect
+                disabled={false}
                 style={{width: '120px'}}
                 currentStage={dealRegStatus}
                 onChange={(value: string) => {

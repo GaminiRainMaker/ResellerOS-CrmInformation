@@ -409,7 +409,7 @@ const SideBar = () => {
                     : token?.colorTextSecondary
                 }
               >
-                Super Admin Permissions
+                Quotes Configuration
               </Typography>
             </Space>,
             '3',

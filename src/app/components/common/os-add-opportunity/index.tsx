@@ -115,6 +115,7 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
               ]}
             >
               <CommonStageSelect
+                disabled={false}
                 style={{width: '100%', marginTop: '10px'}}
                 options={StageValue}
                 onChange={(e: string) => {

@@ -290,7 +290,7 @@ const AddUser = () => {
       />
 
       <OsDrawer
-        title={<Typography name="Body 1/Regular">Update User</Typography>}
+        title={<Typography name="Body 1/Regular">User Settings</Typography>}
         placement="right"
         onClose={() => {
           setOpen(false);
@@ -302,7 +302,7 @@ const AddUser = () => {
             <OsButton
               btnStyle={{width: '100%'}}
               buttontype="PRIMARY"
-              text="UPDATE"
+              text="Update"
               clickHandler={() => form.submit()}
             />
           </Row>

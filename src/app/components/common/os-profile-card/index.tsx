@@ -64,7 +64,7 @@ const ProfileCard: FC<OSProfileInterface> = ({
                 as="div"
                 color={token?.colorInfo}
               >
-                ID {customerData?.id ?? '--'}
+                ID : {customerData?.id ?? '--'}
               </Typography>
             </Typography>
           </Space>

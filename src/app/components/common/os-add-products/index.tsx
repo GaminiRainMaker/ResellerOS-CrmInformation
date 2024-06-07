@@ -229,7 +229,7 @@ const AddProduct = () => {
               loading={productLoading}
               btnStyle={{width: '100%'}}
               buttontype="PRIMARY"
-              text="UPDATE Changes"
+              text="Update Changes"
               clickHandler={() => form.submit()}
             />
           </Row>

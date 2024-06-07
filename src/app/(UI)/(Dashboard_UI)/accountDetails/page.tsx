@@ -161,7 +161,7 @@ const AccountDetails = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Customer
+          Customer Name
         </Typography>
       ),
       dataIndex: 'customer_name',
@@ -256,7 +256,7 @@ const AccountDetails = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Amount
+          Amount ($)
         </Typography>
       ),
       dataIndex: 'amount',
@@ -265,7 +265,7 @@ const AccountDetails = () => {
       render: (text: string) => (
         <Typography name="Body 4/Regular">
           {' '}
-          {`$ ${abbreviate(Number(text ?? 0))}` ?? '--'}
+          {` ${abbreviate(Number(text ?? 0))}` ?? '--'}
         </Typography>
       ),
     },
@@ -280,6 +280,7 @@ const AccountDetails = () => {
       width: 130,
       render: (text: string, record: any) => (
         <CommonStageSelect
+          disabled={true}
           options={StageValue}
           // value={text}
           currentStage={text}

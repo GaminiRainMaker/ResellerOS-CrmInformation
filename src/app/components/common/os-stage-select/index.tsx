@@ -10,12 +10,14 @@ interface CommonStageSelectProps {
   options?: any;
   style?: any;
   placeholder?: string;
+  disabled: boolean;
 }
 
 const CommonStageSelect: FC<CommonStageSelectProps> = ({
   currentStage,
   onChange,
   style,
+  disabled,
   placeholder = 'Select Stage',
   ...rest
 }) => {
@@ -115,6 +117,7 @@ const CommonStageSelect: FC<CommonStageSelectProps> = ({
       {...rest}
       style={style}
       defaultValue={currentStage}
+      disabled={disabled}
       backgroundColor={selectedStage?.color}
       color={selectedStage?.textColor}
       borderColor={selectedStage?.border}
