@@ -40,6 +40,7 @@ const AddDocument: FC<any> = ({
   showDoucmentDropDown,
   documentName,
   documentKey,
+  selectedColumn,
 }) => {
   const [token] = useThemeToken();
   const router = useRouter();
@@ -232,136 +233,150 @@ const AddDocument: FC<any> = ({
                     </Typography>
                   </Row>
                   <Divider />
-                  {syncedNewValue?.map((item: any, indexOfCol: number) => (
-                    <Row style={{marginTop: '6px'}}>
-                      <br />
-                      <CommonSelect
-                        style={{width: '100%'}}
-                        placeholder="Select Columns"
-                        allowClear
-                        options={columnSelectOptions}
-                        onChange={(e: any) => {
-                          syncTableToLineItems(item?.preVal, e, indexOfCol);
-                        }}
-                        value={item?.newVal}
-                        dropdownRender={(menu) => (
-                          <>
-                            <Space
-                              direction="vertical"
-                              style={{padding: '9px 0px 0px 16px'}}
-                            >
-                              <Typography
-                                color={token?.colorPrimaryText}
-                                name="Body 3/Regular"
-                              >
-                                Select by:
-                              </Typography>
-                              <Space>
-                                <Button
-                                  onClick={() => {
-                                    setSelectDropdownType('Quote');
-                                  }}
-                                  style={
-                                    selectDropdownType === 'Quote'
-                                      ? buttonActiveStyle
-                                      : buttonInactiveStyle
-                                  }
+                  {syncedNewValue?.map(
+                    (item: any, indexOfCol: number) => (
+                      console.log(
+                        'selectedColumn === item?.newVal',
+                        selectedColumn === item?.newVal,
+                        selectedColumn,
+                        item?.newVal,
+                      ),
+                      (
+                        <Row style={{marginTop: '6px'}}>
+                          <br />
+                          <CommonSelect
+                            style={{width: '100%'}}
+                            placeholder="Select Columns"
+                            disabled={'QuoteLineItem' === item?.newVal}
+                            allowClear
+                            options={columnSelectOptions}
+                            onChange={(e: any) => {
+                              syncTableToLineItems(item?.preVal, e, indexOfCol);
+                            }}
+                            value={item?.newVal}
+                            dropdownRender={(menu) => (
+                              <>
+                                <Space
+                                  direction="vertical"
+                                  style={{padding: '9px 0px 0px 16px'}}
                                 >
                                   <Typography
-                                    name="Body 4/Regular"
-                                    color={
-                                      token[
+                                    color={token?.colorPrimaryText}
+                                    name="Body 3/Regular"
+                                  >
+                                    Select by:
+                                  </Typography>
+                                  <Space>
+                                    <Button
+                                      onClick={() => {
+                                        setSelectDropdownType('Quote');
+                                      }}
+                                      style={
                                         selectDropdownType === 'Quote'
-                                          ? 'colorPrimaryHover'
-                                          : 'colorPrimaryBorder'
-                                      ]
-                                    }
-                                    cursor="pointer"
-                                  >
-                                    Quote
-                                  </Typography>
-                                </Button>
-                                <Button
-                                  onClick={() => {
-                                    setSelectDropdownType('Quote Line Item');
-                                  }}
-                                  style={
-                                    selectDropdownType === 'Quote Line Item'
-                                      ? buttonActiveStyle
-                                      : buttonInactiveStyle
-                                  }
-                                >
-                                  <Typography
-                                    name="Body 4/Regular"
-                                    color={
-                                      token[
+                                          ? buttonActiveStyle
+                                          : buttonInactiveStyle
+                                      }
+                                    >
+                                      <Typography
+                                        name="Body 4/Regular"
+                                        color={
+                                          token[
+                                            selectDropdownType === 'Quote'
+                                              ? 'colorPrimaryHover'
+                                              : 'colorPrimaryBorder'
+                                          ]
+                                        }
+                                        cursor="pointer"
+                                      >
+                                        Quote
+                                      </Typography>
+                                    </Button>
+                                    <Button
+                                      onClick={() => {
+                                        setSelectDropdownType(
+                                          'Quote Line Item',
+                                        );
+                                      }}
+                                      style={
                                         selectDropdownType === 'Quote Line Item'
-                                          ? 'colorPrimaryHover'
-                                          : 'colorPrimaryBorder'
-                                      ]
-                                    }
-                                    cursor="pointer"
-                                  >
-                                    Quote Line Item
-                                  </Typography>
-                                </Button>
-                                <Button
-                                  onClick={() => {
-                                    setSelectDropdownType('Customer');
-                                  }}
-                                  style={
-                                    selectDropdownType === 'Customer'
-                                      ? buttonActiveStyle
-                                      : buttonInactiveStyle
-                                  }
-                                >
-                                  <Typography
-                                    name="Body 4/Regular"
-                                    color={
-                                      token[
+                                          ? buttonActiveStyle
+                                          : buttonInactiveStyle
+                                      }
+                                    >
+                                      <Typography
+                                        name="Body 4/Regular"
+                                        color={
+                                          token[
+                                            selectDropdownType ===
+                                            'Quote Line Item'
+                                              ? 'colorPrimaryHover'
+                                              : 'colorPrimaryBorder'
+                                          ]
+                                        }
+                                        cursor="pointer"
+                                      >
+                                        Quote Line Item
+                                      </Typography>
+                                    </Button>
+                                    <Button
+                                      onClick={() => {
+                                        setSelectDropdownType('Customer');
+                                      }}
+                                      style={
                                         selectDropdownType === 'Customer'
-                                          ? 'colorPrimaryHover'
-                                          : 'colorPrimaryBorder'
-                                      ]
-                                    }
-                                    cursor="pointer"
-                                  >
-                                    Customer
-                                  </Typography>
-                                </Button>
-                                <Button
-                                  onClick={() => {
-                                    setSelectDropdownType('Opportunity');
-                                  }}
-                                  style={
-                                    selectDropdownType === 'Opportunity'
-                                      ? buttonActiveStyle
-                                      : buttonInactiveStyle
-                                  }
-                                >
-                                  <Typography
-                                    name="Body 4/Regular"
-                                    color={
-                                      token[
+                                          ? buttonActiveStyle
+                                          : buttonInactiveStyle
+                                      }
+                                    >
+                                      <Typography
+                                        name="Body 4/Regular"
+                                        color={
+                                          token[
+                                            selectDropdownType === 'Customer'
+                                              ? 'colorPrimaryHover'
+                                              : 'colorPrimaryBorder'
+                                          ]
+                                        }
+                                        cursor="pointer"
+                                      >
+                                        Customer
+                                      </Typography>
+                                    </Button>
+                                    <Button
+                                      onClick={() => {
+                                        setSelectDropdownType('Opportunity');
+                                      }}
+                                      style={
                                         selectDropdownType === 'Opportunity'
-                                          ? 'colorPrimaryHover'
-                                          : 'colorPrimaryBorder'
-                                      ]
-                                    }
-                                    cursor="pointer"
-                                  >
-                                    Opportunity
-                                  </Typography>
-                                </Button>
-                              </Space>
-                            </Space>
-                            <Divider style={{margin: '5px'}} />
-                            {menu}
-                          </>
-                        )}
-                      />
-                    </Row>
-                  ))}
+                                          ? buttonActiveStyle
+                                          : buttonInactiveStyle
+                                      }
+                                    >
+                                      <Typography
+                                        name="Body 4/Regular"
+                                        color={
+                                          token[
+                                            selectDropdownType === 'Opportunity'
+                                              ? 'colorPrimaryHover'
+                                              : 'colorPrimaryBorder'
+                                          ]
+                                        }
+                                        cursor="pointer"
+                                      >
+                                        Opportunity
+                                      </Typography>
+                                    </Button>
+                                  </Space>
+                                </Space>
+                                <Divider style={{margin: '5px'}} />
+                                {menu}
+                              </>
+                            )}
+                          />
+                        </Row>
+                      )
+                    ),
+                  )}
                 </Col>
               </Row>
               <Row justify={'end'} style={{marginTop: '50px'}}>

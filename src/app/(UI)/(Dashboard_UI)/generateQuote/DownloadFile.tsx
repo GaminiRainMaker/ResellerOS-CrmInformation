@@ -12,7 +12,10 @@ import {FC, useEffect, useState} from 'react';
 import {insertAttachmentDocument} from '../../../../../redux/actions/attachmentDocument';
 import {getAllFormStack} from '../../../../../redux/actions/formStackSync';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
-import {uploadExcelFileToAws} from '../../../../../redux/actions/upload';
+import {
+  uploadExcelFileToAws,
+  uploadToAws,
+} from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
   const [token] = useThemeToken();
@@ -105,16 +108,19 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
               reader.readAsDataURL(blobs);
             });
           };
-
+          let pathUsedToUpload =
+            blob?.type === 'application/octet-stream'
+              ? uploadExcelFileToAws
+              : uploadToAws;
           const base64String = await blobToBase64(blob);
-          dispatch(uploadExcelFileToAws({document: base64String})).then(
+          dispatch(pathUsedToUpload({document: base64String})).then(
             (payload: any) => {
               const pdfUrl = payload?.payload?.data?.Location;
               if (pdfUrl) {
                 let newObjForAttach: any = {
                   doc_url: pdfUrl,
                   quote_id: getQuoteID,
-                  type: 'Downloaded',
+                  type: 'Customer Quote',
                 };
                 dispatch(insertAttachmentDocument(newObjForAttach));
               }

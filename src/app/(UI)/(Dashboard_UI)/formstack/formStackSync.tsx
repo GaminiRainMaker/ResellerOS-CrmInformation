@@ -44,6 +44,10 @@ const FormStackSync = () => {
   const [selectDropdownType, setSelectDropdownType] = useState<string>('Quote');
 
   const [columnSelectOptions, setColumnSelectOptions] = useState<any>([]);
+
+  const [selectedColumn, setSelectColumn] = useState<any>();
+  const [optionForLineItem, setOptionForLineItem] = useState<any>();
+
   const [fieldExist, setFieldExist] = useState<boolean>(true);
 
   useEffect(() => {
@@ -102,11 +106,17 @@ const FormStackSync = () => {
   const getDataOfFormStackByDocId = (id: any) => {
     dispatch(getDocumentById(id))?.then((payload: any) => {
       let keysOfAllFromFormStackApi: any;
+      let optionsARRay: any = [];
       if (payload?.payload?.success?.fields) {
         keysOfAllFromFormStackApi = Object.keys(
           payload?.payload?.success?.fields,
         );
+        keysOfAllFromFormStackApi?.map((items: string) => {
+          optionsARRay?.push({label: formatStatus(items), value: items});
+        });
       }
+
+      setOptionForLineItem(optionsARRay);
 
       if (payload?.payload?.success?.fields?.length === 0) {
         setFieldExist(false);
@@ -156,7 +166,6 @@ const FormStackSync = () => {
               };
               newArr?.push(newObj);
             });
-            console.log('3454353432', newArr);
             setNewSyncedValue(newArr);
           }
         });
@@ -166,8 +175,26 @@ const FormStackSync = () => {
     });
   };
 
-  console.log('fieldExistfieldExist', fieldExist);
+  const changeTheLineItems = (value: any) => {
+    const newArr = [...syncedNewValue];
+    let finIndexOfValue = newArr?.findIndex(
+      (items) => items?.preVal === value?.value,
+    );
+    let newArrAfterChange = newArr?.map((items: any, index: number) => {
+      if (finIndexOfValue === index) {
+        return {
+          ...items,
+          newVal: 'QuoteLineItem',
+        };
+      }
+      return {
+        ...items,
+        newVal: '',
+      };
+    });
 
+    setNewSyncedValue(newArrAfterChange);
+  };
   return (
     <Space direction="vertical" size={24} style={{width: '100%'}}>
       <Form
@@ -212,6 +239,35 @@ const FormStackSync = () => {
             }}
           />
         </SelectFormItem>
+
+        {optionForLineItem && (
+          <SelectFormItem
+            style={{marginTop: '10px', width: '100%'}}
+            label={
+              <Typography name="Body 4/Medium">
+                Select LineItem Column
+              </Typography>
+            }
+            name="lineItemId"
+            rules={[
+              {
+                required: true,
+                message: 'Document is required!',
+              },
+            ]}
+          >
+            <CommonSelect
+              style={{width: '100%'}}
+              placeholder="Select Document"
+              allowClear
+              labelInValue
+              options={optionForLineItem}
+              onChange={(e: any) => {
+                changeTheLineItems(e);
+              }}
+            />
+          </SelectFormItem>
+        )}
       </Form>
 
       {syncedValueForDoc?.length > 0 ? (
@@ -224,6 +280,7 @@ const FormStackSync = () => {
           showDoucmentDropDown={false}
           showSyncScreen={true}
           documentName={documentName}
+          selectedColumn={selectedColumn}
           documentKey={documentKey}
         />
       ) : (
@@ -248,6 +305,7 @@ const FormStackSync = () => {
                 showSyncScreen={true}
                 documentName={documentName}
                 documentKey={documentKey}
+                selectedColumn={selectedColumn}
               />
             </>
           )}

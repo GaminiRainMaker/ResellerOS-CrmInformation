@@ -302,7 +302,17 @@ export const IssueTypeOption = [
     value: 'Other Issue',
   },
 ];
-
+export const  AttachmentOptions = [
+  {label: 'ALL', value: 'all'},
+  {label: 'Statement of Work', value: 'Statement of Work'},
+  {label: 'Terms and Conditions', value: 'Terms and Conditions'},
+  {label: 'Unison/FedBid Award', value: 'Unison/FedBid Award'},
+  {label: 'Other', value: 'Other'},
+  {label: 'Vendor Quote', value: 'Vendor Quote'},
+  {label: 'Customer Quote', value: 'Customer Quote'},
+  {label: 'Pro Forma Quotes', value: 'Pro Forma Quotes'},
+  {label: 'Government Award', value: 'Government Award'},
+];
 export const concernDescription =
   'Your Concern has been raised to our support team. We are sorry for you experience and will try our best to provide you better experience next time.';
 
