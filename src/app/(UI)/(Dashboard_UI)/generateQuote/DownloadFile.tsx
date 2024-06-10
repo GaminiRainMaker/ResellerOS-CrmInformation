@@ -1,19 +1,22 @@
-import { Col, Row } from '@/app/components/common/antd/Grid';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
-import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
+import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import { Form } from 'antd';
+import {Form} from 'antd';
 import axios from 'axios';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { FC, useEffect, useState } from 'react';
-import { insertAttachmentDocument } from '../../../../../redux/actions/attachmentDocument';
-import { getAllFormStack } from '../../../../../redux/actions/formStackSync';
-import { getAllGeneralSetting } from '../../../../../redux/actions/generalSetting';
-import { uploadExcelFileToAws } from '../../../../../redux/actions/upload';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {FC, useEffect, useState} from 'react';
+import {insertAttachmentDocument} from '../../../../../redux/actions/attachmentDocument';
+import {getAllFormStack} from '../../../../../redux/actions/formStackSync';
+import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
+import {
+  uploadExcelFileToAws,
+  uploadToAws,
+} from '../../../../../redux/actions/upload';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
   const [token] = useThemeToken();
   const router = useRouter();
@@ -105,16 +108,19 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
               reader.readAsDataURL(blobs);
             });
           };
-
+          let pathUsedToUpload =
+            blob?.type === 'application/octet-stream'
+              ? uploadExcelFileToAws
+              : uploadToAws;
           const base64String = await blobToBase64(blob);
-          dispatch(uploadExcelFileToAws({document: base64String})).then(
+          dispatch(pathUsedToUpload({document: base64String})).then(
             (payload: any) => {
               const pdfUrl = payload?.payload?.data?.Location;
               if (pdfUrl) {
                 let newObjForAttach: any = {
                   doc_url: pdfUrl,
                   quote_id: getQuoteID,
-                  type: 'Downloaded',
+                  type: 'Customer Quote',
                 };
                 dispatch(insertAttachmentDocument(newObjForAttach));
               }
@@ -224,4 +230,3 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
 };
 
 export default DownloadFile;
-

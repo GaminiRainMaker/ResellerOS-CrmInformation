@@ -26,7 +26,7 @@ import CommonSelect from '@/app/components/common/os-select';
 
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {selectData} from '@/app/utils/CONSTANTS';
+import {AttachmentOptions, selectData} from '@/app/utils/CONSTANTS';
 import {formatDate, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
 import {Form, MenuProps, notification} from 'antd';
@@ -98,6 +98,8 @@ const GenerateQuote: React.FC = () => {
   const [showDocumentModal, setShowDocumentModal] = useState<boolean>(false);
 
   const [objectForSyncingValues, setObjectForSyncingValues] = useState<any>([]);
+  const [addNewCustomerQuote, setAddNewCustomerQuote] =
+    useState<boolean>(false);
 
   useEffect(() => {
     dispatch(getAllTableColumn(''));
@@ -417,7 +419,11 @@ const GenerateQuote: React.FC = () => {
         </Typography>
       ),
       children: (
-        <AttachmentDocument typeForAttachmentFilter={typeForAttachmentFilter} />
+        <AttachmentDocument
+          typeForAttachmentFilter={typeForAttachmentFilter}
+          addNewCustomerQuote={addNewCustomerQuote}
+          setAddNewCustomerQuote={setAddNewCustomerQuote}
+        />
       ),
     },
   ].filter(Boolean);
@@ -472,8 +478,6 @@ const GenerateQuote: React.FC = () => {
       console.error('Error:', error);
     }
   };
-
-  let defaultValue = activeTab === '6' ? 'all' : 'File Name';
 
   return (
     <>
@@ -560,44 +564,58 @@ const GenerateQuote: React.FC = () => {
             }}
             activeKey={activeTab}
             tabBarExtraContent={
-              <Space direction="vertical" size={0}>
-                <Typography
-                  name="Body 4/Medium"
-                  color={token?.colorPrimaryText}
-                >
-                  {activeTab === '6' ? 'Select Type' : 'Select Grouping'}
-                </Typography>
-                <Space size={12}>
-                  <CommonSelect
-                    style={{width: '319px'}}
-                    disabled={
-                      activeTab == '2' || activeTab == '6' ? false : true
-                    }
-                    placeholder="Select Grouping here"
-                    options={
-                      activeTab === '6'
-                        ? [
-                            {label: 'ALL', value: 'all'},
-                            {label: 'Uploaded', value: 'Uploaded'},
-                            {label: 'Downloaded', value: 'Downloaded'},
-                          ]
-                        : selectData
-                    }
-                    onChange={(e) => {
-                      if (activeTab === '6') {
-                        setTypeForAttachmentFilter(e);
-                      } else {
-                        setSelectedFilter(e);
-                      }
+              <Space>
+                {' '}
+                {activeTab === '6' && (
+                  <OsButton
+                    text="Add Customer Quote"
+                    buttontype="PRIMARY"
+                    clickHandler={() => {
+                      setAddNewCustomerQuote(true);
                     }}
-                    allowClear
-                    defaultValue={defaultValue}
                   />
-                  {activeTab !== 6 && (
-                    <Space>
-                      <OsDropdown menu={{items}} />
-                    </Space>
-                  )}
+                )}
+                <Space direction="vertical" size={0}>
+                  <Typography
+                    name="Body 4/Medium"
+                    color={token?.colorPrimaryText}
+                  >
+                    {activeTab === '6' ? 'Select Type' : 'Select Grouping'}
+                  </Typography>
+                  <Space size={12}>
+                    {activeTab === '6' ? (
+                      <CommonSelect
+                        key={1}
+                        style={{width: '319px'}}
+                        placeholder="Select Grouping here"
+                        options={AttachmentOptions}
+                        onChange={(e) => {
+                          setTypeForAttachmentFilter(e);
+                        }}
+                        allowClear
+                        defaultValue={'all'}
+                      />
+                    ) : (
+                      <CommonSelect
+                        key={2}
+                        style={{width: '319px'}}
+                        disabled={activeTab == '2' ? false : true}
+                        placeholder="Select Grouping here"
+                        options={selectData}
+                        onChange={(e) => {
+                          setSelectedFilter(e);
+                        }}
+                        allowClear
+                        defaultValue={'File Name'}
+                      />
+                    )}
+
+                    {activeTab !== '6' && (
+                      <Space>
+                        <OsDropdown menu={{items}} />
+                      </Space>
+                    )}
+                  </Space>
                 </Space>
               </Space>
             }

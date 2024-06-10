@@ -10,14 +10,33 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {DownloadOutlined} from '@ant-design/icons';
-import {notification} from 'antd';
+import {Space, message, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getQuoteFileByQuoteIdAll} from '../../../../../../redux/actions/quoteFile';
 import {useAppDispatch} from '../../../../../../redux/hook';
-import {getAllAttachmentDocument} from '../../../../../../redux/actions/attachmentDocument';
+import {
+  getAllAttachmentDocument,
+  insertAttachmentDocument,
+} from '../../../../../../redux/actions/attachmentDocument';
+import Typography from '@/app/components/common/typography';
+import OsModal from '@/app/components/common/os-modal';
+import {OSDraggerStyle} from '@/app/components/common/os-upload/styled-components';
+import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
+import {convertFileToBase64} from '@/app/utils/base';
+import {
+  uploadExcelFileToAws,
+  uploadToAws,
+} from '../../../../../../redux/actions/upload';
+import CommonSelect from '@/app/components/common/os-select';
+import {AttachmentOptions} from '@/app/utils/CONSTANTS';
+import OsButton from '@/app/components/common/os-button';
 
-const AttachmentDocument: FC<any> = ({typeForAttachmentFilter}) => {
+const AttachmentDocument: FC<any> = ({
+  typeForAttachmentFilter,
+  addNewCustomerQuote,
+  setAddNewCustomerQuote,
+}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const router = useRouter();
@@ -27,8 +46,12 @@ const AttachmentDocument: FC<any> = ({typeForAttachmentFilter}) => {
 
   const [attachmentData, setAttachmentData] = useState<any>();
   const [filterData, setFilterData] = useState<any>();
+  const [attachUrl, setAttachUrl] = useState<any>();
+  const [typeOfAttach, setTypeOfAttach] = useState<any>();
+  const [loadingShow, setLoadingShow] = useState<boolean>(false);
 
-  useEffect(() => {
+  const getAllAttachMents = async () => {
+    setLoadingShow(true);
     dispatch(getQuoteFileByQuoteIdAll(getQuoteID))?.then((payload: any) => {
       let newArr: any = [];
 
@@ -36,7 +59,7 @@ const AttachmentDocument: FC<any> = ({typeForAttachmentFilter}) => {
         let newObj = {
           name: items?.file_name,
           url: items?.pdf_url,
-          type: 'Uploaded',
+          type: 'Vendor Quote',
         };
         newArr?.push(newObj);
 
@@ -57,22 +80,30 @@ const AttachmentDocument: FC<any> = ({typeForAttachmentFilter}) => {
 
               let resultent = newArr?.concat(AttArrr);
               setAttachmentData(resultent);
+              setLoadingShow(false);
             } else {
               setAttachmentData(newArr);
+              setLoadingShow(false);
             }
           },
         );
       });
     });
+    setLoadingShow(false);
+    setAddNewCustomerQuote(false);
+  };
+
+  useEffect(() => {
+    getAllAttachMents();
   }, []);
 
   const locale = {
     emptyText: (
       <EmptyContainer
         title={
-          typeForAttachmentFilter === 'Downloaded'
-            ? 'There are no Document downloaded to view'
-            : 'There are no Document Uploaded to view'
+          typeForAttachmentFilter === 'Vendor Quote'
+            ? 'There are no Document Vendor Quote to view'
+            : 'There are no Document Customer Quote to view'
         }
       />
     ),
@@ -80,16 +111,11 @@ const AttachmentDocument: FC<any> = ({typeForAttachmentFilter}) => {
   useEffect(() => {
     if (typeForAttachmentFilter === 'all') {
       setFilterData(attachmentData);
-    } else if (typeForAttachmentFilter === 'Uploaded') {
+    } else {
       let uploadedFilter = attachmentData?.filter(
         (items: any) => items?.type === typeForAttachmentFilter,
       );
       setFilterData(uploadedFilter);
-    } else if (typeForAttachmentFilter === 'Downloaded') {
-      let DownloadFilter = attachmentData?.filter(
-        (items: any) => items?.type === typeForAttachmentFilter,
-      );
-      setFilterData(DownloadFilter);
     }
   }, [typeForAttachmentFilter]);
   useEffect(() => {
@@ -102,6 +128,18 @@ const AttachmentDocument: FC<any> = ({typeForAttachmentFilter}) => {
       key: 'name',
 
       width: 130,
+      render: (record: any, text: any) => {
+        return (
+          <Typography
+            name="Body 4/Medium"
+            onClick={() => {
+              window?.open(text?.url);
+            }}
+          >
+            {record}
+          </Typography>
+        );
+      },
     },
     {
       title: 'Type',
@@ -109,29 +147,39 @@ const AttachmentDocument: FC<any> = ({typeForAttachmentFilter}) => {
       key: 'type',
       width: 187,
     },
-    {
-      title: 'URL',
-      dataIndex: 'url',
-      key: 'url',
-
-      width: 130,
-    },
-    {
-      title: 'Download',
-      dataIndex: '',
-      key: '',
-      width: 187,
-      render: (record: any, index: number) => {
-        return (
-          <DownloadOutlined
-            onClick={() => {
-              window?.open(record?.url);
-            }}
-          />
-        );
-      },
-    },
   ];
+
+  const beforeUpload = (file: File) => {
+    let pathUsedToUpload = file?.type?.split('.')?.includes('spreadsheetml')
+      ? uploadExcelFileToAws
+      : uploadToAws;
+
+    convertFileToBase64(file)
+      .then((base64String) => {
+        if (base64String) {
+          dispatch(pathUsedToUpload({document: base64String})).then(
+            (payload: any) => {
+              const pdfUrl = payload?.payload?.data?.Location;
+              setAttachUrl(pdfUrl);
+            },
+          );
+        }
+      })
+      .catch((error: any) => {
+        message.error('Error converting file to base64', error);
+      });
+    return false;
+  };
+
+  const addNewAttachment = async () => {
+    let newObjForAttach: any = {
+      doc_url: attachUrl,
+      quote_id: getQuoteID,
+      type: typeOfAttach,
+    };
+    await dispatch(insertAttachmentDocument(newObjForAttach));
+    getAllAttachMents();
+  };
 
   return (
     <>
@@ -140,8 +188,77 @@ const AttachmentDocument: FC<any> = ({typeForAttachmentFilter}) => {
         columns={InputDetailQuoteLineItemcolumns}
         dataSource={filterData || []}
         scroll
-        loading={false}
+        loading={loadingShow}
         locale={locale}
+      />
+
+      <OsModal
+        width={1100}
+        open={addNewCustomerQuote}
+        onCancel={() => {
+          setAddNewCustomerQuote(false);
+          setAttachUrl('');
+          setTypeOfAttach('');
+        }}
+        bodyPadding={40}
+        title="All Customer Quote"
+        body={
+          <Space style={{width: '100%'}}>
+            {attachUrl ? (
+              <>
+                {' '}
+                <CommonSelect
+                  key={1}
+                  style={{width: '319px'}}
+                  placeholder="Select Grouping here"
+                  options={AttachmentOptions}
+                  onChange={(e) => {
+                    setTypeOfAttach(e);
+                  }}
+                  allowClear
+                />
+                <OsButton
+                  buttontype="PRIMARY"
+                  disabled={!typeOfAttach}
+                  clickHandler={addNewAttachment}
+                  text="Save"
+                />
+              </>
+            ) : (
+              <OSDraggerStyle
+                style={{width: '100vh'}}
+                beforeUpload={beforeUpload}
+                showUploadList={false}
+                multiple
+              >
+                <FolderArrowDownIcon
+                  width={24}
+                  color={token?.colorInfoBorder}
+                />
+                <Typography
+                  name="Body 4/Medium"
+                  color={token?.colorPrimaryText}
+                  as="div"
+                >
+                  <Typography
+                    name="Body 4/Medium"
+                    style={{textDecoration: 'underline', cursor: 'pointer'}}
+                    color={token?.colorPrimary}
+                  >
+                    Click to Upload
+                  </Typography>{' '}
+                  or Drag and Drop
+                </Typography>
+                <Typography
+                  name="Body 4/Medium"
+                  color={token?.colorPrimaryText}
+                >
+                  XLS, PDF.
+                </Typography>
+              </OSDraggerStyle>
+            )}
+          </Space>
+        }
       />
     </>
   );
