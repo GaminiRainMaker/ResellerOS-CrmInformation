@@ -96,8 +96,6 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
             type: 'application/octet-stream',
           });
 
-          let obj: any;
-
           const blobToBase64 = (blobs: any) => {
             return new Promise((resolve, reject) => {
               const reader = new FileReader();
