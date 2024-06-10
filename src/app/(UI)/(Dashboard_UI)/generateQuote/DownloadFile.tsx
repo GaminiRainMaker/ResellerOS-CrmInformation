@@ -11,7 +11,7 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {insertAttachmentDocument} from '../../../../../redux/actions/attachmentDocument';
 import {getAllFormStack} from '../../../../../redux/actions/formStackSync';
-import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
+import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';2
 import {
   uploadExcelFileToAws,
   uploadToAws,
