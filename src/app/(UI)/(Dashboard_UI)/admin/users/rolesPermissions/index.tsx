@@ -230,28 +230,28 @@ const RolesAndPermission = () => {
   ];
 
   useEffect(() => {
-    if (
-      cacheAvailableSeats.QuoteAISeats &&
-      cacheTotalQuoteSeats.TotalQuoteSeats &&
-      cacheTotalDealRegSeats.TotalDealRegSeats &&
-      cacheAvailableSeats.DealRegSeats
-    ) {
-      setUserRules(
-        data.map((item: any) => ({
-          ...item,
-          isQuoteDisabled:
-            cacheAvailableSeats.QuoteAISeats ===
-            cacheTotalQuoteSeats.TotalQuoteSeats
-              ? !item.is_quote
-              : false,
-          isDealRegDisabled:
-            cacheAvailableSeats.DealRegSeats ===
-            cacheTotalDealRegSeats.TotalDealRegSeats
-              ? !item.is_dealReg
-              : false,
-        })),
-      );
-    }
+    // if (
+    //   cacheAvailableSeats.QuoteAISeats &&
+    //   cacheTotalQuoteSeats.TotalQuoteSeats &&
+    //   cacheTotalDealRegSeats.TotalDealRegSeats &&
+    //   cacheAvailableSeats.DealRegSeats
+    // ) {
+    setUserRules(
+      data?.map((item: any) => ({
+        ...item,
+        isQuoteDisabled:
+          cacheAvailableSeats.QuoteAISeats ===
+          cacheTotalQuoteSeats.TotalQuoteSeats
+            ? !item.is_quote
+            : false,
+        isDealRegDisabled:
+          cacheAvailableSeats.DealRegSeats ===
+          cacheTotalDealRegSeats.TotalDealRegSeats
+            ? !item.is_dealReg
+            : false,
+      })),
+    );
+    // }
   }, [data]);
 
   useEffect(() => {
@@ -404,15 +404,12 @@ const RolesAndPermission = () => {
           </Row>
 
           {isSubscribed ? (
-            <>
-              {' '}
-              <OsTable
-                columns={RolesAndPermissionsColumns}
-                dataSource={userRules}
-                scroll
-                loading={loading}
-              />
-            </>
+            <OsTable
+              columns={RolesAndPermissionsColumns}
+              dataSource={userRules}
+              scroll
+              loading={loading}
+            />
           ) : (
             <Tag
               style={{
