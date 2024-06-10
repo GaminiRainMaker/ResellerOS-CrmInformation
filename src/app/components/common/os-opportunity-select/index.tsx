@@ -66,6 +66,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
         setShowModal(false);
         form1.resetFields();
         setOpportunityNewValue(d?.payload?.id);
+        form?.setFieldsValue(['opportunity_id', d?.payload?.id]);
       }
     });
   };
