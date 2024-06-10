@@ -130,7 +130,7 @@ const AccountDetails = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          File Name
+          Quote Name
         </Typography>
       ),
       dataIndex: 'file_name',
@@ -195,29 +195,14 @@ const AccountDetails = () => {
       width: 139,
       render: (text: string, record: any) => (
         <Space size={18}>
-          <PencilSquareIcon
-            height={24}
-            width={24}
-            color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              // router.push(`/generateQuote?id=${record?.id}`);
-            }}
-          />
           <EyeIcon
             height={24}
             width={24}
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              // router.push(`/generateQuote?id=${record?.id}`);
+              router.push(`/generateQuote?id=${record?.id}`);
             }}
-          />
-          <TrashIcon
-            height={24}
-            width={24}
-            color={token.colorError}
-            style={{cursor: 'pointer'}}
           />
         </Space>
       ),

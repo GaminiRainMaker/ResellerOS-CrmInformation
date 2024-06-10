@@ -112,7 +112,15 @@ function getColumns(
       ),
     },
     {
-      title: ' ',
+      title: (
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
+          Action
+        </Typography>
+      ),
       dataIndex: 'actions',
       key: 'actions',
       width: 94,
