@@ -7,10 +7,10 @@ import {
   getLineItemsWithNonRepitive,
   getValuesOFLineItemsThoseNotAddedBefore,
 } from '@/app/utils/base';
-import { PlusIcon } from '@heroicons/react/24/outline';
-import { Form, message } from 'antd';
-import { useRouter } from 'next/navigation';
-import { FC, useEffect, useState } from 'react';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import {Form, message} from 'antd';
+import {useRouter} from 'next/navigation';
+import {FC, useEffect, useState} from 'react';
 import {
   getBulkProductIsExisting,
   insertProductsInBulk,
@@ -21,13 +21,14 @@ import {
   insertQuote,
   updateQuoteWithNewlineItemAddByID,
 } from '../../../../../redux/actions/quote';
-import { insertQuoteFile } from '../../../../../redux/actions/quoteFile';
-import { insertQuoteLineItem } from '../../../../../redux/actions/quotelineitem';
-import { uploadToAws } from '../../../../../redux/actions/upload';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {insertQuoteFile} from '../../../../../redux/actions/quoteFile';
+import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
+import {uploadToAws} from '../../../../../redux/actions/upload';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '../os-button';
 import OsUpload from '../os-upload';
-import { AddQuoteInterface, FormattedData } from './types';
+import {AddQuoteInterface, FormattedData} from './types';
+import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
@@ -87,6 +88,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
   ) => {
     const quoteId = form.getFieldValue('existingQuoteId');
     const quotesArr: any = [];
+
     try {
       // setFinalLoading(true);
 
@@ -312,9 +314,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
       if (finalLineItems && finalLineItems.length > 0) {
         dispatch(insertQuoteLineItem(finalLineItems));
       }
-      // if (finalOpportunityArray && syncTableData?.length > 0) {
-      //   dispatch(insertOpportunityLineItem(finalOpportunityArray));
-      // }
+      if (finalOpportunityArray && syncTableData?.length > 0) {
+        dispatch(insertOpportunityLineItem(finalOpportunityArray));
+      }
       setFinalLoading(false);
     } catch (err) {
       setFinalLoading(false);
