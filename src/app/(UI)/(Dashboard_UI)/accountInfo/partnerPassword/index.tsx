@@ -207,10 +207,11 @@ const PartnerPassword = () => {
         } else {
           notification?.open({
             message: 'Partner Password for this partner is already exist.',
-            type: 'info',
+            type: 'error',
           });
           setShowModal(false);
           partnerPasswordForm.resetFields();
+          return;
         }
       });
     }
