@@ -22,7 +22,7 @@ const AddUser: FC<OsAdduser> = ({
   const {cacheAvailableSeats, cacheTotalDealRegSeats, cacheTotalQuoteSeats} =
     useAppSelector((state) => state.cacheFLow);
   const [statementForExpired, setStatementForExpired] = useState('');
-
+  const {isSubscribed} = useAppSelector((state) => state.cacheFLow);
   useEffect(() => {
     form.setFieldsValue({
       first_name: userData?.first_name,
@@ -168,38 +168,46 @@ const AddUser: FC<OsAdduser> = ({
             <>
               <Typography name="Body 3/Medium">Provide Permissions</Typography>
               <Row gutter={[16, 16]} style={{marginTop: '10px'}}>
-                <Col span={6}>
-                  <Space align="start">
-                    <Form.Item label="" valuePropName="checked" name="is_quote">
-                      <Checkbox
-                        style={{paddingBottom: '10px'}}
-                        disabled={
-                          statementForExpired === 'Quote AI' ||
-                          statementForExpired === 'Quote AI and DealReg'
-                        }
-                      />
-                    </Form.Item>
-                    <Typography name="Body 4/Medium">Quote AI</Typography>
-                  </Space>
-                </Col>
-                <Col span={6}>
-                  <Space align="start">
-                    <Form.Item
-                      label=""
-                      name="is_dealReg"
-                      valuePropName="checked"
-                    >
-                      <Checkbox
-                        style={{paddingBottom: '10px'}}
-                        disabled={
-                          statementForExpired === 'DealReg' ||
-                          statementForExpired === 'Quote AI and DealReg'
-                        }
-                      />
-                    </Form.Item>
-                    <Typography name="Body 4/Medium">DealReg AI</Typography>
-                  </Space>
-                </Col>
+                {isSubscribed && (
+                  <>
+                    <Col span={6}>
+                      <Space align="start">
+                        <Form.Item
+                          label=""
+                          valuePropName="checked"
+                          name="is_quote"
+                        >
+                          <Checkbox
+                            style={{paddingBottom: '10px'}}
+                            disabled={
+                              statementForExpired === 'Quote AI' ||
+                              statementForExpired === 'Quote AI and DealReg'
+                            }
+                          />
+                        </Form.Item>
+                        <Typography name="Body 4/Medium">Quote AI</Typography>
+                      </Space>
+                    </Col>
+                    <Col span={6}>
+                      <Space align="start">
+                        <Form.Item
+                          label=""
+                          name="is_dealReg"
+                          valuePropName="checked"
+                        >
+                          <Checkbox
+                            style={{paddingBottom: '10px'}}
+                            disabled={
+                              statementForExpired === 'DealReg' ||
+                              statementForExpired === 'Quote AI and DealReg'
+                            }
+                          />
+                        </Form.Item>
+                        <Typography name="Body 4/Medium">DealReg AI</Typography>
+                      </Space>
+                    </Col>
+                  </>
+                )}
                 <Col span={6}>
                   <Space align="start">
                     <Form.Item label="" name="is_admin" valuePropName="checked">
@@ -208,6 +216,7 @@ const AddUser: FC<OsAdduser> = ({
                     <Typography name="Body 4/Medium">Admin Access</Typography>
                   </Space>
                 </Col>
+
                 {statementForExpired && (
                   <div style={{display: 'flex', flexDirection: 'column'}}>
                     <Typography name="Body 3/Bold">Note:</Typography>
