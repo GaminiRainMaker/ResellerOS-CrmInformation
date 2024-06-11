@@ -50,6 +50,41 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       ),
     }));
 
+  let arrOfObject = [
+    {
+      Line: '4',
+      // TotalPrice: '323432',
+      // UnitPrice: '434',
+      // rosquoteai__Description__c: 'hlooooo',
+      // Quantity: '32423',
+      // rosquoteai__Product_Code__c: 'hapmmewrwe',
+    },
+    {
+      Line: '4',
+      // TotalPrice: '323432',
+      // UnitPrice: '434',
+      // rosquoteai__Description__c: 'hlooooo',
+      // Quantity: '32423',
+      // rosquoteai__Product_Code__c: 'hapmmewrwe',
+    },
+    // {
+    //   rosquoteai__LineNumber__c: '4',
+    //   // TotalPrice: '323432',
+    //   // UnitPrice: '434',
+    //   // rosquoteai__Description__c: 'hlooooo',
+    //   // Quantity: '32423',
+    //   // rosquoteai__Product_Code__c: 'hapmmewrwe',
+    // },
+    // {
+    //   rosquoteai__LineNumber__c: '4',
+    //   // TotalPrice: '323432',
+    //   // UnitPrice: '434',
+    //   // rosquoteai__Description__c: 'hlooooo',
+    //   // Quantity: '32423',
+    //   // rosquoteai__Product_Code__c: 'hapmmewrwe',
+    // },
+  ];
+
   const dowloadFunction = async (data: any, type: string) => {
     const dataItem = data?.data && JSON?.parse(data?.data);
     const formattedData: Record<string, string> = {};
@@ -61,10 +96,16 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
 
     let resultValues: any = {};
     for (let key in formattedData) {
-      resultValues[key] = objectForSyncingValues[formattedData[key]]
-        ? objectForSyncingValues[formattedData[key]]
-        : 'empty';
+      resultValues[key] =
+        key === '_qli'
+          ? arrOfObject
+          : objectForSyncingValues[formattedData[key]]
+            ? objectForSyncingValues[formattedData[key]]
+            : 'empty';
     }
+    resultValues.quotelineitem = arrOfObject;
+
+    console.log('2343243242', resultValues);
     try {
       setLoading(true);
       let pathName =
