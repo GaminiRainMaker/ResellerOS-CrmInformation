@@ -93,30 +93,30 @@ export const quoteColumns = [
   {value: 'pdf_url', label: 'PDF'},
 ];
 export const quotLineItemsColumnsSync = [
-  {value: 'line_number', label: 'Line Number'},
-  {value: 'adjusted_price', label: 'Adjusted Price'},
-  {value: 'product_code', label: 'Product Code'},
-  {value: 'line_amount', label: 'Line Amount'},
-  {value: 'list_price', label: 'List Price'},
-  {value: 'description', label: 'Description'},
-  {value: 'quantity', label: 'Quantity'},
-  {value: 'pdf_url', label: 'Pdf Url'},
-  {value: 'eventId', label: 'EventId'},
-  {value: 'portalId', label: 'PortalId'},
-  {value: 'occurredAt', label: 'OccurredAt'},
-  {value: 'subscriptionType', label: 'Sbscription Type'},
-  {value: 'attemptNumber', label: 'Attempt Number'},
-  {value: 'objectId', label: 'ObjectId'},
-  {value: 'changeSource', label: 'Change Source'},
-  {value: 'changeFlag', label: 'Change Flag'},
-  {value: 'appId', label: 'AppId'},
-  {value: 'quote_file_id', label: 'Quote File Id'},
-  {value: 'customer_id', label: 'Customer Id'},
-  {value: 'user_id', label: 'User Id'},
-  {value: 'organization', label: 'Organization'},
-  {value: 'quote_id', label: 'Quote Id'},
-  {value: 'product_id', label: 'Product Id'},
-  {value: 'bundle_id', label: 'Bundle Id'},
+  {value: 'line_number', label: 'Line Number', type: 'number'},
+  {value: 'adjusted_price', label: 'Adjusted Price', type: 'number'},
+  {value: 'product_code', label: 'Product Code', type: 'string'},
+  {value: 'line_amount', label: 'Line Amount', type: 'number'},
+  {value: 'list_price', label: 'List Price', type: 'number'},
+  {value: 'description', label: 'Description', type: 'string'},
+  {value: 'quantity', label: 'Quantity', type: 'number'},
+  {value: 'pdf_url', label: 'Pdf Url', type: 'string'},
+  {value: 'eventId', label: 'EventId', type: 'number'},
+  {value: 'portalId', label: 'PortalId', type: 'number'},
+  {value: 'occurredAt', label: 'OccurredAt', type: 'string'},
+  {value: 'subscriptionType', label: 'Subscription Type', type: 'string'},
+  {value: 'attemptNumber', label: 'Attempt Number', type: 'number'},
+  {value: 'objectId', label: 'ObjectId', type: 'number'},
+  {value: 'changeSource', label: 'Change Source', type: 'string'},
+  {value: 'changeFlag', label: 'Change Flag', type: 'string'},
+  {value: 'appId', label: 'AppId', type: 'number'},
+  {value: 'quote_file_id', label: 'Quote File Id', type: 'number'},
+  {value: 'customer_id', label: 'Customer Id', type: 'number'},
+  {value: 'user_id', label: 'User Id', type: 'number'},
+  {value: 'organization', label: 'Organization', type: 'string'},
+  {value: 'quote_id', label: 'Quote Id', type: 'number'},
+  {value: 'product_id', label: 'Product Id', type: 'number'},
+  {value: 'bundle_id', label: 'Bundle Id', type: 'number'},
 ];
 export const opportunityColumnsSync = [
   {value: 'user_id', label: 'User Id'},
@@ -137,7 +137,6 @@ export const customerColumnsSync = [
 ];
 
 export const ContractStatusOptions = [
-  {value: 'red', label: 'Red'},
   {value: 'green', label: 'Green'},
   {value: 'yellow', label: 'Yellow'},
 ];
@@ -148,13 +147,31 @@ export const LogicOptions = [
   {value: 'custom_logic', label: 'Custom Logic'},
 ];
 
-export const OperatorsOptions = [
-  {value: '=', label: '='},
-  {value: '!=', label: '!='},
-  {value: '<', label: '<'},
-  {value: '>', label: '>'},
-  {value: '<=', label: '<='},
-  {value: '=>', label: '=>'},
+export const ContractOperatorsOptions = [
+  {
+    label: 'Equals',
+    value: 'Equals',
+  },
+  {
+    label: 'Does not Equals',
+    value: 'Does not Equals',
+  },
+  {
+    label: 'Greater than',
+    value: 'Greater than',
+  },
+  {
+    label: 'Less than',
+    value: 'Less than',
+  },
+  {
+    label: 'Greater than or Equal',
+    value: 'Greater than or Equal',
+  },
+  {
+    label: 'Less than or Equal',
+    value: 'Less than or Equal',
+  },
 ];
 
 export const quoteAndOpportunityLineItemOptions = [
@@ -302,7 +319,7 @@ export const IssueTypeOption = [
     value: 'Other Issue',
   },
 ];
-export const  AttachmentOptions = [
+export const AttachmentOptions = [
   {label: 'ALL', value: 'all'},
   {label: 'Statement of Work', value: 'Statement of Work'},
   {label: 'Terms and Conditions', value: 'Terms and Conditions'},
