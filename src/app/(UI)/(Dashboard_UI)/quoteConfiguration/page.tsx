@@ -96,7 +96,6 @@ const AllQuote: React.FC = () => {
   return (
     <>
       {contextHolder}
-
       <Space size={24} direction="vertical" style={{width: '100%'}}>
         <Row justify="space-between" align="middle">
           <Col>
@@ -107,12 +106,6 @@ const AllQuote: React.FC = () => {
 
           <Col>
             <Space size={8} direction="horizontal">
-              {/* <OsButton
-                text="Cancel"
-                buttontype="SECONDARY"
-                clickHandler={() => {}}
-              /> */}
-
               <OsButton
                 text="Save"
                 buttontype="PRIMARY"
