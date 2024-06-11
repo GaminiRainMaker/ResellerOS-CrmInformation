@@ -109,9 +109,9 @@ const SideBar = () => {
       setSelectedKey(2);
     } else if (pathname?.includes('quoteConfiguration')) {
       setSelectedKey(3);
-    } else if (pathname?.includes('contract')) {
+    } else if (pathname === '/contract') {
       setSelectedKey(4);
-    } else if (pathname?.includes('contractProduct')) {
+    } else if (pathname === '/contractProduct') {
       setSelectedKey(5);
     } else if (
       pathname?.includes('allQuote') ||
@@ -311,7 +311,10 @@ const SideBar = () => {
               icon={
                 <CurrencyDollarIcon
                   color={
-                    selectedKey === 2 || selectedKey === 3
+                    selectedKey === 2 ||
+                    selectedKey === 3 ||
+                    selectedKey === 4 ||
+                    selectedKey === 5
                       ? token?.colorPrimary
                       : token?.colorTextSecondary
                   }
@@ -327,7 +330,10 @@ const SideBar = () => {
                 marginRight: '60px',
               }}
               color={
-                selectedKey === 2 || selectedKey === 3
+                selectedKey === 2 ||
+                selectedKey === 3 ||
+                selectedKey === 4 ||
+                selectedKey === 5
                   ? token?.colorPrimary
                   : token?.colorTextSecondary
               }

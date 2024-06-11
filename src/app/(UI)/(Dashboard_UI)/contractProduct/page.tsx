@@ -165,7 +165,12 @@ const ContractProductMain: React.FC = () => {
         </Row>
 
         <Row
-          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+          style={{
+            background: 'white',
+            padding: '24px',
+            borderRadius: '12px',
+            overflow: 'auto',
+          }}
         >
           <OsTable
             columns={ContractProductColumns}
