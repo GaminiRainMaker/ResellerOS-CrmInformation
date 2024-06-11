@@ -3,21 +3,18 @@
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import {Switch} from '@/app/components/common/antd/Switch';
-import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {ContractStatusOptions, LogicOptions} from '@/app/utils/CONSTANTS';
 import {useEffect, useState} from 'react';
-import {TabContainerStyle} from '../styled-components';
-import GreenStatusFile from './GreenStatusFile';
-import YellowStatusFile from './YellowStatusFile';
 import {getContractConfiguartion} from '../../../../../../../../../redux/actions/contractConfiguration';
 import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../../../../../redux/hook';
+import {TabContainerStyle} from '../styled-components';
+import GreenStatusFile from './GreenStatusFile';
 
 const ContractValidationConfiguration = () => {
   const dispatch = useAppDispatch();
@@ -29,22 +26,9 @@ const ContractValidationConfiguration = () => {
     (state) => state.contractConfiguration,
   );
 
-  const data = {
-    logic: 'OR',
-    contract_status: 'green',
-    json: [
-      {
-        key: '0',
-        serialNumber: '1',
-        fieldName: 'field2',
-        operator: 'Less than or Equal',
-        valueType: 'input',
-        value: '5345',
-      },
-    ],
-  };
-
-  console.log('contractConfigurationData', contractConfigurationData);
+  const matchingObjects = contractConfigurationData?.filter(
+    (item: any) => item?.contract_status === contractStatus,
+  );
 
   useEffect(() => {
     dispatch(getContractConfiguartion(''));
@@ -118,6 +102,8 @@ const ContractValidationConfiguration = () => {
                   <CommonSelect
                     placeholder="Select"
                     style={{width: '100%'}}
+                    defaultValue={matchingObjects?.[0]?.logic}
+                    allowClear
                     options={LogicOptions}
                     onChange={(e) => {
                       setSelectedLogic(e);
@@ -143,26 +129,11 @@ const ContractValidationConfiguration = () => {
             </Space>
           </Space>
 
-          {contractStatus === 'green' ? (
-            <GreenStatusFile initialData={contractConfigurationData} />
-          ) : contractStatus === 'yellow' ? (
-            <YellowStatusFile />
-          ) : (
-            <></>
+          {contractStatus && (
+            <GreenStatusFile initialData={matchingObjects?.[0]} />
           )}
         </Col>
       </Row>
-      {/* <footer
-        style={{
-          width: 'max-content',
-          float: 'right',
-          position: 'absolute',
-          bottom: '-5%',
-          right: '0%',
-        }}
-      >
-        <OsButton text="Save" buttontype="PRIMARY" clickHandler={() => {}} />
-      </footer> */}
     </TabContainerStyle>
   );
 };
