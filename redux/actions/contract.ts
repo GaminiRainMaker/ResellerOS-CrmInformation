@@ -37,3 +37,14 @@ export const updateContractById = createAsyncThunk(
     }
   },
 );
+export const deleteContract = createAsyncThunk(
+  'contract/deleteContract',
+  async (id: any, thunkApi) => {
+    try {
+      const res = await CONTRACT_API.deleteById(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

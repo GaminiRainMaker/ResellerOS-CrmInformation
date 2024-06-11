@@ -5,6 +5,7 @@ import {
   insertContract,
   getAllContract,
   updateContractById,
+  deleteContract,
 } from '../actions/contract';
 
 type ContractState = {
@@ -77,7 +78,22 @@ const contractSlice = createSlice({
           state.loading = false;
           state.error = action.payload;
         },
-      );
+      )
+      .addCase(deleteContract.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        deleteContract.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(deleteContract.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 

@@ -14,6 +14,8 @@ export const CONTRACT_PRODUCT_API = {
     get(`${API.CONTRACT_PRODUCT.INDEX}/${product_code}`) as Promise<
       AxiosResponse<any>
     >,
+  deleteContractProduct: (id: string) =>
+    get(`${API.CONTRACT_PRODUCT.delete}/${id}`) as Promise<AxiosResponse<any>>,
   patch: (data: any) =>
     patch(API.CONTRACT_PRODUCT.INDEX, data) as Promise<AxiosResponse<any>>,
   getContractInBulk: (data: any) =>
