@@ -4,26 +4,25 @@ import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
+import {ContractOperatorsOptions} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Input, Select, Table} from 'antd';
 import {ColumnsType} from 'antd/lib/table';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
+import {RowData, StatusFileProps} from '../configuration.interface';
 
 const {Option} = Select;
 
-interface RowData {
-  key: string;
-  serialNumber: string;
-  fieldName: string;
-  operator: string;
-  valueType: string;
-  value: string;
-}
-
-const GreenStatusFile: React.FC = () => {
+const GreenStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
   const [token] = useThemeToken();
   const [dataSource, setDataSource] = useState<RowData[]>([]);
   const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (initialData.length > 0) {
+      loadInitialData(initialData);
+    }
+  }, [initialData]);
 
   const handleAdd = () => {
     const newRow: RowData = {
@@ -57,13 +56,30 @@ const GreenStatusFile: React.FC = () => {
       if (item.key === key) {
         const newItem = {...item, [column]: value};
         if (column === 'valueType' && value === 'input') {
-          newItem.value = ''; // Clear value when switching to input
+          newItem.value = '';
         }
         return newItem;
       }
       return item;
     });
     setDataSource(newDataSource);
+  };
+
+  const handleSave = () => {
+    console.log('Saved Data:', dataSource);
+
+    // You can replace the above line with any action you want to perform with the data
+  };
+
+  const loadInitialData = (initialData: RowData[]) => {
+    setDataSource(
+      initialData.map((item, index) => ({
+        ...item,
+        key: index.toString(),
+        serialNumber: (index + 1).toString(),
+      })),
+    );
+    setCount(initialData.length);
   };
 
   const columns: ColumnsType<RowData> = [
@@ -103,11 +119,8 @@ const GreenStatusFile: React.FC = () => {
           value={text}
           onChange={(value) => handleInputChange(value, record.key, 'operator')}
           style={{width: '100%', height: '34px'}}
-        >
-          <Option value="equal">Equal</Option>
-          <Option value="less_than">Less Than</Option>
-          <Option value="greater_than">Greater Than</Option>
-        </CommonSelect>
+          options={ContractOperatorsOptions}
+        />
       ),
     },
     {
@@ -200,13 +213,21 @@ const GreenStatusFile: React.FC = () => {
                     pagination={false}
                     rowKey="key"
                   />
-                  <OsButton
-                    text="Add Field"
-                    buttontype="PRIMARY"
-                    icon={<PlusIcon width={24} />}
-                    clickHandler={handleAdd}
-                    style={{marginBottom: 16}}
-                  />
+                  <Space size={24} direction="horizontal">
+                    <OsButton
+                      text="Add Field"
+                      buttontype="PRIMARY"
+                      icon={<PlusIcon width={24} />}
+                      clickHandler={handleAdd}
+                      style={{marginBottom: 16}}
+                    />
+                    <OsButton
+                      text="Save"
+                      buttontype="PRIMARY"
+                      clickHandler={handleSave}
+                      style={{marginBottom: 16}}
+                    />
+                  </Space>
                 </Space>
               ),
             },

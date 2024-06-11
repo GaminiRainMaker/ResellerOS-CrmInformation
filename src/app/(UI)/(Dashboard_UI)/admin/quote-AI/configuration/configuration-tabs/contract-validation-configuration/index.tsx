@@ -19,7 +19,16 @@ const ContractValidationConfiguration = () => {
   const [isSelectStatus, setIsSelectStatus] = useState<boolean>(false);
   const [isSelectLogic, setIsSelectLogic] = useState<boolean>(false);
   const [contractStatus, setContractStatus] = useState<string>('');
-
+  const data = [
+    {
+      key: '0',
+      serialNumber: '1',
+      fieldName: 'field2',
+      operator: 'Less than or Equal',
+      valueType: 'input',
+      value: '5345',
+    },
+  ];
   return (
     <TabContainerStyle>
       <Row>
@@ -113,7 +122,7 @@ const ContractValidationConfiguration = () => {
           </Space>
 
           {contractStatus === 'green' ? (
-            <GreenStatusFile />
+            <GreenStatusFile initialData={data} />
           ) : contractStatus === 'yellow' ? (
             <YellowStatusFile />
           ) : (

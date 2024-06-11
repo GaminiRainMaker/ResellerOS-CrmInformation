@@ -147,13 +147,31 @@ export const LogicOptions = [
   {value: 'custom_logic', label: 'Custom Logic'},
 ];
 
-export const OperatorsOptions = [
-  {value: '=', label: '='},
-  {value: '!=', label: '!='},
-  {value: '<', label: '<'},
-  {value: '>', label: '>'},
-  {value: '<=', label: '<='},
-  {value: '=>', label: '=>'},
+export const ContractOperatorsOptions = [
+  {
+    label: 'Equals',
+    value: 'Equals',
+  },
+  {
+    label: 'Does not Equals',
+    value: 'Does not Equals',
+  },
+  {
+    label: 'Greater than',
+    value: 'Greater than',
+  },
+  {
+    label: 'Less than',
+    value: 'Less than',
+  },
+  {
+    label: 'Greater than or Equal',
+    value: 'Greater than or Equal',
+  },
+  {
+    label: 'Less than or Equal',
+    value: 'Less than or Equal',
+  },
 ];
 
 export const quoteAndOpportunityLineItemOptions = [
@@ -301,7 +319,7 @@ export const IssueTypeOption = [
     value: 'Other Issue',
   },
 ];
-export const  AttachmentOptions = [
+export const AttachmentOptions = [
   {label: 'ALL', value: 'all'},
   {label: 'Statement of Work', value: 'Statement of Work'},
   {label: 'Terms and Conditions', value: 'Terms and Conditions'},
