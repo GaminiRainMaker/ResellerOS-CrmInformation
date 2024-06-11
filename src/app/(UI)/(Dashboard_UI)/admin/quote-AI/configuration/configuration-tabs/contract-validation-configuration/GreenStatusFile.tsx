@@ -39,9 +39,9 @@ const GreenStatusFile: React.FC = () => {
   };
 
   const handleDelete = (key: string) => {
-    const newDataSource = dataSource.filter((item) => item.key !== key);
+    const newDataSource = dataSource.filter((item) => item?.key !== key);
     setDataSource(
-      newDataSource.map((item, index) => ({
+      newDataSource?.map((item, index) => ({
         ...item,
         serialNumber: (index + 1).toString(),
       })),
