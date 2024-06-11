@@ -132,7 +132,7 @@ const GreenStatusFile: React.FC<StatusFileProps> = ({initialData}) => {
           options={quotLineItemsColumnsSync}
         />
       ),
-      width: 220,
+      width: 250,
     },
     {
       title: 'Operator',
