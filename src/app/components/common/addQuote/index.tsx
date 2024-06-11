@@ -9,7 +9,7 @@ import {
 } from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form, message} from 'antd';
-import {useRouter} from 'next/navigation';
+import {RedirectType, useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {
   getBulkProductIsExisting,
@@ -325,7 +325,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
     dispatch(getQuotesByDateFilter({}));
     setShowModal(false);
     setUploadFileData([]);
-
     if (singleQuote || updatedArr?.length === 1) {
       router.push(`/generateQuote?id=${quotesArr[0]?.id}`);
     }
