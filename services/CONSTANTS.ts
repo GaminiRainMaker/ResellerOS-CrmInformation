@@ -251,4 +251,7 @@ export const API = {
     QUERY: 'formstack/query',
     UpdateById: '/formstack/updateById',
   },
+  CONTRACT_CONFIGURATION: {
+    INDEX: '/contractConfiguration',
+  },
 };
