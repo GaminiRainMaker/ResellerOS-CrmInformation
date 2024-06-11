@@ -14,7 +14,7 @@ export const insertUpdateContractConfiguartion = createAsyncThunk(
   },
 );
 
-export const getAllContractConfiguartion = createAsyncThunk(
+export const getContractConfiguartion = createAsyncThunk(
   'ContractConfiguartion/getContractConfiguartion',
   async (id: any, thunkApi) => {
     try {

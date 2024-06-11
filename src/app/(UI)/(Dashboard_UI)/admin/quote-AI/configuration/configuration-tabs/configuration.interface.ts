@@ -8,5 +8,5 @@ export interface RowData {
 }
 
 export interface StatusFileProps {
-  initialData?: RowData[];
+  initialData?: any;
 }

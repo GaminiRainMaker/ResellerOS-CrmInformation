@@ -9,26 +9,47 @@ import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {ContractStatusOptions, LogicOptions} from '@/app/utils/CONSTANTS';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {TabContainerStyle} from '../styled-components';
 import GreenStatusFile from './GreenStatusFile';
 import YellowStatusFile from './YellowStatusFile';
+import {getContractConfiguartion} from '../../../../../../../../../redux/actions/contractConfiguration';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../../../../../../redux/hook';
 
 const ContractValidationConfiguration = () => {
-  const [token] = useThemeToken();
+  const dispatch = useAppDispatch();
   const [isSelectStatus, setIsSelectStatus] = useState<boolean>(false);
   const [isSelectLogic, setIsSelectLogic] = useState<boolean>(false);
   const [contractStatus, setContractStatus] = useState<string>('');
-  const data = [
-    {
-      key: '0',
-      serialNumber: '1',
-      fieldName: 'field2',
-      operator: 'Less than or Equal',
-      valueType: 'input',
-      value: '5345',
-    },
-  ];
+  const [selectedLogic, setSelectedLogic] = useState<string>('');
+  const {data: contractConfigurationData} = useAppSelector(
+    (state) => state.contractConfiguration,
+  );
+
+  const data = {
+    logic: 'OR',
+    contract_status: 'green',
+    json: [
+      {
+        key: '0',
+        serialNumber: '1',
+        fieldName: 'field2',
+        operator: 'Less than or Equal',
+        valueType: 'input',
+        value: '5345',
+      },
+    ],
+  };
+
+  console.log('contractConfigurationData', contractConfigurationData);
+
+  useEffect(() => {
+    dispatch(getContractConfiguartion(''));
+  }, []);
+
   return (
     <TabContainerStyle>
       <Row>
@@ -99,6 +120,7 @@ const ContractValidationConfiguration = () => {
                     style={{width: '100%'}}
                     options={LogicOptions}
                     onChange={(e) => {
+                      setSelectedLogic(e);
                       if (e === 'custom_logic') setIsSelectLogic(true);
                       else setIsSelectLogic(false);
                     }}
@@ -122,7 +144,7 @@ const ContractValidationConfiguration = () => {
           </Space>
 
           {contractStatus === 'green' ? (
-            <GreenStatusFile initialData={data} />
+            <GreenStatusFile initialData={contractConfigurationData} />
           ) : contractStatus === 'yellow' ? (
             <YellowStatusFile />
           ) : (
@@ -130,7 +152,7 @@ const ContractValidationConfiguration = () => {
           )}
         </Col>
       </Row>
-      <footer
+      {/* <footer
         style={{
           width: 'max-content',
           float: 'right',
@@ -140,7 +162,7 @@ const ContractValidationConfiguration = () => {
         }}
       >
         <OsButton text="Save" buttontype="PRIMARY" clickHandler={() => {}} />
-      </footer>
+      </footer> */}
     </TabContainerStyle>
   );
 };

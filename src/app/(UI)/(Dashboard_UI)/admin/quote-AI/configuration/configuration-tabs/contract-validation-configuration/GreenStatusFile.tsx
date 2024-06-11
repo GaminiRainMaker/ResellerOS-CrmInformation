@@ -1,3 +1,4 @@
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
@@ -9,18 +10,25 @@ import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Input, Select, Table} from 'antd';
 import {ColumnsType} from 'antd/lib/table';
 import {useEffect, useState} from 'react';
+import {insertUpdateContractConfiguartion} from '../../../../../../../../../redux/actions/contractConfiguration';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../../../../../../redux/hook';
 import {RowData, StatusFileProps} from '../configuration.interface';
 
 const {Option} = Select;
 
-const GreenStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
+const GreenStatusFile: React.FC<StatusFileProps> = ({initialData}) => {
   const [token] = useThemeToken();
   const [dataSource, setDataSource] = useState<RowData[]>([]);
   const [count, setCount] = useState(0);
+  const dispatch = useAppDispatch();
+  const {loading} = useAppSelector((state) => state.contractConfiguration);
 
   useEffect(() => {
-    if (initialData.length > 0) {
-      loadInitialData(initialData);
+    if (initialData?.json?.length > 0) {
+      loadInitialData(initialData.json);
     }
   }, [initialData]);
 
@@ -38,7 +46,7 @@ const GreenStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
   };
 
   const handleDelete = (key: string) => {
-    const newDataSource = dataSource.filter((item) => item?.key !== key);
+    const newDataSource = dataSource?.filter((item) => item?.key !== key);
     setDataSource(
       newDataSource?.map((item, index) => ({
         ...item,
@@ -52,7 +60,7 @@ const GreenStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
     key: string,
     column: keyof RowData,
   ) => {
-    const newDataSource = dataSource.map((item) => {
+    const newDataSource = dataSource?.map((item) => {
       if (item.key === key) {
         const newItem = {...item, [column]: value};
         if (column === 'valueType' && value === 'input') {
@@ -65,21 +73,16 @@ const GreenStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
     setDataSource(newDataSource);
   };
 
-  const handleSave = () => {
-    console.log('Saved Data:', dataSource);
-
-    // You can replace the above line with any action you want to perform with the data
-  };
-
-  const loadInitialData = (initialData: RowData[]) => {
+  const loadInitialData = (initialFieldData: any) => {
+    const parsedData = JSON?.parse(initialFieldData[0]);
     setDataSource(
-      initialData.map((item, index) => ({
+      parsedData?.map((item: any, index: any) => ({
         ...item,
         key: index.toString(),
         serialNumber: (index + 1).toString(),
       })),
     );
-    setCount(initialData.length);
+    setCount(initialFieldData.length);
   };
 
   const columns: ColumnsType<RowData> = [
@@ -187,6 +190,18 @@ const GreenStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
     },
   ];
 
+  const handleSave = () => {
+    let obj = {
+      id: initialData?.id,
+      logic: initialData?.logic,
+      contract_status: initialData?.contract_status,
+      json: [JSON?.stringify(dataSource)],
+    };
+    if (obj) {
+      dispatch(insertUpdateContractConfiguartion(obj));
+    }
+  };
+
   return (
     <>
       <Space
@@ -213,21 +228,27 @@ const GreenStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
                     pagination={false}
                     rowKey="key"
                   />
-                  <Space size={24} direction="horizontal">
-                    <OsButton
-                      text="Add Field"
-                      buttontype="PRIMARY"
-                      icon={<PlusIcon width={24} />}
-                      clickHandler={handleAdd}
-                      style={{marginBottom: 16}}
-                    />
-                    <OsButton
-                      text="Save"
-                      buttontype="PRIMARY"
-                      clickHandler={handleSave}
-                      style={{marginBottom: 16}}
-                    />
-                  </Space>
+
+                  <Row justify={'space-between'}>
+                    <Col>
+                      <OsButton
+                        text="Add Field"
+                        buttontype="PRIMARY"
+                        icon={<PlusIcon width={24} />}
+                        clickHandler={handleAdd}
+                        style={{marginBottom: 16}}
+                      />{' '}
+                    </Col>
+                    <Col>
+                      <OsButton
+                        loading={loading}
+                        text="Save"
+                        buttontype="PRIMARY"
+                        clickHandler={handleSave}
+                        style={{marginBottom: 16}}
+                      />
+                    </Col>
+                  </Row>
                 </Space>
               ),
             },

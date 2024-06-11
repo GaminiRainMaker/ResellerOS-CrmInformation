@@ -2,7 +2,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
-  getAllContractConfiguartion,
+  getContractConfiguartion,
   insertUpdateContractConfiguartion,
 } from '../actions/contractConfiguration';
 
@@ -47,19 +47,19 @@ const ContractConfigurationSlice = createSlice({
           state.error = action.payload;
         },
       )
-      .addCase(getAllContractConfiguartion.pending, (state) => {
+      .addCase(getContractConfiguartion.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        getAllContractConfiguartion.fulfilled,
+        getContractConfiguartion.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.data = action.payload;
         },
       )
       .addCase(
-        getAllContractConfiguartion.rejected,
+        getContractConfiguartion.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
