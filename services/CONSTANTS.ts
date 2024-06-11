@@ -97,8 +97,9 @@ export const API = {
   },
   CONTRACT_PRODUCT: {
     INDEX: '/contractProduct',
-    QUERY: '/contractProduct/query',
+    QUERY: '/contractProduct/deleteContractProduct',
     getContractInBulk: '/contractProduct/getContractInBulkByProductCode',
+    delete: '/contractProduct/deleteContractProduct',
   },
   CUSTOMER: {
     INDEX: '/customer',

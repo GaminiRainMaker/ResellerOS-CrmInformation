@@ -52,3 +52,14 @@ export const getContractInBulkByProductCode = createAsyncThunk(
     }
   },
 );
+export const deleteContractProduct = createAsyncThunk(
+  'contractProduct/deleteContractProduct',
+  async (id: any, thunkApi) => {
+    try {
+      const res = await CONTRACT_PRODUCT_API.deleteContractProduct(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
