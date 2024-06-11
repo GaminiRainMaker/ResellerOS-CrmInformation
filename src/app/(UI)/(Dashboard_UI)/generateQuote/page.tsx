@@ -568,7 +568,7 @@ const GenerateQuote: React.FC = () => {
                 {' '}
                 {activeTab === '6' && (
                   <OsButton
-                    text="Add Customer Quote"
+                    text="Add Attachment"
                     buttontype="PRIMARY"
                     clickHandler={() => {
                       setAddNewCustomerQuote(true);
