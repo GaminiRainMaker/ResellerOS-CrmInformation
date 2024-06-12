@@ -10,6 +10,7 @@ import {
   updateProductById,
   insertProductsInBulk,
   getBulkProductIsExisting,
+  getAllProductForContract,
 } from '../actions/product';
 
 type ProductState = {
@@ -156,6 +157,24 @@ const productSlice = createSlice({
       )
       .addCase(
         updateProductById.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getAllProductForContract.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getAllProductForContract.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getAllProductForContract.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

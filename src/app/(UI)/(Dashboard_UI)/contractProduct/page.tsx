@@ -31,7 +31,10 @@ import {
 import AddContractProduct from './AddContractProduct';
 import {getAllContract} from '../../../../../redux/actions/contract';
 import OsDrawer from '@/app/components/common/os-drawer';
-import {getAllProduct} from '../../../../../redux/actions/product';
+import {
+  getAllProduct,
+  getAllProductForContract,
+} from '../../../../../redux/actions/product';
 
 const ContractProductMain: React.FC = () => {
   const [token] = useThemeToken();
@@ -52,16 +55,20 @@ const ContractProductMain: React.FC = () => {
   const [deleteId, setDeleteId] = useState<any>();
   const [recordId, setRecordId] = useState<any>();
   const [optionsForContract, setOptionsForContract] = useState<any>();
-  console.log('contactProductData', contactProductData);
+
   useEffect(() => {
-    dispatch(getAllProduct())?.then((payload: any) => {
+    dispatch(getAllProductForContract())?.then((payload: any) => {
       let newProductOptions: any = [];
+      let ProductCodeArr: any = [];
       if (payload?.payload) {
         payload?.payload?.map((items: any) => {
-          newProductOptions?.push({
-            label: items?.product_code,
-            value: items.id,
-          });
+          if (!ProductCodeArr?.includes(items?.product_code)) {
+            newProductOptions?.push({
+              label: items?.product_code,
+              value: items.id,
+            });
+            ProductCodeArr?.push(items?.product_code);
+          }
         });
       }
       setProductOptions(newProductOptions);
