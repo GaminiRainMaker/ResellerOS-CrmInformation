@@ -179,11 +179,18 @@ const AddContractProduct: React.FC<any> = ({
                   },
                 ]}
               >
-                <CommonSelect
-                  style={{width: '100%'}}
-                  mode={drawer ? 'tags' : 'multiple'}
-                  options={productOptions || []}
-                />
+                {drawer ? (
+                  <CommonSelect
+                    style={{width: '100%'}}
+                    options={productOptions || []}
+                  />
+                ) : (
+                  <CommonSelect
+                    style={{width: '100%'}}
+                    mode="multiple"
+                    options={productOptions || []}
+                  />
+                )}
               </SelectFormItem>
             </Col>
           </Row>
