@@ -25,7 +25,6 @@ const OsUpload: React.FC<any> = ({
   addQuoteLineItem,
   form,
   cardLoading,
-  rowSelection,
   setShowToggleTable,
   showToggleTable,
   Quotecolumns,
@@ -97,6 +96,12 @@ const OsUpload: React.FC<any> = ({
     if (!checked) {
       setExistingQuoteId(0);
     }
+  };
+
+  const rowSelection = {
+    onChange: (selectedRowKeys: any) => {
+      setExistingQuoteId(Number(selectedRowKeys));
+    },
   };
 
   return (

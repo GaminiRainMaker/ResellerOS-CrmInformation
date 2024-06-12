@@ -342,12 +342,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
     form.resetFields(['customer_id', 'opportunity_id']);
   };
 
-  const rowSelection = {
-    onChange: (selectedRowKeys: any) => {
-      setExistingQuoteId(Number(selectedRowKeys));
-    },
-  };
-
   return (
     <>
       <OsButton
@@ -375,7 +369,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
             addQuoteLineItem={addQuoteLineItem}
             form={form}
             cardLoading={loading}
-            rowSelection={rowSelection}
             setShowToggleTable={setShowToggleTable}
             showToggleTable={showToggleTable}
             Quotecolumns={Quotecolumns}

@@ -117,11 +117,8 @@ const OsTable: FC<any> = ({
     }),
   }));
 
-
   return (
-    <ReactDragListView.DragColumn
-      {...dragProps }
-    >
+    <ReactDragListView.DragColumn {...dragProps}>
       <CustomTable
         components={components}
         bordered
