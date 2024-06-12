@@ -1,26 +1,40 @@
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {ContractOperatorsOptions} from '@/app/utils/CONSTANTS';
+import {
+  ContractOperatorsOptions,
+  quotLineItemsColumnsSync,
+} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Input, Select, Table} from 'antd';
 import {ColumnsType} from 'antd/lib/table';
 import {useEffect, useState} from 'react';
+import {insertUpdateContractConfiguartion} from '../../../../../../../../../redux/actions/contractConfiguration';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../../../../../../redux/hook';
 import {RowData, StatusFileProps} from '../configuration.interface';
 
 const {Option} = Select;
 
-const YellowStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
+const StatusFile: React.FC<StatusFileProps> = ({initialData}) => {
   const [token] = useThemeToken();
   const [dataSource, setDataSource] = useState<RowData[]>([]);
   const [count, setCount] = useState(0);
+  const dispatch = useAppDispatch();
+  const {loading} = useAppSelector((state) => state.contractConfiguration);
+  const [fieldTypes, setFieldTypes] = useState<{[key: string]: string}>({});
 
   useEffect(() => {
-    if (initialData.length > 0) {
-      loadInitialData(initialData);
+    if (initialData?.json?.length > 0) {
+      loadInitialData(initialData.json);
+    } else {
+      loadInitialData('');
     }
   }, [initialData]);
 
@@ -38,7 +52,7 @@ const YellowStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
   };
 
   const handleDelete = (key: string) => {
-    const newDataSource = dataSource.filter((item) => item?.key !== key);
+    const newDataSource = dataSource?.filter((item) => item?.key !== key);
     setDataSource(
       newDataSource?.map((item, index) => ({
         ...item,
@@ -52,10 +66,20 @@ const YellowStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
     key: string,
     column: keyof RowData,
   ) => {
-    const newDataSource = dataSource.map((item) => {
+    const newDataSource = dataSource?.map((item) => {
       if (item.key === key) {
         const newItem = {...item, [column]: value};
         if (column === 'valueType' && value === 'input') {
+          newItem.value = '';
+        }
+        if (column === 'fieldName') {
+          const selectedField = quotLineItemsColumnsSync.find(
+            (field) => field.value === value,
+          );
+          setFieldTypes({
+            ...fieldTypes,
+            [key]: selectedField?.type || '',
+          });
           newItem.value = '';
         }
         return newItem;
@@ -65,21 +89,30 @@ const YellowStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
     setDataSource(newDataSource);
   };
 
-  const handleSave = () => {
-    console.log('Saved Data:', dataSource);
-
-    // You can replace the above line with any action you want to perform with the data
+  const loadInitialData = (initialFieldData: any) => {
+    if (initialFieldData) {
+      const parsedData = JSON?.parse(initialFieldData[0]);
+      setDataSource(
+        parsedData?.map((item: any, index: any) => ({
+          ...item,
+          key: index.toString(),
+          serialNumber: (index + 1).toString(),
+        })),
+      );
+      setCount(initialFieldData.length);
+    } else {
+      setDataSource([]);
+    }
   };
 
-  const loadInitialData = (initialData: RowData[]) => {
-    setDataSource(
-      initialData.map((item, index) => ({
-        ...item,
-        key: index.toString(),
-        serialNumber: (index + 1).toString(),
-      })),
-    );
-    setCount(initialData.length);
+  const getFieldOptions = (type: string) => {
+    return quotLineItemsColumnsSync
+      .filter((field) => field?.type === type)
+      .map((field) => (
+        <Option key={field.value} value={field.value}>
+          {field.label}
+        </Option>
+      ));
   };
 
   const columns: ColumnsType<RowData> = [
@@ -87,6 +120,7 @@ const YellowStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
       title: 'S No.',
       dataIndex: 'serialNumber',
       key: 'serialNumber',
+      width: 90,
     },
     {
       title: 'Field Name',
@@ -101,12 +135,10 @@ const YellowStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
             handleInputChange(value, record.key, 'fieldName')
           }
           style={{width: '100%', height: '34px'}}
-        >
-          <Option value="field1">Field 1</Option>
-          <Option value="field2">Field 2</Option>
-          <Option value="field3">Field 3</Option>
-        </CommonSelect>
+          options={quotLineItemsColumnsSync}
+        />
       ),
+      width: 250,
     },
     {
       title: 'Operator',
@@ -122,6 +154,7 @@ const YellowStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
           options={ContractOperatorsOptions}
         />
       ),
+      width: 220,
     },
     {
       title: 'Value Type',
@@ -141,6 +174,7 @@ const YellowStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
           <Option value="formula">Formula</Option>
         </CommonSelect>
       ),
+      width: 180,
     },
     {
       title: 'Value',
@@ -161,14 +195,13 @@ const YellowStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
             value={text}
             placeholder="Select Fields"
             onChange={(value) => handleInputChange(value, record.key, 'value')}
-            style={{width: '100%', height: '34px'}}
+            style={{width: '100%', height: 'auto'}}
             mode="multiple"
           >
-            <Option value="formula1">Formula 1</Option>
-            <Option value="formula2">Formula 2</Option>
-            <Option value="formula3">Formula 3</Option>
+            {getFieldOptions(fieldTypes[record.key] || '')}
           </CommonSelect>
         ),
+      width: 250,
     },
     {
       title: 'Action',
@@ -184,8 +217,21 @@ const YellowStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
           />
         </span>
       ),
+      width: 180,
     },
   ];
+
+  const handleSave = () => {
+    let obj = {
+      id: initialData?.id,
+      logic: initialData?.logic,
+      contract_status: initialData?.contract_status,
+      json: [JSON?.stringify(dataSource)],
+    };
+    if (obj) {
+      dispatch(insertUpdateContractConfiguartion(obj));
+    }
+  };
 
   return (
     <Space
@@ -212,21 +258,27 @@ const YellowStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
                   pagination={false}
                   rowKey="key"
                 />
-                <Space size={24} direction="horizontal">
-                  <OsButton
-                    text="Add Field"
-                    buttontype="PRIMARY"
-                    icon={<PlusIcon width={24} />}
-                    clickHandler={handleAdd}
-                    style={{marginBottom: 16}}
-                  />
-                  <OsButton
-                    text="Save"
-                    buttontype="PRIMARY"
-                    clickHandler={handleSave}
-                    style={{marginBottom: 16}}
-                  />
-                </Space>
+
+                <Row justify={'space-between'}>
+                  <Col>
+                    <OsButton
+                      text="Add Field"
+                      buttontype="PRIMARY"
+                      icon={<PlusIcon width={24} />}
+                      clickHandler={handleAdd}
+                      style={{marginBottom: 16}}
+                    />{' '}
+                  </Col>
+                  <Col>
+                    <OsButton
+                      loading={loading}
+                      text="Save"
+                      buttontype="PRIMARY"
+                      clickHandler={handleSave}
+                      style={{marginBottom: 16}}
+                    />
+                  </Col>
+                </Row>
               </Space>
             ),
           },
@@ -236,4 +288,4 @@ const YellowStatusFile: React.FC<StatusFileProps> = ({initialData = []}) => {
   );
 };
 
-export default YellowStatusFile;
+export default StatusFile;

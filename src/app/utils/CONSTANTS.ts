@@ -139,6 +139,7 @@ export const customerColumnsSync = [
 export const ContractStatusOptions = [
   {value: 'green', label: 'Green'},
   {value: 'yellow', label: 'Yellow'},
+  {value: 'red', label: 'Red'},
 ];
 
 export const LogicOptions = [

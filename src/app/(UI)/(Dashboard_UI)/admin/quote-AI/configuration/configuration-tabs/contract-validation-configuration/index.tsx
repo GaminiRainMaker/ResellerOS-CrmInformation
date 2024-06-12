@@ -14,14 +14,14 @@ import {
   useAppSelector,
 } from '../../../../../../../../../redux/hook';
 import {TabContainerStyle} from '../styled-components';
-import GreenStatusFile from './GreenStatusFile';
+import StatusFile from './StatusFile';
 
 const ContractValidationConfiguration = () => {
   const dispatch = useAppDispatch();
   const [isSelectStatus, setIsSelectStatus] = useState<boolean>(false);
   const [isSelectLogic, setIsSelectLogic] = useState<boolean>(false);
   const [contractStatus, setContractStatus] = useState<string>('');
-  const [selectedLogic, setSelectedLogic] = useState<string>('');
+  const [initialLogic, setInitialLogic] = useState<string>('');
   const {data: contractConfigurationData} = useAppSelector(
     (state) => state.contractConfiguration,
   );
@@ -33,6 +33,14 @@ const ContractValidationConfiguration = () => {
   useEffect(() => {
     dispatch(getContractConfiguartion(''));
   }, []);
+
+  useEffect(() => {
+    if (matchingObjects) {
+      setInitialLogic(matchingObjects?.[0]?.logic);
+    }
+  }, [matchingObjects]);
+
+  console.log('matchingObjects', initialLogic);
 
   return (
     <TabContainerStyle>
@@ -102,11 +110,10 @@ const ContractValidationConfiguration = () => {
                   <CommonSelect
                     placeholder="Select"
                     style={{width: '100%'}}
-                    defaultValue={matchingObjects?.[0]?.logic}
+                    value={initialLogic}
                     allowClear
                     options={LogicOptions}
                     onChange={(e) => {
-                      setSelectedLogic(e);
                       if (e === 'custom_logic') setIsSelectLogic(true);
                       else setIsSelectLogic(false);
                     }}
@@ -129,9 +136,7 @@ const ContractValidationConfiguration = () => {
             </Space>
           </Space>
 
-          {contractStatus && (
-            <GreenStatusFile initialData={matchingObjects?.[0]} />
-          )}
+          {contractStatus && <StatusFile initialData={matchingObjects?.[0]} />}
         </Col>
       </Row>
     </TabContainerStyle>
