@@ -20,15 +20,19 @@ const ContractValidationConfiguration = () => {
   const dispatch = useAppDispatch();
   const [isSelectStatus, setIsSelectStatus] = useState<boolean>(false);
   const [isSelectLogic, setIsSelectLogic] = useState<boolean>(false);
+  const [isActive, setIsActive] = useState<boolean>(false);
   const [contractStatus, setContractStatus] = useState<string>('');
   const [initialLogic, setInitialLogic] = useState<string>('');
+  const [customInputLogic, setCustomInputLogic] = useState<string>('');
   const {data: contractConfigurationData} = useAppSelector(
     (state) => state.contractConfiguration,
   );
 
-  const matchingObjects = contractConfigurationData?.filter(
-    (item: any) => item?.contract_status === contractStatus,
-  );
+  const matchingObjects =
+    contractConfigurationData &&
+    contractConfigurationData?.filter(
+      (item: any) => item?.contract_status === contractStatus,
+    );
 
   useEffect(() => {
     dispatch(getContractConfiguartion(''));
@@ -37,10 +41,10 @@ const ContractValidationConfiguration = () => {
   useEffect(() => {
     if (matchingObjects) {
       setInitialLogic(matchingObjects?.[0]?.logic);
+      setIsActive(matchingObjects?.[0]?.is_active);
+      setCustomInputLogic(matchingObjects?.[0]?.custom_input);
     }
-  }, [matchingObjects]);
-
-  console.log('matchingObjects', initialLogic);
+  }, [contractStatus]);
 
   return (
     <TabContainerStyle>
@@ -74,7 +78,13 @@ const ContractValidationConfiguration = () => {
                 <Col>
                   <Space size={8}>
                     <Typography name="Body 3/Regular">Active</Typography>
-                    <Switch size="default" onChange={() => {}} />
+                    <Switch
+                      value={isActive}
+                      size="default"
+                      onChange={(e) => {
+                        setIsActive(e);
+                      }}
+                    />
                   </Space>
                 </Col>
               </Row>
@@ -114,6 +124,7 @@ const ContractValidationConfiguration = () => {
                     allowClear
                     options={LogicOptions}
                     onChange={(e) => {
+                      setInitialLogic(e);
                       if (e === 'custom_logic') setIsSelectLogic(true);
                       else setIsSelectLogic(false);
                     }}
@@ -121,7 +132,7 @@ const ContractValidationConfiguration = () => {
                 </Space>
               )}
 
-              {isSelectLogic && (
+              {(isSelectLogic || initialLogic === 'custom_logic') && (
                 <Space
                   size={4}
                   direction="vertical"
@@ -130,13 +141,28 @@ const ContractValidationConfiguration = () => {
                   }}
                 >
                   <Typography name="Body 4/Medium">Custom</Typography>
-                  <OsInput placeholder="Select" style={{width: '100%'}} />
+                  <OsInput
+                    placeholder="Select"
+                    style={{width: '100%'}}
+                    value={customInputLogic}
+                    onChange={(e) => {
+                      setCustomInputLogic(e?.target?.value);
+                    }}
+                  />
                 </Space>
               )}
             </Space>
           </Space>
 
-          {contractStatus && <StatusFile initialData={matchingObjects?.[0]} />}
+          {contractStatus && (
+            <StatusFile
+              initialData={matchingObjects?.[0]}
+              contractStatus={contractStatus}
+              customLogic={initialLogic}
+              customInputLogic={customInputLogic}
+              isActive={isActive}
+            />
+          )}
         </Col>
       </Row>
     </TabContainerStyle>

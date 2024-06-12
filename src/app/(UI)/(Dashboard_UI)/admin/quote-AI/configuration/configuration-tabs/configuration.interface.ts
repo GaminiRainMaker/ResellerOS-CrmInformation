@@ -9,4 +9,8 @@ export interface RowData {
 
 export interface StatusFileProps {
   initialData?: any;
+  contractStatus?: string;
+  customLogic?: string;
+  customInputLogic?: string;
+  isActive?: boolean;
 }

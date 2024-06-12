@@ -22,7 +22,13 @@ import {RowData, StatusFileProps} from '../configuration.interface';
 
 const {Option} = Select;
 
-const StatusFile: React.FC<StatusFileProps> = ({initialData}) => {
+const StatusFile: React.FC<StatusFileProps> = ({
+  initialData,
+  contractStatus,
+  customLogic,
+  customInputLogic,
+  isActive,
+}) => {
   const [token] = useThemeToken();
   const [dataSource, setDataSource] = useState<RowData[]>([]);
   const [count, setCount] = useState(0);
@@ -224,8 +230,10 @@ const StatusFile: React.FC<StatusFileProps> = ({initialData}) => {
   const handleSave = () => {
     let obj = {
       id: initialData?.id,
-      logic: initialData?.logic,
-      contract_status: initialData?.contract_status,
+      logic: customLogic ?? initialData?.logic,
+      contract_status: contractStatus ?? initialData?.contract_status,
+      custom_input: customInputLogic ?? initialData?.custom_input,
+      is_active: isActive ?? initialData?.is_active,
       json: [JSON?.stringify(dataSource)],
     };
     if (obj) {
