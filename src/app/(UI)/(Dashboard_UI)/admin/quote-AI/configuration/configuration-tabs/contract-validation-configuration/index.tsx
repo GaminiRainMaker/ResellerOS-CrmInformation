@@ -18,7 +18,6 @@ import StatusFile from './StatusFile';
 
 const ContractValidationConfiguration = () => {
   const dispatch = useAppDispatch();
-  const [isSelectStatus, setIsSelectStatus] = useState<boolean>(false);
   const [isSelectLogic, setIsSelectLogic] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<boolean>(false);
   const [contractStatus, setContractStatus] = useState<string>('');
@@ -75,18 +74,20 @@ const ContractValidationConfiguration = () => {
                     Contract Configuration{' '}
                   </Typography>
                 </Col>
-                <Col>
-                  <Space size={8}>
-                    <Typography name="Body 3/Regular">Active</Typography>
-                    <Switch
-                      value={isActive}
-                      size="default"
-                      onChange={(e) => {
-                        setIsActive(e);
-                      }}
-                    />
-                  </Space>
-                </Col>
+                {contractStatus && (
+                  <Col>
+                    <Space size={8}>
+                      <Typography name="Body 3/Regular">Active</Typography>
+                      <Switch
+                        value={isActive}
+                        size="default"
+                        onChange={(e) => {
+                          setIsActive(e);
+                        }}
+                      />
+                    </Space>
+                  </Col>
+                )}
               </Row>
 
               <Space
@@ -99,16 +100,16 @@ const ContractValidationConfiguration = () => {
                 <Typography name="Body 4/Medium">Contract Status</Typography>
                 <CommonSelect
                   placeholder="Select"
+                  allowClear
                   style={{width: '100%'}}
                   options={ContractStatusOptions}
                   onChange={(e) => {
-                    setIsSelectStatus(true);
                     setIsSelectLogic(false);
                     setContractStatus(e);
                   }}
                 />
               </Space>
-              {isSelectStatus && (
+              {contractStatus && (
                 <Space
                   size={4}
                   direction="vertical"
