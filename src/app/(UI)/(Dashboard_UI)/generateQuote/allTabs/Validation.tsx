@@ -350,7 +350,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
   }, [tableColumnDataShow]);
 
   useEffect(() => {
-    validationDataData.map((validationDataItem: any) => {
+    validationDataData?.map((validationDataItem: any) => {
       if (validationDataItem?.rowId === validationDataItem?.id) {
         const obj = {
           id: validationDataItem?.id,
