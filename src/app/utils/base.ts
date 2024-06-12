@@ -808,3 +808,26 @@ export const decrypt = async (
   const dec = new TextDecoder();
   return dec.decode(decrypted);
 };
+
+export const getContractStatus = (
+  firstValue: any,
+  secondValue: any,
+  operator: string,
+): string => {
+  switch (operator) {
+    case '==':
+      return firstValue == secondValue ? 'Correct' : 'Reject';
+    case '!=':
+      return firstValue != secondValue ? 'Correct' : 'Reject';
+    case '>':
+      return firstValue > secondValue ? 'Correct' : 'Reject';
+    case '<':
+      return firstValue < secondValue ? 'Correct' : 'Reject';
+    case '>=':
+      return firstValue >= secondValue ? 'Correct' : 'Reject';
+    case '<=':
+      return firstValue <= secondValue ? 'Correct' : 'Reject';
+    default:
+      return 'Invalid operator';
+  }
+};
