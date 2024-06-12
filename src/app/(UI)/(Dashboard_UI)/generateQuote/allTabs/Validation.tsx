@@ -8,9 +8,10 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
-import {pricingMethod} from '@/app/utils/CONSTANTS';
+import {dummyValidationData, pricingMethod} from '@/app/utils/CONSTANTS';
 import {
   calculateProfitabilityData,
+  getContractStatus,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
 import {
@@ -21,6 +22,7 @@ import {
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import {getContractConfiguartion} from '../../../../../../redux/actions/contractConfiguration';
 import {
   getAllValidationByQuoteId,
   updateValidationById,
@@ -39,9 +41,21 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
   const {data: ContractSettingData} = useAppSelector(
     (state) => state.contractSetting,
   );
+  const {data: contractConfigurationData} = useAppSelector(
+    (state) => state.contractConfiguration,
+  );
   const {quoteById} = useAppSelector((state) => state.quote);
   const [validationDataData, setValidationDataData] =
     useState<any>(ValidationData);
+  const [validationData, setValidationData] =
+    useState<any>(dummyValidationData);
+  const [contract, setContract] = useState<{
+    type: string;
+    record: any;
+  }>({
+    type: '',
+    record: {},
+  });
 
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Validation Data" />,
@@ -88,6 +102,51 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
     return false;
   };
 
+  useEffect(() => {
+    dispatch(getContractConfiguartion({}));
+  }, []);
+
+  const contractStatus = (record: any) => {
+    let fieldName = '';
+    let operator = '';
+    let finalSecondValue = '';
+    let status = '';
+    const matchingObjects =
+      contractConfigurationData &&
+      contractConfigurationData?.filter(
+        (item: any) => item?.contract_status === 'green',
+      );
+    const finalData =
+      matchingObjects?.[0]?.json && JSON?.parse(matchingObjects?.[0]?.json);
+    fieldName = finalData?.[0]['fieldName'];
+    operator = finalData?.[0]['operator'];
+    if (finalData?.[0]['valueType'] === 'formula') {
+      finalSecondValue = finalData?.[0]['value']?.reduce(
+        (acc: any, fieldName: any) => {
+          const value1 = record?.[fieldName];
+          if (typeof value1 === 'number') {
+            return acc + value1; // Add if it's a number
+          } else if (typeof value1 === 'string') {
+            return acc + value1; // Concatenate if it's a string
+          }
+          return acc; // Skip if it's neither number nor string
+        },
+        typeof record?.[finalData?.[0]['value'][0]] === 'number' ? 0 : '',
+      );
+    } else {
+      finalSecondValue = finalData?.[0]['value'];
+    }
+
+    if (operator && record[fieldName] && finalSecondValue) {
+      status = getContractStatus(
+        Number(record[fieldName]),
+        Number(finalSecondValue),
+        operator,
+      );
+    }
+    return status;
+  };
+
   const ValidationQuoteLineItemcolumns = [
     {
       title: '#Line',
@@ -126,7 +185,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
         <CommonSelect
           allowClear
           disabled={renderEditableInput('Pricing Method')}
-          style={{width: '100%'}}
+          style={{width: '100%', height: '34px'}}
           placeholder="Select"
           defaultValue={text}
           onChange={(v) => {
@@ -172,8 +231,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       render: (text: string, record: any) => (
         <CommonSelect
           allowClear
-          disabled={renderEditableInput('Contract')}
-          style={{width: '100%'}}
+          style={{width: '100%', height: '34px'}}
           placeholder="Select"
           defaultValue={text}
           // onChange={(v) => {
@@ -288,14 +346,14 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       key: 'contract_status',
       width: 180,
       render(text: string, record: any) {
-        const status = contractStatusCheck(record);
+        const status = contractStatus(record);
         return {
           children: (
             <TableNameColumn
               fallbackIcon={
-                status === 'success' ? (
+                status === 'Correct' ? (
                   <CheckCircleIcon width={24} color={token?.colorSuccess} />
-                ) : status === 'reject' ? (
+                ) : status === 'Reject' ? (
                   <XCircleIcon width={24} color={token?.colorError} />
                 ) : (
                   <ExclamationCircleIcon
@@ -305,9 +363,9 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
                 )
               }
               iconBg={
-                status === 'success'
+                status === 'Correct'
                   ? token?.colorSuccessBg
-                  : status === 'reject'
+                  : status === 'Reject'
                     ? token?.colorErrorBg
                     : token?.colorWarningBg
               }
@@ -325,6 +383,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
     ValidationQuoteLineItemcolumns?.map((itemCol: any) => {
       let shouldPush = false;
       let contractPush = false;
+      let contractTypePush = false;
       tableColumnDataShow?.forEach((item: any) => {
         if (item?.field_name === itemCol?.title) {
           shouldPush = true;
@@ -343,6 +402,12 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
         contractPush = true;
       }
       if (contractPush) {
+        newArr?.push(itemCol);
+      }
+      if (itemCol?.title === 'Contract Type') {
+        contractTypePush = true;
+      }
+      if (contractTypePush) {
         newArr?.push(itemCol);
       }
     });
@@ -378,7 +443,8 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
         <OsTableWithOutDrag
           loading={loading}
           columns={finalValidationTableCol}
-          dataSource={validationDataData}
+          // dataSource={validationDataData}
+          dataSource={validationData}
           scroll
           locale={locale}
         />
