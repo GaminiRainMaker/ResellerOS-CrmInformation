@@ -1,8 +1,5 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable array-callback-return */
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable consistent-return */
+'use client';
+
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import EmptyContainer from '@/app/components/common/os-empty-container';
@@ -126,58 +123,93 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       key: 'pricing_method',
       width: 200,
       render: (text: string, record: any) => (
-        <Form.Item
-          className="formmarginBottom"
-          name={`pricing_method ${record?.id}`}
-          rules={[
-            {
-              required: renderRequiredInput('Pricing Method'),
-              message: 'This Field id Required',
-            },
-          ]}
-          initialValue={text}
-        >
-          <CommonSelect
-            allowClear
-            disabled={renderEditableInput('Pricing Method')}
-            style={{width: '100%'}}
-            placeholder="Select"
-            defaultValue={text}
-            onChange={(v) => {
-              setValidationDataData((prev: any) =>
-                prev.map((prevItem: any) => {
-                  if (prevItem.id === record?.id) {
-                    return {...prevItem, pricing_method: v};
-                  }
-                  return prevItem;
-                }),
-              );
+        <CommonSelect
+          allowClear
+          disabled={renderEditableInput('Pricing Method')}
+          style={{width: '100%'}}
+          placeholder="Select"
+          defaultValue={text}
+          onChange={(v) => {
+            setValidationDataData((prev: any) =>
+              prev.map((prevItem: any) => {
+                if (prevItem.id === record?.id) {
+                  return {...prevItem, pricing_method: v};
+                }
+                return prevItem;
+              }),
+            );
+            setValidationDataData((prev: any) =>
+              prev.map((prevItem: any) => {
+                if (record?.id === prevItem?.id) {
+                  const rowId = record?.id;
+                  const result: any = calculateProfitabilityData(
+                    useRemoveDollarAndCommahook(prevItem?.quantity),
+                    prevItem?.pricing_method,
+                    useRemoveDollarAndCommahook(prevItem?.line_amount),
+                    useRemoveDollarAndCommahook(prevItem?.list_price),
+                    20,
+                  );
+                  return {
+                    ...prevItem,
+                    unit_price: result.unitPrice,
+                    exit_price: result.exitPrice,
+                    rowId,
+                  };
+                }
+                return prevItem;
+              }),
+            );
+          }}
+          options={pricingMethod}
+        />
+      ),
+    },
+    {
+      title: 'Contract',
+      dataIndex: 'contract',
+      key: 'contract',
+      width: 200,
+      render: (text: string, record: any) => (
+        <CommonSelect
+          allowClear
+          disabled={renderEditableInput('Contract')}
+          style={{width: '100%'}}
+          placeholder="Select"
+          defaultValue={text}
+          // onChange={(v) => {
+          //   setValidationDataData((prev: any) =>
+          //     prev.map((prevItem: any) => {
+          //       if (prevItem.id === record?.id) {
+          //         return {...prevItem, pricing_method: v};
+          //       }
+          //       return prevItem;
+          //     }),
+          //   );
 
-              setValidationDataData((prev: any) =>
-                prev.map((prevItem: any) => {
-                  if (record?.id === prevItem?.id) {
-                    const rowId = record?.id;
-                    const result: any = calculateProfitabilityData(
-                      useRemoveDollarAndCommahook(prevItem?.quantity),
-                      prevItem?.pricing_method,
-                      useRemoveDollarAndCommahook(prevItem?.line_amount),
-                      useRemoveDollarAndCommahook(prevItem?.list_price),
-                      20,
-                    );
-                    return {
-                      ...prevItem,
-                      unit_price: result.unitPrice,
-                      exit_price: result.exitPrice,
-                      rowId,
-                    };
-                  }
-                  return prevItem;
-                }),
-              );
-            }}
-            options={pricingMethod}
-          />
-        </Form.Item>
+          //   setValidationDataData((prev: any) =>
+          //     prev.map((prevItem: any) => {
+          //       if (record?.id === prevItem?.id) {
+          //         const rowId = record?.id;
+          //         const result: any = calculateProfitabilityData(
+          //           useRemoveDollarAndCommahook(prevItem?.quantity),
+          //           prevItem?.pricing_method,
+          //           useRemoveDollarAndCommahook(prevItem?.line_amount),
+          //           useRemoveDollarAndCommahook(prevItem?.list_price),
+          //           20,
+          //         );
+          //         return {
+          //           ...prevItem,
+          //           unit_price: result.unitPrice,
+          //           exit_price: result.exitPrice,
+          //           rowId,
+          //         };
+          //       }
+          //       return prevItem;
+          //     }),
+          //   );
+          // }}
+          // options={pricingMethod}
+        />
       ),
     },
     {
@@ -218,7 +250,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       ),
     },
     {
-      title: 'Unit Price',
+      title: 'Unit Price ($)',
       dataIndex: 'unit_price',
       key: 'unit_price',
       width: 152,
@@ -229,7 +261,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       ),
     },
     {
-      title: 'Exit Price',
+      title: 'Exit Price ($)',
       dataIndex: 'exit_price',
       key: 'exit_price',
       width: 152,
@@ -240,10 +272,10 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       ),
     },
     {
-      title: 'Contract Price',
+      title: 'Contract Price ($)',
       dataIndex: 'contract_price',
       key: 'contract_price',
-      width: 135,
+      width: 150,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
           {text ? `$ ${abbreviate(text ?? 0)}` : 0}
@@ -254,7 +286,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       title: 'Contract Status',
       dataIndex: 'contract_status',
       key: 'contract_status',
-      width: 135,
+      width: 180,
       render(text: string, record: any) {
         const status = contractStatusCheck(record);
         return {
@@ -292,6 +324,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
     const newArr: any = [];
     ValidationQuoteLineItemcolumns?.map((itemCol: any) => {
       let shouldPush = false;
+      let contractPush = false;
       tableColumnDataShow?.forEach((item: any) => {
         if (item?.field_name === itemCol?.title) {
           shouldPush = true;
@@ -304,6 +337,12 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
         shouldPush = true;
       }
       if (shouldPush) {
+        newArr?.push(itemCol);
+      }
+      if (itemCol?.title === 'Contract') {
+        contractPush = true;
+      }
+      if (contractPush) {
         newArr?.push(itemCol);
       }
     });
@@ -336,15 +375,13 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
   return (
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
-        <Form>
-          <OsTableWithOutDrag
-            loading={loading}
-            columns={finalValidationTableCol}
-            dataSource={validationDataData}
-            scroll
-            locale={locale}
-          />
-        </Form>
+        <OsTableWithOutDrag
+          loading={loading}
+          columns={finalValidationTableCol}
+          dataSource={validationDataData}
+          scroll
+          locale={locale}
+        />
       ) : (
         <EmptyContainer title="There Is No Validation Columns" />
       )}
