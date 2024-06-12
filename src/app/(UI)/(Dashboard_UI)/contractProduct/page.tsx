@@ -18,7 +18,11 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 import OsButton from '@/app/components/common/os-button';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
-import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {
+  PencilSquareIcon,
+  PlusIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
 import {
   deleteContractProduct,
   getAllContractProduct,
@@ -26,22 +30,44 @@ import {
 } from '../../../../../redux/actions/contractProduct';
 import AddContractProduct from './AddContractProduct';
 import {getAllContract} from '../../../../../redux/actions/contract';
+import OsDrawer from '@/app/components/common/os-drawer';
+import {getAllProduct} from '../../../../../redux/actions/product';
 
 const ContractProductMain: React.FC = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const router = useRouter();
+
   const searchParams = useSearchParams();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [contractObject, setContractObject] = useState<any>();
   const [loadingContract, setLoadingContract] = useState<boolean>(false);
+  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const {data: contactProductData} = useAppSelector(
     (state) => state.contractProduct,
   );
+  const [productOptions, setProductOptions] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<any>();
+  const [recordId, setRecordId] = useState<any>();
   const [optionsForContract, setOptionsForContract] = useState<any>();
+  console.log('contactProductData', contactProductData);
+  useEffect(() => {
+    dispatch(getAllProduct())?.then((payload: any) => {
+      let newProductOptions: any = [];
+      if (payload?.payload) {
+        payload?.payload?.map((items: any) => {
+          newProductOptions?.push({
+            label: items?.product_code,
+            value: items.id,
+          });
+        });
+      }
+      setProductOptions(newProductOptions);
+    });
+  }, []);
+
   useEffect(() => {
     setLoadingContract(true);
     dispatch(getAllContractProduct());
@@ -49,7 +75,7 @@ const ContractProductMain: React.FC = () => {
       let newOptionsArr: any = [];
       if (payload?.payload) {
         payload?.payload?.map((items: any) => {
-          newOptionsArr?.push({label: items?.name, value: items?.id});
+          newOptionsArr?.push({label: items?.contract, value: items?.id});
         });
       }
       setOptionsForContract(newOptionsArr);
@@ -69,11 +95,30 @@ const ContractProductMain: React.FC = () => {
   const ContractProductColumns = [
     {
       title: 'Contract Product Name',
-      dataIndex: 'product_name',
-      key: 'product_name',
+      dataIndex: 'contract_product_name',
+      key: 'contract_product_name',
       render: (text: string) => <CustomTextCapitalization text={text} />,
     },
-
+    {
+      title: 'Product Code',
+      dataIndex: 'product_code',
+      key: 'product_code',
+      render: (text: string, record: any, index: number) => (
+        <Typography name="Body 4/Regular">
+          {record?.Product?.product_code ?? '--'}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Contract',
+      dataIndex: 'contract',
+      key: 'contract',
+      render: (text: string, record: any, index: number) => (
+        <Typography name="Body 4/Regular">
+          {record?.Contract?.contract ?? '--'}
+        </Typography>
+      ),
+    },
     {
       title: 'Contract Product Price',
       dataIndex: 'contract_price',
@@ -84,36 +129,45 @@ const ContractProductMain: React.FC = () => {
     },
 
     {
-      title: 'Clin Type',
-      dataIndex: 'clin_type',
-      key: 'clin_type',
+      title: 'Product Number',
+      dataIndex: 'product_number',
+      key: 'product_number',
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
+
     {
-      title: 'Edit',
-      dataIndex: 'actions',
-      key: 'actions',
-      render: (text: string, record: any, index: number) => (
-        <Space size={18}>
-          <OsButton
-            buttontype="PRIMARY"
-            text="Edit"
-            clickHandler={() => {
-              setContractObject(record);
-              setShowModal(true);
-            }}
-          />
-        </Space>
-      ),
+      title: 'Contract Product Status',
+      dataIndex: 'Status',
+      key: 'Status',
+      render: (text: string) => <CustomTextCapitalization text={text} />,
     },
+
     {
       title: 'Action',
       dataIndex: 'actions',
       key: 'actions',
       render: (text: string, record: any, index: number) => (
         <Space size={18}>
+          <PencilSquareIcon
+            height={24}
+            width={24}
+            onClick={() => {
+              setRecordId(record?.id);
+              form.setFieldsValue({
+                Status: record?.Status,
+                product_id: record?.product_id,
+                contract_id: record?.contract_id,
+                product_number: record?.product_number,
+                contract_product_name: record?.contract_product_name,
+                contract_price: record?.contract_price,
+              });
+              setOpenDrawer(true);
+            }}
+            color={token.colorInfoBorder}
+            style={{cursor: 'pointer'}}
+          />
           <TrashIcon
             height={24}
             width={24}
@@ -129,20 +183,40 @@ const ContractProductMain: React.FC = () => {
     },
   ];
 
-  const AddNewContractProduct = async () => {
-    setLoadingContract(true);
-    await dispatch(insertContractProduct(contractObject));
-    dispatch(getAllContractProduct());
-    setLoadingContract(false);
-    setContractObject('');
-    setShowModal(false);
-  };
-
   const deleteContractById = async () => {
     await dispatch(deleteContractProduct(Number(deleteId)));
     dispatch(getAllContractProduct());
     setShowModalDelete(false);
     setDeleteId('');
+  };
+  const updatebillDetails = async () => {
+    const FormData = form?.getFieldsValue();
+    let newArr: any = [];
+    if (!openDrawer) {
+      FormData?.product_id?.map((items: any) => {
+        let newObj: any = {
+          ...FormData,
+        };
+        delete FormData?.product_id;
+        newObj.product_id = items;
+        newArr?.push(newObj);
+      });
+    }
+    let newObj: any = {
+      ...FormData,
+    };
+    if (recordId) {
+      newObj.id = recordId;
+    }
+    setLoadingContract(true);
+    await dispatch(insertContractProduct(!openDrawer ? newArr : newObj));
+    dispatch(getAllContractProduct());
+    setLoadingContract(false);
+    setContractObject('');
+    setShowModal(false);
+    setOpenDrawer(false);
+    setRecordId('');
+    form?.resetFields();
   };
 
   return (
@@ -211,6 +285,10 @@ const ContractProductMain: React.FC = () => {
               setContractObject={setContractObject}
               contractObject={contractObject}
               optionsForContract={optionsForContract}
+              onFinish={updatebillDetails}
+              form={form}
+              drawer={false}
+              productOptions={productOptions}
             />
           )
         }
@@ -218,29 +296,68 @@ const ContractProductMain: React.FC = () => {
         open={showModal}
         onCancel={() => {
           setShowModal(false);
-          setContractObject('');
+          form?.resetFields();
         }}
         footer
         primaryButtonText={
-          optionsForContract?.length === 0
-            ? 'Add Contract'
-            : contractObject?.id
-              ? 'Update'
-              : 'Add'
+          optionsForContract?.length === 0 ? 'Add Contract' : 'Add'
         }
         onOk={() => {
           if (optionsForContract?.length === 0) {
             router?.push('/contract');
           } else {
-            AddNewContractProduct();
+            // AddNewContractProduct();
+            form.submit();
           }
         }}
         footerPadding={30}
       />
 
+      <OsDrawer
+        title={
+          <Typography
+            name="Body 1/Regular"
+            align="left"
+            color={token?.colorLinkHover}
+          >
+            Edit Contract Product
+          </Typography>
+        }
+        placement="right"
+        onClose={() => {
+          setOpenDrawer(false);
+          form?.resetFields();
+        }}
+        open={openDrawer}
+        width={450}
+        footer={
+          <Row style={{width: '100%', float: 'right'}}>
+            {' '}
+            <OsButton
+              loading={loadingContract}
+              btnStyle={{width: '100%'}}
+              buttontype="PRIMARY"
+              text="Update Changes"
+              clickHandler={() => {
+                form.submit();
+              }}
+            />
+          </Row>
+        }
+      >
+        <AddContractProduct
+          setContractObject={setContractObject}
+          contractObject={contractObject}
+          optionsForContract={optionsForContract}
+          onFinish={updatebillDetails}
+          form={form}
+          drawer={true}
+          productOptions={productOptions}
+        />
+      </OsDrawer>
       <DeleteModal
         setShowModalDelete={setShowModalDelete}
-        setDeleteIds={deleteId}
+        setDeleteIds={setDeleteId}
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteContractById}
         description="Are you sure you want to delete this contract product?"

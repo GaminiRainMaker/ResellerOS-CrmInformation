@@ -7,99 +7,195 @@ import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
 import {useAppDispatch} from '../../../../../redux/hook';
 import CommonSelect from '@/app/components/common/os-select';
+import {Form} from 'antd';
+import OsCustomerSelect from '@/app/components/common/os-customer-select';
+import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 
 const AddContractProduct: React.FC<any> = ({
-  setContractObject,
-  contractObject,
   optionsForContract,
+  onFinish,
+  form,
+  drawer,
+  productOptions,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
 
-  //   contract_id: req.body.contract_id ,product_name: req.body.product_name ,contract_price: req.body.contract_price,clin_type: req.body.clin_type
   return (
     <>
-      <Row
-        justify="space-between"
-        style={{
-          padding: '24px 40px 20px 40px',
-          backgroundColor: '#F0F4F7',
-          borderRadius: '10px 10px 0px 0px',
-        }}
-        gutter={[0, 16]}
-      >
-        <Typography
-          name="Body 1/Regular"
-          align="left"
-          color={token?.colorLinkHover}
+      {!drawer && (
+        <Row
+          justify="space-between"
+          style={{
+            padding: '24px 40px 20px 40px',
+            backgroundColor: '#F0F4F7',
+            borderRadius: '10px 10px 0px 0px',
+          }}
+          gutter={[0, 16]}
         >
-          Add New Contract Product
-        </Typography>
-      </Row>
-
-      <Space
-        size={16}
-        direction="vertical"
-        style={{width: '100%', padding: '24px 40px 20px 40px'}}
-      >
-        <Row justify="space-between" gutter={[24, 24]}>
-          <Col sm={24} md={12}>
-            Product Name
-            <OsInput
-              value={contractObject?.product_name}
-              onChange={(e: any) => {
-                setContractObject({
-                  ...contractObject,
-                  product_name: e?.target?.value,
-                });
-              }}
-            />
-          </Col>
-
-          <Col sm={24} md={12}>
-            {' '}
-            Contract Price
-            <OsInput
-              value={contractObject?.contract_price}
-              onChange={(e: any) => {
-                setContractObject({
-                  ...contractObject,
-                  contract_price: e?.target?.value,
-                });
-              }}
-            />
-          </Col>
-          <Col sm={24} md={12}>
-            Clin Type
-            <OsInput
-              value={contractObject?.clin_type}
-              onChange={(e: any) => {
-                setContractObject({
-                  ...contractObject,
-                  clin_type: e?.target?.value,
-                });
-              }}
-            />
-          </Col>
-          <Col sm={24} md={12}>
-            Contract
-            <div>
-              {' '}
-              <CommonSelect
-                style={{width: '100%'}}
-                options={optionsForContract || []}
-                value={contractObject?.contract_id}
-                onChange={(e: any) => {
-                  setContractObject({
-                    ...contractObject,
-                    contract_id: e,
-                  });
-                }}
-              />
-            </div>
-          </Col>
+          <Typography
+            name="Body 1/Regular"
+            align="left"
+            color={token?.colorLinkHover}
+          >
+            Add New Contract Product
+          </Typography>
         </Row>
-      </Space>
+      )}
+      <Form
+        layout="vertical"
+        requiredMark={false}
+        form={form}
+        onFinish={onFinish}
+      >
+        <Space
+          size={16}
+          direction="vertical"
+          style={{width: '100%', padding: drawer ? '' : '24px 40px 20px 40px'}}
+        >
+          <Row justify="space-between" gutter={[24, 24]}>
+            <Col sm={24} md={drawer ? 24 : 12}>
+              <SelectFormItem
+                label={<Typography name="Body 4/Medium">Contract</Typography>}
+                name="contract_id"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Contract is required!',
+                  },
+                ]}
+              >
+                <CommonSelect
+                  style={{width: '100%'}}
+                  options={optionsForContract || []}
+                />
+              </SelectFormItem>
+            </Col>
+            <Col sm={24} md={drawer ? 24 : 12}>
+              <SelectFormItem
+                label={
+                  <Typography name="Body 4/Medium">
+                    Contract Product Name
+                  </Typography>
+                }
+                name="contract_product_name"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Contract Product Name is required!',
+                  },
+                  {
+                    pattern: /^[A-Za-z\s]+$/,
+                    message: 'Please enter valid text.',
+                  },
+                ]}
+              >
+                <OsInput placeholder="Enter Text" />
+              </SelectFormItem>
+            </Col>
+
+            <Col sm={24} md={drawer ? 24 : 12}>
+              <SelectFormItem
+                label={
+                  <Typography name="Body 4/Medium">Contract Price</Typography>
+                }
+                name="contract_price"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Contract Price is required!',
+                  },
+                  {
+                    // pattern: /^[0-9]$/,
+                    message: 'Please enter valid text.',
+                  },
+                ]}
+              >
+                <OsInput placeholder="Enter Text" />
+              </SelectFormItem>{' '}
+            </Col>
+            <Col sm={24} md={drawer ? 24 : 12}>
+              <SelectFormItem
+                label={
+                  <Typography name="Body 4/Medium"> Product Number</Typography>
+                }
+                name="product_number"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Product Number is required!',
+                  },
+                  {
+                    // pattern: /^[A-Za-z\s]+$/,
+                    message: 'Please enter valid text.',
+                  },
+                ]}
+              >
+                <OsInput placeholder="Enter Text" />
+              </SelectFormItem>
+            </Col>
+            <Col sm={24} md={drawer ? 24 : 12}>
+              <SelectFormItem
+                label={<Typography name="Body 4/Medium"> Status</Typography>}
+                name="Status"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Status is required!',
+                  },
+                ]}
+              >
+                <CommonSelect
+                  style={{width: '100%'}}
+                  options={[
+                    {
+                      value: 'New',
+                      label: 'New',
+                    },
+                    {
+                      value: 'Approved',
+                      label: 'Approved',
+                    },
+                    {
+                      value: 'Declined',
+                      label: 'Declined',
+                    },
+                    {
+                      value: 'Removed',
+                      label: 'Removed',
+                    },
+                  ]}
+                />
+              </SelectFormItem>
+            </Col>
+            <Col sm={24} md={drawer ? 24 : 12}>
+              <SelectFormItem
+                label={<Typography name="Body 4/Medium">Product</Typography>}
+                name="product_id"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Product is required!',
+                  },
+                ]}
+              >
+                {drawer ? (
+                  <CommonSelect
+                    style={{width: '100%'}}
+                    options={productOptions || []}
+                  />
+                ) : (
+                  <CommonSelect
+                    style={{width: '100%'}}
+                    mode="multiple"
+                    options={productOptions || []}
+                  />
+                )}
+              </SelectFormItem>
+            </Col>
+          </Row>
+        </Space>
+      </Form>
     </>
   );
 };
