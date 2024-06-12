@@ -63,6 +63,7 @@ export const API = {
     UpdateProductById: '/product/updateProductById',
     BULKINSERT: '/product/addProductInBulk',
     GETBULK: '/product/getBulkProductBYProductCode',
+    ProductForContract: '/product/getAllProductForContract',
   },
   PROFITABALITY: {
     INDEX: '/profitability',
