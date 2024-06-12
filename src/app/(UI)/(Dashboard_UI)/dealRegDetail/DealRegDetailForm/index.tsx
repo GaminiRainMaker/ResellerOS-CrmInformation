@@ -103,7 +103,9 @@ const DealRegDetailForm: FC<any> = ({
           commonFiledDataValue?.map((items: any) => {
             const innerValuesObj: any = {
               optionsValues: [items],
-              attributesHeaderName: items?.AttributeSection?.name,
+              attributesHeaderName:
+                items?.AttributeSection?.name.charAt(0).toUpperCase() +
+                items?.AttributeSection?.name.slice(1),
               attributesHeaderId: items?.AttributeSection?.id,
             };
             if (finalArrForCommon?.length > 0) {
