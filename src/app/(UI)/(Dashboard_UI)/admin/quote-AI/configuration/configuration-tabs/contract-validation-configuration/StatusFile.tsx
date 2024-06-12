@@ -235,7 +235,10 @@ const StatusFile: React.FC<StatusFileProps> = ({
       id: initialData?.id,
       logic: customLogic ?? initialData?.logic,
       contract_status: contractStatus ?? initialData?.contract_status,
-      custom_input: customInputLogic ?? initialData?.custom_input,
+      custom_input:
+        customLogic === 'custom_logic'
+          ? customInputLogic ?? initialData?.custom_input
+          : '',
       is_active: isActive ?? initialData?.is_active,
       json: [JSON?.stringify(dataSource)],
     };
