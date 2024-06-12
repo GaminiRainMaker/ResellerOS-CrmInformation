@@ -13,7 +13,10 @@ import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Input, Select, Table} from 'antd';
 import {ColumnsType} from 'antd/lib/table';
 import {useEffect, useState} from 'react';
-import {insertUpdateContractConfiguartion} from '../../../../../../../../../redux/actions/contractConfiguration';
+import {
+  getContractConfiguartion,
+  insertUpdateContractConfiguartion,
+} from '../../../../../../../../../redux/actions/contractConfiguration';
 import {
   useAppDispatch,
   useAppSelector,
@@ -237,7 +240,11 @@ const StatusFile: React.FC<StatusFileProps> = ({
       json: [JSON?.stringify(dataSource)],
     };
     if (obj) {
-      dispatch(insertUpdateContractConfiguartion(obj));
+      dispatch(insertUpdateContractConfiguartion(obj)).then((d) => {
+        if (d?.payload) {
+          dispatch(getContractConfiguartion(''));
+        }
+      });
     }
   };
 
