@@ -17,13 +17,18 @@ import {useEffect, useState} from 'react';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddContract from './addContract';
 import OsButton from '@/app/components/common/os-button';
-import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {
+  PencilSquareIcon,
+  PlusIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
 import {
   deleteContract,
   getAllContract,
   insertContract,
 } from '../../../../../redux/actions/contract';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import OsDrawer from '@/app/components/common/os-drawer';
 
 const ContractMain: React.FC = () => {
   const [token] = useThemeToken();
@@ -36,6 +41,8 @@ const ContractMain: React.FC = () => {
   const {data: contactData} = useAppSelector((state) => state.contract);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<any>();
+  const [openDrawer, setOpenDrawer] = useState<boolean>(false);
+  const [recordId, setRecordId] = useState<any>();
 
   useEffect(() => {
     setLoadingContract(true);
@@ -54,44 +61,18 @@ const ContractMain: React.FC = () => {
 
   const ContractColumns = [
     {
-      title: ' Contract Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: ' Contract Vehicle Name',
+      dataIndex: 'contract_vehicle_name',
+      key: 'contract_vehicle_name',
       render: (text: string) => <CustomTextCapitalization text={text} />,
     },
 
     {
-      title: 'Owner',
-      dataIndex: 'owner',
-      key: 'owner',
+      title: 'contract',
+      dataIndex: 'contract',
+      key: 'contract',
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-
-    {
-      title: 'Contract Type',
-      dataIndex: 'contract_type_record',
-      key: 'contract_type_record',
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: 'Edit',
-      dataIndex: 'actions',
-      key: 'actions',
-      render: (text: string, record: any, index: number) => (
-        <Space size={18}>
-          <OsButton
-            buttontype="PRIMARY"
-            text="Edit"
-            clickHandler={() => {
-              setContractObject(record);
-              setShowModal(true);
-            }}
-          />
-        </Space>
       ),
     },
     {
@@ -100,6 +81,20 @@ const ContractMain: React.FC = () => {
       key: 'actions',
       render: (text: string, record: any, index: number) => (
         <Space size={18}>
+          <PencilSquareIcon
+            height={24}
+            width={24}
+            onClick={() => {
+              setRecordId(record?.id);
+              form.setFieldsValue({
+                contract_vehicle_name: record?.contract_vehicle_name,
+                contract: record?.contract,
+              });
+              setOpenDrawer(true);
+            }}
+            color={token.colorInfoBorder}
+            style={{cursor: 'pointer'}}
+          />
           <TrashIcon
             height={24}
             width={24}
@@ -116,8 +111,17 @@ const ContractMain: React.FC = () => {
   ];
 
   const AddNewContract = async () => {
+    setOpenDrawer(false);
+    const FormData = form?.getFieldsValue();
+    let newObj: any = {
+      ...FormData,
+    };
+    if (recordId) {
+      newObj.id = recordId;
+    }
     setLoadingContract(true);
-    await dispatch(insertContract(contractObject));
+
+    await dispatch(insertContract(newObj));
     dispatch(getAllContract());
     setLoadingContract(false);
     setContractObject('');
@@ -170,10 +174,7 @@ const ContractMain: React.FC = () => {
 
       <OsModal
         body={
-          <AddContract
-            setContractObject={setContractObject}
-            contractObject={contractObject}
-          />
+          <AddContract onFinish={AddNewContract} form={form} drawer={false} />
         }
         width={800}
         open={showModal}
@@ -183,13 +184,50 @@ const ContractMain: React.FC = () => {
         }}
         footer
         primaryButtonText="Add"
-        onOk={AddNewContract}
+        onOk={() => {
+          form.submit();
+        }}
         footerPadding={30}
       />
 
+      <OsDrawer
+        title={
+          <Typography
+            name="Body 1/Regular"
+            align="left"
+            color={token?.colorLinkHover}
+          >
+            Edit Contract
+          </Typography>
+        }
+        placement="right"
+        onClose={() => {
+          setOpenDrawer(false);
+          form?.resetFields();
+        }}
+        open={openDrawer}
+        width={450}
+        footer={
+          <Row style={{width: '100%', float: 'right'}}>
+            {' '}
+            <OsButton
+              loading={loadingContract}
+              btnStyle={{width: '100%'}}
+              buttontype="PRIMARY"
+              text="Update Changes"
+              clickHandler={() => {
+                form.submit();
+              }}
+            />
+          </Row>
+        }
+      >
+        <AddContract onFinish={AddNewContract} form={form} drawer={true} />
+      </OsDrawer>
+
       <DeleteModal
         setShowModalDelete={setShowModalDelete}
-        setDeleteIds={deleteId}
+        setDeleteIds={setDeleteId}
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteContractById}
         description="Are you sure you want to delete this contract?"
