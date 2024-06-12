@@ -528,6 +528,7 @@ const GenerateQuote: React.FC = () => {
                 uploadFileData={uploadFileData}
                 isGenerateQuote
                 existingGenerateQuoteId={Number(getQuoteID)}
+                quoteDetails={objectForSyncingValues}
               />
               <OsButton
                 text=" Mark as Complete"
