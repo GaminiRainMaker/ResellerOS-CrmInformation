@@ -611,7 +611,13 @@ const Profitability: FC<any> = ({
 
   useEffect(() => {
     dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
-      setProfitabilityData(d?.payload);
+      if (d?.payload) {
+        const filteredDataa = d?.payload?.filter(
+          (item: any) => item?.bundle_id === null,
+        );
+
+        setProfitabilityData(filteredDataa);
+      }
     });
   }, [getQuoteID]);
 
@@ -620,7 +626,13 @@ const Profitability: FC<any> = ({
       if (d?.payload) {
         dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then(
           (d: any) => {
-            setProfitabilityData(d?.payload);
+            if (d?.payload) {
+              const filteredDataa = d?.payload?.filter(
+                (item: any) => item?.bundle_id === null,
+              );
+
+              setProfitabilityData(filteredDataa);
+            }
             setIsDeleteProfitabilityModal(false);
           },
         );
@@ -696,7 +708,7 @@ const Profitability: FC<any> = ({
                     }}
                   >
                     <p>{item?.name}</p>
-                    <p>Lines:{item?.QuoteLineItems?.length}</p>
+                    <p>Lines:{item?.Profitabilities?.length}</p>
                     <p>Desc: {item?.description}</p>
                     <p>
                       Quantity:
@@ -721,11 +733,7 @@ const Profitability: FC<any> = ({
                   loading={loading}
                   // rowSelection={rowSelection}
                   columns={finalProfitTableCol}
-                  dataSource={
-                    item?.Profitabilities.sort(
-                      (a: any, b: any) => a.line_number - b.line_number,
-                    ) || []
-                  }
+                  dataSource={item?.Profitabilities || []}
                   scroll
                   rowSelection={rowSelection}
                   locale={locale}
@@ -780,19 +788,21 @@ const Profitability: FC<any> = ({
             </>
           ) : (
             <>
-              <OsTableWithOutDrag
-                loading={loading}
-                columns={finalProfitTableCol}
-                dataSource={profitabilityData
-                  ?.filter((item: any) => !item?.bundle_id)
-                  .sort((a: any, b: any) => a.line_number - b.line_number)}
-                scroll
-                rowSelection={{
-                  ...rowSelection,
-                  selectedRowKeys: selectTedRowIds, // Ensure selectedRowKeys is set to selectedRowIds
-                }}
-                locale={locale}
-              />
+              {profitabilityData?.length > 0 && (
+                <OsTableWithOutDrag
+                  loading={loading}
+                  columns={finalProfitTableCol}
+                  dataSource={profitabilityData
+                    ?.filter((item: any) => !item?.bundle_id)
+                    .sort((a: any, b: any) => a.line_number - b.line_number)}
+                  scroll
+                  rowSelection={{
+                    ...rowSelection,
+                    selectedRowKeys: selectTedRowIds, // Ensure selectedRowKeys is set to selectedRowIds
+                  }}
+                  locale={locale}
+                />
+              )}
             </>
           )}
         </>

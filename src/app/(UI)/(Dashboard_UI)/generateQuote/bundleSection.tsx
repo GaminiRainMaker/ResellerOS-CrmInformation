@@ -45,6 +45,7 @@ const BundleSection: FC<any> = ({selectTedRowIds, setShowBundleModal}) => {
       });
     }
     dispatch(getAllBundle(getQuoteLineItemId));
+    location?.reload();
     setRadioValue(1);
     setShowBundleModal(false);
   };
