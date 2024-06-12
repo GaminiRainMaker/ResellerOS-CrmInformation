@@ -111,38 +111,50 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
     let operator = '';
     let finalSecondValue = '';
     let status = '';
-    const matchingObjects =
-      contractConfigurationData &&
-      contractConfigurationData?.filter(
-        (item: any) => item?.contract_status === 'green',
-      );
-    const finalData =
-      matchingObjects?.[0]?.json && JSON?.parse(matchingObjects?.[0]?.json);
-    fieldName = finalData?.[0]['fieldName'];
-    operator = finalData?.[0]['operator'];
-    if (finalData?.[0]['valueType'] === 'formula') {
-      finalSecondValue = finalData?.[0]['value']?.reduce(
-        (acc: any, fieldName: any) => {
-          const value1 = record?.[fieldName];
-          if (typeof value1 === 'number') {
-            return acc + value1; // Add if it's a number
-          } else if (typeof value1 === 'string') {
-            return acc + value1; // Concatenate if it's a string
-          }
-          return acc; // Skip if it's neither number nor string
-        },
-        typeof record?.[finalData?.[0]['value'][0]] === 'number' ? 0 : '',
-      );
-    } else {
-      finalSecondValue = finalData?.[0]['value'];
-    }
+    const statuses = ['green', 'yellow', 'red'];
 
-    if (operator && record[fieldName] && finalSecondValue) {
-      status = getContractStatus(
-        Number(record[fieldName]),
-        Number(finalSecondValue),
-        operator,
-      );
+    for (let statusCheck of statuses) {
+      const matchingObjects =
+        contractConfigurationData &&
+        contractConfigurationData?.filter(
+          (item: any) => item?.contract_status === statusCheck,
+        );
+
+      if (matchingObjects.length > 0) {
+        const finalData =
+          matchingObjects?.[0]?.json && JSON?.parse(matchingObjects?.[0]?.json);
+        fieldName = finalData?.[0]?.['fieldName'];
+        operator = finalData?.[0]?.['operator'];
+
+        if (finalData?.[0]?.['valueType'] === 'formula') {
+          finalSecondValue = finalData?.[0]['value']?.reduce(
+            (acc: any, fieldName: any) => {
+              const value1 = record?.[fieldName];
+              if (typeof value1 === 'number') {
+                return acc + value1; // Add if it's a number
+              } else if (typeof value1 === 'string') {
+                return acc + value1; // Concatenate if it's a string
+              }
+              return acc; // Skip if it's neither number nor string
+            },
+            typeof record?.[finalData?.[0]['value']?.[0]] === 'number' ? 0 : '',
+          );
+        } else {
+          finalSecondValue = finalData?.[0]?.['value'];
+        }
+
+        if (operator && record?.[fieldName] && finalSecondValue) {
+          status = getContractStatus(
+            Number(record?.[fieldName]),
+            Number(finalSecondValue),
+            operator,
+          );
+        }
+
+        if (status === 'Correct') {
+          break; // Exit loop if status is correct
+        }
+      }
     }
     return status;
   };
