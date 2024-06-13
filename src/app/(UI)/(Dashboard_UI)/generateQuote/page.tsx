@@ -82,6 +82,7 @@ const GenerateQuote: React.FC = () => {
     useState<boolean>(false);
   const [typeForAttachmentFilter, setTypeForAttachmentFilter] =
     useState<any>('all');
+  const [getBundleProfit, setGetBundleProfit] = useState<boolean>(false);
   const [showDocumentModal, setShowDocumentModal] = useState<boolean>(false);
 
   const [objectForSyncingValues, setObjectForSyncingValues] = useState<any>([]);

@@ -79,40 +79,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
   const mergeedColumn: any = [];
 
-  useEffect(() => {
-    let dsfdsfds = [
-      {
-        'LINE NO .': '1',
-        adjusted_price: '$ 31,302.32',
-        description:
-          'PowerTower PT549 Server\nDell Federal Systems L.P. c / o Dell USA L.P. -\n422 - BRSR',
-        list_price: '$ 21,114.59 OM',
-        product_code: '422 - BRSI',
-        quantity: '2',
-      },
-      {
-        'LINE NO .': '2',
-        adjusted_price: '$ 0.00',
-        description:
-          'Dell Hardware Limited Warranty Plus On - Site\nService\nDell Federal Systems L.P. c / o Dell USA L.P. -\n796-5225',
-        list_price: '$ 0.00 OM',
-        product_code: '796-5228',
-        quantity: '2',
-      },
-      {
-        'LINE NO .': '3',
-        adjusted_price: '$ 0.00',
-        description:
-          'ProSupport : Next Business Day On - Site Service\nAfter Problem Diagnosis , 3 Years\nDell Federal Systems L.P. c / o Dell USA L.P. -\n796-6291',
-        list_price: '$ 0.00 OM',
-        product_code: '796-6299',
-        quantity: '2',
-      },
-    ];
-
-    let Jsojdsfdsfs = JSON?.stringify(dsfdsfds);
-    console.log('345345345345', Jsojdsfdsfs);
-  }, []);
+  
   const keys = mergedValue?.length > 0 && Object.keys(mergedValue?.[0]);
 
   if (keys) {
