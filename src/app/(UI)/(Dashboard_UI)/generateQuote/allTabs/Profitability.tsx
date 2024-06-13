@@ -223,17 +223,17 @@ const Profitability: FC<any> = ({
           (items: any) => items?.id === record?.bundle_id,
         );
 
-        let updatedValue = bundleDatass?.quantity * record?.quantity;
+        // let updatedValue = bundleDatass?.quantity * record?.quantity;
         return (
           // bundleData
           <OsInputNumber
+            value={text}
             disabled={renderEditableInput('Quantity')}
             style={{
               height: '36px',
             }}
             type="number"
             min={1}
-            value={updatedValue}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
                 prev.map((prevItem: any) => {
@@ -292,7 +292,7 @@ const Profitability: FC<any> = ({
               height: '36px',
               borderRadius: '10px',
             }}
-            value={updatedValue}
+            defaultValue={updatedValue}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
                 prev.map((prevItem: any) => {
@@ -350,7 +350,7 @@ const Profitability: FC<any> = ({
             }}
             type="number"
             disabled={renderEditableInput('Cost ($)')}
-            value={updatedValue ?? 0.0}
+            defaultValue={updatedValue ?? 0.0}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
                 prev.map((prevItem: any) => {
@@ -791,8 +791,6 @@ const Profitability: FC<any> = ({
                           dataSource={
                             item?.QuoteLineItem?.filter(
                               (itemss: any) => !itemss?.bundle_id,
-                            ).sort(
-                              (a: any, b: any) => a.line_number - b.line_number,
                             ) || []
                           }
                           scroll
@@ -811,9 +809,9 @@ const Profitability: FC<any> = ({
                 <OsTableWithOutDrag
                   loading={loading}
                   columns={finalProfitTableCol}
-                  dataSource={profitabilityData
-                    ?.filter((item: any) => !item?.bundle_id)
-                    .sort((a: any, b: any) => a.line_number - b.line_number)}
+                  dataSource={profitabilityData?.filter(
+                    (item: any) => !item?.bundle_id,
+                  )}
                   scroll
                   rowSelection={{
                     ...rowSelection,
