@@ -521,7 +521,7 @@ const SideBar = () => {
           <Space size={12}>
             <OsAvatar
               icon={
-                <UserGroupIcon
+                <CurrencyDollarIcon
                   color={
                     selectedKey === 6
                       ? token?.colorLink

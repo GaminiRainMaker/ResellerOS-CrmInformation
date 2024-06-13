@@ -902,6 +902,7 @@ const Profitability: FC<any> = ({
           <UpdatingLineItems
             profabilityUpdationState={profabilityUpdationState}
             setProfabilityUpdationState={setProfabilityUpdationState}
+            tableColumnDataShow={tableColumnDataShow}
           />
         }
         width={700}

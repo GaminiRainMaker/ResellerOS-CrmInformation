@@ -55,4 +55,5 @@ export interface UpdateLineItemsInterFace {
     field: string | null;
     label: string;
   }[];
+  tableColumnDataShow: any
 }

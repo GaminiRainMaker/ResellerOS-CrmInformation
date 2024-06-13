@@ -21,16 +21,12 @@ const fieldOption = [
     value: 'quantity',
   },
   {
-    label: 'MSRP',
+    label: 'MSRP ($)',
     value: 'list_price',
   },
   {
-    label: 'Cost',
+    label: 'Cost ($)',
     value: 'adjusted_price',
-  },
-  {
-    label: 'Description',
-    value: 'description',
   },
   {
     label: 'Pricing Method',
@@ -45,9 +41,24 @@ const fieldOption = [
 const UpdatingLineItems: FC<UpdateLineItemsInterFace> = ({
   profabilityUpdationState,
   setProfabilityUpdationState,
+  tableColumnDataShow,
 }) => {
   const [token] = useThemeToken();
-  const [finalFieldOption, setFinalFieldOption] = useState<any>(fieldOption);
+
+  const updatedFieldOptions = fieldOption?.map((option) => {
+    const match = tableColumnDataShow?.find(
+      (data: any) => data.field_name === option.label,
+    );
+    return {
+      ...option,
+      is_editable: match ? match.is_editable : false,
+    };
+  });
+
+  const [finalFieldOption, setFinalFieldOption] =
+    useState<any>(updatedFieldOptions);
+
+  console.log('tableColumnDataShow', finalFieldOption);
 
   const updateFieldOptions = () => {
     const updatedOptions = finalFieldOption?.filter(
