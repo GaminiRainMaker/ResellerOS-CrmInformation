@@ -61,6 +61,9 @@ const Profitability: FC<any> = ({
   );
   const [triggerUpdate, setTriggerUpdate] = useState(false);
 
+  const [newDataForProfit, setNewDataForProfit] = useState<any>([]);
+  const [newDataForBundle, setNewDataForBundle] = useState<any>([]);
+
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
       id: number;
@@ -81,6 +84,40 @@ const Profitability: FC<any> = ({
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Profitability" />,
   };
+  useEffect(() => {
+    if (profitabilityData && profitabilityData?.length > 0) {
+      let newSortedValue = profitabilityData?.sort((a: any, b: any) => {
+        return a.line_number - b.line_number;
+      });
+      let FIlteredData = newSortedValue?.filter(
+        (item: any) => !item?.bundle_id,
+      );
+      setNewDataForProfit(FIlteredData);
+    }
+  }, [profitabilityData]);
+
+  useEffect(() => {
+    if (bundleData && bundleData?.length > 0) {
+      let newArrForBun: any = [];
+      bundleData?.map((items: any) => {
+        let newSortedValue;
+        let newObj = {...items};
+        if (items?.Profitabilities && items?.Profitabilities?.length > 0) {
+          let newSort = [...items.Profitabilities];
+          newSortedValue = newSort?.sort((a: any, b: any) => {
+            return a.line_number - b.line_number;
+          });
+          delete newObj.Profitabilities;
+          newObj.Profitabilities = newSortedValue;
+        }
+
+        newArrForBun?.push(newObj);
+      });
+
+      setNewDataForBundle(newArrForBun);
+    }
+    // Profitabilities
+  }, [bundleData]);
 
   useEffect(() => {
     const filteredDataa = profitabilityDataByQuoteId?.filter(
@@ -252,7 +289,7 @@ const Profitability: FC<any> = ({
           style={{
             height: '36px',
           }}
-          value={index + 1}
+          value={text}
         />
       ),
       width: 111,
@@ -779,8 +816,8 @@ const Profitability: FC<any> = ({
 
   return (
     <>
-      {bundleData?.length > 0 &&
-        bundleData?.map((item: any) => (
+      {newDataForBundle?.length > 0 &&
+        newDataForBundle?.map((item: any) => (
           <OsCollapse
             key={item?.id}
             items={[
@@ -877,9 +914,7 @@ const Profitability: FC<any> = ({
               <OsTableWithOutDrag
                 loading={loading}
                 columns={finalProfitTableCol}
-                dataSource={profitabilityData?.filter(
-                  (item: any) => !item?.bundle_id,
-                )}
+                dataSource={newDataForProfit || []}
                 scroll
                 rowSelection={{
                   ...rowSelection,
