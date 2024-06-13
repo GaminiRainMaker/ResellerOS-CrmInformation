@@ -163,18 +163,14 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       title: '#Line',
       dataIndex: 'line_number',
       key: 'line_number',
-      render: (text: any, record: any) => (
+      render: (text: any, record: any, index: number) => (
         <OsInput
           disabled={renderEditableInput('#Line')}
           style={{
             height: '36px',
           }}
           placeholder={text}
-          value={
-            !selectTedRowIds?.includes(record?.id)
-              ? text * (record?.Bundle?.quantity ? record?.Bundle?.quantity : 1)
-              : quoteLineItemByQuoteData?.line_number
-          }
+          value={index + 1}
           onChange={(v) => {
             setQuoteLineItemByQuoteData((prev: any) =>
               prev.map((prevItem: any) => {
@@ -528,6 +524,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     }
     setTimeout(() => {
       setActiveTab('2');
+      // location?.reload();
     }, 2000);
     setShowVerificationFileModal(false);
   };

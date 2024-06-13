@@ -55,6 +55,7 @@ const Profitability: FC<any> = ({
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const [familyFilter, setFamilyFilter] = useState<any>([]);
+  const [showTable, setShowTable] = useState<boolean>(true);
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
     (state) => state.profitability,
   );
@@ -88,6 +89,16 @@ const Profitability: FC<any> = ({
 
     setProfitabilityData(filteredDataa);
   }, [profitabilityDataByQuoteId]);
+  useEffect(() => {
+    setTimeout(() => {
+      console.log('profitabilityDataprofitabilityData', profitabilityData);
+      if (profitabilityData?.length === 0 && bundleData?.length > 0) {
+        setShowTable(false);
+      } else {
+        setShowTable(true);
+      }
+    }, 3000);
+  }, [bundleData]);
 
   useEffect(() => {
     if (selectedFilter === 'Product Family') {
@@ -235,13 +246,13 @@ const Profitability: FC<any> = ({
       title: '#Line',
       dataIndex: 'line_number',
       key: 'line_number',
-      render: (text: string) => (
+      render: (text: string, record: any, index: number) => (
         <OsInput
           disabled={renderEditableInput('#Line')}
           style={{
             height: '36px',
           }}
-          value={text}
+          value={index + 1}
         />
       ),
       width: 111,
@@ -466,7 +477,6 @@ const Profitability: FC<any> = ({
         return {
           children: (
             <CommonSelect
-              onBlur={handleBlur}
               disabled={renderEditableInput('Product Family')}
               allowClear
               style={{width: '200px'}}
@@ -863,7 +873,7 @@ const Profitability: FC<any> = ({
             </>
           ) : (
             <>
-              {profitabilityData?.length > 0 && (
+              {showTable && (
                 <OsTableWithOutDrag
                   loading={loading}
                   columns={finalProfitTableCol}
