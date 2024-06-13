@@ -524,7 +524,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     }
     setTimeout(() => {
       setActiveTab('2');
-      location?.reload();
+      // location?.reload();
     }, 2000);
     setShowVerificationFileModal(false);
   };
