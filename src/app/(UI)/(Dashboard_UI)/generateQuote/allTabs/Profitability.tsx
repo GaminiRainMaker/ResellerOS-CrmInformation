@@ -222,12 +222,18 @@ const Profitability: FC<any> = ({
         let bundleDatass = bundleData?.find(
           (items: any) => items?.id === record?.bundle_id,
         );
+        let updatedValue;
+        if (bundleDatass) {
+          updatedValue = bundleDatass?.quantity * record?.quantity;
+        } else {
+          updatedValue = record?.quantity;
+        }
 
-        // let updatedValue = bundleDatass?.quantity * record?.quantity;
         return (
           // bundleData
           <OsInputNumber
-            value={text}
+            defaultValue={updatedValue}
+            value={updatedValue ? updatedValue : text}
             disabled={renderEditableInput('Quantity')}
             style={{
               height: '36px',
@@ -282,7 +288,12 @@ const Profitability: FC<any> = ({
           (items: any) => items?.id === record?.bundle_id,
         );
 
-        let updatedValue = bundleDatass?.quantity * record?.list_price;
+        let updatedValue;
+        if (bundleDatass) {
+          updatedValue = bundleDatass?.quantity * record?.list_price;
+        } else {
+          updatedValue = record?.quantity;
+        }
 
         return (
           <OsInput
@@ -293,6 +304,7 @@ const Profitability: FC<any> = ({
               borderRadius: '10px',
             }}
             defaultValue={updatedValue}
+            value={updatedValue ? updatedValue : text}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
                 prev.map((prevItem: any) => {
@@ -340,8 +352,12 @@ const Profitability: FC<any> = ({
         let bundleDatass = bundleData?.find(
           (items: any) => items?.id === record?.bundle_id,
         );
-
-        let updatedValue = bundleDatass?.quantity * record?.adjusted_price;
+        let updatedValue;
+        if (bundleDatass) {
+          updatedValue = bundleDatass?.quantity * record?.adjusted_price;
+        } else {
+          updatedValue = record?.quantity;
+        }
 
         return (
           <OsInput
@@ -351,6 +367,7 @@ const Profitability: FC<any> = ({
             type="number"
             disabled={renderEditableInput('Cost ($)')}
             defaultValue={updatedValue ?? 0.0}
+            value={updatedValue ? updatedValue : text ?? 0.0}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
                 prev.map((prevItem: any) => {
