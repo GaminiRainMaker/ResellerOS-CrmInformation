@@ -89,16 +89,6 @@ const Profitability: FC<any> = ({
 
     setProfitabilityData(filteredDataa);
   }, [profitabilityDataByQuoteId]);
-  useEffect(() => {
-    setTimeout(() => {
-      console.log('profitabilityDataprofitabilityData', profitabilityData);
-      if (profitabilityData?.length === 0 && bundleData?.length > 0) {
-        setShowTable(false);
-      } else {
-        setShowTable(true);
-      }
-    }, 3000);
-  }, [bundleData]);
 
   useEffect(() => {
     if (selectedFilter === 'Product Family') {
@@ -873,21 +863,19 @@ const Profitability: FC<any> = ({
             </>
           ) : (
             <>
-              {showTable && (
-                <OsTableWithOutDrag
-                  loading={loading}
-                  columns={finalProfitTableCol}
-                  dataSource={profitabilityData?.filter(
-                    (item: any) => !item?.bundle_id,
-                  )}
-                  scroll
-                  rowSelection={{
-                    ...rowSelection,
-                    selectedRowKeys: selectTedRowIds, // Ensure selectedRowKeys is set to selectedRowIds
-                  }}
-                  locale={locale}
-                />
-              )}
+              <OsTableWithOutDrag
+                loading={loading}
+                columns={finalProfitTableCol}
+                dataSource={profitabilityData?.filter(
+                  (item: any) => !item?.bundle_id,
+                )}
+                scroll
+                rowSelection={{
+                  ...rowSelection,
+                  selectedRowKeys: selectTedRowIds, // Ensure selectedRowKeys is set to selectedRowIds
+                }}
+                locale={locale}
+              />
             </>
           )}
         </>
