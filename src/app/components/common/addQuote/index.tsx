@@ -29,6 +29,8 @@ import OsButton from '../os-button';
 import OsUpload from '../os-upload';
 import {AddQuoteInterface, FormattedData} from './types';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
+import customer from '../../../../../redux/slices/customer';
+import opportunity from '../../../../../redux/slices/opportunity';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
@@ -40,6 +42,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
   Quotecolumns,
   isGenerateQuote,
   existingGenerateQuoteId,
+  quoteDetails,
 }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -339,12 +342,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
     form.resetFields(['customer_id', 'opportunity_id']);
   };
 
-  const rowSelection = {
-    onChange: (selectedRowKeys: any) => {
-      setExistingQuoteId(Number(selectedRowKeys));
-    },
-  };
-
   return (
     <>
       <OsButton
@@ -372,13 +369,13 @@ const AddQuote: FC<AddQuoteInterface> = ({
             addQuoteLineItem={addQuoteLineItem}
             form={form}
             cardLoading={loading}
-            rowSelection={rowSelection}
             setShowToggleTable={setShowToggleTable}
             showToggleTable={showToggleTable}
             Quotecolumns={Quotecolumns}
             existingQuoteId={existingQuoteId}
             setExistingQuoteId={setExistingQuoteId}
             isGenerateQuote={isGenerateQuote}
+            quoteDetails={quoteDetails}
           />
         }
         width={900}

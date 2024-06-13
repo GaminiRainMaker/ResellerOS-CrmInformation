@@ -685,6 +685,7 @@ const Profitability: FC<any> = ({
       });
     }
   }, [updatedData]);
+  console.log('bundleDatabundleData', bundleData, profitabilityData);
 
   return (
     <>
