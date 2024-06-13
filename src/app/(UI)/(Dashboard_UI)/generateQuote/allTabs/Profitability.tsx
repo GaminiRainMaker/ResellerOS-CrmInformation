@@ -873,21 +873,21 @@ const Profitability: FC<any> = ({
             </>
           ) : (
             <>
-              {showTable && (
-                <OsTableWithOutDrag
-                  loading={loading}
-                  columns={finalProfitTableCol}
-                  dataSource={profitabilityData?.filter(
-                    (item: any) => !item?.bundle_id,
-                  )}
-                  scroll
-                  rowSelection={{
-                    ...rowSelection,
-                    selectedRowKeys: selectTedRowIds, // Ensure selectedRowKeys is set to selectedRowIds
-                  }}
-                  locale={locale}
-                />
-              )}
+              {/* {showTable && ( */}
+              <OsTableWithOutDrag
+                loading={loading}
+                columns={finalProfitTableCol}
+                dataSource={profitabilityData?.filter(
+                  (item: any) => !item?.bundle_id,
+                )}
+                scroll
+                rowSelection={{
+                  ...rowSelection,
+                  selectedRowKeys: selectTedRowIds, // Ensure selectedRowKeys is set to selectedRowIds
+                }}
+                locale={locale}
+              />
+              {/* )} */}
             </>
           )}
         </>

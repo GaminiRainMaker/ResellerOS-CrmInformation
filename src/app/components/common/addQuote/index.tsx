@@ -23,7 +23,10 @@ import {
 } from '../../../../../redux/actions/quote';
 import {insertQuoteFile} from '../../../../../redux/actions/quoteFile';
 import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
-import {uploadToAws} from '../../../../../redux/actions/upload';
+import {
+  uploadExcelFileToAws,
+  uploadToAws,
+} from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '../os-button';
 import OsUpload from '../os-upload';
@@ -43,7 +46,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
   isGenerateQuote,
   existingGenerateQuoteId,
   quoteDetails,
-  isGenerateQuotePage = false
+  isGenerateQuotePage = false,
 }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -67,16 +70,22 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
   const beforeUpload = (file: File) => {
     const obj: any = {...file};
+    let pathUsedToUpload = file?.type?.split('.')?.includes('spreadsheetml')
+      ? uploadExcelFileToAws
+      : uploadToAws;
+
     convertFileToBase64(file)
       .then((base64String: string) => {
         obj.base64 = base64String;
         obj.file = file;
         setLoading(true);
-        dispatch(uploadToAws({document: base64String})).then((payload: any) => {
-          const pdfUrl = payload?.payload?.data?.Location;
-          obj.pdf_url = pdfUrl;
-          setLoading(false);
-        });
+        dispatch(pathUsedToUpload({document: base64String})).then(
+          (payload: any) => {
+            const pdfUrl = payload?.payload?.data?.Location;
+            obj.pdf_url = pdfUrl;
+            setLoading(false);
+          },
+        );
         setUploadFileData((fileData: any) => [...fileData, obj]);
       })
       .catch((error) => {
@@ -331,7 +340,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
     setUploadFileData([]);
     if (singleQuote || updatedArr?.length === 1) {
       router.push(`/generateQuote?id=${quotesArr[0]?.id}`);
-      if(isGenerateQuotePage){
+      if (isGenerateQuotePage) {
         location.reload();
       }
     }

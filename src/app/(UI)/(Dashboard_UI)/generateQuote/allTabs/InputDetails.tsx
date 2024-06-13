@@ -523,9 +523,9 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
     }
     setTimeout(() => {
-      setActiveTab('2');
-      // location?.reload();
-    }, 2000);
+      // setActiveTab('2');
+      location?.reload();
+    }, 1000);
     setShowVerificationFileModal(false);
   };
 
