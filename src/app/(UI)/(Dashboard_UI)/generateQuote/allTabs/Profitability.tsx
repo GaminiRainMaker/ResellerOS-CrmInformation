@@ -59,7 +59,7 @@ const Profitability: FC<any> = ({
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
     (state) => state.profitability,
   );
-  const debouncedProfitabilityData = useDebounceHook(profitabilityData, 900);
+  const debouncedProfitabilityData = useDebounceHook(profitabilityData, 1000);
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
       id: number;
