@@ -600,16 +600,18 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                               onClick={(e) => {
                                                 console.log(
                                                   'item?.title',
-                                                  item?.title?.split('.')[1],
                                                   !item?.title
                                                     ?.split('.')
                                                     ?.includes('pdf'),
+                                                  item?.title?.split('.'),
                                                 );
                                                 if (
                                                   item?.quoteLineItems
                                                     ?.length === 0
                                                 ) {
                                                   setShowExportAs(false);
+                                                } else {
+                                                  setShowExportAs(true);
                                                 }
                                                 if (
                                                   !item?.title
@@ -617,6 +619,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                                     ?.includes('pdf')
                                                 ) {
                                                   setShowExportToTable(false);
+                                                } else {
+                                                  setShowExportToTable(true);
                                                 }
 
                                                 // setShowExportAs
