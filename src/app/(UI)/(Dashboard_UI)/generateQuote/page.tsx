@@ -1,16 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable eqeqeq */
-/* eslint-disable @typescript-eslint/indent */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable radix */
-/* eslint-disable consistent-return */
-/* eslint-disable array-callback-return */
-/* eslint-disable no-unsafe-optional-chaining */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable @typescript-eslint/no-shadow */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable prettier/prettier */
-
 'use client';
 
 import AddQuote from '@/app/components/common/addQuote';
@@ -23,7 +10,6 @@ import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
-
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {AttachmentOptions, selectData} from '@/app/utils/CONSTANTS';
@@ -48,18 +34,18 @@ import Metrics from './allTabs/Metrics';
 import Profitability from './allTabs/Profitability';
 import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
+import AttachmentDocument from './allTabs/attachmentDoc';
 import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
-import AttachmentDocument from './allTabs/attachmentDoc';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [form] = Form.useForm();
-  const [updationForm] = Form.useForm();
   const [addDocForm] = Form.useForm();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [api, contextHolder] = notification.useNotification();
   const getQuoteID = searchParams.get('id');
   const activeTabRoute = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState<any>('1');
@@ -69,7 +55,6 @@ const GenerateQuote: React.FC = () => {
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [selectTedRowData, setSelectedRowData] = useState<React.Key[]>([]);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
-  const [documentId, setDocumentId] = useState<number>();
   const [amountData, setAmountData] = useState<any>();
   const [open, setOpen] = useState(false);
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
@@ -89,10 +74,12 @@ const GenerateQuote: React.FC = () => {
   const [profitabilityData, setProfitabilityData] = useState<any>();
   const [finalInputColumn, setFinalInputColumn] = useState<any>();
   const [quoteLineItemExist, setQuoteLineItemExist] = useState<boolean>(false);
+  const [statusValue, setStatusValue] = useState<string>('');
+  const [statusUpdateLoading, setStatusUpdateLoading] =
+    useState<boolean>(false);
   const {data: quoteFileData} = useAppSelector((state) => state.quoteFile);
   const [showUpdateLineItemModal, setShowUpdateLineItemModal] =
     useState<boolean>(false);
-
   const [typeForAttachmentFilter, setTypeForAttachmentFilter] =
     useState<any>('all');
   const [showDocumentModal, setShowDocumentModal] = useState<boolean>(false);
@@ -228,31 +215,26 @@ const GenerateQuote: React.FC = () => {
   }, [quoteLineItemByQuoteID]);
 
   const commonUpdateCompleteAndDraftMethod = (status: string) => {
-    // if (getQuoteID) {
-    //   const data = {
-    //     id: getQuoteID,
-    //     query: queryItem,
-    //   };
-    //   dispatch(updateQuoteByQuery(data));
-    // }
-    // quoteLineItemByQuoteData?.map((prev: any) => {
-    //   if (selectTedRowIds?.includes(prev?.id)) {
-    //     const obj = {
-    //       id: prev?.id,
-    //       quantity: prev?.quantity,
-    //     };
-    //     return dispatch(UpdateQuoteLineItemQuantityById(obj));
-    //   }
-    // });
-
-    if (getQuoteID) {
-      const obj = {
-        ids: getQuoteID,
-        status,
-      };
-      dispatch(updateQuoteStatusById(obj));
+    try {
+      setStatusUpdateLoading(true);
+      if (getQuoteID) {
+        api.info({
+          message: 'Your changes have been saved.',
+        });
+        const obj = {
+          ids: getQuoteID,
+          status,
+        };
+        dispatch(updateQuoteStatusById(obj)).then((d) => {
+          if (d?.payload) {
+            setStatusUpdateLoading(false);
+          }
+        });
+      }
+    } catch (err) {
+      setStatusUpdateLoading(false);
+      console.log('Error:', err);
     }
-    router?.push('/allQuote');
   };
 
   const items: MenuProps['items'] = [
@@ -481,6 +463,7 @@ const GenerateQuote: React.FC = () => {
 
   return (
     <>
+      {contextHolder}
       <Space size={24} direction="vertical" style={{width: '100%'}}>
         <GenerateQuoteAnalytics
           quoteLineItemByQuoteID={quoteLineItemByQuoteID}
@@ -508,6 +491,9 @@ const GenerateQuote: React.FC = () => {
                 }}
               />
               <OsButton
+                loading={
+                  statusValue === 'In Progress' ? statusUpdateLoading : false
+                }
                 text="Save"
                 buttontype="SECONDARY"
                 clickHandler={() => {
@@ -518,6 +504,7 @@ const GenerateQuote: React.FC = () => {
                     });
                     return;
                   }
+                  setStatusValue('In Progress');
                   commonUpdateCompleteAndDraftMethod('In Progress');
                 }}
               />
@@ -531,6 +518,9 @@ const GenerateQuote: React.FC = () => {
                 quoteDetails={objectForSyncingValues}
               />
               <OsButton
+                loading={
+                  statusValue === 'Needs Review' ? statusUpdateLoading : false
+                }
                 text=" Mark as Complete"
                 buttontype="PRIMARY"
                 clickHandler={() => {
@@ -542,6 +532,7 @@ const GenerateQuote: React.FC = () => {
                     });
                     return;
                   }
+                  setStatusValue('Needs Review');
                   commonUpdateCompleteAndDraftMethod('Needs Review');
                 }}
               />
@@ -687,8 +678,6 @@ const GenerateQuote: React.FC = () => {
           setShowDocumentModal(false);
           addDocForm.resetFields();
         }}
-        // primaryButtonText={'Save'}
-        // onOk={addDocForm.submit}
       />
     </>
   );
