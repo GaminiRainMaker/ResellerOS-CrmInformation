@@ -34,7 +34,6 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
 import UpdatingLineItems from '../UpdatingLineItems';
-import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 
 const Profitability: FC<any> = ({
   tableColumnDataShow,
@@ -61,7 +60,6 @@ const Profitability: FC<any> = ({
   );
   const [triggerUpdate, setTriggerUpdate] = useState(false);
 
-  const debouncedProfitabilityData = useDebounceHook(profitabilityData, 1000);
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
       id: number;
@@ -468,7 +466,6 @@ const Profitability: FC<any> = ({
         return {
           children: (
             <CommonSelect
-              onKeyDown={handleKeyDown}
               onBlur={handleBlur}
               disabled={renderEditableInput('Product Family')}
               allowClear
@@ -479,6 +476,7 @@ const Profitability: FC<any> = ({
               onChange={(e) => {
                 const data = {id: record?.product_id, product_family: e};
                 dispatch(updateProductFamily(data));
+                setTriggerUpdate((prev) => !prev);
               }}
             />
           ),
@@ -492,7 +490,6 @@ const Profitability: FC<any> = ({
       width: 200,
       render: (text: string, record: any) => (
         <CommonSelect
-          onKeyDown={handleKeyDown}
           onBlur={handleBlur}
           allowClear
           disabled={renderEditableInput('Pricing Method')}
@@ -532,6 +529,7 @@ const Profitability: FC<any> = ({
                 return prevItem;
               }),
             );
+            setTriggerUpdate((prev) => !prev);
           }}
           options={pricingMethod}
         />
