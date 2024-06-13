@@ -235,10 +235,9 @@ const Profitability: FC<any> = ({
         }
 
         return (
-          // bundleData
           <OsInputNumber
-            defaultValue={updatedValue}
-            value={updatedValue ? updatedValue : text}
+            // defaultValue={updatedValue}
+            value={bundleDatass ? updatedValue : text}
             disabled={renderEditableInput('Quantity')}
             style={{
               height: '36px',
@@ -308,8 +307,7 @@ const Profitability: FC<any> = ({
               height: '36px',
               borderRadius: '10px',
             }}
-            defaultValue={updatedValue}
-            value={updatedValue ? updatedValue : text}
+            value={bundleDatass ? updatedValue : text}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
                 prev.map((prevItem: any) => {
@@ -371,8 +369,7 @@ const Profitability: FC<any> = ({
             }}
             type="number"
             disabled={renderEditableInput('Cost ($)')}
-            defaultValue={updatedValue ?? 0.0}
-            value={updatedValue ? updatedValue : text ?? 0.0}
+            value={bundleDatass ? updatedValue : text ?? 0.0}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
                 prev.map((prevItem: any) => {
@@ -621,6 +618,29 @@ const Profitability: FC<any> = ({
     });
     setFinalProfitTableCol(newArr);
   }, [tableColumnDataShow]);
+  useEffect(() => {
+    if (bundleData && bundleData?.length > 0) {
+      const newArr: any = [];
+      ProfitabilityQuoteLineItemcolumns?.map((itemCol: any) => {
+        let shouldPush = false;
+        tableColumnDataShow?.forEach((item: any) => {
+          if (item?.field_name === itemCol?.title) {
+            shouldPush = true;
+          }
+        });
+        if (
+          itemCol?.dataIndex === 'actions' ||
+          itemCol?.dataIndex?.includes('actions.')
+        ) {
+          shouldPush = true;
+        }
+        if (shouldPush) {
+          newArr?.push(itemCol);
+        }
+      });
+      setFinalProfitTableCol(newArr);
+    }
+  }, [bundleData]);
 
   useEffect(() => {
     profitabilityData?.map((profitabilityDataItem: any) => {
@@ -734,56 +754,57 @@ const Profitability: FC<any> = ({
 
   return (
     <>
-      {bundleData?.map((item: any) => (
-        <OsCollapse
-          key={item?.id}
-          items={[
-            {
-              key: '1',
-              label: (
-                <>
-                  <Space
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <p>{item?.name}</p>
-                    <p>Lines:{item?.Profitabilities?.length}</p>
-                    <p>Desc: {item?.description}</p>
-                    <p>
-                      Quantity:
-                      <OsInput
-                        defaultValue={item?.quantity}
-                        style={{width: '60px'}}
-                        onChange={(e: any) => {
-                          const data = {
-                            id: item?.id,
-                            quantity: e.target.value,
-                          };
-                          updateBundleQuantityData(data);
-                        }}
-                      />
-                    </p>
-                  </Space>
-                </>
-              ),
-              // children: item?.children,
-              children: (
-                <OsTableWithOutDrag
-                  loading={loading}
-                  // rowSelection={rowSelection}
-                  columns={finalProfitTableCol}
-                  dataSource={item?.Profitabilities || []}
-                  scroll
-                  rowSelection={rowSelection}
-                  locale={locale}
-                />
-              ),
-            },
-          ]}
-        />
-      ))}{' '}
+      {bundleData?.length > 0 &&
+        bundleData?.map((item: any) => (
+          <OsCollapse
+            key={item?.id}
+            items={[
+              {
+                key: '1',
+                label: (
+                  <>
+                    <Space
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <p>{item?.name}</p>
+                      <p>Lines:{item?.Profitabilities?.length}</p>
+                      <p>Desc: {item?.description}</p>
+                      <p>
+                        Quantity:
+                        <OsInput
+                          defaultValue={item?.quantity}
+                          style={{width: '60px'}}
+                          onChange={(e: any) => {
+                            const data = {
+                              id: item?.id,
+                              quantity: e.target.value,
+                            };
+                            updateBundleQuantityData(data);
+                          }}
+                        />
+                      </p>
+                    </Space>
+                  </>
+                ),
+                // children: item?.children,
+                children: (
+                  <OsTableWithOutDrag
+                    loading={loading}
+                    // rowSelection={rowSelection}
+                    columns={finalProfitTableCol}
+                    dataSource={item?.Profitabilities || []}
+                    scroll
+                    rowSelection={rowSelection}
+                    locale={locale}
+                  />
+                ),
+              },
+            ]}
+          />
+        ))}{' '}
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         <>
           {selectedFilter === 'Product Family' ? (
