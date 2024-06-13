@@ -257,7 +257,8 @@ const ContentSection: FC<AuthLayoutInterface> = ({
     } else if (
       formValues?.username &&
       formValues?.password &&
-      formValues?.email
+      formValues?.email &&
+      type === 'Create Account'
     ) {
       dispatch(
         signUpAuth({

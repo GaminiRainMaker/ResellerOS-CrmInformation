@@ -196,7 +196,7 @@ const SideBar = () => {
                 }),
               );
             }
-            if (items?.name === 'DealRegAI Bundle') {
+            if (items?.name === 'DealRegAI') {
               dispatch(
                 setCacheTotalDealRegSeats({TotalDealRegSeats: items?.quantity}),
               );

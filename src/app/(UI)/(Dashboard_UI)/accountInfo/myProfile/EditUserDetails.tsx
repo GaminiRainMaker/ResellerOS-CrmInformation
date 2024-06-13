@@ -103,12 +103,6 @@ const EditUserDetails: FC<UserProfileInterface> = ({
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Company Name</Typography>}
             name="company_name"
-            rules={[
-              {
-                pattern: /^[A-Za-z\s]+$/,
-                message: 'Please enter valid text.',
-              },
-            ]}
           >
             <OsInput disabled={isEditable} />
           </SelectFormItem>

@@ -78,8 +78,9 @@ const CrmInformation: React.FC = () => {
   const [deletedData, setDeletedData] = useState<any>();
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
   const [editRecordData, setEditRecordData] = useState<any>();
-  const [deleteModalDescription, setDeleteModalDescription] =
-    useState<string>('');
+  const [deleteModalDescription, setDeleteModalDescription] = useState<string>(
+    `Are you sure you want to delete this account?`,
+  );
   const [query, setQuery] = useState<{
     customer: string | null;
     contact: string | null;
@@ -359,12 +360,11 @@ const CrmInformation: React.FC = () => {
           dispatch(insertbillingContact(newBillingObject));
         }
         dispatch(setCustomerProfile(''));
+        dispatch(queryCustomer(searchQuery));
       });
-      dispatch(queryCustomer(searchQuery));
+
       form.resetFields();
       setShowModal(false);
-      setShowModal((p) => !p);
-      window?.location?.reload();
     } catch (error) {
       console.log(error);
       form.resetFields();

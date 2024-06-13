@@ -29,7 +29,6 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
   );
   const [showModal, setShowModal] = useState<boolean>(false);
   const [opportunityFilterOption, setOpportunityFilterOption] = useState<any>();
-  const [opportunityNewValue, setOpportunityNewValue] = useState<number>();
   const [form1] = Form.useForm();
 
   useEffect(() => {
@@ -62,10 +61,20 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
     };
     dispatch(insertOpportunity(finalData)).then((d: any) => {
       if (d?.payload) {
-        dispatch(getAllOpportunity());
+        setOpportunityFilterOption([
+          ...opportunityFilterOption,
+          {
+            value: d?.payload?.id,
+            label: (
+              <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+                {FormDAta.title}
+              </Typography>
+            ),
+          },
+        ]);
         setShowModal(false);
         form1.resetFields();
-        setOpportunityNewValue(d?.payload?.id);
+        form.setFieldValue('opportunity_id', d?.payload?.id);
       }
     });
   };
@@ -81,7 +90,6 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
           placeholder="Select"
           disabled={!customerValue}
           allowClear
-          defaultValue={value ?? opportunityNewValue}
           style={{width: '100%'}}
           options={opportunityFilterOption}
           dropdownRender={(menu) => (

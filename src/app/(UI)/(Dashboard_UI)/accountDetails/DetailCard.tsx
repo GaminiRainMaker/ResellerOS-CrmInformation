@@ -163,8 +163,6 @@ const DetailCard = () => {
         placement="right"
         onClose={() => {
           setShowDrawer(false);
-          form.resetFields();
-          dispatch(setBillingContact({}));
         }}
         open={showDrawer}
         width={450}

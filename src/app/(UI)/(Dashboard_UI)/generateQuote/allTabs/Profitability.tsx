@@ -6,7 +6,6 @@
 import {Space} from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import OsCollapse from '@/app/components/common/os-collapse';
-
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
@@ -15,11 +14,7 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
-import {
-  formatStatus,
-  pricingMethod,
-  selectDataForProduct,
-} from '@/app/utils/CONSTANTS';
+import {pricingMethod, selectDataForProduct} from '@/app/utils/CONSTANTS';
 import {
   calculateProfitabilityData,
   useRemoveDollarAndCommahook,
@@ -39,8 +34,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
 import UpdatingLineItems from '../UpdatingLineItems';
-import {Button, List, Upload} from 'antd';
-import {UploadOutlined} from '@ant-design/icons';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 
 const Profitability: FC<any> = ({
   tableColumnDataShow,
@@ -65,6 +59,7 @@ const Profitability: FC<any> = ({
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
     (state) => state.profitability,
   );
+  const debouncedProfitabilityData = useDebounceHook(profitabilityData, 1000);
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
       id: number;
@@ -644,7 +639,7 @@ const Profitability: FC<any> = ({
   }, [bundleData]);
 
   useEffect(() => {
-    profitabilityData?.map((profitabilityDataItem: any) => {
+    debouncedProfitabilityData?.map((profitabilityDataItem: any) => {
       if (profitabilityDataItem?.rowId === profitabilityDataItem?.id) {
         const obj = {
           id: profitabilityDataItem?.id,
@@ -668,8 +663,8 @@ const Profitability: FC<any> = ({
       }
     });
 
-    dispatch(setProfitability(profitabilityData));
-  }, [profitabilityData]);
+    dispatch(setProfitability(debouncedProfitabilityData));
+  }, [debouncedProfitabilityData]);
 
   useEffect(() => {
     dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {

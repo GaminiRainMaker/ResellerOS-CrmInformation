@@ -5,6 +5,7 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
@@ -26,7 +27,9 @@ const Dashboard = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const {isSubscribed} = useAppSelector((state) => state.cacheFLow);
+  const {isSubscribed, loading: cacheFlowLoading} = useAppSelector(
+    (state) => state.cacheFLow,
+  );
   const {loading} = useAppSelector((state) => state.auth);
   const {userInformation} = useAppSelector((state) => state.user);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -72,8 +75,10 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <>
-      {isSubscribed && userInformation?.Role === 'reseller' ? (
+    <GlobalLoader loading={cacheFlowLoading}>
+      {isSubscribed &&
+      userInformation?.Role === 'reseller' &&
+      (userInformation?.DealReg || userInformation?.QuoteAI) ? (
         <Tag
           style={{
             display: 'flex',
@@ -107,8 +112,49 @@ const Dashboard = () => {
             </Col>
           </Row>
         </Tag>
-      ) : userInformation?.Role === 'superAdmin' ? (
-        <> Dashboard</>
+      ) : !userInformation?.DealReg && !userInformation?.QuoteAI ? (
+        <Tag
+          style={{
+            display: 'flex',
+            padding: '20px',
+            borderRadius: '4px',
+            border: `1px solid ${token?.colorSuccess}`,
+          }}
+          color="success"
+        >
+          <Row justify="space-between" style={{width: '100%'}} align="middle">
+            <Col span={12}>
+              <>
+                <Avatar
+                  size={24}
+                  style={{
+                    marginTop: '-12px',
+                    marginRight: '5px',
+                    background: 'none',
+                  }}
+                  icon={
+                    <CheckBadgeIcon width={24} color={token?.colorSuccess} />
+                  }
+                />
+
+                <Space direction="vertical" size={0}>
+                  <Typography color={token?.colorSuccess} name="Heading 3/Bold">
+                    Subscribed Organization
+                  </Typography>
+                  <Typography
+                    color={token?.colorSuccess}
+                    name="Body 3/Medium"
+                    as="span"
+                  >
+                    Our organization holds an active subscription. To gain
+                    access to the quote and deal registration features, please
+                    contact the organizational team or the admin!
+                  </Typography>
+                </Space>
+              </>
+            </Col>
+          </Row>
+        </Tag>
       ) : (
         <>
           <Space direction="vertical" size={24}>
@@ -316,7 +362,7 @@ const Dashboard = () => {
         primaryButtonText="Send Query"
         footerPadding={30}
       />
-    </>
+    </GlobalLoader>
   );
 };
 

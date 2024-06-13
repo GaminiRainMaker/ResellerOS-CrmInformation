@@ -25,13 +25,13 @@ const OsUpload: React.FC<any> = ({
   addQuoteLineItem,
   form,
   cardLoading,
-  rowSelection,
   setShowToggleTable,
   showToggleTable,
   Quotecolumns,
   existingQuoteId,
   setExistingQuoteId,
   isGenerateQuote,
+  quoteDetails,
 }) => {
   const [token] = useThemeToken();
   const [fileList, setFileList] = useState([]);
@@ -47,6 +47,16 @@ const OsUpload: React.FC<any> = ({
     }
     setFileList(newrrr);
   }, [uploadFileData]);
+
+  useEffect(() => {
+    if (quoteDetails && Object.keys(quoteDetails).length > 0) {
+      form?.setFieldsValue({
+        customer_id: quoteDetails.customer_id,
+        opportunity_id: quoteDetails.opportunity_id,
+      });
+      setCustomerValue(quoteDetails.customer_id);
+    }
+  }, [quoteDetails]);
 
   const onFinish = async () => {
     const customerId = form.getFieldValue('customer_id');
@@ -86,6 +96,12 @@ const OsUpload: React.FC<any> = ({
     if (!checked) {
       setExistingQuoteId(0);
     }
+  };
+
+  const rowSelection = {
+    onChange: (selectedRowKeys: any) => {
+      setExistingQuoteId(Number(selectedRowKeys));
+    },
   };
 
   return (
@@ -139,13 +155,14 @@ const OsUpload: React.FC<any> = ({
             )}
           </>
         )}
-        {!existingQuoteId && (
-          <Form
-            layout="vertical"
-            requiredMark={false}
-            form={form}
-            onFinish={onFinish}
-          >
+
+        <Form
+          layout="vertical"
+          requiredMark={false}
+          form={form}
+          onFinish={onFinish}
+        >
+          {!existingQuoteId && (
             <Row gutter={[16, 16]}>
               <Col sm={24} md={12}>
                 <OsCustomerSelect
@@ -163,8 +180,8 @@ const OsUpload: React.FC<any> = ({
                 />
               </Col>
             </Row>
-          </Form>
-        )}
+          )}
+        </Form>
       </Space>
     </GlobalLoader>
   );
