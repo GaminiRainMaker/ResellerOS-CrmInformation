@@ -483,7 +483,7 @@ const GenerateQuote: React.FC = () => {
                 clickHandler={() => {
                   if (quoteFileData?.length > 0) {
                     notification.open({
-                      message: 'Please verify the Files first.',
+                      message: 'Please Verify All the Files first.',
                       type: 'info',
                     });
                     return;
@@ -500,7 +500,7 @@ const GenerateQuote: React.FC = () => {
                 clickHandler={() => {
                   if (quoteFileData?.length > 0) {
                     notification.open({
-                      message: 'Please verify the Files first.',
+                      message: 'Please Verify All the Files first.',
                       type: 'info',
                     });
                     return;
@@ -517,6 +517,7 @@ const GenerateQuote: React.FC = () => {
                 isGenerateQuote
                 existingGenerateQuoteId={Number(getQuoteID)}
                 quoteDetails={objectForSyncingValues}
+                isGenerateQuotePage
               />
               <OsButton
                 loading={
