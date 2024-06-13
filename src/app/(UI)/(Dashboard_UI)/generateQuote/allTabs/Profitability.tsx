@@ -238,7 +238,7 @@ const Profitability: FC<any> = ({
           <OsInputNumber
             // defaultValue={updatedValue}
             value={bundleDatass ? updatedValue : text}
-            disabled={renderEditableInput('Quantity')}
+            disabled={bundleDatass ? true : renderEditableInput('Quantity')}
             style={{
               height: '36px',
             }}
@@ -302,7 +302,7 @@ const Profitability: FC<any> = ({
         return (
           <OsInput
             type="number"
-            disabled={renderEditableInput('MSRP ($)')}
+            disabled={bundleDatass ? true : renderEditableInput('MSRP ($)')}
             style={{
               height: '36px',
               borderRadius: '10px',
@@ -368,7 +368,7 @@ const Profitability: FC<any> = ({
               height: '36px',
             }}
             type="number"
-            disabled={renderEditableInput('Cost ($)')}
+            disabled={bundleDatass ? true : renderEditableInput('Cost ($)')}
             value={bundleDatass ? updatedValue : text ?? 0.0}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
@@ -429,7 +429,8 @@ const Profitability: FC<any> = ({
         return {
           children: (
             <CommonSelect
-              disabled={renderEditableInput('Product Family')}
+              disabled={
+                renderEditableInput('Product Family')}
               allowClear
               style={{width: '200px'}}
               placeholder="Select"
