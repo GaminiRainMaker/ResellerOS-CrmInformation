@@ -54,11 +54,12 @@ const UpdatingLineItems: FC<UpdateLineItemsInterFace> = ({
       is_editable: match ? match.is_editable : false,
     };
   });
+  const editableFieldOptions = updatedFieldOptions?.filter(
+    (option) => option?.is_editable,
+  );
 
   const [finalFieldOption, setFinalFieldOption] =
-    useState<any>(updatedFieldOptions);
-
-  console.log('tableColumnDataShow', finalFieldOption);
+    useState<any>(editableFieldOptions);
 
   const updateFieldOptions = () => {
     const updatedOptions = finalFieldOption?.filter(
