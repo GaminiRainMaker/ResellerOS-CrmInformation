@@ -863,6 +863,7 @@ const Profitability: FC<any> = ({
             </>
           ) : (
             <>
+              {/* {showTable && ( */}
               <OsTableWithOutDrag
                 loading={loading}
                 columns={finalProfitTableCol}
@@ -876,6 +877,7 @@ const Profitability: FC<any> = ({
                 }}
                 locale={locale}
               />
+              {/* )} */}
             </>
           )}
         </>
