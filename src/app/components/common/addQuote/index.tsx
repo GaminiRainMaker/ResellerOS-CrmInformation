@@ -43,6 +43,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
   isGenerateQuote,
   existingGenerateQuoteId,
   quoteDetails,
+  isGenerateQuotePage = false
 }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -330,6 +331,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
     setUploadFileData([]);
     if (singleQuote || updatedArr?.length === 1) {
       router.push(`/generateQuote?id=${quotesArr[0]?.id}`);
+      if(isGenerateQuotePage){
+        location.reload();
+      }
     }
     form.resetFields(['customer_id', 'opportunity_id']);
   };

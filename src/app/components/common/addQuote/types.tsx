@@ -15,4 +15,5 @@ export interface AddQuoteInterface {
   Quotecolumns?: any;
   existingGenerateQuoteId?: number;
   quoteDetails?: any;
+  isGenerateQuotePage?: boolean;
 }

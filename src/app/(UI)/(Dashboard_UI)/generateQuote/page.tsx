@@ -517,6 +517,7 @@ const GenerateQuote: React.FC = () => {
                 isGenerateQuote
                 existingGenerateQuoteId={Number(getQuoteID)}
                 quoteDetails={objectForSyncingValues}
+                isGenerateQuotePage
               />
               <OsButton
                 loading={
