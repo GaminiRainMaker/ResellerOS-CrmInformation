@@ -223,152 +223,176 @@ const Profitability: FC<any> = ({
       title: 'Quantity',
       dataIndex: 'quantity',
       key: 'quantity',
-      render: (text: string, record: any) => (
-        <OsInputNumber
-          disabled={renderEditableInput('Quantity')}
-          style={{
-            height: '36px',
-          }}
-          type="number"
-          min={1}
-          value={text}
-          onChange={(v) => {
-            setProfitabilityData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {...prevItem, quantity: v};
-                }
-                return prevItem;
-              }),
-            );
+      render: (text: string, record: any) => {
+        let bundleDatass = bundleData?.find(
+          (items: any) => items?.id === record?.bundle_id,
+        );
 
-            setProfitabilityData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (record?.id === prevItem?.id) {
-                  const rowId = record?.id;
-                  const result: any = calculateProfitabilityData(
-                    prevItem?.quantity,
-                    prevItem?.pricing_method,
-                    useRemoveDollarAndCommahook(prevItem?.line_amount),
-                    useRemoveDollarAndCommahook(prevItem?.adjusted_price),
-                    useRemoveDollarAndCommahook(prevItem?.list_price),
-                  );
-                  return {
-                    ...prevItem,
-                    unit_price: result.unitPrice,
-                    exit_price: result.exitPrice,
-                    gross_profit: result.grossProfit,
-                    gross_profit_percentage: result.grossProfitPercentage,
-                    rowId,
-                  };
-                }
-                return prevItem;
-              }),
-            );
-          }}
-        />
-      ),
+        let updatedValue = bundleDatass?.quantity * record?.quantity;
+        return (
+          // bundleData
+          <OsInputNumber
+            disabled={renderEditableInput('Quantity')}
+            style={{
+              height: '36px',
+            }}
+            type="number"
+            min={1}
+            value={updatedValue}
+            onChange={(v) => {
+              setProfitabilityData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (prevItem.id === record?.id) {
+                    return {...prevItem, quantity: v};
+                  }
+                  return prevItem;
+                }),
+              );
+
+              setProfitabilityData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (record?.id === prevItem?.id) {
+                    const rowId = record?.id;
+                    const result: any = calculateProfitabilityData(
+                      prevItem?.quantity,
+                      prevItem?.pricing_method,
+                      useRemoveDollarAndCommahook(prevItem?.line_amount),
+                      useRemoveDollarAndCommahook(prevItem?.adjusted_price),
+                      useRemoveDollarAndCommahook(prevItem?.list_price),
+                    );
+                    return {
+                      ...prevItem,
+                      unit_price: result.unitPrice,
+                      exit_price: result.exitPrice,
+                      gross_profit: result.grossProfit,
+                      gross_profit_percentage: result.grossProfitPercentage,
+                      rowId,
+                    };
+                  }
+                  return prevItem;
+                }),
+              );
+            }}
+          />
+        );
+      },
       width: 120,
     },
     {
       title: 'MSRP ($)',
       dataIndex: 'list_price',
       key: 'list_price',
-      render: (text: string, record: any) => (
-        <OsInput
-          type="number"
-          disabled={renderEditableInput('MSRP ($)')}
-          style={{
-            height: '36px',
-            borderRadius: '10px',
-          }}
-          value={text}
-          onChange={(v) => {
-            setProfitabilityData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {...prevItem, list_price: v.target.value};
-                }
-                return prevItem;
-              }),
-            );
+      render: (text: string, record: any) => {
+        let bundleDatass = bundleData?.find(
+          (items: any) => items?.id === record?.bundle_id,
+        );
 
-            setProfitabilityData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (record?.id === prevItem?.id) {
-                  const rowId = record?.id;
-                  const result: any = calculateProfitabilityData(
-                    prevItem?.quantity,
-                    prevItem?.pricing_method,
-                    useRemoveDollarAndCommahook(prevItem?.line_amount),
-                    useRemoveDollarAndCommahook(prevItem?.adjusted_price),
-                    useRemoveDollarAndCommahook(prevItem?.list_price),
-                  );
-                  return {
-                    ...prevItem,
-                    unit_price: result.unitPrice,
-                    exit_price: result.exitPrice,
-                    gross_profit: result.grossProfit,
-                    gross_profit_percentage: result.grossProfitPercentage,
-                    rowId,
-                  };
-                }
-                return prevItem;
-              }),
-            );
-          }}
-        />
-      ),
+        let updatedValue = bundleDatass?.quantity * record?.list_price;
+
+        return (
+          <OsInput
+            type="number"
+            disabled={renderEditableInput('MSRP ($)')}
+            style={{
+              height: '36px',
+              borderRadius: '10px',
+            }}
+            value={updatedValue}
+            onChange={(v) => {
+              setProfitabilityData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (prevItem.id === record?.id) {
+                    return {...prevItem, list_price: v.target.value};
+                  }
+                  return prevItem;
+                }),
+              );
+
+              setProfitabilityData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (record?.id === prevItem?.id) {
+                    const rowId = record?.id;
+                    const result: any = calculateProfitabilityData(
+                      prevItem?.quantity,
+                      prevItem?.pricing_method,
+                      useRemoveDollarAndCommahook(prevItem?.line_amount),
+                      useRemoveDollarAndCommahook(prevItem?.adjusted_price),
+                      useRemoveDollarAndCommahook(prevItem?.list_price),
+                    );
+                    return {
+                      ...prevItem,
+                      unit_price: result.unitPrice,
+                      exit_price: result.exitPrice,
+                      gross_profit: result.grossProfit,
+                      gross_profit_percentage: result.grossProfitPercentage,
+                      rowId,
+                    };
+                  }
+                  return prevItem;
+                }),
+              );
+            }}
+          />
+        );
+      },
       width: 150,
     },
     {
       title: 'Cost ($)',
       dataIndex: 'adjusted_price',
       key: 'adjusted_price ',
-      render: (text: string, record: any) => (
-        <OsInput
-          style={{
-            height: '36px',
-          }}
-          type="number"
-          disabled={renderEditableInput('Cost ($)')}
-          value={text ?? 0.0}
-          onChange={(v) => {
-            setProfitabilityData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {...prevItem, adjusted_price: v.target.value};
-                }
-                return prevItem;
-              }),
-            );
+      render: (text: string, record: any) => {
+        let bundleDatass = bundleData?.find(
+          (items: any) => items?.id === record?.bundle_id,
+        );
 
-            setProfitabilityData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (record?.id === prevItem?.id) {
-                  const rowId = record?.id;
-                  const result: any = calculateProfitabilityData(
-                    prevItem?.quantity,
-                    prevItem?.pricing_method,
-                    useRemoveDollarAndCommahook(prevItem?.line_amount),
-                    useRemoveDollarAndCommahook(prevItem?.adjusted_price),
-                    useRemoveDollarAndCommahook(prevItem?.list_price),
-                  );
-                  return {
-                    ...prevItem,
-                    unit_price: result.unitPrice,
-                    exit_price: result.exitPrice,
-                    gross_profit: result.grossProfit,
-                    gross_profit_percentage: result.grossProfitPercentage,
-                    rowId,
-                  };
-                }
-                return prevItem;
-              }),
-            );
-          }}
-        />
-      ),
+        let updatedValue = bundleDatass?.quantity * record?.adjusted_price;
+
+        return (
+          <OsInput
+            style={{
+              height: '36px',
+            }}
+            type="number"
+            disabled={renderEditableInput('Cost ($)')}
+            value={updatedValue ?? 0.0}
+            onChange={(v) => {
+              setProfitabilityData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (prevItem.id === record?.id) {
+                    return {...prevItem, adjusted_price: v.target.value};
+                  }
+                  return prevItem;
+                }),
+              );
+
+              setProfitabilityData((prev: any) =>
+                prev.map((prevItem: any) => {
+                  if (record?.id === prevItem?.id) {
+                    const rowId = record?.id;
+                    const result: any = calculateProfitabilityData(
+                      prevItem?.quantity,
+                      prevItem?.pricing_method,
+                      useRemoveDollarAndCommahook(prevItem?.line_amount),
+                      useRemoveDollarAndCommahook(prevItem?.adjusted_price),
+                      useRemoveDollarAndCommahook(prevItem?.list_price),
+                    );
+                    return {
+                      ...prevItem,
+                      unit_price: result.unitPrice,
+                      exit_price: result.exitPrice,
+                      gross_profit: result.grossProfit,
+                      gross_profit_percentage: result.grossProfitPercentage,
+                      rowId,
+                    };
+                  }
+                  return prevItem;
+                }),
+              );
+            }}
+          />
+        );
+      },
       width: 150,
     },
     {
@@ -690,7 +714,6 @@ const Profitability: FC<any> = ({
       });
     }
   }, [updatedData]);
-  console.log('bundleDatabundleData', bundleData, profitabilityData);
 
   return (
     <>
