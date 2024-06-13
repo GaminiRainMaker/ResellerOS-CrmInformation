@@ -37,7 +37,7 @@ import {formbuildernewObject} from '@/app/utils/base';
 import {TrashIcon} from '@heroicons/react/24/outline';
 import {Checkbox, Radio, Switch, TimePicker, notification} from 'antd';
 import moment from 'moment';
-import {useRouter, useSearchParams} from 'next/navigation';
+import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
 import {
   getPartnerProgramById,
@@ -66,6 +66,10 @@ const FormBuilderMain: React.FC<any> = ({
   const dispatch = useAppDispatch();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+  // dealRegDetail
+
+  let pathnameForFlow = pathname === '/dealRegDetail';
   const getPartnerProgramID = searchParams.get('id');
   const [holdelSelectedValue, setHoldSelectedValue] = useState<any>();
   const [radioValue, setRadioValue] = useState<any>();
@@ -92,6 +96,7 @@ const FormBuilderMain: React.FC<any> = ({
     if (!openPreviewModal && getPartnerProgramID) {
       dispatch(getPartnerProgramById(Number(getPartnerProgramID)))?.then(
         (payload: any) => {
+          console.log('payloadpayload', payload);
           if (payload?.payload?.form_data?.[0]?.[0]) {
             const formData: any = JSON?.parse(
               payload?.payload?.form_data?.[0]?.[0],
@@ -198,6 +203,8 @@ const FormBuilderMain: React.FC<any> = ({
       setCollapsed(false);
     }
   }, [cartItems]);
+
+  console.log('32432423', partnerData);
 
   return (
     <>
@@ -441,11 +448,13 @@ const FormBuilderMain: React.FC<any> = ({
                                   }}
                                   defaultValue={itemCon?.value}
                                   onChange={(e: any) => {
-                                    updateTheValues(
-                                      e?.target?.value,
-                                      Sectidx,
-                                      ItemConindex,
-                                    );
+                                    if (pathnameForFlow) {
+                                      updateTheValues(
+                                        e?.target?.value,
+                                        Sectidx,
+                                        ItemConindex,
+                                      );
+                                    }
                                   }}
                                 />
                               ) : itemCon?.name === 'Currency' ? (
@@ -460,11 +469,13 @@ const FormBuilderMain: React.FC<any> = ({
                                         : itemCon?.value
                                     }
                                     onChange={(e: any) => {
-                                      updateTheValues(
-                                        e?.target?.value,
-                                        Sectidx,
-                                        ItemConindex,
-                                      );
+                                      if (pathnameForFlow) {
+                                        updateTheValues(
+                                          e?.target?.value,
+                                          Sectidx,
+                                          ItemConindex,
+                                        );
+                                      }
                                     }}
                                   />
                                 </>
@@ -474,12 +485,13 @@ const FormBuilderMain: React.FC<any> = ({
                                     format={itemCon?.dateformat}
                                     // value={newDateeDaTa}
                                     onChange={(e: any) => {
-                                      updateTheValues(
-                                        // moment(e).format('MM-DD-YYYY'),
-                                        e,
-                                        Sectidx,
-                                        ItemConindex,
-                                      );
+                                      if (pathnameForFlow) {
+                                        updateTheValues(
+                                          e,
+                                          Sectidx,
+                                          ItemConindex,
+                                        );
+                                      }
                                     }}
                                   />
                                 </>
@@ -490,11 +502,13 @@ const FormBuilderMain: React.FC<any> = ({
                                     id="Contact"
                                     value={itemCon?.value}
                                     onChange={(e: any) => {
-                                      updateTheValues(
-                                        e?.target?.value,
-                                        Sectidx,
-                                        ItemConindex,
-                                      );
+                                      if (pathnameForFlow) {
+                                        updateTheValues(
+                                          e?.target?.value,
+                                          Sectidx,
+                                          ItemConindex,
+                                        );
+                                      }
                                     }}
                                     mask={itemCon?.dataformat}
                                     limitMaxLength
@@ -510,11 +524,13 @@ const FormBuilderMain: React.FC<any> = ({
                                   suffix={<MailOutlined />}
                                   defaultValue={itemCon?.value}
                                   onChange={(e: any) => {
-                                    updateTheValues(
-                                      e?.target?.value,
-                                      Sectidx,
-                                      ItemConindex,
-                                    );
+                                    if (pathnameForFlow) {
+                                      updateTheValues(
+                                        e?.target?.value,
+                                        Sectidx,
+                                        ItemConindex,
+                                      );
+                                    }
                                   }}
                                 />
                               ) : (
@@ -522,11 +538,13 @@ const FormBuilderMain: React.FC<any> = ({
                                   type={itemCon?.type}
                                   defaultValue={itemCon?.value}
                                   onChange={(e: any) => {
-                                    updateTheValues(
-                                      e?.target?.value,
-                                      Sectidx,
-                                      ItemConindex,
-                                    );
+                                    if (pathnameForFlow) {
+                                      updateTheValues(
+                                        e?.target?.value,
+                                        Sectidx,
+                                        ItemConindex,
+                                      );
+                                    }
                                   }}
                                 />
                               )}{' '}
@@ -598,7 +616,9 @@ const FormBuilderMain: React.FC<any> = ({
                                 mode={itemCon?.type}
                                 defaultValue={itemCon?.value}
                                 onChange={(e: any) => {
-                                  updateTheValues(e, Sectidx, ItemConindex);
+                                  if (pathnameForFlow) {
+                                    updateTheValues(e, Sectidx, ItemConindex);
+                                  }
                                 }}
                               />
                               {item?.content?.length - 1 === ItemConindex &&
@@ -779,20 +799,24 @@ const FormBuilderMain: React.FC<any> = ({
                                                       ? [...holdelSelectedValue]
                                                       : [];
                                                   temp?.push(e?.[0]);
-                                                  updateTheValues(
-                                                    temp,
-                                                    Sectidx,
-                                                    ItemConindex,
-                                                  );
+                                                  if (pathnameForFlow) {
+                                                    updateTheValues(
+                                                      temp,
+                                                      Sectidx,
+                                                      ItemConindex,
+                                                    );
+                                                  }
 
                                                   setHoldSelectedValue(temp);
                                                 } else {
                                                   setHoldSelectedValue(e?.[0]);
-                                                  updateTheValues(
-                                                    e?.[0],
-                                                    Sectidx,
-                                                    ItemConindex,
-                                                  );
+                                                  if (pathnameForFlow) {
+                                                    updateTheValues(
+                                                      e?.[0],
+                                                      Sectidx,
+                                                      ItemConindex,
+                                                    );
+                                                  }
                                                 }
                                               }}
                                               value={holdelSelectedValue}
