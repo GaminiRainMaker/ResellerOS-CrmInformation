@@ -197,13 +197,13 @@ const Profitability: FC<any> = ({
       title: '#Line',
       dataIndex: 'line_number',
       key: 'line_number',
-      render: (text: string) => (
+      render: (text: string, record: any, index: number) => (
         <OsInput
           disabled={renderEditableInput('#Line')}
           style={{
             height: '36px',
           }}
-          value={text}
+          value={index + 1}
         />
       ),
       width: 111,
@@ -424,8 +424,7 @@ const Profitability: FC<any> = ({
         return {
           children: (
             <CommonSelect
-              disabled={
-                renderEditableInput('Product Family')}
+              disabled={renderEditableInput('Product Family')}
               allowClear
               style={{width: '200px'}}
               placeholder="Select"
