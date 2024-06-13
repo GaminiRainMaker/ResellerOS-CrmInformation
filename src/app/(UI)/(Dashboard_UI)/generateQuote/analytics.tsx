@@ -22,7 +22,6 @@ const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
   const [token] = useThemeToken();
   const [totalValues, setTotalValues] = useState<any>();
   const [totalRebateAmount, setTotalRebateAmount] = useState<any>();
-  // const [totalCost, setTotalCost] = useState<number>(0);
   const {profitability} = useAppSelector((state) => state.profitability);
   const {quoteLineItemByQuoteID} = useAppSelector(
     (state) => state.quoteLineItem,
@@ -46,17 +45,12 @@ const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
 
   useEffect(() => {
     let grossProfit: any = 0;
-    let grossProfitPercentage: any = 0;
+    let grossProfitPercentage: number = 0;
     let exitPrice: number = 0;
     let adjustedPrice: number = 0;
     profitability?.map((item: any) => {
       if (item?.gross_profit) {
         grossProfit += item?.gross_profit ? item?.gross_profit : 0;
-      }
-      if (item?.gross_profit_percentage) {
-        grossProfitPercentage += item?.gross_profit_percentage
-          ? item?.gross_profit_percentage
-          : 0;
       }
       if (item?.exit_price) {
         exitPrice += item?.exit_price ? item?.exit_price : 0;
@@ -69,6 +63,9 @@ const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
         adjustedPrice += temp;
       }
     });
+    if (exitPrice > 0) {
+      grossProfitPercentage = (grossProfit / exitPrice) * 100;
+    }
     setTotalValues({
       GrossProfit: grossProfit,
       GrossProfitPercentage: grossProfitPercentage,
