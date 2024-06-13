@@ -59,6 +59,8 @@ const Profitability: FC<any> = ({
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
     (state) => state.profitability,
   );
+  const [triggerUpdate, setTriggerUpdate] = useState(false);
+
   const debouncedProfitabilityData = useDebounceHook(profitabilityData, 1000);
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
@@ -192,6 +194,44 @@ const Profitability: FC<any> = ({
     },
   };
 
+  const handleKeyDown = (e: any) => {
+    if (e.key === 'Enter') {
+      setTriggerUpdate((prev) => !prev);
+    }
+  };
+
+  const handleBlur = () => {
+    setTriggerUpdate((prev) => !prev);
+  };
+
+  useEffect(() => {
+    profitabilityData?.map((profitabilityDataItem: any) => {
+      if (profitabilityDataItem?.rowId === profitabilityDataItem?.id) {
+        const obj = {
+          id: profitabilityDataItem?.id,
+          line_number: profitabilityDataItem?.line_number,
+          quantity: profitabilityDataItem?.quantity,
+          pricing_method: profitabilityDataItem?.pricing_method,
+          line_amount: profitabilityDataItem?.line_amount,
+          list_price: profitabilityDataItem?.list_price,
+          unit_price: profitabilityDataItem?.unit_price,
+          exit_price: profitabilityDataItem?.exit_price,
+          gross_profit: profitabilityDataItem?.gross_profit,
+          gross_profit_percentage:
+            profitabilityDataItem?.gross_profit_percentage,
+          adjusted_price: profitabilityDataItem?.adjusted_price,
+        };
+        dispatch(updateProfitabilityById({...obj})).then((d: any) => {
+          if (d?.payload) {
+            dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+          }
+        });
+      }
+    });
+
+    dispatch(setProfitability(profitabilityData));
+  }, [triggerUpdate]);
+
   const ProfitabilityQuoteLineItemcolumns = [
     {
       title: '#Line',
@@ -228,12 +268,12 @@ const Profitability: FC<any> = ({
         } else {
           updatedValue = record?.quantity;
         }
-
         return (
           <OsInputNumber
-            // defaultValue={updatedValue}
             value={bundleDatass ? updatedValue : text}
             disabled={bundleDatass ? true : renderEditableInput('Quantity')}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             style={{
               height: '36px',
             }}
@@ -302,6 +342,8 @@ const Profitability: FC<any> = ({
               height: '36px',
               borderRadius: '10px',
             }}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             value={bundleDatass ? updatedValue : text}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
@@ -363,6 +405,8 @@ const Profitability: FC<any> = ({
               height: '36px',
             }}
             type="number"
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
             disabled={bundleDatass ? true : renderEditableInput('Cost ($)')}
             value={bundleDatass ? updatedValue : text ?? 0.0}
             onChange={(v) => {
@@ -424,8 +468,9 @@ const Profitability: FC<any> = ({
         return {
           children: (
             <CommonSelect
-              disabled={
-                renderEditableInput('Product Family')}
+              onKeyDown={handleKeyDown}
+              onBlur={handleBlur}
+              disabled={renderEditableInput('Product Family')}
               allowClear
               style={{width: '200px'}}
               placeholder="Select"
@@ -447,6 +492,8 @@ const Profitability: FC<any> = ({
       width: 200,
       render: (text: string, record: any) => (
         <CommonSelect
+          onKeyDown={handleKeyDown}
+          onBlur={handleBlur}
           allowClear
           disabled={renderEditableInput('Pricing Method')}
           style={{width: '100%'}}
@@ -497,6 +544,8 @@ const Profitability: FC<any> = ({
       width: 150,
       render: (text: string, record: any) => (
         <OsInput
+          onKeyDown={handleKeyDown}
+          onBlur={handleBlur}
           disabled={renderEditableInput('Amount')}
           style={{
             height: '36px',
@@ -547,7 +596,7 @@ const Profitability: FC<any> = ({
       width: 150,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
-          {text ? `$${abbreviate(text ?? 0)}` : 0}
+          {text ? `${abbreviate(text ?? 0)}` : 0}
         </Typography>
       ),
     },
@@ -558,7 +607,7 @@ const Profitability: FC<any> = ({
       width: 150,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
-          {text ? `$${abbreviate(text ?? 0)}` : 0}
+          {text ? `${abbreviate(text ?? 0)}` : 0}
         </Typography>
       ),
     },
@@ -569,7 +618,7 @@ const Profitability: FC<any> = ({
       width: 150,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
-          {text ? `$${abbreviate(text ?? '--')}` : '--'}
+          {text ? `${abbreviate(text ?? '--')}` : 0}
         </Typography>
       ),
     },
@@ -580,7 +629,7 @@ const Profitability: FC<any> = ({
       width: 150,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
-          {text ? `${abbreviate(text ?? '--')} %` : '--'}
+          {text ? `${abbreviate(text ?? '--')}` : '--'}
         </Typography>
       ),
     },
@@ -637,34 +686,6 @@ const Profitability: FC<any> = ({
       setFinalProfitTableCol(newArr);
     }
   }, [bundleData]);
-
-  useEffect(() => {
-    debouncedProfitabilityData?.map((profitabilityDataItem: any) => {
-      if (profitabilityDataItem?.rowId === profitabilityDataItem?.id) {
-        const obj = {
-          id: profitabilityDataItem?.id,
-          line_number: profitabilityDataItem?.line_number,
-          quantity: profitabilityDataItem?.quantity,
-          pricing_method: profitabilityDataItem?.pricing_method,
-          line_amount: profitabilityDataItem?.line_amount,
-          list_price: profitabilityDataItem?.list_price,
-          unit_price: profitabilityDataItem?.unit_price,
-          exit_price: profitabilityDataItem?.exit_price,
-          gross_profit: profitabilityDataItem?.gross_profit,
-          gross_profit_percentage:
-            profitabilityDataItem?.gross_profit_percentage,
-          adjusted_price: profitabilityDataItem?.adjusted_price,
-        };
-        dispatch(updateProfitabilityById({...obj})).then((d: any) => {
-          if (d?.payload) {
-            dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
-          }
-        });
-      }
-    });
-
-    dispatch(setProfitability(debouncedProfitabilityData));
-  }, [debouncedProfitabilityData]);
 
   useEffect(() => {
     dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
