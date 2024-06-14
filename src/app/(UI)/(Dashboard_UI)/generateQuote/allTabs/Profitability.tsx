@@ -55,7 +55,6 @@ const Profitability: FC<any> = ({
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const [familyFilter, setFamilyFilter] = useState<any>([]);
-  const [showTable, setShowTable] = useState<boolean>(true);
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
     (state) => state.profitability,
   );
@@ -88,6 +87,7 @@ const Profitability: FC<any> = ({
     );
 
     setProfitabilityData(filteredDataa);
+    dispatch(setProfitability(filteredDataa));
   }, [profitabilityDataByQuoteId]);
 
   useEffect(() => {
@@ -661,6 +661,7 @@ const Profitability: FC<any> = ({
     });
     setFinalProfitTableCol(newArr);
   }, [tableColumnDataShow]);
+
   useEffect(() => {
     if (bundleData && bundleData?.length > 0) {
       const newArr: any = [];
@@ -743,35 +744,11 @@ const Profitability: FC<any> = ({
     setUpdatedData(finalData);
   };
 
-  // useEffect(() => {
-  //   if (updatedData?.length > 0) {
-  //     updatedData?.forEach((item: any) => {
-  //       dispatch(updateProfitabilityById(item));
-  //     });
-  //     setProfabilityUpdationState([
-  //       {
-  //         id: 1,
-  //         field: null,
-  //         value: '',
-  //         label: '',
-  //       },
-  //     ]);
-  //     setShowUpdateLineItemModal(false);
-  //     dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
-  //       if (d?.payload) {
-  //         setSelectedRowData([]);
-  //         setSelectedRowIds([]);
-  //         setProfitabilityData(d?.payload);
-  //       }
-  //     });
-  //   }
-  // }, [updatedData]);
-
   useEffect(() => {
     const updateDataAndFetchProfitability = async () => {
       if (updatedData?.length > 0) {
         await Promise.all(
-          updatedData.map((item: any) =>
+          updatedData?.map((item: any) =>
             dispatch(updateProfitabilityById(item)),
           ),
         );
@@ -795,7 +772,7 @@ const Profitability: FC<any> = ({
           setSelectedRowData([]);
           setSelectedRowIds([]);
           setProfitabilityData(d);
-          // dispatch(setProfitability(d));
+          dispatch(setProfitability(d));
         }
       }
     };
