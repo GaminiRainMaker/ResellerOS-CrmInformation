@@ -540,7 +540,7 @@ const Profitability: FC<any> = ({
           disabled={renderEditableInput('Pricing Method')}
           style={{width: '100%'}}
           placeholder="Select"
-          defaultValue={text}
+          value={text}
           onChange={(v) => {
             setProfitabilityData((prev: any) =>
               prev.map((prevItem: any) => {
@@ -729,7 +729,7 @@ const Profitability: FC<any> = ({
       });
       setFinalProfitTableCol(newArr);
     }
-  }, [bundleData]);
+  }, [newDataForBundle, newDataForProfit]);
 
   useEffect(() => {
     if (activeTab === '2') {
@@ -823,7 +823,7 @@ const Profitability: FC<any> = ({
         }
       }
     };
-
+    dispatch(getAllBundle(getQuoteID));
     updateDataAndFetchProfitability();
   }, [updatedData, dispatch, getQuoteID]);
   return (
