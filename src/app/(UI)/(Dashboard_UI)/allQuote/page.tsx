@@ -38,12 +38,14 @@ const AllQuote: React.FC = () => {
   const {loading, filteredByDate: filteredData} = useAppSelector(
     (state) => state.quote,
   );
+  const {userInformation} = useAppSelector((state) => state.user);
   const router = useRouter();
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [quoteData, setQuoteData] = useState<React.Key[]>([]);
   const [deletedQuote, setDeletedQuote] = useState<React.Key[]>([]);
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
   const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
+  const [emptyContainer, setEmptyContainer] = useState<any>();
   const [fromToDates, setFromToDates] = useState({
     beforeDays: null,
     afterDays: null,
@@ -76,6 +78,25 @@ const AllQuote: React.FC = () => {
     }
   }, [filteredData]);
 
+  const locale = {
+    emptyText: (
+      <EmptyContainer
+        title="No Files"
+        buttonContainer={
+          <AddQuote
+            uploadFileData={uploadFileData}
+            setUploadFileData={setUploadFileData}
+            loading={loading}
+            buttonText="Add Quote"
+          />
+        }
+      />
+    ),
+  };
+  const localeforOtherStatus = {
+    emptyText: <EmptyContainer title="No Files" />,
+  };
+
   useEffect(() => {
     if (activeTab && quoteData.length > 0) {
       const quoteItems =
@@ -84,12 +105,14 @@ const AllQuote: React.FC = () => {
               item?.status?.includes('In Progress'),
             )
           : activeTab === '5'
-            ? quoteData?.filter((item: any) =>
-                item?.status?.includes('In Review'),
+            ? quoteData?.filter(
+                (item: any) => item?.approver_id === userInformation?.id,
               )
             : activeTab === '4'
-              ? quoteData?.filter((item: any) =>
-                  item?.status?.includes('Needs Review'),
+              ? quoteData?.filter(
+                  (item: any) =>
+                    item?.status?.includes('Needs Review') &&
+                    item?.completed_by === userInformation?.id,
                 )
               : activeTab === '1'
                 ? quoteData
@@ -107,6 +130,11 @@ const AllQuote: React.FC = () => {
                         )
                       : [];
       setActiveQuotes(quoteItems);
+      if (activeTab === '1' || activeTab === '2') {
+        setEmptyContainer(locale);
+      } else {
+        setEmptyContainer(localeforOtherStatus);
+      }
     } else {
       setActiveQuotes([]);
     }
@@ -141,6 +169,7 @@ const AllQuote: React.FC = () => {
     editQuote,
     setDeleteIds,
     setShowModalDelete,
+    activeTab
   );
 
   const markAsComplete = async () => {
@@ -153,22 +182,6 @@ const AllQuote: React.FC = () => {
       dispatch(getQuotesByDateFilter({}));
       setActiveTab('4');
     }
-  };
-
-  const locale = {
-    emptyText: (
-      <EmptyContainer
-        title="No Files"
-        buttonContainer={
-          <AddQuote
-            uploadFileData={uploadFileData}
-            setUploadFileData={setUploadFileData}
-            loading={loading}
-            buttonText="Add Quote"
-          />
-        }
-      />
-    ),
   };
 
   const dropDownItems = [
@@ -326,7 +339,7 @@ const AllQuote: React.FC = () => {
                     dataSource={activeQuotes}
                     scroll
                     loading={loading}
-                    locale={locale}
+                    locale={emptyContainer}
                     rowSelection={rowSelection}
                   />
                 ),

@@ -14,6 +14,7 @@ function getColumns(
     (value: SetStateAction<boolean>): void;
     (arg0: boolean): void;
   },
+  activeTab: any,
 ) {
   const columns = [
     {
@@ -31,6 +32,7 @@ function getColumns(
       width: 130,
       render: (text: string, record: any) => (
         <Typography
+          style={{color: token?.colorInfo}}
           hoverOnText
           name="Body 4/Regular"
           onClick={() => {
@@ -107,7 +109,7 @@ function getColumns(
       width: 187,
       render: (text: string) => (
         <div style={{display: 'flex', justifyContent: 'center'}}>
-          <OsStatusWrapper value={text} />
+          <OsStatusWrapper value={activeTab === '5' ? 'In Review' : text} />
         </div>
       ),
     },
@@ -126,15 +128,6 @@ function getColumns(
       width: 94,
       render: (text: string, record: any) => (
         <Space size={18}>
-          <EyeIcon
-            height={24}
-            width={24}
-            color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              editQuote(record.id);
-            }}
-          />
           <TrashIcon
             height={24}
             width={24}
