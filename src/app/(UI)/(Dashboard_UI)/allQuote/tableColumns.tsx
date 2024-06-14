@@ -31,6 +31,7 @@ function getColumns(
       width: 130,
       render: (text: string, record: any) => (
         <Typography
+          style={{color: token?.colorInfo}}
           hoverOnText
           name="Body 4/Regular"
           onClick={() => {
@@ -126,15 +127,6 @@ function getColumns(
       width: 94,
       render: (text: string, record: any) => (
         <Space size={18}>
-          <EyeIcon
-            height={24}
-            width={24}
-            color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              editQuote(record.id);
-            }}
-          />
           <TrashIcon
             height={24}
             width={24}
