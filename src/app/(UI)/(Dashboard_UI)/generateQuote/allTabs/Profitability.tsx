@@ -743,29 +743,65 @@ const Profitability: FC<any> = ({
     setUpdatedData(finalData);
   };
 
+  // useEffect(() => {
+  //   if (updatedData?.length > 0) {
+  //     updatedData?.forEach((item: any) => {
+  //       dispatch(updateProfitabilityById(item));
+  //     });
+  //     setProfabilityUpdationState([
+  //       {
+  //         id: 1,
+  //         field: null,
+  //         value: '',
+  //         label: '',
+  //       },
+  //     ]);
+  //     setShowUpdateLineItemModal(false);
+  //     dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
+  //       if (d?.payload) {
+  //         setSelectedRowData([]);
+  //         setSelectedRowIds([]);
+  //         setProfitabilityData(d?.payload);
+  //       }
+  //     });
+  //   }
+  // }, [updatedData]);
+
   useEffect(() => {
-    if (updatedData?.length > 0) {
-      updatedData?.forEach((item: any) => {
-        dispatch(updateProfitabilityById(item));
-      });
-      setProfabilityUpdationState([
-        {
-          id: 1,
-          field: null,
-          value: '',
-          label: '',
-        },
-      ]);
-      setShowUpdateLineItemModal(false);
-      dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
-        if (d?.payload) {
+    const updateDataAndFetchProfitability = async () => {
+      if (updatedData?.length > 0) {
+        await Promise.all(
+          updatedData.map((item: any) =>
+            dispatch(updateProfitabilityById(item)),
+          ),
+        );
+
+        setProfabilityUpdationState([
+          {
+            id: 1,
+            field: null,
+            value: '',
+            label: '',
+          },
+        ]);
+        setShowUpdateLineItemModal(false);
+
+        const response = await dispatch(
+          getProfitabilityByQuoteId(Number(getQuoteID)),
+        );
+        const d = response?.payload;
+
+        if (d) {
           setSelectedRowData([]);
           setSelectedRowIds([]);
-          setProfitabilityData(d?.payload);
+          setProfitabilityData(d);
+          // dispatch(setProfitability(d));
         }
-      });
-    }
-  }, [updatedData]);
+      }
+    };
+
+    updateDataAndFetchProfitability();
+  }, [updatedData, dispatch, getQuoteID]);
 
   return (
     <>
