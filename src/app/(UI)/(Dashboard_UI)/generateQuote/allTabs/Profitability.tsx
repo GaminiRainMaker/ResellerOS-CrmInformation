@@ -431,6 +431,7 @@ const Profitability: FC<any> = ({
       title: 'Cost ($)',
       dataIndex: 'adjusted_price',
       key: 'adjusted_price ',
+      sorter: (a: any, b: any) => a.adjusted_price - b.adjusted_price,
       render: (text: string, record: any) => {
         let bundleDatass = bundleData?.find(
           (items: any) => items?.id === record?.bundle_id,
@@ -810,6 +811,7 @@ const Profitability: FC<any> = ({
           setProfitabilityData(d?.payload);
         }
       });
+      dispatch(getAllBundle(getQuoteID));
     }
   }, [updatedData]);
 
