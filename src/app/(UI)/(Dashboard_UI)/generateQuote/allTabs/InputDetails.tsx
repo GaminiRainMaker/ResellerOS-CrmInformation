@@ -198,6 +198,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       title: 'Quantity',
       dataIndex: 'quantity',
       key: 'quantity',
+      sorter: (a: any, b: any) => a.quantity - b.quantity,
       render: (text: any, record: any) => (
         <Form.Item
           className="formmarginBottom"
@@ -242,10 +243,10 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       title: 'MSRP ($)',
       dataIndex: 'list_price',
       key: 'list_price',
+      sorter: (a: any, b: any) => a.list_price - b.list_price,
       width: 187,
       render: (text: number) => {
-        const value = useRemoveDollarAndCommahook(text);
-        console.log('valuevalue', value);
+        const value = text ? useRemoveDollarAndCommahook(text) : 0;
         return (
           <Typography name="Body 4/Medium">
             {`$ ${abbreviate(Number(value ?? 0))}`}
@@ -258,6 +259,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       title: 'Cost ($)',
       dataIndex: 'adjusted_price',
       key: 'adjusted_price',
+      sorter: (a: any, b: any) => a.adjusted_price - b.adjusted_price,
       width: 187,
       render: (text: any) => {
         const value = useRemoveDollarAndCommahook(text);
@@ -535,7 +537,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     );
     if (isState) {
       setConfirmedData(false);
-      dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
+      // dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
     }
     let newCount = countOfFiles - 1;
     setCountOFFiles(newCount);
