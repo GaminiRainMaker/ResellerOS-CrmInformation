@@ -468,11 +468,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       }
 
       item?.QuoteLineItems?.forEach((quoteLineItem: any) => {
-        let adjust = 3;
-        let quantity = 3;
-        // abbreviate(quoteLineItem?.adjusted_price ?? 0) *
-        // abbreviate(quoteLineItem?.quantity ?? 0),
-
         separatedData[fileName].quoteLineItems.push(quoteLineItem);
         separatedData[fileName].totalCount++;
         separatedData[fileName].totalAdjustedPrice += Number(
