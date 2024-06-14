@@ -506,24 +506,6 @@ const GenerateQuote: React.FC = () => {
                   setOpen(true);
                 }}
               />
-              <OsButton
-                loading={
-                  statusValue === 'In Progress' ? statusUpdateLoading : false
-                }
-                text="Save"
-                buttontype="SECONDARY"
-                clickHandler={() => {
-                  if (quoteFileData?.length > 0) {
-                    notification.open({
-                      message: 'Please Verify All the Files first.',
-                      type: 'info',
-                    });
-                    return;
-                  }
-                  setStatusValue('In Progress');
-                  commonUpdateCompleteAndDraftMethod('In Progress');
-                }}
-              />
               <AddQuote
                 loading={loading}
                 buttonText="Add Quote"

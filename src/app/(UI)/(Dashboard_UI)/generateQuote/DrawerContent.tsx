@@ -8,7 +8,10 @@ import OsInput from '@/app/components/common/os-input';
 import OsOpportunitySelect from '@/app/components/common/os-opportunity-select';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {quoteStatusOptions} from '@/app/utils/CONSTANTS';
+import {
+  quoteStatusOptions,
+  quoteReviewStatusOptions,
+} from '@/app/utils/CONSTANTS';
 import {formatDate} from '@/app/utils/base';
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
@@ -23,6 +26,7 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const getQuoteId = searchParams.get('id');
+  const getInReviewQuote = searchParams.get('inReviewQuote');
   const {data: dataAddress} = useAppSelector((state) => state.customer);
   const {quoteById, quoteByIdLoading} = useAppSelector((state) => state.quote);
   const [customerValue, setCustomerValue] = useState<number>(0);
@@ -187,32 +191,39 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
               name="status"
             >
               <CommonSelect
-                // eslint-disable-next-line no-unneeded-ternary
-                disabled
-                // disabled={profitabilityDataByQuoteId?.length > 0 ? false : true}
                 style={{width: '150px'}}
-                options={quoteStatusOptions}
+                options={
+                  getInReviewQuote === 'true'
+                    ? quoteReviewStatusOptions
+                    : quoteStatusOptions
+                }
               />
             </Form.Item>
           </Col>
 
           <Col span={24}>
             <Form.Item label="Quote Name" name="file_name">
-              <OsInput />
+              <OsInput disabled={getInReviewQuote === 'true' ? true : false} />
             </Form.Item>
 
             <OsCustomerSelect
               setCustomerValue={setCustomerValue}
               customerValue={customerValue}
+              isDisable={getInReviewQuote === 'true' ? true : false}
             />
 
-            <OsOpportunitySelect form={form} customerValue={customerValue} />
+            <OsOpportunitySelect
+              form={form}
+              customerValue={customerValue}
+              isDisable={getInReviewQuote === 'true' ? true : false}
+            />
 
             <Form.Item label="Contacts" name="contact_id">
               <CommonSelect
                 style={{width: '100%'}}
                 placeholder="Contacts"
                 options={billingOptionsData}
+                disabled={getInReviewQuote === 'true' ? true : false}
               />
             </Form.Item>
           </Col>

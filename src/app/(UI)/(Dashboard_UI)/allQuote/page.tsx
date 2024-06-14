@@ -117,12 +117,16 @@ const AllQuote: React.FC = () => {
               : activeTab === '1'
                 ? quoteData
                 : activeTab === '6'
-                  ? quoteData?.filter((item: any) =>
-                      item?.status?.includes('Approved'),
+                  ? quoteData?.filter(
+                      (item: any) =>
+                        item?.status?.includes('Approved') &&
+                        item?.completed_by === userInformation?.id,
                     )
                   : activeTab === '7'
-                    ? quoteData?.filter((item: any) =>
-                        item?.status?.includes('Rejected'),
+                    ? quoteData?.filter(
+                        (item: any) =>
+                          item?.status?.includes('Rejected') &&
+                          item?.completed_by === userInformation?.id,
                       )
                     : activeTab === '2'
                       ? quoteData?.filter((item: any) =>
@@ -151,7 +155,11 @@ const AllQuote: React.FC = () => {
   };
 
   const editQuote = (quoteId: string) => {
-    router.push(`/generateQuote?id=${quoteId}`);
+    if (activeTab === '5') {
+      router.push(`/generateQuote?id=${quoteId}&inReviewQuote=${true}`);
+    } else {
+      router.push(`/generateQuote?id=${quoteId}&inReviewQuote=${false}`);
+    }
   };
 
   const deleteQuote = async () => {
@@ -169,7 +177,7 @@ const AllQuote: React.FC = () => {
     editQuote,
     setDeleteIds,
     setShowModalDelete,
-    activeTab
+    activeTab,
   );
 
   const markAsComplete = async () => {

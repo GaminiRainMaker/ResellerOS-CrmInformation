@@ -6,4 +6,5 @@ export interface OsOpportunitySelectInterface {
   customerValue?: number
   value?: number
   isRequired?: boolean;
+  isDisable?: boolean;
 }
