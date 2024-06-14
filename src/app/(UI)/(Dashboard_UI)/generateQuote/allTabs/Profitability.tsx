@@ -48,6 +48,7 @@ const Profitability: FC<any> = ({
   setShowUpdateLineItemModal,
   showUpdateLineItemModal,
   selectTedRowData,
+  activeTab,
 }) => {
   const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
@@ -100,7 +101,8 @@ const Profitability: FC<any> = ({
   useEffect(() => {
     if (bundleData && bundleData?.length > 0) {
       let newArrForBun: any = [];
-      bundleData?.map((items: any) => {
+      let newBundleData = [...bundleData];
+      newBundleData?.map((items: any) => {
         let newSortedValue;
         let newObj = {...items};
         if (items?.Profitabilities && items?.Profitabilities?.length > 0) {
@@ -121,12 +123,14 @@ const Profitability: FC<any> = ({
   }, [bundleData]);
 
   useEffect(() => {
-    const filteredDataa = profitabilityDataByQuoteId?.filter(
-      (item: any) => item?.bundle_id === null,
-    );
+    if (activeTab === '2') {
+      const filteredDataa = profitabilityDataByQuoteId?.filter(
+        (item: any) => item?.bundle_id === null,
+      );
 
-    setProfitabilityData(filteredDataa);
-  }, [profitabilityDataByQuoteId]);
+      setProfitabilityData(filteredDataa);
+    }
+  }, [profitabilityDataByQuoteId, activeTab]);
 
   useEffect(() => {
     if (selectedFilter === 'Product Family') {
@@ -211,8 +215,10 @@ const Profitability: FC<any> = ({
   };
 
   useEffect(() => {
-    dispatch(getAllBundle(getQuoteID));
-  }, [getQuoteID]);
+    if (activeTab === '2') {
+      dispatch(getAllBundle(getQuoteID));
+    }
+  }, [getQuoteID, activeTab]);
 
   const renderEditableInput = (field: string) => {
     const editableField = tableColumnDataShow.find(
@@ -724,16 +730,18 @@ const Profitability: FC<any> = ({
   }, [bundleData]);
 
   useEffect(() => {
-    dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
-      if (d?.payload) {
-        const filteredDataa = d?.payload?.filter(
-          (item: any) => item?.bundle_id === null,
-        );
+    if (activeTab === '2') {
+      dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
+        if (d?.payload) {
+          const filteredDataa = d?.payload?.filter(
+            (item: any) => item?.bundle_id === null,
+          );
 
-        setProfitabilityData(filteredDataa);
-      }
-    });
-  }, [getQuoteID]);
+          setProfitabilityData(filteredDataa);
+        }
+      });
+    }
+  }, [getQuoteID, activeTab]);
 
   const deleteProfitabityData = () => {
     dispatch(deleteProfitabilityById({Ids: selectTedRowIds})).then((d) => {

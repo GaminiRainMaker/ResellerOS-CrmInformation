@@ -343,6 +343,7 @@ const GenerateQuote: React.FC = () => {
           selectTedRowData={selectTedRowData}
           isDeleteProfitabilityModal={isDeleteProfitabilityModal}
           setIsDeleteProfitabilityModal={setIsDeleteProfitabilityModal}
+          activeTab={activeTab}
         />
       ),
     },
