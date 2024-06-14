@@ -25,6 +25,7 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
   customerValue,
   isAddNewCustomer = false,
   isRequired = true,
+  isDisable = false,
 }) => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
@@ -103,6 +104,7 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
         rules={[{required: isRequired, message: 'Please Select Customer!'}]}
       >
         <CommonSelect
+          disabled={isDisable}
           placeholder="Select"
           allowClear
           style={{width: '100%'}}

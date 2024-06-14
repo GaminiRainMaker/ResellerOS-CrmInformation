@@ -21,6 +21,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
   form,
   value,
   isRequired = true,
+  isDisable = false,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -88,7 +89,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
       >
         <CommonSelect
           placeholder="Select"
-          disabled={!customerValue}
+          disabled={!customerValue || isDisable}
           allowClear
           style={{width: '100%'}}
           options={opportunityFilterOption}

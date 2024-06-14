@@ -5,7 +5,7 @@ import OsInput from '@/app/components/common/os-input';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {pricingMethod} from '@/app/utils/CONSTANTS';
+import {pricingMethod, selectDataForProduct} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {FC, useState} from 'react';
@@ -31,6 +31,10 @@ const fieldOption = [
   {
     label: 'Pricing Method',
     value: 'pricing_method',
+  },
+  {
+    label: 'Product Family',
+    value: 'product_family',
   },
   {
     label: 'Amount',
@@ -140,6 +144,23 @@ const UpdatingLineItems: FC<UpdateLineItemsInterFace> = ({
                   <CommonSelect
                     placeholder="Select"
                     options={pricingMethod}
+                    style={{width: '100%'}}
+                    onChange={(selectValue) => {
+                      setProfabilityUpdationState((prev) =>
+                        prev.map((prevItem) => {
+                          if (prevItem.id === id) {
+                            return {...prevItem, value: selectValue};
+                          }
+                          return prevItem;
+                        }),
+                      );
+                    }}
+                  />
+                ) : field === 'product_family' ? (
+                  <CommonSelect
+                    placeholder="Select"
+                    allowClear
+                    options={selectDataForProduct}
                     style={{width: '100%'}}
                     onChange={(selectValue) => {
                       setProfabilityUpdationState((prev) =>

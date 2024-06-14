@@ -17,12 +17,11 @@ export const selectData = [
 ];
 
 export const quoteStatusOptions = [
-  {value: 'Drafts', label: 'Drafts'},
   {value: 'In Progress', label: 'In Progress'},
-  {value: 'In Review', label: 'In Review'},
+];
+export const quoteReviewStatusOptions = [
   {value: 'Approved', label: 'Approved'},
   {value: 'Rejected', label: 'Rejected'},
-  {value: 'Needs Review', label: 'Needs Review'},
 ];
 
 export const pricingMethod = [

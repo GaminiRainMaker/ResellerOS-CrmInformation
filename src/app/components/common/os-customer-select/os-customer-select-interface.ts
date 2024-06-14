@@ -3,4 +3,5 @@ export interface OsCustomerSelectInterface {
   isAddNewCustomer?: boolean;
   isRequired?: boolean;
   customerValue?: any;
+  isDisable?: boolean;
 }

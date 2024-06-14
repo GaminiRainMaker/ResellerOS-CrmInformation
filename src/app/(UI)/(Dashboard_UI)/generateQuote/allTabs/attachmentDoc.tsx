@@ -132,6 +132,8 @@ const AttachmentDocument: FC<any> = ({
         return (
           <Typography
             name="Body 4/Medium"
+            style={{color: token?.colorInfo}}
+            hoverOnText
             onClick={() => {
               window?.open(text?.url);
             }}

@@ -514,7 +514,7 @@ const Profitability: FC<any> = ({
             <CommonSelect
               disabled={renderEditableInput('Product Family')}
               allowClear
-              style={{width: '200px'}}
+              style={{width: '200px', height: '36px'}}
               placeholder="Select"
               defaultValue={record?.Product?.product_family}
               options={selectDataForProduct}
@@ -538,7 +538,7 @@ const Profitability: FC<any> = ({
           onBlur={handleBlur}
           allowClear
           disabled={renderEditableInput('Pricing Method')}
-          style={{width: '100%'}}
+          style={{width: '100%', height: '36px'}}
           placeholder="Select"
           value={text}
           onChange={(v) => {
@@ -793,6 +793,7 @@ const Profitability: FC<any> = ({
 
   useEffect(() => {
     const updateDataAndFetchProfitability = async () => {
+      console.log('updatedData12345', updatedData);
       if (updatedData?.length > 0) {
         await Promise.all(
           updatedData?.map((item: any) =>
