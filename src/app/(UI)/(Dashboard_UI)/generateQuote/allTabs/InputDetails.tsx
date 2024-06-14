@@ -59,6 +59,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   setQuoteLineItemExist,
   setActiveTab,
   activeTab,
+  setCountOFFiles,
+  countOfFiles,
 }) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
@@ -435,7 +437,15 @@ const InputDetails: FC<InputDetailTabInterface> = ({
 
   useEffect(() => {
     if (activeTab === '1') {
-      dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
+      dispatch(getQuoteFileByQuoteId(Number(getQuoteID)))?.then(
+        (payload: any) => {
+          if (payload?.payload) {
+            let lengthOfFiles;
+            lengthOfFiles = payload?.payload?.length;
+            setCountOFFiles(Number(lengthOfFiles));
+          }
+        },
+      );
       dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID)));
     }
   }, [getQuoteID, defaultDataShow, activeTab]);
@@ -525,9 +535,10 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       setConfirmedData(false);
       dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
     }
+    let newCount = countOfFiles - 1;
+    setCountOFFiles(newCount);
     setTimeout(() => {
-      // setActiveTab('2');
-      location?.reload();
+      setActiveTab('2');
     }, 1000);
     setShowVerificationFileModal(false);
   };

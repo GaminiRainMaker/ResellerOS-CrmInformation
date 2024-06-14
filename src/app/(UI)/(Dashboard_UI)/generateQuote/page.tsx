@@ -15,7 +15,7 @@ import Typography from '@/app/components/common/typography';
 import {AttachmentOptions, selectData} from '@/app/utils/CONSTANTS';
 import {formatDate, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
-import {Form, MenuProps, notification} from 'antd';
+import {Badge, Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -88,6 +88,7 @@ const GenerateQuote: React.FC = () => {
   const [objectForSyncingValues, setObjectForSyncingValues] = useState<any>([]);
   const [addNewCustomerQuote, setAddNewCustomerQuote] =
     useState<boolean>(false);
+  const [countOfFiles, setCountOFFiles] = useState<number>();
 
   useEffect(() => {
     dispatch(getAllTableColumn(''));
@@ -142,7 +143,15 @@ const GenerateQuote: React.FC = () => {
     );
     setTableColumnDataShow(filterRequired);
   }, [activeTab, tableColumnData]);
-
+  useEffect(() => {
+    setTimeout(() => {
+      if (activeTab === '1' && countOfFiles == 0) {
+        setActiveTab('2');
+      } else {
+        setActiveTab('1');
+      }
+    }, 3000);
+  }, [countOfFiles]);
   useEffect(() => {
     setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);
     let newObj: any = {};
@@ -290,14 +299,16 @@ const GenerateQuote: React.FC = () => {
     {
       key: 1,
       name: (
-        <Typography
-          name="Body 4/Regular"
-          cursor="pointer"
-          color={token?.colorTextBase}
-          onClick={() => setActiveTab('1')}
-        >
-          Review Quotes
-        </Typography>
+        <Badge count={countOfFiles}>
+          <Typography
+            name="Body 4/Regular"
+            cursor="pointer"
+            color={token?.colorTextBase}
+            onClick={() => setActiveTab('1')}
+          >
+            Review Quotes
+          </Typography>
+        </Badge>
       ),
       children: (
         <InputDetails
@@ -314,6 +325,8 @@ const GenerateQuote: React.FC = () => {
           setQuoteLineItemExist={setQuoteLineItemExist}
           setActiveTab={setActiveTab}
           activeTab={activeTab}
+          setCountOFFiles={setCountOFFiles}
+          countOfFiles={countOfFiles}
         />
       ),
     },

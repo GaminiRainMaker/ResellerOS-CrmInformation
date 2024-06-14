@@ -135,6 +135,7 @@ const AttachmentDocument: FC<any> = ({
             onClick={() => {
               window?.open(text?.url);
             }}
+            color="rgb(35, 100, 170)"
           >
             {record}
           </Typography>

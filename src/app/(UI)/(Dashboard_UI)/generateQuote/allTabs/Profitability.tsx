@@ -34,6 +34,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
 import UpdatingLineItems from '../UpdatingLineItems';
+import {Input} from 'antd';
 
 const Profitability: FC<any> = ({
   tableColumnDataShow,
@@ -301,6 +302,8 @@ const Profitability: FC<any> = ({
       title: 'Quantity',
       dataIndex: 'quantity',
       key: 'quantity',
+      sorter: (a: any, b: any) => a.quantity - b.quantity,
+
       render: (text: string, record: any) => {
         let bundleDatass = bundleData?.find(
           (items: any) => items?.id === record?.bundle_id,
@@ -365,29 +368,20 @@ const Profitability: FC<any> = ({
       title: 'MSRP ($)',
       dataIndex: 'list_price',
       key: 'list_price',
+      sorter: (a: any, b: any) => a.list_price - b.list_price,
+
       render: (text: string, record: any) => {
-        let bundleDatass = bundleData?.find(
-          (items: any) => items?.id === record?.bundle_id,
-        );
-
-        let updatedValue;
-        if (bundleDatass) {
-          updatedValue = bundleDatass?.quantity * record?.list_price;
-        } else {
-          updatedValue = record?.quantity;
-        }
-
         return (
           <OsInput
             type="number"
-            disabled={bundleDatass ? true : renderEditableInput('MSRP ($)')}
+            disabled={renderEditableInput('MSRP ($)')}
             style={{
               height: '36px',
               borderRadius: '10px',
             }}
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
-            value={bundleDatass ? updatedValue : text}
+            value={text}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
                 prev.map((prevItem: any) => {
@@ -433,16 +427,6 @@ const Profitability: FC<any> = ({
       key: 'adjusted_price ',
       sorter: (a: any, b: any) => a.adjusted_price - b.adjusted_price,
       render: (text: string, record: any) => {
-        let bundleDatass = bundleData?.find(
-          (items: any) => items?.id === record?.bundle_id,
-        );
-        let updatedValue;
-        if (bundleDatass) {
-          updatedValue = bundleDatass?.quantity * record?.adjusted_price;
-        } else {
-          updatedValue = record?.quantity;
-        }
-
         return (
           <OsInput
             style={{
@@ -451,8 +435,8 @@ const Profitability: FC<any> = ({
             type="number"
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
-            disabled={bundleDatass ? true : renderEditableInput('Cost ($)')}
-            value={bundleDatass ? updatedValue : text ?? 0.0}
+            disabled={renderEditableInput('Cost ($)')}
+            value={text ?? 0.0}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
                 prev.map((prevItem: any) => {
@@ -584,6 +568,8 @@ const Profitability: FC<any> = ({
       title: 'Amount',
       dataIndex: 'line_amount',
       key: 'line_amount',
+      sorter: (a: any, b: any) => a.line_amount - b.line_amount,
+
       width: 150,
       render: (text: string, record: any) => (
         <OsInput
@@ -637,44 +623,106 @@ const Profitability: FC<any> = ({
       dataIndex: 'unit_price',
       key: 'unit_price',
       width: 150,
-      render: (text: number) => (
-        <Typography name="Body 4/Medium">
-          {text ? `${abbreviate(text ?? 0)}` : 0}
-        </Typography>
-      ),
+      render: (text: number, record: any) => {
+        let bundleDatass = bundleData?.find(
+          (items: any) => items?.id === record?.bundle_id,
+        );
+        let updatedValue;
+        if (bundleDatass) {
+          updatedValue = bundleDatass?.quantity * record?.unit_price;
+        } else {
+          updatedValue = record?.unit_price;
+        }
+        return (
+          <Typography name="Body 4/Medium">
+            {bundleDatass
+              ? Number(updatedValue?.toString()?.slice(0, 6))
+              : text
+                ? `${abbreviate(Number(text?.toString()?.slice(0, 6)) ?? 0)}`
+                : 0}
+          </Typography>
+        );
+      },
     },
     {
       title: 'Exit Price ($)',
       dataIndex: 'exit_price',
       key: 'exit_price',
       width: 150,
-      render: (text: number) => (
-        <Typography name="Body 4/Medium">
-          {text ? `${abbreviate(text ?? 0)}` : 0}
-        </Typography>
-      ),
+      render: (text: number, record: any) => {
+        let bundleDatass = bundleData?.find(
+          (items: any) => items?.id === record?.bundle_id,
+        );
+        let updatedValue;
+        if (bundleDatass) {
+          updatedValue = bundleDatass?.quantity * record?.exit_price;
+        } else {
+          updatedValue = record?.exit_price;
+        }
+        return (
+          <Typography name="Body 4/Medium">
+            {bundleDatass
+              ? Number(updatedValue?.toString()?.slice(0, 6))
+              : text
+                ? `${abbreviate(Number(text?.toString()?.slice(0, 6)) ?? 0)}`
+                : 0}
+          </Typography>
+        );
+      },
     },
     {
       title: 'Gross Profit ($)',
       dataIndex: 'gross_profit',
       key: 'gross_profit',
       width: 150,
-      render: (text: number) => (
-        <Typography name="Body 4/Medium">
-          {text ? `${abbreviate(text ?? '--')}` : 0}
-        </Typography>
-      ),
+      render: (text: number, record: any) => {
+        let bundleDatass = bundleData?.find(
+          (items: any) => items?.id === record?.bundle_id,
+        );
+        let updatedValue;
+        if (bundleDatass) {
+          updatedValue = bundleDatass?.quantity * record?.gross_profit;
+        } else {
+          updatedValue = record?.gross_profit;
+        }
+        return (
+          <Typography name="Body 4/Medium">
+            {bundleDatass
+              ? Number(updatedValue?.toString()?.slice(0, 6))
+              : text
+                ? `${abbreviate(Number(text?.toString()?.slice(0, 6)) ?? 0)}`
+                : 0}
+          </Typography>
+        );
+      },
     },
     {
       title: 'Gross Profit %',
       dataIndex: 'gross_profit_percentage',
       key: 'gross_profit_percentage',
       width: 150,
-      render: (text: number) => (
-        <Typography name="Body 4/Medium">
-          {text ? `${abbreviate(text ?? '--')}` : '--'}
-        </Typography>
-      ),
+      render: (text: number, record: any) => {
+        let bundleDatass = bundleData?.find(
+          (items: any) => items?.id === record?.bundle_id,
+        );
+        let updatedValue;
+        if (bundleDatass) {
+          updatedValue =
+            bundleDatass?.quantity * record?.gross_profit_percentage;
+        } else {
+          updatedValue = record?.gross_profit_percentage;
+        }
+        console.log('34534ewwe', text?.toString()?.split('.'));
+        return (
+          <Typography name="Body 4/Medium">
+            {bundleDatass
+              ? Number(updatedValue?.toString()?.slice(0, 6))
+              : text
+                ? `${abbreviate(Number(text?.toString()?.slice(0, 6)) ?? 0)}`
+                : 0}
+          </Typography>
+        );
+      },
     },
   ];
 
@@ -848,9 +896,9 @@ const Profitability: FC<any> = ({
                       <p>Desc: {item?.description}</p>
                       <p>
                         Quantity:
-                        <OsInput
+                        <Input
                           defaultValue={item?.quantity}
-                          style={{width: '60px'}}
+                          style={{width: '60px', marginLeft: '3px'}}
                           onChange={(e: any) => {
                             const data = {
                               id: item?.id,

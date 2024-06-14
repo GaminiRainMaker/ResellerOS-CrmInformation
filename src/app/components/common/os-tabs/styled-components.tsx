@@ -6,7 +6,7 @@ export const TabsStyled = styled(Tabs)`
   width: 100%;
   margin-top: 24px;
   &.ant-tabs > .ant-tabs-nav .ant-tabs-nav-wrap {
-    height: 30px;
+    height: 40px;
     border-bottom: none !important;
   }
   .ant-tabs-top > .ant-tabs-nav {
@@ -20,6 +20,6 @@ export const TabsStyled = styled(Tabs)`
   }
 
   &.ant-tabs-top > .ant-tabs-nav::before {
-     border-bottom: none !important;
+    border-bottom: none !important;
   }
 `;

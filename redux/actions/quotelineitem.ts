@@ -147,11 +147,11 @@ export const deleteQuoteLineItemsByQuoteId = createAsyncThunk(
 );
 
 export const getQuoteLineItemByQuoteIdForEditTable = createAsyncThunk(
-  'quoteLineItem/getQuoteLineItemByQuoteIdForEditTable/:id',
-  async (id: number, thunkApi) => {
+  'quoteLineItem/getQuoteLineItemByQuoteIdForEditTable',
+  async (data: any, thunkApi) => {
     try {
       const res =
-        await QUOTE_LINE_ITEM_API.getQuoteLineItemByQuoteIdForTableEdit(id);
+        await QUOTE_LINE_ITEM_API.getQuoteLineItemByQuoteIdForTableEdit(data);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

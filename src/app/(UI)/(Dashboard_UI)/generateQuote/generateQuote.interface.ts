@@ -21,6 +21,8 @@ export interface InputDetailTabInterface {
   setQuoteLineItemExist?: any;
   setActiveTab?: any;
   activeTab?: any;
+  setCountOFFiles?: any;
+  countOfFiles?: any;
 }
 
 export interface UploadFileInterface {

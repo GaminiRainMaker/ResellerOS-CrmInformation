@@ -59,14 +59,16 @@ const EditorFile = () => {
 
   useEffect(() => {
     if (ExistingQuoteItemss === 'true') {
-      dispatch(getQuoteLineItemByQuoteIdForEditTable(Number(getQUoteId))).then(
-        (d: any) => {
-          if (d?.payload) {
-            // const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
-            setQuoteItems(d?.payload);
-          }
-        },
-      );
+      let newObj = {
+        id: Number(getQUoteId),
+        fileId: Number(getQuoteFileId),
+      };
+      dispatch(getQuoteLineItemByQuoteIdForEditTable(newObj)).then((d: any) => {
+        if (d?.payload) {
+          // const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
+          setQuoteItems(d?.payload);
+        }
+      });
     } else if (quoteFileById?.pdf_url) {
       setNanonetsLoading(true);
       fetch(quoteFileById?.pdf_url)
