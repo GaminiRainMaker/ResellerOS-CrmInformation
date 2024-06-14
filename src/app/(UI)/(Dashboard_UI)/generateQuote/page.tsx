@@ -48,6 +48,7 @@ const GenerateQuote: React.FC = () => {
   const [api, contextHolder] = notification.useNotification();
   const getQuoteID = searchParams.get('id');
   const activeTabRoute = searchParams.get('tab');
+  const getInReviewQuote = searchParams.get('inReviewQuote');
   const [activeTab, setActiveTab] = useState<any>('1');
   const {quoteLineItemByQuoteID, loading} = useAppSelector(
     (state) => state.quoteLineItem,

@@ -12,13 +12,16 @@ import {useAppSelector} from '../../../../../redux/hook';
 
 const QuoteAnalytics = () => {
   const {filteredByDate: filteredData} = useAppSelector((state) => state.quote);
+  const {userInformation} = useAppSelector((state) => state.user);
   const [token] = useThemeToken();
 
   const completedQuote = filteredData?.filter(
     (item: any) => item?.status === 'Completed',
   );
   const needsReviewQuote = filteredData?.filter(
-    (item: any) => item?.status === 'Needs Review',
+    (item: any) =>
+      item?.status === 'Needs Review' &&
+      item?.completed_by === userInformation?.id,
   );
   const draftedQuote = filteredData?.filter(
     (item: any) => item?.status === 'Drafts',
