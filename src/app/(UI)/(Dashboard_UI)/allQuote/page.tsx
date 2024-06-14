@@ -23,6 +23,7 @@ import {
   deleteQuoteById,
   getQuotesByDateFilter,
   updateQuoteByQuery,
+  updateQuoteStatusById,
 } from '../../../../../redux/actions/quote';
 
 import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
@@ -30,6 +31,8 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import QuoteAnalytics from './analytics';
 import {tabItems} from './constants';
 import {getColumns} from './tableColumns';
+import DailogModal from '@/app/components/common/os-modal/DialogModal';
+import {CheckCircleIcon, XCircleIcon} from '@heroicons/react/24/outline';
 
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -44,6 +47,10 @@ const AllQuote: React.FC = () => {
   const [quoteData, setQuoteData] = useState<React.Key[]>([]);
   const [deletedQuote, setDeletedQuote] = useState<React.Key[]>([]);
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
+  const [showApprovedDialogModal, setShowApprovedDialogModal] =
+    useState<boolean>(false);
+  const [showRejectDialogModal, setShowRejectDialogModal] =
+    useState<boolean>(false);
   const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
   const [emptyContainer, setEmptyContainer] = useState<any>();
   const [fromToDates, setFromToDates] = useState({
@@ -106,7 +113,9 @@ const AllQuote: React.FC = () => {
             )
           : activeTab === '5'
             ? quoteData?.filter(
-                (item: any) => item?.approver_id === userInformation?.id,
+                (item: any) =>
+                  item?.status?.includes('Needs Review') &&
+                  item?.approver_id === userInformation?.id,
               )
             : activeTab === '4'
               ? quoteData?.filter(
@@ -162,6 +171,20 @@ const AllQuote: React.FC = () => {
     }
   };
 
+  const updateStatus = (quoteId: string, status: string) => {
+    if (quoteId && status) {
+      const obj = {
+        ids: quoteId,
+        status,
+      };
+      dispatch(updateQuoteStatusById(obj)).then((d) => {
+        if (d?.payload) {
+          dispatch(getQuotesByDateFilter({}));
+        }
+      });
+    }
+  };
+
   const deleteQuote = async () => {
     const data = {Ids: deleteIds};
     await dispatch(deleteQuoteById(data));
@@ -178,6 +201,7 @@ const AllQuote: React.FC = () => {
     setDeleteIds,
     setShowModalDelete,
     activeTab,
+    updateStatus,
   );
 
   const markAsComplete = async () => {
@@ -366,6 +390,30 @@ const AllQuote: React.FC = () => {
         heading="Delete Quote"
         description={`Are you sure you want to delete ${deleteIds?.length > 1 ? 'these' : 'this'} Quote?`}
       />
+      {/* <DailogModal
+        setShowDailogModal={setShowApprovedDialogModal}
+        showDailogModal={showApprovedDialogModal}
+        title="Quote Approve"
+        subTitle="Are you sure you want to approve this quote?"
+        primaryButtonText="Done"
+        icon={
+          <CheckCircleIcon width={35} height={35} color={token?.colorSuccess} />
+        }
+        onOk={() => {
+          quoteStatusUpdation('Approved');
+        }}
+      />
+      <DailogModal
+        setShowDailogModal={setShowRejectDialogModal}
+        showDailogModal={showRejectDialogModal}
+        title="Quote Reject"
+        subTitle="Are you sure you want to reject this quote?"
+        primaryButtonText="Done"
+        icon={<XCircleIcon width={35} height={35} color={token?.colorError} />}
+        onOk={() => {
+          quoteStatusUpdation('Reject');
+        }}
+      /> */}
     </>
   );
 };

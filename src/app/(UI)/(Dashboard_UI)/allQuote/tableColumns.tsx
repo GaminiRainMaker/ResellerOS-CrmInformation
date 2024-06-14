@@ -1,8 +1,14 @@
 import {Space} from '@/app/components/common/antd/Space';
 import OsStatusWrapper from '@/app/components/common/os-status';
+import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {formatDate, formatDateWithTime} from '@/app/utils/base';
-import {EyeIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {
+  CheckIcon,
+  EyeIcon,
+  TrashIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline';
 import {GlobalToken} from 'antd';
 import {JSX, SetStateAction} from 'react';
 
@@ -15,6 +21,7 @@ function getColumns(
     (arg0: boolean): void;
   },
   activeTab: any,
+  updateStatus: any,
 ) {
   const columns = [
     {
@@ -128,16 +135,49 @@ function getColumns(
       width: 94,
       render: (text: string, record: any) => (
         <Space size={18}>
-          <TrashIcon
-            height={24}
-            width={24}
-            color={token.colorError}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              setDeleteIds([record?.id]);
-              setShowModalDelete(true);
-            }}
-          />
+          {activeTab === '5' ? (
+            <Space>
+              <AvatarStyled
+                shape="square"
+                background={token?.colorSuccess}
+                size={28}
+                icon={
+                  <CheckIcon
+                    width={25}
+                    color={token?.colorBgContainer}
+                    onClick={(e) => {
+                      updateStatus(record?.id, 'Approved');
+                    }}
+                  />
+                }
+              />
+              <AvatarStyled
+                shape="square"
+                background={token?.colorError}
+                size={28}
+                icon={
+                  <XMarkIcon
+                    width={25}
+                    color={token?.colorBgContainer}
+                    onClick={(e) => {
+                      updateStatus(record?.id, 'Rejected');
+                    }}
+                  />
+                }
+              />
+            </Space>
+          ) : (
+            <TrashIcon
+              height={24}
+              width={24}
+              color={token.colorError}
+              style={{cursor: 'pointer'}}
+              onClick={() => {
+                setDeleteIds([record?.id]);
+                setShowModalDelete(true);
+              }}
+            />
+          )}
         </Space>
       ),
     },
