@@ -20,6 +20,7 @@ export interface InputDetailTabInterface {
   selectTedRowIds?: any;
   setQuoteLineItemExist?: any;
   setActiveTab?: any;
+  activeTab?: any;
 }
 
 export interface UploadFileInterface {
@@ -55,5 +56,5 @@ export interface UpdateLineItemsInterFace {
     field: string | null;
     label: string;
   }[];
-  tableColumnDataShow: any
+  tableColumnDataShow: any;
 }

@@ -86,7 +86,8 @@ const Profitability: FC<any> = ({
   };
   useEffect(() => {
     if (profitabilityData && profitabilityData?.length > 0) {
-      let newSortedValue = profitabilityData?.sort((a: any, b: any) => {
+      let newArrr: any = [...profitabilityData];
+      let newSortedValue = newArrr?.sort((a: any, b: any) => {
         return a.line_number - b.line_number;
       });
       let FIlteredData = newSortedValue?.filter(

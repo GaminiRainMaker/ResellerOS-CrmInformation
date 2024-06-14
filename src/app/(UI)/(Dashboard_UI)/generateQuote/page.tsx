@@ -313,6 +313,7 @@ const GenerateQuote: React.FC = () => {
           selectTedRowIds={selectTedRowIds}
           setQuoteLineItemExist={setQuoteLineItemExist}
           setActiveTab={setActiveTab}
+          activeTab={activeTab}
         />
       ),
     },

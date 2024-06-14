@@ -58,6 +58,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   selectTedRowIds,
   setQuoteLineItemExist,
   setActiveTab,
+  activeTab,
 }) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
@@ -433,10 +434,12 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   }, [tableColumnDataShow]);
 
   useEffect(() => {
-    dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
-    dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID)));
-  }, [getQuoteID, defaultDataShow]);
-
+    if (activeTab === '1') {
+      dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
+      dispatch(getQuoteLineItemByQuoteId(Number(getQuoteID)));
+    }
+  }, [getQuoteID, defaultDataShow, activeTab]);
+  // dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
   useEffect(() => {
     const separatedData: any = {};
     quoteFileData?.forEach((item: any) => {
