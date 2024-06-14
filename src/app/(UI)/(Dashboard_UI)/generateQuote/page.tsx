@@ -301,6 +301,7 @@ const GenerateQuote: React.FC = () => {
       name: (
         <Badge count={countOfFiles}>
           <Typography
+            style={{padding: '10px'}}
             name="Body 4/Regular"
             cursor="pointer"
             color={token?.colorTextBase}

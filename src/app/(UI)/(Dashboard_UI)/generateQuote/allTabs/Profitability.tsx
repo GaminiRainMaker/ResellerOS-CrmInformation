@@ -622,6 +622,7 @@ const Profitability: FC<any> = ({
       title: 'Unit Price ($)',
       dataIndex: 'unit_price',
       key: 'unit_price',
+      sorter: (a: any, b: any) => a.unit_price - b.unit_price,
       width: 150,
       render: (text: number, record: any) => {
         let bundleDatass = bundleData?.find(
@@ -648,6 +649,7 @@ const Profitability: FC<any> = ({
       title: 'Exit Price ($)',
       dataIndex: 'exit_price',
       key: 'exit_price',
+      sorter: (a: any, b: any) => a.exit_price - b.exit_price,
       width: 150,
       render: (text: number, record: any) => {
         let bundleDatass = bundleData?.find(
@@ -674,6 +676,7 @@ const Profitability: FC<any> = ({
       title: 'Gross Profit ($)',
       dataIndex: 'gross_profit',
       key: 'gross_profit',
+      sorter: (a: any, b: any) => a.gross_profit - b.gross_profit,
       width: 150,
       render: (text: number, record: any) => {
         let bundleDatass = bundleData?.find(
@@ -700,6 +703,8 @@ const Profitability: FC<any> = ({
       title: 'Gross Profit %',
       dataIndex: 'gross_profit_percentage',
       key: 'gross_profit_percentage',
+      sorter: (a: any, b: any) =>
+        a.gross_profit_percentage - b.gross_profit_percentage,
       width: 150,
       render: (text: number, record: any) => {
         let bundleDatass = bundleData?.find(
