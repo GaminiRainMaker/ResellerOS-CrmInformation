@@ -603,12 +603,11 @@ const GenerateQuote: React.FC = () => {
                       />
                     )}
 
-                    {activeTab !== '6' ||
-                      (getInReviewQuote === 'false' && (
-                        <Space>
-                          <OsDropdown menu={{items}} />
-                        </Space>
-                      ))}
+                    {activeTab !== '6' && (
+                      <Space>
+                        <OsDropdown menu={{items}} />
+                      </Space>
+                    )}
                   </Space>
                 </Space>
               </Space>
