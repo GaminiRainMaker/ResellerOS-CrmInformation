@@ -129,7 +129,6 @@ const Profitability: FC<any> = ({
 
       setProfitabilityData(filteredDataa);
       dispatch(setProfitability(filteredDataa));
-
     }
   }, [profitabilityDataByQuoteId, activeTab]);
 
@@ -827,7 +826,6 @@ const Profitability: FC<any> = ({
 
     updateDataAndFetchProfitability();
   }, [updatedData, dispatch, getQuoteID]);
-
   return (
     <>
       {newDataForBundle?.length > 0 &&
