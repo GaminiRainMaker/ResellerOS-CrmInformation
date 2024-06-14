@@ -48,6 +48,7 @@ const GenerateQuote: React.FC = () => {
   const [api, contextHolder] = notification.useNotification();
   const getQuoteID = searchParams.get('id');
   const activeTabRoute = searchParams.get('tab');
+  const getInReviewQuote = searchParams.get('inReviewQuote');
   const [activeTab, setActiveTab] = useState<any>('1');
   const {quoteLineItemByQuoteID, loading} = useAppSelector(
     (state) => state.quoteLineItem,
@@ -602,11 +603,12 @@ const GenerateQuote: React.FC = () => {
                       />
                     )}
 
-                    {activeTab !== '6' && (
-                      <Space>
-                        <OsDropdown menu={{items}} />
-                      </Space>
-                    )}
+                    {activeTab !== '6' ||
+                      (getInReviewQuote === 'false' && (
+                        <Space>
+                          <OsDropdown menu={{items}} />
+                        </Space>
+                      ))}
                   </Space>
                 </Space>
               </Space>
