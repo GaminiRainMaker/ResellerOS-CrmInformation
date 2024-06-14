@@ -14,6 +14,7 @@ function getColumns(
     (value: SetStateAction<boolean>): void;
     (arg0: boolean): void;
   },
+  activeTab: any,
 ) {
   const columns = [
     {
@@ -108,7 +109,7 @@ function getColumns(
       width: 187,
       render: (text: string) => (
         <div style={{display: 'flex', justifyContent: 'center'}}>
-          <OsStatusWrapper value={text} />
+          <OsStatusWrapper value={activeTab === '5' ? 'In Review' : text} />
         </div>
       ),
     },

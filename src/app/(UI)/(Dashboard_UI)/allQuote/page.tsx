@@ -169,6 +169,7 @@ const AllQuote: React.FC = () => {
     editQuote,
     setDeleteIds,
     setShowModalDelete,
+    activeTab
   );
 
   const markAsComplete = async () => {
