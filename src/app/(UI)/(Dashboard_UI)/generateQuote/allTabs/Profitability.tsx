@@ -56,7 +56,6 @@ const Profitability: FC<any> = ({
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const [familyFilter, setFamilyFilter] = useState<any>([]);
-  const [showTable, setShowTable] = useState<boolean>(true);
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
     (state) => state.profitability,
   );
@@ -129,6 +128,8 @@ const Profitability: FC<any> = ({
       );
 
       setProfitabilityData(filteredDataa);
+      dispatch(setProfitability(filteredDataa));
+
     }
   }, [profitabilityDataByQuoteId, activeTab]);
 
@@ -706,6 +707,7 @@ const Profitability: FC<any> = ({
     });
     setFinalProfitTableCol(newArr);
   }, [tableColumnDataShow]);
+
   useEffect(() => {
     if (bundleData && bundleData?.length > 0) {
       const newArr: any = [];
@@ -791,29 +793,40 @@ const Profitability: FC<any> = ({
   };
 
   useEffect(() => {
-    if (updatedData?.length > 0) {
-      updatedData?.forEach((item: any) => {
-        dispatch(updateProfitabilityById(item));
-      });
-      setProfabilityUpdationState([
-        {
-          id: 1,
-          field: null,
-          value: '',
-          label: '',
-        },
-      ]);
-      setShowUpdateLineItemModal(false);
-      dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
-        if (d?.payload) {
+    const updateDataAndFetchProfitability = async () => {
+      if (updatedData?.length > 0) {
+        await Promise.all(
+          updatedData?.map((item: any) =>
+            dispatch(updateProfitabilityById(item)),
+          ),
+        );
+
+        setProfabilityUpdationState([
+          {
+            id: 1,
+            field: null,
+            value: '',
+            label: '',
+          },
+        ]);
+        setShowUpdateLineItemModal(false);
+
+        const response = await dispatch(
+          getProfitabilityByQuoteId(Number(getQuoteID)),
+        );
+        const d = response?.payload;
+
+        if (d) {
           setSelectedRowData([]);
           setSelectedRowIds([]);
-          setProfitabilityData(d?.payload);
+          setProfitabilityData(d);
+          dispatch(setProfitability(d));
         }
-      });
-      dispatch(getAllBundle(getQuoteID));
-    }
-  }, [updatedData]);
+      }
+    };
+
+    updateDataAndFetchProfitability();
+  }, [updatedData, dispatch, getQuoteID]);
 
   return (
     <>
