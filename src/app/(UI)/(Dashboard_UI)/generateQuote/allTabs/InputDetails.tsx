@@ -245,9 +245,10 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       width: 187,
       render: (text: number) => {
         const value = useRemoveDollarAndCommahook(text);
+        console.log('valuevalue', value);
         return (
           <Typography name="Body 4/Medium">
-            {`$ ${abbreviate(value ?? 0)}`}
+            {`$ ${abbreviate(Number(value ?? 0))}`}
             {/* {record?.Bundle?.quantity ? record?.Bundle?.quantity : 1} */}
           </Typography>
         );
@@ -467,10 +468,16 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       }
 
       item?.QuoteLineItems?.forEach((quoteLineItem: any) => {
+        let adjust = 3;
+        let quantity = 3;
+        // abbreviate(quoteLineItem?.adjusted_price ?? 0) *
+        // abbreviate(quoteLineItem?.quantity ?? 0),
+
         separatedData[fileName].quoteLineItems.push(quoteLineItem);
         separatedData[fileName].totalCount++;
         separatedData[fileName].totalAdjustedPrice += Number(
-          quoteLineItem?.adjusted_price * quoteLineItem?.quantity,
+          useRemoveDollarAndCommahook(quoteLineItem?.adjusted_price ?? 0) *
+            useRemoveDollarAndCommahook(quoteLineItem?.quantity ?? 0),
         );
       });
     });
@@ -572,7 +579,9 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                       <p>
                                         Total Cost: $
                                         {abbreviate(
-                                          item?.totalAdjustedPrice ?? 0.0,
+                                          Number(
+                                            item?.totalAdjustedPrice ?? 0.0,
+                                          ),
                                         )}
                                       </p>
                                     </Col>
