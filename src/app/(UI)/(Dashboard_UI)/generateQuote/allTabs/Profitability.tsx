@@ -500,9 +500,18 @@ const Profitability: FC<any> = ({
               allowClear
               style={{width: '200px', height: '36px'}}
               placeholder="Select"
-              defaultValue={record?.Product?.product_family}
+              value={text ?? record?.Product?.product_family}
               options={selectDataForProduct}
               onChange={(e) => {
+                setProfitabilityData((prev: any) =>
+                  prev?.map((prevItem: any) => {
+                    if (prevItem?.id === record?.id) {
+                      return {...prevItem, product_family: e};
+                    }
+                    return prevItem;
+                  }),
+                );
+
                 const data = {id: record?.product_id, product_family: e};
                 dispatch(updateProductFamily(data));
                 setTriggerUpdate((prev) => !prev);
@@ -717,7 +726,6 @@ const Profitability: FC<any> = ({
         } else {
           updatedValue = record?.gross_profit_percentage;
         }
-        console.log('34534ewwe', text?.toString()?.split('.'));
         return (
           <Typography name="Body 4/Medium">
             {bundleDatass
@@ -846,13 +854,22 @@ const Profitability: FC<any> = ({
 
   useEffect(() => {
     const updateDataAndFetchProfitability = async () => {
-      console.log('updatedData12345', updatedData);
+      const ProductFamily = profabilityUpdationState?.find(
+        (field: any) => field?.field === 'product_family',
+      )?.value;
+
       if (updatedData?.length > 0) {
+        const ids = updatedData?.map((item: any) => item?.product_id);
+        let obj = {
+          id: ids,
+          product_family: ProductFamily,
+        };
         await Promise.all(
           updatedData?.map((item: any) =>
             dispatch(updateProfitabilityById(item)),
           ),
         );
+        await dispatch(updateProductFamily(obj));
 
         setProfabilityUpdationState([
           {
@@ -880,6 +897,7 @@ const Profitability: FC<any> = ({
     dispatch(getAllBundle(getQuoteID));
     updateDataAndFetchProfitability();
   }, [updatedData, dispatch, getQuoteID]);
+
   return (
     <>
       {newDataForBundle?.length > 0 &&
