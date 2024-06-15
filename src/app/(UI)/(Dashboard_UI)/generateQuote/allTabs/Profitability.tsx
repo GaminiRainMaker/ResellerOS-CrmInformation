@@ -316,7 +316,7 @@ const Profitability: FC<any> = ({
         }
         return (
           <OsInputNumber
-            value={bundleDatass ? updatedValue : text}
+            value={text}
             disabled={bundleDatass ? true : renderEditableInput('Quantity')}
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
