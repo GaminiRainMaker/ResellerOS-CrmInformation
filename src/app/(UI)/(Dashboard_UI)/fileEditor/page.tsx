@@ -56,8 +56,19 @@ const EditorFile = () => {
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
 
   // ============================== SalesForce Implementations ======================================
+  // const fetchSaleForceDataa = async () => {
+  //   try {
+  //     const data = fetch(
+  //       `https://goldenresellerosquoteai-dev-ed.develop.my.salesforce.com//services/apexrest/rosquoteai/file-in-binary/{{${1}}}`,
+  //     );
+  //     console.log('43243232', data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   useEffect(() => {
+    // fetchSaleForceDataa();
     if (ExistingQuoteItemss === 'true') {
       let newObj = {
         id: Number(getQUoteId),
