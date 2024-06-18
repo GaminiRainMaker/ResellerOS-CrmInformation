@@ -7,4 +7,5 @@ export interface OsOpportunitySelectInterface {
   value?: number
   isRequired?: boolean;
   isDisable?: boolean;
+  setOpportunityValue?: any;
 }

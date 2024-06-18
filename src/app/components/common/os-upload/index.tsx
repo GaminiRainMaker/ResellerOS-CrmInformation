@@ -38,6 +38,7 @@ const OsUpload: React.FC<any> = ({
   const dispatch = useAppDispatch();
   const [fileList, setFileList] = useState([]);
   const [customerValue, setCustomerValue] = useState<number>();
+  const [opportunityValue, setOpportunityValue] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
   const {getExistingQuoteFilterData, loading: quoteLoading} = useAppSelector(
     (state) => state.quote,
@@ -109,12 +110,11 @@ const OsUpload: React.FC<any> = ({
   useEffect(() => {
     dispatch(
       getQuotesByExistingQuoteFilter({
-        customer: form.getFieldValue('customer_id'),
-        opportunity: form.getFieldValue('opportunity_id'),
+        customer: customerValue,
+        opportunity: opportunityValue,
       }),
     );
-  }, [form.getFieldValue('customer_id'), form.getFieldValue('opportunity_id')]);
-  
+  }, [customerValue, opportunityValue]);
 
   return (
     <GlobalLoader loading={cardLoading || loading}>
@@ -168,6 +168,7 @@ const OsUpload: React.FC<any> = ({
                 form={form}
                 customerValue={customerValue}
                 isAddNewOpportunity
+                setOpportunityValue={setOpportunityValue}
               />
             </Col>
           </Row>

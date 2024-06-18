@@ -22,6 +22,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
   value,
   isRequired = true,
   isDisable = false,
+  setOpportunityValue,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -117,6 +118,9 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
               {menu}
             </>
           )}
+          onChange={(e) => {
+            setOpportunityValue(e);
+          }}
         />
       </Form.Item>
 
