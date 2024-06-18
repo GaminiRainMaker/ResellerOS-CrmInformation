@@ -10,17 +10,14 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {Col, Row} from '../antd/Grid';
 import {Space} from '../antd/Space';
 import {Switch} from '../antd/Switch';
-import useDebounceHook from '../hooks/useDebounceHook';
 import useThemeToken from '../hooks/useThemeToken';
 import OsCustomerSelect from '../os-customer-select';
 import GlobalLoader from '../os-global-loader';
 import OsOpportunitySelect from '../os-opportunity-select';
-import CommonSelect from '../os-select';
 import OsTable from '../os-table';
 import Typography from '../typography';
 import UploadCard from './UploadCard';
 import {OSDraggerStyle} from './styled-components';
-import {Option} from 'antd/es/mentions';
 
 const OsUpload: React.FC<any> = ({
   beforeUpload,
@@ -41,14 +38,6 @@ const OsUpload: React.FC<any> = ({
   const dispatch = useAppDispatch();
   const [fileList, setFileList] = useState([]);
   const [customerValue, setCustomerValue] = useState<number>();
-  const [query, setQuery] = useState<{
-    customer: string | null;
-    opportunity: string | null;
-  }>({
-    customer: null,
-    opportunity: null,
-  });
-  const searchQuery = useDebounceHook(query, 500);
   const [loading, setLoading] = useState<boolean>(false);
   const {getExistingQuoteFilterData, loading: quoteLoading} = useAppSelector(
     (state) => state.quote,
@@ -117,43 +106,15 @@ const OsUpload: React.FC<any> = ({
     },
   };
 
-  const uniqueCustomer = Array.from(
-    new Set(
-      getExistingQuoteFilterData?.map(
-        (getExistingQuoteFilterDataItem: any) =>
-          getExistingQuoteFilterDataItem?.Customer?.id,
-      ),
-    ),
-  ).map((id) => {
-    const getExistingQuoteFilterDataItem = getExistingQuoteFilterData.find(
-      (item: any) => item?.Customer?.id === id,
-    );
-    return {
-      label: getExistingQuoteFilterDataItem?.Customer?.name,
-      value: getExistingQuoteFilterDataItem?.Customer?.id,
-    };
-  });
-
-  const uniqueOpportunity = Array.from(
-    new Set(
-      getExistingQuoteFilterData?.map(
-        (getExistingQuoteFilterDataItem: any) =>
-          getExistingQuoteFilterDataItem?.Opportunity?.id,
-      ),
-    ),
-  ).map((id) => {
-    const getExistingQuoteFilterDataItem = getExistingQuoteFilterData.find(
-      (item: any) => item?.Opportunity?.id === id,
-    );
-    return {
-      label: getExistingQuoteFilterDataItem?.Opportunity?.title,
-      value: getExistingQuoteFilterDataItem?.Opportunity?.id,
-    };
-  });
-
   useEffect(() => {
-    dispatch(getQuotesByExistingQuoteFilter(searchQuery));
-  }, [searchQuery]);
+    dispatch(
+      getQuotesByExistingQuoteFilter({
+        customer: form.getFieldValue('customer_id'),
+        opportunity: form.getFieldValue('opportunity_id'),
+      }),
+    );
+  }, [form.getFieldValue('customer_id'), form.getFieldValue('opportunity_id')]);
+  
 
   return (
     <GlobalLoader loading={cardLoading || loading}>
@@ -187,122 +148,40 @@ const OsUpload: React.FC<any> = ({
           setUploadFileData={setUploadFileData}
         />
 
-        {!showToggleTable ? (
-          <Form
-            layout="vertical"
-            requiredMark={false}
-            form={form}
-            onFinish={onFinish}
-          >
-            <Row gutter={[16, 16]}>
-              <Col sm={24} md={12}>
-                <OsCustomerSelect
-                  setCustomerValue={setCustomerValue}
-                  customerValue={customerValue}
-                  isAddNewCustomer
-                />
-              </Col>
-
-              <Col sm={24} md={12}>
-                <OsOpportunitySelect
-                  form={form}
-                  customerValue={customerValue}
-                  isAddNewOpportunity
-                />
-              </Col>
-            </Row>
-          </Form>
-        ) : (
-          <Row justify="space-between" gutter={[16, 16]} align="middle">
-            <Col span={11}>
-              <Typography name="Body 4/Medium">Customer</Typography>
-              <CommonSelect
-                style={{width: '100%'}}
-                placeholder="Select here"
-                showSearch
-                onSearch={(e) => {
-                  setQuery({
-                    ...query,
-                    customer: e,
-                  });
-                }}
-                onChange={(e) => {
-                  setQuery({
-                    ...query,
-                    customer: e,
-                  });
-                }}
-                value={query?.customer}
-              >
-                {uniqueCustomer?.map((customer: any) => (
-                  <Option key={customer?.value} value={customer?.value}>
-                    {customer?.label}
-                  </Option>
-                ))}
-              </CommonSelect>
-            </Col>
-            <Col span={11}>
-              <Typography name="Body 4/Medium">Opportunity</Typography>
-              <CommonSelect
-                style={{width: '100%'}}
-                placeholder="Select here"
-                showSearch
-                onSearch={(e) => {
-                  setQuery({
-                    ...query,
-                    opportunity: e,
-                  });
-                }}
-                onChange={(e) => {
-                  setQuery({
-                    ...query,
-                    opportunity: e,
-                  });
-                }}
-                value={query?.opportunity}
-              >
-                {uniqueOpportunity?.map((customer: any) => (
-                  <Option key={customer?.value} value={customer?.value}>
-                    {customer?.label}
-                  </Option>
-                ))}
-              </CommonSelect>
+        <Form
+          layout="vertical"
+          requiredMark={false}
+          form={form}
+          onFinish={onFinish}
+        >
+          <Row gutter={[16, 16]}>
+            <Col sm={24} md={12}>
+              <OsCustomerSelect
+                setCustomerValue={setCustomerValue}
+                customerValue={customerValue}
+                isAddNewCustomer
+              />
             </Col>
 
-            <Col
-              style={{
-                marginTop: '20px',
-              }}
-              span={2}
-            >
-              <Typography
-                cursor="pointer"
-                name="Button 1"
-                color={
-                  query?.opportunity || query?.customer ? '#0D0D0D' : '#C6CDD5'
-                }
-                onClick={() => {
-                  setQuery({
-                    opportunity: null,
-                    customer: null,
-                  });
-                }}
-              >
-                Reset
-              </Typography>
+            <Col sm={24} md={12}>
+              <OsOpportunitySelect
+                form={form}
+                customerValue={customerValue}
+                isAddNewOpportunity
+              />
             </Col>
           </Row>
-        )}
-
-        {!isGenerateQuote && (
-          <Space size={30} direction="horizontal" align="center">
-            <Typography name="Body 4/Medium">Select Existing Quote?</Typography>
-            <Switch size="default" onChange={onToggleChange} />
-          </Space>
-        )}
+        </Form>
 
         {!isGenerateQuote && (
           <>
+            <Space size={30} direction="horizontal" align="center">
+              <Typography name="Body 4/Medium">
+                Select Existing Quote?
+              </Typography>
+              <Switch size="default" onChange={onToggleChange} />
+            </Space>
+
             {showToggleTable && (
               <OsTable
                 loading={quoteLoading}
