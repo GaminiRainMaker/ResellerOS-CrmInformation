@@ -239,7 +239,6 @@ const GenerateQuote: React.FC = () => {
     }
   }, [quoteLineItemByQuoteID]);
 
-
   const commonUpdateCompleteAndDraftMethod = (status: string) => {
     try {
       setStatusUpdateLoading(true);
@@ -609,7 +608,9 @@ const GenerateQuote: React.FC = () => {
                       <CommonSelect
                         key={2}
                         style={{width: '319px'}}
-                        disabled={activeTab == '2' ? false : true}
+                        disabled={
+                          activeTab == '2' || activeTab == '5' ? false : true
+                        }
                         placeholder="Select Grouping here"
                         options={selectData}
                         onChange={(e) => {

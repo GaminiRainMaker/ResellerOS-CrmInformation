@@ -176,14 +176,6 @@ const UpdatingLineItems: FC<UpdateLineItemsInterFace> = ({
                 ) : (
                   <OsInput
                     value={value}
-                    type={
-                      field === 'quantity' ||
-                      field === 'list_price' ||
-                      field === 'adjusted_price' ||
-                      field === 'line_amount'
-                        ? 'number'
-                        : ''
-                    }
                     onChange={(e) => {
                       setProfabilityUpdationState((prev) =>
                         prev.map((prevItem) => {
