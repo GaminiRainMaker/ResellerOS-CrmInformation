@@ -20,7 +20,7 @@ export default function DashboardLayout({
         <Layout>
           <SideBar />
           <Content
-            style={{padding: pathname === '/formBuilder' ? '0px' : '24px'}}
+            style={{padding: pathname === '/formBuilder' ? '0px' : '12px'}}
           >
             {children}
           </Content>

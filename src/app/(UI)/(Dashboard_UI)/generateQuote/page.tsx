@@ -120,6 +120,7 @@ const GenerateQuote: React.FC = () => {
       setActiveTab('2');
     }
   }, [activeTabRoute]);
+
   useEffect(() => {
     let tabsname: any;
     if (activeTab == '1') {
@@ -144,6 +145,7 @@ const GenerateQuote: React.FC = () => {
     );
     setTableColumnDataShow(filterRequired);
   }, [activeTab, tableColumnData]);
+
   useEffect(() => {
     setTimeout(() => {
       if (activeTab === '1' && countOfFiles == 0) {
@@ -153,6 +155,7 @@ const GenerateQuote: React.FC = () => {
       }
     }, 3000);
   }, [countOfFiles]);
+
   useEffect(() => {
     setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);
     let newObj: any = {};
@@ -224,6 +227,8 @@ const GenerateQuote: React.FC = () => {
       });
     }
   }, [quoteLineItemByQuoteID]);
+
+  console.log('familyFilter', familyFilter, selectedFilter);
 
   const commonUpdateCompleteAndDraftMethod = (status: string) => {
     try {
@@ -482,7 +487,7 @@ const GenerateQuote: React.FC = () => {
   return (
     <>
       {contextHolder}
-      <Space size={24} direction="vertical" style={{width: '100%'}}>
+      <Space size={12} direction="vertical" style={{width: '100%'}}>
         <GenerateQuoteAnalytics
           quoteLineItemByQuoteID={quoteLineItemByQuoteID}
           amountData={amountData}
