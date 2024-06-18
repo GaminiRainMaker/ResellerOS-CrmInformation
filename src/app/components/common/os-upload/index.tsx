@@ -147,32 +147,33 @@ const OsUpload: React.FC<any> = ({
           uploadFileData={uploadFileData}
           setUploadFileData={setUploadFileData}
         />
+        {!isGenerateQuote && (
+          <Form
+            layout="vertical"
+            requiredMark={false}
+            form={form}
+            onFinish={onFinish}
+          >
+            <Row gutter={[16, 16]}>
+              <Col sm={24} md={12}>
+                <OsCustomerSelect
+                  setCustomerValue={setCustomerValue}
+                  customerValue={customerValue}
+                  isAddNewCustomer
+                />
+              </Col>
 
-        <Form
-          layout="vertical"
-          requiredMark={false}
-          form={form}
-          onFinish={onFinish}
-        >
-          <Row gutter={[16, 16]}>
-            <Col sm={24} md={12}>
-              <OsCustomerSelect
-                setCustomerValue={setCustomerValue}
-                customerValue={customerValue}
-                isAddNewCustomer
-              />
-            </Col>
-
-            <Col sm={24} md={12}>
-              <OsOpportunitySelect
-                form={form}
-                customerValue={customerValue}
-                isAddNewOpportunity
-                setOpportunityValue={setOpportunityValue}
-              />
-            </Col>
-          </Row>
-        </Form>
+              <Col sm={24} md={12}>
+                <OsOpportunitySelect
+                  form={form}
+                  customerValue={customerValue}
+                  isAddNewOpportunity
+                  setOpportunityValue={setOpportunityValue}
+                />
+              </Col>
+            </Row>
+          </Form>
+        )}
 
         {!isGenerateQuote && (
           <>
