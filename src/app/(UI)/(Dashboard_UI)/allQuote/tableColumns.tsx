@@ -185,6 +185,118 @@ function getColumns(
 
   return columns;
 }
+function getExistingQuoteColumns(
+  token: GlobalToken,
+  editQuote: {(quoteId: string): void; (arg0: any): void},
+  setDeleteIds: {(value: any): void; (arg0: any[]): void},
+  setShowModalDelete: {
+    (value: SetStateAction<boolean>): void;
+    (arg0: boolean): void;
+  },
+  activeTab: any,
+  updateStatus: any,
+) {
+  const columns = [
+    {
+      title: (
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
+          Quote Name
+        </Typography>
+      ),
+      dataIndex: 'file_name',
+      key: 'file_name',
+      width: 230,
+      render: (text: string, record: any) => (
+        <Typography
+          style={{color: token?.colorInfo}}
+          hoverOnText
+          name="Body 4/Regular"
+          onClick={() => {
+            editQuote(record.id);
+          }}
+        >
+          {record?.file_name ??
+            formatDate(record?.createdAt, 'MM/DD/YYYY | HH:MM')}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
+          Opportunity
+        </Typography>
+      ),
+      dataIndex: 'opportunity',
+      key: 'opportunity',
+      width: 187,
+      render: (text: string, record: any) => (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => {
+            window.open(`/opportunityDetail?id=${record?.Opportunity?.id}`);
+          }}
+          hoverOnText
+        >
+          {record?.Opportunity?.title ?? '--'}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
+          Customer Name
+        </Typography>
+      ),
+      dataIndex: 'customer_name',
+      key: 'customer_name',
+      width: 187,
+      render: (text: string, record: any) => (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => {
+            window.open(`/accountDetails?id=${record?.Customer?.id}`);
+          }}
+          hoverOnText
+        >
+          {record?.Customer?.name ?? '--'}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
+          Status
+        </Typography>
+      ),
+      dataIndex: 'status',
+      key: 'status',
+      width: 187,
+      render: (text: string) => (
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+          <OsStatusWrapper value={activeTab === '5' ? 'In Review' : text} />
+        </div>
+      ),
+    },
+  ];
+
+  return columns;
+}
 
 function getSuperAdminQuoteColumns(
   token: GlobalToken,
@@ -324,4 +436,4 @@ function getSuperAdminQuoteColumns(
   return columns;
 }
 
-export {getColumns, getSuperAdminQuoteColumns};
+export {getColumns, getSuperAdminQuoteColumns, getExistingQuoteColumns};

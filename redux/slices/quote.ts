@@ -13,6 +13,7 @@ import {
   updateQuoteDraftById,
   updateQuoteWithNewlineItemAddByID,
   getAllQuotesByOrganization,
+  getQuotesByExistingQuoteFilter,
 } from '../actions/quote';
 
 type QuoteState = {
@@ -24,6 +25,7 @@ type QuoteState = {
   filteredByDate: any;
   quoteById: any;
   getAllQuotesDataByOrganization: any;
+  getExistingQuoteFilterData: any;
 };
 const initialState: QuoteState = {
   loading: false,
@@ -34,6 +36,7 @@ const initialState: QuoteState = {
   quoteById: {},
   filteredByDate: [],
   getAllQuotesDataByOrganization: [],
+  getExistingQuoteFilterData: [],
 };
 
 const quoteSlice = createSlice({
@@ -227,6 +230,24 @@ const quoteSlice = createSlice({
       )
       .addCase(
         getAllQuotesByOrganization.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getQuotesByExistingQuoteFilter.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getQuotesByExistingQuoteFilter.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.getExistingQuoteFilterData = action.payload;
+        },
+      )
+      .addCase(
+        getQuotesByExistingQuoteFilter.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

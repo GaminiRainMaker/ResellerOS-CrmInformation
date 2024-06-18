@@ -170,3 +170,15 @@ export const getAllQuotesByOrganization = createAsyncThunk(
     }
   },
 );
+export const getQuotesByExistingQuoteFilter = createAsyncThunk(
+  'quote/getQuotesByExistingQuoteFilter',
+  async (data: any, thunkApi) => {
+    console.log('datadata', data);
+    try {
+      const res = await QUOTEAPI.getQuotesByExistingQuoteFilter(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
