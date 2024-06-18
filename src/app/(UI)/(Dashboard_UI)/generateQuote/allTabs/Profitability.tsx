@@ -63,9 +63,10 @@ const Profitability: FC<any> = ({
     (state) => state.profitability,
   );
   const [triggerUpdate, setTriggerUpdate] = useState(false);
-
   const [newDataForProfit, setNewDataForProfit] = useState<any>([]);
   const [newDataForBundle, setNewDataForBundle] = useState<any>([]);
+  const [updateProfitabilityLoading, setUpdateProfitabilityLoading] =
+    useState<boolean>(false);
 
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
@@ -131,8 +132,8 @@ const Profitability: FC<any> = ({
       );
 
       setProfitabilityData(filteredDataa);
-      dispatch(setProfitability(filteredDataa));
     }
+    dispatch(setProfitability(profitabilityDataByQuoteId));
   }, [profitabilityDataByQuoteId, activeTab]);
 
   useEffect(() => {
@@ -855,49 +856,52 @@ const Profitability: FC<any> = ({
   };
 
   useEffect(() => {
-    const updateDataAndFetchProfitability = async () => {
-      const ProductFamily = profabilityUpdationState?.find(
-        (field: any) => field?.field === 'product_family',
-      )?.value;
-
-      if (updatedData?.length > 0) {
-        const ids = updatedData?.map((item: any) => item?.product_id);
-        let obj = {
-          id: ids,
-          product_family: ProductFamily,
-        };
-        await Promise.all(
-          updatedData?.map((item: any) =>
-            dispatch(updateProfitabilityById(item)),
-          ),
-        );
-        await dispatch(updateProductFamily(obj));
-
-        setProfabilityUpdationState([
-          {
-            id: 1,
-            field: null,
-            value: '',
-            label: '',
-          },
-        ]);
-        setShowUpdateLineItemModal(false);
-
-        const response = await dispatch(
-          getProfitabilityByQuoteId(Number(getQuoteID)),
-        );
-        const d = response?.payload;
-
-        if (d) {
-          setSelectedRowData([]);
-          setSelectedRowIds([]);
-          setProfitabilityData(d);
-          dispatch(setProfitability(d));
+    try {
+      const updateDataAndFetchProfitability = async () => {
+        const ProductFamily = profabilityUpdationState?.find(
+          (field: any) => field?.field === 'product_family',
+        )?.value;
+        if (updatedData?.length > 0) {
+          setUpdateProfitabilityLoading(true);
+          const ids = updatedData?.map((item: any) => item?.product_id);
+          let obj = {
+            id: ids,
+            product_family: ProductFamily,
+          };
+          await Promise.all(
+            updatedData?.map((item: any) =>
+              dispatch(updateProfitabilityById(item)),
+            ),
+          );
+          await dispatch(updateProductFamily(obj));
+          setProfabilityUpdationState([
+            {
+              id: 1,
+              field: null,
+              value: '',
+              label: '',
+            },
+          ]);
+          setShowUpdateLineItemModal(false);
+          const response = await dispatch(
+            getProfitabilityByQuoteId(Number(getQuoteID)),
+          );
+          const d = response?.payload;
+          if (d) {
+            setSelectedRowData([]);
+            setSelectedRowIds([]);
+            setProfitabilityData(d);
+            dispatch(setProfitability(d));
+          }
+          setUpdateProfitabilityLoading(false);
         }
-      }
-    };
-    dispatch(getAllBundle(getQuoteID));
-    updateDataAndFetchProfitability();
+      };
+      dispatch(getAllBundle(getQuoteID));
+      updateDataAndFetchProfitability();
+    } catch (err) {
+      setUpdateProfitabilityLoading(false);
+      console.log('Error', err);
+    }
   }, [updatedData, dispatch, getQuoteID]);
 
   return (
@@ -1031,7 +1035,7 @@ const Profitability: FC<any> = ({
       />
       <OsModal
         title={'Update LineItems'}
-        loading={loading}
+        loading={loading || updateProfitabilityLoading}
         body={
           <UpdatingLineItems
             profabilityUpdationState={profabilityUpdationState}

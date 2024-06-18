@@ -1,22 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unsafe-optional-chaining */
-/* eslint-disable array-callback-return */
-/* eslint-disable consistent-return */
-/* eslint-disable react/destructuring-assignment */
+'use client';
+
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsPieChart from '@/app/components/common/os-piechart';
 import Typography from '@/app/components/common/typography';
-import {totalRevenue, useRemoveDollarAndCommahook} from '@/app/utils/base';
+import {useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {FC, useEffect, useState} from 'react';
 
-// const Matrix: FC<any> = ({familyFilter}) => {
 const Matrix: FC<any> = ({familyFilter}) => {
   const [token] = useThemeToken();
   const [sectionData, setSectionData] = useState<
@@ -92,8 +84,6 @@ const Matrix: FC<any> = ({familyFilter}) => {
     },
   ]);
 
-  console.log('3543532432532', familyFilter);
-
   const getPieCellColor = (name: string) => {
     if (name === 'Unassigned') return token?.colorInfo;
     if (name === 'Professional Services') return token?.colorBorderSecondary;
@@ -101,7 +91,7 @@ const Matrix: FC<any> = ({familyFilter}) => {
     if (name === 'Products') return token?.colorPrimary;
     if (name === 'Maintenances') return token?.colorTextDisabled;
   };
-  console.log('familyFilterfamilyFilter1111', familyFilter);
+
   useEffect(() => {
     if (familyFilter.length > 0) {
       const tempArrRevenue: {
@@ -124,13 +114,13 @@ const Matrix: FC<any> = ({familyFilter}) => {
           const {line_amount, quantity, list_price} =
             QuoteLineItemData?.Product;
 
-          const revenue = totalRevenue(
-            useRemoveDollarAndCommahook(line_amount),
-            Number(quantity),
-          );
+          const revenue =
+            useRemoveDollarAndCommahook(line_amount) * Number(quantity);
+
           const ProfitValue =
             useRemoveDollarAndCommahook(line_amount) -
             useRemoveDollarAndCommahook(list_price);
+
           totalRevenueValue += revenue;
           totalProfitValue += ProfitValue;
         });
@@ -151,12 +141,14 @@ const Matrix: FC<any> = ({familyFilter}) => {
             color: getPieCellColor(element.name) ?? '',
           });
       });
+
       setSectionData((prev) =>
         prev.map((prevItem) => {
           if (prevItem.name === 'Revenue by Product Category') {
             return {...prevItem, pieData: tempArrRevenue};
+          } else {
+            return {...prevItem, pieData: tempArrProfit};
           }
-          return {...prevItem, pieData: tempArrProfit};
         }),
       );
     }
@@ -164,7 +156,7 @@ const Matrix: FC<any> = ({familyFilter}) => {
 
   return (
     <>
-      {familyFilter?.familyFilter?.length > 0 ? (
+      {familyFilter?.length > 0 ? (
         <Row gutter={[24, 24]} justify="space-between">
           {sectionData.map((item) => (
             <div

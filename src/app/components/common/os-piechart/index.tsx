@@ -32,7 +32,7 @@ const CustomTooltip = (props: any) => {
 };
 
 const OsPieChart: FC<any> = ({data}: any) => (
-  <PieChart width={650} height={230}>
+  <PieChart width={600} height={230}>
     <Pie
       data={data}
       cx={200}
