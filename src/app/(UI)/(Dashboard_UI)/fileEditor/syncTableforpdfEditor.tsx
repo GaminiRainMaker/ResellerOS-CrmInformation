@@ -75,9 +75,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const [token] = useThemeToken();
   const [syncTableQuoteLItemValues, setSyncTableQuoteLItemValues] =
     useState<any>(
-      // 's1ds' === 'sdsds'
-      //   ? quoteLineItemColumnForSync
-      SaleForceQuoteLineItemColumnSync,
+      quoteLineItemColumnForSync,
+      // SaleForceQuoteLineItemColumnSync,
     );
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');

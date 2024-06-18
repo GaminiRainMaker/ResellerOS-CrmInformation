@@ -16,7 +16,8 @@ import Typography from '@/app/components/common/typography';
 import {totalRevenue, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {FC, useEffect, useState} from 'react';
 
-const Matrix: FC<any> = (familyFilter: any) => {
+// const Matrix: FC<any> = ({familyFilter}) => {
+const Matrix: FC<any> = ({familyFilter}) => {
   const [token] = useThemeToken();
   const [sectionData, setSectionData] = useState<
     {
@@ -91,6 +92,8 @@ const Matrix: FC<any> = (familyFilter: any) => {
     },
   ]);
 
+  console.log('3543532432532', familyFilter);
+
   const getPieCellColor = (name: string) => {
     if (name === 'Unassigned') return token?.colorInfo;
     if (name === 'Professional Services') return token?.colorBorderSecondary;
@@ -98,9 +101,9 @@ const Matrix: FC<any> = (familyFilter: any) => {
     if (name === 'Products') return token?.colorPrimary;
     if (name === 'Maintenances') return token?.colorTextDisabled;
   };
-
+  console.log('familyFilterfamilyFilter1111', familyFilter);
   useEffect(() => {
-    if (familyFilter.familyFilter.length > 0) {
+    if (familyFilter.length > 0) {
       const tempArrRevenue: {
         id: number | string;
         name: string;
@@ -114,7 +117,7 @@ const Matrix: FC<any> = (familyFilter: any) => {
         color: string;
       }[] = [];
 
-      familyFilter.familyFilter.forEach((element: any) => {
+      familyFilter.forEach((element: any) => {
         let totalRevenueValue = 0;
         let totalProfitValue = 0;
         element?.QuoteLineItem?.map((QuoteLineItemData: any) => {
@@ -139,7 +142,6 @@ const Matrix: FC<any> = (familyFilter: any) => {
             value: Math.floor(totalRevenueValue) ?? 0,
             color: getPieCellColor(element.name) ?? '',
           });
-
 
         totalProfitValue > 0 &&
           tempArrProfit.push({

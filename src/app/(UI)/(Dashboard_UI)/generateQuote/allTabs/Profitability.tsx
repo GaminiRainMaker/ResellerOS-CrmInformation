@@ -50,13 +50,15 @@ const Profitability: FC<any> = ({
   showUpdateLineItemModal,
   selectTedRowData,
   activeTab,
+  familyFilter,
+  setFamilyFilter,
 }) => {
   const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
   const {data: bundleData} = useAppSelector((state) => state.bundle);
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
-  const [familyFilter, setFamilyFilter] = useState<any>([]);
+  // const [familyFilter, setFamilyFilter] = useState<any>([]);
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
     (state) => state.profitability,
   );

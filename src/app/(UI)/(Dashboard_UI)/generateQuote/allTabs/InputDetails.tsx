@@ -629,11 +629,8 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                                 onClick={(e) => {
                                                   console.log(
                                                     'item?.title',
-                                                    !item?.title
-                                                      ?.split('.')
-                                                      ?.includes('pdf'),
-                                                    item?.title?.split('.'),
-                                                    item?.title,
+                                                    item?.quoteLineItems
+                                                      ?.length === 0,
                                                   );
                                                   if (
                                                     item?.quoteLineItems
