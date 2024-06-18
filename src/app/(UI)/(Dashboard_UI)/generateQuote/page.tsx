@@ -37,6 +37,8 @@ import Validation from './allTabs/Validation';
 import AttachmentDocument from './allTabs/attachmentDoc';
 import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
+import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
+import {setProfitability} from '../../../../../redux/slices/profitability';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -117,7 +119,13 @@ const GenerateQuote: React.FC = () => {
         delete newObj?.Validations,
         setObjectForSyncingValues(newObj);
     });
+    // dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
+    //   if (d?.payload) {
+    //     dispatch(setProfitability(d?.payload));
+    //   }
+    // });
   }, []);
+
   useEffect(() => {
     if (activeTabRoute === '2') {
       setActiveTab('2');
@@ -231,7 +239,6 @@ const GenerateQuote: React.FC = () => {
     }
   }, [quoteLineItemByQuoteID]);
 
-  console.log('familyFilter', familyFilter, selectedFilter);
 
   const commonUpdateCompleteAndDraftMethod = (status: string) => {
     try {
