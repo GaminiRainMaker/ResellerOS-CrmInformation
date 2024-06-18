@@ -16,7 +16,11 @@ import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {formatStatus, quoteLineItemColumnForSync} from '@/app/utils/CONSTANTS';
+import {
+  SaleForceQuoteLineItemColumnSync,
+  formatStatus,
+  quoteLineItemColumnForSync,
+} from '@/app/utils/CONSTANTS';
 import {
   getLineItemsWithNonRepitive,
   getValuesOFLineItemsThoseNotAddedBefore,
@@ -70,7 +74,11 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   );
   const [token] = useThemeToken();
   const [syncTableQuoteLItemValues, setSyncTableQuoteLItemValues] =
-    useState<any>(quoteLineItemColumnForSync);
+    useState<any>(
+      // 's1ds' === 'sdsds'
+      //   ? quoteLineItemColumnForSync
+      SaleForceQuoteLineItemColumnSync,
+    );
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
@@ -79,7 +87,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
   const mergeedColumn: any = [];
 
-  
   const keys = mergedValue?.length > 0 && Object.keys(mergedValue?.[0]);
 
   if (keys) {

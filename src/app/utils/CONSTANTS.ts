@@ -67,6 +67,39 @@ export const quoteLineItemColumnForSync = [
   {value: 'description', label: 'DESCRIPTION'},
 ];
 
+export const SaleForceQuoteLineItemColumnSync =[
+  {label : 'Description' , value : 'description'},
+  {label : 'Product Code' , value : 'product_code'},
+  {label : 'Quantity' , value : 'quantity'},
+  {label : 'Line Amount' , value : 'line_amount'},
+  {label : 'Adjusted Price' , value : 'adjusted_price'},
+  {label : 'List Price' , value : 'list_price'},
+  {label : 'Line Number' , value : 'line_number'},
+  {label : 'Start Date' , value : 'start_date'},
+  {label : 'End Date' , value : 'end_date'},
+  {label : 'Serial Number' , value : 'serial_number'},
+  {label : 'Oem Name' , value : 'oem_name'},
+  {label : 'Availability' , value : 'availability'},
+  {label : 'Service Duration' , value : 'service_duration'},
+  {label : 'TD#' , value : 'td#'},
+  {label : 'Distributor Name' , value : 'distributor_name'},
+  {label : 'Line Type' , value : 'line_type'},
+  {label : 'Open Market' , value : 'open_market'},
+  {label : 'Model Id' , value : 'model_id'},
+  {label : 'Input' , value : 'input'},
+  {label : 'Gsa Price' , value : 'gsa_price'},
+  {label : 'MPN' , value : 'mpn'},
+  {label : 'Display Mpn' , value : 'display_mpn'},
+  {label : 'Taa Flag' , value : 'taa_flag'},
+  {label : 'Product Type' , value : 'product_type'},
+  {label : 'Epeat Flag' , value : 'epeat_flag'},
+  {label : 'Energy Star Flag' , value : 'energy_star_flag'},
+  {label : 'SS Part' , value : 'ss_part'},
+  {label : 'Notes' , value : 'notes'},
+  {label : 'Bundle Name' , value : 'bundle_name'},
+  
+  ]
+
 export const quoteColumns = [
   {value: 'cage_code', label: 'Stages'},
   {value: 'customer_address', label: 'Customer Address'},

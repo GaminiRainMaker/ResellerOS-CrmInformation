@@ -17,7 +17,7 @@ import {formatDate, useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
 import {Badge, Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
-import {useRouter, useSearchParams} from 'next/navigation';
+import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {
@@ -53,6 +53,8 @@ const GenerateQuote: React.FC = () => {
   const {quoteLineItemByQuoteID, loading} = useAppSelector(
     (state) => state.quoteLineItem,
   );
+
+  const pathname = usePathname();
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [selectTedRowData, setSelectedRowData] = useState<React.Key[]>([]);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
@@ -146,9 +148,9 @@ const GenerateQuote: React.FC = () => {
   }, [activeTab, tableColumnData]);
   useEffect(() => {
     setTimeout(() => {
-      if (activeTab === '1' && countOfFiles == 0) {
+      if (activeTab === '1' && countOfFiles === 0) {
         setActiveTab('2');
-      } else {
+      } else if (activeTab !== '2') {
         setActiveTab('1');
       }
     }, 3000);
@@ -603,7 +605,7 @@ const GenerateQuote: React.FC = () => {
                       />
                     )}
 
-                    {activeTab !== '6' && (
+                    {activeTab === '2' && (
                       <Space>
                         <OsDropdown menu={{items}} />
                       </Space>

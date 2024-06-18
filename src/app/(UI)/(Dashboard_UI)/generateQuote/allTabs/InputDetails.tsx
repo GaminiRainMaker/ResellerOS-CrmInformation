@@ -98,6 +98,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   const [defaultDataShow, setDefaultDataShow] = useState<boolean>(true);
   const [showExportAs, setShowExportAs] = useState<boolean>(true);
   const [showExportToTable, setShowExportToTable] = useState<boolean>(true);
+  const [indexOfVerifyFile, setIndexOfVerifyFile] = useState<any>();
 
   const openNotificationWithIcon = () => {
     api.warning({
@@ -528,6 +529,11 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   };
 
   const updateAllTablesData = async () => {
+    let newArrr = [...quoteLineItemByQuoteData1];
+    newArrr?.splice(indexOfVerifyFile, 1);
+    setQuoteLineItemByQuoteData1(newArrr);
+    let newCount = countOfFiles - 1;
+    setCountOFFiles(newCount);
     setConfirmedData(true);
     const isState = await updateTables(
       fileData,
@@ -539,8 +545,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       setConfirmedData(false);
       // dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
     }
-    let newCount = countOfFiles - 1;
-    setCountOFFiles(newCount);
+
     setTimeout(() => {
       setActiveTab('2');
     }, 1000);
@@ -557,122 +562,130 @@ const InputDetails: FC<InputDetailTabInterface> = ({
               {defaultDataShow ? (
                 <GlobalLoader loading={quoteFileDataLoading}>
                   {quoteLineItemByQuoteData1?.length > 0 ? (
-                    quoteLineItemByQuoteData1?.map((item: any) => {
-                      return (
-                        <OsCollapse
-                          items={[
-                            {
-                              key: '1',
-                              label: (
-                                <>
-                                  <Row justify="space-between">
-                                    <Col span={6}>
-                                      <p>{item?.title}</p>
-                                    </Col>
-                                    <Col span={6}>
-                                      <p>Line Items: {item?.totalCount}</p>
-                                    </Col>
-                                    <Col span={6}>
-                                      <p>
-                                        Total Cost: $
-                                        {abbreviate(
-                                          Number(
-                                            item?.totalAdjustedPrice ?? 0.0,
-                                          ),
-                                        )}
-                                      </p>
-                                    </Col>
-                                    <Col
-                                      span={6}
-                                      style={{
-                                        justifyContent: 'end',
-                                        display: 'flex',
-                                      }}
-                                    >
-                                      <Space>
-                                        <AvatarStyled
-                                          shape="square"
-                                          background={token?.colorSuccess}
-                                          size={28}
-                                          icon={
-                                            <CheckIcon
-                                              width={25}
-                                              color={token?.colorBgContainer}
-                                              onClick={(e) => {
-                                                e?.stopPropagation();
-                                                setShowVerificationFileModal(
-                                                  true,
-                                                );
-                                                setFileLineItemIds(item?.id);
-                                                setFileData(item);
-                                              }}
-                                            />
-                                          }
-                                        />
-                                        <AvatarStyled
-                                          shape="square"
-                                          background={token?.colorError}
-                                          size={28}
-                                          icon={
-                                            <XMarkIcon
-                                              width={25}
-                                              color={token?.colorBgContainer}
-                                              onClick={(e) => {
-                                                console.log(
-                                                  'item?.title',
-                                                  !item?.title
-                                                    ?.split('.')
-                                                    ?.includes('pdf'),
-                                                  item?.title?.split('.'),
-                                                );
-                                                if (
-                                                  item?.quoteLineItems
-                                                    ?.length === 0
-                                                ) {
-                                                  setShowExportAs(false);
-                                                } else {
-                                                  setShowExportAs(true);
-                                                }
-                                                if (
-                                                  !item?.title
-                                                    ?.split('.')
-                                                    ?.includes('pdf')
-                                                ) {
-                                                  setShowExportToTable(false);
-                                                } else {
-                                                  setShowExportToTable(true);
-                                                }
+                    quoteLineItemByQuoteData1?.map(
+                      (item: any, indexOfFile: number) => {
+                        return (
+                          <OsCollapse
+                            items={[
+                              {
+                                key: '1',
+                                label: (
+                                  <>
+                                    <Row justify="space-between">
+                                      <Col span={6}>
+                                        <p>{item?.title}</p>
+                                      </Col>
+                                      <Col span={6}>
+                                        <p>Line Items: {item?.totalCount}</p>
+                                      </Col>
+                                      <Col span={6}>
+                                        <p>
+                                          Total Cost: $
+                                          {abbreviate(
+                                            Number(
+                                              item?.totalAdjustedPrice ?? 0.0,
+                                            ),
+                                          )}
+                                        </p>
+                                      </Col>
+                                      <Col
+                                        span={6}
+                                        style={{
+                                          justifyContent: 'end',
+                                          display: 'flex',
+                                        }}
+                                      >
+                                        <Space>
+                                          <AvatarStyled
+                                            shape="square"
+                                            background={token?.colorSuccess}
+                                            size={28}
+                                            icon={
+                                              <CheckIcon
+                                                width={25}
+                                                color={token?.colorBgContainer}
+                                                onClick={(e) => {
+                                                  setIndexOfVerifyFile(
+                                                    indexOfFile,
+                                                  );
+                                                  e?.stopPropagation();
+                                                  setShowVerificationFileModal(
+                                                    true,
+                                                  );
+                                                  setFileLineItemIds(item?.id);
+                                                  setFileData(item);
+                                                }}
+                                              />
+                                            }
+                                          />
+                                          <AvatarStyled
+                                            shape="square"
+                                            background={token?.colorError}
+                                            size={28}
+                                            icon={
+                                              <XMarkIcon
+                                                width={25}
+                                                color={token?.colorBgContainer}
+                                                onClick={(e) => {
+                                                  console.log(
+                                                    'item?.title',
+                                                    !item?.title
+                                                      ?.split('.')
+                                                      ?.includes('pdf'),
+                                                    item?.title?.split('.'),
+                                                    item?.title,
+                                                  );
+                                                  if (
+                                                    item?.quoteLineItems
+                                                      ?.length === 0
+                                                  ) {
+                                                    setShowExportAs(false);
+                                                  } else {
+                                                    setShowExportAs(true);
+                                                  }
+                                                  if (
+                                                    !item?.title
+                                                      ?.split('.')
+                                                      ?.includes('pdf')
+                                                  ) {
+                                                    setShowExportToTable(false);
+                                                  } else {
+                                                    setShowExportToTable(true);
+                                                  }
 
-                                                // setShowExportAs
-                                                e?.stopPropagation();
-                                                setShowRaiseConcernModal(true);
-                                                setFileLineItemIds(item?.id);
+                                                  // setShowExportAs
+                                                  e?.stopPropagation();
+                                                  setShowRaiseConcernModal(
+                                                    true,
+                                                  );
+                                                  setFileLineItemIds(item?.id);
 
-                                                setFileData(item);
-                                              }}
-                                            />
-                                          }
-                                        />
-                                      </Space>
-                                    </Col>
-                                  </Row>
-                                </>
-                              ),
-                              children: (
-                                <OsTableWithOutDrag
-                                  columns={finalInputColumn}
-                                  dataSource={item?.quoteLineItems || []}
-                                  rowSelection={rowSelection}
-                                  scroll
-                                  loading={false}
-                                  locale={locale}
-                                />
-                              ),
-                            },
-                          ]}
-                        />
-                      );
-                    })
+                                                  setFileData(item);
+                                                }}
+                                              />
+                                            }
+                                          />
+                                        </Space>
+                                      </Col>
+                                    </Row>
+                                  </>
+                                ),
+                                children: (
+                                  <OsTableWithOutDrag
+                                    columns={finalInputColumn}
+                                    dataSource={item?.quoteLineItems || []}
+                                    rowSelection={rowSelection}
+                                    scroll
+                                    loading={false}
+                                    locale={locale}
+                                  />
+                                ),
+                              },
+                            ]}
+                          />
+                        );
+                      },
+                    )
                   ) : (
                     <OsTableWithOutDrag
                       columns={finalInputColumn}
