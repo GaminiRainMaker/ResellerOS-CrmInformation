@@ -3,9 +3,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {sendDataToNanonets} from '@/app/utils/base';
 import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
-import {Form, notification} from 'antd';
+import {Form} from 'antd';
 import React, {useEffect, useState} from 'react';
-import {useAppSelector} from '../../../../../redux/hook';
+import {getQuotesByExistingQuoteFilter} from '../../../../../redux/actions/quote';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {Col, Row} from '../antd/Grid';
 import {Space} from '../antd/Space';
 import {Switch} from '../antd/Switch';
@@ -34,10 +35,12 @@ const OsUpload: React.FC<any> = ({
   quoteDetails,
 }) => {
   const [token] = useThemeToken();
+  const dispatch = useAppDispatch();
   const [fileList, setFileList] = useState([]);
   const [customerValue, setCustomerValue] = useState<number>();
+  const [opportunityValue, setOpportunityValue] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
-  const {filteredByDate: filteredData, loading: quoteLoading} = useAppSelector(
+  const {getExistingQuoteFilterData, loading: quoteLoading} = useAppSelector(
     (state) => state.quote,
   );
   useEffect(() => {
@@ -104,6 +107,15 @@ const OsUpload: React.FC<any> = ({
     },
   };
 
+  useEffect(() => {
+    dispatch(
+      getQuotesByExistingQuoteFilter({
+        customer: customerValue,
+        opportunity: opportunityValue,
+      }),
+    );
+  }, [customerValue, opportunityValue]);
+
   return (
     <GlobalLoader loading={cardLoading || loading}>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -135,6 +147,33 @@ const OsUpload: React.FC<any> = ({
           uploadFileData={uploadFileData}
           setUploadFileData={setUploadFileData}
         />
+
+        <Form
+          layout="vertical"
+          requiredMark={false}
+          form={form}
+          onFinish={onFinish}
+        >
+          <Row gutter={[16, 16]}>
+            <Col sm={24} md={12}>
+              <OsCustomerSelect
+                setCustomerValue={setCustomerValue}
+                customerValue={customerValue}
+                isAddNewCustomer
+              />
+            </Col>
+
+            <Col sm={24} md={12}>
+              <OsOpportunitySelect
+                form={form}
+                customerValue={customerValue}
+                isAddNewOpportunity
+                setOpportunityValue={setOpportunityValue}
+              />
+            </Col>
+          </Row>
+        </Form>
+
         {!isGenerateQuote && (
           <>
             <Space size={30} direction="horizontal" align="center">
@@ -143,45 +182,19 @@ const OsUpload: React.FC<any> = ({
               </Typography>
               <Switch size="default" onChange={onToggleChange} />
             </Space>
+
             {showToggleTable && (
               <OsTable
                 loading={quoteLoading}
                 rowSelection={rowSelection}
                 tableSelectionType="radio"
                 columns={Quotecolumns}
-                dataSource={filteredData}
+                dataSource={getExistingQuoteFilterData}
                 scroll
               />
             )}
           </>
         )}
-
-        <Form
-          layout="vertical"
-          requiredMark={false}
-          form={form}
-          onFinish={onFinish}
-        >
-          {!existingQuoteId && (
-            <Row gutter={[16, 16]}>
-              <Col sm={24} md={12}>
-                <OsCustomerSelect
-                  setCustomerValue={setCustomerValue}
-                  customerValue={customerValue}
-                  isAddNewCustomer
-                />
-              </Col>
-
-              <Col sm={24} md={12}>
-                <OsOpportunitySelect
-                  form={form}
-                  customerValue={customerValue}
-                  isAddNewOpportunity
-                />
-              </Col>
-            </Row>
-          )}
-        </Form>
       </Space>
     </GlobalLoader>
   );

@@ -34,7 +34,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
 import UpdatingLineItems from '../UpdatingLineItems';
-import {Input} from 'antd';
+import {Input, Pagination} from 'antd';
 
 const Profitability: FC<any> = ({
   tableColumnDataShow,
@@ -935,16 +935,19 @@ const Profitability: FC<any> = ({
                     </Space>
                   </>
                 ),
-                // children: item?.children,
                 children: (
                   <OsTableWithOutDrag
                     loading={loading}
-                    // rowSelection={rowSelection}
                     columns={finalProfitTableCol}
                     dataSource={item?.Profitabilities || []}
                     scroll
                     rowSelection={rowSelection}
                     locale={locale}
+                    pagination={{
+                      total: item?.Profitabilities?.length,
+                      defaultPageSize: 10,
+                      defaultCurrent: 1,
+                    }}
                   />
                 ),
               },

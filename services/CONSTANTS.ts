@@ -22,6 +22,7 @@ export const API = {
     UpdateQuoteStatusById: '/quote/updateQuoteStatusById',
     QueryAllManualQuotes: '/quote/queryAllManualQuotes',
     GetAllQuotesByOrganization: '/quote/getAllQuotesByOrganization',
+    GetQuotesByExistingQuoteFilter: '/quote/getQuotesByExistingQuoteFilter',
   },
   QUOTE_LINE_ITEM: {
     INDEX: '/quoteLineItem',

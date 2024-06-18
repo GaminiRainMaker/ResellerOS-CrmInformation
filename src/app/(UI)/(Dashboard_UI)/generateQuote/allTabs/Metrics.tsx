@@ -190,7 +190,7 @@ const Matrix: FC<any> = (familyFilter: any) => {
         </Row>
       ) : (
         <EmptyContainer
-          title="Please Select Grouping to view Matrics"
+          title="Please Select Grouping to view Metrics"
           MetricsIcon
         />
       )}

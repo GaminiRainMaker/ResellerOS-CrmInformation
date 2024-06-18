@@ -29,8 +29,8 @@ import {
 import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import QuoteAnalytics from './analytics';
-import {tabItems} from './constants';
-import {getColumns} from './tableColumns';
+import {getTabItems} from './constants';
+import {getColumns, getExistingQuoteColumns} from './tableColumns';
 import DailogModal from '@/app/components/common/os-modal/DialogModal';
 import {CheckCircleIcon, XCircleIcon} from '@heroicons/react/24/outline';
 
@@ -115,7 +115,7 @@ const AllQuote: React.FC = () => {
             ? quoteData?.filter(
                 (item: any) =>
                   item?.status?.includes('Needs Review') &&
-                  item?.approver_id === userInformation?.id,
+                  userInformation?.Admin,
               )
             : activeTab === '4'
               ? quoteData?.filter(
@@ -170,6 +170,9 @@ const AllQuote: React.FC = () => {
       router.push(`/generateQuote?id=${quoteId}&inReviewQuote=${false}`);
     }
   };
+  const quoteNameNavigation = (quoteId: string) => {
+    window.open(`/generateQuote?id=${quoteId}&inReviewQuote=${false}`);
+  };
 
   const updateStatus = (quoteId: string, status: string) => {
     if (quoteId && status) {
@@ -198,6 +201,15 @@ const AllQuote: React.FC = () => {
   const Quotecolumns = getColumns(
     token,
     editQuote,
+    setDeleteIds,
+    setShowModalDelete,
+    activeTab,
+    updateStatus,
+  );
+
+  const ExitingQuotecolumns = getExistingQuoteColumns(
+    token,
+    quoteNameNavigation,
     setDeleteIds,
     setShowModalDelete,
     activeTab,
@@ -250,6 +262,7 @@ const AllQuote: React.FC = () => {
       ),
     },
   ];
+  const tabItems = getTabItems(userInformation?.Admin);
 
   return (
     <>
@@ -284,7 +297,7 @@ const AllQuote: React.FC = () => {
                 buttonText="Add Quote"
                 setShowToggleTable={setShowToggleTable}
                 showToggleTable={showToggleTable}
-                Quotecolumns={Quotecolumns}
+                Quotecolumns={ExitingQuotecolumns}
               />
 
               <Space>

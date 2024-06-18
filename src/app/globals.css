@@ -92,16 +92,16 @@ a {
 
 
 .ant-layout {
-  /* flex: none; */
+  flex: none;
 }
 
 .ant-layout .ant-layout-sider-light {
-  min-height: 89.5vh;
+  min-height: 85vh;
 }
 
 .ant-menu-light.ant-menu-root.ant-menu-inline {
   border-inline-end: none;
-  margin-top: 26px;
+  /* margin-top: 26px; */
 }
 
 
