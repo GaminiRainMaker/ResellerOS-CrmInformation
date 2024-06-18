@@ -67,6 +67,7 @@ const GenerateQuote: React.FC = () => {
     useState<boolean>(false);
   const [selectedFilter, setSelectedFilter] = useState<string>('File Name');
   const [familyFilter, setFamilyFilter] = useState<any>([]);
+
   const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] =
     useState<any>();
   const {data: tableColumnData} = useAppSelector((state) => state.tableColumn);
@@ -361,6 +362,8 @@ const GenerateQuote: React.FC = () => {
           isDeleteProfitabilityModal={isDeleteProfitabilityModal}
           setIsDeleteProfitabilityModal={setIsDeleteProfitabilityModal}
           activeTab={activeTab}
+          familyFilter={familyFilter}
+          setFamilyFilter={setFamilyFilter}
         />
       ),
     },
