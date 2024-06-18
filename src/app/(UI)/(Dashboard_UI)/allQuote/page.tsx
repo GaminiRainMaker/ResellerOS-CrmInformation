@@ -29,7 +29,7 @@ import {
 import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import QuoteAnalytics from './analytics';
-import {tabItems} from './constants';
+import {getTabItems} from './constants';
 import {getColumns, getExistingQuoteColumns} from './tableColumns';
 import DailogModal from '@/app/components/common/os-modal/DialogModal';
 import {CheckCircleIcon, XCircleIcon} from '@heroicons/react/24/outline';
@@ -115,7 +115,7 @@ const AllQuote: React.FC = () => {
             ? quoteData?.filter(
                 (item: any) =>
                   item?.status?.includes('Needs Review') &&
-                  item?.approver_id === userInformation?.id,
+                  userInformation?.Admin,
               )
             : activeTab === '4'
               ? quoteData?.filter(
@@ -206,7 +206,7 @@ const AllQuote: React.FC = () => {
     activeTab,
     updateStatus,
   );
-  
+
   const ExitingQuotecolumns = getExistingQuoteColumns(
     token,
     quoteNameNavigation,
@@ -262,6 +262,7 @@ const AllQuote: React.FC = () => {
       ),
     },
   ];
+  const tabItems = getTabItems(userInformation?.Admin);
 
   return (
     <>
