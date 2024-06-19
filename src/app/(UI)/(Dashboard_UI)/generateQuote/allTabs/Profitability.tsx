@@ -642,7 +642,7 @@ const Profitability: FC<any> = ({
         );
         let updatedValue;
         if (bundleDatass) {
-          updatedValue = bundleDatass?.quantity * record?.unit_price;
+          updatedValue =  record?.unit_price;
         } else {
           updatedValue = record?.unit_price;
         }
@@ -725,7 +725,7 @@ const Profitability: FC<any> = ({
         let updatedValue;
         if (bundleDatass) {
           updatedValue =
-            bundleDatass?.quantity * record?.gross_profit_percentage;
+           record?.gross_profit_percentage;
         } else {
           updatedValue = record?.gross_profit_percentage;
         }
