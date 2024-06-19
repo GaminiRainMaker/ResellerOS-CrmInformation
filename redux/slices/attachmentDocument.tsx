@@ -4,6 +4,7 @@ import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
   insertAttachmentDocument,
   getAllAttachmentDocument,
+  deleteAttachDocumentById,
 } from '../actions/attachmentDocument';
 
 type AttachmentDocumentState = {
@@ -11,12 +12,14 @@ type AttachmentDocumentState = {
   error: string | null;
   data: any;
   attachmentDocument: any;
+  attachment: any;
 };
 const initialState: AttachmentDocumentState = {
   loading: false,
   error: null,
   data: [],
   attachmentDocument: [],
+  attachment: [],
 };
 
 const attachmentDocumentSlice = createSlice({
@@ -24,7 +27,7 @@ const attachmentDocumentSlice = createSlice({
   initialState,
   reducers: {
     setAttachmentDocument: (state, action) => {
-      state.attachmentDocument = action.payload;
+      state.attachment = action.payload;
     },
   },
   extraReducers(builder) {
@@ -37,7 +40,7 @@ const attachmentDocumentSlice = createSlice({
         insertAttachmentDocument.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = [action.payload];
+          state.attachmentDocument = action.payload;
         },
       )
       .addCase(
@@ -60,6 +63,24 @@ const attachmentDocumentSlice = createSlice({
       )
       .addCase(
         getAllAttachmentDocument.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(deleteAttachDocumentById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        deleteAttachDocumentById.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.attachmentDocument = action.payload;
+        },
+      )
+      .addCase(
+        deleteAttachDocumentById.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

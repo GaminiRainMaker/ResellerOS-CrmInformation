@@ -116,6 +116,7 @@ export const API = {
   },
   ATTACHMENTDOCUMENT: {
     INDEX: '/AttachmentDocument',
+    DeletebyId: '/AttachmentDocument/deleteAttachDocumentById',
   },
   FORMSTACK: {
     INDEX: '/formStackTable',
@@ -203,7 +204,7 @@ export const API = {
   QUOTE_FILE: {
     INDEX: '/quoteFile',
     QUERY: '/quoteFile/query',
-    DeleteById: '/quoteFile/deleteById',
+    DeleteById: '/quoteFile/deleteQuoteFileById',
     UpdateQuoteFileById: '/quoteFile/updateQuoteFileById',
     GetQuoteFileByQuoteId: '/quoteFile/getQuoteFileByQuoteId',
     QuoteFileVerification: '/quoteFile/quoteFileVerification',

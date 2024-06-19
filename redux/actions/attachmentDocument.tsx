@@ -25,3 +25,14 @@ export const getAllAttachmentDocument = createAsyncThunk(
     }
   },
 );
+export const deleteAttachDocumentById = createAsyncThunk(
+  'AttachmentDocument/deleteAttachDocumentById',
+  async (id: any, thunkApi) => {
+    try {
+      const res = await ATTACHMENTDOCUMENT_API.deleteById(id);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

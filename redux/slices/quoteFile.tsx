@@ -3,7 +3,7 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
   UpdateQuoteFileById,
-  deleteQuoteById,
+  deleteQuoteFileById,
   getAllQuoteFile,
   insertQuoteFile,
   getQuoteFileByQuoteId,
@@ -75,19 +75,19 @@ const quoteFileSlice = createSlice({
           state.error = action.payload;
         },
       )
-      .addCase(deleteQuoteById.pending, (state) => {
+      .addCase(deleteQuoteFileById.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        deleteQuoteById.fulfilled,
+        deleteQuoteFileById.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.data = action.payload;
         },
       )
       .addCase(
-        deleteQuoteById.rejected,
+        deleteQuoteFileById.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

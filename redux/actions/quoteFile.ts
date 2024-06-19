@@ -50,7 +50,7 @@ export const quoteFileVerification = createAsyncThunk(
   },
 );
 
-export const deleteQuoteById = createAsyncThunk(
+export const deleteQuoteFileById = createAsyncThunk(
   'quoteFile/delete',
   async (data: any, thunkApi) => {
     try {

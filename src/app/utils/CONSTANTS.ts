@@ -44,7 +44,6 @@ export const StageValue = [
 export const ContractConfigurationColumn = [
   {value: 'quote', label: 'Quote'},
   {value: 'opportunity', label: 'Opportunity'},
-  {value: 'quote_line_item', label: 'Quote Line Item'},
 ];
 
 export const opportunityColumn = [
@@ -211,7 +210,7 @@ export const ContractOperatorsOptions = [
 
 export const quoteAndOpportunityLineItemOptions = [
   {value: 'line_number', label: 'Line Number'},
-  {value: 'adjusted_price', label: 'Adjustet Price'},
+  {value: 'adjusted_price', label: 'Adjusted Price'},
   {value: 'product_code', label: 'Product Code'},
   {value: 'line_amount', label: 'Line Amount'},
   {value: 'list_price', label: 'List Price'},

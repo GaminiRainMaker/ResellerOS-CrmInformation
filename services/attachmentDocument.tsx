@@ -8,4 +8,6 @@ export const ATTACHMENTDOCUMENT_API = {
   post: (data: any) => post(API.ATTACHMENTDOCUMENT.INDEX, data),
   get: (id: any) =>
     get(`${API.ATTACHMENTDOCUMENT.INDEX}/${id}`) as Promise<AxiosResponse<any>>,
+  deleteById: (data: any) =>
+    post(API.ATTACHMENTDOCUMENT.DeletebyId, data) as Promise<AxiosResponse<[]>>,
 };
