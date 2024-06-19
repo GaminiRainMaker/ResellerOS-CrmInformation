@@ -40,9 +40,8 @@ const OsUpload: React.FC<any> = ({
   const [customerValue, setCustomerValue] = useState<number>();
   const [opportunityValue, setOpportunityValue] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
-  const {getExistingQuoteFilterData, loading: quoteLoading} = useAppSelector(
-    (state) => state.quote,
-  );
+  const {getExistingQuoteFilterData, getExistingQuoteFilterLoading} =
+    useAppSelector((state) => state.quote);
   useEffect(() => {
     const newrrr: any = [...fileList];
     if (uploadFileData && uploadFileData?.length > 0) {
@@ -147,13 +146,14 @@ const OsUpload: React.FC<any> = ({
           uploadFileData={uploadFileData}
           setUploadFileData={setUploadFileData}
         />
-        {!isGenerateQuote && (
-          <Form
-            layout="vertical"
-            requiredMark={false}
-            form={form}
-            onFinish={onFinish}
-          >
+
+        <Form
+          layout="vertical"
+          requiredMark={false}
+          form={form}
+          onFinish={onFinish}
+        >
+          {!isGenerateQuote && (
             <Row gutter={[16, 16]}>
               <Col sm={24} md={12}>
                 <OsCustomerSelect
@@ -169,11 +169,12 @@ const OsUpload: React.FC<any> = ({
                   customerValue={customerValue}
                   isAddNewOpportunity
                   setOpportunityValue={setOpportunityValue}
+                  isRequired={showToggleTable ? false : true}
                 />
               </Col>
             </Row>
-          </Form>
-        )}
+          )}
+        </Form>
 
         {!isGenerateQuote && (
           <>
@@ -186,7 +187,7 @@ const OsUpload: React.FC<any> = ({
 
             {showToggleTable && (
               <OsTable
-                loading={quoteLoading}
+                loading={getExistingQuoteFilterLoading}
                 rowSelection={rowSelection}
                 tableSelectionType="radio"
                 columns={Quotecolumns}

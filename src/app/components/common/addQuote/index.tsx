@@ -339,7 +339,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
     setShowModal(false);
     setUploadFileData([]);
     if (singleQuote || updatedArr?.length === 1) {
-      router.push(`/generateQuote?id=${quotesArr[0]?.id}`);
+      router.push(`/generateQuote?id=${quotesArr[0]?.id}&inReviewQuote=false`);
       if (isGenerateQuotePage) {
         location.reload();
       }

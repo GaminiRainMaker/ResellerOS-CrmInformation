@@ -868,6 +868,7 @@ const Profitability: FC<any> = ({
             id: ids,
             product_family: ProductFamily,
           };
+          // console.log('updatedData', updatedData, 'obj', obj);
           await Promise.all(
             updatedData?.map((item: any) =>
               dispatch(updateProfitabilityById(item)),

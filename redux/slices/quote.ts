@@ -26,10 +26,12 @@ type QuoteState = {
   quoteById: any;
   getAllQuotesDataByOrganization: any;
   getExistingQuoteFilterData: any;
+  getExistingQuoteFilterLoading: any;
 };
 const initialState: QuoteState = {
   loading: false,
   quoteByIdLoading: false,
+  getExistingQuoteFilterLoading: false,
   error: null,
   data: [],
   quote: [],
@@ -236,20 +238,20 @@ const quoteSlice = createSlice({
         },
       )
       .addCase(getQuotesByExistingQuoteFilter.pending, (state) => {
-        state.loading = true;
+        state.getExistingQuoteFilterLoading = true;
         state.error = null;
       })
       .addCase(
         getQuotesByExistingQuoteFilter.fulfilled,
         (state, action: PayloadAction<any>) => {
-          state.loading = false;
+          state.getExistingQuoteFilterLoading = false;
           state.getExistingQuoteFilterData = action.payload;
         },
       )
       .addCase(
         getQuotesByExistingQuoteFilter.rejected,
         (state, action: PayloadAction<any>) => {
-          state.loading = false;
+          state.getExistingQuoteFilterLoading = false;
           state.error = action.payload;
         },
       );

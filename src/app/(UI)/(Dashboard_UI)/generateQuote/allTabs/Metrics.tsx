@@ -112,14 +112,11 @@ const Matrix: FC<any> = ({familyFilter}) => {
         let totalProfitValue = 0;
         element?.QuoteLineItem?.map((QuoteLineItemData: any) => {
           const {line_amount, quantity, list_price} =
-            QuoteLineItemData?.Product;
+            QuoteLineItemData;
 
-          const revenue =
-            useRemoveDollarAndCommahook(line_amount) * Number(quantity);
+          const revenue = Number(line_amount) ?? 1 * Number(quantity);
 
-          const ProfitValue =
-            useRemoveDollarAndCommahook(line_amount) -
-            useRemoveDollarAndCommahook(list_price);
+          const ProfitValue = Number(line_amount) ?? 0 - Number(list_price);
 
           totalRevenueValue += revenue;
           totalProfitValue += ProfitValue;
@@ -158,7 +155,7 @@ const Matrix: FC<any> = ({familyFilter}) => {
     <>
       {familyFilter?.length > 0 ? (
         <Row gutter={[24, 24]} justify="space-between">
-          {sectionData.map((item) => (
+          {sectionData?.map((item) => (
             <div
               style={{
                 padding: '18px',
@@ -171,9 +168,7 @@ const Matrix: FC<any> = ({familyFilter}) => {
                 <Space direction="vertical">
                   <Typography name="Body 1/Regular">{item.name}</Typography>
                   <Typography name="Body 3/Regular">
-                    {familyFilter?.selectedFilter
-                      ? `(${familyFilter?.selectedFilter})`
-                      : ''}
+                    (Product Family)
                   </Typography>
                 </Space>
 
