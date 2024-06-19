@@ -12,28 +12,42 @@ import {useAppSelector} from '../../../../../redux/hook';
 
 const QuoteAnalytics = () => {
   const {filteredByDate: filteredData} = useAppSelector((state) => state.quote);
-  const {userInformation} = useAppSelector((state) => state.user);
   const [token] = useThemeToken();
+  const {userInformation} = useAppSelector((state) => state.user);
 
-  const completedQuote = filteredData?.filter(
-    (item: any) => item?.status === 'Completed',
+  const allQuotes = filteredData?.filter((item: any) =>
+    userInformation?.Admin
+      ? filteredData
+      : item?.user_id === userInformation?.id,
   );
-  const needsReviewQuote = filteredData?.filter(
-    (item: any) =>
-      item?.status === 'Needs Review' &&
-      item?.completed_by === userInformation?.id,
+  const draftedQuote = filteredData?.filter((item: any) =>
+    userInformation?.Admin
+      ? item?.status === 'Drafts'
+      : item?.status === 'Drafts' && userInformation?.id === item?.user_id,
   );
-  const draftedQuote = filteredData?.filter(
-    (item: any) => item?.status === 'Drafts',
+
+  const inProgressQuote = filteredData?.filter((item: any) =>
+    userInformation?.Admin
+      ? item?.status === 'In Progress'
+      : item?.status === 'In Progress' && userInformation?.id === item?.user_id,
   );
-  const inProgressQuote = filteredData?.filter(
-    (item: any) => item?.status === 'In Progress',
+  const needsReviewQuote = filteredData?.filter((item: any) =>
+    userInformation?.Admin
+      ? item?.status === 'Needs Review'
+      : item?.status === 'Needs Review' &&
+        userInformation?.id === item?.user_id,
+  );
+
+  const approvedQuotes = filteredData?.filter((item: any) =>
+    userInformation?.Admin
+      ? item?.status === 'Approved'
+      : item?.status === 'Approved' && userInformation?.id === item?.user_id,
   );
 
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{filteredData?.length}</div>,
+      primary: <div>{allQuotes?.length}</div>,
       secondry: 'Total Quotes',
       icon: <QueueListIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
@@ -61,8 +75,8 @@ const QuoteAnalytics = () => {
     },
     {
       key: 5,
-      primary: <div>{completedQuote?.length}</div>,
-      secondry: 'Completed',
+      primary: <div>{approvedQuotes?.length}</div>,
+      secondry: 'Approved',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
     },

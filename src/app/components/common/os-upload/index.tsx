@@ -160,6 +160,7 @@ const OsUpload: React.FC<any> = ({
                   setCustomerValue={setCustomerValue}
                   customerValue={customerValue}
                   isAddNewCustomer
+                  isRequired={showToggleTable ? false : true}
                 />
               </Col>
 

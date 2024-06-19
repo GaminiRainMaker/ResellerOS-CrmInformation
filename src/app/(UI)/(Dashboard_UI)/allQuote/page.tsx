@@ -29,7 +29,7 @@ import {
 import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import QuoteAnalytics from './analytics';
-import {getTabItems} from './constants';
+import {tabItems} from './constants';
 import {getColumns, getExistingQuoteColumns} from './tableColumns';
 import DailogModal from '@/app/components/common/os-modal/DialogModal';
 import {CheckCircleIcon, XCircleIcon} from '@heroicons/react/24/outline';
@@ -45,7 +45,6 @@ const AllQuote: React.FC = () => {
   const router = useRouter();
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [quoteData, setQuoteData] = useState<React.Key[]>([]);
-  const [deletedQuote, setDeletedQuote] = useState<React.Key[]>([]);
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
   const [showApprovedDialogModal, setShowApprovedDialogModal] =
     useState<boolean>(false);
@@ -75,13 +74,9 @@ const AllQuote: React.FC = () => {
 
   useEffect(() => {
     if (filteredData && filteredData?.length > 0) {
-      const deleted = filteredData?.filter((item: any) => item?.is_deleted);
-      const notDeleted = filteredData?.filter((item: any) => !item?.is_deleted);
-      setQuoteData(notDeleted);
-      setDeletedQuote(deleted);
+      setQuoteData(filteredData);
     } else {
       setQuoteData([]);
-      setDeletedQuote([]);
     }
   }, [filteredData]);
 
@@ -109,37 +104,52 @@ const AllQuote: React.FC = () => {
       const quoteItems =
         activeTab === '3'
           ? quoteData?.filter((item: any) =>
-              item?.status?.includes('In Progress'),
+              userInformation?.Admin
+                ? item?.status?.includes('In Progress')
+                : userInformation?.id === item?.user_id &&
+                  item?.status?.includes('In Progress'),
             )
           : activeTab === '5'
-            ? quoteData?.filter(
-                (item: any) =>
-                  item?.status?.includes('Needs Review') &&
-                  userInformation?.Admin,
+            ? quoteData?.filter((item: any) =>
+                userInformation?.Admin
+                  ? item?.status?.includes('Needs Review') &&
+                    item?.user_id !== userInformation?.id
+                  : item?.status?.includes('Needs Review') &&
+                    item?.approver_id === userInformation?.id,
               )
             : activeTab === '4'
-              ? quoteData?.filter(
-                  (item: any) =>
-                    item?.status?.includes('Needs Review') &&
-                    item?.completed_by === userInformation?.id,
+              ? quoteData?.filter((item: any) =>
+                  userInformation?.Admin
+                    ? item?.status?.includes('Needs Review')
+                    : item?.status?.includes('Needs Review') &&
+                      item?.completed_by === userInformation?.id,
                 )
               : activeTab === '1'
-                ? quoteData
+                ? userInformation?.Admin
+                  ? quoteData
+                  : quoteData?.filter(
+                      (item: any) => item?.user_id === userInformation?.id,
+                    )
                 : activeTab === '6'
-                  ? quoteData?.filter(
-                      (item: any) =>
-                        item?.status?.includes('Approved') &&
-                        item?.completed_by === userInformation?.id,
+                  ? quoteData?.filter((item: any) =>
+                      userInformation?.Admin
+                        ? item?.status?.includes('Approved')
+                        : item?.status?.includes('Approved') &&
+                          item?.user_id === userInformation?.id,
                     )
                   : activeTab === '7'
-                    ? quoteData?.filter(
-                        (item: any) =>
-                          item?.status?.includes('Rejected') &&
-                          item?.completed_by === userInformation?.id,
+                    ? quoteData?.filter((item: any) =>
+                        userInformation?.Admin
+                          ? item?.status?.includes('Rejected')
+                          : item?.status?.includes('Rejected') &&
+                            item?.user_id === userInformation?.id,
                       )
                     : activeTab === '2'
                       ? quoteData?.filter((item: any) =>
-                          item?.status?.includes('Drafts'),
+                          userInformation?.Admin
+                            ? item?.status?.includes('Drafts')
+                            : userInformation?.id === item?.user_id &&
+                              item?.status?.includes('Drafts'),
                         )
                       : [];
       setActiveQuotes(quoteItems);
@@ -262,7 +272,6 @@ const AllQuote: React.FC = () => {
       ),
     },
   ];
-  const tabItems = getTabItems(userInformation?.Admin);
 
   return (
     <>
