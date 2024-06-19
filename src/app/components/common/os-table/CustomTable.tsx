@@ -2,7 +2,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable consistent-return */
 import {PaginationProps} from 'antd';
-import {FC} from 'react';
+import {FC, useState} from 'react';
 import useThemeToken from '../hooks/useThemeToken';
 import GlobalLoader from '../os-global-loader';
 import {CustomTable} from './styled-components';
@@ -16,7 +16,7 @@ const OsTableWithOutDrag: FC<any> = ({
   tableSelectionType = 'checkbox',
   scrolly = 1000,
   tablePageSize = 10,
-  pagination,
+  showPagination,
   ...rest
 }) => {
   const [token] = useThemeToken();
@@ -30,6 +30,20 @@ const OsTableWithOutDrag: FC<any> = ({
       return <>{type === 'prev' ? 'Previous' : 'Next'}</>;
     }
     return originalElement;
+  };
+
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    total: 0,
+  });
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPagination({
+      ...pagination,
+      current: page,
+      pageSize,
+    });
   };
 
   return (
@@ -51,17 +65,16 @@ const OsTableWithOutDrag: FC<any> = ({
         indicator: <GlobalLoader loading={rest.loading} />,
         spinning: rest.loading,
       }}
-      // pagination={
-      //   paginationProps
-      //     ? {
-      //         ...rest.pagination,
-      //         pageSize: tablePageSize,
-      //         itemRender,
-      //         showQuickJumper: false,
-      //       }
-      //     : false
-      // }
-      pagination={pagination}
+      pagination={{
+        current: pagination.current,
+        pageSize: pagination.pageSize,
+        total: pagination.total,
+        onChange: handlePaginationChange,
+        position: ['bottomRight'],
+        showSizeChanger: true,
+        pageSizeOptions: [10, 20, 30, 50, 100],
+        // hideOnSinglePage: true,
+      }}
       scroll={
         scrolly
           ? {y: scrolly as number}
