@@ -24,6 +24,8 @@ const OsModal: FC<OSModalPropsInterface> = ({
   thirdButtonText,
   thirdButtonfunction,
   thirdLoading,
+  fourthButtonText,
+  fourthButtonfunction,
   ...rest
 }) => {
   const {onCancel, open, onOk} = rest;
@@ -96,6 +98,19 @@ const OsModal: FC<OSModalPropsInterface> = ({
                   if (onOk) {
                     const mockEvent = {} as React.MouseEvent<HTMLButtonElement>;
                     onOk(mockEvent); // Pass a mock event or any required argument
+                  }
+                }}
+              />
+            )}
+            {fourthButtonText && (
+              <OsButton
+                loading={loading}
+                text={fourthButtonText}
+                buttontype="PRIMARY"
+                clickHandler={() => {
+                  if (fourthButtonfunction) {
+                    const mockEvent = {} as React.MouseEvent<HTMLButtonElement>;
+                    fourthButtonfunction(mockEvent); // Pass a mock event or any required argument
                   }
                 }}
               />

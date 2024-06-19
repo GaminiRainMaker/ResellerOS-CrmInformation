@@ -12,6 +12,7 @@ export interface OSModalPropsInterface extends ModalProps {
   primaryButtonText?: any;
   secondaryButtonText?: string;
   thirdButtonText?: any;
+  fourthButtonText?: string;
   body?: React.ReactNode;
   loading?: boolean;
   thirdLoading?: boolean;
@@ -21,6 +22,7 @@ export interface OSModalPropsInterface extends ModalProps {
   disabledButton?: boolean;
   singleButtonInCenter?: boolean;
   thirdButtonfunction?: any;
+  fourthButtonfunction?: any;
 }
 
 export interface OSDailogInterface extends ModalProps {

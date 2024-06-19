@@ -98,6 +98,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   const [defaultDataShow, setDefaultDataShow] = useState<boolean>(true);
   const [showExportAs, setShowExportAs] = useState<boolean>(true);
   const [showExportToTable, setShowExportToTable] = useState<boolean>(true);
+  const [showSubmitButton, setShowSubmitButton] = useState<boolean>(true);
   const [indexOfVerifyFile, setIndexOfVerifyFile] = useState<any>();
 
   const openNotificationWithIcon = () => {
@@ -519,6 +520,9 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       );
       setShowRaiseConcernModal(false);
       form?.resetFields();
+    } else if (buttonType === 'fourth') {
+      setShowRaiseConcernModal(false);
+      form?.resetFields();
     } else {
       setShowRaiseConcernModal(false);
       form?.resetFields();
@@ -649,6 +653,17 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                                   } else {
                                                     setShowExportToTable(true);
                                                   }
+                                                  if (
+                                                    item?.quoteLineItems
+                                                      ?.length === 0 &&
+                                                    !item?.title
+                                                      ?.split('.')
+                                                      ?.includes('pdf')
+                                                  ) {
+                                                    setShowSubmitButton(true);
+                                                  } else {
+                                                    setShowSubmitButton(false);
+                                                  }
 
                                                   // setShowExportAs
                                                   e?.stopPropagation();
@@ -743,12 +758,17 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         destroyOnClose
         thirdButtonText={showExportToTable ? 'Export File to Tables' : ''}
         primaryButtonText={showExportAs ? 'Edit Data As-Is' : ''}
+        fourthButtonText={showSubmitButton ? 'Submit' : ''}
         onOk={() => {
           form?.submit();
           setButtonType('primary');
         }}
         thirdButtonfunction={() => {
           form?.submit();
+        }}
+        fourthButtonfunction={() => {
+          form?.submit();
+          setButtonType('fourth');
         }}
       />
 
