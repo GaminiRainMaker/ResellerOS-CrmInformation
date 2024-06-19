@@ -326,7 +326,7 @@ const Profitability: FC<any> = ({
             style={{
               height: '36px',
             }}
-            type="number"
+            // type="number"
             min={1}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
@@ -376,7 +376,7 @@ const Profitability: FC<any> = ({
       render: (text: string, record: any) => {
         return (
           <OsInput
-            type="number"
+            // type="number"
             disabled={renderEditableInput('MSRP ($)')}
             style={{
               height: '36px',
@@ -435,7 +435,7 @@ const Profitability: FC<any> = ({
             style={{
               height: '36px',
             }}
-            type="number"
+            // type="number"
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
             disabled={renderEditableInput('Cost ($)')}
@@ -591,7 +591,7 @@ const Profitability: FC<any> = ({
           style={{
             height: '36px',
           }}
-          type="number"
+          // type="number"
           prefix={updateAmountValue(record?.pricing_method)}
           value={text ? useRemoveDollarAndCommahook(text) : 0.0}
           onChange={(v) => {
