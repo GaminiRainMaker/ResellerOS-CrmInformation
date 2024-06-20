@@ -6,7 +6,6 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsPieChart from '@/app/components/common/os-piechart';
 import Typography from '@/app/components/common/typography';
-import {useRemoveDollarAndCommahook} from '@/app/utils/base';
 import {FC, useEffect, useState} from 'react';
 
 const Matrix: FC<any> = ({familyFilter}) => {
@@ -107,12 +106,11 @@ const Matrix: FC<any> = ({familyFilter}) => {
         color: string;
       }[] = [];
 
-      familyFilter.forEach((element: any) => {
+      familyFilter?.forEach((element: any) => {
         let totalRevenueValue = 0;
         let totalProfitValue = 0;
         element?.QuoteLineItem?.map((QuoteLineItemData: any) => {
-          const {line_amount, quantity, list_price} =
-            QuoteLineItemData;
+          const {line_amount, quantity, list_price} = QuoteLineItemData;
 
           const revenue = Number(line_amount) ?? 1 * Number(quantity);
 

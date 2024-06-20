@@ -1,7 +1,5 @@
-/* eslint-disable react/destructuring-assignment */
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable import/no-extraneous-dependencies */
-import {FC} from 'react';
+'use client';
+import {FC, useEffect, useState} from 'react';
 import {Cell, Legend, Pie, PieChart, Tooltip} from 'recharts';
 
 const CustomTooltip = (props: any) => {
@@ -31,37 +29,63 @@ const CustomTooltip = (props: any) => {
   return null;
 };
 
-const OsPieChart: FC<any> = ({data}: any) => (
-  <PieChart width={600} height={230}>
-    <Pie
-      data={data}
-      cx={200}
-      cy={120}
-      innerRadius={50}
-      outerRadius={75}
-      dataKey="value"
-    >
-      {data &&
-        data.map((entry: any, index: number) => (
-          <Cell key={`cell-${index}`} fill={entry?.color} />
-        ))}
-    </Pie>
-    <Legend
-      iconSize={20}
-      iconType="circle"
-      width={200}
-      height={100}
-      layout="vertical"
-      verticalAlign="middle"
-      align="right"
-    />
-    <Tooltip
-      isAnimationActive={false}
-      animationEasing="linear"
-      content={<CustomTooltip />}
-      position={{x: 0, y: 10}}
-    />
-  </PieChart>
-);
+const OsPieChart: FC<any> = ({data}: any) => {
+  const [chartDimensions, setChartDimensions] = useState<any>({});
+
+  useEffect(() => {
+    const updateChartDimensions = () => {
+      let width;
+      if (window.innerWidth < 400) {
+        width = window.innerWidth - 40;
+      } else if (window.innerWidth < 768) {
+        width = 400;
+      } else if (window.innerWidth < 1024) {
+        width = 620;
+      } else if (window.innerWidth < 1537) {
+        width = 620;
+      } else {
+        width = 820;
+      }
+      setChartDimensions({width});
+    };
+
+    window.addEventListener('resize', updateChartDimensions);
+    updateChartDimensions();
+    return () => window.removeEventListener('resize', updateChartDimensions);
+  }, []);
+
+  return (
+    <PieChart width={chartDimensions?.width} height={230}>
+      <Pie
+        data={data}
+        cx={200}
+        cy={120}
+        innerRadius={50}
+        outerRadius={75}
+        dataKey="value"
+      >
+        {data &&
+          data.map((entry: any, index: number) => (
+            <Cell key={`cell-${index}`} fill={entry?.color} />
+          ))}
+      </Pie>
+      <Legend
+        iconSize={20}
+        iconType="circle"
+        width={200}
+        height={100}
+        layout="vertical"
+        verticalAlign="middle"
+        align="right"
+      />
+      <Tooltip
+        isAnimationActive={false}
+        animationEasing="linear"
+        content={<CustomTooltip />}
+        position={{x: 0, y: 10}}
+      />
+    </PieChart>
+  );
+};
 
 export default OsPieChart;
