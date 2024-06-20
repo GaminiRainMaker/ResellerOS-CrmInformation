@@ -205,7 +205,7 @@ const Profitability: FC<any> = ({
 
       setFamilyFilter(finalFamilyArr);
     }
-  }, [selectedFilter]);
+  }, [selectedFilter, profitabilityDataByQuoteId]);
 
   const updateAmountValue = (pricingMethods: string) => {
     if (
