@@ -65,6 +65,7 @@ const Profitability: FC<any> = ({
   const [triggerUpdate, setTriggerUpdate] = useState(false);
   const [newDataForProfit, setNewDataForProfit] = useState<any>([]);
   const [newDataForBundle, setNewDataForBundle] = useState<any>([]);
+  const [getTheBundle, setGetTheBundle] = useState<boolean>(false);
   const [updateProfitabilityLoading, setUpdateProfitabilityLoading] =
     useState<boolean>(false);
 
@@ -100,7 +101,6 @@ const Profitability: FC<any> = ({
       setNewDataForProfit(FIlteredData);
     }
   }, [profitabilityData]);
-
   useEffect(() => {
     if (bundleData && bundleData?.length > 0) {
       let newArrForBun: any = [];
@@ -298,6 +298,13 @@ const Profitability: FC<any> = ({
     dispatch(setProfitability(profitabilityData));
   }, [triggerUpdate]);
 
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(getAllBundle(getQuoteID));
+      setGetTheBundle(false);
+    }, 2000);
+  }, [getTheBundle]);
+
   const ProfitabilityQuoteLineItemcolumns = [
     {
       title: '#Line',
@@ -327,19 +334,10 @@ const Profitability: FC<any> = ({
       sorter: (a: any, b: any) => a.quantity - b.quantity,
 
       render: (text: string, record: any) => {
-        let bundleDatass = bundleData?.find(
-          (items: any) => items?.id === record?.bundle_id,
-        );
-        let updatedValue;
-        if (bundleDatass) {
-          updatedValue = bundleDatass?.quantity * record?.quantity;
-        } else {
-          updatedValue = record?.quantity;
-        }
         return (
           <OsInputNumber
-            value={text}
-            disabled={bundleDatass ? true : renderEditableInput('Quantity')}
+            defaultValue={text}
+            disabled={renderEditableInput('Quantity')}
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
             style={{
@@ -403,7 +401,7 @@ const Profitability: FC<any> = ({
             }}
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
-            value={text}
+            defaultValue={text}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
                 prev.map((prevItem: any) => {
@@ -458,7 +456,7 @@ const Profitability: FC<any> = ({
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
             disabled={renderEditableInput('Cost ($)')}
-            value={text ?? 0.0}
+            defaultValue={text ?? 0.0}
             onChange={(v) => {
               setProfitabilityData((prev: any) =>
                 prev.map((prevItem: any) => {
@@ -522,7 +520,7 @@ const Profitability: FC<any> = ({
               allowClear
               style={{width: '200px', height: '36px'}}
               placeholder="Select"
-              value={text ?? record?.Product?.product_family}
+              defaultValue={text ?? record?.Product?.product_family}
               options={selectDataForProduct}
               onChange={(e) => {
                 setProfitabilityData((prev: any) =>
@@ -555,7 +553,7 @@ const Profitability: FC<any> = ({
           disabled={renderEditableInput('Pricing Method')}
           style={{width: '100%', height: '36px'}}
           placeholder="Select"
-          value={text}
+          defaultValue={text}
           onChange={(v) => {
             setProfitabilityData((prev: any) =>
               prev.map((prevItem: any) => {
@@ -612,7 +610,7 @@ const Profitability: FC<any> = ({
           }}
           // type="number"
           prefix={updateAmountValue(record?.pricing_method)}
-          value={text ? useRemoveDollarAndCommahook(text) : 0.0}
+          defaultValue={text ? useRemoveDollarAndCommahook(text) : 0.0}
           onChange={(v) => {
             setProfitabilityData((prev: any) =>
               prev.map((prevItem: any) => {
@@ -757,11 +755,11 @@ const Profitability: FC<any> = ({
     if (activeTab === '2') {
       dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
         if (d?.payload) {
-          const filteredDataa = d?.payload?.filter(
-            (item: any) => item?.bundle_id === null,
-          );
+          // const filteredDataa = d?.payload?.filter(
+          //   (item: any) => item?.bundle_id === null,
+          // );
 
-          setProfitabilityData(filteredDataa);
+          setProfitabilityData(d?.payload);
         }
       });
     }
@@ -810,6 +808,9 @@ const Profitability: FC<any> = ({
 
       return newObj;
     });
+    setGetTheBundle(true);
+    setSelectedRowData('');
+    setSelectedRowIds('');
     setUpdatedData(finalData);
   };
 
@@ -855,7 +856,12 @@ const Profitability: FC<any> = ({
           setUpdateProfitabilityLoading(false);
         }
       };
-      dispatch(getAllBundle(getQuoteID));
+      setTimeout(() => {
+        dispatch(getAllBundle(getQuoteID));
+      }, 2000);
+
+      // dispatch(getAllBundle(getQuoteID));
+
       updateDataAndFetchProfitability();
     } catch (err) {
       setUpdateProfitabilityLoading(false);
