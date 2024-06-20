@@ -637,23 +637,8 @@ const Profitability: FC<any> = ({
       sorter: (a: any, b: any) => a.unit_price - b.unit_price,
       width: 150,
       render: (text: number, record: any) => {
-        let bundleDatass = bundleData?.find(
-          (items: any) => items?.id === record?.bundle_id,
-        );
-        let updatedValue;
-        if (bundleDatass) {
-          updatedValue =  record?.unit_price;
-        } else {
-          updatedValue = record?.unit_price;
-        }
         return (
-          <Typography name="Body 4/Medium">
-            {bundleDatass
-              ? Number(updatedValue?.toString()?.slice(0, 6))
-              : text
-                ? `${abbreviate(Number(text?.toString()?.slice(0, 6)) ?? 0)}`
-                : 0}
-          </Typography>
+          <Typography name="Body 4/Medium">{abbreviate(text ?? 0)}</Typography>
         );
       },
     },
@@ -676,9 +661,9 @@ const Profitability: FC<any> = ({
         return (
           <Typography name="Body 4/Medium">
             {bundleDatass
-              ? Number(updatedValue?.toString()?.slice(0, 6))
+              ? abbreviate(updatedValue)
               : text
-                ? `${abbreviate(Number(text?.toString()?.slice(0, 6)) ?? 0)}`
+                ? `${abbreviate(text) ?? 0}`
                 : 0}
           </Typography>
         );
@@ -703,9 +688,9 @@ const Profitability: FC<any> = ({
         return (
           <Typography name="Body 4/Medium">
             {bundleDatass
-              ? Number(updatedValue?.toString()?.slice(0, 6))
+              ? abbreviate(updatedValue)
               : text
-                ? `${abbreviate(Number(text?.toString()?.slice(0, 6)) ?? 0)}`
+                ? `${abbreviate(text)}`
                 : 0}
           </Typography>
         );
@@ -719,24 +704,8 @@ const Profitability: FC<any> = ({
         a.gross_profit_percentage - b.gross_profit_percentage,
       width: 150,
       render: (text: number, record: any) => {
-        let bundleDatass = bundleData?.find(
-          (items: any) => items?.id === record?.bundle_id,
-        );
-        let updatedValue;
-        if (bundleDatass) {
-          updatedValue =
-           record?.gross_profit_percentage;
-        } else {
-          updatedValue = record?.gross_profit_percentage;
-        }
         return (
-          <Typography name="Body 4/Medium">
-            {bundleDatass
-              ? Number(updatedValue?.toString()?.slice(0, 6))
-              : text
-                ? `${abbreviate(Number(text?.toString()?.slice(0, 6)) ?? 0)}`
-                : 0}
-          </Typography>
+          <Typography name="Body 4/Medium">{abbreviate(text ?? 0)}</Typography>
         );
       },
     },

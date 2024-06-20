@@ -112,9 +112,9 @@ const Matrix: FC<any> = ({familyFilter}) => {
         element?.QuoteLineItem?.map((QuoteLineItemData: any) => {
           const {line_amount, quantity, list_price} = QuoteLineItemData;
 
-          const revenue = Number(line_amount) ?? 1 * Number(quantity);
+          const revenue = Number(line_amount) * Number(quantity);
 
-          const ProfitValue = Number(line_amount) ?? 0 - Number(list_price);
+          const ProfitValue = Number(line_amount) - Number(list_price);
 
           totalRevenueValue += revenue;
           totalProfitValue += ProfitValue;
@@ -135,7 +135,15 @@ const Matrix: FC<any> = ({familyFilter}) => {
             value: Math.floor(totalProfitValue) ?? 0,
             color: getPieCellColor(element.name) ?? '',
           });
+        console.log('ddddd', totalRevenueValue, totalProfitValue);
       });
+      console.log(
+        'tempArrRevenue',
+        tempArrRevenue,
+        tempArrProfit,
+        'familyFilter',
+        familyFilter,
+      );
 
       setSectionData((prev) =>
         prev.map((prevItem) => {
