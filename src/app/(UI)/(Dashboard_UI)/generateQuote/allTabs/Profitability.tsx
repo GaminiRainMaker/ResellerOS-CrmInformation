@@ -660,11 +660,11 @@ const Profitability: FC<any> = ({
       },
     },
     {
-      title: 'Exit Price ($)',
+      title: 'Extended Price ($)',
       dataIndex: 'exit_price',
       key: 'exit_price',
       sorter: (a: any, b: any) => a.exit_price - b.exit_price,
-      width: 150,
+      width: 190,
       render: (text: number, record: any) => {
         return (
           <Typography name="Body 4/Medium">${abbreviate(text) ?? 0}</Typography>

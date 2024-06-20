@@ -331,10 +331,10 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
       ),
     },
     {
-      title: 'Exit Price ($)',
+      title: 'Extended Price ($)',
       dataIndex: 'exit_price',
       key: 'exit_price',
-      width: 152,
+      width: 190,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
           {text ? `$${abbreviate(text ?? 0)}` : 0}
