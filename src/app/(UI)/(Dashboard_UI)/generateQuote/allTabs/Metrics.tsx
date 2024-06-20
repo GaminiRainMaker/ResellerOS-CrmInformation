@@ -23,6 +23,8 @@ const Matrix: FC<any> = ({selectedFilter}) => {
         name = item.Product.product_family;
       } else if (filterValue === 'Pricing Method') {
         name = item.pricing_method;
+      } else if (filterValue === 'File Name') {
+        name = item?.QuoteLineItem?.QuoteFile?.file_name;
       }
       if (name) {
         const convertToTitleCase = (input: string) => {

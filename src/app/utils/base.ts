@@ -388,11 +388,10 @@ export const updateTables = async (
             allContractWithProductCodeData?.[findContractIndex]?.payload.id,
         });
       }
-
       if (item?.id) {
         profitabilityArray.push({
           ...obj1,
-          quote_line_item_id: item?.id,
+          quoteline_item_id: item?.id,
         });
       }
       finalLineItems.push(obj1);
@@ -409,8 +408,7 @@ export const updateTables = async (
         );
         dispatch(insertValidation(contractProductData));
       }
-      const profitabilityData = genericFun(finalLineItems, profitabilityArray);
-      dispatch(insertProfitability(profitabilityData));
+      dispatch(insertProfitability(profitabilityArray));
       dispatch(quoteFileVerification({id: fileData?.id}));
     }
     return true;
