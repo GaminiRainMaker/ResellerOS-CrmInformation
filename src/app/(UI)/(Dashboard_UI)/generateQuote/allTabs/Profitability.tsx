@@ -114,6 +114,26 @@ const Profitability: FC<any> = ({
             return a.line_number - b.line_number;
           });
           delete newObj.Profitabilities;
+          // For Extended Price
+          let extendedPrice: any = 0;
+          newSortedValue?.forEach((items) => {
+            if (items?.exit_price) {
+              extendedPrice += items?.exit_price ? items?.exit_price : 0;
+            }
+          });
+          newObj.extendedPrice = extendedPrice * newObj.quantity;
+          // for Gross Profit
+          let grossProft: any = 0;
+          newSortedValue?.forEach((items) => {
+            if (items?.gross_profit) {
+              grossProft += items?.gross_profit ? items?.gross_profit : 0;
+            }
+          });
+
+          let grossProfitPer = (grossProft / extendedPrice) * 100;
+          newObj.extendedPrice = extendedPrice * newObj.quantity;
+          newObj.grossProfit = grossProft * newObj.quantity;
+          newObj.grossPercentage = grossProfitPer;
           newObj.Profitabilities = newSortedValue;
         }
 
@@ -144,25 +164,24 @@ const Profitability: FC<any> = ({
       let maintenanceArr: any = [];
       let subscriptionArr: any = [];
       let unassignedArr: any = [];
-
-      if (
-        profitabilityDataByQuoteId &&
-        profitabilityDataByQuoteId?.length > 0
-      ) {
-        productsArr = profitabilityDataByQuoteId?.filter(
+      let newArrrExcludedBundle = profitabilityDataByQuoteId?.filter(
+        (itemss: any) => !itemss?.bundle_id,
+      );
+      if (newArrrExcludedBundle && newArrrExcludedBundle?.length > 0) {
+        productsArr = newArrrExcludedBundle?.filter(
           (item: any) => item?.Product?.product_family === 'Products',
         );
-        professionalServiceArr = profitabilityDataByQuoteId?.filter(
+        professionalServiceArr = newArrrExcludedBundle?.filter(
           (item: any) =>
             item?.Product?.product_family === 'Professional Services',
         );
-        maintenanceArr = profitabilityDataByQuoteId?.filter(
+        maintenanceArr = newArrrExcludedBundle?.filter(
           (item: any) => item?.Product?.product_family === 'Maintenance',
         );
-        subscriptionArr = profitabilityDataByQuoteId?.filter(
+        subscriptionArr = newArrrExcludedBundle?.filter(
           (item: any) => item?.Product?.product_family === 'Subscriptions',
         );
-        unassignedArr = profitabilityDataByQuoteId?.filter(
+        unassignedArr = newArrrExcludedBundle?.filter(
           (item: any) => item?.Product?.product_family == null,
         );
       }
@@ -649,23 +668,8 @@ const Profitability: FC<any> = ({
       sorter: (a: any, b: any) => a.exit_price - b.exit_price,
       width: 150,
       render: (text: number, record: any) => {
-        let bundleDatass = bundleData?.find(
-          (items: any) => items?.id === record?.bundle_id,
-        );
-        let updatedValue;
-        if (bundleDatass) {
-          updatedValue = bundleDatass?.quantity * record?.exit_price;
-        } else {
-          updatedValue = record?.exit_price;
-        }
         return (
-          <Typography name="Body 4/Medium">
-            {bundleDatass
-              ? abbreviate(updatedValue)
-              : text
-                ? `${abbreviate(text) ?? 0}`
-                : 0}
-          </Typography>
+          <Typography name="Body 4/Medium">${abbreviate(text) ?? 0}</Typography>
         );
       },
     },
@@ -676,23 +680,8 @@ const Profitability: FC<any> = ({
       sorter: (a: any, b: any) => a.gross_profit - b.gross_profit,
       width: 150,
       render: (text: number, record: any) => {
-        let bundleDatass = bundleData?.find(
-          (items: any) => items?.id === record?.bundle_id,
-        );
-        let updatedValue;
-        if (bundleDatass) {
-          updatedValue = bundleDatass?.quantity * record?.gross_profit;
-        } else {
-          updatedValue = record?.gross_profit;
-        }
         return (
-          <Typography name="Body 4/Medium">
-            {bundleDatass
-              ? abbreviate(updatedValue)
-              : text
-                ? `${abbreviate(text)}`
-                : 0}
-          </Typography>
+          <Typography name="Body 4/Medium">{abbreviate(text) ?? 0}</Typography>
         );
       },
     },
@@ -894,6 +883,11 @@ const Profitability: FC<any> = ({
                       <p>{item?.name}</p>
                       <p>Lines:{item?.Profitabilities?.length}</p>
                       <p>Desc: {item?.description}</p>
+                      <p>Extended Price : {abbreviate(item?.extendedPrice)}</p>
+                      <p>Gross Profit : {abbreviate(item?.grossProfit)}</p>
+                      <p>
+                        Gross Profit % : {abbreviate(item?.grossPercentage)}
+                      </p>
                       <p>
                         Quantity:
                         <Input
@@ -903,8 +897,21 @@ const Profitability: FC<any> = ({
                             const data = {
                               id: item?.id,
                               quantity: e.target.value,
+                              gross_profit: item?.grossProfit,
+                              gross_profit_percentage: item?.grossPercentage,
+                              extended_price: item?.extendedPrice,
                             };
-                            updateBundleQuantityData(data);
+                            console.log(
+                              '324324324424',
+                              item?.grossProfit,
+                              item?.grossPercentage,
+                              item?.extendedPrice,
+                              data,
+                            );
+
+                            setTimeout(() => {
+                              updateBundleQuantityData(data);
+                            }, 1000);
                           }}
                         />
                       </p>

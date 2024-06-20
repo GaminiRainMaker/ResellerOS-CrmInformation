@@ -56,16 +56,25 @@ const EditorFile = () => {
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
 
   // ============================== SalesForce Implementations ======================================
-  // const fetchSaleForceDataa = async () => {
-  //   try {
-  //     const data = fetch(
-  //       `https://goldenresellerosquoteai-dev-ed.develop.my.salesforce.com//services/apexrest/rosquoteai/file-in-binary/{{${1}}}`,
-  //     );
-  //     console.log('43243232', data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const fetchSaleForceDataa = async () => {
+    try {
+      const documentId = '069Hr00000P9E1lIAF';
+      const url = `https://goldenresellerosquoteai-dev-ed.develop.my.salesforce.com//services/apexrest/rosquoteai/file-in-binary/069Hr00000P9E1lIAF`;
+      const options = {
+        method: 'GET',
+        headers: {
+          accept: 'application/json',
+          Authorization: `Bearer 00DHr000002fwK3!ARUAQPdvZRzfqQOE2_70ja5dwvDbg4QTqHaA_Puw1VyMdARrS0PDsegmaAP0Vq9oaNsikS9MhpIu0deZzzKBbhdhPQtEHN1w`,
+        },
+      };
+      const response = await fetch(url, options);
+      const responseData = await response.json();
+      console.log('43543534', response);
+    } catch (error) {
+      console.log('error--->', error);
+      return {error: error};
+    }
+  };
 
   useEffect(() => {
     // fetchSaleForceDataa();
