@@ -7,92 +7,87 @@ import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsPieChart from '@/app/components/common/os-piechart';
 import Typography from '@/app/components/common/typography';
 import {FC, useEffect, useState} from 'react';
+import {useAppSelector} from '../../../../../../redux/hook';
 
-const Matrix: FC<any> = ({familyFilter}) => {
+const Matrix: FC<any> = ({selectedFilter}) => {
   const [token] = useThemeToken();
-  const [sectionData, setSectionData] = useState<
-    {
-      id: number | string;
-      name: string;
-      filterOption: string;
-      pieData: {
-        id: number | string;
-        name: string;
-        value: number;
-        color: string;
-      }[];
-    }[]
-  >([
+  const {data: profitabilityDataByQuoteId} = useAppSelector(
+    (state) => state.profitability,
+  );
+  const [finalData, setFinalData] = useState<any>();
+  const filterDataByValue = (data: any, filterValue: string) => {
+    const groupedData: any = {};
+    data?.forEach((item: any) => {
+      let name;
+      if (filterValue === 'Product Family') {
+        name = item.Product.product_family;
+      } else if (filterValue === 'Pricing Method') {
+        name = item.pricing_method;
+      }
+      if (name) {
+        const convertToTitleCase = (input: string) => {
+          return input
+            .toLowerCase()
+            .replace(/_/g, ' ')
+            .replace(/\b\w/g, (char) => char.toUpperCase());
+        };
+
+        if (name?.includes('_') || name === name?.toLowerCase()) {
+          name = convertToTitleCase(name);
+        }
+
+        if (!groupedData[name]) {
+          groupedData[name] = {name: name, QuoteLineItem: []};
+        }
+        groupedData[name].QuoteLineItem.push(item);
+      }
+    });
+    setFinalData(Object.values(groupedData));
+  };
+  useEffect(() => {
+    filterDataByValue(profitabilityDataByQuoteId, selectedFilter);
+  }, [selectedFilter]);
+
+  const colorPalette: {[key: string]: string} = {
+    Unassigned: token?.colorInfo,
+    'List Percentage': token?.colorInfo,
+    'Professional Services': '#2B759A',
+    'Cost Dollar': '#2B759A',
+    'List Dollar': '#495D79',
+    Subscriptions: '#31576F',
+    'Cost Percentage': '#31576F',
+    Products: token?.colorPrimary,
+    Manual: token?.colorPrimary,
+    Maintenance: token?.colorTextDisabled,
+    Gp: token?.colorTextDisabled,
+  };
+
+  const getPieCellColor = (name: string) => {
+    if (!colorPalette[name]) {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      colorPalette[name] = color;
+    }
+    return colorPalette[name];
+  };
+  const [sectionData, setSectionData] = useState<any[]>([
     {
       id: 101,
       name: 'Revenue by Product Category',
-      filterOption: familyFilter?.selectedFilter
-        ? familyFilter?.selectedFilter
-        : '',
-      pieData: [
-        {id: 1001, name: 'Unassigned', value: 400, color: token?.colorInfo},
-        {
-          id: 1002,
-          name: 'Professional Services',
-          value: 300,
-          color: token?.colorBorderSecondary,
-        },
-        {id: 1003, name: 'Subscriptions', value: 300, color: '#9AB8D8'},
-        {
-          id: 1004,
-          name: 'Products',
-          value: 200,
-          color: token?.colorPrimary,
-        },
-        {
-          id: 1005,
-          name: 'Maintenances',
-          value: 200,
-          color: token?.colorTextDisabled,
-        },
-      ],
+      pieData: [],
     },
     {
       id: 102,
       name: 'Profit by Product Category',
-      filterOption: familyFilter?.selectedFilter
-        ? familyFilter?.selectedFilter
-        : '',
-      pieData: [
-        {id: 1001, name: 'Unassigned', value: 400, color: token?.colorInfo},
-        {
-          id: 1002,
-          name: 'Professional Services',
-          value: 300,
-          color: token?.colorBorderSecondary,
-        },
-        {id: 1003, name: 'Subscriptions', value: 300, color: '#9AB8D8'},
-        {
-          id: 1004,
-          name: 'Products',
-          value: 200,
-          color: token?.colorPrimary,
-        },
-        {
-          id: 1005,
-          name: 'Maintenances',
-          value: 200,
-          color: token?.colorTextDisabled,
-        },
-      ],
+      pieData: [],
     },
   ]);
 
-  const getPieCellColor = (name: string) => {
-    if (name === 'Unassigned') return token?.colorInfo;
-    if (name === 'Professional Services') return token?.colorBorderSecondary;
-    if (name === 'Subscriptions') return '#9AB8D8';
-    if (name === 'Products') return token?.colorPrimary;
-    if (name === 'Maintenances') return token?.colorTextDisabled;
-  };
-
   useEffect(() => {
-    if (familyFilter.length > 0) {
+    if (finalData && finalData.length > 0) {
       const tempArrRevenue: {
         id: number | string;
         name: string;
@@ -106,44 +101,37 @@ const Matrix: FC<any> = ({familyFilter}) => {
         color: string;
       }[] = [];
 
-      familyFilter?.forEach((element: any) => {
+      finalData?.forEach((element: any) => {
         let totalRevenueValue = 0;
         let totalProfitValue = 0;
-        element?.QuoteLineItem?.map((QuoteLineItemData: any) => {
+        element?.QuoteLineItem?.forEach((QuoteLineItemData: any) => {
           const {line_amount, quantity, list_price} = QuoteLineItemData;
 
           const revenue = Number(line_amount) * Number(quantity);
-
-          const ProfitValue = Number(line_amount) - Number(list_price);
+          const profitValue = Number(line_amount) - Number(list_price);
 
           totalRevenueValue += revenue;
-          totalProfitValue += ProfitValue;
+          totalProfitValue += profitValue;
         });
 
-        totalRevenueValue > 0 &&
+        if (totalRevenueValue > 0) {
           tempArrRevenue.push({
-            id: 1,
+            id: element.name,
             name: element.name,
             value: Math.floor(totalRevenueValue) ?? 0,
             color: getPieCellColor(element.name) ?? '',
           });
+        }
 
-        totalProfitValue > 0 &&
+        if (totalProfitValue > 0) {
           tempArrProfit.push({
-            id: 1,
+            id: element.name,
             name: element.name,
             value: Math.floor(totalProfitValue) ?? 0,
             color: getPieCellColor(element.name) ?? '',
           });
-        console.log('ddddd', totalRevenueValue, totalProfitValue);
+        }
       });
-      console.log(
-        'tempArrRevenue',
-        tempArrRevenue,
-        tempArrProfit,
-        'familyFilter',
-        familyFilter,
-      );
 
       setSectionData((prev) =>
         prev.map((prevItem) => {
@@ -155,11 +143,11 @@ const Matrix: FC<any> = ({familyFilter}) => {
         }),
       );
     }
-  }, [familyFilter]);
+  }, [finalData]);
 
   return (
     <>
-      {familyFilter?.length > 0 ? (
+      {finalData?.length > 0 ? (
         <Row gutter={[24, 24]} justify="space-between">
           {sectionData?.map((item) => (
             <div
@@ -170,11 +158,18 @@ const Matrix: FC<any> = ({familyFilter}) => {
               }}
               key={item.id}
             >
-              <Col>
+              <Col
+                style={{
+                  padding: '18px',
+                  background: '#f6f7f8',
+                  borderRadius: '12px',
+                }}
+                span={12}
+              >
                 <Space direction="vertical">
                   <Typography name="Body 1/Regular">{item.name}</Typography>
                   <Typography name="Body 3/Regular">
-                    (Product Family)
+                    {selectedFilter ? `(${selectedFilter})` : '(--)'}
                   </Typography>
                 </Space>
 
@@ -185,7 +180,11 @@ const Matrix: FC<any> = ({familyFilter}) => {
         </Row>
       ) : (
         <EmptyContainer
-          title="Please Select Grouping to view Metrics"
+          title={
+            selectedFilter
+              ? 'There is no data to show on Metrics Pie'
+              : 'Please Select Grouping to view Metrics'
+          }
           MetricsIcon
         />
       )}

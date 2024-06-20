@@ -44,7 +44,7 @@ const OsPieChart: FC<any> = ({data}: any) => {
       } else if (window.innerWidth < 1537) {
         width = 620;
       } else {
-        width = 820;
+        width = 800;
       }
       setChartDimensions({width});
     };
@@ -55,13 +55,13 @@ const OsPieChart: FC<any> = ({data}: any) => {
   }, []);
 
   return (
-    <PieChart width={chartDimensions?.width} height={230}>
+    <PieChart width={chartDimensions?.width} height={280}>
       <Pie
         data={data}
         cx={200}
         cy={120}
-        innerRadius={50}
-        outerRadius={75}
+        innerRadius={70}
+        outerRadius={95}
         dataKey="value"
       >
         {data &&
@@ -72,7 +72,7 @@ const OsPieChart: FC<any> = ({data}: any) => {
       <Legend
         iconSize={20}
         iconType="circle"
-        width={200}
+        width={250}
         height={100}
         layout="vertical"
         verticalAlign="middle"
@@ -82,7 +82,7 @@ const OsPieChart: FC<any> = ({data}: any) => {
         isAnimationActive={false}
         animationEasing="linear"
         content={<CustomTooltip />}
-        position={{x: 0, y: 10}}
+        position={{x: 130, y: 230}}
       />
     </PieChart>
   );

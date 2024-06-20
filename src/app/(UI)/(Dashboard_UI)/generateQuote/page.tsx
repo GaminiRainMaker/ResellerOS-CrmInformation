@@ -418,9 +418,7 @@ const GenerateQuote: React.FC = () => {
           Metrics
         </Typography>
       ),
-      children: (
-        <Metrics familyFilter={familyFilter} selectedFilter={selectedFilter} />
-      ),
+      children: <Metrics selectedFilter={selectedFilter} />,
     },
     {
       key: 6,
