@@ -14,6 +14,18 @@ export const getProfitabilityByQuoteId = createAsyncThunk(
   },
 );
 
+export const getAllProfitabilityCount = createAsyncThunk(
+  'profitability/getAllProfitabilityCount',
+  async (id: number, thunkApi) => {
+    try {
+      const res = await PROFITABILITY_API.getCountById(id);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+
 export const insertProfitability = createAsyncThunk(
   'profitability/insertProfitability',
   async (data: any, thunkApi) => {

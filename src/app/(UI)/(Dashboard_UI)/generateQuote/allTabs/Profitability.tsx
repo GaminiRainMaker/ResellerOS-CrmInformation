@@ -161,7 +161,11 @@ const Profitability: FC<any> = ({
   }, [bundleData]);
 
   useEffect(() => {
-    if (activeTab === '2') {
+    if (
+      activeTab === '2' &&
+      profitabilityDataByQuoteId &&
+      profitabilityDataByQuoteId?.length > 0
+    ) {
       const filteredDataa = profitabilityDataByQuoteId?.filter(
         (item: any) => item?.bundle_id === null,
       );
@@ -323,8 +327,8 @@ const Profitability: FC<any> = ({
   const ProfitabilityQuoteLineItemcolumns = [
     {
       title: '#Line',
-      dataIndex: 'serialNumber',
-      key: 'serialNumber',
+      dataIndex: 'serial_number',
+      key: 'serial_number',
       render: (text: string, record: any, index: number) => (
         <OsInput
           disabled={renderEditableInput('#Line')}
