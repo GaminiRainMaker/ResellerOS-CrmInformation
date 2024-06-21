@@ -44,7 +44,7 @@ const EditorFile = () => {
   const searchParams = useSearchParams();
   const getQUoteId = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
-  const [quoteItems, setQuoteItems] = useState<any>();
+  const [quoteItems, setQuoteItems] = useState<any>([]);
   const [mergedValue, setMergedVaalues] = useState<any>();
   const router = useRouter();
   const ExistingQuoteItemss = searchParams.get('quoteExist');
@@ -243,7 +243,7 @@ const EditorFile = () => {
 
   useEffect(() => {
     const newArrr: any = [];
-    if (quoteItems) {
+    if (quoteItems && quoteItems.length > 0) {
       quoteItems?.map((itemsss: any) => {
         if (itemsss) {
           const newObj: any = {...itemsss};
