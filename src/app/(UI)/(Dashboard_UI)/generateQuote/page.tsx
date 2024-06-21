@@ -236,14 +236,14 @@ const GenerateQuote: React.FC = () => {
           name="Body 3/Regular"
           cursor="pointer"
           onClick={() => {
-            if (quoteFileData.length > 0) {
-              notification.open({
-                message: 'Please Verify All the Files first.',
-                type: 'info',
-              });
-            } else {
-              setShowBundleModal(true);
-            }
+            // if (quoteFileData.length > 0) {
+            //   notification.open({
+            //     message: 'Please Verify All the Files first.',
+            //     type: 'info',
+            //   });
+            // } else {
+            setShowBundleModal(true);
+            // }
           }}
         >
           Bundle Configuration
@@ -257,12 +257,13 @@ const GenerateQuote: React.FC = () => {
           name="Body 3/Regular"
           cursor="pointer"
           onClick={() => {
-            if (quoteFileData.length > 0) {
-              notification.open({
-                message: 'Please Verify All the Files first.',
-                type: 'info',
-              });
-            } else if (selectTedRowData?.length > 0) {
+            // if (quoteFileData.length > 0) {
+            //   notification.open({
+            //     message: 'Please Verify All the Files first.',
+            //     type: 'info',
+            //   });
+            // } else
+            if (selectTedRowData?.length > 0) {
               setShowUpdateLineItemModal(true);
             }
           }}
@@ -279,12 +280,13 @@ const GenerateQuote: React.FC = () => {
           color={token?.colorError}
           cursor="pointer"
           onClick={() => {
-            if (quoteFileData.length > 0) {
-              notification.open({
-                message: 'Please Verify All the Files first.',
-                type: 'info',
-              });
-            } else if (selectTedRowData?.length > 0) {
+            // if (quoteFileData.length > 0) {
+            //   notification.open({
+            //     message: 'Please Verify All the Files first.',
+            //     type: 'info',
+            //   });
+            // } else
+            if (selectTedRowData?.length > 0) {
               setIsDeleteProfitabilityModal(true);
             }
           }}
