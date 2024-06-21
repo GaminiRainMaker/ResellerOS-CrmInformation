@@ -1,9 +1,12 @@
 'use client';
 import {FC, useEffect, useState} from 'react';
 import {Cell, Legend, Pie, PieChart, Tooltip} from 'recharts';
+import useAbbreviationHook from '../hooks/useAbbreviationHook';
 
 const CustomTooltip = (props: any) => {
   const {active, payload} = props;
+  const {abbreviate} = useAbbreviationHook(0);
+
   if (active && payload && payload.length) {
     return (
       <div
@@ -20,7 +23,7 @@ const CustomTooltip = (props: any) => {
       >
         {payload.map((entry: any) => (
           <p key={entry.value} className="caption">
-            {`${entry.name}: $ ${entry.value}`}
+            {`${entry?.name}: $ ${ abbreviate(entry?.value)  }`}
           </p>
         ))}
       </div>
