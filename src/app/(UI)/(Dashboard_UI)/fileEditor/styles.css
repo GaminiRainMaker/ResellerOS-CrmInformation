@@ -18,3 +18,24 @@ table.htCore tr.odd td {
 .collapsibleIndicator {
     text-align: center;
 }
+
+.ht_clone_top .htCore th {
+    background-color: #457B9D;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 14px;
+}
+
+.ht_clone_left .htCore th {
+    background-color: #457B9D;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 14px;
+}
+
+.ht_clone_top_left_corner .htCore th {
+    background-color: #457B9D;
+    color: #FFFFFF;
+    text-align: center;
+    font-size: 14px;
+}
