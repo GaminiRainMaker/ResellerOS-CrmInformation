@@ -19,6 +19,7 @@ import {
   calculateProfitabilityData,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
+import {Input} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {
@@ -34,7 +35,6 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
 import UpdatingLineItems from '../UpdatingLineItems';
-import {Input, Pagination} from 'antd';
 
 const Profitability: FC<any> = ({
   tableColumnDataShow,
@@ -105,7 +105,8 @@ const Profitability: FC<any> = ({
       });
       setNewDataForProfit(newArrForSerialAdd);
     }
-  }, [profitabilityData]);
+  }, [JSON.stringify(profitabilityData), profitabilityData]);
+
   useEffect(() => {
     if (bundleData && bundleData?.length > 0) {
       let newArrForBun: any = [];
@@ -875,8 +876,6 @@ const Profitability: FC<any> = ({
         dispatch(getAllBundle(getQuoteID));
       }, 2000);
 
-      // dispatch(getAllBundle(getQuoteID));
-
       updateDataAndFetchProfitability();
     } catch (err) {
       setUpdateProfitabilityLoading(false);
@@ -1005,7 +1004,8 @@ const Profitability: FC<any> = ({
               <OsTableWithOutDrag
                 loading={loading}
                 columns={finalProfitTableCol}
-                dataSource={newDataForProfit || []}
+                // dataSource={newDataForProfit || []}
+                dataSource={profitabilityData || []}
                 scroll
                 rowSelection={{
                   ...rowSelection,
