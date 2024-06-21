@@ -9,11 +9,12 @@ export const OsCollapseStyle = styled(Collapse)`
     }
   }
   .ant-collapse-header {
-      background-color: #F0F4F7;
+    background-color: #457B9D; 
+    color: white !important;
   }
   .ant-collapse-item-active {
     .ant-collapse-header {
-        background-color: #457B9D; 
+        background-color: #1C3557;
         color: white;
   }
   .ant-collapse-content-box {
