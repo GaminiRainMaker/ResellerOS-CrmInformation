@@ -52,7 +52,7 @@ const GenerateQuote: React.FC = () => {
   const getQuoteID = searchParams.get('id');
   const activeTabRoute = searchParams.get('tab');
   const getInReviewQuote = searchParams.get('inReviewQuote');
-  const [activeTab, setActiveTab] = useState<any>('1');
+  const [activeTab, setActiveTab] = useState<any>();
   const {quoteLineItemByQuoteID, loading} = useAppSelector(
     (state) => state.quoteLineItem,
   );
@@ -100,50 +100,48 @@ const GenerateQuote: React.FC = () => {
   useEffect(() => {
     dispatch(getAllTableColumn(''));
     dispatch(getAllContractSetting(''));
-  }, []);
-
-  useEffect(() => {
-    if (getQuoteID) {
-      dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
-        if (d?.payload) {
-          dispatch(setProfitability(d?.payload));
-        }
-      });
-    }
-  }, [getQuoteID]);
-
-  useEffect(() => {
-    dispatch(getQuoteById(getQuoteID))?.then((payload: any) => {
-      let newObj = {
-        ...payload?.payload?.Customer,
-        ...payload?.payload?.Opportunity,
-        ...payload?.payload?.QuoteLineItems?.[0],
-        ...payload?.payload,
-      };
-      delete newObj?.Customer;
-      delete newObj?.Opportunity,
-        delete newObj?.Profitabilities,
-        delete newObj?.QuoteFiles,
-        delete newObj?.QuoteLineItems,
-        delete newObj?.RebatesQuoteLineItems,
-        delete newObj?.User,
-        delete newObj?.Validations,
-        setObjectForSyncingValues(newObj);
-    });
-    // dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
-    //   if (d?.payload) {
-    //     dispatch(setProfitability(d?.payload));
-    //   }
-    // });
-  }, []);
-  useEffect(() => {
     dispatch(getQuoteFileCount(Number(getQuoteID)))?.then((payload: any) => {
       if (payload?.payload === 0) {
         setActiveTab('2');
+      } else {
+        setActiveTab('1');
       }
       setCountOFFiles(payload?.payload);
     });
   }, []);
+
+  useEffect(() => {
+    if (getQuoteID && countOfFiles) {
+      if (countOfFiles > 0) {
+        dispatch(getQuoteById(getQuoteID))?.then((payload: any) => {
+          let newObj = {
+            ...payload?.payload?.Customer,
+            ...payload?.payload?.Opportunity,
+            ...payload?.payload?.QuoteLineItems?.[0],
+            ...payload?.payload,
+          };
+          delete newObj?.Customer;
+          delete newObj?.Opportunity,
+            delete newObj?.Profitabilities,
+            delete newObj?.QuoteFiles,
+            delete newObj?.QuoteLineItems,
+            delete newObj?.RebatesQuoteLineItems,
+            delete newObj?.User,
+            delete newObj?.Validations,
+            setObjectForSyncingValues(newObj);
+        });
+      } else {
+        dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then(
+          (d: any) => {
+            if (d?.payload) {
+              dispatch(setProfitability(d?.payload));
+            }
+          },
+        );
+      }
+    }
+  }, [getQuoteID, countOfFiles]);
+
   useEffect(() => {
     if (activeTabRoute === '2') {
       setActiveTab('2');
@@ -176,15 +174,14 @@ const GenerateQuote: React.FC = () => {
   }, [activeTab, tableColumnData]);
 
   useEffect(() => {
-    setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);
-    let newObj: any = {};
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    let adjustPrice: number = 0;
-    let lineAmount: number = 0;
-    let quantity: number = 0;
-    let listPrice: number = 0;
-
     if (quoteLineItemByQuoteID && quoteLineItemByQuoteID?.length > 0) {
+      setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);
+      let newObj: any = {};
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      let adjustPrice: number = 0;
+      let lineAmount: number = 0;
+      let quantity: number = 0;
+      let listPrice: number = 0;
       // eslint-disable-next-line no-unsafe-optional-chaining
       quoteLineItemByQuoteID?.map((item: any, index: any) => {
         if (item?.adjusted_price) {
@@ -197,53 +194,14 @@ const GenerateQuote: React.FC = () => {
           quantity += parseInt(item?.quantity, 10);
         }
       });
-    }
 
-    newObj = {
-      Quantity: quantity,
-      ListPirce: listPrice,
-      AdjustPrice: adjustPrice,
-      LineAmount: lineAmount,
-    };
-    setAmountData(newObj);
-  }, [quoteLineItemByQuoteID]);
-
-  useEffect(() => {
-    let isExist: any;
-    const bundleData: any = [];
-    const UnAssigned: any = [];
-    if (quoteLineItemByQuoteID && quoteLineItemByQuoteID?.length > 0) {
-      isExist = quoteLineItemByQuoteID?.find((item: any) => item?.Bundle);
-    }
-
-    if (isExist) {
-      quoteLineItemByQuoteID?.map((lineItem: any) => {
-        let bundleObj: any;
-        if (lineItem?.Bundle) {
-          if (bundleObj) {
-            bundleObj = {
-              name: bundleObj.name,
-              description: bundleObj.description,
-              quantity: bundleObj.quantity,
-              quoteLieItem: [...bundleObj.quoteLieItem, ...lineItem],
-              bundleId: lineItem?.Bundle.id,
-              id: lineItem.id,
-            };
-          } else {
-            bundleObj = {
-              name: lineItem?.Bundle?.name,
-              description: lineItem?.Bundle?.description,
-              quantity: lineItem?.Bundle?.quantity,
-              quoteLieItem: [lineItem],
-              bundleId: lineItem?.Bundle?.id,
-              id: lineItem?.id,
-            };
-            bundleData?.push(bundleObj);
-          }
-        } else {
-          UnAssigned?.push(lineItem);
-        }
-      });
+      newObj = {
+        Quantity: quantity,
+        ListPirce: listPrice,
+        AdjustPrice: adjustPrice,
+        LineAmount: lineAmount,
+      };
+      setAmountData(newObj);
     }
   }, [quoteLineItemByQuoteID]);
 
