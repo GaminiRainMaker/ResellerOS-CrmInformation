@@ -33,4 +33,8 @@ export const QUOTE_FILE_API = {
     patch(API.QUOTE_FILE.QuoteFileVerification, data) as Promise<
       AxiosResponse<any>
     >,
+  getQuoteFileCount: (id: number) =>
+    get(`${API.QUOTE_FILE.getQuoteFileCount}/${id}`) as Promise<
+      AxiosResponse<any>
+    >,
 };

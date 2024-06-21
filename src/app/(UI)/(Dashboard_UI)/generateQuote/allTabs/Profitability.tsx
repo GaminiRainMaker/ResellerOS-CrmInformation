@@ -93,12 +93,17 @@ const Profitability: FC<any> = ({
     if (profitabilityData && profitabilityData?.length > 0) {
       let newArrr: any = [...profitabilityData];
       let newSortedValue = newArrr?.sort((a: any, b: any) => {
-        return a.line_number - b.line_number;
+        return a.id - b.id;
       });
       let FIlteredData = newSortedValue?.filter(
         (item: any) => !item?.bundle_id,
       );
-      setNewDataForProfit(FIlteredData);
+
+      let newArrForSerialAdd: any = [];
+      FIlteredData?.map((items: any, index: number) => {
+        newArrForSerialAdd?.push({...items, serialNumber: index + 1});
+      });
+      setNewDataForProfit(newArrForSerialAdd);
     }
   }, [profitabilityData]);
   useEffect(() => {
@@ -109,9 +114,14 @@ const Profitability: FC<any> = ({
         let newSortedValue;
         let newObj = {...items};
         if (items?.Profitabilities && items?.Profitabilities?.length > 0) {
-          let newSort = [...items.Profitabilities];
+          let newSort = [...items?.Profitabilities];
+
           newSortedValue = newSort?.sort((a: any, b: any) => {
-            return a.line_number - b.line_number;
+            return a.id - b.id;
+          });
+          let newArrForSerialAdd: any = [];
+          newSort?.map((items: any, index: number) => {
+            newArrForSerialAdd?.push({...items, serialNumber: index + 1});
           });
           delete newObj.Profitabilities;
           // For Extended Price
@@ -129,12 +139,17 @@ const Profitability: FC<any> = ({
               grossProft += items?.gross_profit ? items?.gross_profit : 0;
             }
           });
+          console.log('grossProftgrossProft', grossProft, extendedPrice);
+          let grossProfitPer: any = 0;
+          if (grossProft !== 0 && extendedPrice !== 0) {
+            grossProfitPer = (grossProft / extendedPrice) * 100;
+          }
 
-          let grossProfitPer = (grossProft / extendedPrice) * 100;
           newObj.extendedPrice = extendedPrice * newObj.quantity;
           newObj.grossProfit = grossProft * newObj.quantity;
           newObj.grossPercentage = grossProfitPer;
-          newObj.Profitabilities = newSortedValue;
+
+          newObj.Profitabilities = newArrForSerialAdd;
         }
 
         newArrForBun?.push(newObj);
@@ -308,8 +323,8 @@ const Profitability: FC<any> = ({
   const ProfitabilityQuoteLineItemcolumns = [
     {
       title: '#Line',
-      dataIndex: 'line_number',
-      key: 'line_number',
+      dataIndex: 'serialNumber',
+      key: 'serialNumber',
       render: (text: string, record: any, index: number) => (
         <OsInput
           disabled={renderEditableInput('#Line')}
