@@ -101,7 +101,7 @@ const Profitability: FC<any> = ({
           let newSort = [...items?.Profitabilities];
 
           newSortedValue = newSort?.sort((a: any, b: any) => {
-            return a.id - b.id;
+            return a.serial_number - b.serial_number;
           });
           let newArrForSerialAdd: any = [];
           newSort?.map((items: any, index: number) => {
