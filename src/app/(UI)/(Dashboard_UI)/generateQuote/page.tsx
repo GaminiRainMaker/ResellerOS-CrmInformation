@@ -143,6 +143,14 @@ const GenerateQuote: React.FC = () => {
   }, [getQuoteID, countOfFiles]);
 
   useEffect(() => {
+    dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
+      if (d?.payload) {
+        dispatch(setProfitability(d?.payload));
+      }
+    });
+  }, [getQuoteID]);
+
+  useEffect(() => {
     if (activeTabRoute === '2') {
       setActiveTab('2');
     }
