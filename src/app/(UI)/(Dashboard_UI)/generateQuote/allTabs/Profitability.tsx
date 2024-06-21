@@ -683,7 +683,7 @@ const Profitability: FC<any> = ({
       width: 190,
       render: (text: number, record: any) => {
         return (
-          <Typography name="Body 4/Medium">${abbreviate(text) ?? 0}</Typography>
+          <Typography name="Body 4/Medium">{abbreviate(text) ?? 0}</Typography>
         );
       },
     },
