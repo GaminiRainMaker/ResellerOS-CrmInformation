@@ -112,23 +112,7 @@ const GenerateQuote: React.FC = () => {
   useEffect(() => {
     if (getQuoteID && countOfFiles) {
       if (countOfFiles > 0) {
-        dispatch(getQuoteById(getQuoteID))?.then((payload: any) => {
-          let newObj = {
-            ...payload?.payload?.Customer,
-            ...payload?.payload?.Opportunity,
-            ...payload?.payload?.QuoteLineItems?.[0],
-            ...payload?.payload,
-          };
-          delete newObj?.Customer;
-          delete newObj?.Opportunity,
-            delete newObj?.Profitabilities,
-            delete newObj?.QuoteFiles,
-            delete newObj?.QuoteLineItems,
-            delete newObj?.RebatesQuoteLineItems,
-            delete newObj?.User,
-            delete newObj?.Validations,
-            setObjectForSyncingValues(newObj);
-        });
+        dispatch(getQuoteById(getQuoteID));
       } else {
         dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then(
           (d: any) => {
@@ -140,6 +124,26 @@ const GenerateQuote: React.FC = () => {
       }
     }
   }, [getQuoteID, countOfFiles]);
+
+  useEffect(() => {
+    dispatch(getQuoteById(getQuoteID))?.then((payload: any) => {
+      let newObj = {
+        ...payload?.payload?.Customer,
+        ...payload?.payload?.Opportunity,
+        ...payload?.payload?.QuoteLineItems?.[0],
+        ...payload?.payload,
+      };
+      delete newObj?.Customer;
+      delete newObj?.Opportunity,
+        delete newObj?.Profitabilities,
+        delete newObj?.QuoteFiles,
+        delete newObj?.QuoteLineItems,
+        delete newObj?.RebatesQuoteLineItems,
+        delete newObj?.User,
+        delete newObj?.Validations,
+        setObjectForSyncingValues(newObj);
+    });
+  }, []);
 
   useEffect(() => {
     dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {

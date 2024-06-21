@@ -91,6 +91,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     rosquoteai__Quote_Line_Items__r: '2',
     rosquoteai__Bundle_Name__c: 'werew',
   };
+
   const dowloadFunction = async (data: any, type: string) => {
     const dataItem = data?.data && JSON?.parse(data?.data);
     const formattedData: Record<string, string> = {};
@@ -106,12 +107,14 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
         ? objectForSyncingValues[formattedData[key]]
         : 'empty';
     }
-    resultValues.quotelineitem = erretree;
+
     delete resultValues._pqli;
     delete resultValues._qli;
     delete resultValues._childpqli;
     delete resultValues.quotelineitem;
+    // resultValues.quotelineitem = erretree;
     // resultValues._pqli = testing;
+
     // resultValues._childpqli = testing;
     // resultValues._qli = testing;
 

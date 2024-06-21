@@ -71,6 +71,7 @@ export const API = {
     INDEX: '/profitability',
     QUERY: '/profitability/query',
     DeleteById: '/profitability/deleteProfitabilityById',
+    count: '/profitability/getAllProfitabilityCount',
     UpdateProfitabilityValueForBulk: '/profitability/updateProfitabilityValueForBulk',
   },
   BUNDLE: {

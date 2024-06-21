@@ -540,12 +540,17 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     let newCount = countOfFiles - 1;
     setCountOFFiles(newCount);
     setConfirmedData(true);
+    const countOfLineItem = 0;
+
     const isState = await updateTables(
+      getQuoteID,
       fileData,
       fileData?.quoteLineItems,
       userInformation,
       dispatch,
+      countOfLineItem,
     );
+
     if (isState) {
       setConfirmedData(false);
       // dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));

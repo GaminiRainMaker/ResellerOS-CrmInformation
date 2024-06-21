@@ -101,7 +101,7 @@ const Profitability: FC<any> = ({
           let newSort = [...items?.Profitabilities];
 
           newSortedValue = newSort?.sort((a: any, b: any) => {
-            return a.id - b.id;
+            return a.serial_number - b.serial_number;
           });
           let newArrForSerialAdd: any = [];
           newSort?.map((items: any, index: number) => {
@@ -145,7 +145,11 @@ const Profitability: FC<any> = ({
   }, [bundleData]);
 
   useEffect(() => {
-    if (activeTab === '2') {
+    if (
+      activeTab === '2' &&
+      profitabilityDataByQuoteId &&
+      profitabilityDataByQuoteId?.length > 0
+    ) {
       const filteredDataa = profitabilityDataByQuoteId?.filter(
         (item: any) => item?.bundle_id === null,
       );
@@ -307,8 +311,8 @@ const Profitability: FC<any> = ({
   const ProfitabilityQuoteLineItemcolumns = [
     {
       title: '#Line',
-      dataIndex: 'serialNumber',
-      key: 'serialNumber',
+      dataIndex: 'serial_number',
+      key: 'serial_number',
       render: (text: string, record: any, index: number) => (
         <OsInput
           disabled={renderEditableInput('#Line')}

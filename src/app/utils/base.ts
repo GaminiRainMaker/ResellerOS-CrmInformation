@@ -8,7 +8,10 @@
 import axios from 'axios';
 import moment from 'moment';
 import {getContractInBulkByProductCode} from '../../../redux/actions/contractProduct';
-import {insertProfitability} from '../../../redux/actions/profitability';
+import {
+  getAllProfitabilityCount,
+  insertProfitability,
+} from '../../../redux/actions/profitability';
 import {quoteFileVerification} from '../../../redux/actions/quoteFile';
 import {
   DeleteQuoteLineItemById,
@@ -302,6 +305,7 @@ const genericFun = (
   }));
 
 export const updateTables = async (
+  getQuoteID: any,
   fileData: any,
   quoteLineItemData: any,
   userInformation: any,
@@ -309,6 +313,7 @@ export const updateTables = async (
   missingId?: any,
   edited?: boolean,
   getQuoteId?: number,
+  countOfLineItem?: number | undefined,
 ): Promise<any> => {
   try {
     const rebateDataArray: any[] = [];
@@ -388,11 +393,14 @@ export const updateTables = async (
             allContractWithProductCodeData?.[findContractIndex]?.payload.id,
         });
       }
+      let count: any = 0;
       if (item?.id) {
         profitabilityArray.push({
           ...obj1,
           quoteline_item_id: item?.id,
+          serial_number: count + 1,
         });
+        count = count + 1;
       }
       finalLineItems.push(obj1);
     }
@@ -408,7 +416,19 @@ export const updateTables = async (
         );
         dispatch(insertValidation(contractProductData));
       }
-      dispatch(insertProfitability(profitabilityArray));
+      let count = 0;
+      await dispatch(getAllProfitabilityCount(Number(getQuoteID)))?.then(
+        (payload: any) => {
+          count = payload?.payload;
+        },
+      );
+      const newArrr: any = [];
+
+      profitabilityArray?.map((items: any, index: number) => {
+        newArrr?.push({...items, serial_number: index + count + 1});
+      });
+
+      dispatch(insertProfitability(newArrr));
       dispatch(quoteFileVerification({id: fileData?.id}));
     }
     return true;

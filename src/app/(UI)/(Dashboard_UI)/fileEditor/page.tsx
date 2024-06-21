@@ -444,6 +444,7 @@ const EditorFile = () => {
       type: 'info',
     });
     await updateTables(
+      getQUoteId,
       quoteFileById,
       updateLineItemsValue,
       userInformation,
