@@ -5,6 +5,7 @@ export const API = {
     SEND_EMAIL: '/auth/sendNewUserEmail',
     Send_Forgot_Password_Email: '/auth/sendForgotPasswordEmail',
     Contact_Sales: '/auth/contactSales',
+    salesforceFileGet: '/auth/getSalesForceDataa',
   },
   QUOTE: {
     INDEX: '/quote',

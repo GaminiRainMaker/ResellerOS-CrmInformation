@@ -37,13 +37,14 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
+import {getSalesForceFileData} from '../../../../../redux/actions/auth';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const getQUoteId = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
-  const [quoteItems, setQuoteItems] = useState<any>();
+  const [quoteItems, setQuoteItems] = useState<any>([]);
   const [mergedValue, setMergedVaalues] = useState<any>();
   const router = useRouter();
   const ExistingQuoteItemss = searchParams.get('quoteExist');
@@ -57,27 +58,95 @@ const EditorFile = () => {
 
   // ============================== SalesForce Implementations ======================================
   const fetchSaleForceDataa = async () => {
-    try {
-      const documentId = '069Hr00000P9E1lIAF';
-      const url = `https://goldenresellerosquoteai-dev-ed.develop.my.salesforce.com//services/apexrest/rosquoteai/file-in-binary/069Hr00000P9E1lIAF`;
-      const options = {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          Authorization: `Bearer 00DHr000002fwK3!ARUAQPdvZRzfqQOE2_70ja5dwvDbg4QTqHaA_Puw1VyMdARrS0PDsegmaAP0Vq9oaNsikS9MhpIu0deZzzKBbhdhPQtEHN1w`,
-        },
-      };
-      const response = await fetch(url, options);
-      const responseData = await response.json();
-      console.log('43543534', response);
-    } catch (error) {
-      console.log('error--->', error);
-      return {error: error};
-    }
+    dispatch(getSalesForceFileData(''))?.then(async (payload: any) => {
+      setNanonetsLoading(true);
+      let base64 = ['base64']?.concat([payload?.payload?.body]);
+
+      console.log('3454354354', base64?.toString());
+
+      fetch(base64?.toString())
+        .then((res) => res.blob())
+        .then(async (file) => {
+          const finalFile = new File([file], quoteFileById?.file_name, {
+            type: file.type,
+          });
+
+          const response = await sendDataToNanonets(
+            'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
+            finalFile,
+          );
+
+          const newArrrrAll: any = [];
+          if (response) {
+            for (let i = 0; i < response?.data?.result?.length; i++) {
+              const itemss: any = response?.data?.result[i];
+
+              const newItemsssadsd = itemss?.prediction?.filter(
+                (item: any) => item,
+              );
+              const newAllgetOArr: any = [];
+              newItemsssadsd?.map((itemNew: any) => {
+                let formattedArray1: any = [];
+
+                const formattedData1: any = {};
+                if (itemNew?.cells) {
+                  const titles = itemNew?.cells.filter(
+                    (innerCell: any) => innerCell.row === 1,
+                  );
+                  const strifndfs = (str: any) => {
+                    const losadsd = str
+                      ?.toString()
+                      .match(/\d+(\.\d+)?/g)
+                      ?.map(Number)
+                      ?.toString()
+                      .match(/\d+(\.\d+)?/g)
+                      ?.map(Number);
+                  };
+
+                  itemNew?.cells.forEach((item: any) => {
+                    const rowNum = item.row;
+                    if (rowNum === 1) {
+                      return;
+                    }
+                    if (!formattedData1[rowNum]) {
+                      formattedData1[rowNum] = {};
+                    }
+                    formattedData1[rowNum][
+                      item.label?.toLowerCase()
+                        ? item.label?.toLowerCase()
+                        : titles.find(
+                            (titleRow: any) => titleRow.col === item.col,
+                          ).text
+                    ] = item.label?.toLowerCase()
+                      ? item.label?.toLowerCase()?.includes('Price')
+                      : titles
+                            .find((titleRow: any) => titleRow.col === item.col)
+                            .text?.includes('Price')
+                        ? item?.text
+                            ?.toString()
+                            .match(/\d+(\.\d+)?/g)
+                            ?.map(Number)
+                            ?.toString()
+                            .match(/\d+(\.\d+)?/g)
+                            ?.map(Number)
+                            ?.toString()
+                        : item.text;
+                  });
+                }
+                formattedArray1 = Object.values(formattedData1);
+                newAllgetOArr?.push(formattedArray1);
+                newArrrrAll?.push(formattedArray1);
+                setQuoteItems(newArrrrAll);
+                setNanonetsLoading(false);
+              });
+            }
+          }
+        });
+    });
   };
 
   useEffect(() => {
-    // fetchSaleForceDataa();
+    fetchSaleForceDataa();
     if (ExistingQuoteItemss === 'true') {
       let newObj = {
         id: Number(getQUoteId),
@@ -174,7 +243,7 @@ const EditorFile = () => {
 
   useEffect(() => {
     const newArrr: any = [];
-    if (quoteItems) {
+    if (quoteItems && quoteItems.length > 0) {
       quoteItems?.map((itemsss: any) => {
         if (itemsss) {
           const newObj: any = {...itemsss};
