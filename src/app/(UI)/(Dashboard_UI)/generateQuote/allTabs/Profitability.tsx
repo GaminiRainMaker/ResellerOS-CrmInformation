@@ -31,6 +31,7 @@ import {
   deleteProfitabilityById,
   getProfitabilityByQuoteId,
   updateProfitabilityById,
+  updateProfitabilityValueForBulk,
 } from '../../../../../../redux/actions/profitability';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
@@ -825,12 +826,12 @@ const Profitability: FC<any> = ({
             id: ids,
             product_family: ProductFamily,
           };
-          // console.log('updatedData', updatedData, 'obj', obj);
           await Promise.all(
             updatedData?.map((item: any) =>
               dispatch(updateProfitabilityById(item)),
             ),
           );
+          // await dispatch(updateProfitabilityValueForBulk(updatedData));
           await dispatch(updateProductFamily(obj));
           setProfabilityUpdationState([
             {
