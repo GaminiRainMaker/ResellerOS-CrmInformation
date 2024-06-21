@@ -15,14 +15,15 @@ const Matrix: FC<any> = ({selectedFilter}) => {
     (state) => state.profitability,
   );
   const [finalData, setFinalData] = useState<any>();
+
   const filterDataByValue = (data: any, filterValue: string) => {
     const groupedData: any = {};
     data?.forEach((item: any) => {
       let name;
       if (filterValue === 'Product Family') {
-        name = item.Product.product_family;
+        name = item?.Product?.product_family || 'Unassigned';
       } else if (filterValue === 'Pricing Method') {
-        name = item.pricing_method;
+        name = item?.pricing_method;
       } else if (filterValue === 'File Name') {
         name = item?.QuoteLineItem?.QuoteFile?.file_name;
       }
@@ -31,7 +32,7 @@ const Matrix: FC<any> = ({selectedFilter}) => {
           return input
             .toLowerCase()
             .replace(/_/g, ' ')
-            .replace(/\b\w/g, (char) => char.toUpperCase());
+            .replace(/\b\w/g, (char) => char?.toUpperCase());
         };
 
         if (name?.includes('_') || name === name?.toLowerCase()) {
@@ -41,7 +42,7 @@ const Matrix: FC<any> = ({selectedFilter}) => {
         if (!groupedData[name]) {
           groupedData[name] = {name: name, QuoteLineItem: []};
         }
-        groupedData[name].QuoteLineItem.push(item);
+        groupedData[name]?.QuoteLineItem?.push(item);
       }
     });
     setFinalData(Object.values(groupedData));
@@ -64,14 +65,21 @@ const Matrix: FC<any> = ({selectedFilter}) => {
     Gp: token?.colorTextDisabled,
   };
 
+  const randomColors: string[] = [
+    token?.colorPrimary,
+    token?.colorInfo,
+    token?.colorTextDisabled,
+    '#2B759A',
+    '#495D79',
+    '#31576F',
+  ];
+
+  let colorIndex = 0;
+
   const getPieCellColor = (name: string) => {
     if (!colorPalette[name]) {
-      const letters = '0123456789ABCDEF';
-      let color = '#';
-      for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-      }
-      colorPalette[name] = color;
+      colorPalette[name] = randomColors[colorIndex];
+      colorIndex = (colorIndex + 1) % randomColors.length;
     }
     return colorPalette[name];
   };
@@ -184,7 +192,7 @@ const Matrix: FC<any> = ({selectedFilter}) => {
         <EmptyContainer
           title={
             selectedFilter
-              ? 'There is no data to show on Metrics Pie'
+              ? 'There is no data to show on Metrics'
               : 'Please Select Grouping to view Metrics'
           }
           MetricsIcon

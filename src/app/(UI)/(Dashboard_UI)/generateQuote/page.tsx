@@ -39,6 +39,7 @@ import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
 import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
 import {setProfitability} from '../../../../../redux/slices/profitability';
+import Profitability1 from './allTabs/Profitability1';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -95,6 +96,12 @@ const GenerateQuote: React.FC = () => {
   const [addNewCustomerQuote, setAddNewCustomerQuote] =
     useState<boolean>(false);
   const [countOfFiles, setCountOFFiles] = useState<number>();
+
+  useEffect(() => {
+    if (getQuoteID) {
+      dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+    }
+  }, [getQuoteID]);
 
   useEffect(() => {
     dispatch(getAllTableColumn(''));
@@ -358,23 +365,30 @@ const GenerateQuote: React.FC = () => {
           Profitability
         </Typography>
       ),
+      // children: (
+      //   <Profitability
+      //     profitabilityData={profitabilityData}
+      //     setProfitabilityData={setProfitabilityData}
+      //     tableColumnDataShow={tableColumnDataShow}
+      //     setSelectedRowIds={setSelectedRowIds}
+      //     selectTedRowIds={selectTedRowIds}
+      //     selectedFilter={selectedFilter}
+      //     setSelectedRowData={setSelectedRowData}
+      //     setShowUpdateLineItemModal={setShowUpdateLineItemModal}
+      //     showUpdateLineItemModal={showUpdateLineItemModal}
+      //     selectTedRowData={selectTedRowData}
+      //     isDeleteProfitabilityModal={isDeleteProfitabilityModal}
+      //     setIsDeleteProfitabilityModal={setIsDeleteProfitabilityModal}
+      //     activeTab={activeTab}
+      //     familyFilter={familyFilter}
+      //     setFamilyFilter={setFamilyFilter}
+      //   />
+      // ),
       children: (
-        <Profitability
-          profitabilityData={profitabilityData}
-          setProfitabilityData={setProfitabilityData}
-          tableColumnDataShow={tableColumnDataShow}
-          setSelectedRowIds={setSelectedRowIds}
-          selectTedRowIds={selectTedRowIds}
-          selectedFilter={selectedFilter}
-          setSelectedRowData={setSelectedRowData}
-          setShowUpdateLineItemModal={setShowUpdateLineItemModal}
-          showUpdateLineItemModal={showUpdateLineItemModal}
-          selectTedRowData={selectTedRowData}
-          isDeleteProfitabilityModal={isDeleteProfitabilityModal}
-          setIsDeleteProfitabilityModal={setIsDeleteProfitabilityModal}
+        <Profitability1
           activeTab={activeTab}
-          familyFilter={familyFilter}
-          setFamilyFilter={setFamilyFilter}
+          tableColumnDataShow={tableColumnDataShow}
+          selectedFilter={selectedFilter}
         />
       ),
     },
