@@ -7,6 +7,7 @@ import {
   insertProfitability,
   deleteProfitabilityById,
   getAllProfitabilityCount,
+  updateProfitabilityValueForBulk,
 } from '../actions/profitability';
 
 type ProfitabilityState = {
@@ -14,12 +15,14 @@ type ProfitabilityState = {
   error: string | null;
   data: any;
   profitability: any;
+  profitabilityBulkUpdate: any;
   isProfitabilityCall: boolean;
 };
 const initialState: ProfitabilityState = {
   loading: false,
   error: null,
   data: [],
+  profitabilityBulkUpdate: [],
   profitability: [],
   isProfitabilityCall: false,
 };
@@ -109,6 +112,24 @@ const profitabilitySlice = createSlice({
           state.error = action.payload;
         },
       )
+      .addCase(updateProfitabilityValueForBulk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateProfitabilityValueForBulk.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.profitabilityBulkUpdate = action.payload;
+        },
+      )
+      .addCase(
+        updateProfitabilityValueForBulk.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
       .addCase(getAllProfitabilityCount.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -117,7 +138,7 @@ const profitabilitySlice = createSlice({
         getAllProfitabilityCount.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.profitabilityBulkUpdate = action.payload;
         },
       )
       .addCase(

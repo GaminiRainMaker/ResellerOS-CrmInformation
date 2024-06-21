@@ -251,7 +251,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         const value = text ? useRemoveDollarAndCommahook(text) : 0;
         return (
           <Typography name="Body 4/Medium">
-            {`$ ${abbreviate(Number(value ?? 0))}`}
+            {`${abbreviate(Number(value ?? 0))}`}
             {/* {record?.Bundle?.quantity ? record?.Bundle?.quantity : 1} */}
           </Typography>
         );
@@ -267,7 +267,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         const value = useRemoveDollarAndCommahook(text);
         return (
           <Typography name="Body 4/Medium">
-            {text === null ? 0.0 : `$ ${abbreviate(value ?? 0.0)}`}
+            {text === null ? 0.0 : `${abbreviate(value ?? 0.0)}`}
           </Typography>
         );
       },

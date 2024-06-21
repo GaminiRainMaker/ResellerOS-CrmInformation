@@ -11,6 +11,30 @@ import {useAppSelector} from '../../../../../../redux/hook';
 
 const Matrix: FC<any> = ({selectedFilter}) => {
   const [token] = useThemeToken();
+
+  const [chartDimensions, setChartDimensions] = useState<any>({});
+
+  useEffect(() => {
+    const updateChartDimensions = () => {
+      let width;
+      if (window.innerWidth < 400) {
+        width = window.innerWidth - 40;
+      } else if (window.innerWidth < 768) {
+        width = 400;
+      } else if (window.innerWidth < 1024) {
+        width = 620;
+      } else if (window.innerWidth < 1537) {
+        width = 620;
+      } else {
+        width = 800;
+      }
+      setChartDimensions({width});
+    };
+
+    window.addEventListener('resize', updateChartDimensions);
+    updateChartDimensions();
+    return () => window.removeEventListener('resize', updateChartDimensions);
+  }, []);
   const {data: profitabilityDataByQuoteId} = useAppSelector(
     (state) => state.profitability,
   );
@@ -159,34 +183,52 @@ const Matrix: FC<any> = ({selectedFilter}) => {
     <>
       {finalData?.length > 0 ? (
         <Row gutter={[24, 24]} justify="space-between">
-          {sectionData?.map((item) => (
-            <div
-              style={{
-                padding: '18px',
-                background: '#f6f7f8',
-                borderRadius: '12px',
-              }}
-              key={item.id}
-            >
-              <Col
+          {sectionData?.map((item) => {
+            let word = item?.name?.split(' ')[0].toLowerCase();
+
+            return (
+              <div
                 style={{
                   padding: '18px',
                   background: '#f6f7f8',
                   borderRadius: '12px',
                 }}
-                span={12}
+                key={item.id}
               >
-                <Space direction="vertical">
-                  <Typography name="Body 1/Regular">{item.name}</Typography>
-                  <Typography name="Body 3/Regular">
-                    {selectedFilter ? `(${selectedFilter})` : '(--)'}
-                  </Typography>
-                </Space>
-
-                <OsPieChart data={item.pieData} />
-              </Col>
-            </div>
-          ))}
+                <Col
+                  style={{
+                    padding: '18px',
+                    background: '#f6f7f8',
+                    borderRadius: '12px',
+                  }}
+                  span={12}
+                >
+                  <Space direction="vertical">
+                    <Typography name="Body 1/Regular">{item.name}</Typography>
+                    {item.pieData?.length > 0 && (
+                      <Typography name="Body 3/Regular">
+                        {selectedFilter ? `(${selectedFilter})` : '(--)'}
+                      </Typography>
+                    )}
+                  </Space>
+                  {item.pieData?.length > 0 ? (
+                    <OsPieChart data={item.pieData} />
+                  ) : (
+                    <Typography
+                      name="Body 1/Regular"
+                      style={{
+                        width: chartDimensions?.width,
+                      }}
+                      as="div"
+                    >
+                      There is no {word} available for{' '}
+                      {selectedFilter ? ` (${selectedFilter})` : ' (--)'}
+                    </Typography>
+                  )}
+                </Col>
+              </div>
+            );
+          })}
         </Row>
       ) : (
         <EmptyContainer

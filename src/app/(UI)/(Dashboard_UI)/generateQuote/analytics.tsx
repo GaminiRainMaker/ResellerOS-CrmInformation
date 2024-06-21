@@ -83,7 +83,7 @@ const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
   const analyticsData = [
     {
       key: 1,
-      primary: quoteLineItemByQuoteID?.length,
+      primary: profitability?.length ? profitability?.length : 0,
       secondry: 'Line Items',
       icon: <QueueListIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
