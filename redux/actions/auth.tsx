@@ -13,6 +13,17 @@ export const signUpAuth = createAsyncThunk(
     }
   },
 );
+export const getSalesForceFileData = createAsyncThunk(
+  'auth/getSalesForceDataa',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await AUTH_API.get();
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);
 
 export const verifyAuth = createAsyncThunk(
   'auth/verify',
