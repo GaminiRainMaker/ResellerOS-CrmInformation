@@ -3,6 +3,7 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
   contactSales,
+  getSalesForceFileData,
   sendForgotPasswordEmail,
   sendNewUserEmail,
   signUpAuth,
@@ -103,7 +104,25 @@ const authSlice = createSlice({
       .addCase(contactSales.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(getSalesForceFileData.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getSalesForceFileData.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          // state.data = action.payload;
+        },
+      )
+      .addCase(
+        getSalesForceFileData.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      );
   },
 });
 
