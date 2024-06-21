@@ -221,7 +221,7 @@ const Matrix: FC<any> = ({selectedFilter}) => {
                       }}
                       as="div"
                     >
-                      There is no {word} available for the{' '}
+                      There is no {word} available for{' '}
                       {selectedFilter ? ` (${selectedFilter})` : ' (--)'}
                     </Typography>
                   )}
