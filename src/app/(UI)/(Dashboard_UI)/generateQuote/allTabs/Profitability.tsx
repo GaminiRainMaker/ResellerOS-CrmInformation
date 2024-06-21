@@ -63,7 +63,6 @@ const Profitability: FC<any> = ({
     (state) => state.profitability,
   );
   const [triggerUpdate, setTriggerUpdate] = useState(false);
-  const [newDataForProfit, setNewDataForProfit] = useState<any>([]);
   const [newDataForBundle, setNewDataForBundle] = useState<any>([]);
   const [getTheBundle, setGetTheBundle] = useState<boolean>(false);
   const [updateProfitabilityLoading, setUpdateProfitabilityLoading] =
@@ -89,23 +88,6 @@ const Profitability: FC<any> = ({
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Profitability" />,
   };
-  useEffect(() => {
-    if (profitabilityData && profitabilityData?.length > 0) {
-      let newArrr: any = [...profitabilityData];
-      let newSortedValue = newArrr?.sort((a: any, b: any) => {
-        return a.id - b.id;
-      });
-      let FIlteredData = newSortedValue?.filter(
-        (item: any) => !item?.bundle_id,
-      );
-
-      let newArrForSerialAdd: any = [];
-      FIlteredData?.map((items: any, index: number) => {
-        newArrForSerialAdd?.push({...items, serialNumber: index + 1});
-      });
-      setNewDataForProfit(newArrForSerialAdd);
-    }
-  }, [JSON.stringify(profitabilityData), profitabilityData]);
 
   useEffect(() => {
     if (bundleData && bundleData?.length > 0) {
@@ -765,7 +747,7 @@ const Profitability: FC<any> = ({
       });
       setFinalProfitTableCol(newArr);
     }
-  }, [newDataForBundle, newDataForProfit]);
+  }, [newDataForBundle]);
 
   useEffect(() => {
     if (activeTab === '2') {
@@ -1005,7 +987,6 @@ const Profitability: FC<any> = ({
               <OsTableWithOutDrag
                 loading={loading}
                 columns={finalProfitTableCol}
-                // dataSource={newDataForProfit || []}
                 dataSource={profitabilityData || []}
                 scroll
                 rowSelection={{
