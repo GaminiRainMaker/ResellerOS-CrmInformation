@@ -40,6 +40,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
 
   const FormstackDataOptions =
     formStackSyncData &&
+    formStackSyncData?.length > 0 &&
     formStackSyncData?.map((FormstackDataItem: any) => ({
       value: FormstackDataItem.doc_id,
       key: FormstackDataItem.doc_key,
