@@ -103,6 +103,16 @@ const GenerateQuote: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (getQuoteID) {
+      dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
+        if (d?.payload) {
+          dispatch(setProfitability(d?.payload));
+        }
+      });
+    }
+  }, [getQuoteID]);
+
+  useEffect(() => {
     dispatch(getQuoteById(getQuoteID))?.then((payload: any) => {
       let newObj = {
         ...payload?.payload?.Customer,
