@@ -211,6 +211,7 @@ export const API = {
     GetQuoteFileById: '/quoteFile/getQuoteFileById',
     getQuoteFileByQuoteIdAll: '/quoteFile/getQuoteFileByQuoteIdAll',
     postJson: '/quoteFile/updateQuoteFileByIdForQuoteJson',
+    getQuoteFileCount: '/quoteFile/getQuoteFileCount',
   },
   ASSIGN_PARTNER_PROGRAM: {
     INDEX: '/assignPartnerProgram',

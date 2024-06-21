@@ -115,7 +115,6 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     // resultValues._childpqli = testing;
     // resultValues._qli = testing;
 
-    console.log('2343243242', resultValues);
     try {
       setLoading(true);
       let pathName =

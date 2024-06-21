@@ -39,6 +39,7 @@ import GenerateQuoteAnalytics from './analytics';
 import BundleSection from './bundleSection';
 import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
 import {setProfitability} from '../../../../../redux/slices/profitability';
+import {getQuoteFileCount} from '../../../../../redux/actions/quoteFile';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -125,7 +126,14 @@ const GenerateQuote: React.FC = () => {
     //   }
     // });
   }, []);
-
+  useEffect(() => {
+    dispatch(getQuoteFileCount(Number(getQuoteID)))?.then((payload: any) => {
+      if (payload?.payload === 0) {
+        setActiveTab('2');
+      }
+      setCountOFFiles(payload?.payload);
+    });
+  }, []);
   useEffect(() => {
     if (activeTabRoute === '2') {
       setActiveTab('2');
@@ -156,16 +164,6 @@ const GenerateQuote: React.FC = () => {
     );
     setTableColumnDataShow(filterRequired);
   }, [activeTab, tableColumnData]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (activeTab === '1' && countOfFiles === 0) {
-        setActiveTab('2');
-      } else if (activeTab !== '2') {
-        setActiveTab('1');
-      }
-    }, 3000);
-  }, [countOfFiles]);
 
   useEffect(() => {
     setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);

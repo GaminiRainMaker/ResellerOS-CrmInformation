@@ -447,7 +447,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
           if (payload?.payload) {
             let lengthOfFiles;
             lengthOfFiles = payload?.payload?.length;
-            setCountOFFiles(Number(lengthOfFiles));
           }
         },
       );
@@ -457,42 +456,44 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   // dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
   useEffect(() => {
     const separatedData: any = {};
-    quoteFileData?.forEach((item: any) => {
-      const fileName = item.file_name;
-      if (!separatedData[fileName]) {
-        separatedData[fileName] = {
-          id: item.id,
-          title: fileName,
-          totalAdjustedPrice: 0,
-          totalCount: 0,
-          quoteFile: item?.quote_file,
-          pdfUrl: item?.pdf_url,
-          quoteLineItems: [],
-        };
-      }
-
-      item?.QuoteLineItems?.forEach((quoteLineItem: any) => {
-        separatedData[fileName].quoteLineItems.push(quoteLineItem);
-        separatedData[fileName].totalCount++;
-        separatedData[fileName].totalAdjustedPrice += Number(
-          useRemoveDollarAndCommahook(quoteLineItem?.adjusted_price ?? 0) *
-            useRemoveDollarAndCommahook(quoteLineItem?.quantity ?? 0),
-        );
-      });
-    });
-
-    const result = Object.values(separatedData);
-    const combinedArr: any = [];
     if (quoteFileData && quoteFileData?.length > 0) {
-      quoteFileData?.forEach((itemOut: any) => {
-        itemOut?.QuoteLineItems?.map((itemss: any) => {
-          combinedArr?.push(itemss);
+      quoteFileData?.forEach((item: any) => {
+        const fileName = item.file_name;
+        if (!separatedData[fileName]) {
+          separatedData[fileName] = {
+            id: item.id,
+            title: fileName,
+            totalAdjustedPrice: 0,
+            totalCount: 0,
+            quoteFile: item?.quote_file,
+            pdfUrl: item?.pdf_url,
+            quoteLineItems: [],
+          };
+        }
+
+        item?.QuoteLineItems?.forEach((quoteLineItem: any) => {
+          separatedData[fileName].quoteLineItems.push(quoteLineItem);
+          separatedData[fileName].totalCount++;
+          separatedData[fileName].totalAdjustedPrice += Number(
+            useRemoveDollarAndCommahook(quoteLineItem?.adjusted_price ?? 0) *
+              useRemoveDollarAndCommahook(quoteLineItem?.quantity ?? 0),
+          );
         });
       });
-    }
-    setDataForQuoteLineItemsAll(combinedArr);
 
-    setQuoteLineItemByQuoteData1(result);
+      const result = Object.values(separatedData);
+      const combinedArr: any = [];
+      if (quoteFileData && quoteFileData?.length > 0) {
+        quoteFileData?.forEach((itemOut: any) => {
+          itemOut?.QuoteLineItems?.map((itemss: any) => {
+            combinedArr?.push(itemss);
+          });
+        });
+      }
+      setDataForQuoteLineItemsAll(combinedArr);
+
+      setQuoteLineItemByQuoteData1(result);
+    }
   }, [quoteFileData, defaultDataShow]);
 
   const addConcernData = async () => {
