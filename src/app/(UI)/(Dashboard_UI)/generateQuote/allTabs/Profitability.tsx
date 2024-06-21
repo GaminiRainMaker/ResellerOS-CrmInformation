@@ -790,8 +790,8 @@ const Profitability: FC<any> = ({
               const filteredDataa = d?.payload?.filter(
                 (item: any) => item?.bundle_id === null,
               );
-
               setProfitabilityData(filteredDataa);
+              dispatch(setProfitability(d?.payload));
             }
             setIsDeleteProfitabilityModal(false);
           },
@@ -956,7 +956,8 @@ const Profitability: FC<any> = ({
               },
             ]}
           />
-        ))}{' '}
+        ))}
+
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         <>
           {selectedFilter === 'Product Family' ? (

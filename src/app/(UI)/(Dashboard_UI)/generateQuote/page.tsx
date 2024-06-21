@@ -235,7 +235,16 @@ const GenerateQuote: React.FC = () => {
         <Typography
           name="Body 3/Regular"
           cursor="pointer"
-          onClick={() => setShowBundleModal((p) => !p)}
+          onClick={() => {
+            if (quoteFileData.length > 0) {
+              notification.open({
+                message: 'Please Verify All the Files first.',
+                type: 'info',
+              });
+            } else {
+              setShowBundleModal(true);
+            }
+          }}
         >
           Bundle Configuration
         </Typography>
@@ -248,7 +257,12 @@ const GenerateQuote: React.FC = () => {
           name="Body 3/Regular"
           cursor="pointer"
           onClick={() => {
-            if (selectTedRowData?.length > 0) {
+            if (quoteFileData.length > 0) {
+              notification.open({
+                message: 'Please Verify All the Files first.',
+                type: 'info',
+              });
+            } else if (selectTedRowData?.length > 0) {
               setShowUpdateLineItemModal(true);
             }
           }}
@@ -265,7 +279,12 @@ const GenerateQuote: React.FC = () => {
           color={token?.colorError}
           cursor="pointer"
           onClick={() => {
-            if (selectTedRowIds?.length > 0) {
+            if (quoteFileData.length > 0) {
+              notification.open({
+                message: 'Please Verify All the Files first.',
+                type: 'info',
+              });
+            } else if (selectTedRowData?.length > 0) {
               setIsDeleteProfitabilityModal(true);
             }
           }}
@@ -483,9 +502,9 @@ const GenerateQuote: React.FC = () => {
                       message: 'Please Verify All the Files first.',
                       type: 'info',
                     });
-                    return;
+                  } else {
+                    setOpen(true);
                   }
-                  setOpen(true);
                 }}
               />
               <AddQuote
