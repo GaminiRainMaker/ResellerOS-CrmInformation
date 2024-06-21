@@ -139,11 +139,9 @@ const Matrix: FC<any> = ({selectedFilter}) => {
         let totalRevenueValue = 0;
         let totalProfitValue = 0;
         element?.QuoteLineItem?.forEach((QuoteLineItemData: any) => {
-          const {line_amount, quantity, list_price} = QuoteLineItemData;
-
-          const revenue = Number(line_amount) * Number(quantity);
-          const profitValue = Number(line_amount) - Number(list_price);
-
+          const {exit_price, gross_profit} = QuoteLineItemData;
+          const revenue = Number(exit_price);
+          const profitValue = Number(gross_profit);
           totalRevenueValue += revenue;
           totalProfitValue += profitValue;
         });
@@ -152,7 +150,7 @@ const Matrix: FC<any> = ({selectedFilter}) => {
           tempArrRevenue.push({
             id: element.name,
             name: element.name,
-            value: Math.floor(totalRevenueValue) ?? 0,
+            value: totalRevenueValue ?? 0,
             color: getPieCellColor(element.name) ?? '',
           });
         }
@@ -161,7 +159,7 @@ const Matrix: FC<any> = ({selectedFilter}) => {
           tempArrProfit.push({
             id: element.name,
             name: element.name,
-            value: Math.floor(totalProfitValue) ?? 0,
+            value: totalProfitValue ?? 0,
             color: getPieCellColor(element.name) ?? '',
           });
         }

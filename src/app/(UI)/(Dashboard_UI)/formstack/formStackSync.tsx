@@ -209,11 +209,11 @@ const FormStackSync = () => {
               Select Document
             </Typography>
           </Col>
-          <Col>
+          {/* <Col>
             <SelectFormItem>
               <OsButton text="Save" buttontype="PRIMARY" htmlType="submit" />
             </SelectFormItem>
-          </Col>
+          </Col> */}
         </Row>
         <SelectFormItem
           label={<Typography name="Body 4/Medium">Document</Typography>}
