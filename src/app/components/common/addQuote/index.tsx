@@ -323,19 +323,19 @@ const AddQuote: FC<AddQuoteInterface> = ({
           finalOpportunityArray?.push(singleObjects);
         });
       }
-
+      console.log(finalLineItems, 'finalLineItemsfinalLineItems');
       if (finalLineItems && finalLineItems.length > 0) {
-        dispatch(insertQuoteLineItem(finalLineItems));
+        await dispatch(insertQuoteLineItem(finalLineItems));
       }
       if (finalOpportunityArray && syncTableData?.length > 0) {
-        dispatch(insertOpportunityLineItem(finalOpportunityArray));
+        await dispatch(insertOpportunityLineItem(finalOpportunityArray));
       }
       setFinalLoading(false);
     } catch (err) {
       setFinalLoading(false);
       console.log('object', err);
     }
-    dispatch(getQuotesByDateFilter({}));
+    await dispatch(getQuotesByDateFilter({}));
     setShowModal(false);
     setUploadFileData([]);
     if (singleQuote || updatedArr?.length === 1) {
