@@ -323,7 +323,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
           finalOpportunityArray?.push(singleObjects);
         });
       }
-      console.log(finalLineItems, 'finalLineItemsfinalLineItems');
       if (finalLineItems && finalLineItems.length > 0) {
         await dispatch(insertQuoteLineItem(finalLineItems));
       }
