@@ -336,7 +336,6 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
               defaultValue={text ?? record?.Product?.product_family}
               options={selectDataForProduct}
               onChange={(value) => {
-                handleSave(record);
                 handleFieldChange(
                   record,
                   'product_family',
@@ -363,7 +362,6 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
           placeholder="Select"
           defaultValue={text}
           onChange={(value) => {
-            handleSave(record);
             handleFieldChange(record, 'pricing_method', value, selectedFilter);
           }}
           options={pricingMethod}
