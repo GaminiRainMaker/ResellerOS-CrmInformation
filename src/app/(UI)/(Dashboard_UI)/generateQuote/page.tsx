@@ -69,7 +69,7 @@ const GenerateQuote: React.FC = () => {
     useState<boolean>(false);
   const [isDeleteProfitabilityModal, setIsDeleteProfitabilityModal] =
     useState<boolean>(false);
-  const [selectedFilter, setSelectedFilter] = useState<string>('File Name');
+  const [selectedFilter, setSelectedFilter] = useState<string>('');
   const [familyFilter, setFamilyFilter] = useState<any>([]);
 
   const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] =
