@@ -13,10 +13,17 @@ import {pricingMethod, selectDataForProduct} from '@/app/utils/CONSTANTS';
 import {calculateProfitabilityData} from '@/app/utils/base';
 import {FC, useEffect, useState} from 'react';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+import {
+  getProfitabilityByQuoteId,
+  updateProfitabilityById,
+} from '../../../../../../redux/actions/profitability';
+import {useSearchParams} from 'next/navigation';
 
 const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
   const dispatch = useAppDispatch();
-  const {data: profitabilityDataByQuoteId} = useAppSelector(
+  const searchParams = useSearchParams();
+  const getQuoteID = searchParams.get('id');
+  const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
     (state) => state.profitability,
   );
   const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>();
@@ -101,8 +108,11 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
 
   const handleSave = async (record: any) => {
     try {
-      console.log('handleSave', record);
-      // Update the state with the new data
+      dispatch(updateProfitabilityById(record)).then((d: any) => {
+        if (d?.payload) {
+          dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+        }
+      });
     } catch (error) {
       console.error('Error saving data:', error);
     }
@@ -442,7 +452,7 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
         !selectedFilter && finalProfitTableCol ? (
           <>
             <OsTableWithOutDrag
-              loading={false}
+              loading={loading}
               columns={finalProfitTableCol}
               dataSource={finalData}
               scroll
@@ -473,7 +483,7 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
                           ),
                           children: (
                             <OsTableWithOutDrag
-                              loading={false}
+                              loading={loading}
                               columns={finalProfitTableCol}
                               dataSource={finalDataItem?.QuoteLineItem}
                               scroll
