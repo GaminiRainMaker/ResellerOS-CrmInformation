@@ -10,7 +10,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
 import {pricingMethod, selectDataForProduct} from '@/app/utils/CONSTANTS';
-import {useRemoveDollarAndCommahook} from '@/app/utils/base';
+import {calculateProfitabilityData} from '@/app/utils/base';
 import {FC, useEffect, useState} from 'react';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 
@@ -22,9 +22,13 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
   const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>();
   const {abbreviate} = useAbbreviationHook(0);
   const [finalData, setFinalData] = useState<any>();
-  const [triggerUpdate, setTriggerUpdate] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   const filterDataByValue = (data: any, filterValue?: string) => {
+    if (!filterValue) {
+      setFinalData(Object.values(data));
+      return;
+    }
     const groupedData: any = {};
     data?.forEach((item: any) => {
       let name;
@@ -34,6 +38,12 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
         name = item?.pricing_method;
       } else if (filterValue === 'File Name') {
         name = item?.QuoteLineItem?.QuoteFile?.file_name;
+      } else if (filterValue === 'Vendor/Disti') {
+        name =
+          item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
+            ?.distribu;
+      } else if (filterValue === 'OEM') {
+        name = item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem;
       }
 
       if (name) {
@@ -79,14 +89,47 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
     return !editableField?.is_editable;
   };
 
-  const handleKeyDown = (e: any) => {
+  const handleKeyDown = (e: any, record: any) => {
     if (e.key === 'Enter') {
-      setTriggerUpdate((prev) => !prev);
+      handleSave(record);
     }
   };
 
-  const handleBlur = () => {
-    setTriggerUpdate((prev) => !prev);
+  const handleBlur = (record: any) => {
+    handleSave(record);
+  };
+
+  const handleSave = async (record: any) => {
+    try {
+      console.log('handleSave', record);
+      // Update the state with the new data
+    } catch (error) {
+      console.error('Error saving data:', error);
+    }
+  };
+
+  // const handleBulkUpdate = async (field: string, value: any) => {
+  //   try {
+  //     console.log('Data1234', field, value);
+
+  //     // const response = await axios.post('/api/bulkUpdateProfitability', {
+  //     //   ids: selectedRowKeys,
+  //     //   field,
+  //     //   value,
+  //     // });
+  //     // console.log('Bulk data saved successfully:', response.data);
+  //   } catch (error) {
+  //     console.error('Error saving bulk data:', error);
+  //   }
+  // };
+
+  const onSelectChange = (selectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys(selectedRowKeys);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
   };
 
   useEffect(() => {
@@ -111,18 +154,82 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
     setFinalProfitTableCol(newArr);
   }, [tableColumnDataShow]);
 
+  console.log('selectedFilter1234', selectedFilter);
+
+  const handleFieldChange = (
+    record: any,
+    field: string,
+    value: any,
+    updatedSelectedFilter: string,
+  ) => {
+    const updatedRecord = {...record, [field]: value};
+    const result: any = calculateProfitabilityData(
+      updatedRecord?.quantity,
+      updatedRecord?.pricing_method,
+      updatedRecord?.line_amount,
+      updatedRecord?.adjusted_price,
+      updatedRecord?.list_price,
+    );
+    if (result) {
+      updatedRecord.unit_price = result.unitPrice;
+      updatedRecord.exit_price = result.exitPrice;
+      updatedRecord.gross_profit = result.grossProfit;
+      updatedRecord.gross_profit_percentage = result.grossProfitPercentage;
+    }
+
+    console.log('selectedFilter====', selectedFilter);
+    if (!selectedFilter || selectedFilter === undefined) {
+      setFinalData((prevData: any) => {
+        const newData = prevData?.map((item: any) =>
+          item.id === record.id ? updatedRecord : item,
+        );
+        return newData;
+      });
+    } else if (selectedFilter) {
+      setFinalData((prevData: any) => {
+        return prevData.map((data: any) => {
+          if (data.QuoteLineItem) {
+            const updatedQuotLine = data.QuoteLineItem.map((qla: any) => {
+              if (qla.id === updatedRecord.id) {
+                return updatedRecord;
+              } else {
+                return qla;
+              }
+            });
+            return {
+              ...data,
+              QuoteLineItem: updatedQuotLine,
+            };
+          } else {
+            return {...data};
+          }
+        });
+      });
+    }
+  };
+
   const ProfitabilityQuoteLineItemcolumns = [
     {
       title: '#Line',
       dataIndex: 'line_number',
       key: 'line_number',
-      render: (text: string, record: any, index: number) => (
+      render: (text: string, record: any) => (
         <OsInput
           disabled={renderEditableInput('#Line')}
           style={{
             height: '36px',
           }}
-          value={text}
+          defaultValue={text}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
+          onChange={(e) =>
+            handleFieldChange(
+              record,
+              'line_number',
+              e.target.value,
+              selectedFilter,
+            )
+          }
         />
       ),
       width: 111,
@@ -138,55 +245,22 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
       dataIndex: 'quantity',
       key: 'quantity',
       sorter: (a: any, b: any) => a.quantity - b.quantity,
-
-      render: (text: string, record: any) => {
-        return (
-          <OsInputNumber
-            defaultValue={text}
-            disabled={renderEditableInput('Quantity')}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
-            style={{
-              height: '36px',
-            }}
-            // type="number"
-            min={1}
-            onChange={(v) => {
-              // setProfitabilityData((prev: any) =>
-              //   prev.map((prevItem: any) => {
-              //     if (prevItem.id === record?.id) {
-              //       return {...prevItem, quantity: v};
-              //     }
-              //     return prevItem;
-              //   }),
-              // );
-              // setProfitabilityData((prev: any) =>
-              //   prev.map((prevItem: any) => {
-              //     if (record?.id === prevItem?.id) {
-              //       const rowId = record?.id;
-              //       const result: any = calculateProfitabilityData(
-              //         prevItem?.quantity,
-              //         prevItem?.pricing_method,
-              //         useRemoveDollarAndCommahook(prevItem?.line_amount),
-              //         useRemoveDollarAndCommahook(prevItem?.adjusted_price),
-              //         useRemoveDollarAndCommahook(prevItem?.list_price),
-              //       );
-              //       return {
-              //         ...prevItem,
-              //         unit_price: result.unitPrice,
-              //         exit_price: result.exitPrice,
-              //         gross_profit: result.grossProfit,
-              //         gross_profit_percentage: result.grossProfitPercentage,
-              //         rowId,
-              //       };
-              //     }
-              //     return prevItem;
-              //   }),
-              // );
-            }}
-          />
-        );
-      },
+      render: (text: string, record: any) => (
+        <OsInputNumber
+          defaultValue={text}
+          disabled={renderEditableInput('Quantity')}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
+          style={{
+            height: '36px',
+          }}
+          type="number"
+          min={1}
+          onChange={(e) =>
+            handleFieldChange(record, 'quantity', e, selectedFilter)
+          }
+        />
+      ),
       width: 120,
     },
     {
@@ -194,55 +268,22 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
       dataIndex: 'list_price',
       key: 'list_price',
       sorter: (a: any, b: any) => a.list_price - b.list_price,
-
-      render: (text: string, record: any) => {
-        return (
-          <OsInput
-            // type="number"
-            disabled={renderEditableInput('MSRP ($)')}
-            style={{
-              height: '36px',
-              borderRadius: '10px',
-            }}
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
-            defaultValue={text}
-            onChange={(v) => {
-              // setProfitabilityData((prev: any) =>
-              //   prev.map((prevItem: any) => {
-              //     if (prevItem.id === record?.id) {
-              //       return {...prevItem, list_price: v.target.value};
-              //     }
-              //     return prevItem;
-              //   }),
-              // );
-              // setProfitabilityData((prev: any) =>
-              //   prev.map((prevItem: any) => {
-              //     if (record?.id === prevItem?.id) {
-              //       const rowId = record?.id;
-              //       const result: any = calculateProfitabilityData(
-              //         prevItem?.quantity,
-              //         prevItem?.pricing_method,
-              //         useRemoveDollarAndCommahook(prevItem?.line_amount),
-              //         useRemoveDollarAndCommahook(prevItem?.adjusted_price),
-              //         useRemoveDollarAndCommahook(prevItem?.list_price),
-              //       );
-              //       return {
-              //         ...prevItem,
-              //         unit_price: result.unitPrice,
-              //         exit_price: result.exitPrice,
-              //         gross_profit: result.grossProfit,
-              //         gross_profit_percentage: result.grossProfitPercentage,
-              //         rowId,
-              //       };
-              //     }
-              //     return prevItem;
-              //   }),
-              // );
-            }}
-          />
-        );
-      },
+      render: (text: string, record: any) => (
+        <OsInputNumber
+          min={0}
+          type="number"
+          disabled={renderEditableInput('MSRP ($)')}
+          style={{
+            height: '36px',
+          }}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
+          defaultValue={text}
+          onChange={(e) =>
+            handleFieldChange(record, 'list_price', e, selectedFilter)
+          }
+        />
+      ),
       width: 150,
     },
     {
@@ -250,53 +291,22 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
       dataIndex: 'adjusted_price',
       key: 'adjusted_price ',
       sorter: (a: any, b: any) => a.adjusted_price - b.adjusted_price,
-      render: (text: string, record: any) => {
-        return (
-          <OsInput
-            style={{
-              height: '36px',
-            }}
-            // type="number"
-            onKeyDown={handleKeyDown}
-            onBlur={handleBlur}
-            disabled={renderEditableInput('Cost ($)')}
-            defaultValue={text ?? 0.0}
-            onChange={(v) => {
-              // setProfitabilityData((prev: any) =>
-              //   prev.map((prevItem: any) => {
-              //     if (prevItem.id === record?.id) {
-              //       return {...prevItem, adjusted_price: v.target.value};
-              //     }
-              //     return prevItem;
-              //   }),
-              // );
-              // setProfitabilityData((prev: any) =>
-              //   prev.map((prevItem: any) => {
-              //     if (record?.id === prevItem?.id) {
-              //       const rowId = record?.id;
-              //       const result: any = calculateProfitabilityData(
-              //         prevItem?.quantity,
-              //         prevItem?.pricing_method,
-              //         useRemoveDollarAndCommahook(prevItem?.line_amount),
-              //         useRemoveDollarAndCommahook(prevItem?.adjusted_price),
-              //         useRemoveDollarAndCommahook(prevItem?.list_price),
-              //       );
-              //       return {
-              //         ...prevItem,
-              //         unit_price: result.unitPrice,
-              //         exit_price: result.exitPrice,
-              //         gross_profit: result.grossProfit,
-              //         gross_profit_percentage: result.grossProfitPercentage,
-              //         rowId,
-              //       };
-              //     }
-              //     return prevItem;
-              //   }),
-              // );
-            }}
-          />
-        );
-      },
+      render: (text: string, record: any) => (
+        <OsInputNumber
+          min={0}
+          style={{
+            height: '36px',
+          }}
+          type="number"
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
+          disabled={renderEditableInput('Cost ($)')}
+          defaultValue={text ?? 0.0}
+          onChange={(e) =>
+            handleFieldChange(record, 'adjusted_price', e, selectedFilter)
+          }
+        />
+      ),
       width: 150,
     },
     {
@@ -325,18 +335,14 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
               placeholder="Select"
               defaultValue={text ?? record?.Product?.product_family}
               options={selectDataForProduct}
-              onChange={(e) => {
-                //   setProfitabilityData((prev: any) =>
-                //     prev?.map((prevItem: any) => {
-                //       if (prevItem?.id === record?.id) {
-                //         return {...prevItem, product_family: e};
-                //       }
-                //       return prevItem;
-                //     }),
-                //   );
-                //   const data = {id: record?.product_id, product_family: e};
-                //   dispatch(updateProductFamily(data));
-                //   setTriggerUpdate((prev) => !prev);
+              onChange={(value) => {
+                handleSave(record);
+                handleFieldChange(
+                  record,
+                  'product_family',
+                  value,
+                  selectedFilter,
+                );
               }}
             />
           ),
@@ -350,45 +356,15 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
       width: 200,
       render: (text: string, record: any) => (
         <CommonSelect
-          onBlur={handleBlur}
+          onBlur={(e) => handleBlur(record)}
           allowClear
           disabled={renderEditableInput('Pricing Method')}
           style={{width: '100%', height: '36px'}}
           placeholder="Select"
           defaultValue={text}
-          onChange={(v) => {
-            //   setProfitabilityData((prev: any) =>
-            //     prev.map((prevItem: any) => {
-            //       if (prevItem.id === record?.id) {
-            //         return {...prevItem, pricing_method: v};
-            //       }
-            //       return prevItem;
-            //     }),
-            //   );
-            //   setProfitabilityData((prev: any) =>
-            //     prev.map((prevItem: any) => {
-            //       if (record?.id === prevItem?.id) {
-            //         const rowId = record?.id;
-            //         const result: any = calculateProfitabilityData(
-            //           prevItem?.quantity,
-            //           prevItem?.pricing_method,
-            //           useRemoveDollarAndCommahook(prevItem?.line_amount),
-            //           useRemoveDollarAndCommahook(prevItem?.adjusted_price),
-            //           useRemoveDollarAndCommahook(prevItem?.list_price),
-            //         );
-            //         return {
-            //           ...prevItem,
-            //           unit_price: result.unitPrice,
-            //           exit_price: result.exitPrice,
-            //           gross_profit: result.grossProfit,
-            //           gross_profit_percentage: result.grossProfitPercentage,
-            //           rowId,
-            //         };
-            //       }
-            //       return prevItem;
-            //     }),
-            //   );
-            //   setTriggerUpdate((prev) => !prev);
+          onChange={(value) => {
+            handleSave(record);
+            handleFieldChange(record, 'pricing_method', value, selectedFilter);
           }}
           options={pricingMethod}
         />
@@ -399,51 +375,22 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
       dataIndex: 'line_amount',
       key: 'line_amount',
       sorter: (a: any, b: any) => a.line_amount - b.line_amount,
-
       width: 150,
       render: (text: string, record: any) => (
-        <OsInput
-          onKeyDown={handleKeyDown}
-          onBlur={handleBlur}
+        <OsInputNumber
+          min={0}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
           disabled={renderEditableInput('Amount')}
           style={{
             height: '36px',
           }}
-          // type="number"
+          type="number"
           prefix={updateAmountValue(record?.pricing_method)}
-          defaultValue={text ? useRemoveDollarAndCommahook(text) : 0.0}
-          onChange={(v) => {
-            //   setProfitabilityData((prev: any) =>
-            //     prev.map((prevItem: any) => {
-            //       if (prevItem.id === record?.id) {
-            //         return {...prevItem, line_amount: v.target.value};
-            //       }
-            //       return prevItem;
-            //     }),
-            //   );
-            //   setProfitabilityData((prev: any) =>
-            //     prev.map((prevItem: any) => {
-            //       if (record?.id === prevItem?.id) {
-            //         const rowId = record?.id;
-            //         const result: any = calculateProfitabilityData(
-            //           prevItem?.quantity,
-            //           prevItem?.pricing_method,
-            //           useRemoveDollarAndCommahook(prevItem?.line_amount),
-            //           useRemoveDollarAndCommahook(prevItem?.adjusted_price),
-            //           useRemoveDollarAndCommahook(prevItem?.list_price),
-            //         );
-            //         return {
-            //           ...prevItem,
-            //           unit_price: result.unitPrice,
-            //           exit_price: result.exitPrice,
-            //           gross_profit: result.grossProfit,
-            //           gross_profit_percentage: result.grossProfitPercentage,
-            //           rowId,
-            //         };
-            //       }
-            //       return prevItem;
-            //     }),
-            //   );
+          defaultValue={text ? text : 0.0}
+          onChange={(e) => {
+            console.log('Dataaaa', selectedFilter);
+            handleFieldChange(record, 'line_amount', e, selectedFilter);
           }}
         />
       ),
@@ -454,11 +401,9 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
       key: 'unit_price',
       sorter: (a: any, b: any) => a.unit_price - b.unit_price,
       width: 150,
-      render: (text: number, record: any) => {
-        return (
-          <Typography name="Body 4/Medium">{abbreviate(text ?? 0)}</Typography>
-        );
-      },
+      render: (text: number, record: any) => (
+        <Typography name="Body 4/Medium">{abbreviate(text ?? 0)}</Typography>
+      ),
     },
     {
       title: 'Extended Price ($)',
@@ -466,11 +411,9 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
       key: 'exit_price',
       sorter: (a: any, b: any) => a.exit_price - b.exit_price,
       width: 190,
-      render: (text: number, record: any) => {
-        return (
-          <Typography name="Body 4/Medium">${abbreviate(text) ?? 0}</Typography>
-        );
-      },
+      render: (text: number, record: any) => (
+        <Typography name="Body 4/Medium">${abbreviate(text) ?? 0}</Typography>
+      ),
     },
     {
       title: 'Gross Profit ($)',
@@ -478,11 +421,9 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
       key: 'gross_profit',
       sorter: (a: any, b: any) => a.gross_profit - b.gross_profit,
       width: 150,
-      render: (text: number, record: any) => {
-        return (
-          <Typography name="Body 4/Medium">{abbreviate(text) ?? 0}</Typography>
-        );
-      },
+      render: (text: number, record: any) => (
+        <Typography name="Body 4/Medium">{abbreviate(text) ?? 0}</Typography>
+      ),
     },
     {
       title: 'Gross Profit %',
@@ -491,11 +432,9 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
       sorter: (a: any, b: any) =>
         a.gross_profit_percentage - b.gross_profit_percentage,
       width: 150,
-      render: (text: number, record: any) => {
-        return (
-          <Typography name="Body 4/Medium">{abbreviate(text ?? 0)}</Typography>
-        );
-      },
+      render: (text: number, record: any) => (
+        <Typography name="Body 4/Medium">{abbreviate(text ?? 0)}</Typography>
+      ),
     },
   ];
 
@@ -507,48 +446,54 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
             <OsTableWithOutDrag
               loading={false}
               columns={finalProfitTableCol}
-              dataSource={profitabilityDataByQuoteId}
+              dataSource={finalData}
               scroll
               locale={locale}
+              rowSelection={rowSelection}
             />
           </>
-        ) : selectedFilter === 'Vendor/Disti' || selectedFilter === 'OEM' ? (
-          <EmptyContainer title={`There is no data for ${selectedFilter}`} />
         ) : (
           <>
-            {finalData?.map((finalDataItem: any, index: number) => {
-              console.log('QuoteLineItem', finalDataItem);
-              return (
-                <OsCollapse
-                  key={index}
-                  items={[
-                    {
-                      key: index,
-                      label: (
-                        <Space
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'start',
-                          }}
-                        >
-                          <p>{finalDataItem?.name}</p>
-                        </Space>
-                      ),
-                      children: (
-                        <OsTableWithOutDrag
-                          loading={false}
-                          columns={finalProfitTableCol}
-                          dataSource={finalDataItem?.QuoteLineItem}
-                          scroll
-                          locale={locale}
-                          // rowSelection={rowSelection}
-                        />
-                      ),
-                    },
-                  ]}
-                />
-              );
-            })}
+            {selectedFilter && finalData?.length > 0 ? (
+              <>
+                {finalData?.map((finalDataItem: any, index: number) => {
+                  return (
+                    <OsCollapse
+                      key={index}
+                      items={[
+                        {
+                          key: index,
+                          label: (
+                            <Space
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'start',
+                              }}
+                            >
+                              <p>{finalDataItem?.name}</p>
+                            </Space>
+                          ),
+                          children: (
+                            <OsTableWithOutDrag
+                              loading={false}
+                              columns={finalProfitTableCol}
+                              dataSource={finalDataItem?.QuoteLineItem}
+                              scroll
+                              locale={locale}
+                              rowSelection={rowSelection}
+                            />
+                          ),
+                        },
+                      ]}
+                    />
+                  );
+                })}
+              </>
+            ) : (
+              <EmptyContainer
+                title={`There is no data for ${selectedFilter}`}
+              />
+            )}
           </>
         )
       ) : (

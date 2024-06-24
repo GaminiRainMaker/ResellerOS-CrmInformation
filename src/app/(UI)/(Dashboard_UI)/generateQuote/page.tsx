@@ -384,7 +384,6 @@ const GenerateQuote: React.FC = () => {
       // ),
       children: (
         <Profitability1
-          activeTab={activeTab}
           tableColumnDataShow={tableColumnDataShow}
           selectedFilter={selectedFilter}
         />
