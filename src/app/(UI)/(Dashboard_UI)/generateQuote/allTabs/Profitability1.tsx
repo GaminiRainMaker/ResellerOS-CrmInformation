@@ -19,9 +19,12 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
   const {data: profitabilityDataByQuoteId} = useAppSelector(
     (state) => state.profitability,
   );
+  const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>();
+  const {abbreviate} = useAbbreviationHook(0);
   const [finalData, setFinalData] = useState<any>();
+  const [triggerUpdate, setTriggerUpdate] = useState(false);
 
-  const filterDataByValue = (data: any, filterValue: string) => {
+  const filterDataByValue = (data: any, filterValue?: string) => {
     const groupedData: any = {};
     data?.forEach((item: any) => {
       let name;
@@ -32,6 +35,7 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
       } else if (filterValue === 'File Name') {
         name = item?.QuoteLineItem?.QuoteFile?.file_name;
       }
+
       if (name) {
         const convertToTitleCase = (input: string) => {
           return input
@@ -55,214 +59,25 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
 
   useEffect(() => {
     filterDataByValue(profitabilityDataByQuoteId, selectedFilter);
-  }, [selectedFilter]);
-
-  const {abbreviate} = useAbbreviationHook(0);
-  //   const {data: bundleData} = useAppSelector((state) => state.bundle);
-  //   const searchParams = useSearchParams();
-  //   const getQuoteID = searchParams.get('id');
-  //   // const [familyFilter, setFamilyFilter] = useState<any>([]);
-  //   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
-  //     (state) => state.profitability,
-  //   );
-  const [triggerUpdate, setTriggerUpdate] = useState(false);
-  //   const [newDataForProfit, setNewDataForProfit] = useState<any>([]);
-  //   const [newDataForBundle, setNewDataForBundle] = useState<any>([]);
-  //   const [getTheBundle, setGetTheBundle] = useState<boolean>(false);
-  //   const [updateProfitabilityLoading, setUpdateProfitabilityLoading] =
-  //     useState<boolean>(false);
-
-  //   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
-  //     Array<{
-  //       id: number;
-  //       value: string | number;
-  //       field: string | null;
-  //       label: string;
-  //     }>
-  //   >([
-  //     {
-  //       id: 1,
-  //       field: null,
-  //       value: '',
-  //       label: '',
-  //     },
-  //   ]);
-  //   const [updatedData, setUpdatedData] = useState<any>([]);
+  }, [profitabilityDataByQuoteId, selectedFilter]);
 
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Profitability" />,
   };
 
-  //   useEffect(() => {
-  //     if (profitabilityData && profitabilityData?.length > 0) {
-  //       let newArrr: any = [...profitabilityData];
-  //       let newSortedValue = newArrr?.sort((a: any, b: any) => {
-  //         return a.line_number - b.line_number;
-  //       });
-  //       let FIlteredData = newSortedValue?.filter(
-  //         (item: any) => !item?.bundle_id,
-  //       );
-  //       setNewDataForProfit(FIlteredData);
-  //     }
-  //   }, [profitabilityData]);
-  //   useEffect(() => {
-  //     if (bundleData && bundleData?.length > 0) {
-  //       let newArrForBun: any = [];
-  //       let newBundleData = [...bundleData];
-  //       newBundleData?.map((items: any) => {
-  //         let newSortedValue;
-  //         let newObj = {...items};
-  //         if (items?.Profitabilities && items?.Profitabilities?.length > 0) {
-  //           let newSort = [...items.Profitabilities];
-  //           newSortedValue = newSort?.sort((a: any, b: any) => {
-  //             return a.line_number - b.line_number;
-  //           });
-  //           delete newObj.Profitabilities;
-  //           // For Extended Price
-  //           let extendedPrice: any = 0;
-  //           newSortedValue?.forEach((items) => {
-  //             if (items?.exit_price) {
-  //               extendedPrice += items?.exit_price ? items?.exit_price : 0;
-  //             }
-  //           });
-  //           newObj.extendedPrice = extendedPrice * newObj.quantity;
-  //           // for Gross Profit
-  //           let grossProft: any = 0;
-  //           newSortedValue?.forEach((items) => {
-  //             if (items?.gross_profit) {
-  //               grossProft += items?.gross_profit ? items?.gross_profit : 0;
-  //             }
-  //           });
-
-  //           let grossProfitPer = (grossProft / extendedPrice) * 100;
-  //           newObj.extendedPrice = extendedPrice * newObj.quantity;
-  //           newObj.grossProfit = grossProft * newObj.quantity;
-  //           newObj.grossPercentage = grossProfitPer;
-  //           newObj.Profitabilities = newSortedValue;
-  //         }
-
-  //         newArrForBun?.push(newObj);
-  //       });
-
-  //       setNewDataForBundle(newArrForBun);
-  //     }
-  //     // Profitabilities
-  //   }, [bundleData]);
-
-  //   useEffect(() => {
-  //     if (activeTab === '2') {
-  //       const filteredDataa = profitabilityDataByQuoteId?.filter(
-  //         (item: any) => item?.bundle_id === null,
-  //       );
-
-  //       setProfitabilityData(filteredDataa);
-  //     }
-  //     dispatch(setProfitability(profitabilityDataByQuoteId));
-  //   }, [profitabilityDataByQuoteId, activeTab]);
-
-  //   useEffect(() => {
-  //     if (selectedFilter === 'Product Family') {
-  //       const finalFamilyArr: any = [];
-  //       let productsArr: any = [];
-  //       let professionalServiceArr: any = [];
-  //       let maintenanceArr: any = [];
-  //       let subscriptionArr: any = [];
-  //       let unassignedArr: any = [];
-  //       let newArrrExcludedBundle = profitabilityDataByQuoteId?.filter(
-  //         (itemss: any) => !itemss?.bundle_id,
-  //       );
-  //       if (newArrrExcludedBundle && newArrrExcludedBundle?.length > 0) {
-  //         productsArr = newArrrExcludedBundle?.filter(
-  //           (item: any) => item?.Product?.product_family === 'Products',
-  //         );
-  //         professionalServiceArr = newArrrExcludedBundle?.filter(
-  //           (item: any) =>
-  //             item?.Product?.product_family === 'Professional Services',
-  //         );
-  //         maintenanceArr = newArrrExcludedBundle?.filter(
-  //           (item: any) => item?.Product?.product_family === 'Maintenance',
-  //         );
-  //         subscriptionArr = newArrrExcludedBundle?.filter(
-  //           (item: any) => item?.Product?.product_family === 'Subscriptions',
-  //         );
-  //         unassignedArr = newArrrExcludedBundle?.filter(
-  //           (item: any) => item?.Product?.product_family == null,
-  //         );
-  //       }
-
-  //       if (productsArr && productsArr?.length > 0) {
-  //         const obj: any = {
-  //           name: 'Products',
-  //           QuoteLineItem: productsArr,
-  //         };
-  //         finalFamilyArr?.push(obj);
-  //       }
-  //       if (professionalServiceArr && professionalServiceArr?.length > 0) {
-  //         const obj: any = {
-  //           name: 'Professional Services',
-  //           QuoteLineItem: professionalServiceArr,
-  //         };
-  //         finalFamilyArr?.push(obj);
-  //       }
-  //       if (maintenanceArr && maintenanceArr?.length > 0) {
-  //         const obj: any = {
-  //           name: 'Maintenances',
-  //           QuoteLineItem: maintenanceArr,
-  //         };
-  //         finalFamilyArr?.push(obj);
-  //       }
-  //       if (unassignedArr && subscriptionArr?.length > 0) {
-  //         const obj: any = {
-  //           name: 'Subscriptions',
-  //           QuoteLineItem: subscriptionArr,
-  //         };
-  //         finalFamilyArr?.push(obj);
-  //       }
-  //       if (unassignedArr && unassignedArr?.length > 0) {
-  //         const obj: any = {
-  //           name: 'Unassigned',
-  //           QuoteLineItem: unassignedArr,
-  //         };
-  //         finalFamilyArr?.push(obj);
-  //       }
-
-  //       setFamilyFilter(finalFamilyArr);
-  //     }
-  //   }, [selectedFilter, profitabilityDataByQuoteId]);
-
   const updateAmountValue = (pricingMethods: string) => {
-    if (
-      pricingMethods === 'cost_percentage' ||
-      pricingMethods === 'list_percentage' ||
-      pricingMethods === 'gp'
-    ) {
+    if (['cost_percentage', 'list_percentage', 'gp'].includes(pricingMethods)) {
       return `%`;
     }
     return `$`;
   };
 
-  //   useEffect(() => {
-  //     if (activeTab === '2') {
-  //       dispatch(getAllBundle(getQuoteID));
-  //     }
-  //   }, [getQuoteID, activeTab]);
-
   const renderEditableInput = (field: string) => {
     const editableField = tableColumnDataShow.find(
       (item: any) => item.field_name === field,
     );
-    if (editableField?.is_editable) {
-      return false;
-    }
-    return true;
+    return !editableField?.is_editable;
   };
-
-  // const rowSelection = {
-  //   onChange: (selectedRowKeys: any, record: any) => {
-  //     setSelectedRowData(record);
-  //     setSelectedRowIds(selectedRowKeys);
-  //   },
-  // };
 
   const handleKeyDown = (e: any) => {
     if (e.key === 'Enter') {
@@ -274,40 +89,27 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
     setTriggerUpdate((prev) => !prev);
   };
 
-  // useEffect(() => {
-  //   profitabilityData?.map((profitabilityDataItem: any) => {
-  //     if (profitabilityDataItem?.rowId === profitabilityDataItem?.id) {
-  //       const obj = {
-  //         id: profitabilityDataItem?.id,
-  //         line_number: profitabilityDataItem?.line_number,
-  //         quantity: profitabilityDataItem?.quantity,
-  //         pricing_method: profitabilityDataItem?.pricing_method,
-  //         line_amount: profitabilityDataItem?.line_amount,
-  //         list_price: profitabilityDataItem?.list_price,
-  //         unit_price: profitabilityDataItem?.unit_price,
-  //         exit_price: profitabilityDataItem?.exit_price,
-  //         gross_profit: profitabilityDataItem?.gross_profit,
-  //         gross_profit_percentage:
-  //           profitabilityDataItem?.gross_profit_percentage,
-  //         adjusted_price: profitabilityDataItem?.adjusted_price,
-  //       };
-  //       dispatch(updateProfitabilityById({...obj})).then((d: any) => {
-  //         if (d?.payload) {
-  //           dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
-  //         }
-  //       });
-  //     }
-  //   });
-
-  //   dispatch(setProfitability(profitabilityData));
-  // }, [triggerUpdate]);
-
-  //   useEffect(() => {
-  //     setTimeout(() => {
-  //       dispatch(getAllBundle(getQuoteID));
-  //       setGetTheBundle(false);
-  //     }, 2000);
-  //   }, [getTheBundle]);
+  useEffect(() => {
+    const newArr: any = [];
+    ProfitabilityQuoteLineItemcolumns?.forEach((itemCol: any) => {
+      let shouldPush = false;
+      tableColumnDataShow?.forEach((item: any) => {
+        if (item?.field_name === itemCol?.title) {
+          shouldPush = true;
+        }
+      });
+      if (
+        itemCol?.dataIndex === 'actions' ||
+        itemCol?.dataIndex?.includes('actions.')
+      ) {
+        shouldPush = true;
+      }
+      if (shouldPush) {
+        newArr?.push(itemCol);
+      }
+    });
+    setFinalProfitTableCol(newArr);
+  }, [tableColumnDataShow]);
 
   const ProfitabilityQuoteLineItemcolumns = [
     {
@@ -697,187 +499,17 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
     },
   ];
 
-  //   const updateBundleQuantityData = async (data: any) => {
-  //     await dispatch(updateBundleQuantity(data));
-  //     dispatch(getAllBundle(getQuoteID));
-  //   };
-
-  const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>();
-
-  useEffect(() => {
-    const newArr: any = [];
-    ProfitabilityQuoteLineItemcolumns?.map((itemCol: any) => {
-      let shouldPush = false;
-      tableColumnDataShow?.forEach((item: any) => {
-        if (item?.field_name === itemCol?.title) {
-          shouldPush = true;
-        }
-      });
-      if (
-        itemCol?.dataIndex === 'actions' ||
-        itemCol?.dataIndex?.includes('actions.')
-      ) {
-        shouldPush = true;
-      }
-      if (shouldPush) {
-        newArr?.push(itemCol);
-      }
-    });
-    setFinalProfitTableCol(newArr);
-  }, [tableColumnDataShow]);
-
-  //   useEffect(() => {
-  //     if (bundleData && bundleData?.length > 0) {
-  //       const newArr: any = [];
-  //       ProfitabilityQuoteLineItemcolumns?.map((itemCol: any) => {
-  //         let shouldPush = false;
-  //         tableColumnDataShow?.forEach((item: any) => {
-  //           if (item?.field_name === itemCol?.title) {
-  //             shouldPush = true;
-  //           }
-  //         });
-  //         if (
-  //           itemCol?.dataIndex === 'actions' ||
-  //           itemCol?.dataIndex?.includes('actions.')
-  //         ) {
-  //           shouldPush = true;
-  //         }
-  //         if (shouldPush) {
-  //           newArr?.push(itemCol);
-  //         }
-  //       });
-  //       setFinalProfitTableCol(newArr);
-  //     }
-  //   }, [newDataForBundle, newDataForProfit]);
-
-  //   useEffect(() => {
-  //     if (activeTab === '2') {
-  // dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
-  //   if (d?.payload) {
-  //     // const filteredDataa = d?.payload?.filter(
-  //     //   (item: any) => item?.bundle_id === null,
-  //     // );
-
-  //     setProfitabilityData(d?.payload);
-  //   }
-  // });
-  //     }
-  //   }, [getQuoteID, activeTab]);
-
-  //   const deleteProfitabityData = () => {
-  //     dispatch(deleteProfitabilityById({Ids: selectTedRowIds})).then((d) => {
-  //       if (d?.payload) {
-  //         dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then(
-  //           (d: any) => {
-  //             if (d?.payload) {
-  //               const filteredDataa = d?.payload?.filter(
-  //                 (item: any) => item?.bundle_id === null,
-  //               );
-
-  //               setProfitabilityData(filteredDataa);
-  //             }
-  //             setIsDeleteProfitabilityModal(false);
-  //           },
-  //         );
-  //       }
-  //     });
-  //   };
-
-  //   const updateLineItems = () => {
-  //     const finalData = selectTedRowData?.map((obj: any) => {
-  //       const newObj = {...obj};
-  //       profabilityUpdationState?.forEach((update: any) => {
-  //         if (newObj.hasOwnProperty(update?.field)) {
-  //           newObj[update?.field] = update?.value;
-  //         }
-  //       });
-  //       const profitabilityCalculationData = calculateProfitabilityData(
-  //         newObj.quantity,
-  //         newObj.pricing_method,
-  //         useRemoveDollarAndCommahook(newObj?.line_amount),
-  //         useRemoveDollarAndCommahook(newObj?.adjusted_price),
-  //         useRemoveDollarAndCommahook(newObj?.list_price),
-  //       );
-  //       newObj.unit_price = profitabilityCalculationData?.unitPrice;
-  //       newObj.exit_price = profitabilityCalculationData?.exitPrice;
-  //       newObj.gross_profit = profitabilityCalculationData?.grossProfit;
-  //       newObj.gross_profit_percentage =
-  //         profitabilityCalculationData?.grossProfitPercentage;
-  //       delete newObj?.profitabilityCalculationData;
-
-  //       return newObj;
-  //     });
-  //     setGetTheBundle(true);
-  //     setSelectedRowData('');
-  //     setSelectedRowIds('');
-  //     setUpdatedData(finalData);
-  //   };
-
-  //   useEffect(() => {
-  //     try {
-  //       const updateDataAndFetchProfitability = async () => {
-  //         const ProductFamily = profabilityUpdationState?.find(
-  //           (field: any) => field?.field === 'product_family',
-  //         )?.value;
-  //         if (updatedData?.length > 0) {
-  //           setUpdateProfitabilityLoading(true);
-  //           const ids = updatedData?.map((item: any) => item?.product_id);
-  //           let obj = {
-  //             id: ids,
-  //             product_family: ProductFamily,
-  //           };
-  //           // console.log('updatedData', updatedData, 'obj', obj);
-  //           await Promise.all(
-  //             updatedData?.map((item: any) =>
-  //               dispatch(updateProfitabilityById(item)),
-  //             ),
-  //           );
-  //           await dispatch(updateProductFamily(obj));
-  //           setProfabilityUpdationState([
-  //             {
-  //               id: 1,
-  //               field: null,
-  //               value: '',
-  //               label: '',
-  //             },
-  //           ]);
-  //           setShowUpdateLineItemModal(false);
-  //           const response = await dispatch(
-  //             getProfitabilityByQuoteId(Number(getQuoteID)),
-  //           );
-  //           const d = response?.payload;
-  //           if (d) {
-  //             setSelectedRowData([]);
-  //             setSelectedRowIds([]);
-  //             setProfitabilityData(d);
-  //             dispatch(setProfitability(d));
-  //           }
-  //           setUpdateProfitabilityLoading(false);
-  //         }
-  //       };
-  //       setTimeout(() => {
-  //         dispatch(getAllBundle(getQuoteID));
-  //       }, 2000);
-
-  //       // dispatch(getAllBundle(getQuoteID));
-
-  //       updateDataAndFetchProfitability();
-  //     } catch (err) {
-  //       setUpdateProfitabilityLoading(false);
-  //       console.log('Error', err);
-  //     }
-  //   }, [updatedData, dispatch, getQuoteID]);
-
   return (
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
-        !selectedFilter ? (
+        !selectedFilter && finalProfitTableCol ? (
           <>
             <OsTableWithOutDrag
-              columns={finalProfitTableCol}
-              data={profitabilityDataByQuoteId}
-              scroll
               loading={false}
+              columns={finalProfitTableCol}
+              dataSource={profitabilityDataByQuoteId}
+              scroll
+              locale={locale}
             />
           </>
         ) : selectedFilter === 'Vendor/Disti' || selectedFilter === 'OEM' ? (
@@ -925,44 +557,6 @@ const Profitability1: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
           subTitle="Please Update from admin Configuration Tab or Request to admin to update the columns."
         />
       )}
-
-      {/* <DeleteModal
-        setShowModalDelete={setIsDeleteProfitabilityModal}
-        setDeleteIds={setSelectedRowIds}
-        showModalDelete={isDeleteProfitabilityModal}
-        deleteSelectedIds={deleteProfitabityData}
-        description="Are you sure you want to delete this Profitability?"
-        heading="Delete Profitability"
-      /> */}
-      {/* <OsModal
-        title={'Update LineItems'}
-        loading={loading || updateProfitabilityLoading}
-        body={
-          <UpdatingLineItems
-            profabilityUpdationState={profabilityUpdationState}
-            setProfabilityUpdationState={setProfabilityUpdationState}
-            tableColumnDataShow={tableColumnDataShow}
-          />
-        }
-        width={700}
-        open={showUpdateLineItemModal}
-        onOk={() => {
-          updateLineItems();
-        }}
-        onCancel={() => {
-          setProfabilityUpdationState([
-            {
-              id: 1,
-              field: null,
-              value: '',
-              label: '',
-            },
-          ]);
-          setShowUpdateLineItemModal(false);
-        }}
-        bodyPadding={20}
-        primaryButtonText={'Save'}
-      /> */}
     </>
   );
 };
