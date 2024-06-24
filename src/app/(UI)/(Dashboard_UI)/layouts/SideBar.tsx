@@ -21,7 +21,7 @@ import {
 } from '@heroicons/react/24/outline';
 import {Layout, MenuProps} from 'antd';
 import Image from 'next/image';
-import {usePathname, useRouter} from 'next/navigation';
+import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
 import ActiveCrmIcon from '../../../../../public/assets/static/activeCrmIcon.svg';
 import InActiveCrmIcon from '../../../../../public/assets/static/inActiveCrmIcon.svg';
@@ -55,11 +55,13 @@ const SideBar = () => {
   const [crmChildKey, setCrmChildKey] = useState<number>(0);
   const {userInformation} = useAppSelector((state) => state.user);
   const {cacheAvailableSeats} = useAppSelector((state) => state.cacheFLow);
+  const searchParams = useSearchParams();
+  const SaleforceEdit = searchParams.get('salesforce');
 
   type MenuItem = Required<MenuProps>['items'][number];
 
   useEffect(() => {
-    if (!!userInformation) {
+    if (!!userInformation && !SaleforceEdit) {
       dispatch(getUserByTokenAccess('')).then((payload: any) => {
         dispatch(
           setUserInformation({
@@ -237,19 +239,23 @@ const SideBar = () => {
     }
   };
   useEffect(() => {
-    getAllCustomerByCache();
+    if (!SaleforceEdit) {
+      getAllCustomerByCache();
+    }
   }, [userInformation]);
 
   useEffect(() => {
-    dispatch(getOranizationSeats(''))?.then((payload: any) => {
-      dispatch(
-        setCacheAvailableSeats({
-          ...cacheAvailableSeats,
-          DealRegSeats: payload?.payload?.DealRegAIBundle,
-          QuoteAISeats: payload?.payload?.QuoteAI,
-        }),
-      );
-    });
+    if (!SaleforceEdit) {
+      dispatch(getOranizationSeats(''))?.then((payload: any) => {
+        dispatch(
+          setCacheAvailableSeats({
+            ...cacheAvailableSeats,
+            DealRegSeats: payload?.payload?.DealRegAIBundle,
+            QuoteAISeats: payload?.payload?.QuoteAI,
+          }),
+        );
+      });
+    }
   }, []);
 
   const items: MenuItem[] = [

@@ -44,6 +44,7 @@ const EditorFile = () => {
   const searchParams = useSearchParams();
   const getQUoteId = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
+  const SaleforceEdit = searchParams.get('salesforce');
   const [quoteItems, setQuoteItems] = useState<any>([]);
   const [mergedValue, setMergedVaalues] = useState<any>();
   const router = useRouter();
@@ -151,6 +152,8 @@ const EditorFile = () => {
   };
 
   useEffect(() => {
+    fetchSaleForceDataa();
+    if (!SaleforceEdit) {
     if (ExistingQuoteItemss === 'true') {
       let newObj = {
         id: Number(getQUoteId),
@@ -243,6 +246,7 @@ const EditorFile = () => {
           }
         });
     }
+  }
   }, [ExistingQuoteItemss, quoteFileById]);
 
   useEffect(() => {
@@ -272,11 +276,13 @@ const EditorFile = () => {
   }, [updateLineItemsValue]);
 
   useEffect(() => {
+    if (!SaleforceEdit) {
     dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then((payload: any) => {
       if (payload?.payload === null) {
         setReturnModalBack(true);
       }
     });
+  }
   }, [getQuoteFileId]);
 
   const updateRowsValueforTable = (
@@ -778,43 +784,44 @@ const EditorFile = () => {
           }}
         />
       )}
+      {!SaleforceEdit && (
+        <OsModal
+          body={
+            <Row style={{width: '100%', padding: '15px'}}>
+              <Space
+                style={{width: '100%'}}
+                size={24}
+                direction="vertical"
+                align="center"
+              >
+                <Space direction="vertical" align="center" size={1}>
+                  <Typography style={{fontSize: '20px', textAlign: 'center'}}>
+                    {
+                      'This file is already updated. Please review the other file on Review Quotes'
+                    }
+                  </Typography>
+                </Space>
 
-      <OsModal
-        body={
-          <Row style={{width: '100%', padding: '15px'}}>
-            <Space
-              style={{width: '100%'}}
-              size={24}
-              direction="vertical"
-              align="center"
-            >
-              <Space direction="vertical" align="center" size={1}>
-                <Typography style={{fontSize: '20px', textAlign: 'center'}}>
-                  {
-                    'This file is already updated. Please review the other file on Review Quotes'
-                  }
-                </Typography>
+                <Space size={12}>
+                  <OsButton
+                    // loading={loading}
+                    text="Return to Review Quotes"
+                    buttontype="PRIMARY"
+                    clickHandler={() => {
+                      router?.push(`/generateQuote?id=${Number(getQUoteId)}`);
+                    }}
+                  />
+                </Space>
               </Space>
-
-              <Space size={12}>
-                <OsButton
-                  // loading={loading}
-                  text="Return to Review Quotes"
-                  buttontype="PRIMARY"
-                  clickHandler={() => {
-                    router?.push(`/generateQuote?id=${Number(getQUoteId)}`);
-                  }}
-                />
-              </Space>
-            </Space>
-          </Row>
-        }
-        width={600}
-        onCancel={() => {
-          router?.push(`/generateQuote?id=${Number(getQUoteId)}`);
-        }}
-        open={returnBackModal}
-      />
+            </Row>
+          }
+          width={600}
+          onCancel={() => {
+            router?.push(`/generateQuote?id=${Number(getQUoteId)}`);
+          }}
+          open={returnBackModal}
+        />
+      )}
     </GlobalLoader>
   );
 };

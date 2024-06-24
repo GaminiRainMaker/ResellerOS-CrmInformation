@@ -95,6 +95,8 @@ const CustomHeader = () => {
     loading: notificationLoading,
   } = useAppSelector((state) => state.notification);
   const [openNotifications, setOpenNotifications] = useState<boolean>(false);
+
+  const SaleforceEdit = searchParams.get('salesforce');
   const [userRole, setUserRole] = useState<string>('');
   const [searchFinalData, setSearchFinalData] = useState<any>();
   const [profileImg, setProfileImg] = useState<any>();
@@ -112,13 +114,17 @@ const CustomHeader = () => {
   const [notificationCounts, setNotificationCounts] = useState<number>(0);
 
   useEffect(() => {
-    dispatch(getCountOfNotification(''))?.then((payload: any) => {
-      setNotificationCounts(payload?.payload?.length);
-    });
+    if (!SaleforceEdit) {
+      dispatch(getCountOfNotification(''))?.then((payload: any) => {
+        setNotificationCounts(payload?.payload?.length);
+      });
+    }
   }, []);
 
   useEffect(() => {
+    if (!SaleforceEdit) {
     setNotificationCounts(0);
+    }
   }, [notificationData]);
 
   const isSuperAdminProfile =

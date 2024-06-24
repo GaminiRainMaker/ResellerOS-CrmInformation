@@ -69,18 +69,22 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const {userInformation} = useAppSelector((state) => state.user);
   const [syncedNewValue, setNewSyncedValue] = useState<any>();
   const {quoteFileById} = useAppSelector((state) => state.quoteFile);
+
   const {data: syncTableData, loading: syncDataLoading} = useAppSelector(
     (state) => state.syncTable,
   );
   const [token] = useThemeToken();
-  const [syncTableQuoteLItemValues, setSyncTableQuoteLItemValues] =
-    useState<any>(
-      quoteLineItemColumnForSync,
-      // SaleForceQuoteLineItemColumnSync,
-    );
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
+  const SaleforceEdit = searchParams.get('salesforce');
+  const [syncTableQuoteLItemValues, setSyncTableQuoteLItemValues] =
+    useState<any>(
+      SaleforceEdit
+        ? SaleForceQuoteLineItemColumnSync
+        : quoteLineItemColumnForSync,
+      // ,
+    );
 
   const router = useRouter();
 
