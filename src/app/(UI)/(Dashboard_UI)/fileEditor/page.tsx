@@ -56,10 +56,17 @@ const EditorFile = () => {
   const [missingId, setMissingId] = useState<number[]>([]);
   const [returnBackModal, setReturnModalBack] = useState<boolean>(false);
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
+  const salesToken = searchParams.get('key');
+  const saleDocumentId = searchParams.get('documentId');
+  const SaleQuoteId = searchParams.get('QuoteId');
 
   // ============================== SalesForce Implementations ======================================
   const fetchSaleForceDataa = async () => {
-    dispatch(getSalesForceFileData(''))?.then(async (payload: any) => {
+    let data = {
+      token: salesToken,
+      documentId: saleDocumentId,
+    };
+    dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
       setNanonetsLoading(true);
       let base64 = ['base64']?.concat([payload?.payload?.body]);
       const binaryString = atob(payload?.payload?.body);
@@ -154,99 +161,103 @@ const EditorFile = () => {
   useEffect(() => {
     fetchSaleForceDataa();
     if (!SaleforceEdit) {
-    if (ExistingQuoteItemss === 'true') {
-      let newObj = {
-        id: Number(getQUoteId),
-        fileId: Number(getQuoteFileId),
-      };
-      dispatch(getQuoteLineItemByQuoteIdForEditTable(newObj)).then((d: any) => {
-        if (d?.payload) {
-          // const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
-          setQuoteItems(d?.payload);
-        }
-      });
-    } else if (quoteFileById?.pdf_url) {
-      setNanonetsLoading(true);
-      fetch(quoteFileById?.pdf_url)
-        .then((res) => res.blob())
-        .then(async (file) => {
-          const finalFile = new File([file], quoteFileById?.file_name, {
-            type: file.type,
-          });
-
-          const response = await sendDataToNanonets(
-            'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
-            finalFile,
-          );
-
-          const newArrrrAll: any = [];
-          if (response) {
-            for (let i = 0; i < response?.data?.result?.length; i++) {
-              const itemss: any = response?.data?.result[i];
-
-              const newItemsssadsd = itemss?.prediction?.filter(
-                (item: any) => item,
-              );
-              const newAllgetOArr: any = [];
-              newItemsssadsd?.map((itemNew: any) => {
-                let formattedArray1: any = [];
-
-                const formattedData1: any = {};
-                if (itemNew?.cells) {
-                  const titles = itemNew?.cells.filter(
-                    (innerCell: any) => innerCell.row === 1,
-                  );
-                  const strifndfs = (str: any) => {
-                    const losadsd = str
-                      ?.toString()
-                      .match(/\d+(\.\d+)?/g)
-                      ?.map(Number)
-                      ?.toString()
-                      .match(/\d+(\.\d+)?/g)
-                      ?.map(Number);
-                  };
-
-                  itemNew?.cells.forEach((item: any) => {
-                    const rowNum = item.row;
-                    if (rowNum === 1) {
-                      return;
-                    }
-                    if (!formattedData1[rowNum]) {
-                      formattedData1[rowNum] = {};
-                    }
-                    formattedData1[rowNum][
-                      item.label?.toLowerCase()
-                        ? item.label?.toLowerCase()
-                        : titles.find(
-                            (titleRow: any) => titleRow.col === item.col,
-                          ).text
-                    ] = item.label?.toLowerCase()
-                      ? item.label?.toLowerCase()?.includes('Price')
-                      : titles
-                            .find((titleRow: any) => titleRow.col === item.col)
-                            .text?.includes('Price')
-                        ? item?.text
-                            ?.toString()
-                            .match(/\d+(\.\d+)?/g)
-                            ?.map(Number)
-                            ?.toString()
-                            .match(/\d+(\.\d+)?/g)
-                            ?.map(Number)
-                            ?.toString()
-                        : item.text;
-                  });
-                }
-                formattedArray1 = Object.values(formattedData1);
-                newAllgetOArr?.push(formattedArray1);
-                newArrrrAll?.push(formattedArray1);
-                setQuoteItems(newArrrrAll);
-                setNanonetsLoading(false);
-              });
+      if (ExistingQuoteItemss === 'true') {
+        let newObj = {
+          id: Number(getQUoteId),
+          fileId: Number(getQuoteFileId),
+        };
+        dispatch(getQuoteLineItemByQuoteIdForEditTable(newObj)).then(
+          (d: any) => {
+            if (d?.payload) {
+              // const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
+              setQuoteItems(d?.payload);
             }
-          }
-        });
+          },
+        );
+      } else if (quoteFileById?.pdf_url) {
+        setNanonetsLoading(true);
+        fetch(quoteFileById?.pdf_url)
+          .then((res) => res.blob())
+          .then(async (file) => {
+            const finalFile = new File([file], quoteFileById?.file_name, {
+              type: file.type,
+            });
+
+            const response = await sendDataToNanonets(
+              'a02fffb7-5221-44a2-8eb1-85781a0ecd67',
+              finalFile,
+            );
+
+            const newArrrrAll: any = [];
+            if (response) {
+              for (let i = 0; i < response?.data?.result?.length; i++) {
+                const itemss: any = response?.data?.result[i];
+
+                const newItemsssadsd = itemss?.prediction?.filter(
+                  (item: any) => item,
+                );
+                const newAllgetOArr: any = [];
+                newItemsssadsd?.map((itemNew: any) => {
+                  let formattedArray1: any = [];
+
+                  const formattedData1: any = {};
+                  if (itemNew?.cells) {
+                    const titles = itemNew?.cells.filter(
+                      (innerCell: any) => innerCell.row === 1,
+                    );
+                    const strifndfs = (str: any) => {
+                      const losadsd = str
+                        ?.toString()
+                        .match(/\d+(\.\d+)?/g)
+                        ?.map(Number)
+                        ?.toString()
+                        .match(/\d+(\.\d+)?/g)
+                        ?.map(Number);
+                    };
+
+                    itemNew?.cells.forEach((item: any) => {
+                      const rowNum = item.row;
+                      if (rowNum === 1) {
+                        return;
+                      }
+                      if (!formattedData1[rowNum]) {
+                        formattedData1[rowNum] = {};
+                      }
+                      formattedData1[rowNum][
+                        item.label?.toLowerCase()
+                          ? item.label?.toLowerCase()
+                          : titles.find(
+                              (titleRow: any) => titleRow.col === item.col,
+                            ).text
+                      ] = item.label?.toLowerCase()
+                        ? item.label?.toLowerCase()?.includes('Price')
+                        : titles
+                              .find(
+                                (titleRow: any) => titleRow.col === item.col,
+                              )
+                              .text?.includes('Price')
+                          ? item?.text
+                              ?.toString()
+                              .match(/\d+(\.\d+)?/g)
+                              ?.map(Number)
+                              ?.toString()
+                              .match(/\d+(\.\d+)?/g)
+                              ?.map(Number)
+                              ?.toString()
+                          : item.text;
+                    });
+                  }
+                  formattedArray1 = Object.values(formattedData1);
+                  newAllgetOArr?.push(formattedArray1);
+                  newArrrrAll?.push(formattedArray1);
+                  setQuoteItems(newArrrrAll);
+                  setNanonetsLoading(false);
+                });
+              }
+            }
+          });
+      }
     }
-  }
   }, [ExistingQuoteItemss, quoteFileById]);
 
   useEffect(() => {
@@ -277,12 +288,14 @@ const EditorFile = () => {
 
   useEffect(() => {
     if (!SaleforceEdit) {
-    dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then((payload: any) => {
-      if (payload?.payload === null) {
-        setReturnModalBack(true);
-      }
-    });
-  }
+      dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then(
+        (payload: any) => {
+          if (payload?.payload === null) {
+            setReturnModalBack(true);
+          }
+        },
+      );
+    }
   }, [getQuoteFileId]);
 
   const updateRowsValueforTable = (

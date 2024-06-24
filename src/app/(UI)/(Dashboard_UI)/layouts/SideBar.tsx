@@ -260,6 +260,7 @@ const SideBar = () => {
 
   const items: MenuItem[] = [
     Role !== 'superAdmin' &&
+      !SaleforceEdit &&
       getItem(
         <Typography
           cursor="pointer"

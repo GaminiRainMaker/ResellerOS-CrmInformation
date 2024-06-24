@@ -11,4 +11,5 @@ export const AUTH_API = {
     post(API.AUTH.Send_Forgot_Password_Email, data),
   ContactSales: (data: any) => post(API.AUTH.Contact_Sales, data),
   get: () => get(API.AUTH.salesforceFileGet),
+  postSalesGet: (data: any) => post(API.AUTH.salesforceFileGet, data),
 };

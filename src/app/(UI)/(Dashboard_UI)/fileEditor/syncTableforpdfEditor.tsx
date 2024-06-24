@@ -78,6 +78,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const getQuoteID = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
   const SaleforceEdit = searchParams.get('salesforce');
+  const salesToken = searchParams.get('key');
+  const saleDocumentId = searchParams.get('documentId');
+  const SaleQuoteId = searchParams.get('QuoteId');
   const [syncTableQuoteLItemValues, setSyncTableQuoteLItemValues] =
     useState<any>(
       SaleforceEdit
@@ -201,8 +204,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       return;
     }
     setNanonetsLoading(true);
+
     const dataaa = {id: Number(getQuoteID), fileId: Number(getQuoteFileId)};
-    dispatch(deleteQuoteLineItemsByQuoteId(dataaa));
+    // dispatch(deleteQuoteLineItemsByQuoteId(dataaa));
     mergedValue?.map((obj: any) => {
       const newObj: any = {};
       syncedNewValue?.forEach((mapping: any) => {
