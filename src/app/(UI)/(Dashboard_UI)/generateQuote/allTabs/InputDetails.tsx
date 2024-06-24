@@ -251,7 +251,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         const value = text ? useRemoveDollarAndCommahook(text) : 0;
         return (
           <Typography name="Body 4/Medium">
-            {`$ ${abbreviate(Number(value ?? 0))}`}
+            {`${abbreviate(Number(value ?? 0))}`}
             {/* {record?.Bundle?.quantity ? record?.Bundle?.quantity : 1} */}
           </Typography>
         );
@@ -267,7 +267,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
         const value = useRemoveDollarAndCommahook(text);
         return (
           <Typography name="Body 4/Medium">
-            {text === null ? 0.0 : `$ ${abbreviate(value ?? 0.0)}`}
+            {text === null ? 0.0 : `${abbreviate(value ?? 0.0)}`}
           </Typography>
         );
       },
@@ -447,7 +447,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
           if (payload?.payload) {
             let lengthOfFiles;
             lengthOfFiles = payload?.payload?.length;
-            setCountOFFiles(Number(lengthOfFiles));
           }
         },
       );
@@ -457,42 +456,44 @@ const InputDetails: FC<InputDetailTabInterface> = ({
   // dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
   useEffect(() => {
     const separatedData: any = {};
-    quoteFileData?.forEach((item: any) => {
-      const fileName = item.file_name;
-      if (!separatedData[fileName]) {
-        separatedData[fileName] = {
-          id: item.id,
-          title: fileName,
-          totalAdjustedPrice: 0,
-          totalCount: 0,
-          quoteFile: item?.quote_file,
-          pdfUrl: item?.pdf_url,
-          quoteLineItems: [],
-        };
-      }
-
-      item?.QuoteLineItems?.forEach((quoteLineItem: any) => {
-        separatedData[fileName].quoteLineItems.push(quoteLineItem);
-        separatedData[fileName].totalCount++;
-        separatedData[fileName].totalAdjustedPrice += Number(
-          useRemoveDollarAndCommahook(quoteLineItem?.adjusted_price ?? 0) *
-            useRemoveDollarAndCommahook(quoteLineItem?.quantity ?? 0),
-        );
-      });
-    });
-
-    const result = Object.values(separatedData);
-    const combinedArr: any = [];
     if (quoteFileData && quoteFileData?.length > 0) {
-      quoteFileData?.forEach((itemOut: any) => {
-        itemOut?.QuoteLineItems?.map((itemss: any) => {
-          combinedArr?.push(itemss);
+      quoteFileData?.forEach((item: any) => {
+        const fileName = item.file_name;
+        if (!separatedData[fileName]) {
+          separatedData[fileName] = {
+            id: item.id,
+            title: fileName,
+            totalAdjustedPrice: 0,
+            totalCount: 0,
+            quoteFile: item?.quote_file,
+            pdfUrl: item?.pdf_url,
+            quoteLineItems: [],
+          };
+        }
+
+        item?.QuoteLineItems?.forEach((quoteLineItem: any) => {
+          separatedData[fileName].quoteLineItems.push(quoteLineItem);
+          separatedData[fileName].totalCount++;
+          separatedData[fileName].totalAdjustedPrice += Number(
+            useRemoveDollarAndCommahook(quoteLineItem?.adjusted_price ?? 0) *
+              useRemoveDollarAndCommahook(quoteLineItem?.quantity ?? 0),
+          );
         });
       });
-    }
-    setDataForQuoteLineItemsAll(combinedArr);
 
-    setQuoteLineItemByQuoteData1(result);
+      const result = Object.values(separatedData);
+      const combinedArr: any = [];
+      if (quoteFileData && quoteFileData?.length > 0) {
+        quoteFileData?.forEach((itemOut: any) => {
+          itemOut?.QuoteLineItems?.map((itemss: any) => {
+            combinedArr?.push(itemss);
+          });
+        });
+      }
+      setDataForQuoteLineItemsAll(combinedArr);
+
+      setQuoteLineItemByQuoteData1(result);
+    }
   }, [quoteFileData, defaultDataShow]);
 
   const addConcernData = async () => {
@@ -539,12 +540,17 @@ const InputDetails: FC<InputDetailTabInterface> = ({
     let newCount = countOfFiles - 1;
     setCountOFFiles(newCount);
     setConfirmedData(true);
+    const countOfLineItem = 0;
+
     const isState = await updateTables(
+      getQuoteID,
       fileData,
       fileData?.quoteLineItems,
       userInformation,
       dispatch,
+      countOfLineItem,
     );
+
     if (isState) {
       setConfirmedData(false);
       // dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));

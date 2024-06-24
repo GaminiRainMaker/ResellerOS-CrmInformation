@@ -48,21 +48,27 @@ const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
     let grossProfitPercentage: number = 0;
     let exitPrice: number = 0;
     let adjustedPrice: number = 0;
-    profitability?.map((item: any) => {
-      if (item?.gross_profit) {
-        grossProfit += item?.gross_profit ? item?.gross_profit : 0;
-      }
-      if (item?.exit_price) {
-        exitPrice += item?.exit_price ? item?.exit_price : 0;
-      }
-      if (item?.adjusted_price !== undefined && item?.quantity !== undefined) {
-        let temp: any;
-        temp =
-          Number(item?.adjusted_price) *
-          (item?.quantity ? Number(item?.quantity) : 1);
-        adjustedPrice += temp;
-      }
-    });
+    if (profitability && profitability?.length > 0) {
+      profitability?.map((item: any) => {
+        if (item?.gross_profit) {
+          grossProfit += item?.gross_profit ? item?.gross_profit : 0;
+        }
+        if (item?.exit_price) {
+          exitPrice += item?.exit_price ? item?.exit_price : 0;
+        }
+        if (
+          item?.adjusted_price !== undefined &&
+          item?.quantity !== undefined
+        ) {
+          let temp: any;
+          temp =
+            Number(item?.adjusted_price) *
+            (item?.quantity ? Number(item?.quantity) : 1);
+          adjustedPrice += temp;
+        }
+      });
+    }
+
     if (exitPrice > 0) {
       grossProfitPercentage = (grossProfit / exitPrice) * 100;
     }
@@ -77,7 +83,7 @@ const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
   const analyticsData = [
     {
       key: 1,
-      primary: quoteLineItemByQuoteID?.length,
+      primary: profitability?.length ? profitability?.length : 0,
       secondry: 'Line Items',
       icon: <QueueListIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,

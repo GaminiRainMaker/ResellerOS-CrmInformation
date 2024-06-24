@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {API} from './CONSTANTS';
-import {post} from './index';
+import {post, get} from './index';
 
 export const AUTH_API = {
   // get: () => get(API.BUNDLE.INDEX) as Promise<AxiosResponse<[]>>,
@@ -10,4 +10,5 @@ export const AUTH_API = {
   SendForgotPasswordEmail: (data: any) =>
     post(API.AUTH.Send_Forgot_Password_Email, data),
   ContactSales: (data: any) => post(API.AUTH.Contact_Sales, data),
+  get: () => get(API.AUTH.salesforceFileGet),
 };

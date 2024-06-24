@@ -16,12 +16,16 @@ export const CustomTable = styled(Table)<ITableProps>`
   .ant-table-thead > tr {
     height: 32px;
   }
+  color: white !important;
   .ant-table-thead > tr > th {
     padding: 8px 12px;
     font-weight: 500;
-    color: ${(props) => props?.token?.colorPrimaryText};
+    span {
+      color: white !important;
+    }
+    color: white !important;
     text-align: center;
-    background: ${(props) => props.token.colorInfoBg};
+    background: #457B9D;
     border-bottom: 1px solid #8592a4;
   }
   .ant-table-cell {

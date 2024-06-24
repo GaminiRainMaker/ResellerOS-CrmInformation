@@ -40,6 +40,7 @@ import BundleSection from './bundleSection';
 import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
 import {setProfitability} from '../../../../../redux/slices/profitability';
 import Profitability1 from './allTabs/Profitability1';
+import {getQuoteFileCount} from '../../../../../redux/actions/quoteFile';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -52,7 +53,7 @@ const GenerateQuote: React.FC = () => {
   const getQuoteID = searchParams.get('id');
   const activeTabRoute = searchParams.get('tab');
   const getInReviewQuote = searchParams.get('inReviewQuote');
-  const [activeTab, setActiveTab] = useState<any>('1');
+  const [activeTab, setActiveTab] = useState<any>();
   const {quoteLineItemByQuoteID, loading} = useAppSelector(
     (state) => state.quoteLineItem,
   );
@@ -89,7 +90,6 @@ const GenerateQuote: React.FC = () => {
     useState<boolean>(false);
   const [typeForAttachmentFilter, setTypeForAttachmentFilter] =
     useState<any>('all');
-  const [getBundleProfit, setGetBundleProfit] = useState<boolean>(false);
   const [showDocumentModal, setShowDocumentModal] = useState<boolean>(false);
 
   const [objectForSyncingValues, setObjectForSyncingValues] = useState<any>([]);
@@ -106,7 +106,31 @@ const GenerateQuote: React.FC = () => {
   useEffect(() => {
     dispatch(getAllTableColumn(''));
     dispatch(getAllContractSetting(''));
+    dispatch(getQuoteFileCount(Number(getQuoteID)))?.then((payload: any) => {
+      if (payload?.payload === 0) {
+        setActiveTab('2');
+      } else {
+        setActiveTab('1');
+      }
+      setCountOFFiles(payload?.payload);
+    });
   }, []);
+
+  useEffect(() => {
+    if (getQuoteID && countOfFiles) {
+      if (countOfFiles > 0) {
+        dispatch(getQuoteById(getQuoteID));
+      } else {
+        dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then(
+          (d: any) => {
+            if (d?.payload) {
+              dispatch(setProfitability(d?.payload));
+            }
+          },
+        );
+      }
+    }
+  }, [getQuoteID, countOfFiles]);
 
   useEffect(() => {
     dispatch(getQuoteById(getQuoteID))?.then((payload: any) => {
@@ -126,12 +150,15 @@ const GenerateQuote: React.FC = () => {
         delete newObj?.Validations,
         setObjectForSyncingValues(newObj);
     });
-    // dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
-    //   if (d?.payload) {
-    //     dispatch(setProfitability(d?.payload));
-    //   }
-    // });
   }, []);
+
+  useEffect(() => {
+    dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
+      if (d?.payload) {
+        dispatch(setProfitability(d?.payload));
+      }
+    });
+  }, [getQuoteID]);
 
   useEffect(() => {
     if (activeTabRoute === '2') {
@@ -165,25 +192,14 @@ const GenerateQuote: React.FC = () => {
   }, [activeTab, tableColumnData]);
 
   useEffect(() => {
-    setTimeout(() => {
-      if (activeTab === '1' && countOfFiles === 0) {
-        setActiveTab('2');
-      } else if (activeTab !== '2') {
-        setActiveTab('1');
-      }
-    }, 3000);
-  }, [countOfFiles]);
-
-  useEffect(() => {
-    setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);
-    let newObj: any = {};
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    let adjustPrice: number = 0;
-    let lineAmount: number = 0;
-    let quantity: number = 0;
-    let listPrice: number = 0;
-
     if (quoteLineItemByQuoteID && quoteLineItemByQuoteID?.length > 0) {
+      setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);
+      let newObj: any = {};
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      let adjustPrice: number = 0;
+      let lineAmount: number = 0;
+      let quantity: number = 0;
+      let listPrice: number = 0;
       // eslint-disable-next-line no-unsafe-optional-chaining
       quoteLineItemByQuoteID?.map((item: any, index: any) => {
         if (item?.adjusted_price) {
@@ -196,53 +212,14 @@ const GenerateQuote: React.FC = () => {
           quantity += parseInt(item?.quantity, 10);
         }
       });
-    }
 
-    newObj = {
-      Quantity: quantity,
-      ListPirce: listPrice,
-      AdjustPrice: adjustPrice,
-      LineAmount: lineAmount,
-    };
-    setAmountData(newObj);
-  }, [quoteLineItemByQuoteID]);
-
-  useEffect(() => {
-    let isExist: any;
-    const bundleData: any = [];
-    const UnAssigned: any = [];
-    if (quoteLineItemByQuoteID && quoteLineItemByQuoteID?.length > 0) {
-      isExist = quoteLineItemByQuoteID?.find((item: any) => item?.Bundle);
-    }
-
-    if (isExist) {
-      quoteLineItemByQuoteID?.map((lineItem: any) => {
-        let bundleObj: any;
-        if (lineItem?.Bundle) {
-          if (bundleObj) {
-            bundleObj = {
-              name: bundleObj.name,
-              description: bundleObj.description,
-              quantity: bundleObj.quantity,
-              quoteLieItem: [...bundleObj.quoteLieItem, ...lineItem],
-              bundleId: lineItem?.Bundle.id,
-              id: lineItem.id,
-            };
-          } else {
-            bundleObj = {
-              name: lineItem?.Bundle?.name,
-              description: lineItem?.Bundle?.description,
-              quantity: lineItem?.Bundle?.quantity,
-              quoteLieItem: [lineItem],
-              bundleId: lineItem?.Bundle?.id,
-              id: lineItem?.id,
-            };
-            bundleData?.push(bundleObj);
-          }
-        } else {
-          UnAssigned?.push(lineItem);
-        }
-      });
+      newObj = {
+        Quantity: quantity,
+        ListPirce: listPrice,
+        AdjustPrice: adjustPrice,
+        LineAmount: lineAmount,
+      };
+      setAmountData(newObj);
     }
   }, [quoteLineItemByQuoteID]);
 
@@ -276,7 +253,16 @@ const GenerateQuote: React.FC = () => {
         <Typography
           name="Body 3/Regular"
           cursor="pointer"
-          onClick={() => setShowBundleModal((p) => !p)}
+          onClick={() => {
+            // if (quoteFileData.length > 0) {
+            //   notification.open({
+            //     message: 'Please Verify All the Files first.',
+            //     type: 'info',
+            //   });
+            // } else {
+            setShowBundleModal(true);
+            // }
+          }}
         >
           Bundle Configuration
         </Typography>
@@ -289,6 +275,12 @@ const GenerateQuote: React.FC = () => {
           name="Body 3/Regular"
           cursor="pointer"
           onClick={() => {
+            // if (quoteFileData.length > 0) {
+            //   notification.open({
+            //     message: 'Please Verify All the Files first.',
+            //     type: 'info',
+            //   });
+            // } else
             if (selectTedRowData?.length > 0) {
               setShowUpdateLineItemModal(true);
             }
@@ -306,7 +298,13 @@ const GenerateQuote: React.FC = () => {
           color={token?.colorError}
           cursor="pointer"
           onClick={() => {
-            if (selectTedRowIds?.length > 0) {
+            // if (quoteFileData.length > 0) {
+            //   notification.open({
+            //     message: 'Please Verify All the Files first.',
+            //     type: 'info',
+            //   });
+            // } else
+            if (selectTedRowData?.length > 0) {
               setIsDeleteProfitabilityModal(true);
             }
           }}
@@ -531,9 +529,9 @@ const GenerateQuote: React.FC = () => {
                       message: 'Please Verify All the Files first.',
                       type: 'info',
                     });
-                    return;
+                  } else {
+                    setOpen(true);
                   }
-                  setOpen(true);
                 }}
               />
               <AddQuote

@@ -10,8 +10,12 @@ export const PROFITABILITY_API = {
     post(API.PROFITABALITY.QUERY, data) as Promise<AxiosResponse<[]>>,
   getById: (id: number) =>
     get(`${API.PROFITABALITY.INDEX}/${id}`) as Promise<AxiosResponse<any>>,
+  getCountById: (id: number) =>
+    get(`${API.PROFITABALITY.count}/${id}`) as Promise<AxiosResponse<any>>,
   patch: (data: any) =>
     patch(API.PROFITABALITY.INDEX, data) as Promise<AxiosResponse<any>>,
   deleteById: (data: any) =>
     post(API.PROFITABALITY.DeleteById, data) as Promise<AxiosResponse<any>>,
+  updateProfitabilityValueForBulk: (data: any) =>
+    post(API.PROFITABALITY.UpdateProfitabilityValueForBulk, data) as Promise<AxiosResponse<any>>,
 };

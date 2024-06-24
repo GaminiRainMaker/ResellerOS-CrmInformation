@@ -11,7 +11,8 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {insertAttachmentDocument} from '../../../../../redux/actions/attachmentDocument';
 import {getAllFormStack} from '../../../../../redux/actions/formStackSync';
-import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';2
+import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
+2;
 import {
   uploadExcelFileToAws,
   uploadToAws,
@@ -39,6 +40,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
 
   const FormstackDataOptions =
     formStackSyncData &&
+    formStackSyncData?.length > 0 &&
     formStackSyncData?.map((FormstackDataItem: any) => ({
       value: FormstackDataItem.doc_id,
       key: FormstackDataItem.doc_key,
@@ -50,40 +52,46 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       ),
     }));
 
+  let erretree = [
+    {
+      ID: 1,
+      rosquoteai__Bundle_Name__c: 'sfdwssa',
+      TotalPrice: 33,
+      UnitPrice: 34433,
+      rosquoteai__Bundle_Ext_Price__c: 43543534,
+      rosquoteai__Description__c: 'dfdfds',
+      Quantity: 4,
+      rosquoteai__LineNumber__c: 6,
+      rosquoteai__OEM__r: {Name: 'dsfee'},
+      rosquoteai__Bundle_MSRP__c: 453,
+      rosquoteai__Product_Code__c: '43543dfd',
+      rosquoteai__Quote_Line_Item__c: '435345',
+    },
+  ];
   let arrOfObject = [
     {
-      Line: '4',
-      // TotalPrice: '323432',
-      // UnitPrice: '434',
-      // rosquoteai__Description__c: 'hlooooo',
-      // Quantity: '32423',
-      // rosquoteai__Product_Code__c: 'hapmmewrwe',
+      rosquoteai__Quote_Line_Item__c: '4',
+      rosquoteai__LineNumber__c: '323432',
+      rosquoteai__OEM__r: '434',
+      rosquoteai__Description__c: 'hlooooo',
+      rosquoteai__Bundle_MSRP__c: '32423',
+      rosquoteai__Product_Code__c: 'hapmmewrwe',
+      rosquoteai__Country_of_Origin__c: '344343',
+      rosquoteai__Quote_Line_Items__r: '2',
+      rosquoteai__Bundle_Name__c: 'werew',
     },
-    {
-      Line: '4',
-      // TotalPrice: '323432',
-      // UnitPrice: '434',
-      // rosquoteai__Description__c: 'hlooooo',
-      // Quantity: '32423',
-      // rosquoteai__Product_Code__c: 'hapmmewrwe',
-    },
-    // {
-    //   rosquoteai__LineNumber__c: '4',
-    //   // TotalPrice: '323432',
-    //   // UnitPrice: '434',
-    //   // rosquoteai__Description__c: 'hlooooo',
-    //   // Quantity: '32423',
-    //   // rosquoteai__Product_Code__c: 'hapmmewrwe',
-    // },
-    // {
-    //   rosquoteai__LineNumber__c: '4',
-    //   // TotalPrice: '323432',
-    //   // UnitPrice: '434',
-    //   // rosquoteai__Description__c: 'hlooooo',
-    //   // Quantity: '32423',
-    //   // rosquoteai__Product_Code__c: 'hapmmewrwe',
-    // },
   ];
+  let testing = {
+    rosquoteai__Quote_Line_Item__c: '4',
+    rosquoteai__LineNumber__c: '323432',
+    rosquoteai__OEM__r: '434',
+    rosquoteai__Description__c: 'hlooooo',
+    rosquoteai__Bundle_MSRP__c: '32423',
+    rosquoteai__Product_Code__c: 'hapmmewrwe',
+    rosquoteai__Country_of_Origin__c: '344343',
+    rosquoteai__Quote_Line_Items__r: '2',
+    rosquoteai__Bundle_Name__c: 'werew',
+  };
 
   const dowloadFunction = async (data: any, type: string) => {
     const dataItem = data?.data && JSON?.parse(data?.data);
@@ -96,16 +104,21 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
 
     let resultValues: any = {};
     for (let key in formattedData) {
-      resultValues[key] =
-        key === '_qli'
-          ? arrOfObject
-          : objectForSyncingValues[formattedData[key]]
-            ? objectForSyncingValues[formattedData[key]]
-            : 'empty';
+      resultValues[key] = objectForSyncingValues[formattedData[key]]
+        ? objectForSyncingValues[formattedData[key]]
+        : 'empty';
     }
-    resultValues.quotelineitem = arrOfObject;
 
-    console.log('2343243242', resultValues);
+    delete resultValues._pqli;
+    delete resultValues._qli;
+    delete resultValues._childpqli;
+    delete resultValues.quotelineitem;
+    // resultValues.quotelineitem = erretree;
+    // resultValues._pqli = testing;
+
+    // resultValues._childpqli = testing;
+    // resultValues._qli = testing;
+
     try {
       setLoading(true);
       let pathName =

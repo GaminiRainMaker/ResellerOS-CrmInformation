@@ -19,6 +19,7 @@ import {
   calculateProfitabilityData,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
+import {Input} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {
@@ -30,11 +31,11 @@ import {
   deleteProfitabilityById,
   getProfitabilityByQuoteId,
   updateProfitabilityById,
+  updateProfitabilityValueForBulk,
 } from '../../../../../../redux/actions/profitability';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
 import UpdatingLineItems from '../UpdatingLineItems';
-import {Input, Pagination} from 'antd';
 
 const Profitability: FC<any> = ({
   tableColumnDataShow,
@@ -63,7 +64,6 @@ const Profitability: FC<any> = ({
     (state) => state.profitability,
   );
   const [triggerUpdate, setTriggerUpdate] = useState(false);
-  const [newDataForProfit, setNewDataForProfit] = useState<any>([]);
   const [newDataForBundle, setNewDataForBundle] = useState<any>([]);
   const [getTheBundle, setGetTheBundle] = useState<boolean>(false);
   const [updateProfitabilityLoading, setUpdateProfitabilityLoading] =
@@ -89,18 +89,7 @@ const Profitability: FC<any> = ({
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Profitability" />,
   };
-  useEffect(() => {
-    if (profitabilityData && profitabilityData?.length > 0) {
-      let newArrr: any = [...profitabilityData];
-      let newSortedValue = newArrr?.sort((a: any, b: any) => {
-        return a.line_number - b.line_number;
-      });
-      let FIlteredData = newSortedValue?.filter(
-        (item: any) => !item?.bundle_id,
-      );
-      setNewDataForProfit(FIlteredData);
-    }
-  }, [profitabilityData]);
+
   useEffect(() => {
     if (bundleData && bundleData?.length > 0) {
       let newArrForBun: any = [];
@@ -109,9 +98,14 @@ const Profitability: FC<any> = ({
         let newSortedValue;
         let newObj = {...items};
         if (items?.Profitabilities && items?.Profitabilities?.length > 0) {
-          let newSort = [...items.Profitabilities];
+          let newSort = [...items?.Profitabilities];
+
           newSortedValue = newSort?.sort((a: any, b: any) => {
-            return a.line_number - b.line_number;
+            return a.serial_number - b.serial_number;
+          });
+          let newArrForSerialAdd: any = [];
+          newSort?.map((items: any, index: number) => {
+            newArrForSerialAdd?.push({...items, serialNumber: index + 1});
           });
           delete newObj.Profitabilities;
           // For Extended Price
@@ -129,12 +123,17 @@ const Profitability: FC<any> = ({
               grossProft += items?.gross_profit ? items?.gross_profit : 0;
             }
           });
+          console.log('grossProftgrossProft', grossProft, extendedPrice);
+          let grossProfitPer: any = 0;
+          if (grossProft !== 0 && extendedPrice !== 0) {
+            grossProfitPer = (grossProft / extendedPrice) * 100;
+          }
 
-          let grossProfitPer = (grossProft / extendedPrice) * 100;
           newObj.extendedPrice = extendedPrice * newObj.quantity;
           newObj.grossProfit = grossProft * newObj.quantity;
           newObj.grossPercentage = grossProfitPer;
-          newObj.Profitabilities = newSortedValue;
+
+          newObj.Profitabilities = newArrForSerialAdd;
         }
 
         newArrForBun?.push(newObj);
@@ -146,7 +145,11 @@ const Profitability: FC<any> = ({
   }, [bundleData]);
 
   useEffect(() => {
-    if (activeTab === '2') {
+    if (
+      activeTab === '2' &&
+      profitabilityDataByQuoteId &&
+      profitabilityDataByQuoteId?.length > 0
+    ) {
       const filteredDataa = profitabilityDataByQuoteId?.filter(
         (item: any) => item?.bundle_id === null,
       );
@@ -308,8 +311,8 @@ const Profitability: FC<any> = ({
   const ProfitabilityQuoteLineItemcolumns = [
     {
       title: '#Line',
-      dataIndex: 'line_number',
-      key: 'line_number',
+      dataIndex: 'serial_number',
+      key: 'serial_number',
       render: (text: string, record: any, index: number) => (
         <OsInput
           disabled={renderEditableInput('#Line')}
@@ -667,7 +670,7 @@ const Profitability: FC<any> = ({
       width: 190,
       render: (text: number, record: any) => {
         return (
-          <Typography name="Body 4/Medium">${abbreviate(text) ?? 0}</Typography>
+          <Typography name="Body 4/Medium">{abbreviate(text) ?? 0}</Typography>
         );
       },
     },
@@ -749,7 +752,7 @@ const Profitability: FC<any> = ({
       });
       setFinalProfitTableCol(newArr);
     }
-  }, [newDataForBundle, newDataForProfit]);
+  }, [newDataForBundle]);
 
   useEffect(() => {
     if (activeTab === '2') {
@@ -774,8 +777,8 @@ const Profitability: FC<any> = ({
               const filteredDataa = d?.payload?.filter(
                 (item: any) => item?.bundle_id === null,
               );
-
               setProfitabilityData(filteredDataa);
+              dispatch(setProfitability(d?.payload));
             }
             setIsDeleteProfitabilityModal(false);
           },
@@ -827,12 +830,12 @@ const Profitability: FC<any> = ({
             id: ids,
             product_family: ProductFamily,
           };
-          // console.log('updatedData', updatedData, 'obj', obj);
           await Promise.all(
             updatedData?.map((item: any) =>
               dispatch(updateProfitabilityById(item)),
             ),
           );
+          // await dispatch(updateProfitabilityValueForBulk(updatedData));
           await dispatch(updateProductFamily(obj));
           setProfabilityUpdationState([
             {
@@ -859,8 +862,6 @@ const Profitability: FC<any> = ({
       setTimeout(() => {
         dispatch(getAllBundle(getQuoteID));
       }, 2000);
-
-      // dispatch(getAllBundle(getQuoteID));
 
       updateDataAndFetchProfitability();
     } catch (err) {
@@ -942,7 +943,8 @@ const Profitability: FC<any> = ({
               },
             ]}
           />
-        ))}{' '}
+        ))}
+
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         <>
           {selectedFilter === 'Product Family' ? (
@@ -990,7 +992,7 @@ const Profitability: FC<any> = ({
               <OsTableWithOutDrag
                 loading={loading}
                 columns={finalProfitTableCol}
-                dataSource={newDataForProfit || []}
+                dataSource={profitabilityData || []}
                 scroll
                 rowSelection={{
                   ...rowSelection,

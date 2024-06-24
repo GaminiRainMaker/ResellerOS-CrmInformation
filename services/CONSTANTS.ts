@@ -5,6 +5,7 @@ export const API = {
     SEND_EMAIL: '/auth/sendNewUserEmail',
     Send_Forgot_Password_Email: '/auth/sendForgotPasswordEmail',
     Contact_Sales: '/auth/contactSales',
+    salesforceFileGet: '/auth/getSalesForceDataa',
   },
   QUOTE: {
     INDEX: '/quote',
@@ -70,6 +71,8 @@ export const API = {
     INDEX: '/profitability',
     QUERY: '/profitability/query',
     DeleteById: '/profitability/deleteProfitabilityById',
+    count: '/profitability/getAllProfitabilityCount',
+    UpdateProfitabilityValueForBulk: '/profitability/updateProfitabilityValueForBulk',
   },
   BUNDLE: {
     INDEX: '/bundle',
@@ -211,6 +214,7 @@ export const API = {
     GetQuoteFileById: '/quoteFile/getQuoteFileById',
     getQuoteFileByQuoteIdAll: '/quoteFile/getQuoteFileByQuoteIdAll',
     postJson: '/quoteFile/updateQuoteFileByIdForQuoteJson',
+    getQuoteFileCount: '/quoteFile/getQuoteFileCount',
   },
   ASSIGN_PARTNER_PROGRAM: {
     INDEX: '/assignPartnerProgram',
