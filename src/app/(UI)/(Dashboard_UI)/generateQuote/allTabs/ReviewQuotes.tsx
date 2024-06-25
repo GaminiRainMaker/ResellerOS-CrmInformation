@@ -334,18 +334,23 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
                                     color={token?.colorBgContainer}
                                     onClick={(e) => {
                                       if (
-                                        finalDataItem?.QuoteLineItem?.length > 0
-                                      ) {
-                                        setShowExportAs(true);
-                                      } else if (
                                         finalDataItem?.QuoteLineItem?.length ===
-                                          0 &&
-                                        finalDataItem?.title
+                                        0
+                                      ) {
+                                        setShowExportAs(false);
+                                      } else {
+                                        setShowExportAs(true);
+                                      }
+                                      if (
+                                        !finalDataItem?.title
                                           ?.split('.')
                                           ?.includes('pdf')
                                       ) {
+                                        setShowExportToTable(false);
+                                      } else {
                                         setShowExportToTable(true);
-                                      } else if (
+                                      }
+                                      if (
                                         finalDataItem?.QuoteLineItem?.length ===
                                           0 &&
                                         !finalDataItem?.title
@@ -353,6 +358,8 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
                                           ?.includes('pdf')
                                       ) {
                                         setShowSubmitButton(true);
+                                      } else {
+                                        setShowSubmitButton(false);
                                       }
                                       e?.stopPropagation();
                                       setShowRaiseConcernModal(true);
