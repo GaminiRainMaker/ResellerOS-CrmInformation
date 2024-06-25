@@ -24,6 +24,7 @@ import {useSearchParams} from 'next/navigation';
 import OsModal from '@/app/components/common/os-modal';
 import UpdatingLineItems from '../../UpdatingLineItems';
 import {updateProductFamily} from '../../../../../../../redux/actions/product';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
@@ -95,11 +96,47 @@ const Profitablity: FC<any> = ({
         }
 
         if (!groupedData[name]) {
-          groupedData[name] = {name: name, QuoteLineItem: []};
+          groupedData[name] = {
+            name: name,
+            QuoteLineItem: [],
+            totalExtendedPrice: 0,
+            totalGrossProfit: 0,
+            totalGrossProfitPercentage: 0,
+          };
         }
+
+        let extendedPrice = 0;
+        let grossProfit = 0;
+
+        if (item?.exit_price) {
+          extendedPrice += item.exit_price ? item.exit_price : 0;
+        }
+
+        if (item?.gross_profit) {
+          grossProfit += item.gross_profit ? item.gross_profit : 0;
+        }
+
+        const bundleQuantity = parseInt(item?.bundle?.quantity || '1', 10);
+        groupedData[name].totalExtendedPrice += extendedPrice * bundleQuantity;
+        groupedData[name].totalGrossProfit += grossProfit * bundleQuantity;
+
+        let grossProfitPer = 0;
+        if (
+          groupedData[name].totalGrossProfit !== 0 &&
+          groupedData[name].totalExtendedPrice !== 0
+        ) {
+          grossProfitPer =
+            (groupedData[name].totalGrossProfit /
+              groupedData[name].totalExtendedPrice) *
+            100;
+        }
+
+        groupedData[name].totalGrossProfitPercentage = grossProfitPer;
+
         groupedData[name]?.QuoteLineItem?.push(item);
       }
     });
+
     setFinalData(Object.values(groupedData));
   };
 
@@ -202,7 +239,7 @@ const Profitablity: FC<any> = ({
       });
     }
   };
-  
+
   const rowSelection = {
     onChange: (selectedRowKeys: any, record: any) => {
       setSelectedRowData(record);
@@ -484,8 +521,6 @@ const Profitablity: FC<any> = ({
       return newObj;
     });
 
-    console.log('finalDatafinalData', finalData);
-
     const ProductFamily = profabilityUpdationState?.find(
       (field: any) => field?.field === 'product_family',
     )?.value;
@@ -576,6 +611,8 @@ const Profitablity: FC<any> = ({
   //   }
   // }, [updatedData, dispatch, getQuoteID]);
 
+  console.log('FinalDataa', finalData);
+
   return (
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
@@ -602,14 +639,48 @@ const Profitablity: FC<any> = ({
                         {
                           key: index,
                           label: (
-                            <Space
-                              style={{
-                                display: 'flex',
-                                justifyContent: 'start',
-                              }}
-                            >
-                              <p>{finalDataItem?.name}</p>
-                            </Space>
+                            <Row justify="space-between">
+                              <Col span={6}>
+                                <p>{finalDataItem?.name}</p>
+                              </Col>
+                              <Col span={4}>
+                                <p>
+                                  Line Items:{' '}
+                                  {finalDataItem?.QuoteLineItem?.length}
+                                </p>
+                              </Col>
+                              <Col span={4}>
+                                <p>
+                                  Extended Price : ${' '}
+                                  {abbreviate(
+                                    Number(
+                                      finalDataItem?.totalExtendedPrice ?? 0.0,
+                                    ),
+                                  )}
+                                </p>
+                              </Col>
+                              <Col span={4}>
+                                <p>
+                                  Gross Profit : ${' '}
+                                  {abbreviate(
+                                    Number(
+                                      finalDataItem?.totalGrossProfit ?? 0.0,
+                                    ),
+                                  )}
+                                </p>
+                              </Col>
+                              <Col span={4}>
+                                <p>
+                                  Gross Profit % :{' '}
+                                  {abbreviate(
+                                    Number(
+                                      finalDataItem?.totalGrossProfitPercentage ??
+                                        0.0,
+                                    ),
+                                  )}
+                                </p>
+                              </Col>
+                            </Row>
                           ),
                           children: (
                             <OsTableWithOutDrag
