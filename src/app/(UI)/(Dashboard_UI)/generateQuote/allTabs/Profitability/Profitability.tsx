@@ -209,34 +209,34 @@ const Profitablity: FC<any> = ({
       updatedRecord.gross_profit = result.grossProfit;
       updatedRecord.gross_profit_percentage = result.grossProfitPercentage;
     }
-    if (!selectedFilter || selectedFilter === undefined) {
-      setFinalData((prevData: any) => {
-        const newData = prevData?.map((item: any) =>
-          item.id === record.id ? updatedRecord : item,
-        );
-        return newData;
-      });
-    } else if (selectedFilter) {
-      setFinalData((prevData: any) => {
-        return prevData.map((data: any) => {
-          if (data.QuoteLineItem) {
-            const updatedQuotLine = data.QuoteLineItem.map((qla: any) => {
-              if (qla.id === updatedRecord.id) {
-                return updatedRecord;
-              } else {
-                return qla;
-              }
-            });
-            return {
-              ...data,
-              QuoteLineItem: updatedQuotLine,
-            };
-          } else {
-            return {...data};
-          }
-        });
-      });
-    }
+    // if (!selectedFilter || selectedFilter === undefined) {
+    //   setFinalData((prevData: any) => {
+    //     const newData = prevData?.map((item: any) =>
+    //       item.id === record.id ? updatedRecord : item,
+    //     );
+    //     return newData;
+    //   });
+    // } else if (selectedFilter) {
+    //   setFinalData((prevData: any) => {
+    //     return prevData.map((data: any) => {
+    //       if (data.QuoteLineItem) {
+    //         const updatedQuotLine = data.QuoteLineItem.map((qla: any) => {
+    //           if (qla.id === updatedRecord.id) {
+    //             return updatedRecord;
+    //           } else {
+    //             return qla;
+    //           }
+    //         });
+    //         return {
+    //           ...data,
+    //           QuoteLineItem: updatedQuotLine,
+    //         };
+    //       } else {
+    //         return {...data};
+    //       }
+    //     });
+    //   });
+    // }
   };
 
   const rowSelection = {
