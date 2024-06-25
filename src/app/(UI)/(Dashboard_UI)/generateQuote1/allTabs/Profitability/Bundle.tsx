@@ -615,6 +615,8 @@ const Bundle: FC<any> = ({
                           marginLeft: '3px',
                           height: '36px',
                         }}
+                        type="number"
+                        min={1}
                         onKeyDown={(e) => {
                           e.stopPropagation();
                           handleBundleKeyDown(e, bundleDataItem);

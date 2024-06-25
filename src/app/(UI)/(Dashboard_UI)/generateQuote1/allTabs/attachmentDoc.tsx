@@ -40,7 +40,9 @@ const AttachmentDocument: FC<any> = ({
   const {data: attachmentDocumentData, loading} = useAppSelector(
     (state) => state.attachmentDocument,
   );
-  const {data: quoteFileData} = useAppSelector((state) => state.quoteFile);
+  const {getQuoteFileByQuoteIdAllData: quoteFileData} = useAppSelector(
+    (state) => state.quoteFile,
+  );
   const [attachUrl, setAttachUrl] = useState<any>();
   const [typeOfAttach, setTypeOfAttach] = useState<any>();
   const [combinedData, setCombinedData] = useState<any>();

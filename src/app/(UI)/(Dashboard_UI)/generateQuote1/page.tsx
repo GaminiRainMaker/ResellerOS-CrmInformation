@@ -106,6 +106,12 @@ const GenerateQuote: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (getQuoteFileDataCount === 0) {
+      setActiveTab('2');
+    }
+  }, [getQuoteFileDataCount]);
+
+  useEffect(() => {
     dispatch(getQuoteById(getQuoteID))?.then((payload: any) => {
       let newObj = {
         ...payload?.payload?.Customer,
