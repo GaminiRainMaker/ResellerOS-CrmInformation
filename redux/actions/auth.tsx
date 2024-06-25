@@ -17,7 +17,7 @@ export const getSalesForceFileData = createAsyncThunk(
   'auth/getSalesForceDataa',
   async (data: any, thunkApi) => {
     try {
-      const res = await AUTH_API.get();
+      const res = await AUTH_API.postSalesGet(data);
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error.message);
