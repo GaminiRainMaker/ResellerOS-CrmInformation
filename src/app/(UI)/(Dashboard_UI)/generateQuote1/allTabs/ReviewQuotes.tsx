@@ -56,10 +56,10 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
   const [finalReviewCol, setFinalReviewCol] = useState<any>();
   const [fileVerificationLoading, setFileVerificationLoading] = useState(false);
 
-  const filterDataByValue = (data: any, filterValue?: string) => {
+  const filterDataByValue = (data: any, filterValue: any) => {
     const groupedData: any = {};
     data?.forEach((item: any) => {
-      let name;
+      let name: any;
       if (filterValue === 'Product Family') {
         name = item?.Product?.product_family || 'Unassigned';
       } else if (filterValue === 'Pricing Method') {
@@ -76,7 +76,7 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
           return input
             .toLowerCase()
             .replace(/_/g, ' ')
-            .replace(/\b\w/g, (char) => char?.toUpperCase());
+            .replace(/\b\w/g, (char: any) => char?.toUpperCase());
         };
 
         if (name?.includes('_') || name === name?.toLowerCase()) {
@@ -84,13 +84,24 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
         }
 
         if (!groupedData[name]) {
-          groupedData[name] = {title: name, id: item?.id, QuoteLineItem: []};
+          groupedData[name] = {
+            title: name,
+            id: item?.id,
+            QuoteLineItem: [],
+            totalAdjustedPrice: 0,
+          };
         }
-        groupedData[name].QuoteLineItem = groupedData[
-          name
-        ].QuoteLineItem.concat(item?.QuoteLineItems || []);
+
+        item?.QuoteLineItems.forEach((quoteLineItem: any) => {
+          groupedData[name].QuoteLineItem.push(quoteLineItem);
+          groupedData[name].totalAdjustedPrice += Number(
+            useRemoveDollarAndCommahook(quoteLineItem?.adjusted_price ?? 0) *
+              useRemoveDollarAndCommahook(quoteLineItem?.quantity ?? 0),
+          );
+        });
       }
     });
+
     setReviewQuotesData(Object.values(groupedData));
   };
 
@@ -274,21 +285,23 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
                           <Col span={10}>
                             <p>{finalDataItem?.title}</p>
                           </Col>
-                          <Col span={6}>
+                          <Col span={4}>
                             <p>
                               Line Items: {finalDataItem?.QuoteLineItem?.length}
                             </p>
                           </Col>
-                          {/* <Col span={6}>
+                          <Col span={4}>
                             <p>
                               Total Cost: $
                               {abbreviate(
-                                Number(item?.totalAdjustedPrice ?? 0.0),
+                                Number(
+                                  finalDataItem?.totalAdjustedPrice ?? 0.0,
+                                ),
                               )}
                             </p>
-                          </Col> */}
+                          </Col>
                           <Col
-                            span={6}
+                            span={4}
                             style={{
                               justifyContent: 'end',
                               display: 'flex',
