@@ -26,20 +26,23 @@ import {
   updateQuoteById,
   updateQuoteStatusById,
 } from '../../../../../redux/actions/quote';
-import {getQuoteFileCount} from '../../../../../redux/actions/quoteFile';
+import {
+  getQuoteFileByQuoteId,
+  getQuoteFileCount,
+} from '../../../../../redux/actions/quoteFile';
 import {getAllTableColumn} from '../../../../../redux/actions/tableColumn';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setProfitability} from '../../../../../redux/slices/profitability';
 import DownloadFile from './DownloadFile';
 import DrawerContent from './DrawerContent';
-import InputDetails from './allTabs/InputDetails';
+import ReviewQuotes from './allTabs/ReviewQuotes';
 import Metrics from './allTabs/Metrics';
-import Profitability from './allTabs/Profitability';
+import ProfitabilityMain from './allTabs/Profitability/index';
 import Rebates from './allTabs/Rebates';
 import Validation from './allTabs/Validation';
 import AttachmentDocument from './allTabs/attachmentDoc';
 import GenerateQuoteAnalytics from './analytics';
-import BundleSection from './bundleSection';
+import {getAllBundle} from '../../../../../redux/actions/bundle';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -84,52 +87,36 @@ const GenerateQuote: React.FC = () => {
   const [statusValue, setStatusValue] = useState<string>('');
   const [statusUpdateLoading, setStatusUpdateLoading] =
     useState<boolean>(false);
-  const {data: quoteFileData} = useAppSelector((state) => state.quoteFile);
+  const {data: quoteFileData, getQuoteFileDataCount} = useAppSelector(
+    (state) => state.quoteFile,
+  );
   const [showUpdateLineItemModal, setShowUpdateLineItemModal] =
     useState<boolean>(false);
   const [typeForAttachmentFilter, setTypeForAttachmentFilter] =
     useState<any>('all');
   const [showDocumentModal, setShowDocumentModal] = useState<boolean>(false);
-
   const [objectForSyncingValues, setObjectForSyncingValues] = useState<any>([]);
   const [addNewCustomerQuote, setAddNewCustomerQuote] =
     useState<boolean>(false);
-  const [countOfFiles, setCountOFFiles] = useState<number>();
+
 
   useEffect(() => {
     if (getQuoteID) {
-      dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+      dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
+        if (d?.payload) {
+          dispatch(setProfitability(d?.payload));
+        }
+      });
+      dispatch(getAllBundle(getQuoteID));
+      dispatch(getQuoteFileCount(Number(getQuoteID)));
+      dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
     }
   }, [getQuoteID]);
 
   useEffect(() => {
     dispatch(getAllTableColumn(''));
     dispatch(getAllContractSetting(''));
-    dispatch(getQuoteFileCount(Number(getQuoteID)))?.then((payload: any) => {
-      if (payload?.payload === 0) {
-        setActiveTab('2');
-      } else {
-        setActiveTab('1');
-      }
-      setCountOFFiles(payload?.payload);
-    });
   }, []);
-
-  useEffect(() => {
-    if (getQuoteID && countOfFiles) {
-      if (countOfFiles > 0) {
-        dispatch(getQuoteById(getQuoteID));
-      } else {
-        dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then(
-          (d: any) => {
-            if (d?.payload) {
-              dispatch(setProfitability(d?.payload));
-            }
-          },
-        );
-      }
-    }
-  }, [getQuoteID, countOfFiles]);
 
   useEffect(() => {
     dispatch(getQuoteById(getQuoteID))?.then((payload: any) => {
@@ -150,20 +137,6 @@ const GenerateQuote: React.FC = () => {
         setObjectForSyncingValues(newObj);
     });
   }, []);
-
-  useEffect(() => {
-    dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
-      if (d?.payload) {
-        dispatch(setProfitability(d?.payload));
-      }
-    });
-  }, [getQuoteID]);
-
-  useEffect(() => {
-    if (activeTabRoute === '2') {
-      setActiveTab('2');
-    }
-  }, [activeTabRoute]);
 
   useEffect(() => {
     let tabsname: any;
@@ -189,38 +162,6 @@ const GenerateQuote: React.FC = () => {
     );
     setTableColumnDataShow(filterRequired);
   }, [activeTab, tableColumnData]);
-
-  useEffect(() => {
-    if (quoteLineItemByQuoteID && quoteLineItemByQuoteID?.length > 0) {
-      setQuoteLineItemByQuoteData(quoteLineItemByQuoteID);
-      let newObj: any = {};
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      let adjustPrice: number = 0;
-      let lineAmount: number = 0;
-      let quantity: number = 0;
-      let listPrice: number = 0;
-      // eslint-disable-next-line no-unsafe-optional-chaining
-      quoteLineItemByQuoteID?.map((item: any, index: any) => {
-        if (item?.adjusted_price) {
-          adjustPrice += useRemoveDollarAndCommahook(item?.adjusted_price);
-
-          lineAmount += useRemoveDollarAndCommahook(item?.line_amount);
-
-          listPrice += useRemoveDollarAndCommahook(item?.list_price);
-
-          quantity += parseInt(item?.quantity, 10);
-        }
-      });
-
-      newObj = {
-        Quantity: quantity,
-        ListPirce: listPrice,
-        AdjustPrice: adjustPrice,
-        LineAmount: lineAmount,
-      };
-      setAmountData(newObj);
-    }
-  }, [quoteLineItemByQuoteID]);
 
   const commonUpdateCompleteAndDraftMethod = (status: string) => {
     try {
@@ -318,7 +259,7 @@ const GenerateQuote: React.FC = () => {
     {
       key: 1,
       name: (
-        <Badge count={countOfFiles}>
+        <Badge count={getQuoteFileDataCount}>
           <Typography
             style={{padding: '10px'}}
             name="Body 4/Regular"
@@ -331,22 +272,23 @@ const GenerateQuote: React.FC = () => {
         </Badge>
       ),
       children: (
-        <InputDetails
-          setIsDeleteInputDetailModal={setIsDeleteInputDetailModal}
-          isDeleteInputDetailModal={isDeleteInputDetailModal}
+        <ReviewQuotes
           tableColumnDataShow={tableColumnDataShow}
-          setFinalInputColumn={setFinalInputColumn}
-          finalInputColumn={finalInputColumn}
           selectedFilter={selectedFilter}
-          familyFilter={familyFilter}
-          setFamilyFilter={setFamilyFilter}
-          setSelectedRowIds={setSelectedRowIds}
-          selectTedRowIds={selectTedRowIds}
-          setQuoteLineItemExist={setQuoteLineItemExist}
-          setActiveTab={setActiveTab}
-          activeTab={activeTab}
-          setCountOFFiles={setCountOFFiles}
-          countOfFiles={countOfFiles}
+          // setIsDeleteInputDetailModal={setIsDeleteInputDetailModal}
+          // isDeleteInputDetailModal={isDeleteInputDetailModal}
+          // setFinalInputColumn={setFinalInputColumn}
+          // finalInputColumn={finalInputColumn}
+          // selectedFilter={selectedFilter}
+          // familyFilter={familyFilter}
+          // setFamilyFilter={setFamilyFilter}
+          // setSelectedRowIds={setSelectedRowIds}
+          // selectTedRowIds={selectTedRowIds}
+          // setQuoteLineItemExist={setQuoteLineItemExist}
+          // setActiveTab={setActiveTab}
+          // activeTab={activeTab}
+          // setCountOFFiles={setCountOFFiles}
+          // countOfFiles={countOfFiles}
         />
       ),
     },
@@ -363,22 +305,17 @@ const GenerateQuote: React.FC = () => {
         </Typography>
       ),
       children: (
-        <Profitability
-          profitabilityData={profitabilityData}
-          setProfitabilityData={setProfitabilityData}
+        <ProfitabilityMain
           tableColumnDataShow={tableColumnDataShow}
-          setSelectedRowIds={setSelectedRowIds}
-          selectTedRowIds={selectTedRowIds}
           selectedFilter={selectedFilter}
-          setSelectedRowData={setSelectedRowData}
           setShowUpdateLineItemModal={setShowUpdateLineItemModal}
           showUpdateLineItemModal={showUpdateLineItemModal}
           selectTedRowData={selectTedRowData}
-          isDeleteProfitabilityModal={isDeleteProfitabilityModal}
-          setIsDeleteProfitabilityModal={setIsDeleteProfitabilityModal}
-          activeTab={activeTab}
-          familyFilter={familyFilter}
-          setFamilyFilter={setFamilyFilter}
+          setSelectedRowData={setSelectedRowData}
+          setShowBundleModal={setShowBundleModal}
+          selectTedRowIds={selectTedRowIds}
+          setSelectedRowIds={setSelectedRowIds}
+          showBundleModal={showBundleModal}
         />
       ),
     },
@@ -610,9 +547,9 @@ const GenerateQuote: React.FC = () => {
                       <CommonSelect
                         key={2}
                         style={{width: '319px'}}
-                        disabled={
-                          activeTab == '2' || activeTab == '5' ? false : true
-                        }
+                        // disabled={
+                        //   activeTab == '2' || activeTab == '5' ? false : true
+                        // }
                         placeholder="Select Grouping here"
                         options={selectData}
                         onChange={(e) => {
@@ -665,23 +602,6 @@ const GenerateQuote: React.FC = () => {
       >
         <DrawerContent form={form} open={open} onFinish={onFinish} />
       </OsDrawer>
-
-      {selectTedRowIds?.length > 0 && (
-        <OsModal
-          loading={loading}
-          body={
-            <BundleSection
-              selectTedRowIds={selectTedRowIds}
-              setShowBundleModal={setShowBundleModal}
-            />
-          }
-          width={700}
-          open={showBundleModal}
-          onCancel={() => {
-            setShowBundleModal((p) => !p);
-          }}
-        />
-      )}
 
       <OsModal
         title="Add Template"

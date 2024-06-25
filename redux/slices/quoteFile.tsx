@@ -21,6 +21,7 @@ type QuoteFileState = {
   data: any;
   quoteFile: any;
   quoteFileById: any;
+  getQuoteFileDataCount: number;
 };
 const initialState: QuoteFileState = {
   loading: false,
@@ -28,6 +29,7 @@ const initialState: QuoteFileState = {
   data: [],
   quoteFile: [],
   quoteFileById: [],
+  getQuoteFileDataCount: 0,
 };
 
 const quoteFileSlice = createSlice({
@@ -225,7 +227,7 @@ const quoteFileSlice = createSlice({
         getQuoteFileCount.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.getQuoteFileDataCount = action.payload;
         },
       )
       .addCase(
