@@ -606,8 +606,8 @@ const Bundle: FC<any> = ({
                         bundleDataItem?.gross_profit_percentage ?? 0.0,
                       )}
                     </p>
-                    <p>
-                      Quantity:
+                    <span style={{display: 'flex', alignItems: 'center'}}>
+                      Qty:
                       <OsInputNumber
                         defaultValue={bundleDataItem?.quantity}
                         style={{
@@ -627,7 +627,7 @@ const Bundle: FC<any> = ({
                           e.stopPropagation();
                         }}
                       />
-                    </p>
+                    </span>
                   </Space>
                 ),
                 children: (
