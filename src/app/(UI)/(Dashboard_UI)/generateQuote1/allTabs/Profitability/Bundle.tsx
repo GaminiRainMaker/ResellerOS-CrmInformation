@@ -19,6 +19,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
 import {
   getProfitabilityByQuoteId,
   updateProfitabilityById,
+  updateProfitabilityValueForBulk,
 } from '../../../../../../../redux/actions/profitability';
 import {useSearchParams} from 'next/navigation';
 import OsModal from '@/app/components/common/os-modal';
@@ -40,6 +41,7 @@ const Bundle: FC<any> = ({
   showBundleModal,
   setShowBundleModal,
   selectTedRowIds,
+  setSelectedRowIds,
 }) => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
@@ -52,7 +54,7 @@ const Bundle: FC<any> = ({
   );
   const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>();
   const {abbreviate} = useAbbreviationHook(0);
-  const [bundleData, setbundleData] = useState<any>();
+  const [bundleData, setbundleData] = useState<any>([]);
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
       id: number;
@@ -149,6 +151,7 @@ const Bundle: FC<any> = ({
   const rowSelection = {
     onChange: (selectedRowKeys: any, record: any) => {
       setSelectedRowData(record);
+      setSelectedRowIds(selectedRowKeys);
     },
   };
 
@@ -213,8 +216,8 @@ const Bundle: FC<any> = ({
   const ProfitabilityQuoteLineItemcolumns = [
     {
       title: '#Line',
-      dataIndex: 'line_number',
-      key: 'line_number',
+      dataIndex: 'serial_number',
+      key: 'serial_number',
       render: (text: string, record: any) => (
         <OsInput
           disabled={renderEditableInput('#Line')}
@@ -225,7 +228,7 @@ const Bundle: FC<any> = ({
           onKeyDown={(e) => handleKeyDown(e, record)}
           onBlur={(e) => handleBlur(record)}
           onChange={(e) =>
-            handleFieldChange(record, 'line_number', e.target.value)
+            handleFieldChange(record, 'serial_number', e.target.value)
           }
         />
       ),
@@ -422,122 +425,6 @@ const Bundle: FC<any> = ({
     },
   ];
 
-  const updateLineItems = async () => {
-    const bundleData = selectTedRowData?.map((obj: any) => {
-      const newObj = {...obj};
-      profabilityUpdationState?.forEach((update: any) => {
-        if (newObj.hasOwnProperty(update?.field)) {
-          newObj[update?.field] = update?.value;
-        }
-      });
-      const profitabilityCalculationData = calculateProfitabilityData(
-        newObj.quantity,
-        newObj.pricing_method,
-        useRemoveDollarAndCommahook(newObj?.line_amount),
-        useRemoveDollarAndCommahook(newObj?.adjusted_price),
-        useRemoveDollarAndCommahook(newObj?.list_price),
-      );
-      newObj.unit_price = profitabilityCalculationData?.unitPrice;
-      newObj.exit_price = profitabilityCalculationData?.exitPrice;
-      newObj.gross_profit = profitabilityCalculationData?.grossProfit;
-      newObj.gross_profit_percentage =
-        profitabilityCalculationData?.grossProfitPercentage;
-      delete newObj?.profitabilityCalculationData;
-      return newObj;
-    });
-
-    console.log('bundleDatabundleData', bundleData);
-
-    const ProductFamily = profabilityUpdationState?.find(
-      (field: any) => field?.field === 'product_family',
-    )?.value;
-    if (bundleData?.length > 0) {
-      const ids = bundleData?.map((item: any) => item?.product_id);
-      let obj = {
-        id: ids,
-        product_family: ProductFamily,
-      };
-      await Promise.all(
-        bundleData?.map((item: any) => dispatch(updateProfitabilityById(item))),
-      );
-      // await dispatch(updateProfitabilityValueForBulk(updatedData));
-      await dispatch(updateProductFamily(obj));
-      setProfabilityUpdationState([
-        {
-          id: 1,
-          field: null,
-          value: '',
-          label: '',
-        },
-      ]);
-      setShowUpdateLineItemModal(false);
-      const response = await dispatch(
-        getProfitabilityByQuoteId(Number(getQuoteID)),
-      );
-      const d = response?.payload;
-      // if (d) {
-      //   setSelectedRowData([]);
-      //   setSelectedRowIds([]);
-      //   setProfitabilityData(d);
-      //   dispatch(setProfitability(d));
-      // }
-      // setUpdateProfitabilityLoading(false);
-    }
-  };
-
-  // useEffect(() => {
-  //   try {
-  //     const updateDataAndFetchProfitability = async () => {
-  //       const ProductFamily = profabilityUpdationState?.find(
-  //         (field: any) => field?.field === 'product_family',
-  //       )?.value;
-  //       if (updatedData?.length > 0) {
-  //         setUpdateProfitabilityLoading(true);
-  //         const ids = updatedData?.map((item: any) => item?.product_id);
-  //         let obj = {
-  //           id: ids,
-  //           product_family: ProductFamily,
-  //         };
-  //         await Promise.all(
-  //           updatedData?.map((item: any) =>
-  //             dispatch(updateProfitabilityById(item)),
-  //           ),
-  //         );
-  //         // await dispatch(updateProfitabilityValueForBulk(updatedData));
-  //         await dispatch(updateProductFamily(obj));
-  //         setProfabilityUpdationState([
-  //           {
-  //             id: 1,
-  //             field: null,
-  //             value: '',
-  //             label: '',
-  //           },
-  //         ]);
-  //         setShowUpdateLineItemModal(false);
-  //         const response = await dispatch(
-  //           getProfitabilityByQuoteId(Number(getQuoteID)),
-  //         );
-  //         const d = response?.payload;
-  //         if (d) {
-  //           setSelectedRowData([]);
-  //           setSelectedRowIds([]);
-  //           setProfitabilityData(d);
-  //           dispatch(setProfitability(d));
-  //         }
-  //         setUpdateProfitabilityLoading(false);
-  //       }
-  //     };
-  //     setTimeout(() => {
-  //       dispatch(getAllBundle(getQuoteID));
-  //     }, 2000);
-
-  //     updateDataAndFetchProfitability();
-  //   } catch (err) {
-  //     setUpdateProfitabilityLoading(false);
-  //     console.log('Error', err);
-  //   }
-  // }, [updatedData, dispatch, getQuoteID]);
-
   const handleBundleKeyDown = (e: any, record: any) => {
     if (e.key === 'Enter') {
       handleBundleSave(e, record);
@@ -570,6 +457,59 @@ const Bundle: FC<any> = ({
     if (obj) {
       await dispatch(updateBundleQuantity(obj));
       dispatch(getAllBundle(getQuoteID));
+    }
+  };
+
+  const updateLineItems = async () => {
+    const finalData = selectTedRowData?.map((obj: any) => {
+      const newObj = {...obj};
+      profabilityUpdationState?.forEach((update: any) => {
+        if (newObj.hasOwnProperty(update?.field)) {
+          newObj[update?.field] = update?.value;
+        }
+      });
+      const profitabilityCalculationData = calculateProfitabilityData(
+        newObj.quantity,
+        newObj.pricing_method,
+        useRemoveDollarAndCommahook(newObj?.line_amount),
+        useRemoveDollarAndCommahook(newObj?.adjusted_price),
+        useRemoveDollarAndCommahook(newObj?.list_price),
+      );
+      newObj.unit_price = profitabilityCalculationData?.unitPrice;
+      newObj.exit_price = profitabilityCalculationData?.exitPrice;
+      newObj.gross_profit = profitabilityCalculationData?.grossProfit;
+      newObj.gross_profit_percentage =
+        profitabilityCalculationData?.grossProfitPercentage;
+      delete newObj?.profitabilityCalculationData;
+      return newObj;
+    });
+    const ProductFamily = profabilityUpdationState?.find(
+      (field: any) => field?.field === 'product_family',
+    )?.value;
+    if (finalData?.length > 0) {
+      if (ProductFamily) {
+        const ids = finalData?.map((item: any) => item?.product_id);
+        let obj = {
+          id: ids,
+          product_family: ProductFamily,
+        };
+        await dispatch(updateProductFamily(obj));
+      }
+      await dispatch(updateProfitabilityValueForBulk(finalData));
+      setProfabilityUpdationState([
+        {
+          id: 1,
+          field: null,
+          value: '',
+          label: '',
+        },
+      ]);
+      setShowUpdateLineItemModal(false);
+      const response = await dispatch(getAllBundle(getQuoteID));
+      if (response.payload) {
+        setSelectedRowData([]);
+        setSelectedRowIds([]);
+      }
     }
   };
 
@@ -633,14 +573,17 @@ const Bundle: FC<any> = ({
                   </Space>
                 ),
                 children: (
-                  <OsTableWithOutDrag
-                    loading={bundleLoading || profitabilityLoading}
-                    columns={finalProfitTableCol}
-                    dataSource={bundleDataItem?.Profitabilities}
-                    scroll
-                    locale={locale}
-                    rowSelection={rowSelection}
-                  />
+                  <div key={JSON.stringify(bundleDataItem?.Profitabilities)}>
+                    <OsTableWithOutDrag
+                      loading={bundleLoading || profitabilityLoading}
+                      columns={finalProfitTableCol}
+                      dataSource={bundleDataItem?.Profitabilities}
+                      scroll
+                      locale={locale}
+                      rowSelection={rowSelection}
+                      selectedRowsKeys={selectTedRowIds}
+                    />
+                  </div>
                 ),
               },
             ]}
@@ -650,7 +593,7 @@ const Bundle: FC<any> = ({
 
       <OsModal
         title={'Update LineItems'}
-        // loading={loading || updateProfitabilityLoading}
+        loading={profitabilityLoading}
         body={
           <UpdatingLineItems
             profabilityUpdationState={profabilityUpdationState}

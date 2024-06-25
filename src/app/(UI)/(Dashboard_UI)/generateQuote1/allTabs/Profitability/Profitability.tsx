@@ -79,7 +79,7 @@ const Profitablity: FC<any> = ({
       } else if (filterValue === 'Vendor/Disti') {
         name =
           item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
-            ?.distributor;
+            ?.distribu;
       } else if (filterValue === 'OEM') {
         name = item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem;
       }
@@ -209,8 +209,6 @@ const Profitablity: FC<any> = ({
       updatedRecord.gross_profit = result.grossProfit;
       updatedRecord.gross_profit_percentage = result.grossProfitPercentage;
     }
-
-    console.log('selectedFilter====', selectedFilter);
     if (!selectedFilter || selectedFilter === undefined) {
       setFinalData((prevData: any) => {
         const newData = prevData?.map((item: any) =>
@@ -499,14 +497,8 @@ const Profitablity: FC<any> = ({
   ];
 
   const updateLineItems = async () => {
-    debugger;
     const finalData = selectTedRowData?.map((obj: any) => {
       const newObj = {...obj};
-      console.log(
-        profabilityUpdationState,
-        'profabilityUpdationStateprofabilityUpdationState',
-      );
-
       profabilityUpdationState?.forEach((update: any) => {
         if (newObj.hasOwnProperty(update?.field)) {
           newObj[update?.field] = update?.value;
@@ -539,10 +531,6 @@ const Profitablity: FC<any> = ({
         };
         await dispatch(updateProductFamily(obj));
       }
-
-      // await Promise.all(
-      //   finalData?.map((item: any) => dispatch(updateProfitabilityById(item))),
-      // );
       await dispatch(updateProfitabilityValueForBulk(finalData));
       setProfabilityUpdationState([
         {
@@ -563,66 +551,11 @@ const Profitablity: FC<any> = ({
     }
   };
 
-  // useEffect(() => {
-  //   try {
-  //     const updateDataAndFetchProfitability = async () => {
-  //       const ProductFamily = profabilityUpdationState?.find(
-  //         (field: any) => field?.field === 'product_family',
-  //       )?.value;
-  //       if (updatedData?.length > 0) {
-  //         setUpdateProfitabilityLoading(true);
-  //         const ids = updatedData?.map((item: any) => item?.product_id);
-  //         let obj = {
-  //           id: ids,
-  //           product_family: ProductFamily,
-  //         };
-  //         await Promise.all(
-  //           updatedData?.map((item: any) =>
-  //             dispatch(updateProfitabilityById(item)),
-  //           ),
-  //         );
-  //         // await dispatch(updateProfitabilityValueForBulk(updatedData));
-  //         await dispatch(updateProductFamily(obj));
-  //         setProfabilityUpdationState([
-  //           {
-  //             id: 1,
-  //             field: null,
-  //             value: '',
-  //             label: '',
-  //           },
-  //         ]);
-  //         setShowUpdateLineItemModal(false);
-  //         const response = await dispatch(
-  //           getProfitabilityByQuoteId(Number(getQuoteID)),
-  //         );
-  //         const d = response?.payload;
-  //         if (d) {
-  //           setSelectedRowData([]);
-  //           setSelectedRowIds([]);
-  //           setProfitabilityData(d);
-  //           dispatch(setProfitability(d));
-  //         }
-  //         setUpdateProfitabilityLoading(false);
-  //       }
-  //     };
-  //     setTimeout(() => {
-  //       dispatch(getAllBundle(getQuoteID));
-  //     }, 2000);
-
-  //     updateDataAndFetchProfitability();
-  //   } catch (err) {
-  //     setUpdateProfitabilityLoading(false);
-  //     console.log('Error', err);
-  //   }
-  // }, [updatedData, dispatch, getQuoteID]);
-
-  console.log('FinalDataa', finalData);
-
   return (
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         !selectedFilter && finalProfitTableCol ? (
-          <>
+          <div key={JSON.stringify(finalData)}>
             <OsTableWithOutDrag
               loading={loading}
               columns={finalProfitTableCol}
@@ -630,8 +563,9 @@ const Profitablity: FC<any> = ({
               scroll
               locale={locale}
               rowSelection={rowSelection}
+              selectedRowsKeys={selectTedRowIds}
             />
-          </>
+          </div>
         ) : (
           <>
             {selectedFilter && finalData?.length > 0 ? (
@@ -724,7 +658,7 @@ const Profitablity: FC<any> = ({
 
       <OsModal
         title={'Update LineItems'}
-        // loading={loading || updateProfitabilityLoading}
+        loading={loading}
         body={
           <UpdatingLineItems
             profabilityUpdationState={profabilityUpdationState}

@@ -27,6 +27,7 @@ const ProfitabilityMain: FC<any> = ({
         selectTedRowData={selectTedRowData}
         selectTedRowIds={selectTedRowIds}
         showBundleModal={showBundleModal}
+        setSelectedRowIds={setSelectedRowIds}
       />
       <GroupingData
         tableColumnDataShow={tableColumnDataShow}
