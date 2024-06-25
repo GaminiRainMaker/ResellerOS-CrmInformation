@@ -73,7 +73,7 @@ const Matrix: FC<any> = ({selectedFilter}) => {
   };
   useEffect(() => {
     filterDataByValue(profitabilityDataByQuoteId, selectedFilter);
-  }, [selectedFilter]);
+  }, [selectedFilter, profitabilityDataByQuoteId]);
 
   const colorPalette: {[key: string]: string} = {
     Unassigned: token?.colorInfo,
