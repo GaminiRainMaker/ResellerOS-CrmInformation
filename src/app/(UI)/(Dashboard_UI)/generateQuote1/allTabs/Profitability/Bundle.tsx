@@ -47,6 +47,9 @@ const Bundle: FC<any> = ({
   const {data: bundleApiData, loading: bundleLoading} = useAppSelector(
     (state) => state.bundle,
   );
+  const {loading: profitabilityLoading} = useAppSelector(
+    (state) => state.profitability,
+  );
   const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>();
   const {abbreviate} = useAbbreviationHook(0);
   const [bundleData, setbundleData] = useState<any>();
@@ -100,8 +103,6 @@ const Bundle: FC<any> = ({
   useEffect(() => {
     updateBundleData(bundleApiData);
   }, [bundleApiData]);
-
-  console.log('bundleApiData', bundleApiData);
 
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Profitability" />,
@@ -626,7 +627,7 @@ const Bundle: FC<any> = ({
                 ),
                 children: (
                   <OsTableWithOutDrag
-                    loading={bundleLoading}
+                    loading={bundleLoading || profitabilityLoading}
                     columns={finalProfitTableCol}
                     dataSource={bundleDataItem?.Profitabilities}
                     scroll
