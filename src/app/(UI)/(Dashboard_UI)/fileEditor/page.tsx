@@ -44,7 +44,6 @@ const EditorFile = () => {
   const searchParams = useSearchParams();
   const getQUoteId = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
-  const SaleforceEdit = searchParams.get('salesforce');
   const [quoteItems, setQuoteItems] = useState<any>([]);
   const [mergedValue, setMergedVaalues] = useState<any>();
   const router = useRouter();
@@ -62,6 +61,9 @@ const EditorFile = () => {
 
   // ============================== SalesForce Implementations ======================================
   const fetchSaleForceDataa = async () => {
+    if (getQuoteFileId) {
+      return;
+    }
     let data = {
       token: salesToken,
       documentId: saleDocumentId,
@@ -159,8 +161,9 @@ const EditorFile = () => {
   };
 
   useEffect(() => {
-    fetchSaleForceDataa();
-    if (!SaleforceEdit) {
+    if (saleDocumentId && !getQuoteFileId) {
+      fetchSaleForceDataa();
+    } else {
       if (ExistingQuoteItemss === 'true') {
         let newObj = {
           id: Number(getQUoteId),
@@ -287,7 +290,7 @@ const EditorFile = () => {
   }, [updateLineItemsValue]);
 
   useEffect(() => {
-    if (!SaleforceEdit) {
+    if (!saleDocumentId) {
       dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then(
         (payload: any) => {
           if (payload?.payload === null) {
@@ -797,7 +800,7 @@ const EditorFile = () => {
           }}
         />
       )}
-      {!SaleforceEdit && (
+      {!saleDocumentId && (
         <OsModal
           body={
             <Row style={{width: '100%', padding: '15px'}}>

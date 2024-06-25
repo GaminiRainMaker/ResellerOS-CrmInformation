@@ -56,12 +56,12 @@ const SideBar = () => {
   const {userInformation} = useAppSelector((state) => state.user);
   const {cacheAvailableSeats} = useAppSelector((state) => state.cacheFLow);
   const searchParams = useSearchParams();
-  const SaleforceEdit = searchParams.get('salesforce');
+  const saleDocumentId = searchParams.get('documentId');
 
   type MenuItem = Required<MenuProps>['items'][number];
 
   useEffect(() => {
-    if (!!userInformation && !SaleforceEdit) {
+    if (!!userInformation && !saleDocumentId) {
       dispatch(getUserByTokenAccess('')).then((payload: any) => {
         dispatch(
           setUserInformation({
@@ -239,13 +239,13 @@ const SideBar = () => {
     }
   };
   useEffect(() => {
-    if (!SaleforceEdit) {
+    if (!saleDocumentId) {
       getAllCustomerByCache();
     }
   }, [userInformation]);
 
   useEffect(() => {
-    if (!SaleforceEdit) {
+    if (!saleDocumentId) {
       dispatch(getOranizationSeats(''))?.then((payload: any) => {
         dispatch(
           setCacheAvailableSeats({
@@ -260,7 +260,7 @@ const SideBar = () => {
 
   const items: MenuItem[] = [
     Role !== 'superAdmin' &&
-      !SaleforceEdit &&
+      !saleDocumentId &&
       getItem(
         <Typography
           cursor="pointer"

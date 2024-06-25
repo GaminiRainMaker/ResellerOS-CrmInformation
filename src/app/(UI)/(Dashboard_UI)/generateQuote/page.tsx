@@ -132,6 +132,10 @@ const GenerateQuote: React.FC = () => {
         ...payload?.payload?.Opportunity,
         ...payload?.payload?.QuoteLineItems?.[0],
         ...payload?.payload,
+        customer_id: payload?.payload?.Customer?.id,
+        opportunity_id: payload?.payload?.Opportunity?.id,
+        quoute_line_item_id: payload?.payload?.QuoteLineItems?.[0]?.id,
+        quote_id: payload?.payload?.id,
       };
       delete newObj?.Customer;
       delete newObj?.Opportunity,

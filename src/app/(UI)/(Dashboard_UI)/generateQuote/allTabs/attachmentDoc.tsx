@@ -73,7 +73,7 @@ const AttachmentDocument: FC<any> = ({
       });
     }
 
-    if (quoteFileData) {
+    if (quoteFileData && quoteFileData?.length > 0) {
       quoteFileData?.forEach((item: any) => {
         newData?.push({
           id: item?.id,
@@ -196,6 +196,8 @@ const AttachmentDocument: FC<any> = ({
         }
       });
     }
+    setAttachUrl('');
+    setTypeOfAttach('');
   };
 
   useEffect(() => {

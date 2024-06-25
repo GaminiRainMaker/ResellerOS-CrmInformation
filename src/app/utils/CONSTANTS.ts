@@ -66,41 +66,42 @@ export const quoteLineItemColumnForSync = [
   {value: 'description', label: 'DESCRIPTION'},
 ];
 
-export const SaleForceQuoteLineItemColumnSync =[
-  {label : 'Description' , value : 'description'},
-  {label : 'Product Code' , value : 'product_code'},
-  {label : 'Quantity' , value : 'quantity'},
-  {label : 'Line Amount' , value : 'line_amount'},
-  {label : 'Adjusted Price' , value : 'adjusted_price'},
-  {label : 'List Price' , value : 'list_price'},
-  {label : 'Line Number' , value : 'line_number'},
-  {label : 'Start Date' , value : 'start_date'},
-  {label : 'End Date' , value : 'end_date'},
-  {label : 'Serial Number' , value : 'serial_number'},
-  {label : 'Oem Name' , value : 'oem_name'},
-  {label : 'Availability' , value : 'availability'},
-  {label : 'Service Duration' , value : 'service_duration'},
-  {label : 'TD#' , value : 'td#'},
-  {label : 'Distributor Name' , value : 'distributor_name'},
-  {label : 'Line Type' , value : 'line_type'},
-  {label : 'Open Market' , value : 'open_market'},
-  {label : 'Model Id' , value : 'model_id'},
-  {label : 'Input' , value : 'input'},
-  {label : 'Gsa Price' , value : 'gsa_price'},
-  {label : 'MPN' , value : 'mpn'},
-  {label : 'Display Mpn' , value : 'display_mpn'},
-  {label : 'Taa Flag' , value : 'taa_flag'},
-  {label : 'Product Type' , value : 'product_type'},
-  {label : 'Epeat Flag' , value : 'epeat_flag'},
-  {label : 'Energy Star Flag' , value : 'energy_star_flag'},
-  {label : 'SS Part' , value : 'ss_part'},
-  {label : 'Notes' , value : 'notes'},
-  {label : 'Bundle Name' , value : 'bundle_name'},
-  
-  ]
+export const SaleForceQuoteLineItemColumnSync = [
+  {label: 'Description', value: 'description'},
+  {label: 'Product Code', value: 'product_code'},
+  {label: 'Quantity', value: 'quantity'},
+  {label: 'Line Amount', value: 'line_amount'},
+  {label: 'Adjusted Price', value: 'adjusted_price'},
+  {label: 'List Price', value: 'list_price'},
+  {label: 'Line Number', value: 'line_number'},
+  {label: 'Start Date', value: 'start_date'},
+  {label: 'End Date', value: 'end_date'},
+  {label: 'Serial Number', value: 'serial_number'},
+  {label: 'Oem Name', value: 'oem_name'},
+  {label: 'Availability', value: 'availability'},
+  {label: 'Service Duration', value: 'service_duration'},
+  {label: 'TD#', value: 'td#'},
+  {label: 'Distributor Name', value: 'distributor_name'},
+  {label: 'Line Type', value: 'line_type'},
+  {label: 'Open Market', value: 'open_market'},
+  {label: 'Model Id', value: 'model_id'},
+  {label: 'Input', value: 'input'},
+  {label: 'Gsa Price', value: 'gsa_price'},
+  {label: 'MPN', value: 'mpn'},
+  {label: 'Display Mpn', value: 'display_mpn'},
+  {label: 'Taa Flag', value: 'taa_flag'},
+  {label: 'Product Type', value: 'product_type'},
+  {label: 'Epeat Flag', value: 'epeat_flag'},
+  {label: 'Energy Star Flag', value: 'energy_star_flag'},
+  {label: 'SS Part', value: 'ss_part'},
+  {label: 'Notes', value: 'notes'},
+  {label: 'Bundle Name', value: 'bundle_name'},
+];
 
 export const quoteColumns = [
+  {value: 'quote_id', label: 'Quote Id'},
   {value: 'cage_code', label: 'Stages'},
+  {value: 'createdAt', label: 'Created At'},
   {value: 'customer_address', label: 'Customer Address'},
   {value: 'customer_city', label: 'Customer City'},
   {value: 'customer_email', label: 'Customer Email'},
@@ -124,6 +125,7 @@ export const quoteColumns = [
   {value: 'pdf_url', label: 'PDF'},
 ];
 export const quotLineItemsColumnsSync = [
+  {value: 'quoute_line_item_id', label: 'Quote Line Item Id', type: 'number'},
   {value: 'line_number', label: 'Line Number', type: 'number'},
   {value: 'adjusted_price', label: 'Adjusted Price', type: 'number'},
   {value: 'product_code', label: 'Product Code', type: 'string'},
@@ -152,6 +154,7 @@ export const quotLineItemsColumnsSync = [
   {value: 'bundle_id', label: 'Bundle Id', type: 'number'},
 ];
 export const opportunityColumnsSync = [
+  {value: 'opportunity_id', label: 'Opportunity Id'},
   {value: 'user_id', label: 'User Id'},
   {value: 'organization', label: 'Organization'},
   {value: 'customer_id', label: 'Customer Id'},
@@ -161,6 +164,7 @@ export const opportunityColumnsSync = [
   {value: 'pdf_url', label: 'PDF Url'},
 ];
 export const customerColumnsSync = [
+  {value: 'customer_id', label: 'Customer Id'},
   {value: 'name', label: 'Name'},
   {value: 'currency', label: 'Currency'},
   {value: 'website', label: 'Website'},
@@ -180,7 +184,1028 @@ export const LogicOptions = [
   {value: 'OR', label: 'OR'},
   {value: 'custom_logic', label: 'Custom Logic'},
 ];
-
+export const SaleForArray = [
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn5GOAS',
+    },
+    Id: '0QLHn000008Tn5GOAS',
+    rosquoteai__Bundle_Name__c: 'Cables',
+    rosquoteai__Quote_Line_Items__r: {
+      totalSize: 7,
+      done: true,
+      records: [
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4NOAS',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5GOAS',
+          Id: '0QLHn000008Tn4NOAS',
+          rosquoteai__LineNumber__c: 1,
+          Quantity: 100,
+          rosquoteai__OEM__c: '001Hn00002424K6IAI',
+          rosquoteai__Product_Code__c: '210-3212-L9-13BC09A12',
+          rosquoteai__Description__c:
+            'Adobe Acrobat Pro for enterprise Subscription New,\nMonthly, 1 User, Large Government Agencies - Level 9\n10,000+ (VIP # Req) 12 Month Term\n12 Month\nNamed User\nAdobe Inc.\n65324113BC09A12',
+          UnitPrice: 0,
+          TotalPrice: 0,
+          rosquoteai__OEM__r: {
+            attributes: {
+              type: 'Account',
+              url: '/services/data/v61.0/sobjects/Account/001Hn00002424K6IAI',
+            },
+            Name: 'TechData',
+            Id: '001Hn00002424K6IAI',
+          },
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4TOAS',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5GOAS',
+          Id: '0QLHn000008Tn4TOAS',
+          rosquoteai__LineNumber__c: 7,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '340-AFMQ',
+          rosquoteai__Description__c: 'None',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4SOAS',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5GOAS',
+          Id: '0QLHn000008Tn4SOAS',
+          rosquoteai__LineNumber__c: 6,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '490-BJDZ',
+          rosquoteai__Description__c: 'NVIDIA RTX 3500 Ada 12GB GDDR6',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4ROAS',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5GOAS',
+          Id: '0QLHn000008Tn4ROAS',
+          rosquoteai__LineNumber__c: 5,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '583-BHBG',
+          rosquoteai__Description__c:
+            'English US backlit keyboard with numeric keypad 99-key',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4QOAS',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5GOAS',
+          Id: '0QLHn000008Tn4QOAS',
+          rosquoteai__LineNumber__c: 4,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '370-BBBX',
+          rosquoteai__Description__c: '32GB 1x32GB 5600MT/s CAMM non-ECC',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4POAS',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5GOAS',
+          Id: '0QLHn000008Tn4POAS',
+          rosquoteai__LineNumber__c: 3,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '379-BBBW',
+          rosquoteai__Description__c: 'TAA Information',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4OOAS',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5GOAS',
+          Id: '0QLHn000008Tn4OOAS',
+          rosquoteai__LineNumber__c: 2,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '210-BGNZ',
+          rosquoteai__Description__c:
+            'Dell Mobile Precision Workstation 7780 CTOG',
+          UnitPrice: 3073.84,
+          TotalPrice: 24590.72,
+        },
+      ],
+    },
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn5HOAS',
+    },
+    Id: '0QLHn000008Tn5HOAS',
+    rosquoteai__Bundle_Name__c: 'Switches',
+    rosquoteai__Quote_Line_Items__r: {
+      totalSize: 9,
+      done: true,
+      records: [
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4fOAC',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5HOAS',
+          Id: '0QLHn000008Tn4fOAC',
+          rosquoteai__LineNumber__c: 19,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '823-3810',
+          rosquoteai__Description__c:
+            'Dell Limited Hardware Warranty Plus Service',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4eOAC',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5HOAS',
+          Id: '0QLHn000008Tn4eOAC',
+          rosquoteai__LineNumber__c: 18,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '823-0013',
+          rosquoteai__Description__c:
+            'ProSupport Flex: Next Business Day Onsite 5 Years',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4dOAC',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5HOAS',
+          Id: '0QLHn000008Tn4dOAC',
+          rosquoteai__LineNumber__c: 17,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '340-AGIK',
+          rosquoteai__Description__c: 'SERI Guide (ENG/FR/Multi)',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4cOAC',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5HOAS',
+          Id: '0QLHn000008Tn4cOAC',
+          rosquoteai__LineNumber__c: 16,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '379-BDZB',
+          rosquoteai__Description__c: 'EPEAT 2018 Registered (Gold)',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4bOAC',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5HOAS',
+          Id: '0QLHn000008Tn4bOAC',
+          rosquoteai__LineNumber__c: 15,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '800-BBGF',
+          rosquoteai__Description__c: 'BTO Standard shipment Air',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4aOAC',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5HOAS',
+          Id: '0QLHn000008Tn4aOAC',
+          rosquoteai__LineNumber__c: 14,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '620-AALW',
+          rosquoteai__Description__c: 'OS-Windows Media Not Included',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4ZOAS',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5HOAS',
+          Id: '0QLHn000008Tn4ZOAS',
+          rosquoteai__LineNumber__c: 13,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '450-ALLF',
+          rosquoteai__Description__c: 'E5 Power cord 1M US',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4rOAC',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5HOAS',
+          Id: '0QLHn000008Tn4rOAC',
+          rosquoteai__LineNumber__c: 16,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '387-BBQJ',
+          rosquoteai__Description__c: 'ENERGY STAR Qualified',
+          UnitPrice: 43.4783,
+          TotalPrice: 347.8264,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4YOAS',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5HOAS',
+          Id: '0QLHn000008Tn4YOAS',
+          rosquoteai__LineNumber__c: 12,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '555-BGGV',
+          rosquoteai__Description__c: 'No Wireless LAN Card',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+      ],
+    },
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4UOAS',
+    },
+    Id: '0QLHn000008Tn4UOAS',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4VOAS',
+    },
+    Id: '0QLHn000008Tn4VOAS',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4WOAS',
+    },
+    Id: '0QLHn000008Tn4WOAS',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4XOAS',
+    },
+    Id: '0QLHn000008Tn4XOAS',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4gOAC',
+    },
+    Id: '0QLHn000008Tn4gOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4hOAC',
+    },
+    Id: '0QLHn000008Tn4hOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4iOAC',
+    },
+    Id: '0QLHn000008Tn4iOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4jOAC',
+    },
+    Id: '0QLHn000008Tn4jOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4kOAC',
+    },
+    Id: '0QLHn000008Tn4kOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4lOAC',
+    },
+    Id: '0QLHn000008Tn4lOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4mOAC',
+    },
+    Id: '0QLHn000008Tn4mOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4nOAC',
+    },
+    Id: '0QLHn000008Tn4nOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4oOAC',
+    },
+    Id: '0QLHn000008Tn4oOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4pOAC',
+    },
+    Id: '0QLHn000008Tn4pOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4qOAC',
+    },
+    Id: '0QLHn000008Tn4qOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4sOAC',
+    },
+    Id: '0QLHn000008Tn4sOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4tOAC',
+    },
+    Id: '0QLHn000008Tn4tOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4uOAC',
+    },
+    Id: '0QLHn000008Tn4uOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4vOAC',
+    },
+    Id: '0QLHn000008Tn4vOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4wOAC',
+    },
+    Id: '0QLHn000008Tn4wOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4xOAC',
+    },
+    Id: '0QLHn000008Tn4xOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4yOAC',
+    },
+    Id: '0QLHn000008Tn4yOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4zOAC',
+    },
+    Id: '0QLHn000008Tn4zOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn50OAC',
+    },
+    Id: '0QLHn000008Tn50OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn51OAC',
+    },
+    Id: '0QLHn000008Tn51OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn52OAC',
+    },
+    Id: '0QLHn000008Tn52OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn53OAC',
+    },
+    Id: '0QLHn000008Tn53OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn54OAC',
+    },
+    Id: '0QLHn000008Tn54OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn55OAC',
+    },
+    Id: '0QLHn000008Tn55OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn56OAC',
+    },
+    Id: '0QLHn000008Tn56OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn57OAC',
+    },
+    Id: '0QLHn000008Tn57OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn58OAC',
+    },
+    Id: '0QLHn000008Tn58OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn59OAC',
+    },
+    Id: '0QLHn000008Tn59OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn5AOAS',
+    },
+    Id: '0QLHn000008Tn5AOAS',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn5BOAS',
+    },
+    Id: '0QLHn000008Tn5BOAS',
+  },
+];
+export const FullStackForArray = [
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn5GOAS',
+    },
+    Id: '0QLHn000008Tn5GOAS',
+    rosquoteai__Bundle_Name__c: 'Cables',
+    Quote_Line_Items: {
+      totalSize: 7,
+      done: true,
+      records: [
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4NOAS',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5GOAS',
+          Id: '0QLHn000008Tn4NOAS',
+          rosquoteai__LineNumber__c: 1,
+          Quantity: 100,
+          rosquoteai__OEM__c: '001Hn00002424K6IAI',
+          rosquoteai__Product_Code__c: '210-3212-L9-13BC09A12',
+          Description:
+            'Adobe Acrobat Pro for enterprise Subscription New,\nMonthly, 1 User, Large Government Agencies - Level 9\n10,000+ (VIP # Req) 12 Month Term\n12 Month\nNamed User\nAdobe Inc.\n65324113BC09A12',
+          UnitPrice: 0,
+          TotalPrice: 0,
+          rosquoteai__OEM__r: {
+            attributes: {
+              type: 'Account',
+              url: '/services/data/v61.0/sobjects/Account/001Hn00002424K6IAI',
+            },
+            Name: 'TechData',
+            Id: '001Hn00002424K6IAI',
+          },
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4TOAS',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5GOAS',
+          Id: '0QLHn000008Tn4TOAS',
+          rosquoteai__LineNumber__c: 7,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '340-AFMQ',
+          Description: 'None',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4SOAS',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5GOAS',
+          Id: '0QLHn000008Tn4SOAS',
+          rosquoteai__LineNumber__c: 6,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '490-BJDZ',
+          Description: 'NVIDIA RTX 3500 Ada 12GB GDDR6',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4ROAS',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5GOAS',
+          Id: '0QLHn000008Tn4ROAS',
+          rosquoteai__LineNumber__c: 5,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '583-BHBG',
+          Description: 'English US backlit keyboard with numeric keypad 99-key',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4QOAS',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5GOAS',
+          Id: '0QLHn000008Tn4QOAS',
+          rosquoteai__LineNumber__c: 4,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '370-BBBX',
+          Description: '32GB 1x32GB 5600MT/s CAMM non-ECC',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4POAS',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5GOAS',
+          Id: '0QLHn000008Tn4POAS',
+          rosquoteai__LineNumber__c: 3,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '379-BBBW',
+          Description: 'TAA Information',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4OOAS',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5GOAS',
+          Id: '0QLHn000008Tn4OOAS',
+          rosquoteai__LineNumber__c: 2,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '210-BGNZ',
+          Description: 'Dell Mobile Precision Workstation 7780 CTOG',
+          UnitPrice: 3073.84,
+          TotalPrice: 24590.72,
+        },
+      ],
+    },
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn5HOAS',
+    },
+    Id: '0QLHn000008Tn5HOAS',
+    rosquoteai__Bundle_Name__c: 'Switches',
+    Quote_Line_Items: {
+      totalSize: 9,
+      done: true,
+      records: [
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4fOAC',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5HOAS',
+          Id: '0QLHn000008Tn4fOAC',
+          rosquoteai__LineNumber__c: 19,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '823-3810',
+          Description: 'Dell Limited Hardware Warranty Plus Service',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4eOAC',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5HOAS',
+          Id: '0QLHn000008Tn4eOAC',
+          rosquoteai__LineNumber__c: 18,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '823-0013',
+          Description: 'ProSupport Flex: Next Business Day Onsite 5 Years',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4dOAC',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5HOAS',
+          Id: '0QLHn000008Tn4dOAC',
+          rosquoteai__LineNumber__c: 17,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '340-AGIK',
+          Description: 'SERI Guide (ENG/FR/Multi)',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4cOAC',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5HOAS',
+          Id: '0QLHn000008Tn4cOAC',
+          rosquoteai__LineNumber__c: 16,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '379-BDZB',
+          Description: 'EPEAT 2018 Registered (Gold)',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4bOAC',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5HOAS',
+          Id: '0QLHn000008Tn4bOAC',
+          rosquoteai__LineNumber__c: 15,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '800-BBGF',
+          Description: 'BTO Standard shipment Air',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4aOAC',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5HOAS',
+          Id: '0QLHn000008Tn4aOAC',
+          rosquoteai__LineNumber__c: 14,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '620-AALW',
+          Description: 'OS-Windows Media Not Included',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4ZOAS',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5HOAS',
+          Id: '0QLHn000008Tn4ZOAS',
+          rosquoteai__LineNumber__c: 13,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '450-ALLF',
+          Description: 'E5 Power cord 1M US',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4rOAC',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5HOAS',
+          Id: '0QLHn000008Tn4rOAC',
+          rosquoteai__LineNumber__c: 16,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '387-BBQJ',
+          Description: 'ENERGY STAR Qualified',
+          UnitPrice: 43.4783,
+          TotalPrice: 347.8264,
+        },
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4YOAS',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008Tn5HOAS',
+          Id: '0QLHn000008Tn4YOAS',
+          rosquoteai__LineNumber__c: 12,
+          Quantity: 8,
+          rosquoteai__Product_Code__c: '555-BGGV',
+          Description: 'No Wireless LAN Card',
+          UnitPrice: 0,
+          TotalPrice: 0,
+        },
+      ],
+    },
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4UOAS',
+    },
+    Id: '0QLHn000008Tn4UOAS',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4VOAS',
+    },
+    Id: '0QLHn000008Tn4VOAS',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4WOAS',
+    },
+    Id: '0QLHn000008Tn4WOAS',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4XOAS',
+    },
+    Id: '0QLHn000008Tn4XOAS',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4gOAC',
+    },
+    Id: '0QLHn000008Tn4gOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4hOAC',
+    },
+    Id: '0QLHn000008Tn4hOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4iOAC',
+    },
+    Id: '0QLHn000008Tn4iOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4jOAC',
+    },
+    Id: '0QLHn000008Tn4jOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4kOAC',
+    },
+    Id: '0QLHn000008Tn4kOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4lOAC',
+    },
+    Id: '0QLHn000008Tn4lOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4mOAC',
+    },
+    Id: '0QLHn000008Tn4mOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4nOAC',
+    },
+    Id: '0QLHn000008Tn4nOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4oOAC',
+    },
+    Id: '0QLHn000008Tn4oOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4pOAC',
+    },
+    Id: '0QLHn000008Tn4pOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4qOAC',
+    },
+    Id: '0QLHn000008Tn4qOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4sOAC',
+    },
+    Id: '0QLHn000008Tn4sOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4tOAC',
+    },
+    Id: '0QLHn000008Tn4tOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4uOAC',
+    },
+    Id: '0QLHn000008Tn4uOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4vOAC',
+    },
+    Id: '0QLHn000008Tn4vOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4wOAC',
+    },
+    Id: '0QLHn000008Tn4wOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4xOAC',
+    },
+    Id: '0QLHn000008Tn4xOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4yOAC',
+    },
+    Id: '0QLHn000008Tn4yOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4zOAC',
+    },
+    Id: '0QLHn000008Tn4zOAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn50OAC',
+    },
+    Id: '0QLHn000008Tn50OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn51OAC',
+    },
+    Id: '0QLHn000008Tn51OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn52OAC',
+    },
+    Id: '0QLHn000008Tn52OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn53OAC',
+    },
+    Id: '0QLHn000008Tn53OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn54OAC',
+    },
+    Id: '0QLHn000008Tn54OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn55OAC',
+    },
+    Id: '0QLHn000008Tn55OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn56OAC',
+    },
+    Id: '0QLHn000008Tn56OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn57OAC',
+    },
+    Id: '0QLHn000008Tn57OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn58OAC',
+    },
+    Id: '0QLHn000008Tn58OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn59OAC',
+    },
+    Id: '0QLHn000008Tn59OAC',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn5AOAS',
+    },
+    Id: '0QLHn000008Tn5AOAS',
+  },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn5BOAS',
+    },
+    Id: '0QLHn000008Tn5BOAS',
+  },
+];
 export const ContractOperatorsOptions = [
   {
     label: 'Equals',
