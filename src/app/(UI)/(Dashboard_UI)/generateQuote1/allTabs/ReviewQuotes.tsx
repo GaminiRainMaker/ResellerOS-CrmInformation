@@ -98,7 +98,9 @@ const ReviewQuotes: FC<any> = ({
         if (!groupedData[name]) {
           groupedData[name] = {name: name, QuoteLineItem: []};
         }
-        groupedData[name]?.QuoteLineItems?.push(item);
+        groupedData[name].QuoteLineItem = groupedData[
+          name
+        ].QuoteLineItem.concat(item?.QuoteLineItems || []);
       }
     });
     setReviewQuotesData(Object.values(groupedData));
