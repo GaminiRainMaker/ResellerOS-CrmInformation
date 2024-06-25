@@ -18,7 +18,7 @@ import MoneyRecive from '../../../../../public/assets/static/money-recive.svg';
 import MoneySend from '../../../../../public/assets/static/money-send.svg';
 import {useAppSelector} from '../../../../../redux/hook';
 
-const GenerateQuoteAnalytics: FC<any> = () => {
+const GenerateQuoteAnalytics: FC<any> = ({amountData}) => {
   const [token] = useThemeToken();
   const [totalValues, setTotalValues] = useState<any>();
   const [totalRebateAmount, setTotalRebateAmount] = useState<any>();

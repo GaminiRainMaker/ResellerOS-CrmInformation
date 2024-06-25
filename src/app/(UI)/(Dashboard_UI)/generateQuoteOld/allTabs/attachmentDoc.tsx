@@ -40,9 +40,7 @@ const AttachmentDocument: FC<any> = ({
   const {data: attachmentDocumentData, loading} = useAppSelector(
     (state) => state.attachmentDocument,
   );
-  const {getQuoteFileByQuoteIdAllData: quoteFileData} = useAppSelector(
-    (state) => state.quoteFile,
-  );
+  const {data: quoteFileData} = useAppSelector((state) => state.quoteFile);
   const [attachUrl, setAttachUrl] = useState<any>();
   const [typeOfAttach, setTypeOfAttach] = useState<any>();
   const [combinedData, setCombinedData] = useState<any>();
@@ -75,7 +73,7 @@ const AttachmentDocument: FC<any> = ({
       });
     }
 
-    if (quoteFileData && quoteFileData?.length > 0) {
+    if (quoteFileData) {
       quoteFileData?.forEach((item: any) => {
         newData?.push({
           id: item?.id,
@@ -198,8 +196,6 @@ const AttachmentDocument: FC<any> = ({
         }
       });
     }
-    setAttachUrl('');
-    setTypeOfAttach('');
   };
 
   useEffect(() => {

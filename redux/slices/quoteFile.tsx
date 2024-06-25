@@ -20,14 +20,18 @@ type QuoteFileState = {
   error: string | null;
   data: any;
   quoteFile: any;
+  getQuoteFileByQuoteIdAllData: any;
   quoteFileById: any;
+  getQuoteFileDataCount: number | undefined;
 };
 const initialState: QuoteFileState = {
   loading: false,
   error: null,
   data: [],
   quoteFile: [],
+  getQuoteFileByQuoteIdAllData: [],
   quoteFileById: [],
+  getQuoteFileDataCount: undefined,
 };
 
 const quoteFileSlice = createSlice({
@@ -207,7 +211,7 @@ const quoteFileSlice = createSlice({
         getQuoteFileByQuoteIdAll.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.getQuoteFileByQuoteIdAllData = action.payload;
         },
       )
       .addCase(
@@ -225,7 +229,7 @@ const quoteFileSlice = createSlice({
         getQuoteFileCount.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.getQuoteFileDataCount = action.payload;
         },
       )
       .addCase(

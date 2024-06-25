@@ -6,6 +6,8 @@ export const OsCollapseStyle = styled(Collapse)`
     margin-bottom: 16px;
     .ant-collapse-header {
       padding: 12px;
+      display: flex;
+      align-items: center;
     }
   }
   .ant-collapse-header {

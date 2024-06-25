@@ -637,11 +637,7 @@ const InputDetails: FC<InputDetailTabInterface> = ({
                                                 width={25}
                                                 color={token?.colorBgContainer}
                                                 onClick={(e) => {
-                                                  console.log(
-                                                    'item?.title',
-                                                    item?.quoteLineItems
-                                                      ?.length === 0,
-                                                  );
+                                                  
                                                   if (
                                                     item?.quoteLineItems
                                                       ?.length === 0
