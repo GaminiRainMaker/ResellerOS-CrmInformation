@@ -16,27 +16,18 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import GreenCheckIcon from '../../../../../../public/assets/static/greenCheckIcon.svg';
 import RaiseConcernImg from '../../../../../../public/assets/static/raiseConcern.svg';
-import {UpdateQuoteFileById} from '../../../../../../redux/actions/quoteFile';
+import {
+  UpdateQuoteFileById,
+  getQuoteFileByQuoteId,
+  getQuoteFileCount,
+} from '../../../../../../redux/actions/quoteFile';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setConcernQuoteLineItemData} from '../../../../../../redux/slices/quotelineitem';
+import {CheckIcon, XMarkIcon} from '@heroicons/react/24/outline';
+import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 
-const ReviewQuotes: FC<any> = ({
-  tableColumnDataShow,
-  selectedFilter,
-  setIsDeleteInputDetailModal,
-  isDeleteInputDetailModal,
-  setFinalInputColumn,
-  finalInputColumn,
-  familyFilter,
-  setFamilyFilter,
-  setSelectedRowIds,
-  selectTedRowIds,
-  setQuoteLineItemExist,
-  setActiveTab,
-  activeTab,
-  setCountOFFiles,
-  countOfFiles,
-}) => {
+const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const router = useRouter();
@@ -48,25 +39,23 @@ const ReviewQuotes: FC<any> = ({
   const {loading: quoteFileDataLoading, data: quoteFileData} = useAppSelector(
     (state) => state.quoteFile,
   );
-  const [quoteLineItemByQuoteData1, setQuoteLineItemByQuoteData1] =
-    useState<any>(quoteFileData);
   const [showRaiseConcernModal, setShowRaiseConcernModal] =
     useState<boolean>(false);
   const [showVerificationFileModal, setShowVerificationFileModal] =
     useState<boolean>(false);
   const [fileLineItemIds, setFileLineItemIds] = useState<number[]>([]);
   const [buttonType, setButtonType] = useState<string>('');
-  const [fileData, setFileData] = useState<any>();
   const [api, contextHolder] = notification.useNotification();
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
-  const [confirmedData, setConfirmedData] = useState<boolean>(false);
-  const [defaultDataShow, setDefaultDataShow] = useState<boolean>(true);
-  const [showExportAs, setShowExportAs] = useState<boolean>(true);
-  const [showExportToTable, setShowExportToTable] = useState<boolean>(true);
-  const [showSubmitButton, setShowSubmitButton] = useState<boolean>(true);
-  const [indexOfVerifyFile, setIndexOfVerifyFile] = useState<any>();
+
+  const [showExportAs, setShowExportAs] = useState<boolean>(false);
+  const [showExportToTable, setShowExportToTable] = useState<boolean>(false);
+  const [showSubmitButton, setShowSubmitButton] = useState<boolean>(false);
+
+  const [fileData, setFileData] = useState<any>();
   const [reviewQuotesData, setReviewQuotesData] = useState<any>();
   const [finalReviewCol, setFinalReviewCol] = useState<any>();
+  const [fileVerificationLoading, setFileVerificationLoading] = useState(false);
 
   const filterDataByValue = (data: any, filterValue?: string) => {
     const groupedData: any = {};
@@ -96,7 +85,7 @@ const ReviewQuotes: FC<any> = ({
         }
 
         if (!groupedData[name]) {
-          groupedData[name] = {name: name, QuoteLineItem: []};
+          groupedData[name] = {title: name, id: item?.id, QuoteLineItem: []};
         }
         groupedData[name].QuoteLineItem = groupedData[
           name
@@ -223,13 +212,13 @@ const ReviewQuotes: FC<any> = ({
         raiseIssueData?.issue_type === 'Unread Column/Unmatched Column'
           ? raiseIssueData?.affected_columns
           : null,
-      id: fileLineItemIds,
+      id: fileData?.id,
     };
-    dispatch(UpdateQuoteFileById(data));
+    await dispatch(UpdateQuoteFileById(data));
     dispatch(setConcernQuoteLineItemData(fileData));
     if (buttonType === 'primary') {
       router?.push(
-        `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=true`,
+        `/fileEditor?id=${getQuoteID}&fileId=${fileData?.id}&quoteExist=true`,
       );
       setShowRaiseConcernModal(false);
       form?.resetFields();
@@ -240,38 +229,32 @@ const ReviewQuotes: FC<any> = ({
       setShowRaiseConcernModal(false);
       form?.resetFields();
       router?.push(
-        `/fileEditor?id=${getQuoteID}&fileId=${fileLineItemIds}&quoteExist=false`,
+        `/fileEditor?id=${getQuoteID}&fileId=${fileData?.id}&quoteExist=false`,
       );
     }
+    setShowExportAs(false);
+    setShowExportToTable(false);
+    setShowSubmitButton(false);
   };
 
   const updateAllTablesData = async () => {
-    let newArrr = [...quoteLineItemByQuoteData1];
-    newArrr?.splice(indexOfVerifyFile, 1);
-    setQuoteLineItemByQuoteData1(newArrr);
-    let newCount = countOfFiles - 1;
-    setCountOFFiles(newCount);
-    setConfirmedData(true);
-    const countOfLineItem = 0;
-
-    const isState = await updateTables(
-      getQuoteID,
-      fileData,
-      fileData?.quoteLineItems,
-      userInformation,
-      dispatch,
-      countOfLineItem,
-    );
-
-    if (isState) {
-      setConfirmedData(false);
-      // dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
+    setFileVerificationLoading(true);
+    try {
+      await updateTables(
+        getQuoteID,
+        fileData,
+        fileData?.QuoteLineItem,
+        userInformation,
+        dispatch,
+      );
+      await dispatch(getQuoteFileCount(Number(getQuoteID)));
+      await dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
+    } catch (error) {
+      console.error('Error updating tables:', error);
+    } finally {
+      setFileVerificationLoading(false);
+      setShowVerificationFileModal(false);
     }
-
-    setTimeout(() => {
-      setActiveTab('2');
-    }, 1000);
-    setShowVerificationFileModal(false);
   };
 
   return (
@@ -288,14 +271,87 @@ const ReviewQuotes: FC<any> = ({
                     {
                       key: index,
                       label: (
-                        <Space
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'start',
-                          }}
-                        >
-                          <p>{finalDataItem?.name}</p>
-                        </Space>
+                        <Row justify="space-between">
+                          <Col span={10}>
+                            <p>{finalDataItem?.title}</p>
+                          </Col>
+                          <Col span={6}>
+                            <p>
+                              Line Items: {finalDataItem?.QuoteLineItem?.length}
+                            </p>
+                          </Col>
+                          {/* <Col span={6}>
+                            <p>
+                              Total Cost: $
+                              {abbreviate(
+                                Number(item?.totalAdjustedPrice ?? 0.0),
+                              )}
+                            </p>
+                          </Col> */}
+                          <Col
+                            span={6}
+                            style={{
+                              justifyContent: 'end',
+                              display: 'flex',
+                            }}
+                          >
+                            <Space>
+                              <AvatarStyled
+                                shape="square"
+                                background={token?.colorSuccess}
+                                size={28}
+                                icon={
+                                  <CheckIcon
+                                    width={25}
+                                    color={token?.colorBgContainer}
+                                    onClick={(e) => {
+                                      e?.stopPropagation();
+                                      setShowVerificationFileModal(true);
+                                      setFileData(finalDataItem);
+                                    }}
+                                  />
+                                }
+                              />
+                              <AvatarStyled
+                                shape="square"
+                                background={token?.colorError}
+                                size={28}
+                                icon={
+                                  <XMarkIcon
+                                    width={25}
+                                    color={token?.colorBgContainer}
+                                    onClick={(e) => {
+                                      if (
+                                        finalDataItem?.QuoteLineItem?.length > 0
+                                      ) {
+                                        setShowExportAs(true);
+                                      } else if (
+                                        finalDataItem?.QuoteLineItem?.length ===
+                                          0 &&
+                                        finalDataItem?.title
+                                          ?.split('.')
+                                          ?.includes('pdf')
+                                      ) {
+                                        setShowExportToTable(true);
+                                      } else if (
+                                        finalDataItem?.QuoteLineItem?.length ===
+                                          0 &&
+                                        !finalDataItem?.title
+                                          ?.split('.')
+                                          ?.includes('pdf')
+                                      ) {
+                                        setShowSubmitButton(true);
+                                      }
+                                      e?.stopPropagation();
+                                      setShowRaiseConcernModal(true);
+                                      setFileData(finalDataItem);
+                                    }}
+                                  />
+                                }
+                              />
+                            </Space>
+                          </Col>
+                        </Row>
                       ),
                       children: (
                         <OsTableWithOutDrag
@@ -359,7 +415,7 @@ const ReviewQuotes: FC<any> = ({
       />
 
       <OsModal
-        loading={confirmedData}
+        loading={fileVerificationLoading}
         body={
           <OSDialog
             title="Are you sure you want to verify this file?"

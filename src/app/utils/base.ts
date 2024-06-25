@@ -313,7 +313,6 @@ export const updateTables = async (
   missingId?: any,
   edited?: boolean,
   getQuoteId?: number,
-  countOfLineItem?: number | undefined,
 ): Promise<any> => {
   try {
     const rebateDataArray: any[] = [];
