@@ -36,6 +36,7 @@ const ProfitabilityMain: FC<any> = ({
         selectTedRowData={selectTedRowData}
         setSelectedRowData={setSelectedRowData}
         setSelectedRowIds={setSelectedRowIds}
+        selectTedRowIds={selectTedRowIds}
       />
     </>
   );

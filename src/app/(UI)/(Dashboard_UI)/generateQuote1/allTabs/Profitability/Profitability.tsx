@@ -19,6 +19,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
 import {
   getProfitabilityByQuoteId,
   updateProfitabilityById,
+  updateProfitabilityValueForBulk,
 } from '../../../../../../../redux/actions/profitability';
 import {useSearchParams} from 'next/navigation';
 import OsModal from '@/app/components/common/os-modal';
@@ -34,6 +35,7 @@ const Profitablity: FC<any> = ({
   selectTedRowData,
   setSelectedRowData,
   setSelectedRowIds,
+  selectTedRowIds,
 }) => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
@@ -43,7 +45,7 @@ const Profitablity: FC<any> = ({
   );
   const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>();
   const {abbreviate} = useAbbreviationHook(0);
-  const [finalData, setFinalData] = useState<any>();
+  const [finalData, setFinalData] = useState<any>([]);
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
       id: number;
@@ -78,7 +80,7 @@ const Profitablity: FC<any> = ({
       } else if (filterValue === 'Vendor/Disti') {
         name =
           item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
-            ?.distribu;
+            ?.distributor;
       } else if (filterValue === 'OEM') {
         name = item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem;
       }
@@ -272,8 +274,8 @@ const Profitablity: FC<any> = ({
   const ProfitabilityQuoteLineItemcolumns = [
     {
       title: '#Line',
-      dataIndex: 'line_number',
-      key: 'line_number',
+      dataIndex: 'serial_number',
+      key: 'serial_number',
       render: (text: string, record: any) => (
         <OsInput
           disabled={renderEditableInput('#Line')}
@@ -286,7 +288,7 @@ const Profitablity: FC<any> = ({
           onChange={(e) =>
             handleFieldChange(
               record,
-              'line_number',
+              'serial_number',
               e.target.value,
               selectedFilter,
             )
@@ -498,8 +500,14 @@ const Profitablity: FC<any> = ({
   ];
 
   const updateLineItems = async () => {
+    debugger;
     const finalData = selectTedRowData?.map((obj: any) => {
       const newObj = {...obj};
+      console.log(
+        profabilityUpdationState,
+        'profabilityUpdationStateprofabilityUpdationState',
+      );
+
       profabilityUpdationState?.forEach((update: any) => {
         if (newObj.hasOwnProperty(update?.field)) {
           newObj[update?.field] = update?.value;
@@ -520,21 +528,23 @@ const Profitablity: FC<any> = ({
       delete newObj?.profitabilityCalculationData;
       return newObj;
     });
-
     const ProductFamily = profabilityUpdationState?.find(
       (field: any) => field?.field === 'product_family',
     )?.value;
     if (finalData?.length > 0) {
-      const ids = finalData?.map((item: any) => item?.product_id);
-      let obj = {
-        id: ids,
-        product_family: ProductFamily,
-      };
-      await Promise.all(
-        finalData?.map((item: any) => dispatch(updateProfitabilityById(item))),
-      );
-      // await dispatch(updateProfitabilityValueForBulk(updatedData));
-      await dispatch(updateProductFamily(obj));
+      if (ProductFamily) {
+        const ids = finalData?.map((item: any) => item?.product_id);
+        let obj = {
+          id: ids,
+          product_family: ProductFamily,
+        };
+        await dispatch(updateProductFamily(obj));
+      }
+
+      // await Promise.all(
+      //   finalData?.map((item: any) => dispatch(updateProfitabilityById(item))),
+      // );
+      await dispatch(updateProfitabilityValueForBulk(finalData));
       setProfabilityUpdationState([
         {
           id: 1,
@@ -547,14 +557,10 @@ const Profitablity: FC<any> = ({
       const response = await dispatch(
         getProfitabilityByQuoteId(Number(getQuoteID)),
       );
-      const d = response?.payload;
-      // if (d) {
-      //   setSelectedRowData([]);
-      //   setSelectedRowIds([]);
-      //   setProfitabilityData(d);
-      //   dispatch(setProfitability(d));
-      // }
-      // setUpdateProfitabilityLoading(false);
+      if (response.payload) {
+        setSelectedRowData([]);
+        setSelectedRowIds([]);
+      }
     }
   };
 
@@ -683,14 +689,19 @@ const Profitablity: FC<any> = ({
                             </Row>
                           ),
                           children: (
-                            <OsTableWithOutDrag
-                              loading={loading}
-                              columns={finalProfitTableCol}
-                              dataSource={finalDataItem?.QuoteLineItem}
-                              scroll
-                              locale={locale}
-                              rowSelection={rowSelection}
-                            />
+                            <div
+                              key={JSON.stringify(finalDataItem?.QuoteLineItem)}
+                            >
+                              <OsTableWithOutDrag
+                                loading={loading}
+                                columns={finalProfitTableCol}
+                                dataSource={finalDataItem?.QuoteLineItem}
+                                scroll
+                                locale={locale}
+                                rowSelection={rowSelection}
+                                selectedRowsKeys={selectTedRowIds}
+                              />
+                            </div>
                           ),
                         },
                       ]}

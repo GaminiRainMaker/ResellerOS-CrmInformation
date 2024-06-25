@@ -17,6 +17,7 @@ const OsTableWithOutDrag: FC<any> = ({
   scrolly = 1000,
   tablePageSize = 10,
   showPagination,
+  selectedRowsKeys = [],
   ...rest
 }) => {
   const [token] = useThemeToken();
@@ -50,7 +51,6 @@ const OsTableWithOutDrag: FC<any> = ({
     <CustomTable
       {...rest}
       cursor={cursor}
-      selectedRowsKeys={[]}
       tableInModal={tableInModal}
       token={token}
       rowKey={(record: any) => record?.id}
@@ -58,6 +58,7 @@ const OsTableWithOutDrag: FC<any> = ({
         rowSelection && {
           type: tableSelectionType,
           ...rowSelection,
+          selectedRowKeys: selectedRowsKeys,
         }
       }
       bordered
