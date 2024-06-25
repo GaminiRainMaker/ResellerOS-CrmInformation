@@ -40,13 +40,11 @@ const Bundle: FC<any> = ({
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
-  const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
-    (state) => state.profitability,
-  );
-  const {data: bundleData} = useAppSelector((state) => state.bundle);
+  const {loading} = useAppSelector((state) => state.profitability);
+  const {data: bundleApiData} = useAppSelector((state) => state.bundle);
   const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>();
   const {abbreviate} = useAbbreviationHook(0);
-  const [finalData, setFinalData] = useState<any>();
+  const [bundleData, setbundleData] = useState<any>();
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
       id: number;
@@ -63,11 +61,42 @@ const Bundle: FC<any> = ({
     },
   ]);
 
-  useEffect(() => {
-    setFinalData(bundleData);
-  }, [bundleData]);
+  const updateBundleData = (data: any) => {
+    const groupedData = data.map((bundle: any) => {
+      let extendedPrice = 0;
+      let grossProft = 0;
 
-  console.log('selectTedRowIds', selectTedRowIds);
+      bundle.Profitabilities.forEach((items: any) => {
+        if (items?.exit_price) {
+          extendedPrice += items.exit_price ? items.exit_price : 0;
+        }
+
+        if (items?.gross_profit) {
+          grossProft += items.gross_profit ? items.gross_profit : 0;
+        }
+      });
+
+      let grossProfitPer = 0;
+      if (grossProft !== 0 && extendedPrice !== 0) {
+        grossProfitPer = (grossProft / extendedPrice) * 100;
+      }
+
+      return {
+        ...bundle,
+        extended_price: extendedPrice * parseInt(bundle.quantity, 10),
+        gross_profit: grossProft * parseInt(bundle.quantity, 10),
+        gross_profit_percentage: grossProfitPer,
+      };
+    });
+
+    setbundleData(Object.values(groupedData));
+  };
+
+  useEffect(() => {
+    updateBundleData(bundleApiData);
+  }, [bundleApiData]);
+
+  console.log('bundleData', bundleData);
 
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Profitability" />,
@@ -152,7 +181,7 @@ const Bundle: FC<any> = ({
       updatedRecord.gross_profit = result.grossProfit;
       updatedRecord.gross_profit_percentage = result.grossProfitPercentage;
     }
-    setFinalData((prevData: any) => {
+    setbundleData((prevData: any) => {
       return prevData.map((data: any) => {
         if (data.Profitabilities) {
           const updatedQuotLine = data.Profitabilities.map((qla: any) => {
@@ -386,7 +415,7 @@ const Bundle: FC<any> = ({
   ];
 
   const updateLineItems = async () => {
-    const finalData = selectTedRowData?.map((obj: any) => {
+    const bundleData = selectTedRowData?.map((obj: any) => {
       const newObj = {...obj};
       profabilityUpdationState?.forEach((update: any) => {
         if (newObj.hasOwnProperty(update?.field)) {
@@ -409,19 +438,19 @@ const Bundle: FC<any> = ({
       return newObj;
     });
 
-    console.log('finalDatafinalData', finalData);
+    console.log('bundleDatabundleData', bundleData);
 
     const ProductFamily = profabilityUpdationState?.find(
       (field: any) => field?.field === 'product_family',
     )?.value;
-    if (finalData?.length > 0) {
-      const ids = finalData?.map((item: any) => item?.product_id);
+    if (bundleData?.length > 0) {
+      const ids = bundleData?.map((item: any) => item?.product_id);
       let obj = {
         id: ids,
         product_family: ProductFamily,
       };
       await Promise.all(
-        finalData?.map((item: any) => dispatch(updateProfitabilityById(item))),
+        bundleData?.map((item: any) => dispatch(updateProfitabilityById(item))),
       );
       // await dispatch(updateProfitabilityValueForBulk(updatedData));
       await dispatch(updateProductFamily(obj));
@@ -525,7 +554,7 @@ const Bundle: FC<any> = ({
 
   return (
     <>
-      {finalData?.map((finalDataItem: any, index: number) => {
+      {bundleData?.map((bundleDataItem: any, index: number) => {
         return (
           <OsCollapse
             key={index}
@@ -539,48 +568,43 @@ const Bundle: FC<any> = ({
                       justifyContent: 'space-between',
                     }}
                   >
-                    <p>{finalDataItem?.name}</p>
-                    <p>Lines:{finalDataItem?.Profitabilities?.length}</p>
-                    <p>Desc: {finalDataItem?.description}</p>
+                    <p>{bundleDataItem?.name}</p>
+                    <p>Lines:{bundleDataItem?.Profitabilities?.length}</p>
+                    <p>Desc: {bundleDataItem?.description}</p>
                     <p>
                       Extended Price :{' '}
-                      {abbreviate(
-                        finalDataItem?.Profitabilities?.extendedPrice ?? 0.0,
-                      )}
+                     $ {abbreviate(bundleDataItem?.extended_price ?? 0.0)}
                     </p>
                     <p>
                       Gross Profit :{' '}
-                      {abbreviate(
-                        finalDataItem?.Profitabilities?.grossProfit ?? 0.0,
-                      )}
+                      $ {abbreviate(bundleDataItem?.gross_profit ?? 0.0)}
                     </p>
                     <p>
                       Gross Profit % :{' '}
                       {abbreviate(
-                        finalDataItem?.Profitabilities?.grossPercentage ?? 0.0,
+                        bundleDataItem?.gross_profit_percentage ?? 0.0,
                       )}
                     </p>
                     <p>
                       Quantity:
                       <OsInputNumber
-                        defaultValue={finalDataItem?.quantity}
+                        defaultValue={bundleDataItem?.quantity}
                         style={{
                           width: '60px',
                           marginLeft: '3px',
                           height: '36px',
                         }}
                         onKeyDown={(e) => {
-                          e.stopPropagation
+                          e.stopPropagation;
                           handleBundleKeyDown(
                             e,
-                            finalDataItem?.Profitabilities,
+                            bundleDataItem?.Profitabilities,
                           );
                         }}
                         onBlur={(e) => {
-                          e.stopPropagation
-                          handleBundleBlur(e, finalDataItem?.Profitabilities);
+                          e.stopPropagation;
+                          handleBundleBlur(e, bundleDataItem?.Profitabilities);
                         }}
-                        
                       />
                     </p>
                   </Space>
@@ -589,7 +613,7 @@ const Bundle: FC<any> = ({
                   <OsTableWithOutDrag
                     loading={loading}
                     columns={finalProfitTableCol}
-                    dataSource={finalDataItem?.Profitabilities}
+                    dataSource={bundleDataItem?.Profitabilities}
                     scroll
                     locale={locale}
                     rowSelection={rowSelection}

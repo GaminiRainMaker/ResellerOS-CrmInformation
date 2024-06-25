@@ -13,12 +13,13 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {AttachmentOptions, selectData} from '@/app/utils/CONSTANTS';
-import {formatDate, useRemoveDollarAndCommahook} from '@/app/utils/base';
+import {formatDate} from '@/app/utils/base';
 import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
 import {Badge, Form, MenuProps, notification} from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
-import {usePathname, useRouter, useSearchParams} from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import {getAllBundle} from '../../../../../redux/actions/bundle';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
 import {
@@ -35,14 +36,13 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setProfitability} from '../../../../../redux/slices/profitability';
 import DownloadFile from './DownloadFile';
 import DrawerContent from './DrawerContent';
-import ReviewQuotes from './allTabs/ReviewQuotes';
 import Metrics from './allTabs/Metrics';
 import ProfitabilityMain from './allTabs/Profitability/index';
 import Rebates from './allTabs/Rebates';
+import ReviewQuotes from './allTabs/ReviewQuotes';
 import Validation from './allTabs/Validation';
 import AttachmentDocument from './allTabs/attachmentDoc';
 import GenerateQuoteAnalytics from './analytics';
-import {getAllBundle} from '../../../../../redux/actions/bundle';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -63,8 +63,6 @@ const GenerateQuote: React.FC = () => {
   const [amountData, setAmountData] = useState<any>();
   const [open, setOpen] = useState(false);
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
-  const [isDeleteInputDetailModal, setIsDeleteInputDetailModal] =
-    useState<boolean>(false);
   const [isDeleteProfitabilityModal, setIsDeleteProfitabilityModal] =
     useState<boolean>(false);
   const [selectedFilter, setSelectedFilter] = useState<string>('File Name');
@@ -614,3 +612,103 @@ const GenerateQuote: React.FC = () => {
 };
 
 export default GenerateQuote;
+
+[
+  {
+    id: 69,
+    is_deleted: false,
+    customer_id: null,
+    user_id: null,
+    organization: 'cloudanalogy',
+    name: 'test',
+    description: 'demo',
+    quantity: '3',
+    quote_id: 55,
+    gross_profit_percentage: null,
+    extended_price: null,
+    gross_profit: null,
+    createdAt: '2024-06-25T05:35:59.709Z',
+    updatedAt: '2024-06-25T05:35:59.709Z',
+    Profitabilities: [
+      {
+        id: 881,
+        is_deleted: false,
+        customer_id: null,
+        user_id: null,
+        organization: 'cloudanalogy',
+        quote_id: 55,
+        bundle_id: 69,
+        line_number: '10',
+        adjusted_price: '41',
+        product_code: '556-BBCD',
+        line_amount: '45',
+        list_price: '457',
+        description: 'No Mobile Broadband Card',
+        quantity: '8',
+        pricing_method: 'list_percentage',
+        unit_price: 251.35,
+        exit_price: 2010.8,
+        gross_profit: 1682.8,
+        gross_profit_percentage: 83.68808434453948,
+        quoteline_item_id: 1697,
+        serial_number: '10',
+        createdAt: '2024-06-25T05:25:55.525Z',
+        updatedAt: '2024-06-25T05:37:26.719Z',
+        product_id: 3458,
+      },
+      {
+        id: 880,
+        is_deleted: false,
+        customer_id: null,
+        user_id: null,
+        organization: 'cloudanalogy',
+        quote_id: 55,
+        bundle_id: 69,
+        line_number: '9',
+        adjusted_price: '0',
+        product_code: '451-BDDW',
+        line_amount: null,
+        list_price: '0',
+        description: '93 Wh, 6 Cell, Lithium Ion Polymer',
+        quantity: '8',
+        pricing_method: null,
+        unit_price: null,
+        exit_price: null,
+        gross_profit: null,
+        gross_profit_percentage: null,
+        quoteline_item_id: 1696,
+        serial_number: '9',
+        createdAt: '2024-06-25T05:25:55.525Z',
+        updatedAt: '2024-06-25T05:36:00.489Z',
+        product_id: 3457,
+      },
+      {
+        id: 879,
+        is_deleted: false,
+        customer_id: null,
+        user_id: null,
+        organization: 'cloudanalogy',
+        quote_id: 55,
+        bundle_id: 69,
+        line_number: '8',
+        adjusted_price: '0',
+        product_code: '619-ARSB',
+        line_amount: null,
+        list_price: '0',
+        description:
+          'Windows 11 Pro, English, Spanish, French, Brazilian Portuguese',
+        quantity: '8',
+        pricing_method: null,
+        unit_price: null,
+        exit_price: null,
+        gross_profit: null,
+        gross_profit_percentage: null,
+        quoteline_item_id: 1695,
+        serial_number: '8',
+        createdAt: '2024-06-25T05:25:55.525Z',
+        updatedAt: '2024-06-25T05:36:00.489Z',
+        product_id: 3456,
+      },
+    ],
+  },
+];
