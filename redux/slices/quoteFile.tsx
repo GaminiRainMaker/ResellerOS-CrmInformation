@@ -21,7 +21,7 @@ type QuoteFileState = {
   data: any;
   quoteFile: any;
   quoteFileById: any;
-  getQuoteFileDataCount: number;
+  getQuoteFileDataCount: number | undefined;
 };
 const initialState: QuoteFileState = {
   loading: false,
@@ -29,7 +29,7 @@ const initialState: QuoteFileState = {
   data: [],
   quoteFile: [],
   quoteFileById: [],
-  getQuoteFileDataCount: 0,
+  getQuoteFileDataCount: undefined,
 };
 
 const quoteFileSlice = createSlice({
