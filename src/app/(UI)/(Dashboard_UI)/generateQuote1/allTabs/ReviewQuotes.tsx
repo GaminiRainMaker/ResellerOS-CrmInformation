@@ -1,5 +1,6 @@
 'use client';
 
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -9,8 +10,10 @@ import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import RaiseConcern from '@/app/components/common/os-raise-concern';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
+import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {updateTables, useRemoveDollarAndCommahook} from '@/app/utils/base';
+import {CheckIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
@@ -23,9 +26,6 @@ import {
 } from '../../../../../../redux/actions/quoteFile';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setConcernQuoteLineItemData} from '../../../../../../redux/slices/quotelineitem';
-import {CheckIcon, XMarkIcon} from '@heroicons/react/24/outline';
-import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
-import {Col, Row} from '@/app/components/common/antd/Grid';
 
 const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
   const dispatch = useAppDispatch();
@@ -43,7 +43,6 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
     useState<boolean>(false);
   const [showVerificationFileModal, setShowVerificationFileModal] =
     useState<boolean>(false);
-  const [fileLineItemIds, setFileLineItemIds] = useState<number[]>([]);
   const [buttonType, setButtonType] = useState<string>('');
   const [api, contextHolder] = notification.useNotification();
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
