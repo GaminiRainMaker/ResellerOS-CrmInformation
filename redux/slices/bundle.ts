@@ -11,6 +11,7 @@ type BundleState = {
   loading: boolean;
   error: string | null;
   data: any;
+  updateBundle: any;
   bundle: any;
 };
 
@@ -18,6 +19,7 @@ const initialState: BundleState = {
   loading: false,
   error: null,
   data: [],
+  updateBundle: [],
   bundle: [],
 };
 
@@ -63,7 +65,7 @@ const bundleSlice = createSlice({
         updateBundleQuantity.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.updateBundle = action.payload;
         },
       )
       .addCase(
