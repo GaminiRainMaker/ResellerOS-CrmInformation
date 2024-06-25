@@ -199,9 +199,9 @@ const Profitablity: FC<any> = ({
     const result: any = calculateProfitabilityData(
       updatedRecord?.quantity,
       updatedRecord?.pricing_method,
-      updatedRecord?.line_amount,
-      updatedRecord?.adjusted_price,
-      updatedRecord?.list_price,
+      updatedRecord?.line_amount ?? 0,
+      updatedRecord?.adjusted_price ?? 0,
+      updatedRecord?.list_price ?? 0,
     );
     if (result) {
       updatedRecord.unit_price = result.unitPrice;
