@@ -60,7 +60,6 @@ const GenerateQuote: React.FC = () => {
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [selectTedRowData, setSelectedRowData] = useState<React.Key[]>([]);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
-  const [amountData, setAmountData] = useState<any>();
   const [open, setOpen] = useState(false);
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
   const [isDeleteProfitabilityModal, setIsDeleteProfitabilityModal] =
@@ -417,10 +416,7 @@ const GenerateQuote: React.FC = () => {
     <>
       {contextHolder}
       <Space size={12} direction="vertical" style={{width: '100%'}}>
-        <GenerateQuoteAnalytics
-          quoteLineItemByQuoteID={quoteLineItemByQuoteID}
-          amountData={amountData}
-        />
+        <GenerateQuoteAnalytics/>
 
         <Row justify="space-between" align="middle">
           <Col>
