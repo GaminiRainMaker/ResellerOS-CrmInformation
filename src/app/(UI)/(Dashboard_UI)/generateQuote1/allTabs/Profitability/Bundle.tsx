@@ -97,7 +97,9 @@ const Bundle: FC<any> = ({
       };
     });
 
-    setbundleData(Object.values(groupedData));
+    if (groupedData && typeof groupedData === 'object') {
+      setbundleData(Object.values(groupedData));
+    }
   };
 
   useEffect(() => {

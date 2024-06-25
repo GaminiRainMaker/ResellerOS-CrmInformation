@@ -53,7 +53,7 @@ const GenerateQuote: React.FC = () => {
   const searchParams = useSearchParams();
   const [api, contextHolder] = notification.useNotification();
   const getQuoteID = searchParams.get('id');
-  const [activeTab, setActiveTab] = useState<any>();
+  const [activeTab, setActiveTab] = useState<any>('1');
   const {quoteLineItemByQuoteID, loading} = useAppSelector(
     (state) => state.quoteLineItem,
   );
@@ -262,20 +262,6 @@ const GenerateQuote: React.FC = () => {
         <ReviewQuotes
           tableColumnDataShow={tableColumnDataShow}
           selectedFilter={selectedFilter}
-          // setIsDeleteInputDetailModal={setIsDeleteInputDetailModal}
-          // isDeleteInputDetailModal={isDeleteInputDetailModal}
-          // setFinalInputColumn={setFinalInputColumn}
-          // finalInputColumn={finalInputColumn}
-          // selectedFilter={selectedFilter}
-          // familyFilter={familyFilter}
-          // setFamilyFilter={setFamilyFilter}
-          // setSelectedRowIds={setSelectedRowIds}
-          // selectTedRowIds={selectTedRowIds}
-          // setQuoteLineItemExist={setQuoteLineItemExist}
-          // setActiveTab={setActiveTab}
-          // activeTab={activeTab}
-          // setCountOFFiles={setCountOFFiles}
-          // countOfFiles={countOfFiles}
         />
       ),
     },
