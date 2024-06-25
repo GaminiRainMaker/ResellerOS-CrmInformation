@@ -53,14 +53,10 @@ const GenerateQuote: React.FC = () => {
   const searchParams = useSearchParams();
   const [api, contextHolder] = notification.useNotification();
   const getQuoteID = searchParams.get('id');
-  const activeTabRoute = searchParams.get('tab');
-  const getInReviewQuote = searchParams.get('inReviewQuote');
   const [activeTab, setActiveTab] = useState<any>();
   const {quoteLineItemByQuoteID, loading} = useAppSelector(
     (state) => state.quoteLineItem,
   );
-
-  const pathname = usePathname();
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [selectTedRowData, setSelectedRowData] = useState<React.Key[]>([]);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
@@ -72,18 +68,12 @@ const GenerateQuote: React.FC = () => {
   const [isDeleteProfitabilityModal, setIsDeleteProfitabilityModal] =
     useState<boolean>(false);
   const [selectedFilter, setSelectedFilter] = useState<string>('File Name');
-  const [familyFilter, setFamilyFilter] = useState<any>([]);
 
-  const [quoteLineItemByQuoteData, setQuoteLineItemByQuoteData] =
-    useState<any>();
   const {data: tableColumnData} = useAppSelector((state) => state.tableColumn);
   const {data: contractSettingData} = useAppSelector(
     (state) => state.contractSetting,
   );
   const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
-  const [profitabilityData, setProfitabilityData] = useState<any>();
-  const [finalInputColumn, setFinalInputColumn] = useState<any>();
-  const [quoteLineItemExist, setQuoteLineItemExist] = useState<boolean>(false);
   const [statusValue, setStatusValue] = useState<string>('');
   const [statusUpdateLoading, setStatusUpdateLoading] =
     useState<boolean>(false);
@@ -98,7 +88,6 @@ const GenerateQuote: React.FC = () => {
   const [objectForSyncingValues, setObjectForSyncingValues] = useState<any>([]);
   const [addNewCustomerQuote, setAddNewCustomerQuote] =
     useState<boolean>(false);
-
 
   useEffect(() => {
     if (getQuoteID) {
