@@ -614,12 +614,15 @@ const Bundle: FC<any> = ({
                           height: '36px',
                         }}
                         onKeyDown={(e) => {
-                          e.stopPropagation;
+                          e.stopPropagation();
                           handleBundleKeyDown(e, bundleDataItem);
                         }}
                         onBlur={(e) => {
-                          e.stopPropagation;
+                          e.stopPropagation();
                           handleBundleBlur(e, bundleDataItem);
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
                         }}
                       />
                     </p>

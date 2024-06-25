@@ -32,7 +32,7 @@ const Profitablity: FC<any> = ({
   showUpdateLineItemModal,
   selectTedRowData,
   setSelectedRowData,
-  setSelectedRowIds
+  setSelectedRowIds,
 }) => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
@@ -151,36 +151,6 @@ const Profitablity: FC<any> = ({
     }
   };
 
-  const rowSelection = {
-    onChange: (selectedRowKeys: any, record: any) => {
-      setSelectedRowData(record);
-      setSelectedRowIds(selectedRowKeys);
-    },
-  };
-
- 
-  useEffect(() => {
-    const newArr: any = [];
-    ProfitabilityQuoteLineItemcolumns?.forEach((itemCol: any) => {
-      let shouldPush = false;
-      tableColumnDataShow?.forEach((item: any) => {
-        if (item?.field_name === itemCol?.title) {
-          shouldPush = true;
-        }
-      });
-      if (
-        itemCol?.dataIndex === 'actions' ||
-        itemCol?.dataIndex?.includes('actions.')
-      ) {
-        shouldPush = true;
-      }
-      if (shouldPush) {
-        newArr?.push(itemCol);
-      }
-    });
-    setFinalProfitTableCol(newArr);
-  }, [tableColumnDataShow]);
-
   const handleFieldChange = (
     record: any,
     field: string,
@@ -232,6 +202,35 @@ const Profitablity: FC<any> = ({
       });
     }
   };
+  
+  const rowSelection = {
+    onChange: (selectedRowKeys: any, record: any) => {
+      setSelectedRowData(record);
+      setSelectedRowIds(selectedRowKeys);
+    },
+  };
+
+  useEffect(() => {
+    const newArr: any = [];
+    ProfitabilityQuoteLineItemcolumns?.forEach((itemCol: any) => {
+      let shouldPush = false;
+      tableColumnDataShow?.forEach((item: any) => {
+        if (item?.field_name === itemCol?.title) {
+          shouldPush = true;
+        }
+      });
+      if (
+        itemCol?.dataIndex === 'actions' ||
+        itemCol?.dataIndex?.includes('actions.')
+      ) {
+        shouldPush = true;
+      }
+      if (shouldPush) {
+        newArr?.push(itemCol);
+      }
+    });
+    setFinalProfitTableCol(newArr);
+  }, [tableColumnDataShow]);
 
   const ProfitabilityQuoteLineItemcolumns = [
     {

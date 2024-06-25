@@ -66,7 +66,7 @@ export const InputPasswordStyled = styled(InputNumberPassword)`
 export const InputNumberStyled = styled(InputNumber)`
   display: flex;
   height: 48px;
-  padding: 12px;
+  padding: 0px;
   align-items: center;
   gap: var(--Corners, 8px);
   align-self: stretch;
