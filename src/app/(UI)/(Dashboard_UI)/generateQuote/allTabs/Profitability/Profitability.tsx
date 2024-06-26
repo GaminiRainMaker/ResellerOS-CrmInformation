@@ -125,10 +125,10 @@ const Profitablity: FC<any> = ({
           let grossProfit = 0;
 
           if (item?.exit_price) {
-            extendedPrice += item.exit_price * quantity || 1;
+            extendedPrice += item.exit_price * (quantity || 1);
           }
           if (item?.gross_profit && item.quantity) {
-            grossProfit += item.gross_profit * quantity || 1;
+            grossProfit += item.gross_profit * (quantity || 1);
           }
 
           groupedData[name].totalExtendedPrice += extendedPrice;
