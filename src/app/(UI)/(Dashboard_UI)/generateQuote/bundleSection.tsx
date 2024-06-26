@@ -11,12 +11,15 @@ import {useSearchParams} from 'next/navigation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {getAllBundle, insertBundle} from '../../../../../redux/actions/bundle';
 import {updateQuoteLineItemForBundleId} from '../../../../../redux/actions/quotelineitem';
+import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 
 const BundleSection: FC<any> = ({selectTedRowIds, setShowBundleModal}) => {
   const searchParams = useSearchParams();
   const getQuoteId = searchParams.get('id');
   const dispatch = useAppDispatch();
-  const {data: bundleData} = useAppSelector((state) => state.bundle);
+  const {data: bundleData, loading: BundleLoading} = useAppSelector(
+    (state) => state.bundle,
+  );
   const [radioValue, setRadioValue] = useState(1);
   const [token] = useThemeToken();
   const [bundleValue, setBundleValue] = useState<any>();
@@ -127,11 +130,12 @@ const BundleSection: FC<any> = ({selectTedRowIds, setShowBundleModal}) => {
             </div>
             <div style={{marginLeft: '20px'}}>
               <Typography name="Body 3/Regular">Quantity</Typography>
-              <OsInput
-                style={{width: '235px', marginTop: '5px'}}
+              <OsInputNumber
                 type="number"
+                min={1}
+                style={{width: '235px', marginTop: '5px'}}
                 onChange={(e: any) => {
-                  setBundleValue({...bundleValue, quantity: e.target.value});
+                  setBundleValue({...bundleValue, quantity: e});
                 }}
               />
             </div>
@@ -154,6 +158,7 @@ const BundleSection: FC<any> = ({selectTedRowIds, setShowBundleModal}) => {
         style={{display: 'flex', justifyContent: 'end', marginBottom: '-100px'}}
       >
         <OsButton
+          loading={BundleLoading}
           text={radioValue == 1 ? 'Add' : 'Create'}
           buttontype="PRIMARY"
           clickHandler={commonAddCreateBundle}
