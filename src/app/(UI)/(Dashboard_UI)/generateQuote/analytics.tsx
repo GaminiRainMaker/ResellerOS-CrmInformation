@@ -22,7 +22,10 @@ const GenerateQuoteAnalytics: FC<any> = () => {
   const [token] = useThemeToken();
   const [totalValues, setTotalValues] = useState<any>();
   const [totalRebateAmount, setTotalRebateAmount] = useState<any>();
-  const {profitability} = useAppSelector((state) => state.profitability);
+  const {profitability, data: profitabilityDataByQuoteId} = useAppSelector(
+    (state) => state.profitability,
+  );
+
   const {quoteLineItemByQuoteID} = useAppSelector(
     (state) => state.quoteLineItem,
   );
@@ -30,6 +33,8 @@ const GenerateQuoteAnalytics: FC<any> = () => {
     (state) => state.rebateQuoteLineItem,
   );
   const {abbreviate} = useAbbreviationHook(0);
+
+  console.log('profitabilityDataByQuoteId', profitabilityDataByQuoteId);
 
   useEffect(() => {
     let rebateAmount: any = 0;
@@ -48,8 +53,8 @@ const GenerateQuoteAnalytics: FC<any> = () => {
     let grossProfitPercentage: number = 0;
     let exitPrice: number = 0;
     let adjustedPrice: number = 0;
-    if (profitability && profitability?.length > 0) {
-      profitability?.map((item: any) => {
+    if (profitabilityDataByQuoteId && profitabilityDataByQuoteId?.length > 0) {
+      profitabilityDataByQuoteId?.map((item: any) => {
         if (item?.gross_profit) {
           grossProfit += item?.gross_profit ? item?.gross_profit : 0;
         }
@@ -78,12 +83,14 @@ const GenerateQuoteAnalytics: FC<any> = () => {
       ExitPrice: exitPrice,
       AdjustedPrice: adjustedPrice,
     });
-  }, [JSON.stringify(profitability)]);
+  }, [JSON.stringify(profitabilityDataByQuoteId)]);
 
   const analyticsData = [
     {
       key: 1,
-      primary: profitability?.length ? profitability?.length : 0,
+      primary: profitabilityDataByQuoteId
+        ? profitabilityDataByQuoteId?.length
+        : 0,
       secondry: 'Line Items',
       icon: <QueueListIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
