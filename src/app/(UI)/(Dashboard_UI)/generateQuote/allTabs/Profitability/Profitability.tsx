@@ -45,6 +45,8 @@ const Profitablity: FC<any> = ({
   const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>();
   const {abbreviate} = useAbbreviationHook(0);
   const [finalData, setFinalData] = useState<any>([]);
+  const [finalFieldData, setFinalFieldData] = useState<any>({});
+  const [keyPressed, setKeyPressed] = useState('');
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
       id: number;
@@ -167,14 +169,25 @@ const Profitablity: FC<any> = ({
     return !editableField?.is_editable;
   };
 
+  useEffect(() => {
+    if (
+      keyPressed &&
+      finalFieldData &&
+      Object.keys(finalFieldData).length > 0 &&
+      keyPressed === finalFieldData?.id
+    ) {
+      handleSave(finalFieldData);
+    }
+  }, [keyPressed, finalFieldData]);
+
   const handleKeyDown = (e: any, record: any) => {
     if (e.key === 'Enter') {
-      handleSave(record);
+      setKeyPressed(record?.id);
     }
   };
 
   const handleBlur = (record: any) => {
-    handleSave(record);
+    setKeyPressed(record?.id);
   };
 
   const handleSave = async (record: any) => {
@@ -184,6 +197,8 @@ const Profitablity: FC<any> = ({
           dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
         }
       });
+      setKeyPressed('');
+      setFinalFieldData({});
     } catch (error) {
       console.error('Error saving data:', error);
     }
@@ -209,34 +224,7 @@ const Profitablity: FC<any> = ({
       updatedRecord.gross_profit = result.grossProfit;
       updatedRecord.gross_profit_percentage = result.grossProfitPercentage;
     }
-    // if (!selectedFilter || selectedFilter === undefined) {
-    //   setFinalData((prevData: any) => {
-    //     const newData = prevData?.map((item: any) =>
-    //       item.id === record.id ? updatedRecord : item,
-    //     );
-    //     return newData;
-    //   });
-    // } else if (selectedFilter) {
-    //   setFinalData((prevData: any) => {
-    //     return prevData.map((data: any) => {
-    //       if (data.QuoteLineItem) {
-    //         const updatedQuotLine = data.QuoteLineItem.map((qla: any) => {
-    //           if (qla.id === updatedRecord.id) {
-    //             return updatedRecord;
-    //           } else {
-    //             return qla;
-    //           }
-    //         });
-    //         return {
-    //           ...data,
-    //           QuoteLineItem: updatedQuotLine,
-    //         };
-    //       } else {
-    //         return {...data};
-    //       }
-    //     });
-    //   });
-    // }
+    setFinalFieldData(updatedRecord);
   };
 
   const rowSelection = {
