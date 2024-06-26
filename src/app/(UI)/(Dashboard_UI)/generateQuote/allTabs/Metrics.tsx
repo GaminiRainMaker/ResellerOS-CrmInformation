@@ -47,12 +47,21 @@ const Matrix: FC<any> = ({selectedFilter}) => {
       if (filterValue === 'Product Family') {
         name = item?.Product?.product_family || 'Unassigned';
       } else if (filterValue === 'Pricing Method') {
-        name = item?.pricing_method;
+        name = item?.pricing_method || 'Unassigned';
       } else if (filterValue === 'File Name') {
         name = item?.QuoteLineItem?.QuoteFile?.file_name;
+      } else if (filterValue === 'Vendor/Disti') {
+        name =
+          item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
+            ?.distribu;
+      } else if (filterValue === 'OEM') {
+        name = item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem;
       }
       if (name) {
         const convertToTitleCase = (input: string) => {
+          if (!input) {
+            return '';
+          }
           return input
             .toLowerCase()
             .replace(/_/g, ' ')

@@ -69,47 +69,46 @@ const Profitablity: FC<any> = ({
   ]);
 
   const filterDataByValue = (data: any, filterValue?: string) => {
-    if (!filterValue) {
-      setFinalData(data ? Object.values(data) : []);
-      return;
-    }
-
     const groupedData: any = {};
+    const arrayData: any[] = [];
     data?.forEach((item: any) => {
       let name, description, type, quantity, bundleId;
-
-      if (item?.bundle_id) {
-        bundleId = item?.bundle_id;
-        name = item?.Bundle?.name;
-        description = item?.Bundle?.description;
-        quantity = item?.Bundle?.quantity;
-        type = 'bundle';
-      } else {
-        if (filterValue === 'Product Family') {
-          name = item?.Product?.product_family || 'Unassigned';
-        } else if (filterValue === 'Pricing Method') {
-          name = item?.pricing_method;
-        } else if (filterValue === 'File Name') {
-          name = item?.QuoteLineItem?.QuoteFile?.file_name;
-        } else if (filterValue === 'Vendor/Disti') {
-          name =
-            item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
-              ?.distribu;
-        } else if (filterValue === 'OEM') {
-          name = item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem;
+      if (item?.bundle_id || filterValue) {
+        if (item?.bundle_id) {
+          bundleId = item?.bundle_id;
+          name = item?.Bundle?.name;
+          description = item?.Bundle?.description;
+          quantity = item?.Bundle?.quantity;
+          type = 'bundle';
+        } else {
+          if (filterValue === 'Product Family') {
+            name = item?.Product?.product_family || 'Unassigned';
+          } else if (filterValue === 'Pricing Method') {
+            name = item?.pricing_method || 'Unassigned';
+          } else if (filterValue === 'File Name') {
+            name = item?.QuoteLineItem?.QuoteFile?.file_name;
+          } else if (filterValue === 'Vendor/Disti') {
+            name =
+              item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
+                ?.distribu;
+          } else if (filterValue === 'OEM') {
+            name = item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem;
+          }
+          type = 'groups';
         }
-        type = 'groups';
-      }
-      if (name) {
         const convertToTitleCase = (input: string) => {
+          if (!input) {
+            return '';
+          }
           return input
-            .toLowerCase()
-            .replace(/_/g, ' ')
-            .replace(/\b\w/g, (char) => char?.toUpperCase());
+            ?.toLowerCase()
+            ?.replace(/_/g, ' ')
+            ?.replace(/\b\w/g, (char) => char?.toUpperCase());
         };
         if (name?.includes('_') || name === name?.toLowerCase()) {
           name = convertToTitleCase(name);
         }
+
         if (!groupedData[name]) {
           groupedData[name] = {
             bundleId: bundleId || null,
@@ -124,20 +123,39 @@ const Profitablity: FC<any> = ({
           };
         }
         if (item?.bundle_id) {
-          groupedData[name].totalExtendedPrice =
-            item.Bundle.extended_price || 0;
-          groupedData[name].totalGrossProfit = item.Bundle.gross_profit || 0;
-          groupedData[name].totalGrossProfitPercentage =
-            item.Bundle.gross_profit_percentage || 0;
+          let extendedPrice = 0;
+          let grossProfit = 0;
+
+          if (item?.exit_price) {
+            extendedPrice += item.exit_price * (quantity || 1);
+          }
+          if (item?.gross_profit && item.quantity) {
+            grossProfit += item.gross_profit * (quantity || 1);
+          }
+
+          groupedData[name].totalExtendedPrice += extendedPrice;
+          groupedData[name].totalGrossProfit += grossProfit;
+
+          let grossProfitPer = 0;
+          if (
+            groupedData[name].totalGrossProfit !== 0 &&
+            groupedData[name].totalExtendedPrice !== 0
+          ) {
+            grossProfitPer =
+              (groupedData[name].totalGrossProfit /
+                groupedData[name].totalExtendedPrice) *
+              100;
+          }
+          groupedData[name].totalGrossProfitPercentage = grossProfitPer;
         } else {
           let extendedPrice = 0;
           let grossProfit = 0;
 
           if (item?.exit_price) {
-            extendedPrice += item.exit_price ? item.exit_price : 0;
+            extendedPrice += item.exit_price;
           }
           if (item?.gross_profit) {
-            grossProfit += item.gross_profit ? item.gross_profit : 0;
+            grossProfit += item.gross_profit;
           }
 
           groupedData[name].totalExtendedPrice += extendedPrice;
@@ -156,9 +174,11 @@ const Profitablity: FC<any> = ({
           groupedData[name].totalGrossProfitPercentage = grossProfitPer;
         }
         groupedData[name]?.QuoteLineItem?.push(item);
+      } else {
+        arrayData.push(item);
       }
     });
-    setFinalData(Object.values(groupedData));
+    setFinalData([...Object.values(groupedData), ...arrayData]);
   };
 
   useEffect(() => {
@@ -223,14 +243,15 @@ const Profitablity: FC<any> = ({
     field: string,
     value: any,
     updatedSelectedFilter: string,
+    type: string,
   ) => {
     const updatedRecord = {...record, [field]: value};
     const result: any = calculateProfitabilityData(
-      updatedRecord?.quantity,
+      Number(updatedRecord?.quantity),
       updatedRecord?.pricing_method,
-      updatedRecord?.line_amount ?? 0,
-      updatedRecord?.adjusted_price ?? 0,
-      updatedRecord?.list_price ?? 0,
+      Number(updatedRecord?.line_amount) ?? 0,
+      Number(updatedRecord?.adjusted_price) ?? 0,
+      Number(updatedRecord?.list_price) ?? 0,
     );
     if (result) {
       updatedRecord.unit_price = result.unitPrice;
@@ -239,6 +260,9 @@ const Profitablity: FC<any> = ({
       updatedRecord.gross_profit_percentage = result.grossProfitPercentage;
     }
     setFinalFieldData(updatedRecord);
+    if (type === 'select') {
+      handleSave(updatedRecord);
+    }
   };
 
   const rowSelection = {
@@ -290,6 +314,7 @@ const Profitablity: FC<any> = ({
               'serial_number',
               e.target.value,
               selectedFilter,
+              'input',
             )
           }
         />
@@ -319,7 +344,7 @@ const Profitablity: FC<any> = ({
           type="number"
           min={1}
           onChange={(e) =>
-            handleFieldChange(record, 'quantity', e, selectedFilter)
+            handleFieldChange(record, 'quantity', e, selectedFilter, 'input')
           }
         />
       ),
@@ -342,7 +367,7 @@ const Profitablity: FC<any> = ({
           onBlur={(e) => handleBlur(record)}
           defaultValue={text ?? 0.0}
           onChange={(e) =>
-            handleFieldChange(record, 'list_price', e, selectedFilter)
+            handleFieldChange(record, 'list_price', e, selectedFilter, 'input')
           }
         />
       ),
@@ -365,7 +390,13 @@ const Profitablity: FC<any> = ({
           disabled={renderEditableInput('Cost ($)')}
           defaultValue={text ?? 0.0}
           onChange={(e) =>
-            handleFieldChange(record, 'adjusted_price', e, selectedFilter)
+            handleFieldChange(
+              record,
+              'adjusted_price',
+              e,
+              selectedFilter,
+              'input',
+            )
           }
         />
       ),
@@ -403,6 +434,7 @@ const Profitablity: FC<any> = ({
                   'product_family',
                   value,
                   selectedFilter,
+                  'select',
                 );
               }}
             />
@@ -424,7 +456,13 @@ const Profitablity: FC<any> = ({
           placeholder="Select"
           defaultValue={text}
           onChange={(value) => {
-            handleFieldChange(record, 'pricing_method', value, selectedFilter);
+            handleFieldChange(
+              record,
+              'pricing_method',
+              value,
+              selectedFilter,
+              'select',
+            );
           }}
           options={pricingMethod}
         />
@@ -450,7 +488,13 @@ const Profitablity: FC<any> = ({
           defaultValue={text ?? 0.0}
           onChange={(e) => {
             console.log('Dataaaa', selectedFilter);
-            handleFieldChange(record, 'line_amount', e, selectedFilter);
+            handleFieldChange(
+              record,
+              'line_amount',
+              e,
+              selectedFilter,
+              'input',
+            );
           }}
         />
       ),
@@ -585,23 +629,126 @@ const Profitablity: FC<any> = ({
       dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
     }
   };
-  console.log('dataasdsa', finalData);
+
+  const renderFinalData = () => {
+    const bundleData = finalData.filter((item: any) => item.type === 'bundle');
+    const nonBundleData = finalData.filter(
+      (item: any) => item.type !== 'bundle',
+    );
+    return (
+      <div>
+        {bundleData.map((finalDataItem: any, index: number) => (
+          <OsCollapse
+            key={index}
+            items={[
+              {
+                key: index,
+                label: (
+                  <Row justify="space-between">
+                    <Col>
+                      <p>{finalDataItem?.name}</p>
+                    </Col>
+                    <Col>
+                      <p>Line Items: {finalDataItem?.QuoteLineItem?.length}</p>
+                    </Col>
+                    {finalDataItem?.description && (
+                      <Col>
+                        <p>Desc: {finalDataItem?.description}</p>
+                      </Col>
+                    )}
+                    <Col>
+                      <p>
+                        Extended Price: $
+                        {abbreviate(
+                          Number(finalDataItem?.totalExtendedPrice ?? 0.0),
+                        )}
+                      </p>
+                    </Col>
+                    <Col>
+                      <p>
+                        Gross Profit: $
+                        {abbreviate(
+                          Number(finalDataItem?.totalGrossProfit ?? 0.0),
+                        )}
+                      </p>
+                    </Col>
+                    <Col>
+                      <p>
+                        Gross Profit %:{' '}
+                        {abbreviate(
+                          Number(
+                            finalDataItem?.totalGrossProfitPercentage ?? 0.0,
+                          ),
+                        )}
+                      </p>
+                    </Col>
+                    {finalDataItem?.type === 'bundle' && (
+                      <Col>
+                        <span style={{display: 'flex', alignItems: 'center'}}>
+                          Qty:
+                          <OsInputNumber
+                            defaultValue={finalDataItem?.quantity}
+                            style={{
+                              width: '60px',
+                              marginLeft: '3px',
+                              height: '36px',
+                            }}
+                            type="number"
+                            min={1}
+                            onKeyDown={(e) => {
+                              e.stopPropagation();
+                              handleBundleKeyDown(e, finalDataItem);
+                            }}
+                            onBlur={(e) => {
+                              e.stopPropagation();
+                              handleBundleBlur(e, finalDataItem);
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                          />
+                        </span>
+                      </Col>
+                    )}
+                  </Row>
+                ),
+                children: (
+                  <div key={JSON.stringify(finalDataItem?.QuoteLineItem)}>
+                    <OsTableWithOutDrag
+                      loading={loading}
+                      columns={finalProfitTableCol}
+                      dataSource={finalDataItem?.QuoteLineItem}
+                      scroll
+                      locale={locale}
+                      rowSelection={rowSelection}
+                      selectedRowsKeys={selectTedRowIds}
+                    />
+                  </div>
+                ),
+              },
+            ]}
+          />
+        ))}
+        {nonBundleData.length > 0 && (
+          <OsTableWithOutDrag
+            loading={loading}
+            columns={finalProfitTableCol}
+            dataSource={nonBundleData}
+            scroll
+            locale={locale}
+            rowSelection={rowSelection}
+            selectedRowsKeys={selectTedRowIds}
+          />
+        )}
+      </div>
+    );
+  };
 
   return (
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         !selectedFilter && finalProfitTableCol ? (
-          <div key={JSON.stringify(finalData)}>
-            <OsTableWithOutDrag
-              loading={loading}
-              columns={finalProfitTableCol}
-              dataSource={finalData}
-              scroll
-              locale={locale}
-              rowSelection={rowSelection}
-              selectedRowsKeys={selectTedRowIds}
-            />
-          </div>
+          <div key={JSON.stringify(finalData)}>{renderFinalData()}</div>
         ) : (
           <>
             {selectedFilter && finalData?.length > 0 ? (
