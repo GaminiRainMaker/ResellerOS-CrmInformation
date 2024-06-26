@@ -96,8 +96,10 @@ const Profitablity: FC<any> = ({
           }
           type = 'groups';
         }
-
         const convertToTitleCase = (input: string) => {
+          if (!input) {
+            return '';
+          }
           return input
             ?.toLowerCase()
             ?.replace(/_/g, ' ')
