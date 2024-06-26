@@ -47,7 +47,7 @@ const Matrix: FC<any> = ({selectedFilter}) => {
       if (filterValue === 'Product Family') {
         name = item?.Product?.product_family || 'Unassigned';
       } else if (filterValue === 'Pricing Method') {
-        name = item?.pricing_method;
+        name = item?.pricing_method || 'Unassigned';
       } else if (filterValue === 'File Name') {
         name = item?.QuoteLineItem?.QuoteFile?.file_name;
       } else if (filterValue === 'Vendor/Disti') {
