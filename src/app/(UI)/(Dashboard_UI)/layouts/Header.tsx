@@ -96,7 +96,7 @@ const CustomHeader = () => {
   } = useAppSelector((state) => state.notification);
   const [openNotifications, setOpenNotifications] = useState<boolean>(false);
 
-  const SaleforceEdit = searchParams.get('salesforce');
+  const saleDocumentId = searchParams.get('documentId');
   const [userRole, setUserRole] = useState<string>('');
   const [searchFinalData, setSearchFinalData] = useState<any>();
   const [profileImg, setProfileImg] = useState<any>();
@@ -114,7 +114,7 @@ const CustomHeader = () => {
   const [notificationCounts, setNotificationCounts] = useState<number>(0);
 
   useEffect(() => {
-    if (!SaleforceEdit) {
+    if (!saleDocumentId) {
       dispatch(getCountOfNotification(''))?.then((payload: any) => {
         setNotificationCounts(payload?.payload?.length);
       });
@@ -122,7 +122,7 @@ const CustomHeader = () => {
   }, []);
 
   useEffect(() => {
-    if (!SaleforceEdit) {
+    if (!saleDocumentId) {
       setNotificationCounts(0);
     }
   }, [notificationData]);
@@ -309,7 +309,7 @@ const CustomHeader = () => {
             <Col>
               <Image src={HeaderLogo} alt="HeaderLogo" />
             </Col>
-            {!SaleforceEdit && (
+            {!saleDocumentId && (
               <Col span={15}>
                 <SearchSelect
                   onSearch={(e: any) => {
@@ -329,7 +329,7 @@ const CustomHeader = () => {
         </Col>
 
         <Col>
-          {!SaleforceEdit && (
+          {!saleDocumentId && (
             <Space
               direction="horizontal"
               size={24}

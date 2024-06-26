@@ -12,12 +12,12 @@ import {FC, useEffect, useState} from 'react';
 import {insertAttachmentDocument} from '../../../../../redux/actions/attachmentDocument';
 import {getAllFormStack} from '../../../../../redux/actions/formStackSync';
 import {getAllGeneralSetting} from '../../../../../redux/actions/generalSetting';
-2;
 import {
   uploadExcelFileToAws,
   uploadToAws,
 } from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {FullStackForArray, SaleForArray} from '@/app/utils/CONSTANTS';
 const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
   const [token] = useThemeToken();
   const router = useRouter();
@@ -81,17 +81,6 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       rosquoteai__Bundle_Name__c: 'werew',
     },
   ];
-  let testing = {
-    rosquoteai__Quote_Line_Item__c: '4',
-    rosquoteai__LineNumber__c: '323432',
-    rosquoteai__OEM__r: '434',
-    rosquoteai__Description__c: 'hlooooo',
-    rosquoteai__Bundle_MSRP__c: '32423',
-    rosquoteai__Product_Code__c: 'hapmmewrwe',
-    rosquoteai__Country_of_Origin__c: '344343',
-    rosquoteai__Quote_Line_Items__r: '2',
-    rosquoteai__Bundle_Name__c: 'werew',
-  };
 
   const dowloadFunction = async (data: any, type: string) => {
     const dataItem = data?.data && JSON?.parse(data?.data);
@@ -108,16 +97,13 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
         ? objectForSyncingValues[formattedData[key]]
         : 'empty';
     }
-
+    let quoteDataa = SaleForArray;
+    // let quoteDataa = FullStackForArray;
     delete resultValues._pqli;
     delete resultValues._qli;
     delete resultValues._childpqli;
     delete resultValues.quotelineitem;
-    // resultValues.quotelineitem = erretree;
-    // resultValues._pqli = testing;
-
-    // resultValues._childpqli = testing;
-    // resultValues._qli = testing;
+    resultValues.quotelineitem = quoteDataa;
 
     try {
       setLoading(true);
