@@ -22,20 +22,14 @@ const GenerateQuoteAnalytics: FC<any> = () => {
   const [token] = useThemeToken();
   const [totalValues, setTotalValues] = useState<any>();
   const [totalRebateAmount, setTotalRebateAmount] = useState<any>();
-  const {profitability, data: profitabilityDataByQuoteId} = useAppSelector(
+  const {data: profitabilityDataByQuoteId} = useAppSelector(
     (state) => state.profitability,
-  );
-
-  const {quoteLineItemByQuoteID} = useAppSelector(
-    (state) => state.quoteLineItem,
   );
   const {rebateQuoteLine} = useAppSelector(
     (state) => state.rebateQuoteLineItem,
   );
   const {abbreviate} = useAbbreviationHook(0);
-
-  console.log('profitabilityDataByQuoteId', profitabilityDataByQuoteId);
-
+  
   useEffect(() => {
     let rebateAmount: any = 0;
     rebateQuoteLine?.map((item: any) => {
