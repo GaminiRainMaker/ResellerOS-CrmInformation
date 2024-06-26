@@ -14,7 +14,7 @@ import {updateQuoteLineItemForBundleId} from '../../../../../redux/actions/quote
 
 const BundleSection: FC<any> = ({selectTedRowIds, setShowBundleModal}) => {
   const searchParams = useSearchParams();
-  const getQuoteLineItemId = searchParams.get('id');
+  const getQuoteId = searchParams.get('id');
   const dispatch = useAppDispatch();
   const {data: bundleData} = useAppSelector((state) => state.bundle);
   const [radioValue, setRadioValue] = useState(1);
@@ -44,18 +44,19 @@ const BundleSection: FC<any> = ({selectTedRowIds, setShowBundleModal}) => {
         }
       });
     }
-    dispatch(getAllBundle(getQuoteLineItemId));
+    await dispatch(getAllBundle(getQuoteId));
 
     setRadioValue(1);
     setShowBundleModal(false);
     setTimeout(() => {
       location?.reload();
-    }, 2000);
+    }, 1000);
   };
 
   useEffect(() => {
-    dispatch(getAllBundle(getQuoteLineItemId));
+    dispatch(getAllBundle(getQuoteId));
   }, []);
+
   useEffect(() => {
     const bundleArray: any = [];
     if (bundleData) {
@@ -119,7 +120,7 @@ const BundleSection: FC<any> = ({selectTedRowIds, setShowBundleModal}) => {
                   setBundleValue({
                     ...bundleValue,
                     name: e.target.value,
-                    quote_id: getQuoteLineItemId,
+                    quote_id: getQuoteId,
                   });
                 }}
               />

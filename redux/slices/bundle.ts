@@ -39,7 +39,7 @@ const bundleSlice = createSlice({
       })
       .addCase(insertBundle.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.data = [action.payload];
+        state.bundle = action.payload;
       })
       .addCase(insertBundle.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
