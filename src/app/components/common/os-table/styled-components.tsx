@@ -25,9 +25,10 @@ export const CustomTable = styled(Table)<ITableProps>`
     }
     color: white !important;
     text-align: center;
-    background: #457B9D;
+    background: #457b9d !important;
     border-bottom: 1px solid #8592a4;
   }
+
   .ant-table-cell {
     text-align: center;
   }

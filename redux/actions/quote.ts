@@ -38,6 +38,18 @@ export const getQuoteById = createAsyncThunk(
   },
 );
 
+export const getQuoteByIdForFormStack = createAsyncThunk(
+  'quote/getQuoteByIdForFormStack',
+  async (id: any, thunkApi) => {
+    try {
+      const res = await QUOTEAPI.getQuoteByIdForFormStack(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+
 export const updateQuoteDraftById = createAsyncThunk(
   'quote/updateQuoteDraftById',
   async (id: number, thunkApi) => {

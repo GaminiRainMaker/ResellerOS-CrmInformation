@@ -28,6 +28,10 @@ export const QUOTEAPI = {
     post(API.QUOTE.GetQuotesByDateFilter, data) as Promise<AxiosResponse<any>>,
   getQuoteByID: (id: number) =>
     get(`${API.QUOTE.GetQuoteByID}/${id}`) as Promise<AxiosResponse<any>>,
+  getQuoteByIdForFormStack: (id: number) =>
+    get(`${API.QUOTE.getQuoteByIdForFormStack}/${id}`) as Promise<
+      AxiosResponse<any>
+    >,
   updateQuoteWithNewlineItemAdd: (id: number) =>
     get(`${API.QUOTE.UpdateQuoteWithNewlineItemAdd}/${id}`) as Promise<
       AxiosResponse<any>
@@ -36,10 +40,14 @@ export const QUOTEAPI = {
     post(API.QUOTE.updateQuoteJson, data) as Promise<AxiosResponse<any>>,
   updateQuoteConcern: (data: any) =>
     post(API.QUOTE.ConcernUpdate, data) as Promise<AxiosResponse<any>>,
-    getAllQuotesByOrganization: (data: any) =>
-    post(API.QUOTE.GetAllQuotesByOrganization, data) as Promise<AxiosResponse<any>>,
-    getQuotesByExistingQuoteFilter: (data: any) =>
-    post(API.QUOTE.GetQuotesByExistingQuoteFilter, data) as Promise<AxiosResponse<any>>,
+  getAllQuotesByOrganization: (data: any) =>
+    post(API.QUOTE.GetAllQuotesByOrganization, data) as Promise<
+      AxiosResponse<any>
+    >,
+  getQuotesByExistingQuoteFilter: (data: any) =>
+    post(API.QUOTE.GetQuotesByExistingQuoteFilter, data) as Promise<
+      AxiosResponse<any>
+    >,
   // put: (id: number, data: any) => put(API.QUOTE.INDEX + "/" + id, data),
   // delete: (id: number) => del(API.QUOTE.INDEX + "/" + id),
 };
