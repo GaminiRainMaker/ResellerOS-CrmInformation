@@ -261,11 +261,7 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
         userInformation,
         dispatch,
       );
-      await dispatch(getQuoteFileCount(Number(getQuoteID))).then((d: any) => {
-        if (d?.payload) {
-          dispatch(setQuoteFileDataCount(d?.payload));
-        }
-      });
+
       await dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
       await dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then(
         (d: any) => {
@@ -274,6 +270,12 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
           }
         },
       );
+      await dispatch(getQuoteFileCount(Number(getQuoteID))).then((d: any) => {
+        console.log('countttttttt', d?.payload);
+        if (d?.payload) {
+          dispatch(setQuoteFileDataCount(d?.payload));
+        }
+      });
     } catch (error) {
       console.error('Error updating tables:', error);
     } finally {
