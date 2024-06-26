@@ -277,7 +277,7 @@ const SideBar = () => {
                 <Squares2X2Icon
                   color={
                     selectedKey == 1
-                      ? token?.colorPrimary
+                      ? token?.colorLink
                       : token?.colorTextSecondary
                   }
                   width={24}
@@ -291,9 +291,7 @@ const SideBar = () => {
                 marginTop: '1px',
               }}
               color={
-                selectedKey == 1
-                  ? token?.colorPrimary
-                  : token?.colorTextSecondary
+                selectedKey == 1 ? token?.colorLink : token?.colorTextSecondary
               }
             >
               Dashboard
@@ -322,7 +320,7 @@ const SideBar = () => {
                     selectedKey === 3 ||
                     selectedKey === 4 ||
                     selectedKey === 5
-                      ? token?.colorPrimary
+                      ? token?.colorLink
                       : token?.colorTextSecondary
                   }
                   width={24}
@@ -341,7 +339,7 @@ const SideBar = () => {
                 selectedKey === 3 ||
                 selectedKey === 4 ||
                 selectedKey === 5
-                  ? token?.colorPrimary
+                  ? token?.colorLink
                   : token?.colorTextSecondary
               }
             >
@@ -576,7 +574,7 @@ const SideBar = () => {
                 <ReceiptPercentIcon
                   color={
                     selectedKey === 7
-                      ? token?.colorPrimary
+                      ? token?.colorLink
                       : token?.colorTextSecondary
                   }
                   width={24}
@@ -591,9 +589,7 @@ const SideBar = () => {
                 marginTop: '1px',
               }}
               color={
-                selectedKey === 7
-                  ? token?.colorPrimary
-                  : token?.colorTextSecondary
+                selectedKey === 7 ? token?.colorLink : token?.colorTextSecondary
               }
             >
               {' '}
@@ -622,7 +618,7 @@ const SideBar = () => {
                 <ReceiptPercentIcon
                   color={
                     selectedKey === 8
-                      ? token?.colorPrimary
+                      ? token?.colorLink
                       : token?.colorTextSecondary
                   }
                   width={24}
@@ -637,9 +633,7 @@ const SideBar = () => {
                 marginTop: '1px',
               }}
               color={
-                selectedKey === 8
-                  ? token?.colorPrimary
-                  : token?.colorTextSecondary
+                selectedKey === 8 ? token?.colorLink : token?.colorTextSecondary
               }
             >
               {' '}
@@ -666,7 +660,7 @@ const SideBar = () => {
     //             <ShoppingBagIcon
     //               color={
     //                  selectedKey ===9
-    //                   ? token?.colorPrimary
+    //                   ? token?.colorLink
     //                   : token?.colorTextSecondary
     //               }
     //               width={24}
@@ -682,7 +676,7 @@ const SideBar = () => {
     //           }}
     //           color={
     //              selectedKey ===9
-    //               ? token?.colorPrimary
+    //               ? token?.colorLink
     //               : token?.colorTextSecondary
     //           }
     //         >
@@ -717,7 +711,7 @@ const SideBar = () => {
                 <UsersIcon
                   color={
                     selectedKey === 10
-                      ? token?.colorPrimary
+                      ? token?.colorLink
                       : token?.colorTextSecondary
                   }
                   width={24}
@@ -732,7 +726,7 @@ const SideBar = () => {
               }}
               color={
                 selectedKey === 10
-                  ? token?.colorPrimary
+                  ? token?.colorLink
                   : token?.colorTextSecondary
               }
             >
@@ -761,7 +755,7 @@ const SideBar = () => {
                 <UsersIcon
                   color={
                     selectedKey === 11
-                      ? token?.colorPrimary
+                      ? token?.colorLink
                       : token?.colorTextSecondary
                   }
                   width={24}
@@ -776,7 +770,7 @@ const SideBar = () => {
               }}
               color={
                 selectedKey === 11
-                  ? token?.colorPrimary
+                  ? token?.colorLink
                   : token?.colorTextSecondary
               }
             >
@@ -804,7 +798,7 @@ const SideBar = () => {
     //             <BoltIcon
     //               color={
     //                 selectedKey === 12
-    //                   ? token?.colorPrimary
+    //                   ? token?.colorLink
     //                   : token?.colorTextSecondary
     //               }
     //               width={24}
@@ -819,7 +813,7 @@ const SideBar = () => {
     //           }}
     //           color={
     //             selectedKey === 12
-    //               ? token?.colorPrimary
+    //               ? token?.colorLink
     //               : token?.colorTextSecondary
     //           }
     //         >
@@ -1017,7 +1011,7 @@ const SideBar = () => {
               <AdjustmentsHorizontalIcon
                 color={
                   selectedKey === 16
-                    ? token?.colorPrimary
+                    ? token?.colorLink
                     : token?.colorTextSecondary
                 }
                 width={24}
@@ -1029,9 +1023,7 @@ const SideBar = () => {
             cursor="pointer"
             name="Button 1"
             color={
-              selectedKey === 16
-                ? `#1C3557 !important`
-                : token?.colorTextSecondary
+              selectedKey === 16 ? token?.colorLink : token?.colorTextSecondary
             }
           >
             Admin
@@ -1058,7 +1050,7 @@ const SideBar = () => {
                 <UserGroupIcon
                   color={
                     selectedKey === 18 || selectedKey === 17
-                      ? token?.colorPrimary
+                      ? token?.colorLink
                       : token?.colorTextSecondary
                   }
                   width={24}
@@ -1071,7 +1063,7 @@ const SideBar = () => {
               name="Button 1"
               color={
                 selectedKey === 17 || selectedKey === 18
-                  ? token?.colorPrimary
+                  ? token?.colorLink
                   : token?.colorTextSecondary
               }
               style={{marginLeft: '12px'}}
@@ -1190,7 +1182,7 @@ const SideBar = () => {
                 selectedKey?.toString()?.includes('8') ||
                 selectedKey?.toString()?.includes('0') ||
                 selectedKey?.toString()?.includes('9')
-                  ? token?.colorPrimary
+                  ? token?.colorLink
                   : token?.colorTextSecondary,
             }}
           />
