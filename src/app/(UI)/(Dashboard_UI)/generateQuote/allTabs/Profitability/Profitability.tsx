@@ -105,18 +105,36 @@ const Profitablity: FC<any> = ({
             };
           }
           if (item?.bundle_id) {
-            groupedData[name].totalExtendedPrice =
-              item.Bundle.extended_price || 0;
-            groupedData[name].totalGrossProfit = item.Bundle.gross_profit || 0;
-            groupedData[name].totalGrossProfitPercentage =
-              item.Bundle.gross_profit_percentage || 0;
+            let extendedPrice = 0;
+            let grossProfit = 0;
+
+            if (item?.exit_price) {
+              extendedPrice += item.exit_price * quantity || 1;
+            }
+            if (item?.gross_profit && item.quantity) {
+              grossProfit += item.gross_profit * quantity || 1;
+            }
+
+            groupedData[name].totalExtendedPrice += extendedPrice;
+            groupedData[name].totalGrossProfit += grossProfit;
+
+            let grossProfitPer = 0;
+            if (
+              groupedData[name].totalGrossProfit !== 0 &&
+              groupedData[name].totalExtendedPrice !== 0
+            ) {
+              grossProfitPer =
+                (groupedData[name].totalGrossProfit /
+                  groupedData[name].totalExtendedPrice) *
+                100;
+            }
+            groupedData[name].totalGrossProfitPercentage = grossProfitPer;
           }
           groupedData[name]?.QuoteLineItem?.push(item);
         } else {
           arrayData.push(item);
         }
       });
-
       setFinalData([...Object.values(groupedData), ...arrayData]);
     } else {
       const groupedData: any = {};
@@ -167,21 +185,41 @@ const Profitablity: FC<any> = ({
               totalGrossProfitPercentage: 0,
             };
           }
+
           if (item?.bundle_id) {
-            groupedData[name].totalExtendedPrice =
-              item.Bundle.extended_price || 0;
-            groupedData[name].totalGrossProfit = item.Bundle.gross_profit || 0;
-            groupedData[name].totalGrossProfitPercentage =
-              item.Bundle.gross_profit_percentage || 0;
+            let extendedPrice = 0;
+            let grossProfit = 0;
+
+            if (item?.exit_price) {
+              extendedPrice += item.exit_price * quantity || 1;
+            }
+            if (item?.gross_profit && item.quantity) {
+              grossProfit += item.gross_profit * quantity || 1;
+            }
+
+            groupedData[name].totalExtendedPrice += extendedPrice;
+            groupedData[name].totalGrossProfit += grossProfit;
+
+            let grossProfitPer = 0;
+            if (
+              groupedData[name].totalGrossProfit !== 0 &&
+              groupedData[name].totalExtendedPrice !== 0
+            ) {
+              grossProfitPer =
+                (groupedData[name].totalGrossProfit /
+                  groupedData[name].totalExtendedPrice) *
+                100;
+            }
+            groupedData[name].totalGrossProfitPercentage = grossProfitPer;
           } else {
             let extendedPrice = 0;
             let grossProfit = 0;
 
             if (item?.exit_price) {
-              extendedPrice += item.exit_price ? item.exit_price : 0;
+              extendedPrice += item.exit_price;
             }
             if (item?.gross_profit) {
-              grossProfit += item.gross_profit ? item.gross_profit : 0;
+              grossProfit += item.gross_profit;
             }
 
             groupedData[name].totalExtendedPrice += extendedPrice;
