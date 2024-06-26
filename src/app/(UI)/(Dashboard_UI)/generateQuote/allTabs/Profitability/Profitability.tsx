@@ -749,9 +749,7 @@ const Profitablity: FC<any> = ({
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         !selectedFilter && finalProfitTableCol ? (
-          <div key={JSON.stringify(finalData)}>
-            {renderFinalData()}
-          </div>
+          <div key={JSON.stringify(finalData)}>{renderFinalData()}</div>
         ) : (
           <>
             {selectedFilter && finalData?.length > 0 ? (
