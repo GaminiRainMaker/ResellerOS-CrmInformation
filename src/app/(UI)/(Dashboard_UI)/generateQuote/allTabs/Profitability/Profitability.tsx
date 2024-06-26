@@ -69,77 +69,11 @@ const Profitablity: FC<any> = ({
   ]);
 
   const filterDataByValue = (data: any, filterValue?: string) => {
-    if (!filterValue) {
-      const groupedData: any = {};
-      const arrayData: any[] = [];
-      data?.forEach((item: any) => {
-        let name, description, type, quantity, bundleId;
-        if (item?.bundle_id) {
-          bundleId = item?.bundle_id;
-          name = item?.Bundle?.name;
-          description = item?.Bundle?.description;
-          quantity = item?.Bundle?.quantity;
-          type = 'bundle';
-
-          const convertToTitleCase = (input: string) => {
-            return input
-              .toLowerCase()
-              .replace(/_/g, ' ')
-              .replace(/\b\w/g, (char) => char?.toUpperCase());
-          };
-          if (name?.includes('_') || name === name?.toLowerCase()) {
-            name = convertToTitleCase(name);
-          }
-
-          if (!groupedData[name]) {
-            groupedData[name] = {
-              bundleId: bundleId || null,
-              name: name,
-              description: description || '',
-              quantity: quantity || '',
-              type: type,
-              QuoteLineItem: [],
-              totalExtendedPrice: 0,
-              totalGrossProfit: 0,
-              totalGrossProfitPercentage: 0,
-            };
-          }
-          if (item?.bundle_id) {
-            let extendedPrice = 0;
-            let grossProfit = 0;
-
-            if (item?.exit_price) {
-              extendedPrice += item.exit_price * quantity || 1;
-            }
-            if (item?.gross_profit && item.quantity) {
-              grossProfit += item.gross_profit * quantity || 1;
-            }
-
-            groupedData[name].totalExtendedPrice += extendedPrice;
-            groupedData[name].totalGrossProfit += grossProfit;
-
-            let grossProfitPer = 0;
-            if (
-              groupedData[name].totalGrossProfit !== 0 &&
-              groupedData[name].totalExtendedPrice !== 0
-            ) {
-              grossProfitPer =
-                (groupedData[name].totalGrossProfit /
-                  groupedData[name].totalExtendedPrice) *
-                100;
-            }
-            groupedData[name].totalGrossProfitPercentage = grossProfitPer;
-          }
-          groupedData[name]?.QuoteLineItem?.push(item);
-        } else {
-          arrayData.push(item);
-        }
-      });
-      setFinalData([...Object.values(groupedData), ...arrayData]);
-    } else {
-      const groupedData: any = {};
-      data?.forEach((item: any) => {
-        let name, description, type, quantity, bundleId;
+    const groupedData: any = {};
+    const arrayData: any[] = [];
+    data?.forEach((item: any) => {
+      let name, description, type, quantity, bundleId;
+      if (item?.bundle_id || filterValue) {
         if (item?.bundle_id) {
           bundleId = item?.bundle_id;
           name = item?.Bundle?.name;
@@ -162,86 +96,87 @@ const Profitablity: FC<any> = ({
           }
           type = 'groups';
         }
-        if (name) {
-          const convertToTitleCase = (input: string) => {
-            return input
-              .toLowerCase()
-              .replace(/_/g, ' ')
-              .replace(/\b\w/g, (char) => char?.toUpperCase());
-          };
-          if (name?.includes('_') || name === name?.toLowerCase()) {
-            name = convertToTitleCase(name);
-          }
-          if (!groupedData[name]) {
-            groupedData[name] = {
-              bundleId: bundleId || null,
-              name: name,
-              description: description || '',
-              quantity: quantity || '',
-              type: type,
-              QuoteLineItem: [],
-              totalExtendedPrice: 0,
-              totalGrossProfit: 0,
-              totalGrossProfitPercentage: 0,
-            };
-          }
 
-          if (item?.bundle_id) {
-            let extendedPrice = 0;
-            let grossProfit = 0;
-
-            if (item?.exit_price) {
-              extendedPrice += item.exit_price * quantity || 1;
-            }
-            if (item?.gross_profit && item.quantity) {
-              grossProfit += item.gross_profit * quantity || 1;
-            }
-
-            groupedData[name].totalExtendedPrice += extendedPrice;
-            groupedData[name].totalGrossProfit += grossProfit;
-
-            let grossProfitPer = 0;
-            if (
-              groupedData[name].totalGrossProfit !== 0 &&
-              groupedData[name].totalExtendedPrice !== 0
-            ) {
-              grossProfitPer =
-                (groupedData[name].totalGrossProfit /
-                  groupedData[name].totalExtendedPrice) *
-                100;
-            }
-            groupedData[name].totalGrossProfitPercentage = grossProfitPer;
-          } else {
-            let extendedPrice = 0;
-            let grossProfit = 0;
-
-            if (item?.exit_price) {
-              extendedPrice += item.exit_price;
-            }
-            if (item?.gross_profit) {
-              grossProfit += item.gross_profit;
-            }
-
-            groupedData[name].totalExtendedPrice += extendedPrice;
-            groupedData[name].totalGrossProfit += grossProfit;
-
-            let grossProfitPer = 0;
-            if (
-              groupedData[name].totalGrossProfit !== 0 &&
-              groupedData[name].totalExtendedPrice !== 0
-            ) {
-              grossProfitPer =
-                (groupedData[name].totalGrossProfit /
-                  groupedData[name].totalExtendedPrice) *
-                100;
-            }
-            groupedData[name].totalGrossProfitPercentage = grossProfitPer;
-          }
-          groupedData[name]?.QuoteLineItem?.push(item);
+        const convertToTitleCase = (input: string) => {
+          return input
+            .toLowerCase()
+            .replace(/_/g, ' ')
+            .replace(/\b\w/g, (char) => char?.toUpperCase());
+        };
+        if (name?.includes('_') || name === name?.toLowerCase()) {
+          name = convertToTitleCase(name);
         }
-      });
-      setFinalData(Object.values(groupedData));
-    }
+
+        if (!groupedData[name]) {
+          groupedData[name] = {
+            bundleId: bundleId || null,
+            name: name,
+            description: description || '',
+            quantity: quantity || '',
+            type: type,
+            QuoteLineItem: [],
+            totalExtendedPrice: 0,
+            totalGrossProfit: 0,
+            totalGrossProfitPercentage: 0,
+          };
+        }
+        if (item?.bundle_id) {
+          let extendedPrice = 0;
+          let grossProfit = 0;
+
+          if (item?.exit_price) {
+            extendedPrice += item.exit_price * quantity || 1;
+          }
+          if (item?.gross_profit && item.quantity) {
+            grossProfit += item.gross_profit * quantity || 1;
+          }
+
+          groupedData[name].totalExtendedPrice += extendedPrice;
+          groupedData[name].totalGrossProfit += grossProfit;
+
+          let grossProfitPer = 0;
+          if (
+            groupedData[name].totalGrossProfit !== 0 &&
+            groupedData[name].totalExtendedPrice !== 0
+          ) {
+            grossProfitPer =
+              (groupedData[name].totalGrossProfit /
+                groupedData[name].totalExtendedPrice) *
+              100;
+          }
+          groupedData[name].totalGrossProfitPercentage = grossProfitPer;
+        } else {
+          let extendedPrice = 0;
+          let grossProfit = 0;
+
+          if (item?.exit_price) {
+            extendedPrice += item.exit_price;
+          }
+          if (item?.gross_profit) {
+            grossProfit += item.gross_profit;
+          }
+
+          groupedData[name].totalExtendedPrice += extendedPrice;
+          groupedData[name].totalGrossProfit += grossProfit;
+
+          let grossProfitPer = 0;
+          if (
+            groupedData[name].totalGrossProfit !== 0 &&
+            groupedData[name].totalExtendedPrice !== 0
+          ) {
+            grossProfitPer =
+              (groupedData[name].totalGrossProfit /
+                groupedData[name].totalExtendedPrice) *
+              100;
+          }
+          groupedData[name].totalGrossProfitPercentage = grossProfitPer;
+        }
+        groupedData[name]?.QuoteLineItem?.push(item);
+      } else {
+        arrayData.push(item);
+      }
+    });
+    setFinalData([...Object.values(groupedData), ...arrayData]);
   };
 
   useEffect(() => {
