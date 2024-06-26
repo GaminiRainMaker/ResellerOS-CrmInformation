@@ -246,7 +246,7 @@ const Bundle: FC<any> = ({
       sorter: (a: any, b: any) => a.quantity - b.quantity,
       render: (text: string, record: any) => (
         <OsInputNumber
-          defaultValue={text}
+          defaultValue={text ?? 0}
           disabled={renderEditableInput('Quantity')}
           onKeyDown={(e) => handleKeyDown(e, record)}
           onBlur={(e) => handleBlur(record)}
@@ -275,7 +275,7 @@ const Bundle: FC<any> = ({
           }}
           onKeyDown={(e) => handleKeyDown(e, record)}
           onBlur={(e) => handleBlur(record)}
-          defaultValue={text}
+          defaultValue={text ?? 0.0}
           onChange={(e) => handleFieldChange(record, 'list_price', e)}
         />
       ),
@@ -373,7 +373,7 @@ const Bundle: FC<any> = ({
           }}
           type="number"
           prefix={updateAmountValue(record?.pricing_method)}
-          defaultValue={text ? text : 0.0}
+          defaultValue={text ?? 0.0}
           onChange={(e) => {
             console.log('Dataaaa', selectedFilter);
             handleFieldChange(record, 'line_amount', e);
