@@ -70,95 +70,140 @@ const Profitablity: FC<any> = ({
 
   const filterDataByValue = (data: any, filterValue?: string) => {
     if (!filterValue) {
-      setFinalData(data ? Object.values(data) : []);
-      return;
-    }
-
-    const groupedData: any = {};
-    data?.forEach((item: any) => {
-      let name, description, type, quantity, bundleId;
-
-      if (item?.bundle_id) {
-        bundleId = item?.bundle_id;
-        name = item?.Bundle?.name;
-        description = item?.Bundle?.description;
-        quantity = item?.Bundle?.quantity;
-        type = 'bundle';
-      } else {
-        if (filterValue === 'Product Family') {
-          name = item?.Product?.product_family || 'Unassigned';
-        } else if (filterValue === 'Pricing Method') {
-          name = item?.pricing_method;
-        } else if (filterValue === 'File Name') {
-          name = item?.QuoteLineItem?.QuoteFile?.file_name;
-        } else if (filterValue === 'Vendor/Disti') {
-          name =
-            item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
-              ?.distribu;
-        } else if (filterValue === 'OEM') {
-          name = item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem;
-        }
-        type = 'groups';
-      }
-      if (name) {
-        const convertToTitleCase = (input: string) => {
-          return input
-            .toLowerCase()
-            .replace(/_/g, ' ')
-            .replace(/\b\w/g, (char) => char?.toUpperCase());
-        };
-        if (name?.includes('_') || name === name?.toLowerCase()) {
-          name = convertToTitleCase(name);
-        }
-        if (!groupedData[name]) {
-          groupedData[name] = {
-            bundleId: bundleId || null,
-            name: name,
-            description: description || '',
-            quantity: quantity || '',
-            type: type,
-            QuoteLineItem: [],
-            totalExtendedPrice: 0,
-            totalGrossProfit: 0,
-            totalGrossProfitPercentage: 0,
-          };
-        }
+      const groupedData: any = {};
+      const arrayData: any[] = [];
+      data?.forEach((item: any) => {
+        let name, description, type, quantity, bundleId;
         if (item?.bundle_id) {
-          groupedData[name].totalExtendedPrice =
-            item.Bundle.extended_price || 0;
-          groupedData[name].totalGrossProfit = item.Bundle.gross_profit || 0;
-          groupedData[name].totalGrossProfitPercentage =
-            item.Bundle.gross_profit_percentage || 0;
+          bundleId = item?.bundle_id;
+          name = item?.Bundle?.name;
+          description = item?.Bundle?.description;
+          quantity = item?.Bundle?.quantity;
+          type = 'bundle';
+
+          const convertToTitleCase = (input: string) => {
+            return input
+              .toLowerCase()
+              .replace(/_/g, ' ')
+              .replace(/\b\w/g, (char) => char?.toUpperCase());
+          };
+          if (name?.includes('_') || name === name?.toLowerCase()) {
+            name = convertToTitleCase(name);
+          }
+
+          if (!groupedData[name]) {
+            groupedData[name] = {
+              bundleId: bundleId || null,
+              name: name,
+              description: description || '',
+              quantity: quantity || '',
+              type: type,
+              QuoteLineItem: [],
+              totalExtendedPrice: 0,
+              totalGrossProfit: 0,
+              totalGrossProfitPercentage: 0,
+            };
+          }
+          if (item?.bundle_id) {
+            groupedData[name].totalExtendedPrice =
+              item.Bundle.extended_price || 0;
+            groupedData[name].totalGrossProfit = item.Bundle.gross_profit || 0;
+            groupedData[name].totalGrossProfitPercentage =
+              item.Bundle.gross_profit_percentage || 0;
+          }
+          groupedData[name]?.QuoteLineItem?.push(item);
         } else {
-          let extendedPrice = 0;
-          let grossProfit = 0;
-
-          if (item?.exit_price) {
-            extendedPrice += item.exit_price ? item.exit_price : 0;
-          }
-          if (item?.gross_profit) {
-            grossProfit += item.gross_profit ? item.gross_profit : 0;
-          }
-
-          groupedData[name].totalExtendedPrice += extendedPrice;
-          groupedData[name].totalGrossProfit += grossProfit;
-
-          let grossProfitPer = 0;
-          if (
-            groupedData[name].totalGrossProfit !== 0 &&
-            groupedData[name].totalExtendedPrice !== 0
-          ) {
-            grossProfitPer =
-              (groupedData[name].totalGrossProfit /
-                groupedData[name].totalExtendedPrice) *
-              100;
-          }
-          groupedData[name].totalGrossProfitPercentage = grossProfitPer;
+          arrayData.push(item);
         }
-        groupedData[name]?.QuoteLineItem?.push(item);
-      }
-    });
-    setFinalData(Object.values(groupedData));
+      });
+
+      setFinalData([...Object.values(groupedData), ...arrayData]);
+    } else {
+      const groupedData: any = {};
+      data?.forEach((item: any) => {
+        let name, description, type, quantity, bundleId;
+        if (item?.bundle_id) {
+          bundleId = item?.bundle_id;
+          name = item?.Bundle?.name;
+          description = item?.Bundle?.description;
+          quantity = item?.Bundle?.quantity;
+          type = 'bundle';
+        } else {
+          if (filterValue === 'Product Family') {
+            name = item?.Product?.product_family || 'Unassigned';
+          } else if (filterValue === 'Pricing Method') {
+            name = item?.pricing_method;
+          } else if (filterValue === 'File Name') {
+            name = item?.QuoteLineItem?.QuoteFile?.file_name;
+          } else if (filterValue === 'Vendor/Disti') {
+            name =
+              item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
+                ?.distribu;
+          } else if (filterValue === 'OEM') {
+            name = item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem;
+          }
+          type = 'groups';
+        }
+        if (name) {
+          const convertToTitleCase = (input: string) => {
+            return input
+              .toLowerCase()
+              .replace(/_/g, ' ')
+              .replace(/\b\w/g, (char) => char?.toUpperCase());
+          };
+          if (name?.includes('_') || name === name?.toLowerCase()) {
+            name = convertToTitleCase(name);
+          }
+          if (!groupedData[name]) {
+            groupedData[name] = {
+              bundleId: bundleId || null,
+              name: name,
+              description: description || '',
+              quantity: quantity || '',
+              type: type,
+              QuoteLineItem: [],
+              totalExtendedPrice: 0,
+              totalGrossProfit: 0,
+              totalGrossProfitPercentage: 0,
+            };
+          }
+          if (item?.bundle_id) {
+            groupedData[name].totalExtendedPrice =
+              item.Bundle.extended_price || 0;
+            groupedData[name].totalGrossProfit = item.Bundle.gross_profit || 0;
+            groupedData[name].totalGrossProfitPercentage =
+              item.Bundle.gross_profit_percentage || 0;
+          } else {
+            let extendedPrice = 0;
+            let grossProfit = 0;
+
+            if (item?.exit_price) {
+              extendedPrice += item.exit_price ? item.exit_price : 0;
+            }
+            if (item?.gross_profit) {
+              grossProfit += item.gross_profit ? item.gross_profit : 0;
+            }
+
+            groupedData[name].totalExtendedPrice += extendedPrice;
+            groupedData[name].totalGrossProfit += grossProfit;
+
+            let grossProfitPer = 0;
+            if (
+              groupedData[name].totalGrossProfit !== 0 &&
+              groupedData[name].totalExtendedPrice !== 0
+            ) {
+              grossProfitPer =
+                (groupedData[name].totalGrossProfit /
+                  groupedData[name].totalExtendedPrice) *
+                100;
+            }
+            groupedData[name].totalGrossProfitPercentage = grossProfitPer;
+          }
+          groupedData[name]?.QuoteLineItem?.push(item);
+        }
+      });
+      setFinalData(Object.values(groupedData));
+    }
   };
 
   useEffect(() => {
@@ -585,22 +630,127 @@ const Profitablity: FC<any> = ({
       dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
     }
   };
-  console.log('dataasdsa', finalData);
+
+  const renderFinalData = () => {
+    const bundleData = finalData.filter((item: any) => item.type === 'bundle');
+    const nonBundleData = finalData.filter(
+      (item: any) => item.type !== 'bundle',
+    );
+    return (
+      <div>
+        {bundleData.map((finalDataItem: any, index: number) => (
+          <OsCollapse
+            key={index}
+            items={[
+              {
+                key: index,
+                label: (
+                  <Row justify="space-between">
+                    <Col>
+                      <p>{finalDataItem?.name}</p>
+                    </Col>
+                    <Col>
+                      <p>Line Items: {finalDataItem?.QuoteLineItem?.length}</p>
+                    </Col>
+                    {finalDataItem?.description && (
+                      <Col>
+                        <p>Desc: {finalDataItem?.description}</p>
+                      </Col>
+                    )}
+                    <Col>
+                      <p>
+                        Extended Price: $
+                        {abbreviate(
+                          Number(finalDataItem?.totalExtendedPrice ?? 0.0),
+                        )}
+                      </p>
+                    </Col>
+                    <Col>
+                      <p>
+                        Gross Profit: $
+                        {abbreviate(
+                          Number(finalDataItem?.totalGrossProfit ?? 0.0),
+                        )}
+                      </p>
+                    </Col>
+                    <Col>
+                      <p>
+                        Gross Profit %:{' '}
+                        {abbreviate(
+                          Number(
+                            finalDataItem?.totalGrossProfitPercentage ?? 0.0,
+                          ),
+                        )}
+                      </p>
+                    </Col>
+                    {finalDataItem?.type === 'bundle' && (
+                      <Col>
+                        <span style={{display: 'flex', alignItems: 'center'}}>
+                          Qty:
+                          <OsInputNumber
+                            defaultValue={finalDataItem?.quantity}
+                            style={{
+                              width: '60px',
+                              marginLeft: '3px',
+                              height: '36px',
+                            }}
+                            type="number"
+                            min={1}
+                            onKeyDown={(e) => {
+                              e.stopPropagation();
+                              handleBundleKeyDown(e, finalDataItem);
+                            }}
+                            onBlur={(e) => {
+                              e.stopPropagation();
+                              handleBundleBlur(e, finalDataItem);
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                          />
+                        </span>
+                      </Col>
+                    )}
+                  </Row>
+                ),
+                children: (
+                  <div key={JSON.stringify(finalDataItem?.QuoteLineItem)}>
+                    <OsTableWithOutDrag
+                      loading={loading}
+                      columns={finalProfitTableCol}
+                      dataSource={finalDataItem?.QuoteLineItem}
+                      scroll
+                      locale={locale}
+                      rowSelection={rowSelection}
+                      selectedRowsKeys={selectTedRowIds}
+                    />
+                  </div>
+                ),
+              },
+            ]}
+          />
+        ))}
+        {nonBundleData.length > 0 && (
+          <OsTableWithOutDrag
+            loading={loading}
+            columns={finalProfitTableCol}
+            dataSource={nonBundleData}
+            scroll
+            locale={locale}
+            rowSelection={rowSelection}
+            selectedRowsKeys={selectTedRowIds}
+          />
+        )}
+      </div>
+    );
+  };
 
   return (
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         !selectedFilter && finalProfitTableCol ? (
           <div key={JSON.stringify(finalData)}>
-            <OsTableWithOutDrag
-              loading={loading}
-              columns={finalProfitTableCol}
-              dataSource={finalData}
-              scroll
-              locale={locale}
-              rowSelection={rowSelection}
-              selectedRowsKeys={selectTedRowIds}
-            />
+            {renderFinalData()}
           </div>
         ) : (
           <>
