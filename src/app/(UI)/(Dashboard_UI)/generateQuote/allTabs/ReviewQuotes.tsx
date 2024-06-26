@@ -29,6 +29,7 @@ import {setConcernQuoteLineItemData} from '../../../../../../redux/slices/quotel
 import {getProfitabilityByQuoteId} from '../../../../../../redux/actions/profitability';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
 import {setQuoteFileDataCount} from '../../../../../../redux/slices/quoteFile';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 
 const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
   const dispatch = useAppDispatch();
@@ -282,7 +283,7 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
   };
 
   return (
-    <>
+    <GlobalLoader loading={quoteFileDataLoading}>
       {contextHolder}
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
         selectedFilter && reviewQuotesData?.length > 0 ? (
@@ -470,7 +471,7 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
         }}
         singleButtonInCenter
       />
-    </>
+    </GlobalLoader>
   );
 };
 
