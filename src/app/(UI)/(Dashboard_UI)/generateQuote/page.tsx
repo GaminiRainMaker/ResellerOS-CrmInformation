@@ -126,7 +126,7 @@ const GenerateQuote: React.FC = () => {
       delete newObj?.Opportunity,
         delete newObj?.Profitabilities,
         delete newObj?.QuoteFiles,
-        delete newObj?.QuoteLineItems,
+        newObj?.QuoteLineItems,
         delete newObj?.RebatesQuoteLineItems,
         delete newObj?.User,
         delete newObj?.Validations,
@@ -420,7 +420,7 @@ const GenerateQuote: React.FC = () => {
     <>
       {contextHolder}
       <Space size={12} direction="vertical" style={{width: '100%'}}>
-        <GenerateQuoteAnalytics/>
+        <GenerateQuoteAnalytics />
 
         <Row justify="space-between" align="middle">
           <Col>

@@ -17,7 +17,7 @@ import {
   uploadToAws,
 } from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {FullStackForArray, SaleForArray} from '@/app/utils/CONSTANTS';
+import {SaleForArrayAll} from '@/app/utils/CONSTANTS';
 const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
   const [token] = useThemeToken();
   const router = useRouter();
@@ -25,6 +25,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const [pdfUrl, setPdfUrl] = useState<any>(null);
+  const [newArrOfLineItems, setNewArrOfLineItems] = useState<any>();
   const [showPreviewModal, setShowPreviewModal] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedDoc, setSelectedDoc] = useState<any>();
@@ -52,36 +53,42 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       ),
     }));
 
-  let erretree = [
-    {
-      ID: 1,
-      rosquoteai__Bundle_Name__c: 'sfdwssa',
-      TotalPrice: 33,
-      UnitPrice: 34433,
-      rosquoteai__Bundle_Ext_Price__c: 43543534,
-      rosquoteai__Description__c: 'dfdfds',
-      Quantity: 4,
-      rosquoteai__LineNumber__c: 6,
-      rosquoteai__OEM__r: {Name: 'dsfee'},
-      rosquoteai__Bundle_MSRP__c: 453,
-      rosquoteai__Product_Code__c: '43543dfd',
-      rosquoteai__Quote_Line_Item__c: '435345',
-    },
-  ];
-  let arrOfObject = [
-    {
-      rosquoteai__Quote_Line_Item__c: '4',
-      rosquoteai__LineNumber__c: '323432',
-      rosquoteai__OEM__r: '434',
-      rosquoteai__Description__c: 'hlooooo',
-      rosquoteai__Bundle_MSRP__c: '32423',
-      rosquoteai__Product_Code__c: 'hapmmewrwe',
-      rosquoteai__Country_of_Origin__c: '344343',
-      rosquoteai__Quote_Line_Items__r: '2',
-      rosquoteai__Bundle_Name__c: 'werew',
-    },
-  ];
-
+  useEffect(() => {
+    let newArrOfOject: any = [];
+    if (
+      objectForSyncingValues &&
+      objectForSyncingValues?.QuoteLineItems?.length > 0
+    ) {
+      objectForSyncingValues?.QuoteLineItems?.map(
+        (items: any, index: number) => {
+          let newObj = {
+            attributes: {
+              type: 'QuoteLineItem',
+              url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4OOAS',
+            },
+            rosquoteai__Quote_Line_Item__c: index + 1,
+            Id: items?.id,
+            rosquoteai__LineNumber__c: index + 1,
+            Quantity: items?.quantity,
+            rosquoteai__Product_Code__c: items?.product_code,
+            rosquoteai__Description__c: items?.description,
+            UnitPrice: items?.line_amount,
+            TotalPrice: items?.list_price,
+          };
+          newArrOfOject?.push(newObj);
+        },
+      );
+    }
+    let finalObj = {
+      Id: '1',
+      rosquoteai__Quote_Line_Items__r: {
+        // totalSize: 7,
+        // done: true,
+        records: newArrOfOject,
+      },
+    };
+    setNewArrOfLineItems([finalObj]);
+  }, [objectForSyncingValues]);
   const dowloadFunction = async (data: any, type: string) => {
     const dataItem = data?.data && JSON?.parse(data?.data);
     const formattedData: Record<string, string> = {};
@@ -97,13 +104,13 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
         ? objectForSyncingValues[formattedData[key]]
         : 'empty';
     }
-    let quoteDataa = SaleForArray;
-    // let quoteDataa = FullStackForArray;
     delete resultValues._pqli;
     delete resultValues._qli;
     delete resultValues._childpqli;
     delete resultValues.quotelineitem;
-    resultValues.quotelineitem = quoteDataa;
+    // resultValues.quotelineitem = SaleForArrayAll;
+
+    resultValues.quotelineitem = newArrOfLineItems;
 
     try {
       setLoading(true);
