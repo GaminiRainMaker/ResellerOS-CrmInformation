@@ -17,6 +17,7 @@ import {
 } from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import {updateBundleQuantity} from '../../../../../../../redux/actions/bundle';
 import {updateProductFamily} from '../../../../../../../redux/actions/product';
 import {
   getProfitabilityByQuoteId,
@@ -25,6 +26,7 @@ import {
 } from '../../../../../../../redux/actions/profitability';
 import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
 import UpdatingLineItems from '../../UpdatingLineItems';
+import BundleSection from '../../bundleSection';
 
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
@@ -35,6 +37,8 @@ const Profitablity: FC<any> = ({
   setSelectedRowData,
   setSelectedRowIds,
   selectTedRowIds,
+  setShowBundleModal,
+  showBundleModal,
 }) => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
@@ -42,6 +46,7 @@ const Profitablity: FC<any> = ({
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
     (state) => state.profitability,
   );
+  const {loading: bundleLoading} = useAppSelector((state) => state.bundle);
   const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>();
   const {abbreviate} = useAbbreviationHook(0);
   const [finalData, setFinalData] = useState<any>([]);
@@ -71,21 +76,30 @@ const Profitablity: FC<any> = ({
 
     const groupedData: any = {};
     data?.forEach((item: any) => {
-      let name;
-      if (filterValue === 'Product Family') {
-        name = item?.Product?.product_family || 'Unassigned';
-      } else if (filterValue === 'Pricing Method') {
-        name = item?.pricing_method;
-      } else if (filterValue === 'File Name') {
-        name = item?.QuoteLineItem?.QuoteFile?.file_name;
-      } else if (filterValue === 'Vendor/Disti') {
-        name =
-          item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
-            ?.distribu;
-      } else if (filterValue === 'OEM') {
-        name = item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem;
-      }
+      let name, description, type, quantity, bundleId;
 
+      if (item?.bundle_id) {
+        bundleId = item?.bundle_id;
+        name = item?.Bundle?.name;
+        description = item?.Bundle?.description;
+        quantity = item?.Bundle?.quantity;
+        type = 'bundle';
+      } else {
+        if (filterValue === 'Product Family') {
+          name = item?.Product?.product_family || 'Unassigned';
+        } else if (filterValue === 'Pricing Method') {
+          name = item?.pricing_method;
+        } else if (filterValue === 'File Name') {
+          name = item?.QuoteLineItem?.QuoteFile?.file_name;
+        } else if (filterValue === 'Vendor/Disti') {
+          name =
+            item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
+              ?.distribu;
+        } else if (filterValue === 'OEM') {
+          name = item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem;
+        }
+        type = 'groups';
+      }
       if (name) {
         const convertToTitleCase = (input: string) => {
           return input
@@ -93,62 +107,62 @@ const Profitablity: FC<any> = ({
             .replace(/_/g, ' ')
             .replace(/\b\w/g, (char) => char?.toUpperCase());
         };
-
         if (name?.includes('_') || name === name?.toLowerCase()) {
           name = convertToTitleCase(name);
         }
-
         if (!groupedData[name]) {
           groupedData[name] = {
+            bundleId: bundleId || null,
             name: name,
+            description: description || '',
+            quantity: quantity || '',
+            type: type,
             QuoteLineItem: [],
             totalExtendedPrice: 0,
             totalGrossProfit: 0,
             totalGrossProfitPercentage: 0,
           };
         }
+        if (item?.bundle_id) {
+          groupedData[name].totalExtendedPrice =
+            item.Bundle.extended_price || 0;
+          groupedData[name].totalGrossProfit = item.Bundle.gross_profit || 0;
+          groupedData[name].totalGrossProfitPercentage =
+            item.Bundle.gross_profit_percentage || 0;
+        } else {
+          let extendedPrice = 0;
+          let grossProfit = 0;
 
-        let extendedPrice = 0;
-        let grossProfit = 0;
+          if (item?.exit_price) {
+            extendedPrice += item.exit_price ? item.exit_price : 0;
+          }
+          if (item?.gross_profit) {
+            grossProfit += item.gross_profit ? item.gross_profit : 0;
+          }
 
-        if (item?.exit_price) {
-          extendedPrice += item.exit_price ? item.exit_price : 0;
+          groupedData[name].totalExtendedPrice += extendedPrice;
+          groupedData[name].totalGrossProfit += grossProfit;
+
+          let grossProfitPer = 0;
+          if (
+            groupedData[name].totalGrossProfit !== 0 &&
+            groupedData[name].totalExtendedPrice !== 0
+          ) {
+            grossProfitPer =
+              (groupedData[name].totalGrossProfit /
+                groupedData[name].totalExtendedPrice) *
+              100;
+          }
+          groupedData[name].totalGrossProfitPercentage = grossProfitPer;
         }
-
-        if (item?.gross_profit) {
-          grossProfit += item.gross_profit ? item.gross_profit : 0;
-        }
-
-        const bundleQuantity = parseInt(item?.bundle?.quantity || '1', 10);
-        groupedData[name].totalExtendedPrice += extendedPrice * bundleQuantity;
-        groupedData[name].totalGrossProfit += grossProfit * bundleQuantity;
-
-        let grossProfitPer = 0;
-        if (
-          groupedData[name].totalGrossProfit !== 0 &&
-          groupedData[name].totalExtendedPrice !== 0
-        ) {
-          grossProfitPer =
-            (groupedData[name].totalGrossProfit /
-              groupedData[name].totalExtendedPrice) *
-            100;
-        }
-
-        groupedData[name].totalGrossProfitPercentage = grossProfitPer;
-
         groupedData[name]?.QuoteLineItem?.push(item);
       }
     });
-
     setFinalData(Object.values(groupedData));
   };
 
   useEffect(() => {
-    const withoutBundleData = profitabilityDataByQuoteId?.filter(
-      (profitabilityDataByQuoteIdItem: any) =>
-        !profitabilityDataByQuoteIdItem?.bundle_id,
-    );
-    filterDataByValue(withoutBundleData, selectedFilter);
+    filterDataByValue(profitabilityDataByQuoteId, selectedFilter);
   }, [profitabilityDataByQuoteId, selectedFilter]);
 
   const locale = {
@@ -539,6 +553,40 @@ const Profitablity: FC<any> = ({
     }
   };
 
+  const handleBundleKeyDown = (e: any, record: any) => {
+    if (e.key === 'Enter') {
+      handleBundleSave(e, record);
+    }
+  };
+
+  const handleBundleBlur = (e: any, record: any) => {
+    handleBundleSave(e, record);
+  };
+
+  const handleBundleSave = async (e: any, record: any) => {
+    let quantity = parseInt(e.target.value, 10);
+    let extendedPriceUnit = record?.totalExtendedPrice / record?.quantity;
+    let grossProfitUnit = record?.totalGrossProfit / record?.quantity;
+    let updatedExtendedPrice = extendedPriceUnit * quantity;
+    let updatedGrossProfit = grossProfitUnit * quantity;
+    let grossProfitPer = 0;
+    if (updatedGrossProfit !== 0 && updatedExtendedPrice !== 0) {
+      grossProfitPer = (updatedGrossProfit / updatedExtendedPrice) * 100;
+    }
+    let obj = {
+      id: record?.bundleId,
+      quantity: quantity,
+      extended_price: updatedExtendedPrice,
+      gross_profit: updatedGrossProfit,
+      gross_profit_percentage: grossProfitPer,
+    };
+    if (obj) {
+      await dispatch(updateBundleQuantity(obj));
+      dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+    }
+  };
+  console.log('dataasdsa', finalData);
+
   return (
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
@@ -567,16 +615,21 @@ const Profitablity: FC<any> = ({
                           key: index,
                           label: (
                             <Row justify="space-between">
-                              <Col span={6}>
+                              <Col>
                                 <p>{finalDataItem?.name}</p>
                               </Col>
-                              <Col span={4}>
+                              <Col>
                                 <p>
                                   Line Items:{' '}
                                   {finalDataItem?.QuoteLineItem?.length}
                                 </p>
                               </Col>
-                              <Col span={4}>
+                              {finalDataItem?.description && (
+                                <Col>
+                                  <p>Desc: {finalDataItem?.description}</p>
+                                </Col>
+                              )}
+                              <Col>
                                 <p>
                                   Extended Price : ${' '}
                                   {abbreviate(
@@ -586,7 +639,7 @@ const Profitablity: FC<any> = ({
                                   )}
                                 </p>
                               </Col>
-                              <Col span={4}>
+                              <Col>
                                 <p>
                                   Gross Profit : ${' '}
                                   {abbreviate(
@@ -596,7 +649,7 @@ const Profitablity: FC<any> = ({
                                   )}
                                 </p>
                               </Col>
-                              <Col span={4}>
+                              <Col>
                                 <p>
                                   Gross Profit % :{' '}
                                   {abbreviate(
@@ -607,6 +660,39 @@ const Profitablity: FC<any> = ({
                                   )}
                                 </p>
                               </Col>
+                              {finalDataItem?.type === 'bundle' && (
+                                <Col>
+                                  <span
+                                    style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                    }}
+                                  >
+                                    Qty:
+                                    <OsInputNumber
+                                      defaultValue={finalDataItem?.quantity}
+                                      style={{
+                                        width: '60px',
+                                        marginLeft: '3px',
+                                        height: '36px',
+                                      }}
+                                      type="number"
+                                      min={1}
+                                      onKeyDown={(e) => {
+                                        e.stopPropagation();
+                                        handleBundleKeyDown(e, finalDataItem);
+                                      }}
+                                      onBlur={(e) => {
+                                        e.stopPropagation();
+                                        handleBundleBlur(e, finalDataItem);
+                                      }}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                      }}
+                                    />
+                                  </span>
+                                </Col>
+                              )}
                             </Row>
                           ),
                           children: (
@@ -672,6 +758,21 @@ const Profitablity: FC<any> = ({
         }}
         bodyPadding={20}
         primaryButtonText={'Save'}
+      />
+
+      <OsModal
+        loading={bundleLoading}
+        body={
+          <BundleSection
+            selectTedRowIds={selectTedRowIds}
+            setShowBundleModal={setShowBundleModal}
+          />
+        }
+        width={700}
+        open={showBundleModal}
+        onCancel={() => {
+          setShowBundleModal((p: boolean) => !p);
+        }}
       />
     </>
   );

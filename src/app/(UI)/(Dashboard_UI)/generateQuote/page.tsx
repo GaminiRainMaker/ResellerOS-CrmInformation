@@ -494,13 +494,15 @@ const GenerateQuote: React.FC = () => {
               <Space>
                 {' '}
                 {activeTab === '6' && (
-                  <OsButton
-                    text="Add Attachment"
-                    buttontype="PRIMARY"
-                    clickHandler={() => {
-                      setAddNewCustomerQuote(true);
-                    }}
-                  />
+                  <div style={{marginTop: '20px'}}>
+                    <OsButton
+                      text="Add Attachment"
+                      buttontype="PRIMARY"
+                      clickHandler={() => {
+                        setAddNewCustomerQuote(true);
+                      }}
+                    />
+                  </div>
                 )}
                 <Space direction="vertical" size={0}>
                   <Typography
