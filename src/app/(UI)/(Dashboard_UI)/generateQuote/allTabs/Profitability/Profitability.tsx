@@ -99,9 +99,9 @@ const Profitablity: FC<any> = ({
 
         const convertToTitleCase = (input: string) => {
           return input
-            .toLowerCase()
-            .replace(/_/g, ' ')
-            .replace(/\b\w/g, (char) => char?.toUpperCase());
+            ?.toLowerCase()
+            ?.replace(/_/g, ' ')
+            ?.replace(/\b\w/g, (char) => char?.toUpperCase());
         };
         if (name?.includes('_') || name === name?.toLowerCase()) {
           name = convertToTitleCase(name);
@@ -241,6 +241,7 @@ const Profitablity: FC<any> = ({
     field: string,
     value: any,
     updatedSelectedFilter: string,
+    type: string,
   ) => {
     const updatedRecord = {...record, [field]: value};
     const result: any = calculateProfitabilityData(
@@ -257,6 +258,9 @@ const Profitablity: FC<any> = ({
       updatedRecord.gross_profit_percentage = result.grossProfitPercentage;
     }
     setFinalFieldData(updatedRecord);
+    if (type === 'select') {
+      handleSave(updatedRecord);
+    }
   };
 
   const rowSelection = {
@@ -308,6 +312,7 @@ const Profitablity: FC<any> = ({
               'serial_number',
               e.target.value,
               selectedFilter,
+              'input',
             )
           }
         />
@@ -337,7 +342,7 @@ const Profitablity: FC<any> = ({
           type="number"
           min={1}
           onChange={(e) =>
-            handleFieldChange(record, 'quantity', e, selectedFilter)
+            handleFieldChange(record, 'quantity', e, selectedFilter, 'input')
           }
         />
       ),
@@ -360,7 +365,7 @@ const Profitablity: FC<any> = ({
           onBlur={(e) => handleBlur(record)}
           defaultValue={text ?? 0.0}
           onChange={(e) =>
-            handleFieldChange(record, 'list_price', e, selectedFilter)
+            handleFieldChange(record, 'list_price', e, selectedFilter, 'input')
           }
         />
       ),
@@ -383,7 +388,13 @@ const Profitablity: FC<any> = ({
           disabled={renderEditableInput('Cost ($)')}
           defaultValue={text ?? 0.0}
           onChange={(e) =>
-            handleFieldChange(record, 'adjusted_price', e, selectedFilter)
+            handleFieldChange(
+              record,
+              'adjusted_price',
+              e,
+              selectedFilter,
+              'input',
+            )
           }
         />
       ),
@@ -421,6 +432,7 @@ const Profitablity: FC<any> = ({
                   'product_family',
                   value,
                   selectedFilter,
+                  'select',
                 );
               }}
             />
@@ -442,7 +454,13 @@ const Profitablity: FC<any> = ({
           placeholder="Select"
           defaultValue={text}
           onChange={(value) => {
-            handleFieldChange(record, 'pricing_method', value, selectedFilter);
+            handleFieldChange(
+              record,
+              'pricing_method',
+              value,
+              selectedFilter,
+              'select',
+            );
           }}
           options={pricingMethod}
         />
@@ -468,7 +486,13 @@ const Profitablity: FC<any> = ({
           defaultValue={text ?? 0.0}
           onChange={(e) => {
             console.log('Dataaaa', selectedFilter);
-            handleFieldChange(record, 'line_amount', e, selectedFilter);
+            handleFieldChange(
+              record,
+              'line_amount',
+              e,
+              selectedFilter,
+              'input',
+            );
           }}
         />
       ),
