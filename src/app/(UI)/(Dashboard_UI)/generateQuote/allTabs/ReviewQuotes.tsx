@@ -26,6 +26,9 @@ import {
 } from '../../../../../../redux/actions/quoteFile';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setConcernQuoteLineItemData} from '../../../../../../redux/slices/quotelineitem';
+import {getProfitabilityByQuoteId} from '../../../../../../redux/actions/profitability';
+import {setProfitability} from '../../../../../../redux/slices/profitability';
+import {setQuoteFileDataCount} from '../../../../../../redux/slices/quoteFile';
 
 const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
   const dispatch = useAppDispatch();
@@ -257,8 +260,19 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
         userInformation,
         dispatch,
       );
-      await dispatch(getQuoteFileCount(Number(getQuoteID)));
+      await dispatch(getQuoteFileCount(Number(getQuoteID))).then((d: any) => {
+        if (d?.payload) {
+          dispatch(setQuoteFileDataCount(d?.payload));
+        }
+      });
       await dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
+      await dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then(
+        (d: any) => {
+          if (d?.payload) {
+            dispatch(setProfitability(d?.payload));
+          }
+        },
+      );
     } catch (error) {
       console.error('Error updating tables:', error);
     } finally {

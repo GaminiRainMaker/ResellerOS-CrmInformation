@@ -41,6 +41,9 @@ const quoteFileSlice = createSlice({
     setQuoteFile: (state, action) => {
       state.quoteFile = action.payload;
     },
+    setQuoteFileDataCount: (state, action) => {
+      state.getQuoteFileDataCount = action.payload;
+    },
   },
   extraReducers(builder) {
     builder
@@ -242,5 +245,5 @@ const quoteFileSlice = createSlice({
   },
 });
 
-export const {setQuoteFile} = quoteFileSlice.actions;
+export const {setQuoteFile, setQuoteFileDataCount} = quoteFileSlice.actions;
 export default quoteFileSlice?.reducer;

@@ -43,6 +43,9 @@ const quoteLineItemSlice = createSlice({
     setConcernQuoteLineItemData: (state, action) => {
       state.concernQuoteLineItemData = action.payload;
     },
+    setQuoteLineItemByQuoteID: (state, action) => {
+      state.quoteLineItemByQuoteID = action.payload;
+    },
   },
   extraReducers(builder) {
     builder
@@ -265,6 +268,9 @@ const quoteLineItemSlice = createSlice({
   },
 });
 
-export const {setQuoteLineItem, setConcernQuoteLineItemData} =
-  quoteLineItemSlice.actions;
+export const {
+  setQuoteLineItem,
+  setConcernQuoteLineItemData,
+  setQuoteLineItemByQuoteID,
+} = quoteLineItemSlice.actions;
 export default quoteLineItemSlice?.reducer;
