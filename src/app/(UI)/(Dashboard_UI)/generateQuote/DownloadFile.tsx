@@ -52,43 +52,91 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
         </Typography>
       ),
     }));
-
   useEffect(() => {
-    let newArrOfOject: any = [];
+    let finArrr: any = [];
+    // ========================= For Bundles =====================================
+    if (
+      objectForSyncingValues &&
+      objectForSyncingValues?.bundleData?.length > 0
+    ) {
+      objectForSyncingValues?.bundleData?.map(
+        (itemBun: any, indexBun: number) => {
+          let innerLineArr: any = [];
+          itemBun?.Profitabilities?.map((items: any, index: number) => {
+            let newObj = {
+              attributes: {
+                type: 'QuoteLineItem',
+              },
+              Id: items?.id,
+              line_number: items?.line_number ? items?.line_number : index + 1,
+              quantity: items?.quantity,
+              product_code: items?.product_code,
+              description: items?.description,
+              line_amount: items?.line_amount,
+              list_price: items?.list_price,
+              organization: items?.organization,
+            };
+            innerLineArr?.push(newObj);
+          });
+
+          let finalObj = {
+            attributes: {
+              type: 'QuoteLineItem',
+            },
+            Id: '1',
+            bundle_name: itemBun?.name,
+            quote_line_items: {
+              records: innerLineArr,
+            },
+          };
+
+          finArrr?.push(finalObj);
+        },
+      );
+    }
+
+    // ========================For Simple Line Items =============================
     if (
       objectForSyncingValues &&
       objectForSyncingValues?.QuoteLineItems?.length > 0
     ) {
+      let newArrOfOject: any = [];
       objectForSyncingValues?.QuoteLineItems?.map(
         (items: any, index: number) => {
           let newObj = {
             attributes: {
               type: 'QuoteLineItem',
-              url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn4OOAS',
             },
-            rosquoteai__Quote_Line_Item__c: index + 1,
             Id: items?.id,
-            rosquoteai__LineNumber__c: index + 1,
-            Quantity: items?.quantity,
-            rosquoteai__Product_Code__c: items?.product_code,
-            rosquoteai__Description__c: items?.description,
-            UnitPrice: items?.line_amount,
-            TotalPrice: items?.list_price,
+            line_number: items?.line_number ? items?.line_number : index + 1,
+            quantity: items?.quantity,
+            product_code: items?.product_code,
+            description: items?.description,
+            line_amount: items?.line_amount,
+            list_price: items?.list_price,
+            organization: items?.organization,
           };
           newArrOfOject?.push(newObj);
         },
       );
+
+      let finalObj = {
+        attributes: {
+          type: 'QuoteLineItem',
+        },
+        Id: '1',
+        bundle_name: 'WithOut  Bundle',
+        quote_line_items: {
+          records: newArrOfOject,
+        },
+      };
+
+      finArrr?.push(finalObj);
     }
-    let finalObj = {
-      Id: '1',
-      rosquoteai__Quote_Line_Items__r: {
-        // totalSize: 7,
-        // done: true,
-        records: newArrOfOject,
-      },
-    };
-    setNewArrOfLineItems([finalObj]);
+
+    setNewArrOfLineItems(finArrr);
   }, [objectForSyncingValues]);
+
   const dowloadFunction = async (data: any, type: string) => {
     const dataItem = data?.data && JSON?.parse(data?.data);
     const formattedData: Record<string, string> = {};
@@ -109,7 +157,6 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     delete resultValues._childpqli;
     delete resultValues.quotelineitem;
     // resultValues.quotelineitem = SaleForArrayAll;
-
     resultValues.quotelineitem = newArrOfLineItems;
 
     try {

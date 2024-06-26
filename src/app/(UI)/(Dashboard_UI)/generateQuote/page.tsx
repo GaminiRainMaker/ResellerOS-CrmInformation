@@ -24,6 +24,7 @@ import {getAllContractSetting} from '../../../../../redux/actions/contractSettin
 import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
 import {
   getQuoteById,
+  getQuoteByIdForFormStack,
   updateQuoteById,
   updateQuoteStatusById,
 } from '../../../../../redux/actions/quote';
@@ -111,27 +112,52 @@ const GenerateQuote: React.FC = () => {
   }, [getQuoteFileDataCount]);
 
   useEffect(() => {
-    dispatch(getQuoteById(getQuoteID))?.then((payload: any) => {
-      let newObj = {
-        ...payload?.payload?.Customer,
-        ...payload?.payload?.Opportunity,
-        ...payload?.payload?.QuoteLineItems?.[0],
-        ...payload?.payload,
-        customer_id: payload?.payload?.Customer?.id,
-        opportunity_id: payload?.payload?.Opportunity?.id,
-        quoute_line_item_id: payload?.payload?.QuoteLineItems?.[0]?.id,
-        quote_id: payload?.payload?.id,
-      };
-      delete newObj?.Customer;
-      delete newObj?.Opportunity,
-        delete newObj?.Profitabilities,
-        delete newObj?.QuoteFiles,
-        newObj?.QuoteLineItems,
-        delete newObj?.RebatesQuoteLineItems,
-        delete newObj?.User,
-        delete newObj?.Validations,
-        setObjectForSyncingValues(newObj);
-    });
+    dispatch(getQuoteByIdForFormStack(Number(getQuoteID)))?.then(
+      (payload: any) => {
+        dispatch(getAllBundle(Number(getQuoteID)))?.then(
+          (payloadBundle: any) => {
+            if (payloadBundle?.payload?.length > 0) {
+              const newBundleData: any = [];
+              payloadBundle?.payload?.map((items: any) => {
+                if (items?.Profitabilities?.length > 0) {
+                  newBundleData?.push(items);
+                }
+              });
+              let newObj = {
+                ...payload?.payload?.Customer,
+                ...payload?.payload?.Opportunity,
+                ...payload?.payload,
+                customer_id: payload?.payload?.Customer?.id,
+                opportunity_id: payload?.payload?.Opportunity?.id,
+                quoute_line_item_id: payload?.payload?.Profitabilities?.id,
+                quote_id: payload?.payload?.id,
+              };
+              delete newObj?.Customer;
+              delete newObj?.Opportunity,
+                delete newObj?.Profitabilities,
+                (newObj.bundleData = newBundleData);
+              newObj.QuoteLineItems = payload?.payload?.Profitabilities;
+              setObjectForSyncingValues(newObj);
+            } else {
+              let newObj = {
+                ...payload?.payload?.Customer,
+                ...payload?.payload?.Opportunity,
+                ...payload?.payload,
+                customer_id: payload?.payload?.Customer?.id,
+                opportunity_id: payload?.payload?.Opportunity?.id,
+                quoute_line_item_id: payload?.payload?.Profitabilities?.id,
+                quote_id: payload?.payload?.id,
+              };
+              delete newObj?.Customer;
+              delete newObj?.Opportunity,
+                delete newObj?.Profitabilities,
+                (newObj.QuoteLineItems = payload?.payload?.Profitabilities);
+              setObjectForSyncingValues(newObj);
+            }
+          },
+        );
+      },
+    );
   }, []);
 
   useEffect(() => {

@@ -16,6 +16,7 @@ export const API = {
     DeleteById: '/quote/deleteQuote',
     GetQuotesByDateFilter: '/quote/getQuotesByDateFilter',
     GetQuoteByID: '/quote/getQuoteById',
+    getQuoteByIdForFormStack: '/quote/getQuoteByIdForFormStack',
     GetQuoteByManual: '/quote/getAllManualQuotes',
     UpdateQuoteWithNewlineItemAdd: '/quote/updateQuoteWithNewlineItemAdd',
     updateQuoteJson: '/quote/updateQuoteJsonAndManual',
@@ -72,7 +73,8 @@ export const API = {
     QUERY: '/profitability/query',
     DeleteById: '/profitability/deleteProfitabilityById',
     count: '/profitability/getAllProfitabilityCount',
-    UpdateProfitabilityValueForBulk: '/profitability/updateProfitabilityValueForBulk',
+    UpdateProfitabilityValueForBulk:
+      '/profitability/updateProfitabilityValueForBulk',
   },
   BUNDLE: {
     INDEX: '/bundle',

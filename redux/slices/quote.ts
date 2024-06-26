@@ -14,6 +14,7 @@ import {
   updateQuoteWithNewlineItemAddByID,
   getAllQuotesByOrganization,
   getQuotesByExistingQuoteFilter,
+  getQuoteByIdForFormStack,
 } from '../actions/quote';
 
 type QuoteState = {
@@ -250,6 +251,24 @@ const quoteSlice = createSlice({
       )
       .addCase(
         getQuotesByExistingQuoteFilter.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.getExistingQuoteFilterLoading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getQuoteByIdForFormStack.pending, (state) => {
+        state.getExistingQuoteFilterLoading = true;
+        state.error = null;
+      })
+      .addCase(
+        getQuoteByIdForFormStack.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.getExistingQuoteFilterLoading = false;
+          state.getExistingQuoteFilterData = action.payload;
+        },
+      )
+      .addCase(
+        getQuoteByIdForFormStack.rejected,
         (state, action: PayloadAction<any>) => {
           state.getExistingQuoteFilterLoading = false;
           state.error = action.payload;
