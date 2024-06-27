@@ -222,7 +222,9 @@ const GenerateQuote: React.FC = () => {
             //     type: 'info',
             //   });
             // } else {
-            setShowBundleModal(true);
+            if (selectTedRowData?.length > 0) {
+              setShowBundleModal(true);
+            }
             // }
           }}
         >

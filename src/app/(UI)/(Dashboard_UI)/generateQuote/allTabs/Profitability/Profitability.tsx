@@ -26,7 +26,8 @@ import {
 } from '../../../../../../../redux/actions/profitability';
 import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
 import UpdatingLineItems from '../../UpdatingLineItems';
-import BundleSection from '../../bundleSection';
+import {Form} from 'antd';
+import BundleSection from '../../BundleSection';
 
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
@@ -41,6 +42,7 @@ const Profitablity: FC<any> = ({
   showBundleModal,
 }) => {
   const dispatch = useAppDispatch();
+  const [BundleForm] = Form.useForm();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
@@ -913,13 +915,18 @@ const Profitablity: FC<any> = ({
           <BundleSection
             selectTedRowIds={selectTedRowIds}
             setShowBundleModal={setShowBundleModal}
+            form={BundleForm}
           />
         }
         width={700}
         open={showBundleModal}
         onCancel={() => {
           setShowBundleModal((p: boolean) => !p);
+          BundleForm?.resetFields();
         }}
+        primaryButtonText={'Save'}
+        onOk={BundleForm.submit}
+        footerPadding={20}
       />
     </>
   );
