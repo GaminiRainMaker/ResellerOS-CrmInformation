@@ -98,6 +98,9 @@ const Profitablity: FC<any> = ({
           }
           type = 'groups';
         }
+        if (!name) {
+          return; 
+        }
         const convertToTitleCase = (input: string) => {
           if (!input) {
             return '';
