@@ -163,7 +163,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     // resultValues.quotelineitem = SaleForArrayAll;
     // resultValues.quotelineitem = salesForceWithWithoutBundle;
     // resultValues.quotelineitem = [];
-    resultValues.quote_notes = [];
+    // resultValues.quote_notes = [];
     resultValues.quotelineitem = newArrOfLineItems;
 
     try {
