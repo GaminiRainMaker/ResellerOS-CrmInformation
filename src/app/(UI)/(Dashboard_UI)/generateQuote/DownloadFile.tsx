@@ -17,7 +17,10 @@ import {
   uploadToAws,
 } from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {SaleForArrayAll} from '@/app/utils/CONSTANTS';
+import {
+  SaleForArrayAll,
+  salesForceWithWithoutBundle,
+} from '@/app/utils/CONSTANTS';
 const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
   const [token] = useThemeToken();
   const router = useRouter();
@@ -156,8 +159,12 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     delete resultValues._qli;
     delete resultValues._childpqli;
     delete resultValues.quotelineitem;
+    delete resultValues.quote_notes;
     // resultValues.quotelineitem = SaleForArrayAll;
-    resultValues.quotelineitem = newArrOfLineItems;
+    resultValues.quotelineitem = salesForceWithWithoutBundle;
+    // resultValues.quotelineitem = [];
+    resultValues.quote_notes = [];
+    // resultValues.quotelineitem = newArrOfLineItems;
 
     try {
       setLoading(true);
