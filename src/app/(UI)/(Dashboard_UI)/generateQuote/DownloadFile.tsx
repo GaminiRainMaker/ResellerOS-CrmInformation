@@ -161,10 +161,10 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     delete resultValues.quotelineitem;
     delete resultValues.quote_notes;
     // resultValues.quotelineitem = SaleForArrayAll;
-    resultValues.quotelineitem = salesForceWithWithoutBundle;
+    // resultValues.quotelineitem = salesForceWithWithoutBundle;
     // resultValues.quotelineitem = [];
     resultValues.quote_notes = [];
-    // resultValues.quotelineitem = newArrOfLineItems;
+    resultValues.quotelineitem = newArrOfLineItems;
 
     try {
       setLoading(true);
