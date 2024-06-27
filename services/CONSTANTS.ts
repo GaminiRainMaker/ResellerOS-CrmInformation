@@ -6,6 +6,8 @@ export const API = {
     Send_Forgot_Password_Email: '/auth/sendForgotPasswordEmail',
     Contact_Sales: '/auth/contactSales',
     salesforceFileGet: '/auth/getSalesForceDataa',
+    salesforceDataAsItIs: '/auth/getSalesForceDataaForEditAsItIs',
+    salesforceAddUpdate: '/auth/addSalesForceDataa',
   },
   QUOTE: {
     INDEX: '/quote',

@@ -52,6 +52,7 @@ import {
 import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
 import {insertValidation} from '../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {addSalesForceDataa} from '../../../../../redux/actions/auth';
 
 interface EditPdfDataInterface {
   setMergedVaalues?: any;
@@ -77,13 +78,14 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
- 
+
   const salesToken = searchParams.get('key');
-  const saleDocumentId = searchParams.get('documentId');
+  const salesForceFiledId = searchParams.get('FileId');
   const SaleQuoteId = searchParams.get('QuoteId');
+  const salesForceUrl = searchParams.get('urls');
   const [syncTableQuoteLItemValues, setSyncTableQuoteLItemValues] =
     useState<any>(
-      saleDocumentId
+      salesForceFiledId
         ? SaleForceQuoteLineItemColumnSync
         : quoteLineItemColumnForSync,
       // ,
@@ -221,6 +223,23 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       });
       alllArrayValue?.push(newObj);
     });
+
+    if (salesForceFiledId) {
+      let newdata = {
+        token: salesToken,
+        // documentId: salesForceFiledId,
+        urls: salesForceUrl,
+        QuoteId: SaleQuoteId,
+        FileId: salesForceFiledId,
+        action: 'ExportFileToTable',
+        lineItem: alllArrayValue,
+      };
+      dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
+        console.log('3453424', payload);
+      });
+      setNanonetsLoading(false);
+      return;
+    }
 
     const newrrLineItems: any = [];
     const rebateDataArray: any = [];
@@ -433,7 +452,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     router?.push(`/generateQuote?id=${Number(getQuoteID)}`);
   };
   const handleChange = (value: string) => {
-    const newInsertOptions = quoteLineItemColumnForSync?.find(
+    let optionsTOAdd = salesForceFiledId
+      ? SaleForceQuoteLineItemColumnSync
+      : quoteLineItemColumnForSync;
+    const newInsertOptions = optionsTOAdd?.find(
       (itemss: any) => itemss?.value === value,
     );
     const newArr =
