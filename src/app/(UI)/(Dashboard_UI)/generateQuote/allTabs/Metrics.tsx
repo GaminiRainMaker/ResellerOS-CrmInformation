@@ -147,10 +147,21 @@ const Matrix: FC<any> = ({selectedFilter}) => {
       finalData?.forEach((element: any) => {
         let totalRevenueValue = 0;
         let totalProfitValue = 0;
+        let revenue = 0;
+        let profitValue = 0;
         element?.QuoteLineItem?.forEach((QuoteLineItemData: any) => {
           const {exit_price, gross_profit} = QuoteLineItemData;
-          const revenue = Number(exit_price);
-          const profitValue = Number(gross_profit);
+          if (QuoteLineItemData?.Bundle) {
+            revenue =
+              Number(exit_price) *
+                Number(QuoteLineItemData?.Bundle?.quantity) ?? 1;
+            profitValue =
+              Number(gross_profit) *
+                Number(QuoteLineItemData?.Bundle?.quantity) ?? 1;
+          } else {
+            revenue = Number(exit_price);
+            profitValue = Number(gross_profit);
+          }
           totalRevenueValue += revenue;
           totalProfitValue += profitValue;
         });
@@ -190,52 +201,53 @@ const Matrix: FC<any> = ({selectedFilter}) => {
     <>
       {finalData?.length > 0 ? (
         <Row gutter={[24, 24]} justify="space-between">
-          {sectionData?.map((item) => {
-            let word = item?.name?.split(' ')[0].toLowerCase();
+          {sectionData &&
+            sectionData?.map((item) => {
+              let word = item?.name?.split(' ')[0].toLowerCase();
 
-            return (
-              <div
-                style={{
-                  padding: '18px',
-                  background: '#f6f7f8',
-                  borderRadius: '12px',
-                }}
-                key={item.id}
-              >
-                <Col
+              return (
+                <div
                   style={{
                     padding: '18px',
                     background: '#f6f7f8',
                     borderRadius: '12px',
                   }}
-                  span={12}
+                  key={item.id}
                 >
-                  <Space direction="vertical">
-                    <Typography name="Body 1/Regular">{item.name}</Typography>
-                    {item.pieData?.length > 0 && (
-                      <Typography name="Body 3/Regular">
-                        {selectedFilter ? `(${selectedFilter})` : '(--)'}
+                  <Col
+                    style={{
+                      padding: '18px',
+                      background: '#f6f7f8',
+                      borderRadius: '12px',
+                    }}
+                    span={12}
+                  >
+                    <Space direction="vertical">
+                      <Typography name="Body 1/Regular">{item.name}</Typography>
+                      {item.pieData?.length > 0 && (
+                        <Typography name="Body 3/Regular">
+                          {selectedFilter ? `(${selectedFilter})` : '(--)'}
+                        </Typography>
+                      )}
+                    </Space>
+                    {item.pieData?.length > 0 ? (
+                      <OsPieChart data={item.pieData} />
+                    ) : (
+                      <Typography
+                        name="Body 1/Regular"
+                        style={{
+                          width: chartDimensions?.width,
+                        }}
+                        as="div"
+                      >
+                        There is no {word} available for{' '}
+                        {selectedFilter ? ` (${selectedFilter})` : ' (--)'}
                       </Typography>
                     )}
-                  </Space>
-                  {item.pieData?.length > 0 ? (
-                    <OsPieChart data={item.pieData} />
-                  ) : (
-                    <Typography
-                      name="Body 1/Regular"
-                      style={{
-                        width: chartDimensions?.width,
-                      }}
-                      as="div"
-                    >
-                      There is no {word} available for{' '}
-                      {selectedFilter ? ` (${selectedFilter})` : ' (--)'}
-                    </Typography>
-                  )}
-                </Col>
-              </div>
-            );
-          })}
+                  </Col>
+                </div>
+              );
+            })}
         </Row>
       ) : (
         <EmptyContainer

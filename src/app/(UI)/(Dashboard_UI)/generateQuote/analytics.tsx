@@ -29,7 +29,7 @@ const GenerateQuoteAnalytics: FC<any> = () => {
     (state) => state.rebateQuoteLineItem,
   );
   const {abbreviate} = useAbbreviationHook(0);
-  
+
   useEffect(() => {
     let rebateAmount: any = 0;
     rebateQuoteLine?.map((item: any) => {
@@ -43,38 +43,56 @@ const GenerateQuoteAnalytics: FC<any> = () => {
   }, [JSON.stringify(rebateQuoteLine)]);
 
   useEffect(() => {
-    let grossProfit: any = 0;
-    let grossProfitPercentage: number = 0;
-    let exitPrice: number = 0;
-    let adjustedPrice: number = 0;
-    if (profitabilityDataByQuoteId && profitabilityDataByQuoteId?.length > 0) {
-      profitabilityDataByQuoteId?.map((item: any) => {
-        if (item?.gross_profit) {
-          grossProfit += item?.gross_profit ? item?.gross_profit : 0;
-        }
-        if (item?.exit_price) {
-          exitPrice += item?.exit_price ? item?.exit_price : 0;
-        }
-        if (
-          item?.adjusted_price !== undefined &&
-          item?.quantity !== undefined
-        ) {
-          let temp: any;
-          temp =
-            Number(item?.adjusted_price) *
-            (item?.quantity ? Number(item?.quantity) : 1);
-          adjustedPrice += temp;
+    let grossProfit = 0;
+    let bundleGrossProfit = 0;
+    let grossProfitPercentage = 0;
+    let exitPrice = 0;
+    let bundleExitPrice = 0;
+    let adjustedPrice = 0;
+
+    if (profitabilityDataByQuoteId && profitabilityDataByQuoteId.length > 0) {
+      const uniqueBundleIds = new Set();
+      profitabilityDataByQuoteId.forEach((item: any) => {
+        if (item?.bundle_id && !uniqueBundleIds.has(item.bundle_id)) {
+          uniqueBundleIds.add(item.bundle_id);
+
+          if (item?.Bundle?.gross_profit) {
+            bundleGrossProfit += Number(item.Bundle.gross_profit);
+          }
+          if (item?.Bundle?.extended_price) {
+            bundleExitPrice += Number(item.Bundle.extended_price);
+          }
+        } else if (!item?.bundle_id) {
+          if (item?.gross_profit) {
+            grossProfit += item.gross_profit;
+          }
+          if (item?.exit_price) {
+            exitPrice += item.exit_price;
+          }
+          if (
+            item?.adjusted_price !== undefined &&
+            item?.quantity !== undefined
+          ) {
+            let temp: any;
+            temp =
+              Number(item?.adjusted_price) *
+              (item?.quantity ? Number(item?.quantity) : 1);
+            adjustedPrice += temp;
+          }
         }
       });
     }
+    const totalGrossProfit = grossProfit + bundleGrossProfit;
+    const totalExitPrice = exitPrice + bundleExitPrice;
 
-    if (exitPrice > 0) {
-      grossProfitPercentage = (grossProfit / exitPrice) * 100;
+    if (totalExitPrice > 0) {
+      grossProfitPercentage = (totalGrossProfit / totalExitPrice) * 100;
     }
+
     setTotalValues({
-      GrossProfit: grossProfit,
+      GrossProfit: totalGrossProfit,
       GrossProfitPercentage: grossProfitPercentage,
-      ExitPrice: exitPrice,
+      ExitPrice: totalExitPrice,
       AdjustedPrice: adjustedPrice,
     });
   }, [JSON.stringify(profitabilityDataByQuoteId)]);
