@@ -28,7 +28,10 @@ import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setConcernQuoteLineItemData} from '../../../../../../redux/slices/quotelineitem';
 import {getProfitabilityByQuoteId} from '../../../../../../redux/actions/profitability';
 import {setProfitability} from '../../../../../../redux/slices/profitability';
-import {setQuoteFileDataCount} from '../../../../../../redux/slices/quoteFile';
+import {
+  setQuoteFileDataCount,
+  setQuoteFileUnverifiedById,
+} from '../../../../../../redux/slices/quoteFile';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 
 const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
@@ -40,9 +43,8 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
   const {abbreviate} = useAbbreviationHook(0);
   const [form] = Form.useForm();
   const {userInformation} = useAppSelector((state) => state.user);
-  const {loading: quoteFileDataLoading, data: quoteFileData} = useAppSelector(
-    (state) => state.quoteFile,
-  );
+  const {loading: quoteFileDataLoading, quoteFileUnverifiedById} =
+    useAppSelector((state) => state.quoteFile);
   const [showRaiseConcernModal, setShowRaiseConcernModal] =
     useState<boolean>(false);
   const [showVerificationFileModal, setShowVerificationFileModal] =
@@ -110,8 +112,10 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
   };
 
   useEffect(() => {
-    filterDataByValue(quoteFileData, selectedFilter);
-  }, [quoteFileData, selectedFilter]);
+    filterDataByValue(quoteFileUnverifiedById, selectedFilter);
+  }, [quoteFileUnverifiedById, selectedFilter]);
+
+  console.log('quoteFileData', quoteFileUnverifiedById);
 
   const openNotificationWithIcon = () => {
     api.warning({
@@ -264,7 +268,13 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
         dispatch,
       );
 
-      await dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
+      await dispatch(getQuoteFileByQuoteId(Number(getQuoteID))).then(
+        (d: any) => {
+          if (d?.payload) {
+            dispatch(setQuoteFileUnverifiedById(d?.payload));
+          }
+        },
+      );
       await dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then(
         (d: any) => {
           if (d?.payload) {
@@ -273,7 +283,6 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
         },
       );
       await dispatch(getQuoteFileCount(Number(getQuoteID))).then((d: any) => {
-        console.log('countttttttt', d?.payload);
         if (d?.payload) {
           dispatch(setQuoteFileDataCount(d?.payload));
         }

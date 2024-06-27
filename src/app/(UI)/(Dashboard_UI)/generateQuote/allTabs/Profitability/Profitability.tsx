@@ -99,7 +99,7 @@ const Profitablity: FC<any> = ({
           type = 'groups';
         }
         if (!name) {
-          return; 
+          return;
         }
         const convertToTitleCase = (input: string) => {
           if (!input) {
@@ -230,8 +230,13 @@ const Profitablity: FC<any> = ({
   };
 
   const handleSave = async (record: any) => {
+    const data = {
+      id: record?.product_id,
+      product_family: record.product_family,
+    };
     try {
-      dispatch(updateProfitabilityById(record)).then((d: any) => {
+      await dispatch(updateProductFamily(data));
+      await dispatch(updateProfitabilityById(record)).then((d: any) => {
         if (d?.payload) {
           dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
         }

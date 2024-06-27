@@ -23,6 +23,8 @@ type QuoteFileState = {
   getQuoteFileByQuoteIdAllData: any;
   quoteFileById: any;
   getQuoteFileDataCount: number | undefined;
+  quoteFileUnverifiedById:any;
+  
 };
 const initialState: QuoteFileState = {
   loading: false,
@@ -32,6 +34,7 @@ const initialState: QuoteFileState = {
   getQuoteFileByQuoteIdAllData: [],
   quoteFileById: [],
   getQuoteFileDataCount: undefined,
+  quoteFileUnverifiedById: [],
 };
 
 const quoteFileSlice = createSlice({
@@ -43,6 +46,9 @@ const quoteFileSlice = createSlice({
     },
     setQuoteFileDataCount: (state, action) => {
       state.getQuoteFileDataCount = action.payload;
+    },
+    setQuoteFileUnverifiedById: (state, action) => {
+      state.quoteFileUnverifiedById = action.payload;
     },
   },
   extraReducers(builder) {
@@ -127,7 +133,7 @@ const quoteFileSlice = createSlice({
         getQuoteFileByQuoteId.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.quoteFileUnverifiedById = action.payload;
         },
       )
       .addCase(
@@ -245,5 +251,5 @@ const quoteFileSlice = createSlice({
   },
 });
 
-export const {setQuoteFile, setQuoteFileDataCount} = quoteFileSlice.actions;
+export const {setQuoteFile, setQuoteFileDataCount, setQuoteFileUnverifiedById} = quoteFileSlice.actions;
 export default quoteFileSlice?.reducer;
