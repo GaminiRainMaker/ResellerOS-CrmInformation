@@ -37,7 +37,11 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
-import {getSalesForceFileData} from '../../../../../redux/actions/auth';
+import {
+  addSalesForceDataa,
+  getSalesForceDataaForEditAsItIs,
+  getSalesForceFileData,
+} from '../../../../../redux/actions/auth';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
@@ -56,21 +60,46 @@ const EditorFile = () => {
   const [returnBackModal, setReturnModalBack] = useState<boolean>(false);
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
   const salesToken = searchParams.get('key');
-  const saleDocumentId = searchParams.get('documentId');
   const SaleQuoteId = searchParams.get('QuoteId');
+  const EditSalesLineItems = searchParams.get('editLine');
+  const salesForceUrl = searchParams.get('urls');
+  const salesForceFiledId = searchParams.get('FileId');
 
   // ============================== SalesForce Implementations ======================================
+
   const fetchSaleForceDataa = async () => {
     if (getQuoteFileId) {
       return;
     }
+    setNanonetsLoading(true);
+
+    if (EditSalesLineItems === 'true') {
+      // Work In Case of Edit Data As It Is
+      let newdata = {
+        token: salesToken,
+        // documentId: salesForceFiledId,
+        urls: salesForceUrl,
+        QuoteId: SaleQuoteId,
+        FileId: salesForceFiledId,
+      };
+      dispatch(getSalesForceDataaForEditAsItIs(newdata))?.then(
+        (payload: any) => {
+          setUpdateLineItemsValue(payload?.payload);
+          setNanonetsLoading(false);
+          return;
+        },
+      );
+      return;
+    }
+
+    // Work in case of export to tables
     let data = {
       token: salesToken,
-      documentId: saleDocumentId,
+      FileId: salesForceFiledId,
+      urls: salesForceUrl,
     };
     dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
       setNanonetsLoading(true);
-      let base64 = ['base64']?.concat([payload?.payload?.body]);
       const binaryString = atob(payload?.payload?.body);
 
       // Convert binary string to an array of bytes
@@ -161,7 +190,7 @@ const EditorFile = () => {
   };
 
   useEffect(() => {
-    if (saleDocumentId && !getQuoteFileId) {
+    if (salesForceFiledId && !getQuoteFileId) {
       fetchSaleForceDataa();
     } else {
       if (ExistingQuoteItemss === 'true') {
@@ -279,6 +308,8 @@ const EditorFile = () => {
     }
   }, [quoteFileById]);
 
+  // EditSalesLineItems
+
   useEffect(() => {
     if (quoteFileById?.QuoteLineItems) {
       const missingIds = quoteFileById?.QuoteLineItems.filter(
@@ -290,7 +321,7 @@ const EditorFile = () => {
   }, [updateLineItemsValue]);
 
   useEffect(() => {
-    if (!saleDocumentId) {
+    if (!salesForceFiledId) {
       dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then(
         (payload: any) => {
           if (payload?.payload === null) {
@@ -448,7 +479,13 @@ const EditorFile = () => {
   if (keysss) {
     keysss?.map((item: any) => {
       if (item) {
-        if (item === 'id' || item === 'quote_id' || item === 'organization') {
+        if (
+          item === 'id' ||
+          item === 'quote_id' ||
+          item === 'organization' ||
+          item === 'Id' ||
+          item === 'quoteId'
+        ) {
           const dataObj = {data: item, readOnly: true};
           updateLineItemColumnData?.push(dataObj);
         } else {
@@ -465,6 +502,24 @@ const EditorFile = () => {
       message: 'Kindly wait a moment while we wrap things up.',
       type: 'info',
     });
+
+    if (EditSalesLineItems === 'true') {
+      let newdata = {
+        token: salesToken,
+        // documentId: salesForceFiledId,
+        urls: salesForceUrl,
+        QuoteId: SaleQuoteId,
+        FileId: salesForceFiledId,
+        action: 'EditDataAsIs',
+        lineItem: updateLineItemsValue,
+      };
+
+      dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
+      });
+      setNanonetsLoading(false);
+      return;
+    }
+
     await updateTables(
       getQUoteId,
       quoteFileById,
@@ -506,7 +561,7 @@ const EditorFile = () => {
           overflow: 'auto',
         }}
       >
-        {ExistingQuoteItemss === 'true' ? (
+        {ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true' ? (
           <>
             <Space
               onClick={(e) => {
@@ -526,11 +581,13 @@ const EditorFile = () => {
                 marginBottom: '20px',
               }}
             >
-              <OsButton
-                text="Cancel"
-                buttontype="SECONDARY"
-                clickHandler={CancelEditing}
-              />{' '}
+              {!salesForceFiledId && (
+                <OsButton
+                  text="Cancel"
+                  buttontype="SECONDARY"
+                  clickHandler={CancelEditing}
+                />
+              )}
               <OsButton
                 text="Save LineItems"
                 buttontype="PRIMARY"
@@ -600,13 +657,15 @@ const EditorFile = () => {
                     marginBottom: '20px',
                   }}
                 >
-                  <OsButton
-                    text="Cancel"
-                    buttontype="SECONDARY"
-                    clickHandler={() => {
-                      syncShow('cancel');
-                    }}
-                  />{' '}
+                  {!salesForceFiledId && (
+                    <OsButton
+                      text="Cancel"
+                      buttontype="SECONDARY"
+                      clickHandler={() => {
+                        syncShow('cancel');
+                      }}
+                    />
+                  )}
                   <OsButton
                     text="Sync Table"
                     buttontype="PRIMARY"
@@ -675,17 +734,19 @@ const EditorFile = () => {
                     }}
                   >
                     {' '}
-                    <OsButton
-                      text="Cancel"
-                      buttontype="SECONDARY"
-                      // clickHandler={(e: any) => {
-                      //   e?.preventDefault();
-                      //   CancelEditing();
-                      // }}
-                      clickHandler={(e: void) => {
-                        CancelEditing();
-                      }}
-                    />
+                    {!salesForceFiledId && (
+                      <OsButton
+                        text="Cancel"
+                        buttontype="SECONDARY"
+                        // clickHandler={(e: any) => {
+                        //   e?.preventDefault();
+                        //   CancelEditing();
+                        // }}
+                        clickHandler={(e: void) => {
+                          CancelEditing();
+                        }}
+                      />
+                    )}
                     <OsButton
                       text="Merge Table"
                       buttontype="PRIMARY"
@@ -800,7 +861,7 @@ const EditorFile = () => {
           }}
         />
       )}
-      {!saleDocumentId && (
+      {!salesForceFiledId && (
         <OsModal
           body={
             <Row style={{width: '100%', padding: '15px'}}>

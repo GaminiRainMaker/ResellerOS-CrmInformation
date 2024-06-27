@@ -2,7 +2,9 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
+  addSalesForceDataa,
   contactSales,
+  getSalesForceDataaForEditAsItIs,
   getSalesForceFileData,
   sendForgotPasswordEmail,
   sendNewUserEmail,
@@ -118,6 +120,42 @@ const authSlice = createSlice({
       )
       .addCase(
         getSalesForceFileData.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getSalesForceDataaForEditAsItIs.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getSalesForceDataaForEditAsItIs.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          // state.data = action.payload;
+        },
+      )
+      .addCase(
+        getSalesForceDataaForEditAsItIs.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(addSalesForceDataa.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        addSalesForceDataa.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          // state.data = action.payload;
+        },
+      )
+      .addCase(
+        addSalesForceDataa.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
