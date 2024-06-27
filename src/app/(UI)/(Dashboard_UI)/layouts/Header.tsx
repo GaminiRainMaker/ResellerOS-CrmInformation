@@ -95,8 +95,7 @@ const CustomHeader = () => {
     loading: notificationLoading,
   } = useAppSelector((state) => state.notification);
   const [openNotifications, setOpenNotifications] = useState<boolean>(false);
-
-  const saleDocumentId = searchParams.get('documentId');
+  const salesForceFiledId = searchParams.get('FileId');
   const [userRole, setUserRole] = useState<string>('');
   const [searchFinalData, setSearchFinalData] = useState<any>();
   const [profileImg, setProfileImg] = useState<any>();
@@ -114,7 +113,7 @@ const CustomHeader = () => {
   const [notificationCounts, setNotificationCounts] = useState<number>(0);
 
   useEffect(() => {
-    if (!saleDocumentId) {
+    if (!salesForceFiledId) {
       dispatch(getCountOfNotification(''))?.then((payload: any) => {
         setNotificationCounts(payload?.payload?.length);
       });
@@ -122,7 +121,7 @@ const CustomHeader = () => {
   }, []);
 
   useEffect(() => {
-    if (!saleDocumentId) {
+    if (!salesForceFiledId) {
       setNotificationCounts(0);
     }
   }, [notificationData]);
@@ -309,7 +308,7 @@ const CustomHeader = () => {
             <Col>
               <Image src={HeaderLogo} alt="HeaderLogo" />
             </Col>
-            {!saleDocumentId && (
+            {!salesForceFiledId && (
               <Col span={15}>
                 <SearchSelect
                   onSearch={(e: any) => {
@@ -329,7 +328,7 @@ const CustomHeader = () => {
         </Col>
 
         <Col>
-          {!saleDocumentId && (
+          {!salesForceFiledId && (
             <Space
               direction="horizontal"
               size={24}

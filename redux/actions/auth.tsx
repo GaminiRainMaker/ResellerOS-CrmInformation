@@ -25,6 +25,30 @@ export const getSalesForceFileData = createAsyncThunk(
   },
 );
 
+export const getSalesForceDataaForEditAsItIs = createAsyncThunk(
+  'auth/getSalesForceDataaForEditAsItIs',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await AUTH_API.getAsItIs(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);
+
+export const addSalesForceDataa = createAsyncThunk(
+  'auth/addSalesForceDataa',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await AUTH_API.addUpdateSales(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);
+
 export const verifyAuth = createAsyncThunk(
   'auth/verify',
   async (data: any, thunkApi) => {
