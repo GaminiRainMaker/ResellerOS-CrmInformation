@@ -237,6 +237,8 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
       setShowRaiseConcernModal(false);
       form?.resetFields();
     } else if (buttonType === 'fourth') {
+      dispatch(getQuoteFileCount(Number(getQuoteID)));
+      dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
       setShowRaiseConcernModal(false);
       form?.resetFields();
     } else {

@@ -21,16 +21,14 @@ const BundleSection: FC<any> = ({
   const searchParams = useSearchParams();
   const getQuoteId = searchParams.get('id');
   const dispatch = useAppDispatch();
-  const {data: bundleData, loading: BundleLoading} = useAppSelector(
-    (state) => state.bundle,
-  );
+  const {data: bundleData} = useAppSelector((state) => state.bundle);
   const [radioValue, setRadioValue] = useState(1);
   const [bundleOptions, setBundleOptions] = useState<any>([]);
 
   const onChange = (e: RadioChangeEvent) => {
     setRadioValue(e.target.value);
   };
-  
+
   const onFinish = async () => {
     const BundleData = form.getFieldsValue();
 
@@ -39,17 +37,15 @@ const BundleSection: FC<any> = ({
         ...BundleData,
         quote_id: getQuoteId,
       };
-      await dispatch(insertBundle(obj)).then(
-        (e) => {
-          if (e) {
-            const data = {
-              Ids: selectTedRowIds,
-              bundle_id: e?.payload?.data?.id,
-            };
-            dispatch(updateQuoteLineItemForBundleId(data));
-          }
-        },
-      );
+      await dispatch(insertBundle(obj)).then((e) => {
+        if (e) {
+          const data = {
+            Ids: selectTedRowIds,
+            bundle_id: e?.payload?.data?.id,
+          };
+          dispatch(updateQuoteLineItemForBundleId(data));
+        }
+      });
     } else {
       const data = {
         Ids: selectTedRowIds,
