@@ -95,7 +95,7 @@ const CustomHeader = () => {
     loading: notificationLoading,
   } = useAppSelector((state) => state.notification);
   const [openNotifications, setOpenNotifications] = useState<boolean>(false);
-  const salesForceFiledId = searchParams.get('FileId');
+  const salesForceFiledId = searchParams.get('file_Id');
   const [userRole, setUserRole] = useState<string>('');
   const [searchFinalData, setSearchFinalData] = useState<any>();
   const [profileImg, setProfileImg] = useState<any>();

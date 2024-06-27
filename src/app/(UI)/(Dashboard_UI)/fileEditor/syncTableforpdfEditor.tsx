@@ -80,9 +80,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const getQuoteFileId = searchParams.get('fileId');
 
   const salesToken = searchParams.get('key');
-  const salesForceFiledId = searchParams.get('FileId');
-  const SaleQuoteId = searchParams.get('QuoteId');
-  const salesForceUrl = searchParams.get('urls');
+  const salesForceFiledId = searchParams.get('file_Id');
+  const SaleQuoteId = searchParams.get('quote_Id');
+  const salesForceUrl = searchParams.get('instance_url');
   const [syncTableQuoteLItemValues, setSyncTableQuoteLItemValues] =
     useState<any>(
       salesForceFiledId

@@ -60,11 +60,11 @@ const EditorFile = () => {
   const [returnBackModal, setReturnModalBack] = useState<boolean>(false);
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
   const salesToken = searchParams.get('key');
-  const SaleQuoteId = searchParams.get('QuoteId');
+  const SaleQuoteId = searchParams.get('quote_Id');
   const EditSalesLineItems = searchParams.get('editLine');
-  const salesForceUrl = searchParams.get('urls');
-  const salesForceFiledId = searchParams.get('FileId');
-
+  const salesForceUrl = searchParams.get('instance_url');
+  const salesForceFiledId = searchParams.get('file_Id');
+  // quoteId,instance_url,fileId
   // ============================== SalesForce Implementations ======================================
 
   const fetchSaleForceDataa = async () => {
@@ -514,8 +514,7 @@ const EditorFile = () => {
         lineItem: updateLineItemsValue,
       };
 
-      dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
-      });
+      dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {});
       setNanonetsLoading(false);
       return;
     }
