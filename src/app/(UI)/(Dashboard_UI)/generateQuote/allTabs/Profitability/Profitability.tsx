@@ -13,6 +13,7 @@ import Typography from '@/app/components/common/typography';
 import {pricingMethod, selectDataForProduct} from '@/app/utils/CONSTANTS';
 import {
   calculateProfitabilityData,
+  currencyFormatter,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
@@ -344,14 +345,16 @@ const Profitablity: FC<any> = ({
       sorter: (a: any, b: any) => a.quantity - b.quantity,
       render: (text: string, record: any) => (
         <OsInputNumber
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
           defaultValue={text ?? 0.0}
           disabled={renderEditableInput('Quantity')}
           onKeyDown={(e) => handleKeyDown(e, record)}
           onBlur={(e) => handleBlur(record)}
           style={{
             height: '36px',
+            textAlignLast: 'right',
           }}
-          type="number"
           min={1}
           onChange={(e) =>
             handleFieldChange(record, 'quantity', e, selectedFilter, 'input')
@@ -368,10 +371,14 @@ const Profitablity: FC<any> = ({
       render: (text: string, record: any) => (
         <OsInputNumber
           min={0}
-          type="number"
+          precision={2}
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
           disabled={renderEditableInput('MSRP ($)')}
           style={{
             height: '36px',
+            textAlignLast: 'right',
+            width: '100%',
           }}
           onKeyDown={(e) => handleKeyDown(e, record)}
           onBlur={(e) => handleBlur(record)}
@@ -390,11 +397,15 @@ const Profitablity: FC<any> = ({
       sorter: (a: any, b: any) => a.adjusted_price - b.adjusted_price,
       render: (text: string, record: any) => (
         <OsInputNumber
+          precision={2}
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
           min={0}
           style={{
             height: '36px',
+            textAlignLast: 'right',
+            width: '100%',
           }}
-          type="number"
           onKeyDown={(e) => handleKeyDown(e, record)}
           onBlur={(e) => handleBlur(record)}
           disabled={renderEditableInput('Cost ($)')}
@@ -492,12 +503,15 @@ const Profitablity: FC<any> = ({
           disabled={renderEditableInput('Amount')}
           style={{
             height: '36px',
+            textAlignLast: 'center',
+            width: '100%',
           }}
-          type="number"
+          precision={2}
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
           prefix={updateAmountValue(record?.pricing_method)}
           defaultValue={text ?? 0.0}
           onChange={(e) => {
-            console.log('Dataaaa', selectedFilter);
             handleFieldChange(
               record,
               'line_amount',
@@ -702,8 +716,13 @@ const Profitablity: FC<any> = ({
                               width: '60px',
                               marginLeft: '3px',
                               height: '36px',
+                              textAlignLast: 'right',
                             }}
-                            type="number"
+                            precision={2}
+                            formatter={currencyFormatter}
+                            parser={(value) =>
+                              value!.replace(/\$\s?|(,*)/g, '')
+                            }
                             min={1}
                             onKeyDown={(e) => {
                               e.stopPropagation();
@@ -832,8 +851,13 @@ const Profitablity: FC<any> = ({
                                         width: '60px',
                                         marginLeft: '3px',
                                         height: '36px',
+                                        textAlignLast: 'right',
                                       }}
-                                      type="number"
+                                      precision={2}
+                                      formatter={currencyFormatter}
+                                      parser={(value) =>
+                                        value!.replace(/\$\s?|(,*)/g, '')
+                                      }
                                       min={1}
                                       onKeyDown={(e) => {
                                         e.stopPropagation();

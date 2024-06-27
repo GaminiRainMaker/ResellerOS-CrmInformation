@@ -20,6 +20,7 @@ import {
 import {getRebatesInBulkByProductCode} from '../../../redux/actions/rebate';
 import {insertRebateQuoteLineItem} from '../../../redux/actions/rebateQuoteLineitem';
 import {insertValidation} from '../../../redux/actions/validation';
+import {InputNumberProps} from 'antd';
 
 export const calculateProfitabilityData = (
   Qty: number,
@@ -847,4 +848,21 @@ export const getContractStatus = (
     default:
       return 'Invalid operator';
   }
+};
+
+export const currencyFormatter: InputNumberProps['formatter'] = (
+  f,
+  {userTyping},
+) => {
+  console.log('ddddd',f, userTyping)
+  // if (!f) {
+  //   return '';
+  // }
+  // if (!userTyping) {
+  //   return `${Number(f)
+  //     .toFixed(2)
+  //     .toString()
+  //     .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+  // }
+  return `${f}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
