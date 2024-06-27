@@ -240,7 +240,7 @@ const FormStackSync = () => {
           />
         </SelectFormItem>
 
-        {optionForLineItem && (
+        {/* {optionForLineItem && (
           <SelectFormItem
             style={{marginTop: '10px', width: '100%'}}
             label={
@@ -267,7 +267,7 @@ const FormStackSync = () => {
               }}
             />
           </SelectFormItem>
-        )}
+        )} */}
       </Form>
 
       {syncedValueForDoc?.length > 0 ? (
