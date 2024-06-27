@@ -26,7 +26,8 @@ import {
 } from '../../../../../../../redux/actions/profitability';
 import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
 import UpdatingLineItems from '../../UpdatingLineItems';
-import BundleSection from '../../bundleSection';
+import {Form} from 'antd';
+import BundleSection from '../../BundleSection';
 
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
@@ -41,6 +42,7 @@ const Profitablity: FC<any> = ({
   showBundleModal,
 }) => {
   const dispatch = useAppDispatch();
+  const [BundleForm] = Form.useForm();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
@@ -95,6 +97,9 @@ const Profitablity: FC<any> = ({
             name = item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem;
           }
           type = 'groups';
+        }
+        if (!name) {
+          return;
         }
         const convertToTitleCase = (input: string) => {
           if (!input) {
@@ -225,8 +230,13 @@ const Profitablity: FC<any> = ({
   };
 
   const handleSave = async (record: any) => {
+    const data = {
+      id: record?.product_id,
+      product_family: record.product_family,
+    };
     try {
-      dispatch(updateProfitabilityById(record)).then((d: any) => {
+      await dispatch(updateProductFamily(data));
+      await dispatch(updateProfitabilityById(record)).then((d: any) => {
         if (d?.payload) {
           dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
         }
@@ -913,13 +923,18 @@ const Profitablity: FC<any> = ({
           <BundleSection
             selectTedRowIds={selectTedRowIds}
             setShowBundleModal={setShowBundleModal}
+            form={BundleForm}
           />
         }
         width={700}
         open={showBundleModal}
         onCancel={() => {
           setShowBundleModal((p: boolean) => !p);
+          BundleForm?.resetFields();
         }}
+        primaryButtonText={'Save'}
+        onOk={BundleForm.submit}
+        footerPadding={20}
       />
     </>
   );

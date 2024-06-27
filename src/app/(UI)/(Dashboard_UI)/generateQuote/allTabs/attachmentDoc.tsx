@@ -26,6 +26,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import {deleteQuoteFileById} from '../../../../../../redux/actions/quoteFile';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 
 const AttachmentDocument: FC<any> = ({
   typeForAttachmentFilter,
@@ -49,6 +50,7 @@ const AttachmentDocument: FC<any> = ({
   const [filteredData, setFilteredData] = useState([]);
   const [callApis, setCallApis] = useState<boolean>(false);
   const [loadingShow, setLoadingShow] = useState<boolean>(false);
+  const [bufferLoading, setBufferLoading] = useState<boolean>(false);
   const [deletedData, setDeletedData] = useState<any>();
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
 
@@ -162,44 +164,45 @@ const AttachmentDocument: FC<any> = ({
     },
   ];
 
-  const beforeUpload = (file: File) => {
+  const beforeUpload = async (file: File) => {
     let pathUsedToUpload = file?.type?.split('.')?.includes('spreadsheetml')
       ? uploadExcelFileToAws
       : uploadToAws;
-
-    convertFileToBase64(file)
-      .then((base64String) => {
-        if (base64String) {
-          dispatch(pathUsedToUpload({document: base64String})).then(
-            (payload: any) => {
-              const pdfUrl = payload?.payload?.data?.Location;
-              setAttachUrl(pdfUrl);
-            },
-          );
-        }
-      })
-      .catch((error: any) => {
-        message.error('Error converting file to base64', error);
-      });
+    try {
+      setBufferLoading(true);
+      const base64String = await convertFileToBase64(file);
+      if (base64String) {
+        const payload = await dispatch(
+          pathUsedToUpload({document: base64String}),
+        );
+        const pdfUrl = payload?.payload?.data?.Location;
+        setAttachUrl(pdfUrl);
+        message.success('File uploaded successfully');
+      }
+    } catch (error: any) {
+      message.error('Error converting file to base64', error);
+    } finally {
+      setBufferLoading(false);
+    }
     return false;
   };
 
-  const addNewAttachment = () => {
+  const addNewAttachment = async () => {
     let newObjForAttach: any = {
       doc_url: attachUrl,
       quote_id: getQuoteID,
       type: typeOfAttach,
     };
     if (newObjForAttach) {
-      dispatch(insertAttachmentDocument(newObjForAttach)).then((d) => {
+      await dispatch(insertAttachmentDocument(newObjForAttach)).then((d) => {
         if (d?.payload) {
           setAddNewCustomerQuote(false);
           setCallApis(true);
+          setAttachUrl('');
+          setTypeOfAttach('');
         }
       });
     }
-    setAttachUrl('');
-    setTypeOfAttach('');
   };
 
   useEffect(() => {
@@ -242,23 +245,25 @@ const AttachmentDocument: FC<any> = ({
       />
 
       <OsModal
-        width={1100}
+        loading={loading}
+        width={600}
         open={addNewCustomerQuote}
         onCancel={() => {
           setAddNewCustomerQuote(false);
           setAttachUrl('');
           setTypeOfAttach('');
         }}
-        bodyPadding={40}
-        title="All Customer Quote"
+        bodyPadding={20}
+        title="Add Customer Attachments"
+        primaryButtonText={typeOfAttach && 'Save'}
+        onOk={addNewAttachment}
         body={
-          <Space style={{width: '100%'}}>
+          <div style={{width: '100%'}}>
             {attachUrl ? (
               <>
-                {' '}
                 <CommonSelect
                   key={1}
-                  style={{width: '319px'}}
+                  style={{width: '100%'}}
                   placeholder="Select Grouping here"
                   options={AttachmentOptions}
                   onChange={(e) => {
@@ -266,48 +271,42 @@ const AttachmentDocument: FC<any> = ({
                   }}
                   allowClear
                 />
-                <OsButton
-                  loading={loading}
-                  buttontype="PRIMARY"
-                  disabled={!typeOfAttach}
-                  clickHandler={addNewAttachment}
-                  text="Save"
-                />
               </>
             ) : (
-              <OSDraggerStyle
-                style={{width: '100vh'}}
-                beforeUpload={beforeUpload}
-                showUploadList={false}
-                multiple
-              >
-                <FolderArrowDownIcon
-                  width={24}
-                  color={token?.colorInfoBorder}
-                />
-                <Typography
-                  name="Body 4/Medium"
-                  color={token?.colorPrimaryText}
-                  as="div"
+              <GlobalLoader loading={bufferLoading}>
+                <OSDraggerStyle
+                  beforeUpload={beforeUpload}
+                  showUploadList={false}
+                  multiple
                 >
+                  <FolderArrowDownIcon
+                    width={24}
+                    color={token?.colorInfoBorder}
+                  />
                   <Typography
                     name="Body 4/Medium"
-                    style={{textDecoration: 'underline', cursor: 'pointer'}}
-                    color={token?.colorPrimary}
+                    color={token?.colorPrimaryText}
+                    as="div"
                   >
-                    Click to Upload
-                  </Typography>{' '}
-                  or Drag and Drop
-                </Typography>
-                <Typography
-                  name="Body 4/Medium"
-                  color={token?.colorPrimaryText}
-                >
-                  XLS, PDF.
-                </Typography>
-              </OSDraggerStyle>
+                    <Typography
+                      name="Body 4/Medium"
+                      style={{textDecoration: 'underline', cursor: 'pointer'}}
+                      color={token?.colorPrimary}
+                    >
+                      Click to Upload
+                    </Typography>{' '}
+                    or Drag and Drop
+                  </Typography>
+                  <Typography
+                    name="Body 4/Medium"
+                    color={token?.colorPrimaryText}
+                  >
+                    XLS, PDF.
+                  </Typography>
+                </OSDraggerStyle>
+              </GlobalLoader>
             )}
-          </Space>
+          </div>
         }
       />
 

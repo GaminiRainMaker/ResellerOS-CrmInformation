@@ -109,7 +109,7 @@ const GenerateQuote: React.FC = () => {
     if (getQuoteFileDataCount === 0) {
       setActiveTab('2');
     }
-  }, [getQuoteFileDataCount]);
+  }, [JSON.stringify(getQuoteFileDataCount)]);
 
   useEffect(() => {
     dispatch(getQuoteByIdForFormStack(Number(getQuoteID)))?.then(
@@ -222,7 +222,9 @@ const GenerateQuote: React.FC = () => {
             //     type: 'info',
             //   });
             // } else {
-            setShowBundleModal(true);
+            if (selectTedRowData?.length > 0) {
+              setShowBundleModal(true);
+            }
             // }
           }}
         >
