@@ -6,7 +6,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import Typography from '@/app/components/common/typography';
-import {Button, Divider, Form} from 'antd';
+import {Button, Divider, Form, Radio} from 'antd';
 
 import {useEffect, useState} from 'react';
 
@@ -44,6 +44,7 @@ const FormStackSync = () => {
   const [selectDropdownType, setSelectDropdownType] = useState<string>('Quote');
 
   const [columnSelectOptions, setColumnSelectOptions] = useState<any>([]);
+  const [typeOffile, setTypeOfFile] = useState<any>('');
 
   const [selectedColumn, setSelectColumn] = useState<any>();
   const [optionForLineItem, setOptionForLineItem] = useState<any>();
@@ -126,6 +127,9 @@ const FormStackSync = () => {
         dispatch(getFormStackByDocId(id))?.then((payload: any) => {
           if (payload?.payload) {
             let valuesFromSyncApi = JSON?.parse(payload?.payload?.syncJson);
+            if (payload?.payload?.type_of_file) {
+              setTypeOfFile(payload?.payload?.type_of_file);
+            }
             let newArrForSync: any = [];
             if (
               keysOfAllFromFormStackApi?.length > 0 &&
@@ -236,39 +240,28 @@ const FormStackSync = () => {
               setDocumentKey(e?.key);
               setDocumentId(e?.value);
               getDataOfFormStackByDocId(e?.value);
+              setTypeOfFile('');
             }}
           />
         </SelectFormItem>
-
-        {/* {optionForLineItem && (
-          <SelectFormItem
-            style={{marginTop: '10px', width: '100%'}}
-            label={
-              <Typography name="Body 4/Medium">
-                Select LineItem Column
-              </Typography>
-            }
-            name="lineItemId"
-            rules={[
-              {
-                required: true,
-                message: 'Document is required!',
-              },
-            ]}
-          >
-            <CommonSelect
-              style={{width: '100%'}}
-              placeholder="Select Document"
-              allowClear
-              labelInValue
-              options={optionForLineItem}
-              onChange={(e: any) => {
-                changeTheLineItems(e);
-              }}
-            />
-          </SelectFormItem>
-        )} */}
       </Form>
+      {optionForLineItem && (
+        <>
+          <Typography name="Body 4/Medium">Type Of Syncing</Typography>
+          <Radio.Group
+            onChange={(e: any) => {
+              setTypeOfFile(e?.target?.value);
+            }}
+            value={typeOffile}
+          >
+            <Radio value={'Bundle Only'}>Bundles Only</Radio>
+            <Radio value={'Line Items Only'}>Lines Items Only</Radio>
+            <Radio value={'With and without bundle'}>
+              With and without bundles
+            </Radio>
+          </Radio.Group>
+        </>
+      )}
 
       {syncedValueForDoc?.length > 0 ? (
         <AddDocument
@@ -306,6 +299,8 @@ const FormStackSync = () => {
                 documentName={documentName}
                 documentKey={documentKey}
                 selectedColumn={selectedColumn}
+                typeOffile={typeOffile}
+                setTypeOfFile={setTypeOfFile}
               />
             </>
           )}

@@ -41,6 +41,8 @@ const AddDocument: FC<any> = ({
   documentName,
   documentKey,
   selectedColumn,
+  typeOffile,
+  setTypeOfFile,
 }) => {
   const [token] = useThemeToken();
   const router = useRouter();
@@ -171,11 +173,20 @@ const AddDocument: FC<any> = ({
   };
 
   const addNewSyncValues = async () => {
+    if (!typeOffile) {
+      notification?.open({
+        message: 'Please select type of Syncing',
+        type: 'error',
+      });
+
+      return;
+    }
     let obj = {
       doc_id: documentId,
       syncJson: [JSON.stringify(syncedNewValue)],
       doc_name: documentName,
       doc_key: documentKey,
+      type_of_file: typeOffile,
     };
     if (obj && documentId) {
       await dispatch(insertFormStack(obj));
@@ -185,6 +196,7 @@ const AddDocument: FC<any> = ({
       message: 'FormStack Syncing added successfully',
       type: 'success',
     });
+    setTypeOfFile('');
   };
 
   return (

@@ -121,7 +121,10 @@ const GenerateQuote: React.FC = () => {
                   newBundleData?.push(items);
                 }
               });
+
               let newObj = {
+                bundleData: newBundleData,
+                QuoteLineItems: payload?.payload?.Profitabilities,
                 ...payload?.payload?.Customer,
                 ...payload?.payload?.Opportunity,
                 ...payload?.payload,
@@ -133,9 +136,7 @@ const GenerateQuote: React.FC = () => {
               delete newObj?.Customer;
               delete newObj?.Opportunity,
                 delete newObj?.Profitabilities,
-                (newObj.bundleData = newBundleData);
-              newObj.QuoteLineItems = payload?.payload?.Profitabilities;
-              setObjectForSyncingValues(newObj);
+                setObjectForSyncingValues(newObj);
             } else {
               let newObj = {
                 ...payload?.payload?.Customer,
