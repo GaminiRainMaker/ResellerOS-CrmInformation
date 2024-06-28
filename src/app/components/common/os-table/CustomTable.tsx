@@ -15,7 +15,7 @@ const OsTableWithOutDrag: FC<any> = ({
   cursor = 'default',
   tableSelectionType = 'checkbox',
   scrolly = 1000,
-  tablePageSize = 10,
+  tablePageSize = 100,
   showPagination,
   selectedRowsKeys = [],
   ...rest
@@ -35,7 +35,7 @@ const OsTableWithOutDrag: FC<any> = ({
 
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 10,
+    pageSize: 100,
     total: 0,
   });
 
