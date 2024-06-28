@@ -21,7 +21,9 @@ import {FC, useEffect, useState} from 'react';
 import {updateBundleQuantity} from '../../../../../../../redux/actions/bundle';
 import {updateProductFamily} from '../../../../../../../redux/actions/product';
 import {
+  deleteProfitabilityById,
   getProfitabilityByQuoteId,
+  removeBundleLineItems,
   updateProfitabilityById,
   updateProfitabilityValueForBulk,
 } from '../../../../../../../redux/actions/profitability';
@@ -29,6 +31,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
 import UpdatingLineItems from '../../UpdatingLineItems';
 import {Form} from 'antd';
 import BundleSection from '../../BundleSection';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import {TrashIcon} from '@heroicons/react/24/outline';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 
@@ -43,6 +46,10 @@ const Profitablity: FC<any> = ({
   selectTedRowIds,
   setShowBundleModal,
   showBundleModal,
+  setIsDeleteProfitabilityModal,
+  isDeleteProfitabilityModal,
+  showRemoveBundleLineItemModal,
+  setShowRemoveBundleLineItemModal,
 }) => {
   const dispatch = useAppDispatch();
   const [BundleForm] = Form.useForm();
@@ -59,7 +66,7 @@ const Profitablity: FC<any> = ({
   const [finalData, setFinalData] = useState<any>([]);
   const [finalFieldData, setFinalFieldData] = useState<any>({});
   const [keyPressed, setKeyPressed] = useState('');
-  const [collapseActiveKeys, setCollapseActiveKeys] = useState<string[]>([]);
+  const [collapseActiveKeys, setCollapseActiveKeys] = useState<any>([]);
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
       id: number;
@@ -326,14 +333,20 @@ const Profitablity: FC<any> = ({
 
   const ActionColumn = {
     title: 'Action',
-    render: (text: string, record: any) => (
-      <TrashIcon
-        height={24}
-        width={24}
-        color={token.colorError}
-        style={{cursor: 'pointer'}}
-      />
-    ),
+    render: (text: string, record: any) => {
+      return (
+        <TrashIcon
+          height={24}
+          width={24}
+          color={token.colorError}
+          style={{cursor: 'pointer'}}
+          onClick={() => {
+            setSelectedRowData([record]);
+            setShowRemoveBundleLineItemModal(true);
+          }}
+        />
+      );
+    },
     width: 111,
   };
 
@@ -685,6 +698,33 @@ const Profitablity: FC<any> = ({
       dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
     }
   };
+
+  const deleteProfitabityData = () => {
+    const Ids: any = selectTedRowData?.map((item: any) => item?.id);
+    dispatch(deleteProfitabilityById({Ids: Ids})).then((d) => {
+      if (d?.payload) {
+        dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+        setIsDeleteProfitabilityModal(false);
+        setSelectedRowData([]);
+        setSelectedRowIds([]);
+      }
+    });
+  };
+
+  const removeBundleLineItemsFunction = () => {
+    const Ids: any = selectTedRowData?.map((item: any) => item?.id);
+    if (Ids) {
+      dispatch(removeBundleLineItems({Ids: Ids})).then((d) => {
+        if (d?.payload) {
+          dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+          setShowRemoveBundleLineItemModal(false);
+          setSelectedRowData([]);
+          setSelectedRowIds([]);
+        }
+      });
+    }
+  };
+
   const renderFinalData = () => {
     const bundleData = finalData.filter((item: any) => item.type === 'bundle');
     const nonBundleData = finalData.filter(
@@ -698,16 +738,7 @@ const Profitablity: FC<any> = ({
             key={index}
             activeKey={collapseActiveKeys}
             onChange={(key: string | string[]) => {
-              let arr: string[] = [...collapseActiveKeys];
-              const collapseIndex = arr.findIndex(
-                (item: string) => item === key,
-              );
-              if (collapseIndex > -1) {
-                arr.splice(collapseIndex, 1);
-              } else {
-                arr.push(...key);
-              }
-              setCollapseActiveKeys(arr);
+              setCollapseActiveKeys(key);
             }}
             items={[
               {
@@ -837,16 +868,7 @@ const Profitablity: FC<any> = ({
                       key={index}
                       activeKey={collapseActiveKeys}
                       onChange={(key: string | string[]) => {
-                        let arr: string[] = [...collapseActiveKeys];
-                        const collapseIndex = arr.findIndex(
-                          (item: string) => item === key,
-                        );
-                        if (collapseIndex > -1) {
-                          arr.splice(collapseIndex, 1);
-                        } else {
-                          arr.push(...key);
-                        }
-                        setCollapseActiveKeys(arr);
+                        setCollapseActiveKeys(key);
                       }}
                       items={[
                         {
@@ -1025,6 +1047,24 @@ const Profitablity: FC<any> = ({
         primaryButtonText={'Save'}
         onOk={BundleForm.submit}
         footerPadding={20}
+      />
+
+      <DeleteModal
+        setShowModalDelete={setIsDeleteProfitabilityModal}
+        setDeleteIds={setSelectedRowIds}
+        showModalDelete={isDeleteProfitabilityModal}
+        deleteSelectedIds={deleteProfitabityData}
+        description="Are you sure you want to delete this Profitability?"
+        heading="Delete Profitability"
+      />
+      <DeleteModal
+        loading={bundleLoading}
+        setShowModalDelete={setShowRemoveBundleLineItemModal}
+        setDeleteIds={setSelectedRowIds}
+        showModalDelete={showRemoveBundleLineItemModal}
+        deleteSelectedIds={removeBundleLineItemsFunction}
+        description="Are you sure you want to delete lineItem from this Bundle?"
+        heading="Delete LineItem from Bundle"
       />
     </>
   );

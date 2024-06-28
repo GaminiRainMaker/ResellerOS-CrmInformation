@@ -13,6 +13,10 @@ const ProfitabilityMain: FC<any> = ({
   selectTedRowIds,
   setSelectedRowIds,
   showBundleModal,
+  isDeleteProfitabilityModal,
+  setIsDeleteProfitabilityModal,
+  showRemoveBundleLineItemModal,
+  setShowRemoveBundleLineItemModal
 }) => {
   return (
     <>
@@ -27,6 +31,10 @@ const ProfitabilityMain: FC<any> = ({
         selectTedRowIds={selectTedRowIds}
         setShowBundleModal={setShowBundleModal}
         showBundleModal={showBundleModal}
+        isDeleteProfitabilityModal={isDeleteProfitabilityModal}
+        setIsDeleteProfitabilityModal={setIsDeleteProfitabilityModal}
+        showRemoveBundleLineItemModal={showRemoveBundleLineItemModal}
+        setShowRemoveBundleLineItemModal={setShowRemoveBundleLineItemModal}
       />
     </>
   );
