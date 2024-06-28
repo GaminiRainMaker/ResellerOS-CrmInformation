@@ -59,7 +59,7 @@ const GenerateQuote: React.FC = () => {
     (state) => state.quoteLineItem,
   );
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
-  const [selectTedRowData, setSelectedRowData] = useState<React.Key[]>([]);
+  const [selectTedRowData, setSelectedRowData] = useState<any>([]);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [open, setOpen] = useState(false);
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
@@ -216,16 +216,26 @@ const GenerateQuote: React.FC = () => {
           name="Body 3/Regular"
           cursor="pointer"
           onClick={() => {
-            // if (quoteFileData.length > 0) {
-            //   notification.open({
-            //     message: 'Please Verify All the Files first.',
-            //     type: 'info',
-            //   });
-            // } else {
             if (selectTedRowData?.length > 0) {
-              setShowBundleModal(true);
+              let bundleCount = 0;
+              for (const item of selectTedRowData) {
+                if (item?.bundle_id) {
+                  bundleCount++;
+                }
+              }
+              if (bundleCount > 0) {
+                const message =
+                  bundleCount === 1
+                    ? 'For this Line item bundle is already created.'
+                    : 'For these Line items bundles are already created.';
+                notification.open({
+                  message,
+                  type: 'info',
+                });
+              } else {
+                setShowBundleModal(true);
+              }
             }
-            // }
           }}
         >
           Bundle Configuration
