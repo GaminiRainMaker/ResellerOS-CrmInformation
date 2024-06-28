@@ -77,7 +77,7 @@ const GenerateQuote: React.FC = () => {
   const [statusValue, setStatusValue] = useState<string>('');
   const [statusUpdateLoading, setStatusUpdateLoading] =
     useState<boolean>(false);
-  const {data: quoteFileData, getQuoteFileDataCount} = useAppSelector(
+  const {quoteFileUnverifiedById, getQuoteFileDataCount} = useAppSelector(
     (state) => state.quoteFile,
   );
   const [showUpdateLineItemModal, setShowUpdateLineItemModal] =
@@ -214,18 +214,21 @@ const GenerateQuote: React.FC = () => {
           name="Body 3/Regular"
           cursor="pointer"
           onClick={() => {
-            if (selectTedRowData?.length > 0) {
-              let bundleCount = 0;
-              for (const item of selectTedRowData) {
-                if (item?.bundle_id) {
-                  bundleCount++;
-                }
-              }
+            if (quoteFileUnverifiedById?.length > 0) {
+              notification.open({
+                message: 'Please verify all the files first.',
+                type: 'info',
+              });
+            } else if (selectTedRowData?.length > 0) {
+              const bundleCount = selectTedRowData.filter(
+                (item: any) => item?.bundle_id,
+              ).length;
+
               if (bundleCount > 0) {
                 const message =
                   bundleCount === 1
                     ? 'For this Line item bundle is already created.'
-                    : 'For these Line items bundles are already created.';
+                    : 'For these Line items bundle is already created.';
                 notification.open({
                   message,
                   type: 'info',
@@ -233,6 +236,11 @@ const GenerateQuote: React.FC = () => {
               } else {
                 setShowBundleModal(true);
               }
+            } else {
+              notification.open({
+                message: 'Please select the Line items first.',
+                type: 'info',
+              });
             }
           }}
         >
@@ -247,14 +255,18 @@ const GenerateQuote: React.FC = () => {
           name="Body 3/Regular"
           cursor="pointer"
           onClick={() => {
-            // if (quoteFileData.length > 0) {
-            //   notification.open({
-            //     message: 'Please Verify All the Files first.',
-            //     type: 'info',
-            //   });
-            // } else
-            if (selectTedRowData?.length > 0) {
+            if (quoteFileUnverifiedById?.length > 0) {
+              notification.open({
+                message: 'Please verify all the files first.',
+                type: 'info',
+              });
+            } else if (selectTedRowData?.length > 0) {
               setShowUpdateLineItemModal(true);
+            } else {
+              notification.open({
+                message: 'Please select the Line items first.',
+                type: 'info',
+              });
             }
           }}
         >
@@ -270,18 +282,25 @@ const GenerateQuote: React.FC = () => {
           color={token?.colorError}
           cursor="pointer"
           onClick={() => {
-            if (selectTedRowData?.length > 0) {
-              let bundleCount = 0;
-              for (const item of selectTedRowData) {
-                if (item?.bundle_id) {
-                  bundleCount++;
-                }
-              }
+            if (quoteFileUnverifiedById?.length > 0) {
+              notification.open({
+                message: 'Please verify all the files first.',
+                type: 'info',
+              });
+            } else if (selectTedRowData?.length > 0) {
+              let bundleCount = selectTedRowData.filter(
+                (item: any) => item?.bundle_id,
+              ).length;
               if (bundleCount > 0) {
                 setShowRemoveBundleLineItemModal(true);
               } else {
                 setIsDeleteProfitabilityModal(true);
               }
+            } else {
+              notification.open({
+                message: 'Please select the Line items first.',
+                type: 'info',
+              });
             }
           }}
         >
@@ -476,9 +495,9 @@ const GenerateQuote: React.FC = () => {
                 text="Edit Quote Header"
                 buttontype="SECONDARY"
                 clickHandler={() => {
-                  if (quoteFileData?.length > 0) {
+                  if (quoteFileUnverifiedById?.length > 0) {
                     notification.open({
-                      message: 'Please Verify All the Files first.',
+                      message: 'Please verify all the files first.',
                       type: 'info',
                     });
                   } else {
@@ -503,11 +522,14 @@ const GenerateQuote: React.FC = () => {
                 text=" Mark as Complete"
                 buttontype="PRIMARY"
                 clickHandler={() => {
-                  if (quoteFileData && quoteFileData?.length > 0) {
+                  if (
+                    quoteFileUnverifiedById &&
+                    quoteFileUnverifiedById?.length > 0
+                  ) {
                     notification?.open({
                       message:
-                        'Please Verify All the Pdf to mark as Complete this Quote',
-                      type: 'error',
+                        'Please verify all the files first to mark as Complete this Quote',
+                      type: 'info',
                     });
                     return;
                   }

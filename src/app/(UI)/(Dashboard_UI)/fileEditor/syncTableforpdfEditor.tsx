@@ -74,6 +74,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const {data: syncTableData, loading: syncDataLoading} = useAppSelector(
     (state) => state.syncTable,
   );
+
   const [token] = useThemeToken();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
@@ -224,6 +225,21 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       alllArrayValue?.push(newObj);
     });
 
+    function cleanObject(obj: any) {
+      let cleanedObj: any = {};
+      // Iterate through the keys of the object
+      Object.keys(obj).forEach((key) => {
+        // Only add to the cleaned object if key is not empty and value is defined
+        if (key !== '' && obj[key] !== undefined) {
+          cleanedObj[key] = obj[key];
+        }
+      });
+      return cleanedObj;
+    }
+
+    // Map over newArr and apply cleanObject to each element
+    let requiredOutput = alllArrayValue.map((obj: any) => cleanObject(obj));
+
     if (salesForceFiledId) {
       let newdata = {
         token: salesToken,
@@ -232,11 +248,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         QuoteId: SaleQuoteId,
         FileId: salesForceFiledId,
         action: 'ExportFileToTable',
-        lineItem: alllArrayValue,
+        lineItem: requiredOutput,
       };
-      dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
-        console.log('3453424', payload);
-      });
+      dispatch(addSalesForceDataa(newdata));
       setNanonetsLoading(false);
       return;
     }
@@ -244,20 +258,20 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     const newrrLineItems: any = [];
     const rebateDataArray: any = [];
     const contractProductArray: any = [];
-    if (alllArrayValue) {
+    if (requiredOutput) {
       const data = {
-        quote_json: JSON?.stringify(alllArrayValue),
+        quote_json: JSON?.stringify(requiredOutput),
         id: Number(getQuoteID),
       };
       await dispatch(updateQuoteJsonAndManual(data));
 
-      let newArrValues = getLineItemsWithNonRepitive(alllArrayValue);
+      let newArrValues = getLineItemsWithNonRepitive(requiredOutput);
 
       let allProductCodes: any = [];
       let allProductCodeDataa: any = [];
       const allReabatesWithProductCodeData: any = [];
       const allContractWithProductCodeData: any = [];
-      alllArrayValue?.map((itemsPro: any) => {
+      requiredOutput?.map((itemsPro: any) => {
         allProductCodes?.push(
           itemsPro?.product_code
             ? itemsPro?.product_code?.replace(/\s/g, '')
@@ -275,7 +289,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       if (valuessOfAlreayExist?.payload?.length > 0) {
         // ======To get items that are  non added Values==============
         let newInsertionData = getValuesOFLineItemsThoseNotAddedBefore(
-          alllArrayValue,
+          requiredOutput,
           allProductCodeDataa,
         );
 
@@ -318,9 +332,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         },
       );
 
-      if (alllArrayValue) {
-        for (let i = 0; i < alllArrayValue?.length; i++) {
-          let itemsOfProduct = alllArrayValue[i];
+      if (requiredOutput) {
+        for (let i = 0; i < requiredOutput?.length; i++) {
+          let itemsOfProduct = requiredOutput[i];
           if (itemsOfProduct) {
             let productCode = itemsOfProduct?.product_code
               ? itemsOfProduct?.product_code?.replace(/\s/g, '')
@@ -451,24 +465,39 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     setNanonetsLoading(false);
     router?.push(`/generateQuote?id=${Number(getQuoteID)}`);
   };
-  const handleChange = (value: string) => {
+  const handleChange = () => {
+    // This defines which option we are using salesforce or full stack
     let optionsTOAdd = salesForceFiledId
       ? SaleForceQuoteLineItemColumnSync
       : quoteLineItemColumnForSync;
-    const newInsertOptions = optionsTOAdd?.find(
-      (itemss: any) => itemss?.value === value,
-    );
-    const newArr =
-      syncTableQuoteLItemValues?.length > 0
-        ? [...syncTableQuoteLItemValues]
-        : [];
-
-    newArr?.push(newInsertOptions);
-
+    let newArrOfOptions: any = [];
+    // This defines the options already added to the synced values
+    syncedNewValue?.map((items: any) => {
+      if (items?.newVal) {
+        newArrOfOptions?.push(items?.newVal);
+      }
+    });
+    let newArrOfOptionsToNotUsed = [...optionsTOAdd];
+    // This will remove the options value those are already added in sync
+    if (newArrOfOptions?.length > 0) {
+      newArrOfOptions?.map((item: string) => {
+        const findIndex = newArrOfOptionsToNotUsed?.findIndex(
+          (itemss: any) => itemss?.value === item,
+        );
+        if (findIndex !== -1) {
+          newArrOfOptionsToNotUsed?.splice(findIndex, 1);
+        }
+      });
+    }
+    // setTimeout used to rerender data in the options with updating the state
     setTimeout(() => {
-      setSyncTableQuoteLItemValues(newArr);
-    }, 1000);
+      setSyncTableQuoteLItemValues(newArrOfOptionsToNotUsed);
+    }, 100);
   };
+
+  useEffect(() => {
+    handleChange();
+  }, [syncedNewValue]);
 
   return (
     <>
@@ -518,7 +547,14 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                     syncTableToLineItems(item, e, indexOfCol);
                   }}
                   allowClear
-                  onClear={() => handleChange(item?.newVal)}
+                  onClear={() => {
+                    if (!item?.newVal) {
+                      return;
+                    }
+                    if (item?.newVal) {
+                      handleChange();
+                    }
+                  }}
                   defaultValue={item?.newVal?.toString()?.toUpperCase()}
                   style={{width: '250px'}}
                   options={syncTableQuoteLItemValues}
@@ -535,7 +571,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           }}
         >
           <OsButton
-            loading={syncDataLoading}
+            loading={nanonetsLoading}
             text="Sync And Save"
             style={{
               width: '100%',

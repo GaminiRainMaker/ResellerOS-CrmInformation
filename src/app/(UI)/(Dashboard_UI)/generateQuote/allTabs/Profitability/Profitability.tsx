@@ -1050,6 +1050,7 @@ const Profitablity: FC<any> = ({
       />
 
       <DeleteModal
+        loading={loading}
         setShowModalDelete={setIsDeleteProfitabilityModal}
         setDeleteIds={setSelectedRowIds}
         showModalDelete={isDeleteProfitabilityModal}
