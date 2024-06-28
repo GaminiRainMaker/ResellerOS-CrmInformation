@@ -6,7 +6,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import Typography from '@/app/components/common/typography';
-import {Button, Divider, Form} from 'antd';
+import {Button, Divider, Form, Radio} from 'antd';
 
 import {useEffect, useState} from 'react';
 
@@ -44,6 +44,7 @@ const FormStackSync = () => {
   const [selectDropdownType, setSelectDropdownType] = useState<string>('Quote');
 
   const [columnSelectOptions, setColumnSelectOptions] = useState<any>([]);
+  const [typeOffile, setTypeOfFile] = useState<any>('');
 
   const [selectedColumn, setSelectColumn] = useState<any>();
   const [optionForLineItem, setOptionForLineItem] = useState<any>();
@@ -126,6 +127,9 @@ const FormStackSync = () => {
         dispatch(getFormStackByDocId(id))?.then((payload: any) => {
           if (payload?.payload) {
             let valuesFromSyncApi = JSON?.parse(payload?.payload?.syncJson);
+            if (payload?.payload?.type_of_file) {
+              setTypeOfFile(payload?.payload?.type_of_file);
+            }
             let newArrForSync: any = [];
             if (
               keysOfAllFromFormStackApi?.length > 0 &&
@@ -195,6 +199,7 @@ const FormStackSync = () => {
 
     setNewSyncedValue(newArrAfterChange);
   };
+  console.log('4354365435435', typeOffile);
   return (
     <Space direction="vertical" size={24} style={{width: '100%'}}>
       <Form
@@ -240,7 +245,7 @@ const FormStackSync = () => {
           />
         </SelectFormItem>
 
-        {/* {optionForLineItem && (
+        {optionForLineItem && (
           <SelectFormItem
             style={{marginTop: '10px', width: '100%'}}
             label={
@@ -256,18 +261,21 @@ const FormStackSync = () => {
               },
             ]}
           >
-            <CommonSelect
-              style={{width: '100%'}}
-              placeholder="Select Document"
-              allowClear
-              labelInValue
-              options={optionForLineItem}
+            <Radio.Group
               onChange={(e: any) => {
-                changeTheLineItems(e);
+                setTypeOfFile(e?.target?.value);
               }}
-            />
+              defaultValue={typeOffile}
+              value={typeOffile}
+            >
+              <Radio value={'Bundle Only'}>Bundle Only</Radio>
+              <Radio value={'Line Items Only'}>Line Items Only</Radio>
+              <Radio value={'With and without bundle'}>
+                With and without bundle
+              </Radio>
+            </Radio.Group>
           </SelectFormItem>
-        )} */}
+        )}
       </Form>
 
       {syncedValueForDoc?.length > 0 ? (
@@ -306,6 +314,8 @@ const FormStackSync = () => {
                 documentName={documentName}
                 documentKey={documentKey}
                 selectedColumn={selectedColumn}
+                typeOffile={typeOffile}
+                setTypeOfFile={setTypeOfFile}
               />
             </>
           )}

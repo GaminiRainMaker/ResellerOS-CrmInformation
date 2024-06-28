@@ -21,6 +21,11 @@ import {
   SaleForArrayAll,
   salesForceWithWithoutBundle,
 } from '@/app/utils/CONSTANTS';
+import {
+  getFormattedValuesForBundlesOnly,
+  getFormattedValuesForLineItems,
+  getFormattedValuesForWithAndWithoutBundles,
+} from '@/app/utils/base';
 const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
   const [token] = useThemeToken();
   const router = useRouter();
@@ -55,120 +60,24 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
         </Typography>
       ),
     }));
-  useEffect(() => {
-    let finArrr: any = [];
-    // ========================= For Bundles =====================================
-    // if (
-    //   objectForSyncingValues &&
-    //   objectForSyncingValues?.bundleData?.length > 0
-    // ) {
-    //   objectForSyncingValues?.bundleData?.map(
-    //     (itemBun: any, indexBun: number) => {
-    //       let innerLineArr: any = [];
-    //       itemBun?.Profitabilities?.map((items: any, index: number) => {
-    //         let newObj = {
-    //           attributes: {
-    //             type: 'QuoteLineItem',
-    //           },
-    //           Id: items?.id,
-    //           line_number: items?.line_number ? items?.line_number : index + 1,
-    //           quantity: items?.quantity,
-    //           product_code: items?.product_code,
-    //           description: items?.description,
-    //           line_amount: items?.line_amount,
-    //           list_price: items?.list_price,
-    //           organization: items?.organization,
-    //         };
-    //         innerLineArr?.push(newObj);
-    //       });
-
-    //       let finalObj = {
-    //         attributes: {
-    //           type: 'QuoteLineItem',
-    //         },
-    //         Id: '1',
-    //         bundle_name: itemBun?.name,
-    //         extended_price: itemBun?.extended_price,
-    //         rosquoteai__Quote_Line_Items__r: {
-    //           records: innerLineArr,
-    //         },
-    //       };
-
-    //       finArrr?.push(finalObj);
-    //     },
-    //   );
-    // }
-
-    // // // ========================For Simple Line Items =============================
-    // if (
-    //   objectForSyncingValues &&
-    //   objectForSyncingValues?.QuoteLineItems?.length > 0
-    // ) {
-    //   let newArrOfOject: any = [];
-    //   objectForSyncingValues?.QuoteLineItems?.map(
-    //     (items: any, index: number) => {
-    //       let newObj = {
-    //         attributes: {
-    //           type: 'QuoteLineItem',
-    //         },
-    //         Id: items?.id,
-    //         line_number: items?.line_number ? items?.line_number : index + 1,
-    //         quantity: items?.quantity,
-    //         product_code: items?.product_code,
-    //         description: items?.description,
-    //         line_amount: items?.line_amount,
-    //         list_price: items?.list_price,
-    //         organization: items?.organization,
-    //       };
-    //       newArrOfOject?.push(newObj);
-    //     },
-    //   );
-
-    //   let finalObj = {
-    //     attributes: {
-    //       type: 'QuoteLineItem',
-    //     },
-    //     Id: '1',
-    //     bundle_name: 'WithOut  Bundle',
-    //     rosquoteai__Quote_Line_Items__r: {
-    //       records: newArrOfOject,
-    //     },
-    //   };
-
-    //   finArrr?.push(finalObj);
-    // }
-
-    if (
-      objectForSyncingValues &&
-      objectForSyncingValues?.QuoteLineItems?.length > 0
-    ) {
-      let newArrOfOject: any = [];
-      objectForSyncingValues?.QuoteLineItems?.map(
-        (items: any, index: number) => {
-          let newObj = {
-            attributes: {
-              type: 'QuoteLineItem',
-            },
-            Id: items?.id,
-            line_number: items?.line_number ? items?.line_number : index + 1,
-            quantity: items?.quantity,
-            product_code: items?.product_code,
-            description: items?.description,
-            line_amount: items?.line_amount,
-            list_price: items?.list_price,
-            organization: items?.organization,
-          };
-          newArrOfOject?.push(newObj);
-        },
-      );
-
-      finArrr = newArrOfOject;
-    }
-
-    setNewArrOfLineItems(finArrr);
-  }, [objectForSyncingValues]);
 
   const dowloadFunction = async (data: any, type: string) => {
+    console.log('datadata', data?.key, data, formStackSyncData);
+
+    let findTheItem = formStackSyncData?.find(
+      (item: any) => item?.doc_key === data?.key,
+    );
+    let lineItemsArray: any = [];
+    if (findTheItem?.type_of_file === 'With and without bundle') {
+      lineItemsArray = getFormattedValuesForWithAndWithoutBundles(
+        objectForSyncingValues,
+      );
+    } else if (findTheItem?.type_of_file === 'Bundle Only') {
+      lineItemsArray = getFormattedValuesForBundlesOnly(objectForSyncingValues);
+    } else if (findTheItem?.type_of_file === 'Line Items Only') {
+      lineItemsArray = getFormattedValuesForLineItems(objectForSyncingValues);
+    }
+
     const dataItem = data?.data && JSON?.parse(data?.data);
     const formattedData: Record<string, string> = {};
     dataItem?.forEach((item: any) => {
@@ -183,16 +92,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
         resultValues[key] = objectForSyncingValues[formattedData[key]];
       }
     }
-    delete resultValues._pqli;
-    delete resultValues._qli;
-    delete resultValues._childpqli;
-    delete resultValues.quotelineitem;
-    delete resultValues.quote_notes;
-    // resultValues.quotelineitem = SaleForArrayAll;
-    // resultValues.quotelineitem = salesForceWithWithoutBundle;
-    // resultValues.quotelineitem = [];
-    // resultValues.quote_notes = [];
-    resultValues.quotelineitem = newArrOfLineItems;
+    resultValues.quotelineitem = lineItemsArray;
 
     try {
       setLoading(true);

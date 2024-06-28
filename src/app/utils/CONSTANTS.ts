@@ -179,28 +179,45 @@ export const SaleForArrayAll = [
   {
     attributes: {
       type: 'QuoteLineItem',
-      url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008Tn5rOAC',
     },
-    Id: '0QLHn000008Tn5rOAC',
-    rosquoteai__LineNumber__c: 1,
-    Quantity: 100,
-    rosquoteai__OEM__c: '001Hn00002424K6IAI',
-    rosquoteai__Product_Code__c: '210-3212-L9-13BC09A12',
-    rosquoteai__Description__c:
-      'Adobe Acrobat Pro for enterprise Subscription New,\nMonthly, 1 User, Large Government Agencies - Level 9\n10,000+ (VIP # Req) 12 Month Term\n12 Month\nNamed User\nAdobe Inc.\n65324113BC09A12',
-    UnitPrice: 0,
-    TotalPrice: 0,
-    rosquoteai__OEM__r: {
-      attributes: {
-        type: 'Account',
-        url: '/services/data/v61.0/sobjects/Account/001Hn00002424K6IAI',
-      },
-      Name: 'TechData',
-      Id: '001Hn00002424K6IAI',
+    Id: '0QLHn000008TowSOAS',
+    bundle_name: 'Wiring',
+    extended_price: 4359743598430,
+    quote_line_items: {
+      records: [
+        {
+          attributes: {
+            type: 'QuoteLineItem',
+            url: '/services/data/v61.0/sobjects/QuoteLineItem/0QLHn000008TovnOAC',
+          },
+          rosquoteai__Quote_Line_Item__c: '0QLHn000008TowSOAS',
+          Id: '0QLHn000008TovnOAC',
+          line_number: 7,
+          quantity: 8,
+          product_code: '980-5724',
+          description: 'Keep Your Hard Drive 5 Year',
+          line_amount: 3478.2609,
+          list_price: 27826.0872,
+          organization: 'ewew',
+        },
+      ],
     },
   },
+  {
+    attributes: {
+      type: 'QuoteLineItem',
+    },
+    rosquoteai__Quote_Line_Item__c: '0QLHn000008TowSOAS',
+    Id: '0QLHn000008TovnOAC',
+    line_number: 7,
+    quantity: 8,
+    product_code: '980-5724',
+    description: 'Keep Your Hard Drive 5 Year',
+    line_amount: 3478.2609,
+    list_price: 27826.0872,
+    organization: 'ewew',
+  },
 ];
-
 export const salesForceWithWithoutBundle = [
   {
     attributes: {

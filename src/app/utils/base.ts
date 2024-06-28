@@ -854,7 +854,7 @@ export const currencyFormatter: InputNumberProps['formatter'] = (
   f,
   {userTyping},
 ) => {
-  console.log('ddddd',f, userTyping)
+  console.log('ddddd', f, userTyping);
   // if (!f) {
   //   return '';
   // }
@@ -865,4 +865,157 @@ export const currencyFormatter: InputNumberProps['formatter'] = (
   //     .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
   // }
   return `${f}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
+export const getFormattedValuesForBundlesOnly = (
+  objectForSyncingValues: any,
+) => {
+  let finArrr: any = [];
+
+  if (
+    objectForSyncingValues &&
+    objectForSyncingValues?.bundleData?.length > 0
+  ) {
+    objectForSyncingValues?.bundleData?.map(
+      (itemBun: any, indexBun: number) => {
+        console.log('itemBun', itemBun);
+        let innerLineArr: any = [];
+        itemBun?.Profitabilities?.map((items: any, index: number) => {
+          let newObj = {
+            attributes: {
+              type: 'QuoteLineItem',
+            },
+            Id: items?.id,
+            line_number: items?.line_number ? items?.line_number : index + 1,
+            quantity: items?.quantity,
+            product_code: items?.product_code,
+            description: items?.description,
+            line_amount: items?.line_amount,
+            list_price: items?.list_price,
+            organization: items?.organization,
+          };
+          innerLineArr?.push(newObj);
+        });
+
+        let finalObj = {
+          attributes: {
+            type: 'QuoteLineItem',
+          },
+          Id: '1',
+          bundle_name: itemBun?.name,
+          extended_price: itemBun?.extended_price,
+          quote_line_items: {
+            records: innerLineArr,
+          },
+        };
+
+        finArrr?.push(finalObj);
+      },
+    );
+  }
+
+  return finArrr;
+};
+
+export const getFormattedValuesForLineItems = (objectForSyncingValues: any) => {
+  let finArrr: any = [];
+
+  if (
+    objectForSyncingValues &&
+    objectForSyncingValues?.QuoteLineItems?.length > 0
+  ) {
+    let newArrOfOject: any = [];
+    objectForSyncingValues?.QuoteLineItems?.map((items: any, index: number) => {
+      let newObj = {
+        attributes: {
+          type: 'QuoteLineItem',
+        },
+        Id: items?.id,
+        line_number: items?.line_number ? items?.line_number : index + 1,
+        quantity: items?.quantity,
+        product_code: items?.product_code,
+        description: items?.description,
+        line_amount: items?.line_amount,
+        list_price: items?.list_price,
+        organization: items?.organization,
+      };
+      newArrOfOject?.push(newObj);
+    });
+
+    finArrr = newArrOfOject;
+  }
+
+  return finArrr;
+};
+
+export const getFormattedValuesForWithAndWithoutBundles = (
+  objectForSyncingValues: any,
+) => {
+  let finArrr: any = [];
+
+  if (
+    objectForSyncingValues &&
+    objectForSyncingValues?.bundleData?.length > 0
+  ) {
+    objectForSyncingValues?.bundleData?.map(
+      (itemBun: any, indexBun: number) => {
+        console.log('itemBun', itemBun);
+        let innerLineArr: any = [];
+        itemBun?.Profitabilities?.map((items: any, index: number) => {
+          let newObj = {
+            attributes: {
+              type: 'QuoteLineItem',
+            },
+            Id: items?.id,
+            line_number: items?.line_number ? items?.line_number : index + 1,
+            quantity: items?.quantity,
+            product_code: items?.product_code,
+            description: items?.description,
+            line_amount: items?.line_amount,
+            list_price: items?.list_price,
+            organization: items?.organization,
+          };
+          innerLineArr?.push(newObj);
+        });
+
+        let finalObj = {
+          attributes: {
+            type: 'QuoteLineItem',
+          },
+          Id: '1',
+          bundle_name: itemBun?.name,
+          extended_price: itemBun?.extended_price,
+          quote_line_items: {
+            records: innerLineArr,
+          },
+        };
+
+        finArrr?.push(finalObj);
+      },
+    );
+  }
+
+  if (
+    objectForSyncingValues &&
+    objectForSyncingValues?.QuoteLineItems?.length > 0
+  ) {
+    objectForSyncingValues?.QuoteLineItems?.map((items: any, index: number) => {
+      let newObj = {
+        attributes: {
+          type: 'QuoteLineItem',
+        },
+        Id: items?.id,
+        line_number: items?.line_number ? items?.line_number : index + 1,
+        quantity: items?.quantity,
+        product_code: items?.product_code,
+        description: items?.description,
+        line_amount: items?.line_amount,
+        list_price: items?.list_price,
+        organization: items?.organization,
+      };
+      finArrr?.push(newObj);
+    });
+  }
+
+  return finArrr;
 };
