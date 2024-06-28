@@ -282,7 +282,6 @@ const GenerateQuote: React.FC = () => {
                 }
               }
               if (bundleCount > 0) {
-                console.log('BundleData', selectTedRowData);
                 setShowRemoveBundleLineItemModal(true);
               } else {
                 setIsDeleteProfitabilityModal(true);
