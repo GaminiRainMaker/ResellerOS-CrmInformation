@@ -16,6 +16,8 @@ export const PROFITABILITY_API = {
     patch(API.PROFITABALITY.INDEX, data) as Promise<AxiosResponse<any>>,
   deleteById: (data: any) =>
     post(API.PROFITABALITY.DeleteById, data) as Promise<AxiosResponse<any>>,
+  removeBundleById: (data: any) =>
+    post(API.PROFITABALITY.RemoveBundleById, data) as Promise<AxiosResponse<any>>,
   updateProfitabilityValueForBulk: (data: any) =>
     post(API.PROFITABALITY.UpdateProfitabilityValueForBulk, data) as Promise<AxiosResponse<any>>,
 };

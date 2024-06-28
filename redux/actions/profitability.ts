@@ -61,6 +61,17 @@ export const deleteProfitabilityById = createAsyncThunk(
     }
   },
 );
+export const removeBundleLineItems = createAsyncThunk(
+  'profitability/removeBundleLineItems',
+  async (Ids: any, thunkApi) => {
+    try {
+      const res = await PROFITABILITY_API.removeBundleById(Ids);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
 export const updateProfitabilityValueForBulk = createAsyncThunk(
   'profitability/updateProfitabilityValueForBulk',
   async (data: any, thunkApi) => {

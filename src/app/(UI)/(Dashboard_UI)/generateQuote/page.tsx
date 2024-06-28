@@ -65,6 +65,8 @@ const GenerateQuote: React.FC = () => {
   const [showBundleModal, setShowBundleModal] = useState<boolean>(false);
   const [isDeleteProfitabilityModal, setIsDeleteProfitabilityModal] =
     useState<boolean>(false);
+  const [showRemoveBundleLineItemModal, setShowRemoveBundleLineItemModal] =
+    useState<boolean>(false);
   const [selectedFilter, setSelectedFilter] = useState<string>('File Name');
 
   const {data: tableColumnData} = useAppSelector((state) => state.tableColumn);
@@ -272,19 +274,25 @@ const GenerateQuote: React.FC = () => {
           color={token?.colorError}
           cursor="pointer"
           onClick={() => {
-            // if (quoteFileData.length > 0) {
-            //   notification.open({
-            //     message: 'Please Verify All the Files first.',
-            //     type: 'info',
-            //   });
-            // } else
             if (selectTedRowData?.length > 0) {
-              setIsDeleteProfitabilityModal(true);
+              let bundleCount = 0;
+              for (const item of selectTedRowData) {
+                if (item?.bundle_id) {
+                  bundleCount++;
+                }
+              }
+              if (bundleCount > 0) {
+                console.log('BundleData', selectTedRowData);
+                setShowRemoveBundleLineItemModal(true);
+              } else {
+                setIsDeleteProfitabilityModal(true);
+              }
             }
           }}
         >
           Delete Selected
         </Typography>
+        // removeBundleLineItems
       ),
     },
   ];
@@ -336,6 +344,10 @@ const GenerateQuote: React.FC = () => {
           selectTedRowIds={selectTedRowIds}
           setSelectedRowIds={setSelectedRowIds}
           showBundleModal={showBundleModal}
+          isDeleteProfitabilityModal={isDeleteProfitabilityModal}
+          setIsDeleteProfitabilityModal={setIsDeleteProfitabilityModal}
+          showRemoveBundleLineItemModal={showRemoveBundleLineItemModal}
+          setShowRemoveBundleLineItemModal={setShowRemoveBundleLineItemModal}
         />
       ),
     },

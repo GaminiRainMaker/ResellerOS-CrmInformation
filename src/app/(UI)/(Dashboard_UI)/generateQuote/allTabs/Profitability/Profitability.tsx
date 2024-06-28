@@ -29,7 +29,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
 import UpdatingLineItems from '../../UpdatingLineItems';
 import {Form} from 'antd';
 import BundleSection from '../../BundleSection';
-
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
@@ -42,6 +42,10 @@ const Profitablity: FC<any> = ({
   selectTedRowIds,
   setShowBundleModal,
   showBundleModal,
+  setIsDeleteProfitabilityModal,
+  isDeleteProfitabilityModal,
+  showRemoveBundleLineItemModal,
+  setShowRemoveBundleLineItemModal,
 }) => {
   const dispatch = useAppDispatch();
   const [BundleForm] = Form.useForm();
@@ -669,6 +673,9 @@ const Profitablity: FC<any> = ({
     }
   };
 
+  const deleteProfitabityData = () => {};
+  const removeBundleLineItems = () => {};
+
   const renderFinalData = () => {
     const bundleData = finalData.filter((item: any) => item.type === 'bundle');
     const nonBundleData = finalData.filter(
@@ -974,6 +981,23 @@ const Profitablity: FC<any> = ({
         primaryButtonText={'Save'}
         onOk={BundleForm.submit}
         footerPadding={20}
+      />
+
+      <DeleteModal
+        setShowModalDelete={setIsDeleteProfitabilityModal}
+        setDeleteIds={setSelectedRowIds}
+        showModalDelete={isDeleteProfitabilityModal}
+        deleteSelectedIds={deleteProfitabityData}
+        description="Are you sure you want to delete this Profitability?"
+        heading="Delete Profitability"
+      />
+      <DeleteModal
+        setShowModalDelete={setShowRemoveBundleLineItemModal}
+        setDeleteIds={setSelectedRowIds}
+        showModalDelete={showRemoveBundleLineItemModal}
+        deleteSelectedIds={removeBundleLineItems}
+        description="Are you sure you want to remove this lineItem from this Bundle?"
+        heading="Remove LineItem"
       />
     </>
   );
