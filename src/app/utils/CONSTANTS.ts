@@ -83,7 +83,6 @@ export const SaleForceQuoteLineItemColumnSync = [
   {label: 'Line Type', value: 'line_type'},
   {label: 'Open Market', value: 'open_market'},
   {label: 'Input', value: 'input'},
-  {label: 'Gsa Price', value: 'gsa_price'},
   {label: 'Taa Flag', value: 'taa_flag'},
   {label: 'Epeat Flag', value: 'epeat_flag'},
   {label: 'Energy Star Flag', value: 'energy_star_flag'},
