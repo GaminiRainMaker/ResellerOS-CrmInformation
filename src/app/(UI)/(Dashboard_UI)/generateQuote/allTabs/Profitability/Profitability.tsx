@@ -698,16 +698,7 @@ const Profitablity: FC<any> = ({
             key={index}
             activeKey={collapseActiveKeys}
             onChange={(key: string | string[]) => {
-              let arr: string[] = [...collapseActiveKeys];
-              const collapseIndex = arr.findIndex(
-                (item: string) => item === key,
-              );
-              if (collapseIndex > -1) {
-                arr.splice(collapseIndex, 1);
-              } else {
-                arr.push(...key);
-              }
-              setCollapseActiveKeys(arr);
+              setCollapseActiveKeys(key);
             }}
             items={[
               {
@@ -837,16 +828,7 @@ const Profitablity: FC<any> = ({
                       key={index}
                       activeKey={collapseActiveKeys}
                       onChange={(key: string | string[]) => {
-                        let arr: string[] = [...collapseActiveKeys];
-                        const collapseIndex = arr.findIndex(
-                          (item: string) => item === key,
-                        );
-                        if (collapseIndex > -1) {
-                          arr.splice(collapseIndex, 1);
-                        } else {
-                          arr.push(...key);
-                        }
-                        setCollapseActiveKeys(arr);
+                        setCollapseActiveKeys(key);
                       }}
                       items={[
                         {
