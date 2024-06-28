@@ -30,6 +30,8 @@ import UpdatingLineItems from '../../UpdatingLineItems';
 import {Form} from 'antd';
 import BundleSection from '../../BundleSection';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import {TrashIcon} from '@heroicons/react/24/outline';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
@@ -49,17 +51,20 @@ const Profitablity: FC<any> = ({
 }) => {
   const dispatch = useAppDispatch();
   const [BundleForm] = Form.useForm();
+  const [token] = useThemeToken();
+
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
     (state) => state.profitability,
   );
   const {loading: bundleLoading} = useAppSelector((state) => state.bundle);
-  const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>();
+  const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>([]);
   const {abbreviate} = useAbbreviationHook(0);
   const [finalData, setFinalData] = useState<any>([]);
   const [finalFieldData, setFinalFieldData] = useState<any>({});
   const [keyPressed, setKeyPressed] = useState('');
+  const [collapseActiveKeys, setCollapseActiveKeys] = useState<string[]>([]);
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
       id: number;
@@ -323,6 +328,19 @@ const Profitablity: FC<any> = ({
     });
     setFinalProfitTableCol(newArr);
   }, [tableColumnDataShow]);
+
+  const ActionColumn = {
+    title: 'Action',
+    render: (text: string, record: any) => (
+      <TrashIcon
+        height={24}
+        width={24}
+        color={token.colorError}
+        style={{cursor: 'pointer'}}
+      />
+    ),
+    width: 111,
+  };
 
   const ProfitabilityQuoteLineItemcolumns = [
     {
@@ -681,11 +699,25 @@ const Profitablity: FC<any> = ({
     const nonBundleData = finalData.filter(
       (item: any) => item.type !== 'bundle',
     );
+
     return (
       <div>
         {bundleData.map((finalDataItem: any, index: number) => (
           <OsCollapse
             key={index}
+            activeKey={collapseActiveKeys}
+            onChange={(key: string | string[]) => {
+              let arr: string[] = [...collapseActiveKeys];
+              const collapseIndex = arr.findIndex(
+                (item: string) => item === key,
+              );
+              if (collapseIndex > -1) {
+                arr.splice(collapseIndex, 1);
+              } else {
+                arr.push(...key);
+              }
+              setCollapseActiveKeys(arr);
+            }}
             items={[
               {
                 key: index,
@@ -767,7 +799,7 @@ const Profitablity: FC<any> = ({
                   <div key={JSON.stringify(finalDataItem?.QuoteLineItem)}>
                     <OsTableWithOutDrag
                       loading={loading}
-                      columns={finalProfitTableCol}
+                      columns={[...finalProfitTableCol, ActionColumn]}
                       dataSource={finalDataItem?.QuoteLineItem}
                       scroll
                       locale={locale}
@@ -805,9 +837,26 @@ const Profitablity: FC<any> = ({
             {selectedFilter && finalData?.length > 0 ? (
               <>
                 {finalData?.map((finalDataItem: any, index: number) => {
+                  const isBundle =
+                    finalDataItem?.QuoteLineItem?.findIndex(
+                      (item: any) => item?.bundle_id,
+                    ) > -1;
                   return (
                     <OsCollapse
                       key={index}
+                      activeKey={collapseActiveKeys}
+                      onChange={(key: string | string[]) => {
+                        let arr: string[] = [...collapseActiveKeys];
+                        const collapseIndex = arr.findIndex(
+                          (item: string) => item === key,
+                        );
+                        if (collapseIndex > -1) {
+                          arr.splice(collapseIndex, 1);
+                        } else {
+                          arr.push(...key);
+                        }
+                        setCollapseActiveKeys(arr);
+                      }}
                       items={[
                         {
                           key: index,
@@ -904,7 +953,11 @@ const Profitablity: FC<any> = ({
                             >
                               <OsTableWithOutDrag
                                 loading={loading}
-                                columns={finalProfitTableCol}
+                                columns={
+                                  isBundle
+                                    ? [...finalProfitTableCol, ActionColumn]
+                                    : finalProfitTableCol
+                                }
                                 dataSource={finalDataItem?.QuoteLineItem}
                                 scroll
                                 locale={locale}
