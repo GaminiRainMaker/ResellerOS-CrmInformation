@@ -96,7 +96,6 @@ const FormBuilderMain: React.FC<any> = ({
     if (!openPreviewModal && getPartnerProgramID) {
       dispatch(getPartnerProgramById(Number(getPartnerProgramID)))?.then(
         (payload: any) => {
-          console.log('payloadpayload', payload);
           if (payload?.payload?.form_data?.[0]?.[0]) {
             const formData: any = JSON?.parse(
               payload?.payload?.form_data?.[0]?.[0],
@@ -203,8 +202,6 @@ const FormBuilderMain: React.FC<any> = ({
       setCollapsed(false);
     }
   }, [cartItems]);
-
-  console.log('32432423', partnerData);
 
   return (
     <>

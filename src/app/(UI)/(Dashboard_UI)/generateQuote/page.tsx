@@ -93,7 +93,7 @@ const GenerateQuote: React.FC = () => {
     if (getQuoteID) {
       dispatch(getQuoteFileCount(Number(getQuoteID)));
       dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
-      dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))
+      dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
       dispatch(getAllBundle(getQuoteID));
     }
   }, [getQuoteID]);

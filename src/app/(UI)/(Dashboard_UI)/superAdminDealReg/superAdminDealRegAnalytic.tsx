@@ -13,7 +13,6 @@ import {
 
 const SuperAdminDealRegAnalytic = ({data}: any) => {
   const [token] = useThemeToken();
-  console.log('propsprops1234', data);
 
   const activeTemplateCount: any = data?.getFormDataProgram?.filter(
     (getFormDataProgramItem: any) => getFormDataProgramItem?.form_data_active,

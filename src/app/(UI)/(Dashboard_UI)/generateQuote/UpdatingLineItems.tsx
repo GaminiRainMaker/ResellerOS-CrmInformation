@@ -111,7 +111,6 @@ const UpdatingLineItems: FC<UpdateLineItemsInterFace> = ({
                 options={finalFieldOption}
                 value={field}
                 onChange={(value: string, option: any) => {
-                  console.log('value123', value, option);
                   setProfabilityUpdationState((prev) =>
                     prev.map((prevItem) => {
                       if (prevItem.id === id) {

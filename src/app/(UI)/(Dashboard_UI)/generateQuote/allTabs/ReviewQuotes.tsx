@@ -115,7 +115,6 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
     filterDataByValue(quoteFileUnverifiedById, selectedFilter);
   }, [quoteFileUnverifiedById, selectedFilter]);
 
-  console.log('quoteFileData', quoteFileUnverifiedById);
 
   const openNotificationWithIcon = () => {
     api.warning({
