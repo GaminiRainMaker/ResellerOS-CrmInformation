@@ -28,7 +28,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
 import UpdatingLineItems from '../../UpdatingLineItems';
 import {Form} from 'antd';
-import BundleSection from '../../BundleSection1';
+import BundleSection from '../../BundleSection';
 
 
 const Profitablity: FC<any> = ({
