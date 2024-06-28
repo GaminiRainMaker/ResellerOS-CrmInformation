@@ -43,6 +43,8 @@ const AddDocument: FC<any> = ({
   selectedColumn,
   typeOffile,
   setTypeOfFile,
+  setTypeOfFileUpload,
+  typeOffileUpload,
 }) => {
   const [token] = useThemeToken();
   const router = useRouter();
@@ -143,17 +145,6 @@ const AddDocument: FC<any> = ({
     const indexOfPre = newSyncTableData?.findIndex(
       (item: any) => item?.key === keyInd,
     );
-    // const syncOtions =
-    //   syncTableQuoteLItemValues?.length > 0
-    //     ? [...syncTableQuoteLItemValues]
-    //     : [];
-
-    // const indexOFItem = syncOtions?.findIndex(
-    //   (itemV: any) => itemV?.value === newSyncValue,
-    // );
-    // syncOtions?.splice(indexOFItem, 1);
-
-    // setSyncTableQuoteLItemValues(syncOtions);
 
     if (indexOfPre === -1) {
       newSyncTableData?.push({
@@ -181,12 +172,15 @@ const AddDocument: FC<any> = ({
 
       return;
     }
+    console.log('34543543', setTypeOfFileUpload);
+
     let obj = {
       doc_id: documentId,
       syncJson: [JSON.stringify(syncedNewValue)],
       doc_name: documentName,
       doc_key: documentKey,
       type_of_file: typeOffile,
+      type_of_upload: typeOffileUpload,
     };
     if (obj && documentId) {
       await dispatch(insertFormStack(obj));
@@ -197,6 +191,7 @@ const AddDocument: FC<any> = ({
       type: 'success',
     });
     setTypeOfFile('');
+    setTypeOfFileUpload('');
   };
 
   return (

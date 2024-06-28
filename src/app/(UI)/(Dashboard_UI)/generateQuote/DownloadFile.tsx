@@ -62,8 +62,6 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     }));
 
   const dowloadFunction = async (data: any, type: string) => {
-    console.log('datadata', data?.key, data, formStackSyncData);
-
     let findTheItem = formStackSyncData?.find(
       (item: any) => item?.doc_key === data?.key,
     );
@@ -93,7 +91,6 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       }
     }
     resultValues.quotelineitem = lineItemsArray;
-
     try {
       setLoading(true);
       let pathName =
