@@ -30,7 +30,6 @@ import UpdatingLineItems from '../../UpdatingLineItems';
 import {Form} from 'antd';
 import BundleSection from '../../BundleSection';
 
-
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
   selectedFilter,
@@ -56,6 +55,7 @@ const Profitablity: FC<any> = ({
   const [finalData, setFinalData] = useState<any>([]);
   const [finalFieldData, setFinalFieldData] = useState<any>({});
   const [keyPressed, setKeyPressed] = useState('');
+  const [collapseActiveKeys, setCollapseActiveKeys] = useState<string[]>([]);
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
       id: number;
@@ -668,17 +668,30 @@ const Profitablity: FC<any> = ({
       dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
     }
   };
-
   const renderFinalData = () => {
     const bundleData = finalData.filter((item: any) => item.type === 'bundle');
     const nonBundleData = finalData.filter(
       (item: any) => item.type !== 'bundle',
     );
+
     return (
       <div>
         {bundleData.map((finalDataItem: any, index: number) => (
           <OsCollapse
             key={index}
+            activeKey={collapseActiveKeys}
+            onChange={(key: string | string[]) => {
+              let arr: string[] = [...collapseActiveKeys];
+              const collapseIndex = arr.findIndex(
+                (item: string) => item === key,
+              );
+              if (collapseIndex > -1) {
+                arr.splice(collapseIndex, 1);
+              } else {
+                arr.push(...key);
+              }
+              setCollapseActiveKeys(arr);
+            }}
             items={[
               {
                 key: index,
@@ -801,6 +814,19 @@ const Profitablity: FC<any> = ({
                   return (
                     <OsCollapse
                       key={index}
+                      activeKey={collapseActiveKeys}
+                      onChange={(key: string | string[]) => {
+                        let arr: string[] = [...collapseActiveKeys];
+                        const collapseIndex = arr.findIndex(
+                          (item: string) => item === key,
+                        );
+                        if (collapseIndex > -1) {
+                          arr.splice(collapseIndex, 1);
+                        } else {
+                          arr.push(...key);
+                        }
+                        setCollapseActiveKeys(arr);
+                      }}
                       items={[
                         {
                           key: index,
