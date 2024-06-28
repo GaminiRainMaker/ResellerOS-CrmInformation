@@ -23,7 +23,7 @@ const CustomTooltip = (props: any) => {
       >
         {payload.map((entry: any) => (
           <p key={entry.value} className="caption">
-            {`${entry?.name}: $ ${ abbreviate(entry?.value)  }`}
+            {`${entry?.name}: $ ${abbreviate(entry?.value)}`}
           </p>
         ))}
       </div>
@@ -68,7 +68,7 @@ const OsPieChart: FC<any> = ({data}: any) => {
         dataKey="value"
       >
         {data &&
-          data.map((entry: any, index: number) => (
+          data?.map((entry: any, index: number) => (
             <Cell key={`cell-${index}`} fill={entry?.color} />
           ))}
       </Pie>

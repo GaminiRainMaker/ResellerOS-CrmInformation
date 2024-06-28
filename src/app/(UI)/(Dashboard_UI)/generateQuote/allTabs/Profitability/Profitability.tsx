@@ -28,8 +28,8 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
 import UpdatingLineItems from '../../UpdatingLineItems';
 import {Form} from 'antd';
-// import BundleSection from '../../BundleSection';4
-import BundleSection from '../../bundleSection';
+import BundleSection from '../../BundleSection';
+
 
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
@@ -75,6 +75,8 @@ const Profitablity: FC<any> = ({
   const filterDataByValue = (data: any, filterValue?: string) => {
     const groupedData: any = {};
     const arrayData: any[] = [];
+    const bundleData: any[] = [];
+
     data?.forEach((item: any) => {
       let name, description, type, quantity, bundleId;
       if (item?.bundle_id || filterValue) {
@@ -108,11 +110,11 @@ const Profitablity: FC<any> = ({
             return '';
           }
           return input
-            ?.toLowerCase()
-            ?.replace(/_/g, ' ')
-            ?.replace(/\b\w/g, (char) => char?.toUpperCase());
+            .toLowerCase()
+            .replace(/_/g, ' ')
+            .replace(/\b\w/g, (char) => char.toUpperCase());
         };
-        if (name?.includes('_') || name === name?.toLowerCase()) {
+        if (name.includes('_') || name === name.toLowerCase()) {
           name = convertToTitleCase(name);
         }
 
@@ -181,11 +183,23 @@ const Profitablity: FC<any> = ({
           groupedData[name].totalGrossProfitPercentage = grossProfitPer;
         }
         groupedData[name]?.QuoteLineItem?.push(item);
+
+        if (item?.bundle_id) {
+          bundleData.push(groupedData[name]);
+        }
       } else {
         arrayData.push(item);
       }
     });
-    setFinalData([...Object.values(groupedData), ...arrayData]);
+
+    const finalData = [
+      ...new Set(bundleData),
+      ...Object.values(groupedData).filter(
+        (group) => !bundleData.includes(group),
+      ),
+      ...arrayData,
+    ];
+    setFinalData(finalData);
   };
 
   useEffect(() => {
