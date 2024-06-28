@@ -69,17 +69,17 @@ const GenerateQuoteAnalytics: FC<any> = () => {
           if (item?.exit_price) {
             exitPrice += item.exit_price;
           }
-          if (
-            item?.adjusted_price !== undefined &&
-            item?.quantity !== undefined
-          ) {
-            let temp: any;
-            temp =
-              Number(item?.adjusted_price) *
-              (item?.quantity ? Number(item?.quantity) : 1);
-            adjustedPrice += temp;
-          }
         }
+        // if (
+        //   item?.adjusted_price !== undefined &&
+        //   item?.quantity !== undefined
+        // ) {
+        //   let temp: any;
+        //   temp =
+        //     Number(item?.adjusted_price) *
+        //     (item?.quantity ? Number(item?.quantity) : 1);
+        //   adjustedPrice += temp;
+        // }
       });
     }
     const totalGrossProfit = grossProfit + bundleGrossProfit;
@@ -116,7 +116,7 @@ const GenerateQuoteAnalytics: FC<any> = () => {
     },
     {
       key: 3,
-      primary: `$${abbreviate(totalValues?.AdjustedPrice ?? 0)}`,
+      primary: `$${abbreviate(totalValues?.ExitPrice ?? 0)}`,
       secondry: 'Total Cost',
       icon: <CurrencyDollarIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,

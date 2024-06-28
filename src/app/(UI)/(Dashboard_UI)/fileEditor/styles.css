@@ -20,7 +20,7 @@ table.htCore tr.odd td {
 }
 
 .ht_clone_top .htCore th {
-    background-color: #457B9D;
+    background-color: #457B9D !important;
     color: #FFFFFF;
     text-align: center;
     font-size: 14px;
