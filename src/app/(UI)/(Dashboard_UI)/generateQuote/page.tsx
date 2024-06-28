@@ -292,7 +292,6 @@ const GenerateQuote: React.FC = () => {
         >
           Delete Selected
         </Typography>
-        // removeBundleLineItems
       ),
     },
   ];

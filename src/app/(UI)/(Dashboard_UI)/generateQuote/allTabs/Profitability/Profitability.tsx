@@ -22,6 +22,7 @@ import {updateBundleQuantity} from '../../../../../../../redux/actions/bundle';
 import {updateProductFamily} from '../../../../../../../redux/actions/product';
 import {
   getProfitabilityByQuoteId,
+  removeBundleLineItems,
   updateProfitabilityById,
   updateProfitabilityValueForBulk,
 } from '../../../../../../../redux/actions/profitability';
@@ -331,14 +332,20 @@ const Profitablity: FC<any> = ({
 
   const ActionColumn = {
     title: 'Action',
-    render: (text: string, record: any) => (
-      <TrashIcon
-        height={24}
-        width={24}
-        color={token.colorError}
-        style={{cursor: 'pointer'}}
-      />
-    ),
+    render: (text: string, record: any) => {
+      return (
+        <TrashIcon
+          height={24}
+          width={24}
+          color={token.colorError}
+          style={{cursor: 'pointer'}}
+          onClick={() => {
+            setSelectedRowData([record]);
+            setShowRemoveBundleLineItemModal(true);
+          }}
+        />
+      );
+    },
     width: 111,
   };
 
@@ -692,7 +699,19 @@ const Profitablity: FC<any> = ({
   };
 
   const deleteProfitabityData = () => {};
-  const removeBundleLineItems = () => {};
+
+  const removeBundleLineItemsFunction = () => {
+    const Ids: any = selectTedRowData?.map((item: any) => item?.id);
+    if (Ids) {
+      dispatch(removeBundleLineItems({Ids: Ids})).then((d) => {
+        if (d?.payload) {
+          dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+          setShowRemoveBundleLineItemModal(false);
+          setSelectedRowData([]);
+        }
+      });
+    }
+  };
 
   const renderFinalData = () => {
     const bundleData = finalData.filter((item: any) => item.type === 'bundle');
@@ -1045,12 +1064,13 @@ const Profitablity: FC<any> = ({
         heading="Delete Profitability"
       />
       <DeleteModal
+        loading={bundleLoading}
         setShowModalDelete={setShowRemoveBundleLineItemModal}
         setDeleteIds={setSelectedRowIds}
         showModalDelete={showRemoveBundleLineItemModal}
-        deleteSelectedIds={removeBundleLineItems}
-        description="Are you sure you want to remove this lineItem from this Bundle?"
-        heading="Remove LineItem"
+        deleteSelectedIds={removeBundleLineItemsFunction}
+        description="Are you sure you want to delete lineItem from this Bundle?"
+        heading="Delete LineItem from Bundle"
       />
     </>
   );
