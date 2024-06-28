@@ -45,6 +45,7 @@ const FormStackSync = () => {
 
   const [columnSelectOptions, setColumnSelectOptions] = useState<any>([]);
   const [typeOffile, setTypeOfFile] = useState<any>('');
+  const [typeOffileUpload, setTypeOfFileUpload] = useState<any>();
 
   const [selectedColumn, setSelectColumn] = useState<any>();
   const [optionForLineItem, setOptionForLineItem] = useState<any>();
@@ -67,7 +68,7 @@ const FormStackSync = () => {
   useEffect(() => {
     dispatch(getAllDocuments(''));
   }, []);
-
+  console.log('typeOffileUpload', typeOffileUpload);
   useEffect(() => {
     switch (selectDropdownType) {
       case 'Quote Line Item':
@@ -116,6 +117,8 @@ const FormStackSync = () => {
           optionsARRay?.push({label: formatStatus(items), value: items});
         });
       }
+
+      setTypeOfFileUpload(payload?.payload?.success?.output);
 
       setOptionForLineItem(optionsARRay);
 
@@ -241,6 +244,7 @@ const FormStackSync = () => {
               setDocumentId(e?.value);
               getDataOfFormStackByDocId(e?.value);
               setTypeOfFile('');
+              setTypeOfFileUpload('');
             }}
           />
         </SelectFormItem>
@@ -275,6 +279,10 @@ const FormStackSync = () => {
           documentName={documentName}
           selectedColumn={selectedColumn}
           documentKey={documentKey}
+          setTypeOfFileUpload={setTypeOfFileUpload}
+          typeOffileUpload={typeOffileUpload}
+          typeOffile={typeOffile}
+          setTypeOfFile={setTypeOfFile}
         />
       ) : (
         <>
@@ -301,6 +309,8 @@ const FormStackSync = () => {
                 selectedColumn={selectedColumn}
                 typeOffile={typeOffile}
                 setTypeOfFile={setTypeOfFile}
+                setTypeOfFileUpload={setTypeOfFileUpload}
+                typeOffileUpload={typeOffileUpload}
               />
             </>
           )}
