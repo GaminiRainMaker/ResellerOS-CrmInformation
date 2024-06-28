@@ -18,7 +18,11 @@ import {
   getAllAttachmentDocument,
   insertAttachmentDocument,
 } from '../../../../../../redux/actions/attachmentDocument';
-import {getQuoteFileByQuoteIdAll} from '../../../../../../redux/actions/quoteFile';
+import {
+  getQuoteFileByQuoteId,
+  getQuoteFileByQuoteIdAll,
+  getQuoteFileCount,
+} from '../../../../../../redux/actions/quoteFile';
 import {
   uploadExcelFileToAws,
   uploadToAws,
@@ -27,6 +31,8 @@ import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import {deleteQuoteFileById} from '../../../../../../redux/actions/quoteFile';
 import GlobalLoader from '@/app/components/common/os-global-loader';
+import {deleteLineItemsByQuoteFileId} from '../../../../../../redux/actions/quotelineitem';
+import {getProfitabilityByQuoteId} from '../../../../../../redux/actions/profitability';
 
 const AttachmentDocument: FC<any> = ({
   typeForAttachmentFilter,
@@ -92,10 +98,11 @@ const AttachmentDocument: FC<any> = ({
       setLoadingShow(false);
     }, 1000);
   };
+
   useEffect(() => {
     mergeAndModifyData();
     setCallApis(false);
-  }, [attachmentDocumentData, quoteFileData]);
+  }, [JSON.stringify(quoteFileData), JSON.stringify(attachmentDocumentData)]);
 
   const locale = {
     emptyText: (
@@ -218,16 +225,30 @@ const AttachmentDocument: FC<any> = ({
           setFilteredData(filtered || []);
           break;
       }
+    } else {
+      setFilteredData([]);
     }
   }, [combinedData, typeForAttachmentFilter]);
 
-  const deleteSelectedIds = () => {
+  const deleteSelectedIds = async () => {
     if (deletedData?.type === 'Vendor Quote') {
-      dispatch(deleteQuoteFileById({id: deletedData?.id}));
+      await dispatch(deleteQuoteFileById({id: deletedData?.id}));
+      await dispatch(deleteLineItemsByQuoteFileId({id: deletedData?.id})).then(
+        (d) => {
+          if (d?.payload) {
+            dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+            dispatch(getQuoteFileCount(Number(getQuoteID)));
+            dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
+            dispatch(getQuoteFileByQuoteIdAll(getQuoteID));
+          }
+        },
+      );
+
       setCallApis(true);
       setShowDeleteModal(false);
     } else {
-      dispatch(deleteAttachDocumentById({id: deletedData?.id}));
+      await dispatch(deleteAttachDocumentById({id: deletedData?.id}));
+      await dispatch(getAllAttachmentDocument(getQuoteID));
       setCallApis(true);
       setShowDeleteModal(false);
     }

@@ -115,7 +115,6 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
     filterDataByValue(quoteFileUnverifiedById, selectedFilter);
   }, [quoteFileUnverifiedById, selectedFilter]);
 
-  console.log('quoteFileData', quoteFileUnverifiedById);
 
   const openNotificationWithIcon = () => {
     api.warning({
@@ -260,38 +259,20 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
   const updateAllTablesData = async () => {
     setFileVerificationLoading(true);
     try {
-      await updateTables(
+      updateTables(
         getQuoteID,
         fileData,
         fileData?.QuoteLineItem,
         userInformation,
         dispatch,
       );
-
-      await dispatch(getQuoteFileByQuoteId(Number(getQuoteID))).then(
-        (d: any) => {
-          if (d?.payload) {
-            dispatch(setQuoteFileUnverifiedById(d?.payload));
-          }
-        },
-      );
-      await dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then(
-        (d: any) => {
-          if (d?.payload) {
-            dispatch(setProfitability(d?.payload));
-          }
-        },
-      );
-      await dispatch(getQuoteFileCount(Number(getQuoteID))).then((d: any) => {
-        if (d?.payload) {
-          dispatch(setQuoteFileDataCount(d?.payload));
-        }
-      });
     } catch (error) {
       console.error('Error updating tables:', error);
     } finally {
-      setFileVerificationLoading(false);
-      setShowVerificationFileModal(false);
+      setTimeout(() => {
+        setFileVerificationLoading(false);
+        setShowVerificationFileModal(false);
+      }, 2000);
     }
   };
 

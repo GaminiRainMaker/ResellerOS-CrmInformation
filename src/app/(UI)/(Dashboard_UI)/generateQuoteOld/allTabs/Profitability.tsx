@@ -123,7 +123,6 @@ const Profitability: FC<any> = ({
               grossProft += items?.gross_profit ? items?.gross_profit : 0;
             }
           });
-          console.log('grossProftgrossProft', grossProft, extendedPrice);
           let grossProfitPer: any = 0;
           if (grossProft !== 0 && extendedPrice !== 0) {
             grossProfitPer = (grossProft / extendedPrice) * 100;
@@ -908,13 +907,6 @@ const Profitability: FC<any> = ({
                               gross_profit_percentage: item?.grossPercentage,
                               extended_price: item?.extendedPrice,
                             };
-                            console.log(
-                              '324324324424',
-                              item?.grossProfit,
-                              item?.grossPercentage,
-                              item?.extendedPrice,
-                              data,
-                            );
 
                             setTimeout(() => {
                               updateBundleQuantityData(data);

@@ -5,14 +5,20 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable react-hooks/rules-of-hooks */
 
+import {InputNumberProps} from 'antd';
 import axios from 'axios';
 import moment from 'moment';
 import {getContractInBulkByProductCode} from '../../../redux/actions/contractProduct';
 import {
   getAllProfitabilityCount,
+  getProfitabilityByQuoteId,
   insertProfitability,
 } from '../../../redux/actions/profitability';
-import {quoteFileVerification} from '../../../redux/actions/quoteFile';
+import {
+  getQuoteFileByQuoteId,
+  getQuoteFileCount,
+  quoteFileVerification,
+} from '../../../redux/actions/quoteFile';
 import {
   DeleteQuoteLineItemById,
   updateQuoteLineItemById,
@@ -20,7 +26,10 @@ import {
 import {getRebatesInBulkByProductCode} from '../../../redux/actions/rebate';
 import {insertRebateQuoteLineItem} from '../../../redux/actions/rebateQuoteLineitem';
 import {insertValidation} from '../../../redux/actions/validation';
-import {InputNumberProps} from 'antd';
+import {
+  setQuoteFileDataCount,
+  setQuoteFileUnverifiedById,
+} from '../../../redux/slices/quoteFile';
 
 export const calculateProfitabilityData = (
   Qty: number,
@@ -427,9 +436,18 @@ export const updateTables = async (
       profitabilityArray?.map((items: any, index: number) => {
         newArrr?.push({...items, serial_number: index + count + 1});
       });
-
       dispatch(insertProfitability(newArrr));
-      dispatch(quoteFileVerification({id: fileData?.id}));
+      dispatch(quoteFileVerification({id: fileData?.id})).then((d: any) => {
+        if (d?.payload) {
+          dispatch(getQuoteFileByQuoteId(Number(getQuoteID))).then((d: any) => {
+            if (d?.payload) {
+              dispatch(setQuoteFileUnverifiedById(d?.payload));
+            }
+          });
+          dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+          dispatch(getQuoteFileCount(Number(getQuoteID)))
+        }
+      });
     }
     return true;
   } catch (err) {
@@ -440,7 +458,6 @@ export const updateTables = async (
 
 export const sendDataToNanonets = async (model_id: string, file: File) => {
   let API_ENDPOINT = '';
-  console.log('3454353', file);
   if (file?.type.includes('spreadsheetml')) {
     API_ENDPOINT = `https://app.nanonets.com/api/v2/OCR/Model/0ba764d3-bfd5-4756-bdb1-0e5bc427bdda/LabelFile/`;
   } else {
@@ -449,7 +466,6 @@ export const sendDataToNanonets = async (model_id: string, file: File) => {
   const API_KEY = '198c15fd-9680-11ed-82f6-7a0abc6e8cc8';
   const formData = new FormData();
   formData?.append('file', file);
-  console.log('3454353', formData);
   try {
     const response = await axios.post(API_ENDPOINT, formData, {
       headers: {
@@ -854,7 +870,6 @@ export const currencyFormatter: InputNumberProps['formatter'] = (
   f,
   {userTyping},
 ) => {
-  console.log('ddddd', f, userTyping);
   // if (!f) {
   //   return '';
   // }

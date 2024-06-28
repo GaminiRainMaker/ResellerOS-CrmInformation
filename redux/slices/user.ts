@@ -300,7 +300,3 @@ export const {
 } = userSlice.actions;
 export default userSlice?.reducer;
 
-// console.log(
-//   'error12345',
-//   action.payload?.message?.response?.data?.message,
-// );

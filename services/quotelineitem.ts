@@ -44,6 +44,10 @@ export const QUOTE_LINE_ITEM_API = {
     post(API.QUOTE_LINE_ITEM.deleteQuoteLineByQuoteId, data) as Promise<
       AxiosResponse<any>
     >,
+  deleteLineItemsByQuoteFileId: (data: any) =>
+    post(API.QUOTE_LINE_ITEM.DeleteLineItemsByQuoteFileId, data) as Promise<
+      AxiosResponse<any>
+    >,
 
   getQuoteLineItemByQuoteIdForTableEdit: (data: any) =>
     post(

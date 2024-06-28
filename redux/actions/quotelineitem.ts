@@ -145,6 +145,17 @@ export const deleteQuoteLineItemsByQuoteId = createAsyncThunk(
     }
   },
 );
+export const deleteLineItemsByQuoteFileId = createAsyncThunk(
+  'quoteLineItem/deleteLineItemsByQuoteFileId',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await QUOTE_LINE_ITEM_API.deleteLineItemsByQuoteFileId(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
 
 export const getQuoteLineItemByQuoteIdForEditTable = createAsyncThunk(
   'quoteLineItem/getQuoteLineItemByQuoteIdForEditTable',

@@ -355,7 +355,6 @@ const InputDetails: FC<InputDetailTabInterface> = ({
       let unassignedArr: any = [];
 
       if (dataForQuoteLineItemsAll && dataForQuoteLineItemsAll?.length > 0) {
-        console.log('finalFamilyArrfinalFamilyArr', dataNullForBundle);
         productsArr = dataForQuoteLineItemsAll?.filter(
           (item: any) => item?.Product?.product_family === 'Products',
         );

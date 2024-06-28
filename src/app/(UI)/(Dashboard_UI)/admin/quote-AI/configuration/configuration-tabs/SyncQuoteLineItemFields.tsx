@@ -321,8 +321,6 @@ const SyncQuoteLineItemField = () => {
           color={token.colorError}
           style={{cursor: 'pointer'}}
           onClick={() => {
-            console.log('436435353', record);
-
             if (record?.id) {
               deleteRowSync(record?.id);
             } else {

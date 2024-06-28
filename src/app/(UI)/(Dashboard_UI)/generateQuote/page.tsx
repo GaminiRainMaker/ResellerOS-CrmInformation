@@ -91,14 +91,10 @@ const GenerateQuote: React.FC = () => {
 
   useEffect(() => {
     if (getQuoteID) {
-      dispatch(getProfitabilityByQuoteId(Number(getQuoteID))).then((d: any) => {
-        if (d?.payload) {
-          dispatch(setProfitability(d?.payload));
-        }
-      });
-      dispatch(getAllBundle(getQuoteID));
       dispatch(getQuoteFileCount(Number(getQuoteID)));
       dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
+      dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+      dispatch(getAllBundle(getQuoteID));
     }
   }, [getQuoteID]);
 

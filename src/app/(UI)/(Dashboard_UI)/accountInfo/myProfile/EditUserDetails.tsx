@@ -12,7 +12,6 @@ const EditUserDetails: FC<UserProfileInterface> = ({
   isEditable,
   onFinish,
 }) => {
-  console.log('4323432423', form);
   return (
     <Form
       layout="vertical"
