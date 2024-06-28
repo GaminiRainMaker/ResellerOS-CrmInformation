@@ -58,7 +58,7 @@ const AddDocument: FC<any> = ({
   const [columnSelectOptions, setColumnSelectOptions] = useState<any>([]);
   const [innerDocOptions, setInnerDocOptions] = useState<any>();
   const [optionsForSync, setOptionsForSync] = useState<any>();
-  console.log('typeOffile', typeOffile);
+
   useEffect(() => {
     dispatch(getAllDocuments(''));
   }, []);
@@ -173,6 +173,14 @@ const AddDocument: FC<any> = ({
   };
 
   const addNewSyncValues = async () => {
+    if (!typeOffile) {
+      notification?.open({
+        message: 'Please select type of Syncing',
+        type: 'error',
+      });
+
+      return;
+    }
     let obj = {
       doc_id: documentId,
       syncJson: [JSON.stringify(syncedNewValue)],

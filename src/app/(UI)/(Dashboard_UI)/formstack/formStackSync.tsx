@@ -199,7 +199,6 @@ const FormStackSync = () => {
 
     setNewSyncedValue(newArrAfterChange);
   };
-  console.log('4354365435435', typeOffile);
   return (
     <Space direction="vertical" size={24} style={{width: '100%'}}>
       <Form
@@ -241,42 +240,28 @@ const FormStackSync = () => {
               setDocumentKey(e?.key);
               setDocumentId(e?.value);
               getDataOfFormStackByDocId(e?.value);
+              setTypeOfFile('');
             }}
           />
         </SelectFormItem>
-
-        {optionForLineItem && (
-          <SelectFormItem
-            style={{marginTop: '10px', width: '100%'}}
-            label={
-              <Typography name="Body 4/Medium">
-                Select LineItem Column
-              </Typography>
-            }
-            name="lineItemId"
-            rules={[
-              {
-                required: true,
-                message: 'Document is required!',
-              },
-            ]}
-          >
-            <Radio.Group
-              onChange={(e: any) => {
-                setTypeOfFile(e?.target?.value);
-              }}
-              defaultValue={typeOffile}
-              value={typeOffile}
-            >
-              <Radio value={'Bundle Only'}>Bundle Only</Radio>
-              <Radio value={'Line Items Only'}>Line Items Only</Radio>
-              <Radio value={'With and without bundle'}>
-                With and without bundle
-              </Radio>
-            </Radio.Group>
-          </SelectFormItem>
-        )}
       </Form>
+      {optionForLineItem && (
+        <>
+          <Typography name="Body 4/Medium">Type Of Syncing</Typography>
+          <Radio.Group
+            onChange={(e: any) => {
+              setTypeOfFile(e?.target?.value);
+            }}
+            value={typeOffile}
+          >
+            <Radio value={'Bundle Only'}>Bundles Only</Radio>
+            <Radio value={'Line Items Only'}>Lines Items Only</Radio>
+            <Radio value={'With and without bundle'}>
+              With and without bundles
+            </Radio>
+          </Radio.Group>
+        </>
+      )}
 
       {syncedValueForDoc?.length > 0 ? (
         <AddDocument
