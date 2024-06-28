@@ -5,14 +5,20 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable react-hooks/rules-of-hooks */
 
+import {InputNumberProps} from 'antd';
 import axios from 'axios';
 import moment from 'moment';
 import {getContractInBulkByProductCode} from '../../../redux/actions/contractProduct';
 import {
   getAllProfitabilityCount,
+  getProfitabilityByQuoteId,
   insertProfitability,
 } from '../../../redux/actions/profitability';
-import {quoteFileVerification} from '../../../redux/actions/quoteFile';
+import {
+  getQuoteFileByQuoteId,
+  getQuoteFileCount,
+  quoteFileVerification,
+} from '../../../redux/actions/quoteFile';
 import {
   DeleteQuoteLineItemById,
   updateQuoteLineItemById,
@@ -20,7 +26,10 @@ import {
 import {getRebatesInBulkByProductCode} from '../../../redux/actions/rebate';
 import {insertRebateQuoteLineItem} from '../../../redux/actions/rebateQuoteLineitem';
 import {insertValidation} from '../../../redux/actions/validation';
-import {InputNumberProps} from 'antd';
+import {
+  setQuoteFileDataCount,
+  setQuoteFileUnverifiedById,
+} from '../../../redux/slices/quoteFile';
 
 export const calculateProfitabilityData = (
   Qty: number,
@@ -429,7 +438,21 @@ export const updateTables = async (
       });
 
       dispatch(insertProfitability(newArrr));
-      dispatch(quoteFileVerification({id: fileData?.id}));
+      dispatch(quoteFileVerification({id: fileData?.id})).then((d: any) => {
+        if (d?.payload) {
+          dispatch(getQuoteFileByQuoteId(Number(getQuoteID))).then((d: any) => {
+            if (d?.payload) {
+              dispatch(setQuoteFileUnverifiedById(d?.payload));
+            }
+          });
+          dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+          dispatch(getQuoteFileCount(Number(getQuoteID))).then((d: any) => {
+            if (d?.payload) {
+              dispatch(setQuoteFileDataCount(d?.payload));
+            }
+          });
+        }
+      });
     }
     return true;
   } catch (err) {
@@ -854,7 +877,6 @@ export const currencyFormatter: InputNumberProps['formatter'] = (
   f,
   {userTyping},
 ) => {
-  console.log('ddddd',f, userTyping)
   // if (!f) {
   //   return '';
   // }

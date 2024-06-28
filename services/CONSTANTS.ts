@@ -34,6 +34,7 @@ export const API = {
     UpdateQuoteLineItemQuantityById:
       '/quoteLineItem/updateQuantityOfQuoteLineItem',
     DeleteQuoteLineItemById: '/quoteLineItem/deleteQuoteLineItems',
+    DeleteLineItemsByQuoteFileId: '/quoteLineItem/deleteLineItemsByQuoteFileId',
     GetQuoteLineItemByQuoteId: '/quoteLineItem/getQuoteLineItemByQuoteId',
     GetQuoteLineItemByQuoteIdandBundleIdNull:
       '/quoteLineItem/getQuoteLineItemByQuoteIdandBundleIdNull',
