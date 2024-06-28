@@ -118,7 +118,6 @@ const GenerateQuote: React.FC = () => {
                   newBundleData?.push(items);
                 }
               });
-
               let newObj = {
                 bundleData: newBundleData,
                 QuoteLineItems: payload?.payload?.Profitabilities,

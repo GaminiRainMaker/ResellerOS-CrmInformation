@@ -65,6 +65,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     let findTheItem = formStackSyncData?.find(
       (item: any) => item?.doc_key === data?.key,
     );
+
     let lineItemsArray: any = [];
     if (findTheItem?.type_of_file === 'With and without bundle') {
       lineItemsArray = getFormattedValuesForWithAndWithoutBundles(
@@ -91,10 +92,12 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       }
     }
     resultValues.quotelineitem = lineItemsArray;
+    // || data.type_of_upload !== 'pdf'
+
     try {
       setLoading(true);
       let pathName =
-        type === 'download'
+        type === 'download' || findTheItem?.type_of_upload !== 'pdf'
           ? `https://www.webmerge.me/merge/${data?.value}/${data?.key}?downoad=1`
           : `https://www.webmerge.me/merge/${data?.value}/${data?.key}`;
       if (data && GeneralSettingData?.api_key) {
@@ -113,7 +116,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
         const blob = new Blob([response.data], {
           type: 'application/pdf',
         });
-        if (type === 'preview') {
+        if (type === 'preview' && findTheItem?.type_of_upload === 'pdf') {
           const url123 = URL.createObjectURL(blob);
           setPdfUrl(url123);
           setShowPreviewModal(true);
