@@ -89,7 +89,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
             Id: '1',
             bundle_name: itemBun?.name,
             extended_price: itemBun?.extended_price,
-            rosquoteai__Quote_Line_Items__r: {
+            quote_line_items: {
               records: innerLineArr,
             },
           };
@@ -130,7 +130,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
         },
         Id: '1',
         bundle_name: 'WithOut  Bundle',
-        rosquoteai__Quote_Line_Items__r: {
+        quote_line_items: {
           records: newArrOfOject,
         },
       };
