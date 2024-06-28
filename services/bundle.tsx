@@ -10,4 +10,6 @@ export const BUNDLE_API = {
     get(`${API.BUNDLE.INDEX}/${id}`) as Promise<AxiosResponse<any>>,
   patch: (data: any) =>
     patch(API.BUNDLE.INDEX, data) as Promise<AxiosResponse<any>>,
+  updateBundleBulk: (data: any) =>
+    post(API.BUNDLE.UpdateBundleBulk, data) as Promise<AxiosResponse<any>>,
 };
