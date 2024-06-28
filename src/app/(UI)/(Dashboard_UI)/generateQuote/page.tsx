@@ -23,7 +23,6 @@ import {getAllBundle} from '../../../../../redux/actions/bundle';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
 import {
-  getQuoteById,
   getQuoteByIdForFormStack,
   updateQuoteById,
   updateQuoteStatusById,
@@ -34,7 +33,6 @@ import {
 } from '../../../../../redux/actions/quoteFile';
 import {getAllTableColumn} from '../../../../../redux/actions/tableColumn';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {setProfitability} from '../../../../../redux/slices/profitability';
 import DownloadFile from './DownloadFile';
 import DrawerContent from './DrawerContent';
 import Metrics from './allTabs/Metrics';
@@ -68,7 +66,6 @@ const GenerateQuote: React.FC = () => {
   const [showRemoveBundleLineItemModal, setShowRemoveBundleLineItemModal] =
     useState<boolean>(false);
   const [selectedFilter, setSelectedFilter] = useState<string>('File Name');
-
   const {data: tableColumnData} = useAppSelector((state) => state.tableColumn);
   const {data: contractSettingData} = useAppSelector(
     (state) => state.contractSetting,
@@ -107,7 +104,7 @@ const GenerateQuote: React.FC = () => {
     if (getQuoteFileDataCount === 0) {
       setActiveTab('2');
     }
-  }, [JSON.stringify(getQuoteFileDataCount)]);
+  }, [getQuoteFileDataCount]);
 
   useEffect(() => {
     dispatch(getQuoteByIdForFormStack(Number(getQuoteID)))?.then(
