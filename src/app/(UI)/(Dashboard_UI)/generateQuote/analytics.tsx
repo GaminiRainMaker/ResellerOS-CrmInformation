@@ -55,7 +55,6 @@ const GenerateQuoteAnalytics: FC<any> = () => {
       profitabilityDataByQuoteId.forEach((item: any) => {
         if (item?.bundle_id && !uniqueBundleIds.has(item.bundle_id)) {
           uniqueBundleIds.add(item.bundle_id);
-
           if (item?.Bundle?.gross_profit) {
             bundleGrossProfit += Number(item.Bundle.gross_profit);
           }

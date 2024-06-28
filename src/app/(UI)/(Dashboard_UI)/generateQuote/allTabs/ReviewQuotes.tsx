@@ -115,7 +115,6 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
     filterDataByValue(quoteFileUnverifiedById, selectedFilter);
   }, [quoteFileUnverifiedById, selectedFilter]);
 
-
   const openNotificationWithIcon = () => {
     api.warning({
       message: 'Please Add Concern!',
@@ -397,7 +396,13 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
             })}
           </>
         ) : (
-          <EmptyContainer title={`There is no data for ${selectedFilter}`} />
+          <EmptyContainer
+            title={
+              selectedFilter
+                ? `There is no data for ${selectedFilter}.`
+                : 'There is no data.'
+            }
+          />
         )
       ) : (
         <EmptyContainer

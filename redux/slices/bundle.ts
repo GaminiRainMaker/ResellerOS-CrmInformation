@@ -5,6 +5,7 @@ import {
   insertBundle,
   getAllBundle,
   updateBundleQuantity,
+  updateBundleBulk,
 } from '../actions/bundle';
 
 type BundleState = {
@@ -13,6 +14,7 @@ type BundleState = {
   data: any;
   updateBundle: any;
   bundle: any;
+  updateBundleBulkData: any;
 };
 
 const initialState: BundleState = {
@@ -21,6 +23,7 @@ const initialState: BundleState = {
   data: [],
   updateBundle: [],
   bundle: [],
+  updateBundleBulkData: [],
 };
 
 const bundleSlice = createSlice({
@@ -70,6 +73,24 @@ const bundleSlice = createSlice({
       )
       .addCase(
         updateBundleQuantity.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(updateBundleBulk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateBundleBulk.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.updateBundleBulkData = action.payload;
+        },
+      )
+      .addCase(
+        updateBundleBulk.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

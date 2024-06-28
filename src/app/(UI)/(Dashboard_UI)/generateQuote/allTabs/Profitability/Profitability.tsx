@@ -18,7 +18,10 @@ import {
 } from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
-import {updateBundleQuantity} from '../../../../../../../redux/actions/bundle';
+import {
+  updateBundleBulk,
+  updateBundleQuantity,
+} from '../../../../../../../redux/actions/bundle';
 import {updateProductFamily} from '../../../../../../../redux/actions/product';
 import {
   deleteProfitabilityById,
@@ -211,6 +214,22 @@ const Profitablity: FC<any> = ({
       ...arrayData,
     ];
     setFinalData(finalData);
+    const uniqueBundleData = bundleData
+      ?.filter(
+        (item: any, index, self) =>
+          index === self?.findIndex((t) => t?.bundleId === item?.bundleId),
+      )
+      ?.map((item) => ({
+        id: item.bundleId,
+        quantity: item.quantity,
+        extended_price: item.totalExtendedPrice,
+        gross_profit: item.totalGrossProfit,
+        gross_profit_percentage: item.totalGrossProfitPercentage,
+      }));
+
+    if (bundleData?.length > 0 && uniqueBundleData) {
+      dispatch(updateBundleBulk(uniqueBundleData));
+    }
   };
 
   useEffect(() => {
@@ -860,7 +879,8 @@ const Profitablity: FC<any> = ({
               <>
                 {finalData?.map((finalDataItem: any, index: number) => {
                   const isBundle =
-                    finalDataItem?.QuoteLineItem?.findIndex(
+                    Array.isArray(finalDataItem?.QuoteLineItem) &&
+                    finalDataItem.QuoteLineItem.findIndex(
                       (item: any) => item?.bundle_id,
                     ) > -1;
                   return (

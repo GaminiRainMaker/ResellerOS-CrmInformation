@@ -36,3 +36,15 @@ export const updateBundleQuantity = createAsyncThunk(
     }
   },
 );
+
+export const updateBundleBulk = createAsyncThunk(
+  'bundle/updateBundleBulk',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await BUNDLE_API.updateBundleBulk(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

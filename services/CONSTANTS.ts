@@ -82,6 +82,7 @@ export const API = {
   },
   BUNDLE: {
     INDEX: '/bundle',
+    UpdateBundleBulk: '/bundle/updateBundleBulk',
   },
   CACHEFLOW: {
     INDEX: '/cacheFlow',
