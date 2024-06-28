@@ -21,6 +21,7 @@ import {FC, useEffect, useState} from 'react';
 import {updateBundleQuantity} from '../../../../../../../redux/actions/bundle';
 import {updateProductFamily} from '../../../../../../../redux/actions/product';
 import {
+  deleteProfitabilityById,
   getProfitabilityByQuoteId,
   removeBundleLineItems,
   updateProfitabilityById,
@@ -65,7 +66,7 @@ const Profitablity: FC<any> = ({
   const [finalData, setFinalData] = useState<any>([]);
   const [finalFieldData, setFinalFieldData] = useState<any>({});
   const [keyPressed, setKeyPressed] = useState('');
-  const [collapseActiveKeys, setCollapseActiveKeys] = useState<string[]>([]);
+  const [collapseActiveKeys, setCollapseActiveKeys] = useState<any>([]);
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
       id: number;
@@ -698,7 +699,17 @@ const Profitablity: FC<any> = ({
     }
   };
 
-  const deleteProfitabityData = () => {};
+  const deleteProfitabityData = () => {
+    const Ids: any = selectTedRowData?.map((item: any) => item?.id);
+    dispatch(deleteProfitabilityById({Ids: Ids})).then((d) => {
+      if (d?.payload) {
+        dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+        setIsDeleteProfitabilityModal(false);
+        setSelectedRowData([]);
+        setSelectedRowIds([]);
+      }
+    });
+  };
 
   const removeBundleLineItemsFunction = () => {
     const Ids: any = selectTedRowData?.map((item: any) => item?.id);
@@ -708,6 +719,7 @@ const Profitablity: FC<any> = ({
           dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
           setShowRemoveBundleLineItemModal(false);
           setSelectedRowData([]);
+          setSelectedRowIds([]);
         }
       });
     }
