@@ -445,7 +445,7 @@ export const updateTables = async (
             }
           });
           dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
-          dispatch(getQuoteFileCount(Number(getQuoteID)))
+          dispatch(getQuoteFileCount(Number(getQuoteID)));
         }
       });
     }
@@ -918,7 +918,8 @@ export const getFormattedValuesForBundlesOnly = (
           },
           Id: '1',
           bundle_name: itemBun?.name,
-          extended_price: itemBun?.extended_price,
+          extended_price: 3243243,
+          bundle_grand_total: 97090809,
           quote_line_items: {
             records: innerLineArr,
           },
@@ -953,6 +954,8 @@ export const getFormattedValuesForLineItems = (objectForSyncingValues: any) => {
         line_amount: items?.line_amount,
         list_price: items?.list_price,
         organization: items?.organization,
+        extended_price: 3243243,
+        grand_total: 23098497292,
       };
       newArrOfOject?.push(newObj);
     });
@@ -999,7 +1002,7 @@ export const getFormattedValuesForWithAndWithoutBundles = (
           },
           Id: '1',
           bundle_name: itemBun?.name,
-          extended_price: itemBun?.extended_price,
+          extended_price: 3243243,
           quote_line_items: {
             records: innerLineArr,
           },
@@ -1027,6 +1030,8 @@ export const getFormattedValuesForWithAndWithoutBundles = (
         line_amount: items?.line_amount,
         list_price: items?.list_price,
         organization: items?.organization,
+        extended_price: 3243243,
+        grand_total: 97090809,
       };
       finArrr?.push(newObj);
     });

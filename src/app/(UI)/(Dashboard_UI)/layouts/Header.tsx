@@ -354,7 +354,7 @@ const CustomHeader = () => {
                   marginLeft: 200,
                   marginTop: 20,
                 }}
-                open={openNotifications}
+                // open={openNotifications}
                 menu={{items}}
                 // eslint-disable-next-line react/no-unstable-nested-components
                 dropdownRender={() => (
@@ -455,9 +455,9 @@ const CustomHeader = () => {
               >
                 <Badge count={notificationCounts}>
                   <AvatarStyled
-                    onClick={() => {
-                      setOpenNotifications(!openNotifications);
-                    }}
+                    // onClick={() => {
+                    //   setOpenNotifications(!openNotifications);
+                    // }}
                     background={token?.colorInfoBg}
                     icon={
                       <BellIcon width={24} color={token?.colorInfoBorder} />
