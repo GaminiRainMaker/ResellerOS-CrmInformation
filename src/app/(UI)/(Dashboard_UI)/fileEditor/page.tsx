@@ -571,211 +571,179 @@ const EditorFile = () => {
   console.log('quoteItemsquoteItems', quoteItems);
   return (
     <GlobalLoader loading={nanonetsLoading}>
-      <div
-        style={{
-          background: 'white',
-          width: '100%',
-          height: '80vh',
-          overflow: 'auto',
-        }}
-      >
-        {ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true' ? (
-          <>
-            <Space
-              onClick={(e) => {
-                e?.preventDefault();
-                // setShowModal(true);
+      {ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true' ? (
+        <>
+          <div
+            style={{
+              position: 'relative',
+              maxHeight: '75vh',
+              overflow: 'auto',
+            }}
+          >
+            <HotTable
+              data={updateLineItemsValue}
+              colWidths={200}
+              columnHeaderHeight={40}
+              height="auto"
+              colHeaders={updateLineItemColumn}
+              columns={updateLineItemColumnData}
+              width="auto"
+              minSpareRows={0}
+              autoWrapRow
+              autoWrapCol
+              licenseKey="non-commercial-and-evaluation"
+              dropdownMenu
+              hiddenColumns={{
+                indicators: true,
               }}
-              size={25}
-              style={{
-                display: 'flex',
-                justifyContent: 'end',
-                marginRight: '50px',
-                // top: '10',
-                position: 'fixed',
-
-                right: '0',
-                bottom: '0',
-                marginBottom: '20px',
+              contextMenu
+              multiColumnSorting
+              filters
+              rowHeaders
+              allowInsertRow={false}
+              allowInsertColumn
+              afterGetColHeader={alignHeaders}
+              beforeRenderer={() => {
+                addClassesToRows('', '', '', '', '', '', quoteItems);
               }}
-            >
-              {!salesForceFiledId && (
-                <OsButton
-                  text="Cancel"
-                  buttontype="SECONDARY"
-                  clickHandler={CancelEditing}
-                />
-              )}
+              afterRemoveRow={(change, source) => {
+                deleteRowsItemsForLineItemsa(source, change);
+              }}
+              afterChange={(change: any, source) => {
+                if (change) {
+                  updateRowsValueForLineItems(
+                    change?.[0]?.[0],
+                    change?.[0]?.[1],
+                    change?.[0]?.[3],
+                  );
+                }
+              }}
+              navigableHeaders
+            />
+          </div>
+          <br />
+          <Space
+            onClick={(e) => {
+              e?.preventDefault();
+            }}
+            size={25}
+            style={{
+              display: 'flex',
+              justifyContent: 'end',
+              marginRight: '50px',
+              right: '0',
+              bottom: '0',
+              marginBottom: '20px',
+            }}
+          >
+            {!salesForceFiledId && (
               <OsButton
-                text="Save LineItems"
-                buttontype="PRIMARY"
-                clickHandler={updateData}
+                text="Cancel"
+                buttontype="SECONDARY"
+                clickHandler={CancelEditing}
               />
-            </Space>{' '}
-            <div style={{width: '90%', overflow: 'auto'}}>
-              <HotTable
-                data={updateLineItemsValue}
-                colWidths={200}
-                columnHeaderHeight={40}
-                height="auto"
-                colHeaders={updateLineItemColumn}
-                columns={updateLineItemColumnData}
-                width="auto"
-                minSpareRows={0}
-                autoWrapRow
-                autoWrapCol
-                licenseKey="non-commercial-and-evaluation"
-                dropdownMenu
-                hiddenColumns={{
-                  indicators: true,
+            )}
+            <OsButton
+              text="Save LineItems"
+              buttontype="PRIMARY"
+              clickHandler={updateData}
+            />
+          </Space>{' '}
+        </>
+      ) : (
+        <>
+          {mergedValue?.length > 0 ? (
+            <>
+              <div
+                style={{
+                  position: 'relative',
+                  maxHeight: '75vh',
+                  overflow: 'auto',
                 }}
-                contextMenu
-                multiColumnSorting
-                filters
-                rowHeaders
-                allowInsertRow={false}
-                allowInsertColumn
-                afterGetColHeader={alignHeaders}
-                beforeRenderer={() => {
-                  addClassesToRows('', '', '', '', '', '', quoteItems);
-                }}
-                afterRemoveRow={(change, source) => {
-                  deleteRowsItemsForLineItemsa(source, change);
-                }}
-                afterChange={(change: any, source) => {
-                  if (change) {
-                    updateRowsValueForLineItems(
-                      change?.[0]?.[0],
-                      change?.[0]?.[1],
-                      change?.[0]?.[3],
-                    );
-                  }
-                }}
-                navigableHeaders
-              />
-            </div>
-          </>
-        ) : (
-          <>
-            {mergedValue?.length > 0 ? (
-              <>
-                <Space
-                  onClick={(e) => {
-                    e?.preventDefault();
-                    // setShowModal(true);
+              >
+                <HotTable
+                  data={mergedValue}
+                  allowRemoveColumn
+                  dropdownMenu
+                  colWidths={200}
+                  columnHeaderHeight={40}
+                  height="auto"
+                  colHeaders={mergeedColumn}
+                  width="auto"
+                  minSpareRows={0}
+                  autoWrapRow
+                  autoWrapCol
+                  licenseKey="non-commercial-and-evaluation"
+                  hiddenColumns={{
+                    indicators: true,
                   }}
-                  size={25}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'end',
-                    marginRight: '50px',
-                    // top: '10',
-                    position: 'fixed',
-
-                    right: '0',
-                    bottom: '0',
-                    marginBottom: '20px',
+                  contextMenu
+                  multiColumnSorting
+                  filters
+                  rowHeaders
+                  allowInsertRow
+                  allowInsertColumn
+                  afterGetColHeader={alignHeaders}
+                  beforeRenderer={() => {
+                    addClassesToRows('', '', '', '', '', '', quoteItems);
                   }}
-                >
-                  {!salesForceFiledId && (
-                    <OsButton
-                      text="Cancel"
-                      buttontype="SECONDARY"
-                      clickHandler={() => {
-                        syncShow('cancel');
-                      }}
-                    />
-                  )}
+                  afterRemoveRow={(change, source) => {
+                    deleteRowsItems(source, change);
+                  }}
+                  afterChange={(change: any, source) => {
+                    if (change) {
+                      updateRowsValue(
+                        change?.[0]?.[0],
+                        change?.[0]?.[1],
+                        change?.[0]?.[3],
+                      );
+                    }
+                  }}
+                  navigableHeaders
+                />
+              </div>
+              <br />
+              <Space
+                onClick={(e) => {
+                  e?.preventDefault();
+                }}
+                size={25}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'end',
+                  marginRight: '50px',
+                  right: '0',
+                  bottom: '0',
+                  marginBottom: '20px',
+                }}
+              >
+                {!salesForceFiledId && (
                   <OsButton
-                    text="Sync Table"
-                    buttontype="PRIMARY"
+                    text="Cancel"
+                    buttontype="SECONDARY"
                     clickHandler={() => {
-                      syncShow('sync');
+                      syncShow('cancel');
                     }}
                   />
-                </Space>
-
-                <div style={{width: '90%', overflow: 'auto'}}>
-                  <HotTable
-                    data={mergedValue}
-                    allowRemoveColumn
-                    dropdownMenu
-                    colWidths={200}
-                    columnHeaderHeight={40}
-                    height="auto"
-                    colHeaders={mergeedColumn}
-                    width="auto"
-                    minSpareRows={0}
-                    autoWrapRow
-                    autoWrapCol
-                    licenseKey="non-commercial-and-evaluation"
-                    hiddenColumns={{
-                      indicators: true,
-                    }}
-                    contextMenu
-                    multiColumnSorting
-                    filters
-                    rowHeaders
-                    allowInsertRow
-                    allowInsertColumn
-                    afterGetColHeader={alignHeaders}
-                    beforeRenderer={() => {
-                      addClassesToRows('', '', '', '', '', '', quoteItems);
-                    }}
-                    afterRemoveRow={(change, source) => {
-                      deleteRowsItems(source, change);
-                    }}
-                    afterChange={(change: any, source) => {
-                      if (change) {
-                        updateRowsValue(
-                          change?.[0]?.[0],
-                          change?.[0]?.[1],
-                          change?.[0]?.[3],
-                        );
-                      }
-                    }}
-                    navigableHeaders
-                  />
-                </div>
-              </>
-            ) : (
-              <>
-                {quoteItems && (
-                  <Space
-                    size={25}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'end',
-                      marginRight: '50px',
-                      // top: '10',
-                      position: 'fixed',
-
-                      right: '0',
-                      bottom: '0',
-                      marginBottom: '20px',
-                    }}
-                  >
-                    {' '}
-                    {!salesForceFiledId && (
-                      <OsButton
-                        text="Cancel"
-                        buttontype="SECONDARY"
-                        // clickHandler={(e: any) => {
-                        //   e?.preventDefault();
-                        //   CancelEditing();
-                        // }}
-                        clickHandler={(e: void) => {
-                          CancelEditing();
-                        }}
-                      />
-                    )}
-                    <OsButton
-                      text="Merge Table"
-                      buttontype="PRIMARY"
-                      clickHandler={() => mergeTableData(quoteItems)}
-                    />
-                  </Space>
                 )}
+                <OsButton
+                  text="Sync Table"
+                  buttontype="PRIMARY"
+                  clickHandler={() => {
+                    syncShow('sync');
+                  }}
+                />
+              </Space>
+            </>
+          ) : (
+            <div style={{position: 'absolute', width: '100%'}}>
+              <div
+                style={{
+                  position: 'relative',
+                  maxHeight: '75vh',
+                  overflow: 'auto',
+                }}
+              >
                 {quoteItems &&
                   quoteItems?.map((itemss: any, indexOFTable: number) => {
                     const allHeaderValue: any = [];
@@ -787,9 +755,8 @@ const EditorFile = () => {
                         }
                       });
                     }
-
                     return (
-                      <>
+                      <div>
                         <Space direction="horizontal" style={{width: '100%'}}>
                           <Typography
                             onClick={() => mergeTableData(quoteItems)}
@@ -803,7 +770,7 @@ const EditorFile = () => {
                             }}
                           />
                         </Space>
-                        <div style={{width: '90%', overflow: 'auto'}}>
+                        <div style={{overflow: 'auto'}}>
                           <HotTable
                             data={itemss}
                             colWidths={[
@@ -859,14 +826,46 @@ const EditorFile = () => {
                             navigableHeaders
                           />
                         </div>
-                      </>
+                      </div>
                     );
                   })}
-              </>
-            )}
-          </>
-        )}
-      </div>
+              </div>
+              {quoteItems && (
+                <>
+                  <br />
+                  <Space
+                    size={25}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'end',
+                      marginRight: '50px',
+                      right: '0',
+                      bottom: '0',
+                      marginBottom: '20px',
+                    }}
+                  >
+                    {' '}
+                    {!salesForceFiledId && (
+                      <OsButton
+                        text="Cancel"
+                        buttontype="SECONDARY"
+                        clickHandler={(e: void) => {
+                          CancelEditing();
+                        }}
+                      />
+                    )}
+                    <OsButton
+                      text="Merge Table"
+                      buttontype="PRIMARY"
+                      clickHandler={() => mergeTableData(quoteItems)}
+                    />
+                  </Space>
+                </>
+              )}
+            </div>
+          )}
+        </>
+      )}
       {showModal && (
         <OsModal
           // loading={loading}

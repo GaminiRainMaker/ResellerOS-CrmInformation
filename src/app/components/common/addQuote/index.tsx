@@ -103,7 +103,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
     const quotesArr: any = [];
 
     try {
-      // setFinalLoading(true);
+      setFinalLoading(true);
 
       for (let i = 0; i < updatedArr.length; i++) {
         let quoteLineItemArr: any = [];
