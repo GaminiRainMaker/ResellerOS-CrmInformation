@@ -92,6 +92,9 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       }
     }
     resultValues.quotelineitem = lineItemsArray;
+    resultValues.extended_price = 3243243;
+    resultValues.grand_total = 23098497292;
+
     // || data.type_of_upload !== 'pdf'
 
     try {
