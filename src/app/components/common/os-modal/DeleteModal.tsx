@@ -7,6 +7,7 @@ import useThemeToken from '../hooks/useThemeToken';
 import OsButton from '../os-button';
 import {AvatarStyled} from '../os-table/styled-components';
 import Typography from '../typography';
+import {Checkbox} from '../antd/Checkbox';
 
 const DeleteModal: FC<any> = ({
   showModalDelete,
@@ -16,6 +17,7 @@ const DeleteModal: FC<any> = ({
   heading,
   description,
   loading,
+  setCheckedValue,
 }) => {
   const [token] = useThemeToken();
   return (
@@ -43,6 +45,18 @@ const DeleteModal: FC<any> = ({
               <Typography name="Heading 3/Medium">{heading}</Typography>
               <Typography name="Body 3/Regular">{description}</Typography>
             </Space>
+            {setCheckedValue && (
+              <Space>
+                <Checkbox
+                  onChange={(e) => {
+                    setCheckedValue(e?.target?.checked);
+                  }}
+                />
+                <Typography name="Body 3/Regular">
+                  Do you want to delete the attachment's respective line items?
+                </Typography>
+              </Space>
+            )}
 
             <Space size={12}>
               <OsButton

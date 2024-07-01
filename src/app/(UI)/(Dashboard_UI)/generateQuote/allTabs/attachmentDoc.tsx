@@ -1,8 +1,9 @@
 'use client';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import OsButton from '@/app/components/common/os-button';
 import EmptyContainer from '@/app/components/common/os-empty-container';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {OSDraggerStyle} from '@/app/components/common/os-upload/styled-components';
@@ -18,21 +19,19 @@ import {
   getAllAttachmentDocument,
   insertAttachmentDocument,
 } from '../../../../../../redux/actions/attachmentDocument';
+import {getProfitabilityByQuoteId} from '../../../../../../redux/actions/profitability';
 import {
+  deleteQuoteFileById,
   getQuoteFileByQuoteId,
   getQuoteFileByQuoteIdAll,
   getQuoteFileCount,
 } from '../../../../../../redux/actions/quoteFile';
+import {deleteLineItemsByQuoteFileId} from '../../../../../../redux/actions/quotelineitem';
 import {
   uploadExcelFileToAws,
   uploadToAws,
 } from '../../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
-import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
-import {deleteQuoteFileById} from '../../../../../../redux/actions/quoteFile';
-import GlobalLoader from '@/app/components/common/os-global-loader';
-import {deleteLineItemsByQuoteFileId} from '../../../../../../redux/actions/quotelineitem';
-import {getProfitabilityByQuoteId} from '../../../../../../redux/actions/profitability';
 
 const AttachmentDocument: FC<any> = ({
   typeForAttachmentFilter,
@@ -59,6 +58,7 @@ const AttachmentDocument: FC<any> = ({
   const [bufferLoading, setBufferLoading] = useState<boolean>(false);
   const [deletedData, setDeletedData] = useState<any>();
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [checkedValue, setCheckedValue] = useState<boolean>(false);
 
   useEffect(() => {
     if (getQuoteID) {
@@ -233,17 +233,18 @@ const AttachmentDocument: FC<any> = ({
   const deleteSelectedIds = async () => {
     if (deletedData?.type === 'Vendor Quote') {
       await dispatch(deleteQuoteFileById({id: deletedData?.id}));
-      await dispatch(deleteLineItemsByQuoteFileId({id: deletedData?.id})).then(
-        (d) => {
+      await dispatch(getQuoteFileByQuoteIdAll(getQuoteID));
+      if (checkedValue) {
+        await dispatch(
+          deleteLineItemsByQuoteFileId({id: deletedData?.id}),
+        ).then((d) => {
           if (d?.payload) {
             dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
             dispatch(getQuoteFileCount(Number(getQuoteID)));
             dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
-            dispatch(getQuoteFileByQuoteIdAll(getQuoteID));
           }
-        },
-      );
-
+        });
+      }
       setCallApis(true);
       setShowDeleteModal(false);
     } else {
@@ -338,6 +339,9 @@ const AttachmentDocument: FC<any> = ({
         deleteSelectedIds={deleteSelectedIds}
         description="Are you sure you want to delete this attachment?"
         heading="Delete Attachment"
+        setCheckedValue={
+          deletedData?.type === 'Vendor Quote' && setCheckedValue
+        }
       />
     </>
   );
