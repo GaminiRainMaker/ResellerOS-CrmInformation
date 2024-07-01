@@ -97,7 +97,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     try {
       setLoading(true);
       let pathName =
-        type === 'download' || findTheItem?.type_of_upload !== 'pdf'
+        type === 'download'
           ? `https://www.webmerge.me/merge/${data?.value}/${data?.key}?downoad=1`
           : `https://www.webmerge.me/merge/${data?.value}/${data?.key}`;
       if (data && GeneralSettingData?.api_key) {
@@ -135,6 +135,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
               reader.readAsDataURL(blobs);
             });
           };
+          console.log('blob?.type', blob?.type);
           let pathUsedToUpload =
             blob?.type === 'application/octet-stream'
               ? uploadExcelFileToAws
@@ -156,7 +157,10 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
           const url = window.URL.createObjectURL(blob);
           const link = document.createElement('a');
           link.href = url;
-          link.setAttribute('download', 'downloaded_file.pdf');
+          link.setAttribute(
+            'download',
+            `downloaded_file.${findTheItem?.type_of_upload}`,
+          );
           document.body.appendChild(link);
           link.click();
           window.URL.revokeObjectURL(url);
@@ -207,7 +211,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
             {pdfUrl && <iframe src={pdfUrl} width="100%" height="500px" />}
             <br />
 
-            {pdfUrl && (
+            {selectedDoc && (
               <Row justify={'end'}>
                 <OsButton
                   text="Download"
