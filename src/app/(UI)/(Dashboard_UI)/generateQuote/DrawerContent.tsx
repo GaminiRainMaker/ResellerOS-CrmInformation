@@ -50,7 +50,7 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
           if (item.id === customerValue) {
             item.BillingContacts.forEach((itemss: any) => {
               updatedAllBillingContact.push({
-                label: `${itemss.billing_first_name ? itemss.billing_first_name : 'First'} ${itemss.billing_last_name ? itemss.billing_last_name : 'Last'}`,
+                label: `${itemss.billing_first_name ?? itemss.billing_first_name} ${itemss.billing_last_name ?? itemss.billing_last_name}`,
                 value: itemss.id,
               });
             });
