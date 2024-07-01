@@ -763,47 +763,105 @@ const Profitablity: FC<any> = ({
               {
                 key: index,
                 label: (
-                  <Row justify="space-between">
-                    <Col>
-                      <p>{finalDataItem?.name}</p>
+                  <Row justify="space-between" align="middle" gutter={[8, 8]}>
+                    <Col span={4}>
+                      <Typography
+                        name="Body 4/Medium"
+                        color={token?.colorBgContainer}
+                        ellipsis
+                        tooltip
+                        as="div"
+                      >
+                        {finalDataItem?.name}
+                      </Typography>
                     </Col>
-                    <Col>
-                      <p>Line Items: {finalDataItem?.QuoteLineItem?.length}</p>
+                    <Col span={2}>
+                      <span>
+                        Line Items:{' '}
+                        <Typography
+                          name="Body 4/Medium"
+                          color={token?.colorBgContainer}
+                          ellipsis
+                          tooltip
+                        >
+                          {finalDataItem?.QuoteLineItem?.length}
+                        </Typography>
+                      </span>
                     </Col>
                     {finalDataItem?.description && (
-                      <Col>
-                        <p>Desc: {finalDataItem?.description}</p>
+                      <Col span={4}>
+                        <span style={{display: 'flex'}}>
+                          Desc:{' '}
+                          <Typography
+                            name="Body 4/Medium"
+                            color={token?.colorBgContainer}
+                            ellipsis
+                            tooltip
+                            as="div"
+                          >
+                            {finalDataItem?.description}
+                          </Typography>
+                        </span>
                       </Col>
                     )}
-                    <Col>
-                      <p>
-                        Extended Price: $
-                        {abbreviate(
-                          Number(finalDataItem?.totalExtendedPrice ?? 0.0),
-                        )}
-                      </p>
+                    <Col span={4}>
+                      <span style={{display: 'flex'}}>
+                        Extended Price: ${' '}
+                        <Typography
+                          name="Body 4/Medium"
+                          color={token?.colorBgContainer}
+                          ellipsis
+                          tooltip
+                          as="div"
+                        >
+                          {abbreviate(
+                            Number(finalDataItem?.totalExtendedPrice ?? 0.0),
+                          )}
+                        </Typography>
+                      </span>
                     </Col>
-                    <Col>
-                      <p>
-                        Gross Profit: $
-                        {abbreviate(
-                          Number(finalDataItem?.totalGrossProfit ?? 0.0),
-                        )}
-                      </p>
+                    <Col span={4}>
+                      <span style={{display: 'flex'}}>
+                        Gross Profit: ${' '}
+                        <Typography
+                          name="Body 4/Medium"
+                          color={token?.colorBgContainer}
+                          ellipsis
+                          tooltip
+                          as="div"
+                        >
+                          {abbreviate(
+                            Number(finalDataItem?.totalGrossProfit ?? 0.0),
+                          )}
+                        </Typography>
+                      </span>
                     </Col>
-                    <Col>
-                      <p>
-                        Gross Profit %:{' '}
-                        {abbreviate(
-                          Number(
-                            finalDataItem?.totalGrossProfitPercentage ?? 0.0,
-                          ),
-                        )}
-                      </p>
+                    <Col span={4}>
+                      <span style={{display: 'flex'}}>
+                        Gross Profit%:{' '}
+                        <Typography
+                          name="Body 4/Medium"
+                          color={token?.colorBgContainer}
+                          ellipsis
+                          tooltip
+                          as="div"
+                        >
+                          {abbreviate(
+                            Number(
+                              finalDataItem?.totalGrossProfitPercentage ?? 0.0,
+                            ),
+                          )}
+                        </Typography>
+                      </span>
                     </Col>
                     {finalDataItem?.type === 'bundle' && (
-                      <Col>
-                        <span style={{display: 'flex', alignItems: 'center'}}>
+                      <Col span={2}>
+                        <span
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                          }}
+                        >
                           Qty:
                           <OsInputNumber
                             defaultValue={finalDataItem?.quantity}
@@ -894,54 +952,109 @@ const Profitablity: FC<any> = ({
                         {
                           key: index,
                           label: (
-                            <Row justify="space-between">
-                              <Col>
-                                <p>{finalDataItem?.name}</p>
+                            <Row
+                              justify="space-between"
+                              align="middle"
+                              gutter={[8, 8]}
+                            >
+                              <Col span={4}>
+                                <Typography
+                                  name="Body 4/Medium"
+                                  color={token?.colorBgContainer}
+                                  ellipsis
+                                  tooltip
+                                  as="div"
+                                >
+                                  {finalDataItem?.name}
+                                </Typography>
                               </Col>
-                              <Col>
-                                <p>
+                              <Col span={2}>
+                                <span>
                                   Line Items:{' '}
-                                  {finalDataItem?.QuoteLineItem?.length}
-                                </p>
+                                  <Typography
+                                    name="Body 4/Medium"
+                                    color={token?.colorBgContainer}
+                                    ellipsis
+                                    tooltip
+                                  >
+                                    {finalDataItem?.QuoteLineItem?.length}
+                                  </Typography>
+                                </span>
                               </Col>
                               {finalDataItem?.description && (
-                                <Col>
-                                  <p>Desc: {finalDataItem?.description}</p>
+                                <Col span={4}>
+                                  <span style={{display: 'flex'}}>
+                                    Desc:{' '}
+                                    <Typography
+                                      name="Body 4/Medium"
+                                      color={token?.colorBgContainer}
+                                      ellipsis
+                                      tooltip
+                                      as="div"
+                                    >
+                                      {finalDataItem?.description}
+                                    </Typography>
+                                  </span>
                                 </Col>
                               )}
-                              <Col>
-                                <p>
-                                  Extended Price : ${' '}
-                                  {abbreviate(
-                                    Number(
-                                      finalDataItem?.totalExtendedPrice ?? 0.0,
-                                    ),
-                                  )}
-                                </p>
+                              <Col span={4}>
+                                <span style={{display: 'flex'}}>
+                                  Extended Price: ${' '}
+                                  <Typography
+                                    name="Body 4/Medium"
+                                    color={token?.colorBgContainer}
+                                    ellipsis
+                                    tooltip
+                                    as="div"
+                                  >
+                                    {abbreviate(
+                                      Number(
+                                        finalDataItem?.totalExtendedPrice ??
+                                          0.0,
+                                      ),
+                                    )}
+                                  </Typography>
+                                </span>
                               </Col>
-                              <Col>
-                                <p>
-                                  Gross Profit : ${' '}
-                                  {abbreviate(
-                                    Number(
-                                      finalDataItem?.totalGrossProfit ?? 0.0,
-                                    ),
-                                  )}
-                                </p>
+                              <Col span={4}>
+                                <span style={{display: 'flex'}}>
+                                  Gross Profit: ${' '}
+                                  <Typography
+                                    name="Body 4/Medium"
+                                    color={token?.colorBgContainer}
+                                    ellipsis
+                                    tooltip
+                                    as="div"
+                                  >
+                                    {abbreviate(
+                                      Number(
+                                        finalDataItem?.totalGrossProfit ?? 0.0,
+                                      ),
+                                    )}
+                                  </Typography>
+                                </span>
                               </Col>
-                              <Col>
-                                <p>
-                                  Gross Profit % :{' '}
-                                  {abbreviate(
-                                    Number(
-                                      finalDataItem?.totalGrossProfitPercentage ??
-                                        0.0,
-                                    ),
-                                  )}
-                                </p>
+                              <Col span={4}>
+                                <span style={{display: 'flex'}}>
+                                  Gross Profit%:{' '}
+                                  <Typography
+                                    name="Body 4/Medium"
+                                    color={token?.colorBgContainer}
+                                    ellipsis
+                                    tooltip
+                                    as="div"
+                                  >
+                                    {abbreviate(
+                                      Number(
+                                        finalDataItem?.totalGrossProfitPercentage ??
+                                          0.0,
+                                      ),
+                                    )}
+                                  </Typography>
+                                </span>
                               </Col>
                               {finalDataItem?.type === 'bundle' && (
-                                <Col>
+                                <Col span={2}>
                                   <span
                                     style={{
                                       display: 'flex',
