@@ -219,25 +219,19 @@ const AccountDetails = () => {
       dataIndex: 'title',
       key: 'title',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      render: (text: string, record: any) => (
+        <Typography
+          hoverOnText
+          name="Body 4/Regular"
+          color={token?.colorInfo}
+          onClick={() => {
+            router.push(`/opportunityDetail?id=${record?.id}`);
+          }}
+        >
+          {text ?? '--'}
+        </Typography>
       ),
     },
-    // {
-    //   title: (
-    //     <Typography name="Body 4/Medium" className="dragHandler">
-    //       Customer Account
-    //     </Typography>
-    //   ),
-    //   dataIndex: 'customer_name',
-    //   key: 'customer_name',
-    //   width: 187,
-    //   render: (text: string) => (
-    //     <Typography name="Body 4/Regular">
-    //       {customerData?.name ?? '--'}
-    //     </Typography>
-    //   ),
-    // },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -265,34 +259,10 @@ const AccountDetails = () => {
       width: 130,
       render: (text: string, record: any) => (
         <CommonStageSelect
-          disabled={true}
+          disabled={false}
           options={StageValue}
-          // value={text}
           currentStage={text}
         />
-      ),
-    },
-    {
-      title: ' ',
-      dataIndex: 'actions',
-      key: 'actions',
-      width: 94,
-      render: (text: string, record: any) => (
-        <Space size={18}>
-          <PencilSquareIcon
-            height={24}
-            width={24}
-            color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
-            onClick={() => {}}
-          />
-          <TrashIcon
-            height={24}
-            width={24}
-            color={token.colorError}
-            style={{cursor: 'pointer'}}
-          />
-        </Space>
       ),
     },
   ];
@@ -329,7 +299,7 @@ const AccountDetails = () => {
             </Row>
 
             <OsCard>
-              <OsTableWithOutDrag
+              <OsTable
                 loading={loading}
                 columns={Quotecolumns}
                 dataSource={customerData?.Quotes}
