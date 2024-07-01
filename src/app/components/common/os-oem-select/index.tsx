@@ -94,6 +94,7 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
     JSON.stringify(OemData),
     JSON.stringify(oemDatByDistributorId),
     JSON.stringify(quoteConfigData),
+    distributorValue,
   ]);
 
   return (

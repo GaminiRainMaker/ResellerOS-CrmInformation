@@ -371,9 +371,9 @@ const EditorFile = () => {
       return newObj;
     });
     const transformObjects = (arr: any) => {
-      const transformedArray = arr.map((obj: any) => {
+      const transformedArray = arr.map((obj: any, index: number) => {
         if (obj[''] !== undefined) {
-          obj['emptyHeader'] = obj[''];
+          obj[`emptyHeader ${index}`] = obj[''];
           delete obj[''];
         }
         return obj;
@@ -394,9 +394,9 @@ const EditorFile = () => {
     setTimeout(() => {
       if (newTableData?.length === 1) {
         const transformObjects = (arr: any) => {
-          const transformedArray = arr.map((obj: any) => {
+          const transformedArray = arr.map((obj: any, index: number) => {
             if (obj[''] !== undefined) {
-              obj['emptyHeader'] = obj[''];
+              obj[`emptyHeader ${index}`] = obj[''];
               delete obj[''];
             }
             return obj;

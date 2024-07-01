@@ -1,8 +1,9 @@
 'use client';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import OsButton from '@/app/components/common/os-button';
 import EmptyContainer from '@/app/components/common/os-empty-container';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {OSDraggerStyle} from '@/app/components/common/os-upload/styled-components';
@@ -18,21 +19,19 @@ import {
   getAllAttachmentDocument,
   insertAttachmentDocument,
 } from '../../../../../../redux/actions/attachmentDocument';
+import {getProfitabilityByQuoteId} from '../../../../../../redux/actions/profitability';
 import {
+  deleteQuoteFileById,
   getQuoteFileByQuoteId,
   getQuoteFileByQuoteIdAll,
   getQuoteFileCount,
 } from '../../../../../../redux/actions/quoteFile';
+import {deleteLineItemsByQuoteFileId} from '../../../../../../redux/actions/quotelineitem';
 import {
   uploadExcelFileToAws,
   uploadToAws,
 } from '../../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
-import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
-import {deleteQuoteFileById} from '../../../../../../redux/actions/quoteFile';
-import GlobalLoader from '@/app/components/common/os-global-loader';
-import {deleteLineItemsByQuoteFileId} from '../../../../../../redux/actions/quotelineitem';
-import {getProfitabilityByQuoteId} from '../../../../../../redux/actions/profitability';
 
 const AttachmentDocument: FC<any> = ({
   typeForAttachmentFilter,
@@ -50,7 +49,13 @@ const AttachmentDocument: FC<any> = ({
   const {getQuoteFileByQuoteIdAllData: quoteFileData} = useAppSelector(
     (state) => state.quoteFile,
   );
-  const [attachUrl, setAttachUrl] = useState<any>();
+  const [attachUrl, setAttachUrl] = useState<{
+    name: string;
+    url: string;
+  }>({
+    name: '',
+    url: '',
+  });
   const [typeOfAttach, setTypeOfAttach] = useState<any>();
   const [combinedData, setCombinedData] = useState<any>();
   const [filteredData, setFilteredData] = useState([]);
@@ -59,6 +64,7 @@ const AttachmentDocument: FC<any> = ({
   const [bufferLoading, setBufferLoading] = useState<boolean>(false);
   const [deletedData, setDeletedData] = useState<any>();
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [checkedValue, setCheckedValue] = useState<boolean>(false);
 
   useEffect(() => {
     if (getQuoteID) {
@@ -70,33 +76,36 @@ const AttachmentDocument: FC<any> = ({
   const mergeAndModifyData = () => {
     setLoadingShow(true);
     const newData: any = [];
-    if (attachmentDocumentData) {
-      attachmentDocumentData?.forEach((item: any) => {
-        newData?.push({
-          id: item?.id,
-          name: item?.Quote?.customer_name
-            ? item?.Quote?.customer_name
-            : 'Quote',
-          url: item?.doc_url,
-          type: item?.type,
+    try {
+      if (attachmentDocumentData) {
+        attachmentDocumentData?.forEach((item: any) => {
+          newData?.push({
+            id: item?.id,
+            name: item?.name,
+            url: item?.doc_url,
+            type: item?.type,
+          });
         });
-      });
-    }
+      }
 
-    if (quoteFileData && quoteFileData?.length > 0) {
-      quoteFileData?.forEach((item: any) => {
-        newData?.push({
-          id: item?.id,
-          name: item?.file_name,
-          url: item?.pdf_url,
-          type: 'Vendor Quote',
+      if (quoteFileData && quoteFileData?.length > 0) {
+        quoteFileData?.forEach((item: any) => {
+          newData?.push({
+            id: item?.id,
+            name: item?.file_name,
+            url: item?.pdf_url,
+            type: 'Vendor Quote',
+          });
         });
-      });
-    }
-    setTimeout(() => {
+      }
       setCombinedData(newData);
+      setTimeout(() => {
+        setLoadingShow(false);
+      }, 500);
+    } catch (err) {
+      console.log('Err', err);
       setLoadingShow(false);
-    }, 1000);
+    }
   };
 
   useEffect(() => {
@@ -121,23 +130,19 @@ const AttachmentDocument: FC<any> = ({
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-
       width: 130,
-      render: (record: any, text: any) => {
-        return (
-          <Typography
-            name="Body 4/Medium"
-            style={{color: token?.colorInfo}}
-            hoverOnText
-            onClick={() => {
-              window?.open(text?.url);
-            }}
-            color="rgb(35, 100, 170)"
-          >
-            {record}
-          </Typography>
-        );
-      },
+      render: (text: any, record: any) => (
+        <Typography
+          name="Body 4/Medium"
+          style={{color: token?.colorInfo}}
+          hoverOnText
+          onClick={() => {
+            window?.open(record?.url);
+          }}
+        >
+          {text ?? '--'}
+        </Typography>
+      ),
     },
     {
       title: 'Type',
@@ -183,7 +188,10 @@ const AttachmentDocument: FC<any> = ({
           pathUsedToUpload({document: base64String}),
         );
         const pdfUrl = payload?.payload?.data?.Location;
-        setAttachUrl(pdfUrl);
+        setAttachUrl({
+          name: file?.name ?? 'Quote',
+          url: pdfUrl,
+        });
         message.success('File uploaded successfully');
       }
     } catch (error: any) {
@@ -196,7 +204,8 @@ const AttachmentDocument: FC<any> = ({
 
   const addNewAttachment = async () => {
     let newObjForAttach: any = {
-      doc_url: attachUrl,
+      name: attachUrl?.name,
+      doc_url: attachUrl?.url,
       quote_id: getQuoteID,
       type: typeOfAttach,
     };
@@ -205,7 +214,7 @@ const AttachmentDocument: FC<any> = ({
         if (d?.payload) {
           setAddNewCustomerQuote(false);
           setCallApis(true);
-          setAttachUrl('');
+          setAttachUrl({name: '', url: ''});
           setTypeOfAttach('');
         }
       });
@@ -233,17 +242,18 @@ const AttachmentDocument: FC<any> = ({
   const deleteSelectedIds = async () => {
     if (deletedData?.type === 'Vendor Quote') {
       await dispatch(deleteQuoteFileById({id: deletedData?.id}));
-      await dispatch(deleteLineItemsByQuoteFileId({id: deletedData?.id})).then(
-        (d) => {
+      await dispatch(getQuoteFileByQuoteIdAll(getQuoteID));
+      if (checkedValue) {
+        await dispatch(
+          deleteLineItemsByQuoteFileId({id: deletedData?.id}),
+        ).then((d) => {
           if (d?.payload) {
             dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
             dispatch(getQuoteFileCount(Number(getQuoteID)));
             dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
-            dispatch(getQuoteFileByQuoteIdAll(getQuoteID));
           }
-        },
-      );
-
+        });
+      }
       setCallApis(true);
       setShowDeleteModal(false);
     } else {
@@ -271,7 +281,7 @@ const AttachmentDocument: FC<any> = ({
         open={addNewCustomerQuote}
         onCancel={() => {
           setAddNewCustomerQuote(false);
-          setAttachUrl('');
+          setAttachUrl({name: '', url: ''});
           setTypeOfAttach('');
         }}
         bodyPadding={20}
@@ -280,7 +290,7 @@ const AttachmentDocument: FC<any> = ({
         onOk={addNewAttachment}
         body={
           <div style={{width: '100%'}}>
-            {attachUrl ? (
+            {attachUrl?.url ? (
               <>
                 <CommonSelect
                   key={1}
@@ -338,6 +348,9 @@ const AttachmentDocument: FC<any> = ({
         deleteSelectedIds={deleteSelectedIds}
         description="Are you sure you want to delete this attachment?"
         heading="Delete Attachment"
+        setCheckedValue={
+          deletedData?.type === 'Vendor Quote' && setCheckedValue
+        }
       />
     </>
   );
