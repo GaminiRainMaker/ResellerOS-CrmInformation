@@ -118,6 +118,7 @@ const GenerateQuote: React.FC = () => {
                   newBundleData?.push(items);
                 }
               });
+              console.log('payload?.payload', payload?.payload);
               let newObj = {
                 bundleData: newBundleData,
                 QuoteLineItems: payload?.payload?.Profitabilities,
@@ -142,12 +143,12 @@ const GenerateQuote: React.FC = () => {
                 opportunity_id: payload?.payload?.Opportunity?.id,
                 quoute_line_item_id: payload?.payload?.Profitabilities?.id,
                 quote_id: payload?.payload?.id,
+                QuoteLineItems: payload?.payload?.Profitabilities,
               };
               delete newObj?.Customer;
               delete newObj?.Opportunity,
                 delete newObj?.Profitabilities,
-                (newObj.QuoteLineItems = payload?.payload?.Profitabilities);
-              setObjectForSyncingValues(newObj);
+                setObjectForSyncingValues(newObj);
             }
           },
         );

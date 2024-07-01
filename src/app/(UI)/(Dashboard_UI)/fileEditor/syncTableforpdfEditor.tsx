@@ -38,7 +38,10 @@ import {
   insertProduct,
   insertProductsInBulk,
 } from '../../../../../redux/actions/product';
-import {insertProfitability} from '../../../../../redux/actions/profitability';
+import {
+  getAllProfitabilityCount,
+  insertProfitability,
+} from '../../../../../redux/actions/profitability';
 import {updateQuoteJsonAndManual} from '../../../../../redux/actions/quote';
 import {quoteFileVerification} from '../../../../../redux/actions/quoteFile';
 import {
@@ -450,7 +453,21 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         }
         if (newrrLineItems && newrrLineItems.length > 0) {
           const data = genericFun(d?.payload, newrrLineItems);
-          dispatch(insertProfitability(data));
+          let count = 0;
+          async () => {
+            await dispatch(getAllProfitabilityCount(Number(getQuoteID)))?.then(
+              (payload: any) => {
+                count = payload?.payload;
+              },
+            );
+          };
+
+          const newArrr: any = [];
+
+          data?.map((items: any, index: number) => {
+            newArrr?.push({...items, serial_number: index + count + 1});
+          });
+          dispatch(insertProfitability(newArrr));
         }
       });
     }
