@@ -2,11 +2,13 @@
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapse from '@/app/components/common/os-collapse';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import OsModal from '@/app/components/common/os-modal';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
@@ -16,6 +18,8 @@ import {
   currencyFormatter,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
+import {TrashIcon} from '@heroicons/react/24/outline';
+import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {
@@ -31,12 +35,8 @@ import {
   updateProfitabilityValueForBulk,
 } from '../../../../../../../redux/actions/profitability';
 import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
-import UpdatingLineItems from '../../UpdatingLineItems';
-import {Form} from 'antd';
 import BundleSection from '../../BundleSection';
-import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
-import {TrashIcon} from '@heroicons/react/24/outline';
-import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import UpdatingLineItems from '../../UpdatingLineItems';
 
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
@@ -1188,7 +1188,7 @@ const Profitablity: FC<any> = ({
         setDeleteIds={setSelectedRowIds}
         showModalDelete={isDeleteProfitabilityModal}
         deleteSelectedIds={deleteProfitabityData}
-        description="Are you sure you want to delete this Profitability?"
+        description="Are you sure you want to delete selected line items?"
         heading="Delete Profitability"
       />
       <DeleteModal
