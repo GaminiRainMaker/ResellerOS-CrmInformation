@@ -151,7 +151,6 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
   //   dispatch(updateQuoteById(obj));
   //   setOpen(false);
   // };
-
   useEffect(() => {
     form.setFieldsValue({
       file_name: quoteById?.file_name,
@@ -159,6 +158,9 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
       customer_id: quoteById?.customer_id,
       contact_id: quoteById?.contact_id && quoteById?.contact_id,
       status: quoteById?.status,
+      quote_notes: quoteById?.quote_notes,
+      quote_shipping: quoteById?.quote_shipping,
+      quote_tax: quoteById?.quote_tax,
     });
     setCustomerValue(quoteById?.customer_id);
   }, [quoteById]);
@@ -223,6 +225,26 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
                 style={{width: '100%'}}
                 placeholder="Contacts"
                 options={billingOptionsData}
+                disabled={getInReviewQuote === 'true' ? true : false}
+              />
+            </Form.Item>
+            <Form.Item label=" Quote Note" name="quote_notes">
+              <OsInput
+                placeholder="notes"
+                disabled={getInReviewQuote === 'true' ? true : false}
+              />
+            </Form.Item>
+            <Form.Item label="Quote Tax" name="quote_tax">
+              <OsInput
+                placeholder="quote tax"
+                type="number"
+                disabled={getInReviewQuote === 'true' ? true : false}
+              />
+            </Form.Item>
+            <Form.Item label="Quote Shipping" name="quote_shipping">
+              <OsInput
+                placeholder="Quote Shipping"
+                type="number"
                 disabled={getInReviewQuote === 'true' ? true : false}
               />
             </Form.Item>
