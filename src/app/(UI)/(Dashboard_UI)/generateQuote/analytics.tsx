@@ -48,6 +48,7 @@ const GenerateQuoteAnalytics: FC<any> = () => {
     let grossProfitPercentage = 0;
     let exitPrice = 0;
     let bundleExitPrice = 0;
+    let BundleAdjustedPrice = 0;
     let adjustedPrice = 0;
 
     if (profitabilityDataByQuoteId && profitabilityDataByQuoteId.length > 0) {
@@ -68,16 +69,29 @@ const GenerateQuoteAnalytics: FC<any> = () => {
           if (item?.exit_price) {
             exitPrice += item.exit_price;
           }
+          if (
+            item?.adjusted_price !== undefined &&
+            item?.quantity !== undefined
+          ) {
+            let temp: any;
+            temp =
+              Number(item?.adjusted_price) *
+              (item?.quantity ? Number(item?.quantity) : 1);
+            adjustedPrice += temp;
+          }
         }
-        if (
-          item?.adjusted_price !== undefined &&
-          item?.quantity !== undefined
-        ) {
-          let temp: any;
-          temp =
-            Number(item?.adjusted_price) *
-            (item?.quantity ? Number(item?.quantity) : 1);
-          adjustedPrice += temp;
+
+        if (item?.bundle_id) {
+          if (
+            item?.adjusted_price !== undefined &&
+            item?.quantity !== undefined
+          ) {
+            let temp: any;
+            temp =
+              Number(item?.adjusted_price) *
+              (item?.quantity ? Number(item?.quantity) : 1);
+            BundleAdjustedPrice += temp * Number(item.Bundle.quantity) ?? 1;
+          }
         }
       });
     }
@@ -92,7 +106,7 @@ const GenerateQuoteAnalytics: FC<any> = () => {
       GrossProfit: totalGrossProfit,
       GrossProfitPercentage: grossProfitPercentage,
       ExitPrice: totalExitPrice,
-      AdjustedPrice: adjustedPrice,
+      TotalCost: adjustedPrice + BundleAdjustedPrice,
     });
   }, [JSON.stringify(profitabilityDataByQuoteId)]);
 
@@ -115,7 +129,7 @@ const GenerateQuoteAnalytics: FC<any> = () => {
     },
     {
       key: 3,
-      primary: `$${abbreviate(totalValues?.AdjustedPrice ?? 0)}`,
+      primary: `$${abbreviate(totalValues?.TotalCost ?? 0)}`,
       secondry: 'Total Cost',
       icon: <CurrencyDollarIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
