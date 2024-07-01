@@ -49,7 +49,13 @@ const AttachmentDocument: FC<any> = ({
   const {getQuoteFileByQuoteIdAllData: quoteFileData} = useAppSelector(
     (state) => state.quoteFile,
   );
-  const [attachUrl, setAttachUrl] = useState<any>();
+  const [attachUrl, setAttachUrl] = useState<{
+    name: string;
+    url: string;
+  }>({
+    name: '',
+    url: '',
+  });
   const [typeOfAttach, setTypeOfAttach] = useState<any>();
   const [combinedData, setCombinedData] = useState<any>();
   const [filteredData, setFilteredData] = useState([]);
@@ -75,9 +81,7 @@ const AttachmentDocument: FC<any> = ({
         attachmentDocumentData?.forEach((item: any) => {
           newData?.push({
             id: item?.id,
-            name: item?.Quote?.customer_name
-              ? item?.Quote?.customer_name
-              : 'Quote',
+            name: item?.name,
             url: item?.doc_url,
             type: item?.type,
           });
@@ -95,7 +99,9 @@ const AttachmentDocument: FC<any> = ({
         });
       }
       setCombinedData(newData);
-      setLoadingShow(false);
+      setTimeout(() => {
+        setLoadingShow(false);
+      }, 500);
     } catch (err) {
       console.log('Err', err);
       setLoadingShow(false);
@@ -124,23 +130,19 @@ const AttachmentDocument: FC<any> = ({
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-
       width: 130,
-      render: (record: any, text: any) => {
-        return (
-          <Typography
-            name="Body 4/Medium"
-            style={{color: token?.colorInfo}}
-            hoverOnText
-            onClick={() => {
-              window?.open(text?.url);
-            }}
-            color="rgb(35, 100, 170)"
-          >
-            {record}
-          </Typography>
-        );
-      },
+      render: (text: any, record: any) => (
+        <Typography
+          name="Body 4/Medium"
+          style={{color: token?.colorInfo}}
+          hoverOnText
+          onClick={() => {
+            window?.open(record?.url);
+          }}
+        >
+          {text ?? '--'}
+        </Typography>
+      ),
     },
     {
       title: 'Type',
@@ -186,7 +188,10 @@ const AttachmentDocument: FC<any> = ({
           pathUsedToUpload({document: base64String}),
         );
         const pdfUrl = payload?.payload?.data?.Location;
-        setAttachUrl(pdfUrl);
+        setAttachUrl({
+          name: file?.name ?? 'Quote',
+          url: pdfUrl,
+        });
         message.success('File uploaded successfully');
       }
     } catch (error: any) {
@@ -199,7 +204,8 @@ const AttachmentDocument: FC<any> = ({
 
   const addNewAttachment = async () => {
     let newObjForAttach: any = {
-      doc_url: attachUrl,
+      name: attachUrl?.name,
+      doc_url: attachUrl?.url,
       quote_id: getQuoteID,
       type: typeOfAttach,
     };
@@ -208,7 +214,7 @@ const AttachmentDocument: FC<any> = ({
         if (d?.payload) {
           setAddNewCustomerQuote(false);
           setCallApis(true);
-          setAttachUrl('');
+          setAttachUrl({name: '', url: ''});
           setTypeOfAttach('');
         }
       });
@@ -275,7 +281,7 @@ const AttachmentDocument: FC<any> = ({
         open={addNewCustomerQuote}
         onCancel={() => {
           setAddNewCustomerQuote(false);
-          setAttachUrl('');
+          setAttachUrl({name: '', url: ''});
           setTypeOfAttach('');
         }}
         bodyPadding={20}
@@ -284,7 +290,7 @@ const AttachmentDocument: FC<any> = ({
         onOk={addNewAttachment}
         body={
           <div style={{width: '100%'}}>
-            {attachUrl ? (
+            {attachUrl?.url ? (
               <>
                 <CommonSelect
                   key={1}
