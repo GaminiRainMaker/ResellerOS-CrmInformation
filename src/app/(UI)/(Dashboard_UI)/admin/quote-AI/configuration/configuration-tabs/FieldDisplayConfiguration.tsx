@@ -312,15 +312,6 @@ const FieldDisplayConfiguration: FC<any> = () => {
                             scrolly={165}
                           />
                         )}
-
-                        <div style={{width: 'max-content', float: 'right'}}>
-                          <OsButton
-                            text="Add Field"
-                            buttontype="PRIMARY"
-                            icon={<PlusIcon width={24} />}
-                            clickHandler={() => {}}
-                          />
-                        </div>
                       </Space>
                     ),
                   },
