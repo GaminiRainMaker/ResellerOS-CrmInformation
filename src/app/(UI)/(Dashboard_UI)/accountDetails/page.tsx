@@ -83,11 +83,11 @@ const AccountDetails = () => {
       primary: (
         <div>
           {customerData?.Quotes?.filter(
-            (item: any) => item.approved_request === true,
+            (item: any) => item.status === 'Approved',
           ).length ?? 0}
         </div>
       ),
-      secondry: 'Completed Quotes',
+      secondry: 'Approved Quotes',
       icon: <CheckCircleIcon width={36} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
     },
