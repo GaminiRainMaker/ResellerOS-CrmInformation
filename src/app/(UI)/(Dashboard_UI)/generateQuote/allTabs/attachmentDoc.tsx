@@ -70,33 +70,36 @@ const AttachmentDocument: FC<any> = ({
   const mergeAndModifyData = () => {
     setLoadingShow(true);
     const newData: any = [];
-    if (attachmentDocumentData) {
-      attachmentDocumentData?.forEach((item: any) => {
-        newData?.push({
-          id: item?.id,
-          name: item?.Quote?.customer_name
-            ? item?.Quote?.customer_name
-            : 'Quote',
-          url: item?.doc_url,
-          type: item?.type,
+    try {
+      if (attachmentDocumentData) {
+        attachmentDocumentData?.forEach((item: any) => {
+          newData?.push({
+            id: item?.id,
+            name: item?.Quote?.customer_name
+              ? item?.Quote?.customer_name
+              : 'Quote',
+            url: item?.doc_url,
+            type: item?.type,
+          });
         });
-      });
-    }
+      }
 
-    if (quoteFileData && quoteFileData?.length > 0) {
-      quoteFileData?.forEach((item: any) => {
-        newData?.push({
-          id: item?.id,
-          name: item?.file_name,
-          url: item?.pdf_url,
-          type: 'Vendor Quote',
+      if (quoteFileData && quoteFileData?.length > 0) {
+        quoteFileData?.forEach((item: any) => {
+          newData?.push({
+            id: item?.id,
+            name: item?.file_name,
+            url: item?.pdf_url,
+            type: 'Vendor Quote',
+          });
         });
-      });
-    }
-    setTimeout(() => {
+      }
       setCombinedData(newData);
       setLoadingShow(false);
-    }, 1000);
+    } catch (err) {
+      console.log('Err', err);
+      setLoadingShow(false);
+    }
   };
 
   useEffect(() => {
