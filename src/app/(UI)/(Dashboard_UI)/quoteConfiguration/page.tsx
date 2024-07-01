@@ -4,15 +4,11 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import OsDistributorSelect from '@/app/components/common/os-distributor-select';
-import OsDropdown from '@/app/components/common/os-dropdown';
 import EmptyContainer from '@/app/components/common/os-empty-container';
-import OsInput from '@/app/components/common/os-input';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
-import OsOemSelect from '@/app/components/common/os-oem-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useEffect, useState} from 'react';
 import {
