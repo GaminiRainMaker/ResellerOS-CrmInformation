@@ -61,6 +61,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       ),
     }));
 
+  console.log('objectForSyncingValues', objectForSyncingValues);
   const dowloadFunction = async (data: any, type: string) => {
     let findTheItem = formStackSyncData?.find(
       (item: any) => item?.doc_key === data?.key,
@@ -86,16 +87,26 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     });
 
     let resultValues: any = {};
+
     for (let key in formattedData) {
       if (objectForSyncingValues[formattedData[key]]) {
         resultValues[key] = objectForSyncingValues[formattedData[key]];
       }
     }
     resultValues.quotelineitem = lineItemsArray;
-    resultValues.extended_price = 3243243;
-    resultValues.grand_total = 23098497292;
 
     // || data.type_of_upload !== 'pdf'
+    if (findTheItem?.type_of_file === 'Line Items Only') {
+      let totalExtendedPrice: any = 0;
+      lineItemsArray?.forEach((items: any) => {
+        totalExtendedPrice += Number(items?.list_price);
+      });
+      resultValues.extended_price = totalExtendedPrice;
+      resultValues.grand_total =
+        totalExtendedPrice +
+        Number(objectForSyncingValues?.quote_tax) +
+        Number(objectForSyncingValues?.quote_shipping);
+    }
 
     try {
       setLoading(true);

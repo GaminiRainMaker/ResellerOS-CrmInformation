@@ -911,15 +911,23 @@ export const getFormattedValuesForBundlesOnly = (
           };
           innerLineArr?.push(newObj);
         });
-
+        let totalExtendedPrice: any = 0;
+        innerLineArr?.forEach((items: any) => {
+          totalExtendedPrice += Number(items?.list_price);
+        });
+        let extendedPriceFinal = totalExtendedPrice * Number(itemBun?.quantity);
+        let grand_totalFinal =
+          extendedPriceFinal +
+          Number(objectForSyncingValues?.quote_tax) +
+          Number(objectForSyncingValues?.quote_shipping);
         let finalObj = {
           attributes: {
             type: 'QuoteLineItem',
           },
           Id: '1',
           bundle_name: itemBun?.name,
-          extended_price: 3243243,
-          bundle_grand_total: 97090809,
+          extended_price: totalExtendedPrice * Number(itemBun?.quantity),
+          bundle_grand_total: grand_totalFinal,
           quote_line_items: {
             records: innerLineArr,
           },
@@ -954,8 +962,6 @@ export const getFormattedValuesForLineItems = (objectForSyncingValues: any) => {
         line_amount: items?.line_amount,
         list_price: items?.list_price,
         organization: items?.organization,
-        extended_price: 3243243,
-        grand_total: 23098497292,
       };
       newArrOfOject?.push(newObj);
     });
@@ -995,6 +1001,15 @@ export const getFormattedValuesForWithAndWithoutBundles = (
           };
           innerLineArr?.push(newObj);
         });
+        let totalExtendedPrice: any = 0;
+        innerLineArr?.forEach((items: any) => {
+          totalExtendedPrice += Number(items?.list_price);
+        });
+        let extendedPriceFinal = totalExtendedPrice * Number(itemBun?.quantity);
+        let grand_totalFinal =
+          extendedPriceFinal +
+          Number(objectForSyncingValues?.quote_tax) +
+          Number(objectForSyncingValues?.quote_shipping);
 
         let finalObj = {
           attributes: {
@@ -1002,7 +1017,8 @@ export const getFormattedValuesForWithAndWithoutBundles = (
           },
           Id: '1',
           bundle_name: itemBun?.name,
-          extended_price: 3243243,
+          extended_price: extendedPriceFinal,
+          grand_total: grand_totalFinal,
           quote_line_items: {
             records: innerLineArr,
           },
@@ -1017,6 +1033,15 @@ export const getFormattedValuesForWithAndWithoutBundles = (
     objectForSyncingValues &&
     objectForSyncingValues?.QuoteLineItems?.length > 0
   ) {
+    let totalExtendedPrice: any = 0;
+    objectForSyncingValues?.QuoteLineItems?.forEach((items: any) => {
+      totalExtendedPrice += Number(items?.list_price);
+    });
+    let extendedPriceFinal = totalExtendedPrice;
+    let grand_totalFinal =
+      extendedPriceFinal +
+      Number(objectForSyncingValues?.quote_tax) +
+      Number(objectForSyncingValues?.quote_shipping);
     objectForSyncingValues?.QuoteLineItems?.map((items: any, index: number) => {
       let newObj = {
         attributes: {
@@ -1030,8 +1055,8 @@ export const getFormattedValuesForWithAndWithoutBundles = (
         line_amount: items?.line_amount,
         list_price: items?.list_price,
         organization: items?.organization,
-        extended_price: 3243243,
-        grand_total: 97090809,
+        extended_price: extendedPriceFinal,
+        grand_total: grand_totalFinal,
       };
       finArrr?.push(newObj);
     });
