@@ -100,9 +100,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
   if (keys) {
     keys?.map((item: any) => {
-      if (item && !item?.toLowerCase()?.includes('line')) {
-        mergeedColumn?.push(item);
-      }
+      // if (item && !item?.toLowerCase()?.includes('line')) {
+      mergeedColumn?.push(item ? item : 'emptyHeader');
+      // }
     });
   }
 

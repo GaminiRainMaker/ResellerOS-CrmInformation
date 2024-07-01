@@ -139,15 +139,6 @@ const EditorFile = () => {
               const titles = itemNew?.cells.filter(
                 (innerCell: any) => innerCell.row === 1,
               );
-              const strifndfs = (str: any) => {
-                const losadsd = str
-                  ?.toString()
-                  .match(/\d+(\.\d+)?/g)
-                  ?.map(Number)
-                  ?.toString()
-                  .match(/\d+(\.\d+)?/g)
-                  ?.map(Number);
-              };
 
               itemNew?.cells.forEach((item: any) => {
                 const rowNum = item.row;
@@ -379,7 +370,20 @@ const EditorFile = () => {
 
       return newObj;
     });
-    setMergedVaalues(resultArray);
+    const transformObjects = (arr: any) => {
+      const transformedArray = arr.map((obj: any) => {
+        if (obj[''] !== undefined) {
+          obj['emptyHeader'] = obj[''];
+          delete obj[''];
+        }
+        return obj;
+      });
+      return transformedArray;
+    };
+
+    // Apply transformation
+    let result = transformObjects(resultArray);
+    setMergedVaalues(result);
   };
 
   const deleteTable = (indexOfTable: number) => {
@@ -389,7 +393,20 @@ const EditorFile = () => {
     setQuoteItems(newTableData);
     setTimeout(() => {
       if (newTableData?.length === 1) {
-        mergeTableData(newTableData);
+        const transformObjects = (arr: any) => {
+          const transformedArray = arr.map((obj: any) => {
+            if (obj[''] !== undefined) {
+              obj['emptyHeader'] = obj[''];
+              delete obj[''];
+            }
+            return obj;
+          });
+          return transformedArray;
+        };
+
+        // Apply transformation
+        let result = transformObjects(newTableData?.[0]);
+        mergeTableData(result);
       }
     }, 100);
   };
@@ -428,10 +445,11 @@ const EditorFile = () => {
   if (keys) {
     keys?.map((item: any) => {
       if (item) {
-        mergeedColumn?.push(formatStatus(item));
+        mergeedColumn?.push(item);
       }
     });
   }
+
   // ======================================== FOr Update LineItems=====================================
 
   const updateRowsValueForLineItems = (
@@ -550,6 +568,7 @@ const EditorFile = () => {
       CancelEditing();
     }
   };
+  console.log('quoteItemsquoteItems', quoteItems);
   return (
     <GlobalLoader loading={nanonetsLoading}>
       <div
@@ -593,46 +612,48 @@ const EditorFile = () => {
                 clickHandler={updateData}
               />
             </Space>{' '}
-            <HotTable
-              data={updateLineItemsValue}
-              colWidths={200}
-              columnHeaderHeight={40}
-              height="auto"
-              colHeaders={updateLineItemColumn}
-              columns={updateLineItemColumnData}
-              width="auto"
-              minSpareRows={0}
-              autoWrapRow
-              autoWrapCol
-              licenseKey="non-commercial-and-evaluation"
-              dropdownMenu
-              hiddenColumns={{
-                indicators: true,
-              }}
-              contextMenu
-              multiColumnSorting
-              filters
-              rowHeaders
-              allowInsertRow={false}
-              allowInsertColumn
-              afterGetColHeader={alignHeaders}
-              beforeRenderer={() => {
-                addClassesToRows('', '', '', '', '', '', quoteItems);
-              }}
-              afterRemoveRow={(change, source) => {
-                deleteRowsItemsForLineItemsa(source, change);
-              }}
-              afterChange={(change: any, source) => {
-                if (change) {
-                  updateRowsValueForLineItems(
-                    change?.[0]?.[0],
-                    change?.[0]?.[1],
-                    change?.[0]?.[3],
-                  );
-                }
-              }}
-              navigableHeaders
-            />
+            <div style={{width: '90%', overflow: 'auto'}}>
+              <HotTable
+                data={updateLineItemsValue}
+                colWidths={200}
+                columnHeaderHeight={40}
+                height="auto"
+                colHeaders={updateLineItemColumn}
+                columns={updateLineItemColumnData}
+                width="auto"
+                minSpareRows={0}
+                autoWrapRow
+                autoWrapCol
+                licenseKey="non-commercial-and-evaluation"
+                dropdownMenu
+                hiddenColumns={{
+                  indicators: true,
+                }}
+                contextMenu
+                multiColumnSorting
+                filters
+                rowHeaders
+                allowInsertRow={false}
+                allowInsertColumn
+                afterGetColHeader={alignHeaders}
+                beforeRenderer={() => {
+                  addClassesToRows('', '', '', '', '', '', quoteItems);
+                }}
+                afterRemoveRow={(change, source) => {
+                  deleteRowsItemsForLineItemsa(source, change);
+                }}
+                afterChange={(change: any, source) => {
+                  if (change) {
+                    updateRowsValueForLineItems(
+                      change?.[0]?.[0],
+                      change?.[0]?.[1],
+                      change?.[0]?.[3],
+                    );
+                  }
+                }}
+                navigableHeaders
+              />
+            </div>
           </>
         ) : (
           <>
@@ -674,46 +695,48 @@ const EditorFile = () => {
                   />
                 </Space>
 
-                <HotTable
-                  data={mergedValue}
-                  allowRemoveColumn
-                  dropdownMenu
-                  colWidths={200}
-                  columnHeaderHeight={40}
-                  height="auto"
-                  colHeaders={mergeedColumn}
-                  width="auto"
-                  minSpareRows={0}
-                  autoWrapRow
-                  autoWrapCol
-                  licenseKey="non-commercial-and-evaluation"
-                  hiddenColumns={{
-                    indicators: true,
-                  }}
-                  contextMenu
-                  multiColumnSorting
-                  filters
-                  rowHeaders
-                  allowInsertRow
-                  allowInsertColumn
-                  afterGetColHeader={alignHeaders}
-                  beforeRenderer={() => {
-                    addClassesToRows('', '', '', '', '', '', quoteItems);
-                  }}
-                  afterRemoveRow={(change, source) => {
-                    deleteRowsItems(source, change);
-                  }}
-                  afterChange={(change: any, source) => {
-                    if (change) {
-                      updateRowsValue(
-                        change?.[0]?.[0],
-                        change?.[0]?.[1],
-                        change?.[0]?.[3],
-                      );
-                    }
-                  }}
-                  navigableHeaders
-                />
+                <div style={{width: '90%', overflow: 'auto'}}>
+                  <HotTable
+                    data={mergedValue}
+                    allowRemoveColumn
+                    dropdownMenu
+                    colWidths={200}
+                    columnHeaderHeight={40}
+                    height="auto"
+                    colHeaders={mergeedColumn}
+                    width="auto"
+                    minSpareRows={0}
+                    autoWrapRow
+                    autoWrapCol
+                    licenseKey="non-commercial-and-evaluation"
+                    hiddenColumns={{
+                      indicators: true,
+                    }}
+                    contextMenu
+                    multiColumnSorting
+                    filters
+                    rowHeaders
+                    allowInsertRow
+                    allowInsertColumn
+                    afterGetColHeader={alignHeaders}
+                    beforeRenderer={() => {
+                      addClassesToRows('', '', '', '', '', '', quoteItems);
+                    }}
+                    afterRemoveRow={(change, source) => {
+                      deleteRowsItems(source, change);
+                    }}
+                    afterChange={(change: any, source) => {
+                      if (change) {
+                        updateRowsValue(
+                          change?.[0]?.[0],
+                          change?.[0]?.[1],
+                          change?.[0]?.[3],
+                        );
+                      }
+                    }}
+                    navigableHeaders
+                  />
+                </div>
               </>
             ) : (
               <>
@@ -780,60 +803,62 @@ const EditorFile = () => {
                             }}
                           />
                         </Space>
-                        <HotTable
-                          data={itemss}
-                          colWidths={[
-                            200, 200, 400, 200, 200, 200, 200, 200, 200, 200,
-                            200, 200, 200, 200, 200, 200,
-                          ]}
-                          height="auto"
-                          colHeaders={allHeaderValue}
-                          width="auto"
-                          minSpareRows={0}
-                          autoWrapRow
-                          autoWrapCol
-                          licenseKey="non-commercial-and-evaluation"
-                          dropdownMenu
-                          hiddenColumns={{
-                            indicators: true,
-                          }}
-                          contextMenu
-                          multiColumnSorting
-                          filters
-                          rowHeaders
-                          allowInsertRow
-                          allowInsertColumn={false}
-                          afterGetColHeader={alignHeaders}
-                          beforeRenderer={() => {
-                            addClassesToRows(
-                              '',
-                              '',
-                              '',
-                              '',
-                              '',
-                              '',
-                              quoteItems,
-                            );
-                          }}
-                          afterRemoveRow={(change, source) => {
-                            deleteRowsItemsForTable(
-                              indexOFTable,
-                              change,
-                              source,
-                            );
-                          }}
-                          afterChange={(change: any, source) => {
-                            if (change) {
-                              updateRowsValueforTable(
-                                indexOFTable,
-                                change?.[0]?.[0],
-                                change?.[0]?.[1],
-                                change?.[0]?.[3],
+                        <div style={{width: '90%', overflow: 'auto'}}>
+                          <HotTable
+                            data={itemss}
+                            colWidths={[
+                              200, 200, 400, 200, 200, 200, 200, 200, 200, 200,
+                              200, 200, 200, 200, 200, 200,
+                            ]}
+                            height="auto"
+                            colHeaders={allHeaderValue}
+                            width="auto"
+                            minSpareRows={0}
+                            autoWrapRow
+                            autoWrapCol
+                            licenseKey="non-commercial-and-evaluation"
+                            dropdownMenu
+                            hiddenColumns={{
+                              indicators: true,
+                            }}
+                            contextMenu
+                            multiColumnSorting
+                            filters
+                            rowHeaders
+                            allowInsertRow
+                            allowInsertColumn={false}
+                            afterGetColHeader={alignHeaders}
+                            beforeRenderer={() => {
+                              addClassesToRows(
+                                '',
+                                '',
+                                '',
+                                '',
+                                '',
+                                '',
+                                quoteItems,
                               );
-                            }
-                          }}
-                          navigableHeaders
-                        />
+                            }}
+                            afterRemoveRow={(change, source) => {
+                              deleteRowsItemsForTable(
+                                indexOFTable,
+                                change,
+                                source,
+                              );
+                            }}
+                            afterChange={(change: any, source) => {
+                              if (change) {
+                                updateRowsValueforTable(
+                                  indexOFTable,
+                                  change?.[0]?.[0],
+                                  change?.[0]?.[1],
+                                  change?.[0]?.[3],
+                                );
+                              }
+                            }}
+                            navigableHeaders
+                          />
+                        </div>
                       </>
                     );
                   })}
