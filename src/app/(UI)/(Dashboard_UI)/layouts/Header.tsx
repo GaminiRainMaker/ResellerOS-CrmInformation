@@ -94,7 +94,6 @@ const CustomHeader = () => {
     data: notificationData,
     loading: notificationLoading,
   } = useAppSelector((state) => state.notification);
-  const [openNotifications, setOpenNotifications] = useState<boolean>(false);
   const salesForceFiledId = searchParams.get('file_Id');
   const [userRole, setUserRole] = useState<string>('');
   const [searchFinalData, setSearchFinalData] = useState<any>();
@@ -354,8 +353,8 @@ const CustomHeader = () => {
                   marginLeft: 200,
                   marginTop: 20,
                 }}
-                open={openNotifications}
                 menu={{items}}
+              
                 // eslint-disable-next-line react/no-unstable-nested-components
                 dropdownRender={() => (
                   <div style={dropDownStyle}>
@@ -410,7 +409,6 @@ const CustomHeader = () => {
                               cursor="pointer"
                               secondaryEllipsis
                               onClick={() => {
-                                setOpenNotifications(false);
                                 router.push(
                                   userInformation?.Admin
                                     ? `/superAdminPartner?tab=2`
@@ -446,18 +444,14 @@ const CustomHeader = () => {
                         buttontype="PRIMARY"
                         clickHandler={() => {
                           router?.push('/notification');
-                          setOpenNotifications(false);
                         }}
                       />
                     </div>
                   </div>
                 )}
               >
-                <Badge count={notificationCounts}>
+                <Badge count={notificationCounts} >
                   <AvatarStyled
-                    onClick={() => {
-                      setOpenNotifications(!openNotifications);
-                    }}
                     background={token?.colorInfoBg}
                     icon={
                       <BellIcon width={24} color={token?.colorInfoBorder} />
