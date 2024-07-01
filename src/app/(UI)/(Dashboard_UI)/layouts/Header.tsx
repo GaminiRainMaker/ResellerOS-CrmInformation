@@ -354,8 +354,6 @@ const CustomHeader = () => {
                   marginTop: 20,
                 }}
                 menu={{items}}
-              
-                // eslint-disable-next-line react/no-unstable-nested-components
                 dropdownRender={() => (
                   <div style={dropDownStyle}>
                     {notificationCount?.length > 0 ? (
