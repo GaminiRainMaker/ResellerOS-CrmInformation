@@ -860,6 +860,7 @@ const Profitablity: FC<any> = ({
                           style={{
                             display: 'flex',
                             alignItems: 'center',
+                            justifyContent: 'end',
                           }}
                         >
                           Qty:
@@ -1059,6 +1060,7 @@ const Profitablity: FC<any> = ({
                                     style={{
                                       display: 'flex',
                                       alignItems: 'center',
+                                      justifyContent: 'end',
                                     }}
                                   >
                                     Qty:
