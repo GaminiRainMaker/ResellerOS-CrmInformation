@@ -768,7 +768,7 @@ const Profitablity: FC<any> = ({
                 key: index,
                 label: (
                   <Row justify="space-between" align="middle" gutter={[8, 8]}>
-                    <Col xs={24} sm={12} md={12} lg={6} xl={6}>
+                    <Col xs={24} sm={12} md={12} lg={5} xl={5}>
                       <Badge count={finalDataItem?.QuoteLineItem?.length}>
                         <Typography
                           style={{padding: '5px 8px 0px 0px'}}
@@ -782,7 +782,7 @@ const Profitablity: FC<any> = ({
                         </Typography>
                       </Badge>
                     </Col>
-                    <Col xs={24} sm={12} md={12} lg={4} xl={4}>
+                    <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                       <span
                         style={{
                           display: 'flex',
@@ -990,7 +990,7 @@ const Profitablity: FC<any> = ({
                               align="middle"
                               gutter={[8, 8]}
                             >
-                              <Col xs={24} sm={12} md={12} lg={6} xl={6}>
+                              <Col xs={24} sm={12} md={12} lg={5} xl={5}>
                                 <Badge
                                   count={finalDataItem?.QuoteLineItem?.length}
                                 >
@@ -1006,7 +1006,7 @@ const Profitablity: FC<any> = ({
                                   </Typography>
                                 </Badge>
                               </Col>
-                              <Col xs={24} sm={12} md={12} lg={4} xl={4}>
+                              <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                                 <span
                                   style={{
                                     display: 'flex',
