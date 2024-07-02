@@ -42,6 +42,7 @@ import {
   getSalesForceDataaForEditAsItIs,
   getSalesForceFileData,
 } from '../../../../../redux/actions/auth';
+import {HiddenColumns} from 'handsontable/plugins';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
@@ -628,6 +629,7 @@ const EditorFile = () => {
                 dropdownMenu
                 hiddenColumns={{
                   indicators: true,
+                  columns: salesForceFiledId ? [0, 1] : [0],
                 }}
                 contextMenu
                 multiColumnSorting

@@ -106,7 +106,7 @@ const GenerateQuote: React.FC = () => {
     }
   }, [getQuoteFileDataCount]);
 
-  useEffect(() => {
+  const getQuoteDetailById = async () => {
     dispatch(getQuoteByIdForFormStack(Number(getQuoteID)))?.then(
       (payload: any) => {
         dispatch(getAllBundle(Number(getQuoteID)))?.then(
@@ -154,6 +154,10 @@ const GenerateQuote: React.FC = () => {
         );
       },
     );
+  };
+
+  useEffect(() => {
+    getQuoteDetailById();
   }, []);
 
   useEffect(() => {
@@ -328,6 +332,7 @@ const GenerateQuote: React.FC = () => {
         <ReviewQuotes
           tableColumnDataShow={tableColumnDataShow}
           selectedFilter={selectedFilter}
+          getQuoteDetailById={getQuoteDetailById}
         />
       ),
     },
@@ -462,6 +467,7 @@ const GenerateQuote: React.FC = () => {
     },
   ];
 
+  console.log('34543543', new Date());
   const onFinish = async () => {
     const headerValue = form.getFieldsValue();
     try {
@@ -469,8 +475,9 @@ const GenerateQuote: React.FC = () => {
         id: Number(getQuoteID),
         ...headerValue,
       };
-      dispatch(updateQuoteById(obj));
+      await dispatch(updateQuoteById(obj));
       setOpen(false);
+      getQuoteDetailById();
     } catch (error) {
       setOpen(false);
       console.error('Error:', error);

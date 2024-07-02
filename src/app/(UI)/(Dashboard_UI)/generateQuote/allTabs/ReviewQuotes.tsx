@@ -34,7 +34,11 @@ import {
 } from '../../../../../../redux/slices/quoteFile';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 
-const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
+const ReviewQuotes: FC<any> = ({
+  tableColumnDataShow,
+  selectedFilter,
+  getQuoteDetailById,
+}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const router = useRouter();
@@ -258,13 +262,14 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
   const updateAllTablesData = async () => {
     setFileVerificationLoading(true);
     try {
-      updateTables(
+      await updateTables(
         getQuoteID,
         fileData,
         fileData?.QuoteLineItem,
         userInformation,
         dispatch,
       );
+      getQuoteDetailById();
     } catch (error) {
       console.error('Error updating tables:', error);
     } finally {

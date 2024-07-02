@@ -216,6 +216,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
                     onChange={(e: any, data: any) => {
                       dowloadFunction(data, 'preview');
                       setSelectedDoc(data);
+                      setPdfUrl('');
                     }}
                   />
                 </SelectFormItem>
