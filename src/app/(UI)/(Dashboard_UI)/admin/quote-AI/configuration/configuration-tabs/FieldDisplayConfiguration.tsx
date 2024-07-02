@@ -13,7 +13,7 @@ import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
-import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {TrashIcon} from '@heroicons/react/24/outline';
 import {FC, useEffect, useState} from 'react';
 import {
   getAllTableColumn,
@@ -58,7 +58,6 @@ const FieldDisplayConfiguration: FC<any> = () => {
         item?.table_name?.includes(selectedTable),
       );
     }
-
     setTableColumnDataShow(filteredArray);
   }, [selectedTable, tableColumnData]);
 
@@ -211,6 +210,8 @@ const FieldDisplayConfiguration: FC<any> = () => {
     ...(selectedTable !== 'Rebates' ? FiledDisplayConfigurationUniqueItem : []),
     ...thirdFieldDisplayConfigurationFields,
   ];
+
+
   return (
     <>
       <TabContainerStyle>
@@ -243,7 +244,6 @@ const FieldDisplayConfiguration: FC<any> = () => {
                           borderRadius: '12px',
                         }}
                       >
-                        {/* <Typography name="Body 4/Medium">Select Tab</Typography> */}
                         <CommonSelect
                           placeholder="Select"
                           options={[
@@ -308,19 +308,10 @@ const FieldDisplayConfiguration: FC<any> = () => {
                             tableSelectionType="checkbox"
                             columns={allColumns}
                             dataSource={tableColumnDataShow}
-                            tablePageSize={50}
-                            scrolly={165}
+                            defaultPageSize={15}
+                            scrolly={200}
                           />
                         )}
-
-                        <div style={{width: 'max-content', float: 'right'}}>
-                          <OsButton
-                            text="Add Field"
-                            buttontype="PRIMARY"
-                            icon={<PlusIcon width={24} />}
-                            clickHandler={() => {}}
-                          />
-                        </div>
                       </Space>
                     ),
                   },

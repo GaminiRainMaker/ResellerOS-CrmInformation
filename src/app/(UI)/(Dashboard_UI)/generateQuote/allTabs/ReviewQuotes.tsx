@@ -392,6 +392,7 @@ const ReviewQuotes: FC<any> = ({
                           dataSource={finalDataItem?.QuoteLineItem}
                           scroll
                           locale={locale}
+                          defaultPageSize={finalDataItem?.QuoteLineItem?.length}
                         />
                       ),
                     },

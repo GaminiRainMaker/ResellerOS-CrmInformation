@@ -372,6 +372,7 @@ const SyncQuoteField = () => {
                         columns={SyncQuoteFields}
                         dataSource={updatedColumnforQuoteSync}
                         scroll
+                        defaultPageSize={updatedColumnforQuoteSync?.length}
                       />
                       <div style={{width: 'max-content', float: 'right'}}>
                         <OsButton

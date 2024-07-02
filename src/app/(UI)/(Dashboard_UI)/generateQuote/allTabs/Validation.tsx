@@ -459,6 +459,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
           dataSource={validationData}
           scroll
           locale={locale}
+          defaultPageSize={validationData?.length}
         />
       ) : (
         <EmptyContainer title="There Is No Validation Columns" />

@@ -348,17 +348,6 @@ const UpdateGenerateQuote = () => {
       </Row>
       <Row style={{overflow: 'auto'}}>
         <Col span={24}>
-          {/* <OsTableWithOutDrag
-            loading={loading}
-            // rowSelection={rowSelection}
-            columns={InputDetailQuoteLineItemcolumns}
-            dataSource={inputData}
-            // scroll
-            scrollx={200}
-            // rowSelection={rowSelection}
-            // locale={locale}
-          /> */}
-
           <HotTable
             data={inputData}
             ref={hotRef}

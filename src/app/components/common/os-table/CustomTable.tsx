@@ -18,6 +18,7 @@ const OsTableWithOutDrag: FC<any> = ({
   tablePageSize = 100,
   showPagination,
   selectedRowsKeys = [],
+  defaultPageSize,
   ...rest
 }) => {
   const [token] = useThemeToken();
@@ -32,10 +33,14 @@ const OsTableWithOutDrag: FC<any> = ({
     }
     return originalElement;
   };
-
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 100,
+    pageSize:
+      defaultPageSize === 0
+        ? 10
+        : defaultPageSize < 100
+          ? defaultPageSize
+          : 100,
     total: 0,
   });
 

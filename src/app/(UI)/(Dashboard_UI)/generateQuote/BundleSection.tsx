@@ -12,11 +12,15 @@ import {FC, useEffect, useState} from 'react';
 import {getAllBundle, insertBundle} from '../../../../../redux/actions/bundle';
 import {updateQuoteLineItemForBundleId} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
 
 const BundleSection: FC<any> = ({
   selectTedRowIds,
   setShowBundleModal,
   form,
+  bundleId,
+  drawer,
+  setShowBundleDrawer,
 }) => {
   const searchParams = useSearchParams();
   const getQuoteId = searchParams.get('id');
@@ -36,6 +40,7 @@ const BundleSection: FC<any> = ({
       const obj = {
         ...BundleData,
         quote_id: getQuoteId,
+        id: bundleId,
       };
       await dispatch(insertBundle(obj)).then((e) => {
         if (e) {
@@ -53,9 +58,12 @@ const BundleSection: FC<any> = ({
       };
       dispatch(updateQuoteLineItemForBundleId(data));
     }
+    await dispatch(getProfitabilityByQuoteId(Number(getQuoteId)));
     await dispatch(getAllBundle(getQuoteId));
     setRadioValue(1);
     setShowBundleModal(false);
+    setShowBundleDrawer && setShowBundleDrawer(false);
+
     setTimeout(() => {
       location?.reload();
     }, 1000);
@@ -79,28 +87,30 @@ const BundleSection: FC<any> = ({
     <Space
       direction="vertical"
       size={18}
-      style={{width: '100%', padding: '20px'}}
+      style={{width: '100%', padding: drawer ? '' : '20px'}}
     >
-      <Space direction="horizontal" size={18} style={{width: '100%'}}>
-        <Radio.Group onChange={onChange} value={radioValue}>
-          <Radio value={1}>
-            {' '}
-            <Typography name="Body 3/Regular">
-              Add in existing Bundle
-            </Typography>
-          </Radio>
-          <Radio value={2}>
-            <Typography name="Body 3/Regular">Create new bundle</Typography>
-          </Radio>
-        </Radio.Group>
-      </Space>
+      {!drawer && (
+        <Space direction="horizontal" size={18} style={{width: '100%'}}>
+          <Radio.Group onChange={onChange} value={radioValue}>
+            <Radio value={1}>
+              {' '}
+              <Typography name="Body 3/Regular">
+                Add in existing Bundle
+              </Typography>
+            </Radio>
+            <Radio value={2}>
+              <Typography name="Body 3/Regular">Create new bundle</Typography>
+            </Radio>
+          </Radio.Group>
+        </Space>
+      )}
       <Form
         layout="vertical"
         requiredMark={false}
         form={form}
         onFinish={onFinish}
       >
-        {radioValue == 1 ? (
+        {!drawer && radioValue == 1 ? (
           <SelectFormItem
             label={<Typography name="Body 4/Medium">Add to Bundle</Typography>}
             name="bundle_id"
