@@ -387,6 +387,7 @@ const ReviewQuotes: FC<any> = ({tableColumnDataShow, selectedFilter}) => {
                           dataSource={finalDataItem?.QuoteLineItem}
                           scroll
                           locale={locale}
+                          defaultPageSize={finalDataItem?.QuoteLineItem?.length}
                         />
                       ),
                     },

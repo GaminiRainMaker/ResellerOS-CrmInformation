@@ -14,12 +14,10 @@ import Typography from '@/app/components/common/typography';
 import {pricingMethod} from '@/app/utils/CONSTANTS';
 import {
   calculateProfitabilityData,
-  convertDataToText,
   rebateAmount,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
-import {Button} from '@/app/components/common/antd/Button';
 import {
   getRebateQuoteLineItemByQuoteId,
   updateRebateQuoteLineItemById,
@@ -318,6 +316,7 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
             columns={finaRebateTableCol}
             dataSource={rebateData}
             scroll
+            defaultPageSize={rebateData?.length}
           />
         </>
       ) : (

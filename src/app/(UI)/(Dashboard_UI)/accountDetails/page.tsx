@@ -14,18 +14,11 @@ import OsTable from '@/app/components/common/os-table';
 import DetailAnalyticCard from '@/app/components/common/os-table/DetailAnalyticCard';
 import Typography from '@/app/components/common/typography';
 import {StageValue} from '@/app/utils/CONSTANTS';
-import {
-  CheckCircleIcon,
-  EyeIcon,
-  PencilSquareIcon,
-  TagIcon,
-  TrashIcon,
-} from '@heroicons/react/24/outline';
+import {CheckCircleIcon, EyeIcon, TagIcon} from '@heroicons/react/24/outline';
 import {Space} from 'antd';
 
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import EmptyContainer from '@/app/components/common/os-empty-container';
-import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {formatDate} from '@/app/utils/base';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect} from 'react';

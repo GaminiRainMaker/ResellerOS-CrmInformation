@@ -13,7 +13,7 @@ import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
-import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {TrashIcon} from '@heroicons/react/24/outline';
 import {FC, useEffect, useState} from 'react';
 import {
   getAllTableColumn,
@@ -310,6 +310,7 @@ const FieldDisplayConfiguration: FC<any> = () => {
                             dataSource={tableColumnDataShow}
                             tablePageSize={50}
                             scrolly={165}
+                            defaultPageSize={tableColumnDataShow?.length}
                           />
                         )}
                       </Space>

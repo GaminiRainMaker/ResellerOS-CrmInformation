@@ -39,9 +39,7 @@ const AttachmentDocument: FC<any> = ({
   const {data: attachmentDocumentData, loading} = useAppSelector(
     (state) => state.attachmentDocument,
   );
-  const {userInformation} = useAppSelector(
-    (state) => state.user,
-  );
+  const {userInformation} = useAppSelector((state) => state.user);
   const {getQuoteFileByQuoteIdAllData: quoteFileData} = useAppSelector(
     (state) => state.quoteFile,
   );
@@ -237,6 +235,7 @@ const AttachmentDocument: FC<any> = ({
         scroll
         loading={loadingShow}
         locale={locale}
+        defaultPageSize={filteredData?.length}
       />
 
       <OsModal

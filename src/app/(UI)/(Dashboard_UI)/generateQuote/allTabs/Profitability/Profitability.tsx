@@ -916,6 +916,7 @@ const Profitablity: FC<any> = ({
                       locale={locale}
                       rowSelection={rowSelection}
                       selectedRowsKeys={selectTedRowIds}
+                      defaultPageSize={finalDataItem?.QuoteLineItem?.length}
                     />
                   </div>
                 ),
@@ -932,6 +933,7 @@ const Profitablity: FC<any> = ({
             locale={locale}
             rowSelection={rowSelection}
             selectedRowsKeys={selectTedRowIds}
+            defaultPageSize={nonBundleData?.length}
           />
         )}
       </div>
@@ -1134,6 +1136,9 @@ const Profitablity: FC<any> = ({
                                 locale={locale}
                                 rowSelection={rowSelection}
                                 selectedRowsKeys={selectTedRowIds}
+                                defaultPageSize={
+                                  finalDataItem?.QuoteLineItem?.length
+                                }
                               />
                             </div>
                           ),

@@ -1,28 +1,27 @@
 'use client';
 
+import {Col} from '@/app/components/common/antd/Grid';
 import {Switch} from '@/app/components/common/antd/Switch';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import CommonSelect from '@/app/components/common/os-select';
-import OsTable from '@/app/components/common/os-table';
+import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
 import {quoteAndOpportunityLineItemOptions} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {Row, Space, Table, notification} from 'antd';
+import {Row, Space, notification} from 'antd';
 import {useEffect, useState} from 'react';
-import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
-import {Col} from '@/app/components/common/antd/Grid';
-import {TabContainerStyle} from './styled-components';
+import {
+  deleteSyncTableRow,
+  getAllSyncTable,
+  insertUpdateSyncTable,
+} from '../../../../../../../../redux/actions/syncTable';
 import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../../../../redux/hook';
-import {
-  getAllSyncTable,
-  insertUpdateSyncTable,
-  deleteSyncTableRow,
-} from '../../../../../../../../redux/actions/syncTable';
+import {TabContainerStyle} from './styled-components';
 
 const SyncQuoteLineItemField = () => {
   const [token] = useThemeToken();
@@ -368,6 +367,7 @@ const SyncQuoteLineItemField = () => {
                         columns={SyncQuoteLineItemFields}
                         dataSource={updateColumn}
                         scroll
+                        defaultPageSize={updateColumn?.length}
                       />
                       <div style={{width: 'max-content', float: 'right'}}>
                         <OsButton
