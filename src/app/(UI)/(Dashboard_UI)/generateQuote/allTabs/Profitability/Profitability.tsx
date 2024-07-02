@@ -18,8 +18,8 @@ import {
   currencyFormatter,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
-import {TrashIcon} from '@heroicons/react/24/outline';
-import {Form} from 'antd';
+import {PencilSquareIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {Badge, Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {
@@ -37,6 +37,8 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
 import BundleSection from '../../BundleSection';
 import UpdatingLineItems from '../../UpdatingLineItems';
+import OsDrawer from '@/app/components/common/os-drawer';
+import OsButton from '@/app/components/common/os-button';
 
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
@@ -70,6 +72,8 @@ const Profitablity: FC<any> = ({
   const [finalFieldData, setFinalFieldData] = useState<any>({});
   const [keyPressed, setKeyPressed] = useState('');
   const [collapseActiveKeys, setCollapseActiveKeys] = useState<any>([]);
+  const [showBundleDrawer, setShowBundleDrawer] = useState<boolean>(false);
+  const [bundleRecordId, setBundleRecordId] = useState<any>();
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
       id: number;
@@ -959,30 +963,23 @@ const Profitablity: FC<any> = ({
                               gutter={[8, 8]}
                             >
                               <Col span={4}>
-                                <Typography
-                                  name="Body 4/Medium"
-                                  color={token?.colorBgContainer}
-                                  ellipsis
-                                  tooltip
-                                  as="div"
+                                <Badge
+                                  count={finalDataItem?.QuoteLineItem?.length}
                                 >
-                                  {finalDataItem?.name}
-                                </Typography>
-                              </Col>
-                              <Col span={2}>
-                                <span>
-                                  Line Items:{' '}
                                   <Typography
+                                    style={{padding: '5px 8px 0px 0px'}}
                                     name="Body 4/Medium"
                                     color={token?.colorBgContainer}
                                     ellipsis
                                     tooltip
+                                    as="div"
                                   >
-                                    {finalDataItem?.QuoteLineItem?.length}
+                                    {finalDataItem?.name}
                                   </Typography>
-                                </span>
+                                </Badge>
                               </Col>
-                              {finalDataItem?.description && (
+
+                              {/* {finalDataItem?.description && (
                                 <Col span={4}>
                                   <span style={{display: 'flex'}}>
                                     Desc:{' '}
@@ -997,10 +994,10 @@ const Profitablity: FC<any> = ({
                                     </Typography>
                                   </span>
                                 </Col>
-                              )}
+                              )} */}
                               <Col span={4}>
                                 <span style={{display: 'flex'}}>
-                                  Extended Price: ${' '}
+                                  Ext Price: ${' '}
                                   <Typography
                                     name="Body 4/Medium"
                                     color={token?.colorBgContainer}
@@ -1019,7 +1016,7 @@ const Profitablity: FC<any> = ({
                               </Col>
                               <Col span={4}>
                                 <span style={{display: 'flex'}}>
-                                  Gross Profit: ${' '}
+                                  GP: ${' '}
                                   <Typography
                                     name="Body 4/Medium"
                                     color={token?.colorBgContainer}
@@ -1037,7 +1034,7 @@ const Profitablity: FC<any> = ({
                               </Col>
                               <Col span={4}>
                                 <span style={{display: 'flex'}}>
-                                  Gross Profit%:{' '}
+                                  GP%:{' '}
                                   <Typography
                                     name="Body 4/Medium"
                                     color={token?.colorBgContainer}
@@ -1055,43 +1052,68 @@ const Profitablity: FC<any> = ({
                                 </span>
                               </Col>
                               {finalDataItem?.type === 'bundle' && (
-                                <Col span={2}>
-                                  <span
-                                    style={{
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'end',
-                                    }}
-                                  >
-                                    Qty:
-                                    <OsInputNumber
-                                      defaultValue={finalDataItem?.quantity}
+                                <>
+                                  <Col style={{display: 'flex'}}>
+                                    <span
                                       style={{
-                                        width: '60px',
-                                        marginLeft: '3px',
-                                        height: '36px',
-                                        textAlignLast: 'right',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'end',
+                                        marginRight: '10px',
                                       }}
-                                      precision={2}
-                                      formatter={currencyFormatter}
-                                      parser={(value) =>
-                                        value!.replace(/\$\s?|(,*)/g, '')
-                                      }
-                                      min={1}
-                                      onKeyDown={(e) => {
-                                        e.stopPropagation();
-                                        handleBundleKeyDown(e, finalDataItem);
-                                      }}
-                                      onBlur={(e) => {
-                                        e.stopPropagation();
-                                        handleBundleBlur(e, finalDataItem);
+                                    >
+                                      Qty:
+                                      <OsInputNumber
+                                        defaultValue={finalDataItem?.quantity}
+                                        style={{
+                                          width: '60px',
+                                          marginLeft: '3px',
+                                          height: '36px',
+                                          textAlignLast: 'right',
+                                        }}
+                                        precision={2}
+                                        formatter={currencyFormatter}
+                                        parser={(value) =>
+                                          value!.replace(/\$\s?|(,*)/g, '')
+                                        }
+                                        min={1}
+                                        onKeyDown={(e) => {
+                                          e.stopPropagation();
+                                          handleBundleKeyDown(e, finalDataItem);
+                                        }}
+                                        onBlur={(e) => {
+                                          e.stopPropagation();
+                                          handleBundleBlur(e, finalDataItem);
+                                        }}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                        }}
+                                      />
+                                    </span>
+                                    <PencilSquareIcon
+                                      height={24}
+                                      width={24}
+                                      color={token.colorBgContainer}
+                                      style={{
+                                        cursor: 'pointer',
+                                        marginTop: '5px',
                                       }}
                                       onClick={(e) => {
                                         e.stopPropagation();
+                                        setShowBundleDrawer(true);
+                                        setBundleRecordId(
+                                          finalDataItem?.bundleId,
+                                        );
+                                        BundleForm.setFieldsValue({
+                                          name: finalDataItem?.name,
+                                          quantity: finalDataItem?.quantity,
+                                          description:
+                                            finalDataItem?.description,
+                                        });
                                       }}
                                     />
-                                  </span>
-                                </Col>
+                                  </Col>
+                                </>
                               )}
                             </Row>
                           ),
@@ -1183,6 +1205,40 @@ const Profitablity: FC<any> = ({
         onOk={BundleForm.submit}
         footerPadding={20}
       />
+
+      <OsDrawer
+        title={
+          <Typography name="Body 1/Regular" color="#0D0D0D">
+            Update Bundle
+          </Typography>
+        }
+        placement="right"
+        onClose={() => {
+          setShowBundleDrawer(false);
+          BundleForm.resetFields();
+          setBundleRecordId('');
+        }}
+        open={showBundleDrawer}
+        width={450}
+        footer={
+          <OsButton
+            loading={bundleLoading}
+            btnStyle={{width: '100%'}}
+            buttontype="PRIMARY"
+            text="Update Changes"
+            clickHandler={BundleForm.submit}
+          />
+        }
+      >
+        <BundleSection
+          selectTedRowIds={selectTedRowIds}
+          setShowBundleModal={setShowBundleModal}
+          form={BundleForm}
+          bundleId={bundleRecordId}
+          setShowBundleDrawer={setShowBundleDrawer}
+          drawer
+        />
+      </OsDrawer>
 
       <DeleteModal
         loading={loading}

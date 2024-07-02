@@ -1,37 +1,29 @@
 'use client';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import EmptyContainer from '@/app/components/common/os-empty-container';
-import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
-import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
-import {OSDraggerStyle} from '@/app/components/common/os-upload/styled-components';
 import Typography from '@/app/components/common/typography';
-import {AttachmentOptions} from '@/app/utils/CONSTANTS';
-import {convertFileToBase64} from '@/app/utils/base';
-import {FolderArrowDownIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {Space, message, notification} from 'antd';
+import {TrashIcon} from '@heroicons/react/24/outline';
+import {Form, Space, notification} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {
   deleteAttachDocumentById,
   getAllAttachmentDocument,
   insertAttachmentDocument,
-} from '../../../../../../redux/actions/attachmentDocument';
-import {getProfitabilityByQuoteId} from '../../../../../../redux/actions/profitability';
+} from '../../../../../../../redux/actions/attachmentDocument';
+import {getProfitabilityByQuoteId} from '../../../../../../../redux/actions/profitability';
 import {
   deleteQuoteFileById,
   getQuoteFileByQuoteId,
   getQuoteFileByQuoteIdAll,
   getQuoteFileCount,
-} from '../../../../../../redux/actions/quoteFile';
-import {deleteLineItemsByQuoteFileId} from '../../../../../../redux/actions/quotelineitem';
-import {
-  uploadExcelFileToAws,
-  uploadToAws,
-} from '../../../../../../redux/actions/upload';
-import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+} from '../../../../../../../redux/actions/quoteFile';
+import {deleteLineItemsByQuoteFileId} from '../../../../../../../redux/actions/quotelineitem';
+import {useAppDispatch, useAppSelector} from '../../../../../../../redux/hook';
+import Attachments from './Attachments';
 
 const AttachmentDocument: FC<any> = ({
   typeForAttachmentFilter,
@@ -42,26 +34,22 @@ const AttachmentDocument: FC<any> = ({
   const [token] = useThemeToken();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
+  const [attachmentForm] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
   const {data: attachmentDocumentData, loading} = useAppSelector(
     (state) => state.attachmentDocument,
   );
+  const {userInformation} = useAppSelector(
+    (state) => state.user,
+  );
   const {getQuoteFileByQuoteIdAllData: quoteFileData} = useAppSelector(
     (state) => state.quoteFile,
   );
-  const [attachUrl, setAttachUrl] = useState<{
-    name: string;
-    url: string;
-  }>({
-    name: '',
-    url: '',
-  });
-  const [typeOfAttach, setTypeOfAttach] = useState<any>();
+  const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [combinedData, setCombinedData] = useState<any>();
   const [filteredData, setFilteredData] = useState([]);
   const [callApis, setCallApis] = useState<boolean>(false);
   const [loadingShow, setLoadingShow] = useState<boolean>(false);
-  const [bufferLoading, setBufferLoading] = useState<boolean>(false);
   const [deletedData, setDeletedData] = useState<any>();
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [checkedValue, setCheckedValue] = useState<boolean>(false);
@@ -176,46 +164,22 @@ const AttachmentDocument: FC<any> = ({
     },
   ];
 
-  const beforeUpload = async (file: File) => {
-    let pathUsedToUpload = file?.type?.split('.')?.includes('spreadsheetml')
-      ? uploadExcelFileToAws
-      : uploadToAws;
-    try {
-      setBufferLoading(true);
-      const base64String = await convertFileToBase64(file);
-      if (base64String) {
-        const payload = await dispatch(
-          pathUsedToUpload({document: base64String}),
-        );
-        const pdfUrl = payload?.payload?.data?.Location;
-        setAttachUrl({
-          name: file?.name ?? 'Quote',
-          url: pdfUrl,
-        });
-        message.success('File uploaded successfully');
-      }
-    } catch (error: any) {
-      message.error('Error converting file to base64', error);
-    } finally {
-      setBufferLoading(false);
-    }
-    return false;
-  };
-
   const addNewAttachment = async () => {
-    let newObjForAttach: any = {
-      name: attachUrl?.name,
-      doc_url: attachUrl?.url,
-      quote_id: getQuoteID,
-      type: typeOfAttach,
-    };
-    if (newObjForAttach) {
-      await dispatch(insertAttachmentDocument(newObjForAttach)).then((d) => {
+    const updatedData = uploadFileData?.map((item: any) => {
+      return {
+        quote_id: getQuoteID,
+        type: item?.type,
+        doc_url: item?.doc_url,
+        name: item?.name,
+        organization: userInformation?.organization,
+      };
+    });
+    if (updatedData) {
+      await dispatch(insertAttachmentDocument(updatedData)).then((d) => {
         if (d?.payload) {
           setAddNewCustomerQuote(false);
           setCallApis(true);
-          setAttachUrl({name: '', url: ''});
-          setTypeOfAttach('');
+          setUploadFileData([]);
         }
       });
     }
@@ -276,68 +240,24 @@ const AttachmentDocument: FC<any> = ({
       />
 
       <OsModal
+        disabledButton={uploadFileData?.length === 0}
         loading={loading}
-        width={600}
+        width={700}
         open={addNewCustomerQuote}
         onCancel={() => {
           setAddNewCustomerQuote(false);
-          setAttachUrl({name: '', url: ''});
-          setTypeOfAttach('');
         }}
         bodyPadding={20}
         title="Add Customer Attachments"
-        primaryButtonText={typeOfAttach && 'Save'}
-        onOk={addNewAttachment}
+        primaryButtonText={'Save'}
+        onOk={attachmentForm.submit}
         body={
-          <div style={{width: '100%'}}>
-            {attachUrl?.url ? (
-              <>
-                <CommonSelect
-                  key={1}
-                  style={{width: '100%'}}
-                  placeholder="Select Grouping here"
-                  options={AttachmentOptions}
-                  onChange={(e) => {
-                    setTypeOfAttach(e);
-                  }}
-                  allowClear
-                />
-              </>
-            ) : (
-              <GlobalLoader loading={bufferLoading}>
-                <OSDraggerStyle
-                  beforeUpload={beforeUpload}
-                  showUploadList={false}
-                  multiple
-                >
-                  <FolderArrowDownIcon
-                    width={24}
-                    color={token?.colorInfoBorder}
-                  />
-                  <Typography
-                    name="Body 4/Medium"
-                    color={token?.colorPrimaryText}
-                    as="div"
-                  >
-                    <Typography
-                      name="Body 4/Medium"
-                      style={{textDecoration: 'underline', cursor: 'pointer'}}
-                      color={token?.colorPrimary}
-                    >
-                      Click to Upload
-                    </Typography>{' '}
-                    or Drag and Drop
-                  </Typography>
-                  <Typography
-                    name="Body 4/Medium"
-                    color={token?.colorPrimaryText}
-                  >
-                    XLS, PDF.
-                  </Typography>
-                </OSDraggerStyle>
-              </GlobalLoader>
-            )}
-          </div>
+          <Attachments
+            uploadFileData={uploadFileData}
+            setUploadFileData={setUploadFileData}
+            addNewAttachment={addNewAttachment}
+            form={attachmentForm}
+          />
         }
       />
 

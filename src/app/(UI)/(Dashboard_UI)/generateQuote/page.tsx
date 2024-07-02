@@ -40,7 +40,7 @@ import ProfitabilityMain from './allTabs/Profitability/index';
 import Rebates from './allTabs/Rebates';
 import ReviewQuotes from './allTabs/ReviewQuotes';
 import Validation from './allTabs/Validation';
-import AttachmentDocument from './allTabs/attachmentDoc';
+import AttachmentDocument from './allTabs/Attachment/index';
 import GenerateQuoteAnalytics from './analytics';
 
 const GenerateQuote: React.FC = () => {
