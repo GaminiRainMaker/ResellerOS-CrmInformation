@@ -859,6 +859,7 @@ const Profitablity: FC<any> = ({
                         <Col
                           style={{
                             display: 'flex',
+                            justifyContent: 'end',
                           }}
                           xs={12}
                           sm={12}
@@ -1089,6 +1090,7 @@ const Profitablity: FC<any> = ({
                                   <Col
                                     style={{
                                       display: 'flex',
+                                      justifyContent: 'end',
                                     }}
                                     xs={12}
                                     sm={12}
