@@ -217,6 +217,8 @@ const AttachmentDocument: FC<any> = ({
           }
         });
       }
+      dispatch(getQuoteFileCount(Number(getQuoteID)));
+      dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
       setCallApis(true);
       setShowDeleteModal(false);
     } else {
