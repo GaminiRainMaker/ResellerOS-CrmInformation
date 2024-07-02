@@ -768,49 +768,23 @@ const Profitablity: FC<any> = ({
                 key: index,
                 label: (
                   <Row justify="space-between" align="middle" gutter={[8, 8]}>
-                    <Col span={4}>
-                      <Typography
-                        name="Body 4/Medium"
-                        color={token?.colorBgContainer}
-                        ellipsis
-                        tooltip
-                        as="div"
-                      >
-                        {finalDataItem?.name}
-                      </Typography>
-                    </Col>
-                    <Col span={2}>
-                      <span>
-                        Line Items:{' '}
+                    <Col xs={24} sm={12} md={12} lg={6} xl={6}>
+                      <Badge count={finalDataItem?.QuoteLineItem?.length}>
                         <Typography
+                          style={{padding: '5px 8px 0px 0px'}}
                           name="Body 4/Medium"
                           color={token?.colorBgContainer}
                           ellipsis
                           tooltip
+                          as="div"
                         >
-                          {finalDataItem?.QuoteLineItem?.length}
+                          {finalDataItem?.name}
                         </Typography>
-                      </span>
+                      </Badge>
                     </Col>
-                    {finalDataItem?.description && (
-                      <Col span={4}>
-                        <span style={{display: 'flex'}}>
-                          Desc:{' '}
-                          <Typography
-                            name="Body 4/Medium"
-                            color={token?.colorBgContainer}
-                            ellipsis
-                            tooltip
-                            as="div"
-                          >
-                            {finalDataItem?.description}
-                          </Typography>
-                        </span>
-                      </Col>
-                    )}
-                    <Col span={4}>
+                    <Col xs={24} sm={12} md={12} lg={4} xl={4}>
                       <span style={{display: 'flex'}}>
-                        Extended Price: ${' '}
+                        Ext Price:{' '}
                         <Typography
                           name="Body 4/Medium"
                           color={token?.colorBgContainer}
@@ -818,15 +792,16 @@ const Profitablity: FC<any> = ({
                           tooltip
                           as="div"
                         >
+                          $
                           {abbreviate(
                             Number(finalDataItem?.totalExtendedPrice ?? 0.0),
                           )}
                         </Typography>
                       </span>
                     </Col>
-                    <Col span={4}>
+                    <Col xs={24} sm={12} md={12} lg={4} xl={4}>
                       <span style={{display: 'flex'}}>
-                        Gross Profit: ${' '}
+                        GP:{' '}
                         <Typography
                           name="Body 4/Medium"
                           color={token?.colorBgContainer}
@@ -834,15 +809,16 @@ const Profitablity: FC<any> = ({
                           tooltip
                           as="div"
                         >
+                          $
                           {abbreviate(
                             Number(finalDataItem?.totalGrossProfit ?? 0.0),
                           )}
                         </Typography>
                       </span>
                     </Col>
-                    <Col span={4}>
+                    <Col xs={24} sm={10} md={12} lg={4} xl={4}>
                       <span style={{display: 'flex'}}>
-                        Gross Profit%:{' '}
+                        GP:{' '}
                         <Typography
                           name="Body 4/Medium"
                           color={token?.colorBgContainer}
@@ -850,6 +826,7 @@ const Profitablity: FC<any> = ({
                           tooltip
                           as="div"
                         >
+                          %
                           {abbreviate(
                             Number(
                               finalDataItem?.totalGrossProfitPercentage ?? 0.0,
@@ -859,43 +836,73 @@ const Profitablity: FC<any> = ({
                       </span>
                     </Col>
                     {finalDataItem?.type === 'bundle' && (
-                      <Col span={2}>
-                        <span
+                      <>
+                        <Col
                           style={{
                             display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'end',
                           }}
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={3}
+                          xl={3}
                         >
-                          Qty:
-                          <OsInputNumber
-                            defaultValue={finalDataItem?.quantity}
+                          <span
                             style={{
-                              width: '60px',
-                              marginLeft: '3px',
-                              height: '36px',
-                              textAlignLast: 'right',
+                              display: 'flex',
+                              alignItems: 'center',
+                              marginRight: '10px',
                             }}
-                            precision={2}
-                            formatter={currencyFormatter}
-                            parser={(value) =>
-                              value!.replace(/\$\s?|(,*)/g, '')
-                            }
-                            min={1}
-                            onKeyDown={(e) => {
-                              e.stopPropagation();
-                              handleBundleKeyDown(e, finalDataItem);
-                            }}
-                            onBlur={(e) => {
-                              e.stopPropagation();
-                              handleBundleBlur(e, finalDataItem);
+                          >
+                            Qty:
+                            <OsInputNumber
+                              defaultValue={finalDataItem?.quantity}
+                              style={{
+                                width: '60px',
+                                marginLeft: '3px',
+                                height: '36px',
+                                textAlignLast: 'right',
+                              }}
+                              precision={2}
+                              formatter={currencyFormatter}
+                              parser={(value) =>
+                                value!.replace(/\$\s?|(,*)/g, '')
+                              }
+                              min={1}
+                              onKeyDown={(e) => {
+                                e.stopPropagation();
+                                handleBundleKeyDown(e, finalDataItem);
+                              }}
+                              onBlur={(e) => {
+                                e.stopPropagation();
+                                handleBundleBlur(e, finalDataItem);
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                              }}
+                            />
+                          </span>
+                          <PencilSquareIcon
+                            height={24}
+                            width={24}
+                            color={token.colorBgContainer}
+                            style={{
+                              cursor: 'pointer',
+                              marginTop: '5px',
                             }}
                             onClick={(e) => {
                               e.stopPropagation();
+                              setShowBundleDrawer(true);
+                              setBundleRecordId(finalDataItem?.bundleId);
+                              BundleForm.setFieldsValue({
+                                name: finalDataItem?.name,
+                                quantity: finalDataItem?.quantity,
+                                description: finalDataItem?.description,
+                              });
                             }}
                           />
-                        </span>
-                      </Col>
+                        </Col>
+                      </>
                     )}
                   </Row>
                 ),
@@ -962,7 +969,7 @@ const Profitablity: FC<any> = ({
                               align="middle"
                               gutter={[8, 8]}
                             >
-                              <Col span={4}>
+                              <Col xs={24} sm={12} md={12} lg={6} xl={6}>
                                 <Badge
                                   count={finalDataItem?.QuoteLineItem?.length}
                                 >
@@ -978,26 +985,9 @@ const Profitablity: FC<any> = ({
                                   </Typography>
                                 </Badge>
                               </Col>
-
-                              {/* {finalDataItem?.description && (
-                                <Col span={4}>
-                                  <span style={{display: 'flex'}}>
-                                    Desc:{' '}
-                                    <Typography
-                                      name="Body 4/Medium"
-                                      color={token?.colorBgContainer}
-                                      ellipsis
-                                      tooltip
-                                      as="div"
-                                    >
-                                      {finalDataItem?.description}
-                                    </Typography>
-                                  </span>
-                                </Col>
-                              )} */}
-                              <Col span={4}>
+                              <Col xs={24} sm={12} md={12} lg={4} xl={4}>
                                 <span style={{display: 'flex'}}>
-                                  Ext Price: ${' '}
+                                  Ext Price:{' '}
                                   <Typography
                                     name="Body 4/Medium"
                                     color={token?.colorBgContainer}
@@ -1005,6 +995,7 @@ const Profitablity: FC<any> = ({
                                     tooltip
                                     as="div"
                                   >
+                                    $
                                     {abbreviate(
                                       Number(
                                         finalDataItem?.totalExtendedPrice ??
@@ -1014,9 +1005,9 @@ const Profitablity: FC<any> = ({
                                   </Typography>
                                 </span>
                               </Col>
-                              <Col span={4}>
+                              <Col xs={24} sm={12} md={12} lg={4} xl={4}>
                                 <span style={{display: 'flex'}}>
-                                  GP: ${' '}
+                                  GP:{' '}
                                   <Typography
                                     name="Body 4/Medium"
                                     color={token?.colorBgContainer}
@@ -1024,6 +1015,7 @@ const Profitablity: FC<any> = ({
                                     tooltip
                                     as="div"
                                   >
+                                    $
                                     {abbreviate(
                                       Number(
                                         finalDataItem?.totalGrossProfit ?? 0.0,
@@ -1032,9 +1024,9 @@ const Profitablity: FC<any> = ({
                                   </Typography>
                                 </span>
                               </Col>
-                              <Col span={4}>
+                              <Col xs={24} sm={10} md={12} lg={4} xl={4}>
                                 <span style={{display: 'flex'}}>
-                                  GP%:{' '}
+                                  GP:{' '}
                                   <Typography
                                     name="Body 4/Medium"
                                     color={token?.colorBgContainer}
@@ -1042,6 +1034,7 @@ const Profitablity: FC<any> = ({
                                     tooltip
                                     as="div"
                                   >
+                                    %
                                     {abbreviate(
                                       Number(
                                         finalDataItem?.totalGrossProfitPercentage ??
@@ -1053,12 +1046,20 @@ const Profitablity: FC<any> = ({
                               </Col>
                               {finalDataItem?.type === 'bundle' && (
                                 <>
-                                  <Col style={{display: 'flex'}}>
+                                  <Col
+                                    style={{
+                                      display: 'flex',
+                                    }}
+                                    xs={12}
+                                    sm={12}
+                                    md={12}
+                                    lg={3}
+                                    xl={3}
+                                  >
                                     <span
                                       style={{
                                         display: 'flex',
                                         alignItems: 'center',
-                                        justifyContent: 'end',
                                         marginRight: '10px',
                                       }}
                                     >
