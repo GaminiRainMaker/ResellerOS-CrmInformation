@@ -783,7 +783,12 @@ const Profitablity: FC<any> = ({
                       </Badge>
                     </Col>
                     <Col xs={24} sm={12} md={12} lg={4} xl={4}>
-                      <span style={{display: 'flex'}}>
+                      <span
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
                         Ext Price:{' '}
                         <Typography
                           name="Body 4/Medium"
@@ -791,6 +796,7 @@ const Profitablity: FC<any> = ({
                           ellipsis
                           tooltip
                           as="div"
+                          style={{marginLeft: '2px'}}
                         >
                           $
                           {abbreviate(
@@ -800,7 +806,12 @@ const Profitablity: FC<any> = ({
                       </span>
                     </Col>
                     <Col xs={24} sm={12} md={12} lg={4} xl={4}>
-                      <span style={{display: 'flex'}}>
+                      <span
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
                         GP:{' '}
                         <Typography
                           name="Body 4/Medium"
@@ -808,6 +819,7 @@ const Profitablity: FC<any> = ({
                           ellipsis
                           tooltip
                           as="div"
+                          style={{marginLeft: '2px'}}
                         >
                           $
                           {abbreviate(
@@ -817,21 +829,28 @@ const Profitablity: FC<any> = ({
                       </span>
                     </Col>
                     <Col xs={24} sm={10} md={12} lg={4} xl={4}>
-                      <span style={{display: 'flex'}}>
-                        GP:{' '}
+                      <span
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                        }}
+                      >
+                        GP%:{' '}
                         <Typography
                           name="Body 4/Medium"
                           color={token?.colorBgContainer}
                           ellipsis
                           tooltip
                           as="div"
+                          style={{marginLeft: '2px'}}
                         >
-                          %
+                          {' '}
                           {abbreviate(
                             Number(
                               finalDataItem?.totalGrossProfitPercentage ?? 0.0,
                             ),
                           )}
+                          %
                         </Typography>
                       </span>
                     </Col>
@@ -988,7 +1007,12 @@ const Profitablity: FC<any> = ({
                                 </Badge>
                               </Col>
                               <Col xs={24} sm={12} md={12} lg={4} xl={4}>
-                                <span style={{display: 'flex'}}>
+                                <span
+                                  style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                  }}
+                                >
                                   Ext Price:{' '}
                                   <Typography
                                     name="Body 4/Medium"
@@ -996,6 +1020,7 @@ const Profitablity: FC<any> = ({
                                     ellipsis
                                     tooltip
                                     as="div"
+                                    style={{marginLeft: '2px'}}
                                   >
                                     $
                                     {abbreviate(
@@ -1008,7 +1033,12 @@ const Profitablity: FC<any> = ({
                                 </span>
                               </Col>
                               <Col xs={24} sm={12} md={12} lg={4} xl={4}>
-                                <span style={{display: 'flex'}}>
+                                <span
+                                  style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                  }}
+                                >
                                   GP:{' '}
                                   <Typography
                                     name="Body 4/Medium"
@@ -1016,6 +1046,7 @@ const Profitablity: FC<any> = ({
                                     ellipsis
                                     tooltip
                                     as="div"
+                                    style={{marginLeft: '2px'}}
                                   >
                                     $
                                     {abbreviate(
@@ -1027,22 +1058,29 @@ const Profitablity: FC<any> = ({
                                 </span>
                               </Col>
                               <Col xs={24} sm={10} md={12} lg={4} xl={4}>
-                                <span style={{display: 'flex'}}>
-                                  GP:{' '}
+                                <span
+                                  style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                  }}
+                                >
+                                  GP%:{' '}
                                   <Typography
                                     name="Body 4/Medium"
                                     color={token?.colorBgContainer}
                                     ellipsis
                                     tooltip
                                     as="div"
+                                    style={{marginLeft: '2px'}}
                                   >
-                                    %
+                                    {' '}
                                     {abbreviate(
                                       Number(
                                         finalDataItem?.totalGrossProfitPercentage ??
                                           0.0,
                                       ),
                                     )}
+                                    %
                                   </Typography>
                                 </span>
                               </Col>

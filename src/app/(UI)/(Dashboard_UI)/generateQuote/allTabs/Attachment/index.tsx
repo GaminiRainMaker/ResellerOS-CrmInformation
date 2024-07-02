@@ -229,14 +229,16 @@ const AttachmentDocument: FC<any> = ({
   return (
     <>
       {contextHolder}
-      <OsTableWithOutDrag
-        columns={InputDetailQuoteLineItemcolumns}
-        dataSource={filteredData}
-        scroll
-        loading={loadingShow}
-        locale={locale}
-        defaultPageSize={filteredData?.length}
-      />
+      {filteredData && (
+        <OsTableWithOutDrag
+          columns={InputDetailQuoteLineItemcolumns}
+          dataSource={filteredData}
+          scroll
+          loading={loadingShow}
+          locale={locale}
+          defaultPageSize={filteredData?.length}
+        />
+      )}
 
       <OsModal
         disabledButton={uploadFileData?.length === 0}

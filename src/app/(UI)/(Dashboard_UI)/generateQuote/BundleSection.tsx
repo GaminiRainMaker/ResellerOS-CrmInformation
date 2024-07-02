@@ -62,7 +62,7 @@ const BundleSection: FC<any> = ({
     await dispatch(getAllBundle(getQuoteId));
     setRadioValue(1);
     setShowBundleModal(false);
-    setShowBundleDrawer(false);
+    setShowBundleDrawer && setShowBundleDrawer(false);
 
     setTimeout(() => {
       location?.reload();

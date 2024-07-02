@@ -35,7 +35,12 @@ const OsTableWithOutDrag: FC<any> = ({
   };
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: defaultPageSize < 100 ? defaultPageSize : 100,
+    pageSize:
+      defaultPageSize === 0
+        ? 10
+        : defaultPageSize < 100
+          ? defaultPageSize
+          : 100,
     total: 0,
   });
 
