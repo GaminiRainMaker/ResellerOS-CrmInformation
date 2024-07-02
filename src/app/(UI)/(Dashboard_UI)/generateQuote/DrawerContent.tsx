@@ -111,7 +111,7 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
       file_name: quoteById?.file_name,
       opportunity_id: quoteById?.opportunity_id,
       customer_id: quoteById?.customer_id,
-      contact_id: quoteById?.contact_id && quoteById?.contact_id,
+      contact_id: quoteById?.contact_id,
       status: quoteById?.status,
       quote_notes: quoteById?.quote_notes,
       quote_shipping: quoteById?.quote_shipping,
