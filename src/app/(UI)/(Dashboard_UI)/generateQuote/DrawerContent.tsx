@@ -12,7 +12,7 @@ import {
   quoteStatusOptions,
   quoteReviewStatusOptions,
 } from '@/app/utils/CONSTANTS';
-import {formatDate} from '@/app/utils/base';
+import {currencyFormatter, formatDate} from '@/app/utils/base';
 import {Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
@@ -21,6 +21,7 @@ import {getAllOpportunity} from '../../../../../redux/actions/opportunity';
 import {getQuoteById} from '../../../../../redux/actions/quote';
 import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 
 const DrawerContent: FC<any> = ({open, form, onFinish}) => {
   const dispatch = useAppDispatch();
@@ -34,10 +35,7 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
   const [billingOptionsData, setBillingOptionData] = useState<any>();
   const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const [opportunityObject, setOpportunityObject] = useState<any>();
-  const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
-    (state) => state.profitability,
-  );
-  // BillingContacts
+
   useEffect(() => {
     const customerOptions: any = [];
     const updatedAllBillingContact: any = [];
@@ -109,49 +107,6 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
   }, [syncTableData, quoteData]);
 
   useEffect(() => {
-    if (getQuoteId) dispatch(getQuoteById(Number(getQuoteId)));
-  }, [open]);
-
-  // const onSubmit = async (values: FormDataProps) => {
-  // if (
-  //   generalSettingData?.attach_doc_type === 'opportunity' ||
-  //   syncTableData?.length > 0
-  // ) {
-  //   const opportunityDataItemPDfUrl: any = [];
-  //   let OpportunityValue: any = {};
-  //   opportunityData?.map((opportunityDataItem: any) => {
-  //     if (opportunityDataItem?.id === values?.opportunity_id) {
-  //       opportunityDataItemPDfUrl.push(
-  //         opportunityDataItem?.pdf_url,
-  //         quoteById?.pdf_url,
-  //       );
-  //       if (generalSettingData?.attach_doc_type === 'opportunity') {
-  //         OpportunityValue = {
-  //           ...opportunityObject,
-  //           id: opportunityDataItem?.id,
-  //           pdf_url: [
-  //             ...(opportunityDataItem?.pdf_url || []),
-  //             ...opportunityDataItemPDfUrl.flat(),
-  //           ],
-  //         };
-  //       }
-  //     }
-  //   });
-  //   if (generalSettingData?.attach_doc_type === 'opportunity') {
-  //     dispatch(updateOpportunity(OpportunityValue));
-  //   } else {
-  //     dispatch(updateOpportunity(opportunityObject));
-  //   }
-  // }
-  //   setDrawerData((prev) => ({...prev, formData: values}));
-  //   const obj = {
-  //     id: Number(getQuoteLineItemId),
-  //     ...values,
-  //   };
-  //   dispatch(updateQuoteById(obj));
-  //   setOpen(false);
-  // };
-  useEffect(() => {
     form.setFieldsValue({
       file_name: quoteById?.file_name,
       opportunity_id: quoteById?.opportunity_id,
@@ -164,6 +119,7 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
     });
     setCustomerValue(quoteById?.customer_id);
   }, [quoteById]);
+
   return (
     <GlobalLoader loading={quoteByIdLoading}>
       <Form
@@ -230,22 +186,35 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
             </Form.Item>
             <Form.Item label=" Quote Note" name="quote_notes">
               <OsInput
-                placeholder="notes"
+                placeholder="Notes"
                 disabled={getInReviewQuote === 'true' ? true : false}
               />
             </Form.Item>
+
             <Form.Item label="Quote Tax" name="quote_tax">
-              <OsInput
-                placeholder="quote tax"
-                type="number"
+              <OsInputNumber
+                min={0}
+                precision={2}
+                formatter={currencyFormatter}
+                parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
                 disabled={getInReviewQuote === 'true' ? true : false}
+                style={{
+                  width: '100%',
+                }}
+                placeholder="Quote Tax"
               />
             </Form.Item>
             <Form.Item label="Quote Shipping" name="quote_shipping">
-              <OsInput
-                placeholder="Quote Shipping"
-                type="number"
+              <OsInputNumber
+                min={0}
+                precision={2}
+                formatter={currencyFormatter}
+                parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
                 disabled={getInReviewQuote === 'true' ? true : false}
+                style={{
+                  width: '100%',
+                }}
+                placeholder="Quote Shipping"
               />
             </Form.Item>
           </Col>

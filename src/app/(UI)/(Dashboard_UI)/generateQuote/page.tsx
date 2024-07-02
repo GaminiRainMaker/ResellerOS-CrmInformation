@@ -23,6 +23,7 @@ import {getAllBundle} from '../../../../../redux/actions/bundle';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
 import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
 import {
+  getQuoteById,
   getQuoteByIdForFormStack,
   updateQuoteById,
   updateQuoteStatusById,
@@ -53,9 +54,8 @@ const GenerateQuote: React.FC = () => {
   const [api, contextHolder] = notification.useNotification();
   const getQuoteID = searchParams.get('id');
   const [activeTab, setActiveTab] = useState<any>('1');
-  const {quoteLineItemByQuoteID, loading} = useAppSelector(
-    (state) => state.quoteLineItem,
-  );
+  const {loading} = useAppSelector((state) => state.quoteLineItem);
+  const {quoteById} = useAppSelector((state) => state.quote);
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [selectTedRowData, setSelectedRowData] = useState<any>([]);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
@@ -89,6 +89,7 @@ const GenerateQuote: React.FC = () => {
   useEffect(() => {
     if (getQuoteID) {
       dispatch(getQuoteFileCount(Number(getQuoteID)));
+      dispatch(getQuoteById(Number(getQuoteID)));
       dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
       dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
       dispatch(getAllBundle(getQuoteID));
@@ -452,11 +453,8 @@ const GenerateQuote: React.FC = () => {
             router?.push(`/generateQuote?id=${getQuoteID}`);
           }}
         >
-          {quoteLineItemByQuoteID?.[0]?.Quote?.file_name ??
-            formatDate(
-              quoteLineItemByQuoteID?.[0]?.Quote?.createdAt,
-              'MM/DD/YYYY | HH:MM',
-            )}
+          {quoteById?.file_name ??
+            formatDate(quoteById?.createdAt, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },
@@ -469,8 +467,13 @@ const GenerateQuote: React.FC = () => {
         id: Number(getQuoteID),
         ...headerValue,
       };
-      dispatch(updateQuoteById(obj));
-      setOpen(false);
+      dispatch(updateQuoteById(obj)).then((d) => {
+        dispatch(getQuoteById(Number(getQuoteID))).then((d) => {
+          if (d?.payload) {
+            setOpen(false);
+          }
+        });
+      });
     } catch (error) {
       setOpen(false);
       console.error('Error:', error);
