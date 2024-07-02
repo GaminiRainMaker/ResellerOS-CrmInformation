@@ -48,7 +48,7 @@ const UploadCard: FC<any> = ({
           <Row key={item?.uid} justify="space-between" gutter={[0, 8]}>
             <Col span={10}>
               <Space size={12}>
-                {item?.file?.type.split('/')[1] === 'pdf' ? (
+                {item?.name?.includes('pdf') ? (
                   <Image src={PdfImg} alt="PdfImg" />
                 ) : (
                   <Image src={XlsImg} alt="XlsImg" />

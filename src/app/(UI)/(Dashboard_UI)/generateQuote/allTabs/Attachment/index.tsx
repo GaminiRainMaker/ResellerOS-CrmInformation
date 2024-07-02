@@ -175,6 +175,7 @@ const AttachmentDocument: FC<any> = ({
     if (updatedData) {
       await dispatch(insertAttachmentDocument(updatedData)).then((d) => {
         if (d?.payload) {
+          dispatch(getAllAttachmentDocument(getQuoteID));
           setAddNewCustomerQuote(false);
           setCallApis(true);
           setUploadFileData([]);

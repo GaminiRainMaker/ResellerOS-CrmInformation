@@ -58,7 +58,6 @@ const FieldDisplayConfiguration: FC<any> = () => {
         item?.table_name?.includes(selectedTable),
       );
     }
-
     setTableColumnDataShow(filteredArray);
   }, [selectedTable, tableColumnData]);
 
@@ -211,6 +210,8 @@ const FieldDisplayConfiguration: FC<any> = () => {
     ...(selectedTable !== 'Rebates' ? FiledDisplayConfigurationUniqueItem : []),
     ...thirdFieldDisplayConfigurationFields,
   ];
+
+
   return (
     <>
       <TabContainerStyle>
@@ -243,7 +244,6 @@ const FieldDisplayConfiguration: FC<any> = () => {
                           borderRadius: '12px',
                         }}
                       >
-                        {/* <Typography name="Body 4/Medium">Select Tab</Typography> */}
                         <CommonSelect
                           placeholder="Select"
                           options={[
@@ -308,9 +308,8 @@ const FieldDisplayConfiguration: FC<any> = () => {
                             tableSelectionType="checkbox"
                             columns={allColumns}
                             dataSource={tableColumnDataShow}
-                            tablePageSize={50}
-                            scrolly={165}
-                            defaultPageSize={tableColumnDataShow?.length}
+                            defaultPageSize={15}
+                            scrolly={200}
                           />
                         )}
                       </Space>
