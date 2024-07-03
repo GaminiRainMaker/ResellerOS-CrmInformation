@@ -202,6 +202,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
   const syncTableDataNew = async () => {
     const alllArrayValue: any = [];
+
     if (mergeedColumn?.length !== syncedNewValue?.length) {
       notification.open({
         message: 'Please sync All Items',
@@ -209,7 +210,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       });
       return;
     }
-    setNanonetsLoading(true);
+
+    // setNanonetsLoading(true);
 
     const dataaa = {id: Number(getQuoteID), fileId: Number(getQuoteFileId)};
     // dispatch(deleteQuoteLineItemsByQuoteId(dataaa));
@@ -244,6 +246,19 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     let requiredOutput = alllArrayValue.map((obj: any) => cleanObject(obj));
 
     if (salesForceFiledId) {
+      const findProduct = syncedNewValue?.find(
+        (items: any) => items?.newVal === 'product_code',
+      );
+
+      if (!findProduct || findProduct === undefined) {
+        notification.open({
+          message:
+            'Product Code is madatory. Please Sync Product Code to Proceed',
+          type: 'error',
+        });
+        setNanonetsLoading(false);
+        return;
+      }
       let newdata = {
         token: salesToken,
         // documentId: salesForceFiledId,
@@ -253,7 +268,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         action: 'ExportFileToTable',
         lineItem: requiredOutput,
       };
-      dispatch(addSalesForceDataa(newdata));
+      dispatch(addSalesForceDataa(newdata))?.then((payload:any) => {
+        console.log("435435433", payload?.payload)
+      })
       setNanonetsLoading(false);
       return;
     }

@@ -1064,3 +1064,79 @@ export const getFormattedValuesForWithAndWithoutBundles = (
 
   return finArrr;
 };
+export const getFormattedValuesForWithAndWithoutBundlesForExcelFile = (
+  objectForSyncingValues: any,
+) => {
+  let bundleArrOfObject: any = [];
+  let lineItemsArr: any = [];
+
+  // ====================== For LineItems ==================================
+
+  if (
+    objectForSyncingValues &&
+    objectForSyncingValues?.QuoteLineItems?.length > 0
+  ) {
+    let totalExtendedPrice: any = 0;
+    objectForSyncingValues?.QuoteLineItems?.forEach((items: any) => {
+      totalExtendedPrice += Number(items?.list_price);
+    });
+    let extendedPriceFinal = totalExtendedPrice;
+    let grand_totalFinal =
+      extendedPriceFinal +
+      Number(objectForSyncingValues?.quote_tax) +
+      Number(objectForSyncingValues?.quote_shipping);
+    objectForSyncingValues?.QuoteLineItems?.map((items: any, index: number) => {
+      let newObj = {
+        attributes: {
+          type: 'QuoteLineItem',
+        },
+        Id: items?.id,
+        line_number: items?.line_number ? items?.line_number : index + 1,
+        quantity: items?.quantity,
+        product_code: items?.product_code,
+        description: items?.description,
+        line_amount: items?.line_amount,
+        list_price: items?.list_price,
+        organization: items?.organization,
+        extended_price: extendedPriceFinal,
+        grand_total: grand_totalFinal,
+      };
+      lineItemsArr?.push(newObj);
+    });
+  }
+
+  // ====================== For Bundles ==================================
+  if (
+    objectForSyncingValues &&
+    objectForSyncingValues?.bundleData?.length > 0
+  ) {
+    objectForSyncingValues?.bundleData?.map(
+      (itemBun: any, indexBun: number) => {
+        if (itemBun?.name) {
+          bundleArrOfObject?.push({
+            rowType: 'header',
+            Id: indexBun + 1,
+            ProductGroup: itemBun?.name,
+          });
+        }
+        itemBun?.Profitabilities?.map((items: any, index: number) => {
+          let newObj = {
+            Id: items?.id,
+            line_number: items?.line_number ? items?.line_number : index + 1,
+            quantity: items?.quantity,
+            product_code: items?.product_code,
+            description: items?.description,
+            line_amount: items?.line_amount,
+            list_price: items?.list_price,
+            organization: items?.organization,
+          };
+          bundleArrOfObject?.push(newObj);
+        });
+
+        // finArrr?.push(finalObj);
+      },
+    );
+  }
+
+  return {lineItemss: lineItemsArr, bundleData: bundleArrOfObject};
+};
