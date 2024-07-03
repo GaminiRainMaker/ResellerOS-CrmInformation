@@ -21,7 +21,6 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {getAllBundle} from '../../../../../redux/actions/bundle';
 import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
-import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitability';
 import {
   getQuoteById,
   getQuoteByIdForFormStack,
@@ -91,7 +90,6 @@ const GenerateQuote: React.FC = () => {
       dispatch(getQuoteFileCount(Number(getQuoteID)));
       dispatch(getQuoteById(Number(getQuoteID)));
       dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
-      dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
       dispatch(getAllBundle(getQuoteID));
     }
   }, [getQuoteID]);

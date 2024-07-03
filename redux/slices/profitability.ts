@@ -87,7 +87,6 @@ const profitabilitySlice = createSlice({
         updateProfitabilityById.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
         },
       )
       .addCase(
