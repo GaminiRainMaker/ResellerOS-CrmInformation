@@ -130,7 +130,14 @@ const AccountDetails = () => {
       key: 'file_name',
       width: 250,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
+        <Typography
+          hoverOnText
+          name="Body 4/Regular"
+          color={token?.colorInfo}
+          onClick={() => {
+            router.push(`/generateQuote?id=${record?.id}`);
+          }}
+        >
           {record?.file_name ??
             formatDate(record?.createdAt, 'MM/DD/YYYY | HH:MM')}
         </Typography>
@@ -154,21 +161,6 @@ const AccountDetails = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Customer Name
-        </Typography>
-      ),
-      dataIndex: 'customer_name',
-      key: 'customer_name',
-      width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">
-          {customerData?.name ?? '--'}
-        </Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
           Status
         </Typography>
       ),
@@ -179,25 +171,6 @@ const AccountDetails = () => {
         <span style={{display: 'flex', justifyContent: 'center'}}>
           <OsStatusWrapper value={text} />
         </span>
-      ),
-    },
-    {
-      title: 'Actions',
-      dataIndex: 'actions',
-      key: 'actions',
-      width: 139,
-      render: (text: string, record: any) => (
-        <Space size={18}>
-          <EyeIcon
-            height={24}
-            width={24}
-            color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              router.push(`/generateQuote?id=${record?.id}`);
-            }}
-          />
-        </Space>
       ),
     },
   ];
@@ -250,12 +223,10 @@ const AccountDetails = () => {
       dataIndex: 'stages',
       key: 'stages',
       width: 130,
-      render: (text: string, record: any) => (
-        <CommonStageSelect
-          disabled={false}
-          options={StageValue}
-          currentStage={text}
-        />
+      render: (text: string) => (
+        <span style={{display: 'flex', justifyContent: 'center'}}>
+          <OsStatusWrapper value={text} />
+        </span>
       ),
     },
   ];

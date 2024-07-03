@@ -199,6 +199,7 @@ const CrmInformation: React.FC = () => {
             router.push(`/accountDetails?id=${record?.id}`);
           }}
           hoverOnText
+          color={token?.colorInfo}
         >
           {text ?? '--'}
         </Typography>
