@@ -789,6 +789,7 @@ const Profitablity: FC<any> = ({
                           ellipsis
                           tooltip
                           as="div"
+                          maxWidth={240}
                         >
                           {finalDataItem?.name}
                         </Typography>
@@ -971,12 +972,7 @@ const Profitablity: FC<any> = ({
       </div>
     );
   };
-  console.log(
-    finalProfitTableCol,
-    'finalProfitTableCol',
-    selectedFilter,
-    finalData,
-  );
+
   return (
     <>
       {finalProfitTableCol && finalProfitTableCol?.length > 0 ? (
@@ -1019,6 +1015,7 @@ const Profitablity: FC<any> = ({
                                     ellipsis
                                     tooltip
                                     as="div"
+                                    maxWidth={240}
                                   >
                                     {finalDataItem?.name}
                                   </Typography>

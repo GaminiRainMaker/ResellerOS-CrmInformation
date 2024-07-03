@@ -199,6 +199,7 @@ const CrmInformation: React.FC = () => {
             router.push(`/accountDetails?id=${record?.id}`);
           }}
           hoverOnText
+          color={token?.colorInfo}
         >
           {text ?? '--'}
         </Typography>
@@ -356,7 +357,7 @@ const CrmInformation: React.FC = () => {
         if (newAddressObj) {
           dispatch(insertAddAddress(newAddressObj));
         }
-        if (newAddressObj) {
+        if (objectValuesForContact?.billing_first_name && newBillingObject) {
           dispatch(insertbillingContact(newBillingObject));
         }
         dispatch(setCustomerProfile(''));
@@ -534,6 +535,7 @@ const CrmInformation: React.FC = () => {
         onCancel={() => {
           setShowModal((p) => !p);
           form.resetFields();
+          setObjectValueForContact({});
         }}
         onOk={form.submit}
         primaryButtonText="Save"
@@ -547,6 +549,7 @@ const CrmInformation: React.FC = () => {
           setShowDrawer((p: boolean) => !p);
           form.resetFields();
           dispatch(setBillingContact({}));
+          setObjectValueForContact({});
         }}
         open={showDrawer}
         width={450}

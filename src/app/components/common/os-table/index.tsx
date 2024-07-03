@@ -4,7 +4,6 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable consistent-return */
-import {PaginationProps} from 'antd';
 import {FC, useCallback, useState} from 'react';
 import ReactDragListView from 'react-drag-listview';
 import {Resizable} from 'react-resizable';
@@ -50,21 +49,17 @@ const OsTable: FC<any> = ({
   scrolly = 1000,
   tablePageSize = 10,
   drag = false,
+  defaultPageSize = 10,
   ...rest
 }) => {
   const [token] = useThemeToken();
   const [columns, setColumns] = useState(rest?.columns);
-  const itemRender: PaginationProps['itemRender'] = (
-    page,
-    type,
-    originalElement,
-  ) => {
-    if (type === 'jump-next' || type === 'jump-prev') return;
-    if (type === 'prev' || type === 'next') {
-      return <>{type === 'prev' ? 'Previous' : 'Next'}</>;
-    }
-    return originalElement;
-  };
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+
+    total: 0,
+  });
 
   const dragProps = {
     onDragEnd: useCallback(
@@ -117,6 +112,14 @@ const OsTable: FC<any> = ({
     }),
   }));
 
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPagination({
+      ...pagination,
+      current: page,
+      pageSize,
+    });
+  };
+
   return (
     <ReactDragListView.DragColumn {...dragProps}>
       <CustomTable
@@ -139,16 +142,15 @@ const OsTable: FC<any> = ({
           indicator: <GlobalLoader loading={loading} />,
           spinning: loading,
         }}
-        pagination={
-          paginationProps
-            ? {
-                ...rest.pagination,
-                pageSize: tablePageSize,
-                itemRender,
-                showQuickJumper: false,
-              }
-            : false
-        }
+        pagination={{
+          current: pagination.current,
+          pageSize: pagination.pageSize,
+          total: pagination.total,
+          onChange: handlePaginationChange,
+          position: ['bottomRight'],
+          showSizeChanger: true,
+          pageSizeOptions: [10, 20, 30, 50, 100],
+        }}
         scroll={
           scrolly
             ? {y: scrolly as number}
@@ -156,7 +158,7 @@ const OsTable: FC<any> = ({
               ? {y: scrollx as number}
               : undefined
         }
-        paginationBorder={paginationProps}
+        // paginationBorder={paginationProps}
       />
     </ReactDragListView.DragColumn>
   );

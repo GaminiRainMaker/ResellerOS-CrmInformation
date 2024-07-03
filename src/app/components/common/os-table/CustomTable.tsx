@@ -22,6 +22,15 @@ const OsTableWithOutDrag: FC<any> = ({
   ...rest
 }) => {
   const [token] = useThemeToken();
+  const roundPageSize = (size: number) => {
+    if (size <= 10) return 10;
+    if (size <= 20) return 20;
+    if (size <= 30) return 30;
+    if (size <= 50) return 50;
+    return 100;
+  };
+  const defaultPageSizeAdjusted = roundPageSize(defaultPageSize);
+
   const itemRender: PaginationProps['itemRender'] = (
     page,
     type,
@@ -33,14 +42,10 @@ const OsTableWithOutDrag: FC<any> = ({
     }
     return originalElement;
   };
+
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize:
-      defaultPageSize === 0
-        ? 10
-        : defaultPageSize < 100
-          ? defaultPageSize
-          : 100,
+    pageSize: defaultPageSizeAdjusted,
     total: 0,
   });
 

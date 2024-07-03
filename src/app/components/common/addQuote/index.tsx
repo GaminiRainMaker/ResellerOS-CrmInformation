@@ -357,7 +357,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const resetFields = () => {
     setShowModal(false);
     setUploadFileData([]);
-    setShowToggleTable(false);
+    setShowToggleTable && setShowToggleTable(false);
     setExistingQuoteId(0);
     form.resetFields(['customer_id', 'opportunity_id']);
   };
