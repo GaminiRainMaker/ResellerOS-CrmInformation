@@ -248,7 +248,7 @@ const Profitablity: FC<any> = ({
       filterDataByValue(profitabilityDataByQuoteId, selectedFilter);
       setCollapseActiveKeys([]);
     }
-  }, [profitabilityDataByQuoteId, selectedFilter]);
+  }, [JSON.stringify(profitabilityDataByQuoteId), selectedFilter]);
 
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Profitability" />,

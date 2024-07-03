@@ -35,38 +35,33 @@ const BundleSection: FC<any> = ({
 
   const onFinish = async () => {
     const BundleData = form.getFieldsValue();
-
+    let data = {
+      Ids: selectTedRowIds,
+      bundle_id: BundleData?.bundle_id,
+    };
     if (BundleData?.name) {
       const obj = {
         ...BundleData,
         quote_id: getQuoteId,
         id: bundleId,
       };
+
       await dispatch(insertBundle(obj)).then((e) => {
         if (e) {
-          const data = {
-            Ids: selectTedRowIds,
+          data = {
+            ...data,
             bundle_id: e?.payload?.data?.id,
           };
-          dispatch(updateQuoteLineItemForBundleId(data));
         }
       });
-    } else {
-      const data = {
-        Ids: selectTedRowIds,
-        bundle_id: BundleData?.bundle_id,
-      };
-      dispatch(updateQuoteLineItemForBundleId(data));
     }
+    await dispatch(updateQuoteLineItemForBundleId(data));
+
     await dispatch(getProfitabilityByQuoteId(Number(getQuoteId)));
     await dispatch(getAllBundle(getQuoteId));
     setRadioValue(1);
     setShowBundleModal(false);
     setShowBundleDrawer && setShowBundleDrawer(false);
-
-    setTimeout(() => {
-      location?.reload();
-    }, 1000);
   };
 
   useEffect(() => {
