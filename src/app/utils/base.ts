@@ -907,7 +907,11 @@ export const getFormattedValuesForBundlesOnly = (
             description: items?.description,
             line_amount: items?.line_amount,
             list_price: items?.list_price,
-            organization: items?.organization,
+            organization: objectForSyncingValues?.distributor_name
+              ? objectForSyncingValues?.distributor_name
+              : objectForSyncingValues?.oem_name
+                ? objectForSyncingValues?.oem_name
+                : items?.organization,
           };
           innerLineArr?.push(newObj);
         });
@@ -961,7 +965,11 @@ export const getFormattedValuesForLineItems = (objectForSyncingValues: any) => {
         description: items?.description,
         line_amount: items?.line_amount,
         list_price: items?.list_price,
-        organization: items?.organization,
+        organization: objectForSyncingValues?.distributor_name
+          ? objectForSyncingValues?.distributor_name
+          : objectForSyncingValues?.oem_name
+            ? objectForSyncingValues?.oem_name
+            : items?.organization,
       };
       newArrOfOject?.push(newObj);
     });
@@ -997,7 +1005,11 @@ export const getFormattedValuesForWithAndWithoutBundles = (
             description: items?.description,
             line_amount: items?.line_amount,
             list_price: items?.list_price,
-            organization: items?.organization,
+            organization: objectForSyncingValues?.distributor_name
+              ? objectForSyncingValues?.distributor_name
+              : objectForSyncingValues?.oem_name
+                ? objectForSyncingValues?.oem_name
+                : items?.organization,
           };
           innerLineArr?.push(newObj);
         });
@@ -1054,7 +1066,11 @@ export const getFormattedValuesForWithAndWithoutBundles = (
         description: items?.description,
         line_amount: items?.line_amount,
         list_price: items?.list_price,
-        organization: items?.organization,
+        organization: objectForSyncingValues?.distributor_name
+          ? objectForSyncingValues?.distributor_name
+          : objectForSyncingValues?.oem_name
+            ? objectForSyncingValues?.oem_name
+            : items?.organization,
         extended_price: extendedPriceFinal,
         grand_total: grand_totalFinal,
       };
@@ -1097,7 +1113,11 @@ export const getFormattedValuesForWithAndWithoutBundlesForExcelFile = (
         description: items?.description,
         line_amount: items?.line_amount,
         list_price: items?.list_price,
-        organization: items?.organization,
+        organization: objectForSyncingValues?.distributor_name
+          ? objectForSyncingValues?.distributor_name
+          : objectForSyncingValues?.oem_name
+            ? objectForSyncingValues?.oem_name
+            : items?.organization,
         extended_price: extendedPriceFinal,
         grand_total: grand_totalFinal,
       };
@@ -1128,7 +1148,11 @@ export const getFormattedValuesForWithAndWithoutBundlesForExcelFile = (
             description: items?.description,
             line_amount: items?.line_amount,
             list_price: items?.list_price,
-            organization: items?.organization,
+            organization: objectForSyncingValues?.distributor_name
+              ? objectForSyncingValues?.distributor_name
+              : objectForSyncingValues?.oem_name
+                ? objectForSyncingValues?.oem_name
+                : items?.organization,
           };
           bundleArrOfObject?.push(newObj);
         });

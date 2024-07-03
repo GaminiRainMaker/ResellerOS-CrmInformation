@@ -31,8 +31,6 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const [pdfUrl, setPdfUrl] = useState<any>(null);
-  const [newArrOfLineItems, setNewArrOfLineItems] = useState<any>();
-  const [showPreviewModal, setShowPreviewModal] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedDoc, setSelectedDoc] = useState<any>();
   const {loading: GeneralSettingLoading, data: GeneralSettingData} =
@@ -211,7 +209,6 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
         if (type === 'preview' && findTheItem?.type_of_upload === 'pdf') {
           const url123 = URL.createObjectURL(blob);
           setPdfUrl(url123);
-          setShowPreviewModal(true);
         } else {
           const blob = new Blob([response.data], {
             type: 'application/octet-stream',
