@@ -148,27 +148,13 @@ const OpportunityDetails = () => {
             router.push(`/generateQuote?id=${record.id}`);
           }}
           hoverOnText
+          color={token?.colorInfo}
         >
           {record?.file_name ??
             formatDate(record?.createdAt, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },
-    // {
-    //   title: (
-    //     <Typography name="Body 4/Medium" className="dragHandler">
-    //       Generated Date
-    //     </Typography>
-    //   ),
-    //   dataIndex: 'createdAt',
-    //   key: 'createdAt',
-    //   width: 130,
-    //   render: (text: string) => (
-    //     <Typography name="Body 4/Regular">
-    //       {formatDate(text, 'MM/DD/YYYY | HH:MM')}
-    //     </Typography>
-    //   ),
-    // },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -197,29 +183,6 @@ const OpportunityDetails = () => {
         <span style={{display: 'flex', justifyContent: 'center'}}>
           <OsStatusWrapper value={text} />
         </span>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Actions
-        </Typography>
-      ),
-      dataIndex: 'actions',
-      key: 'actions',
-      width: 94,
-      render: (text: string, record: any) => (
-        <Space size={18}>
-          <EyeIcon
-            height={24}
-            width={24}
-            color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
-            onClick={() => {
-              router.push(`/generateQuote?id=${record?.id}`);
-            }}
-          />
-        </Space>
       ),
     },
   ];
