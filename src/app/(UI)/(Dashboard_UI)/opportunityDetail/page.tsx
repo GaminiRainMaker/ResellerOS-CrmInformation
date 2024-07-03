@@ -2,14 +2,15 @@
 
 'use client';
 
+import AddQuote from '@/app/components/common/addQuote';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import AddOpportunity from '@/app/components/common/os-add-opportunity';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
-import OsDropdown from '@/app/components/common/os-dropdown';
+import OsDrawer from '@/app/components/common/os-drawer';
 import EmptyContainer from '@/app/components/common/os-empty-container';
-import OsInput from '@/app/components/common/os-input';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import OpportunityAnalyticCard from '@/app/components/common/os-opportunity-analytic-card';
 import OsStatusWrapper from '@/app/components/common/os-status';
@@ -17,20 +18,16 @@ import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {formatDate} from '@/app/utils/base';
-import {EyeIcon, PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {Form} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import AddQuote from '@/app/components/common/addQuote';
-import OsDrawer from '@/app/components/common/os-drawer';
-import {Form} from 'antd';
-import AddOpportunity from '@/app/components/common/os-add-opportunity';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {
   deleteOpportunity,
   getOpportunityById,
   updateOpportunity,
 } from '../../../../../redux/actions/opportunity';
-import {setStageValue} from '../../../../../redux/slices/opportunity';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {tabItems} from '../allQuote/constants';
 
 const OpportunityDetails = () => {
   const [token] = useThemeToken();
@@ -42,6 +39,7 @@ const OpportunityDetails = () => {
   const {loading, opportunityById: opportunityData} = useAppSelector(
     (state) => state.Opportunity,
   );
+  const {userInformation} = useAppSelector((state) => state.user);
   const [formValue, setFormValue] = useState<any>();
   const [showDrawer, setShowDrawer] = useState(false);
   const [deleteIds, setDeleteIds] = useState<any>();
@@ -49,13 +47,15 @@ const OpportunityDetails = () => {
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [showToggleTable, setShowToggleTable] = useState<boolean>(false);
   const [customerValue, setCustomerValue] = useState<number>();
+  const [activeTab, setActiveTab] = useState<any>('1');
+  const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
 
   const {loading: QuoteLoading} = useAppSelector((state) => state.quote);
   useEffect(() => {
     dispatch(getOpportunityById(opportunityId));
   }, []);
 
-  const OpportunityData = {
+  const OpportunityObjectData = {
     id: opportunityData?.id,
     title: opportunityData?.title,
     amount: opportunityData?.amount,
@@ -75,6 +75,69 @@ const OpportunityDetails = () => {
       });
     }
   }, [showDrawer]);
+
+  useEffect(() => {
+    if (
+      activeTab &&
+      opportunityData?.Quotes &&
+      opportunityData?.Quotes.length > 0
+    ) {
+      const quoteItems =
+        activeTab === '3'
+          ? opportunityData?.Quotes?.filter((item: any) =>
+              userInformation?.Admin
+                ? item?.status?.includes('In Progress')
+                : userInformation?.id === item?.user_id &&
+                  item?.status?.includes('In Progress'),
+            )
+          : activeTab === '5'
+            ? opportunityData?.Quotes?.filter((item: any) =>
+                userInformation?.Admin
+                  ? item?.status?.includes('Needs Review') &&
+                    item?.user_id !== userInformation?.id
+                  : item?.status?.includes('Needs Review') &&
+                    item?.approver_id === userInformation?.id,
+              )
+            : activeTab === '4'
+              ? opportunityData?.Quotes?.filter((item: any) =>
+                  userInformation?.Admin
+                    ? item?.status?.includes('Needs Review')
+                    : item?.status?.includes('Needs Review') &&
+                      item?.completed_by === userInformation?.id,
+                )
+              : activeTab === '1'
+                ? userInformation?.Admin
+                  ? opportunityData?.Quotes
+                  : opportunityData?.Quotes?.filter(
+                      (item: any) => item?.user_id === userInformation?.id,
+                    )
+                : activeTab === '6'
+                  ? opportunityData?.Quotes?.filter((item: any) =>
+                      userInformation?.Admin
+                        ? item?.status?.includes('Approved')
+                        : item?.status?.includes('Approved') &&
+                          item?.user_id === userInformation?.id,
+                    )
+                  : activeTab === '7'
+                    ? opportunityData?.Quotes?.filter((item: any) =>
+                        userInformation?.Admin
+                          ? item?.status?.includes('Rejected')
+                          : item?.status?.includes('Rejected') &&
+                            item?.user_id === userInformation?.id,
+                      )
+                    : activeTab === '2'
+                      ? opportunityData?.Quotes?.filter((item: any) =>
+                          userInformation?.Admin
+                            ? item?.status?.includes('Drafts')
+                            : userInformation?.id === item?.user_id &&
+                              item?.status?.includes('Drafts'),
+                        )
+                      : [];
+      setActiveQuotes(quoteItems);
+    } else {
+      setActiveQuotes([]);
+    }
+  }, [activeTab, opportunityData?.Quotes]);
 
   const menuItems = [
     {
@@ -101,7 +164,7 @@ const OpportunityDetails = () => {
           color={token?.colorPrimaryText}
           onClick={() => {}}
         >
-          {OpportunityData?.title}
+          {OpportunityObjectData?.title}
         </Typography>
       ),
     },
@@ -164,9 +227,9 @@ const OpportunityDetails = () => {
       dataIndex: 'customer_name',
       key: 'customer_name',
       width: 187,
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
-          {OpportunityData?.customer ?? '--'}
+          {record?.Customer?.name ?? '--'}
         </Typography>
       ),
     },
@@ -184,34 +247,6 @@ const OpportunityDetails = () => {
           <OsStatusWrapper value={text} />
         </span>
       ),
-    },
-  ];
-
-  const tabItems = [
-    {
-      label: <Typography name="Body 4/Regular">All</Typography>,
-      key: '1',
-      children: (
-        <>
-          {OpportunityData?.customer && (
-            <OsTable
-              columns={Quotecolumns}
-              dataSource={OpportunityData?.quotes}
-              scroll
-              loading={loading}
-              locale={locale}
-            />
-          )}
-        </>
-      ),
-    },
-    {
-      label: <Typography name="Body 4/Regular">In Progress</Typography>,
-      key: '2',
-    },
-    {
-      label: <Typography name="Body 4/Regular">Completed</Typography>,
-      key: '3',
     },
   ];
 
@@ -239,7 +274,7 @@ const OpportunityDetails = () => {
         <OpportunityAnalyticCard
           setFormValue={setFormValue}
           setOpen={setShowDrawer}
-          OpportunityData={OpportunityData}
+          OpportunityData={OpportunityObjectData}
           setDeleteIds={setDeleteIds}
           setShowModalDelete={setShowModalDelete}
         />
@@ -263,7 +298,38 @@ const OpportunityDetails = () => {
         <Row
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
-          <OsTabs items={tabItems} />
+          <OsTabs
+            onChange={(e) => {
+              setActiveTab(e);
+            }}
+            activeKey={activeTab}
+            items={
+              tabItems &&
+              tabItems?.map((tabItem: any, index: number) => ({
+                key: `${index + 1}`,
+                label: (
+                  <Typography
+                    name="Body 4/Medium"
+                    cursor="pointer"
+                    color={token?.colorTextBase}
+                  >
+                    {tabItem.label}
+                  </Typography>
+                ),
+                children: (
+                  <OsTable
+                    key={tabItem?.key}
+                    columns={Quotecolumns}
+                    dataSource={activeQuotes}
+                    scroll
+                    loading={loading}
+                    locale={locale}
+                  />
+                ),
+                ...tabItem,
+              }))
+            }
+          />
         </Row>
       </Space>
 

@@ -166,7 +166,7 @@ const CrmOpportunity: React.FC = () => {
         <Typography
           name="Body 4/Regular"
           onClick={() => {
-            window.open(`/opportunityDetail?id=${record?.id}`);
+            router.push(`/opportunityDetail?id=${record?.id}`);
           }}
           hoverOnText
         >
