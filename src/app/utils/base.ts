@@ -882,6 +882,22 @@ export const currencyFormatter: InputNumberProps['formatter'] = (
   return `${f}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 };
 
+export const currencyAmountFormatter: InputNumberProps['formatter'] = (
+  f,
+  {userTyping},
+) => {
+  if (!f) {
+    return '';
+  }
+  if (!userTyping) {
+    return `${Number(f)
+      .toFixed(2)
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+  }
+  return `${f}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
 export const getFormattedValuesForBundlesOnly = (
   objectForSyncingValues: any,
 ) => {

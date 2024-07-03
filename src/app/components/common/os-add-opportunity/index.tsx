@@ -12,6 +12,8 @@ import {useState} from 'react';
 import OsCustomerSelect from '../os-customer-select';
 import {SelectFormItem} from '../os-oem-select/oem-select-styled';
 import {AddOpportunityInterface} from './os-add-opportunity-interface';
+import OsInputNumber from '../os-input/InputNumber';
+import {currencyAmountFormatter, currencyFormatter} from '@/app/utils/base';
 
 const AddOpportunity: React.FC<AddOpportunityInterface> = ({
   onFinish,
@@ -100,7 +102,18 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
                 },
               ]}
             >
-              <OsInput prefix="$" placeholder="00.00" disabled={drawer} />
+              <OsInputNumber
+                prefix="$"
+                min={0}
+                precision={2}
+                formatter={currencyAmountFormatter}
+                parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+                disabled={drawer}
+                style={{
+                  width: '100%',
+                }}
+                placeholder="Quote Shipping"
+              />
             </SelectFormItem>
           </Col>
           <Col span={12}>
