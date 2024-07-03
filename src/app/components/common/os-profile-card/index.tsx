@@ -263,6 +263,7 @@ const ProfileCard: FC<OSProfileInterface> = ({
                         onClick={() => setShowAllContactModal((p) => !p)}
                         color={token?.colorLink}
                         cursor="pointer"
+                        style={{margin: '0px 10px 0px 0px'}}
                       >
                         View all{' '}
                       </Typography>

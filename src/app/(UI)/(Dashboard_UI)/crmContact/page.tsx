@@ -351,7 +351,7 @@ const CrmAccount: React.FC = () => {
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              Contact
+              All Contact
             </Typography>
           </Col>
           <Col>

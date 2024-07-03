@@ -62,7 +62,7 @@ const AddUser = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Name
+          User Name
         </Typography>
       ),
       dataIndex: 'user_name',
@@ -131,15 +131,17 @@ const AddUser = () => {
       key: 'status',
       width: 173,
       render: (text: string, record: any) => (
-        <OsStatusWrapper
-          value={record?.is_email_invite ? 'Invite Sent' : 'Verified'}
-        />
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+          <OsStatusWrapper
+            value={record?.is_email_invite ? 'Invite Sent' : 'Verified'}
+          />
+        </div>
       ),
     },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          {' '}
+          Action
         </Typography>
       ),
       dataIndex: 'actions',
@@ -302,7 +304,7 @@ const AddUser = () => {
             <OsButton
               btnStyle={{width: '100%'}}
               buttontype="PRIMARY"
-              text="Update"
+              text="Update Changes"
               clickHandler={() => form.submit()}
             />
           </Row>
