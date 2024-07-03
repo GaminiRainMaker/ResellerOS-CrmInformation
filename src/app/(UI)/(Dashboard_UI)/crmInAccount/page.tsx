@@ -554,7 +554,7 @@ const CrmInformation: React.FC = () => {
           <OsButton
             btnStyle={{width: '100%'}}
             buttontype="PRIMARY"
-            text="Update"
+            text="Update Changes"
             clickHandler={form.submit}
           />
         }

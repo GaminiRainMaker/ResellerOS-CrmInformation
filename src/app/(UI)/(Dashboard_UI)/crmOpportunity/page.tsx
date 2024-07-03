@@ -278,8 +278,8 @@ const CrmOpportunity: React.FC = () => {
       setDeleteIds(selectedRowKeys);
     },
     getCheckboxProps: (record: any) => ({
-      disabled: record.name === 'Disabled User',
-      name: record.name,
+      disabled: record?.name === 'Disabled User',
+      name: record?.name,
     }),
   };
 
@@ -375,13 +375,12 @@ const CrmOpportunity: React.FC = () => {
     },
   ];
 
-  const uniqueOpportunity = Array.from(
-    new Set(opportunityData?.map((opportunity: any) => opportunity.title)),
-    // new Set(opportunityData?.map((opportunity: any) => opportunity?.title)),
+  const uniqueOpportunity = Array?.from(
+    new Set(opportunityData?.map((opportunity: any) => opportunity?.title)),
   );
 
-  const uniqueCustomer = Array.from(
-    new Set(opportunityData?.map((contact: any) => contact.Customer?.name)),
+  const uniqueCustomer = Array?.from(
+    new Set(opportunityData?.map((contact: any) => contact?.Customer?.name)),
   );
 
   const onFinish = () => {
