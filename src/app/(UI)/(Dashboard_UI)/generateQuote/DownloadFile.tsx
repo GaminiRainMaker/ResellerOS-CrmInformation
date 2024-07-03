@@ -17,14 +17,12 @@ import {
   uploadToAws,
 } from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {
-  SaleForArrayAll,
-  salesForceWithWithoutBundle,
-} from '@/app/utils/CONSTANTS';
+import {parentpqli, salesForceWithArrrr} from '@/app/utils/saleforce';
 import {
   getFormattedValuesForBundlesOnly,
   getFormattedValuesForLineItems,
   getFormattedValuesForWithAndWithoutBundles,
+  getFormattedValuesForWithAndWithoutBundlesForExcelFile,
 } from '@/app/utils/base';
 const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
   const [token] = useThemeToken();
@@ -46,7 +44,73 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     dispatch(getAllFormStack(''));
     dispatch(getAllGeneralSetting(''));
   }, []);
+  const [formStackOptions, setFormStackOptions] = useState<any>();
 
+  useEffect(() => {
+    let newArrOfOption: any = [];
+    formStackSyncData &&
+      formStackSyncData?.length > 0 &&
+      formStackSyncData?.map((FormstackDataItem: any) => {
+        if (
+          objectForSyncingValues?.bundleData?.length > 0 &&
+          FormstackDataItem?.type_of_file === 'With and without bundle' &&
+          objectForSyncingValues?.QuoteLineItems?.length > 0
+        ) {
+          let newObj = {
+            value: FormstackDataItem.doc_id,
+            key: FormstackDataItem.doc_key,
+            data: FormstackDataItem.syncJson,
+            label: (
+              <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+                {FormstackDataItem.doc_name}
+              </Typography>
+            ),
+          };
+          newArrOfOption?.push(newObj);
+        }
+        if (
+          objectForSyncingValues?.bundleData?.length > 0 &&
+          FormstackDataItem?.type_of_file === 'Bundle Only' &&
+          objectForSyncingValues?.QuoteLineItems?.length === 0
+        ) {
+          let newObj = {
+            value: FormstackDataItem.doc_id,
+            key: FormstackDataItem.doc_key,
+            data: FormstackDataItem.syncJson,
+            label: (
+              <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+                {FormstackDataItem.doc_name}
+              </Typography>
+            ),
+          };
+          newArrOfOption?.push(newObj);
+        }
+        if (
+          (!objectForSyncingValues?.bundleData ||
+            objectForSyncingValues?.bundleData?.length === 0) &&
+          FormstackDataItem?.type_of_file === 'Line Items Only' &&
+          objectForSyncingValues?.QuoteLineItems?.length > 0
+        ) {
+          let newObj = {
+            value: FormstackDataItem.doc_id,
+            key: FormstackDataItem.doc_key,
+            data: FormstackDataItem.syncJson,
+            label: (
+              <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+                {FormstackDataItem.doc_name}
+              </Typography>
+            ),
+          };
+          newArrOfOption?.push(newObj);
+        }
+      });
+
+    setFormStackOptions(newArrOfOption);
+  }, [
+    objectForSyncingValues,
+    JSON?.stringify(objectForSyncingValues),
+    formStackSyncData,
+  ]);
   const FormstackDataOptions =
     formStackSyncData &&
     formStackSyncData?.length > 0 &&
@@ -61,14 +125,31 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       ),
     }));
 
-  console.log('objectForSyncingValues', objectForSyncingValues);
   const dowloadFunction = async (data: any, type: string) => {
     let findTheItem = formStackSyncData?.find(
       (item: any) => item?.doc_key === data?.key,
     );
-
+    let resultValues: any = {};
     let lineItemsArray: any = [];
-    if (findTheItem?.type_of_file === 'With and without bundle') {
+    if (
+      findTheItem?.type_of_file === 'With and without bundle' &&
+      findTheItem.type_of_upload === 'xlsx'
+    ) {
+      lineItemsArray = getFormattedValuesForWithAndWithoutBundlesForExcelFile(
+        objectForSyncingValues,
+      );
+      resultValues.parentQLI = lineItemsArray?.lineItemss;
+      resultValues.newArray = lineItemsArray?.bundleData;
+      let totalExtendedPrice: any = 0;
+      lineItemsArray?.lineItemss?.forEach((items: any) => {
+        totalExtendedPrice += Number(items?.list_price);
+      });
+      resultValues.extended_price = totalExtendedPrice;
+      resultValues.grand_total =
+        totalExtendedPrice +
+        Number(objectForSyncingValues?.quote_tax) +
+        Number(objectForSyncingValues?.quote_shipping);
+    } else if (findTheItem?.type_of_file === 'With and without bundle') {
       lineItemsArray = getFormattedValuesForWithAndWithoutBundles(
         objectForSyncingValues,
       );
@@ -86,8 +167,6 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
       }
     });
 
-    let resultValues: any = {};
-
     for (let key in formattedData) {
       if (objectForSyncingValues[formattedData[key]]) {
         resultValues[key] = objectForSyncingValues[formattedData[key]];
@@ -95,7 +174,6 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     }
     resultValues.quotelineitem = lineItemsArray;
 
-    // || data.type_of_upload !== 'pdf'
     if (findTheItem?.type_of_file === 'Line Items Only') {
       let totalExtendedPrice: any = 0;
       lineItemsArray?.forEach((items: any) => {
@@ -212,7 +290,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
                     style={{width: '100%'}}
                     placeholder="Select Document"
                     allowClear
-                    options={FormstackDataOptions}
+                    options={formStackOptions}
                     onChange={(e: any, data: any) => {
                       dowloadFunction(data, 'preview');
                       setSelectedDoc(data);
