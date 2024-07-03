@@ -62,6 +62,7 @@ const BundleSection: FC<any> = ({
     setRadioValue(1);
     setShowBundleModal(false);
     setShowBundleDrawer && setShowBundleDrawer(false);
+    form?.resetFields();
   };
 
   useEffect(() => {
