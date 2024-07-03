@@ -211,10 +211,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       return;
     }
 
-    // setNanonetsLoading(true);
+    setNanonetsLoading(true);
 
-    const dataaa = {id: Number(getQuoteID), fileId: Number(getQuoteFileId)};
-    // dispatch(deleteQuoteLineItemsByQuoteId(dataaa));
     mergedValue?.map((obj: any) => {
       const newObj: any = {};
       syncedNewValue?.forEach((mapping: any) => {
@@ -268,9 +266,13 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         action: 'ExportFileToTable',
         lineItem: requiredOutput,
       };
-      dispatch(addSalesForceDataa(newdata))?.then((payload:any) => {
-        console.log("435435433", payload?.payload)
-      })
+      dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
+        let messgaeForApi = payload?.payload?.message;
+        notification.open({
+          message: messgaeForApi,
+          type: 'info',
+        });
+      });
       setNanonetsLoading(false);
       return;
     }
