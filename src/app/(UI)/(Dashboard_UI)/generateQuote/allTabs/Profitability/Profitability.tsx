@@ -94,121 +94,123 @@ const Profitablity: FC<any> = ({
     const groupedData: any = {};
     const arrayData: any[] = [];
     const bundleData: any[] = [];
-
-    data?.forEach((item: any) => {
-      let name, description, type, quantity, bundleId;
-      if (item?.bundle_id || filterValue) {
-        if (item?.bundle_id) {
-          bundleId = item?.bundle_id;
-          name = item?.Bundle?.name;
-          description = item?.Bundle?.description;
-          quantity = item?.Bundle?.quantity;
-          type = 'bundle';
-        } else {
-          if (filterValue === 'Product Family') {
-            name = item?.Product?.product_family || 'Unassigned';
-          } else if (filterValue === 'Pricing Method') {
-            name = item?.pricing_method || 'Unassigned';
-          } else if (filterValue === 'File Name') {
-            name = item?.QuoteLineItem?.QuoteFile?.file_name;
-          } else if (filterValue === 'Vendor/Disti') {
-            name =
-              item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
-                ?.distribu;
-          } else if (filterValue === 'OEM') {
-            name = item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem;
+    data &&
+      data.length > 0 &&
+      data?.forEach((item: any) => {
+        let name, description, type, quantity, bundleId;
+        if (item?.bundle_id || filterValue) {
+          if (item?.bundle_id) {
+            bundleId = item?.bundle_id;
+            name = item?.Bundle?.name;
+            description = item?.Bundle?.description;
+            quantity = item?.Bundle?.quantity;
+            type = 'bundle';
+          } else {
+            if (filterValue === 'Product Family') {
+              name = item?.Product?.product_family || 'Unassigned';
+            } else if (filterValue === 'Pricing Method') {
+              name = item?.pricing_method || 'Unassigned';
+            } else if (filterValue === 'File Name') {
+              name = item?.QuoteLineItem?.QuoteFile?.file_name;
+            } else if (filterValue === 'Vendor/Disti') {
+              name =
+                item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
+                  ?.distribu;
+            } else if (filterValue === 'OEM') {
+              name =
+                item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem;
+            }
+            type = 'groups';
           }
-          type = 'groups';
-        }
-        if (!name) {
-          return;
-        }
-        const convertToTitleCase = (input: string) => {
-          if (!input) {
-            return '';
+          if (!name) {
+            return;
           }
-          return input
-            .toLowerCase()
-            .replace(/_/g, ' ')
-            .replace(/\b\w/g, (char) => char.toUpperCase());
-        };
-        if (name.includes('_') || name === name.toLowerCase()) {
-          name = convertToTitleCase(name);
-        }
-
-        if (!groupedData[name]) {
-          groupedData[name] = {
-            bundleId: bundleId || null,
-            name: name,
-            description: description || '',
-            quantity: quantity || '',
-            type: type,
-            QuoteLineItem: [],
-            totalExtendedPrice: 0,
-            totalGrossProfit: 0,
-            totalGrossProfitPercentage: 0,
+          const convertToTitleCase = (input: string) => {
+            if (!input) {
+              return '';
+            }
+            return input
+              .toLowerCase()
+              .replace(/_/g, ' ')
+              .replace(/\b\w/g, (char) => char.toUpperCase());
           };
-        }
-        if (item?.bundle_id) {
-          let extendedPrice = 0;
-          let grossProfit = 0;
-
-          if (item?.exit_price) {
-            extendedPrice += item.exit_price * (quantity || 1);
-          }
-          if (item?.gross_profit && item.quantity) {
-            grossProfit += item.gross_profit * (quantity || 1);
+          if (name.includes('_') || name === name.toLowerCase()) {
+            name = convertToTitleCase(name);
           }
 
-          groupedData[name].totalExtendedPrice += extendedPrice;
-          groupedData[name].totalGrossProfit += grossProfit;
-
-          let grossProfitPer = 0;
-          if (
-            groupedData[name].totalGrossProfit !== 0 &&
-            groupedData[name].totalExtendedPrice !== 0
-          ) {
-            grossProfitPer =
-              (groupedData[name].totalGrossProfit /
-                groupedData[name].totalExtendedPrice) *
-              100;
+          if (!groupedData[name]) {
+            groupedData[name] = {
+              bundleId: bundleId || null,
+              name: name,
+              description: description || '',
+              quantity: quantity || '',
+              type: type,
+              QuoteLineItem: [],
+              totalExtendedPrice: 0,
+              totalGrossProfit: 0,
+              totalGrossProfitPercentage: 0,
+            };
           }
-          groupedData[name].totalGrossProfitPercentage = grossProfitPer;
+          if (item?.bundle_id) {
+            let extendedPrice = 0;
+            let grossProfit = 0;
+
+            if (item?.exit_price) {
+              extendedPrice += item.exit_price * (quantity || 1);
+            }
+            if (item?.gross_profit && item.quantity) {
+              grossProfit += item.gross_profit * (quantity || 1);
+            }
+
+            groupedData[name].totalExtendedPrice += extendedPrice;
+            groupedData[name].totalGrossProfit += grossProfit;
+
+            let grossProfitPer = 0;
+            if (
+              groupedData[name].totalGrossProfit !== 0 &&
+              groupedData[name].totalExtendedPrice !== 0
+            ) {
+              grossProfitPer =
+                (groupedData[name].totalGrossProfit /
+                  groupedData[name].totalExtendedPrice) *
+                100;
+            }
+            groupedData[name].totalGrossProfitPercentage = grossProfitPer;
+          } else {
+            let extendedPrice = 0;
+            let grossProfit = 0;
+
+            if (item?.exit_price) {
+              extendedPrice += item.exit_price;
+            }
+            if (item?.gross_profit) {
+              grossProfit += item.gross_profit;
+            }
+
+            groupedData[name].totalExtendedPrice += extendedPrice;
+            groupedData[name].totalGrossProfit += grossProfit;
+
+            let grossProfitPer = 0;
+            if (
+              groupedData[name].totalGrossProfit !== 0 &&
+              groupedData[name].totalExtendedPrice !== 0
+            ) {
+              grossProfitPer =
+                (groupedData[name].totalGrossProfit /
+                  groupedData[name].totalExtendedPrice) *
+                100;
+            }
+            groupedData[name].totalGrossProfitPercentage = grossProfitPer;
+          }
+          groupedData[name]?.QuoteLineItem?.push(item);
+
+          if (item?.bundle_id) {
+            bundleData.push(groupedData[name]);
+          }
         } else {
-          let extendedPrice = 0;
-          let grossProfit = 0;
-
-          if (item?.exit_price) {
-            extendedPrice += item.exit_price;
-          }
-          if (item?.gross_profit) {
-            grossProfit += item.gross_profit;
-          }
-
-          groupedData[name].totalExtendedPrice += extendedPrice;
-          groupedData[name].totalGrossProfit += grossProfit;
-
-          let grossProfitPer = 0;
-          if (
-            groupedData[name].totalGrossProfit !== 0 &&
-            groupedData[name].totalExtendedPrice !== 0
-          ) {
-            grossProfitPer =
-              (groupedData[name].totalGrossProfit /
-                groupedData[name].totalExtendedPrice) *
-              100;
-          }
-          groupedData[name].totalGrossProfitPercentage = grossProfitPer;
+          arrayData.push(item);
         }
-        groupedData[name]?.QuoteLineItem?.push(item);
-
-        if (item?.bundle_id) {
-          bundleData.push(groupedData[name]);
-        }
-      } else {
-        arrayData.push(item);
-      }
-    });
+      });
 
     const finalData = [
       ...new Set(bundleData),
@@ -218,6 +220,7 @@ const Profitablity: FC<any> = ({
       ...arrayData,
     ];
     setFinalData(finalData);
+
     const uniqueBundleData = bundleData
       ?.filter(
         (item: any, index, self) =>
@@ -237,7 +240,13 @@ const Profitablity: FC<any> = ({
   };
 
   useEffect(() => {
-    filterDataByValue(profitabilityDataByQuoteId, selectedFilter);
+    dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+  }, [getQuoteID]);
+
+  useEffect(() => {
+    if (profitabilityDataByQuoteId && profitabilityDataByQuoteId.length > 0) {
+      filterDataByValue(profitabilityDataByQuoteId, selectedFilter);
+    }
   }, [profitabilityDataByQuoteId, selectedFilter]);
 
   const locale = {
@@ -333,26 +342,28 @@ const Profitablity: FC<any> = ({
   };
 
   useEffect(() => {
-    const newArr: any = [];
-    ProfitabilityQuoteLineItemcolumns?.forEach((itemCol: any) => {
-      let shouldPush = false;
-      tableColumnDataShow?.forEach((item: any) => {
-        if (item?.field_name === itemCol?.title) {
+    if (tableColumnDataShow && tableColumnDataShow.length > 0) {
+      const newArr: any = [];
+      ProfitabilityQuoteLineItemcolumns?.forEach((itemCol: any) => {
+        let shouldPush = false;
+        tableColumnDataShow?.forEach((item: any) => {
+          if (item?.field_name === itemCol?.title) {
+            shouldPush = true;
+          }
+        });
+        if (
+          itemCol?.dataIndex === 'actions' ||
+          itemCol?.dataIndex?.includes('actions.')
+        ) {
           shouldPush = true;
         }
+        if (shouldPush) {
+          newArr?.push(itemCol);
+        }
       });
-      if (
-        itemCol?.dataIndex === 'actions' ||
-        itemCol?.dataIndex?.includes('actions.')
-      ) {
-        shouldPush = true;
-      }
-      if (shouldPush) {
-        newArr?.push(itemCol);
-      }
-    });
-    setFinalProfitTableCol(newArr);
-  }, [tableColumnDataShow]);
+      setFinalProfitTableCol(newArr);
+    }
+  }, [JSON.stringify(tableColumnDataShow)]);
 
   const ActionColumn = {
     title: 'Action',
@@ -959,11 +970,16 @@ const Profitablity: FC<any> = ({
       </div>
     );
   };
-
+  console.log(
+    finalProfitTableCol,
+    'finalProfitTableCol',
+    selectedFilter,
+    finalData,
+  );
   return (
     <>
-      {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
-        !selectedFilter && finalProfitTableCol ? (
+      {finalProfitTableCol && finalProfitTableCol?.length > 0 ? (
+        !selectedFilter ? (
           <div key={JSON.stringify(finalData)}>{renderFinalData()}</div>
         ) : (
           <>
