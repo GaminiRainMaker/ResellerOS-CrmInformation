@@ -69,6 +69,7 @@ const profitabilitySlice = createSlice({
         getProfitabilityByQuoteId.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
+          state.data = action.payload;
         },
       )
       .addCase(

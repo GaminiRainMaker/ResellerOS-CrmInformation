@@ -246,6 +246,7 @@ const Profitablity: FC<any> = ({
   useEffect(() => {
     if (profitabilityDataByQuoteId && profitabilityDataByQuoteId.length > 0) {
       filterDataByValue(profitabilityDataByQuoteId, selectedFilter);
+      setCollapseActiveKeys([]);
     }
   }, [profitabilityDataByQuoteId, selectedFilter]);
 
