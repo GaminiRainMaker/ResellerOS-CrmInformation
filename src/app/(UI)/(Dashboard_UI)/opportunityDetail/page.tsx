@@ -297,6 +297,8 @@ const OpportunityDetails = () => {
               setShowToggleTable={setShowToggleTable}
               showToggleTable={showToggleTable}
               Quotecolumns={Quotecolumns}
+              opportunityId={opportunityData?.id}
+              customerId={opportunityData?.customer_id}
             />
           </Col>
         </Row>

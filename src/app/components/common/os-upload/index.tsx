@@ -33,6 +33,8 @@ const OsUpload: React.FC<any> = ({
   setExistingQuoteId,
   isGenerateQuote,
   quoteDetails,
+  opportunityDetailId,
+  customerDetailId,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -88,6 +90,13 @@ const OsUpload: React.FC<any> = ({
     const index = newArr.findIndex((item) => item.error);
     if (index > -1) {
       setUploadFileData(newArr);
+    } else if (opportunityDetailId) {
+      addQuoteLineItem(
+        customerDetailId,
+        opportunityDetailId,
+        newArr,
+        singleQuote,
+      );
     } else {
       addQuoteLineItem(customerId, opportunityId, newArr, singleQuote);
     }
@@ -110,10 +119,10 @@ const OsUpload: React.FC<any> = ({
     dispatch(
       getQuotesByExistingQuoteFilter({
         customer: customerValue,
-        opportunity: opportunityValue,
+        opportunity: opportunityValue ?? opportunityDetailId,
       }),
     );
-  }, [customerValue, opportunityValue]);
+  }, [customerValue, opportunityValue, opportunityDetailId]);
 
   return (
     <GlobalLoader loading={cardLoading || loading}>
@@ -153,28 +162,29 @@ const OsUpload: React.FC<any> = ({
           form={form}
           onFinish={onFinish}
         >
-          {!isGenerateQuote && (
-            <Row gutter={[16, 16]}>
-              <Col sm={24} md={12}>
-                <OsCustomerSelect
-                  setCustomerValue={setCustomerValue}
-                  customerValue={customerValue}
-                  isAddNewCustomer
-                  isRequired={showToggleTable ? false : true}
-                />
-              </Col>
+          {!isGenerateQuote ||
+            (!opportunityDetailId && (
+              <Row gutter={[16, 16]}>
+                <Col sm={24} md={12}>
+                  <OsCustomerSelect
+                    setCustomerValue={setCustomerValue}
+                    customerValue={customerValue}
+                    isAddNewCustomer
+                    isRequired={showToggleTable ? false : true}
+                  />
+                </Col>
 
-              <Col sm={24} md={12}>
-                <OsOpportunitySelect
-                  form={form}
-                  customerValue={customerValue}
-                  isAddNewOpportunity
-                  setOpportunityValue={setOpportunityValue}
-                  isRequired={showToggleTable ? false : true}
-                />
-              </Col>
-            </Row>
-          )}
+                <Col sm={24} md={12}>
+                  <OsOpportunitySelect
+                    form={form}
+                    customerValue={customerValue}
+                    isAddNewOpportunity
+                    setOpportunityValue={setOpportunityValue}
+                    isRequired={showToggleTable ? false : true}
+                  />
+                </Col>
+              </Row>
+            ))}
         </Form>
 
         {!isGenerateQuote && (

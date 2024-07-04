@@ -16,4 +16,6 @@ export interface AddQuoteInterface {
   existingGenerateQuoteId?: number;
   quoteDetails?: any;
   isGenerateQuotePage?: boolean;
+  opportunityId?: number;
+  customerId?: number;
 }
