@@ -5,7 +5,7 @@ import GlobalLoader from '@/app/components/common/os-global-loader';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {Form} from 'antd';
+import {Form, Space} from 'antd';
 import axios from 'axios';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
@@ -248,7 +248,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
           link.href = url;
           link.setAttribute(
             'download',
-            `downloaded_file.${findTheItem?.type_of_upload}`,
+            `${objectForSyncingValues?.file_name ? objectForSyncingValues?.file_name : objectForSyncingValues?.createdAt}.${findTheItem?.type_of_upload}`,
           );
           document.body.appendChild(link);
           link.click();
@@ -289,7 +289,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
                     allowClear
                     options={formStackOptions}
                     onChange={(e: any, data: any) => {
-                      dowloadFunction(data, 'preview');
+                      // dowloadFunction(data, 'preview');
                       setSelectedDoc(data);
                       setPdfUrl('');
                     }}
@@ -302,13 +302,29 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
             <br />
 
             {selectedDoc && (
-              <Row justify={'end'}>
-                <OsButton
-                  text="Download"
-                  buttontype="PRIMARY"
-                  clickHandler={() => dowloadFunction(selectedDoc, 'download')}
-                />
-              </Row>
+              <Space
+                align="end"
+                style={{width: '100%', display: 'flex', justifyContent: 'end'}}
+              >
+                {' '}
+                <Row justify={'end'}>
+                  <OsButton
+                    text="Preview"
+                    buttontype="SECONDARY"
+                    clickHandler={() => dowloadFunction(selectedDoc, 'preview')}
+                  />
+                </Row>
+                <Row justify={'end'}>
+                  <OsButton
+                    text="Download"
+                    buttontype="PRIMARY"
+                    clickHandler={() => {
+                      dowloadFunction(selectedDoc, 'download');
+                      setPdfUrl('');
+                    }}
+                  />
+                </Row>
+              </Space>
             )}
           </Form>
         ) : (
