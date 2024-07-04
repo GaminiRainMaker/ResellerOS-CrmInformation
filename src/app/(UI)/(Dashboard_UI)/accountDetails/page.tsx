@@ -39,6 +39,10 @@ const AccountDetails = () => {
   const searchParams = useSearchParams();
   const getCustomerID = searchParams.get('id');
 
+  const quotes = customerData.Opportunities?.flatMap(
+    (opportunity: any) => opportunity?.Quotes,
+  );
+
   useEffect(() => {
     dispatch(getCustomerBYId(getCustomerID));
   }, [getCustomerID]);
@@ -259,20 +263,6 @@ const AccountDetails = () => {
             </Row>
 
             <Row justify="start">
-              <Typography name="Heading 3/Medium">Quotes</Typography>
-            </Row>
-
-            <OsCard>
-              <OsTable
-                loading={loading}
-                columns={Quotecolumns}
-                dataSource={customerData?.Quotes}
-                scroll
-                locale={locale}
-              />
-            </OsCard>
-
-            <Row justify="start">
               <Typography name="Heading 3/Medium">Opportunities</Typography>
             </Row>
 
@@ -281,6 +271,20 @@ const AccountDetails = () => {
                 loading={loading}
                 columns={OpportunityColumns}
                 dataSource={customerData?.Opportunities}
+                locale={locale}
+              />
+            </OsCard>
+
+            <Row justify="start">
+              <Typography name="Heading 3/Medium">Quotes</Typography>
+            </Row>
+
+            <OsCard>
+              <OsTable
+                loading={loading}
+                columns={Quotecolumns}
+                dataSource={quotes}
+                scroll
                 locale={locale}
               />
             </OsCard>
