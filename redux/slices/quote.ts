@@ -2,19 +2,20 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
+  getAllQuotesByOrganization,
   getAllQuotesWithCompletedAndDraft,
   getQuoteById,
-  queryAllManualQuotes,
+  getQuoteByIdForFormStack,
   getQuotesByDateFilter,
+  getQuotesByExistingQuoteFilter,
   insertQuote,
+  queryAllManualQuotes,
   updateQuoteById,
   updateQuoteByQuery,
   updateQuoteConcern,
+  updateQuoteCustomerId,
   updateQuoteDraftById,
   updateQuoteWithNewlineItemAddByID,
-  getAllQuotesByOrganization,
-  getQuotesByExistingQuoteFilter,
-  getQuoteByIdForFormStack,
 } from '../actions/quote';
 
 type QuoteState = {
@@ -269,6 +270,23 @@ const quoteSlice = createSlice({
       )
       .addCase(
         getQuoteByIdForFormStack.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.getExistingQuoteFilterLoading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(updateQuoteCustomerId.pending, (state) => {
+        state.getExistingQuoteFilterLoading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateQuoteCustomerId.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.getExistingQuoteFilterLoading = false;
+        },
+      )
+      .addCase(
+        updateQuoteCustomerId.rejected,
         (state, action: PayloadAction<any>) => {
           state.getExistingQuoteFilterLoading = false;
           state.error = action.payload;

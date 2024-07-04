@@ -112,46 +112,6 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
     if (getQuoteId) dispatch(getQuoteById(Number(getQuoteId)));
   }, [open]);
 
-  // const onSubmit = async (values: FormDataProps) => {
-  // if (
-  //   generalSettingData?.attach_doc_type === 'opportunity' ||
-  //   syncTableData?.length > 0
-  // ) {
-  //   const opportunityDataItemPDfUrl: any = [];
-  //   let OpportunityValue: any = {};
-  //   opportunityData?.map((opportunityDataItem: any) => {
-  //     if (opportunityDataItem?.id === values?.opportunity_id) {
-  //       opportunityDataItemPDfUrl.push(
-  //         opportunityDataItem?.pdf_url,
-  //         quoteById?.pdf_url,
-  //       );
-  //       if (generalSettingData?.attach_doc_type === 'opportunity') {
-  //         OpportunityValue = {
-  //           ...opportunityObject,
-  //           id: opportunityDataItem?.id,
-  //           pdf_url: [
-  //             ...(opportunityDataItem?.pdf_url || []),
-  //             ...opportunityDataItemPDfUrl.flat(),
-  //           ],
-  //         };
-  //       }
-  //     }
-  //   });
-  //   if (generalSettingData?.attach_doc_type === 'opportunity') {
-  //     dispatch(updateOpportunity(OpportunityValue));
-  //   } else {
-  //     dispatch(updateOpportunity(opportunityObject));
-  //   }
-  // }
-  //   setDrawerData((prev) => ({...prev, formData: values}));
-  //   const obj = {
-  //     id: Number(getQuoteLineItemId),
-  //     ...values,
-  //   };
-  //   dispatch(updateQuoteById(obj));
-  //   setOpen(false);
-  // };
-
   useEffect(() => {
     form.setFieldsValue({
       file_name: quoteById?.file_name,

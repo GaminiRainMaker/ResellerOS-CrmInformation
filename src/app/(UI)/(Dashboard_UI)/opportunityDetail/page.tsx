@@ -28,6 +28,7 @@ import {
 } from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {tabItems} from '../allQuote/constants';
+import {updateQuoteCustomerId} from '../../../../../redux/actions/quote';
 
 const OpportunityDetails = () => {
   const [token] = useThemeToken();
@@ -250,14 +251,18 @@ const OpportunityDetails = () => {
     },
   ];
 
-  const updateOpportunityData = () => {
+  const updateOpportunityData = async () => {
     const FormDAta = form.getFieldsValue();
     const finalData = {
       ...FormDAta,
-      customer_id: customerValue,
       id: opportunityId,
     };
-    dispatch(updateOpportunity(finalData))?.then((d: any) => {
+    const result = {
+      customer_id: finalData?.customer_id,
+      id: opportunityData?.Quotes?.map((item: any) => item.id),
+    };
+    if (result?.id?.length > 0) await dispatch(updateQuoteCustomerId(result));
+    await dispatch(updateOpportunity(finalData))?.then((d: any) => {
       if (d?.payload) {
         dispatch(getOpportunityById(opportunityId));
         setShowDrawer(false);
