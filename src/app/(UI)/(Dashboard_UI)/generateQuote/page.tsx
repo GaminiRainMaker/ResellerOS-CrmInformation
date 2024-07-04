@@ -42,6 +42,7 @@ import ReviewQuotes from './allTabs/ReviewQuotes';
 import Validation from './allTabs/Validation';
 import AttachmentDocument from './allTabs/Attachment/index';
 import GenerateQuoteAnalytics from './analytics';
+import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -92,6 +93,7 @@ const GenerateQuote: React.FC = () => {
       dispatch(getQuoteById(Number(getQuoteID)));
       dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
       dispatch(getAllBundle(getQuoteID));
+      dispatch(getRebateQuoteLineItemByQuoteId(Number(getQuoteID)));
     }
   }, [getQuoteID]);
 
@@ -380,7 +382,12 @@ const GenerateQuote: React.FC = () => {
           Rebates
         </Typography>
       ),
-      children: <Rebates tableColumnDataShow={tableColumnDataShow} />,
+      children: (
+        <Rebates
+          tableColumnDataShow={tableColumnDataShow}
+          selectedFilter={selectedFilter}
+        />
+      ),
     },
     contractSettingData?.show_validation_tab && {
       key: 4,

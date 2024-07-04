@@ -61,7 +61,6 @@ const Profitablity: FC<any> = ({
   const dispatch = useAppDispatch();
   const [BundleForm] = Form.useForm();
   const [token] = useThemeToken();
-
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
