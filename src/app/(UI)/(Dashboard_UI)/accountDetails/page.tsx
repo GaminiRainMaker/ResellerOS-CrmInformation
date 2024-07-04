@@ -70,7 +70,7 @@ const AccountDetails = () => {
     },
     {
       key: 2,
-      primary: <div>{customerData?.Quotes?.length ?? 0}</div>,
+      primary: <div>{quotes?.length ?? 0}</div>,
       secondry: 'Total Quotes',
       icon: <TagIcon width={36} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
@@ -79,9 +79,8 @@ const AccountDetails = () => {
       key: 3,
       primary: (
         <div>
-          {customerData?.Quotes?.filter(
-            (item: any) => item.status === 'Approved',
-          ).length ?? 0}
+          {quotes?.filter((item: any) => item.status === 'Approved').length ??
+            0}
         </div>
       ),
       secondry: 'Approved Quotes',
