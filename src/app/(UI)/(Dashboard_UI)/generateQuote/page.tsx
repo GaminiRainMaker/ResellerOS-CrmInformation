@@ -64,6 +64,8 @@ const GenerateQuote: React.FC = () => {
     useState<boolean>(false);
   const [showRemoveBundleLineItemModal, setShowRemoveBundleLineItemModal] =
     useState<boolean>(false);
+  const [collapseActiveKeys, setCollapseActiveKeys] = useState<any>([]);
+
   const [selectedFilter, setSelectedFilter] = useState<string>('File Name');
   const {data: tableColumnData} = useAppSelector((state) => state.tableColumn);
   const {data: contractSettingData} = useAppSelector(
@@ -355,6 +357,8 @@ const GenerateQuote: React.FC = () => {
           showUpdateLineItemModal={showUpdateLineItemModal}
           selectTedRowData={selectTedRowData}
           setSelectedRowData={setSelectedRowData}
+          setCollapseActiveKeys={setCollapseActiveKeys}
+          collapseActiveKeys={collapseActiveKeys}
           setShowBundleModal={setShowBundleModal}
           selectTedRowIds={selectTedRowIds}
           setSelectedRowIds={setSelectedRowIds}
@@ -607,6 +611,7 @@ const GenerateQuote: React.FC = () => {
                         options={selectData}
                         onChange={(e) => {
                           setSelectedFilter(e);
+                          setCollapseActiveKeys([]);
                         }}
                         allowClear
                         defaultValue={'File Name'}
