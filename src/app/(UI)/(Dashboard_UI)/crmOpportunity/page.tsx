@@ -168,6 +168,7 @@ const CrmOpportunity: React.FC = () => {
           onClick={() => {
             router.push(`/opportunityDetail?id=${record?.id}`);
           }}
+          color={token?.colorInfo}
           hoverOnText
         >
           {text ?? '--'}
