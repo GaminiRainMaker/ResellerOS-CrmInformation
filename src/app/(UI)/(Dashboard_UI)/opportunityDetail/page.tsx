@@ -360,6 +360,7 @@ const OpportunityDetails = () => {
           setCustomerValue={setCustomerValue}
           customerValue={customerValue}
           drawer
+          stageValue={opportunityData?.stages}
         />
       </OsDrawer>
 
