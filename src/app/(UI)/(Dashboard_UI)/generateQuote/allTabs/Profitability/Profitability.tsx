@@ -55,6 +55,8 @@ const Profitablity: FC<any> = ({
   isDeleteProfitabilityModal,
   showRemoveBundleLineItemModal,
   setShowRemoveBundleLineItemModal,
+  collapseActiveKeys,
+  setCollapseActiveKeys,
 }) => {
   const dispatch = useAppDispatch();
   const [BundleForm] = Form.useForm();
@@ -71,7 +73,6 @@ const Profitablity: FC<any> = ({
   const [finalData, setFinalData] = useState<any>([]);
   const [finalFieldData, setFinalFieldData] = useState<any>({});
   const [keyPressed, setKeyPressed] = useState('');
-  const [collapseActiveKeys, setCollapseActiveKeys] = useState<any>([]);
   const [showBundleDrawer, setShowBundleDrawer] = useState<boolean>(false);
   const [bundleRecordId, setBundleRecordId] = useState<any>();
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
@@ -246,7 +247,6 @@ const Profitablity: FC<any> = ({
   useEffect(() => {
     if (profitabilityDataByQuoteId && profitabilityDataByQuoteId.length > 0) {
       filterDataByValue(profitabilityDataByQuoteId, selectedFilter);
-      setCollapseActiveKeys([]);
     }
   }, [JSON.stringify(profitabilityDataByQuoteId), selectedFilter]);
 

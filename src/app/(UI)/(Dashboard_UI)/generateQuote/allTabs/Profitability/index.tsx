@@ -16,7 +16,9 @@ const ProfitabilityMain: FC<any> = ({
   isDeleteProfitabilityModal,
   setIsDeleteProfitabilityModal,
   showRemoveBundleLineItemModal,
-  setShowRemoveBundleLineItemModal
+  setShowRemoveBundleLineItemModal,
+  collapseActiveKeys,
+  setCollapseActiveKeys,
 }) => {
   return (
     <>
@@ -35,6 +37,8 @@ const ProfitabilityMain: FC<any> = ({
         setIsDeleteProfitabilityModal={setIsDeleteProfitabilityModal}
         showRemoveBundleLineItemModal={showRemoveBundleLineItemModal}
         setShowRemoveBundleLineItemModal={setShowRemoveBundleLineItemModal}
+        collapseActiveKeys={collapseActiveKeys}
+        setCollapseActiveKeys={setCollapseActiveKeys}
       />
     </>
   );
