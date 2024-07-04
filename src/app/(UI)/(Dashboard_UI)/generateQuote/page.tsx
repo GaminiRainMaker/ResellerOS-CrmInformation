@@ -463,7 +463,6 @@ const GenerateQuote: React.FC = () => {
     },
   ];
 
-  console.log('34543543', new Date());
   const onFinish = async () => {
     const headerValue = form.getFieldsValue();
     try {
@@ -485,6 +484,7 @@ const GenerateQuote: React.FC = () => {
     }
   };
 
+  console.log('quoteByIdquoteById', quoteById);
   return (
     <>
       {contextHolder}

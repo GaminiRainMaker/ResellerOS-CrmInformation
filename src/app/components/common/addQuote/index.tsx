@@ -58,7 +58,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [finalLoading, setFinalLoading] = useState<boolean>(false);
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
-  const [currentDate, setCurrentDate] = useState<any>(new Date());
 
   useEffect(() => {
     if (existingQuoteId || existingGenerateQuoteId) {
@@ -187,11 +186,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
       }
       if (quotesArr.length > 0 && !quoteId) {
         for (let i = 0; i < quotesArr.length; i++) {
-          console.log('currentDate', currentDate);
           let newObj = {
             ...quotesArr[i],
-            createdAt: currentDate,
-            newDAte: currentDate,
+            // quote_name: Date.now(),
           };
           const response = await dispatch(insertQuote([newObj]));
           // eslint-disable-next-line no-unsafe-optional-chaining

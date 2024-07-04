@@ -116,6 +116,7 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
       quote_notes: quoteById?.quote_notes,
       quote_shipping: quoteById?.quote_shipping,
       quote_tax: quoteById?.quote_tax,
+      quote_name: quoteById?.quote_name,
     });
     setCustomerValue(quoteById?.customer_id);
   }, [quoteById]);
