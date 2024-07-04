@@ -1297,6 +1297,8 @@ const Profitablity: FC<any> = ({
           bundleId={bundleRecordId}
           setShowBundleDrawer={setShowBundleDrawer}
           drawer
+          setSelectedRowData={setSelectedRowData}
+          setSelectedRowIds={setSelectedRowIds}
         />
       </OsDrawer>
 
@@ -1307,7 +1309,7 @@ const Profitablity: FC<any> = ({
         showModalDelete={isDeleteProfitabilityModal}
         deleteSelectedIds={deleteProfitabityData}
         description="Are you sure you want to delete selected line items?"
-        heading="Delete Profitability"
+        heading="Delete Line Item"
       />
       <DeleteModal
         loading={bundleLoading}

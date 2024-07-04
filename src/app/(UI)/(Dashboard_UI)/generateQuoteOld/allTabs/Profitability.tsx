@@ -1008,7 +1008,7 @@ const Profitability: FC<any> = ({
         showModalDelete={isDeleteProfitabilityModal}
         deleteSelectedIds={deleteProfitabityData}
         description="Are you sure you want to delete this Profitability?"
-        heading="Delete Profitability"
+        heading="Delete Line Item"
       />
       <OsModal
         title={'Update LineItems'}

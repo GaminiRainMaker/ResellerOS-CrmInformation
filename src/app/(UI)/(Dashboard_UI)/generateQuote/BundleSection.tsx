@@ -21,6 +21,8 @@ const BundleSection: FC<any> = ({
   bundleId,
   drawer,
   setShowBundleDrawer,
+  setSelectedRowData,
+  setSelectedRowIds,
 }) => {
   const searchParams = useSearchParams();
   const getQuoteId = searchParams.get('id');
@@ -55,8 +57,9 @@ const BundleSection: FC<any> = ({
         }
       });
     }
+    setSelectedRowData && setSelectedRowData([]);
+    setSelectedRowIds && setSelectedRowIds([]);
     await dispatch(updateQuoteLineItemForBundleId(data));
-
     await dispatch(getProfitabilityByQuoteId(Number(getQuoteId)));
     await dispatch(getAllBundle(getQuoteId));
     setRadioValue(1);

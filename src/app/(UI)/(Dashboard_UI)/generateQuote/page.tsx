@@ -65,7 +65,6 @@ const GenerateQuote: React.FC = () => {
   const [showRemoveBundleLineItemModal, setShowRemoveBundleLineItemModal] =
     useState<boolean>(false);
   const [collapseActiveKeys, setCollapseActiveKeys] = useState<any>([]);
-
   const [selectedFilter, setSelectedFilter] = useState<string>('File Name');
   const {data: tableColumnData} = useAppSelector((state) => state.tableColumn);
   const {data: contractSettingData} = useAppSelector(
@@ -119,7 +118,6 @@ const GenerateQuote: React.FC = () => {
                   newBundleData?.push(items);
                 }
               });
-              console.log('payload?.payload', payload?.payload);
               let newObj = {
                 bundleData: newBundleData,
                 QuoteLineItems: payload?.payload?.Profitabilities,
@@ -488,7 +486,6 @@ const GenerateQuote: React.FC = () => {
     }
   };
 
-  console.log('quoteByIdquoteById', quoteById);
   return (
     <>
       {contextHolder}

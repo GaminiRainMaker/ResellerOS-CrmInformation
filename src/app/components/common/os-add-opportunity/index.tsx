@@ -113,7 +113,7 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
                 style={{
                   width: '100%',
                 }}
-                placeholder="Quote Shipping"
+                placeholder="Enter Amount"
               />
             </SelectFormItem>
           </Col>

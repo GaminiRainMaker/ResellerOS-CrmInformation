@@ -23,6 +23,7 @@ import {
   UpdateQuoteFileById,
   getQuoteFileByQuoteId,
   getQuoteFileCount,
+  quoteFileVerification,
 } from '../../../../../../redux/actions/quoteFile';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import {setConcernQuoteLineItemData} from '../../../../../../redux/slices/quotelineitem';
@@ -243,8 +244,9 @@ const ReviewQuotes: FC<any> = ({
       setShowRaiseConcernModal(false);
       form?.resetFields();
     } else if (buttonType === 'fourth') {
-      dispatch(getQuoteFileCount(Number(getQuoteID)));
-      dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
+      await dispatch(quoteFileVerification({id: fileData?.id}));
+      await dispatch(getQuoteFileCount(Number(getQuoteID)));
+      await dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
       setShowRaiseConcernModal(false);
       form?.resetFields();
     } else {
@@ -423,7 +425,7 @@ const ReviewQuotes: FC<any> = ({
         body={
           <RaiseConcern
             title="Report an issue"
-            description="We are here to assist you ! Please write your concern regarding this quote to us. Also, you can update the quote manually."
+            description="We are here to assist you! Please write your concern regarding this quote to us. Also, you can update the quote manually."
             image={RaiseConcernImg}
             form={form}
             onClick={addConcernData}
