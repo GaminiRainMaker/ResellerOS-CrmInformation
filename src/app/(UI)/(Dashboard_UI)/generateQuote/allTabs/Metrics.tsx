@@ -11,35 +11,10 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 
 const Matrix: FC<any> = ({selectedFilter}) => {
   const [token] = useThemeToken();
-
-  const [chartDimensions, setChartDimensions] = useState<any>({});
-
-  useEffect(() => {
-    const updateChartDimensions = () => {
-      let width;
-      if (window.innerWidth < 400) {
-        width = window.innerWidth - 40;
-      } else if (window.innerWidth < 768) {
-        width = 400;
-      } else if (window.innerWidth < 1024) {
-        width = 620;
-      } else if (window.innerWidth < 1537) {
-        width = 620;
-      } else {
-        width = 800;
-      }
-      setChartDimensions({width});
-    };
-
-    window.addEventListener('resize', updateChartDimensions);
-    updateChartDimensions();
-    return () => window.removeEventListener('resize', updateChartDimensions);
-  }, []);
   const {data: profitabilityDataByQuoteId} = useAppSelector(
     (state) => state.profitability,
   );
   const [finalData, setFinalData] = useState<any>();
-
   const filterDataByValue = (data: any, filterValue: string) => {
     const groupedData: any = {};
     data?.forEach((item: any) => {
@@ -97,7 +72,6 @@ const Matrix: FC<any> = ({selectedFilter}) => {
     Maintenance: token?.colorTextDisabled,
     Gp: token?.colorTextDisabled,
   };
-
   const randomColors: string[] = [
     token?.colorPrimary,
     token?.colorInfo,
@@ -106,9 +80,7 @@ const Matrix: FC<any> = ({selectedFilter}) => {
     '#495D79',
     '#31576F',
   ];
-
   let colorIndex = 0;
-
   const getPieCellColor = (name: string) => {
     if (!colorPalette[name]) {
       colorPalette[name] = randomColors[colorIndex];
@@ -226,10 +198,8 @@ const Matrix: FC<any> = ({selectedFilter}) => {
                     ) : (
                       <Typography
                         name="Body 1/Regular"
-                        style={{
-                          width: chartDimensions?.width,
-                        }}
                         as="div"
+                        style={{height: '200px'}}
                       >
                         There is no {word} available for{' '}
                         {selectedFilter ? ` (${selectedFilter})` : ' (--)'}

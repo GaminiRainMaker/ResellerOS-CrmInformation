@@ -1,5 +1,5 @@
 'use client';
-import {FC, useEffect, useState} from 'react';
+import {FC} from 'react';
 import {
   Cell,
   Legend,
@@ -40,32 +40,8 @@ const CustomTooltip = (props: any) => {
 };
 
 const OsPieChart: FC<any> = ({data}: any) => {
-  const [chartDimensions, setChartDimensions] = useState<any>({});
-
-  useEffect(() => {
-    const updateChartDimensions = () => {
-      let width;
-      if (window.innerWidth < 400) {
-        width = window.innerWidth - 40;
-      } else if (window.innerWidth < 768) {
-        width = 400;
-      } else if (window.innerWidth < 1024) {
-        width = 620;
-      } else if (window.innerWidth < 1537) {
-        width = 620;
-      } else {
-        width = 800;
-      }
-      setChartDimensions({width});
-    };
-
-    window.addEventListener('resize', updateChartDimensions);
-    updateChartDimensions();
-    return () => window.removeEventListener('resize', updateChartDimensions);
-  }, []);
-
   return (
-    <ResponsiveContainer width="100%" height={280} >
+    <ResponsiveContainer width="100%" height={280}>
       <PieChart>
         <Pie
           data={data}
