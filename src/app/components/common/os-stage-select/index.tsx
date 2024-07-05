@@ -10,7 +10,7 @@ interface CommonStageSelectProps {
   options?: any;
   style?: any;
   placeholder?: string;
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 const CommonStageSelect: FC<CommonStageSelectProps> = ({
@@ -49,9 +49,9 @@ const CommonStageSelect: FC<CommonStageSelectProps> = ({
       border: `${token?.colorError}`,
     },
     'In Progress': {
-      color: `${token?.colorErrorBg}`,
-      textColor: `${token?.colorError}`,
-      border: `${token?.colorError}`,
+      color: `${token?.colorWarningBg}`,
+      textColor: `${token?.colorWarning}`,
+      border: `${token?.colorWarning}`,
     },
     New: {
       color: `${token?.colorInfoBgHover}`,
@@ -104,6 +104,11 @@ const CommonStageSelect: FC<CommonStageSelectProps> = ({
       border: `${token?.colorSuccess}`,
     },
     'Vendor Received - Held': {
+      color: `${token?.colorInfoBgHover}`,
+      textColor: `${token?.colorInfo}`,
+      border: `${token?.colorInfo}`,
+    },
+    'Drafts': {
       color: `${token?.colorInfoBgHover}`,
       textColor: `${token?.colorInfo}`,
       border: `${token?.colorInfo}`,

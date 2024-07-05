@@ -648,7 +648,7 @@ const GenerateQuote: React.FC = () => {
       <OsDrawer
         title={<Typography name="Body 1/Regular">Quote Settings</Typography>}
         placement="right"
-        onClose={() => setOpen((p) => !p)}
+        onClose={() => setOpen(false)}
         open={open}
         width={450}
         footer={
@@ -657,12 +657,12 @@ const GenerateQuote: React.FC = () => {
               btnStyle={{width: '100%'}}
               buttontype="PRIMARY"
               text="Update Changes"
-              clickHandler={() => form.submit()}
+              clickHandler={form.submit}
             />
           </Row>
         }
       >
-        <DrawerContent form={form} open={open} onFinish={onFinish} />
+        <DrawerContent form={form} onFinish={onFinish}/>
       </OsDrawer>
 
       <OsModal

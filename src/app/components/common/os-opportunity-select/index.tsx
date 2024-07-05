@@ -119,7 +119,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
             </>
           )}
           onChange={(e) => {
-            setOpportunityValue(e);
+            setOpportunityValue && setOpportunityValue(e);
           }}
         />
       </Form.Item>

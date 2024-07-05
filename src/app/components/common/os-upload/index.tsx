@@ -162,29 +162,28 @@ const OsUpload: React.FC<any> = ({
           form={form}
           onFinish={onFinish}
         >
-          {!isGenerateQuote ||
-            (!opportunityDetailId && (
-              <Row gutter={[16, 16]}>
-                <Col sm={24} md={12}>
-                  <OsCustomerSelect
-                    setCustomerValue={setCustomerValue}
-                    customerValue={customerValue}
-                    isAddNewCustomer
-                    isRequired={showToggleTable ? false : true}
-                  />
-                </Col>
+          {!isGenerateQuote && !opportunityDetailId && (
+            <Row gutter={[16, 16]}>
+              <Col sm={24} md={12}>
+                <OsCustomerSelect
+                  setCustomerValue={setCustomerValue}
+                  customerValue={customerValue}
+                  isAddNewCustomer
+                  isRequired={showToggleTable ? false : true}
+                />
+              </Col>
 
-                <Col sm={24} md={12}>
-                  <OsOpportunitySelect
-                    form={form}
-                    customerValue={customerValue}
-                    isAddNewOpportunity
-                    setOpportunityValue={setOpportunityValue}
-                    isRequired={showToggleTable ? false : true}
-                  />
-                </Col>
-              </Row>
-            ))}
+              <Col sm={24} md={12}>
+                <OsOpportunitySelect
+                  form={form}
+                  customerValue={customerValue}
+                  isAddNewOpportunity
+                  setOpportunityValue={setOpportunityValue}
+                  isRequired={showToggleTable ? false : true}
+                />
+              </Col>
+            </Row>
+          )}
         </Form>
 
         {!isGenerateQuote && (

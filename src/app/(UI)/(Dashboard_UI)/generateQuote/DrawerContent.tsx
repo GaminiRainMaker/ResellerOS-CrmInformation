@@ -22,8 +22,9 @@ import {getQuoteById} from '../../../../../redux/actions/quote';
 import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsInputNumber from '@/app/components/common/os-input/InputNumber';
+import CommonStageSelect from '@/app/components/common/os-stage-select';
 
-const DrawerContent: FC<any> = ({open, form, onFinish}) => {
+const DrawerContent: FC<any> = ({form, onFinish}) => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const getQuoteId = searchParams.get('id');
@@ -35,6 +36,7 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
   const [billingOptionsData, setBillingOptionData] = useState<any>();
   const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const [opportunityObject, setOpportunityObject] = useState<any>();
+  const [stageNewValue, setStageNewValue] = useState<string>(quoteById?.status);
 
   useEffect(() => {
     const customerOptions: any = [];
@@ -118,6 +120,7 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
       quote_tax: quoteById?.quote_tax,
       quote_name: quoteById?.quote_name,
     });
+    setStageNewValue(quoteById?.status);
     setCustomerValue(quoteById?.customer_id);
   }, [quoteById]);
 
@@ -125,7 +128,6 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
     <GlobalLoader loading={quoteByIdLoading}>
       <Form
         layout="vertical"
-        name="wrap"
         wrapperCol={{flex: 1}}
         onFinish={onFinish}
         form={form}
@@ -149,13 +151,17 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
               }
               name="status"
             >
-              <CommonSelect
-                style={{width: '150px'}}
+              <CommonStageSelect
                 options={
                   getInReviewQuote === 'true'
                     ? quoteReviewStatusOptions
                     : quoteStatusOptions
                 }
+                style={{width: '150px'}}
+                onChange={(e: string) => {
+                  setStageNewValue(e);
+                }}
+                currentStage={stageNewValue}
               />
             </Form.Item>
           </Col>
@@ -185,6 +191,7 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
                 disabled={getInReviewQuote === 'true' ? true : false}
               />
             </Form.Item>
+
             <Form.Item label=" Quote Note" name="quote_notes">
               <OsInput
                 placeholder="Notes"
@@ -205,6 +212,7 @@ const DrawerContent: FC<any> = ({open, form, onFinish}) => {
                 placeholder="Quote Tax"
               />
             </Form.Item>
+
             <Form.Item label="Quote Shipping" name="quote_shipping">
               <OsInputNumber
                 min={0}
