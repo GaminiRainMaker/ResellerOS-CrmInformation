@@ -1,6 +1,5 @@
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import EmptyContainer from '@/app/components/common/os-empty-container';
@@ -8,6 +7,7 @@ import OsPieChart from '@/app/components/common/os-piechart';
 import Typography from '@/app/components/common/typography';
 import {FC, useEffect, useState} from 'react';
 import {useAppSelector} from '../../../../../../redux/hook';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 
 const Matrix: FC<any> = ({selectedFilter}) => {
   const [token] = useThemeToken();
@@ -197,31 +197,22 @@ const Matrix: FC<any> = ({selectedFilter}) => {
     }
   }, [finalData]);
 
+  const style: React.CSSProperties = {
+    padding: '18px',
+    background: '#f6f7f8',
+    borderRadius: '12px',
+  };
+
   return (
     <>
       {finalData?.length > 0 ? (
-        <Row gutter={[24, 24]} justify="space-between">
+        <Row gutter={[16, 16]} justify={'space-between'}>
           {sectionData &&
             sectionData?.map((item) => {
               let word = item?.name?.split(' ')[0].toLowerCase();
-
               return (
-                <div
-                  style={{
-                    padding: '18px',
-                    background: '#f6f7f8',
-                    borderRadius: '12px',
-                  }}
-                  key={item.id}
-                >
-                  <Col
-                    style={{
-                      padding: '18px',
-                      background: '#f6f7f8',
-                      borderRadius: '12px',
-                    }}
-                    span={12}
-                  >
+                <Col key={item.id} md={24} lg={24} xl={12} xxl={12}>
+                  <div style={style}>
                     <Space direction="vertical">
                       <Typography name="Body 1/Regular">{item.name}</Typography>
                       {item.pieData?.length > 0 && (
@@ -244,8 +235,8 @@ const Matrix: FC<any> = ({selectedFilter}) => {
                         {selectedFilter ? ` (${selectedFilter})` : ' (--)'}
                       </Typography>
                     )}
-                  </Col>
-                </div>
+                  </div>
+                </Col>
               );
             })}
         </Row>
