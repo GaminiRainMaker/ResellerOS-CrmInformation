@@ -8,7 +8,7 @@ import {
   getValuesOFLineItemsThoseNotAddedBefore,
 } from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form, message} from 'antd';
+import {Form, message, notification} from 'antd';
 import {RedirectType, useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {
@@ -60,7 +60,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [finalLoading, setFinalLoading] = useState<boolean>(false);
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
-
+  const [typeOfAddQuote, setTypeOfAddQuote] = useState<number>(1);
+  const [allValuesForManual, setAllValuesForManual] = useState<boolean>(false);
   useEffect(() => {
     if (existingQuoteId || existingGenerateQuoteId) {
       const dddd = existingQuoteId ?? existingGenerateQuoteId;
@@ -353,6 +354,83 @@ const AddQuote: FC<AddQuoteInterface> = ({
     form.resetFields(['customer_id', 'opportunity_id']);
   };
 
+  useEffect(() => {
+    form.resetFields([
+      'customer_id',
+      'opportunity_id',
+      'oem_name',
+      'distributor_name',
+      'file_name',
+    ]);
+    setUploadFileData([]);
+  }, [typeOfAddQuote]);
+  const addQuoteManually = async (
+    customerId: string,
+    opportunityId: string,
+    oem: string,
+    distributer: string,
+    fileName: string,
+  ) => {
+    if (!fileName) {
+      notification?.open({message: 'Please Add the file name', type: 'error'});
+      return;
+    }
+    if (!oem) {
+      notification?.open({message: 'Please Add Oem Name', type: 'error'});
+      return;
+    }
+    if (!distributer) {
+      notification?.open({
+        message: 'Please Add Distributor Name',
+        type: 'error',
+      });
+      return;
+    }
+    if (!customerId) {
+      notification?.open({message: 'Please Select Customer', type: 'error'});
+      return;
+    }
+    if (!opportunityId) {
+      notification?.open({message: 'Please Select opportunity', type: 'error'});
+      return;
+    }
+
+    let newObj = {
+      oem_name: oem,
+      distributor_name: distributer,
+      file_name: fileName,
+      customer_id: customerId,
+      opportunity_id: opportunityId,
+      organization: userInformation?.organization,
+      user_id: userInformation?.id,
+      status: 'Drafts',
+    };
+    form.resetFields([
+      'customer_id',
+      'opportunity_id',
+      'oem_name',
+      'distributor_name',
+      'file_name',
+    ]);
+    setShowModal(false);
+    const response = await dispatch(insertQuote([newObj]))?.then(
+      async (payload: any) => {
+        const quoteFile = {
+          file_name: fileName,
+          quote_id: payload?.payload?.data?.[0]?.id,
+          is_verified: true,
+        };
+        const insertedQuoteFile = await dispatch(
+          insertQuoteFile(quoteFile),
+        )?.then((payloadFile: any) => {
+          router.push(
+            `/manualFileEditor?id=${payload?.payload?.data?.[0]?.id}&fileId=${payloadFile?.payload?.id}`,
+          );
+        });
+      },
+    );
+  };
+
   const resetFields = () => {
     setShowModal(false);
     setUploadFileData([]);
@@ -378,7 +456,11 @@ const AddQuote: FC<AddQuoteInterface> = ({
       <OsModal
         loading={finalLoading}
         bodyPadding={22}
-        disabledButton={!(uploadFileData?.length > 0)}
+        disabledButton={
+          typeOfAddQuote === 1
+            ? !(uploadFileData?.length > 0)
+            : allValuesForManual
+        }
         destroyOnClose
         body={
           <OsUpload
@@ -386,6 +468,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
             uploadFileData={uploadFileData}
             setUploadFileData={setUploadFileData}
             addQuoteLineItem={addQuoteLineItem}
+            addQuoteManually={addQuoteManually}
             form={form}
             cardLoading={loading}
             setShowToggleTable={setShowToggleTable}
@@ -395,14 +478,25 @@ const AddQuote: FC<AddQuoteInterface> = ({
             setExistingQuoteId={setExistingQuoteId}
             isGenerateQuote={isGenerateQuote}
             quoteDetails={quoteDetails}
+            typeOfAddQuote={typeOfAddQuote}
+            setTypeOfAddQuote={setTypeOfAddQuote}
+            setAllValuesForManual={setAllValuesForManual}
             opportunityDetailId={opportunityId}
             customerDetailId={customerId}
           />
         }
         width={900}
-        primaryButtonText="Generate Single Quote"
+        primaryButtonText={
+          typeOfAddQuote === 1
+            ? 'Generate Single Quote'
+            : 'Generate Manually Quote'
+        }
         thirdButtonText={
-          !existingQuoteId ? 'Save & Generate Individual Quotes' : null
+          typeOfAddQuote === 2
+            ? null
+            : !existingQuoteId
+              ? 'Save & Generate Individual Quotes'
+              : null
         }
         open={showModal}
         onOk={() => {

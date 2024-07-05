@@ -429,6 +429,7 @@ const EditorFile = () => {
     });
     setMergedVaalues(changedArr);
   };
+
   const deleteRowsItems = (indexOfDeletion: number, NumberOf: number) => {
     const newArrr = mergedValue?.length > 0 ? [...mergedValue] : [];
     newArrr
