@@ -1,40 +1,42 @@
 'use client';
 
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import OsCollapse from '@/app/components/common/os-collapse';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
-import {dummyValidationData, pricingMethod} from '@/app/utils/CONSTANTS';
-import {
-  calculateProfitabilityData,
-  getContractStatus,
-  useRemoveDollarAndCommahook,
-} from '@/app/utils/base';
+import {pricingMethod} from '@/app/utils/CONSTANTS';
+import {getContractStatus} from '@/app/utils/base';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline';
-import {Form} from 'antd';
+import {Badge, Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getContractConfiguartion} from '../../../../../../redux/actions/contractConfiguration';
-import {
-  getAllValidationByQuoteId,
-  updateValidationById,
-} from '../../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 
-const Validation: FC<any> = ({tableColumnDataShow}) => {
+const Validation: FC<any> = ({
+  tableColumnDataShow,
+  selectedFilter,
+  selectTedRowData,
+  setSelectedRowData,
+  setSelectedRowIds,
+  selectTedRowIds,
+  collapseActiveKeys,
+  setCollapseActiveKeys,
+}) => {
   const {abbreviate} = useAbbreviationHook(0);
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
-  const getQuoteID = searchParams.get('id');
   const {data: ValidationData, loading} = useAppSelector(
     (state) => state.validation,
   );
@@ -45,10 +47,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
     (state) => state.contractConfiguration,
   );
   const {quoteById} = useAppSelector((state) => state.quote);
-  const [validationDataData, setValidationDataData] =
-    useState<any>(ValidationData);
-  const [validationData, setValidationData] =
-    useState<any>(dummyValidationData);
+  const [validationFinalData, setValidationFinalData] = useState<any>([]);
   const [contract, setContract] = useState<{
     type: string;
     record: any;
@@ -57,30 +56,98 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
     record: {},
   });
 
-  const locale = {
-    emptyText: <EmptyContainer title="There is no data for Validation Data" />,
+  const filterDataByValue = (data: any[], filterValue?: string) => {
+    const groupedData: {[key: string]: any} = {};
+    const arrayData: any[] = [];
+
+    if (!data || data.length === 0) {
+      setValidationFinalData([]);
+      return;
+    }
+
+    const convertToTitleCase = (input: string) => {
+      if (!input) return '';
+      return input
+        .toLowerCase()
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+    };
+
+    data.forEach((item) => {
+      let name: string | undefined;
+      let description = '';
+      const type = 'groups';
+
+      if (filterValue) {
+        switch (filterValue) {
+          case 'Product Family':
+            name = item?.Product?.product_family || 'Unassigned';
+            break;
+          case 'Pricing Method':
+            name = item?.pricing_method || 'Unassigned';
+            break;
+          case 'File Name':
+            name = item?.QuoteLineItem?.QuoteFile?.file_name;
+            break;
+          case 'Vendor/Disti':
+            name =
+              item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
+                ?.distribu;
+            break;
+          case 'OEM':
+            name = item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem;
+            break;
+          default:
+            name = undefined;
+        }
+        console.log('Dataaaa', name, filterValue, item);
+
+        if (!name) return;
+
+        if (name.includes('_') || name === name.toLowerCase()) {
+          name = convertToTitleCase(name);
+        }
+
+        if (!groupedData[name]) {
+          groupedData[name] = {
+            name,
+            description,
+            type,
+            QuoteLineItem: [],
+            totalExtendedPrice: 0,
+            totalGrossProfit: 0,
+            totalGrossProfitPercentage: 0,
+          };
+        }
+
+        const extendedPrice = item?.exit_price || 0;
+        const grossProfit = item?.gross_profit || 0;
+
+        groupedData[name].totalExtendedPrice += extendedPrice;
+        groupedData[name].totalGrossProfit += grossProfit;
+
+        groupedData[name].totalGrossProfitPercentage =
+          groupedData[name].totalExtendedPrice !== 0
+            ? (groupedData[name].totalGrossProfit /
+                groupedData[name].totalExtendedPrice) *
+              100
+            : 0;
+
+        groupedData[name].QuoteLineItem.push(item);
+      } else {
+        arrayData.push(item);
+      }
+    });
+
+    const finalData = [...Object.values(groupedData), ...arrayData];
+    setValidationFinalData(finalData);
   };
 
-  const contractStatusCheck = (record: any) => {
-    const matchingField = ContractSettingData.matching_filed;
-
-    const value =
-      ContractSettingData.object_name === 'quote'
-        ? quoteById?.[matchingField]
-        : ContractSettingData.object_name === 'opportunity'
-          ? quoteById?.Opportunity?.[matchingField]
-          : ContractSettingData.object_name === 'quote_line_item'
-            ? record?.[matchingField]
-            : null;
-
-    if (value) {
-      const result = record?.product_code === value ? 'success' : 'reject';
-      return result;
+  useEffect(() => {
+    if (ValidationData && ValidationData?.length > 0) {
+      filterDataByValue(ValidationData, selectedFilter);
     }
-    if (!value) {
-      return 'reject';
-    }
-  };
+  }, [JSON.stringify(ValidationData), selectedFilter]);
 
   const renderEditableInput = (field: string) => {
     const editableField = tableColumnDataShow.find(
@@ -102,62 +169,23 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
     return false;
   };
 
-  useEffect(() => {
-    dispatch(getContractConfiguartion({}));
-  }, []);
-
-  const contractStatus = (record: any) => {
-    let fieldName = '';
-    let operator = '';
-    let finalSecondValue = '';
-    let status = '';
-    const statuses = ['green', 'yellow', 'red'];
-
-    for (let statusCheck of statuses) {
-      const matchingObjects =
-        contractConfigurationData &&
-        contractConfigurationData?.filter(
-          (item: any) => item?.contract_status === statusCheck,
-        );
-
-      if (matchingObjects.length > 0) {
-        const finalData =
-          matchingObjects?.[0]?.json && JSON?.parse(matchingObjects?.[0]?.json);
-        fieldName = finalData?.[0]?.['fieldName'];
-        operator = finalData?.[0]?.['operator'];
-
-        if (finalData?.[0]?.['valueType'] === 'formula') {
-          finalSecondValue = finalData?.[0]['value']?.reduce(
-            (acc: any, fieldName: any) => {
-              const value1 = record?.[fieldName];
-              if (typeof value1 === 'number') {
-                return acc + value1; // Add if it's a number
-              } else if (typeof value1 === 'string') {
-                return acc + value1; // Concatenate if it's a string
-              }
-              return acc; // Skip if it's neither number nor string
-            },
-            typeof record?.[finalData?.[0]['value']?.[0]] === 'number' ? 0 : '',
-          );
-        } else {
-          finalSecondValue = finalData?.[0]?.['value'];
-        }
-
-        if (operator && record?.[fieldName] && finalSecondValue) {
-          status = getContractStatus(
-            Number(record?.[fieldName]),
-            Number(finalSecondValue),
-            operator,
-          );
-        }
-
-        if (status === 'Correct') {
-          break; // Exit loop if status is correct
-        }
-      }
+  const handleKeyDown = (e: any, record: any) => {
+    if (e.key === 'Enter') {
+      // setKeyPressed(record?.id);
     }
-    return status;
   };
+
+  const handleBlur = (record: any) => {
+    // setKeyPressed(record?.id);
+  };
+
+  const handleFieldChange = (
+    record: any,
+    field: string,
+    value: any,
+    updatedSelectedFilter: string,
+    type: string,
+  ) => {};
 
   const ValidationQuoteLineItemcolumns = [
     {
@@ -200,37 +228,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
           style={{width: '100%', height: '34px'}}
           placeholder="Select"
           defaultValue={text}
-          onChange={(v) => {
-            setValidationDataData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {...prevItem, pricing_method: v};
-                }
-                return prevItem;
-              }),
-            );
-            setValidationDataData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (record?.id === prevItem?.id) {
-                  const rowId = record?.id;
-                  const result: any = calculateProfitabilityData(
-                    useRemoveDollarAndCommahook(prevItem?.quantity),
-                    prevItem?.pricing_method,
-                    useRemoveDollarAndCommahook(prevItem?.line_amount),
-                    useRemoveDollarAndCommahook(prevItem?.list_price),
-                    20,
-                  );
-                  return {
-                    ...prevItem,
-                    unit_price: result.unitPrice,
-                    exit_price: result.exitPrice,
-                    rowId,
-                  };
-                }
-                return prevItem;
-              }),
-            );
-          }}
+          onChange={(e) => {}}
           options={pricingMethod}
         />
       ),
@@ -246,39 +244,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
           style={{width: '100%', height: '34px'}}
           placeholder="Select"
           defaultValue={text}
-          // onChange={(v) => {
-          //   setValidationDataData((prev: any) =>
-          //     prev.map((prevItem: any) => {
-          //       if (prevItem.id === record?.id) {
-          //         return {...prevItem, pricing_method: v};
-          //       }
-          //       return prevItem;
-          //     }),
-          //   );
-
-          //   setValidationDataData((prev: any) =>
-          //     prev.map((prevItem: any) => {
-          //       if (record?.id === prevItem?.id) {
-          //         const rowId = record?.id;
-          //         const result: any = calculateProfitabilityData(
-          //           useRemoveDollarAndCommahook(prevItem?.quantity),
-          //           prevItem?.pricing_method,
-          //           useRemoveDollarAndCommahook(prevItem?.line_amount),
-          //           useRemoveDollarAndCommahook(prevItem?.list_price),
-          //           20,
-          //         );
-          //         return {
-          //           ...prevItem,
-          //           unit_price: result.unitPrice,
-          //           exit_price: result.exitPrice,
-          //           rowId,
-          //         };
-          //       }
-          //       return prevItem;
-          //     }),
-          //   );
-          // }}
-          // options={pricingMethod}
+          options={pricingMethod}
         />
       ),
     },
@@ -305,16 +271,7 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
               height: '36px',
             }}
             value={text}
-            onChange={(v) => {
-              setValidationDataData((prev: any) =>
-                prev.map((prevItem: any) => {
-                  if (prevItem.id === record?.id) {
-                    return {...prevItem, line_amount: v.target.value};
-                  }
-                  return prevItem;
-                }),
-              );
-            }}
+            onChange={(v) => {}}
           />
         </Form.Item>
       ),
@@ -401,12 +358,6 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
           shouldPush = true;
         }
       });
-      if (
-        itemCol?.dataIndex === 'actions' ||
-        itemCol?.dataIndex?.includes('actions.')
-      ) {
-        shouldPush = true;
-      }
       if (shouldPush) {
         newArr?.push(itemCol);
       }
@@ -426,41 +377,283 @@ const Validation: FC<any> = ({tableColumnDataShow}) => {
     setFinalValidationTableCol(newArr);
   }, [tableColumnDataShow]);
 
-  useEffect(() => {
-    validationDataData?.map((validationDataItem: any) => {
-      if (validationDataItem?.rowId === validationDataItem?.id) {
-        const obj = {
-          id: validationDataItem?.id,
-          line_number: validationDataItem?.line_number,
-          list_price: validationDataItem?.list_price,
-          pricing_method: validationDataItem?.pricing_method,
-          line_amount: validationDataItem?.line_amount,
-          unit_price: validationDataItem?.unit_price,
-          exit_price: validationDataItem?.exit_price,
-        };
-        dispatch(updateValidationById({...obj}));
-      }
-    });
-  }, [validationDataData]);
+  const rowSelection = () => {};
+
+  const locale = {
+    emptyText: <EmptyContainer title="There is no data for Validation." />,
+  };
+
+  const contractStatusCheck = (record: any) => {
+    const matchingField = ContractSettingData.matching_filed;
+
+    const value =
+      ContractSettingData.object_name === 'quote'
+        ? quoteById?.[matchingField]
+        : ContractSettingData.object_name === 'opportunity'
+          ? quoteById?.Opportunity?.[matchingField]
+          : ContractSettingData.object_name === 'quote_line_item'
+            ? record?.[matchingField]
+            : null;
+
+    if (value) {
+      const result = record?.product_code === value ? 'success' : 'reject';
+      return result;
+    }
+    if (!value) {
+      return 'reject';
+    }
+  };
 
   useEffect(() => {
-    dispatch(getAllValidationByQuoteId(Number(getQuoteID))).then((d: any) => {
-      setValidationDataData(d?.payload);
-    });
-  }, [getQuoteID]);
+    dispatch(getContractConfiguartion({}));
+  }, []);
+
+  const contractStatus = (record: any) => {
+    let fieldName = '';
+    let operator = '';
+    let finalSecondValue = '';
+    let status = '';
+    const statuses = ['green', 'yellow', 'red'];
+
+    for (let statusCheck of statuses) {
+      const matchingObjects =
+        contractConfigurationData &&
+        contractConfigurationData?.filter(
+          (item: any) => item?.contract_status === statusCheck,
+        );
+
+      if (matchingObjects.length > 0) {
+        const finalData =
+          matchingObjects?.[0]?.json && JSON?.parse(matchingObjects?.[0]?.json);
+        fieldName = finalData?.[0]?.['fieldName'];
+        operator = finalData?.[0]?.['operator'];
+
+        if (finalData?.[0]?.['valueType'] === 'formula') {
+          finalSecondValue = finalData?.[0]['value']?.reduce(
+            (acc: any, fieldName: any) => {
+              const value1 = record?.[fieldName];
+              if (typeof value1 === 'number') {
+                return acc + value1; // Add if it's a number
+              } else if (typeof value1 === 'string') {
+                return acc + value1; // Concatenate if it's a string
+              }
+              return acc; // Skip if it's neither number nor string
+            },
+            typeof record?.[finalData?.[0]['value']?.[0]] === 'number' ? 0 : '',
+          );
+        } else {
+          finalSecondValue = finalData?.[0]?.['value'];
+        }
+
+        if (operator && record?.[fieldName] && finalSecondValue) {
+          status = getContractStatus(
+            Number(record?.[fieldName]),
+            Number(finalSecondValue),
+            operator,
+          );
+        }
+
+        if (status === 'Correct') {
+          break; // Exit loop if status is correct
+        }
+      }
+    }
+    return status;
+  };
+
+  // useEffect(() => {
+  //   validationDataData?.map((validationDataItem: any) => {
+  //     if (validationDataItem?.rowId === validationDataItem?.id) {
+  //       const obj = {
+  //         id: validationDataItem?.id,
+  //         line_number: validationDataItem?.line_number,
+  //         list_price: validationDataItem?.list_price,
+  //         pricing_method: validationDataItem?.pricing_method,
+  //         line_amount: validationDataItem?.line_amount,
+  //         unit_price: validationDataItem?.unit_price,
+  //         exit_price: validationDataItem?.exit_price,
+  //       };
+  //       dispatch(updateValidationById({...obj}));
+  //     }
+  //   });
+  // }, [validationDataData]);
 
   return (
     <>
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
-        <OsTableWithOutDrag
-          loading={loading}
-          columns={finalValidationTableCol}
-          // dataSource={validationDataData}
-          dataSource={validationData}
-          scroll
-          locale={locale}
-          defaultPageSize={validationData?.length}
-        />
+        !selectedFilter ? (
+          <div key={JSON.stringify(validationFinalData)}>
+            <OsTableWithOutDrag
+              loading={loading}
+              columns={finalValidationTableCol}
+              dataSource={validationFinalData}
+              scroll
+              locale={locale}
+              rowSelection={rowSelection}
+              selectedRowsKeys={selectTedRowIds}
+              defaultPageSize={validationFinalData?.length}
+            />
+          </div>
+        ) : (
+          <>
+            {selectedFilter && validationFinalData?.length > 0 ? (
+              <>
+                {validationFinalData?.map(
+                  (finalDataItem: any, index: number) => {
+                    return (
+                      <OsCollapse
+                        key={index}
+                        activeKey={collapseActiveKeys}
+                        onChange={(key: string | string[]) => {
+                          setCollapseActiveKeys(key);
+                        }}
+                        items={[
+                          {
+                            key: index,
+                            label: (
+                              <Row
+                                justify="space-between"
+                                align="middle"
+                                gutter={[8, 8]}
+                              >
+                                <Col xs={24} sm={12} md={12} lg={5} xl={5}>
+                                  <Badge
+                                    count={finalDataItem?.QuoteLineItem?.length}
+                                  >
+                                    <Typography
+                                      style={{padding: '5px 8px 0px 0px'}}
+                                      name="Body 4/Medium"
+                                      color={token?.colorBgContainer}
+                                      ellipsis
+                                      tooltip
+                                      as="div"
+                                      maxWidth={240}
+                                    >
+                                      {finalDataItem?.name}
+                                    </Typography>
+                                  </Badge>
+                                </Col>
+                                <Col xs={24} sm={12} md={12} lg={6} xl={6}>
+                                  <span
+                                    style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                    }}
+                                  >
+                                    Ext Price:{' '}
+                                    <Typography
+                                      name="Body 4/Medium"
+                                      color={token?.colorBgContainer}
+                                      ellipsis
+                                      tooltip
+                                      as="div"
+                                      style={{marginLeft: '2px'}}
+                                    >
+                                      $
+                                      {abbreviate(
+                                        Number(
+                                          finalDataItem?.totalExtendedPrice ??
+                                            0.0,
+                                        ),
+                                      )}
+                                    </Typography>
+                                  </span>
+                                </Col>
+                                <Col xs={24} sm={12} md={12} lg={4} xl={4}>
+                                  <span
+                                    style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                    }}
+                                  >
+                                    GP:{' '}
+                                    <Typography
+                                      name="Body 4/Medium"
+                                      color={token?.colorBgContainer}
+                                      ellipsis
+                                      tooltip
+                                      as="div"
+                                      style={{marginLeft: '2px'}}
+                                    >
+                                      $
+                                      {abbreviate(
+                                        Number(
+                                          finalDataItem?.totalGrossProfit ??
+                                            0.0,
+                                        ),
+                                      )}
+                                    </Typography>
+                                  </span>
+                                </Col>
+                                <Col xs={24} sm={10} md={12} lg={4} xl={4}>
+                                  <span
+                                    style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                    }}
+                                  >
+                                    GP%:{' '}
+                                    <Typography
+                                      name="Body 4/Medium"
+                                      color={token?.colorBgContainer}
+                                      ellipsis
+                                      tooltip
+                                      as="div"
+                                      style={{marginLeft: '2px'}}
+                                    >
+                                      {' '}
+                                      {abbreviate(
+                                        Number(
+                                          finalDataItem?.totalGrossProfitPercentage ??
+                                            0.0,
+                                        ),
+                                      )}
+                                      %
+                                    </Typography>
+                                  </span>
+                                </Col>
+                              </Row>
+                            ),
+                            children: (
+                              <div
+                                key={JSON.stringify(
+                                  finalDataItem?.QuoteLineItem,
+                                )}
+                              >
+                                <OsTableWithOutDrag
+                                  loading={loading}
+                                  columns={finalValidationTableCol}
+                                  dataSource={finalDataItem?.QuoteLineItem}
+                                  scroll
+                                  locale={locale}
+                                  rowSelection={rowSelection}
+                                  selectedRowsKeys={selectTedRowIds}
+                                  defaultPageSize={
+                                    finalDataItem?.QuoteLineItem?.length
+                                  }
+                                />
+                              </div>
+                            ),
+                          },
+                        ]}
+                      />
+                    );
+                  },
+                )}
+              </>
+            ) : (
+              <OsTableWithOutDrag
+                loading={loading}
+                columns={finalValidationTableCol}
+                dataSource={[]}
+                scroll
+                locale={locale}
+                rowSelection={rowSelection}
+                selectedRowsKeys={selectTedRowIds}
+              />
+            )}
+          </>
+        )
       ) : (
         <EmptyContainer title="There Is No Validation Columns" />
       )}

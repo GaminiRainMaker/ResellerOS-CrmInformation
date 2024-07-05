@@ -77,7 +77,7 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
     dispatch(getAllCustomer({}));
     dispatch(getAllOpportunity());
     dispatch(getAllSyncTable('Quote'));
-  }, []);
+  }, [getQuoteId]);
 
   useEffect(() => {
     const newRequiredArray: any = [];
@@ -120,7 +120,6 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
     setStageNewValue(quoteById?.status);
     setCustomerValue(quoteById?.customer_id);
   }, [quoteById]);
-
 
   return (
     <GlobalLoader loading={quoteByIdLoading}>

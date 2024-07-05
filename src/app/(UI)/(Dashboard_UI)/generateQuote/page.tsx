@@ -43,6 +43,7 @@ import Validation from './allTabs/Validation';
 import AttachmentDocument from './allTabs/Attachment/index';
 import GenerateQuoteAnalytics from './analytics';
 import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
+import {getAllValidationByQuoteId} from '../../../../../redux/actions/validation';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -94,6 +95,7 @@ const GenerateQuote: React.FC = () => {
       dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
       dispatch(getAllBundle(getQuoteID));
       dispatch(getRebateQuoteLineItemByQuoteId(Number(getQuoteID)));
+      dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
     }
   }, [getQuoteID]);
 
@@ -386,6 +388,8 @@ const GenerateQuote: React.FC = () => {
         <Rebates
           tableColumnDataShow={tableColumnDataShow}
           selectedFilter={selectedFilter}
+          collapseActiveKeys={collapseActiveKeys}
+          setCollapseActiveKeys={setCollapseActiveKeys}
         />
       ),
     },
@@ -401,7 +405,14 @@ const GenerateQuote: React.FC = () => {
           Validation
         </Typography>
       ),
-      children: <Validation tableColumnDataShow={tableColumnDataShow} />,
+      children: (
+        <Validation
+          tableColumnDataShow={tableColumnDataShow}
+          selectedFilter={selectedFilter}
+          collapseActiveKeys={collapseActiveKeys}
+          setCollapseActiveKeys={setCollapseActiveKeys}
+        />
+      ),
     },
     {
       key: 5,
@@ -662,7 +673,7 @@ const GenerateQuote: React.FC = () => {
           </Row>
         }
       >
-        <DrawerContent form={form} onFinish={onFinish}/>
+        <DrawerContent form={form} onFinish={onFinish} />
       </OsDrawer>
 
       <OsModal

@@ -1,5 +1,5 @@
 'use client';
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapse from '@/app/components/common/os-collapse';
@@ -9,11 +9,11 @@ import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
-import {pricingMethod} from '@/app/utils/CONSTANTS';
-import {currencyFormatter} from '@/app/utils/base';
-import {Badge} from 'antd';
-import {FC, useEffect, useState} from 'react';
-import {useAppSelector} from '../../../../../../redux/hook';
+import { pricingMethod } from '@/app/utils/CONSTANTS';
+import { currencyFormatter } from '@/app/utils/base';
+import { Badge } from 'antd';
+import { FC, useEffect, useState } from 'react';
+import { useAppSelector } from '../../../../../../redux/hook';
 
 const Rebates: FC<any> = ({
   tableColumnDataShow,
@@ -22,6 +22,8 @@ const Rebates: FC<any> = ({
   setSelectedRowData,
   setSelectedRowIds,
   selectTedRowIds,
+  collapseActiveKeys,
+  setCollapseActiveKeys,
 }) => {
   const [token] = useThemeToken();
   const {abbreviate} = useAbbreviationHook(0);
@@ -30,84 +32,91 @@ const Rebates: FC<any> = ({
   );
   const [rebateFinalData, setRebateFinalData] = useState<any>([]);
 
-  const filterDataByValue = (data: any, filterValue?: string) => {
-    const groupedData: any = {};
+  const filterDataByValue = (data: any[], filterValue?: string) => {
+    const groupedData: {[key: string]: any} = {};
     const arrayData: any[] = [];
-    data &&
-      data.length > 0 &&
-      data?.forEach((item: any) => {
-        let name, description, type;
-        if (filterValue) {
-          if (filterValue === 'Product Family') {
+
+    if (!data || data.length === 0) {
+      setRebateFinalData([]);
+      return;
+    }
+
+    const convertToTitleCase = (input: string) => {
+      if (!input) return '';
+      return input
+        .toLowerCase()
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+    };
+
+    data.forEach((item) => {
+      let name: string | undefined;
+      let description = '';
+      const type = 'groups';
+
+      if (filterValue) {
+        switch (filterValue) {
+          case 'Product Family':
             name = item?.Product?.product_family || 'Unassigned';
-          } else if (filterValue === 'Pricing Method') {
+            break;
+          case 'Pricing Method':
             name = item?.pricing_method || 'Unassigned';
-          } else if (filterValue === 'File Name') {
+            break;
+          case 'File Name':
             name = item?.QuoteLineItem?.QuoteFile?.file_name;
-          } else if (filterValue === 'Vendor/Disti') {
+            break;
+          case 'Vendor/Disti':
             name =
               item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
                 ?.distribu;
-          } else if (filterValue === 'OEM') {
+            break;
+          case 'OEM':
             name = item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem;
-          }
-          type = 'groups';
-
-          if (!name) {
-            return;
-          }
-          const convertToTitleCase = (input: string) => {
-            if (!input) {
-              return '';
-            }
-            return input
-              .toLowerCase()
-              .replace(/_/g, ' ')
-              .replace(/\b\w/g, (char) => char.toUpperCase());
-          };
-          if (name.includes('_') || name === name.toLowerCase()) {
-            name = convertToTitleCase(name);
-          }
-
-          if (!groupedData[name]) {
-            groupedData[name] = {
-              name: name,
-              description: description || '',
-              type: type,
-              QuoteLineItem: [],
-              totalExtendedPrice: 0,
-              totalGrossProfit: 0,
-              totalGrossProfitPercentage: 0,
-            };
-          }
-          let extendedPrice = 0;
-          let grossProfit = 0;
-
-          if (item?.exit_price) {
-            extendedPrice += item.exit_price;
-          }
-          if (item?.gross_profit) {
-            grossProfit += item.gross_profit;
-          }
-          groupedData[name].totalExtendedPrice += extendedPrice;
-          groupedData[name].totalGrossProfit += grossProfit;
-          let grossProfitPer = 0;
-          if (
-            groupedData[name].totalGrossProfit !== 0 &&
-            groupedData[name].totalExtendedPrice !== 0
-          ) {
-            grossProfitPer =
-              (groupedData[name].totalGrossProfit /
-                groupedData[name].totalExtendedPrice) *
-              100;
-          }
-          groupedData[name].totalGrossProfitPercentage = grossProfitPer;
-          groupedData[name]?.QuoteLineItem?.push(item);
-        } else {
-          arrayData.push(item);
+            break;
+          default:
+            name = undefined;
         }
-      });
-    setRebateFinalData(groupedData);
+        console.log('Dataaaa', name, filterValue, item);
+
+        if (!name) return;
+
+        if (name.includes('_') || name === name.toLowerCase()) {
+          name = convertToTitleCase(name);
+        }
+
+        if (!groupedData[name]) {
+          groupedData[name] = {
+            name,
+            description,
+            type,
+            QuoteLineItem: [],
+            totalExtendedPrice: 0,
+            totalGrossProfit: 0,
+            totalGrossProfitPercentage: 0,
+          };
+        }
+
+        const extendedPrice = item?.exit_price || 0;
+        const grossProfit = item?.gross_profit || 0;
+
+        groupedData[name].totalExtendedPrice += extendedPrice;
+        groupedData[name].totalGrossProfit += grossProfit;
+
+        groupedData[name].totalGrossProfitPercentage =
+          groupedData[name].totalExtendedPrice !== 0
+            ? (groupedData[name].totalGrossProfit /
+                groupedData[name].totalExtendedPrice) *
+              100
+            : 0;
+
+        groupedData[name].QuoteLineItem.push(item);
+      } else {
+        arrayData.push(item);
+      }
+    });
+
+    const finalData = [...Object.values(groupedData), ...arrayData];
+    setRebateFinalData(finalData);
   };
 
   useEffect(() => {
@@ -125,6 +134,24 @@ const Rebates: FC<any> = ({
     }
     return true;
   };
+
+  const handleKeyDown = (e: any, record: any) => {
+    if (e.key === 'Enter') {
+      // setKeyPressed(record?.id);
+    }
+  };
+
+  const handleBlur = (record: any) => {
+    // setKeyPressed(record?.id);
+  };
+
+  const handleFieldChange = (
+    record: any,
+    field: string,
+    value: any,
+    updatedSelectedFilter: string,
+    type: string,
+  ) => {};
 
   const RebatesQuoteLineItemcolumns = [
     {
@@ -178,8 +205,8 @@ const Rebates: FC<any> = ({
       render: (text: string, record: any) => (
         <OsInputNumber
           min={0}
-          // onKeyDown={(e) => handleKeyDown(e, record)}
-          // onBlur={(e) => handleBlur(record)}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
           disabled={renderEditableInput('Amount')}
           style={{
             height: '36px',
@@ -191,13 +218,13 @@ const Rebates: FC<any> = ({
           parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
           defaultValue={text ?? 0.0}
           onChange={(e) => {
-            // handleFieldChange(
-            //   record,
-            //   'line_amount',
-            //   e,
-            //   selectedFilter,
-            //   'input',
-            // );
+            handleFieldChange(
+              record,
+              'line_amount',
+              e,
+              selectedFilter,
+              'input',
+            );
           }}
         />
       ),
@@ -302,9 +329,9 @@ const Rebates: FC<any> = ({
                   return (
                     <OsCollapse
                       key={index}
-                      // activeKey={collapseActiveKeys}
+                      activeKey={collapseActiveKeys}
                       onChange={(key: string | string[]) => {
-                        // setCollapseActiveKeys(key);
+                        setCollapseActiveKeys(key);
                       }}
                       items={[
                         {
