@@ -31,8 +31,7 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
   const getInReviewQuote = searchParams.get('inReviewQuote');
   const {data: dataAddress} = useAppSelector((state) => state.customer);
   const {quoteById, quoteByIdLoading} = useAppSelector((state) => state.quote);
-  const [customerValue, setCustomerValue] = useState<number>(0);
-  const [quoteData, setQuoteData] = useState<any>();
+  const [customerValue, setCustomerValue] = useState<number>();
   const [billingOptionsData, setBillingOptionData] = useState<any>();
   const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const [opportunityObject, setOpportunityObject] = useState<any>();
@@ -74,11 +73,9 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
   }, [dataAddress, customerValue]);
 
   useEffect(() => {
+    dispatch(getQuoteById(Number(getQuoteId)));
     dispatch(getAllCustomer({}));
     dispatch(getAllOpportunity());
-    dispatch(getQuoteById(Number(getQuoteId))).then((payload) => {
-      setQuoteData(payload?.payload);
-    });
     dispatch(getAllSyncTable('Quote'));
   }, []);
 
@@ -97,7 +94,7 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
     newRequiredArray?.map((itemsRe: any) => {
       newArrayForOpporQuoteLineItem?.push({
         key: itemsRe?.reciver,
-        value: quoteData?.[itemsRe?.sender],
+        value: getQuoteId?.[itemsRe?.sender],
       });
     });
 
@@ -106,7 +103,7 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
       {},
     );
     setOpportunityObject(singleObjects);
-  }, [syncTableData, quoteData]);
+  }, [syncTableData, getQuoteId]);
 
   useEffect(() => {
     form.setFieldsValue({
@@ -123,6 +120,7 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
     setStageNewValue(quoteById?.status);
     setCustomerValue(quoteById?.customer_id);
   }, [quoteById]);
+
 
   return (
     <GlobalLoader loading={quoteByIdLoading}>
@@ -217,6 +215,7 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
               <OsInputNumber
                 min={0}
                 precision={2}
+                prefix={'$'}
                 formatter={currencyFormatter}
                 parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
                 disabled={getInReviewQuote === 'true' ? true : false}

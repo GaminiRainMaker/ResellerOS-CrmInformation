@@ -39,6 +39,7 @@ import BundleSection from '../../BundleSection';
 import UpdatingLineItems from '../../UpdatingLineItems';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsButton from '@/app/components/common/os-button';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
@@ -973,7 +974,7 @@ const Profitablity: FC<any> = ({
   };
 
   return (
-    <>
+    <GlobalLoader loading={finalData && finalData?.length <= 0}>
       {finalProfitTableCol && finalProfitTableCol?.length > 0 ? (
         !selectedFilter ? (
           <div key={JSON.stringify(finalData)}>{renderFinalData()}</div>
@@ -1319,7 +1320,7 @@ const Profitablity: FC<any> = ({
         description="Are you sure you want to delete lineItem from this Bundle?"
         heading="Delete LineItem from Bundle"
       />
-    </>
+    </GlobalLoader>
   );
 };
 
