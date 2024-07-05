@@ -1251,8 +1251,10 @@ const Profitablity: FC<any> = ({
         body={
           <BundleSection
             selectTedRowIds={selectTedRowIds}
+            setSelectedRowData={setSelectedRowData}
             setShowBundleModal={setShowBundleModal}
             form={BundleForm}
+            setSelectedRowIds={setSelectedRowIds}
           />
         }
         width={700}
@@ -1292,12 +1294,12 @@ const Profitablity: FC<any> = ({
       >
         <BundleSection
           selectTedRowIds={selectTedRowIds}
+          setSelectedRowData={setSelectedRowData}
           setShowBundleModal={setShowBundleModal}
           form={BundleForm}
           bundleId={bundleRecordId}
-          setShowBundleDrawer={setShowBundleDrawer}
           drawer
-          setSelectedRowData={setSelectedRowData}
+          setShowBundleDrawer={setShowBundleDrawer}
           setSelectedRowIds={setSelectedRowIds}
         />
       </OsDrawer>
