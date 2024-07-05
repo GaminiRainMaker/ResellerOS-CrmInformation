@@ -372,9 +372,11 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                 productCode,
             );
             const obj1: any = {
-              quote_file_id: quoteFileById?.[0]?.id
-                ? quoteFileById?.[0]?.id
-                : getQuoteFileId,
+              quote_file_id: getQuoteFileId
+                ? getQuoteFileId
+                : quoteFileById?.[0]?.id
+                  ? quoteFileById?.[0]?.id
+                  : getQuoteFileId,
               quote_id: Number(getQuoteID),
               product_id: itemsToAdd?.id,
               product_code: itemsToAdd?.product_code,
@@ -500,7 +502,11 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     }
     dispatch(
       quoteFileVerification({
-        id: quoteFileById?.[0]?.id ? quoteFileById?.[0]?.id : getQuoteFileId,
+        id: getQuoteFileId
+          ? getQuoteFileId
+          : quoteFileById?.[0]?.id
+            ? quoteFileById?.[0]?.id
+            : getQuoteFileId,
       }),
     );
     setNanonetsLoading(false);
@@ -596,7 +602,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                       handleChange();
                     }
                   }}
-                  defaultValue={item?.newVal?.toString()?.toUpperCase()}
+                  defaultValue={formatStatus(
+                    item?.newVal?.toString()?.toUpperCase(),
+                  )}
                   style={{width: '250px'}}
                   options={syncTableQuoteLItemValues}
                 />
