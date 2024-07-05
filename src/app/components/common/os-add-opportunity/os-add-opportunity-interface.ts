@@ -7,4 +7,5 @@ export interface AddOpportunityInterface {
   customerValue?: number;
   setCustomerValue?: any;
   showCustomerSelect?: boolean;
+  stageValue?: string;
 }

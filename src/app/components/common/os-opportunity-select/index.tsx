@@ -39,8 +39,8 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
 
   useEffect(() => {
     form?.resetFields(['opportunity_id', 'contact_id']);
-    const filterUsers = opportunityData?.filter((item: any) =>
-      item?.customer_id?.toString()?.includes(customerValue),
+    const filterUsers = opportunityData?.filter(
+      (item: any) => item?.customer_id === customerValue,
     );
 
     const opportunityOptions = filterUsers?.map((opportunity: any) => ({
@@ -119,7 +119,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
             </>
           )}
           onChange={(e) => {
-            setOpportunityValue(e);
+            setOpportunityValue && setOpportunityValue(e);
           }}
         />
       </Form.Item>

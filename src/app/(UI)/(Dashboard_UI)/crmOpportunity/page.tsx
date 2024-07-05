@@ -43,7 +43,6 @@ import {queryContact} from '../../../../../redux/actions/billingContact';
 import {queryCustomer} from '../../../../../redux/actions/customer';
 import {
   deleteOpportunity,
-  getAllOpportunity,
   getdeleteOpportunity,
   insertOpportunity,
   queryOpportunity,
@@ -73,6 +72,7 @@ const CrmOpportunity: React.FC = () => {
   const {filteredData} = useAppSelector((state) => state.billingContact);
   const [activeOpportunity, setActiveOpportunity] = useState<any>();
   const [customerValue, setCustomerValue] = useState<number>();
+  const [stageValue, setStageValue] = useState<string>('');
   const [recordId, setRecordId] = useState<number>();
   const [deleteModalDescription, setDeleteModalDescription] =
     useState<string>('');
@@ -94,26 +94,14 @@ const CrmOpportunity: React.FC = () => {
 
   const deleteSelectedIds = async () => {
     const data = {Ids: deleteIds};
-    await dispatch(deleteOpportunity(data));
-    setTimeout(() => {
-      dispatch(queryOpportunity(query));
-      dispatch(getdeleteOpportunity(''));
-    }, 1000);
-    setDeleteIds([]);
-    setShowModalDelete(false);
+    await dispatch(deleteOpportunity(data)).then((d) => {
+      if (d?.payload) {
+        dispatch(queryOpportunity(query));
+        setDeleteIds([]);
+        setShowModalDelete(false);
+      }
+    });
   };
-
-  useEffect(() => {
-    dispatch(getdeleteOpportunity(''));
-  }, []);
-
-  useEffect(() => {
-    setTimeout(() => {
-      dispatch(queryOpportunity(query));
-    }, 1000);
-
-    dispatch(getdeleteOpportunity(''));
-  }, [!showModal]);
 
   const analyticsData = [
     {
@@ -168,6 +156,7 @@ const CrmOpportunity: React.FC = () => {
           onClick={() => {
             router.push(`/opportunityDetail?id=${record?.id}`);
           }}
+          color={token?.colorInfo}
           hoverOnText
         >
           {text ?? '--'}
@@ -255,6 +244,7 @@ const CrmOpportunity: React.FC = () => {
                 title: record?.title,
                 amount: record?.amount,
               });
+              setStageValue(record?.stages);
               setShowDrawer(true);
             }}
           />
@@ -391,7 +381,7 @@ const CrmOpportunity: React.FC = () => {
     };
     dispatch(insertOpportunity(finalData)).then((d: any) => {
       if (d?.payload) {
-        dispatch(getAllOpportunity());
+        dispatch(queryOpportunity(searchQuery));
         setShowModal(false);
         form.resetFields();
       }
@@ -407,7 +397,7 @@ const CrmOpportunity: React.FC = () => {
     };
     dispatch(updateOpportunity(finalData))?.then((d: any) => {
       if (d?.payload) {
-        dispatch(getAllOpportunity());
+        dispatch(queryOpportunity(searchQuery));
         setShowDrawer(false);
         form.resetFields();
       }
@@ -621,16 +611,17 @@ const CrmOpportunity: React.FC = () => {
           setCustomerValue={setCustomerValue}
           customerValue={customerValue}
           drawer
+          stageValue={stageValue}
         />
       </OsDrawer>
 
       <DeleteModal
+        loading={loading}
         setShowModalDelete={setShowModalDelete}
         setDeleteIds={setDeleteIds}
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteSelectedIds}
         description={deleteModalDescription}
-        // description="Are you sure you want to delete this opportunity?"
         heading="Delete Opportunity"
       />
     </>

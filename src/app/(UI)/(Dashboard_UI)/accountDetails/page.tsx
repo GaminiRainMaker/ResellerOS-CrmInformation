@@ -39,6 +39,10 @@ const AccountDetails = () => {
   const searchParams = useSearchParams();
   const getCustomerID = searchParams.get('id');
 
+  const quotes = customerData.Opportunities?.flatMap(
+    (opportunity: any) => opportunity?.Quotes,
+  );
+
   useEffect(() => {
     dispatch(getCustomerBYId(getCustomerID));
   }, [getCustomerID]);
@@ -66,7 +70,7 @@ const AccountDetails = () => {
     },
     {
       key: 2,
-      primary: <div>{customerData?.Quotes?.length ?? 0}</div>,
+      primary: <div>{quotes?.length ?? 0}</div>,
       secondry: 'Total Quotes',
       icon: <TagIcon width={36} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
@@ -75,9 +79,8 @@ const AccountDetails = () => {
       key: 3,
       primary: (
         <div>
-          {customerData?.Quotes?.filter(
-            (item: any) => item.status === 'Approved',
-          ).length ?? 0}
+          {quotes?.filter((item: any) => item.status === 'Approved').length ??
+            0}
         </div>
       ),
       secondry: 'Approved Quotes',
@@ -259,20 +262,6 @@ const AccountDetails = () => {
             </Row>
 
             <Row justify="start">
-              <Typography name="Heading 3/Medium">Quotes</Typography>
-            </Row>
-
-            <OsCard>
-              <OsTable
-                loading={loading}
-                columns={Quotecolumns}
-                dataSource={customerData?.Quotes}
-                scroll
-                locale={locale}
-              />
-            </OsCard>
-
-            <Row justify="start">
               <Typography name="Heading 3/Medium">Opportunities</Typography>
             </Row>
 
@@ -281,6 +270,20 @@ const AccountDetails = () => {
                 loading={loading}
                 columns={OpportunityColumns}
                 dataSource={customerData?.Opportunities}
+                locale={locale}
+              />
+            </OsCard>
+
+            <Row justify="start">
+              <Typography name="Heading 3/Medium">Quotes</Typography>
+            </Row>
+
+            <OsCard>
+              <OsTable
+                loading={loading}
+                columns={Quotecolumns}
+                dataSource={quotes}
+                scroll
                 locale={locale}
               />
             </OsCard>

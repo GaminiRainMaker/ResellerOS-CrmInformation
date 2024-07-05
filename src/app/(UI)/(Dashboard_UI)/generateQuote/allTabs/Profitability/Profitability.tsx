@@ -39,6 +39,7 @@ import BundleSection from '../../BundleSection';
 import UpdatingLineItems from '../../UpdatingLineItems';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsButton from '@/app/components/common/os-button';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
@@ -55,11 +56,12 @@ const Profitablity: FC<any> = ({
   isDeleteProfitabilityModal,
   showRemoveBundleLineItemModal,
   setShowRemoveBundleLineItemModal,
+  collapseActiveKeys,
+  setCollapseActiveKeys,
 }) => {
   const dispatch = useAppDispatch();
   const [BundleForm] = Form.useForm();
   const [token] = useThemeToken();
-
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
@@ -71,7 +73,6 @@ const Profitablity: FC<any> = ({
   const [finalData, setFinalData] = useState<any>([]);
   const [finalFieldData, setFinalFieldData] = useState<any>({});
   const [keyPressed, setKeyPressed] = useState('');
-  const [collapseActiveKeys, setCollapseActiveKeys] = useState<any>([]);
   const [showBundleDrawer, setShowBundleDrawer] = useState<boolean>(false);
   const [bundleRecordId, setBundleRecordId] = useState<any>();
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
@@ -246,7 +247,6 @@ const Profitablity: FC<any> = ({
   useEffect(() => {
     if (profitabilityDataByQuoteId && profitabilityDataByQuoteId.length > 0) {
       filterDataByValue(profitabilityDataByQuoteId, selectedFilter);
-      setCollapseActiveKeys([]);
     }
   }, [JSON.stringify(profitabilityDataByQuoteId), selectedFilter]);
 
@@ -974,7 +974,7 @@ const Profitablity: FC<any> = ({
   };
 
   return (
-    <>
+    <GlobalLoader loading={finalData && finalData?.length <= 0}>
       {finalProfitTableCol && finalProfitTableCol?.length > 0 ? (
         !selectedFilter ? (
           <div key={JSON.stringify(finalData)}>{renderFinalData()}</div>
@@ -1251,8 +1251,10 @@ const Profitablity: FC<any> = ({
         body={
           <BundleSection
             selectTedRowIds={selectTedRowIds}
+            setSelectedRowData={setSelectedRowData}
             setShowBundleModal={setShowBundleModal}
             form={BundleForm}
+            setSelectedRowIds={setSelectedRowIds}
           />
         }
         width={700}
@@ -1292,11 +1294,13 @@ const Profitablity: FC<any> = ({
       >
         <BundleSection
           selectTedRowIds={selectTedRowIds}
+          setSelectedRowData={setSelectedRowData}
           setShowBundleModal={setShowBundleModal}
           form={BundleForm}
           bundleId={bundleRecordId}
-          setShowBundleDrawer={setShowBundleDrawer}
           drawer
+          setShowBundleDrawer={setShowBundleDrawer}
+          setSelectedRowIds={setSelectedRowIds}
         />
       </OsDrawer>
 
@@ -1307,7 +1311,7 @@ const Profitablity: FC<any> = ({
         showModalDelete={isDeleteProfitabilityModal}
         deleteSelectedIds={deleteProfitabityData}
         description="Are you sure you want to delete selected line items?"
-        heading="Delete Profitability"
+        heading="Delete Line Item"
       />
       <DeleteModal
         loading={bundleLoading}
@@ -1318,7 +1322,7 @@ const Profitablity: FC<any> = ({
         description="Are you sure you want to delete lineItem from this Bundle?"
         heading="Delete LineItem from Bundle"
       />
-    </>
+    </GlobalLoader>
   );
 };
 

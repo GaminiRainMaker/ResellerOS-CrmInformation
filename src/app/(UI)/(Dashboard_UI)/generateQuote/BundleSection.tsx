@@ -16,11 +16,13 @@ import {getProfitabilityByQuoteId} from '../../../../../redux/actions/profitabil
 
 const BundleSection: FC<any> = ({
   selectTedRowIds,
+  setSelectedRowData,
   setShowBundleModal,
   form,
   bundleId,
   drawer,
   setShowBundleDrawer,
+  setSelectedRowIds,
 }) => {
   const searchParams = useSearchParams();
   const getQuoteId = searchParams.get('id');
@@ -56,9 +58,9 @@ const BundleSection: FC<any> = ({
       });
     }
     await dispatch(updateQuoteLineItemForBundleId(data));
-
+    setSelectedRowData && setSelectedRowData([]);
+    setSelectedRowIds && setSelectedRowIds([]);
     await dispatch(getProfitabilityByQuoteId(Number(getQuoteId)));
-    await dispatch(getAllBundle(getQuoteId));
     setRadioValue(1);
     setShowBundleModal(false);
     setShowBundleDrawer && setShowBundleDrawer(false);

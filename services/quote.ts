@@ -48,6 +48,8 @@ export const QUOTEAPI = {
     post(API.QUOTE.GetQuotesByExistingQuoteFilter, data) as Promise<
       AxiosResponse<any>
     >,
+  updateQuoteCustomerId: (data: any) =>
+    patch(API.QUOTE.UpdateQuoteCustomerId, data) as Promise<AxiosResponse<any>>,
   // put: (id: number, data: any) => put(API.QUOTE.INDEX + "/" + id, data),
   // delete: (id: number) => del(API.QUOTE.INDEX + "/" + id),
 };

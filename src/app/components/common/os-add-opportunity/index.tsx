@@ -7,13 +7,13 @@ import OsInput from '@/app/components/common/os-input';
 import CommonStageSelect from '@/app/components/common/os-stage-select';
 import Typography from '@/app/components/common/typography';
 import {StageValue} from '@/app/utils/CONSTANTS';
+import {currencyAmountFormatter} from '@/app/utils/base';
 import {Form} from 'antd';
 import {useState} from 'react';
 import OsCustomerSelect from '../os-customer-select';
+import OsInputNumber from '../os-input/InputNumber';
 import {SelectFormItem} from '../os-oem-select/oem-select-styled';
 import {AddOpportunityInterface} from './os-add-opportunity-interface';
-import OsInputNumber from '../os-input/InputNumber';
-import {currencyAmountFormatter, currencyFormatter} from '@/app/utils/base';
 
 const AddOpportunity: React.FC<AddOpportunityInterface> = ({
   onFinish,
@@ -22,9 +22,10 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
   customerValue,
   setCustomerValue,
   showCustomerSelect,
+  stageValue,
 }) => {
   const [token] = useThemeToken();
-  const [stageValue, setStageValue] = useState<string>();
+  const [stageNewValue, setStageNewValue] = useState<string>();
 
   return (
     <>
@@ -112,7 +113,7 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
                 style={{
                   width: '100%',
                 }}
-                placeholder="Quote Shipping"
+                placeholder="Enter Amount"
               />
             </SelectFormItem>
           </Col>
@@ -132,9 +133,9 @@ const AddOpportunity: React.FC<AddOpportunityInterface> = ({
                 style={{width: '100%', marginTop: '10px'}}
                 options={StageValue}
                 onChange={(e: string) => {
-                  setStageValue(e);
+                  setStageNewValue(e);
                 }}
-                currentStage={stageValue}
+                currentStage={stageNewValue ?? stageValue}
               />
             </SelectFormItem>
           </Col>

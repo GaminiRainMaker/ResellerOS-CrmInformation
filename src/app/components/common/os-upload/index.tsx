@@ -37,6 +37,8 @@ const OsUpload: React.FC<any> = ({
   quoteDetails,
   typeOfAddQuote,
   setTypeOfAddQuote,
+  opportunityDetailId,
+  customerDetailId,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -95,6 +97,13 @@ const OsUpload: React.FC<any> = ({
     const index = newArr.findIndex((item) => item.error);
     if (index > -1) {
       setUploadFileData(newArr);
+    } else if (opportunityDetailId) {
+      addQuoteLineItem(
+        customerDetailId,
+        opportunityDetailId,
+        newArr,
+        singleQuote,
+      );
     } else {
       if (typeOfAddQuote === 1) {
         addQuoteLineItem(customerId, opportunityId, newArr, singleQuote);
@@ -127,10 +136,10 @@ const OsUpload: React.FC<any> = ({
     dispatch(
       getQuotesByExistingQuoteFilter({
         customer: customerValue,
-        opportunity: opportunityValue,
+        opportunity: opportunityValue ?? opportunityDetailId,
       }),
     );
-  }, [customerValue, opportunityValue]);
+  }, [customerValue, opportunityValue, opportunityDetailId]);
 
   return (
     <GlobalLoader loading={cardLoading || loading}>
@@ -257,7 +266,7 @@ const OsUpload: React.FC<any> = ({
               </Col>
             </Row>
 
-            {!isGenerateQuote && (
+            {!isGenerateQuote && !opportunityDetailId && (
               <Row gutter={[16, 16]}>
                 <Col sm={24} md={12}>
                   <OsCustomerSelect

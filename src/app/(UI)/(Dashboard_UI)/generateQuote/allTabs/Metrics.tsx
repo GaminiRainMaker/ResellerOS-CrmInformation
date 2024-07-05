@@ -1,6 +1,5 @@
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import EmptyContainer from '@/app/components/common/os-empty-container';
@@ -8,38 +7,14 @@ import OsPieChart from '@/app/components/common/os-piechart';
 import Typography from '@/app/components/common/typography';
 import {FC, useEffect, useState} from 'react';
 import {useAppSelector} from '../../../../../../redux/hook';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 
 const Matrix: FC<any> = ({selectedFilter}) => {
   const [token] = useThemeToken();
-
-  const [chartDimensions, setChartDimensions] = useState<any>({});
-
-  useEffect(() => {
-    const updateChartDimensions = () => {
-      let width;
-      if (window.innerWidth < 400) {
-        width = window.innerWidth - 40;
-      } else if (window.innerWidth < 768) {
-        width = 400;
-      } else if (window.innerWidth < 1024) {
-        width = 620;
-      } else if (window.innerWidth < 1537) {
-        width = 620;
-      } else {
-        width = 800;
-      }
-      setChartDimensions({width});
-    };
-
-    window.addEventListener('resize', updateChartDimensions);
-    updateChartDimensions();
-    return () => window.removeEventListener('resize', updateChartDimensions);
-  }, []);
   const {data: profitabilityDataByQuoteId} = useAppSelector(
     (state) => state.profitability,
   );
   const [finalData, setFinalData] = useState<any>();
-
   const filterDataByValue = (data: any, filterValue: string) => {
     const groupedData: any = {};
     data?.forEach((item: any) => {
@@ -97,7 +72,6 @@ const Matrix: FC<any> = ({selectedFilter}) => {
     Maintenance: token?.colorTextDisabled,
     Gp: token?.colorTextDisabled,
   };
-
   const randomColors: string[] = [
     token?.colorPrimary,
     token?.colorInfo,
@@ -106,9 +80,7 @@ const Matrix: FC<any> = ({selectedFilter}) => {
     '#495D79',
     '#31576F',
   ];
-
   let colorIndex = 0;
-
   const getPieCellColor = (name: string) => {
     if (!colorPalette[name]) {
       colorPalette[name] = randomColors[colorIndex];
@@ -197,31 +169,22 @@ const Matrix: FC<any> = ({selectedFilter}) => {
     }
   }, [finalData]);
 
+  const style: React.CSSProperties = {
+    padding: '18px',
+    background: '#f6f7f8',
+    borderRadius: '12px',
+  };
+
   return (
     <>
       {finalData?.length > 0 ? (
-        <Row gutter={[24, 24]} justify="space-between">
+        <Row gutter={[16, 16]} justify={'space-between'}>
           {sectionData &&
             sectionData?.map((item) => {
               let word = item?.name?.split(' ')[0].toLowerCase();
-
               return (
-                <div
-                  style={{
-                    padding: '18px',
-                    background: '#f6f7f8',
-                    borderRadius: '12px',
-                  }}
-                  key={item.id}
-                >
-                  <Col
-                    style={{
-                      padding: '18px',
-                      background: '#f6f7f8',
-                      borderRadius: '12px',
-                    }}
-                    span={12}
-                  >
+                <Col key={item.id} md={24} lg={24} xl={12} xxl={12}>
+                  <div style={style}>
                     <Space direction="vertical">
                       <Typography name="Body 1/Regular">{item.name}</Typography>
                       {item.pieData?.length > 0 && (
@@ -233,19 +196,13 @@ const Matrix: FC<any> = ({selectedFilter}) => {
                     {item.pieData?.length > 0 ? (
                       <OsPieChart data={item.pieData} />
                     ) : (
-                      <Typography
-                        name="Body 1/Regular"
-                        style={{
-                          width: chartDimensions?.width,
-                        }}
-                        as="div"
-                      >
-                        There is no {word} available for{' '}
-                        {selectedFilter ? ` (${selectedFilter})` : ' (--)'}
-                      </Typography>
+                      <EmptyContainer
+                        title={`There is no ${word} available for ${selectedFilter ? `(${selectedFilter})` : '(--)'}`}
+                        MetricsIcon
+                      />
                     )}
-                  </Col>
-                </div>
+                  </div>
+                </Col>
               );
             })}
         </Row>

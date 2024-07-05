@@ -42,6 +42,8 @@ import ReviewQuotes from './allTabs/ReviewQuotes';
 import Validation from './allTabs/Validation';
 import AttachmentDocument from './allTabs/Attachment/index';
 import GenerateQuoteAnalytics from './analytics';
+import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
+import {getAllValidationByQuoteId} from '../../../../../redux/actions/validation';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -64,6 +66,7 @@ const GenerateQuote: React.FC = () => {
     useState<boolean>(false);
   const [showRemoveBundleLineItemModal, setShowRemoveBundleLineItemModal] =
     useState<boolean>(false);
+  const [collapseActiveKeys, setCollapseActiveKeys] = useState<any>([]);
   const [selectedFilter, setSelectedFilter] = useState<string>('File Name');
   const {data: tableColumnData} = useAppSelector((state) => state.tableColumn);
   const {data: contractSettingData} = useAppSelector(
@@ -91,6 +94,8 @@ const GenerateQuote: React.FC = () => {
       dispatch(getQuoteById(Number(getQuoteID)));
       dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
       dispatch(getAllBundle(getQuoteID));
+      dispatch(getRebateQuoteLineItemByQuoteId(Number(getQuoteID)));
+      dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
     }
   }, [getQuoteID]);
 
@@ -117,7 +122,6 @@ const GenerateQuote: React.FC = () => {
                   newBundleData?.push(items);
                 }
               });
-              console.log('payload?.payload', payload?.payload);
               let newObj = {
                 bundleData: newBundleData,
                 QuoteLineItems: payload?.payload?.Profitabilities,
@@ -355,6 +359,8 @@ const GenerateQuote: React.FC = () => {
           showUpdateLineItemModal={showUpdateLineItemModal}
           selectTedRowData={selectTedRowData}
           setSelectedRowData={setSelectedRowData}
+          setCollapseActiveKeys={setCollapseActiveKeys}
+          collapseActiveKeys={collapseActiveKeys}
           setShowBundleModal={setShowBundleModal}
           selectTedRowIds={selectTedRowIds}
           setSelectedRowIds={setSelectedRowIds}
@@ -378,7 +384,14 @@ const GenerateQuote: React.FC = () => {
           Rebates
         </Typography>
       ),
-      children: <Rebates tableColumnDataShow={tableColumnDataShow} />,
+      children: (
+        <Rebates
+          tableColumnDataShow={tableColumnDataShow}
+          selectedFilter={selectedFilter}
+          collapseActiveKeys={collapseActiveKeys}
+          setCollapseActiveKeys={setCollapseActiveKeys}
+        />
+      ),
     },
     contractSettingData?.show_validation_tab && {
       key: 4,
@@ -392,7 +405,14 @@ const GenerateQuote: React.FC = () => {
           Validation
         </Typography>
       ),
-      children: <Validation tableColumnDataShow={tableColumnDataShow} />,
+      children: (
+        <Validation
+          tableColumnDataShow={tableColumnDataShow}
+          selectedFilter={selectedFilter}
+          collapseActiveKeys={collapseActiveKeys}
+          setCollapseActiveKeys={setCollapseActiveKeys}
+        />
+      ),
     },
     {
       key: 5,
@@ -484,7 +504,6 @@ const GenerateQuote: React.FC = () => {
     }
   };
 
-  console.log('quoteByIdquoteById', quoteById);
   return (
     <>
       {contextHolder}
@@ -607,6 +626,7 @@ const GenerateQuote: React.FC = () => {
                         options={selectData}
                         onChange={(e) => {
                           setSelectedFilter(e);
+                          setCollapseActiveKeys([]);
                         }}
                         allowClear
                         defaultValue={'File Name'}
@@ -639,7 +659,7 @@ const GenerateQuote: React.FC = () => {
       <OsDrawer
         title={<Typography name="Body 1/Regular">Quote Settings</Typography>}
         placement="right"
-        onClose={() => setOpen((p) => !p)}
+        onClose={() => setOpen(false)}
         open={open}
         width={450}
         footer={
@@ -648,12 +668,12 @@ const GenerateQuote: React.FC = () => {
               btnStyle={{width: '100%'}}
               buttontype="PRIMARY"
               text="Update Changes"
-              clickHandler={() => form.submit()}
+              clickHandler={form.submit}
             />
           </Row>
         }
       >
-        <DrawerContent form={form} open={open} onFinish={onFinish} />
+        <DrawerContent form={form} onFinish={onFinish} />
       </OsDrawer>
 
       <OsModal

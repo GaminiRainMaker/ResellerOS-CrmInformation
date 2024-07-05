@@ -48,6 +48,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
   existingGenerateQuoteId,
   quoteDetails,
   isGenerateQuotePage = false,
+  opportunityId,
+  customerId,
 }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
@@ -479,6 +481,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
             typeOfAddQuote={typeOfAddQuote}
             setTypeOfAddQuote={setTypeOfAddQuote}
             setAllValuesForManual={setAllValuesForManual}
+            opportunityDetailId={opportunityId}
+            customerDetailId={customerId}
           />
         }
         width={900}

@@ -1,6 +1,13 @@
 'use client';
-import {FC, useEffect, useState} from 'react';
-import {Cell, Legend, Pie, PieChart, Tooltip} from 'recharts';
+import {FC} from 'react';
+import {
+  Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+} from 'recharts';
 import useAbbreviationHook from '../hooks/useAbbreviationHook';
 
 const CustomTooltip = (props: any) => {
@@ -33,61 +40,39 @@ const CustomTooltip = (props: any) => {
 };
 
 const OsPieChart: FC<any> = ({data}: any) => {
-  const [chartDimensions, setChartDimensions] = useState<any>({});
-
-  useEffect(() => {
-    const updateChartDimensions = () => {
-      let width;
-      if (window.innerWidth < 400) {
-        width = window.innerWidth - 40;
-      } else if (window.innerWidth < 768) {
-        width = 400;
-      } else if (window.innerWidth < 1024) {
-        width = 620;
-      } else if (window.innerWidth < 1537) {
-        width = 620;
-      } else {
-        width = 800;
-      }
-      setChartDimensions({width});
-    };
-
-    window.addEventListener('resize', updateChartDimensions);
-    updateChartDimensions();
-    return () => window.removeEventListener('resize', updateChartDimensions);
-  }, []);
-
   return (
-    <PieChart width={chartDimensions?.width} height={280}>
-      <Pie
-        data={data}
-        cx={200}
-        cy={120}
-        innerRadius={70}
-        outerRadius={95}
-        dataKey="value"
-      >
-        {data &&
-          data?.map((entry: any, index: number) => (
-            <Cell key={`cell-${index}`} fill={entry?.color} />
-          ))}
-      </Pie>
-      <Legend
-        iconSize={20}
-        iconType="circle"
-        width={250}
-        height={100}
-        layout="vertical"
-        verticalAlign="middle"
-        align="right"
-      />
-      <Tooltip
-        isAnimationActive={false}
-        animationEasing="linear"
-        content={<CustomTooltip />}
-        position={{x: 130, y: 230}}
-      />
-    </PieChart>
+    <ResponsiveContainer width="100%" height={280}>
+      <PieChart>
+        <Pie
+          data={data}
+          cx={200}
+          cy={120}
+          innerRadius={70}
+          outerRadius={95}
+          dataKey="value"
+        >
+          {data &&
+            data?.map((entry: any, index: number) => (
+              <Cell key={`cell-${index}`} fill={entry?.color} />
+            ))}
+        </Pie>
+        <Legend
+          iconSize={20}
+          iconType="circle"
+          width={250}
+          height={100}
+          layout="vertical"
+          verticalAlign="middle"
+          align="right"
+        />
+        <Tooltip
+          isAnimationActive={false}
+          animationEasing="linear"
+          content={<CustomTooltip />}
+          position={{x: 130, y: 230}}
+        />
+      </PieChart>
+    </ResponsiveContainer>
   );
 };
 

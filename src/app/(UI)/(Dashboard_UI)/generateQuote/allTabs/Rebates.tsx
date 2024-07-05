@@ -1,84 +1,129 @@
-/* eslint-disable array-callback-return */
-import OsInput from '@/app/components/common/os-input';
-import {FC, useCallback, useEffect, useState} from 'react';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import _debounce from 'lodash/debounce';
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable consistent-return */
+'use client';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import OsCollapse from '@/app/components/common/os-collapse';
 import EmptyContainer from '@/app/components/common/os-empty-container';
+import OsInput from '@/app/components/common/os-input';
+import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
-import {pricingMethod} from '@/app/utils/CONSTANTS';
-import {
-  calculateProfitabilityData,
-  rebateAmount,
-  useRemoveDollarAndCommahook,
-} from '@/app/utils/base';
-import {useSearchParams} from 'next/navigation';
-import {
-  getRebateQuoteLineItemByQuoteId,
-  updateRebateQuoteLineItemById,
-} from '../../../../../../redux/actions/rebateQuoteLineitem';
-import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
-import {setRebate} from '../../../../../../redux/slices/rebate';
-import {setRebateQuoteLineItem} from '../../../../../../redux/slices/rebateQuoteLineItem';
+import { pricingMethod } from '@/app/utils/CONSTANTS';
+import { currencyFormatter } from '@/app/utils/base';
+import { Badge } from 'antd';
+import { FC, useEffect, useState } from 'react';
+import { useAppSelector } from '../../../../../../redux/hook';
 
-const Rebates: FC<any> = ({tableColumnDataShow}) => {
-  const dispatch = useAppDispatch();
+const Rebates: FC<any> = ({
+  tableColumnDataShow,
+  selectedFilter,
+  selectTedRowData,
+  setSelectedRowData,
+  setSelectedRowIds,
+  selectTedRowIds,
+  collapseActiveKeys,
+  setCollapseActiveKeys,
+}) => {
+  const [token] = useThemeToken();
   const {abbreviate} = useAbbreviationHook(0);
-  const searchParams = useSearchParams();
-  const getQuoteID = searchParams.get('id');
   const {data: RebateData, loading} = useAppSelector(
     (state) => state.rebateQuoteLineItem,
   );
-  const [rebateData, setRebateData] = useState<any>(RebateData);
-  const updateRebateQuoteLineItemData = (updatedData: any) => {
-    dispatch(updateRebateQuoteLineItemById(updatedData));
-  };
+  const [rebateFinalData, setRebateFinalData] = useState<any>([]);
 
-  const debouncedApiCall = useCallback(
-    _debounce(updateRebateQuoteLineItemData, 500),
-    [],
-  );
+  const filterDataByValue = (data: any[], filterValue?: string) => {
+    const groupedData: {[key: string]: any} = {};
+    const arrayData: any[] = [];
 
-  useEffect(() => {
-    setTimeout(() => {
-      dispatch(setRebate(rebateData));
-    }, 500);
-  }, [rebateData]);
+    if (!data || data.length === 0) {
+      setRebateFinalData([]);
+      return;
+    }
 
-  const handleInputChange = (recordId: number, list_price: string) => {
-    rebateData.map((prevItem: any) => {
-      if (recordId === prevItem?.id) {
-        const rebateAmountValue: any = rebateAmount(
-          useRemoveDollarAndCommahook(list_price),
-          prevItem?.quantity,
-          prevItem?.percentage_payout,
-        );
-        const obj = {
-          id: prevItem?.id,
-          line_number: prevItem?.line_number,
-          quantity: prevItem?.quantity,
-          list_price,
-          percentage_payout: prevItem?.percentage_payout,
-          line_amount: prevItem?.line_amount,
-          unit_price: prevItem?.unit_price,
-          exit_price: prevItem?.exit_price,
-          rebate_amount: rebateAmountValue,
-          rebate_percentage: prevItem?.percentage_payout,
-          rowId: recordId,
-        };
-        debouncedApiCall(obj);
+    const convertToTitleCase = (input: string) => {
+      if (!input) return '';
+      return input
+        .toLowerCase()
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+    };
+
+    data.forEach((item) => {
+      let name: string | undefined;
+      let description = '';
+      const type = 'groups';
+
+      if (filterValue) {
+        switch (filterValue) {
+          case 'Product Family':
+            name = item?.Product?.product_family || 'Unassigned';
+            break;
+          case 'Pricing Method':
+            name = item?.pricing_method || 'Unassigned';
+            break;
+          case 'File Name':
+            name = item?.QuoteLineItem?.QuoteFile?.file_name;
+            break;
+          case 'Vendor/Disti':
+            name =
+              item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
+                ?.distribu;
+            break;
+          case 'OEM':
+            name = item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem;
+            break;
+          default:
+            name = undefined;
+        }
+        console.log('Dataaaa', name, filterValue, item);
+
+        if (!name) return;
+
+        if (name.includes('_') || name === name.toLowerCase()) {
+          name = convertToTitleCase(name);
+        }
+
+        if (!groupedData[name]) {
+          groupedData[name] = {
+            name,
+            description,
+            type,
+            QuoteLineItem: [],
+            totalExtendedPrice: 0,
+            totalGrossProfit: 0,
+            totalGrossProfitPercentage: 0,
+          };
+        }
+
+        const extendedPrice = item?.exit_price || 0;
+        const grossProfit = item?.gross_profit || 0;
+
+        groupedData[name].totalExtendedPrice += extendedPrice;
+        groupedData[name].totalGrossProfit += grossProfit;
+
+        groupedData[name].totalGrossProfitPercentage =
+          groupedData[name].totalExtendedPrice !== 0
+            ? (groupedData[name].totalGrossProfit /
+                groupedData[name].totalExtendedPrice) *
+              100
+            : 0;
+
+        groupedData[name].QuoteLineItem.push(item);
+      } else {
+        arrayData.push(item);
       }
     });
+
+    const finalData = [...Object.values(groupedData), ...arrayData];
+    setRebateFinalData(finalData);
   };
 
   useEffect(() => {
-    dispatch(setRebateQuoteLineItem(rebateData));
-  }, [JSON.stringify(RebateData)]);
+    if (RebateData && RebateData.length > 0) {
+      filterDataByValue(RebateData, selectedFilter);
+    }
+  }, [JSON.stringify(RebateData), selectedFilter]);
 
   const renderEditableInput = (field: string) => {
     const editableField = tableColumnDataShow.find(
@@ -89,6 +134,24 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
     }
     return true;
   };
+
+  const handleKeyDown = (e: any, record: any) => {
+    if (e.key === 'Enter') {
+      // setKeyPressed(record?.id);
+    }
+  };
+
+  const handleBlur = (record: any) => {
+    // setKeyPressed(record?.id);
+  };
+
+  const handleFieldChange = (
+    record: any,
+    field: string,
+    value: any,
+    updatedSelectedFilter: string,
+    type: string,
+  ) => {};
 
   const RebatesQuoteLineItemcolumns = [
     {
@@ -129,39 +192,6 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
           style={{width: '100%'}}
           placeholder="Select"
           defaultValue={text}
-          onChange={(v) => {
-            setRebateData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {...prevItem, pricing_method: v};
-                }
-                return prevItem;
-              }),
-            );
-            setRebateData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (record?.id === prevItem?.id) {
-                  const rowId = record?.id;
-                  const result: any = calculateProfitabilityData(
-                    useRemoveDollarAndCommahook(prevItem?.quantity),
-                    prevItem?.pricing_method,
-                    useRemoveDollarAndCommahook(prevItem?.line_amount),
-                    useRemoveDollarAndCommahook(prevItem?.adjusted_price),
-                    useRemoveDollarAndCommahook(prevItem?.list_price),
-                  );
-                  return {
-                    ...prevItem,
-                    unit_price: result.unitPrice,
-                    exit_price: result.exitPrice,
-                    gross_profit: result.grossProfit,
-                    gross_profit_percentage: result.grossProfitPercentage,
-                    rowId,
-                  };
-                }
-                return prevItem;
-              }),
-            );
-          }}
           options={pricingMethod}
         />
       ),
@@ -173,27 +203,34 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
       key: 'line_amount',
       width: 121,
       render: (text: string, record: any) => (
-        <OsInput
-          disabled
+        <OsInputNumber
+          min={0}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
+          disabled={renderEditableInput('Amount')}
           style={{
             height: '36px',
+            textAlignLast: 'center',
+            width: '100%',
           }}
-          value={text}
-          onChange={(v) => {
-            setRebateData((prev: any) =>
-              prev.map((prevItem: any) => {
-                if (prevItem.id === record?.id) {
-                  return {...prevItem, line_amount: v.target.value};
-                }
-                return prevItem;
-              }),
+          precision={2}
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+          defaultValue={text ?? 0.0}
+          onChange={(e) => {
+            handleFieldChange(
+              record,
+              'line_amount',
+              e,
+              selectedFilter,
+              'input',
             );
           }}
         />
       ),
     },
     {
-      title: 'Unit Price',
+      title: 'Unit Price ($)',
       dataIndex: 'unit_price',
       key: 'unit_price',
       width: 152,
@@ -204,10 +241,10 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
       ),
     },
     {
-      title: 'Exit Price',
+      title: 'Extended Price ($)',
       dataIndex: 'exit_price',
       key: 'exit_price',
-      width: 131,
+      width: 150,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
           {text ? `$ ${abbreviate(text ?? 0)}` : 0}
@@ -215,10 +252,10 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
       ),
     },
     {
-      title: 'Rebate Amount',
+      title: 'Rebate Amount ($)',
       dataIndex: 'rebate_amount',
       key: 'rebate_amount',
-      width: 135,
+      width: 150,
       render: (text: number) => (
         <Typography name="Body 4/Medium">
           {text ? `$ ${abbreviate(text ?? 0)}` : 0}
@@ -237,30 +274,6 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
       ),
     },
   ];
-
-  useEffect(() => {
-    rebateData.map((rebatesDataItem: any) => {
-      if (rebatesDataItem?.rowId === rebatesDataItem?.id) {
-        const obj = {
-          id: rebatesDataItem?.id,
-          line_number: rebatesDataItem?.line_number,
-          quantity: rebatesDataItem?.quantity,
-          list_price: rebatesDataItem?.list_price,
-          line_amount: rebatesDataItem?.line_amount,
-          percentage_payout: rebatesDataItem?.percentage_payout,
-          unit_price: rebatesDataItem?.unit_price,
-          exit_price: rebatesDataItem?.exit_price,
-          rebate_amount: rebatesDataItem?.rebate_amount,
-          rebate_percentage: rebatesDataItem?.percentage_payout,
-          pricing_method: rebatesDataItem?.pricing_method,
-        };
-
-        dispatch(updateRebateQuoteLineItemById({...obj}));
-      }
-    });
-    // for analytics tabss it is in pending
-    // dispatch(setProfitability(profitabilityData));
-  }, [rebateData]);
 
   const [finaRebateTableCol, setFinaRebateTableCol] = useState<any>();
 
@@ -286,39 +299,183 @@ const Rebates: FC<any> = ({tableColumnDataShow}) => {
     setFinaRebateTableCol(newArr);
   }, [tableColumnDataShow]);
 
-  useEffect(() => {
-    dispatch(getRebateQuoteLineItemByQuoteId(Number(getQuoteID))).then(
-      (d: any) => {
-        setRebateData(d?.payload);
-      },
-    );
-  }, [getQuoteID]);
+  const rowSelection = () => {};
+
+  const locale = {
+    emptyText: <EmptyContainer title="There is no data for Rebates" />,
+  };
+
   return (
     <>
-      {rebateData && rebateData?.length > 0 ? (
-        <>
-          {/* <Button
-            onClick={() => {
-              const textResult = convertDataToText(
-                finaRebateTableCol,
-                rebateData,
-              );
-              if (textResult) {
-                navigator.clipboard.writeText(textResult);
-              }
-            }}
-          >
-            Copy Data
-          </Button> */}
-
-          <OsTableWithOutDrag
-            loading={loading}
-            columns={finaRebateTableCol}
-            dataSource={rebateData}
-            scroll
-            defaultPageSize={rebateData?.length}
-          />
-        </>
+      {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
+        !selectedFilter ? (
+          <div key={JSON.stringify(rebateFinalData)}>
+            <OsTableWithOutDrag
+              loading={loading}
+              columns={finaRebateTableCol}
+              dataSource={rebateFinalData}
+              scroll
+              locale={locale}
+              rowSelection={rowSelection}
+              selectedRowsKeys={selectTedRowIds}
+              defaultPageSize={rebateFinalData?.length}
+            />
+          </div>
+        ) : (
+          <>
+            {selectedFilter && rebateFinalData?.length > 0 ? (
+              <>
+                {rebateFinalData?.map((finalDataItem: any, index: number) => {
+                  return (
+                    <OsCollapse
+                      key={index}
+                      activeKey={collapseActiveKeys}
+                      onChange={(key: string | string[]) => {
+                        setCollapseActiveKeys(key);
+                      }}
+                      items={[
+                        {
+                          key: index,
+                          label: (
+                            <Row
+                              justify="space-between"
+                              align="middle"
+                              gutter={[8, 8]}
+                            >
+                              <Col xs={24} sm={12} md={12} lg={5} xl={5}>
+                                <Badge
+                                  count={finalDataItem?.QuoteLineItem?.length}
+                                >
+                                  <Typography
+                                    style={{padding: '5px 8px 0px 0px'}}
+                                    name="Body 4/Medium"
+                                    color={token?.colorBgContainer}
+                                    ellipsis
+                                    tooltip
+                                    as="div"
+                                    maxWidth={240}
+                                  >
+                                    {finalDataItem?.name}
+                                  </Typography>
+                                </Badge>
+                              </Col>
+                              <Col xs={24} sm={12} md={12} lg={6} xl={6}>
+                                <span
+                                  style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                  }}
+                                >
+                                  Ext Price:{' '}
+                                  <Typography
+                                    name="Body 4/Medium"
+                                    color={token?.colorBgContainer}
+                                    ellipsis
+                                    tooltip
+                                    as="div"
+                                    style={{marginLeft: '2px'}}
+                                  >
+                                    $
+                                    {abbreviate(
+                                      Number(
+                                        finalDataItem?.totalExtendedPrice ??
+                                          0.0,
+                                      ),
+                                    )}
+                                  </Typography>
+                                </span>
+                              </Col>
+                              <Col xs={24} sm={12} md={12} lg={4} xl={4}>
+                                <span
+                                  style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                  }}
+                                >
+                                  GP:{' '}
+                                  <Typography
+                                    name="Body 4/Medium"
+                                    color={token?.colorBgContainer}
+                                    ellipsis
+                                    tooltip
+                                    as="div"
+                                    style={{marginLeft: '2px'}}
+                                  >
+                                    $
+                                    {abbreviate(
+                                      Number(
+                                        finalDataItem?.totalGrossProfit ?? 0.0,
+                                      ),
+                                    )}
+                                  </Typography>
+                                </span>
+                              </Col>
+                              <Col xs={24} sm={10} md={12} lg={4} xl={4}>
+                                <span
+                                  style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                  }}
+                                >
+                                  GP%:{' '}
+                                  <Typography
+                                    name="Body 4/Medium"
+                                    color={token?.colorBgContainer}
+                                    ellipsis
+                                    tooltip
+                                    as="div"
+                                    style={{marginLeft: '2px'}}
+                                  >
+                                    {' '}
+                                    {abbreviate(
+                                      Number(
+                                        finalDataItem?.totalGrossProfitPercentage ??
+                                          0.0,
+                                      ),
+                                    )}
+                                    %
+                                  </Typography>
+                                </span>
+                              </Col>
+                            </Row>
+                          ),
+                          children: (
+                            <div
+                              key={JSON.stringify(finalDataItem?.QuoteLineItem)}
+                            >
+                              <OsTableWithOutDrag
+                                loading={loading}
+                                columns={finaRebateTableCol}
+                                dataSource={finalDataItem?.QuoteLineItem}
+                                scroll
+                                locale={locale}
+                                rowSelection={rowSelection}
+                                selectedRowsKeys={selectTedRowIds}
+                                defaultPageSize={
+                                  finalDataItem?.QuoteLineItem?.length
+                                }
+                              />
+                            </div>
+                          ),
+                        },
+                      ]}
+                    />
+                  );
+                })}
+              </>
+            ) : (
+              <OsTableWithOutDrag
+                loading={loading}
+                columns={finaRebateTableCol}
+                dataSource={[]}
+                scroll
+                locale={locale}
+                rowSelection={rowSelection}
+                selectedRowsKeys={selectTedRowIds}
+              />
+            )}
+          </>
+        )
       ) : (
         <EmptyContainer
           title="There is no columns for Rebates"
