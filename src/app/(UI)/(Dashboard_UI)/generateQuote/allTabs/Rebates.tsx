@@ -1,5 +1,5 @@
 'use client';
-import { Col, Row } from '@/app/components/common/antd/Grid';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapse from '@/app/components/common/os-collapse';
@@ -9,11 +9,13 @@ import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import Typography from '@/app/components/common/typography';
-import { pricingMethod } from '@/app/utils/CONSTANTS';
-import { currencyFormatter } from '@/app/utils/base';
-import { Badge } from 'antd';
-import { FC, useEffect, useState } from 'react';
-import { useAppSelector } from '../../../../../../redux/hook';
+import {pricingMethod} from '@/app/utils/CONSTANTS';
+import {currencyFormatter} from '@/app/utils/base';
+import {Badge} from 'antd';
+import {FC, useEffect, useState} from 'react';
+import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+import {useSearchParams} from 'next/navigation';
+import {getRebateQuoteLineItemByQuoteId} from '../../../../../../redux/actions/rebateQuoteLineitem';
 
 const Rebates: FC<any> = ({
   tableColumnDataShow,
@@ -26,11 +28,18 @@ const Rebates: FC<any> = ({
   setCollapseActiveKeys,
 }) => {
   const [token] = useThemeToken();
+  const searchParams = useSearchParams();
+  const getQuoteID = searchParams.get('id');
+  const dispatch = useAppDispatch();
   const {abbreviate} = useAbbreviationHook(0);
   const {data: RebateData, loading} = useAppSelector(
     (state) => state.rebateQuoteLineItem,
   );
   const [rebateFinalData, setRebateFinalData] = useState<any>([]);
+
+  useEffect(() => {
+    dispatch(getRebateQuoteLineItemByQuoteId(Number(getQuoteID)));
+  }, [getQuoteID]);
 
   const filterDataByValue = (data: any[], filterValue?: string) => {
     const groupedData: {[key: string]: any} = {};
@@ -76,8 +85,6 @@ const Rebates: FC<any> = ({
           default:
             name = undefined;
         }
-        console.log('Dataaaa', name, filterValue, item);
-
         if (!name) return;
 
         if (name.includes('_') || name === name.toLowerCase()) {
@@ -156,14 +163,14 @@ const Rebates: FC<any> = ({
   const RebatesQuoteLineItemcolumns = [
     {
       title: '#Line',
-      dataIndex: 'line_number',
-      key: 'line_number',
+      dataIndex: 'serial_number',
+      key: 'serial_number',
       render: (text: string) => (
         <OsInput
-          disabled
           style={{
             height: '36px',
           }}
+          disabled
           value={text}
           onChange={(v) => {}}
         />
@@ -174,7 +181,7 @@ const Rebates: FC<any> = ({
       title: 'SKU',
       dataIndex: 'product_code',
       key: 'product_code',
-      width: 130,
+      width: 200,
     },
     {
       title: 'Product Description',
@@ -189,7 +196,7 @@ const Rebates: FC<any> = ({
       render: (text: string, record: any) => (
         <CommonSelect
           disabled
-          style={{width: '100%'}}
+          style={{width: '100%', height: '36px'}}
           placeholder="Select"
           defaultValue={text}
           options={pricingMethod}
@@ -392,7 +399,7 @@ const Rebates: FC<any> = ({
                                     alignItems: 'center',
                                   }}
                                 >
-                                  GP:{' '}
+                                  Rbt Amt:{' '}
                                   <Typography
                                     name="Body 4/Medium"
                                     color={token?.colorBgContainer}
@@ -417,7 +424,7 @@ const Rebates: FC<any> = ({
                                     alignItems: 'center',
                                   }}
                                 >
-                                  GP%:{' '}
+                                  Rebate%:{' '}
                                   <Typography
                                     name="Body 4/Medium"
                                     color={token?.colorBgContainer}
@@ -464,14 +471,8 @@ const Rebates: FC<any> = ({
                 })}
               </>
             ) : (
-              <OsTableWithOutDrag
-                loading={loading}
-                columns={finaRebateTableCol}
-                dataSource={[]}
-                scroll
-                locale={locale}
-                rowSelection={rowSelection}
-                selectedRowsKeys={selectTedRowIds}
+              <EmptyContainer
+                title={`There is no data for ${selectedFilter}`}
               />
             )}
           </>

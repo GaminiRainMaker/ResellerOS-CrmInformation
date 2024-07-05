@@ -379,25 +379,26 @@ export const updateTables = async (
       // getRebatesInBulkByProductCode
       // getContractInBulkByProductCode
       let findRebateIndex = allReabatesWithProductCodeData?.findIndex(
-        (itemReb: any) => item.product_code === itemReb.product_code,
+        (itemReb: any) => item.product_code === itemReb?.PID,
       );
       if (findRebateIndex !== -1) {
-        rebateDataArray.push({
+        let newObj = {
           ...obj1,
-          quote_line_item_id: item?.id,
+          quoteline_item_id: item?.id,
           rebate_id: allReabatesWithProductCodeData?.[findRebateIndex]?.id,
           percentage_payout:
             allReabatesWithProductCodeData?.[findRebateIndex]
               ?.percentage_payout,
-        });
+        };
+        rebateDataArray.push(newObj);
       }
       let findContractIndex = allContractWithProductCodeData?.findIndex(
-        (itemReb: any) => item.product_code === itemReb.product_code,
+        (itemReb: any) => item.product_code === itemReb.contract_product_name,
       );
       if (findContractIndex !== -1) {
         contractProductArray.push({
           ...obj1,
-          quote_line_item_id: item?.id,
+          quoteline_item_id: item?.id,
           contract_product_id:
             allContractWithProductCodeData?.[findContractIndex]?.payload.id,
         });
@@ -414,40 +415,59 @@ export const updateTables = async (
       finalLineItems.push(obj1);
     }
     if (finalLineItems.length > 0) {
-      if (rebateDataArray.length > 0) {
-        const rebateData = genericFun(finalLineItems, rebateDataArray);
-        dispatch(insertRebateQuoteLineItem(rebateData));
-      }
-      if (contractProductArray.length > 0) {
-        const contractProductData = genericFun(
-          finalLineItems,
-          contractProductArray,
-        );
-        dispatch(insertValidation(contractProductData));
-      }
       let count = 0;
-      await dispatch(getAllProfitabilityCount(Number(getQuoteID)))?.then(
+
+      await dispatch(getAllProfitabilityCount(Number(getQuoteID))).then(
         (payload: any) => {
           count = payload?.payload;
         },
       );
-      const newArrr: any = [];
 
-      profitabilityArray?.map((items: any, index: number) => {
-        newArrr?.push({...items, serial_number: index + count + 1});
-      });
-      dispatch(insertProfitability(newArrr));
-      dispatch(quoteFileVerification({id: fileData?.id})).then((d: any) => {
-        if (d?.payload) {
-          dispatch(getQuoteFileByQuoteId(Number(getQuoteID))).then((d: any) => {
-            if (d?.payload) {
-              dispatch(setQuoteFileUnverifiedById(d?.payload));
-            }
+      if (rebateDataArray.length > 0) {
+        const newRebateArr: any = [];
+        rebateDataArray.forEach((item: any, index: number) => {
+          newRebateArr.push({...item, serial_number: index + count + 1});
+        });
+        if (newRebateArr)
+          await dispatch(insertRebateQuoteLineItem(newRebateArr));
+      }
+
+      if (contractProductArray.length > 0) {
+        const newContractProductArr: any = [];
+        contractProductArray.forEach((item: any, index: number) => {
+          newContractProductArr.push({
+            ...item,
+            serial_number: index + count + 1,
           });
-          dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
-          dispatch(getQuoteFileCount(Number(getQuoteID)));
-        }
+        });
+        if (newContractProductArr)
+          await dispatch(insertValidation(newContractProductArr));
+      }
+
+      const newProfitabilityArr: any = [];
+      profitabilityArray.forEach((item: any, index: number) => {
+        newProfitabilityArr.push({...item, serial_number: index + count + 1});
       });
+      if (newProfitabilityArr)
+        await dispatch(insertProfitability(newProfitabilityArr));
+
+      await dispatch(quoteFileVerification({id: fileData?.id})).then(
+        (verificationResponse: any) => {
+          if (verificationResponse?.payload) {
+            dispatch(getQuoteFileByQuoteId(Number(getQuoteID))).then(
+              (quoteFileResponse: any) => {
+                if (quoteFileResponse?.payload) {
+                  dispatch(
+                    setQuoteFileUnverifiedById(quoteFileResponse?.payload),
+                  );
+                }
+              },
+            );
+            dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+            dispatch(getQuoteFileCount(Number(getQuoteID)));
+          }
+        },
+      );
     }
     return true;
   } catch (err) {

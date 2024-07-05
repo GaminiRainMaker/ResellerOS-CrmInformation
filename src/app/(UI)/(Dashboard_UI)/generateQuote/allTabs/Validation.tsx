@@ -566,7 +566,7 @@ const Validation: FC<any> = ({
                                       alignItems: 'center',
                                     }}
                                   >
-                                    GP:{' '}
+                                    Contract Price:{' '}
                                     <Typography
                                       name="Body 4/Medium"
                                       color={token?.colorBgContainer}
@@ -582,33 +582,6 @@ const Validation: FC<any> = ({
                                             0.0,
                                         ),
                                       )}
-                                    </Typography>
-                                  </span>
-                                </Col>
-                                <Col xs={24} sm={10} md={12} lg={4} xl={4}>
-                                  <span
-                                    style={{
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                    }}
-                                  >
-                                    GP%:{' '}
-                                    <Typography
-                                      name="Body 4/Medium"
-                                      color={token?.colorBgContainer}
-                                      ellipsis
-                                      tooltip
-                                      as="div"
-                                      style={{marginLeft: '2px'}}
-                                    >
-                                      {' '}
-                                      {abbreviate(
-                                        Number(
-                                          finalDataItem?.totalGrossProfitPercentage ??
-                                            0.0,
-                                        ),
-                                      )}
-                                      %
                                     </Typography>
                                   </span>
                                 </Col>
@@ -642,14 +615,8 @@ const Validation: FC<any> = ({
                 )}
               </>
             ) : (
-              <OsTableWithOutDrag
-                loading={loading}
-                columns={finalValidationTableCol}
-                dataSource={[]}
-                scroll
-                locale={locale}
-                rowSelection={rowSelection}
-                selectedRowsKeys={selectTedRowIds}
+              <EmptyContainer
+                title={`There is no data for ${selectedFilter}`}
               />
             )}
           </>
