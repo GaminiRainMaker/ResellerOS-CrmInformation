@@ -196,14 +196,10 @@ const Matrix: FC<any> = ({selectedFilter}) => {
                     {item.pieData?.length > 0 ? (
                       <OsPieChart data={item.pieData} />
                     ) : (
-                      <Typography
-                        name="Body 1/Regular"
-                        as="div"
-                        style={{height: '200px'}}
-                      >
-                        There is no {word} available for{' '}
-                        {selectedFilter ? ` (${selectedFilter})` : ' (--)'}
-                      </Typography>
+                      <EmptyContainer
+                        title={`There is no ${word} available for ${selectedFilter ? `(${selectedFilter})` : '(--)'}`}
+                        MetricsIcon
+                      />
                     )}
                   </div>
                 </Col>
