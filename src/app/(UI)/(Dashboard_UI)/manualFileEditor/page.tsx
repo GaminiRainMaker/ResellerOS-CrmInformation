@@ -26,16 +26,23 @@ import {formatStatus} from '@/app/utils/CONSTANTS';
 import OsModal from '@/app/components/common/os-modal';
 import SyncTableData from '../fileEditor/syncTableforpdfEditor';
 import OsButton from '@/app/components/common/os-button';
-import {Space} from 'antd';
+import {notification, Space} from 'antd';
+import Typography from '@/app/components/common/typography';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
+import {XCircleIcon} from '@heroicons/react/24/outline';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
+  const [token] = useThemeToken();
+
   const searchParams = useSearchParams();
-  const getQUoteId = searchParams.get('id');
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [countTrigger, setCountTrigger] = useState<number>(0);
   const [arrayOflineItem, setArrayOflineItem] = useState<any>([]);
+  const [saveNewHeader, setSaveNewHeader] = useState<boolean>(false);
+  const [showConfirmHeader, setShowConfirmHeader] = useState<boolean>(false);
 
   useEffect(() => {
     let newArr = [
@@ -62,12 +69,14 @@ const EditorFile = () => {
     setArrayOflineItem(newArr);
   }, []);
 
-  const AddNewHeaderToTheObject = (newArr: any) => {
+  const AddNewHeaderToTheObject = () => {
+    setSaveNewHeader(true);
+    setShowConfirmHeader(false);
     // Extract headers from the first object
-    const headers = newArr[0];
+    const headers = arrayOflineItem[0];
 
     // Remove the first object from the array
-    const dataArray = newArr.slice(1);
+    const dataArray = arrayOflineItem.slice(1);
 
     // Function to replace keys in each object
     const replaceKeys = (obj: any, headers: any) => {
@@ -121,12 +130,7 @@ const EditorFile = () => {
         removeDuplicateValues(obj),
       );
 
-      if (countTrigger === 0) {
-        AddNewHeaderToTheObject(cleanedData);
-        setCountTrigger(1);
-      } else {
-        setArrayOflineItem(arrayOflineItem);
-      }
+      setArrayOflineItem(cleanedData);
     }
   }, [arrayOflineItem]);
 
@@ -166,9 +170,70 @@ const EditorFile = () => {
     //   CancelEditing();
     // }
   };
-  console.log('43543543543', arrayOflineItem);
   return (
     <GlobalLoader loading={nanonetsLoading}>
+      <Typography
+        name="Body 1/Bold"
+        // color={token?.colorLink}
+        style={{marginBottom: '6px'}}
+      >
+        Note:
+      </Typography>
+      <Row gutter={[32, 16]} style={{marginTop: '10px', marginBottom: '40px'}}>
+        <Col span={12}>
+          <div style={{display: 'flex', flexDirection: 'column'}}>
+            <Typography
+              name="Body 3/Bold"
+              color={token?.colorLink}
+              style={{marginBottom: '6px'}}
+            >
+              Note:
+            </Typography>
+            <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
+              <ul style={{listStyleType: 'disc', marginLeft: '20px'}}>
+                <li>Data need to copied from excel file only.</li>
+                <li>Your first is going to be headers of you file data.</li>
+              </ul>
+            </Typography>
+          </div>
+        </Col>
+        {!saveNewHeader && (
+          <Col span={12}>
+            {' '}
+            <Space
+              onClick={(e) => {
+                e?.preventDefault();
+              }}
+              size={25}
+              style={{
+                display: 'flex',
+                justifyContent: 'end',
+                marginRight: '50px',
+                right: '0',
+                bottom: '0',
+                marginBottom: '20px',
+              }}
+            >
+              <OsButton
+                text="Save Header"
+                buttontype="PRIMARY"
+                clickHandler={() => {
+                  if (arrayOflineItem?.length > 1) {
+                    setShowConfirmHeader(true);
+                  } else {
+                    notification?.open({
+                      message: 'Please add data fisrt to save the headers',
+                      type: 'info',
+                    });
+                  }
+
+                  // AddNewHeaderToTheObject();
+                }}
+              />
+            </Space>
+          </Col>
+        )}
+      </Row>
       <HotTable
         data={arrayOflineItem}
         colWidths={[
@@ -236,10 +301,69 @@ const EditorFile = () => {
           text="Sync Table"
           buttontype="PRIMARY"
           clickHandler={() => {
-            syncShow('sync');
+            if (saveNewHeader) {
+              syncShow('sync');
+            } else {
+              notification?.open({
+                message:
+                  'Please add data from excel file. Then please save the first row as the header',
+                type: 'info',
+              });
+            }
           }}
         />
       </Space>
+      <OsModal
+        // title={'Share Credentials in Team'}
+        body={
+          <Row style={{width: '100%', padding: '15px'}}>
+            <Space
+              style={{width: '100%'}}
+              size={24}
+              direction="vertical"
+              align="center"
+            >
+              <Space direction="vertical" align="center" size={1}>
+                <Typography
+                  name="Heading 3/Medium"
+                  style={{display: 'flex', textAlign: 'center'}}
+                >
+                  Your First Row is going to be the headers of the data
+                </Typography>
+                <Typography name="Body 3/Regular">
+                  Are you sure you want to save headers
+                </Typography>
+              </Space>
+
+              <Space size={12}>
+                <OsButton
+                  text={`Don't Save`}
+                  buttontype="SECONDARY"
+                  clickHandler={() => {
+                    setShowConfirmHeader(false);
+                  }}
+                />
+                <OsButton
+                  text="Yes, Save"
+                  buttontype="PRIMARY"
+                  clickHandler={() => {
+                    AddNewHeaderToTheObject();
+                  }}
+                />
+              </Space>
+            </Space>
+          </Row>
+        }
+        width={600}
+        open={showConfirmHeader}
+        // open={true}
+        onCancel={() => {
+          setShowConfirmHeader(false);
+        }}
+        onOk={AddNewHeaderToTheObject}
+        // primaryButtonText=""
+        bodyPadding={40}
+      />
 
       {showModal && (
         <OsModal

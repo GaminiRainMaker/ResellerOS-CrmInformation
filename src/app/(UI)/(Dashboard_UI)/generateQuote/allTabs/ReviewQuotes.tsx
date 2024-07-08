@@ -99,6 +99,7 @@ const ReviewQuotes: FC<any> = ({
             title: name,
             id: item?.id,
             QuoteLineItem: [],
+            maunalAdded: item?.manual_file,
             totalAdjustedPrice: 0,
           };
         }
@@ -235,6 +236,7 @@ const ReviewQuotes: FC<any> = ({
           : null,
       id: fileData?.id,
     };
+
     await dispatch(UpdateQuoteFileById(data));
     dispatch(setConcernQuoteLineItemData(fileData));
     if (buttonType === 'primary') {
@@ -249,6 +251,10 @@ const ReviewQuotes: FC<any> = ({
       await dispatch(getQuoteFileByQuoteId(Number(getQuoteID)));
       setShowRaiseConcernModal(false);
       form?.resetFields();
+    } else if (buttonType === 'fifth') {
+      setShowRaiseConcernModal(false);
+      form?.resetFields();
+      router?.push(`manualFileEditor?id=${getQuoteID}&fileId=${fileData?.id}`);
     } else {
       setShowRaiseConcernModal(false);
       form?.resetFields();
@@ -348,34 +354,46 @@ const ReviewQuotes: FC<any> = ({
                                     width={25}
                                     color={token?.colorBgContainer}
                                     onClick={(e) => {
-                                      if (
-                                        finalDataItem?.QuoteLineItem?.length ===
-                                        0
-                                      ) {
-                                        setShowExportAs(false);
-                                      } else {
-                                        setShowExportAs(true);
+                                      console.log(
+                                        '43543543',
+                                        finalDataItem?.maunalAdded,
+                                      );
+                                      if (!finalDataItem?.maunalAdded) {
+                                        if (
+                                          finalDataItem?.QuoteLineItem
+                                            ?.length === 0
+                                        ) {
+                                          setShowExportAs(false);
+                                        } else {
+                                          setShowExportAs(true);
+                                        }
+                                        if (
+                                          !finalDataItem?.title
+                                            ?.split('.')
+                                            ?.includes('pdf')
+                                        ) {
+                                          setShowExportToTable(false);
+                                        } else {
+                                          setShowExportToTable(true);
+                                        }
+                                        if (
+                                          finalDataItem?.QuoteLineItem
+                                            ?.length === 0 &&
+                                          !finalDataItem?.title
+                                            ?.split('.')
+                                            ?.includes('pdf')
+                                        ) {
+                                          setShowSubmitButton(true);
+                                        } else {
+                                          setShowSubmitButton(false);
+                                        }
                                       }
-                                      if (
-                                        !finalDataItem?.title
-                                          ?.split('.')
-                                          ?.includes('pdf')
-                                      ) {
-                                        setShowExportToTable(false);
-                                      } else {
-                                        setShowExportToTable(true);
-                                      }
-                                      if (
-                                        finalDataItem?.QuoteLineItem?.length ===
-                                          0 &&
-                                        !finalDataItem?.title
-                                          ?.split('.')
-                                          ?.includes('pdf')
-                                      ) {
+                                      if (finalDataItem?.maunalAdded) {
                                         setShowSubmitButton(true);
-                                      } else {
-                                        setShowSubmitButton(false);
+                                        setShowExportToTable(false);
+                                        setShowExportAs(false);
                                       }
+
                                       e?.stopPropagation();
                                       setShowRaiseConcernModal(true);
                                       setFileData(finalDataItem);
@@ -441,7 +459,8 @@ const ReviewQuotes: FC<any> = ({
         destroyOnClose
         thirdButtonText={showExportToTable ? 'Export File to Tables' : ''}
         primaryButtonText={showExportAs ? 'Edit Data As-Is' : ''}
-        fourthButtonText={showSubmitButton ? 'Submit' : ''}
+        fourthButtonText={showSubmitButton ? 'Submit Issue' : ''}
+        fifthButtonText={showSubmitButton ? 'Update Manually' : ''}
         onOk={() => {
           form?.submit();
           setButtonType('primary');
@@ -452,6 +471,10 @@ const ReviewQuotes: FC<any> = ({
         fourthButtonfunction={() => {
           form?.submit();
           setButtonType('fourth');
+        }}
+        fifthButtonfunction={() => {
+          form?.submit();
+          setButtonType('fifth');
         }}
       />
 

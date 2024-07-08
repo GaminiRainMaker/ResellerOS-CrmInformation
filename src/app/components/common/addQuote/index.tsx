@@ -105,14 +105,30 @@ const AddQuote: FC<AddQuoteInterface> = ({
   ) => {
     const quoteId = form.getFieldValue('existingQuoteId');
     const quotesArr: any = [];
+    let singleAddOnQuoteId: any;
+    let newArrWithManual: any = [];
+    let newArrWithoutManual: any = [];
 
+    if (updatedArr && updatedArr?.length > 0) {
+      updatedArr?.map((items: any) => {
+        if (items?.manualquote) {
+          let newObj = {
+            ...items,
+            file_name: items?.file?.name,
+          };
+          newArrWithManual?.push(newObj);
+        } else {
+          newArrWithoutManual?.push(items);
+        }
+      });
+    }
     try {
       setFinalLoading(true);
 
-      for (let i = 0; i < updatedArr.length; i++) {
+      for (let i = 0; i < newArrWithoutManual.length; i++) {
         let quoteLineItemArr: any = [];
         const lineItemData: FormattedData = {};
-        const nanoNetsResult = updatedArr[i]?.data?.result;
+        const nanoNetsResult = newArrWithoutManual[i]?.data?.result;
         let quoteObj: any = {};
         const lineItems: any = [];
         let quoteItem = {};
@@ -155,8 +171,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
           quoteObj = {
             ...quoteItem,
             nanonets_id: result?.id,
-            quote_config_id: updatedArr[i]?.quote_config_id ?? 18,
-            pdf_url: updatedArr[i]?.pdf_url,
+            quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
+            pdf_url: newArrWithoutManual[i]?.pdf_url,
             user_id: userInformation.id,
             customer_id: customerId,
             opportunity_id: opportunityId,
@@ -164,9 +180,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
             status: 'Drafts',
             quoteFileObj: [
               {
-                file_name: updatedArr[i]?.file?.name,
-                pdf_url: updatedArr[i]?.pdf_url,
-                quote_config_id: updatedArr[i]?.quote_config_id ?? 18,
+                file_name: newArrWithoutManual[i]?.file?.name,
+                pdf_url: newArrWithoutManual[i]?.pdf_url,
+                quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
                 nanonets_id: result?.id,
                 lineItems: lineItems.length > 0 ? lineItems : [],
               },
@@ -210,6 +226,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
       const finalLineItems: any = [];
       for (let i = 0; i < quotesArr?.length; i++) {
         for (let k = 0; k < quotesArr[i].quoteFileObj.length; k++) {
+          singleAddOnQuoteId = quotesArr[i]?.id;
           const quoteFile = {
             ...quotesArr[i].quoteFileObj[k],
             quote_id: quotesArr[i]?.id,
@@ -345,12 +362,71 @@ const AddQuote: FC<AddQuoteInterface> = ({
     await dispatch(getQuotesByDateFilter({}));
     setShowModal(false);
     setUploadFileData([]);
-    if (singleQuote || updatedArr?.length === 1) {
+
+    if ((singleQuote || quoteId) && newArrWithManual?.length > 0) {
+      let latestestFIleId: any;
+      for (let i = 0; i < newArrWithManual.length; i++) {
+        let itemss = newArrWithManual[i];
+
+        const quoteFile = {
+          file_name: itemss?.file_name,
+          quote_id: quoteId ? quoteId : singleAddOnQuoteId,
+          is_verified: false,
+          manual_file: true,
+        };
+        const insertedQuoteFile = await dispatch(
+          insertQuoteFile(quoteFile),
+        )?.then((payload: any) => {
+          latestestFIleId = payload?.payload?.id;
+        });
+      }
+      router.push(
+        `/manualFileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId}&fileId=${latestestFIleId}`,
+      );
+    }
+    if (newArrWithManual?.length === 0) {
       router.push(`/generateQuote?id=${quotesArr[0]?.id}&inReviewQuote=false`);
       if (isGenerateQuotePage) {
         location.reload();
       }
     }
+    if (!singleQuote) {
+      let latestQuoteId: any;
+      let latestQuoteFIleId: any;
+      for (let i = 0; i < newArrWithManual.length; i++) {
+        let itemss = newArrWithManual[i];
+        let newObj = {
+          ...itemss,
+          organization: userInformation?.organization,
+          user_id: userInformation?.id,
+          status: 'Drafts',
+          customer_id: customerId,
+          opportunity_id: opportunityId,
+        };
+        const response = await dispatch(insertQuote([newObj]))?.then(
+          async (payload: any) => {
+            latestQuoteId = payload?.payload?.data?.[0]?.id;
+            const quoteFile = {
+              file_name: itemss?.file_name,
+              quote_id: payload?.payload?.data?.[0]?.id,
+              is_verified: false,
+              manual_file: true,
+            };
+            const insertedQuoteFile = await dispatch(
+              insertQuoteFile(quoteFile),
+            )?.then((payloadFile: any) => {
+              latestQuoteFIleId = payloadFile?.payload?.id;
+            });
+          },
+        );
+      }
+      if (newArrWithManual?.length > 0) {
+        router.push(
+          `/manualFileEditor?id=${latestQuoteId}&fileId=${latestQuoteFIleId}`,
+        );
+      }
+    }
+
     form.resetFields(['customer_id', 'opportunity_id']);
   };
 
@@ -370,66 +446,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
     oem: string,
     distributer: string,
     fileName: string,
-  ) => {
-    if (!fileName) {
-      notification?.open({message: 'Please Add the file name', type: 'error'});
-      return;
-    }
-    if (!oem) {
-      notification?.open({message: 'Please Add Oem Name', type: 'error'});
-      return;
-    }
-    if (!distributer) {
-      notification?.open({
-        message: 'Please Add Distributor Name',
-        type: 'error',
-      });
-      return;
-    }
-    if (!customerId) {
-      notification?.open({message: 'Please Select Customer', type: 'error'});
-      return;
-    }
-    if (!opportunityId) {
-      notification?.open({message: 'Please Select opportunity', type: 'error'});
-      return;
-    }
-
-    let newObj = {
-      oem_name: oem,
-      distributor_name: distributer,
-      file_name: fileName,
-      customer_id: customerId,
-      opportunity_id: opportunityId,
-      organization: userInformation?.organization,
-      user_id: userInformation?.id,
-      status: 'Drafts',
-    };
-    form.resetFields([
-      'customer_id',
-      'opportunity_id',
-      'oem_name',
-      'distributor_name',
-      'file_name',
-    ]);
-    setShowModal(false);
-    const response = await dispatch(insertQuote([newObj]))?.then(
-      async (payload: any) => {
-        const quoteFile = {
-          file_name: fileName,
-          quote_id: payload?.payload?.data?.[0]?.id,
-          is_verified: true,
-        };
-        const insertedQuoteFile = await dispatch(
-          insertQuoteFile(quoteFile),
-        )?.then((payloadFile: any) => {
-          router.push(
-            `/manualFileEditor?id=${payload?.payload?.data?.[0]?.id}&fileId=${payloadFile?.payload?.id}`,
-          );
-        });
-      },
-    );
-  };
+  ) => {};
 
   const resetFields = () => {
     setShowModal(false);

@@ -77,12 +77,12 @@ const OsUpload: React.FC<any> = ({
     setLoading(true);
     for (let i = 0; i < uploadFileData.length; i++) {
       let obj: any = {...uploadFileData[i]};
-      if (!obj?.distributor_id && !obj?.oem_id) {
+      if (!obj?.distributor_id && !obj?.oem_id && !obj?.manualquote) {
         obj.error = true;
       } else {
         obj.error = false;
       }
-      if (!obj.error) {
+      if (!obj.error && obj?.model_id) {
         // eslint-disable-next-line no-await-in-loop
         const response: any = await sendDataToNanonets(
           obj?.model_id,
@@ -105,17 +105,7 @@ const OsUpload: React.FC<any> = ({
         singleQuote,
       );
     } else {
-      if (typeOfAddQuote === 1) {
-        addQuoteLineItem(customerId, opportunityId, newArr, singleQuote);
-      } else {
-        addQuoteManually(
-          customerId,
-          opportunityId,
-          OemName,
-          DistributerName,
-          fileName,
-        );
-      }
+      addQuoteLineItem(customerId, opportunityId, newArr, singleQuote);
     }
   };
 
@@ -143,176 +133,88 @@ const OsUpload: React.FC<any> = ({
 
   return (
     <GlobalLoader loading={cardLoading || loading}>
-      <Row style={{marginBottom: '10px'}}>
-        <Radio.Group
-          onChange={(e: any) => {
-            setTypeOfAddQuote(e?.target?.value);
-          }}
-          value={typeOfAddQuote}
+      <Space size={24} direction="vertical" style={{width: '100%'}}>
+        <OSDraggerStyle
+          beforeUpload={beforeUpload}
+          showUploadList={false}
+          multiple
         >
-          <Radio value={1}>
-            <Typography name="Body 3/Medium">Upload Quote</Typography>
-          </Radio>
-          <Radio value={2}>
-            <Typography name="Body 3/Medium">Manually Add Quote</Typography>
-          </Radio>
-        </Radio.Group>
-      </Row>
-      {typeOfAddQuote === 1 ? (
-        <Space size={24} direction="vertical" style={{width: '100%'}}>
-          <OSDraggerStyle
-            beforeUpload={beforeUpload}
-            showUploadList={false}
-            multiple
+          <FolderArrowDownIcon width={24} color={token?.colorInfoBorder} />
+          <Typography
+            name="Body 4/Medium"
+            color={token?.colorPrimaryText}
+            as="div"
           >
-            <FolderArrowDownIcon width={24} color={token?.colorInfoBorder} />
             <Typography
               name="Body 4/Medium"
-              color={token?.colorPrimaryText}
-              as="div"
+              style={{textDecoration: 'underline', cursor: 'pointer'}}
+              color={token?.colorPrimary}
             >
-              <Typography
-                name="Body 4/Medium"
-                style={{textDecoration: 'underline', cursor: 'pointer'}}
-                color={token?.colorPrimary}
-              >
-                Click to Upload
-              </Typography>{' '}
-              or Drag and Drop
-            </Typography>
-            <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
-              XLS, PDF.
-            </Typography>
-          </OSDraggerStyle>
-          <UploadCard
-            uploadFileData={uploadFileData}
-            setUploadFileData={setUploadFileData}
-          />
+              Click to Upload
+            </Typography>{' '}
+            or Drag and Drop
+          </Typography>
+          <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
+            XLS, PDF.
+          </Typography>
+        </OSDraggerStyle>
+        <UploadCard
+          uploadFileData={uploadFileData}
+          setUploadFileData={setUploadFileData}
+        />
 
-          <Form
-            layout="vertical"
-            requiredMark={false}
-            form={form}
-            onFinish={onFinish}
-          >
-            {!isGenerateQuote && (
-              <Row gutter={[16, 16]}>
-                <Col sm={24} md={12}>
-                  <OsCustomerSelect
-                    setCustomerValue={setCustomerValue}
-                    customerValue={customerValue}
-                    isAddNewCustomer
-                    isRequired={showToggleTable ? false : true}
-                  />
-                </Col>
-
-                <Col sm={24} md={12}>
-                  <OsOpportunitySelect
-                    form={form}
-                    customerValue={customerValue}
-                    isAddNewOpportunity
-                    setOpportunityValue={setOpportunityValue}
-                    isRequired={showToggleTable ? false : true}
-                  />
-                </Col>
-              </Row>
-            )}
-          </Form>
-
+        <Form
+          layout="vertical"
+          requiredMark={false}
+          form={form}
+          onFinish={onFinish}
+        >
           {!isGenerateQuote && (
-            <>
-              <Space size={30} direction="horizontal" align="center">
-                <Typography name="Body 4/Medium">
-                  Select Existing Quote?
-                </Typography>
-                <Switch size="default" onChange={onToggleChange} />
-              </Space>
-
-              {showToggleTable && (
-                <OsTable
-                  loading={getExistingQuoteFilterLoading}
-                  rowSelection={rowSelection}
-                  tableSelectionType="radio"
-                  columns={Quotecolumns}
-                  dataSource={getExistingQuoteFilterData}
-                  scroll
-                />
-              )}
-            </>
-          )}
-        </Space>
-      ) : (
-        <Space size={24} direction="vertical" style={{width: '100%'}}>
-          <Form
-            layout="vertical"
-            requiredMark={false}
-            form={form}
-            onFinish={onFinish}
-          >
-            <Form.Item label="Quote File Name" name="file_name">
-              <OsInput />
-            </Form.Item>
             <Row gutter={[16, 16]}>
               <Col sm={24} md={12}>
-                {' '}
-                <Form.Item label="Oem Name" name="oem_name">
-                  <OsInput />
-                </Form.Item>
+                <OsCustomerSelect
+                  setCustomerValue={setCustomerValue}
+                  customerValue={customerValue}
+                  isAddNewCustomer
+                  isRequired={showToggleTable ? false : true}
+                />
               </Col>
+
               <Col sm={24} md={12}>
-                <Form.Item label="Distributor Name" name="distributor_name">
-                  <OsInput />
-                </Form.Item>
+                <OsOpportunitySelect
+                  form={form}
+                  customerValue={customerValue}
+                  isAddNewOpportunity
+                  setOpportunityValue={setOpportunityValue}
+                  isRequired={showToggleTable ? false : true}
+                />
               </Col>
             </Row>
-
-            {!isGenerateQuote && !opportunityDetailId && (
-              <Row gutter={[16, 16]}>
-                <Col sm={24} md={12}>
-                  <OsCustomerSelect
-                    setCustomerValue={setCustomerValue}
-                    customerValue={customerValue}
-                    isAddNewCustomer
-                    isRequired={showToggleTable ? false : true}
-                  />
-                </Col>
-
-                <Col sm={24} md={12}>
-                  <OsOpportunitySelect
-                    form={form}
-                    customerValue={customerValue}
-                    isAddNewOpportunity
-                    setOpportunityValue={setOpportunityValue}
-                    isRequired={showToggleTable ? false : true}
-                  />
-                </Col>
-              </Row>
-            )}
-          </Form>
-
-          {!isGenerateQuote && (
-            <>
-              <Space size={30} direction="horizontal" align="center">
-                <Typography name="Body 4/Medium">
-                  Select Existing Quote?
-                </Typography>
-                <Switch size="default" onChange={onToggleChange} />
-              </Space>
-
-              {showToggleTable && (
-                <OsTable
-                  loading={getExistingQuoteFilterLoading}
-                  rowSelection={rowSelection}
-                  tableSelectionType="radio"
-                  columns={Quotecolumns}
-                  dataSource={getExistingQuoteFilterData}
-                  scroll
-                />
-              )}
-            </>
           )}
-        </Space>
-      )}
+        </Form>
+
+        {!isGenerateQuote && (
+          <>
+            <Space size={30} direction="horizontal" align="center">
+              <Typography name="Body 4/Medium">
+                Select Existing Quote?
+              </Typography>
+              <Switch size="default" onChange={onToggleChange} />
+            </Space>
+
+            {showToggleTable && (
+              <OsTable
+                loading={getExistingQuoteFilterLoading}
+                rowSelection={rowSelection}
+                tableSelectionType="radio"
+                columns={Quotecolumns}
+                dataSource={getExistingQuoteFilterData}
+                scroll
+              />
+            )}
+          </>
+        )}
+      </Space>
     </GlobalLoader>
   );
 };

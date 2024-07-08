@@ -200,6 +200,11 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     return newArr;
   };
 
+  const pushBack = () => {
+    console.log('34543543543', 'holaaaa3');
+    router.push(`/generateQuote?id=${Number(getQuoteID)}`);
+    router?.push(`/generateQuote?id=${Number(getQuoteID)}`);
+  };
   const syncTableDataNew = async () => {
     const alllArrayValue: any = [];
 
@@ -466,6 +471,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         finalOpportunityArray?.push(singleObjects);
       });
     }
+    console.log('34543543543', 'holaaaa1');
 
     if (newrrLineItems && newrrLineItems.length > 0) {
       dispatch(insertQuoteLineItem(newrrLineItems)).then((d) => {
@@ -497,6 +503,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         }
       });
     }
+    console.log('34543543543', 'holaaaa2');
     if (finalOpportunityArray && syncTableData?.length > 0) {
       dispatch(insertOpportunityLineItem(finalOpportunityArray));
     }
@@ -509,8 +516,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             : getQuoteFileId,
       }),
     );
+    pushBack();
+
     setNanonetsLoading(false);
-    router?.push(`/generateQuote?id=${Number(getQuoteID)}`);
   };
   const handleChange = () => {
     // This defines which option we are using salesforce or full stack

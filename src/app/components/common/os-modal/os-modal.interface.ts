@@ -23,6 +23,8 @@ export interface OSModalPropsInterface extends ModalProps {
   singleButtonInCenter?: boolean;
   thirdButtonfunction?: any;
   fourthButtonfunction?: any;
+  fifthButtonText?: any;
+  fifthButtonfunction?: any;
 }
 
 export interface OSDailogInterface extends ModalProps {
