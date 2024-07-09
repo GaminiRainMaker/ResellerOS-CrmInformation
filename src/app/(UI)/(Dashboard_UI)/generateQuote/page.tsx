@@ -33,17 +33,42 @@ import {
 } from '../../../../../redux/actions/quoteFile';
 import {getAllTableColumn} from '../../../../../redux/actions/tableColumn';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import DownloadFile from './DownloadFile';
+const DownloadFile = dynamic(() => import('./DownloadFile'), {
+  ssr: false,
+});
+const Metrics = dynamic(() => import('./allTabs/Metrics'), {
+  ssr: false,
+});
+const ProfitabilityMain = dynamic(
+  () => import('./allTabs/Profitability/index'),
+  {
+    ssr: false,
+  },
+);
+const Rebates = dynamic(() => import('./allTabs/Rebates'), {
+  ssr: false,
+});
+const Validation = dynamic(() => import('./allTabs/Validation'), {
+  ssr: false,
+});
+const AttachmentDocument = dynamic(() => import('./allTabs/Attachment/index'), {
+  ssr: false,
+});
+const ReviewQuotes = dynamic(() => import('./allTabs/ReviewQuotes'), {
+  ssr: false,
+});
+// import DownloadFile from './DownloadFile';
+// import Metrics from './allTabs/Metrics';
+// import ProfitabilityMain from './allTabs/Profitability/index';
+// import Rebates from './allTabs/Rebates';
+// import ReviewQuotes from './allTabs/ReviewQuotes';
+// import Validation from './allTabs/Validation';
+// import AttachmentDocument from './allTabs/Attachment/index';
 import DrawerContent from './DrawerContent';
-import Metrics from './allTabs/Metrics';
-import ProfitabilityMain from './allTabs/Profitability/index';
-import Rebates from './allTabs/Rebates';
-import ReviewQuotes from './allTabs/ReviewQuotes';
-import Validation from './allTabs/Validation';
-import AttachmentDocument from './allTabs/Attachment/index';
 import GenerateQuoteAnalytics from './analytics';
 import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
 import {getAllValidationByQuoteId} from '../../../../../redux/actions/validation';
+import dynamic from 'next/dynamic';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
