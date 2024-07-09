@@ -62,12 +62,14 @@ interface EditPdfDataInterface {
   mergedValue?: any;
   setNanonetsLoading?: any;
   nanonetsLoading?: any;
+  routingConditions?: any;
 }
 const SyncTableData: FC<EditPdfDataInterface> = ({
   setMergedVaalues,
   mergedValue,
   setNanonetsLoading,
   nanonetsLoading,
+  routingConditions,
 }) => {
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -200,11 +202,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     return newArr;
   };
 
-  const pushBack = () => {
-    console.log('34543543543', 'holaaaa3');
-    router.push(`/generateQuote?id=${Number(getQuoteID)}`);
-    router?.push(`/generateQuote?id=${Number(getQuoteID)}`);
-  };
   const syncTableDataNew = async () => {
     const alllArrayValue: any = [];
 
@@ -471,7 +468,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         finalOpportunityArray?.push(singleObjects);
       });
     }
-    console.log('34543543543', 'holaaaa1');
 
     if (newrrLineItems && newrrLineItems.length > 0) {
       dispatch(insertQuoteLineItem(newrrLineItems)).then((d) => {
@@ -503,7 +499,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         }
       });
     }
-    console.log('34543543543', 'holaaaa2');
     if (finalOpportunityArray && syncTableData?.length > 0) {
       dispatch(insertOpportunityLineItem(finalOpportunityArray));
     }
@@ -516,7 +511,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             : getQuoteFileId,
       }),
     );
-    pushBack();
+    routingConditions();
 
     setNanonetsLoading(false);
   };

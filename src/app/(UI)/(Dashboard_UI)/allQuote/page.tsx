@@ -152,7 +152,11 @@ const AllQuote: React.FC = () => {
                               item?.status?.includes('Drafts'),
                         )
                       : [];
-      setActiveQuotes(quoteItems);
+      let newArrr = [...quoteItems];
+      let sortedArrr = newArrr?.sort((a: any, b: any) => {
+        return b.id - a.id;
+      });
+      setActiveQuotes(sortedArrr);
       if (activeTab === '1' || activeTab === '2') {
         setEmptyContainer(locale);
       } else {

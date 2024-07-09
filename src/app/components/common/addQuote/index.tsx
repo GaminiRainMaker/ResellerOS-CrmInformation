@@ -122,6 +122,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
         }
       });
     }
+
     try {
       setFinalLoading(true);
 
@@ -365,12 +366,32 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
     if ((singleQuote || quoteId) && newArrWithManual?.length > 0) {
       let latestestFIleId: any;
+      let quoteIdForManualss: any;
+      if (newArrWithoutManual?.length === 0) {
+        let newObj = {
+          distributor_name: newArrWithManual?.[0]?.distributor_name,
+          oem_name: newArrWithManual?.[0]?.oem_name,
+          file_name: newArrWithManual?.[0]?.file_name,
+          user_id: userInformation.id,
+          customer_id: customerId,
+          opportunity_id: opportunityId,
+          organization: userInformation.organization,
+          status: 'Drafts',
+        };
+        const response = await dispatch(insertQuote([newObj]));
+        quoteIdForManualss = response?.payload?.data[0]?.id;
+      }
+
       for (let i = 0; i < newArrWithManual.length; i++) {
         let itemss = newArrWithManual[i];
 
         const quoteFile = {
           file_name: itemss?.file_name,
-          quote_id: quoteId ? quoteId : singleAddOnQuoteId,
+          quote_id: quoteId
+            ? quoteId
+            : singleAddOnQuoteId
+              ? singleAddOnQuoteId
+              : quoteIdForManualss,
           is_verified: false,
           manual_file: true,
         };
@@ -381,7 +402,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
         });
       }
       router.push(
-        `/manualFileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId}&fileId=${latestestFIleId}`,
+        `/manualFileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${latestestFIleId}`,
       );
     }
     if (newArrWithManual?.length === 0) {

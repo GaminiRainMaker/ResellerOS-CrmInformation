@@ -13,6 +13,7 @@ import {
   queryQuoteFile,
   getQuoteFileByQuoteIdAll,
   getQuoteFileCount,
+  getfileByQuoteIdWithManual,
 } from '../actions/quoteFile';
 
 type QuoteFileState = {
@@ -23,8 +24,7 @@ type QuoteFileState = {
   getQuoteFileByQuoteIdAllData: any;
   quoteFileById: any;
   getQuoteFileDataCount: number | undefined;
-  quoteFileUnverifiedById:any;
-  
+  quoteFileUnverifiedById: any;
 };
 const initialState: QuoteFileState = {
   loading: false,
@@ -247,9 +247,28 @@ const quoteFileSlice = createSlice({
           state.loading = false;
           state.error = action.payload;
         },
+      )
+      .addCase(getfileByQuoteIdWithManual.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getfileByQuoteIdWithManual.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.getQuoteFileDataCount = action.payload;
+        },
+      )
+      .addCase(
+        getfileByQuoteIdWithManual.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
       );
   },
 });
 
-export const {setQuoteFile, setQuoteFileDataCount, setQuoteFileUnverifiedById} = quoteFileSlice.actions;
+export const {setQuoteFile, setQuoteFileDataCount, setQuoteFileUnverifiedById} =
+  quoteFileSlice.actions;
 export default quoteFileSlice?.reducer;

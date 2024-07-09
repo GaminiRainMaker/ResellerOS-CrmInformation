@@ -49,6 +49,17 @@ export const quoteFileVerification = createAsyncThunk(
     }
   },
 );
+export const getfileByQuoteIdWithManual = createAsyncThunk(
+  'quoteFile/getfileByQuoteIdWithManual',
+  async (id: any, thunkApi) => {
+    try {
+      const res = await QUOTE_FILE_API.getfileByQuoteIdWithManualadd(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
 
 export const deleteQuoteFileById = createAsyncThunk(
   'quoteFile/delete',

@@ -37,4 +37,8 @@ export const QUOTE_FILE_API = {
     get(`${API.QUOTE_FILE.getQuoteFileCount}/${id}`) as Promise<
       AxiosResponse<any>
     >,
+  getfileByQuoteIdWithManualadd: (id: number) =>
+    get(`${API.QUOTE_FILE.getfileByQuoteIdWithManualadd}/${id}`) as Promise<
+      AxiosResponse<any>
+    >,
 };

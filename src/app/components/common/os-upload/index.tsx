@@ -77,11 +77,20 @@ const OsUpload: React.FC<any> = ({
     setLoading(true);
     for (let i = 0; i < uploadFileData.length; i++) {
       let obj: any = {...uploadFileData[i]};
-      if (!obj?.distributor_id && !obj?.oem_id && !obj?.manualquote) {
-        obj.error = true;
+      if (obj?.manualquote) {
+        if (!obj?.distributor_name && !obj?.oem_name) {
+          obj.error = true;
+        } else {
+          obj.error = false;
+        }
       } else {
-        obj.error = false;
+        if (!obj?.distributor_id && !obj?.oem_id) {
+          obj.error = true;
+        } else {
+          obj.error = false;
+        }
       }
+
       if (!obj.error && obj?.model_id) {
         // eslint-disable-next-line no-await-in-loop
         const response: any = await sendDataToNanonets(
@@ -95,6 +104,7 @@ const OsUpload: React.FC<any> = ({
     }
     setLoading(false);
     const index = newArr.findIndex((item) => item.error);
+
     if (index > -1) {
       setUploadFileData(newArr);
     } else if (opportunityDetailId) {

@@ -16,7 +16,7 @@ import {HotTable} from '@handsontable/react';
 import {useEffect, useState} from 'react';
 import './styles.css';
 
-import {useSearchParams} from 'next/navigation';
+import {useRouter, useSearchParams} from 'next/navigation';
 import {addClassesToRows, alignHeaders} from '../fileEditor/hooksCallbacks';
 
 import GlobalLoader from '@/app/components/common/os-global-loader';
@@ -32,19 +32,22 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import {XCircleIcon} from '@heroicons/react/24/outline';
+import {getfileByQuoteIdWithManual} from '../../../../../redux/actions/quoteFile';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const getQuoteID = searchParams.get('id');
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [arrayOflineItem, setArrayOflineItem] = useState<any>([]);
   const [saveNewHeader, setSaveNewHeader] = useState<boolean>(false);
   const [showConfirmHeader, setShowConfirmHeader] = useState<boolean>(false);
+  const [currentFileData, setCurrentFileData] = useState<any>();
 
-  useEffect(() => {
+  const addNewLine = () => {
     let newArr = [
       {
         a: '',
@@ -67,6 +70,10 @@ const EditorFile = () => {
     ];
 
     setArrayOflineItem(newArr);
+  };
+
+  useEffect(() => {
+    addNewLine();
   }, []);
 
   const AddNewHeaderToTheObject = () => {
@@ -142,6 +149,18 @@ const EditorFile = () => {
 
     setArrayOflineItem(newArrr);
   };
+  useEffect(() => {
+    dispatch(getfileByQuoteIdWithManual(Number(getQuoteID)))?.then(
+      (payload: any) => {
+        setCurrentFileData(payload?.payload);
+        window.history.replaceState(
+          null,
+          '',
+          `manualFileEditor?id=${Number(getQuoteID)}&fileId=${Number(payload?.payload?.id)}`,
+        );
+      },
+    );
+  }, []);
 
   const updateRowsValue = (
     rowIndex: number,
@@ -170,15 +189,54 @@ const EditorFile = () => {
     //   CancelEditing();
     // }
   };
+
+  const checkForNewFile = async () => {
+    let isExist: boolean = false;
+    let dataNew: any;
+    await dispatch(getfileByQuoteIdWithManual(Number(getQuoteID)))?.then(
+      (payload: any) => {
+        if (payload?.payload) {
+          setCurrentFileData(payload?.payload);
+          isExist = true;
+          dataNew = payload?.payload;
+        } else {
+          isExist = false;
+        }
+      },
+    );
+    setShowModal(false);
+    setShowConfirmHeader(false);
+    if (isExist) {
+      addNewLine();
+      window.history.replaceState(
+        null,
+        '',
+        `manualFileEditor?id=${Number(getQuoteID)}&fileId=${Number(dataNew?.id)}`,
+      );
+      location?.reload();
+      return;
+    } else {
+      router.push(`/generateQuote?id=${Number(getQuoteID)}`);
+      window.history.replaceState(
+        null,
+        '',
+        `/generateQuote?id=${Number(getQuoteID)}`,
+      );
+      location?.reload();
+    }
+  };
+
   return (
     <GlobalLoader loading={nanonetsLoading}>
-      <Typography
-        name="Body 1/Bold"
-        // color={token?.colorLink}
-        style={{marginBottom: '6px'}}
-      >
-        Note:
-      </Typography>
+      {currentFileData && (
+        <Typography
+          name="Body 1/Bold"
+          // color={token?.colorLink}
+          style={{marginBottom: '6px'}}
+        >
+          {currentFileData?.file_name}
+        </Typography>
+      )}
       <Row gutter={[32, 16]} style={{marginTop: '10px', marginBottom: '40px'}}>
         <Col span={12}>
           <div style={{display: 'flex', flexDirection: 'column'}}>
@@ -192,7 +250,7 @@ const EditorFile = () => {
             <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
               <ul style={{listStyleType: 'disc', marginLeft: '20px'}}>
                 <li>Data need to copied from excel file only.</li>
-                <li>Your first is going to be headers of you file data.</li>
+                <li>Your first row is going to be headers of you file data.</li>
               </ul>
             </Typography>
           </div>
@@ -290,17 +348,19 @@ const EditorFile = () => {
           marginBottom: '20px',
         }}
       >
-        <OsButton
+        {/* <OsButton
           text="Cancel"
           buttontype="SECONDARY"
           clickHandler={() => {
             syncShow('cancel');
           }}
-        />
+        /> */}
         <OsButton
           text="Sync Table"
           buttontype="PRIMARY"
           clickHandler={() => {
+            // router.push(`/generateQuote?id=${Number(getQuoteID)}`);
+
             if (saveNewHeader) {
               syncShow('sync');
             } else {
@@ -374,6 +434,7 @@ const EditorFile = () => {
               setMergedVaalues={setArrayOflineItem}
               setNanonetsLoading={setNanonetsLoading}
               nanonetsLoading={nanonetsLoading}
+              routingConditions={checkForNewFile}
             />
           }
           width={600}

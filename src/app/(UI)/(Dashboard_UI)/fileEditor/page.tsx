@@ -570,7 +570,9 @@ const EditorFile = () => {
       CancelEditing();
     }
   };
-  console.log('quoteItemsquoteItems', quoteItems);
+  const checkForNewFile = async () => {
+    router.push(`/generateQuote?id=${Number(getQUoteId)}`);
+  };
   return (
     <GlobalLoader loading={nanonetsLoading}>
       {ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true' ? (
@@ -878,6 +880,7 @@ const EditorFile = () => {
               setMergedVaalues={setMergedVaalues}
               setNanonetsLoading={setNanonetsLoading}
               nanonetsLoading={nanonetsLoading}
+              routingConditions={checkForNewFile}
             />
           }
           width={600}
