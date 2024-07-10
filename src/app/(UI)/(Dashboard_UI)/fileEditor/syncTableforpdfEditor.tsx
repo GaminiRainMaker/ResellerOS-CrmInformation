@@ -502,13 +502,14 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     if (finalOpportunityArray && syncTableData?.length > 0) {
       dispatch(insertOpportunityLineItem(finalOpportunityArray));
     }
+    let fileIdLatest = searchParams.get('fileId');
     dispatch(
       quoteFileVerification({
-        id: getQuoteFileId
-          ? getQuoteFileId
+        id: fileIdLatest
+          ? fileIdLatest
           : quoteFileById?.[0]?.id
             ? quoteFileById?.[0]?.id
-            : getQuoteFileId,
+            : fileIdLatest,
       }),
     );
     routingConditions();

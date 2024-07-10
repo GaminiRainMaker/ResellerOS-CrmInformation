@@ -160,6 +160,8 @@ const EditorFile = () => {
     );
   }, []);
 
+  console.log('43543543534', currentFileData);
+
   const updateRowsValue = (
     rowIndex: number,
     keyValue: string,
