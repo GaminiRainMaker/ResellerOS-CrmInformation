@@ -394,6 +394,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
               : quoteIdForManualss,
           is_verified: false,
           manual_file: true,
+          pdf_url: itemss?.pdf_url,
+          training_work: itemss?.training_work,
+          distributor_name: itemss?.distributor_name,
+          oem_name: itemss?.oem_name,
         };
         const insertedQuoteFile = await dispatch(
           insertQuoteFile(quoteFile),
@@ -432,6 +436,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
               quote_id: payload?.payload?.data?.[0]?.id,
               is_verified: false,
               manual_file: true,
+              pdf_url: itemss?.pdf_url,
+              training_work: itemss?.training_work,
+              distributor_name: itemss?.distributor_name,
+              oem_name: itemss?.oem_name,
             };
             const insertedQuoteFile = await dispatch(
               insertQuoteFile(quoteFile),
@@ -523,7 +531,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
             customerDetailId={customerId}
           />
         }
-        width={900}
+        width={1000}
         primaryButtonText={
           typeOfAddQuote === 1
             ? 'Generate Single Quote'

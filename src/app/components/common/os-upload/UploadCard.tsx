@@ -1,6 +1,6 @@
 /* eslint-disable array-callback-return */
-import {TrashIcon} from '@heroicons/react/24/outline';
-import {Form, Switch} from 'antd';
+import {InformationCircleIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {Avatar, Form, Popover, Switch} from 'antd';
 import Image from 'next/image';
 import {FC} from 'react';
 import PdfImg from '../../../../../public/assets/static/pdf.svg';
@@ -31,7 +31,6 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
     value: number,
     manual: boolean,
   ) => {
-    console.log('456445345', manual);
     const arr = [...uploadFileData];
     const obj = {...arr[index]};
     if (type === 'distributor') {
@@ -44,7 +43,10 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
       obj.oem_name = '';
 
       obj.model_id = '';
+      obj.training_work = false;
       obj.quote_config_id = '';
+    } else if (type === 'training_work') {
+      obj.training_work = manual;
     } else if (type === 'distributor_name') {
       obj.distributor_name = value;
     } else if (type === 'oem_name') {
@@ -52,7 +54,7 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
     } else {
       obj.oem_id = value;
     }
-    const data = quoteConfigData.find(
+    const data = quoteConfigData?.find(
       (quoteData: any) =>
         (obj?.distributor_id
           ? quoteData.distributor_id === obj.distributor_id
@@ -66,7 +68,6 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
     arr[index] = obj;
     setUploadFileData(arr);
   };
-
 
   return (
     <div>
@@ -106,7 +107,7 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
                 <Typography name="Body 4/Medium">{item?.file?.name}</Typography>
               </Space>
             </Col>
-            <Col span={4}>
+            <Col span={item?.manualquote ? 3 : 4}>
               <Space size={12}>
                 <Typography
                   name="Body 3/Medium"
@@ -121,6 +122,48 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
                 </Typography>
               </Space>
             </Col>
+            {item?.manualquote && (
+              <Col span={2}>
+                <Space size={12}>
+                  <Typography
+                    name="Body 3/Medium"
+                    color={token?.colorPrimaryText}
+                  >
+                    <Popover
+                      content={
+                        <Typography name="Body 3/Regular">
+                          By checking , you confirm to use this document for
+                          taining purpose
+                        </Typography>
+                      }
+                    >
+                      <Avatar
+                        size={24}
+                        style={{
+                          // marginTop: '-12px',
+                          marginRight: '5px',
+                          background: 'none',
+                        }}
+                        icon={
+                          <InformationCircleIcon width={24} color={'black'} />
+                        }
+                      />
+                    </Popover>
+
+                    <Switch
+                      onChange={(e: any) => {
+                        handleChangeDistributorOem(
+                          'training_work',
+                          index,
+                          0,
+                          e,
+                        );
+                      }}
+                    />
+                  </Typography>
+                </Space>
+              </Col>
+            )}
             {item?.manualquote ? (
               <>
                 <Col span={5}>

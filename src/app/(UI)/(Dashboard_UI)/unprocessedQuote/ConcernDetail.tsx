@@ -50,6 +50,7 @@ const ConcernDetail: FC<ConcernDetailInterface> = ({
               pdf_url: item?.pdf_url,
               nanonets_id: item?.nanonets_id,
               file_name: item?.file_name,
+              manual: false,
               model_id: item?.QuoteConfiguration?.model_id,
             });
           }
@@ -60,14 +61,28 @@ const ConcernDetail: FC<ConcernDetailInterface> = ({
               pdf_url: item?.pdf_url,
               nanonets_id: item?.nanonets_id,
               file_name: item?.file_name,
+              manual: false,
               model_id: item?.QuoteConfiguration?.model_id,
             },
           ];
           concernPDFArray?.push({
-            issue_type: item?.issue_type,
+            issue_type: 'Manual File',
             data,
           });
         }
+      }
+      if (!item?.issue_type && item?.manual_file) {
+        const data = [
+          {
+            pdf_url: item?.pdf_url,
+            manual: true,
+            file_name: item?.file_name,
+          },
+        ];
+        concernPDFArray?.push({
+          issue_type: item?.issue_type,
+          data,
+        });
       }
     });
 
@@ -86,7 +101,7 @@ const ConcernDetail: FC<ConcernDetailInterface> = ({
               </Typography>
               <TextArea
                 placeholder="Write your Concern here!"
-                value={item.issue_type}
+                value={item.issue_type ? item.issue_type : 'Manual File'}
                 disabled
               />
               <br />
@@ -95,6 +110,7 @@ const ConcernDetail: FC<ConcernDetailInterface> = ({
                 style={{
                   display: 'flex',
                   gap: 10,
+                  justifyContent: 'center',
                 }}
               >
                 {item?.data?.map((dataItem: any) => (
@@ -118,18 +134,20 @@ const ConcernDetail: FC<ConcernDetailInterface> = ({
                           }}
                         />
                       </IconWrapper>
-                      <IconWrapper>
-                        <ArrowTopRightOnSquareIcon
-                          color={token?.colorInfo}
-                          cursor="pointer"
-                          width={22}
-                          onClick={() => {
-                            window.open(
-                              `https://app.nanonets.com/#/ocr/test/${dataItem?.model_id}/${dataItem?.nanonets_id}`,
-                            );
-                          }}
-                        />
-                      </IconWrapper>
+                      {!dataItem?.manual && (
+                        <IconWrapper>
+                          <ArrowTopRightOnSquareIcon
+                            color={token?.colorInfo}
+                            cursor="pointer"
+                            width={22}
+                            onClick={() => {
+                              window.open(
+                                `https://app.nanonets.com/#/ocr/test/${dataItem?.model_id}/${dataItem?.nanonets_id}`,
+                              );
+                            }}
+                          />
+                        </IconWrapper>
+                      )}
                     </Row>
                     <Space
                       direction="vertical"

@@ -15,10 +15,8 @@ import '@handsontable/pikaday/css/pikaday.css';
 import {HotTable} from '@handsontable/react';
 import {useEffect, useState} from 'react';
 import './styles.css';
-
 import {useRouter, useSearchParams} from 'next/navigation';
 import {addClassesToRows, alignHeaders} from '../fileEditor/hooksCallbacks';
-
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import 'handsontable/dist/handsontable.min.css';
 import {useAppDispatch} from '../../../../../redux/hook';

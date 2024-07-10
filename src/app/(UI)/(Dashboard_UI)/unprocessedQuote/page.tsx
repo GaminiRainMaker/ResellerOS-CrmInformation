@@ -65,8 +65,9 @@ const AllQuote: React.FC = () => {
   useEffect(() => {
     dispatch(queryQuoteFile(searchQuery));
   }, [searchQuery]);
-
-  const filteredData = data?.filter((d: any) => d?.issue_type !== null);
+  const filteredData = data?.filter(
+    (d: any) => d?.issue_type !== null || d?.manual_file,
+  );
 
   const deleteQuote = async () => {
     const data = {Ids: deleteIds};
