@@ -247,8 +247,10 @@ const EditorFile = () => {
             </Typography>
             <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
               <ul style={{listStyleType: 'disc', marginLeft: '20px'}}>
-                <li>Data need to copied from excel file only.</li>
-                <li>Your first row is going to be headers of you file data.</li>
+                <li>Data needs to be copied from an Excel file only.</li>
+                <li>
+                  The first row will contain the headers of your file data.
+                </li>
               </ul>
             </Typography>
           </div>
@@ -293,8 +295,8 @@ const EditorFile = () => {
       <HotTable
         data={arrayOflineItem}
         colWidths={[
-          200, 200, 400, 800, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200,
-          200, 200,
+          300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300,
+          300, 300,
         ]}
         height="auto"
         colHeaders={mergeedColumn}
@@ -318,7 +320,15 @@ const EditorFile = () => {
           addClassesToRows('', '', '', '', '', '', arrayOflineItem);
         }}
         afterRemoveRow={(change, source) => {
-          deleteRowsItems(source, change);
+          if (arrayOflineItem?.length > 1) {
+            deleteRowsItems(source, change);
+          } else {
+            // notification?.open({
+            //   message: 'You can not delete only row from table',
+            //   type: 'error',
+            // });
+            addNewLine();
+          }
         }}
         afterChange={(change: any, source) => {
           if (change) {
