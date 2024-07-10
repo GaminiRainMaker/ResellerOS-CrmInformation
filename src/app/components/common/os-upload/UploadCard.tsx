@@ -247,7 +247,9 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
               style={{borderRadius: '18px', padding: '8px'}}
             >
               <Typography name="Body 4/Regular" color={token?.colorError}>
-                Please select either Distributor or OEM
+                {item?.manualquote
+                  ? 'Please add either Distributor or OEM'
+                  : 'Please select either Distributor or OEM'}
               </Typography>
             </Tag>
           )}
