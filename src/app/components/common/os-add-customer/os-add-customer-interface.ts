@@ -6,10 +6,16 @@ export interface AddCustomertInterface {
   onFinish: any;
   objectValuesForContact: any;
   setObjectValueForContact: any;
-  contactDetail?:any;
-  setContactDetail?:any;
-  shipppingAddress?:any
-  setShippingAddress?:any
+  contactDetail?: any;
+  setContactDetail?: any;
+  shipppingAddress?: any;
+  setShippingAddress?: any;
+  setActiveKeyForTabs?: any;
+  activeKeyForTabs?: any;
+  setNewAddContact?: any;
+  newAddContact?: any;
+  errorFileds?: any;
+  setErrorFileds?: any;
 }
 export interface CustomerAccountInterface {
   formValue?: any;
