@@ -65,6 +65,8 @@ const CrmInformation: React.FC = () => {
   const [objectValuesForContact, setObjectValueForContact] = useState<any>();
   const [contactDetail, setContactDetail] = useState<any>();
   const [shipppingAddress, setShippingAddress] = useState<any>();
+  const [activeKeyForTabs, setActiveKeyForTabs] = useState<any>(1);
+  const [newAddContact, setNewAddContact] = useState<Boolean>(false);
 
   const {loading, filteredData, customerProfile} = useAppSelector(
     (state) => state.customer,
@@ -550,6 +552,8 @@ const CrmInformation: React.FC = () => {
           form.resetFields();
           dispatch(setBillingContact({}));
           setObjectValueForContact({});
+          setActiveKeyForTabs(1);
+          setNewAddContact(false);
         }}
         open={showDrawer}
         width={450}
@@ -572,6 +576,10 @@ const CrmInformation: React.FC = () => {
           setContactDetail={setContactDetail}
           shipppingAddress={shipppingAddress}
           setShippingAddress={setShippingAddress}
+          setActiveKeyForTabs={setActiveKeyForTabs}
+          activeKeyForTabs={activeKeyForTabs}
+          setNewAddContact={setNewAddContact}
+          newAddContact={newAddContact}
         />
       </OsDrawer>
 

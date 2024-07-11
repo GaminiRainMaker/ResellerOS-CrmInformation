@@ -42,6 +42,10 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
   setObjectValueForContact,
   contactDetail,
   setContactDetail,
+  setActiveKeyForTabs,
+  activeKeyForTabs,
+  setNewAddContact,
+  newAddContact,
 }) => {
   const [token] = useThemeToken();
   const {billingContact} = useAppSelector((state) => state.billingContact);
@@ -49,7 +53,6 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
   const dispatch = useAppDispatch();
   const [editContactOIndex, setEditContactIndex] = useState<any>(null);
   const [editBillingAddress, setEditBillingAddress] = useState<Boolean>(false);
-  const [newAdd, setNewAdd] = useState<Boolean>(false);
   const [errorFileds, setErrorFileds] = useState<boolean>(false);
 
   const updateValues = (type: string, indexofupdate: number) => {
@@ -75,7 +78,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
     setEditBillingAddress(false);
     setEditContactIndex(null);
     setErrorFileds(false);
-    setNewAdd(false);
+    setNewAddContact(false);
   };
 
   const uploadImagesToBackend = async (newFileList: any, index: any) => {
@@ -302,9 +305,18 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
         <Divider />
         <CustomerTabsStyle
           defaultActiveKey="1"
+          activeKey={activeKeyForTabs?.toString()}
           items={[
             {
-              label: 'Shipping Address',
+              label: (
+                <div
+                  onClick={() => {
+                    setActiveKeyForTabs(1);
+                  }}
+                >
+                  Shipping Address
+                </div>
+              ),
               key: '1',
               children: (
                 <Row gutter={[16, 16]}>
@@ -396,7 +408,15 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
               ),
             },
             {
-              label: 'Billing Address',
+              label: (
+                <div
+                  onClick={() => {
+                    setActiveKeyForTabs(2);
+                  }}
+                >
+                  Billing Address
+                </div>
+              ),
               key: '2',
               children: (
                 <Row gutter={[16, 16]}>
@@ -519,7 +539,15 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
               ),
             },
             {
-              label: 'Contact',
+              label: (
+                <div
+                  onClick={() => {
+                    setActiveKeyForTabs(3);
+                  }}
+                >
+                  Contact
+                </div>
+              ),
               key: '3',
               children: (
                 <>
@@ -618,7 +646,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                         </>
                       )}
                     </Row>
-                    {(editBillingAddress || !drawer || newAdd) && (
+                    {(editBillingAddress || !drawer || newAddContact) && (
                       <>
                         <Row
                           style={{
@@ -649,18 +677,22 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                   });
                                 }}
                               />
-                              {errorFileds &&
-                                !objectValuesForContact?.billing_first_name && (
-                                  <div style={{color: 'red'}}>
-                                    This filed is required!
-                                  </div>
-                                )}
-                              {!AlphabetsRegex?.test(
-                                objectValuesForContact?.billing_first_name,
-                              ) && (
-                                <div style={{color: 'red'}}>
-                                  Please enter vaild first name
-                                </div>
+                              {errorFileds && (
+                                <>
+                                  {!objectValuesForContact?.billing_first_name ? (
+                                    <div style={{color: 'red'}}>
+                                      This filed is required!
+                                    </div>
+                                  ) : (
+                                    !AlphabetsRegex?.test(
+                                      objectValuesForContact?.billing_first_name,
+                                    ) && (
+                                      <div style={{color: 'red'}}>
+                                        Please enter vaild first name
+                                      </div>
+                                    )
+                                  )}
+                                </>
                               )}
                             </Col>
                             <Col style={{width: '47%'}}>
@@ -679,18 +711,22 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                   });
                                 }}
                               />
-                              {errorFileds &&
-                                !objectValuesForContact?.billing_last_name && (
-                                  <div style={{color: 'red'}}>
-                                    This filed is required!
-                                  </div>
-                                )}
-                              {!AlphabetsRegex?.test(
-                                objectValuesForContact?.billing_last_name,
-                              ) && (
-                                <div style={{color: 'red'}}>
-                                  Please enter vaild last name
-                                </div>
+                              {errorFileds && (
+                                <>
+                                  {!objectValuesForContact?.billing_last_name ? (
+                                    <div style={{color: 'red'}}>
+                                      This filed is required!
+                                    </div>
+                                  ) : (
+                                    !AlphabetsRegex?.test(
+                                      objectValuesForContact?.billing_last_name,
+                                    ) && (
+                                      <div style={{color: 'red'}}>
+                                        Please enter vaild last name
+                                      </div>
+                                    )
+                                  )}
+                                </>
                               )}
                             </Col>
                           </Row>
@@ -714,13 +750,22 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                   });
                                 }}
                               />
-
-                              {!AlphabetsRegex?.test(
-                                objectValuesForContact?.billing_role,
-                              ) && (
-                                <div style={{color: 'red'}}>
-                                  Please enter vaild role
-                                </div>
+                              {errorFileds && (
+                                <>
+                                  {!objectValuesForContact?.billing_role ? (
+                                    <div style={{color: 'red'}}>
+                                      This filed is required!
+                                    </div>
+                                  ) : (
+                                    !AlphabetsRegex?.test(
+                                      objectValuesForContact?.billing_role,
+                                    ) && (
+                                      <div style={{color: 'red'}}>
+                                        Please enter vaild role
+                                      </div>
+                                    )
+                                  )}
+                                </>
                               )}
                             </Col>
                             <Col style={{width: '47%'}}>
@@ -738,16 +783,23 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                   });
                                 }}
                               />
-
-                              {errorFileds &&
-                                !emailRegex?.test(
-                                  objectValuesForContact?.billing_email,
-                                ) &&
-                                objectValuesForContact?.billing_email && (
-                                  <div style={{color: 'red'}}>
-                                    Please enter vaild email
-                                  </div>
-                                )}
+                              {errorFileds && (
+                                <>
+                                  {!objectValuesForContact?.billing_email ? (
+                                    <div style={{color: 'red'}}>
+                                      Please enter the email
+                                    </div>
+                                  ) : (
+                                    !emailRegex?.test(
+                                      objectValuesForContact?.billing_email,
+                                    ) && (
+                                      <div style={{color: 'red'}}>
+                                        Please enter vaild email
+                                      </div>
+                                    )
+                                  )}
+                                </>
+                              )}
                             </Col>
                             {drawer && (
                               <Row
@@ -757,34 +809,66 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                   display: 'flex',
                                   justifyContent: 'end',
                                 }}
+                                gutter={32}
                               >
                                 <OsButton
+                                  style={{marginRight: '40px'}}
                                   buttontype="PRIMARY"
                                   clickHandler={() => {
-                                    if (
-                                      !objectValuesForContact?.billing_email ||
-                                      !objectValuesForContact?.billing_first_name ||
-                                      !objectValuesForContact?.billing_last_name ||
-                                      !objectValuesForContact?.billing_role
-                                    ) {
-                                      setErrorFileds(true);
-                                      return;
-                                    }
-                                    if (
-                                      objectValuesForContact?.customer_id ||
-                                      editBillingAddress
-                                    ) {
+                                    setNewAddContact(false);
+
+                                    if (editBillingAddress) {
                                       updateValues('update', editContactOIndex);
-                                    } else {
-                                      updateValues('add', editContactOIndex);
+                                      setEditBillingAddress(false);
                                     }
                                   }}
-                                  text={
-                                    editBillingAddress === true
-                                      ? 'Update'
-                                      : 'Add'
-                                  }
+                                  text={'Cancel'}
                                 />
+                                <Col>
+                                  <OsButton
+                                    buttontype="PRIMARY"
+                                    style={{marginLeft: '40px'}}
+                                    clickHandler={() => {
+                                      if (
+                                        !emailRegex?.test(
+                                          objectValuesForContact?.billing_email,
+                                        ) ||
+                                        !objectValuesForContact?.billing_email ||
+                                        !objectValuesForContact?.billing_first_name ||
+                                        !objectValuesForContact?.billing_last_name ||
+                                        !objectValuesForContact?.billing_role ||
+                                        !AlphabetsRegex?.test(
+                                          objectValuesForContact?.billing_first_name,
+                                        ) ||
+                                        !AlphabetsRegex?.test(
+                                          objectValuesForContact?.billing_last_name,
+                                        ) ||
+                                        !AlphabetsRegex?.test(
+                                          objectValuesForContact?.billing_role,
+                                        )
+                                      ) {
+                                        setErrorFileds(true);
+                                        return;
+                                      }
+                                      if (
+                                        objectValuesForContact?.customer_id ||
+                                        editBillingAddress
+                                      ) {
+                                        updateValues(
+                                          'update',
+                                          editContactOIndex,
+                                        );
+                                      } else {
+                                        updateValues('add', editContactOIndex);
+                                      }
+                                    }}
+                                    text={
+                                      editBillingAddress === true
+                                        ? 'Update'
+                                        : 'Add'
+                                    }
+                                  />
+                                </Col>
                               </Row>
                             )}
                           </Row>
@@ -794,18 +878,18 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                         </Row>
                       </>
                     )}
-                    {drawer && !newAdd && !editBillingAddress && (
+                    {drawer && !newAddContact && !editBillingAddress && (
                       <Row
                         style={{marginTop: '20px'}}
                         onClick={() => {
-                          setNewAdd(true);
-                          // setFormValue({
-                          //   ...formValue,
+                          setNewAddContact(true);
+                          setErrorFileds(false);
+                          // setObjectValueForContact({
                           //   billing_email: '',
                           //   billing_last_name: '',
                           //   billing_first_name: '',
                           //   billing_role: '',
-                          //   customer_id: formValue?.id,
+                          //   customer_id: billingContact?.id,
                           // });
                         }}
                       >
