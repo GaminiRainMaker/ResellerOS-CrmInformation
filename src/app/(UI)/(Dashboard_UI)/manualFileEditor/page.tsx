@@ -376,7 +376,7 @@ const EditorFile = () => {
             } else {
               notification?.open({
                 message:
-                  'Please add data from excel file. Then please save the first row as the header',
+                  'Please add the data from excel and save the header first.',
                 type: 'info',
               });
             }
