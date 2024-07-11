@@ -200,6 +200,7 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
               <OsInputNumber
                 min={0}
                 precision={2}
+                prefix={'$'}
                 formatter={currencyFormatter}
                 parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
                 disabled={getInReviewQuote === 'true' ? true : false}

@@ -235,7 +235,9 @@ const ProfileCard: FC<OSProfileInterface> = ({
               </Space>
             </Col>
 
-            {contactCardData && (
+            {billingContact &&
+            billingContact?.BillingContacts?.length > 0 &&
+            contactCardData ? (
               <Col span={24}>
                 <Space direction="vertical" style={{width: '100%'}}>
                   <Space
@@ -270,6 +272,25 @@ const ProfileCard: FC<OSProfileInterface> = ({
                     </Badge>
                   </Space>
                   <OsContactCard data={contactCardData} />
+                </Space>
+              </Col>
+            ) : (
+              <Col span={24}>
+                <Space direction="vertical" style={{width: '100%'}}>
+                  <Space
+                    align="center"
+                    style={{display: 'flex', justifyContent: 'space-between'}}
+                  >
+                    <Typography
+                      name="Body 4/Medium"
+                      color={token?.colorLinkHover}
+                    >
+                      Contacts
+                    </Typography>
+                  </Space>
+                  <Typography name="Body 3/Regular">
+                    There is no contact for this customer.
+                  </Typography>
                 </Space>
               </Col>
             )}

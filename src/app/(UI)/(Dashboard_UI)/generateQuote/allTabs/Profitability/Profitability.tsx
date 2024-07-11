@@ -781,7 +781,10 @@ const Profitablity: FC<any> = ({
                 label: (
                   <Row justify="space-between" align="middle" gutter={[8, 8]}>
                     <Col xs={24} sm={12} md={12} lg={5} xl={5}>
-                      <Badge count={finalDataItem?.QuoteLineItem?.length}>
+                      <Badge
+                        count={finalDataItem?.QuoteLineItem?.length}
+                        overflowCount={2000}
+                      >
                         <Typography
                           style={{padding: '5px 8px 0px 0px'}}
                           name="Body 4/Medium"
@@ -1014,6 +1017,7 @@ const Profitablity: FC<any> = ({
                               <Col xs={24} sm={12} md={12} lg={5} xl={5}>
                                 <Badge
                                   count={finalDataItem?.QuoteLineItem?.length}
+                                  overflowCount={2000}
                                 >
                                   <Typography
                                     style={{padding: '5px 8px 0px 0px'}}

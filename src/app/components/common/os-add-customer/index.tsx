@@ -85,7 +85,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
         type: 'info',
       });
     }
-    const datas = await getBase64(newFileList);
+    const datas: any = await getBase64(newFileList);
 
     const mediaType = newFileList?.type.split('/')[0];
 
@@ -114,7 +114,6 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
             }
           },
         );
-        dispatch(queryCustomer(null));
       }
     });
   };
