@@ -16,6 +16,7 @@ export interface AddCustomertInterface {
   newAddContact?: any;
   errorFileds?: any;
   setErrorFileds?: any;
+  getCustomers?: any;
 }
 export interface CustomerAccountInterface {
   formValue?: any;

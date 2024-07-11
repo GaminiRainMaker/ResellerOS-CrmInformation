@@ -398,10 +398,10 @@ const EditorFile = () => {
                   name="Heading 3/Medium"
                   style={{display: 'flex', textAlign: 'center'}}
                 >
-                  Your First Row is going to be the headers of the data
+                  Your first row is going to be the headers of the data.
                 </Typography>
                 <Typography name="Body 3/Regular">
-                  Are you sure you want to save headers
+                  Are you sure you want to save the headers?
                 </Typography>
               </Space>
 
