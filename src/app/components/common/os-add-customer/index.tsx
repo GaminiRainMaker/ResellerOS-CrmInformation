@@ -48,6 +48,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
   newAddContact,
   errorFileds,
   setErrorFileds,
+  getCustomers,
 }) => {
   const [token] = useThemeToken();
   const {billingContact} = useAppSelector((state) => state.billingContact);
@@ -81,6 +82,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
     setEditContactIndex(null);
     setErrorFileds(false);
     setNewAddContact(false);
+    getCustomers();
   };
 
   const uploadImagesToBackend = async (newFileList: any, index: any) => {
@@ -159,6 +161,8 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
   ]);
 
   const AlphabetsRegex = /^[A-Za-z\s]+$/;
+  const AlphabetsRegexWithSpecialChr =
+    /^[A-Z@~`!@#$%^&*()_=+\\\\';:\"\\/?>.<,-]*$/i;
   const emailRegex =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -758,7 +762,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                       This filed is required!
                                     </div>
                                   ) : (
-                                    !AlphabetsRegex?.test(
+                                    !AlphabetsRegexWithSpecialChr?.test(
                                       objectValuesForContact?.billing_role,
                                     ) && (
                                       <div style={{color: 'red'}}>
@@ -844,7 +848,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                         !AlphabetsRegex?.test(
                                           objectValuesForContact?.billing_last_name,
                                         ) ||
-                                        !AlphabetsRegex?.test(
+                                        !AlphabetsRegexWithSpecialChr?.test(
                                           objectValuesForContact?.billing_role,
                                         )
                                       ) {

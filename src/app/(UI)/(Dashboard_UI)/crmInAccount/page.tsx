@@ -104,6 +104,10 @@ const CrmInformation: React.FC = () => {
     dispatch(queryContact(''));
   }, [searchQuery]);
 
+  const getCustomers = () => {
+    dispatch(queryCustomer(searchQuery));
+  };
+
   useEffect(() => {
     const deletedAll = billingData?.filter((item: any) => item?.is_deleted);
     const setDeleted = deletedAll;
@@ -345,6 +349,8 @@ const CrmInformation: React.FC = () => {
   };
 
   const AlphabetsRegex = /^[A-Za-z\s]+$/;
+  const AlphabetsRegexWithSpecialChr =
+    /^[A-Z@~`!@#$%^&*()_=+\\\\';:\"\\/?>.<,-]*$/i;
   const emailRegex =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -357,7 +363,7 @@ const CrmInformation: React.FC = () => {
       !objectValuesForContact?.billing_role ||
       !AlphabetsRegex?.test(objectValuesForContact?.billing_first_name) ||
       !AlphabetsRegex?.test(objectValuesForContact?.billing_last_name) ||
-      !AlphabetsRegex?.test(objectValuesForContact?.billing_role)
+      !AlphabetsRegexWithSpecialChr?.test(objectValuesForContact?.billing_role)
     ) {
       setErrorFileds(true);
       return;
@@ -564,6 +570,7 @@ const CrmInformation: React.FC = () => {
           setShowModal((p) => !p);
           form.resetFields();
           setObjectValueForContact({});
+          setActiveKeyForTabs(1);
         }}
         onOk={form.submit}
         fourthButtonfunction={() => {
@@ -583,6 +590,7 @@ const CrmInformation: React.FC = () => {
           dispatch(setBillingContact({}));
           setObjectValueForContact({});
           setActiveKeyForTabs(1);
+          setObjectValueForContact({});
           setNewAddContact(false);
         }}
         open={showDrawer}
@@ -612,6 +620,7 @@ const CrmInformation: React.FC = () => {
           newAddContact={newAddContact}
           errorFileds={errorFileds}
           setErrorFileds={setErrorFileds}
+          getCustomers={getCustomers}
         />
       </OsDrawer>
 
