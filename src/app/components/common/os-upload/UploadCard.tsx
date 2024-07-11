@@ -133,7 +133,7 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
                       content={
                         <Typography name="Body 3/Regular">
                           By checking , you confirm to use this document for
-                          training purpose
+                          taining purpose
                         </Typography>
                       }
                     >
