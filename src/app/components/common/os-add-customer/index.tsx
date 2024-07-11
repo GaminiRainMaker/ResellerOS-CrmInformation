@@ -46,6 +46,8 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
   activeKeyForTabs,
   setNewAddContact,
   newAddContact,
+  errorFileds,
+  setErrorFileds,
 }) => {
   const [token] = useThemeToken();
   const {billingContact} = useAppSelector((state) => state.billingContact);
@@ -53,7 +55,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
   const dispatch = useAppDispatch();
   const [editContactOIndex, setEditContactIndex] = useState<any>(null);
   const [editBillingAddress, setEditBillingAddress] = useState<Boolean>(false);
-  const [errorFileds, setErrorFileds] = useState<boolean>(false);
+  // const [errorFileds, setErrorFileds] = useState<boolean>(false);
 
   const updateValues = (type: string, indexofupdate: number) => {
     const newArrOfContact: any =

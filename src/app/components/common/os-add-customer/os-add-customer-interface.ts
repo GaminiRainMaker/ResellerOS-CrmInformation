@@ -14,6 +14,8 @@ export interface AddCustomertInterface {
   activeKeyForTabs?: any;
   setNewAddContact?: any;
   newAddContact?: any;
+  errorFileds?: any;
+  setErrorFileds?: any;
 }
 export interface CustomerAccountInterface {
   formValue?: any;

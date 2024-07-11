@@ -31,7 +31,7 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import {Form, MenuProps} from 'antd';
+import {Form, MenuProps, notification} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -80,6 +80,8 @@ const CrmInformation: React.FC = () => {
   const [deletedData, setDeletedData] = useState<any>();
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
   const [editRecordData, setEditRecordData] = useState<any>();
+  const [errorFileds, setErrorFileds] = useState<boolean>(false);
+
   const [deleteModalDescription, setDeleteModalDescription] = useState<string>(
     `Are you sure you want to delete this account?`,
   );
@@ -342,7 +344,24 @@ const CrmInformation: React.FC = () => {
     ),
   };
 
+  const AlphabetsRegex = /^[A-Za-z\s]+$/;
+  const emailRegex =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
   const onFinish = () => {
+    if (
+      !emailRegex?.test(objectValuesForContact?.billing_email) ||
+      !objectValuesForContact?.billing_email ||
+      !objectValuesForContact?.billing_first_name ||
+      !objectValuesForContact?.billing_last_name ||
+      !objectValuesForContact?.billing_role ||
+      !AlphabetsRegex?.test(objectValuesForContact?.billing_first_name) ||
+      !AlphabetsRegex?.test(objectValuesForContact?.billing_last_name) ||
+      !AlphabetsRegex?.test(objectValuesForContact?.billing_role)
+    ) {
+      setErrorFileds(true);
+      return;
+    }
     const FormData = form.getFieldsValue();
     try {
       dispatch(
@@ -368,6 +387,7 @@ const CrmInformation: React.FC = () => {
 
       form.resetFields();
       setShowModal(false);
+      setActiveKeyForTabs(1);
     } catch (error) {
       console.log(error);
       form.resetFields();
@@ -530,6 +550,12 @@ const CrmInformation: React.FC = () => {
             setContactDetail={setContactDetail}
             shipppingAddress={shipppingAddress}
             setShippingAddress={setShippingAddress}
+            setActiveKeyForTabs={setActiveKeyForTabs}
+            activeKeyForTabs={activeKeyForTabs}
+            setNewAddContact={setNewAddContact}
+            newAddContact={newAddContact}
+            errorFileds={errorFileds}
+            setErrorFileds={setErrorFileds}
           />
         }
         width={700}
@@ -540,7 +566,11 @@ const CrmInformation: React.FC = () => {
           setObjectValueForContact({});
         }}
         onOk={form.submit}
-        primaryButtonText="Save"
+        fourthButtonfunction={() => {
+          setActiveKeyForTabs(activeKeyForTabs + 1);
+        }}
+        fourthButtonText={activeKeyForTabs === 3 ? '' : 'Next'}
+        primaryButtonText={activeKeyForTabs === 3 ? 'Save' : ''}
         footerPadding={20}
       />
 
@@ -580,6 +610,8 @@ const CrmInformation: React.FC = () => {
           activeKeyForTabs={activeKeyForTabs}
           setNewAddContact={setNewAddContact}
           newAddContact={newAddContact}
+          errorFileds={errorFileds}
+          setErrorFileds={setErrorFileds}
         />
       </OsDrawer>
 
