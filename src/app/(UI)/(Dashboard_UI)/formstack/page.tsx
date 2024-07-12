@@ -56,7 +56,7 @@ const FormStackMain: React.FC = () => {
         </Typography>
       ),
       key: '2',
-      children: <FormStackApiKey />,
+      children: <FormStackApiKey setActiveTab={setActiveTab} />,
     },
   ];
   useEffect(() => {

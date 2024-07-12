@@ -12,14 +12,18 @@ import Image from 'next/image';
 import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
 import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
 
-import {useEffect} from 'react';
+import {FC, useEffect} from 'react';
 
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {
   getAllGeneralSetting,
   insertUpdateGeneralSetting,
 } from '../../../../../redux/actions/generalSetting';
-const FormStackApiKey = () => {
+
+interface FormStackInterface {
+  setActiveTab?: any;
+}
+const FormStackApiKey: FC<FormStackInterface> = ({setActiveTab}) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
@@ -32,6 +36,8 @@ const FormStackApiKey = () => {
       : {...values};
 
     dispatch(insertUpdateGeneralSetting(obj));
+    location?.reload();
+    setActiveTab('2');
   };
 
   useEffect(() => {
