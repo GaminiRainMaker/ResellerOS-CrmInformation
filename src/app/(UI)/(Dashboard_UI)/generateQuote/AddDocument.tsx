@@ -190,7 +190,7 @@ const AddDocument: FC<any> = ({
       message: 'FormStack Syncing added successfully',
       type: 'success',
     });
-    setTypeOfFile('');
+    // setTypeOfFile('');
     setTypeOfFileUpload('');
   };
 
