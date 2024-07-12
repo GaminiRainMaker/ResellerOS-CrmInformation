@@ -35,7 +35,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
 
   useEffect(() => {
     dispatch(getAllOpportunity());
-  }, []);
+  }, [customerValue]);
 
   useEffect(() => {
     form?.resetFields(['opportunity_id', 'contact_id']);

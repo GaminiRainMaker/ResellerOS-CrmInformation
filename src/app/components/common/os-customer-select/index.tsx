@@ -41,14 +41,17 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const customerOptionData = dataAddress?.map((dataAddressItem: any) => ({
-      value: dataAddressItem?.id,
-      label: (
-        <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-          {dataAddressItem?.name}
-        </Typography>
-      ),
-    }));
+    const customerOptionData =
+      dataAddress &&
+      dataAddress?.length > 0 &&
+      dataAddress?.map((dataAddressItem: any) => ({
+        value: dataAddressItem?.id,
+        label: (
+          <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+            {dataAddressItem?.name}
+          </Typography>
+        ),
+      }));
     setCustomerOptions(customerOptionData);
   }, [JSON.stringify(dataAddress)]);
 
