@@ -132,8 +132,8 @@ const UploadCard: FC<any> = ({uploadFileData, setUploadFileData, form}) => {
                     <Popover
                       content={
                         <Typography name="Body 3/Regular">
-                          By checking , you confirm to use this document for
-                          taining purpose
+                          By enabling this toggle button, you confirm that this
+                          document will be used for training purposes.
                         </Typography>
                       }
                     >

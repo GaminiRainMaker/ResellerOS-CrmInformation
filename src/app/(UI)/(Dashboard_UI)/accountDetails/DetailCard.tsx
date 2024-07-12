@@ -38,6 +38,9 @@ const DetailCard = () => {
   const [contactDetail, setContactDetail] = useState<any>();
   const [shipppingAddress, setShippingAddress] = useState<any>();
   const [showDrawer, setShowDrawer] = useState<boolean>(false);
+  const [errorFileds, setErrorFileds] = useState<boolean>(false);
+  const [activeKeyForTabs, setActiveKeyForTabs] = useState<any>(1);
+  const [newAddContact, setNewAddContact] = useState<Boolean>(false);
 
   const contactCardData = [
     {
@@ -131,7 +134,9 @@ const DetailCard = () => {
     dispatch(setBillingContact({}));
     form.resetFields();
   };
-
+  const getCustomer = () => {
+    dispatch(getCustomerBYId(getCustomerID));
+  };
   return (
     <>
       <ProfileCard
@@ -163,6 +168,8 @@ const DetailCard = () => {
         placement="right"
         onClose={() => {
           setShowDrawer(false);
+          setObjectValueForContact({});
+          setActiveKeyForTabs(1);
         }}
         open={showDrawer}
         width={450}
@@ -185,6 +192,14 @@ const DetailCard = () => {
           setContactDetail={setContactDetail}
           shipppingAddress={shipppingAddress}
           setShippingAddress={setShippingAddress}
+          setActiveKeyForTabs={setActiveKeyForTabs}
+          activeKeyForTabs={activeKeyForTabs}
+          setNewAddContact={setNewAddContact}
+          newAddContact={newAddContact}
+          errorFileds={errorFileds}
+          setErrorFileds={setErrorFileds}
+          customerData={customerData}
+          getCustomers={getCustomer}
         />
       </OsDrawer>
     </>

@@ -61,6 +61,7 @@ const AddDocument: FC<any> = ({
   const [innerDocOptions, setInnerDocOptions] = useState<any>();
   const [optionsForSync, setOptionsForSync] = useState<any>();
 
+  console.log('34543543', typeOffileUpload);
   useEffect(() => {
     dispatch(getAllDocuments(''));
   }, []);
@@ -172,7 +173,6 @@ const AddDocument: FC<any> = ({
 
       return;
     }
-    console.log('34543543', setTypeOfFileUpload);
 
     let obj = {
       doc_id: documentId,

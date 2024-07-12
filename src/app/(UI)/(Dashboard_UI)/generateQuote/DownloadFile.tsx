@@ -127,6 +127,8 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
     let findTheItem = formStackSyncData?.find(
       (item: any) => item?.doc_key === data?.key,
     );
+
+    console.log('3453534', findTheItem);
     let resultValues: any = {};
     let lineItemsArray: any = [];
     if (
@@ -248,7 +250,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
           link.href = url;
           link.setAttribute(
             'download',
-            `${objectForSyncingValues?.file_name ? objectForSyncingValues?.file_name : objectForSyncingValues?.createdAt}.${findTheItem?.type_of_upload}`,
+            `${objectForSyncingValues?.file_name ? objectForSyncingValues?.file_name : objectForSyncingValues?.createdAt}.${findTheItem?.type_of_upload ? findTheItem?.type_of_upload : 'xlsx'}`,
           );
           document.body.appendChild(link);
           link.click();

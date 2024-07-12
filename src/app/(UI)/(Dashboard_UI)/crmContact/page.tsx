@@ -61,7 +61,6 @@ const CrmAccount: React.FC = () => {
   const {filteredData: customerData} = useAppSelector(
     (state) => state.customer,
   );
-
   const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
   const {loading, filteredData} = useAppSelector(
     (state) => state.billingContact,

@@ -49,6 +49,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
   errorFileds,
   setErrorFileds,
   getCustomers,
+  customerData,
 }) => {
   const [token] = useThemeToken();
   const {billingContact} = useAppSelector((state) => state.billingContact);
@@ -57,7 +58,6 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
   const [editContactOIndex, setEditContactIndex] = useState<any>(null);
   const [editBillingAddress, setEditBillingAddress] = useState<Boolean>(false);
   // const [errorFileds, setErrorFileds] = useState<boolean>(false);
-
   const updateValues = (type: string, indexofupdate: number) => {
     const newArrOfContact: any =
       contactDetail?.length > 0 ? [...contactDetail] : [];
@@ -70,7 +70,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
 
     const newBillingObject: any = {
       ...objectValuesForContact,
-      customer_id: billingContact?.id,
+      customer_id: customerData ? customerData?.id : billingContact?.id,
     };
 
     if (newBillingObject) {
@@ -82,7 +82,9 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
     setEditContactIndex(null);
     setErrorFileds(false);
     setNewAddContact(false);
-    getCustomers();
+    if (getCustomers) {
+      getCustomers();
+    }
   };
 
   const uploadImagesToBackend = async (newFileList: any, index: any) => {

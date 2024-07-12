@@ -17,6 +17,7 @@ export interface AddCustomertInterface {
   errorFileds?: any;
   setErrorFileds?: any;
   getCustomers?: any;
+  customerData?:any;
 }
 export interface CustomerAccountInterface {
   formValue?: any;
