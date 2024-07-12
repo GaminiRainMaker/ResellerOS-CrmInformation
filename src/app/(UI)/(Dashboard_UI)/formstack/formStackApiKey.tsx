@@ -7,7 +7,7 @@ import OsButton from '@/app/components/common/os-button';
 import OsInputPassword from '@/app/components/common/os-input/InputPassword';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import Typography from '@/app/components/common/typography';
-import {Form} from 'antd';
+import {Form, notification} from 'antd';
 import Image from 'next/image';
 import eyeSlashIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
 import eyeIcon from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
@@ -36,7 +36,13 @@ const FormStackApiKey: FC<FormStackInterface> = ({setActiveTab}) => {
       : {...values};
 
     dispatch(insertUpdateGeneralSetting(obj));
-    location?.reload();
+    notification?.open({
+      message: 'Your data is saved successfully.',
+      type: 'info',
+    });
+    setTimeout(() => {
+      location?.reload();
+    }, 1000);
     setActiveTab('2');
   };
 
