@@ -261,7 +261,7 @@ const FormStackSync = () => {
             <Radio value={'Bundle Only'}>Bundles Only</Radio>
             <Radio value={'Line Items Only'}>Lines Items Only</Radio>
             <Radio value={'With and without bundle'}>
-              With and without bundles
+              {'With and Without Bundle'}
             </Radio>
           </Radio.Group>
         </>
