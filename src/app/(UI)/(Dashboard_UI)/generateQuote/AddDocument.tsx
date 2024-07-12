@@ -245,7 +245,7 @@ const AddDocument: FC<any> = ({
                       <br />
                       <CommonSelect
                         style={{width: '100%'}}
-                        placeholder="Select Columns"
+                        // placeholder="Select Columns"
                         disabled={'QuoteLineItem' === item?.newVal}
                         allowClear
                         options={columnSelectOptions}
