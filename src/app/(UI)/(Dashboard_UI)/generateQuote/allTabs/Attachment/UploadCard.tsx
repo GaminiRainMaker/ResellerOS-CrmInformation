@@ -27,6 +27,8 @@ const UploadCard: FC<any> = ({
     );
   };
 
+  console.log('uploadFileData', uploadFileData);
+
   const handleAttachmentType = (index: number, value: number) => {
     const arr = [...uploadFileData];
     const obj = {...arr[index]};
@@ -38,64 +40,65 @@ const UploadCard: FC<any> = ({
   return (
     <div>
       <br />
-      {uploadFileData?.map((item: any, index: number) => (
-        <Form
-          onFinish={addNewAttachment}
-          key={item?.uid}
-          layout="vertical"
-          form={form}
-        >
-          <Row key={item?.uid} justify="space-between" gutter={[0, 8]}>
-            <Col span={10}>
-              <Space size={12}>
-                {item?.name?.includes('pdf') ? (
-                  <Image src={PdfImg} alt="PdfImg" />
-                ) : (
-                  <Image src={XlsImg} alt="XlsImg" />
-                )}
+      {uploadFileData?.length > 0 &&
+        uploadFileData?.map((item: any, index: number) => (
+          <Form
+            onFinish={addNewAttachment}
+            key={item?.uid}
+            layout="vertical"
+            form={form}
+          >
+            <Row key={item?.uid} justify="space-between" gutter={[0, 8]}>
+              <Col span={10}>
+                <Space size={12}>
+                  {item?.name?.includes('pdf') ? (
+                    <Image src={PdfImg} alt="PdfImg" />
+                  ) : (
+                    <Image src={XlsImg} alt="XlsImg" />
+                  )}
 
-                <Typography name="Body 4/Medium">{item?.name}</Typography>
-              </Space>
-            </Col>
-            <Col span={10}>
-              <SelectFormItem
-                name={`type${item?.uid}`}
-                rules={[
-                  {
-                    required: true,
-                    message: 'This field is required.',
-                  },
-                ]}
-              >
-                <CommonSelect
-                  key={item?.uid}
-                  style={{width: '100%'}}
-                  placeholder="Select Grouping here"
-                  options={AttachmentOptions}
-                  onChange={(e) => {
-                    handleAttachmentType(index, e);
+                  <Typography name="Body 4/Medium">{item?.name}</Typography>
+                </Space>
+              </Col>
+              <Col span={10}>
+                <SelectFormItem
+                  name={`type${item?.uid}`}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'This field is required.',
+                    },
+                  ]}
+                >
+                  <CommonSelect
+                    key={item?.uid}
+                    style={{width: '100%'}}
+                    placeholder="Select Grouping here"
+                    options={AttachmentOptions}
+                    onChange={(e) => {
+                      handleAttachmentType(index, e);
+                    }}
+                    allowClear
+                  />
+                </SelectFormItem>
+              </Col>
+
+              <Col span={2}>
+                <TrashIcon
+                  cursor="pointer"
+                  width={20}
+                  color={token?.colorError}
+                  onClick={() => {
+                    removeFile(item?.uid);
                   }}
-                  allowClear
+                  style={{marginTop: '15px'}}
                 />
-              </SelectFormItem>
-            </Col>
+              </Col>
+            </Row>
 
-            <Col span={2}>
-              <TrashIcon
-                cursor="pointer"
-                width={20}
-                color={token?.colorError}
-                onClick={() => {
-                  removeFile(item?.uid);
-                }}
-                style={{marginTop: '15px'}}
-              />
-            </Col>
-          </Row>
-
-          <Divider />
-        </Form>
-      ))}
+            <Divider />
+          </Form>
+        ))}
     </div>
   );
 };

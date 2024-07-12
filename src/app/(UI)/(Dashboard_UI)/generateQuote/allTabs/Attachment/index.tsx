@@ -250,6 +250,7 @@ const AttachmentDocument: FC<any> = ({
         open={addNewCustomerQuote}
         onCancel={() => {
           setAddNewCustomerQuote(false);
+          setUploadFileData([]);
         }}
         bodyPadding={20}
         title="Add Customer Attachments"
