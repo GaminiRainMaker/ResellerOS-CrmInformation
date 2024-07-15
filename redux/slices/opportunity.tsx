@@ -56,7 +56,6 @@ const opportunitySlice = createSlice({
         insertOpportunity.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          // state.data = [action.payload];
         },
       )
       .addCase(
@@ -74,7 +73,7 @@ const opportunitySlice = createSlice({
         getAllOpportunity.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.opportunity = action.payload;
         },
       )
       .addCase(

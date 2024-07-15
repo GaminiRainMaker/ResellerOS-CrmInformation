@@ -116,10 +116,12 @@ const Profitablity: FC<any> = ({
             } else if (filterValue === 'Vendor/Disti') {
               name =
                 item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Distributor
-                  ?.distribu;
+                  ?.distribu ??
+                item?.QuoteLineItem?.QuoteFile?.distributor_name;
             } else if (filterValue === 'OEM') {
               name =
-                item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem;
+                item?.QuoteLineItem?.QuoteFile?.QuoteConfiguration?.Oem?.oem ??
+                item?.QuoteLineItem?.QuoteFile?.oem_name;
             }
             type = 'groups';
           }
@@ -993,14 +995,7 @@ const Profitablity: FC<any> = ({
   };
 
   return (
-    <GlobalLoader
-      loading={
-        profitabilityDataByQuoteId &&
-        profitabilityDataByQuoteId?.length > 0 &&
-        finalData &&
-        finalData?.length <= 0
-      }
-    >
+    <GlobalLoader loading={profitabilityDataByQuoteId?.length < 0}>
       {finalProfitTableCol && finalProfitTableCol?.length > 0 ? (
         !selectedFilter ? (
           <div key={JSON.stringify(finalData)}>{renderFinalData()}</div>

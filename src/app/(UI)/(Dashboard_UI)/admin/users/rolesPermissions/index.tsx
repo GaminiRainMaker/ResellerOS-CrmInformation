@@ -392,7 +392,6 @@ const RolesAndPermission = () => {
                       color={'#A0AAB8'}
                     />
                   </Tooltip>
-                  <OsButton text="CANCEL" buttontype="SECONDARY" />
                   <OsButton
                     text="SAVE"
                     buttontype="PRIMARY"

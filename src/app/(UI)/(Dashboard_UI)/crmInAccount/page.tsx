@@ -45,6 +45,7 @@ import {
 } from '../../../../../redux/actions/billingContact';
 import {
   deleteCustomers,
+  getAllCustomer,
   insertCustomer,
   queryCustomer,
   updateCustomer,
@@ -68,9 +69,12 @@ const CrmInformation: React.FC = () => {
   const [activeKeyForTabs, setActiveKeyForTabs] = useState<any>(1);
   const [newAddContact, setNewAddContact] = useState<Boolean>(false);
 
-  const {loading, filteredData, customerProfile} = useAppSelector(
-    (state) => state.customer,
-  );
+  const {
+    loading,
+    filteredData,
+    customerProfile,
+    data: customerAllData,
+  } = useAppSelector((state) => state.customer);
   const {filteredData: billingData} = useAppSelector(
     (state) => state.billingContact,
   );
@@ -102,6 +106,7 @@ const CrmInformation: React.FC = () => {
     dispatch(queryCustomer(searchQuery));
     dispatch(queryOpportunity(''));
     dispatch(queryContact(''));
+    dispatch(getAllCustomer(''));
   }, [searchQuery]);
 
   const getCustomers = () => {
@@ -119,6 +124,7 @@ const CrmInformation: React.FC = () => {
     await dispatch(deleteCustomers(data));
     setTimeout(() => {
       dispatch(queryCustomer(query));
+      dispatch(getAllCustomer(''));
     }, 1000);
     setDeleteIds([]);
     setShowModalDelete(false);
@@ -155,7 +161,7 @@ const CrmInformation: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{filteredData?.length}</div>,
+      primary: <div>{customerAllData?.length}</div>,
       secondry: 'Customers',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
@@ -389,6 +395,7 @@ const CrmInformation: React.FC = () => {
         }
         dispatch(setCustomerProfile(''));
         dispatch(queryCustomer(searchQuery));
+        dispatch(getAllCustomer(''));
       });
 
       form.resetFields();

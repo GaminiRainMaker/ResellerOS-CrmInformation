@@ -21,7 +21,16 @@ function getColumns(
     (arg0: boolean): void;
   },
   activeTab: any,
-  updateStatus: any,
+  userInformation: any,
+  setShowApprovedDialogModal: {
+    (value: SetStateAction<boolean>): void;
+    (arg0: boolean): void;
+  },
+  setRecordId: any,
+  setShowRejectDialogModal: {
+    (value: SetStateAction<boolean>): void;
+    (arg0: boolean): void;
+  },
 ) {
   const columns = [
     {
@@ -114,11 +123,29 @@ function getColumns(
       dataIndex: 'status',
       key: 'status',
       width: 187,
-      render: (text: string) => (
-        <div style={{display: 'flex', justifyContent: 'center'}}>
-          <OsStatusWrapper value={activeTab === '5' ? 'In Review' : text} />
-        </div>
-      ),
+      render: (text: string, record: any) => {
+        let finalStatus: any;
+        if (userInformation && Object.keys(userInformation).length > 0) {
+          if (
+            record?.approver_id === userInformation?.id &&
+            activeTab === '1' &&
+            text === 'Needs Review'
+          ) {
+            finalStatus = 'In Review';
+          } else if (activeTab === '5') {
+            finalStatus = 'In Review';
+          } else {
+            finalStatus = text;
+          }
+        } else {
+          finalStatus = text;
+        }
+        return (
+          <div style={{display: 'flex', justifyContent: 'center'}}>
+            <OsStatusWrapper value={finalStatus} />
+          </div>
+        );
+      },
     },
     {
       title: (
@@ -146,7 +173,11 @@ function getColumns(
                     width={25}
                     color={token?.colorBgContainer}
                     onClick={(e) => {
-                      updateStatus(record?.id, 'Approved');
+                      setShowApprovedDialogModal(true);
+                      setRecordId({
+                        ids: record?.id,
+                        status: 'Approved',
+                      });
                     }}
                   />
                 }
@@ -160,7 +191,11 @@ function getColumns(
                     width={25}
                     color={token?.colorBgContainer}
                     onClick={(e) => {
-                      updateStatus(record?.id, 'Rejected');
+                      setShowRejectDialogModal(true);
+                      setRecordId({
+                        ids: record?.id,
+                        status: 'Rejected',
+                      });
                     }}
                   />
                 }

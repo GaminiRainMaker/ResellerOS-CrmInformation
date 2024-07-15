@@ -1,9 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
-/* eslint-disable no-nested-ternary */
-/* eslint-disable eqeqeq */
-/* eslint-disable @typescript-eslint/indent */
-/* eslint-disable react-hooks/exhaustive-deps */
-
 'use client';
 
 import Typography from '@/app/components/common/typography';
@@ -43,6 +37,7 @@ import {queryContact} from '../../../../../redux/actions/billingContact';
 import {queryCustomer} from '../../../../../redux/actions/customer';
 import {
   deleteOpportunity,
+  getAllOpportunity,
   getdeleteOpportunity,
   insertOpportunity,
   queryOpportunity,
@@ -65,6 +60,7 @@ const CrmOpportunity: React.FC = () => {
     data: opportunityData,
     loading,
     deletedCount: countDeletedOpp,
+    opportunity,
   } = useAppSelector((state) => state.Opportunity);
   const {filteredData: customerData} = useAppSelector(
     (state) => state.customer,
@@ -90,13 +86,15 @@ const CrmOpportunity: React.FC = () => {
     dispatch(queryOpportunity(searchQuery));
     dispatch(queryContact(''));
     dispatch(queryCustomer(''));
+    dispatch(getAllOpportunity());
   }, [searchQuery]);
 
   const deleteSelectedIds = async () => {
     const data = {Ids: deleteIds};
-    await dispatch(deleteOpportunity(data)).then((d) => {
+    await dispatch(deleteOpportunity(data)).then((d: any) => {
       if (d?.payload) {
         dispatch(queryOpportunity(query));
+        dispatch(getAllOpportunity());
         setDeleteIds([]);
         setShowModalDelete(false);
       }
@@ -113,7 +111,7 @@ const CrmOpportunity: React.FC = () => {
     },
     {
       key: 2,
-      primary: <div>{opportunityData?.length}</div>,
+      primary: <div>{opportunity?.length}</div>,
       secondry: 'Opportunities',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
@@ -382,6 +380,7 @@ const CrmOpportunity: React.FC = () => {
     dispatch(insertOpportunity(finalData)).then((d: any) => {
       if (d?.payload) {
         dispatch(queryOpportunity(searchQuery));
+        dispatch(getAllOpportunity());
         setShowModal(false);
         form.resetFields();
       }

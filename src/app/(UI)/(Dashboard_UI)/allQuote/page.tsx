@@ -18,6 +18,8 @@ import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
+import GreenCheckIcon from '../../../../../public/assets/static/greenCheckIcon.svg';
+import CancelIcon from '../../../../../public/assets/static/CancelIcon.svg';
 
 import {
   deleteQuoteById,
@@ -61,6 +63,10 @@ const AllQuote: React.FC = () => {
     'Are you sure you want to delete this Quote?',
   );
   const [deleteIds, setDeleteIds] = useState<any>();
+  const [recordId, setRecordId] = useState<any>({
+    ids: null,
+    status: '',
+  });
 
   useEffect(() => {
     dispatch(getAllSyncTable('QuoteLineItem'));
@@ -128,7 +134,9 @@ const AllQuote: React.FC = () => {
                 ? userInformation?.Admin
                   ? quoteData
                   : quoteData?.filter(
-                      (item: any) => item?.user_id === userInformation?.id,
+                      (item: any) =>
+                        item?.user_id === userInformation?.id ||
+                        item?.approver_id === userInformation?.id,
                     )
                 : activeTab === '6'
                   ? quoteData?.filter((item: any) =>
@@ -188,15 +196,13 @@ const AllQuote: React.FC = () => {
     window.open(`/generateQuote?id=${quoteId}&inReviewQuote=${false}`);
   };
 
-  const updateStatus = (quoteId: string, status: string) => {
-    if (quoteId && status) {
-      const obj = {
-        ids: quoteId,
-        status,
-      };
-      dispatch(updateQuoteStatusById(obj)).then((d) => {
+  const updateStatus = () => {
+    if (recordId) {
+      dispatch(updateQuoteStatusById(recordId)).then((d) => {
         if (d?.payload) {
           dispatch(getQuotesByDateFilter({}));
+          setShowApprovedDialogModal(false);
+          setShowRejectDialogModal(false);
         }
       });
     }
@@ -218,7 +224,10 @@ const AllQuote: React.FC = () => {
     setDeleteIds,
     setShowModalDelete,
     activeTab,
-    updateStatus,
+    userInformation,
+    setShowApprovedDialogModal,
+    setRecordId,
+    setShowRejectDialogModal,
   );
 
   const ExitingQuotecolumns = getExistingQuoteColumns(
@@ -416,30 +425,26 @@ const AllQuote: React.FC = () => {
         heading="Delete Quote"
         description={`Are you sure you want to delete ${deleteIds?.length > 1 ? 'these' : 'this'} Quote?`}
       />
-      {/* <DailogModal
+      <DailogModal
+        loading={loading}
         setShowDailogModal={setShowApprovedDialogModal}
         showDailogModal={showApprovedDialogModal}
         title="Quote Approve"
         subTitle="Are you sure you want to approve this quote?"
         primaryButtonText="Done"
-        icon={
-          <CheckCircleIcon width={35} height={35} color={token?.colorSuccess} />
-        }
-        onOk={() => {
-          quoteStatusUpdation('Approved');
-        }}
+        image={GreenCheckIcon}
+        onOk={updateStatus}
       />
       <DailogModal
+        loading={loading}
         setShowDailogModal={setShowRejectDialogModal}
         showDailogModal={showRejectDialogModal}
         title="Quote Reject"
         subTitle="Are you sure you want to reject this quote?"
         primaryButtonText="Done"
-        icon={<XCircleIcon width={35} height={35} color={token?.colorError} />}
-        onOk={() => {
-          quoteStatusUpdation('Reject');
-        }}
-      /> */}
+        onOk={updateStatus}
+        image={CancelIcon}
+      />
     </>
   );
 };

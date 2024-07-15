@@ -119,7 +119,7 @@ const customerSlice = createSlice({
         updateCustomer.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = [action.payload];
+          state.data = action.payload;
         },
       )
       .addCase(updateCustomer.rejected, (state, action: PayloadAction<any>) => {
@@ -134,7 +134,7 @@ const customerSlice = createSlice({
         searchCustomer.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = [action.payload];
+          state.data = action.payload;
         },
       )
       .addCase(searchCustomer.rejected, (state, action: PayloadAction<any>) => {

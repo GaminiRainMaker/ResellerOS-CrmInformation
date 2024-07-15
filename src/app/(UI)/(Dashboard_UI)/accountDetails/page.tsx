@@ -39,9 +39,11 @@ const AccountDetails = () => {
   const searchParams = useSearchParams();
   const getCustomerID = searchParams.get('id');
 
-  const quotes = customerData.Opportunities?.flatMap(
-    (opportunity: any) => opportunity?.Quotes,
-  );
+  const quotes =
+    customerData &&
+    customerData?.Opportunities?.flatMap(
+      (opportunity: any) => opportunity?.Quotes,
+    );
 
   useEffect(() => {
     dispatch(getCustomerBYId(getCustomerID));

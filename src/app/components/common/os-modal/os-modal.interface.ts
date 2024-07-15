@@ -44,4 +44,5 @@ export interface OSDailogInterface extends ModalProps {
   onOk?: any;
   secondryButtontype?: string;
   width?: number;
+  image?: any;
 }

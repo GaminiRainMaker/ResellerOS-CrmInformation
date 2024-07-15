@@ -33,6 +33,7 @@ import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {
   deleteBillingContact,
+  getAllbillingContact,
   insertbillingContact,
   queryContact,
   updateBillingContact,
@@ -62,9 +63,11 @@ const CrmAccount: React.FC = () => {
     (state) => state.customer,
   );
   const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
-  const {loading, filteredData} = useAppSelector(
-    (state) => state.billingContact,
-  );
+  const {
+    loading,
+    filteredData,
+    data: ContactAllData,
+  } = useAppSelector((state) => state.billingContact);
   const [deletedData, setDeletedData] = useState<any>();
   const [query, setQuery] = useState<{
     contact: string | null;
@@ -79,6 +82,7 @@ const CrmAccount: React.FC = () => {
     dispatch(queryContact(searchQuery));
     dispatch(queryCustomer(''));
     dispatch(queryOpportunity(''));
+    dispatch(getAllbillingContact(''));
   }, [searchQuery]);
 
   useEffect(() => {
@@ -101,6 +105,7 @@ const CrmAccount: React.FC = () => {
     setTimeout(() => {
       dispatch(getAllCustomer(''));
       dispatch(queryContact(''));
+      dispatch(getAllbillingContact(''));
     }, 1000);
   };
 
@@ -127,7 +132,7 @@ const CrmAccount: React.FC = () => {
     },
     {
       key: 3,
-      primary: <div>{filteredData?.length}</div>,
+      primary: <div>{ContactAllData?.length}</div>,
       secondry: 'Contacts',
       icon: <PhoneIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
@@ -303,6 +308,7 @@ const CrmAccount: React.FC = () => {
     dispatch(insertbillingContact(FormData)).then((d: any) => {
       if (d?.payload) {
         dispatch(queryContact(searchQuery));
+        dispatch(getAllbillingContact(''));
         form.resetFields();
         setShowModal(false);
       }

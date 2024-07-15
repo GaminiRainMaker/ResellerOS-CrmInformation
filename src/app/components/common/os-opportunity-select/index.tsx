@@ -26,7 +26,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const {data: opportunityData, loading} = useAppSelector(
+  const {opportunity, loading} = useAppSelector(
     (state) => state.Opportunity,
   );
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -39,7 +39,7 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
 
   useEffect(() => {
     form?.resetFields(['opportunity_id', 'contact_id']);
-    const filterUsers = opportunityData?.filter(
+    const filterUsers = opportunity?.filter(
       (item: any) => item?.customer_id === customerValue,
     );
 
@@ -53,8 +53,9 @@ const OsOpportunitySelect: FC<OsOpportunitySelectInterface> = ({
     }));
 
     setOpportunityFilterOption(opportunityOptions);
-  }, [JSON.stringify(opportunityData), customerValue]);
+  }, [JSON.stringify(opportunity), customerValue]);
 
+  
   const onFinish = () => {
     const FormDAta = form1.getFieldsValue();
     const finalData = {

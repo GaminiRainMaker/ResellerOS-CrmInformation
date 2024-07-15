@@ -396,12 +396,13 @@ export const updateTables = async (
         (itemReb: any) => item.product_code === itemReb.contract_product_name,
       );
       if (findContractIndex !== -1) {
-        contractProductArray.push({
+        let newObj = {
           ...obj1,
           quoteline_item_id: item?.id,
           contract_product_id:
             allContractWithProductCodeData?.[findContractIndex]?.payload.id,
-        });
+        };
+        contractProductArray.push(newObj);
       }
       let count: any = 0;
       if (item?.id) {
@@ -431,7 +432,6 @@ export const updateTables = async (
         if (newRebateArr)
           await dispatch(insertRebateQuoteLineItem(newRebateArr));
       }
-
       if (contractProductArray.length > 0) {
         const newContractProductArr: any = [];
         contractProductArray.forEach((item: any, index: number) => {
