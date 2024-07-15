@@ -979,14 +979,7 @@ const Profitablity: FC<any> = ({
   };
 
   return (
-    <GlobalLoader
-      loading={
-        profitabilityDataByQuoteId &&
-        profitabilityDataByQuoteId?.length > 0 &&
-        finalData &&
-        finalData?.length <= 0
-      }
-    >
+    <GlobalLoader loading={profitabilityDataByQuoteId?.length < 0}>
       {finalProfitTableCol && finalProfitTableCol?.length > 0 ? (
         !selectedFilter ? (
           <div key={JSON.stringify(finalData)}>{renderFinalData()}</div>
