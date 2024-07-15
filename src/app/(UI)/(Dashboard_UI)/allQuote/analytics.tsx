@@ -18,7 +18,8 @@ const QuoteAnalytics = () => {
   const allQuotes = filteredData?.filter((item: any) =>
     userInformation?.Admin
       ? filteredData
-      : item?.user_id === userInformation?.id,
+      : item?.user_id === userInformation?.id ||
+        item?.approver_id === userInformation?.id,
   );
   const draftedQuote = filteredData?.filter((item: any) =>
     userInformation?.Admin
