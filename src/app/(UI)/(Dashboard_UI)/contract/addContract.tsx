@@ -60,10 +60,10 @@ const AddContract: React.FC<any> = ({drawer, form, onFinish}) => {
                     required: true,
                     message: 'Contract Vehicle Name is required!',
                   },
-                  {
-                    pattern: /^[A-Za-z\s]+$/,
-                    message: 'Please enter valid text.',
-                  },
+                  // {
+                  //   pattern: /^[A-Za-z\s]+$/,
+                  //   message: 'Please enter valid text.',
+                  // },
                 ]}
               >
                 <OsInput placeholder="Enter Text" />
@@ -79,10 +79,10 @@ const AddContract: React.FC<any> = ({drawer, form, onFinish}) => {
                     required: true,
                     message: 'Contract is required!',
                   },
-                  {
-                    pattern: /^[A-Za-z\s]+$/,
-                    message: 'Please enter valid text.',
-                  },
+                  // {
+                  //   pattern: /^[A-Za-z\s]+$/,
+                  //   message: 'Please enter valid text.',
+                  // },
                 ]}
               >
                 <OsInput placeholder="Enter Text" />

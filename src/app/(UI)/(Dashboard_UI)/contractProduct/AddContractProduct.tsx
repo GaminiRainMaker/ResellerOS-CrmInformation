@@ -84,10 +84,10 @@ const AddContractProduct: React.FC<any> = ({
                     required: true,
                     message: 'Contract Product Name is required!',
                   },
-                  {
-                    pattern: /^[A-Za-z\s]+$/,
-                    message: 'Please enter valid text.',
-                  },
+                  // {
+                  //   pattern: /^[A-Za-z\s]+$/,
+                  //   message: 'Please enter valid text.',
+                  // },
                 ]}
               >
                 <OsInput placeholder="Enter Text" />
@@ -105,10 +105,10 @@ const AddContractProduct: React.FC<any> = ({
                     required: true,
                     message: 'Contract Price is required!',
                   },
-                  {
-                    // pattern: /^[0-9]$/,
-                    message: 'Please enter valid text.',
-                  },
+                  // {
+                  //   // pattern: /^[0-9]$/,
+                  //   message: 'Please enter valid text.',
+                  // },
                 ]}
               >
                 <OsInput placeholder="Enter Text" />
@@ -125,10 +125,10 @@ const AddContractProduct: React.FC<any> = ({
                     required: true,
                     message: 'Product Number is required!',
                   },
-                  {
-                    // pattern: /^[A-Za-z\s]+$/,
-                    message: 'Please enter valid text.',
-                  },
+                  // {
+                  //   // pattern: /^[A-Za-z\s]+$/,
+                  //   message: 'Please enter valid text.',
+                  // },
                 ]}
               >
                 <OsInput placeholder="Enter Text" />
