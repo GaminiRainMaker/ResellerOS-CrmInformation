@@ -262,7 +262,6 @@ const Profitablity: FC<any> = ({
       filterDataByValue(profitabilityDataByQuoteId, selectedFilter);
     }
   }, [JSON.stringify(profitabilityDataByQuoteId), selectedFilter]);
-
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Profitability" />,
   };
@@ -401,8 +400,8 @@ const Profitablity: FC<any> = ({
   const ProfitabilityQuoteLineItemcolumns = [
     {
       title: '#Line',
-      dataIndex: 'serial_number',
-      key: 'serial_number',
+      dataIndex: 'line_number',
+      key: 'line_number',
       render: (text: string, record: any) => (
         <OsInput
           disabled={renderEditableInput('#Line')}
@@ -415,7 +414,7 @@ const Profitablity: FC<any> = ({
           onChange={(e) =>
             handleFieldChange(
               record,
-              'serial_number',
+              'line_number',
               e.target.value,
               selectedFilter,
               'input',
@@ -987,7 +986,7 @@ const Profitablity: FC<any> = ({
             defaultPageSize={nonBundleData?.length}
             setPageChange={setPageChange}
             pageChange={pageChange}
-            uniqueId={nonBundleData ?.name}
+            uniqueId={nonBundleData?.name}
           />
         )}
       </div>
