@@ -19,6 +19,9 @@ const OsTableWithOutDrag: FC<any> = ({
   showPagination,
   selectedRowsKeys = [],
   defaultPageSize,
+  setPageChange,
+  pageChange,
+  uniqueId,
   ...rest
 }) => {
   const [token] = useThemeToken();
@@ -50,13 +53,35 @@ const OsTableWithOutDrag: FC<any> = ({
   });
 
   const handlePaginationChange = (page: number, pageSize: number) => {
+    let newArrToUpdate: any = [...pageChange];
+
+    let findTheIndex = newArrToUpdate?.findIndex(
+      (item: any) => uniqueId === item?.name,
+    );
+
+    const updatedArrForPaggination = newArrToUpdate?.map(
+      (items: any, index: number) => {
+        if (index === findTheIndex) {
+          return {
+            ...items,
+            current: page,
+            pageSize,
+          };
+        }
+        return items;
+      },
+    );
+
+    setPageChange(updatedArrForPaggination);
     setPagination({
       ...pagination,
       current: page,
       pageSize,
     });
   };
-
+  const findTheCurrentTable = pageChange?.find(
+    (items: any) => items?.name === uniqueId,
+  );
   return (
     <CustomTable
       {...rest}
@@ -77,9 +102,11 @@ const OsTableWithOutDrag: FC<any> = ({
         spinning: rest.loading,
       }}
       pagination={{
-        current: pagination.current,
-        pageSize: pagination.pageSize,
-        total: pagination.total,
+        current: uniqueId ? findTheCurrentTable?.current : pagination.current,
+        pageSize: uniqueId
+          ? findTheCurrentTable?.pageSize
+          : pagination.pageSize,
+        total: uniqueId ? findTheCurrentTable?.total : pagination.total,
         onChange: handlePaginationChange,
         position: ['bottomRight'],
         showSizeChanger: true,

@@ -364,6 +364,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       if (requiredOutput) {
         for (let i = 0; i < requiredOutput?.length; i++) {
           let itemsOfProduct = requiredOutput[i];
+
           if (itemsOfProduct) {
             let productCode = itemsOfProduct?.product_code
               ? itemsOfProduct?.product_code?.replace(/\s/g, '')
@@ -373,6 +374,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                 productItemFind?.product_code?.replace(/\s/g, '') ===
                 productCode,
             );
+            // console.log('4354354353454', itemsOfProduct, itemsToAdd);
             const obj1: any = {
               quote_file_id: getQuoteFileId
                 ? getQuoteFileId
@@ -385,11 +387,13 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               // line_amount: useRemoveDollarAndCommahook(
               //   itemsOfProduct?.line_amount,
               // ),
-              list_price: useRemoveDollarAndCommahook(itemsToAdd?.list_price),
-              description: itemsToAdd?.description,
-              quantity: useRemoveDollarAndCommahook(itemsToAdd?.quantity),
+              list_price: useRemoveDollarAndCommahook(
+                itemsOfProduct?.list_price,
+              ),
+              description: itemsOfProduct?.description,
+              quantity: useRemoveDollarAndCommahook(itemsOfProduct?.quantity),
               adjusted_price: useRemoveDollarAndCommahook(
-                itemsToAdd?.adjusted_price,
+                itemsOfProduct?.adjusted_price,
               ),
               line_number: itemsToAdd?.line_number,
               organization: userInformation.organization,
@@ -481,21 +485,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         }
         if (newrrLineItems && newrrLineItems.length > 0) {
           const data = genericFun(d?.payload, newrrLineItems);
-          let count = 0;
-          async () => {
-            await dispatch(getAllProfitabilityCount(Number(getQuoteID)))?.then(
-              (payload: any) => {
-                count = payload?.payload;
-              },
-            );
-          };
 
-          const newArrr: any = [];
-
-          data?.map((items: any, index: number) => {
-            newArrr?.push({...items, serial_number: index + count + 1});
-          });
-          dispatch(insertProfitability(newArrr));
+          dispatch(insertProfitability(data));
         }
       });
     }

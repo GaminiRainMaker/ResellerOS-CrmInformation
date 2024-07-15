@@ -75,6 +75,7 @@ const Profitablity: FC<any> = ({
   const [keyPressed, setKeyPressed] = useState('');
   const [showBundleDrawer, setShowBundleDrawer] = useState<boolean>(false);
   const [bundleRecordId, setBundleRecordId] = useState<any>();
+  const [pageChange, setPageChange] = useState<any>();
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
       id: number;
@@ -90,7 +91,6 @@ const Profitablity: FC<any> = ({
       label: '',
     },
   ]);
-
   const filterDataByValue = (data: any, filterValue?: string) => {
     const groupedData: any = {};
     const arrayData: any[] = [];
@@ -220,8 +220,19 @@ const Profitablity: FC<any> = ({
       ),
       ...arrayData,
     ];
-    setFinalData(finalData);
 
+    setFinalData(finalData);
+    let newArrForPaggination: any = [];
+
+    finalData?.map((items: any) => {
+      newArrForPaggination?.push({
+        name: items?.name,
+        current: 1,
+        pageSize: items?.QuoteLineItem?.length > 100 ? 100 : 20,
+        total: 0,
+      });
+    });
+    setPageChange(newArrForPaggination);
     const uniqueBundleData = bundleData
       ?.filter(
         (item: any, index, self) =>
@@ -336,7 +347,7 @@ const Profitablity: FC<any> = ({
   };
 
   const rowSelection = {
-    onChange: (selectedRowKeys: any, record: any) => {
+    onChange: (selectedRowKeys: any, record: any, defaultPageSize: any) => {
       setSelectedRowData(record);
       setSelectedRowIds(selectedRowKeys);
     },
@@ -765,7 +776,6 @@ const Profitablity: FC<any> = ({
     const nonBundleData = finalData.filter(
       (item: any) => item.type !== 'bundle',
     );
-
     return (
       <div>
         {bundleData.map((finalDataItem: any, index: number) => (
@@ -953,6 +963,9 @@ const Profitablity: FC<any> = ({
                       rowSelection={rowSelection}
                       selectedRowsKeys={selectTedRowIds}
                       defaultPageSize={finalDataItem?.QuoteLineItem?.length}
+                      setPageChange={setPageChange}
+                      pageChange={pageChange}
+                      uniqueId={finalDataItem?.name}
                     />
                   </div>
                 ),
@@ -970,6 +983,9 @@ const Profitablity: FC<any> = ({
             rowSelection={rowSelection}
             selectedRowsKeys={selectTedRowIds}
             defaultPageSize={nonBundleData?.length}
+            setPageChange={setPageChange}
+            pageChange={pageChange}
+            uniqueId={nonBundleData ?.name}
           />
         )}
       </div>
@@ -1204,6 +1220,9 @@ const Profitablity: FC<any> = ({
                                 defaultPageSize={
                                   finalDataItem?.QuoteLineItem?.length
                                 }
+                                setPageChange={setPageChange}
+                                pageChange={pageChange}
+                                uniqueId={finalDataItem?.name}
                               />
                             </div>
                           ),

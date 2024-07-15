@@ -28,8 +28,6 @@ import {notification, Space} from 'antd';
 import Typography from '@/app/components/common/typography';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import {Col, Row} from '@/app/components/common/antd/Grid';
-import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
-import {XCircleIcon} from '@heroicons/react/24/outline';
 import {getfileByQuoteIdWithManual} from '../../../../../redux/actions/quoteFile';
 
 const EditorFile = () => {
@@ -38,6 +36,7 @@ const EditorFile = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const getQuoteID = searchParams.get('id');
+  const SaleQuoteId = searchParams.get('quote_Id');
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [arrayOflineItem, setArrayOflineItem] = useState<any>([]);
@@ -73,7 +72,7 @@ const EditorFile = () => {
   useEffect(() => {
     addNewLine();
   }, []);
-
+  console.log('343243243', SaleQuoteId);
   const AddNewHeaderToTheObject = () => {
     setSaveNewHeader(true);
     setShowConfirmHeader(false);

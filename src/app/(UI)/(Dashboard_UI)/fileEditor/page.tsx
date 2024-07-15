@@ -926,6 +926,7 @@ const EditorFile = () => {
             router?.push(`/generateQuote?id=${Number(getQUoteId)}`);
           }}
           open={returnBackModal}
+          // open={false}
         />
       )}
     </GlobalLoader>
