@@ -8,9 +8,10 @@ import {
   getValuesOFLineItemsThoseNotAddedBefore,
 } from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form, message, notification} from 'antd';
-import {RedirectType, useRouter} from 'next/navigation';
+import {Form, message} from 'antd';
+import {useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
+import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {
   getBulkProductIsExisting,
   insertProductsInBulk,
@@ -31,10 +32,6 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '../os-button';
 import OsUpload from '../os-upload';
 import {AddQuoteInterface, FormattedData} from './types';
-import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
-import customer from '../../../../../redux/slices/customer';
-import opportunity from '../../../../../redux/slices/opportunity';
-import moment from 'moment';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,

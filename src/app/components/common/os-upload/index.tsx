@@ -3,7 +3,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {sendDataToNanonets} from '@/app/utils/base';
 import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
-import {Form, Radio} from 'antd';
+import {Form} from 'antd';
 import React, {useEffect, useState} from 'react';
 import {getQuotesByExistingQuoteFilter} from '../../../../../redux/actions/quote';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -18,7 +18,6 @@ import OsTable from '../os-table';
 import Typography from '../typography';
 import UploadCard from './UploadCard';
 import {OSDraggerStyle} from './styled-components';
-import OsInput from '../os-input';
 
 const OsUpload: React.FC<any> = ({
   beforeUpload,
@@ -122,7 +121,7 @@ const OsUpload: React.FC<any> = ({
   const onToggleChange = (checked: boolean) => {
     setShowToggleTable(checked);
     if (!checked) {
-      setExistingQuoteId(0);
+      setExistingQuoteId();
     }
   };
 
@@ -186,7 +185,7 @@ const OsUpload: React.FC<any> = ({
                   setCustomerValue={setCustomerValue}
                   customerValue={customerValue}
                   isAddNewCustomer
-                  isRequired={showToggleTable ? false : true}
+                  isRequired={existingQuoteId ? false : true}
                 />
               </Col>
 
@@ -196,7 +195,7 @@ const OsUpload: React.FC<any> = ({
                   customerValue={customerValue}
                   isAddNewOpportunity
                   setOpportunityValue={setOpportunityValue}
-                  isRequired={showToggleTable ? false : true}
+                  isRequired={existingQuoteId ? false : true}
                 />
               </Col>
             </Row>
