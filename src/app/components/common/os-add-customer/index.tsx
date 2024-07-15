@@ -318,7 +318,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
               label: (
                 <div
                   onClick={() => {
-                    setActiveKeyForTabs(1);
+                    setActiveKeyForTabs && setActiveKeyForTabs(1);
                   }}
                 >
                   Shipping Address
@@ -418,7 +418,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
               label: (
                 <div
                   onClick={() => {
-                    setActiveKeyForTabs(2);
+                    setActiveKeyForTabs && setActiveKeyForTabs(2);
                   }}
                 >
                   Billing Address
@@ -549,7 +549,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
               label: (
                 <div
                   onClick={() => {
-                    setActiveKeyForTabs(3);
+                    setActiveKeyForTabs && setActiveKeyForTabs(3);
                   }}
                 >
                   Contact
