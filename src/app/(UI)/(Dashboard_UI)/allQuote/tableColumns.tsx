@@ -21,8 +21,16 @@ function getColumns(
     (arg0: boolean): void;
   },
   activeTab: any,
-  updateStatus: any,
   userInformation: any,
+  setShowApprovedDialogModal: {
+    (value: SetStateAction<boolean>): void;
+    (arg0: boolean): void;
+  },
+  setRecordId: any,
+  setShowRejectDialogModal: {
+    (value: SetStateAction<boolean>): void;
+    (arg0: boolean): void;
+  },
 ) {
   const columns = [
     {
@@ -165,7 +173,11 @@ function getColumns(
                     width={25}
                     color={token?.colorBgContainer}
                     onClick={(e) => {
-                      updateStatus(record?.id, 'Approved');
+                      setShowApprovedDialogModal(true);
+                      setRecordId({
+                        ids: record?.id,
+                        status: 'Approved',
+                      });
                     }}
                   />
                 }
@@ -179,7 +191,11 @@ function getColumns(
                     width={25}
                     color={token?.colorBgContainer}
                     onClick={(e) => {
-                      updateStatus(record?.id, 'Rejected');
+                      setShowRejectDialogModal(true);
+                      setRecordId({
+                        ids: record?.id,
+                        status: 'Rejected',
+                      });
                     }}
                   />
                 }

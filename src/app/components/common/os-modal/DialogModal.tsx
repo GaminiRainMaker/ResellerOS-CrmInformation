@@ -6,6 +6,7 @@ import OsButton from '../os-button';
 import {AvatarStyled} from '../os-table/styled-components';
 import Typography from '../typography';
 import {OSDailogInterface} from './os-modal.interface';
+import Image from 'next/image';
 
 const DailogModal: FC<OSDailogInterface> = ({
   showDailogModal,
@@ -18,6 +19,7 @@ const DailogModal: FC<OSDailogInterface> = ({
   onOk,
   secondryButtontype = 'SECONDARY',
   width = 600,
+  image,
 }) => (
   <OsModal
     width={width}
@@ -45,8 +47,11 @@ const DailogModal: FC<OSDailogInterface> = ({
                 alignItems: 'center',
               }}
             >
-              <AvatarStyled background="white" icon={icon} />
-
+              {' '}
+              <br />
+              {icon && <AvatarStyled background="white" icon={icon} />}
+              {image && <Image src={image} alt={image} />}
+              <br />
               <Typography name="Heading 3/Medium">{title}</Typography>
             </span>
             <Typography name="Body 3/Regular">{subTitle}</Typography>
