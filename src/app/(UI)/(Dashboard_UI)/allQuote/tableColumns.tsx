@@ -120,7 +120,8 @@ function getColumns(
         if (userInformation && Object.keys(userInformation).length > 0) {
           if (
             record?.approver_id === userInformation?.id &&
-            activeTab === '1'
+            activeTab === '1' &&
+            text === 'Needs Review'
           ) {
             finalStatus = 'In Review';
           } else if (activeTab === '5') {
