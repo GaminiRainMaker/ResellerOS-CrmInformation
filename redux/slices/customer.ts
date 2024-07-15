@@ -21,6 +21,7 @@ type CustomerState = {
   filteredData: any;
   customerProfileByIdData: any;
   customerProfile: string;
+  customerDataById: any;
 };
 const initialState: CustomerState = {
   loading: false,
@@ -30,6 +31,7 @@ const initialState: CustomerState = {
   filteredData: [],
   customerProfileByIdData: {},
   customerProfile: '',
+  customerDataById: {},
 };
 
 const customerSlice = createSlice({
@@ -159,7 +161,7 @@ const customerSlice = createSlice({
       })
       .addCase(getCustomerBYId.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload;
+        state.customerDataById = action.payload;
       })
       .addCase(
         getCustomerBYId.rejected,
