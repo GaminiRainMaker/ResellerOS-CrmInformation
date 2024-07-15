@@ -36,7 +36,7 @@ const initialState: UserState = {
   error: null,
   data: [],
   user: [],
-  userInformation: [],
+  userInformation: {},
   loginUserInformation: {},
   allResellerRecord: {},
   searchDataa: [],
@@ -147,7 +147,7 @@ const userSlice = createSlice({
         getUserByTokenAccess.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.userInformation = action.payload;
+          // state.userInformation = action.payload;
         },
       )
       .addCase(

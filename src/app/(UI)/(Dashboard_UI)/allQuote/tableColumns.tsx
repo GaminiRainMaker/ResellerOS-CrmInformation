@@ -22,6 +22,7 @@ function getColumns(
   },
   activeTab: any,
   updateStatus: any,
+  userInformation: any,
 ) {
   const columns = [
     {
@@ -114,11 +115,28 @@ function getColumns(
       dataIndex: 'status',
       key: 'status',
       width: 187,
-      render: (text: string) => (
-        <div style={{display: 'flex', justifyContent: 'center'}}>
-          <OsStatusWrapper value={activeTab === '5' ? 'In Review' : text} />
-        </div>
-      ),
+      render: (text: string, record: any) => {
+        let finalStatus: any;
+        if (userInformation && Object.keys(userInformation).length > 0) {
+          if (
+            record?.approver_id === userInformation?.id &&
+            activeTab === '1'
+          ) {
+            finalStatus = 'In Review';
+          } else if (activeTab === '5') {
+            finalStatus = 'In Review';
+          } else {
+            finalStatus = text;
+          }
+        } else {
+          finalStatus = text;
+        }
+        return (
+          <div style={{display: 'flex', justifyContent: 'center'}}>
+            <OsStatusWrapper value={finalStatus} />
+          </div>
+        );
+      },
     },
     {
       title: (

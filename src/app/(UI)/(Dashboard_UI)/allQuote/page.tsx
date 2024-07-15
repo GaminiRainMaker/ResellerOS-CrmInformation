@@ -31,8 +31,6 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import QuoteAnalytics from './analytics';
 import {tabItems} from './constants';
 import {getColumns, getExistingQuoteColumns} from './tableColumns';
-import DailogModal from '@/app/components/common/os-modal/DialogModal';
-import {CheckCircleIcon, XCircleIcon} from '@heroicons/react/24/outline';
 
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -128,7 +126,9 @@ const AllQuote: React.FC = () => {
                 ? userInformation?.Admin
                   ? quoteData
                   : quoteData?.filter(
-                      (item: any) => item?.user_id === userInformation?.id,
+                      (item: any) =>
+                        item?.user_id === userInformation?.id ||
+                        item?.approver_id === userInformation?.id,
                     )
                 : activeTab === '6'
                   ? quoteData?.filter((item: any) =>
@@ -219,6 +219,7 @@ const AllQuote: React.FC = () => {
     setShowModalDelete,
     activeTab,
     updateStatus,
+    userInformation,
   );
 
   const ExitingQuotecolumns = getExistingQuoteColumns(
