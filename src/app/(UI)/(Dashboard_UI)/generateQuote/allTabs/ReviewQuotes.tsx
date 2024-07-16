@@ -34,6 +34,7 @@ import {
   setQuoteFileUnverifiedById,
 } from '../../../../../../redux/slices/quoteFile';
 import GlobalLoader from '@/app/components/common/os-global-loader';
+import CommonSelect from '@/app/components/common/os-select';
 
 const ReviewQuotes: FC<any> = ({
   tableColumnDataShow,
@@ -187,6 +188,25 @@ const ReviewQuotes: FC<any> = ({
             {text === null ? 0.0 : `${abbreviate(value ?? 0.0)}`}
           </Typography>
         );
+      },
+    },
+    {
+      title: 'Product Family',
+      dataIndex: 'product_family',
+      key: 'product_family',
+      width: 285,
+      render(text: any, record: any) {
+        return {
+          children: (
+            <CommonSelect
+              disabled={true}
+              allowClear
+              style={{width: '200px', height: '36px'}}
+              placeholder="Select"
+              defaultValue={text ?? record?.Product?.product_family}
+            />
+          ),
+        };
       },
     },
     {
