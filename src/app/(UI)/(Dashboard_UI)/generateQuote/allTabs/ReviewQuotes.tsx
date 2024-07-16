@@ -66,7 +66,7 @@ const ReviewQuotes: FC<any> = ({
   const [reviewQuotesData, setReviewQuotesData] = useState<any>();
   const [finalReviewCol, setFinalReviewCol] = useState<any>();
   const [fileVerificationLoading, setFileVerificationLoading] = useState(false);
-
+  const [pageChange, setPageChange] = useState<any>();
   const filterDataByValue = (data: any, filterValue: any) => {
     const groupedData: any = {};
     data?.forEach((item: any) => {
@@ -115,6 +115,27 @@ const ReviewQuotes: FC<any> = ({
     });
 
     setReviewQuotesData(Object.values(groupedData));
+    let newArrForPaggination: any = [];
+
+    Object.values(groupedData)?.map((items: any) => {
+      newArrForPaggination?.push({
+        name: items?.name,
+        current: 1,
+        pageSize:
+          items?.QuoteLineItem?.length < 10
+            ? 10
+            : items?.QuoteLineItem?.length < 20
+              ? 20
+              : items?.QuoteLineItem?.length < 30
+                ? 30
+                : items?.QuoteLineItem?.length < 31 ||
+                    items?.QuoteLineItem?.length < 51
+                  ? 50
+                  : 100,
+        total: 0,
+      });
+    });
+    setPageChange(newArrForPaggination);
   };
 
   useEffect(() => {
@@ -354,10 +375,6 @@ const ReviewQuotes: FC<any> = ({
                                     width={25}
                                     color={token?.colorBgContainer}
                                     onClick={(e) => {
-                                      console.log(
-                                        '43543543',
-                                        finalDataItem?.maunalAdded,
-                                      );
                                       if (!finalDataItem?.maunalAdded) {
                                         if (
                                           finalDataItem?.QuoteLineItem
@@ -413,6 +430,9 @@ const ReviewQuotes: FC<any> = ({
                           scroll
                           locale={locale}
                           defaultPageSize={finalDataItem?.QuoteLineItem?.length}
+                          setPageChange={setPageChange}
+                          pageChange={pageChange}
+                          uniqueId={finalDataItem?.name}
                         />
                       ),
                     },

@@ -230,7 +230,18 @@ const Profitablity: FC<any> = ({
       newArrForPaggination?.push({
         name: items?.name,
         current: 1,
-        pageSize: items?.QuoteLineItem?.length > 100 ? 100 : 20,
+        pageSize:
+          items?.QuoteLineItem?.length < 11
+            ? 10
+            : items?.QuoteLineItem?.length < 21
+              ? 20
+              : items?.QuoteLineItem?.length < 31
+                ? 30
+                : items?.QuoteLineItem?.length < 31 ||
+                    items?.QuoteLineItem?.length < 51
+                  ? 50
+                  : 100,
+
         total: 0,
       });
     });
