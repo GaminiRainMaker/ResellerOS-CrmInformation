@@ -86,7 +86,7 @@ const UserManagement = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          {' '}
+          Actions
         </Typography>
       ),
       dataIndex: 'actions',

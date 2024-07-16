@@ -351,13 +351,14 @@ export const updateTables = async (
       },
     );
 
-    await dispatch(getContractInBulkByProductCode(allProductCodes))?.then(
-      (payload: any) => {
-        payload?.payload?.map((items: any) => {
-          allContractWithProductCodeData?.push(items);
-        });
-      },
-    );
+    // await dispatch(getContractInBulkByProductCode(allProductCodes))?.then(
+    //   (payload: any) => {
+    //     payload?.payload?.map((items: any) => {
+    //       allContractWithProductCodeData?.push(items);
+    //     });
+    //   },
+    // );
+
     for (const item of quoteLineItemData) {
       const obj1: any = {
         quote_id: item.quote_id ?? getQuoteId,
