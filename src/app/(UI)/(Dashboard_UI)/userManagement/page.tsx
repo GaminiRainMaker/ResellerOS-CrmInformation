@@ -89,7 +89,11 @@ const UserManagement = () => {
             );
           }}
         >
-          {text ?? '--'}
+          {record?.first_name && record?.last_name
+            ? `${record.first_name} ${record.last_name}`
+            : record?.first_name
+              ? record.first_name
+              : record?.user_name}
         </Typography>
       ),
     },
