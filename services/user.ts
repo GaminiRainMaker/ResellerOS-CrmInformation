@@ -12,8 +12,8 @@ export const USERAPI = {
   loginUser: (data: any) => post(API.USER.LOGIN, data),
   query: (data: any) =>
     post(API.USER.QUERY, data) as Promise<AxiosResponse<[]>>,
-  getAdminUserOfAllOrganization: () =>
-    get(API.USER.GetAdminUserOfAllOrganization) as Promise<AxiosResponse<[]>>,
+  getAdminUserOfAllOrganization: (data: any) =>
+    post(API.USER.GetAdminUserOfAllOrganization, data) as Promise<AxiosResponse<[]>>,
   getById: (id: number) =>
     get(`${API.USER.INDEX}/${id}`) as Promise<AxiosResponse<any>>,
   updateUserById: (data: any) =>

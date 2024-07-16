@@ -16,6 +16,9 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AssignPartnerProgram from './AssignPartnerProgram';
 import {insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
 import {setAllResellerRecord} from '../../../../../redux/slices/user';
+import CommonSelect from '@/app/components/common/os-select';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
+import {Option} from 'antd/es/mentions';
 
 const UserManagement = () => {
   const dispatch = useAppDispatch();
@@ -32,12 +35,44 @@ const UserManagement = () => {
   const updatedResellerData = userData?.filter(
     (d: any) => d?.organization !== 'rainmakercloud',
   );
+  const [query, setQuery] = useState<{
+    organization: string | null;
+    user_name: string | null;
+  }>({
+    organization: null,
+    user_name: null,
+  });
+  const searchQuery = useDebounceHook(query, 500);
 
   const UserDataColumns = [
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          User Name
+          Organization
+        </Typography>
+      ),
+      dataIndex: 'organization',
+      key: 'organization',
+      width: 173,
+      render: (text: string, record: any) => (
+        <Typography
+          hoverOnText
+          color={token?.colorInfo}
+          name="Body 4/Regular"
+          onClick={() => {
+            router.push(
+              `/organizationUsers?organization=${record?.organization}`,
+            );
+          }}
+        >
+          {text ?? '--'}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Master Admin Name
         </Typography>
       ),
       dataIndex: 'user_name',
@@ -46,10 +81,11 @@ const UserManagement = () => {
       render: (text: string, record: any) => (
         <Typography
           hoverOnText
+          color={token?.colorInfo}
           name="Body 4/Regular"
           onClick={() => {
             router.push(
-              `/organizationUsers?organization=${record?.organization}`,
+              `/accountInfo?id=${record?.id}&organization=${record?.organization}&role=superAdmin`,
             );
           }}
         >
@@ -70,19 +106,7 @@ const UserManagement = () => {
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
     },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          Organization
-        </Typography>
-      ),
-      dataIndex: 'organization',
-      key: 'organization',
-      width: 173,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
+
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -126,8 +150,8 @@ const UserManagement = () => {
       top: 0,
       behavior: 'smooth',
     });
-    dispatch(getAdminUserOfAllOrganization(''));
-  }, []);
+    dispatch(getAdminUserOfAllOrganization(searchQuery));
+  }, [searchQuery]);
 
   const locale = {
     emptyText: <EmptyContainer title="No Users" />,
@@ -148,6 +172,17 @@ const UserManagement = () => {
     });
   };
 
+  const uniqueOrganization = Array?.from(
+    new Set(
+      updatedResellerData?.map(
+        (organization: any) => organization?.organization,
+      ),
+    ),
+  );
+
+  const uniqueUsername = Array?.from(
+    new Set(updatedResellerData?.map((user_name: any) => user_name?.user_name)),
+  );
   return (
     <>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
@@ -168,6 +203,95 @@ const UserManagement = () => {
             gap: 12,
           }}
         >
+          <Row justify={'space-between'}>
+            <Col />
+            <Col>
+              {' '}
+              <Space size={12} align="center">
+                <Space direction="vertical" size={0}>
+                  <Typography name="Body 4/Medium">Organization</Typography>
+                  <CommonSelect
+                    style={{width: '200px'}}
+                    placeholder="Search here"
+                    showSearch
+                    onSearch={(e) => {
+                      setQuery({
+                        ...query,
+                        organization: e,
+                      });
+                    }}
+                    onChange={(e) => {
+                      setQuery({
+                        ...query,
+                        organization: e,
+                      });
+                    }}
+                    value={query?.organization}
+                  >
+                    {uniqueOrganization?.map((organization: any) => (
+                      <Option key={organization} value={organization}>
+                        {organization}
+                      </Option>
+                    ))}
+                  </CommonSelect>
+                </Space>
+                <Space direction="vertical" size={0}>
+                  <Typography name="Body 4/Medium">
+                    Master Admin Name
+                  </Typography>
+                  <CommonSelect
+                    style={{width: '200px'}}
+                    placeholder="Search here"
+                    showSearch
+                    onSearch={(e) => {
+                      setQuery({
+                        ...query,
+                        user_name: e,
+                      });
+                    }}
+                    onChange={(e) => {
+                      setQuery({
+                        ...query,
+                        user_name: e,
+                      });
+                    }}
+                    value={query?.user_name}
+                  >
+                    {uniqueUsername?.map((user_name: any) => (
+                      <Option key={user_name} value={user_name}>
+                        {user_name}
+                      </Option>
+                    ))}
+                  </CommonSelect>
+                </Space>
+
+                <div
+                  style={{
+                    marginTop: '15px',
+                  }}
+                >
+                  <Typography
+                    cursor="pointer"
+                    name="Button 1"
+                    color={
+                      query?.organization || query?.user_name
+                        ? '#0D0D0D'
+                        : '#C6CDD5'
+                    }
+                    onClick={() => {
+                      setQuery({
+                        organization: null,
+                        user_name: null,
+                      });
+                    }}
+                  >
+                    Reset
+                  </Typography>
+                </div>
+              </Space>
+            </Col>
+          </Row>
+
           <OsTable
             locale={locale}
             columns={UserDataColumns}
