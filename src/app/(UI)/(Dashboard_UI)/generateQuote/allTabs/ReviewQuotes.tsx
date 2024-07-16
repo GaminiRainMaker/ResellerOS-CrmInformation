@@ -74,7 +74,7 @@ const ReviewQuotes: FC<any> = ({
       if (filterValue === 'Product Family') {
         name = item?.Product?.product_family || 'Unassigned';
       } else if (filterValue === 'Pricing Method') {
-        name = item?.pricing_method;
+        name = item?.pricing_method || 'Unassigned';
       } else if (filterValue === 'File Name') {
         name = item?.file_name;
       } else if (filterValue === 'Vendor/Disti') {
@@ -292,7 +292,20 @@ const ReviewQuotes: FC<any> = ({
     <GlobalLoader loading={quoteFileDataLoading}>
       {contextHolder}
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
-        selectedFilter && reviewQuotesData?.length > 0 ? (
+        !selectedFilter ? (
+          <div>
+            <OsTableWithOutDrag
+              loading={quoteFileDataLoading}
+              columns={finalReviewCol}
+              dataSource={quoteFileUnverifiedById?.[0]?.QuoteLineItems}
+              scroll
+              locale={locale}
+              defaultPageSize={
+                quoteFileUnverifiedById?.[0]?.QuoteLineItems?.length
+              }
+            />
+          </div>
+        ) : selectedFilter && reviewQuotesData?.length > 0 ? (
           <>
             {reviewQuotesData?.map((finalDataItem: any, index: number) => {
               return (
