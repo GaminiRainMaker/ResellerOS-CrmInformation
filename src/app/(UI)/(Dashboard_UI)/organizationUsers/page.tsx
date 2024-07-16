@@ -136,7 +136,15 @@ const OrganizationUsers = () => {
   ];
 
   const uniqueUsername = Array?.from(
-    new Set(userData?.map((name: any) => name?.user_name)),
+    new Set(
+      userData?.map((record: any) =>
+        record?.first_name && record?.last_name
+          ? `${record.first_name} ${record.last_name}`
+          : record?.first_name
+            ? record.first_name
+            : record?.user_name,
+      ),
+    ),
   );
 
   return (

@@ -185,7 +185,15 @@ const UserManagement = () => {
   );
 
   const uniqueUsername = Array?.from(
-    new Set(updatedResellerData?.map((user_name: any) => user_name?.user_name)),
+    new Set(
+      updatedResellerData?.map((record: any) =>
+        record?.first_name && record?.last_name
+          ? `${record.first_name} ${record.last_name}`
+          : record?.first_name
+            ? record.first_name
+            : record?.user_name,
+      ),
+    ),
   );
   return (
     <>
