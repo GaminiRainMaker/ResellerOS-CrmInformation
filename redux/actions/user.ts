@@ -115,7 +115,7 @@ export const getAdminUserOfAllOrganization = createAsyncThunk(
   'user/getAdminUserOfAllOrganization',
   async (data: any, thunkApi) => {
     try {
-      const res = await USERAPI.getAdminUserOfAllOrganization();
+      const res = await USERAPI.getAdminUserOfAllOrganization(data);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

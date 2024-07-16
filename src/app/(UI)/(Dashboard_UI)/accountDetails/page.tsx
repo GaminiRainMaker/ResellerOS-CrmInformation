@@ -8,14 +8,11 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import {OsCard} from '@/app/components/common/os-card';
-import CommonStageSelect from '@/app/components/common/os-stage-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import DetailAnalyticCard from '@/app/components/common/os-table/DetailAnalyticCard';
 import Typography from '@/app/components/common/typography';
-import {StageValue} from '@/app/utils/CONSTANTS';
-import {CheckCircleIcon, EyeIcon, TagIcon} from '@heroicons/react/24/outline';
-import {Space} from 'antd';
+import {CheckCircleIcon, TagIcon} from '@heroicons/react/24/outline';
 
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import EmptyContainer from '@/app/components/common/os-empty-container';
@@ -32,7 +29,7 @@ const AccountDetails = () => {
   const router = useRouter();
   const {abbreviate} = useAbbreviationHook(0);
 
-  const {loading, data: customerData} = useAppSelector(
+  const {loading, customerDataById: customerData} = useAppSelector(
     (state) => state.customer,
   );
   const dispatch = useAppDispatch();

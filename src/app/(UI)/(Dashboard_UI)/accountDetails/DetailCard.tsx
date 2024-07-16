@@ -28,7 +28,7 @@ const DetailCard = () => {
   const searchParams = useSearchParams();
   const getCustomerID = searchParams.get('id');
   const [form] = Form.useForm();
-  const {data: customerData} = useAppSelector((state) => state.customer);
+  const {customerDataById: customerData} = useAppSelector((state) => state.customer);
   const [showAllContactModal, setShowAllContactModal] =
     useState<boolean>(false);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);

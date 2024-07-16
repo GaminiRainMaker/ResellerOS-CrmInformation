@@ -34,6 +34,7 @@ import {
   setQuoteFileUnverifiedById,
 } from '../../../../../../redux/slices/quoteFile';
 import GlobalLoader from '@/app/components/common/os-global-loader';
+import CommonSelect from '@/app/components/common/os-select';
 
 const ReviewQuotes: FC<any> = ({
   tableColumnDataShow,
@@ -74,7 +75,7 @@ const ReviewQuotes: FC<any> = ({
       if (filterValue === 'Product Family') {
         name = item?.Product?.product_family || 'Unassigned';
       } else if (filterValue === 'Pricing Method') {
-        name = item?.pricing_method;
+        name = item?.pricing_method || 'Unassigned';
       } else if (filterValue === 'File Name') {
         name = item?.file_name;
       } else if (filterValue === 'Vendor/Disti') {
@@ -211,6 +212,25 @@ const ReviewQuotes: FC<any> = ({
       },
     },
     {
+      title: 'Product Family',
+      dataIndex: 'product_family',
+      key: 'product_family',
+      width: 285,
+      render(text: any, record: any) {
+        return {
+          children: (
+            <CommonSelect
+              disabled={true}
+              allowClear
+              style={{width: '200px', height: '36px'}}
+              placeholder="Select"
+              defaultValue={text ?? record?.Product?.product_family}
+            />
+          ),
+        };
+      },
+    },
+    {
       title: 'Product Description',
       dataIndex: 'description',
       key: 'description',
@@ -313,7 +333,20 @@ const ReviewQuotes: FC<any> = ({
     <GlobalLoader loading={quoteFileDataLoading}>
       {contextHolder}
       {tableColumnDataShow && tableColumnDataShow?.length > 0 ? (
-        selectedFilter && reviewQuotesData?.length > 0 ? (
+        !selectedFilter ? (
+          <div>
+            <OsTableWithOutDrag
+              loading={quoteFileDataLoading}
+              columns={finalReviewCol}
+              dataSource={quoteFileUnverifiedById?.[0]?.QuoteLineItems}
+              scroll
+              locale={locale}
+              defaultPageSize={
+                quoteFileUnverifiedById?.[0]?.QuoteLineItems?.length
+              }
+            />
+          </div>
+        ) : selectedFilter && reviewQuotesData?.length > 0 ? (
           <>
             {reviewQuotesData?.map((finalDataItem: any, index: number) => {
               return (

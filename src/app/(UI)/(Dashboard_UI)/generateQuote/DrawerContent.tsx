@@ -43,19 +43,20 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
     const updatedAllCustomer: any = [];
 
     if (dataAddress) {
-      dataAddress.forEach((item: any) => {
-        updatedAllCustomer.push(item);
-        if (item.BillingContacts) {
-          if (item.id === customerValue) {
-            item.BillingContacts.forEach((itemss: any) => {
-              updatedAllBillingContact.push({
-                label: `${itemss.billing_first_name ?? itemss.billing_first_name} ${itemss.billing_last_name ?? itemss.billing_last_name}`,
-                value: itemss.id,
+      dataAddress &&
+        dataAddress?.forEach((item: any) => {
+          updatedAllCustomer?.push(item);
+          if (item?.BillingContacts) {
+            if (item.id === customerValue) {
+              item?.BillingContacts?.forEach((itemss: any) => {
+                updatedAllBillingContact?.push({
+                  label: `${itemss.billing_first_name ?? itemss?.billing_first_name} ${itemss?.billing_last_name ?? itemss?.billing_last_name}`,
+                  value: itemss.id,
+                });
               });
-            });
+            }
           }
-        }
-      });
+        });
     }
 
     const isLiveCustomer = updatedAllCustomer.filter(
