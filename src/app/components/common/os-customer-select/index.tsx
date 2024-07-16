@@ -3,22 +3,21 @@
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {FC, useEffect, useState} from 'react';
+import {insertAddAddress} from '../../../../../redux/actions/address';
+import {insertbillingContact} from '../../../../../redux/actions/billingContact';
 import {
   getAllCustomer,
   insertCustomer,
-  queryCustomer,
 } from '../../../../../redux/actions/customer';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {setCustomerProfile} from '../../../../../redux/slices/customer';
 import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
+import AddCustomer from '../os-add-customer';
 import OsModal from '../os-modal';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
 import {OsCustomerSelectInterface} from './os-customer-select-interface';
-import AddCustomer from '../os-add-customer';
-import {insertAddAddress} from '../../../../../redux/actions/address';
-import {insertbillingContact} from '../../../../../redux/actions/billingContact';
-import {setCustomerProfile} from '../../../../../redux/slices/customer';
 
 const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
   setCustomerValue,
@@ -59,11 +58,11 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
     dispatch(getAllCustomer({}));
   }, []);
 
-  const onFinish = () => {
+  const onFinish = async () => {
     const FormData = form.getFieldsValue();
     try {
       setLoading(true);
-      dispatch(
+      await dispatch(
         insertCustomer({...FormData, profile_image: customerProfile}),
       ).then((data) => {
         const newAddressObj: any = {
@@ -91,6 +90,8 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
         dispatch(setCustomerProfile(''));
       });
       setLoading(false);
+      form.resetFields();
+      setOpen(false);
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -132,6 +133,7 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
                   <Typography
                     color={token?.colorPrimaryText}
                     name="Body 3/Regular"
+                    cursor="pointer"
                   >
                     Add Customer Account
                   </Typography>
