@@ -91,28 +91,28 @@ function templateColumns(
       width: 187,
       render: (text: string, record: any) => statusWrapper(text),
     },
-    {
-      title: (
-        <Typography
-          name="Body 4/Medium"
-          className="dragHandler"
-          color={token?.colorPrimaryText}
-        >
-          Active
-        </Typography>
-      ),
-      dataIndex: 'is_active',
-      key: 'is_active',
-      width: 187,
-      render: (text: string, record: any) => (
-        <Switch
-          onClick={(e) => {
-            updateTemplate(record?.id, e);
-          }}
-          value={record?.form_data_active}
-        />
-      ),
-    },
+    // {
+    //   title: (
+    //     <Typography
+    //       name="Body 4/Medium"
+    //       className="dragHandler"
+    //       color={token?.colorPrimaryText}
+    //     >
+    //       Active
+    //     </Typography>
+    //   ),
+    //   dataIndex: 'is_active',
+    //   key: 'is_active',
+    //   width: 187,
+    //   render: (text: string, record: any) => (
+    //     <Switch
+    //       onClick={(e) => {
+    //         updateTemplate(record?.id, e);
+    //       }}
+    //       value={record?.form_data_active}
+    //     />
+    //   ),
+    // },
     {
       title: 'Actions',
       dataIndex: 'actions',

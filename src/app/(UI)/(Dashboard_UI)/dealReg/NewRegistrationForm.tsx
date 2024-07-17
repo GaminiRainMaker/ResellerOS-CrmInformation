@@ -18,7 +18,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {partnerProgramFilter} from '@/app/utils/base';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {Form} from 'antd';
+import {Form, notification} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
@@ -129,26 +129,40 @@ const NewRegistrationForm: FC<any> = ({
 
   const registeredFormFinish = () => {
     const data = form.getFieldsValue();
+    if (
+      data?.registeredPartners === undefined &&
+      data?.selfRegisteredPartners === undefined &&
+      formStep === 0
+    ) {
+      notification?.open({
+        message: 'Please add atleast one partner and partner program.',
+        type: 'info',
+      });
+      return;
+    }
     let combinedData: any = [];
-
     if (registeredPartnerData) {
       combinedData = [
-        ...registeredPartnerData.registeredPartners.map((obj: any) => ({
-          ...obj,
-          type: 'registered',
-        })),
-        ...registeredPartnerData.selfRegisteredPartners.map((obj: any) => ({
-          ...obj,
-          type: 'self registered',
-        })),
+        ...(registeredPartnerData.registeredPartners ?? [])?.map(
+          (obj: any) => ({
+            ...obj,
+            type: 'registered',
+          }),
+        ),
+        ...(registeredPartnerData.selfRegisteredPartners ?? [])?.map(
+          (obj: any) => ({
+            ...obj,
+            type: 'self registered',
+          }),
+        ),
       ];
     } else {
       combinedData = [
-        ...data.registeredPartners.map((obj: any) => ({
+        ...(data?.registeredPartners ?? [])?.map((obj: any) => ({
           ...obj,
           type: 'Registered',
         })),
-        ...data.selfRegisteredPartners.map((obj: any) => ({
+        ...(data?.selfRegisteredPartners ?? [])?.map((obj: any) => ({
           ...obj,
           type: 'Self Registered',
         })),
@@ -233,7 +247,7 @@ const NewRegistrationForm: FC<any> = ({
                       </Typography>
                     ),
                     children: (
-                      <Form.List name="registeredPartners" initialValue={[{}]}>
+                      <Form.List name="registeredPartners">
                         {(fields, {add, remove}) => (
                           <>
                             {fields?.map(({key, name, ...restField}) => (
@@ -327,7 +341,7 @@ const NewRegistrationForm: FC<any> = ({
                                   color={token?.colorLink}
                                   cursor="pointer"
                                 >
-                                  Add Partner
+                                  Add Partner and Partner Program
                                 </Typography>
                               </Space>
                             </Form.Item>
@@ -351,10 +365,7 @@ const NewRegistrationForm: FC<any> = ({
                       </Typography>
                     ),
                     children: (
-                      <Form.List
-                        name="selfRegisteredPartners"
-                        initialValue={[{}]}
-                      >
+                      <Form.List name="selfRegisteredPartners">
                         {(fields, {add, remove}) => (
                           <>
                             {fields?.map(({key, name, ...restField}) => (
@@ -448,7 +459,7 @@ const NewRegistrationForm: FC<any> = ({
                                   color={token?.colorLink}
                                   cursor="pointer"
                                 >
-                                  Add Partner
+                                  Add Partner and Partner Program
                                 </Typography>
                               </Space>
                             </Form.Item>

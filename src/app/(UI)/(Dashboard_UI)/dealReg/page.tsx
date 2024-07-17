@@ -294,8 +294,8 @@ const DealReg: React.FC = () => {
     dispatch(queryDealReg(searchQuery));
   }, [searchQuery]);
 
-  const uniqueCustomer = Array.from(
-    new Set(DealRegData?.map((contact: any) => contact.Customer?.name)),
+  const uniqueCustomer = Array?.from(
+    new Set(DealRegData?.map((contact: any) => contact?.Customer?.name)),
   );
 
   return (
