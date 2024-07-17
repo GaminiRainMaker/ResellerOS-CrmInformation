@@ -402,7 +402,7 @@ const RolesAndPermission = () => {
             )}
           </Row>
 
-          {!isSubscribed ? (
+          {isSubscribed ? (
             <OsTable
               columns={RolesAndPermissionsColumns}
               dataSource={userRules}
