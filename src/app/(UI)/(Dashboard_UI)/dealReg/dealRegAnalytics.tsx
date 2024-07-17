@@ -12,11 +12,20 @@ import {
 const DealRegAnalytics = (props: any) => {
   const [token] = useThemeToken();
 
+  const uniquePartnerIds = new Set();
+  props?.data?.forEach((item: any) => {
+    item?.data?.forEach((childItem: any) => {
+      uniquePartnerIds?.add(childItem?.partner_id);
+    });
+  });
+
   const analyticsData = [
     {
       key: 1,
       primary: (
-        <Typography name="Heading 3/Medium">{props?.data?.length}</Typography>
+        <Typography name="Heading 3/Medium">
+          {props?.data?.length ?? 0}
+        </Typography>
       ),
       secondry: 'Total Forms',
       icon: <QueueListIcon width={24} color={token?.colorInfo} />,
@@ -25,7 +34,9 @@ const DealRegAnalytics = (props: any) => {
     {
       key: 2,
       primary: (
-        <Typography name="Heading 3/Medium">{props?.data?.length}</Typography>
+        <Typography name="Heading 3/Medium">
+          {uniquePartnerIds?.size ?? 0}
+        </Typography>
       ),
       secondry: 'Partners',
       icon: <ClipboardDocumentCheckIcon width={24} color={token?.colorLink} />,
