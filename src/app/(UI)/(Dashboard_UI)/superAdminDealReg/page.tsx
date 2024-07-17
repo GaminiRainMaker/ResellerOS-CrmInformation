@@ -35,6 +35,7 @@ import {
   updateAttributeSectionById,
 } from '../../../../../redux/actions/attributeSection';
 import {
+  deletePartnerProgramFormData,
   getFormDataProgram,
   updatePartnerProgramById,
 } from '../../../../../redux/actions/partnerProgram';
@@ -57,7 +58,7 @@ const SuperAdminDealReg = () => {
     useAppSelector((state) => state.attributeSection);
   const {loading: attributeFieldLoading, data: attributeFieldData} =
     useAppSelector((state) => state.attributeField);
-  const {getFormDataProgramData} = useAppSelector(
+  const {getFormDataProgramData, loading: templatedataLoading} = useAppSelector(
     (state) => state.partnerProgram,
   );
   const [showStandardAttributeField, setshowStandardAttributeField] =
@@ -70,7 +71,9 @@ const SuperAdminDealReg = () => {
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
   const [showSectionDrawer, setShowSectionDrawer] = useState<boolean>(false);
   const [showFieldDrawer, setShowFieldDrawer] = useState<boolean>(false);
-  const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
+  const [showTemplateDeleteModal, setShowTemplateDeleteModal] =
+    useState<boolean>(false);
+  const [templateDeleteIds, setTemplateDeleteIds] = useState<any>();
   const [sectionDeleteId, setSectionDeleteId] = useState<any>();
   const [showSectionDeleteModal, setShowSectionDeleteModal] =
     useState<boolean>(false);
@@ -157,7 +160,6 @@ const SuperAdminDealReg = () => {
     });
     setShowFieldDrawer(true);
   };
-  const setDeleteIds = () => {};
 
   const deleteSelectedSection = async () => {
     const data = {Ids: sectionDeleteId};
@@ -181,6 +183,20 @@ const SuperAdminDealReg = () => {
     });
   };
 
+  const deleteSelectedTemplate = async () => {
+    if (templateDeleteIds) {
+      await dispatch(deletePartnerProgramFormData(templateDeleteIds))?.then(
+        (d) => {
+          if (d?.payload) {
+            dispatch(getFormDataProgram());
+            setShowTemplateDeleteModal(false);
+            setTemplateDeleteIds('');
+          }
+        },
+      );
+    }
+  };
+
   const updateTemplate = (recordid: number, value: boolean) => {
     dispatch(
       updatePartnerProgramById({id: recordid, form_data_active: value}),
@@ -196,8 +212,8 @@ const SuperAdminDealReg = () => {
     statusWrapper,
     editTemplate,
     updateTemplate,
-    setDeleteIds,
-    setShowModalDelete,
+    setTemplateDeleteIds,
+    setShowTemplateDeleteModal,
   );
 
   const StandardAttributesFieldsColumns = standardAttributes(
@@ -674,6 +690,16 @@ const SuperAdminDealReg = () => {
           isDrawer
         />
       </OsDrawer>
+
+      <DeleteModal
+        loading={templatedataLoading}
+        setShowModalDelete={setShowTemplateDeleteModal}
+        setDeleteIds={setTemplateDeleteIds}
+        showModalDelete={showTemplateDeleteModal}
+        deleteSelectedIds={deleteSelectedTemplate}
+        heading="Delete Template"
+        description="Are you sure you want to delete this template?"
+      />
 
       <DeleteModal
         loading={attributeSectionLoading}

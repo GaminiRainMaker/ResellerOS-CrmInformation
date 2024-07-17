@@ -14,8 +14,8 @@ function templateColumns(
   statusWrapper: {(item: any): JSX.Element; (arg0: any): any},
   editQuote: {(quoteId: string): void; (arg0: any): void},
   updateTemplate: any,
-  setDeleteIds: {(value: any): void; (arg0: any[]): void},
-  setShowModalDelete: {
+  setTemplateDeleteIds: {(value: any): void; (arg0: any[]): void},
+  setShowTemplateDeleteModal: {
     (value: SetStateAction<boolean>): void;
     (arg0: boolean): void;
   },
@@ -114,7 +114,7 @@ function templateColumns(
       ),
     },
     {
-      title: ' ',
+      title: 'Actions',
       dataIndex: 'actions',
       key: 'actions',
       width: 94,
@@ -135,8 +135,8 @@ function templateColumns(
             color={token.colorError}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              setDeleteIds([record?.id]);
-              setShowModalDelete(true);
+              setTemplateDeleteIds(record?.id);
+              setShowTemplateDeleteModal(true);
             }}
           />
         </Space>
@@ -223,7 +223,6 @@ function standardAttributes(
       key: 'data_type',
       width: 187,
       render: (text: string) => <CustomTextCapitalization text={text} />,
-
     },
     {
       title: (
@@ -289,7 +288,7 @@ function standardAttributes(
       render: (text: boolean) => <Checkbox checked={text} />,
     },
     {
-      title: ' ',
+      title: 'Actions',
       dataIndex: 'actions',
       key: 'actions',
       width: 94,
@@ -429,7 +428,7 @@ function standardAttributesSection(
       render: (text: boolean) => <Checkbox checked={text} />,
     },
     {
-      title: ' ',
+      title: 'Actions',
       dataIndex: 'actions',
       key: 'actions',
       width: 94,

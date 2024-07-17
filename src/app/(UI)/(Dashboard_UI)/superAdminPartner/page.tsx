@@ -185,6 +185,7 @@ const SuperAdminPartner: React.FC = () => {
       render: (text: string, record: any) => (
         <CustomTextCapitalization text={record?.partner_name} />
       ),
+      width: 200,
     },
     {
       title: (
@@ -199,6 +200,7 @@ const SuperAdminPartner: React.FC = () => {
           {record?.partner_email ?? '--'}
         </Typography>
       ),
+      width: 200,
     },
     {
       title: (
@@ -209,6 +211,7 @@ const SuperAdminPartner: React.FC = () => {
       dataIndex: 'partner_program',
       key: 'partner_program',
       render: (text: string) => <CustomTextCapitalization text={text} />,
+      width: 200,
     },
     {
       title: (
@@ -221,6 +224,7 @@ const SuperAdminPartner: React.FC = () => {
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
+      width: 200,
     },
     {
       title: (
@@ -236,6 +240,7 @@ const SuperAdminPartner: React.FC = () => {
           disabled
         />
       ),
+      width: 200,
     },
     {
       title: (
@@ -250,6 +255,7 @@ const SuperAdminPartner: React.FC = () => {
           {record?.AssignPartnerProgram?.User?.user_name ?? '--'}
         </Typography>
       ),
+      width: 200,
     },
     {
       title: (
@@ -278,6 +284,7 @@ const SuperAdminPartner: React.FC = () => {
           {record?.form_data ? 'View' : 'Create Template'}
         </Typography>
       ),
+      width: 200,
     },
     {
       title: (
@@ -287,10 +294,12 @@ const SuperAdminPartner: React.FC = () => {
       ),
       dataIndex: 'action',
       key: 'action',
+      width: 300,
       render: (text: string, record: any) => (
         <Space direction="horizontal">
           {' '}
           <OsButton
+            btnStyle={{height: '32px'}}
             buttontype="PRIMARY"
             text="Approve"
             clickHandler={() => {
@@ -302,6 +311,7 @@ const SuperAdminPartner: React.FC = () => {
             }}
           />{' '}
           <OsButton
+            btnStyle={{height: '32px'}}
             buttontype="SECONDARY"
             text="Decline"
             clickHandler={() => {
