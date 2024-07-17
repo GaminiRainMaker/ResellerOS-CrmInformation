@@ -316,56 +316,56 @@ const RolesAndPermission = () => {
           : '';
   return (
     <>
-      {(quoteCount === cacheTotalQuoteSeats?.TotalQuoteSeats ||
-        cacheTotalDealRegSeats?.TotalDealRegSeats === dealCount) && (
-        <Tag
-          style={{
-            padding: '4px',
-            borderRadius: '4px',
-            border: `1px solid ${token?.colorError}`,
-            marginBottom: '24px',
-            width: '100%',
-          }}
-          color="error"
-          bordered
-        >
-          <Row justify="space-between" align="middle">
-            <Col>
-              <Space size={2}>
+      <GlobalLoader loading={cacheFlowLoading}>
+        {(quoteCount === cacheTotalQuoteSeats?.TotalQuoteSeats ||
+          cacheTotalDealRegSeats?.TotalDealRegSeats === dealCount) && (
+          <Tag
+            style={{
+              padding: '4px',
+              borderRadius: '4px',
+              border: `1px solid ${token?.colorError}`,
+              marginBottom: '24px',
+              width: '100%',
+            }}
+            color="error"
+            bordered
+          >
+            <Row justify="space-between" align="middle">
+              <Col>
+                <Space size={2}>
+                  <Avatar
+                    size={24}
+                    style={{
+                      background: 'none',
+                    }}
+                    icon={<XCircleIcon color={token?.colorError} width={20} />}
+                  />
+
+                  <Typography name="Body 4/Medium" color={token?.colorError}>
+                    {`The Limit for ${StatementForExpired} permissions has completed. You cannot
+                  assign this permission to anyone else.`}
+                  </Typography>
+                </Space>
+              </Col>
+              <Col>
                 <Avatar
                   size={24}
                   style={{
                     background: 'none',
                   }}
-                  icon={<XCircleIcon color={token?.colorError} width={20} />}
+                  icon={
+                    <XMarkIcon
+                      cursor="pointer"
+                      onClick={handleClose}
+                      color={token?.colorError}
+                      width={16}
+                    />
+                  }
                 />
-
-                <Typography name="Body 4/Medium" color={token?.colorError}>
-                  {`The Limit for ${StatementForExpired} permissions has completed. You cannot
-                  assign this permission to anyone else.`}
-                </Typography>
-              </Space>
-            </Col>
-            <Col>
-              <Avatar
-                size={24}
-                style={{
-                  background: 'none',
-                }}
-                icon={
-                  <XMarkIcon
-                    cursor="pointer"
-                    onClick={handleClose}
-                    color={token?.colorError}
-                    width={16}
-                  />
-                }
-              />
-            </Col>
-          </Row>
-        </Tag>
-      )}
-      <GlobalLoader loading={cacheFlowLoading}>
+              </Col>
+            </Row>
+          </Tag>
+        )}
         <Space direction="vertical" size={24} style={{width: '100%'}}>
           <Row justify="space-between" align="middle">
             <Col>
@@ -402,7 +402,7 @@ const RolesAndPermission = () => {
             )}
           </Row>
 
-          {!isSubscribed ? (
+          {isSubscribed ? (
             <OsTable
               columns={RolesAndPermissionsColumns}
               dataSource={userRules}
