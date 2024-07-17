@@ -18,7 +18,7 @@ import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form} from 'antd';
+import {Form, notification} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -350,6 +350,15 @@ const SuperAdminDealReg = () => {
     dispatch(insertAttributeField(attributeFiledData))?.then((d) => {
       if (d?.payload) {
         dispatch(queryAttributeField(searchQuery));
+        setshowStandardAttributeField(false);
+        form?.resetFields();
+      }
+      if (d?.payload === undefined) {
+        notification?.open({
+          message:
+            'An attribute field with the same label in this attribute section already exists.',
+          type: 'error',
+        });
         setshowStandardAttributeField(false);
         form?.resetFields();
       }
