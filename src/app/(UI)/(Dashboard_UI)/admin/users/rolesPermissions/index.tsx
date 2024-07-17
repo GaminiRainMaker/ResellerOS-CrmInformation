@@ -314,11 +314,13 @@ const RolesAndPermission = () => {
         : cacheTotalDealRegSeats?.TotalDealRegSeats === dealCount
           ? 'Deal Reg'
           : '';
+
   return (
     <>
-      <GlobalLoader loading={cacheFlowLoading}>
-        {(quoteCount === cacheTotalQuoteSeats?.TotalQuoteSeats ||
-          cacheTotalDealRegSeats?.TotalDealRegSeats === dealCount) && (
+      <GlobalLoader loading={userRules?.length <= 0 || cacheFlowLoading}>
+        {((quoteCount === cacheTotalQuoteSeats?.TotalQuoteSeats && visible) ||
+          (cacheTotalDealRegSeats?.TotalDealRegSeats === dealCount &&
+            visible)) && (
           <Tag
             style={{
               padding: '4px',
