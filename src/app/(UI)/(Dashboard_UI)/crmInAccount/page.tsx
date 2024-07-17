@@ -125,6 +125,7 @@ const CrmInformation: React.FC = () => {
     setTimeout(() => {
       dispatch(queryCustomer(query));
       dispatch(getAllCustomer(''));
+      dispatch(queryContact(''));
     }, 1000);
     setDeleteIds([]);
     setShowModalDelete(false);
@@ -396,6 +397,7 @@ const CrmInformation: React.FC = () => {
         dispatch(setCustomerProfile(''));
         dispatch(queryCustomer(searchQuery));
         dispatch(getAllCustomer(''));
+        dispatch(queryContact(''));
       });
 
       form.resetFields();
