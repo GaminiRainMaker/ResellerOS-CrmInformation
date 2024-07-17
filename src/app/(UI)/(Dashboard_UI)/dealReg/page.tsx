@@ -17,7 +17,7 @@ import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {PlusIcon} from '@heroicons/react/24/outline';
+import {ArrowTopRightOnSquareIcon, PlusIcon} from '@heroicons/react/24/outline';
 import {TabsProps} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
@@ -219,7 +219,8 @@ const DealReg: React.FC = () => {
                               <p>{itemDeal?.title}</p>
                             </Col>
                             <Col>
-                              <p
+                              <Space
+                                align="center"
                                 onClick={(e) => {
                                   router?.push(
                                     `/dealRegDetail?id=${itemDeal?.dealReg_id}&opportunityId=${itemDeal?.opportunity_id}&customerId=${itemDeal?.customer_id}&contactId=${itemDeal?.contact_id}`,
@@ -227,8 +228,13 @@ const DealReg: React.FC = () => {
                                   e?.stopPropagation();
                                 }}
                               >
-                                Deal Registration
-                              </p>
+                                <p>Deal Registration</p>
+                                <ArrowTopRightOnSquareIcon
+                                  cursor="pointer"
+                                  style={{marginTop: '5px'}}
+                                  width={20}
+                                />
+                              </Space>
                             </Col>
                           </Row>
                         </>
