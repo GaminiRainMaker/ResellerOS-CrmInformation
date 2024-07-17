@@ -189,7 +189,6 @@ const SideBar = () => {
           return payload?.payload?.sucess;
         });
 
-        let arrayOfProposal: any = [];
         if (allProposalData) {
           allProposalData?.[0]?.proposalItems?.map((items: any) => {
             if (items?.name === 'QuoteAI') {
@@ -229,7 +228,6 @@ const SideBar = () => {
             ?.replace(/[^\w\s]/gi, '')
             ?.toLowerCase() == userInformation?.organization?.toLowerCase(),
       );
-
       if (loggedInOrganization) {
         getSubsCriptionForCustomer(loggedInOrganization?.id);
       } else if (!loggedInOrganization) {
