@@ -248,7 +248,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           let valuessOfAlreayExist = await dispatch(
             getBulkProductIsExisting(allProductCodes),
           );
-          if (valuessOfAlreayExist?.payload) {
+          if (valuessOfAlreayExist?.payload?.length > 0) {
             allProductCodeDataa = valuessOfAlreayExist?.payload;
           }
 
