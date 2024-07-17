@@ -112,7 +112,9 @@ const Dashboard = () => {
             </Col>
           </Row>
         </Tag>
-      ) : !userInformation?.DealReg && !userInformation?.QuoteAI ? (
+      ) : isSubscribed &&
+        !userInformation?.DealReg &&
+        !userInformation?.QuoteAI ? (
         <Tag
           style={{
             display: 'flex',
