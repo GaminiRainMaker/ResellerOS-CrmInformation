@@ -188,6 +188,7 @@ const SideBar = () => {
         )?.then((payload: any) => {
           return payload?.payload?.sucess;
         });
+
         if (allProposalData) {
           allProposalData?.[0]?.proposalItems?.map((items: any) => {
             if (items?.name === 'QuoteAI') {
