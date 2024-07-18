@@ -11,6 +11,7 @@ import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsDrawer from '@/app/components/common/os-drawer';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
@@ -241,6 +242,33 @@ const SuperAdminDealReg = () => {
     setShowSectionDeleteModal,
   );
 
+  const attributesFieldLocal = {
+    emptyText: (
+      <EmptyContainer
+        title="There is no data for Standard Attributes Fields."
+        actionButton="New Attributes Fields"
+        onClick={() => setshowStandardAttributeField(true)}
+      />
+    ),
+  };
+  const attributesSectionLocal = {
+    emptyText: (
+      <EmptyContainer
+        title="There is no data for Standard Attributes Section."
+        actionButton="New Attributes Section"
+        onClick={() => setShowStandardAttributeSection(true)}
+      />
+    ),
+  };
+  const attributesTemplateLocal = {
+    emptyText: (
+      <EmptyContainer
+        title="There is no data for Templates."
+        subTitle="Please create the template from Partners & Partners Program."
+      />
+    ),
+  };
+
   const superAdmintabItems = [
     {
       label: (
@@ -260,7 +288,7 @@ const SuperAdminDealReg = () => {
           columns={TemplateColumns}
           dataSource={getFormDataProgramData}
           scroll
-          locale={[]}
+          locale={attributesTemplateLocal}
           loading={templatedataLoading}
         />
       ),
@@ -283,7 +311,7 @@ const SuperAdminDealReg = () => {
           columns={StandardAttributesSectionColumns}
           dataSource={attributeSectionData}
           scroll
-          locale={[]}
+          locale={attributesSectionLocal}
           loading={attributeSectionLoading}
         />
       ),
@@ -306,7 +334,7 @@ const SuperAdminDealReg = () => {
           columns={StandardAttributesFieldsColumns}
           dataSource={attributeFieldData}
           scroll
-          locale={[]}
+          locale={attributesFieldLocal}
           loading={attributeFieldLoading}
         />
       ),
