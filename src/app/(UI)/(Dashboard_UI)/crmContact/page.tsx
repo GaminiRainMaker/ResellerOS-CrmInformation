@@ -44,7 +44,7 @@ import {
 } from '../../../../../redux/actions/customer';
 import {queryOpportunity} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import AddContact from './addContact';
+import AddContact from '@/app/components/common/os-add-contact';
 
 const CrmAccount: React.FC = () => {
   const dispatch = useAppDispatch();

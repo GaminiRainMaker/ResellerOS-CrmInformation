@@ -16,6 +16,7 @@ type BillingContactState = {
   data: any;
   billingContact: any;
   filteredData: any;
+  billingContactData: any;
 };
 const initialState: BillingContactState = {
   loading: false,
@@ -23,6 +24,7 @@ const initialState: BillingContactState = {
   data: [],
   billingContact: {},
   filteredData: [],
+  billingContactData: {},
 };
 
 const billingContactSlice = createSlice({
@@ -43,7 +45,7 @@ const billingContactSlice = createSlice({
         insertbillingContact.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.billingContactData = action.payload;
         },
       )
       .addCase(

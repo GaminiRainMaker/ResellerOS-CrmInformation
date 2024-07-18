@@ -16,10 +16,7 @@ import {Form, notification} from 'antd';
 import _debounce from 'lodash/debounce';
 import {useCallback, useState} from 'react';
 import {insertbillingContact} from '../../../../../redux/actions/billingContact';
-import {
-  getCustomerProfileById,
-  queryCustomer,
-} from '../../../../../redux/actions/customer';
+import {getCustomerProfileById} from '../../../../../redux/actions/customer';
 import {uploadToAwsForUserImage} from '../../../../../redux/actions/upload';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';

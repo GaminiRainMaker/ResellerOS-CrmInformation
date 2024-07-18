@@ -130,8 +130,10 @@ const NewRegistrationForm: FC<any> = ({
   const registeredFormFinish = () => {
     const data = form.getFieldsValue();
     if (
-      data?.registeredPartners === undefined &&
-      data?.selfRegisteredPartners === undefined &&
+      (data?.registeredPartners === undefined ||
+        data?.registeredPartners?.length <= 0) &&
+      (data?.selfRegisteredPartners === undefined ||
+        data?.selfRegisteredPartners?.length <= 0) &&
       formStep === 0
     ) {
       notification?.open({
@@ -278,7 +280,7 @@ const NewRegistrationForm: FC<any> = ({
                                   >
                                     <CommonSelect
                                       placeholder="Select"
-                                      style={{width: '100%'}}
+                                      style={{width: '100%', height: '36px'}}
                                       options={partnerOptions}
                                       onChange={(value) => {
                                         findPartnerProgramsById(value);
@@ -305,16 +307,20 @@ const NewRegistrationForm: FC<any> = ({
                                     <CommonSelect
                                       placeholder="Select"
                                       options={partnerProgramOptions}
-                                      style={{width: '100%'}}
+                                      style={{width: '100%', height: '36px'}}
                                     />
                                   </SelectFormItem>
                                 </Col>
-                                <Col span={4}>
+                                <Col
+                                  span={4}
+                                  style={{
+                                    paddingTop: '25px',
+                                  }}
+                                >
                                   <TrashIcon
                                     width={25}
                                     color={token?.colorError}
                                     onClick={() => remove(name)}
-                                    style={{paddingTop: '10px'}}
                                     cursor="pointer"
                                   />
                                 </Col>
@@ -396,7 +402,7 @@ const NewRegistrationForm: FC<any> = ({
                                   >
                                     <CommonSelect
                                       placeholder="Select"
-                                      style={{width: '100%'}}
+                                      style={{width: '100%', height: '36px'}}
                                       options={partnerOptions}
                                       onChange={(value) => {
                                         findPartnerProgramsById(value);
@@ -423,16 +429,20 @@ const NewRegistrationForm: FC<any> = ({
                                     <CommonSelect
                                       placeholder="Select"
                                       options={partnerProgramOptions}
-                                      style={{width: '100%'}}
+                                      style={{width: '100%', height: '36px'}}
                                     />
                                   </SelectFormItem>
                                 </Col>
-                                <Col span={4}>
+                                <Col
+                                  span={4}
+                                  style={{
+                                    paddingTop: '25px',
+                                  }}
+                                >
                                   <TrashIcon
                                     width={25}
                                     color={token?.colorError}
                                     onClick={() => remove(name)}
-                                    style={{paddingTop: '10px'}}
                                     cursor="pointer"
                                   />
                                 </Col>
@@ -491,6 +501,8 @@ const NewRegistrationForm: FC<any> = ({
                 <OsContactSelect
                   customerValue={customerValue}
                   name="contact_id"
+                  isAddNewContact
+                  form={form}
                 />
               </Col>
 
