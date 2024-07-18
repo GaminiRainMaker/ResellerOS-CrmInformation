@@ -6,12 +6,14 @@
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import FormBuilderMain from '@/app/components/common/formBuilder/page';
+import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
@@ -65,7 +67,7 @@ const SuperAdminDealReg = () => {
     useState<boolean>(false);
   const [showStandardAttributeSection, setShowStandardAttributeSection] =
     useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<number>();
+  const [activeTab, setActiveTab] = useState<number>(1);
   const [recordId, setRecordId] = useState<number>();
   const [formData, setformData] = useState<any>();
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
@@ -88,6 +90,13 @@ const SuperAdminDealReg = () => {
     fieldLabel: null,
     sectionName: null,
   });
+  const [templateQuery, templateSetQuery] = useState<{
+    partner: string | null;
+    partnerProgram: string | null;
+  }>({
+    partner: null,
+    partnerProgram: null,
+  });
 
   const [attributeSectionQuery, setAttributeSectionQuery] = useState<{
     sectionName: string | null;
@@ -96,10 +105,11 @@ const SuperAdminDealReg = () => {
   });
   const searchQuery = useDebounceHook(query, 400);
   const sectionSearchQuery = useDebounceHook(attributeSectionQuery, 400);
+  const templateSearchQuery = useDebounceHook(templateQuery, 400);
 
   useEffect(() => {
-    dispatch(getFormDataProgram());
-  }, []);
+    dispatch(getFormDataProgram(templateSearchQuery));
+  }, [templateSearchQuery]);
 
   useEffect(() => {
     dispatch(queryAttributeField(searchQuery));
@@ -188,7 +198,7 @@ const SuperAdminDealReg = () => {
       await dispatch(deletePartnerProgramFormData(templateDeleteIds))?.then(
         (d) => {
           if (d?.payload) {
-            dispatch(getFormDataProgram());
+            dispatch(getFormDataProgram(templateSearchQuery));
             setShowTemplateDeleteModal(false);
             setTemplateDeleteIds('');
           }
@@ -202,7 +212,7 @@ const SuperAdminDealReg = () => {
       updatePartnerProgramById({id: recordid, form_data_active: value}),
     ).then((d) => {
       if (d?.payload) {
-        dispatch(getFormDataProgram());
+        dispatch(getFormDataProgram(templateSearchQuery));
       }
     });
   };
@@ -384,6 +394,37 @@ const SuperAdminDealReg = () => {
     ),
   );
 
+  const initialUniqueTemplatePartnerProgram = Array.from(
+    new Set(
+      getFormDataProgramData?.map(
+        (getFormDataProgramDataItem: any) =>
+          getFormDataProgramDataItem?.partner_program,
+      ),
+    ),
+  );
+
+  const uniqueTemplatePartnerPrograms =
+    initialUniqueTemplatePartnerProgram?.map((partnerProgram: any) => ({
+      value: partnerProgram,
+      label: <CustomTextCapitalization text={partnerProgram} />,
+    }));
+
+  const initialUniqueTemplatePartner = Array.from(
+    new Set(
+      getFormDataProgramData?.map(
+        (getFormDataProgramDataItem: any) =>
+          getFormDataProgramDataItem?.Partner?.partner,
+      ),
+    ),
+  );
+
+  const uniqueTemplatePartner = initialUniqueTemplatePartner?.map(
+    (partnerProgram: any) => ({
+      value: partnerProgram,
+      label: <CustomTextCapitalization text={partnerProgram} />,
+    }),
+  );
+
   const analyticData = {
     attributeSection: attributeSectionData,
     attributeField: attributeFieldData,
@@ -428,9 +469,94 @@ const SuperAdminDealReg = () => {
           <OsTabs
             tabBarExtraContent={
               <Form layout="vertical">
-                {activeTab === 2 ? (
+                {activeTab === 1 ? (
                   <Space size={12}>
-                    <Form.Item label="Attribute Label">
+                    <SelectFormItem label="Partner">
+                      <CommonSelect
+                        style={{width: '180px'}}
+                        placeholder="Search Here"
+                        showSearch
+                        onSearch={(e) => {
+                          templateSetQuery({
+                            ...templateQuery,
+                            partner: e,
+                          });
+                        }}
+                        onChange={(e) => {
+                          templateSetQuery({
+                            ...templateQuery,
+                            partner: e,
+                          });
+                        }}
+                        value={templateQuery?.partner}
+                      >
+                        {uniqueTemplatePartner?.map((partner: any) => (
+                          <Option key={partner?.value} value={partner?.value}>
+                            {partner?.label}
+                          </Option>
+                        ))}
+                      </CommonSelect>
+                    </SelectFormItem>
+
+                    <SelectFormItem label="Partner Program">
+                      <CommonSelect
+                        style={{width: '180px'}}
+                        placeholder="Search Here"
+                        showSearch
+                        onSearch={(e) => {
+                          templateSetQuery({
+                            ...templateQuery,
+                            partnerProgram: e,
+                          });
+                        }}
+                        onChange={(e) => {
+                          templateSetQuery({
+                            ...templateQuery,
+                            partnerProgram: e,
+                          });
+                        }}
+                        value={templateQuery?.partnerProgram}
+                      >
+                        {uniqueTemplatePartnerPrograms?.map(
+                          (partnerProgram: any) => (
+                            <Option
+                              key={partnerProgram?.value}
+                              value={partnerProgram?.value}
+                            >
+                              {partnerProgram?.label}
+                            </Option>
+                          ),
+                        )}
+                      </CommonSelect>
+                    </SelectFormItem>
+                    <div
+                      style={{
+                        marginTop: '15px',
+                      }}
+                    >
+                      <Typography
+                        cursor="pointer"
+                        name="Button 1"
+                        color={
+                          templateQuery?.partner ||
+                          templateQuery?.partnerProgram
+                            ? '#0D0D0D'
+                            : '#C6CDD5'
+                        }
+                        onClick={() => {
+                          templateSetQuery({
+                            partner: null,
+                            partnerProgram: null,
+                          });
+                        }}
+                      >
+                        Reset
+                      </Typography>
+                    </div>
+                  </Space>
+                ) : activeTab === 2 ? (
+                  <Space size={12}>
+                    <SelectFormItem label="Attribute Label">
                       <CommonSelect
                         style={{width: '180px'}}
                         placeholder="Search Here"
@@ -455,9 +581,9 @@ const SuperAdminDealReg = () => {
                           </Option>
                         ))}
                       </CommonSelect>
-                    </Form.Item>
+                    </SelectFormItem>
 
-                    <Form.Item label="Attribute Section">
+                    <SelectFormItem label="Attribute Section">
                       <CommonSelect
                         style={{width: '180px'}}
                         placeholder="Search Here"
@@ -482,24 +608,34 @@ const SuperAdminDealReg = () => {
                           </Option>
                         ))}
                       </CommonSelect>
-                    </Form.Item>
-                    <Typography
-                      cursor="pointer"
-                      name="Button 1"
-                      color="#C6CDD5"
-                      onClick={() => {
-                        setQuery({
-                          fieldLabel: null,
-                          sectionName: null,
-                        });
+                    </SelectFormItem>
+                    <div
+                      style={{
+                        marginTop: '15px',
                       }}
                     >
-                      Reset
-                    </Typography>
+                      <Typography
+                        cursor="pointer"
+                        name="Button 1"
+                        color={
+                          query?.fieldLabel || query?.sectionName
+                            ? '#0D0D0D'
+                            : '#C6CDD5'
+                        }
+                        onClick={() => {
+                          setQuery({
+                            fieldLabel: null,
+                            sectionName: null,
+                          });
+                        }}
+                      >
+                        Reset
+                      </Typography>
+                    </div>
                   </Space>
                 ) : activeTab === 3 ? (
                   <Space size={12}>
-                    <Form.Item label="Attribute Section">
+                    <SelectFormItem label="Attribute Section">
                       <CommonSelect
                         style={{width: '180px'}}
                         placeholder="Search Here"
@@ -524,19 +660,30 @@ const SuperAdminDealReg = () => {
                           </Option>
                         ))}
                       </CommonSelect>
-                    </Form.Item>
-                    <Typography
-                      cursor="pointer"
-                      name="Button 1"
-                      color="#C6CDD5"
-                      onClick={() => {
-                        setAttributeSectionQuery({
-                          sectionName: null,
-                        });
+                    </SelectFormItem>
+
+                    <div
+                      style={{
+                        marginTop: '15px',
                       }}
                     >
-                      Reset
-                    </Typography>
+                      <Typography
+                        cursor="pointer"
+                        name="Button 1"
+                        color={
+                          attributeSectionQuery?.sectionName
+                            ? '#0D0D0D'
+                            : '#C6CDD5'
+                        }
+                        onClick={() => {
+                          setAttributeSectionQuery({
+                            sectionName: null,
+                          });
+                        }}
+                      >
+                        Reset
+                      </Typography>
+                    </div>
                   </Space>
                 ) : (
                   <></>
