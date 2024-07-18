@@ -336,6 +336,7 @@ function getExistingQuoteColumns(
 function getSuperAdminQuoteColumns(
   token: GlobalToken,
   actionEye: {(value: string): void; (arg0: any): void},
+  router: any,
 ) {
   const columns = [
     {
@@ -352,7 +353,16 @@ function getSuperAdminQuoteColumns(
       key: 'organization',
       width: 220,
       render: (text: string, record: any) => (
-        <Typography name="Body 4/Regular">
+        <Typography
+          name="Body 4/Regular"
+          hoverOnText
+          color={token?.colorInfo}
+          onClick={() => {
+            router?.push(
+              `/organizationUsers?organization=${record?.Quote?.organization}`,
+            );
+          }}
+        >
           {record?.Quote?.organization}
         </Typography>
       ),
