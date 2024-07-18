@@ -261,7 +261,7 @@ const SuperAdminDealReg = () => {
           dataSource={getFormDataProgramData}
           scroll
           locale={[]}
-          loading={attributeFieldLoading}
+          loading={templatedataLoading}
         />
       ),
     },
@@ -307,7 +307,7 @@ const SuperAdminDealReg = () => {
           dataSource={attributeFieldData}
           scroll
           locale={[]}
-          loading={false}
+          loading={attributeFieldLoading}
         />
       ),
     },
