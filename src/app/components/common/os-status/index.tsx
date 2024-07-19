@@ -36,6 +36,11 @@ const OsStatusWrapper: FC<OsStatusWrapperProps> = ({value}) => {
       textColor: `${token?.colorWarning}`,
       border: `${token?.colorWarning}`,
     },
+    Pending: {
+      color: `${token?.colorWarningBg}`,
+      textColor: `${token?.colorWarning}`,
+      border: `${token?.colorWarning}`,
+    },
     Completed: {
       color: `${token?.colorSuccessBg}`,
       textColor: `${token?.colorSuccess}`,

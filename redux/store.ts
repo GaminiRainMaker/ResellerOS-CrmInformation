@@ -39,7 +39,8 @@ import cacheFLow from './slices/cacheFLow';
 import formstack from './slices/formstack';
 import formStackSync from './slices/formStackSync';
 import contractConfiguration from './slices/contractConfiguration';
-import attachmentDocument from './slices//attachmentDocument';
+import attachmentDocument from './slices/attachmentDocument';
+import LineItemSyncing from './slices/LineItemSyncing';
 
 // Configure redux store
 const store = configureStore({
@@ -83,6 +84,7 @@ const store = configureStore({
     formStackSync,
     contractConfiguration,
     attachmentDocument,
+    LineItemSyncing,
   },
   middleware: [thunk],
   devTools: true,

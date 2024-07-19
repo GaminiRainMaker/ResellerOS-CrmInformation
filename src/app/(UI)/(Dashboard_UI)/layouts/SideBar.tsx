@@ -508,6 +508,46 @@ const SideBar = () => {
             </Space>,
             '5',
           ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(6);
+                router?.push('/lineItemSyncing');
+              }}
+              color={token?.colorTextSecondary}
+            >
+              <OsAvatar
+                icon={
+                  selectedKey === 6 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                color={
+                  selectedKey?.toString()?.includes('6')
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                LineItems Syncing
+              </Typography>
+            </Space>,
+            '6',
+          ),
         ],
       ),
     isQuoteAI &&
