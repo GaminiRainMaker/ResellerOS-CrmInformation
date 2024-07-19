@@ -36,6 +36,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 const DownloadFile = dynamic(() => import('./DownloadFile'), {
   ssr: false,
 });
+
 const Metrics = dynamic(() => import('./allTabs/Metrics'), {
   ssr: false,
 });

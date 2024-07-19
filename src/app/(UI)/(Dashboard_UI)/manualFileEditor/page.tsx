@@ -518,6 +518,7 @@ const EditorFile = () => {
               nanonetsLoading={nanonetsLoading}
               routingConditions={checkForNewFile}
               currentFileId={currentFileData?.FileId}
+              currentFileName={currentFileData?.name}
               manualFlow={true}
               checkForNewFileForSalesForce={checkForNewFileForSalesForce}
             />
