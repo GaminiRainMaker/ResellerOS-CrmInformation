@@ -63,6 +63,8 @@ interface EditPdfDataInterface {
   setNanonetsLoading?: any;
   nanonetsLoading?: any;
   routingConditions?: any;
+  currentFileId?: any;
+  manualFlow?: any;
 }
 const SyncTableData: FC<EditPdfDataInterface> = ({
   setMergedVaalues,
@@ -70,6 +72,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   setNanonetsLoading,
   nanonetsLoading,
   routingConditions,
+  currentFileId,
+  manualFlow,
 }) => {
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -91,7 +95,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const salesForceUrl = searchParams.get('instance_url');
   const [syncTableQuoteLItemValues, setSyncTableQuoteLItemValues] =
     useState<any>(
-      salesForceFiledId
+      SaleQuoteId
         ? SaleForceQuoteLineItemColumnSync
         : quoteLineItemColumnForSync,
       // ,
@@ -245,7 +249,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     // Map over newArr and apply cleanObject to each element
     let requiredOutput = alllArrayValue.map((obj: any) => cleanObject(obj));
 
-    if (salesForceFiledId) {
+    if (SaleQuoteId) {
       const findProduct = syncedNewValue?.find(
         (items: any) => items?.newVal === 'product_code',
       );
@@ -264,11 +268,11 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         // documentId: salesForceFiledId,
         urls: salesForceUrl,
         QuoteId: SaleQuoteId,
-        FileId: salesForceFiledId,
+        FileId: manualFlow ? currentFileId : salesForceFiledId,
         action: 'ExportFileToTable',
         lineItem: requiredOutput,
       };
-      dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
+      await dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
         let messgaeForApi = payload?.payload?.message;
         notification.open({
           message: 'Please close the review quotes window',
@@ -281,6 +285,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       });
 
       setNanonetsLoading(false);
+      routingConditions();
       return;
     }
 
@@ -509,7 +514,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   };
   const handleChange = () => {
     // This defines which option we are using salesforce or full stack
-    let optionsTOAdd = salesForceFiledId
+    let optionsTOAdd = SaleQuoteId
       ? SaleForceQuoteLineItemColumnSync
       : quoteLineItemColumnForSync;
     let newArrOfOptions: any = [];

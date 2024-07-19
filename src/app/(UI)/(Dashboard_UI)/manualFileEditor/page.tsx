@@ -29,6 +29,7 @@ import Typography from '@/app/components/common/typography';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {getfileByQuoteIdWithManual} from '../../../../../redux/actions/quoteFile';
+import {getSalesForceFileData} from '../../../../../redux/actions/auth';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
@@ -43,6 +44,10 @@ const EditorFile = () => {
   const [saveNewHeader, setSaveNewHeader] = useState<boolean>(false);
   const [showConfirmHeader, setShowConfirmHeader] = useState<boolean>(false);
   const [currentFileData, setCurrentFileData] = useState<any>();
+  const salesToken = searchParams.get('key');
+  const EditSalesLineItems = searchParams.get('editLine');
+  const salesForceFiledId = searchParams.get('file_Id');
+  const salesForceUrl = searchParams.get('instance_url');
 
   const addNewLine = () => {
     let newArr = [
@@ -147,19 +152,34 @@ const EditorFile = () => {
     setArrayOflineItem(newArrr);
   };
   useEffect(() => {
-    dispatch(getfileByQuoteIdWithManual(Number(getQuoteID)))?.then(
-      (payload: any) => {
-        setCurrentFileData(payload?.payload);
-        window.history.replaceState(
-          null,
-          '',
-          `manualFileEditor?id=${Number(getQuoteID)}&fileId=${Number(payload?.payload?.id)}`,
-        );
-      },
-    );
+    // SaleQuoteId
+    if (SaleQuoteId) {
+      let data = {
+        token: salesToken,
+        FileId: null,
+        urls: salesForceUrl,
+        quoteId: SaleQuoteId,
+      };
+      dispatch(getSalesForceFileData(data))?.then((payload: any) => {
+        let newObj = {
+          file_name: payload?.payload?.title,
+          FileId: payload?.payload?.fileId,
+        };
+        setCurrentFileData(newObj);
+      });
+    } else {
+      dispatch(getfileByQuoteIdWithManual(Number(getQuoteID)))?.then(
+        (payload: any) => {
+          setCurrentFileData(payload?.payload);
+          window.history.replaceState(
+            null,
+            '',
+            `manualFileEditor?id=${Number(getQuoteID)}&fileId=${Number(payload?.payload?.id)}`,
+          );
+        },
+      );
+    }
   }, []);
-
-  console.log('43543543534', currentFileData);
 
   const updateRowsValue = (
     rowIndex: number,
@@ -192,36 +212,70 @@ const EditorFile = () => {
   const checkForNewFile = async () => {
     let isExist: boolean = false;
     let dataNew: any;
-    await dispatch(getfileByQuoteIdWithManual(Number(getQuoteID)))?.then(
-      (payload: any) => {
+    if (SaleQuoteId) {
+      let data = {
+        token: salesToken,
+        FileId: null,
+        urls: salesForceUrl,
+        quoteId: SaleQuoteId,
+      };
+      dispatch(getSalesForceFileData(data))?.then((payload: any) => {
         if (payload?.payload) {
-          setCurrentFileData(payload?.payload);
-          isExist = true;
-          dataNew = payload?.payload;
+          let newObj = {
+            file_name: payload?.payload?.title,
+            FileId: payload?.payload?.fileId,
+          };
+          setCurrentFileData(newObj);
+          notification?.open({
+            message: 'Please Update Line Items for new manual File',
+            type: 'info',
+          });
         } else {
           isExist = false;
         }
-      },
-    );
+      });
+    } else {
+      await dispatch(getfileByQuoteIdWithManual(Number(getQuoteID)))?.then(
+        (payload: any) => {
+          if (payload?.payload) {
+            setCurrentFileData(payload?.payload);
+            isExist = true;
+            dataNew = payload?.payload;
+          } else {
+            isExist = false;
+            notification?.open({
+              message: 'Line Items are updatet. Please close the modal!',
+              type: 'success',
+            });
+          }
+        },
+      );
+    }
+
     setShowModal(false);
     setShowConfirmHeader(false);
-    if (isExist) {
-      addNewLine();
-      window.history.replaceState(
-        null,
-        '',
-        `manualFileEditor?id=${Number(getQuoteID)}&fileId=${Number(dataNew?.id)}`,
-      );
-      location?.reload();
-      return;
+
+    console.log('isExistisExist', isExist);
+    if (SaleQuoteId) {
     } else {
-      router.push(`/generateQuote?id=${Number(getQuoteID)}`);
-      window.history.replaceState(
-        null,
-        '',
-        `/generateQuote?id=${Number(getQuoteID)}`,
-      );
-      location?.reload();
+      if (isExist) {
+        addNewLine();
+        window.history.replaceState(
+          null,
+          '',
+          `manualFileEditor?id=${Number(getQuoteID)}&fileId=${Number(dataNew?.id)}`,
+        );
+        location?.reload();
+        return;
+      } else {
+        router.push(`/generateQuote?id=${Number(getQuoteID)}`);
+        window.history.replaceState(
+          null,
+          '',
+          `/generateQuote?id=${Number(getQuoteID)}`,
+        );
+        location?.reload();
+      }
     }
   };
 
@@ -444,6 +498,8 @@ const EditorFile = () => {
               setNanonetsLoading={setNanonetsLoading}
               nanonetsLoading={nanonetsLoading}
               routingConditions={checkForNewFile}
+              currentFileId={currentFileData?.FileId}
+              manualFlow={true}
             />
           }
           width={600}

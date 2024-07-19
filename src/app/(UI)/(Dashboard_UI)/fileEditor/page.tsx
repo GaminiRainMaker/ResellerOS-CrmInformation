@@ -98,6 +98,7 @@ const EditorFile = () => {
       token: salesToken,
       FileId: salesForceFiledId,
       urls: salesForceUrl,
+      quoteId: null,
     };
     dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
       setNanonetsLoading(true);
@@ -182,7 +183,7 @@ const EditorFile = () => {
   };
 
   useEffect(() => {
-    if (salesForceFiledId && !getQuoteFileId) {
+    if (salesForceUrl && !getQuoteFileId) {
       fetchSaleForceDataa();
     } else {
       if (ExistingQuoteItemss === 'true') {
@@ -313,7 +314,7 @@ const EditorFile = () => {
   }, [updateLineItemsValue]);
 
   useEffect(() => {
-    if (!salesForceFiledId) {
+    if (!salesForceUrl) {
       dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then(
         (payload: any) => {
           if (payload?.payload === null) {
@@ -599,7 +600,7 @@ const EditorFile = () => {
               dropdownMenu
               hiddenColumns={{
                 indicators: true,
-                columns: salesForceFiledId ? [0, 1] : [0],
+                columns: salesForceUrl ? [0, 1] : [0],
               }}
               contextMenu
               multiColumnSorting
@@ -641,7 +642,7 @@ const EditorFile = () => {
               marginBottom: '20px',
             }}
           >
-            {!salesForceFiledId && (
+            {!salesForceUrl && (
               <OsButton
                 text="Cancel"
                 buttontype="SECONDARY"
@@ -722,7 +723,7 @@ const EditorFile = () => {
                   marginBottom: '20px',
                 }}
               >
-                {!salesForceFiledId && (
+                {!salesForceUrl && (
                   <OsButton
                     text="Cancel"
                     buttontype="SECONDARY"
@@ -850,7 +851,7 @@ const EditorFile = () => {
                     }}
                   >
                     {' '}
-                    {!salesForceFiledId && (
+                    {!salesForceUrl && (
                       <OsButton
                         text="Cancel"
                         buttontype="SECONDARY"
@@ -881,6 +882,7 @@ const EditorFile = () => {
               setNanonetsLoading={setNanonetsLoading}
               nanonetsLoading={nanonetsLoading}
               routingConditions={checkForNewFile}
+              manualFlow={false}
             />
           }
           width={600}
@@ -890,7 +892,7 @@ const EditorFile = () => {
           }}
         />
       )}
-      {!salesForceFiledId && (
+      {!salesForceUrl && (
         <OsModal
           body={
             <Row style={{width: '100%', padding: '15px'}}>

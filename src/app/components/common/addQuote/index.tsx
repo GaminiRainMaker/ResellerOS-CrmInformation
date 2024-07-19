@@ -403,7 +403,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
         });
       }
       router.push(
-        `/manualFileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${latestestFIleId}`,
+        `/manualFileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}`,
       );
     }
     if (newArrWithManual?.length === 0) {
@@ -448,7 +448,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
       }
       if (newArrWithManual?.length > 0) {
         router.push(
-          `/manualFileEditor?id=${latestQuoteId}&fileId=${latestQuoteFIleId}`,
+          `/manualFileEditor?id=${latestQuoteId}`,
         );
       }
     }

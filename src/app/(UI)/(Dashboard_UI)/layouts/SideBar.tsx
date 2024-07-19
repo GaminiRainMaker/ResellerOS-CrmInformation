@@ -56,12 +56,12 @@ const SideBar = () => {
   const {userInformation} = useAppSelector((state) => state.user);
   const {cacheAvailableSeats} = useAppSelector((state) => state.cacheFLow);
   const searchParams = useSearchParams();
-  const salesForceFiledId = searchParams.get('file_Id');
+  const salesForceUrl = searchParams.get('instance_url');
 
   type MenuItem = Required<MenuProps>['items'][number];
 
   useEffect(() => {
-    if (!!userInformation && !salesForceFiledId) {
+    if (!!userInformation && !salesForceUrl) {
       dispatch(getUserByTokenAccess('')).then((payload: any) => {
         dispatch(
           setUserInformation({
@@ -238,13 +238,13 @@ const SideBar = () => {
     }
   };
   useEffect(() => {
-    if (!salesForceFiledId) {
+    if (!salesForceUrl) {
       getAllCustomerByCache();
     }
   }, [userInformation]);
 
   useEffect(() => {
-    if (!salesForceFiledId) {
+    if (!salesForceUrl) {
       dispatch(getOranizationSeats(''))?.then((payload: any) => {
         dispatch(
           setCacheAvailableSeats({
@@ -259,7 +259,7 @@ const SideBar = () => {
 
   const items: MenuItem[] = [
     Role !== 'superAdmin' &&
-      !salesForceFiledId &&
+      !salesForceUrl &&
       getItem(
         <Typography
           cursor="pointer"

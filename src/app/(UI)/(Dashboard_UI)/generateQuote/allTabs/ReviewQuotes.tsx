@@ -62,7 +62,7 @@ const ReviewQuotes: FC<any> = ({
   const [showExportAs, setShowExportAs] = useState<boolean>(false);
   const [showExportToTable, setShowExportToTable] = useState<boolean>(false);
   const [showSubmitButton, setShowSubmitButton] = useState<boolean>(false);
-
+  const [conditionsForTheButtons, setConditionsForTheButtons] = useState<any>();
   const [fileData, setFileData] = useState<any>();
   const [reviewQuotesData, setReviewQuotesData] = useState<any>();
   const [finalReviewCol, setFinalReviewCol] = useState<any>();
@@ -304,6 +304,11 @@ const ReviewQuotes: FC<any> = ({
       );
     }
     setShowExportAs(false);
+    setConditionsForTheButtons({
+      exportAs: false,
+      exportTable: false,
+      maunalExport: false,
+    });
     setShowExportToTable(false);
     setShowSubmitButton(false);
   };
@@ -328,6 +333,8 @@ const ReviewQuotes: FC<any> = ({
       }, 2000);
     }
   };
+
+  console.log('234324322', conditionsForTheButtons);
 
   return (
     <GlobalLoader loading={quoteFileDataLoading}>
@@ -408,37 +415,75 @@ const ReviewQuotes: FC<any> = ({
                                     width={25}
                                     color={token?.colorBgContainer}
                                     onClick={(e) => {
+                                      // setConditionsForTheButtons({
+                                      //   ...conditionsForTheButtons,
+                                      //   exportAs: false,
+                                      //   exportTable: false,
+                                      //   maunalExport: false,
+                                      // });
                                       if (!finalDataItem?.maunalAdded) {
                                         if (
                                           finalDataItem?.QuoteLineItem
                                             ?.length === 0
                                         ) {
+                                          setConditionsForTheButtons({
+                                            ...conditionsForTheButtons,
+                                            exportAs: false,
+                                          });
                                           setShowExportAs(false);
                                         } else {
+                                          setConditionsForTheButtons({
+                                            ...conditionsForTheButtons,
+                                            exportAs: true,
+                                          });
                                           setShowExportAs(true);
                                         }
                                         if (
                                           !finalDataItem?.title
+                                            ?.toLowerCase()
                                             ?.split('.')
                                             ?.includes('pdf')
                                         ) {
+                                          setConditionsForTheButtons({
+                                            ...conditionsForTheButtons,
+                                            exportTable: false,
+                                          });
                                           setShowExportToTable(false);
                                         } else {
+                                          setConditionsForTheButtons({
+                                            ...conditionsForTheButtons,
+                                            exportTable: true,
+                                          });
                                           setShowExportToTable(true);
                                         }
                                         if (
                                           finalDataItem?.QuoteLineItem
                                             ?.length === 0 &&
                                           !finalDataItem?.title
+                                            ?.toLowerCase()
                                             ?.split('.')
                                             ?.includes('pdf')
                                         ) {
+                                          setConditionsForTheButtons({
+                                            ...conditionsForTheButtons,
+                                            maunalExport: true,
+                                          });
                                           setShowSubmitButton(true);
                                         } else {
+                                          setConditionsForTheButtons({
+                                            ...conditionsForTheButtons,
+                                            maunalExport: false,
+                                          });
                                           setShowSubmitButton(false);
                                         }
                                       }
                                       if (finalDataItem?.maunalAdded) {
+                                        setConditionsForTheButtons({
+                                          ...conditionsForTheButtons,
+                                          exportAs: false,
+                                          exportTable: false,
+                                          maunalExport: true,
+                                        });
                                         setShowSubmitButton(true);
                                         setShowExportToTable(false);
                                         setShowExportAs(false);
@@ -510,9 +555,18 @@ const ReviewQuotes: FC<any> = ({
           form?.resetFields();
         }}
         destroyOnClose
-        thirdButtonText={showExportToTable ? 'Export File to Tables' : ''}
-        primaryButtonText={showExportAs ? 'Edit Data As-Is' : ''}
-        fourthButtonText={showSubmitButton ? 'Submit Issue' : ''}
+        thirdButtonText={
+          // conditionsForTheButtons?.exportTable ? 'Export File to Tables' : ''
+          showExportToTable ? 'Export File to Tables' : ''
+        }
+        primaryButtonText={
+          // conditionsForTheButtons?.exportAs ? 'Edit Data As-Is' : ''
+          showExportAs ? 'Edit Data As-Is' : ''
+        }
+        fourthButtonText={
+          // conditionsForTheButtons?.maunalExport ? 'Submit Issue' : ''
+          showSubmitButton ? 'Submit Issue' : ''
+        }
         fifthButtonText={showSubmitButton ? 'Update Manually' : ''}
         onOk={() => {
           form?.submit();

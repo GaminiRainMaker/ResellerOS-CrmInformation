@@ -94,7 +94,7 @@ const CustomHeader = () => {
     data: notificationData,
     loading: notificationLoading,
   } = useAppSelector((state) => state.notification);
-  const salesForceFiledId = searchParams.get('file_Id');
+  const salesForceUrl = searchParams.get('instance_url');
   const [userRole, setUserRole] = useState<string>('');
   const [searchFinalData, setSearchFinalData] = useState<any>();
   const [profileImg, setProfileImg] = useState<any>();
@@ -112,7 +112,7 @@ const CustomHeader = () => {
   const [notificationCounts, setNotificationCounts] = useState<number>(0);
 
   useEffect(() => {
-    if (!salesForceFiledId) {
+    if (!salesForceUrl) {
       dispatch(getCountOfNotification(''))?.then((payload: any) => {
         setNotificationCounts(payload?.payload?.length);
       });
@@ -120,7 +120,7 @@ const CustomHeader = () => {
   }, []);
 
   useEffect(() => {
-    if (!salesForceFiledId) {
+    if (!salesForceUrl) {
       setNotificationCounts(0);
     }
   }, [notificationData]);
@@ -307,7 +307,7 @@ const CustomHeader = () => {
             <Col>
               <Image src={HeaderLogo} alt="HeaderLogo" />
             </Col>
-            {!salesForceFiledId && (
+            {!salesForceUrl && (
               <Col span={15}>
                 <SearchSelect
                   onSearch={(e: any) => {
@@ -327,7 +327,7 @@ const CustomHeader = () => {
         </Col>
 
         <Col>
-          {!salesForceFiledId && (
+          {!salesForceUrl && (
             <Space
               direction="horizontal"
               size={24}
@@ -448,7 +448,7 @@ const CustomHeader = () => {
                   </div>
                 )}
               >
-                <Badge count={notificationCounts} >
+                <Badge count={notificationCounts}>
                   <AvatarStyled
                     background={token?.colorInfoBg}
                     icon={
