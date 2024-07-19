@@ -209,62 +209,52 @@ const EditorFile = () => {
     // }
   };
 
+  const checkForNewFileForSalesForce = async () => {
+    let data = {
+      token: salesToken,
+      FileId: null,
+      urls: salesForceUrl,
+      quoteId: SaleQuoteId,
+    };
+    dispatch(getSalesForceFileData(data))?.then((payload: any) => {
+      if (payload?.payload) {
+        let newObj = {
+          file_name: payload?.payload?.title,
+          FileId: payload?.payload?.fileId,
+        };
+        setCurrentFileData(newObj);
+        notification?.open({
+          message: 'Please Update Line Items for new manual File',
+          type: 'info',
+        });
+      } else {
+        notification?.open({
+          message: 'The Line Items are created! Please close the modal!',
+        });
+      }
+    });
+  };
+
   const checkForNewFile = async () => {
     let isExist: boolean = false;
     let dataNew: any;
-    if (SaleQuoteId) {
-      let data = {
-        token: salesToken,
-        FileId: null,
-        urls: salesForceUrl,
-        quoteId: SaleQuoteId,
-      };
-      dispatch(getSalesForceFileData(data))?.then((payload: any) => {
+    await dispatch(getfileByQuoteIdWithManual(Number(getQuoteID)))?.then(
+      (payload: any) => {
         if (payload?.payload) {
-          let newObj = {
-            file_name: payload?.payload?.title,
-            FileId: payload?.payload?.fileId,
-          };
-          setCurrentFileData(newObj);
-          notification?.open({
-            message: 'Please Update Line Items for new manual File',
-            type: 'info',
-          });
+          setCurrentFileData(payload?.payload);
+          isExist = true;
+          dataNew = payload?.payload;
         } else {
           isExist = false;
         }
-      });
-    } else {
-      await dispatch(getfileByQuoteIdWithManual(Number(getQuoteID)))?.then(
-        (payload: any) => {
-          if (payload?.payload) {
-            setCurrentFileData(payload?.payload);
-            isExist = true;
-            dataNew = payload?.payload;
-          } else {
-            isExist = false;
-            notification?.open({
-              message: 'Line Items are updatet. Please close the modal!',
-              type: 'success',
-            });
-          }
-        },
-      );
-    }
+      },
+    );
 
     setShowModal(false);
     setShowConfirmHeader(false);
-
-    console.log('isExistisExist', isExist);
     if (SaleQuoteId) {
     } else {
       if (isExist) {
-        addNewLine();
-        window.history.replaceState(
-          null,
-          '',
-          `manualFileEditor?id=${Number(getQuoteID)}&fileId=${Number(dataNew?.id)}`,
-        );
         location?.reload();
         return;
       } else {
@@ -500,6 +490,7 @@ const EditorFile = () => {
               routingConditions={checkForNewFile}
               currentFileId={currentFileData?.FileId}
               manualFlow={true}
+              checkForNewFileForSalesForce={checkForNewFileForSalesForce}
             />
           }
           width={600}

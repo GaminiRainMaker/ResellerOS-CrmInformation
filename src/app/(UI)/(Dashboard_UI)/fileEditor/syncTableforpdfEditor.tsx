@@ -65,6 +65,7 @@ interface EditPdfDataInterface {
   routingConditions?: any;
   currentFileId?: any;
   manualFlow?: any;
+  checkForNewFileForSalesForce?: any;
 }
 const SyncTableData: FC<EditPdfDataInterface> = ({
   setMergedVaalues,
@@ -74,6 +75,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   routingConditions,
   currentFileId,
   manualFlow,
+  checkForNewFileForSalesForce,
 }) => {
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -285,10 +287,11 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       });
 
       setNanonetsLoading(false);
-      routingConditions();
+      if (manualFlow) {
+        checkForNewFileForSalesForce();
+      }
       return;
     }
-
     const newrrLineItems: any = [];
     const rebateDataArray: any = [];
     const contractProductArray: any = [];
