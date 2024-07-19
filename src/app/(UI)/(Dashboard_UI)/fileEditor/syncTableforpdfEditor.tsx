@@ -66,6 +66,7 @@ interface EditPdfDataInterface {
   currentFileId?: any;
   manualFlow?: any;
   checkForNewFileForSalesForce?: any;
+  currentFileName?: any;
 }
 const SyncTableData: FC<EditPdfDataInterface> = ({
   setMergedVaalues,
@@ -76,6 +77,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   currentFileId,
   manualFlow,
   checkForNewFileForSalesForce,
+  currentFileName,
 }) => {
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -239,6 +241,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     function cleanObject(obj: any) {
       let cleanedObj: any = {};
       // Iterate through the keys of the object
+      // currentFileName
       Object.keys(obj).forEach((key) => {
         // Only add to the cleaned object if key is not empty and value is defined
         if (key !== '' && obj[key] !== undefined) {
@@ -250,8 +253,15 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
     // Map over newArr and apply cleanObject to each element
     let requiredOutput = alllArrayValue.map((obj: any) => cleanObject(obj));
+    let newArrWIthFileName: any = [];
+    requiredOutput?.map((items: any) => {
+      newArrWIthFileName?.push({
+        ...items,
+        file_name: manualFlow ? currentFileName : null,
+      });
+    });
 
-    if (SaleQuoteId) {
+    if (SaleQuoteId && newArrWIthFileName?.length > 0) {
       const findProduct = syncedNewValue?.find(
         (items: any) => items?.newVal === 'product_code',
       );
@@ -272,7 +282,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         QuoteId: SaleQuoteId,
         FileId: manualFlow ? currentFileId : salesForceFiledId,
         action: 'ExportFileToTable',
-        lineItem: requiredOutput,
+        lineItem: newArrWIthFileName,
       };
       await dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
         let messgaeForApi = payload?.payload?.message;

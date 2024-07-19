@@ -20,6 +20,7 @@ type AddClassesToRows = (
   ODD_ROW_CLASS?: any,
 ) => void;
 
+
 export const addClassesToRows: AddClassesToRows = (
   TD,
   row,
