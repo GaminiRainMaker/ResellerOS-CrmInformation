@@ -27,9 +27,9 @@ export const getAllPartnerProgram = createAsyncThunk(
 );
 export const getFormDataProgram = createAsyncThunk(
   'partnerProgram/getFormDataProgram',
-  async (data, thunkApi) => {
+  async (data: any, thunkApi) => {
     try {
-      const res = await PARTNER_PROGRAM_API.getFormDataProgram();
+      const res = await PARTNER_PROGRAM_API.getFormDataProgram(data);
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error?.message);

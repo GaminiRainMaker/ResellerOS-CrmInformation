@@ -1,21 +1,14 @@
 'use client';
 
-import Typography from '@/app/components/common/typography';
 import {Divider} from '@/app/components/common/antd/Divider';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCustomerSelect from '@/app/components/common/os-customer-select';
 import OsInput from '@/app/components/common/os-input';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
-import Form, {FormInstance} from 'antd/es/form/Form';
-
-interface CustomerAccountInterface {
-  onFinish: any;
-  drawer?: boolean;
-  form: FormInstance;
-  customerValue?: number;
-  setCustomerValue: any;
-}
+import Typography from '@/app/components/common/typography';
+import Form from 'antd/es/form/Form';
+import {CustomerAccountInterface} from './os-contact-interface';
 
 const AddContact: React.FC<CustomerAccountInterface> = ({
   onFinish,
@@ -23,6 +16,7 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
   customerValue,
   setCustomerValue,
   drawer,
+  isDealregForm = false,
 }) => {
   const [token] = useThemeToken();
   return (
@@ -56,13 +50,17 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
         form={form}
         onFinish={onFinish}
       >
-        <OsCustomerSelect
-          setCustomerValue={setCustomerValue}
-          customerValue={customerValue}
-          isAddNewCustomer
-          isRequired
-        />
-        <Divider style={{border: '1px solid #C7CDD5'}} />
+        {!isDealregForm && (
+          <>
+            <OsCustomerSelect
+              setCustomerValue={setCustomerValue}
+              customerValue={customerValue}
+              isAddNewCustomer
+              isRequired
+            />
+            <Divider style={{border: '1px solid #C7CDD5'}} />
+          </>
+        )}
 
         <Row gutter={[16, 24]} justify="space-between">
           <Col span={12}>
@@ -74,10 +72,6 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
                   required: true,
                   message: 'First Name is required!',
                 },
-                {
-                  pattern: /^[A-Za-z\s]+$/,
-                  message: 'Please enter valid text.',
-                },
               ]}
             >
               <OsInput placeholder="Enter Text" />
@@ -88,12 +82,6 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
             <SelectFormItem
               label={<Typography name="Body 4/Medium">Last Name</Typography>}
               name="billing_last_name"
-              rules={[
-                {
-                  pattern: /^[A-Za-z\s]+$/,
-                  message: 'Please enter valid text.',
-                },
-              ]}
             >
               <OsInput placeholder="Enter Text" />
             </SelectFormItem>
@@ -107,10 +95,6 @@ const AddContact: React.FC<CustomerAccountInterface> = ({
                 {
                   pattern: /^[A-Za-z\s]+$/,
                   message: 'Please enter valid role.',
-                },
-                {
-                  required: true,
-                  message: 'Role is required!',
                 },
               ]}
             >

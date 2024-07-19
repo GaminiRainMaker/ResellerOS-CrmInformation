@@ -23,7 +23,7 @@ const SuperAdminDealRegAnalytic = ({data}: any) => {
       key: 1,
       primary: (
         <Typography name="Heading 3/Medium">
-          {data?.getFormDataProgram?.length}
+          {data?.getFormDataProgram?.length ?? 0}
         </Typography>
       ),
       secondry: 'Templates',
@@ -34,7 +34,7 @@ const SuperAdminDealRegAnalytic = ({data}: any) => {
       key: 2,
       primary: (
         <Typography name="Heading 3/Medium">
-          {activeTemplateCount?.length}
+          {activeTemplateCount?.length ?? 0}
         </Typography>
       ),
       secondry: 'Active Templates',
@@ -45,7 +45,7 @@ const SuperAdminDealRegAnalytic = ({data}: any) => {
       key: 3,
       primary: (
         <Typography name="Heading 3/Medium">
-          {data?.attributeSection?.length}
+          {data?.attributeSection?.length ?? 0}
         </Typography>
       ),
       secondry: 'Attributes Sections',
@@ -58,7 +58,7 @@ const SuperAdminDealRegAnalytic = ({data}: any) => {
       key: 4,
       primary: (
         <Typography name="Heading 3/Medium">
-          {data?.attributeField?.length}
+          {data?.attributeField?.length ?? 0}
         </Typography>
       ),
       secondry: 'Attributes Fields',

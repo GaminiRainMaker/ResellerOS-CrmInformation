@@ -28,6 +28,8 @@ export const PARTNER_PROGRAM_API = {
     get(`${API.PARTNER_PROGRAM.deletePartnerFormData}/${id}`) as Promise<
       AxiosResponse<any>
     >,
-  getFormDataProgram: () =>
-    get(API.PARTNER_PROGRAM.GetFormDataProgram) as Promise<AxiosResponse<[]>>,
+  getFormDataProgram: (data: any) =>
+    post(API.PARTNER_PROGRAM.GetFormDataProgram, data) as Promise<
+      AxiosResponse<[]>
+    >,
 };

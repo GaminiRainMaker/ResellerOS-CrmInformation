@@ -40,10 +40,12 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {getSuperAdminQuoteColumns} from '../allQuote/tableColumns';
 import ConcernDetail from './ConcernDetail';
 import EditedQuoteAnalytics from './editedQuoteAnalytic';
+import {useRouter} from 'next/navigation';
 
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
+  const router = useRouter();
   const [token] = useThemeToken();
   const {loading, data} = useAppSelector((state) => state.quoteFile);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
@@ -65,6 +67,7 @@ const AllQuote: React.FC = () => {
   useEffect(() => {
     dispatch(queryQuoteFile(searchQuery));
   }, [searchQuery]);
+
   const filteredData = data?.filter(
     (d: any) => d?.issue_type !== null || d?.manual_file,
   );
@@ -83,7 +86,7 @@ const AllQuote: React.FC = () => {
     setShowConcernDetailModal({visible: true, quoteId: value});
   };
 
-  const Quotecolumns = getSuperAdminQuoteColumns(token, actionEye);
+  const Quotecolumns = getSuperAdminQuoteColumns(token, actionEye, router);
 
   const uniqueCreatedBy = Array?.from(
     new Set(data?.map((dataItem: any) => dataItem?.Quote?.User?.user_name)),
