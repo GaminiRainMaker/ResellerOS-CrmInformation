@@ -8,7 +8,6 @@
 'use client';
 
 import {FC, useEffect, useState} from 'react';
-
 import {Divider} from '@/app/components/common/antd/Divider';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
@@ -27,35 +26,36 @@ import {
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
 import {Col, Row, notification} from 'antd';
-import {RedirectType, useRouter, useSearchParams} from 'next/navigation';
-import {
-  getContractInBulkByProductCode,
-  getContractProductByProductCode,
-} from '../../../../../redux/actions/contractProduct';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {insertLineItemSyncing} from '../../../../../redux/actions/LineItemSyncing';
+import {addSalesForceDataa} from '../../../../../redux/actions/auth';
+import {getContractInBulkByProductCode} from '../../../../../redux/actions/contractProduct';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {
   getBulkProductIsExisting,
-  insertProduct,
   insertProductsInBulk,
 } from '../../../../../redux/actions/product';
-import {
-  getAllProfitabilityCount,
-  insertProfitability,
-} from '../../../../../redux/actions/profitability';
+import {insertProfitability} from '../../../../../redux/actions/profitability';
 import {updateQuoteJsonAndManual} from '../../../../../redux/actions/quote';
 import {quoteFileVerification} from '../../../../../redux/actions/quoteFile';
-import {
-  deleteQuoteLineItemsByQuoteId,
-  insertQuoteLineItem,
-} from '../../../../../redux/actions/quotelineitem';
-import {
-  getRebatesByProductCode,
-  getRebatesInBulkByProductCode,
-} from '../../../../../redux/actions/rebate';
+import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
+import {getRebatesInBulkByProductCode} from '../../../../../redux/actions/rebate';
 import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
 import {insertValidation} from '../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {addSalesForceDataa} from '../../../../../redux/actions/auth';
+
+type DataItem = {
+  preVal: string;
+  newVal: string;
+  key: number;
+};
+
+type UpdatedDataItem = {
+  pdf_header: string;
+  quote_header: string;
+  status: string;
+  quote_id: number;
+};
 
 interface EditPdfDataInterface {
   setMergedVaalues?: any;
@@ -220,6 +220,24 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     }
 
     setNanonetsLoading(true);
+
+    const updatedData: UpdatedDataItem[] =
+      syncedNewValue &&
+      syncedNewValue?.length > 0 &&
+      syncedNewValue
+        ?.filter((item: DataItem) => item.newVal !== '')
+        .map(
+          ({preVal, newVal}: DataItem): UpdatedDataItem => ({
+            pdf_header: preVal,
+            quote_header: newVal,
+            status: 'Pending',
+            quote_id: Number(getQuoteID),
+          }),
+        );
+
+    if (updatedData) {
+      dispatch(insertLineItemSyncing(updatedData));
+    }
 
     mergedValue?.map((obj: any) => {
       const newObj: any = {};
