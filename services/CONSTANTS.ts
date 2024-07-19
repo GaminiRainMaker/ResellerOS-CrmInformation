@@ -270,4 +270,10 @@ export const API = {
   CONTRACT_CONFIGURATION: {
     INDEX: '/contractConfiguration',
   },
+  LINEITEM_SYNCING: {
+    INDEX: '/lineItemSyncing',
+    DeleteLineItemSyncingById: '/lineItemSyncing/deleteLineItemSyncingById',
+    GetLineItemSyncingById: '/lineItemSyncing/getLineItemSyncingById',
+    QUERY: 'lineItemSyncing/query',
+  },
 };
