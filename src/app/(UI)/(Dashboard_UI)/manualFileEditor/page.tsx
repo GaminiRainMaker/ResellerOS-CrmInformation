@@ -224,6 +224,10 @@ const EditorFile = () => {
       urls: salesForceUrl,
       quoteId: SaleQuoteId,
     };
+
+    setShowModal(false);
+    setShowConfirmHeader(false);
+    addNewLine();
     dispatch(getSalesForceFileData(data))?.then((payload: any) => {
       if (payload?.payload) {
         let newObj = {
@@ -518,7 +522,7 @@ const EditorFile = () => {
               nanonetsLoading={nanonetsLoading}
               routingConditions={checkForNewFile}
               currentFileId={currentFileData?.FileId}
-              currentFileName={currentFileData?.name}
+              currentFileName={currentFileData?.file_name}
               manualFlow={true}
               checkForNewFileForSalesForce={checkForNewFileForSalesForce}
             />

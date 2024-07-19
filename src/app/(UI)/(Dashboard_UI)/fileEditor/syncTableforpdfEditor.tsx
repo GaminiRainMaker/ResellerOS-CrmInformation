@@ -305,18 +305,22 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       await dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
         let messgaeForApi = payload?.payload?.message;
         notification.open({
-          message: 'Please close the review quotes window',
-          type: 'info',
-        });
-        notification.open({
           message: messgaeForApi,
           type: 'info',
         });
+        if (!manualFlow) {
+          notification.open({
+            message: 'Please close the review quotes window',
+            type: 'info',
+          });
+        }
       });
 
       setNanonetsLoading(false);
       if (manualFlow) {
+      setTimeout(() => {
         checkForNewFileForSalesForce();
+      },2000)
       }
       return;
     }
