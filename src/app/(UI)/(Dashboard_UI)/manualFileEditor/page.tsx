@@ -30,6 +30,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {getfileByQuoteIdWithManual} from '../../../../../redux/actions/quoteFile';
 import {getSalesForceFileData} from '../../../../../redux/actions/auth';
+import OsInput from '@/app/components/common/os-input';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
@@ -47,6 +48,10 @@ const EditorFile = () => {
   const salesToken = searchParams.get('key');
   const EditSalesLineItems = searchParams.get('editLine');
   const salesForceFiledId = searchParams.get('file_Id');
+  const [mergeedColumnHeader, setMergeedColumnHeader] = useState<any>();
+
+  const [showAddColumnModal, setShowAddColumnModal] = useState<boolean>(false);
+  const [newHeaderName, setNewHeaderName] = useState<any>();
   const salesForceUrl = searchParams.get('instance_url');
 
   const addNewLine = () => {
@@ -77,7 +82,6 @@ const EditorFile = () => {
   useEffect(() => {
     addNewLine();
   }, []);
-  console.log('343243243', SaleQuoteId);
   const AddNewHeaderToTheObject = () => {
     setSaveNewHeader(true);
     setShowConfirmHeader(false);
@@ -107,18 +111,22 @@ const EditorFile = () => {
 
     setArrayOflineItem(transformedData);
   };
-
-  const mergeedColumn: any = [];
-  const keys = arrayOflineItem?.length > 0 && Object.keys(arrayOflineItem?.[0]);
-  if (keys) {
-    keys?.map((item: any) => {
-      if (item) {
-        mergeedColumn?.push(formatStatus(item));
-      }
-    });
-  }
   useEffect(() => {
-    if (arrayOflineItem?.length > 1) {
+    const mergeedColumn: any = [];
+    const keys =
+      arrayOflineItem?.length > 0 && Object.keys(arrayOflineItem?.[0]);
+    if (keys) {
+      keys?.map((item: any) => {
+        if (item) {
+          mergeedColumn?.push(formatStatus(item));
+        }
+      });
+    }
+    setMergeedColumnHeader(mergeedColumn);
+  }, [arrayOflineItem]);
+
+  useEffect(() => {
+    if (arrayOflineItem?.length > 1 && !saveNewHeader) {
       const removeDuplicateValues = (obj: any) => {
         const seenValues = new Set();
         const newObj: any = {};
@@ -269,6 +277,17 @@ const EditorFile = () => {
     }
   };
 
+  const AddNewCloumnToMergedTable = async (value: any) => {
+    let newArr: any = [...arrayOflineItem];
+    let resultantArr: any = [];
+
+    newArr?.map((items: any) => {
+      resultantArr?.push({...items, [value]: ''});
+    });
+    setArrayOflineItem(resultantArr);
+    setShowAddColumnModal(false);
+    setNewHeaderName('');
+  };
   return (
     <GlobalLoader loading={nanonetsLoading}>
       {currentFileData && (
@@ -300,23 +319,25 @@ const EditorFile = () => {
             </Typography>
           </div>
         </Col>
-        {!saveNewHeader && (
-          <Col span={12}>
+
+        <Col span={12}>
+          {' '}
+          <Space
+            onClick={(e) => {
+              e?.preventDefault();
+            }}
+            size={25}
+            style={{
+              display: 'flex',
+              justifyContent: 'end',
+              marginRight: '50px',
+              right: '0',
+              bottom: '0',
+              marginBottom: '20px',
+            }}
+          >
             {' '}
-            <Space
-              onClick={(e) => {
-                e?.preventDefault();
-              }}
-              size={25}
-              style={{
-                display: 'flex',
-                justifyContent: 'end',
-                marginRight: '50px',
-                right: '0',
-                bottom: '0',
-                marginBottom: '20px',
-              }}
-            >
+            {!saveNewHeader ? (
               <OsButton
                 text="Save Header"
                 buttontype="PRIMARY"
@@ -333,9 +354,17 @@ const EditorFile = () => {
                   // AddNewHeaderToTheObject();
                 }}
               />
-            </Space>
-          </Col>
-        )}
+            ) : (
+              <OsButton
+                text="Add New Column"
+                buttontype="PRIMARY"
+                clickHandler={() => {
+                  setShowAddColumnModal(true);
+                }}
+              />
+            )}
+          </Space>
+        </Col>
       </Row>
       <HotTable
         data={arrayOflineItem}
@@ -344,7 +373,7 @@ const EditorFile = () => {
           300, 300,
         ]}
         height="auto"
-        colHeaders={mergeedColumn}
+        colHeaders={mergeedColumnHeader}
         width="auto"
         minSpareRows={0}
         autoWrapRow
@@ -500,6 +529,36 @@ const EditorFile = () => {
           }}
         />
       )}
+      <OsModal
+        title="Add New Column"
+        bodyPadding={30}
+        body={
+          <Row gutter={[16, 24]} justify="space-between">
+            <Col span={21}>
+              <OsInput
+                style={{width: '100%'}}
+                placeholder="Please add the column header name"
+                onChange={(e: any) => {
+                  setNewHeaderName(e?.target?.value);
+                }}
+              />
+            </Col>
+            <OsButton
+              disabled={newHeaderName?.length > 0 ? false : true}
+              text="Add"
+              buttontype="PRIMARY"
+              clickHandler={() => {
+                AddNewCloumnToMergedTable(newHeaderName);
+              }}
+            />
+          </Row>
+        }
+        width={900}
+        open={showAddColumnModal}
+        onCancel={() => {
+          setShowAddColumnModal(false);
+        }}
+      />
     </GlobalLoader>
   );
 };

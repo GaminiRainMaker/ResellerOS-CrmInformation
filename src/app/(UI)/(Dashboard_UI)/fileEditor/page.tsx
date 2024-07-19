@@ -22,7 +22,7 @@ import OsModal from '@/app/components/common/os-modal';
 import {formatStatus} from '@/app/utils/CONSTANTS';
 import {sendDataToNanonets, updateTables} from '@/app/utils/base';
 import {TrashIcon, XCircleIcon} from '@heroicons/react/24/outline';
-import {Row, notification} from 'antd';
+import {Col, Row, notification} from 'antd';
 import Typography from 'antd/es/typography/Typography';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {addClassesToRows, alignHeaders} from './hooksCallbacks';
@@ -43,6 +43,7 @@ import {
   getSalesForceFileData,
 } from '../../../../../redux/actions/auth';
 import {HiddenColumns} from 'handsontable/plugins';
+import OsInput from '@/app/components/common/os-input';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
@@ -60,6 +61,8 @@ const EditorFile = () => {
   const [missingId, setMissingId] = useState<number[]>([]);
   const [returnBackModal, setReturnModalBack] = useState<boolean>(false);
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
+  const [showAddColumnModal, setShowAddColumnModal] = useState<boolean>(false);
+  const [newHeaderName, setNewHeaderName] = useState<any>();
   const salesToken = searchParams.get('key');
   const SaleQuoteId = searchParams.get('quote_Id');
   const EditSalesLineItems = searchParams.get('editLine');
@@ -276,6 +279,9 @@ const EditorFile = () => {
                   newAllgetOArr?.push(formattedArray1);
                   newArrrrAll?.push(formattedArray1);
                   setQuoteItems(newArrrrAll);
+                  if (newArrrrAll?.length === 1) {
+                    mergeTableData(newArrrrAll);
+                  }
                   setNanonetsLoading(false);
                 });
               }
@@ -574,6 +580,19 @@ const EditorFile = () => {
   const checkForNewFile = async () => {
     router.push(`/generateQuote?id=${Number(getQUoteId)}`);
   };
+
+  const AddNewCloumnToMergedTable = async (value: any) => {
+    let newArr: any = [...mergedValue];
+    let resultantArr: any = [];
+
+    newArr?.map((items: any) => {
+      resultantArr?.push({...items, [value]: ''});
+    });
+    setMergedVaalues(resultantArr);
+    setShowAddColumnModal(false);
+    setNewHeaderName('');
+  };
+
   return (
     <GlobalLoader loading={nanonetsLoading}>
       {ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true' ? (
@@ -667,6 +686,28 @@ const EditorFile = () => {
                   overflow: 'auto',
                 }}
               >
+                <Space
+                  onClick={(e) => {
+                    e?.preventDefault();
+                  }}
+                  size={25}
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'end',
+                    marginRight: '50px',
+                    right: '0',
+                    bottom: '0',
+                    marginBottom: '20px',
+                  }}
+                >
+                  <OsButton
+                    text="Add New Column"
+                    buttontype="PRIMARY"
+                    clickHandler={() => {
+                      setShowAddColumnModal(true);
+                    }}
+                  />
+                </Space>
                 <HotTable
                   data={mergedValue}
                   allowRemoveColumn
@@ -931,6 +972,37 @@ const EditorFile = () => {
           // open={false}
         />
       )}
+
+      <OsModal
+        title="Add New Column"
+        bodyPadding={30}
+        body={
+          <Row gutter={[16, 24]} justify="space-between">
+            <Col span={21}>
+              <OsInput
+                style={{width: '100%'}}
+                placeholder="Please add the column header name"
+                onChange={(e: any) => {
+                  setNewHeaderName(e?.target?.value);
+                }}
+              />
+            </Col>
+            <OsButton
+              disabled={newHeaderName?.length > 0 ? false : true}
+              text="Add"
+              buttontype="PRIMARY"
+              clickHandler={() => {
+                AddNewCloumnToMergedTable(newHeaderName);
+              }}
+            />
+          </Row>
+        }
+        width={900}
+        open={showAddColumnModal}
+        onCancel={() => {
+          setShowAddColumnModal(false);
+        }}
+      />
     </GlobalLoader>
   );
 };
