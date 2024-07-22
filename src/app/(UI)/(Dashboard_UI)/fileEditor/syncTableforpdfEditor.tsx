@@ -256,7 +256,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           }),
         );
 
-    if (updatedData) {
+    if (updatedData && !SaleQuoteId) {
       dispatch(insertLineItemSyncing(updatedData));
     }
 
@@ -317,8 +317,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         // documentId: salesForceFiledId,
         urls: salesForceUrl,
         QuoteId: SaleQuoteId,
-        // FileId: manualFlow ? currentFileId : salesForceFiledId,
-        FileId: '0699I000001mVvQQAU',
+        FileId: manualFlow ? currentFileId : salesForceFiledId,
+        // FileId: '0Q09I0000002Bc5SAE',
         action: 'ExportFileToTable',
         lineItem: newArrWIthFileName,
       };
