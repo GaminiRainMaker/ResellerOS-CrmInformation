@@ -18,6 +18,11 @@ import OsModal from '../os-modal';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
 import {OsCustomerSelectInterface} from './os-customer-select-interface';
+import {
+  AlphabetsRegex,
+  AlphabetsRegexWithSpecialChr,
+  emailRegex,
+} from '@/app/utils/base';
 
 const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
   setCustomerValue,
@@ -38,6 +43,8 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
   const [contactDetail, setContactDetail] = useState<any>();
   const [shipppingAddress, setShippingAddress] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [errorFileds, setErrorFileds] = useState<boolean>(false);
+  const [activeKeyForTabs, setActiveKeyForTabs] = useState<any>(1);
 
   useEffect(() => {
     const customerOptionData =
@@ -60,6 +67,20 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
 
   const onFinish = async () => {
     const FormData = form.getFieldsValue();
+
+    if (
+      !emailRegex?.test(objectValuesForContact?.billing_email) ||
+      !objectValuesForContact?.billing_email ||
+      !objectValuesForContact?.billing_first_name ||
+      !objectValuesForContact?.billing_last_name ||
+      !objectValuesForContact?.billing_role ||
+      !AlphabetsRegex?.test(objectValuesForContact?.billing_first_name) ||
+      !AlphabetsRegex?.test(objectValuesForContact?.billing_last_name) ||
+      !AlphabetsRegexWithSpecialChr?.test(objectValuesForContact?.billing_role)
+    ) {
+      setErrorFileds(true);
+      return;
+    }
     try {
       setLoading(true);
       await dispatch(
@@ -90,6 +111,7 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
         dispatch(setCustomerProfile(''));
       });
       setLoading(false);
+      setActiveKeyForTabs(1);
       form.resetFields();
       setOpen(false);
     } catch (error) {
@@ -157,6 +179,10 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
             setContactDetail={setContactDetail}
             shipppingAddress={shipppingAddress}
             setShippingAddress={setShippingAddress}
+            setActiveKeyForTabs={setActiveKeyForTabs}
+            activeKeyForTabs={activeKeyForTabs}
+            errorFileds={errorFileds}
+            setErrorFileds={setErrorFileds}
           />
         }
         width={700}
@@ -166,7 +192,11 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
           form.resetFields();
         }}
         onOk={form.submit}
-        primaryButtonText="Save"
+        fourthButtonfunction={() => {
+          setActiveKeyForTabs(activeKeyForTabs + 1);
+        }}
+        fourthButtonText={activeKeyForTabs === 3 ? '' : 'Next'}
+        primaryButtonText={activeKeyForTabs === 3 ? 'Save' : ''}
         footerPadding={20}
       />
     </>

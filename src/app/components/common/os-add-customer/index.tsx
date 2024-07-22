@@ -30,6 +30,7 @@ import {SelectFormItem} from '../os-oem-select/oem-select-styled';
 import TableNameColumn from '../os-table/TableNameColumn';
 import {AddCustomertInterface} from './os-add-customer-interface';
 import {CustomerTabsStyle} from './styled-components';
+import { AlphabetsRegex, AlphabetsRegexWithSpecialChr, emailRegex } from '@/app/utils/base';
 
 const AddCustomer: React.FC<AddCustomertInterface> = ({
   drawer,
@@ -159,11 +160,6 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
     billingContact,
   ]);
 
-  const AlphabetsRegex = /^[A-Za-z\s]+$/;
-  const AlphabetsRegexWithSpecialChr =
-    /^[A-Z@~`!@#$%^&*()_=+\\\\';:\"\\/?>.<,-]*$/i;
-  const emailRegex =
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   return (
     <>

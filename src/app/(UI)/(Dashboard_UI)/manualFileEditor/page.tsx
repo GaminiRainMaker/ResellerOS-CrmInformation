@@ -227,6 +227,7 @@ const EditorFile = () => {
 
     setShowModal(false);
     setShowConfirmHeader(false);
+    setSaveNewHeader(false);
     addNewLine();
     dispatch(getSalesForceFileData(data))?.then((payload: any) => {
       if (payload?.payload) {
@@ -250,6 +251,8 @@ const EditorFile = () => {
   const checkForNewFile = async () => {
     let isExist: boolean = false;
     let dataNew: any;
+    setSaveNewHeader(false);
+    addNewLine();
     await dispatch(getfileByQuoteIdWithManual(Number(getQuoteID)))?.then(
       (payload: any) => {
         if (payload?.payload) {
@@ -392,7 +395,7 @@ const EditorFile = () => {
         filters
         rowHeaders
         allowInsertRow
-        allowInsertColumn={false}
+        // allowInsertColumn={true}
         afterGetColHeader={alignHeaders}
         beforeRenderer={() => {
           addClassesToRows('', '', '', '', '', '', arrayOflineItem);

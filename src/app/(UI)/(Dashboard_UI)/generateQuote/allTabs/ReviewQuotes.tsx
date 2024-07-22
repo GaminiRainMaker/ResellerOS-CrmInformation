@@ -567,7 +567,7 @@ const ReviewQuotes: FC<any> = ({
           // conditionsForTheButtons?.maunalExport ? 'Submit Issue' : ''
           showSubmitButton ? 'Submit Issue' : ''
         }
-        fifthButtonText={showSubmitButton ? 'Update Manually' : ''}
+        fifthButtonText={'Update Manually'}
         onOk={() => {
           form?.submit();
           setButtonType('primary');

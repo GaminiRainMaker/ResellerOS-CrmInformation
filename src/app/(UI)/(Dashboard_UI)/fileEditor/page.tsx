@@ -279,9 +279,9 @@ const EditorFile = () => {
                   newAllgetOArr?.push(formattedArray1);
                   newArrrrAll?.push(formattedArray1);
                   setQuoteItems(newArrrrAll);
-                  if (newArrrrAll?.length === 1) {
-                    mergeTableData(newArrrrAll);
-                  }
+                  // if (newArrrrAll?.length === 1) {
+                  //   mergeTableData(newArrrrAll);
+                  // }
                   setNanonetsLoading(false);
                 });
               }
@@ -291,6 +291,11 @@ const EditorFile = () => {
     }
   }, [ExistingQuoteItemss, quoteFileById]);
 
+  useEffect(() => {
+    if (quoteItems?.length === 1) {
+      mergeTableData(quoteItems);
+    }
+  }, [quoteItems]);
   useEffect(() => {
     const newArrr: any = [];
     if (quoteItems && quoteItems.length > 0) {

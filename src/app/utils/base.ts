@@ -1201,3 +1201,9 @@ export const getFormattedValuesForWithAndWithoutBundlesForExcelFile = (
 
   return {lineItemss: lineItemsArr, bundleData: bundleArrOfObject};
 };
+
+export const AlphabetsRegex = /^[A-Za-z\s]+$/;
+export const AlphabetsRegexWithSpecialChr =
+  /^[A-Z@~`!@#$%^&*()_=+\\\\';:\"\\/?>.<,-]*$/i;
+export const emailRegex =
+  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
