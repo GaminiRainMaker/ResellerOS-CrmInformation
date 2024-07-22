@@ -24,6 +24,9 @@ export const OSModalStyle = styled(Modal)<{
     padding: ${(props) =>
       props.bodyPadding ? `${props.bodyPadding}px` : '0px'};
   }
+  &.ant-modal .ant-modal-footer {
+    text-align: ${(props) => (props.styleFooter ? `center` : 'end')};
+  }
 
   border-radius: 10px;
 `;

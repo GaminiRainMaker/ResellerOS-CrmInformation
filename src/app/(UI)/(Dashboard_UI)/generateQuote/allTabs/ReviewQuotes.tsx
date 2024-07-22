@@ -334,7 +334,6 @@ const ReviewQuotes: FC<any> = ({
     }
   };
 
-  console.log('234324322', conditionsForTheButtons);
 
   return (
     <GlobalLoader loading={quoteFileDataLoading}>
