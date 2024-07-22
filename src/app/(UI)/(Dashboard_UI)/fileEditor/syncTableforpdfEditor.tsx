@@ -295,6 +295,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       newArrWIthFileName?.push({
         ...items,
         file_name: manualFlow ? currentFileName : null,
+        file_id: manualFlow ? currentFileId : null,
       });
     });
 
