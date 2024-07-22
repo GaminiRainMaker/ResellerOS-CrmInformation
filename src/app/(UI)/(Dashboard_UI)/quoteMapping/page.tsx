@@ -58,7 +58,7 @@ const QuoteMappings = () => {
   }, [searchQuery]);
 
   const locale = {
-    emptyText: <EmptyContainer title="No Users" />,
+    emptyText: <EmptyContainer title="No Quote Mappings" />,
   };
 
   const uniqueQuoteName = Array?.from(
@@ -427,13 +427,14 @@ const QuoteMappings = () => {
         loading={loading}
         body={
           <OSDialog
-            title="Approve Line Item"
+            title="Change Status to"
             description="Are you sure, you want to mark the status to approve for the following line item:"
             thirdLineText={
               recordData
                 ? `“${recordData?.pdf_header}” to “${recordData?.quote_header}”`
                 : ''
             }
+            statusText={'“Approved”'}
           />
         }
         bodyPadding={40}
@@ -455,8 +456,8 @@ const QuoteMappings = () => {
         loading={loading}
         body={
           <OSDialog
-            title="Change Status to “Reject”"
-            description="Are you sure, you want to mark the status to approve for the following line item:"
+            title="Change Status to"
+            description="Are you sure, you want to mark the status to rejected for the following line item:"
             thirdLineText={
               recordData
                 ? `“${recordData?.pdf_header}” to “${recordData?.quote_header}”`
@@ -464,6 +465,7 @@ const QuoteMappings = () => {
             }
             form={form}
             onFinish={updateLineItemStatus}
+            statusText={'“Reject”'}
           />
         }
         bodyPadding={40}

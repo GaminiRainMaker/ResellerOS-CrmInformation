@@ -15,6 +15,7 @@ const OSDialog: FC<any> = ({
   thirdLineText,
   form,
   onFinish,
+  statusText,
 }) => {
   const [token] = useThemeToken();
 
@@ -26,9 +27,27 @@ const OSDialog: FC<any> = ({
         style={{width: '100%', textAlign: 'center'}}
       >
         {image && <Image src={image} alt={image} />}
-        <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-          {title}
-        </Typography>
+
+        {statusText ? (
+          <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
+            {title}
+            <Typography
+              name="Heading 3/Medium"
+              color={
+                statusText === '“Approved”'
+                  ? token?.colorSuccess
+                  : token?.colorError
+              }
+            >
+              {statusText}
+            </Typography>
+          </Typography>
+        ) : (
+          <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
+            {title}
+          </Typography>
+        )}
+
         <Typography name="Body 3/Regular" color={token?.colorPrimaryText}>
           {description}
         </Typography>
