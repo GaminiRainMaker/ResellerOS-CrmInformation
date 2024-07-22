@@ -72,9 +72,12 @@ const OSDialog: FC<any> = ({
           </Form>
         </>
       )}
-
-      <br />
-      <br />
+      {!form && (
+        <>
+          <br />
+          <br />
+        </>
+      )}
     </div>
   );
 };

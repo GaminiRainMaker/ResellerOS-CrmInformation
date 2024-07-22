@@ -426,6 +426,7 @@ const QuoteMappings = () => {
         onOk={() => {
           updateLineItemStatus();
         }}
+        styleFooter
       />
       <OsModal
         loading={loading}
@@ -452,6 +453,7 @@ const QuoteMappings = () => {
         secondaryButtonText="Cancel"
         primaryButtonText="Reject"
         onOk={form.submit}
+        styleFooter
       />
     </>
   );

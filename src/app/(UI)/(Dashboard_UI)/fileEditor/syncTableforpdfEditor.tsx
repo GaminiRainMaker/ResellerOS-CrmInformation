@@ -130,8 +130,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       syncedNewValue?.length > 0 ? [...syncedNewValue] : [];
     let newSyncOptionChecks = syncTableQuoteLItemValues;
 
-    const validHeaders = new Set(mergeedColumn);
-
     mergeedColumn?.map((mergeItem: string, indexMerge: number) => {
       const NewFilterOption = newSyncOptionChecks?.find((item: any) =>
         item?.label
