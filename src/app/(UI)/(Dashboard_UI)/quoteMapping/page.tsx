@@ -13,7 +13,7 @@ import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {formatDate} from '@/app/utils/base';
-import {Form} from 'antd';
+import {Form, notification} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {MenuProps} from 'antd/lib';
 import {useRouter} from 'next/navigation';
@@ -213,6 +213,28 @@ const QuoteMappings = () => {
     // selectedRowKeys([]);
   };
 
+  const handleApproveClick = () => {
+    if (selectedId?.length <= 0) {
+      notification?.open({
+        message: 'Please select the Quote Mappings.',
+        type: 'info',
+      });
+      return;
+    }
+    setShowApproveModal(true);
+  };
+
+  const handleRejectClick = () => {
+    if (selectedId?.length <= 0) {
+      notification?.open({
+        message: 'Please select the Quote Mappings.',
+        type: 'info',
+      });
+      return;
+    }
+    setShowRejectModal(true);
+  };
+
   const dropDownItems: MenuProps['items'] = [
     ...(activeTab === 1 || activeTab === 3
       ? [
@@ -223,7 +245,7 @@ const QuoteMappings = () => {
                 name="Body 3/Regular"
                 cursor="pointer"
                 onClick={() => {
-                  setShowApproveModal(true);
+                  handleApproveClick();
                 }}
               >
                 Approve Selected
@@ -241,7 +263,7 @@ const QuoteMappings = () => {
                 name="Body 3/Regular"
                 cursor="pointer"
                 onClick={() => {
-                  setShowRejectModal(true);
+                  handleRejectClick();
                 }}
               >
                 Reject Selected
@@ -419,6 +441,7 @@ const QuoteMappings = () => {
         open={showApproveModal}
         onCancel={() => {
           setShowApproveModal(false);
+          setRecordData('');
         }}
         destroyOnClose
         secondaryButtonText="Cancel"
@@ -448,6 +471,7 @@ const QuoteMappings = () => {
         open={showRejectModal}
         onCancel={() => {
           setShowRejectModal(false);
+          setRecordData('');
         }}
         destroyOnClose
         secondaryButtonText="Cancel"
