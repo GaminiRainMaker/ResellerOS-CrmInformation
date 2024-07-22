@@ -54,6 +54,7 @@ import {queryOpportunity} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';
 import {setCustomerProfile} from '../../../../../redux/slices/customer';
+import { AlphabetsRegex, AlphabetsRegexWithSpecialChr, emailRegex } from '@/app/utils/base';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -354,12 +355,6 @@ const CrmInformation: React.FC = () => {
       />
     ),
   };
-
-  const AlphabetsRegex = /^[A-Za-z\s]+$/;
-  const AlphabetsRegexWithSpecialChr =
-    /^[A-Z@~`!@#$%^&*()_=+\\\\';:\"\\/?>.<,-]*$/i;
-  const emailRegex =
-    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   const onFinish = () => {
     if (

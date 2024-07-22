@@ -298,7 +298,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         // documentId: salesForceFiledId,
         urls: salesForceUrl,
         QuoteId: SaleQuoteId,
-        FileId: manualFlow ? currentFileId : salesForceFiledId,
+        // FileId: manualFlow ? currentFileId : salesForceFiledId,
+        FileId: '0699I000001mVvQQAU',
         action: 'ExportFileToTable',
         lineItem: newArrWIthFileName,
       };
@@ -318,9 +319,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
       setNanonetsLoading(false);
       if (manualFlow) {
-      setTimeout(() => {
-        checkForNewFileForSalesForce();
-      },2000)
+        setTimeout(() => {
+          checkForNewFileForSalesForce();
+        }, 2000);
       }
       return;
     }
