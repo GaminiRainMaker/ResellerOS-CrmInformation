@@ -237,7 +237,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           }),
         );
 
-    if (updatedData) {
+    if (updatedData && !SaleQuoteId) {
       dispatch(insertLineItemSyncing(updatedData));
     }
 
