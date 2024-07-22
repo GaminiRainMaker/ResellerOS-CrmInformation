@@ -131,7 +131,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     let newSyncOptionChecks = syncTableQuoteLItemValues;
 
     const validHeaders = new Set(mergeedColumn);
-
     mergeedColumn?.map((mergeItem: string, indexMerge: number) => {
       const NewFilterOption = newSyncOptionChecks?.find((item: any) =>
         item?.label
@@ -156,13 +155,15 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             : NewFilterOption?.value,
           key: indexMerge,
         });
+        // console.log(
+        //   'syncTableQuoteLItemValuessyncTableQuoteLItemValues',
+        //   syncTableQuoteLItemValues,
+        // );
 
+        // return;
         const newOptions: any = [...newSyncOptionChecks];
 
-        const indexOFItem = newOptions?.findIndex(
-          (itemV: any) => itemV?.value === NewFilterOption?.value,
-        );
-        newOptions?.splice(indexOFItem, 1);
+        // newOptions?.splice(indexOFItem, 1);
         // setSyncTableQuoteLItemValues(newOptions);
         newSyncOptionChecks = newOptions;
       } else {
