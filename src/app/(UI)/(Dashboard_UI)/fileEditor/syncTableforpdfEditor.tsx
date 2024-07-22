@@ -131,10 +131,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     let newSyncOptionChecks = syncTableQuoteLItemValues;
 
     const validHeaders = new Set(mergeedColumn);
-    const filteredData = ApprovedQuoteMappingData?.filter((item: any) =>
-      validHeaders?.has(item?.pdf_header),
-    );
-    console.log('filteredData', filteredData);
 
     mergeedColumn?.map((mergeItem: string, indexMerge: number) => {
       const NewFilterOption = newSyncOptionChecks?.find((item: any) =>
@@ -144,10 +140,20 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           ?.includes(mergeItem?.toLowerCase()),
       );
 
-      if (NewFilterOption) {
+      const NewFilterOptionForAdminAproved = ApprovedQuoteMappingData?.find(
+        (item: any) =>
+          item?.pdf_header
+            ?.toString()
+            ?.toLowerCase()
+            ?.includes(mergeItem?.toLowerCase()),
+      );
+
+      if (NewFilterOption || NewFilterOptionForAdminAproved) {
         newSyncTableData?.push({
           preVal: mergeItem,
-          newVal: NewFilterOption?.value,
+          newVal: NewFilterOptionForAdminAproved
+            ? NewFilterOptionForAdminAproved?.quote_header
+            : NewFilterOption?.value,
           key: indexMerge,
         });
 
