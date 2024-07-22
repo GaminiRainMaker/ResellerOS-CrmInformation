@@ -465,7 +465,7 @@ const QuoteMappings = () => {
             }
             form={form}
             onFinish={updateLineItemStatus}
-            statusText={'“Reject”'}
+            statusText={'“Rejected”'}
           />
         }
         bodyPadding={40}

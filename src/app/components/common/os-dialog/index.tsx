@@ -30,7 +30,7 @@ const OSDialog: FC<any> = ({
 
         {statusText ? (
           <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-            {title}
+            {title}{' '}
             <Typography
               name="Heading 3/Medium"
               color={
