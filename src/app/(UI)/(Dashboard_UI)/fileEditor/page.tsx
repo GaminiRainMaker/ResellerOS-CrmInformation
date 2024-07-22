@@ -314,7 +314,9 @@ const EditorFile = () => {
   }, [quoteFileById]);
 
   useEffect(() => {
-    dispatch(queryLineItemSyncing({}));
+    if (!salesForceUrl) {
+      dispatch(queryLineItemSyncing({}));
+    }
   }, []);
 
   // EditSalesLineItems
