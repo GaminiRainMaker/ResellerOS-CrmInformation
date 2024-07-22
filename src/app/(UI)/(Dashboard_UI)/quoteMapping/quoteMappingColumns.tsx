@@ -331,7 +331,7 @@ function rejectQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Approved Date
+          Rejected Date
         </Typography>
       ),
       dataIndex: 'status_date',
