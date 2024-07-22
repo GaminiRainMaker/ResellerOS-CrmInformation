@@ -13,7 +13,7 @@ import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {formatDate} from '@/app/utils/base';
-import {Form} from 'antd';
+import {Form, notification} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {MenuProps} from 'antd/lib';
 import {useRouter} from 'next/navigation';
@@ -58,7 +58,7 @@ const QuoteMappings = () => {
   }, [searchQuery]);
 
   const locale = {
-    emptyText: <EmptyContainer title="No Users" />,
+    emptyText: <EmptyContainer title="No Quote Mappings" />,
   };
 
   const uniqueQuoteName = Array?.from(
@@ -213,6 +213,28 @@ const QuoteMappings = () => {
     // selectedRowKeys([]);
   };
 
+  const handleApproveClick = () => {
+    if (selectedId?.length <= 0) {
+      notification?.open({
+        message: 'Please select the Quote Mappings.',
+        type: 'info',
+      });
+      return;
+    }
+    setShowApproveModal(true);
+  };
+
+  const handleRejectClick = () => {
+    if (selectedId?.length <= 0) {
+      notification?.open({
+        message: 'Please select the Quote Mappings.',
+        type: 'info',
+      });
+      return;
+    }
+    setShowRejectModal(true);
+  };
+
   const dropDownItems: MenuProps['items'] = [
     ...(activeTab === 1 || activeTab === 3
       ? [
@@ -223,7 +245,7 @@ const QuoteMappings = () => {
                 name="Body 3/Regular"
                 cursor="pointer"
                 onClick={() => {
-                  setShowApproveModal(true);
+                  handleApproveClick();
                 }}
               >
                 Approve Selected
@@ -241,7 +263,7 @@ const QuoteMappings = () => {
                 name="Body 3/Regular"
                 cursor="pointer"
                 onClick={() => {
-                  setShowRejectModal(true);
+                  handleRejectClick();
                 }}
               >
                 Reject Selected
@@ -405,13 +427,14 @@ const QuoteMappings = () => {
         loading={loading}
         body={
           <OSDialog
-            title="Approve Line Item"
+            title="Change Status to"
             description="Are you sure, you want to mark the status to approve for the following line item:"
             thirdLineText={
               recordData
                 ? `“${recordData?.pdf_header}” to “${recordData?.quote_header}”`
                 : ''
             }
+            statusText={'“Approved”'}
           />
         }
         bodyPadding={40}
@@ -419,6 +442,7 @@ const QuoteMappings = () => {
         open={showApproveModal}
         onCancel={() => {
           setShowApproveModal(false);
+          setRecordData('');
         }}
         destroyOnClose
         secondaryButtonText="Cancel"
@@ -426,13 +450,14 @@ const QuoteMappings = () => {
         onOk={() => {
           updateLineItemStatus();
         }}
+        styleFooter
       />
       <OsModal
         loading={loading}
         body={
           <OSDialog
-            title="Change Status to “Reject”"
-            description="Are you sure, you want to mark the status to approve for the following line item:"
+            title="Change Status to"
+            description="Are you sure, you want to mark the status to rejected for the following line item:"
             thirdLineText={
               recordData
                 ? `“${recordData?.pdf_header}” to “${recordData?.quote_header}”`
@@ -440,6 +465,7 @@ const QuoteMappings = () => {
             }
             form={form}
             onFinish={updateLineItemStatus}
+            statusText={'“Reject”'}
           />
         }
         bodyPadding={40}
@@ -447,11 +473,13 @@ const QuoteMappings = () => {
         open={showRejectModal}
         onCancel={() => {
           setShowRejectModal(false);
+          setRecordData('');
         }}
         destroyOnClose
         secondaryButtonText="Cancel"
         primaryButtonText="Reject"
         onOk={form.submit}
+        styleFooter
       />
     </>
   );
