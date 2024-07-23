@@ -334,7 +334,7 @@ const QuoteMappings = () => {
         body={
           <OSDialog
             title="Change Status to"
-            description="Are you sure, you want to mark the status to approve for the following line item:"
+            description="Are you sure, you want to mark the status to approve for the following mapping:"
             thirdLineText={
               recordData
                 ? `“${recordData?.pdf_header}” to  “${formatHeader(recordData?.quote_header)}”`
@@ -363,7 +363,7 @@ const QuoteMappings = () => {
         body={
           <OSDialog
             title="Change Status to"
-            description="Are you sure, you want to mark the status to rejected for the following line item:"
+            description="Are you sure, you want to mark the status to rejected for the following mapping:"
             thirdLineText={
               recordData
                 ? `“${recordData?.pdf_header}” to  “${formatHeader(recordData?.quote_header)}”`
