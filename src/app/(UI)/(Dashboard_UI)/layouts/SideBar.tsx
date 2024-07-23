@@ -513,7 +513,7 @@ const SideBar = () => {
               size={12}
               onClick={() => {
                 setSelectedKey(6);
-                router?.push('/lineItemSyncing');
+                router?.push('/quoteMapping');
               }}
               color={token?.colorTextSecondary}
             >
@@ -543,7 +543,7 @@ const SideBar = () => {
                     : token?.colorTextSecondary
                 }
               >
-                LineItems Syncing
+                Quote Mappings
               </Typography>
             </Space>,
             '6',

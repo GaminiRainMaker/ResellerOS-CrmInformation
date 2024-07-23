@@ -28,6 +28,7 @@ const OsModal: FC<OSModalPropsInterface> = ({
   fourthButtonfunction,
   fifthButtonText,
   fifthButtonfunction,
+  styleFooter,
   ...rest
 }) => {
   const {onCancel, open, onOk} = rest;
@@ -35,6 +36,7 @@ const OsModal: FC<OSModalPropsInterface> = ({
   return (
     <OSModalStyle
       bodyPadding={bodyPadding}
+      styleFooter={styleFooter}
       {...rest}
       // onCancel={closeAction}
       title={<Typography name={titleTypography}>{title}</Typography>}

@@ -58,18 +58,12 @@ const AttachmentDocument = dynamic(() => import('./allTabs/Attachment/index'), {
 const ReviewQuotes = dynamic(() => import('./allTabs/ReviewQuotes'), {
   ssr: false,
 });
-// import DownloadFile from './DownloadFile';
-// import Metrics from './allTabs/Metrics';
-// import ProfitabilityMain from './allTabs/Profitability/index';
-// import Rebates from './allTabs/Rebates';
-// import ReviewQuotes from './allTabs/ReviewQuotes';
-// import Validation from './allTabs/Validation';
-// import AttachmentDocument from './allTabs/Attachment/index';
-import DrawerContent from './DrawerContent';
-import GenerateQuoteAnalytics from './analytics';
+
+import dynamic from 'next/dynamic';
 import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
 import {getAllValidationByQuoteId} from '../../../../../redux/actions/validation';
-import dynamic from 'next/dynamic';
+import DrawerContent from './DrawerContent';
+import GenerateQuoteAnalytics from './analytics';
 
 const GenerateQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -645,9 +639,6 @@ const GenerateQuote: React.FC = () => {
                       <CommonSelect
                         key={2}
                         style={{width: '319px'}}
-                        // disabled={
-                        //   activeTab == '2' || activeTab == '5' ? false : true
-                        // }
                         placeholder="Select Grouping here"
                         options={selectData}
                         onChange={(e) => {
@@ -655,7 +646,7 @@ const GenerateQuote: React.FC = () => {
                           setCollapseActiveKeys([]);
                         }}
                         allowClear
-                        defaultValue={'File Name'}
+                        value={selectedFilter}
                       />
                     )}
 

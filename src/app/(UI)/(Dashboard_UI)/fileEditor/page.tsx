@@ -44,6 +44,7 @@ import {
 } from '../../../../../redux/actions/auth';
 import {HiddenColumns} from 'handsontable/plugins';
 import OsInput from '@/app/components/common/os-input';
+import {queryLineItemSyncing} from '../../../../../redux/actions/LineItemSyncing';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
@@ -311,6 +312,12 @@ const EditorFile = () => {
       setUpdateLineItemsValue(newArrr);
     }
   }, [quoteFileById]);
+
+  useEffect(() => {
+    if (!salesForceUrl) {
+      dispatch(queryLineItemSyncing({}));
+    }
+  }, []);
 
   // EditSalesLineItems
 

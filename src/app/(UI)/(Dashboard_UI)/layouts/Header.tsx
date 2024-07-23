@@ -247,6 +247,8 @@ const CustomHeader = () => {
       router?.push('/crmContact');
     } else if (typeRoute === 'Opportunity') {
       router?.push('/crmOpportunity');
+    } else if (typeRoute === 'quoteMapping') {
+      router?.push('/quoteMapping');
     }
   };
 

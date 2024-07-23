@@ -41,8 +41,8 @@ const TableNameColumn: FC<any> = ({
 
   const getStyledText = (text: string, requiredValue: boolean) => {
     if (requiredValue) {
-      const tempValue: string = text.split(' ')?.[0];
-      const remainingText = text.split(' ').slice(1).join(' ');
+      const tempValue: string = text?.split(' ')?.[0];
+      const remainingText = text && text?.split(' ').slice(1).join(' ');
       return (
         <span style={{cursor}}>
           <span style={{fontWeight: 800}}>{tempValue}</span> {remainingText}

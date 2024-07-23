@@ -7,7 +7,6 @@
 
 'use client';
 
-import {FC, useEffect, useState} from 'react';
 import {Divider} from '@/app/components/common/antd/Divider';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
@@ -27,7 +26,11 @@ import {
 } from '@/app/utils/base';
 import {Col, Row, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {insertLineItemSyncing} from '../../../../../redux/actions/LineItemSyncing';
+import {FC, useEffect, useState} from 'react';
+import {
+  insertLineItemSyncing,
+  queryLineItemSyncing,
+} from '../../../../../redux/actions/LineItemSyncing';
 import {addSalesForceDataa} from '../../../../../redux/actions/auth';
 import {getContractInBulkByProductCode} from '../../../../../redux/actions/contractProduct';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
@@ -54,7 +57,7 @@ type UpdatedDataItem = {
   pdf_header: string;
   quote_header: string;
   status: string;
-  quote_id: number;
+  quote_file_id: number;
 };
 
 interface EditPdfDataInterface {
@@ -87,6 +90,12 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const {data: syncTableData, loading: syncDataLoading} = useAppSelector(
     (state) => state.syncTable,
   );
+  const {data: LineItemSyncingData} = useAppSelector(
+    (state) => state.LineItemSyncing,
+  );
+  const ApprovedQuoteMappingData = LineItemSyncingData?.filter(
+    (LineItemSyncingItem: any) => LineItemSyncingItem?.status === 'Approved',
+  );
 
   const [token] = useThemeToken();
   const searchParams = useSearchParams();
@@ -104,11 +113,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         : quoteLineItemColumnForSync,
       // ,
     );
-
   const router = useRouter();
-
   const mergeedColumn: any = [];
-
   const keys = mergedValue?.length > 0 && Object.keys(mergedValue?.[0]);
 
   if (keys) {
@@ -123,6 +129,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     const newSyncTableData =
       syncedNewValue?.length > 0 ? [...syncedNewValue] : [];
     let newSyncOptionChecks = syncTableQuoteLItemValues;
+
     mergeedColumn?.map((mergeItem: string, indexMerge: number) => {
       const NewFilterOption = newSyncOptionChecks?.find((item: any) =>
         item?.label
@@ -131,19 +138,31 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           ?.includes(mergeItem?.toLowerCase()),
       );
 
-      if (NewFilterOption) {
+      const NewFilterOptionForAdminAproved = ApprovedQuoteMappingData?.find(
+        (item: any) =>
+          item?.pdf_header
+            ?.toString()
+            ?.toLowerCase()
+            ?.includes(mergeItem?.toLowerCase()),
+      );
+
+      if (NewFilterOption || NewFilterOptionForAdminAproved) {
         newSyncTableData?.push({
           preVal: mergeItem,
-          newVal: NewFilterOption?.value,
+          newVal: NewFilterOptionForAdminAproved
+            ? NewFilterOptionForAdminAproved?.quote_header
+            : NewFilterOption?.value,
           key: indexMerge,
         });
+        // console.log(
+        //   'syncTableQuoteLItemValuessyncTableQuoteLItemValues',
+        //   syncTableQuoteLItemValues,
+        // );
 
+        // return;
         const newOptions: any = [...newSyncOptionChecks];
 
-        const indexOFItem = newOptions?.findIndex(
-          (itemV: any) => itemV?.value === NewFilterOption?.value,
-        );
-        newOptions?.splice(indexOFItem, 1);
+        // newOptions?.splice(indexOFItem, 1);
         // setSyncTableQuoteLItemValues(newOptions);
         newSyncOptionChecks = newOptions;
       } else {
@@ -233,7 +252,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             pdf_header: preVal,
             quote_header: newVal,
             status: 'Pending',
-            quote_id: Number(getQuoteID),
+            quote_file_id: Number(getQuoteFileId),
           }),
         );
 
@@ -276,6 +295,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       newArrWIthFileName?.push({
         ...items,
         file_name: manualFlow ? currentFileName : null,
+        file_id: manualFlow ? currentFileId : null,
       });
     });
 
@@ -548,6 +568,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
     setNanonetsLoading(false);
   };
+
   const handleChange = () => {
     // This defines which option we are using salesforce or full stack
     let optionsTOAdd = SaleQuoteId

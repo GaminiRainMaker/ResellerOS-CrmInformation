@@ -32,6 +32,14 @@ export const pricingMethod = [
   {value: 'manual', label: 'Manual'},
   {value: 'gp', label: 'GP'},
 ];
+export const QuoteMappingRejectOption = [
+  {
+    value: 'This is not suitable as per PDF Header',
+    label: 'This is not suitable as per PDF Header',
+  },
+  {value: 'Other', label: 'Other'},
+  
+];
 
 export const StageValue = [
   {value: 'Prove', label: 'Prove'},
