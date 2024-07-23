@@ -1,8 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import {Space} from '@/app/components/common/antd/Space';
 import OsStatusWrapper from '@/app/components/common/os-status';
+import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {formatDate} from '@/app/utils/base';
+import {CheckIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {GlobalToken} from 'antd';
 import {JSX, SetStateAction} from 'react';
 
@@ -90,51 +92,65 @@ function newQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Change Status
+          Status
         </Typography>
       ),
       dataIndex: 'status',
       key: 'status',
       width: 173,
-      render: (text: string, record: any) => {
-        if (text === 'Pending') {
-          return (
-            <Space size={10}>
-              <Typography
-                color={token?.colorSuccessActive}
-                cursor="pointer"
-                name="Body 3/Bold"
+      render: (text: string) => {
+        return (
+          <span style={{display: 'flex', justifyContent: 'center'}}>
+            <OsStatusWrapper value={text} />
+          </span>
+        );
+      },
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Actions
+        </Typography>
+      ),
+      dataIndex: 'status',
+      key: 'status',
+      width: 173,
+      render: (text: string, record: any) => (
+        <Space size={20}>
+          <AvatarStyled
+            shape="square"
+            background={token?.colorSuccess}
+            size={28}
+            icon={
+              <CheckIcon
+                width={25}
+                color={token?.colorBgContainer}
                 onClick={() => {
                   setShowApproveModal(true);
                   setSelectedId && setSelectedId([record?.id]);
                   setRecordData(record);
                 }}
-              >
-                Approve
-              </Typography>
-
-              <Typography
-                color={token?.colorErrorActive}
-                cursor="pointer"
-                name="Body 3/Bold"
+              />
+            }
+          />
+          <AvatarStyled
+            shape="square"
+            background={token?.colorError}
+            size={28}
+            icon={
+              <XMarkIcon
+                width={25}
+                color={token?.colorBgContainer}
                 onClick={() => {
                   setShowRejectModal(true);
                   setSelectedId && setSelectedId([record?.id]);
                   setRecordData(record);
                 }}
-              >
-                Reject
-              </Typography>
-            </Space>
-          );
-        } else {
-          return (
-            <span style={{display: 'flex', justifyContent: 'center'}}>
-              <OsStatusWrapper value={text} />
-            </span>
-          );
-        }
-      },
+              />
+            }
+          />
+        </Space>
+      ),
     },
   ];
 
@@ -252,25 +268,36 @@ function approvedQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Change Status
+          Actions
         </Typography>
       ),
       dataIndex: 'status',
       key: 'status',
       width: 173,
       render: (text: string, record: any) => (
-        <Typography
-          color={token?.colorLink}
-          cursor="pointer"
-          name="Body 3/Bold"
-          onClick={() => {
-            setShowRejectModal(true);
-            setSelectedId && setSelectedId([record?.id]);
-            setRecordData(record);
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
           }}
         >
-          Reject
-        </Typography>
+          <AvatarStyled
+            shape="square"
+            background={token?.colorError}
+            size={28}
+            icon={
+              <XMarkIcon
+                width={25}
+                color={token?.colorBgContainer}
+                onClick={() => {
+                  setShowRejectModal(true);
+                  setSelectedId && setSelectedId([record?.id]);
+                  setRecordData(record);
+                }}
+              />
+            }
+          />
+        </div>
       ),
     },
   ];
@@ -403,25 +430,36 @@ function rejectQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Change Status
+          Actions
         </Typography>
       ),
       dataIndex: 'status',
       key: 'status',
       width: 173,
       render: (text: string, record: any) => (
-        <Typography
-          color={token?.colorLink}
-          cursor="pointer"
-          name="Body 3/Bold"
-          onClick={() => {
-            setShowApproveModal(true);
-            setSelectedId && setSelectedId([record?.id]);
-            setRecordData(record);
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
           }}
         >
-          Approve
-        </Typography>
+          <AvatarStyled
+            shape="square"
+            background={token?.colorSuccess}
+            size={28}
+            icon={
+              <CheckIcon
+                width={25}
+                color={token?.colorBgContainer}
+                onClick={() => {
+                  setShowApproveModal(true);
+                  setSelectedId && setSelectedId([record?.id]);
+                  setRecordData(record);
+                }}
+              />
+            }
+          />
+        </div>
       ),
     },
   ];
