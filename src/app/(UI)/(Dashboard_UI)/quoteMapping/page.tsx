@@ -349,6 +349,7 @@ const QuoteMappings = () => {
         onCancel={() => {
           setShowApproveModal(false);
           setRecordData('');
+          form.resetFields();
         }}
         destroyOnClose
         secondaryButtonText="Cancel"
@@ -380,6 +381,7 @@ const QuoteMappings = () => {
         onCancel={() => {
           setShowRejectModal(false);
           setRecordData('');
+          form.resetFields();
         }}
         destroyOnClose
         secondaryButtonText="Cancel"
