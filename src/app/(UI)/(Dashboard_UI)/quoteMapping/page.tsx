@@ -7,14 +7,12 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OSDialog from '@/app/components/common/os-dialog';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import EmptyContainer from '@/app/components/common/os-empty-container';
+import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
-import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {formatDate} from '@/app/utils/base';
 import {Form, notification} from 'antd';
-import {Option} from 'antd/es/mentions';
 import {MenuProps} from 'antd/lib';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -39,13 +37,9 @@ const QuoteMappings = () => {
   );
   const [activeTab, setActiveTab] = useState<number>(1);
   const [query, setQuery] = useState<{
-    quote_name: string | null;
-    pdf_header: string | null;
-    quote_header: string | null;
+    searchValue: string;
   }>({
-    quote_name: null,
-    pdf_header: null,
-    quote_header: null,
+    searchValue: '',
   });
   const [showApproveModal, setShowApproveModal] = useState<boolean>(false);
   const [showRejectModal, setShowRejectModal] = useState<boolean>(false);
@@ -61,21 +55,6 @@ const QuoteMappings = () => {
     emptyText: <EmptyContainer title="No Quote Mappings" />,
   };
 
-  const uniqueQuoteName = Array?.from(
-    new Set(
-      LineItemSyncingData?.map(
-        (item: any) =>
-          item?.Quote?.file_name ??
-          formatDate(item?.Quote?.createdAt, 'MM/DD/YYYY | HH:MM'),
-      ),
-    ),
-  );
-  const uniquePdfHeader = Array?.from(
-    new Set(LineItemSyncingData?.map((item: any) => item?.pdf_header)),
-  );
-  const uniqueQuoteHeader = Array?.from(
-    new Set(LineItemSyncingData?.map((item: any) => item?.quote_header)),
-  );
   const QuoteMappingNewColumns = newQuoteMappingColumns(
     token,
     router,
@@ -214,25 +193,25 @@ const QuoteMappings = () => {
   };
 
   const handleApproveClick = () => {
-    if (selectedId?.length <= 0) {
+    if (selectedId?.length > 0) {
+      setShowApproveModal(true);
+    } else {
       notification?.open({
         message: 'Please select the Quote Mappings.',
         type: 'info',
       });
-      return;
     }
-    setShowApproveModal(true);
   };
 
   const handleRejectClick = () => {
-    if (selectedId?.length <= 0) {
+    if (selectedId?.length > 0) {
+      setShowRejectModal(true);
+    } else {
       notification?.open({
         message: 'Please select the Quote Mappings.',
         type: 'info',
       });
-      return;
     }
-    setShowRejectModal(true);
   };
 
   const dropDownItems: MenuProps['items'] = [
@@ -274,6 +253,13 @@ const QuoteMappings = () => {
       : []),
   ];
 
+  const formatHeader = (text: string) => {
+    return text
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  };
+
   return (
     <>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
@@ -305,91 +291,19 @@ const QuoteMappings = () => {
             tabBarExtraContent={
               <Space size={12} align="center">
                 <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">PDF Header</Typography>
-                  <CommonSelect
-                    style={{width: '200px'}}
+                  <Typography name="Body 4/Medium">Search here</Typography>
+                  <OsInput
+                    style={{width: '250px'}}
                     placeholder="Search here"
-                    showSearch
-                    onSearch={(e) => {
-                      setQuery({
-                        ...query,
-                        pdf_header: e,
-                      });
-                    }}
                     onChange={(e) => {
                       setQuery({
                         ...query,
-                        pdf_header: e,
+                        searchValue: e?.target?.value,
                       });
                     }}
-                    value={query?.pdf_header}
-                  >
-                    {uniquePdfHeader?.map((pdf_header: any) => (
-                      <Option key={pdf_header} value={pdf_header}>
-                        {pdf_header}
-                      </Option>
-                    ))}
-                  </CommonSelect>
+                    value={query?.searchValue}
+                  />
                 </Space>
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">
-                    Quote Line Item Header
-                  </Typography>
-                  <CommonSelect
-                    style={{width: '200px'}}
-                    placeholder="Search here"
-                    showSearch
-                    onSearch={(e) => {
-                      setQuery({
-                        ...query,
-                        quote_header: e,
-                      });
-                    }}
-                    onChange={(e) => {
-                      setQuery({
-                        ...query,
-                        quote_header: e,
-                      });
-                    }}
-                    value={query?.quote_header}
-                  >
-                    {uniqueQuoteHeader?.map((quote_header: any) => (
-                      <Option key={quote_header} value={quote_header}>
-                        {quote_header}
-                      </Option>
-                    ))}
-                  </CommonSelect>
-                </Space>
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">
-                    Quote PDF Document
-                  </Typography>
-                  <CommonSelect
-                    style={{width: '200px'}}
-                    placeholder="Search here"
-                    showSearch
-                    onSearch={(e) => {
-                      setQuery({
-                        ...query,
-                        quote_name: e,
-                      });
-                    }}
-                    onChange={(e) => {
-                      setQuery({
-                        ...query,
-                        quote_name: e,
-                      });
-                    }}
-                    value={query?.quote_name}
-                  >
-                    {uniqueQuoteName?.map((quote_name: any) => (
-                      <Option key={quote_name} value={quote_name}>
-                        {quote_name}
-                      </Option>
-                    ))}
-                  </CommonSelect>
-                </Space>
-
                 <div
                   style={{
                     marginTop: '15px',
@@ -398,18 +312,10 @@ const QuoteMappings = () => {
                   <Typography
                     cursor="pointer"
                     name="Button 1"
-                    color={
-                      query?.quote_name ||
-                      query?.pdf_header ||
-                      query?.quote_header
-                        ? '#0D0D0D'
-                        : '#C6CDD5'
-                    }
+                    color={query?.searchValue ? '#0D0D0D' : '#C6CDD5'}
                     onClick={() => {
                       setQuery({
-                        quote_name: null,
-                        pdf_header: null,
-                        quote_header: null,
+                        searchValue: '',
                       });
                     }}
                   >
@@ -431,7 +337,7 @@ const QuoteMappings = () => {
             description="Are you sure, you want to mark the status to approve for the following line item:"
             thirdLineText={
               recordData
-                ? `“${recordData?.pdf_header}” to “${recordData?.quote_header}”`
+                ? `“${recordData?.pdf_header}” to  “${formatHeader(recordData?.quote_header)}”`
                 : ''
             }
             statusText={'“Approved”'}
@@ -460,7 +366,7 @@ const QuoteMappings = () => {
             description="Are you sure, you want to mark the status to rejected for the following line item:"
             thirdLineText={
               recordData
-                ? `“${recordData?.pdf_header}” to “${recordData?.quote_header}”`
+                ? `“${recordData?.pdf_header}” to  “${formatHeader(recordData?.quote_header)}”`
                 : ''
             }
             form={form}

@@ -1,12 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import {Space} from '@/app/components/common/antd/Space';
+import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {formatDate} from '@/app/utils/base';
 import {CheckIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {GlobalToken} from 'antd';
-import {JSX, SetStateAction} from 'react';
+import {SetStateAction} from 'react';
 
 function newQuoteMappingColumns(
   token: GlobalToken,
@@ -45,9 +46,7 @@ function newQuoteMappingColumns(
       dataIndex: 'quote_header',
       key: 'quote_header',
       width: 220,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text}</Typography>
-      ),
+      render: (text: string) => <CustomTextCapitalization text={text} />,
     },
     {
       title: (
@@ -55,8 +54,8 @@ function newQuoteMappingColumns(
           Requested Date
         </Typography>
       ),
-      dataIndex: 'quote_id',
-      key: 'quote_id',
+      dataIndex: 'quote_file_id',
+      key: 'quote_file_id',
       width: 173,
       render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
@@ -79,13 +78,11 @@ function newQuoteMappingColumns(
           color={token?.colorInfo}
           name="Body 4/Regular"
           onClick={() => {
-            // router.push(
-            //   `/generateQuote?id=${record?.Quote?.id}&inReviewQuote=${false}`,
-            // );
+            window.open(record?.QuoteFile?.pdf_url);
           }}
+          style={{cursor: 'pointer', textDecoration: 'underline'}}
         >
-          {record?.Quote?.file_name ??
-            formatDate(record?.Quote?.createdAt, 'MM/DD/YYYY | HH:MM')}
+          {record?.QuoteFile?.file_name}
         </Typography>
       ),
     },
@@ -189,9 +186,7 @@ function approvedQuoteMappingColumns(
       dataIndex: 'quote_header',
       key: 'quote_header',
       width: 220,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text}</Typography>
-      ),
+      render: (text: string) => <CustomTextCapitalization text={text} />,
     },
     {
       title: (
@@ -229,8 +224,8 @@ function approvedQuoteMappingColumns(
           Quote PDF Document
         </Typography>
       ),
-      dataIndex: 'quote_id',
-      key: 'quote_id',
+      dataIndex: 'quote_file_id',
+      key: 'quote_file_id',
       width: 173,
       render: (text: string, record: any) => (
         <Typography
@@ -238,13 +233,11 @@ function approvedQuoteMappingColumns(
           color={token?.colorInfo}
           name="Body 4/Regular"
           onClick={() => {
-            // router.push(
-            //   `/generateQuote?id=${record?.Quote?.id}&inReviewQuote=${false}`,
-            // );
+            window.open(record?.QuoteFile?.pdf_url);
           }}
+          style={{cursor: 'pointer', textDecoration: 'underline'}}
         >
-          {record?.Quote?.file_name ??
-            formatDate(record?.Quote?.createdAt, 'MM/DD/YYYY | HH:MM')}
+          {record?.QuoteFile?.file_name}
         </Typography>
       ),
     },
@@ -336,9 +329,7 @@ function rejectQuoteMappingColumns(
       dataIndex: 'quote_header',
       key: 'quote_header',
       width: 220,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text}</Typography>
-      ),
+      render: (text: string) => <CustomTextCapitalization text={text} />,
     },
     {
       title: (
@@ -376,8 +367,8 @@ function rejectQuoteMappingColumns(
           Quote PDF Document
         </Typography>
       ),
-      dataIndex: 'quote_id',
-      key: 'quote_id',
+      dataIndex: 'quote_file_id',
+      key: 'quote_file_id',
       width: 173,
       render: (text: string, record: any) => (
         <Typography
@@ -385,13 +376,11 @@ function rejectQuoteMappingColumns(
           color={token?.colorInfo}
           name="Body 4/Regular"
           onClick={() => {
-            // router.push(
-            //   `/generateQuote?id=${record?.Quote?.id}&inReviewQuote=${false}`,
-            // );
+            window.open(record?.QuoteFile?.pdf_url);
           }}
+          style={{cursor: 'pointer', textDecoration: 'underline'}}
         >
-          {record?.Quote?.file_name ??
-            formatDate(record?.Quote?.createdAt, 'MM/DD/YYYY | HH:MM')}
+          {record?.QuoteFile?.file_name}
         </Typography>
       ),
     },
@@ -467,7 +456,7 @@ function rejectQuoteMappingColumns(
 }
 
 export {
-  newQuoteMappingColumns,
   approvedQuoteMappingColumns,
+  newQuoteMappingColumns,
   rejectQuoteMappingColumns,
 };

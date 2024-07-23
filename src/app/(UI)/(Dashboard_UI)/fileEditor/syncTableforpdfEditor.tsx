@@ -57,7 +57,7 @@ type UpdatedDataItem = {
   pdf_header: string;
   quote_header: string;
   status: string;
-  quote_id: number;
+  quote_file_id: number;
 };
 
 interface EditPdfDataInterface {
@@ -252,7 +252,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             pdf_header: preVal,
             quote_header: newVal,
             status: 'Pending',
-            quote_id: Number(getQuoteID),
+            quote_file_id: Number(getQuoteFileId),
           }),
         );
 
