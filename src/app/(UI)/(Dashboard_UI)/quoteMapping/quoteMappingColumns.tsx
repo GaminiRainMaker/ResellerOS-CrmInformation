@@ -54,12 +54,12 @@ function newQuoteMappingColumns(
           Requested Date
         </Typography>
       ),
-      dataIndex: 'quote_file_id',
-      key: 'quote_file_id',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       width: 173,
-      render: (text: string, record: any) => (
+      render: (text: string) => (
         <Typography name="Body 4/Regular">
-          {formatDate(record?.Quote?.createdAt, 'MM/DD/YYYY | HH:MM')}
+          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },
@@ -69,8 +69,8 @@ function newQuoteMappingColumns(
           Quote PDF Document
         </Typography>
       ),
-      dataIndex: 'quote_id',
-      key: 'quote_id',
+      dataIndex: 'quote_file_id',
+      key: 'quote_file_id',
       width: 173,
       render: (text: string, record: any) => (
         <Typography
@@ -194,12 +194,12 @@ function approvedQuoteMappingColumns(
           Requested Date
         </Typography>
       ),
-      dataIndex: 'quote_id',
-      key: 'quote_id',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       width: 173,
-      render: (text: string, record: any) => (
+      render: (text: string) => (
         <Typography name="Body 4/Regular">
-          {formatDate(record?.Quote?.createdAt, 'MM/DD/YYYY | HH:MM')}
+          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },
@@ -337,12 +337,12 @@ function rejectQuoteMappingColumns(
           Requested Date
         </Typography>
       ),
-      dataIndex: 'quote_id',
-      key: 'quote_id',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
       width: 173,
-      render: (text: string, record: any) => (
+      render: (text: string) => (
         <Typography name="Body 4/Regular">
-          {formatDate(record?.Quote?.createdAt, 'MM/DD/YYYY | HH:MM')}
+          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },
