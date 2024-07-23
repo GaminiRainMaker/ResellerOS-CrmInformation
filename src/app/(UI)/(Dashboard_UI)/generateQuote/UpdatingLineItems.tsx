@@ -8,7 +8,7 @@ import Typography from '@/app/components/common/typography';
 import {pricingMethod, selectDataForProduct} from '@/app/utils/CONSTANTS';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
-import {FC, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {UpdateLineItemsInterFace} from './generateQuote.interface';
 
 const fieldOption = [
@@ -75,6 +75,22 @@ const UpdatingLineItems: FC<UpdateLineItemsInterFace> = ({
     setFinalFieldOption(updatedOptions);
   };
 
+  useEffect(() => {
+    let newArrr: any = [];
+    let newArrrForOptions: any = [];
+    profabilityUpdationState?.map((items: any) => {
+      if (items?.label) {
+        newArrr?.push(items?.label);
+      }
+    });
+
+    fieldOption?.map((itemss: any) => {
+      if (!newArrr?.includes(itemss?.label)) {
+        newArrrForOptions?.push(itemss);
+      }
+    });
+    setFinalFieldOption(newArrrForOptions);
+  }, [profabilityUpdationState]);
   return (
     <Form
       name="dynamic_form_nest_item"
@@ -207,10 +223,6 @@ const UpdatingLineItems: FC<UpdateLineItemsInterFace> = ({
                     return prevItem.id !== id;
                   }),
                 );
-                setFinalFieldOption((prevOptions: any) => [
-                  ...prevOptions,
-                  ...[tempArrayElement],
-                ]);
               }}
               style={{paddingTop: '10px'}}
               cursor="pointer"

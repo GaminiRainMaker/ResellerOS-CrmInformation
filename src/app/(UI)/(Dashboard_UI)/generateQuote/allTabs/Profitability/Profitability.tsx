@@ -633,7 +633,12 @@ const Profitablity: FC<any> = ({
       sorter: (a: any, b: any) => a.unit_price - b.unit_price,
       width: 150,
       render: (text: number, record: any) => (
-        <Typography name="Body 4/Medium">{abbreviate(text ?? 0)}</Typography>
+        <Typography
+          name="Body 4/Medium"
+          style={{display: 'flex', justifyContent: 'end'}}
+        >
+          {abbreviate(text ?? 0)}
+        </Typography>
       ),
     },
     {
@@ -643,7 +648,12 @@ const Profitablity: FC<any> = ({
       sorter: (a: any, b: any) => a.exit_price - b.exit_price,
       width: 190,
       render: (text: number, record: any) => (
-        <Typography name="Body 4/Medium">${abbreviate(text) ?? 0}</Typography>
+        <Typography
+          name="Body 4/Medium"
+          style={{display: 'flex', justifyContent: 'end'}}
+        >
+          ${abbreviate(text) ?? 0}
+        </Typography>
       ),
     },
     {
@@ -653,7 +663,12 @@ const Profitablity: FC<any> = ({
       sorter: (a: any, b: any) => a.gross_profit - b.gross_profit,
       width: 150,
       render: (text: number, record: any) => (
-        <Typography name="Body 4/Medium">{abbreviate(text) ?? 0}</Typography>
+        <Typography
+          name="Body 4/Medium"
+          style={{display: 'flex', justifyContent: 'end'}}
+        >
+          {abbreviate(text) ?? 0}
+        </Typography>
       ),
     },
     {
@@ -664,7 +679,12 @@ const Profitablity: FC<any> = ({
         a.gross_profit_percentage - b.gross_profit_percentage,
       width: 150,
       render: (text: number, record: any) => (
-        <Typography name="Body 4/Medium">{abbreviate(text ?? 0)}</Typography>
+        <Typography
+          name="Body 4/Medium"
+          style={{display: 'flex', justifyContent: 'end'}}
+        >
+          {abbreviate(text ?? 0)}
+        </Typography>
       ),
     },
   ];

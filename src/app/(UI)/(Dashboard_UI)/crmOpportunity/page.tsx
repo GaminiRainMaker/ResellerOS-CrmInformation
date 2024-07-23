@@ -205,7 +205,7 @@ const CrmOpportunity: React.FC = () => {
       key: 'stages',
       render: (text: string, record: any) => (
         <CommonStageSelect
-          disabled={false}
+          disabled={true}
           options={StageValue}
           onChange={(e: any) => {
             const dataa = {id: record?.id, stages: e};
@@ -284,21 +284,21 @@ const CrmOpportunity: React.FC = () => {
   useEffect(() => {
     if (activeTab && opportunityData?.length > 0) {
       const quoteItems =
-        activeTab === '3'
+        activeTab === '5'
           ? opportunityData?.filter((item: any) => item.stages === 'Develop')
           : activeTab == '1'
             ? opportunityData
-            : activeTab === '2'
+            : activeTab === '6'
               ? opportunityData?.filter((item: any) => item.stages === 'Commit')
               : activeTab === '4'
                 ? opportunityData?.filter(
                     (item: any) => item.stages === 'Negotiate',
                   )
-                : activeTab === '5'
+                : activeTab === '3'
                   ? opportunityData?.filter(
                       (item: any) => item.stages === 'Qualify',
                     )
-                  : activeTab === '6'
+                  : activeTab === '2'
                     ? opportunityData?.filter(
                         (item: any) => item.stages === 'Prove',
                       )
@@ -315,11 +315,12 @@ const CrmOpportunity: React.FC = () => {
       key: '1',
     },
     {
-      label: <Typography name="Body 4/Regular">Commit</Typography>,
+      label: <Typography name="Body 4/Regular">Prove</Typography>,
       key: '2',
     },
+
     {
-      label: <Typography name="Body 4/Regular">Develop</Typography>,
+      label: <Typography name="Body 4/Regular">Qualify</Typography>,
       key: '3',
     },
     {
@@ -327,11 +328,12 @@ const CrmOpportunity: React.FC = () => {
       key: '4',
     },
     {
-      label: <Typography name="Body 4/Regular">Qualify</Typography>,
+      label: <Typography name="Body 4/Regular">Develop</Typography>,
       key: '5',
     },
+
     {
-      label: <Typography name="Body 4/Regular">Prove</Typography>,
+      label: <Typography name="Body 4/Regular">Commit</Typography>,
       key: '6',
     },
   ];

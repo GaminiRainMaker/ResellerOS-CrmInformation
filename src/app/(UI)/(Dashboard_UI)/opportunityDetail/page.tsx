@@ -176,12 +176,16 @@ const OpportunityDetails = () => {
       <EmptyContainer
         title="No Files"
         buttonContainer={
-          <AddQuote
-            uploadFileData={uploadFileData}
-            setUploadFileData={setUploadFileData}
-            loading={QuoteLoading}
-            buttonText="Add Quote"
-          />
+          <>
+            {activeTab === 1 && (
+              <AddQuote
+                uploadFileData={uploadFileData}
+                setUploadFileData={setUploadFileData}
+                loading={QuoteLoading}
+                buttonText="Add Quote"
+              />
+            )}
+          </>
         }
       />
     ),

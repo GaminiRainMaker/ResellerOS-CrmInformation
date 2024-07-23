@@ -53,26 +53,29 @@ const OsTableWithOutDrag: FC<any> = ({
   });
 
   const handlePaginationChange = (page: number, pageSize: number) => {
-    let newArrToUpdate: any = [...pageChange];
+    if (uniqueId) {
+      let newArrToUpdate: any = [...pageChange];
 
-    let findTheIndex = newArrToUpdate?.findIndex(
-      (item: any) => uniqueId === item?.name,
-    );
+      let findTheIndex = newArrToUpdate?.findIndex(
+        (item: any) => uniqueId === item?.name,
+      );
 
-    const updatedArrForPaggination = newArrToUpdate?.map(
-      (items: any, index: number) => {
-        if (index === findTheIndex) {
-          return {
-            ...items,
-            current: page,
-            pageSize,
-          };
-        }
-        return items;
-      },
-    );
+      const updatedArrForPaggination = newArrToUpdate?.map(
+        (items: any, index: number) => {
+          if (index === findTheIndex) {
+            return {
+              ...items,
+              current: page,
+              pageSize,
+            };
+          }
+          return items;
+        },
+      );
 
-    setPageChange(updatedArrForPaggination);
+      setPageChange(updatedArrForPaggination);
+    }
+
     setPagination({
       ...pagination,
       current: page,
