@@ -47,11 +47,15 @@ const NewRegistrationForm: FC<any> = ({
   const {data: partnerData} = useAppSelector((state) => state.partner);
   const {userInformation} = useAppSelector((state) => state.user);
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
-  const [partnerProgramOptions, setPartnerProgrramOptions] = useState();
   const [formStep, setFormStep] = useState<number>(0);
   const [customerValue, setCustomerValue] = useState<number>();
   const [registeredPartnerData, setRegisteredPartnerData] = useState<any>();
   const [addressData, setAddressData] = useState<any>();
+  const [partnerProgramOptions, setPartnerProgrramOptions] = useState();
+  const [partnerOptions, setPartnerOptions] = useState<any>();
+  const [choosenIdProgram, setChoosedIdProgram] = useState<any>();
+  const [allAddedPartnerProgramIDs, setAllAddedPartnerProgramIDs] =
+    useState<any>();
 
   useEffect(() => {
     dispatch(getAllPartnerandProgram(''));
@@ -74,11 +78,27 @@ const NewRegistrationForm: FC<any> = ({
 
     setAllFilterPartnerData(FilterArrayDataa?.filterData);
   }, [partnerData]);
+  const dataForTheObjects = form.getFieldsValue();
 
-  const partnerOptions = allPartnerFilterData?.map((partner: any) => ({
-    label: <CustomTextCapitalization text={partner?.partner} />,
-    value: partner?.id,
-  }));
+  useEffect(() => {
+    let partnerOptions: any = [];
+
+    allPartnerFilterData?.map((partner: any) => {
+      let newCheckArrForHaveProgrmIds: any = [];
+      partner?.PartnerPrograms?.map((items: any) => {
+        if (!allAddedPartnerProgramIDs?.includes(items?.id)) {
+          newCheckArrForHaveProgrmIds?.push(items?.id);
+        }
+      });
+      if (newCheckArrForHaveProgrmIds?.length > 0) {
+        partnerOptions?.push({
+          label: <CustomTextCapitalization text={partner?.partner} />,
+          value: partner?.id,
+        });
+      }
+    });
+    setPartnerOptions(partnerOptions);
+  }, [allPartnerFilterData, dataForTheObjects?.registeredPartners]);
 
   const findPartnerProgramsById = (chosenId: number) => {
     const filteredData = allPartnerFilterData?.filter(
@@ -86,14 +106,20 @@ const NewRegistrationForm: FC<any> = ({
     );
 
     if (filteredData) {
-      const partnerPrograms = filteredData?.[0]?.PartnerPrograms?.map(
-        (program: any) => ({
-          label: <CustomTextCapitalization text={program?.partner_program} />,
-          value: program?.id,
-        }),
-      );
+      let partnerPrograms: any = [];
+      filteredData?.[0]?.PartnerPrograms?.map((program: any) => {
+        if (!allAddedPartnerProgramIDs?.includes(program?.id)) {
+          partnerPrograms?.push({
+            label: <CustomTextCapitalization text={program?.partner_program} />,
+            value: program?.id,
+          });
+        }
+      });
       setPartnerProgrramOptions(partnerPrograms);
     }
+  };
+  const onHitDeleteTheObject = () => {
+    findPartnerProgramsById(choosenIdProgram);
   };
 
   useEffect(() => {
@@ -284,6 +310,7 @@ const NewRegistrationForm: FC<any> = ({
                                       options={partnerOptions}
                                       onChange={(value) => {
                                         findPartnerProgramsById(value);
+                                        setChoosedIdProgram(value);
                                       }}
                                     />
                                   </SelectFormItem>
@@ -307,6 +334,14 @@ const NewRegistrationForm: FC<any> = ({
                                     <CommonSelect
                                       placeholder="Select"
                                       options={partnerProgramOptions}
+                                      onChange={(e: any) => {
+                                        let AllIds: any =
+                                          allAddedPartnerProgramIDs?.length > 0
+                                            ? [...allAddedPartnerProgramIDs]
+                                            : [];
+                                        AllIds?.push(e);
+                                        setAllAddedPartnerProgramIDs(AllIds);
+                                      }}
                                       style={{width: '100%', height: '36px'}}
                                     />
                                   </SelectFormItem>
@@ -320,7 +355,32 @@ const NewRegistrationForm: FC<any> = ({
                                   <TrashIcon
                                     width={25}
                                     color={token?.colorError}
-                                    onClick={() => remove(name)}
+                                    onClick={
+                                      () => {
+                                        let dataa = form.getFieldsValue();
+
+                                        if (dataa?.registeredPartners[name]) {
+                                          let newArrr: any =
+                                            allAddedPartnerProgramIDs?.length >
+                                            0
+                                              ? [...allAddedPartnerProgramIDs]
+                                              : [];
+
+                                          let findIndexOfId = newArrr.findIndex(
+                                            (item: number) =>
+                                              item ===
+                                              dataa?.registeredPartners[name]
+                                                ?.partner_program_id,
+                                          );
+                                          newArrr.splice(findIndexOfId, 1);
+                                          setAllAddedPartnerProgramIDs(newArrr);
+                                        }
+                                        remove(name);
+                                        onHitDeleteTheObject();
+                                      }
+
+                                      // remove(name)
+                                    }
                                     cursor="pointer"
                                   />
                                 </Col>
