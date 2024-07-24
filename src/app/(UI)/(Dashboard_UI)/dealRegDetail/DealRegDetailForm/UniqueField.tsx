@@ -14,8 +14,9 @@ const UniqueFields: React.FC<any> = ({
   setSectionIndexActive,
   data,
   activeKey,
+  form,
 }) => {
-  const [form] = Form.useForm();
+  // const [form] = Form.useForm();
   const dispatch = useAppDispatch();
 
   useEffect(() => {

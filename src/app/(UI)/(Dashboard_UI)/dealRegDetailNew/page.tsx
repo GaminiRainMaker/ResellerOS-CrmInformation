@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 'use client';
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
@@ -7,8 +5,6 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
-import DealRegCustomTabs from '@/app/components/common/os-custom-tab/DealRegCustomTab';
-import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
@@ -22,16 +18,13 @@ import {
   getDealRegByPartnerProgramId,
   updateDealRegById,
 } from '../../../../../redux/actions/dealReg';
-import {
-  getDealRegAddressById,
-  updateDealRegAddressById,
-} from '../../../../../redux/actions/dealRegAddress';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
-import DealDrawerContent from './DealRegDetailForm/DealRegDrawerContent';
+import DealRegCustomTabs from './DealRegCustomTabs';
 
 const DealRegDetail = () => {
-  const [form] = Form.useForm();
+  const [CommonFieldForm] = Form.useForm();
+  const [UniqueFieldForm] = Form.useForm();
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -43,13 +36,8 @@ const DealRegDetail = () => {
   const [open, setOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const searchParams = useSearchParams();
-  const [activeKey, setActiveKey] = useState('');
   const getOpportunityId = searchParams.get('opportunityId');
   const getPartnerProgramId = searchParams.get('program_id');
-
-  const [selectedUserId, setSelectedUserId] = useState<any>();
-  const [formDataValues, setFormDataValues] = useState<any>([]);
-  const [cartItems, setCartItems] = useState<any>([]);
 
   useEffect(() => {
     if (getOpportunityId) {
@@ -59,26 +47,28 @@ const DealRegDetail = () => {
       dispatch(getDealRegByPartnerProgramId(Number(getPartnerProgramId)));
     }
   }, []);
-  const updateTheDealReg = async () => {
-    const newObj = {
-      ...formDataValues?.[0],
-      unique_form_data: [
-        JSON?.stringify(formDataValues?.[0]?.unique_form_data),
-      ],
-      common_form_data: [
-        JSON?.stringify(formDataValues?.[0]?.common_form_data),
-      ],
-    };
-    console.log('newObj', newObj);
 
-    // await dispatch(updateDealRegById(newObj));
-    // if (getOpportunityId) {
-    //   dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-    // }
-    // if (getPartnerProgramId) {
-    //   dispatch(getDealRegByPartnerProgramId(Number(getPartnerProgramId)));
-    // }
-  };
+  // const updateTheDealReg = async () => {
+  //   const newObj = {
+  //     ...formDataValues?.[0],
+  //     unique_form_data: [
+  //       JSON?.stringify(formDataValues?.[0]?.unique_form_data),
+  //     ],
+  //     common_form_data: [
+  //       JSON?.stringify(formDataValues?.[0]?.common_form_data),
+  //     ],
+  //   };
+  //   console.log('newObj', newObj);
+
+  //   // await dispatch(updateDealRegById(newObj));
+  //   // if (getOpportunityId) {
+  //   //   dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+  //   // }
+  //   // if (getPartnerProgramId) {
+  //   //   dispatch(getDealRegByPartnerProgramId(Number(getPartnerProgramId)));
+  //   // }
+  // };
+
   const OsBreadCrumbItems = [
     {
       key: '1',
@@ -116,72 +106,40 @@ const DealRegDetail = () => {
     },
   ];
 
-  useEffect(() => {
-    if (!activeKey) {
-      const finalArr = [];
-      if (DealRegData?.length > 0) {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        const program_id = DealRegData[0]?.partner_program_id;
-        setActiveKey(program_id as string);
-        for (let i = 0; i < DealRegData.length; i++) {
-          const newObj = {...DealRegData?.[i]};
+  // const onFinish = async () => {
+  //   const dealRegNewData = form.getFieldsValue();
+  //   try {
+  //     await Promise.all([
+  //       dispatch(updateDealRegById({...dealRegNewData, id: dealReg?.id})),
+  //       dispatch(
+  //         updateDealRegAddressById({...dealRegNewData, dealRegId: dealReg?.id}),
+  //       ),
+  //     ]);
+  //     dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+  //     dispatch(getDealRegAddressById(dealReg?.id));
+  //     setOpen(false);
+  //   } catch (error) {
+  //     console.error('Error:', error);
+  //   }
+  // };
+  console.log('dealRegdealReg', dealReg, DealRegData);
 
-          newObj.unique_form_data = DealRegData?.[i]?.unique_form_data
-            ? JSON?.parse(DealRegData?.[i]?.unique_form_data)
-            : [];
-
-          newObj.common_form_data = DealRegData?.[i]?.common_form_data
-            ? JSON?.parse(DealRegData?.[i]?.common_form_data)
-            : {};
-          finalArr.push(newObj);
-        }
-        setFormDataValues(finalArr);
-      }
-    }
-  }, [DealRegData]);
-
-  useEffect(() => {
-    if (cartItems) {
-      const newArr = [...formDataValues];
-      const index = newArr.findIndex(
-        (item: any) => item.partner_program_id === activeKey,
-      );
-
-      if (index > -1) {
-        const obj = {...newArr[index]};
-        obj.unique_form_data = cartItems;
-        newArr[index] = obj;
-
-        setFormDataValues(newArr);
-      }
-    }
-  }, [cartItems]);
-
-  const onFinish = async () => {
-    const dealRegNewData = form.getFieldsValue();
-    try {
-      await Promise.all([
-        dispatch(updateDealRegById({...dealRegNewData, id: dealReg?.id})),
-        dispatch(
-          updateDealRegAddressById({...dealRegNewData, dealRegId: dealReg?.id}),
-        ),
-      ]);
-      dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-      dispatch(getDealRegAddressById(dealReg?.id));
-      setOpen(false);
-    } catch (error) {
-      console.error('Error:', error);
-    }
+  const onFinish1 = () => {
+    const CommonFieldFormData = CommonFieldForm.getFieldsValue();
+    const UniqueFieldFormData = UniqueFieldForm.getFieldsValue();
+    console.log(
+      'CommonFieldFormData',
+      CommonFieldFormData,
+      'UniqueFieldFormData',
+      UniqueFieldFormData,
+    );
+    let obj = {
+      common_form_data: JSON.stringify(CommonFieldFormData),
+      unique_form_data: JSON.stringify(UniqueFieldFormData),
+    };
+    console.log('obj', obj);
+    // dispatch(updateDealRegById({...dealRegNewData, id: dealReg?.id}));
   };
-
-  console.log(
-    'DealregData',
-    DealRegData,
-    selectedUserId,
-    activeKey,
-    cartItems,
-    formDataValues,
-  );
 
   return (
     <div>
@@ -194,7 +152,7 @@ const DealRegDetail = () => {
             <OsButton
               text="Save"
               buttontype="SECONDARY"
-              clickHandler={updateTheDealReg}
+              clickHandler={onFinish1}
             />
             <OsButton
               text="Add New Form"
@@ -209,8 +167,12 @@ const DealRegDetail = () => {
           </Space>
         </Col>
       </Row>
-
       <DealRegCustomTabs
+        CommonFieldForm={CommonFieldForm}
+        UniqueFieldForm={UniqueFieldForm}
+      />
+
+      {/* <DealRegCustomTabs
         tabs={DealRegData}
         selectedUserId={selectedUserId}
         form={form}
@@ -220,9 +182,9 @@ const DealRegDetail = () => {
         cartItems={cartItems}
         setActiveKey={setActiveKey}
         formDataValues={formDataValues}
-      />
+      /> */}
 
-      <OsDrawer
+      {/* <OsDrawer
         title={<Typography name="Body 1/Regular">Form Settings</Typography>}
         placement="right"
         onClose={() => setOpen((p) => !p)}
@@ -244,7 +206,7 @@ const DealRegDetail = () => {
           form={form}
           onFinish={onFinish}
         />
-      </OsDrawer>
+      </OsDrawer> */}
 
       <OsModal
         bodyPadding={22}

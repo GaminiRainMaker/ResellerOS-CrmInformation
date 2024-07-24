@@ -27,7 +27,6 @@ const DealRegDetailForm: FC<any> = ({
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const {dealReg} = useAppSelector((state) => state.dealReg);
   const [commonFields, setCommonFields] = useState([]);
   const [sectionIndexActive, setSectionIndexAactive] = useState<any>();
 
@@ -87,6 +86,7 @@ const DealRegDetailForm: FC<any> = ({
           sectionIndexActive={sectionIndexActive}
           data={data?.PartnerProgram}
           activeKey={activeKey}
+          form={form}
         />
       ),
     },
