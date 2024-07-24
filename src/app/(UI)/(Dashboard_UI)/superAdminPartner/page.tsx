@@ -19,7 +19,7 @@ import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {partnerProgramFilter} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
-import {Checkbox, Form} from 'antd';
+import {Checkbox, Form, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
@@ -303,11 +303,19 @@ const SuperAdminPartner: React.FC = () => {
             buttontype="PRIMARY"
             text="Approve"
             clickHandler={() => {
-              updateRequest(
-                true,
-                record?.AssignPartnerProgram?.id,
-                record?.AssignPartnerProgram?.requested_by,
-              );
+              if (record?.form_data) {
+                updateRequest(
+                  true,
+                  record?.AssignPartnerProgram?.id,
+                  record?.AssignPartnerProgram?.requested_by,
+                );
+              } else {
+                notification?.open({
+                  message:
+                    'Please create the  template for this partner program to approve',
+                  type: 'info',
+                });
+              }
             }}
           />{' '}
           <OsButton
