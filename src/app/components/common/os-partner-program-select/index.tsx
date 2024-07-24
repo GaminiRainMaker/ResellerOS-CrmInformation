@@ -11,8 +11,11 @@ import CommonSelect from '../os-select';
 import Typography from '../typography';
 import {OsPartnerProgramSelectInterface} from './os-partner-program.interface';
 import CustomTextCapitalization from '../hooks/CustomTextCapitalizationHook';
+import {usePathname} from 'next/navigation';
+import {getAssignPartnerProgramByOrganization} from '../../../../../redux/actions/assignPartnerProgram';
 
 const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
+  organizationName,
   name = 'partner_program',
   partnerId,
   isRequired = false,
@@ -28,15 +31,43 @@ const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
   );
   const {partnerRequestData} = useAppSelector((state) => state.partner);
   const [finalProgramOptions, setFinalProgramOptions] = useState<any>();
+  const dispatch = useAppDispatch();
+  const pathname = usePathname();
+  const [allApprovedIdsOrganization, setAllApprovedIdsForOrganization] =
+    useState<any>();
 
   useEffect(() => {
-    const partnerProgramsRequestOptions =
-      partnerRequestData?.[0]?.PartnerPrograms?.map((program: any) => ({
-        label: <CustomTextCapitalization text={program?.partner_program} />,
-        value: program?.id,
-      }));
+    dispatch(
+      getAssignPartnerProgramByOrganization({
+        // organization: userInformation?.organization,
+        organization: organizationName,
+      }),
+    )?.then((payload: any) => {
+      let newArrOfIds: any = [];
+      if (
+        payload?.payload?.approved?.length > 0 &&
+        pathname === '/userManagement'
+      ) {
+        payload?.payload?.approved?.map((items: any) => {
+          newArrOfIds?.push(items?.partner_program_id);
+        });
+      }
+      setAllApprovedIdsForOrganization(newArrOfIds);
+    });
+  }, []);
+
+  useEffect(() => {
+    let partnerProgramsRequestOptions: any = [];
+    partnerRequestData?.[0]?.PartnerPrograms?.map((program: any) => {
+      if (!allApprovedIdsOrganization?.includes(program?.id)) {
+        partnerProgramsRequestOptions?.push({
+          label: <CustomTextCapitalization text={program?.partner_program} />,
+          value: program?.id,
+        });
+      }
+    });
     setFinalProgramOptions(partnerProgramsRequestOptions);
-  }, [partnerRequestData]);
+  }, [partnerRequestData, allApprovedIdsOrganization]);
 
   return (
     <>

@@ -1,6 +1,7 @@
 import {FormInstance} from 'antd';
 
 export interface OsPartnerProgramSelectInterface {
+  organizationName?:string;
   form: FormInstance;
   name?: string;
   value?: number;
