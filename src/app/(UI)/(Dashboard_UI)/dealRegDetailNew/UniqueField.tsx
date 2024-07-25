@@ -1,9 +1,7 @@
 import {Checkbox} from '@/app/components/common/antd/Checkbox';
-import {Collapse, Panel} from '@/app/components/common/antd/Collapse';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import {Switch} from '@/app/components/common/antd/Switch';
-import ContactInput from '@/app/components/common/os-contact';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import {
   SectionColStyledInner,
@@ -20,9 +18,9 @@ import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
 import Typography from '@/app/components/common/typography';
 import {MailOutlined} from '@ant-design/icons';
 import {Form, Radio, TimePicker} from 'antd';
-import {useAppSelector} from '../../../../../redux/hook';
-import {useEffect, useState} from 'react';
 import {FormInstance} from 'antd/lib';
+import {useEffect, useState} from 'react';
+import {useAppSelector} from '../../../../../redux/hook';
 
 interface UniqueFieldsProps {
   data: any;
@@ -31,7 +29,10 @@ interface UniqueFieldsProps {
 }
 
 const UniqueFields: React.FC<UniqueFieldsProps> = ({data, form, activeKey}) => {
-  const template = JSON.parse(data?.form_data)?.[0]?.content;
+  const allContent = JSON.parse(data?.form_data).flatMap(
+    (section: any) => section.content,
+  );
+
   const {dealReg} = useAppSelector((state) => state.dealReg);
   const [uniqueTemplateData, setUniqueTemplateData] = useState<any>();
 
@@ -199,15 +200,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({data, form, activeKey}) => {
       ?.replace(/[^a-z0-9_]/g, '');
   };
 
-  const sections = template?.reduce((acc: any[], item: any) => {
-    if (item?.sectionTitle) {
-      acc.push({sectionTitle: item?.sectionTitle, items: []});
-    } else if (acc.length > 0) {
-      acc[acc.length - 1]?.items?.push(item);
-    }
-    return acc;
-  }, []);
-
   useEffect(() => {
     if (dealReg?.PartnerProgram?.id === activeKey) {
       const uniqueFormData =
@@ -238,56 +230,49 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({data, form, activeKey}) => {
   }, [uniqueTemplateData, form]);
 
   return (
-    <Row>
-      <Form
-        layout="vertical"
-        style={{width: '100%', background: 'white', borderRadius: '12px'}}
-        form={form}
-      >
-        <Collapse accordion style={{width: '100%'}} ghost>
-          {sections.map((section: any, sectionIndex: number) => (
-            <Panel
-              header={
-                <Space style={{display: 'flex', justifyContent: 'start'}}>
-                  <Typography name="Body 2/Medium">
-                    {section.sectionTitle}
-                  </Typography>
-                </Space>
-              }
-              key={sectionIndex}
+    <Form
+      layout="vertical"
+      style={{width: '100%', background: 'white', borderRadius: '12px'}}
+      form={form}
+    >
+      <Row>
+        {allContent?.map((allContentItem: any, itemIndex: number) => {
+          const alignment = allContentItem?.Alignemnt || 'left';
+          const fontSize = allContentItem?.FontSize || 'default';
+          if (allContentItem?.name === 'Text Content') {
+            return (
+              <Col span={24} style={{textAlign: alignment, padding: '24px'}}>
+                <p style={{fontSize: fontSize === 'h2' ? 24 : 16}}>
+                  {allContentItem?.sectionTitle}
+                </p>
+              </Col>
+            );
+          }
+          return (
+            <Col
+              span={allContentItem.name === 'Line Break' ? 24 : 12}
+              style={{
+                padding: '24px',
+                paddingTop: '0px',
+              }}
+              key={itemIndex}
             >
-              <Row>
-                {section.items.map((formItem: any, itemIndex: number) => {
-                  return (
-                    <Col
-                      span={formItem.name === 'Line Break' ? 24 : 12}
-                      style={{
-                        padding: '24px',
-                        paddingTop: '0px',
-                      }}
-                      key={itemIndex}
-                    >
-                      <SelectFormItem
-                        name={convertToSnakeCase(formItem.label)}
-                        label={
-                          <Typography name="Body 4/Medium">
-                            {formItem.label}
-                          </Typography>
-                        }
-                        required={formItem.required}
-                        // help={formItem.hintTextValue}
-                      >
-                        {getInputComponent(formItem)}
-                      </SelectFormItem>
-                    </Col>
-                  );
-                })}
-              </Row>
-            </Panel>
-          ))}
-        </Collapse>
-      </Form>
-    </Row>
+              <SelectFormItem
+                name={convertToSnakeCase(allContentItem.label) + itemIndex}
+                label={
+                  <Typography name="Body 4/Medium">
+                    {allContentItem.label}
+                  </Typography>
+                }
+                required={allContentItem.required}
+              >
+                {getInputComponent(allContentItem)}
+              </SelectFormItem>
+            </Col>
+          );
+        })}
+      </Row>
+    </Form>
   );
 };
 

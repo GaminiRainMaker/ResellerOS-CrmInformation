@@ -1207,3 +1207,58 @@ export const AlphabetsRegexWithSpecialChr =
   /^[A-Z@~`!@#$%^&*()_=+\\\\';:\"\\/?>.<,-]*$/i;
 export const emailRegex =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+export const tabPercentageCalculations = (
+  DealregItemData: any,
+  AttributeFieldData: any,
+  PartnerProgram: any,
+) => {
+  const uniqueFormData =
+    DealregItemData?.unique_form_data?.[0] &&
+    JSON?.parse(DealregItemData?.unique_form_data?.[0]);
+  const commonFormData =
+    DealregItemData?.common_form_data?.[0] &&
+    JSON?.parse(DealregItemData?.common_form_data?.[0]);
+
+  const allContent =
+    PartnerProgram?.form_data &&
+    JSON.parse(PartnerProgram?.form_data).flatMap(
+      (section: any) => section.content,
+    );
+
+  const combinedUniqueData =
+    uniqueFormData && Object?.keys(uniqueFormData).length > 0
+      ? uniqueFormData
+      : allContent?.reduce((acc: any, item: any) => {
+          acc[item?.name] = '';
+          return acc;
+        }, {});
+
+  const combinedCommonData =
+    commonFormData && Object?.keys(commonFormData).length > 0
+      ? commonFormData
+      : AttributeFieldData?.reduce((acc: any, item: any) => {
+          acc[item.name] = '';
+          return acc;
+        }, {});
+
+  const combinedData = {...combinedUniqueData, ...combinedCommonData};
+
+  const totalFields = Object.keys(combinedData).filter(
+    (key) => key !== 'Text Content' && key !== 'Line Break',
+  ).length;
+
+  const filledFields = Object?.values(combinedData)?.filter(
+    (value) => value !== '' && value != null,
+  ).length;
+  console.log(
+    'combinedData',
+    combinedData,
+    'totalFields',
+    totalFields,
+    filledFields,
+  );
+
+  const fillupPercentage = (filledFields / totalFields) * 100;
+  return Math.round(fillupPercentage);
+};

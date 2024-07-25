@@ -1,14 +1,17 @@
+import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {Panel} from '@/app/components/common/antd/Collapse';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
+import {Switch} from '@/app/components/common/antd/Switch';
+import CommonDatePicker from '@/app/components/common/os-date-picker';
 import OsInput from '@/app/components/common/os-input';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {Collapse, Form, FormInstance} from 'antd';
-import {useSearchParams} from 'next/navigation';
+import {MailOutlined} from '@ant-design/icons';
+import {Collapse, Form, FormInstance, Radio, TimePicker} from 'antd';
 import {FC, useEffect, useState} from 'react';
-import {queryAttributeField} from '../../../../../redux/actions/attributeField';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {useAppSelector} from '../../../../../redux/hook';
 
 interface AttributeData {
   id: number;
@@ -61,26 +64,14 @@ interface TransformedData {
 interface CommonFieldsProps {
   form: FormInstance;
   activeKey: string;
-  onPercentageChange: (percentage: number) => void; // Add this callback
 }
 
-const CommonFields: FC<CommonFieldsProps> = ({
-  form,
-  activeKey,
-  onPercentageChange,
-}) => {
-  const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
-  const getDealId = searchParams.get('id');
+const CommonFields: FC<CommonFieldsProps> = ({form, activeKey}) => {
   const {data: AttributeFieldData} = useAppSelector(
     (state) => state.attributeField,
   );
   const {dealReg} = useAppSelector((state) => state.dealReg);
   const [templateData, setTemplateData] = useState<any>();
-
-  useEffect(() => {
-    dispatch(queryAttributeField(''));
-  }, [dispatch]);
 
   const transformData = (data: AttributeData[]): TransformedData[] => {
     const groupedData = data?.reduce(
@@ -117,24 +108,33 @@ const CommonFields: FC<CommonFieldsProps> = ({
   const getInputComponent = (child: TransformedChild) => {
     const fieldName = convertToSnakeCase(child?.label);
     const initialValue = templateData?.[fieldName];
+    const commonProps = {defaultValue: initialValue};
     switch (child.data_type) {
       case 'textarea':
-        return (
-          <OsInput placeholder={child.help_text} defaultValue={initialValue} />
-        );
+      case 'text':
+        return <OsInput {...commonProps} />;
       case 'email':
         return (
-          <OsInput
-            type="email"
-            placeholder={child.help_text}
-            defaultValue={initialValue}
-          />
+          <OsInput type="email" suffix={<MailOutlined />} {...commonProps} />
         );
-      // Add more cases as needed for different data types
+      case 'contact':
+        return <OsInput type="contact" {...commonProps} />;
+      case 'date':
+        return <CommonDatePicker format="MM/DD/YYYY" />;
+      case 'time':
+        return <TimePicker />;
+      case 'currency':
+        return <OsInput type="text" suffix="$" {...commonProps} />;
+      case 'table':
+        return <OsTable />;
+      case 'checkbox':
+        return <Checkbox checked={!!initialValue} />;
+      case 'radio':
+        return <Radio checked={!!initialValue} />;
+      case 'toggle':
+        return <Switch checked={!!initialValue} />;
       default:
-        return (
-          <OsInput placeholder={child.help_text} defaultValue={initialValue} />
-        );
+        return <OsInput placeholder={child.help_text} {...commonProps} />;
     }
   };
 
@@ -161,13 +161,6 @@ const CommonFields: FC<CommonFieldsProps> = ({
     }
   }, [activeKey, dealReg, form]);
 
-  console.log(
-    'daaataaa',
-    dealReg?.PartnerProgram?.id,
-    activeKey,
-    'templateData',
-    templateData,
-  );
   useEffect(() => {
     if (templateData) {
       const initialValues = Object.keys(templateData).reduce(
@@ -181,58 +174,31 @@ const CommonFields: FC<CommonFieldsProps> = ({
     }
   }, [templateData, form]);
 
-  const calculatePercentage = () => {
-    let requiredFieldsCount = 0;
-    let filledRequiredFieldsCount = 0;
-
-    template.forEach((section) => {
-      section.children.forEach((child) => {
-        if (child.is_required) {
-          requiredFieldsCount++;
-          const fieldName = convertToSnakeCase(child.label);
-          if (templateData?.[fieldName]) {
-            filledRequiredFieldsCount++;
-          }
-        }
-      });
-    });
-
-    if (requiredFieldsCount === 0) return 100;
-    return (filledRequiredFieldsCount / requiredFieldsCount) * 100;
-  };
-
-  useEffect(() => {
-    if (templateData) {
-      const percentage = calculatePercentage();
-      onPercentageChange(percentage);
-    }
-  }, [templateData, onPercentageChange]);
-
   return (
-    <Row>
-      <Form
-        form={form}
-        layout="vertical"
-        style={{width: '100%', background: 'white', borderRadius: '12px'}}
-      >
-        <Collapse accordion style={{width: '100%'}} ghost>
-          {template?.map((section, index) => (
-            <Panel
-              header={
-                <Space
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'start',
-                  }}
-                >
-                  <Typography name="Body 2/Medium">{section?.title}</Typography>
-                </Space>
-              }
-              key={index}
-            >
+    <Form
+      form={form}
+      layout="vertical"
+      style={{width: '100%', background: 'white', borderRadius: '12px'}}
+    >
+      <Collapse accordion style={{width: '100%'}} ghost>
+        {template?.map((section, index) => (
+          <Panel
+            header={
+              <Space
+                style={{
+                  display: 'flex',
+                  justifyContent: 'start',
+                }}
+              >
+                <Typography name="Body 2/Medium">{section?.title}</Typography>
+              </Space>
+            }
+            key={index}
+          >
+            <Row>
               {section.children.map((child) => (
                 <Col
-                  span={8}
+                  span={12}
                   style={{padding: '24px', paddingTop: '0px'}}
                   key={child.id}
                 >
@@ -254,11 +220,11 @@ const CommonFields: FC<CommonFieldsProps> = ({
                   </SelectFormItem>
                 </Col>
               ))}
-            </Panel>
-          ))}
-        </Collapse>
-      </Form>
-    </Row>
+            </Row>
+          </Panel>
+        ))}
+      </Collapse>
+    </Form>
   );
 };
 

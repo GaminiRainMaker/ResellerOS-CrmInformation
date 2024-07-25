@@ -14,7 +14,6 @@ const DealRegDetailForm: FC<any> = ({
   activeKey,
   CommonFieldForm,
   UniqueFieldForm,
-  onPercentageChange,
 }) => {
   const [token] = useThemeToken();
 
@@ -30,7 +29,6 @@ const DealRegDetailForm: FC<any> = ({
         <CommonFields
           form={CommonFieldForm}
           activeKey={activeKey}
-          onPercentageChange={onPercentageChange}
         />
       ),
     },
