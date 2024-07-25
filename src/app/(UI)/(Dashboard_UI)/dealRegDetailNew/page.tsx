@@ -113,35 +113,28 @@ const DealRegDetail = () => {
     },
   ];
 
-  // const onFinish = async () => {
-  //   const dealRegNewData = form.getFieldsValue();
-  //   try {
-  //     await Promise.all([
-  //       dispatch(updateDealRegById({...dealRegNewData, id: dealReg?.id})),
-  //       dispatch(
-  //         updateDealRegAddressById({...dealRegNewData, dealRegId: dealReg?.id}),
-  //       ),
-  //     ]);
-  //     dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-  //     dispatch(getDealRegAddressById(dealReg?.id));
-  //     setOpen(false);
-  //   } catch (error) {
-  //     console.error('Error:', error);
-  //   }
-  // };
-
   const onFinish1 = () => {
-    const CommonFieldFormData = CommonFieldForm.getFieldsValue();
-    const UniqueFieldFormData = UniqueFieldForm.getFieldsValue();
-    let obj = {
-      common_form_data: [JSON.stringify(CommonFieldFormData)],
-      unique_form_data: [JSON.stringify(UniqueFieldFormData)],
+    const commonFieldFormData = CommonFieldForm.getFieldsValue();
+    const uniqueFieldFormData = UniqueFieldForm.getFieldsValue();
+    const commonData =
+      Object.keys(commonFieldFormData).length > 0
+        ? [JSON.stringify(commonFieldFormData)]
+        : dealReg?.common_form_data;
+
+    const uniqueData =
+      Object.keys(uniqueFieldFormData).length > 0
+        ? [JSON.stringify(uniqueFieldFormData)]
+        : dealReg?.unique_form_data;
+
+    const obj = {
+      common_form_data: commonData,
+      unique_form_data: uniqueData,
       id: dealReg?.id,
     };
-    console.log('obj12345', obj);
+
     if (obj) {
-      dispatch(updateDealRegById(obj)).then((d) => {
-        if (d?.payload) {
+      dispatch(updateDealRegById(obj)).then((response) => {
+        if (response?.payload) {
           dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
         }
       });
