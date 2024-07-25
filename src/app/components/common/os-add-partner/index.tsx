@@ -24,6 +24,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
   setOpen,
   drawer = false,
   formPartnerData,
+  partnerId,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -35,8 +36,14 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
       organization: userInformation?.organization,
       user_id: userInformation?.id,
     };
+    console.log('partnerObjpartnerObj', partnerObj);
     if (drawer) {
-      dispatch(updatePartnerById({...partnerObj, id: formPartnerData?.id}));
+      dispatch(
+        updatePartnerById({
+          ...partnerObj,
+          id: partnerId ? partnerId : formPartnerData?.id,
+        }),
+      );
     } else {
       dispatch(insertPartner(partnerObj)).then((d: any) => {
         if (d?.payload) {
@@ -51,7 +58,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
   useEffect(() => {
     form?.resetFields();
   }, [formPartnerData]);
-
+  console.log('formform', form);
   return (
     <>
       {!drawer && (

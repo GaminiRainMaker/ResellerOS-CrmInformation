@@ -184,6 +184,7 @@ export const API = {
     UpdatePartnerById: '/partner/updatePartnerById',
     GetAllPartnerTemp: '/partner/getAllPartnerTemp',
     getAllPartnerandProgram: '/partner/getAllPartnerandProgram',
+    filterData: 'partner/getAllPartnerandProgramFilterData',
   },
   PARTNER_PROGRAM: {
     INDEX: '/partnerProgram',

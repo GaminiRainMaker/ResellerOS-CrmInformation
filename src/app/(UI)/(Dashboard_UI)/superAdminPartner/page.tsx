@@ -18,7 +18,11 @@ import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {partnerProgramFilter} from '@/app/utils/base';
-import {PlusIcon} from '@heroicons/react/24/outline';
+import {
+  PencilSquareIcon,
+  PlusIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
 import {Checkbox, Form, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -27,6 +31,7 @@ import {updateAssignPartnerProgramById} from '../../../../../redux/actions/assig
 import {
   deletePartner,
   getAllPartnerandProgram,
+  getAllPartnerandProgramFilterData,
 } from '../../../../../redux/actions/partner';
 import {
   deletePartnerProgram,
@@ -35,6 +40,8 @@ import {
 } from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SuperAdminPartnerAnalytics from './SuperAdminPartnerAnalytic';
+import OsInput from '@/app/components/common/os-input';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 
 export interface SeparatedData {
   [partnerId: number]: {
@@ -77,15 +84,30 @@ const SuperAdminPartner: React.FC = () => {
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [partnerProgramColumns, setPartnerProgramColumns] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
+  const [queryDataa, setQueryData] = useState<any>();
+
   const {insertProgramLoading} = useAppSelector(
     (state) => state.partnerProgram,
   );
+  const [allPartnerData, setAllPartnerData] = useState<any>();
   const [superAdminPartnerAnalyticData, setSuperAdminPartnerAnalyticData] =
     useState<any>();
 
   useEffect(() => {
-    dispatch(getAllPartnerandProgram(''));
+    // dispatch(getAllPartnerandProgram(''));
+    dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
+      setAllPartnerData(payload?.payload);
+    });
   }, []);
+  const searchQuery = useDebounceHook(queryDataa, 500);
+
+  useEffect(() => {
+    dispatch(getAllPartnerandProgramFilterData(searchQuery))?.then(
+      (payload: any) => {
+        setAllPartnerData(payload?.payload);
+      },
+    );
+  }, [searchQuery]);
 
   useEffect(() => {
     if (getTabId) {
@@ -103,7 +125,7 @@ const SuperAdminPartner: React.FC = () => {
     const FilterArrayDataa = partnerProgramFilter(
       'super',
       userInformation,
-      PartnerData,
+      allPartnerData,
       activeTab,
     );
     setSuperAdminPartnerAnalyticData(FilterArrayDataa);
@@ -125,7 +147,7 @@ const SuperAdminPartner: React.FC = () => {
     } else {
       setAllFilterPartnerData(FilterArrayDataa?.filterData);
     }
-  }, [JSON.stringify(PartnerData), activeTab]);
+  }, [JSON.stringify(allPartnerData), activeTab]);
 
   const updateRequest = async (type: boolean, id: number, requesId: number) => {
     const Data = {
@@ -134,7 +156,9 @@ const SuperAdminPartner: React.FC = () => {
       requested_by: requesId,
     };
     await dispatch(updateAssignPartnerProgramById(Data));
-    dispatch(getAllPartnerandProgram(''));
+    dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
+      setAllPartnerData(payload?.payload);
+    });
   };
 
   const deleteSelectedPartnerProgramIds = async () => {
@@ -149,7 +173,9 @@ const SuperAdminPartner: React.FC = () => {
   const deleteSelectedPartnerIds = async () => {
     const data = {id: deletePartnerIds};
     await dispatch(deletePartner(data)).then(() => {
-      dispatch(getAllPartnerandProgram(''));
+      dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
+        setAllPartnerData(payload?.payload);
+      });
     });
     setDeletePartnerIds([]);
     setShowPartnerDeleteModal(false);
@@ -393,7 +419,7 @@ const SuperAdminPartner: React.FC = () => {
     },
   ];
 
-  const PartnerColumns = [
+  const PartnerColumnsData = [
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -452,7 +478,6 @@ const SuperAdminPartner: React.FC = () => {
       ),
     },
   ];
-
   const superAdmintabItems = [
     {
       label: (
@@ -463,7 +488,43 @@ const SuperAdminPartner: React.FC = () => {
       key: '1',
       children: (
         <OsTable
-          columns={PartnerColumns}
+          columns={[
+            ...PartnerColumnsData,
+            {
+              title: 'Action',
+              dataIndex: 'actions',
+              key: 'actions',
+              render: (text: string, record: any, index: number) => (
+                <Space size={18}>
+                  <PencilSquareIcon
+                    height={24}
+                    width={24}
+                    onClick={() => {
+                      form.setFieldsValue({
+                        partner: record?.partner,
+                        description: record?.description,
+                        partner_program: record?.partner_program,
+                        id: record?.id,
+                      });
+                      setShowPartnerProgramDrawer(true);
+                    }}
+                    color={token.colorInfoBorder}
+                    style={{cursor: 'pointer'}}
+                  />
+                  <TrashIcon
+                    height={24}
+                    width={24}
+                    color={token.colorError}
+                    style={{cursor: 'pointer'}}
+                    onClick={() => {
+                      setDeletePartnerProgramIds(record?.id);
+                      setShowPartnerProgramDeleteModal(true);
+                    }}
+                  />
+                </Space>
+              ),
+            },
+          ]}
           expandable={{
             // eslint-disable-next-line react/no-unstable-nested-components
             expandedRowRender: (record: any) => (
@@ -510,7 +571,7 @@ const SuperAdminPartner: React.FC = () => {
       key: '3',
       children: (
         <OsTable
-          columns={PartnerColumns}
+          columns={PartnerColumnsData}
           expandable={{
             // eslint-disable-next-line react/no-unstable-nested-components
             expandedRowRender: (record: any) => (
@@ -535,7 +596,45 @@ const SuperAdminPartner: React.FC = () => {
   ];
 
   useEffect(() => {
-    if (activeTab === 2) {
+    if (activeTab === 1) {
+      const newArrforTheProgram = [...PartnerProgramColumns];
+      const newObj: any = {
+        title: 'Action',
+        dataIndex: 'actions',
+        key: 'actions',
+        render: (text: string, record: any, index: number) => (
+          <Space size={18}>
+            <PencilSquareIcon
+              height={24}
+              width={24}
+              onClick={() => {
+                form.setFieldsValue({
+                  partner: record?.partner,
+                  description: record?.description,
+                  partner_program: record?.partner_program,
+                  id: record?.id,
+                });
+                setShowPartnerProgramDrawer(true);
+              }}
+              color={token.colorInfoBorder}
+              style={{cursor: 'pointer'}}
+            />
+            <TrashIcon
+              height={24}
+              width={24}
+              color={token.colorError}
+              style={{cursor: 'pointer'}}
+              onClick={() => {
+                setDeletePartnerProgramIds(record?.id);
+                setShowPartnerProgramDeleteModal(true);
+              }}
+            />
+          </Space>
+        ),
+      };
+      newArrforTheProgram?.push(newObj);
+      setPartnerProgramColumns(newArrforTheProgram);
+    } else if (activeTab === 2) {
       const newArr = [...PartnerProgramColumns];
       const newObj: any = {
         title: (
@@ -614,6 +713,54 @@ const SuperAdminPartner: React.FC = () => {
           <OsTabs
             activeKey={activeTab?.toString()}
             items={superAdmintabItems}
+            tabBarExtraContent={
+              <Space size={12} align="center">
+                <Space direction="vertical" size={0}>
+                  <Typography name="Body 4/Medium">Partner</Typography>
+                  <OsInput
+                    value={queryDataa?.partnerQuery}
+                    onChange={(e: any) => {
+                      setQueryData({
+                        ...queryDataa,
+                        partnerQuery: e?.target?.value,
+                      });
+                    }}
+                  />
+                </Space>
+                <Space direction="vertical" size={0}>
+                  <Typography name="Body 4/Medium">Partner Program</Typography>
+                  <OsInput
+                    value={queryDataa?.partnerprogramQuery}
+                    onChange={(e: any) => {
+                      setQueryData({
+                        ...queryDataa,
+                        partnerprogramQuery: e?.target?.value,
+                      });
+                    }}
+                  />
+                </Space>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: '20px',
+                  }}
+                >
+                  <Typography
+                    cursor="pointer"
+                    name="Button 1"
+                    style={{cursor: 'pointer'}}
+                    color={token?.colorLink}
+                    onClick={() => {
+                      setQueryData({});
+                    }}
+                  >
+                    Reset
+                  </Typography>
+                </div>
+              </Space>
+            }
           />
         </Row>
       </Space>
@@ -671,7 +818,7 @@ const SuperAdminPartner: React.FC = () => {
           form={form}
           setOpen={setShowPartnerDrawer}
           formPartnerData={formPartnerData}
-          drawer
+          drawer={true}
         />
       </OsDrawer>
 
