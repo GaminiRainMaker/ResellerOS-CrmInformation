@@ -1,14 +1,12 @@
-/* eslint-disable consistent-return */
-/* eslint-disable array-callback-return */
 import {Panel} from '@/app/components/common/antd/Collapse';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import OsInput from '@/app/components/common/os-input';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import Typography from '@/app/components/common/typography';
-import {Collapse, Form} from 'antd';
+import {Collapse, Form, FormInstance} from 'antd';
 import {useSearchParams} from 'next/navigation';
-import {FC, useEffect} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {queryAttributeField} from '../../../../../redux/actions/attributeField';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
@@ -60,17 +58,29 @@ interface TransformedData {
   children: TransformedChild[];
 }
 
-const CommonFields: FC<any> = ({form, activeKey}) => {
+interface CommonFieldsProps {
+  form: FormInstance;
+  activeKey: string;
+  onPercentageChange: (percentage: number) => void; // Add this callback
+}
+
+const CommonFields: FC<CommonFieldsProps> = ({
+  form,
+  activeKey,
+  onPercentageChange,
+}) => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const getDealId = searchParams.get('id');
   const {data: AttributeFieldData} = useAppSelector(
     (state) => state.attributeField,
   );
+  const {dealReg} = useAppSelector((state) => state.dealReg);
+  const [templateData, setTemplateData] = useState<any>();
 
   useEffect(() => {
     dispatch(queryAttributeField(''));
-  }, []);
+  }, [dispatch]);
 
   const transformData = (data: AttributeData[]): TransformedData[] => {
     const groupedData = data?.reduce(
@@ -102,17 +112,29 @@ const CommonFields: FC<any> = ({form, activeKey}) => {
     }));
   };
 
-  const groupedData = transformData(AttributeFieldData);
+  const template = transformData(AttributeFieldData);
 
-  const getInputComponent = (child: any) => {
+  const getInputComponent = (child: TransformedChild) => {
+    const fieldName = convertToSnakeCase(child?.label);
+    const initialValue = templateData?.[fieldName];
     switch (child.data_type) {
       case 'textarea':
-        return <OsInput placeholder={child.help_text} />;
+        return (
+          <OsInput placeholder={child.help_text} defaultValue={initialValue} />
+        );
       case 'email':
-        return <OsInput type="email" placeholder={child.help_text} />;
+        return (
+          <OsInput
+            type="email"
+            placeholder={child.help_text}
+            defaultValue={initialValue}
+          />
+        );
       // Add more cases as needed for different data types
       default:
-        return <OsInput placeholder={child.help_text} />;
+        return (
+          <OsInput placeholder={child.help_text} defaultValue={initialValue} />
+        );
     }
   };
 
@@ -123,6 +145,69 @@ const CommonFields: FC<any> = ({form, activeKey}) => {
       ?.replace(/[^a-z0-9_]/g, '');
   };
 
+  useEffect(() => {
+    if (dealReg?.PartnerProgram?.id === activeKey) {
+      const commonFormData =
+        dealReg?.common_form_data && JSON.parse(dealReg?.common_form_data);
+      if (commonFormData) {
+        setTemplateData(commonFormData);
+      } else {
+        setTemplateData('');
+        form.resetFields();
+      }
+    } else {
+      setTemplateData('');
+      form.resetFields();
+    }
+  }, [activeKey, dealReg, form]);
+
+  console.log(
+    'daaataaa',
+    dealReg?.PartnerProgram?.id,
+    activeKey,
+    'templateData',
+    templateData,
+  );
+  useEffect(() => {
+    if (templateData) {
+      const initialValues = Object.keys(templateData).reduce(
+        (acc: any, key) => {
+          acc[key] = templateData[key];
+          return acc;
+        },
+        {},
+      );
+      form.setFieldsValue(initialValues);
+    }
+  }, [templateData, form]);
+
+  const calculatePercentage = () => {
+    let requiredFieldsCount = 0;
+    let filledRequiredFieldsCount = 0;
+
+    template.forEach((section) => {
+      section.children.forEach((child) => {
+        if (child.is_required) {
+          requiredFieldsCount++;
+          const fieldName = convertToSnakeCase(child.label);
+          if (templateData?.[fieldName]) {
+            filledRequiredFieldsCount++;
+          }
+        }
+      });
+    });
+
+    if (requiredFieldsCount === 0) return 100;
+    return (filledRequiredFieldsCount / requiredFieldsCount) * 100;
+  };
+
+  useEffect(() => {
+    if (templateData) {
+      const percentage = calculatePercentage();
+      onPercentageChange(percentage);
+    }
+  }, [templateData, onPercentageChange]);
+
   return (
     <Row>
       <Form
@@ -131,38 +216,36 @@ const CommonFields: FC<any> = ({form, activeKey}) => {
         style={{width: '100%', background: 'white', borderRadius: '12px'}}
       >
         <Collapse accordion style={{width: '100%'}} ghost>
-          {groupedData?.map((section, index) => (
+          {template?.map((section, index) => (
             <Panel
               header={
-                <>
-                  <Space
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'start',
-                    }}
-                  >
-                    <Typography name="Body 2/Medium">
-                      {section?.title}
-                    </Typography>
-                  </Space>
-                </>
+                <Space
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'start',
+                  }}
+                >
+                  <Typography name="Body 2/Medium">{section?.title}</Typography>
+                </Space>
               }
               key={index}
             >
               {section.children.map((child) => (
-                <Col span={8} style={{padding: '24px', paddingTop: '0px'}}>
+                <Col
+                  span={8}
+                  style={{padding: '24px', paddingTop: '0px'}}
+                  key={child.id}
+                >
                   <SelectFormItem
-                    key={child.id}
                     name={convertToSnakeCase(child?.label)}
                     label={
                       <Typography name="Body 4/Medium">
                         {child?.label}
                       </Typography>
                     }
-                    // required={child?.is_required}
                     rules={[
                       {
-                        required: true,
+                        required: child?.is_required,
                         message: 'This field is required!',
                       },
                     ]}

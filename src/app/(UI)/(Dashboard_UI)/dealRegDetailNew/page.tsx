@@ -21,6 +21,8 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs from './DealRegCustomTabs';
+import {setDealReg} from '../../../../../redux/slices/dealReg';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 
 const DealRegDetail = () => {
   const [CommonFieldForm] = Form.useForm();
@@ -32,6 +34,7 @@ const DealRegDetail = () => {
     data: DealRegData,
     dealReg,
     dealRegUpdateData,
+    loading: dealRegLoading,
   } = useAppSelector((state) => state.dealReg);
   const [open, setOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -47,6 +50,10 @@ const DealRegDetail = () => {
       dispatch(getDealRegByPartnerProgramId(Number(getPartnerProgramId)));
     }
   }, []);
+
+  useEffect(() => {
+    dispatch(setDealReg(DealRegData?.[0]));
+  }, [DealRegData]);
 
   // const updateTheDealReg = async () => {
   //   const newObj = {
@@ -122,23 +129,23 @@ const DealRegDetail = () => {
   //     console.error('Error:', error);
   //   }
   // };
-  console.log('dealRegdealReg', dealReg, DealRegData);
 
   const onFinish1 = () => {
     const CommonFieldFormData = CommonFieldForm.getFieldsValue();
     const UniqueFieldFormData = UniqueFieldForm.getFieldsValue();
-    console.log(
-      'CommonFieldFormData',
-      CommonFieldFormData,
-      'UniqueFieldFormData',
-      UniqueFieldFormData,
-    );
     let obj = {
-      common_form_data: JSON.stringify(CommonFieldFormData),
-      unique_form_data: JSON.stringify(UniqueFieldFormData),
+      common_form_data: [JSON.stringify(CommonFieldFormData)],
+      unique_form_data: [JSON.stringify(UniqueFieldFormData)],
+      id: dealReg?.id,
     };
-    console.log('obj', obj);
-    // dispatch(updateDealRegById({...dealRegNewData, id: dealReg?.id}));
+    console.log('obj12345', obj);
+    if (obj) {
+      dispatch(updateDealRegById(obj)).then((d) => {
+        if (d?.payload) {
+          dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+        }
+      });
+    }
   };
 
   return (
@@ -150,6 +157,7 @@ const DealRegDetail = () => {
         <Col>
           <Space size={8}>
             <OsButton
+              loading={dealRegLoading}
               text="Save"
               buttontype="SECONDARY"
               clickHandler={onFinish1}
@@ -167,10 +175,12 @@ const DealRegDetail = () => {
           </Space>
         </Col>
       </Row>
-      <DealRegCustomTabs
-        CommonFieldForm={CommonFieldForm}
-        UniqueFieldForm={UniqueFieldForm}
-      />
+      <GlobalLoader loading={dealRegLoading}>
+        <DealRegCustomTabs
+          CommonFieldForm={CommonFieldForm}
+          UniqueFieldForm={UniqueFieldForm}
+        />
+      </GlobalLoader>
 
       {/* <DealRegCustomTabs
         tabs={DealRegData}

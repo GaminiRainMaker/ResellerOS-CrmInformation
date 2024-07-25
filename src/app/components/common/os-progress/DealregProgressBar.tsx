@@ -8,9 +8,14 @@ interface ProgressProps {
     colorTextDisabled: string;
     colorBorderSecondary: string;
   };
+  percent: number;
 }
 
-const CustomProgress: React.FC<ProgressProps> = ({isActive, token}) => {
+const CustomProgress: React.FC<ProgressProps> = ({
+  isActive,
+  token,
+  percent = 0,
+}) => {
   return (
     <Progress
       type="circle"
@@ -18,7 +23,7 @@ const CustomProgress: React.FC<ProgressProps> = ({isActive, token}) => {
       strokeWidth={10}
       strokeLinecap="butt"
       gapPosition="left"
-      percent={0}
+      percent={percent ?? 0}
       strokeColor={isActive ? token.colorBgContainer : token.colorTextDisabled}
       trailColor={
         isActive ? token.colorTextDisabled : token.colorBorderSecondary

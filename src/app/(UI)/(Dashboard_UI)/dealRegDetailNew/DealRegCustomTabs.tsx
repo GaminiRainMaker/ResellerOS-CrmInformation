@@ -14,7 +14,6 @@ import {useEffect, useMemo, useState} from 'react';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setDealReg} from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
-import {Form} from 'antd';
 
 const DealRegCustomTabs: React.FC<any> = ({
   CommonFieldForm,
@@ -22,12 +21,13 @@ const DealRegCustomTabs: React.FC<any> = ({
 }) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const {
-    data: DealRegData,
-    dealReg,
-    dealRegUpdateData,
-  } = useAppSelector((state) => state.dealReg);
+  const {data: DealRegData} = useAppSelector((state) => state.dealReg);
   const [activeKey, setActiveKey] = useState<number>();
+
+  const [percentage, setPercentage] = useState<number>(0);
+  const handlePercentageChange = (newPercentage: number) => {
+    setPercentage(newPercentage);
+  };
 
   useEffect(() => {
     if (DealRegData && DealRegData.length > 0) {
@@ -65,7 +65,7 @@ const DealRegCustomTabs: React.FC<any> = ({
               onClick={() => dispatch(setDealReg(element))}
             >
               <Space>
-                <CustomProgress isActive={isActive} token={token} />
+                <CustomProgress isActive={isActive} token={token} percent={0} />
                 <Typography
                   style={{color: textColor}}
                   cursor="pointer"
@@ -85,6 +85,7 @@ const DealRegCustomTabs: React.FC<any> = ({
               activeKey={activeKey}
               CommonFieldForm={CommonFieldForm}
               UniqueFieldForm={UniqueFieldForm}
+              onPercentageChange={handlePercentageChange}
             />
           </div>
         ),
