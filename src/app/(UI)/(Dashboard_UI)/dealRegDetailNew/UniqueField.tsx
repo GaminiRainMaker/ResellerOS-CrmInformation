@@ -106,18 +106,19 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({data, form, activeKey}) => {
               />
             ) : itemCon?.name === 'Date' ? (
               <CommonDatePicker format={itemCon?.dateformat} />
-            ) : itemCon?.name === 'Contact' ? (
-              <ContactInput
-                name="Contact"
-                id="Contact"
-                value={itemCon?.value}
-                mask={itemCon?.dataformat}
-                limitMaxLength
-                defaultCountry={itemCon?.defaultcountry}
-                max={11}
-                onChange={() => {}}
-              />
-            ) : itemCon?.name === 'Email' || itemCon?.label === 'Email' ? (
+            ) : // : itemCon?.name === 'Contact' ? (
+            //   <ContactInput
+            //     name="Contact"
+            //     id="Contact"
+            //     value={itemCon?.value}
+            //     mask={itemCon?.dataformat}
+            //     limitMaxLength
+            //     defaultCountry={itemCon?.defaultcountry}
+            //     max={11}
+            //     onChange={() => {}}
+            //   />
+            // )
+            itemCon?.name === 'Email' || itemCon?.label === 'Email' ? (
               <OsInput
                 type={itemCon?.type}
                 suffix={<MailOutlined />}
