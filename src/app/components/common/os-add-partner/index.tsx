@@ -36,7 +36,6 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
       organization: userInformation?.organization,
       user_id: userInformation?.id,
     };
-    console.log('partnerObjpartnerObj', partnerObj);
     if (drawer) {
       dispatch(
         updatePartnerById({

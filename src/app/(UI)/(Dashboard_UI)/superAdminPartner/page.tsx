@@ -478,6 +478,8 @@ const SuperAdminPartner: React.FC = () => {
       ),
     },
   ];
+  let dataaa = form?.getFieldsValue();
+  console.log('2342342342', dataaa);
   const superAdmintabItems = [
     {
       label: (
@@ -500,6 +502,7 @@ const SuperAdminPartner: React.FC = () => {
                     height={24}
                     width={24}
                     onClick={() => {
+                      console.log('34543534532', record);
                       form.setFieldsValue({
                         partner: record?.partner,
                         description: record?.description,

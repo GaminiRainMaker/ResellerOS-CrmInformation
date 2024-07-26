@@ -95,13 +95,12 @@ const OsPartnerSelect: FC<{
             newArr?.push(itemsInner);
           }
         });
-
-        if (newArr?.length > 0 && pathname !== '/superAdminPartner') {
+        if (pathname === '/superAdminPartner') {
           newOptionArr?.push({
             label: <CustomTextCapitalization text={items?.partner} />,
             value: items?.id,
           });
-        } else {
+        } else if (newArr?.length > 0) {
           newOptionArr?.push({
             label: <CustomTextCapitalization text={items?.partner} />,
             value: items?.id,
