@@ -687,8 +687,6 @@ const SuperAdminPartner: React.FC = () => {
       setPartnerProgramColumns(PartnerProgramColumns);
     }
   }, [activeTab]);
-  let dataaa = form?.getFieldsValue();
-  console.log('2342342342', dataaa);
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
