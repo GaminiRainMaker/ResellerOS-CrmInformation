@@ -32,11 +32,13 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
+
   useEffect(() => {
+    form?.resetFields();
     if (updateTheObject) {
       form.setFieldsValue(updateTheObject);
     }
-  }, []);
+  }, [updateTheObject]);
   const onFinish = async (value: any) => {
     const partnerObj = {
       ...value,

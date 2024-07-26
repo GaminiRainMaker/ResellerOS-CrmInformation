@@ -809,6 +809,7 @@ const SuperAdminPartner: React.FC = () => {
         onClose={() => {
           setShowPartnerDrawer((p) => !p);
           setUpdateTheObject({});
+          form?.resetFields();
         }}
         open={showPartnerDrawer}
         width={450}
@@ -842,6 +843,7 @@ const SuperAdminPartner: React.FC = () => {
         onClose={() => {
           setShowPartnerProgramDrawer((p) => !p);
           setUpdateTheObject({});
+          form?.resetFields();
         }}
         open={showPartnerProgramDrawer}
         width={450}

@@ -32,7 +32,12 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
   const [partnerValue, setPartnerValue] = useState<number>();
-
+  useEffect(() => {
+    form?.resetFields();
+    if (updateTheObject) {
+      form.setFieldsValue(updateTheObject);
+    }
+  }, [updateTheObject]);
   const onFinish = async (value: any) => {
     const partnerProgramObj = {
       ...value,
