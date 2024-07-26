@@ -482,7 +482,7 @@ const SuperAdminPartner: React.FC = () => {
       ),
     },
   ];
-  console.log('allPartnerFilterData', allPartnerFilterData);
+
   const superAdmintabItems = [
     {
       label: (
