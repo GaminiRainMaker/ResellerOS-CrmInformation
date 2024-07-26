@@ -38,7 +38,7 @@ const DealRegDetail = () => {
     dealRegUpdateData,
     loading: dealRegLoading,
   } = useAppSelector((state) => state.dealReg);
-  const [open, setOpen] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const searchParams = useSearchParams();
   const getOpportunityId = searchParams.get('opportunityId');
@@ -87,7 +87,7 @@ const DealRegDetail = () => {
     {
       key: '1',
       label: (
-        <Typography onClick={() => setOpen(true)} name="Body 3/Regular">
+        <Typography onClick={() => setOpenDrawer(true)} name="Body 3/Regular">
           Edit Form Details
         </Typography>
       ),
@@ -115,21 +115,32 @@ const DealRegDetail = () => {
         id: dealReg?.id,
       };
 
-      console.log('commonFieldFormData', obj);
-
-      if (obj) {
-        dispatch(updateDealRegById(obj)).then((response) => {
-          if (response?.payload) {
-            dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-          }
-        });
-      }
+      // if (obj) {
+      //   dispatch(updateDealRegById(obj)).then((response) => {
+      //     if (response?.payload) {
+      //       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+      //     }
+      //   });
+      // }
     }
   };
 
-  const onDrawerUpdate = () => {
+  const onDrawerUpdate = async () => {
     const DrawerData = drawerForm.getFieldsValue();
-    console.log('DrawerData', DrawerData);
+    const updateValues = {
+      id: dealReg?.id,
+      customer_id: DrawerData?.customer_id,
+      contact_id: DrawerData?.contact_id,
+    };
+    if (updateValues) {
+      await dispatch(updateDealRegById(updateValues)).then((response) => {
+        if (response?.payload) {
+          dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+        }
+      });
+      setOpenDrawer(false);
+      drawerForm.resetFields();
+    }
   };
 
   return (
@@ -166,8 +177,11 @@ const DealRegDetail = () => {
       <OsDrawer
         title={<Typography name="Body 1/Regular">Form Settings</Typography>}
         placement="right"
-        onClose={() => setOpen((p) => !p)}
-        open={open}
+        onClose={() => {
+          setOpenDrawer(false);
+          drawerForm.resetFields();
+        }}
+        open={openDrawer}
         width={450}
         footer={
           <Row style={{width: '100%', float: 'right'}}>

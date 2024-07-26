@@ -39,7 +39,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({data, form, activeKey}) => {
   const getInputComponent = (itemCon: any) => {
     const fieldName = convertToSnakeCase(itemCon?.label);
     const initialValue = uniqueTemplateData?.[fieldName];
-    console.log('itemConitemCon', itemCon);
     switch (itemCon?.name) {
       case 'Table':
         return (
