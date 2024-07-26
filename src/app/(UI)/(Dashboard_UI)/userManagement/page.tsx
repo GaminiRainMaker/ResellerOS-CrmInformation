@@ -163,6 +163,7 @@ const UserManagement = () => {
 
   const onFinish = () => {
     const Data = form?.getFieldsValue();
+
     const obj = {
       organization: selectedRecordData?.organization,
       partner_program_id: Data?.partner_program_id,
@@ -317,7 +318,7 @@ const UserManagement = () => {
       <OsModal
         loading={AssignPartnerProgramLoading}
         title="Assign Partner Program"
-        body={<AssignPartnerProgram form={form} onFinish={onFinish} />}
+        body={<AssignPartnerProgram form={form} onFinish={onFinish} organizationCurrent ={ selectedRecordData?.organization}/>}
         bodyPadding={40}
         width={638}
         open={showPartnerProgramAssignModal}

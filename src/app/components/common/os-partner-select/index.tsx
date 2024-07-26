@@ -16,9 +16,12 @@ import AddPartner from '../os-add-partner';
 import OsModal from '../os-modal';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
+import {getAssignPartnerProgramByOrganization} from '../../../../../redux/actions/assignPartnerProgram';
+import {usePathname} from 'next/navigation';
 
 const OsPartnerSelect: FC<{
   // form: FormInstance;
+  organizationName?: string;
   name?: string;
   setPartnerValue?: any;
   partnerProgramName?: string;
@@ -28,6 +31,7 @@ const OsPartnerSelect: FC<{
   notApprovedData?: boolean;
   form?: any;
 }> = ({
+  organizationName,
   name = 'partner',
   setPartnerValue,
   // form,
@@ -39,6 +43,7 @@ const OsPartnerSelect: FC<{
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
+  const pathname = usePathname();
   const [form] = Form.useForm();
   const {userInformation, allResellerRecord} = useAppSelector(
     (state) => state.user,
@@ -53,12 +58,76 @@ const OsPartnerSelect: FC<{
     useState<boolean>(false);
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [selectedPartnerId, setSelectedPartnerId] = useState<number>();
+  const [allApprovedIdsOrganization, setAllApprovedIdsForOrganization] =
+    useState<any>();
 
   useEffect(() => {
     if (isSuperAdmin || notApprovedData) {
       dispatch(getAllPartnerandProgram(''));
+      dispatch(
+        getAssignPartnerProgramByOrganization({
+          // organization: userInformation?.organization,
+          organization: organizationName,
+        }),
+      )?.then((payload: any) => {
+        let newArrOfIds: any = [];
+        if (
+          payload?.payload?.approved?.length > 0 &&
+          pathname === '/userManagement'
+        ) {
+          payload?.payload?.approved?.map((items: any) => {
+            newArrOfIds?.push(items?.partner_program_id);
+          });
+        }
+        setAllApprovedIdsForOrganization(newArrOfIds);
+      });
     }
   }, []);
+  const [partnerOptions, setPartnerOptions] = useState<any>();
+
+  useEffect(() => {
+    let newOptionArr: any = [];
+    if (isSuperAdmin || notApprovedData) {
+      console.log('allPartnerFilterData', allPartnerFilterData);
+      allPartnerFilterData?.map((items: any) => {
+        let newArr: any = [];
+        items?.PartnerPrograms?.map((itemsInner: any) => {
+          if (!allApprovedIdsOrganization?.includes(itemsInner?.id)) {
+            newArr?.push(itemsInner);
+          }
+        });
+
+        if (newArr?.length > 0) {
+          newOptionArr?.push({
+            label: <CustomTextCapitalization text={items?.partner} />,
+            value: items?.id,
+          });
+        }
+      });
+    } else {
+      partnerApprovedObjects?.map((dataAddressItem: any) => {
+        newOptionArr?.push({
+          value: dataAddressItem.id,
+          label: <CustomTextCapitalization text={dataAddressItem.partner} />,
+        });
+      });
+    }
+    setPartnerOptions(newOptionArr);
+    // const partnerOptions =
+    //   isSuperAdmin || notApprovedData
+    //     ? allPartnerFilterData?.map((partner: any) => ({
+    //         label: <CustomTextCapitalization text={partner?.partner} />,
+    //         value: partner?.id,
+    //       }))
+    //     : partnerApprovedObjects?.map((dataAddressItem: any) => ({
+    //         value: dataAddressItem.id,
+    //         label: <CustomTextCapitalization text={dataAddressItem.partner} />,
+    //       }));
+    // console.log(
+    //   'allPartnerFilterDataallPartnerFilterData',
+    //   allPartnerFilterData,
+    // );
+  }, [allApprovedIdsOrganization, allPartnerFilterData, allPartnerFilterData]);
 
   useEffect(() => {
     if (PartnerData) {
@@ -79,17 +148,6 @@ const OsPartnerSelect: FC<{
     partnerApprovedObjects?.push(partner);
   });
 
-  const partnerOptions =
-    isSuperAdmin || notApprovedData
-      ? allPartnerFilterData?.map((partner: any) => ({
-          label: <CustomTextCapitalization text={partner?.partner} />,
-          value: partner?.id,
-        }))
-      : partnerApprovedObjects?.map((dataAddressItem: any) => ({
-          value: dataAddressItem.id,
-          label: <CustomTextCapitalization text={dataAddressItem.partner} />,
-        }));
-
   const setFinalData = (e: any) => {
     const filteredData = allPartnerFilterData?.filter(
       (item: any) => item?.id === e,
@@ -103,6 +161,8 @@ const OsPartnerSelect: FC<{
     );
     dispatch(setPartnerRequestData(filteredData));
   }, [PartnerData, allPartnerFilterData]);
+
+  //
 
   return (
     <>
