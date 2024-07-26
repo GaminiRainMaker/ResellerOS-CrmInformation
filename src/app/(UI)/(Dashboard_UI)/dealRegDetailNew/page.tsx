@@ -5,7 +5,9 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
+import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
 import {PlusIcon} from '@heroicons/react/24/outline';
@@ -19,11 +21,9 @@ import {
   updateDealRegById,
 } from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {setDealReg} from '../../../../../redux/slices/dealReg';
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs from './DealRegCustomTabs';
-import {setDealReg} from '../../../../../redux/slices/dealReg';
-import GlobalLoader from '@/app/components/common/os-global-loader';
-import OsDrawer from '@/app/components/common/os-drawer';
 import DealRegDrawer from './DealRegDrawer';
 import SubmitDealRegForms from './SubmitDealRegForms';
 
@@ -37,7 +37,6 @@ const DealRegDetail = () => {
   const {
     data: DealRegData,
     dealReg,
-    dealRegUpdateData,
     loading: dealRegLoading,
   } = useAppSelector((state) => state.dealReg);
   const [openDrawer, setOpenDrawer] = useState(false);
