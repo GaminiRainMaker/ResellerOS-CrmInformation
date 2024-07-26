@@ -36,6 +36,8 @@ const Partners: React.FC = () => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
+  const [loadingForRequest, setLoadingForRequest] = useState<boolean>(false);
+
   const getTabId = searchParams.get('tab');
   const [showModal, setShowModal] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<number>(1);
@@ -55,7 +57,7 @@ const Partners: React.FC = () => {
       setAllPartnerData(payload?.payload);
     });
   }, []);
-
+  let organizationNameForRequest = userInformation?.organization;
   const searchQuery = useDebounceHook(queryDataa, 500);
 
   useEffect(() => {
@@ -356,16 +358,20 @@ const Partners: React.FC = () => {
   ];
 
   const handleAddNewAssignedPartnerProgramRequest = async (id: number) => {
+    setLoadingForRequest(true);
     const partnerObj = {
-      organization: userInformation?.organization,
+      organization: organizationNameForRequest,
       requested_by: userInformation?.id,
       new_request: false,
       partner_program_id: id,
     };
     await dispatch(insertAssignPartnerProgram(partnerObj));
-    dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
-      setAllPartnerData(payload?.payload);
-    });
+    await dispatch(getAllPartnerandProgramFilterData({}))?.then(
+      (payload: any) => {
+        setAllPartnerData(payload?.payload);
+      },
+    );
+    setLoadingForRequest(false);
   };
 
   useEffect(() => {
@@ -420,7 +426,7 @@ const Partners: React.FC = () => {
                 columns={partnerProgramColumns}
                 dataSource={record?.PartnerPrograms}
                 scroll
-                loading={false}
+                loading={loadingForRequest}
                 paginationProps={false}
               />
             ),
@@ -429,7 +435,7 @@ const Partners: React.FC = () => {
           dataSource={allPartnerFilterData}
           scroll
           locale={locale}
-          loading={false}
+          loading={loadingForRequest}
           drag
         />
       ),

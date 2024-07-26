@@ -18,6 +18,7 @@ const DeleteModal: FC<any> = ({
   description,
   loading,
   setCheckedValue,
+  
 }) => {
   const [token] = useThemeToken();
   return (

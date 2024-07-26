@@ -548,7 +548,7 @@ export const partnerProgramFilter = (
         } else {
           // Approved for organization
           if (
-            (itemProgram?.user_id === userInformation?.id &&
+            (itemProgram?.organization === 'rainmakercloud' &&
               !itemProgram?.AssignPartnerProgram) ||
             itemProgram?.AssignPartnerProgram?.is_approved
           ) {
@@ -602,7 +602,12 @@ export const partnerProgramFilter = (
       if (item?.PartnerPrograms) {
         if (typeOfLogin === 'user' || superAdminSide) {
           item?.PartnerPrograms?.filter((itemProgramD: any) => {
-            if (!allNotRequestedIds?.includes(itemProgramD?.id)) {
+            if (
+              !allNotRequestedIds?.includes(itemProgramD?.id) &&
+              (!itemProgramD?.AssignPartnerProgram ||
+                itemProgramD?.AssignPartnerProgram?.is_approved ||
+                itemProgramD?.organization === 'rainmakercloud')
+            ) {
               newArrForPrograms?.push(itemProgramD);
             }
           });

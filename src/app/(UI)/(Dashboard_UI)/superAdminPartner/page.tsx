@@ -85,6 +85,7 @@ const SuperAdminPartner: React.FC = () => {
   const [partnerProgramColumns, setPartnerProgramColumns] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
   const [queryDataa, setQueryData] = useState<any>();
+  const [updateTheObject, setUpdateTheObject] = useState<any>();
 
   const {insertProgramLoading} = useAppSelector(
     (state) => state.partnerProgram,
@@ -92,12 +93,14 @@ const SuperAdminPartner: React.FC = () => {
   const [allPartnerData, setAllPartnerData] = useState<any>();
   const [superAdminPartnerAnalyticData, setSuperAdminPartnerAnalyticData] =
     useState<any>();
-
-  useEffect(() => {
-    // dispatch(getAllPartnerandProgram(''));
+  const getAllPartnerData = async () => {
     dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
       setAllPartnerData(payload?.payload);
     });
+  };
+  useEffect(() => {
+    // dispatch(getAllPartnerandProgram(''));
+    getAllPartnerData();
   }, []);
   const searchQuery = useDebounceHook(queryDataa, 500);
 
@@ -163,8 +166,8 @@ const SuperAdminPartner: React.FC = () => {
 
   const deleteSelectedPartnerProgramIds = async () => {
     const data = {id: deletePartnerProgramIds};
-    await dispatch(deletePartnerProgram(data)).then(() => {
-      dispatch(getAllPartnerProgram());
+    await dispatch(deletePartnerProgram(data)).then(async () => {
+      await getAllPartnerData();
     });
     setDeletePartnerProgramIds([]);
     setShowPartnerProgramDeleteModal(false);
@@ -172,10 +175,11 @@ const SuperAdminPartner: React.FC = () => {
 
   const deleteSelectedPartnerIds = async () => {
     const data = {id: deletePartnerIds};
-    await dispatch(deletePartner(data)).then(() => {
-      dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
-        setAllPartnerData(payload?.payload);
-      });
+    await dispatch(deletePartner(data)).then(async () => {
+      await getAllPartnerData();
+      // dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
+      //   setAllPartnerData(payload?.payload);
+      // });
     });
     setDeletePartnerIds([]);
     setShowPartnerDeleteModal(false);
@@ -338,7 +342,7 @@ const SuperAdminPartner: React.FC = () => {
               } else {
                 notification?.open({
                   message:
-                    'Please create the  template for this partner program to approve',
+                    'Please create the  template for this partner program to approve.',
                   type: 'info',
                 });
               }
@@ -478,8 +482,7 @@ const SuperAdminPartner: React.FC = () => {
       ),
     },
   ];
-  let dataaa = form?.getFieldsValue();
-  console.log('2342342342', dataaa);
+
   const superAdmintabItems = [
     {
       label: (
@@ -502,14 +505,16 @@ const SuperAdminPartner: React.FC = () => {
                     height={24}
                     width={24}
                     onClick={() => {
-                      console.log('34543534532', record);
-                      form.setFieldsValue({
+                      let newObj = {
                         partner: record?.partner,
-                        description: record?.description,
-                        partner_program: record?.partner_program,
+                        industry: record?.industry,
+                        email: record?.email,
+                        website: record?.website,
                         id: record?.id,
-                      });
-                      setShowPartnerProgramDrawer(true);
+                      };
+                      setUpdateTheObject(newObj);
+
+                      setShowPartnerDrawer(true);
                     }}
                     color={token.colorInfoBorder}
                     style={{cursor: 'pointer'}}
@@ -520,8 +525,8 @@ const SuperAdminPartner: React.FC = () => {
                     color={token.colorError}
                     style={{cursor: 'pointer'}}
                     onClick={() => {
-                      setDeletePartnerProgramIds(record?.id);
-                      setShowPartnerProgramDeleteModal(true);
+                      setDeletePartnerIds(record?.id);
+                      setShowPartnerDeleteModal(true);
                     }}
                   />
                 </Space>
@@ -611,12 +616,13 @@ const SuperAdminPartner: React.FC = () => {
               height={24}
               width={24}
               onClick={() => {
-                form.setFieldsValue({
+                let newObj = {
                   partner: record?.partner,
                   description: record?.description,
                   partner_program: record?.partner_program,
                   id: record?.id,
-                });
+                };
+                setUpdateTheObject(newObj);
                 setShowPartnerProgramDrawer(true);
               }}
               color={token.colorInfoBorder}
@@ -681,7 +687,6 @@ const SuperAdminPartner: React.FC = () => {
       setPartnerProgramColumns(PartnerProgramColumns);
     }
   }, [activeTab]);
-
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -803,6 +808,7 @@ const SuperAdminPartner: React.FC = () => {
         placement="right"
         onClose={() => {
           setShowPartnerDrawer((p) => !p);
+          setUpdateTheObject({});
         }}
         open={showPartnerDrawer}
         width={450}
@@ -822,6 +828,9 @@ const SuperAdminPartner: React.FC = () => {
           setOpen={setShowPartnerDrawer}
           formPartnerData={formPartnerData}
           drawer={true}
+          setUpdateTheObject={setUpdateTheObject}
+          updateTheObject={updateTheObject}
+          getAllPartnerData={getAllPartnerData}
         />
       </OsDrawer>
 
@@ -832,6 +841,7 @@ const SuperAdminPartner: React.FC = () => {
         placement="right"
         onClose={() => {
           setShowPartnerProgramDrawer((p) => !p);
+          setUpdateTheObject({});
         }}
         open={showPartnerProgramDrawer}
         width={450}
@@ -851,6 +861,9 @@ const SuperAdminPartner: React.FC = () => {
           setOpen={setShowPartnerProgramDrawer}
           formPartnerData={formPartnerProgramData}
           drawer
+          setUpdateTheObject={setUpdateTheObject}
+          updateTheObject={updateTheObject}
+          getAllPartnerData={getAllPartnerData}
         />
       </OsDrawer>
 
