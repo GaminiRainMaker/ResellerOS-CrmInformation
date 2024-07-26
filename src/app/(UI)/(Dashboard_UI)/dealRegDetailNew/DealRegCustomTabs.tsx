@@ -60,22 +60,20 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
           uniqueFieldObject[key] = value;
         }
       }
-      console.log('formData', commonFieldObject);
 
       const obj = {
         common_form_data: [JSON.stringify(commonFieldObject)],
         unique_form_data: [JSON.stringify(uniqueFieldObject)],
         id: dealReg?.id,
       };
-      console.log('objobj', obj);
 
-      // if (obj) {
-      //   dispatch(updateDealRegById(obj)).then((response) => {
-      //     if (response?.payload) {
-      //       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-      //     }
-      //   });
-      // }
+      if (obj) {
+        dispatch(updateDealRegById(obj)).then((response) => {
+          if (response?.payload) {
+            dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+          }
+        });
+      }
     }
 
     // const tabPercentage = tabBarPercentageCalculations(

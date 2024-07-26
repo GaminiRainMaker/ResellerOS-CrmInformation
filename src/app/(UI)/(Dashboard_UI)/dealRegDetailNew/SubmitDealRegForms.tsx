@@ -31,7 +31,7 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
           element?.common_form_data,
         );
 
-        if (tabPercentage !== 100) {
+        if (tabPercentage === 100) {
           return {
             value: element?.id,
             label: (
@@ -48,7 +48,6 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
     setTabItems(newTabItems);
   }, [DealRegData, AttributeFieldData]);
 
-  console.log('tabItems', tabItems);
 
   return (
     <Form
