@@ -11,4 +11,7 @@ export interface AddPartnerInterface {
   drawer?: boolean;
   formPartnerData?: any;
   partnerId?: number;
+  setUpdateTheObject?: any;
+  updateTheObject?: any;
+  getAllPartnerData?: any;
 }

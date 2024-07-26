@@ -25,26 +25,36 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
   drawer = false,
   formPartnerData,
   partnerId,
+  setUpdateTheObject,
+  updateTheObject,
+  getAllPartnerData,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
-
-  const onFinish = (value: any) => {
+  useEffect(() => {
+    if (updateTheObject) {
+      form.setFieldsValue(updateTheObject);
+    }
+  }, []);
+  const onFinish = async (value: any) => {
     const partnerObj = {
       ...value,
       organization: userInformation?.organization,
       user_id: userInformation?.id,
     };
     if (drawer) {
-      dispatch(
+      await dispatch(
         updatePartnerById({
           ...partnerObj,
-          id: partnerId ? partnerId : formPartnerData?.id,
+          id: updateTheObject ? updateTheObject?.id : formPartnerData?.id,
         }),
       );
+      getAllPartnerData();
+      setUpdateTheObject({});
+      setOpen && setOpen(false);
     } else {
-      dispatch(insertPartner(partnerObj)).then((d: any) => {
+      await dispatch(insertPartner(partnerObj)).then((d: any) => {
         if (d?.payload) {
           dispatch(getAllPartnerandProgram(''));
           form?.resetFields();
@@ -90,7 +100,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
           onFinish={onFinish}
           layout="vertical"
           requiredMark={false}
-          initialValues={formPartnerData}
+          initialValues={formPartnerData ? formPartnerData : updateTheObject}
         >
           <Form.Item
             label="Partner Name"

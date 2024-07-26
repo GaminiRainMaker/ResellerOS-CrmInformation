@@ -91,7 +91,10 @@ const OsPartnerSelect: FC<{
       allPartnerFilterData?.map((items: any) => {
         let newArr: any = [];
         items?.PartnerPrograms?.map((itemsInner: any) => {
-          if (!allApprovedIdsOrganization?.includes(itemsInner?.id)) {
+          if (
+            !allApprovedIdsOrganization?.includes(itemsInner?.id) &&
+            (itemsInner?.form_data?.length > 0 || pathname === '/partners')
+          ) {
             newArr?.push(itemsInner);
           }
         });
