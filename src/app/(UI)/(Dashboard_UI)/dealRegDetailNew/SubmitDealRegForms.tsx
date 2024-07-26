@@ -42,11 +42,11 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
           };
         }
 
-        return null; 
+        return null;
       }).filter((item: any) => item !== null);
 
     setTabItems(newTabItems);
-  }, [DealRegData, AttributeFieldData]); // add dependencies
+  }, [DealRegData, AttributeFieldData]);
 
   console.log('tabItems', tabItems);
 

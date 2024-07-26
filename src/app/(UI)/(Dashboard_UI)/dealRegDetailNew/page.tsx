@@ -97,34 +97,6 @@ const DealRegDetail = () => {
     },
   ];
 
-  const onFinish = () => {
-    // const commonFieldObject: any = {};
-    // const uniqueFieldObject: any = {};
-    // const commonFieldFormData = FormData.getFieldsValue();
-    // if (commonFieldFormData) {
-    //   for (const [key, value] of Object?.entries(commonFieldFormData)) {
-    //     if (key?.startsWith('c_')) {
-    //       commonFieldObject[key] = value;
-    //     } else if (key?.startsWith('u_')) {
-    //       uniqueFieldObject[key] = value;
-    //     }
-    //   }
-    //   console.log('formData', commonFieldObject, uniqueFieldObject);
-    //   const obj = {
-    //     common_form_data: [JSON.stringify(commonFieldObject)],
-    //     unique_form_data: [JSON.stringify(uniqueFieldObject)],
-    //     id: dealReg?.id,
-    //   };
-    //   // if (obj) {
-    //   //   dispatch(updateDealRegById(obj)).then((response) => {
-    //   //     if (response?.payload) {
-    //   //       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-    //   //     }
-    //   //   });
-    //   // }
-    // }
-  };
-
   const onDrawerUpdate = async () => {
     const DrawerData = drawerForm.getFieldsValue();
     const updateValues = {
@@ -142,6 +114,7 @@ const DealRegDetail = () => {
       drawerForm.resetFields();
     }
   };
+
   const submitDealRegFormFun = async () => {
     const SubmitDealRegForm = submitDealRegForm.getFieldsValue();
     const SubmitDealRegFormData = {
@@ -169,7 +142,6 @@ const DealRegDetail = () => {
         <Col>
           <Space size={8}>
             <OsButton
-              // loading={dealRegLoading}
               text="Submit Form"
               buttontype="SECONDARY"
               clickHandler={() => {
@@ -217,6 +189,7 @@ const DealRegDetail = () => {
       </OsDrawer>
 
       <OsModal
+        loading={dealRegLoading}
         bodyPadding={22}
         body={
           <NewRegistrationForm isDealRegDetail setShowModal={setShowModal} />
