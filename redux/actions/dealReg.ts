@@ -87,3 +87,15 @@ export const queryDealReg = createAsyncThunk(
     }
   },
 );
+
+export const updateDealRegStatus = createAsyncThunk(
+  'dealReg/updateDealRegStatus',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await DEALREG_API.updateDealRegStatus(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

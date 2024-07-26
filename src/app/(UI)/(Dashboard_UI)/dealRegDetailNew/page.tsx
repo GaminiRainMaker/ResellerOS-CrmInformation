@@ -19,6 +19,7 @@ import {
   getDealRegByOpportunityId,
   getDealRegByPartnerProgramId,
   updateDealRegById,
+  updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setDealReg} from '../../../../../redux/slices/dealReg';
@@ -118,18 +119,19 @@ const DealRegDetail = () => {
     const SubmitDealRegForm = submitDealRegForm.getFieldsValue();
     const SubmitDealRegFormData = {
       ...SubmitDealRegForm,
-      status: 'completed',
+      status: 'Completed',
     };
-    console.log('SubmitDealRegFormData', SubmitDealRegFormData);
-    // if (updateValues) {
-    //   await dispatch(updateDealRegById(updateValues)).then((response) => {
-    //     if (response?.payload) {
-    //       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-    //     }
-    //   });
-    //   setShowSubmitFormModal(false);
-    //   submitDealRegForm.resetFields();
-    // }
+    if (SubmitDealRegFormData) {
+      await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
+        (response) => {
+          if (response?.payload) {
+            dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+          }
+        },
+      );
+      setShowSubmitFormModal(false);
+      submitDealRegForm.resetFields();
+    }
   };
 
   return (
@@ -202,6 +204,7 @@ const DealRegDetail = () => {
         footer={false}
       />
       <OsModal
+        loading={dealRegLoading}
         title="Submit DealReg Forms"
         bodyPadding={22}
         body={

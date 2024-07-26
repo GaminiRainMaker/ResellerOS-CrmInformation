@@ -8,6 +8,8 @@ export const DEALREG_API = {
   post: (data: any) => post(API.DEALREG.INDEX, data),
   query: (data: any) =>
     post(API.DEALREG.QUERY, data) as Promise<AxiosResponse<[]>>,
+  updateDealRegStatus: (data: any) =>
+    patch(API.DEALREG.UpdateDealRegStatus, data) as Promise<AxiosResponse<[]>>,
   getById: (id: number) =>
     get(`${API.DEALREG.INDEX}/${id}`) as Promise<AxiosResponse<any>>,
   patch: (data: any) =>
