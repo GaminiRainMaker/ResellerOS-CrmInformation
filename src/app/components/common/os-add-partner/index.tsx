@@ -62,12 +62,13 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
         }
       });
     }
+    form?.resetFields();
+    setUpdateTheObject({});
   };
 
   useEffect(() => {
     form?.resetFields();
   }, [formPartnerData]);
-  console.log('formform', form);
   return (
     <>
       {!drawer && (
@@ -100,7 +101,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
           onFinish={onFinish}
           layout="vertical"
           requiredMark={false}
-          initialValues={formPartnerData ? formPartnerData : updateTheObject}
+          initialValues={updateTheObject ? updateTheObject : formPartnerData}
         >
           <Form.Item
             label="Partner Name"

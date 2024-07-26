@@ -64,6 +64,8 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
         }
       });
     }
+    form?.resetFields();
+    setUpdateTheObject({});
   };
 
   useEffect(() => {
