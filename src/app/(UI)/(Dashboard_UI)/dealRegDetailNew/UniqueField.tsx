@@ -258,7 +258,9 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({data, form, activeKey}) => {
               key={itemIndex}
             >
               <SelectFormItem
-                name={convertToSnakeCase(allContentItem.label) + itemIndex}
+                name={
+                  'u_' + convertToSnakeCase(allContentItem.label) + itemIndex
+                }
                 label={
                   <Typography name="Body 4/Medium">
                     {allContentItem.label}

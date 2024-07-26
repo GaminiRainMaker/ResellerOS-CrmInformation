@@ -5,16 +5,11 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import Typography from '@/app/components/common/typography';
-import {FC, useState} from 'react';
+import {FC} from 'react';
 import CommonFields from './CommonField';
 import UniqueFields from './UniqueField';
 
-const DealRegDetailForm: FC<any> = ({
-  data,
-  activeKey,
-  CommonFieldForm,
-  UniqueFieldForm,
-}) => {
+const DealRegDetailForm: FC<any> = ({data, activeKey, form}) => {
   const [token] = useThemeToken();
 
   const CommonFieldsItems = [
@@ -25,12 +20,7 @@ const DealRegDetailForm: FC<any> = ({
           Common Fields
         </Typography>
       ),
-      children: (
-        <CommonFields
-          form={CommonFieldForm}
-          activeKey={activeKey}
-        />
-      ),
+      children: <CommonFields form={form} activeKey={activeKey} />,
     },
   ];
 
@@ -45,7 +35,7 @@ const DealRegDetailForm: FC<any> = ({
       children: (
         <UniqueFields
           data={data?.PartnerProgram}
-          form={UniqueFieldForm}
+          form={form}
           activeKey={activeKey}
         />
       ),

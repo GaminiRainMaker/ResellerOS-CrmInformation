@@ -1,4 +1,4 @@
-import { FormInstance } from "antd";
+import {FormInstance} from 'antd';
 
 export interface OsCustomerSelectInterface {
   setCustomerValue?: any;
@@ -8,9 +8,9 @@ export interface OsCustomerSelectInterface {
   isDisable?: boolean;
 }
 export interface OsContactSelectInterface {
-  customerValue: any,
-  isAddNewContact?: boolean,
-  form?: FormInstance,
-  value?: string,
-  name : string,
+  customerValue: any;
+  isAddNewContact?: boolean;
+  form?: FormInstance;
+  value?: string;
+  name: string;
 }

@@ -10,16 +10,15 @@ import {
 import CustomProgress from '@/app/components/common/os-progress/DealregProgressBar';
 import Typography from '@/app/components/common/typography';
 import {formatStatus} from '@/app/utils/CONSTANTS';
+import {tabBarPercentageCalculations} from '@/app/utils/base';
 import {useEffect, useMemo, useState} from 'react';
+import {queryAttributeField} from '../../../../../redux/actions/attributeField';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setDealReg} from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
-import {tabPercentageCalculations} from '@/app/utils/base';
-import {queryAttributeField} from '../../../../../redux/actions/attributeField';
 
 const DealRegCustomTabs: React.FC<any> = ({
-  CommonFieldForm,
-  UniqueFieldForm,
+  form,
 }) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
@@ -45,12 +44,14 @@ const DealRegCustomTabs: React.FC<any> = ({
   const tabItems = useMemo(() => {
     if (!DealRegData) return [];
     return DealRegData?.map((element: any) => {
-      const {partner_program_id, id, Partner, PartnerProgram} = element;
+      const {partner_program_id, Partner, PartnerProgram} = element;
       const isActive = activeKey?.toString() === partner_program_id?.toString();
-      const finalPercentage = tabPercentageCalculations(
-        element,
+
+      const tabPercentage = tabBarPercentageCalculations(
+        element?.PartnerProgram?.form_data,
         AttributeFieldData,
-        PartnerProgram,
+        element?.unique_form_data,
+        element?.common_form_data,
       );
       const headerStyle = {
         background: isActive ? token.colorInfo : token.colorInfoBg,
@@ -62,20 +63,22 @@ const DealRegCustomTabs: React.FC<any> = ({
         key: partner_program_id,
         label: (
           <Row
-            key={id}
+            key={partner_program_id}
             gutter={[0, 10]}
             style={{width: 'fit-content', margin: '24px 0px'}}
           >
             <DealRegCustomTabHeaderStyle
               token={token}
               style={headerStyle}
-              onClick={() => dispatch(setDealReg(element))}
+              onClick={() => {
+                dispatch(setDealReg(element));
+              }}
             >
               <Space>
                 <CustomProgress
                   isActive={isActive}
                   token={token}
-                  percent={finalPercentage}
+                  percent={tabPercentage}
                 />
                 <Typography
                   style={{color: textColor}}
@@ -94,8 +97,7 @@ const DealRegCustomTabs: React.FC<any> = ({
             <DealRegDetailForm
               data={element}
               activeKey={activeKey}
-              CommonFieldForm={CommonFieldForm}
-              UniqueFieldForm={UniqueFieldForm}
+              form={form}
             />
           </div>
         ),

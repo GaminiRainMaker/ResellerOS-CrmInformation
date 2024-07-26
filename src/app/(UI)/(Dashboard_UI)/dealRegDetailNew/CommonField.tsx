@@ -196,14 +196,14 @@ const CommonFields: FC<CommonFieldsProps> = ({form, activeKey}) => {
             key={index}
           >
             <Row>
-              {section.children.map((child) => (
+              {section.children.map((child, Childndex) => (
                 <Col
                   span={12}
                   style={{padding: '24px', paddingTop: '0px'}}
                   key={child.id}
                 >
                   <SelectFormItem
-                    name={convertToSnakeCase(child?.label)}
+                    name={'c_' + convertToSnakeCase(child?.label) + Childndex}
                     label={
                       <Typography name="Body 4/Medium">
                         {child?.label}

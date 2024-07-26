@@ -37,6 +37,7 @@ const OsContactSelect: FC<OsContactSelectInterface> = ({
 
   useEffect(() => {
     form?.resetFields(['opportunity_id', name]);
+    form?.resetFields(['billing_contact_id']);
     const filterUsers =
       billingContactData &&
       billingContactData?.filter(

@@ -23,10 +23,12 @@ import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs from './DealRegCustomTabs';
 import {setDealReg} from '../../../../../redux/slices/dealReg';
 import GlobalLoader from '@/app/components/common/os-global-loader';
+import OsDrawer from '@/app/components/common/os-drawer';
+import DealRegDrawer from './DealRegDrawer';
 
 const DealRegDetail = () => {
-  const [CommonFieldForm] = Form.useForm();
-  const [UniqueFieldForm] = Form.useForm();
+  const [FormData] = Form.useForm();
+  const [drawerForm] = Form.useForm();
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -54,27 +56,6 @@ const DealRegDetail = () => {
   useEffect(() => {
     dispatch(setDealReg(DealRegData?.[0]));
   }, [DealRegData]);
-
-  // const updateTheDealReg = async () => {
-  //   const newObj = {
-  //     ...formDataValues?.[0],
-  //     unique_form_data: [
-  //       JSON?.stringify(formDataValues?.[0]?.unique_form_data),
-  //     ],
-  //     common_form_data: [
-  //       JSON?.stringify(formDataValues?.[0]?.common_form_data),
-  //     ],
-  //   };
-  //   console.log('newObj', newObj);
-
-  //   // await dispatch(updateDealRegById(newObj));
-  //   // if (getOpportunityId) {
-  //   //   dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-  //   // }
-  //   // if (getPartnerProgramId) {
-  //   //   dispatch(getDealRegByPartnerProgramId(Number(getPartnerProgramId)));
-  //   // }
-  // };
 
   const OsBreadCrumbItems = [
     {
@@ -113,32 +94,42 @@ const DealRegDetail = () => {
     },
   ];
 
-  const onFinish1 = () => {
-    const commonFieldFormData = CommonFieldForm.getFieldsValue();
-    const uniqueFieldFormData = UniqueFieldForm.getFieldsValue();
-    const commonData =
-      Object.keys(commonFieldFormData).length > 0
-        ? [JSON.stringify(commonFieldFormData)]
-        : dealReg?.common_form_data;
+  const onFinish = () => {
+    const commonFieldObject: any = {};
+    const uniqueFieldObject: any = {};
+    const commonFieldFormData = FormData.getFieldsValue();
 
-    const uniqueData =
-      Object.keys(uniqueFieldFormData).length > 0
-        ? [JSON.stringify(uniqueFieldFormData)]
-        : dealReg?.unique_form_data;
-
-    const obj = {
-      common_form_data: commonData,
-      unique_form_data: uniqueData,
-      id: dealReg?.id,
-    };
-
-    if (obj) {
-      dispatch(updateDealRegById(obj)).then((response) => {
-        if (response?.payload) {
-          dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+    if (commonFieldFormData) {
+      for (const [key, value] of Object?.entries(commonFieldFormData)) {
+        if (key?.startsWith('c_')) {
+          commonFieldObject[key] = value;
+        } else if (key?.startsWith('u_')) {
+          uniqueFieldObject[key] = value;
         }
-      });
+      }
+      console.log('formData', commonFieldObject, uniqueFieldObject);
+
+      const obj = {
+        common_form_data: [JSON.stringify(commonFieldObject)],
+        unique_form_data: [JSON.stringify(uniqueFieldObject)],
+        id: dealReg?.id,
+      };
+
+      console.log('commonFieldFormData', obj);
+
+      if (obj) {
+        dispatch(updateDealRegById(obj)).then((response) => {
+          if (response?.payload) {
+            dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+          }
+        });
+      }
     }
+  };
+
+  const onDrawerUpdate = () => {
+    const DrawerData = drawerForm.getFieldsValue();
+    console.log('DrawerData', DrawerData);
   };
 
   return (
@@ -153,7 +144,7 @@ const DealRegDetail = () => {
               loading={dealRegLoading}
               text="Save"
               buttontype="SECONDARY"
-              clickHandler={onFinish1}
+              clickHandler={onFinish}
             />
             <OsButton
               text="Add New Form"
@@ -169,25 +160,10 @@ const DealRegDetail = () => {
         </Col>
       </Row>
       <GlobalLoader loading={dealRegLoading}>
-        <DealRegCustomTabs
-          CommonFieldForm={CommonFieldForm}
-          UniqueFieldForm={UniqueFieldForm}
-        />
+        <DealRegCustomTabs form={FormData} />
       </GlobalLoader>
 
-      {/* <DealRegCustomTabs
-        tabs={DealRegData}
-        selectedUserId={selectedUserId}
-        form={form}
-        activeKey={activeKey}
-        setFormDataValues={setFormDataValues}
-        setCartItems={setCartItems}
-        cartItems={cartItems}
-        setActiveKey={setActiveKey}
-        formDataValues={formDataValues}
-      /> */}
-
-      {/* <OsDrawer
+      <OsDrawer
         title={<Typography name="Body 1/Regular">Form Settings</Typography>}
         placement="right"
         onClose={() => setOpen((p) => !p)}
@@ -199,17 +175,13 @@ const DealRegDetail = () => {
               btnStyle={{width: '100%'}}
               buttontype="PRIMARY"
               text="Update Changes"
-              clickHandler={() => form.submit()}
+              clickHandler={drawerForm.submit}
             />
           </Row>
         }
       >
-        <DealDrawerContent
-          setSelectedUserId={setSelectedUserId}
-          form={form}
-          onFinish={onFinish}
-        />
-      </OsDrawer> */}
+        <DealRegDrawer form={drawerForm} onFinish={onDrawerUpdate} />
+      </OsDrawer>
 
       <OsModal
         bodyPadding={22}
