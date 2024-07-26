@@ -16,11 +16,18 @@ import {queryAttributeField} from '../../../../../redux/actions/attributeField';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setDealReg} from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
+import {
+  getDealRegByOpportunityId,
+  updateDealRegById,
+} from '../../../../../redux/actions/dealReg';
+import { useSearchParams } from 'next/navigation';
 
 const DealRegCustomTabs: React.FC<any> = ({form}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const {data: DealRegData} = useAppSelector((state) => state.dealReg);
+  const searchParams = useSearchParams();
+  const getOpportunityId = searchParams.get('opportunityId');
+  const {data: DealRegData, dealReg} = useAppSelector((state) => state.dealReg);
   const [activeKey, setActiveKey] = useState<number>();
   const [tabItems, setTabItems] = useState([]);
   const {data: AttributeFieldData} = useAppSelector(
@@ -38,6 +45,46 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
 
   const handleTabChange = (key: any) => {
     setActiveKey(key);
+  };
+
+  const onFinish = () => {
+    const commonFieldObject: any = {};
+    const uniqueFieldObject: any = {};
+    const commonFieldFormData = form.getFieldsValue();
+
+    if (commonFieldFormData) {
+      for (const [key, value] of Object?.entries(commonFieldFormData)) {
+        if (key?.startsWith('c_')) {
+          commonFieldObject[key] = value;
+        } else if (key?.startsWith('u_')) {
+          uniqueFieldObject[key] = value;
+        }
+      }
+      console.log('formData', commonFieldObject);
+
+      const obj = {
+        common_form_data: [JSON.stringify(commonFieldObject)],
+        unique_form_data: [JSON.stringify(uniqueFieldObject)],
+        id: dealReg?.id,
+      };
+      console.log('objobj', obj);
+
+      // if (obj) {
+      //   dispatch(updateDealRegById(obj)).then((response) => {
+      //     if (response?.payload) {
+      //       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+      //     }
+      //   });
+      // }
+    }
+
+    // const tabPercentage = tabBarPercentageCalculations(
+    //   dealReg?.PartnerProgram?.form_data,
+    //   AttributeFieldData,
+    //   dealReg?.unique_form_data,
+    //   dealReg?.common_form_data,
+    // );
+    // console.log('tabPercentagetabPercentage', tabPercentage);
   };
 
   useEffect(() => {
@@ -106,6 +153,7 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
                 data={element}
                 activeKey={activeKey}
                 form={form}
+                handleBlur={onFinish}
               />
             </div>
           ),

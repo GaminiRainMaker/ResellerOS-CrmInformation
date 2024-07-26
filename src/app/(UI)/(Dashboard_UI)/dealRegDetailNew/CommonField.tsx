@@ -9,64 +9,17 @@ import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-s
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {MailOutlined} from '@ant-design/icons';
-import {Collapse, Form, FormInstance, Radio, TimePicker} from 'antd';
+import {Collapse, Form, Radio, TimePicker} from 'antd';
 import {FC, useEffect, useState} from 'react';
 import {useAppSelector} from '../../../../../redux/hook';
+import {
+  AttributeData,
+  CommonFieldsProps,
+  TransformedChild,
+  TransformedData,
+} from './dealReg.interface';
 
-interface AttributeData {
-  id: number;
-  is_deleted: boolean;
-  name: string | null;
-  label: string;
-  data_type: string;
-  order: number;
-  map_from: string;
-  map_to: string | null;
-  help_text: string;
-  attribute_section_id: number;
-  is_active: boolean;
-  is_view: boolean;
-  is_required: boolean;
-  createdAt: string;
-  updatedAt: string;
-  AttributeSection: {
-    id: number;
-    is_deleted: boolean;
-    name: string;
-    order: number;
-    is_active: boolean;
-    is_view: boolean;
-    is_required: boolean;
-    createdAt: string;
-    updatedAt: string;
-  };
-}
-
-interface TransformedChild {
-  id: number;
-  label: string;
-  data_type: string;
-  help_text: string;
-  is_active: boolean;
-  is_deleted: boolean;
-  is_required: boolean;
-  is_view: boolean;
-  map_from: string;
-  name: string | null;
-  order: number;
-}
-
-interface TransformedData {
-  title: string;
-  children: TransformedChild[];
-}
-
-interface CommonFieldsProps {
-  form: FormInstance;
-  activeKey: string;
-}
-
-const CommonFields: FC<CommonFieldsProps> = ({form, activeKey}) => {
+const CommonFields: FC<CommonFieldsProps> = ({form, activeKey, handleBlur}) => {
   const {data: AttributeFieldData} = useAppSelector(
     (state) => state.attributeField,
   );
@@ -108,7 +61,7 @@ const CommonFields: FC<CommonFieldsProps> = ({form, activeKey}) => {
   const getInputComponent = (child: TransformedChild) => {
     const fieldName = convertToSnakeCase(child?.label);
     const initialValue = templateData?.[fieldName];
-    const commonProps = {defaultValue: initialValue};
+    const commonProps = {defaultValue: initialValue, onBlur: handleBlur};
     switch (child.data_type) {
       case 'textarea':
       case 'text':
@@ -180,8 +133,14 @@ const CommonFields: FC<CommonFieldsProps> = ({form, activeKey}) => {
       layout="vertical"
       style={{width: '100%', background: 'white', borderRadius: '12px'}}
     >
-      <Collapse accordion style={{width: '100%'}} ghost>
-        {template?.map((section, index) => (
+      {template?.map((section, index) => (
+        <Collapse
+          key={index}
+          defaultActiveKey={index}
+          accordion
+          style={{width: '100%'}}
+          ghost
+        >
           <Panel
             header={
               <Space
@@ -222,8 +181,8 @@ const CommonFields: FC<CommonFieldsProps> = ({form, activeKey}) => {
               ))}
             </Row>
           </Panel>
-        ))}
-      </Collapse>
+        </Collapse>
+      ))}
     </Form>
   );
 };

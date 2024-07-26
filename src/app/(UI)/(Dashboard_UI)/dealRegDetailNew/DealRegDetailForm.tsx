@@ -9,7 +9,7 @@ import {FC} from 'react';
 import CommonFields from './CommonField';
 import UniqueFields from './UniqueField';
 
-const DealRegDetailForm: FC<any> = ({data, activeKey, form}) => {
+const DealRegDetailForm: FC<any> = ({data, activeKey, form, handleBlur}) => {
   const [token] = useThemeToken();
 
   const CommonFieldsItems = [
@@ -20,7 +20,13 @@ const DealRegDetailForm: FC<any> = ({data, activeKey, form}) => {
           Common Fields
         </Typography>
       ),
-      children: <CommonFields form={form} activeKey={activeKey} />,
+      children: (
+        <CommonFields
+          form={form}
+          activeKey={activeKey}
+          handleBlur={handleBlur}
+        />
+      ),
     },
   ];
 
@@ -37,6 +43,7 @@ const DealRegDetailForm: FC<any> = ({data, activeKey, form}) => {
           data={data?.PartnerProgram}
           form={form}
           activeKey={activeKey}
+          handleBlur={handleBlur}
         />
       ),
     },

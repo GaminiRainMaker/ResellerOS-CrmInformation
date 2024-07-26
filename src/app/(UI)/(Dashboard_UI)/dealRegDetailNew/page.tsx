@@ -25,10 +25,12 @@ import {setDealReg} from '../../../../../redux/slices/dealReg';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsDrawer from '@/app/components/common/os-drawer';
 import DealRegDrawer from './DealRegDrawer';
+import SubmitDealRegForms from './SubmitDealRegForms';
 
 const DealRegDetail = () => {
   const [FormData] = Form.useForm();
   const [drawerForm] = Form.useForm();
+  const [submitDealRegForm] = Form.useForm();
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -40,6 +42,7 @@ const DealRegDetail = () => {
   } = useAppSelector((state) => state.dealReg);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showSubmitFormModal, setShowSubmitFormModal] = useState(false);
   const searchParams = useSearchParams();
   const getOpportunityId = searchParams.get('opportunityId');
   const getPartnerProgramId = searchParams.get('program_id');
@@ -95,34 +98,31 @@ const DealRegDetail = () => {
   ];
 
   const onFinish = () => {
-    const commonFieldObject: any = {};
-    const uniqueFieldObject: any = {};
-    const commonFieldFormData = FormData.getFieldsValue();
-
-    if (commonFieldFormData) {
-      for (const [key, value] of Object?.entries(commonFieldFormData)) {
-        if (key?.startsWith('c_')) {
-          commonFieldObject[key] = value;
-        } else if (key?.startsWith('u_')) {
-          uniqueFieldObject[key] = value;
-        }
-      }
-      console.log('formData', commonFieldObject, uniqueFieldObject);
-
-      const obj = {
-        common_form_data: [JSON.stringify(commonFieldObject)],
-        unique_form_data: [JSON.stringify(uniqueFieldObject)],
-        id: dealReg?.id,
-      };
-
-      // if (obj) {
-      //   dispatch(updateDealRegById(obj)).then((response) => {
-      //     if (response?.payload) {
-      //       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-      //     }
-      //   });
-      // }
-    }
+    // const commonFieldObject: any = {};
+    // const uniqueFieldObject: any = {};
+    // const commonFieldFormData = FormData.getFieldsValue();
+    // if (commonFieldFormData) {
+    //   for (const [key, value] of Object?.entries(commonFieldFormData)) {
+    //     if (key?.startsWith('c_')) {
+    //       commonFieldObject[key] = value;
+    //     } else if (key?.startsWith('u_')) {
+    //       uniqueFieldObject[key] = value;
+    //     }
+    //   }
+    //   console.log('formData', commonFieldObject, uniqueFieldObject);
+    //   const obj = {
+    //     common_form_data: [JSON.stringify(commonFieldObject)],
+    //     unique_form_data: [JSON.stringify(uniqueFieldObject)],
+    //     id: dealReg?.id,
+    //   };
+    //   // if (obj) {
+    //   //   dispatch(updateDealRegById(obj)).then((response) => {
+    //   //     if (response?.payload) {
+    //   //       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+    //   //     }
+    //   //   });
+    //   // }
+    // }
   };
 
   const onDrawerUpdate = async () => {
@@ -142,6 +142,23 @@ const DealRegDetail = () => {
       drawerForm.resetFields();
     }
   };
+  const submitDealRegFormFun = async () => {
+    const SubmitDealRegForm = submitDealRegForm.getFieldsValue();
+    const SubmitDealRegFormData = {
+      ...SubmitDealRegForm,
+      status: 'completed',
+    };
+    console.log('SubmitDealRegFormData', SubmitDealRegFormData);
+    // if (updateValues) {
+    //   await dispatch(updateDealRegById(updateValues)).then((response) => {
+    //     if (response?.payload) {
+    //       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+    //     }
+    //   });
+    //   setShowSubmitFormModal(false);
+    //   submitDealRegForm.resetFields();
+    // }
+  };
 
   return (
     <div>
@@ -152,10 +169,12 @@ const DealRegDetail = () => {
         <Col>
           <Space size={8}>
             <OsButton
-              loading={dealRegLoading}
-              text="Save"
+              // loading={dealRegLoading}
+              text="Submit Form"
               buttontype="SECONDARY"
-              clickHandler={onFinish}
+              clickHandler={() => {
+                setShowSubmitFormModal(true);
+              }}
             />
             <OsButton
               text="Add New Form"
@@ -209,6 +228,24 @@ const DealRegDetail = () => {
           setShowModal((p) => !p);
         }}
         footer={false}
+      />
+      <OsModal
+        title="Submit DealReg Forms"
+        bodyPadding={22}
+        body={
+          <SubmitDealRegForms
+            form={submitDealRegForm}
+            onFinish={submitDealRegFormFun}
+          />
+        }
+        width={583}
+        open={showSubmitFormModal}
+        onOk={submitDealRegForm?.submit}
+        onCancel={() => {
+          setShowSubmitFormModal(false);
+          submitDealRegForm?.resetFields();
+        }}
+        primaryButtonText={'Save'}
       />
     </div>
   );

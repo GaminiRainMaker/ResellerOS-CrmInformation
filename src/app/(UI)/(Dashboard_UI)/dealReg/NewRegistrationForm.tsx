@@ -23,11 +23,10 @@ import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {
-  getAllDealReg,
   getDealRegByOpportunityId,
   insertDealReg,
+  queryDealReg,
 } from '../../../../../redux/actions/dealReg';
-import {insertDealRegAddress} from '../../../../../redux/actions/dealRegAddress';
 import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
@@ -153,7 +152,7 @@ const NewRegistrationForm: FC<any> = ({
     });
   }, [customerValue || getCustomerId]);
 
-  const registeredFormFinish = () => {
+  const registeredFormFinish = async () => {
     const data = form.getFieldsValue();
     if (
       (data?.registeredPartners === undefined ||
@@ -213,6 +212,7 @@ const NewRegistrationForm: FC<any> = ({
           opportunity_id: getOpportunityId,
           contact_id: getContactId,
           customer_id: getCustomerId,
+          status: 'New',
         }));
       } else {
         newData = combinedData?.map((obj: any) => ({
@@ -220,34 +220,20 @@ const NewRegistrationForm: FC<any> = ({
           ...data,
           ...addressData,
           organization: userInformation?.organization,
+          status: 'New',
         }));
       }
 
-      dispatch(insertDealReg(newData)).then((d: any) => {
+      await dispatch(insertDealReg(newData)).then((d: any) => {
         if (d?.payload) {
-          d?.payload?.map(async (DataItem: any) => {
-            if (DataItem?.id) {
-              const obj12 = {
-                dealRegId: DataItem?.id,
-                ...newData[0],
-              };
-              // eslint-disable-next-line @typescript-eslint/no-shadow
-              await dispatch(insertDealRegAddress(obj12)).then((d: any) => {
-                if (d) {
-                  setShowModal(false);
-                  if (isDealRegDetail) {
-                    dispatch(
-                      getDealRegByOpportunityId(Number(getOpportunityId)),
-                    );
-                  } else {
-                    dispatch(getAllDealReg());
-                  }
-                }
-              });
-            }
-          });
+          if (isDealRegDetail) {
+            dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+          } else {
+            dispatch(queryDealReg(''));
+          }
         }
       });
+      setShowModal(false);
     }
   };
 

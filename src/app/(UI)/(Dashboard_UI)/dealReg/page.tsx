@@ -161,7 +161,11 @@ const DealReg: React.FC = () => {
       dataIndex: 'status',
       key: 'status',
       width: 187,
-      render: (text: string) => <OsStatusWrapper value={text} />,
+      render: (text: string) => (
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+          <OsStatusWrapper value={text} />
+        </div>
+      ),
     },
   ];
 
@@ -198,62 +202,63 @@ const DealReg: React.FC = () => {
     setFinalDealRegData(Object.values(separatedData));
   }, [DealRegData]);
 
+  console.log('finalDealRegData', finalDealRegData);
+
   const tabItems: TabsProps['items'] = [
     {
       label: <Typography name="Body 4/Regular">All</Typography>,
       key: '1',
       children: (
         <>
-          {finalDealRegData?.length > 0 ? (
-            <>
-              {finalDealRegData?.map((itemDeal: any) => (
-                <OsCollapse
-                  defaultActiveKey={['1']}
-                  items={[
-                    {
-                      key: '1',
-                      label: (
-                        <>
-                          <Row justify="space-between">
-                            <Col>
-                              <p>{itemDeal?.title}</p>
-                            </Col>
-                            <Col>
-                              <Space
-                                align="center"
-                                onClick={(e) => {
-                                  router?.push(
-                                    `/dealRegDetailNew?id=${itemDeal?.dealReg_id}&opportunityId=${itemDeal?.opportunity_id}&customerId=${itemDeal?.customer_id}&contactId=${itemDeal?.contact_id}`,
-                                  );
-                                  e?.stopPropagation();
-                                }}
-                              >
-                                <p>Deal Registration</p>
-                                <ArrowTopRightOnSquareIcon
-                                  cursor="pointer"
-                                  style={{marginTop: '5px'}}
-                                  width={20}
-                                />
-                              </Space>
-                            </Col>
-                          </Row>
-                        </>
-                      ),
-                      children: (
-                        <OsTable
-                          columns={DealRegColumns}
-                          dataSource={itemDeal?.data}
-                          // rowSelection={rowSelection}
-                          scroll
-                          loading={dealLoading}
-                          locale={locale}
-                        />
-                      ),
-                    },
-                  ]}
-                />
-              ))}
-            </>
+          {finalDealRegData?.some(
+            (itemDeal: any) => itemDeal?.data?.length > 0,
+          ) ? (
+            finalDealRegData?.map((itemDeal: any) => (
+              <OsCollapse
+                defaultActiveKey={['1']}
+                items={[
+                  {
+                    key: '1',
+                    label: (
+                      <>
+                        <Row justify="space-between">
+                          <Col>
+                            <p>{itemDeal?.title}</p>
+                          </Col>
+                          <Col>
+                            <Space
+                              align="center"
+                              onClick={(e) => {
+                                router?.push(
+                                  `/dealRegDetailNew?id=${itemDeal?.dealReg_id}&opportunityId=${itemDeal?.opportunity_id}&customerId=${itemDeal?.customer_id}&contactId=${itemDeal?.contact_id}`,
+                                );
+                                e?.stopPropagation();
+                              }}
+                            >
+                              <p>Deal Registration</p>
+                              <ArrowTopRightOnSquareIcon
+                                cursor="pointer"
+                                style={{marginTop: '5px'}}
+                                width={20}
+                              />
+                            </Space>
+                          </Col>
+                        </Row>
+                      </>
+                    ),
+                    children: (
+                      <OsTable
+                        columns={DealRegColumns}
+                        dataSource={itemDeal?.data}
+                        scroll
+                        loading={dealLoading}
+                        locale={locale}
+                      />
+                    ),
+                  },
+                ]}
+              />
+            ))
           ) : (
             <OsTable
               columns={[]}
@@ -270,28 +275,140 @@ const DealReg: React.FC = () => {
       label: <Typography name="Body 4/Regular">In Progress</Typography>,
       key: '2',
       children: (
-        <OsTable
-          columns={DealRegColumns}
-          dataSource={[]}
-          // rowSelection={rowSelection}
-          scroll
-          loading={dealLoading}
-          locale={locale}
-        />
+        <>
+          {finalDealRegData?.some((itemDeal: any) =>
+            itemDeal?.data?.some(
+              (dataItem: any) => dataItem?.status === 'In Progress',
+            ),
+          ) ? (
+            finalDealRegData?.map((itemDeal: any) => (
+              <OsCollapse
+                defaultActiveKey={['1']}
+                items={[
+                  {
+                    key: '1',
+                    label: (
+                      <>
+                        <Row justify="space-between">
+                          <Col>
+                            <p>{itemDeal?.title}</p>
+                          </Col>
+                          <Col>
+                            <Space
+                              align="center"
+                              onClick={(e) => {
+                                router?.push(
+                                  `/dealRegDetailNew?id=${itemDeal?.dealReg_id}&opportunityId=${itemDeal?.opportunity_id}&customerId=${itemDeal?.customer_id}&contactId=${itemDeal?.contact_id}`,
+                                );
+                                e?.stopPropagation();
+                              }}
+                            >
+                              <p>Deal Registration</p>
+                              <ArrowTopRightOnSquareIcon
+                                cursor="pointer"
+                                style={{marginTop: '5px'}}
+                                width={20}
+                              />
+                            </Space>
+                          </Col>
+                        </Row>
+                      </>
+                    ),
+                    children: (
+                      <OsTable
+                        columns={DealRegColumns}
+                        dataSource={itemDeal?.data?.filter(
+                          (dataItem: any) => dataItem?.status === 'In Progress',
+                        )}
+                        scroll
+                        loading={dealLoading}
+                        locale={locale}
+                      />
+                    ),
+                  },
+                ]}
+              />
+            ))
+          ) : (
+            <OsTable
+              columns={[]}
+              dataSource={[]}
+              scroll
+              loading={false}
+              locale={locale}
+            />
+          )}
+        </>
       ),
     },
     {
       label: <Typography name="Body 4/Regular">Completed</Typography>,
       key: '3',
       children: (
-        <OsTable
-          columns={DealRegColumns}
-          dataSource={[]}
-          // rowSelection={rowSelection}
-          scroll
-          loading={dealLoading}
-          locale={locale}
-        />
+        <>
+          {finalDealRegData?.some((itemDeal: any) =>
+            itemDeal?.data?.some(
+              (dataItem: any) => dataItem?.status === 'Completed',
+            ),
+          ) ? (
+            finalDealRegData?.map((itemDeal: any) => (
+              <OsCollapse
+                defaultActiveKey={['1']}
+                items={[
+                  {
+                    key: '1',
+                    label: (
+                      <>
+                        <Row justify="space-between">
+                          <Col>
+                            <p>{itemDeal?.title}</p>
+                          </Col>
+                          <Col>
+                            <Space
+                              align="center"
+                              onClick={(e) => {
+                                router?.push(
+                                  `/dealRegDetailNew?id=${itemDeal?.dealReg_id}&opportunityId=${itemDeal?.opportunity_id}&customerId=${itemDeal?.customer_id}&contactId=${itemDeal?.contact_id}`,
+                                );
+                                e?.stopPropagation();
+                              }}
+                            >
+                              <p>Deal Registration</p>
+                              <ArrowTopRightOnSquareIcon
+                                cursor="pointer"
+                                style={{marginTop: '5px'}}
+                                width={20}
+                              />
+                            </Space>
+                          </Col>
+                        </Row>
+                      </>
+                    ),
+                    children: (
+                      <OsTable
+                        columns={DealRegColumns}
+                        dataSource={itemDeal?.data?.filter(
+                          (dataItem: any) => dataItem?.status === 'Completed',
+                        )}
+                        scroll
+                        loading={dealLoading}
+                        locale={locale}
+                      />
+                    ),
+                  },
+                ]}
+              />
+            ))
+          ) : (
+            <OsTable
+              columns={[]}
+              dataSource={[]}
+              scroll
+              loading={false}
+              locale={locale}
+            />
+          )}
+        </>
       ),
     },
   ];

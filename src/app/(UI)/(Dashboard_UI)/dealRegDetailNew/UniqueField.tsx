@@ -18,17 +18,16 @@ import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
 import Typography from '@/app/components/common/typography';
 import {MailOutlined} from '@ant-design/icons';
 import {Form, Radio, TimePicker} from 'antd';
-import {FormInstance} from 'antd/lib';
 import {useEffect, useState} from 'react';
 import {useAppSelector} from '../../../../../redux/hook';
+import {UniqueFieldsProps} from './dealReg.interface';
 
-interface UniqueFieldsProps {
-  data: any;
-  form: FormInstance;
-  activeKey: string;
-}
-
-const UniqueFields: React.FC<UniqueFieldsProps> = ({data, form, activeKey}) => {
+const UniqueFields: React.FC<UniqueFieldsProps> = ({
+  data,
+  form,
+  activeKey,
+  handleBlur,
+}) => {
   const allContent = JSON.parse(data?.form_data).flatMap(
     (section: any) => section.content,
   );
@@ -39,6 +38,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({data, form, activeKey}) => {
   const getInputComponent = (itemCon: any) => {
     const fieldName = convertToSnakeCase(itemCon?.label);
     const initialValue = uniqueTemplateData?.[fieldName];
+    const commonProps = {defaultValue: initialValue, onBlur: handleBlur};
     switch (itemCon?.name) {
       case 'Table':
         return (
@@ -48,48 +48,58 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({data, form, activeKey}) => {
                 const totalCol = itemCon?.ColumnsData?.length;
                 const totalFloorValue = Math.floor(24 / totalCol);
                 return (
-                  <SectionColStyledInner span={totalFloorValue}>
+                  <SectionColStyledInner
+                    span={totalFloorValue}
+                    key={indexOfColumn}
+                  >
                     {itemColum?.title}
                   </SectionColStyledInner>
                 );
               },
             )}
-            {itemCon?.noOfRowsData?.map((rowsMapItem: string) => (
-              <Row style={{width: '100%'}}>
-                {itemCon?.ColumnsData?.map((itemColum: any) => {
-                  const totalFloorValue = Math.floor(
-                    24 / itemCon?.ColumnsData?.length,
-                  );
-                  return (
-                    <SectionColStyledInnerContent span={totalFloorValue}>
-                      {itemColum?.type === 'single' ||
-                      itemColum?.type === 'multiple' ? (
-                        <CommonSelect
-                          variant="borderless"
-                          mode={itemColum?.type}
-                          style={{border: 'none', width: '100%'}}
-                        />
-                      ) : (
-                        <OsInput
-                          variant="borderless"
-                          type={itemColum?.type}
-                          style={{border: 'none'}}
-                        />
-                      )}
-                    </SectionColStyledInnerContent>
-                  );
-                })}
-              </Row>
-            ))}
+            {itemCon?.noOfRowsData?.map(
+              (rowsMapItem: string, rowIndex: number) => (
+                <Row style={{width: '100%'}} key={rowIndex}>
+                  {itemCon?.ColumnsData?.map(
+                    (itemColum: any, colIndex: number) => {
+                      const totalFloorValue = Math.floor(
+                        24 / itemCon?.ColumnsData?.length,
+                      );
+                      return (
+                        <SectionColStyledInnerContent
+                          span={totalFloorValue}
+                          key={colIndex}
+                        >
+                          {itemColum?.type === 'single' ||
+                          itemColum?.type === 'multiple' ? (
+                            <CommonSelect
+                              variant="borderless"
+                              mode={itemColum?.type}
+                              style={{border: 'none', width: '100%'}}
+                            />
+                          ) : (
+                            <OsInput
+                              variant="borderless"
+                              type={itemColum?.type}
+                              style={{border: 'none'}}
+                            />
+                          )}
+                        </SectionColStyledInnerContent>
+                      );
+                    },
+                  )}
+                </Row>
+              ),
+            )}
           </SectionRowStyledInner>
         );
+
       case 'Text':
-      case 'Currency':
       case 'Email':
       case 'Contact':
       case 'Time':
-      case 'Add Section':
       case 'Date':
+      case 'Currency':
         return (
           <>
             {itemCon?.name === 'Time' ? (
@@ -102,33 +112,22 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({data, form, activeKey}) => {
               <OsInput
                 suffix={itemCon?.currency}
                 type={itemCon?.type}
-                defaultValue={initialValue}
+                {...commonProps}
               />
             ) : itemCon?.name === 'Date' ? (
               <CommonDatePicker format={itemCon?.dateformat} />
-            ) : // : itemCon?.name === 'Contact' ? (
-            //   <ContactInput
-            //     name="Contact"
-            //     id="Contact"
-            //     value={itemCon?.value}
-            //     mask={itemCon?.dataformat}
-            //     limitMaxLength
-            //     defaultCountry={itemCon?.defaultcountry}
-            //     max={11}
-            //     onChange={() => {}}
-            //   />
-            // )
-            itemCon?.name === 'Email' || itemCon?.label === 'Email' ? (
+            ) : itemCon?.name === 'Email' ? (
               <OsInput
-                type={itemCon?.type}
+                type="email"
                 suffix={<MailOutlined />}
-                defaultValue={initialValue}
+                {...commonProps}
               />
             ) : (
-              <OsInput type={itemCon?.type} defaultValue={initialValue} />
+              <OsInput type={itemCon?.type} {...commonProps} />
             )}
           </>
         );
+
       case 'Multi-Select':
       case 'Drop Down':
         const optionssMulti = itemCon?.options?.map((itemoo: any) => ({
@@ -143,6 +142,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({data, form, activeKey}) => {
             defaultValue={initialValue}
           />
         );
+
       case 'Checkbox':
       case 'Radio Button':
       case 'Toggle':
@@ -154,15 +154,17 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({data, form, activeKey}) => {
                   24 / itemCon?.columnRequired,
                 );
                 return (
-                  <ToggleColStyled span={totalFloorValue}>
+                  <ToggleColStyled span={totalFloorValue} key={itemLabelInde}>
                     {itemCon?.name === 'Radio Button' ? (
-                      <Radio value={itemLabelInde}>{itemLabelOp}</Radio>
+                      <Radio value={itemLabelInde} checked={!!initialValue}>
+                        {itemLabelOp}
+                      </Radio>
                     ) : itemCon?.name === 'Toggle' ? (
                       <>
-                        <Switch /> {itemLabelOp}
+                        <Switch checked={!!initialValue} /> {itemLabelOp}
                       </>
                     ) : (
-                      <Checkbox value={itemLabelOp} checked>
+                      <Checkbox value={itemLabelOp} checked={!!initialValue}>
                         {itemLabelOp}
                       </Checkbox>
                     )}
