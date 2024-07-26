@@ -73,3 +73,15 @@ export const getAllPartnerandProgram = createAsyncThunk(
     }
   },
 );
+export const getAllPartnerandProgramFilterData = createAsyncThunk(
+  'partner/getAllPartnerandProgramFilterData',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PARTNER_API.filterData(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+

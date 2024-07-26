@@ -88,7 +88,6 @@ const OsPartnerSelect: FC<{
   useEffect(() => {
     let newOptionArr: any = [];
     if (isSuperAdmin || notApprovedData) {
-      console.log('allPartnerFilterData', allPartnerFilterData);
       allPartnerFilterData?.map((items: any) => {
         let newArr: any = [];
         items?.PartnerPrograms?.map((itemsInner: any) => {
@@ -96,8 +95,12 @@ const OsPartnerSelect: FC<{
             newArr?.push(itemsInner);
           }
         });
-
-        if (newArr?.length > 0) {
+        if (pathname === '/superAdminPartner') {
+          newOptionArr?.push({
+            label: <CustomTextCapitalization text={items?.partner} />,
+            value: items?.id,
+          });
+        } else if (newArr?.length > 0) {
           newOptionArr?.push({
             label: <CustomTextCapitalization text={items?.partner} />,
             value: items?.id,
@@ -163,7 +166,6 @@ const OsPartnerSelect: FC<{
   }, [PartnerData, allPartnerFilterData]);
 
   //
-
   return (
     <>
       <Form.Item

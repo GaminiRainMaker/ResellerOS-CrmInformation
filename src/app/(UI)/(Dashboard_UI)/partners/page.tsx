@@ -21,10 +21,15 @@ import {useEffect, useState} from 'react';
 import {useSearchParams} from 'next/navigation';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import {insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
-import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
+import {
+  getAllPartnerandProgram,
+  getAllPartnerandProgramFilterData,
+} from '../../../../../redux/actions/partner';
 import {getUnassignedProgram} from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import PartnerAnalytics from './partnerAnalytics';
+import OsInput from '@/app/components/common/os-input';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 
 const Partners: React.FC = () => {
   const [token] = useThemeToken();
@@ -40,14 +45,26 @@ const Partners: React.FC = () => {
   const {userInformation} = useAppSelector((state) => state.user);
   const [formData, setformData] = useState<any>();
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
-  const [requestPartnerLoading, setRequestPartnerLoading] = useState<boolean>(false)
+  const [queryDataa, setQueryData] = useState<any>();
+  const [requestPartnerLoading, setRequestPartnerLoading] =
+    useState<boolean>(false);
 
   useEffect(() => {
     dispatch(getUnassignedProgram());
-    dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
+    dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
       setAllPartnerData(payload?.payload);
     });
   }, []);
+
+  const searchQuery = useDebounceHook(queryDataa, 500);
+
+  useEffect(() => {
+    dispatch(getAllPartnerandProgramFilterData(searchQuery))?.then(
+      (payload: any) => {
+        setAllPartnerData(payload?.payload);
+      },
+    );
+  }, [searchQuery]);
 
   useEffect(() => {
     if (getTabId) {
@@ -346,7 +363,7 @@ const Partners: React.FC = () => {
       partner_program_id: id,
     };
     await dispatch(insertAssignPartnerProgram(partnerObj));
-    dispatch(getAllPartnerandProgram(''))?.then((payload: any) => {
+    dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
       setAllPartnerData(payload?.payload);
     });
   };
@@ -506,13 +523,70 @@ const Partners: React.FC = () => {
         <Row
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
-          <OsTabs activeKey={activeTab?.toString()} items={tabItems} />
+          <OsTabs
+            activeKey={activeTab?.toString()}
+            items={tabItems}
+            tabBarExtraContent={
+              <Space size={12} align="center">
+                <Space direction="vertical" size={0}>
+                  <Typography name="Body 4/Medium">Partner</Typography>
+                  <OsInput
+                    value={queryDataa?.partnerQuery}
+                    onChange={(e: any) => {
+                      setQueryData({
+                        ...queryDataa,
+                        partnerQuery: e?.target?.value,
+                      });
+                    }}
+                  />
+                </Space>
+                <Space direction="vertical" size={0}>
+                  <Typography name="Body 4/Medium">Partner Program</Typography>
+                  <OsInput
+                    value={queryDataa?.partnerprogramQuery}
+                    onChange={(e: any) => {
+                      setQueryData({
+                        ...queryDataa,
+                        partnerprogramQuery: e?.target?.value,
+                      });
+                    }}
+                  />
+                </Space>
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: '20px',
+                  }}
+                >
+                  <Typography
+                    cursor="pointer"
+                    name="Button 1"
+                    style={{cursor: 'pointer'}}
+                    color={token?.colorLink}
+                    onClick={() => {
+                      setQueryData({});
+                    }}
+                  >
+                    Reset
+                  </Typography>
+                </div>
+              </Space>
+            }
+          />
         </Row>
       </Space>
 
       <OsModal
         loading={requestPartnerLoading}
-        body={<RequestPartner form={form} setOpen={setShowModal} setRequestPartnerLoading={setRequestPartnerLoading} />}
+        body={
+          <RequestPartner
+            form={form}
+            setOpen={setShowModal}
+            setRequestPartnerLoading={setRequestPartnerLoading}
+          />
+        }
         width={800}
         open={showModal}
         onCancel={() => {

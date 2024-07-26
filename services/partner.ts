@@ -20,4 +20,6 @@ export const PARTNER_API = {
     get(API.PARTNER.GetAllPartnerTemp) as Promise<AxiosResponse<[]>>,
   getAllPartnerandProgram: () =>
     get(API.PARTNER.getAllPartnerandProgram) as Promise<AxiosResponse<[]>>,
+  filterData: (data: any) =>
+    post(API.PARTNER.filterData, data) as Promise<AxiosResponse<[]>>,
 };

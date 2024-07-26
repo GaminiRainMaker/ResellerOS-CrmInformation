@@ -8,6 +8,7 @@ import {
   updatePartnerById,
   getAllPartner,
   getAllPartnerandProgram,
+  getAllPartnerandProgramFilterData,
 } from '../actions/partner';
 
 type PartnerState = {
@@ -125,6 +126,24 @@ const partnerSlice = createSlice({
       )
       .addCase(
         getAllPartnerandProgram.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getAllPartnerandProgramFilterData.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getAllPartnerandProgramFilterData.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getAllPartnerandProgramFilterData.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
