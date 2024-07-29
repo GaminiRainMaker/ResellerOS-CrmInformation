@@ -360,10 +360,13 @@ const Partners: React.FC = () => {
   const handleAddNewAssignedPartnerProgramRequest = async (id: number) => {
     setLoadingForRequest(true);
     const partnerObj = {
-      organization: organizationNameForRequest,
+      organization: userInformation?.organization
+        ? userInformation?.organization
+        : organizationNameForRequest,
       requested_by: userInformation?.id,
       new_request: false,
       partner_program_id: id,
+      userResquest:true
     };
     await dispatch(insertAssignPartnerProgram(partnerObj));
     await dispatch(getAllPartnerandProgramFilterData({}))?.then(
