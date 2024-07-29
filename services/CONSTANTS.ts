@@ -173,6 +173,7 @@ export const API = {
     GetDealRegByOpportunityId: '/dealReg/getDealRegByOpportunityId',
     GetDealRegByPartnerProgramId: '/dealReg/getDealRegByPartnerProgramId',
     UpdateDealRegStatus: '/dealReg/updateDealRegStatus',
+    GetDealRegById: '/dealReg/getDealRegById',
   },
   DEALREGADDRESS: {
     INDEX: '/dealRegAddress',

@@ -28,9 +28,9 @@ export const getAllDealReg = createAsyncThunk(
 
 export const getDealRegById = createAsyncThunk(
   'dealReg/getDealRegById',
-  async (id: number, thunkApi) => {
+  async (id: any, thunkApi) => {
     try {
-      const res = await DEALREG_API.getById(id);
+      const res = await DEALREG_API.getDealRegById(id);
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error?.message);

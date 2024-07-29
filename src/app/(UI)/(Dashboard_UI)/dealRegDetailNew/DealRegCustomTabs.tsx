@@ -11,31 +11,36 @@ import CustomProgress from '@/app/components/common/os-progress/DealregProgressB
 import Typography from '@/app/components/common/typography';
 import {formatStatus} from '@/app/utils/CONSTANTS';
 import {tabBarPercentageCalculations} from '@/app/utils/base';
+import {useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {queryAttributeField} from '../../../../../redux/actions/attributeField';
+import {updateDealRegById} from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {setDealReg} from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
-import {
-  getDealRegByOpportunityId,
-  updateDealRegById,
-} from '../../../../../redux/actions/dealReg';
-import {useSearchParams} from 'next/navigation';
+import {setDealRegForNew} from '../../../../../redux/slices/dealReg';
 
 const DealRegCustomTabs: React.FC<any> = ({form}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const searchParams = useSearchParams();
   const getOpportunityId = searchParams.get('opportunityId');
-  const {data: DealRegData, dealReg} = useAppSelector((state) => state.dealReg);
+  const {
+    data: DealRegData,
+    dealReg,
+    getDealRegForNew,
+  } = useAppSelector((state) => state.dealReg);
   const [activeKey, setActiveKey] = useState<number>();
   const [tabItems, setTabItems] = useState([]);
   const {data: AttributeFieldData} = useAppSelector(
     (state) => state.attributeField,
   );
+
+  const [commonTemplateData, setCommonTemplateData] = useState<any>();
+  const [uniqueTemplateData, setUniqueTemplateData] = useState<any>();
+
   useEffect(() => {
     if (DealRegData && DealRegData.length > 0) {
-      setActiveKey(DealRegData[0]?.partner_program_id);
+      setActiveKey(DealRegData[0]?.id);
     }
   }, [DealRegData]);
 
@@ -43,13 +48,11 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
     dispatch(queryAttributeField(''));
   }, [dispatch]);
 
-  const handleTabChange = (key: any) => {
-    setActiveKey(key);
-  };
-
-  const onFinish = () => {
+  const onFinish = async () => {
     const commonFieldObject: any = {};
     const uniqueFieldObject: any = {};
+    let finalCommonData: any = {};
+    let finalUniqueData: any = {};
     const commonFieldFormData = form.getFieldsValue();
 
     if (commonFieldFormData) {
@@ -60,57 +63,71 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
           uniqueFieldObject[key] = value;
         }
       }
+      if (activeKey) {
+        const commonFormData = getDealRegForNew?.[0]?.common_form_data
+          ? JSON?.parse(getDealRegForNew?.[0]?.common_form_data)
+          : '';
+        const newFinalData = commonTemplateData
+          ? commonTemplateData
+          : commonFormData;
 
+        finalCommonData = {
+          ...newFinalData,
+          ...commonFieldObject,
+        };
+        setCommonTemplateData(finalCommonData);
+      }
       const obj = {
-        common_form_data: [JSON.stringify(commonFieldObject)],
-        unique_form_data: [JSON.stringify(uniqueFieldObject)],
-        id: dealReg?.id,
+        common_form_data: [JSON.stringify(finalCommonData)],
+        unique_form_data: [JSON.stringify(finalUniqueData)],
+        id: getDealRegForNew?.[0]?.id,
       };
 
       if (obj) {
-        dispatch(updateDealRegById(obj)).then((response: any) => {
-          if (response?.payload) {
-            dispatch(getDealRegByOpportunityId(Number(getOpportunityId))).then(
-              (d) => {
-                if (d?.payload) {
-                  const statusData = d?.payload?.reduce(
-                    (acc: any[], element: any) => {
-                      if (element?.id === dealReg?.id) {
-                        const tabPercentage = tabBarPercentageCalculations(
-                          element?.PartnerProgram?.form_data,
-                          AttributeFieldData,
-                          element?.unique_form_data,
-                          element?.common_form_data,
-                        );
-
-                        if (tabPercentage > 0 && tabPercentage < 100) {
-                          acc.push({
-                            id: element?.id,
-                            status: 'In Progress',
-                          });
-                        }
-                      }
-                      return acc;
-                    },
-                    [],
-                  );
-                  console.log('statusData', statusData);
-                }
-              },
-            );
-          }
-        });
+        dispatch(updateDealRegById(obj));
+        // .then((response: any) => {
+        // if (response?.payload) {
+        //   dispatch(getDealRegByOpportunityId(Number(getOpportunityId))).then(
+        //     (d) => {
+        //       if (d?.payload) {
+        //         const statusData = d?.payload?.reduce(
+        //           (acc: any[], element: any) => {
+        //             if (element?.id === dealReg?.id) {
+        //               const tabPercentage = tabBarPercentageCalculations(
+        //                 element?.PartnerProgram?.form_data,
+        //                 AttributeFieldData,
+        //                 element?.unique_form_data,
+        //                 element?.common_form_data,
+        //               );
+        //               if (tabPercentage > 0 && tabPercentage < 100) {
+        //                 acc.push({
+        //                   id: element?.id,
+        //                   status: 'In Progress',
+        //                 });
+        //               }
+        //             }
+        //             return acc;
+        //           },
+        //           [],
+        //         );
+        //         console.log('statusData', statusData);
+        //         // dispatch(updateDealRegStatus(statusData)).then((response) => {
+        //         //   if (response?.payload) {
+        //         //     dispatch(
+        //         //       getDealRegByOpportunityId(Number(getOpportunityId)),
+        //         //     );
+        //         //   }
+        //         // });
+        //       }
+        //     },
+        //   );
+        // }
+        // });
       }
     }
-
-    // const tabPercentage = tabBarPercentageCalculations(
-    //   dealReg?.PartnerProgram?.form_data,
-    //   AttributeFieldData,
-    //   dealReg?.unique_form_data,
-    //   dealReg?.common_form_data,
-    // );
-    // console.log('tabPercentagetabPercentage', tabPercentage);
   };
+
+  console.log('commonTemplateData', commonTemplateData);
 
   useEffect(() => {
     if (!DealRegData) {
@@ -121,9 +138,8 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
     const newTabItems =
       DealRegData &&
       DealRegData?.map((element: any) => {
-        const {partner_program_id, Partner, PartnerProgram} = element;
-        const isActive =
-          activeKey?.toString() === partner_program_id?.toString();
+        const {partner_program_id, Partner, PartnerProgram, id} = element;
+        const isActive = activeKey?.toString() === id?.toString();
 
         const tabPercentage = tabBarPercentageCalculations(
           element?.PartnerProgram?.form_data,
@@ -131,6 +147,8 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
           element?.unique_form_data,
           element?.common_form_data,
         );
+
+        console.log('tabPercentage', tabPercentage);
 
         const headerStyle = {
           background: isActive ? token.colorInfo : token.colorInfoBg,
@@ -141,10 +159,10 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
           : token?.colorTextDisabled;
 
         return {
-          key: partner_program_id,
+          key: id,
           label: (
             <Row
-              key={partner_program_id}
+              key={id}
               gutter={[0, 10]}
               style={{width: 'fit-content', margin: '24px 0px'}}
             >
@@ -152,7 +170,10 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
                 token={token}
                 style={headerStyle}
                 onClick={() => {
-                  dispatch(setDealReg(element));
+                  // dispatch(setDealRegForNew({}));
+                  setCommonTemplateData('');
+                  // dispatch(setDealReg(element));
+                  setActiveKey(id);
                 }}
               >
                 <Space>
@@ -173,12 +194,16 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
             </Row>
           ),
           children: (
-            <div key={partner_program_id}>
+            <div key={id}>
               <DealRegDetailForm
                 data={element}
                 activeKey={activeKey}
                 form={form}
                 handleBlur={onFinish}
+                commonTemplateData={commonTemplateData}
+                setCommonTemplateData={setCommonTemplateData}
+                uniqueTemplateData={uniqueTemplateData}
+                setUniqueTemplateData={setUniqueTemplateData}
               />
             </div>
           ),
@@ -194,7 +219,6 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
         token={token}
         activeKey={activeKey as any}
         items={tabItems}
-        onChange={handleTabChange}
       />
     </>
   );

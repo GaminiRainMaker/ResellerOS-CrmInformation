@@ -10,21 +10,28 @@ import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {MailOutlined} from '@ant-design/icons';
 import {Collapse, Form, Radio, TimePicker} from 'antd';
-import {FC, useEffect, useState} from 'react';
-import {useAppSelector} from '../../../../../redux/hook';
+import {FC, useEffect} from 'react';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {
   AttributeData,
   CommonFieldsProps,
   TransformedChild,
   TransformedData,
 } from './dealReg.interface';
+import {getDealRegById} from '../../../../../redux/actions/dealReg';
 
-const CommonFields: FC<CommonFieldsProps> = ({form, activeKey, handleBlur}) => {
+const CommonFields: FC<CommonFieldsProps> = ({
+  form,
+  activeKey,
+  handleBlur,
+  commonTemplateData,
+  setCommonTemplateData,
+}) => {
+  const dispatch = useAppDispatch();
   const {data: AttributeFieldData} = useAppSelector(
     (state) => state.attributeField,
   );
-  const {dealReg} = useAppSelector((state) => state.dealReg);
-  const [templateData, setTemplateData] = useState<any>();
+  const {dealReg, getDealRegForNew} = useAppSelector((state) => state.dealReg);
 
   const transformData = (data: AttributeData[]): TransformedData[] => {
     const groupedData = data?.reduce(
@@ -60,7 +67,7 @@ const CommonFields: FC<CommonFieldsProps> = ({form, activeKey, handleBlur}) => {
 
   const getInputComponent = (child: TransformedChild) => {
     const fieldName = convertToSnakeCase(child?.label);
-    const initialValue = templateData?.[fieldName];
+    const initialValue = commonTemplateData?.[fieldName];
     const commonProps = {defaultValue: initialValue, onBlur: handleBlur};
     switch (child.data_type) {
       case 'textarea':
@@ -99,48 +106,47 @@ const CommonFields: FC<CommonFieldsProps> = ({form, activeKey, handleBlur}) => {
   };
 
   useEffect(() => {
-    if (dealReg?.PartnerProgram?.id === activeKey) {
-      const commonFormData =
-        dealReg?.common_form_data && JSON.parse(dealReg?.common_form_data);
+    if (activeKey) {
+      dispatch(getDealRegById(activeKey));
+    }
+  }, [activeKey]);
+
+  useEffect(() => {
+    if (activeKey) {
+      console.log('getDealRegForNew533453', getDealRegForNew[0]);
+      const commonFormData = getDealRegForNew?.[0]?.common_form_data
+        ? JSON?.parse(getDealRegForNew?.[0]?.common_form_data)
+        : '';
       if (commonFormData) {
-        setTemplateData(commonFormData);
+        setCommonTemplateData(commonFormData);
+        const initialValues = Object?.keys(commonFormData).reduce(
+          (acc: any, key) => {
+            acc[key] = commonFormData[key];
+            return acc;
+          },
+          {},
+        );
+        form.setFieldsValue(initialValues);
       } else {
-        setTemplateData('');
+        setCommonTemplateData('');
         form.resetFields();
       }
     } else {
-      setTemplateData('');
+      setCommonTemplateData('');
       form.resetFields();
     }
-  }, [activeKey, dealReg, form]);
+  }, [getDealRegForNew]);
 
-  useEffect(() => {
-    if (templateData) {
-      const initialValues = Object.keys(templateData).reduce(
-        (acc: any, key) => {
-          acc[key] = templateData[key];
-          return acc;
-        },
-        {},
-      );
-      form.setFieldsValue(initialValues);
-    }
-  }, [templateData, form]);
 
   return (
     <Form
       form={form}
       layout="vertical"
       style={{width: '100%', background: 'white', borderRadius: '12px'}}
+      // initialValues={commonTemplateData}
     >
       {template?.map((section, index) => (
-        <Collapse
-          key={index}
-          defaultActiveKey={index}
-          accordion
-          style={{width: '100%'}}
-          ghost
-        >
+        <Collapse key={index} accordion style={{width: '100%'}} ghost>
           <Panel
             header={
               <Space

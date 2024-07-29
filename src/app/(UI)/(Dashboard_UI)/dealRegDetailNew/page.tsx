@@ -60,6 +60,8 @@ const DealRegDetail = () => {
     dispatch(setDealReg(DealRegData?.[0]));
   }, [DealRegData]);
 
+  console.log('DealRegDataDealRegData', DealRegData);
+
   const OsBreadCrumbItems = [
     {
       key: '1',

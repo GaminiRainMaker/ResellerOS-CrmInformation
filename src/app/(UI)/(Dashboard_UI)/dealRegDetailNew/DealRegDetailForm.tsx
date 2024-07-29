@@ -9,7 +9,16 @@ import {FC} from 'react';
 import CommonFields from './CommonField';
 import UniqueFields from './UniqueField';
 
-const DealRegDetailForm: FC<any> = ({data, activeKey, form, handleBlur}) => {
+const DealRegDetailForm: FC<any> = ({
+  data,
+  activeKey,
+  form,
+  handleBlur,
+  commonTemplateData,
+  setCommonTemplateData,
+  uniqueTemplateData,
+  setUniqueTemplateData,
+}) => {
   const [token] = useThemeToken();
 
   const CommonFieldsItems = [
@@ -25,6 +34,8 @@ const DealRegDetailForm: FC<any> = ({data, activeKey, form, handleBlur}) => {
           form={form}
           activeKey={activeKey}
           handleBlur={handleBlur}
+          commonTemplateData={commonTemplateData}
+          setCommonTemplateData={setCommonTemplateData}
         />
       ),
     },
@@ -44,6 +55,8 @@ const DealRegDetailForm: FC<any> = ({data, activeKey, form, handleBlur}) => {
           form={form}
           activeKey={activeKey}
           handleBlur={handleBlur}
+          uniqueTemplateData={uniqueTemplateData}
+          setUniqueTemplateData={setUniqueTemplateData}
         />
       ),
     },

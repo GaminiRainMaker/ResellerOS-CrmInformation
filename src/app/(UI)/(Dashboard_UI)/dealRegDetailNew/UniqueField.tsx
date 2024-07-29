@@ -27,13 +27,15 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
   form,
   activeKey,
   handleBlur,
+  uniqueTemplateData,
+  setUniqueTemplateData,
 }) => {
   const allContent = JSON.parse(data?.form_data).flatMap(
     (section: any) => section.content,
   );
 
   const {dealReg} = useAppSelector((state) => state.dealReg);
-  const [uniqueTemplateData, setUniqueTemplateData] = useState<any>();
+  // const [uniqueTemplateData, setUniqueTemplateData] = useState<any>();
 
   const getInputComponent = (itemCon: any) => {
     const fieldName = convertToSnakeCase(itemCon?.label);
@@ -207,6 +209,14 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
         dealReg?.common_form_data && JSON.parse(dealReg?.unique_form_data);
       if (uniqueFormData) {
         setUniqueTemplateData(uniqueFormData);
+        const initialValues = Object.keys(uniqueFormData).reduce(
+          (acc: any, key) => {
+            acc[key] = uniqueFormData[key];
+            return acc;
+          },
+          {},
+        );
+        form.setFieldsValue(initialValues);
       } else {
         setUniqueTemplateData('');
         form.resetFields();
@@ -217,18 +227,18 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     }
   }, [activeKey, dealReg, form]);
 
-  useEffect(() => {
-    if (uniqueTemplateData) {
-      const initialValues = Object.keys(uniqueTemplateData).reduce(
-        (acc: any, key) => {
-          acc[key] = uniqueTemplateData[key];
-          return acc;
-        },
-        {},
-      );
-      form.setFieldsValue(initialValues);
-    }
-  }, [uniqueTemplateData, form]);
+  // useEffect(() => {
+  //   if (uniqueTemplateData) {
+  //     const initialValues = Object.keys(uniqueTemplateData).reduce(
+  //       (acc: any, key) => {
+  //         acc[key] = uniqueTemplateData[key];
+  //         return acc;
+  //       },
+  //       {},
+  //     );
+  //     form.setFieldsValue(initialValues);
+  //   }
+  // }, [uniqueTemplateData, form]);
 
   return (
     <Form
