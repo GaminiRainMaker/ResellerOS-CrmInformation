@@ -30,7 +30,6 @@ const ConcernDetail: FC<ConcernDetailInterface> = ({
   useEffect(() => {
     dispatch(getQuoteById(showConcernDetailModal?.quoteId));
   }, [showConcernDetailModal?.quoteId]);
-
   useEffect(() => {
     const concernPDFArray: any = [];
     quoteById?.QuoteFiles?.forEach((item: any) => {
@@ -66,7 +65,7 @@ const ConcernDetail: FC<ConcernDetailInterface> = ({
             },
           ];
           concernPDFArray?.push({
-            issue_type: 'Manual File',
+            issue_type: item?.issue_type ? item?.issue_type : 'Manual File',
             data,
           });
         }
