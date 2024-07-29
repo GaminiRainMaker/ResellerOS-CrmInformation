@@ -27,15 +27,14 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
   form,
   activeKey,
   handleBlur,
-  uniqueTemplateData,
-  setUniqueTemplateData,
+  formData,
 }) => {
   const allContent = JSON.parse(data?.form_data).flatMap(
     (section: any) => section.content,
   );
 
   const {dealReg} = useAppSelector((state) => state.dealReg);
-  // const [uniqueTemplateData, setUniqueTemplateData] = useState<any>();
+  const [uniqueTemplateData, setUniqueTemplateData] = useState<any>();
 
   const getInputComponent = (itemCon: any) => {
     const fieldName = convertToSnakeCase(itemCon?.label);
@@ -204,9 +203,8 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
   };
 
   useEffect(() => {
-    if (dealReg?.PartnerProgram?.id === activeKey) {
-      const uniqueFormData =
-        dealReg?.common_form_data && JSON.parse(dealReg?.unique_form_data);
+    if (formData && formData?.unique_form_data) {
+      const uniqueFormData = formData?.unique_form_data;
       if (uniqueFormData) {
         setUniqueTemplateData(uniqueFormData);
         const initialValues = Object.keys(uniqueFormData).reduce(
@@ -217,15 +215,9 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           {},
         );
         form.setFieldsValue(initialValues);
-      } else {
-        setUniqueTemplateData('');
-        form.resetFields();
       }
-    } else {
-      setUniqueTemplateData('');
-      form.resetFields();
     }
-  }, [activeKey, dealReg, form]);
+  }, [form, formData]);
 
   // useEffect(() => {
   //   if (uniqueTemplateData) {
@@ -270,7 +262,10 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
             >
               <SelectFormItem
                 name={
-                  'u_' + convertToSnakeCase(allContentItem.label) + itemIndex
+                  'u_' +
+                  convertToSnakeCase(allContentItem.label) +
+                  itemIndex +
+                  activeKey
                 }
                 label={
                   <Typography name="Body 4/Medium">

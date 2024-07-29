@@ -52,14 +52,12 @@ export interface CommonFieldsProps {
   form: FormInstance;
   activeKey: string;
   handleBlur: () => void;
-  commonTemplateData: any;
-  setCommonTemplateData: any;
+  formData: any;
 }
 export interface UniqueFieldsProps {
   data: any;
   form: FormInstance;
   activeKey: string;
   handleBlur: () => void;
-  uniqueTemplateData: any;
-  setUniqueTemplateData: any;
+  formData: any;
 }

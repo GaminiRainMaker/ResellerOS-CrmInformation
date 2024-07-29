@@ -14,7 +14,10 @@ import {tabBarPercentageCalculations} from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {queryAttributeField} from '../../../../../redux/actions/attributeField';
-import {updateDealRegById} from '../../../../../redux/actions/dealReg';
+import {
+  getDealRegById,
+  updateDealRegById,
+} from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DealRegDetailForm from './DealRegDetailForm';
 import {setDealRegForNew} from '../../../../../redux/slices/dealReg';
@@ -34,9 +37,7 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
   const {data: AttributeFieldData} = useAppSelector(
     (state) => state.attributeField,
   );
-
-  const [commonTemplateData, setCommonTemplateData] = useState<any>();
-  const [uniqueTemplateData, setUniqueTemplateData] = useState<any>();
+  const [formData, setFormData] = useState<any>();
 
   useEffect(() => {
     if (DealRegData && DealRegData.length > 0) {
@@ -45,16 +46,40 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
   }, [DealRegData]);
 
   useEffect(() => {
+    if (activeKey) {
+      dispatch(getDealRegById(activeKey));
+    }
+  }, [activeKey]);
+
+  useEffect(() => {
+    if (getDealRegForNew && getDealRegForNew.length > 0) {
+      let finalDealReg = getDealRegForNew[0];
+      const obj = {
+        common_form_data:
+          finalDealReg?.common_form_data &&
+          finalDealReg?.common_form_data.length > 0
+            ? JSON.parse(finalDealReg?.common_form_data[0])
+            : {},
+        unique_form_data:
+          finalDealReg?.unique_form_data &&
+          finalDealReg?.unique_form_data.length > 0
+            ? JSON.parse(finalDealReg?.unique_form_data[0])
+            : {},
+        id: finalDealReg?.id,
+      };
+      setFormData(obj);
+    }
+  }, [getDealRegForNew]);
+
+  useEffect(() => {
     dispatch(queryAttributeField(''));
   }, [dispatch]);
 
   const onFinish = async () => {
-    const commonFieldObject: any = {};
-    const uniqueFieldObject: any = {};
-    let finalCommonData: any = {};
-    let finalUniqueData: any = {};
     const commonFieldFormData = form.getFieldsValue();
 
+    const commonFieldObject: any = {};
+    const uniqueFieldObject: any = {};
     if (commonFieldFormData) {
       for (const [key, value] of Object?.entries(commonFieldFormData)) {
         if (key?.startsWith('c_')) {
@@ -63,26 +88,18 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
           uniqueFieldObject[key] = value;
         }
       }
-      if (activeKey) {
-        const commonFormData = getDealRegForNew?.[0]?.common_form_data
-          ? JSON?.parse(getDealRegForNew?.[0]?.common_form_data)
-          : '';
-        const newFinalData = commonTemplateData
-          ? commonTemplateData
-          : commonFormData;
 
-        finalCommonData = {
-          ...newFinalData,
-          ...commonFieldObject,
-        };
-        setCommonTemplateData(finalCommonData);
-      }
       const obj = {
-        common_form_data: [JSON.stringify(finalCommonData)],
-        unique_form_data: [JSON.stringify(finalUniqueData)],
-        id: getDealRegForNew?.[0]?.id,
+        common_form_data: [JSON.stringify(commonFieldObject)],
+        unique_form_data: [JSON.stringify(uniqueFieldObject)],
+        id: activeKey,
       };
-
+      const formObj = {
+        common_form_data: commonFieldObject,
+        unique_form_data: uniqueFieldObject,
+        id: activeKey,
+      };
+      setFormData(formObj);
       if (obj) {
         dispatch(updateDealRegById(obj));
         // .then((response: any) => {
@@ -127,8 +144,6 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
     }
   };
 
-  console.log('commonTemplateData', commonTemplateData);
-
   useEffect(() => {
     if (!DealRegData) {
       setTabItems([]);
@@ -171,7 +186,6 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
                 style={headerStyle}
                 onClick={() => {
                   // dispatch(setDealRegForNew({}));
-                  setCommonTemplateData('');
                   // dispatch(setDealReg(element));
                   setActiveKey(id);
                 }}
@@ -200,10 +214,7 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
                 activeKey={activeKey}
                 form={form}
                 handleBlur={onFinish}
-                commonTemplateData={commonTemplateData}
-                setCommonTemplateData={setCommonTemplateData}
-                uniqueTemplateData={uniqueTemplateData}
-                setUniqueTemplateData={setUniqueTemplateData}
+                formData={formData}
               />
             </div>
           ),
@@ -211,7 +222,15 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
       });
 
     setTabItems(newTabItems);
-  }, [DealRegData, activeKey, AttributeFieldData, token, dispatch, form]);
+  }, [
+    DealRegData,
+    activeKey,
+    AttributeFieldData,
+    token,
+    dispatch,
+    form,
+    formData,
+  ]);
 
   return (
     <>

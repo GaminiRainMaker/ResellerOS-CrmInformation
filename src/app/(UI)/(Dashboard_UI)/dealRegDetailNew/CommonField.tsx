@@ -10,7 +10,7 @@ import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {MailOutlined} from '@ant-design/icons';
 import {Collapse, Form, Radio, TimePicker} from 'antd';
-import {FC, useEffect} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {
   AttributeData,
@@ -18,20 +18,36 @@ import {
   TransformedChild,
   TransformedData,
 } from './dealReg.interface';
-import {getDealRegById} from '../../../../../redux/actions/dealReg';
 
 const CommonFields: FC<CommonFieldsProps> = ({
   form,
   activeKey,
   handleBlur,
-  commonTemplateData,
-  setCommonTemplateData,
+  formData,
 }) => {
   const dispatch = useAppDispatch();
   const {data: AttributeFieldData} = useAppSelector(
     (state) => state.attributeField,
   );
   const {dealReg, getDealRegForNew} = useAppSelector((state) => state.dealReg);
+  const [commonTemplateData, setCommonTemplateData] = useState<any>();
+
+  useEffect(() => {
+    if (formData) {
+      const commonFormData = formData?.common_form_data;
+      if (commonFormData) {
+        setCommonTemplateData(commonFormData);
+        const initialValues = Object.keys(commonFormData).reduce(
+          (acc: any, key) => {
+            acc[key] = commonFormData[key];
+            return acc;
+          },
+          {},
+        );
+        form.setFieldsValue(initialValues);
+      }
+    }
+  }, [form, formData]);
 
   const transformData = (data: AttributeData[]): TransformedData[] => {
     const groupedData = data?.reduce(
@@ -106,17 +122,8 @@ const CommonFields: FC<CommonFieldsProps> = ({
   };
 
   useEffect(() => {
-    if (activeKey) {
-      dispatch(getDealRegById(activeKey));
-    }
-  }, [activeKey]);
-
-  useEffect(() => {
-    if (activeKey) {
-      console.log('getDealRegForNew533453', getDealRegForNew[0]);
-      const commonFormData = getDealRegForNew?.[0]?.common_form_data
-        ? JSON?.parse(getDealRegForNew?.[0]?.common_form_data)
-        : '';
+    if (formData && formData?.common_form_data) {
+      const commonFormData = formData?.common_form_data;
       if (commonFormData) {
         setCommonTemplateData(commonFormData);
         const initialValues = Object?.keys(commonFormData).reduce(
@@ -127,16 +134,9 @@ const CommonFields: FC<CommonFieldsProps> = ({
           {},
         );
         form.setFieldsValue(initialValues);
-      } else {
-        setCommonTemplateData('');
-        form.resetFields();
       }
-    } else {
-      setCommonTemplateData('');
-      form.resetFields();
     }
-  }, [getDealRegForNew]);
-
+  }, [formData]);
 
   return (
     <Form
@@ -168,7 +168,12 @@ const CommonFields: FC<CommonFieldsProps> = ({
                   key={child.id}
                 >
                   <SelectFormItem
-                    name={'c_' + convertToSnakeCase(child?.label) + Childndex}
+                    name={
+                      'c_' +
+                      convertToSnakeCase(child?.label) +
+                      Childndex +
+                      activeKey
+                    }
                     label={
                       <Typography name="Body 4/Medium">
                         {child?.label}

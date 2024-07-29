@@ -14,10 +14,7 @@ const DealRegDetailForm: FC<any> = ({
   activeKey,
   form,
   handleBlur,
-  commonTemplateData,
-  setCommonTemplateData,
-  uniqueTemplateData,
-  setUniqueTemplateData,
+  formData,
 }) => {
   const [token] = useThemeToken();
 
@@ -34,8 +31,7 @@ const DealRegDetailForm: FC<any> = ({
           form={form}
           activeKey={activeKey}
           handleBlur={handleBlur}
-          commonTemplateData={commonTemplateData}
-          setCommonTemplateData={setCommonTemplateData}
+          formData={formData}
         />
       ),
     },
@@ -55,8 +51,7 @@ const DealRegDetailForm: FC<any> = ({
           form={form}
           activeKey={activeKey}
           handleBlur={handleBlur}
-          uniqueTemplateData={uniqueTemplateData}
-          setUniqueTemplateData={setUniqueTemplateData}
+          formData={formData}
         />
       ),
     },
