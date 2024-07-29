@@ -52,3 +52,15 @@ export const updateSharedPartnerPasswordById = createAsyncThunk(
     }
   },
 );
+
+export const getSharedPartnerPasswordForOrganization = createAsyncThunk(
+  'sharedPartnerPassword/getSharedPartnerPasswordForOrganization',
+  async (id: any, thunkApi) => {
+    try {
+      const res = await SHARED_PARTNER_PASSWORD_API.getByIdfororganization(id);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

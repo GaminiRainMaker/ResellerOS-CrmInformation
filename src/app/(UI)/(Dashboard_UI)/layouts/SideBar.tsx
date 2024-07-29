@@ -228,6 +228,7 @@ const SideBar = () => {
             ?.replace(/[^\w\s]/gi, '')
             ?.toLowerCase() == userInformation?.organization?.toLowerCase(),
       );
+
       if (loggedInOrganization) {
         getSubsCriptionForCustomer(loggedInOrganization?.id);
       } else if (!loggedInOrganization) {

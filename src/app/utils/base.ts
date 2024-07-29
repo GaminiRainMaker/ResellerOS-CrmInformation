@@ -365,7 +365,9 @@ export const updateTables = async (
         product_id: item.product_id,
         product_code: item.product_code,
         // line_amount: useRemoveDollarAndCommahook(item?.line_amount),
-        list_price: useRemoveDollarAndCommahook(item?.list_price),
+        list_price: useRemoveDollarAndCommahook(
+          item?.cost ? item?.cost : item?.list_price,
+        ),
         description: item.description,
         quantity: useRemoveDollarAndCommahook(item?.quantity),
         adjusted_price: useRemoveDollarAndCommahook(item?.adjusted_price),
@@ -444,13 +446,8 @@ export const updateTables = async (
         if (newContractProductArr)
           await dispatch(insertValidation(newContractProductArr));
       }
-
-      const newProfitabilityArr: any = [];
-      profitabilityArray.forEach((item: any, index: number) => {
-        newProfitabilityArr.push({...item, serial_number: index + count + 1});
-      });
-      if (newProfitabilityArr)
-        await dispatch(insertProfitability(newProfitabilityArr));
+      if (profitabilityArray)
+        await dispatch(insertProfitability(profitabilityArray));
 
       await dispatch(quoteFileVerification({id: fileData?.id})).then(
         (verificationResponse: any) => {

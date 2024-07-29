@@ -1,6 +1,7 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
   deleteSharedPartnerPassword,
+  getSharedPartnerPasswordForOrganization,
   insertSharedPartnerPassword,
   querySharedPartnerPassword,
   updateSharedPartnerPasswordById,
@@ -97,6 +98,24 @@ const sharedPartnerPasswordSlice = createSlice({
       )
       .addCase(
         updateSharedPartnerPasswordById.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getSharedPartnerPasswordForOrganization.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getSharedPartnerPasswordForOrganization.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getSharedPartnerPasswordForOrganization.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

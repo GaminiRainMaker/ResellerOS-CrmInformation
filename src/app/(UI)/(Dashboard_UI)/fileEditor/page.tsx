@@ -198,6 +198,7 @@ const EditorFile = () => {
         dispatch(getQuoteLineItemByQuoteIdForEditTable(newObj)).then(
           (d: any) => {
             if (d?.payload) {
+              console.log('d?.payload', d?.payload);
               // const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
               setQuoteItems(d?.payload);
             }
@@ -523,7 +524,8 @@ const EditorFile = () => {
           item === 'quote_id' ||
           item === 'organization' ||
           item === 'Id' ||
-          item === 'quoteId'
+          item === 'quoteId' ||
+          item === 'product_id'
         ) {
           const dataObj = {data: item, readOnly: true};
           updateLineItemColumnData?.push(dataObj);
@@ -568,6 +570,7 @@ const EditorFile = () => {
       true,
       Number(getQUoteId),
     );
+
     router?.push(`/generateQuote?id=${getQUoteId}&tab=2`);
   };
 
@@ -631,7 +634,7 @@ const EditorFile = () => {
               dropdownMenu
               hiddenColumns={{
                 indicators: true,
-                columns: salesForceUrl ? [0, 1] : [0],
+                columns: salesForceUrl ? [0, 1] : [0, 1],
               }}
               contextMenu
               multiColumnSorting

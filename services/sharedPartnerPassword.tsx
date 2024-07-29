@@ -25,4 +25,8 @@ export const SHARED_PARTNER_PASSWORD_API = {
     patch(API.SHARED_PARTNER_PASSWORD.INDEX, data) as Promise<
       AxiosResponse<any>
     >,
+    getByIdfororganization: (id: number) =>
+      get(`${API.SHARED_PARTNER_PASSWORD.getByIdfororganization}/${id}`) as Promise<
+        AxiosResponse<any>
+      >,
 };

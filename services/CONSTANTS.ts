@@ -262,6 +262,8 @@ export const API = {
     QUERY: 'sharedPartnerPassword/query',
     DeleteById: '/sharedPartnerPassword/deleteById',
     UpdateById: '/sharedPartnerPassword/updateById',
+    getByIdfororganization:
+      '/sharedPartnerPassword/getSharedPartnerPasswordForOrganization',
   },
   FORM_STACK: {
     INDEX: '/formstack',

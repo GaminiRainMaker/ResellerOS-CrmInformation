@@ -4,6 +4,7 @@ import {ShareIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {GlobalToken} from 'antd';
 import {SetStateAction} from 'react';
 import DecryptedPassword from './partnerPassword/DecryptedPassword';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 
 export function getMyTeamColumns(token: GlobalToken) {
   const columns = [
@@ -188,7 +189,7 @@ export function getMyPartnerColumns(
       width: 130,
       render: (text: string, record: any) => (
         <Typography hoverOnText name="Body 4/Regular">
-          {record?.Partner?.partner ?? '--'}
+          {formatStatus(record?.Partner?.partner) ?? '--'}
         </Typography>
       ),
     },
@@ -302,7 +303,7 @@ export function getSharedPasswordColumns(token: GlobalToken) {
       width: 130,
       render: (text: string, record: any) => (
         <Typography hoverOnText name="Body 4/Regular">
-          {record?.PartnerPassword?.Partner?.partner ?? '--'}
+          {formatStatus(record?.PartnerPassword?.Partner?.partner) ?? '--'}
         </Typography>
       ),
     },

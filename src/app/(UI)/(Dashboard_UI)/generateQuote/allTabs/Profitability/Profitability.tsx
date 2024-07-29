@@ -543,6 +543,7 @@ const Profitablity: FC<any> = ({
       key: 'product_family',
       width: 285,
       render(text: any, record: any) {
+        console.log('453453', record, text);
         return {
           children: (
             <CommonSelect
