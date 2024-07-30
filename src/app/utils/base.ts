@@ -1219,62 +1219,58 @@ const filterEmptyValues = (obj: any) => {
   );
 };
 
-export const tabBarPercentageCalculations = (
-  PartnerProgram: any,
-  AttributeFieldData: any,
-  UniqueFormData: any,
-  CommonFormData: any,
-) => {
-  const allContent =
-    PartnerProgram &&
-    JSON.parse(PartnerProgram)
-      .flatMap((section: any) => section?.content)
-      .filter(
-        (item: any) =>
-          item?.name !== 'Line Break' && item?.name !== 'Text Content',
-      );
-  const totalCount = [AttributeFieldData, allContent]
-    .filter((array) => array !== undefined && array !== null)
-    .flatMap((array) => array);
+const filterRequiredAndNonEmptyValues = (obj: any) => {
+  if (!obj) return {};
 
-  const uniqueFormData = UniqueFormData && JSON?.parse(UniqueFormData);
-  const commonFormData = CommonFormData && JSON?.parse(CommonFormData);
-
-  const filteredObj1 = filterEmptyValues(uniqueFormData);
-  const filteredObj2 = filterEmptyValues(commonFormData);
-
-  const mergedObj = {...filteredObj1, ...filteredObj2};
-  const filledValueLength = Object.keys(mergedObj).length;
-
-  const fillupPercentage = (filledValueLength / totalCount?.length) * 100;
-  return Math.round(fillupPercentage);
+  return Object.fromEntries(
+    Object.entries(obj).filter(
+      ([key, value]) =>
+        key.includes('_required') && value !== '' && value !== undefined,
+    ),
+  );
 };
-export const tabBarPercentageNewCalculations = (
+
+export const calculateTabBarPercentage = (
   PartnerProgram: any,
   AttributeFieldData: any,
   UniqueFormData: any,
   CommonFormData: any,
+  parseForms: boolean = false,
 ) => {
   const allContent =
     PartnerProgram &&
     JSON.parse(PartnerProgram)
       .flatMap((section: any) => section?.content)
-      .filter(
-        (item: any) =>
-          item?.name !== 'Line Break' && item?.name !== 'Text Content',
-      );
-  const totalCount = [AttributeFieldData, allContent]
+      .filter((item: any) => item?.required);
+
+  const filteAttributeFieldData = AttributeFieldData?.filter(
+    (AttributeFieldItem: any) => AttributeFieldItem?.is_required,
+  );
+
+  const totalCount = [filteAttributeFieldData, allContent]
     .filter((array) => array !== undefined && array !== null)
     .flatMap((array) => array);
 
-  const uniqueFormData = UniqueFormData;
-  const commonFormData = CommonFormData;
+  const uniqueFormData = parseForms
+    ? JSON.parse(UniqueFormData)
+    : UniqueFormData;
+  const commonFormData = parseForms
+    ? JSON.parse(CommonFormData)
+    : CommonFormData;
 
-  const filteredObj1 = filterEmptyValues(uniqueFormData);
-  const filteredObj2 = filterEmptyValues(commonFormData);
+  const filteredObj1 = filterRequiredAndNonEmptyValues(uniqueFormData);
+  const filteredObj2 = filterRequiredAndNonEmptyValues(commonFormData);
 
   const mergedObj = {...filteredObj1, ...filteredObj2};
+
   const filledValueLength = Object.keys(mergedObj).length;
+
+  console.log(
+    'filledValue',
+    filledValueLength,
+    'Total',
+    totalCount?.length,
+  );
 
   const fillupPercentage = (filledValueLength / totalCount?.length) * 100;
   return Math.round(fillupPercentage);

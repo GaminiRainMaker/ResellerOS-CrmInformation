@@ -10,10 +10,7 @@ import {
 import CustomProgress from '@/app/components/common/os-progress/DealregProgressBar';
 import Typography from '@/app/components/common/typography';
 import {formatStatus} from '@/app/utils/CONSTANTS';
-import {
-  tabBarPercentageCalculations,
-  tabBarPercentageNewCalculations,
-} from '@/app/utils/base';
+import {calculateTabBarPercentage} from '@/app/utils/base';
 import {useEffect, useState} from 'react';
 import {queryAttributeField} from '../../../../../redux/actions/attributeField';
 import {
@@ -52,11 +49,12 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
   useEffect(() => {
     if (getDealRegForNew && Object.keys(getDealRegForNew).length > 0) {
       let finalDealReg = getDealRegForNew;
-      const tabPercentage = tabBarPercentageCalculations(
+      const tabPercentage = calculateTabBarPercentage(
         finalDealReg?.PartnerProgram?.form_data,
         AttributeFieldData,
         finalDealReg?.unique_form_data,
         finalDealReg?.common_form_data,
+        true,
       );
       const obj = {
         common_form_data:
@@ -88,7 +86,6 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
 
   const onFinish = async () => {
     const commonFieldFormData = form.getFieldsValue();
-
     const commonFieldObject: any = {};
     const uniqueFieldObject: any = {};
     let finalCommonFieldObject: any = {};
@@ -123,7 +120,7 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
         };
       }
 
-      const tabPercentage = tabBarPercentageNewCalculations(
+      const tabPercentage = calculateTabBarPercentage(
         finalDealReg?.PartnerProgram?.form_data,
         AttributeFieldData,
         finalUniqueFieldObject,
@@ -173,11 +170,12 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
         const {Partner, PartnerProgram, id} = element;
         const isActive = activeKey?.toString() === id?.toString();
 
-        const tabPercentage = tabBarPercentageCalculations(
+        const tabPercentage = calculateTabBarPercentage(
           element?.PartnerProgram?.form_data,
           AttributeFieldData,
           element?.unique_form_data,
           element?.common_form_data,
+          true,
         );
         const headerStyle = {
           background: isActive ? token.colorInfo : token.colorInfoBg,

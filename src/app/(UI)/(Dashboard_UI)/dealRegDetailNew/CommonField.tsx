@@ -161,35 +161,39 @@ const CommonFields: FC<CommonFieldsProps> = ({
             key={index}
           >
             <Row>
-              {section.children.map((child, Childndex) => (
-                <Col
-                  span={12}
-                  style={{padding: '24px', paddingTop: '0px'}}
-                  key={child.id}
-                >
-                  <SelectFormItem
-                    name={
-                      'c_' +
-                      convertToSnakeCase(child?.label) +
-                      Childndex +
-                      activeKey
-                    }
-                    label={
-                      <Typography name="Body 4/Medium">
-                        {child?.label}
-                      </Typography>
-                    }
-                    rules={[
-                      {
-                        required: child?.is_required,
-                        message: 'This field is required!',
-                      },
-                    ]}
+              {section?.children?.map((child, Childndex) => {
+                const required = child?.is_required;
+                return (
+                  <Col
+                    span={12}
+                    style={{padding: '24px', paddingTop: '0px'}}
+                    key={child.id}
                   >
-                    {getInputComponent(child)}
-                  </SelectFormItem>
-                </Col>
-              ))}
+                    <SelectFormItem
+                      name={
+                        'c_' +
+                        convertToSnakeCase(child?.label) +
+                        Childndex +
+                        activeKey +
+                        (required ? '_required' : '')
+                      }
+                      label={
+                        <Typography name="Body 4/Medium">
+                          {child?.label}
+                        </Typography>
+                      }
+                      rules={[
+                        {
+                          required: child?.is_required,
+                          message: 'This field is required!',
+                        },
+                      ]}
+                    >
+                      {getInputComponent(child)}
+                    </SelectFormItem>
+                  </Col>
+                );
+              })}
             </Row>
           </Panel>
         </Collapse>

@@ -219,19 +219,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     }
   }, [form, formData]);
 
-  // useEffect(() => {
-  //   if (uniqueTemplateData) {
-  //     const initialValues = Object.keys(uniqueTemplateData).reduce(
-  //       (acc: any, key) => {
-  //         acc[key] = uniqueTemplateData[key];
-  //         return acc;
-  //       },
-  //       {},
-  //     );
-  //     form.setFieldsValue(initialValues);
-  //   }
-  // }, [uniqueTemplateData, form]);
-
   return (
     <Form
       layout="vertical"
@@ -242,6 +229,8 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
         {allContent?.map((allContentItem: any, itemIndex: number) => {
           const alignment = allContentItem?.Alignemnt || 'left';
           const fontSize = allContentItem?.FontSize || 'default';
+          const required = allContentItem?.required;
+
           if (allContentItem?.name === 'Text Content') {
             return (
               <Col span={24} style={{textAlign: alignment, padding: '24px'}}>
@@ -265,7 +254,8 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                   'u_' +
                   convertToSnakeCase(allContentItem.label) +
                   itemIndex +
-                  activeKey
+                  activeKey +
+                  (required ? '_required' : '')
                 }
                 label={
                   <Typography name="Body 4/Medium">

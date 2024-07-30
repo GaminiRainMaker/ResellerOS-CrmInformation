@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useState} from 'react';
 import {useAppSelector} from '../../../../../redux/hook';
-import {tabBarPercentageCalculations} from '@/app/utils/base';
+import {calculateTabBarPercentage} from '@/app/utils/base';
 import CommonSelect from '@/app/components/common/os-select';
 import {formatStatus} from '@/app/utils/CONSTANTS';
 import Typography from '@/app/components/common/typography';
@@ -24,11 +24,12 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
       DealRegData &&
       DealRegData?.map((element: any) => {
         const {Partner, PartnerProgram} = element;
-        const tabPercentage = tabBarPercentageCalculations(
+        const tabPercentage = calculateTabBarPercentage(
           element?.PartnerProgram?.form_data,
           AttributeFieldData,
           element?.unique_form_data,
           element?.common_form_data,
+          true
         );
 
         if (tabPercentage === 100) {
@@ -47,7 +48,6 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
 
     setTabItems(newTabItems);
   }, [DealRegData, AttributeFieldData]);
-
 
   return (
     <Form
