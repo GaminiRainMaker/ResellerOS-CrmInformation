@@ -13,6 +13,7 @@ import {Form, Input} from 'antd';
 import React from 'react';
 import {EditableFiledsCommonInterface} from '../formBuilder.interface';
 import {CollapseSpaceStyle} from '../../dealRegDetail/DealRegDetailForm/styled-components';
+import OsButton from '@/app/components/common/os-button';
 
 const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
   sectionIndex,
@@ -136,68 +137,9 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
         </Typography>
       ),
       children: (
-        <Form layout="vertical">
-          <div style={{height: '20vh', overflow: 'auto'}}>
-            {cartItems?.[sectionIndex || 0]?.content?.[
-              contentIndex || 0
-            ]?.options?.map((itemOption: any, indexOp: number) => (
-              <Row style={{width: '100%'}}>
-                <Col
-                  key={indexOp}
-                  className="list-item"
-                  draggable
-                  onDragStart={(e) => {
-                    dragItem.current = indexOp;
-                  }}
-                  onDragEnter={(e) => {
-                    dragOverItem.current = indexOp;
-                  }}
-                  onDragEnd={() => handleSort('options')}
-                  onDragOver={(e) => e.preventDefault()}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                    marginBottom: '25px',
-                    gap: '12px',
-                  }}
-                >
-                  {/* <div>{itemOption}</div> */}
-                  <OsInput
-                    key={indexOp}
-                    // defaultValue={itemOption}
-                    value={itemOption}
-                    onChange={(e: any) => {
-                      changeFiellOptionsValue(
-                        e?.target?.value,
-                        indexOp,
-                        'options',
-                      );
-                    }}
-                  />{' '}
-                  <TrashIcon
-                    color="#EB445A"
-                    width={35}
-                    onClick={() => deleteOption(indexOp, 'options')}
-                  />{' '}
-                  <ArrowsPointingOutIcon
-                    color="#2364AA"
-                    width={35}
-                    key={indexOp}
-                    className="list-item"
-                    // draggable
-                    onDragStart={(e) => {
-                      dragItem.current = indexOp;
-                    }}
-                    onDragEnter={(e) => {
-                      dragOverItem.current = indexOp;
-                    }}
-                    onDragEnd={() => handleSort('options')}
-                    onDragOver={(e) => e.preventDefault()}
-                  />
-                </Col>
-              </Row>
-            ))}
+        <>
+          {' '}
+          <div style={{marginBottom: '10px', width: '100%'}}>
             <Typography
               name="Body 3/Bold"
               color={token?.colorInfo}
@@ -207,8 +149,72 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
             >
               + Add New
             </Typography>
-          </div>
-        </Form>
+          </div>{' '}
+          <Form layout="vertical">
+            <div style={{height: '20vh' || '25vh', overflow: 'auto'}}>
+              {cartItems?.[sectionIndex || 0]?.content?.[
+                contentIndex || 0
+              ]?.options?.map((itemOption: any, indexOp: number) => (
+                <Row style={{width: '100%'}}>
+                  <Col
+                    key={indexOp}
+                    className="list-item"
+                    draggable
+                    onDragStart={(e) => {
+                      dragItem.current = indexOp;
+                    }}
+                    onDragEnter={(e) => {
+                      dragOverItem.current = indexOp;
+                    }}
+                    onDragEnd={() => handleSort('options')}
+                    onDragOver={(e) => e.preventDefault()}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                      marginBottom: '25px',
+                      gap: '12px',
+                    }}
+                  >
+                    {/* <div>{itemOption}</div> */}
+                    <OsInput
+                      key={indexOp}
+                      // defaultValue={itemOption}
+                      value={itemOption}
+                      onChange={(e: any) => {
+                        changeFiellOptionsValue(
+                          e?.target?.value,
+                          indexOp,
+                          'options',
+                        );
+                      }}
+                    />{' '}
+                    <TrashIcon
+                      color="#EB445A"
+                      width={35}
+                      onClick={() => deleteOption(indexOp, 'options')}
+                    />{' '}
+                    <ArrowsPointingOutIcon
+                      color="#2364AA"
+                      width={35}
+                      key={indexOp}
+                      className="list-item"
+                      // draggable
+                      onDragStart={(e) => {
+                        dragItem.current = indexOp;
+                      }}
+                      onDragEnter={(e) => {
+                        dragOverItem.current = indexOp;
+                      }}
+                      onDragEnd={() => handleSort('options')}
+                      onDragOver={(e) => e.preventDefault()}
+                    />
+                  </Col>
+                </Row>
+              ))}
+            </div>
+          </Form>
+        </>
       ),
     },
   ];

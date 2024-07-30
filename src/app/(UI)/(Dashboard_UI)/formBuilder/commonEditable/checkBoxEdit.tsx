@@ -134,77 +134,84 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
         </Typography>
       ),
       children: (
-        <Form layout="vertical">
-          {cartItems?.[sectionIndex || 0]?.content?.[
-            contentIndex || 0
-          ]?.labelOptions?.map((itemOption: any, indexOp: number) => (
-            <Row style={{width: '100%'}}>
-              <Col
-                key={indexOp}
-                className="list-item"
-                draggable
-                onDragStart={(e) => {
-                  dragItem.current = indexOp;
-                }}
-                onDragEnter={(e) => {
-                  dragOverItem.current = indexOp;
-                }}
-                onDragEnd={() => handleSort('labelOptions')}
-                onDragOver={(e) => e.preventDefault()}
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  width: '100%',
-                  marginBottom: '25px',
-                  gap: '12px',
-                }}
-              >
-                {/* <div>{itemOption}</div> */}
-                <OsInput
-                  key={indexOp}
-                  defaultValue={itemOption}
-                  value={itemOption}
-                  onChange={(e: any) => {
-                    changeFiellOptionsValue(
-                      e?.target?.value,
-                      indexOp,
-                      'labelOptions',
-                    );
-                  }}
-                />{' '}
-                <TrashIcon
-                  color="#EB445A"
-                  width={35}
-                  onClick={() => deleteOption(indexOp, 'labelOptions')}
-                />{' '}
-                <ArrowsPointingOutIcon
-                  color="#2364AA"
-                  width={35}
-                  key={indexOp}
-                  className="list-item"
-                  // draggable
-                  onDragStart={(e) => {
-                    dragItem.current = indexOp;
-                  }}
-                  onDragEnter={(e) => {
-                    dragOverItem.current = indexOp;
-                  }}
-                  onDragEnd={() => handleSort('labelOptions')}
-                  onDragOver={(e) => e.preventDefault()}
-                />
-              </Col>
-            </Row>
-          ))}
-          <Typography
-            name="Body 3/Bold"
-            color={token?.colorInfo}
-            onClick={() => addnewOptions('labelOptions')}
-            cursor="pointer"
-            style={{cursor: 'pointer'}}
-          >
-            + Add New
-          </Typography>
-        </Form>
+        <>
+          {' '}
+          <div style={{marginBottom: '10px', width: '100%'}}>
+            <Typography
+              name="Body 3/Bold"
+              color={token?.colorInfo}
+              onClick={() => addnewOptions('labelOptions')}
+              cursor="pointer"
+              style={{cursor: 'pointer'}}
+            >
+              + Add New
+            </Typography>
+          </div>{' '}
+          <Form layout="vertical">
+            <div style={{height: '20vh' || '25vh', overflow: 'auto'}}>
+              {cartItems?.[sectionIndex || 0]?.content?.[
+                contentIndex || 0
+              ]?.labelOptions?.map((itemOption: any, indexOp: number) => (
+                <Row style={{width: '100%'}}>
+                  <Col
+                    key={indexOp}
+                    className="list-item"
+                    draggable
+                    onDragStart={(e) => {
+                      dragItem.current = indexOp;
+                    }}
+                    onDragEnter={(e) => {
+                      dragOverItem.current = indexOp;
+                    }}
+                    onDragEnd={() => handleSort('labelOptions')}
+                    onDragOver={(e) => e.preventDefault()}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      width: '100%',
+                      marginBottom: '25px',
+                      gap: '12px',
+                    }}
+                  >
+                    {/* <div>{itemOption}</div> */}
+                    <OsInput
+                      key={indexOp}
+                      defaultValue={itemOption}
+                      value={itemOption}
+                      onChange={(e: any) => {
+                        changeFiellOptionsValue(
+                          e?.target?.value,
+                          indexOp,
+                          'labelOptions',
+                        );
+                      }}
+                    />{' '}
+                    <TrashIcon
+                      color="#EB445A"
+                      width={35}
+                      onClick={() => deleteOption(indexOp, 'labelOptions')}
+                    />{' '}
+                    <ArrowsPointingOutIcon
+                      color="#2364AA"
+                      width={35}
+                      key={indexOp}
+                      className="list-item"
+                      // draggable
+                      onDragStart={(e) => {
+                        dragItem.current = indexOp;
+                      }}
+                      onDragEnter={(e) => {
+                        dragOverItem.current = indexOp;
+                      }}
+                      onDragEnd={() => handleSort('labelOptions')}
+                      onDragOver={(e) => e.preventDefault()}
+                    />
+                  </Col>
+                </Row>
+              ))}
+            </div>
+          </Form>
+        </>
       ),
     },
   ];
