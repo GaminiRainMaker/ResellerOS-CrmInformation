@@ -58,17 +58,16 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
         finalDealReg?.unique_form_data,
         finalDealReg?.common_form_data,
       );
-
       const obj = {
         common_form_data:
           finalDealReg?.common_form_data &&
           finalDealReg?.common_form_data.length > 0
-            ? JSON.parse(finalDealReg?.common_form_data[0])
+            ? JSON?.parse(finalDealReg?.common_form_data?.[0])
             : {},
         unique_form_data:
           finalDealReg?.unique_form_data &&
           finalDealReg?.unique_form_data.length > 0
-            ? JSON.parse(finalDealReg?.unique_form_data[0])
+            ? JSON?.parse(finalDealReg?.unique_form_data?.[0])
             : {},
         id: finalDealReg?.id,
         unique_template:
@@ -107,12 +106,19 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
 
       if (getDealRegForNew && Object?.keys(getDealRegForNew).length > 0) {
         finalDealReg = getDealRegForNew;
+        const parsedCommonFormData = finalDealReg?.common_form_data?.[0]
+          ? JSON.parse(finalDealReg.common_form_data[0])
+          : {};
+        const parsedUniqueFormData = finalDealReg?.unique_form_data?.[0]
+          ? JSON.parse(finalDealReg.unique_form_data[0])
+          : {};
+
         finalCommonFieldObject = {
-          ...JSON.parse(finalDealReg?.common_form_data[0]),
+          ...parsedCommonFormData,
           ...commonFieldObject,
         };
         finalUniqueFieldObject = {
-          ...JSON.parse(finalDealReg?.unique_form_data[0]),
+          ...parsedUniqueFormData,
           ...uniqueFieldObject,
         };
       }

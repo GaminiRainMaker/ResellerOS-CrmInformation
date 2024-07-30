@@ -1236,9 +1236,9 @@ export const tabBarPercentageCalculations = (
         (item: any) =>
           item?.name !== 'Line Break' && item?.name !== 'Text Content',
       );
-  const totalCount = [AttributeFieldData, allContent]?.flatMap(
-    (array) => array,
-  );
+  const totalCount = [AttributeFieldData, allContent]
+    .filter((array) => array !== undefined && array !== null)
+    .flatMap((array) => array);
 
   const uniqueFormData = UniqueFormData && JSON?.parse(UniqueFormData);
   const commonFormData = CommonFormData && JSON?.parse(CommonFormData);
@@ -1266,9 +1266,9 @@ export const tabBarPercentageNewCalculations = (
         (item: any) =>
           item?.name !== 'Line Break' && item?.name !== 'Text Content',
       );
-  const totalCount = [AttributeFieldData, allContent]?.flatMap(
-    (array) => array,
-  );
+  const totalCount = [AttributeFieldData, allContent]
+    .filter((array) => array !== undefined && array !== null)
+    .flatMap((array) => array);
 
   const uniqueFormData = UniqueFormData;
   const commonFormData = CommonFormData;
