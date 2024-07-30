@@ -1227,7 +1227,6 @@ export const tabBarPercentageCalculations = (
   AttributeFieldData: any,
   UniqueFormData: any,
   CommonFormData: any,
-  parsed?: boolean,
 ) => {
   const allContent =
     PartnerProgram &&

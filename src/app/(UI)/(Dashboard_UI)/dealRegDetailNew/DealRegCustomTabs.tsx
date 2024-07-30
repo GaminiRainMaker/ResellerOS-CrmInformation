@@ -52,8 +52,6 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
   useEffect(() => {
     if (getDealRegForNew && Object.keys(getDealRegForNew).length > 0) {
       let finalDealReg = getDealRegForNew;
-      console.log('finalDealReg', finalDealReg);
-
       const tabPercentage = tabBarPercentageCalculations(
         finalDealReg?.PartnerProgram?.form_data,
         AttributeFieldData,
@@ -175,9 +173,6 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
           element?.unique_form_data,
           element?.common_form_data,
         );
-
-        console.log('tabPercentage', tabPercentage);
-
         const headerStyle = {
           background: isActive ? token.colorInfo : token.colorInfoBg,
         };
