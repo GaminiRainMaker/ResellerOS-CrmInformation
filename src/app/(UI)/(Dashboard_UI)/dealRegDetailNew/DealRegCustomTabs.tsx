@@ -20,7 +20,6 @@ import {
 } from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DealRegDetailForm from './DealRegDetailForm';
-import {setDealRegForNew} from '../../../../../redux/slices/dealReg';
 
 const DealRegCustomTabs: React.FC<any> = ({form}) => {
   const dispatch = useAppDispatch();
@@ -101,45 +100,33 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
       };
       setFormData(formObj);
       if (obj) {
-        dispatch(updateDealRegById(obj));
-        // .then((response: any) => {
-        // if (response?.payload) {
-        //   dispatch(getDealRegByOpportunityId(Number(getOpportunityId))).then(
-        //     (d) => {
-        //       if (d?.payload) {
-        //         const statusData = d?.payload?.reduce(
-        //           (acc: any[], element: any) => {
-        //             if (element?.id === dealReg?.id) {
-        //               const tabPercentage = tabBarPercentageCalculations(
-        //                 element?.PartnerProgram?.form_data,
-        //                 AttributeFieldData,
-        //                 element?.unique_form_data,
-        //                 element?.common_form_data,
-        //               );
-        //               if (tabPercentage > 0 && tabPercentage < 100) {
-        //                 acc.push({
-        //                   id: element?.id,
-        //                   status: 'In Progress',
-        //                 });
-        //               }
-        //             }
-        //             return acc;
-        //           },
-        //           [],
-        //         );
-        //         console.log('statusData', statusData);
-        //         // dispatch(updateDealRegStatus(statusData)).then((response) => {
-        //         //   if (response?.payload) {
-        //         //     dispatch(
-        //         //       getDealRegByOpportunityId(Number(getOpportunityId)),
-        //         //     );
-        //         //   }
-        //         // });
-        //       }
-        //     },
-        //   );
-        // }
-        // });
+        console.log('objobj', obj, 'formObj', formObj);
+
+        dispatch(updateDealRegById(obj)).then((d) => {
+          if (d?.payload) {
+            // const statusData = d?.payload?.reduce(
+            //   (acc: any[], element: any) => {
+            //     if (element?.id === dealReg?.id) {
+            //       const tabPercentage = tabBarPercentageCalculations(
+            //         element?.PartnerProgram?.form_data,
+            //         AttributeFieldData,
+            //         element?.unique_form_data,
+            //         element?.common_form_data,
+            //       );
+            //       if (tabPercentage > 0 && tabPercentage < 100) {
+            //         acc.push({
+            //           id: element?.id,
+            //           status: 'In Progress',
+            //         });
+            //       }
+            //     }
+            //     return acc;
+            //   },
+            //   [],
+            // );
+            // dispatch(updateDealRegStatus(statusData))
+          }
+        });
       }
     }
   };
@@ -153,7 +140,7 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
     const newTabItems =
       DealRegData &&
       DealRegData?.map((element: any) => {
-        const {partner_program_id, Partner, PartnerProgram, id} = element;
+        const {Partner, PartnerProgram, id} = element;
         const isActive = activeKey?.toString() === id?.toString();
 
         const tabPercentage = tabBarPercentageCalculations(
@@ -185,8 +172,6 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
                 token={token}
                 style={headerStyle}
                 onClick={() => {
-                  // dispatch(setDealRegForNew({}));
-                  // dispatch(setDealReg(element));
                   setActiveKey(id);
                 }}
               >
