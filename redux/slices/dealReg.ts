@@ -9,6 +9,7 @@ import {
   insertDealReg,
   updateDealRegById,
   queryDealReg,
+  updateDealRegStatus,
 } from '../actions/dealReg';
 
 type DealRegState = {
@@ -18,6 +19,8 @@ type DealRegState = {
   dealReg: any;
   dealRegUpdateData: any;
   submitDealRegData: boolean;
+  getDealRegForNew: any;
+  getDealRegForNewLoading: boolean;
 };
 const initialState: DealRegState = {
   loading: false,
@@ -26,6 +29,8 @@ const initialState: DealRegState = {
   dealReg: {},
   dealRegUpdateData: {},
   submitDealRegData: false,
+  getDealRegForNew: {},
+  getDealRegForNewLoading: false,
 };
 
 const dealRegSlice = createSlice({
@@ -40,6 +45,9 @@ const dealRegSlice = createSlice({
     },
     setDealRegUpdateData: (state, action) => {
       state.dealRegUpdateData = action.payload;
+    },
+    setDealRegForNew: (state, action) => {
+      state.getDealRegForNew = action.payload;
     },
   },
   extraReducers(builder) {
@@ -57,18 +65,18 @@ const dealRegSlice = createSlice({
         state.error = action.payload;
       })
       .addCase(getDealRegById.pending, (state) => {
-        state.loading = true;
+        state.getDealRegForNewLoading = true;
         state.error = null;
       })
       .addCase(
         getDealRegById.fulfilled,
         (state, action: PayloadAction<any>) => {
-          state.loading = false;
-          state.data = action.payload;
+          state.getDealRegForNewLoading = false;
+          state.getDealRegForNew = action.payload;
         },
       )
       .addCase(getDealRegById.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
+        state.getDealRegForNewLoading = false;
         state.error = action.payload;
       })
       .addCase(getAllDealReg.pending, (state) => {
@@ -103,7 +111,7 @@ const dealRegSlice = createSlice({
         updateDealRegById.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          // state.data = action.payload;
         },
       )
       .addCase(
@@ -148,10 +156,31 @@ const dealRegSlice = createSlice({
           state.loading = false;
           state.error = action.payload;
         },
+      )
+      .addCase(updateDealRegStatus.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateDealRegStatus.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+        },
+      )
+      .addCase(
+        updateDealRegStatus.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
       );
   },
 });
 
-export const {setDealReg, setDealRegUpdateData, setSubmitDealRegData} =
-  dealRegSlice.actions;
+export const {
+  setDealReg,
+  setDealRegUpdateData,
+  setSubmitDealRegData,
+  setDealRegForNew,
+} = dealRegSlice.actions;
 export default dealRegSlice?.reducer;

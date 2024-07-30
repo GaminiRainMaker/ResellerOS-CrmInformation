@@ -1209,3 +1209,43 @@ export const AlphabetsRegexWithSpecialChr =
   /^[A-Z@~`!@#$%^&*()_=+\\\\';:\"\\/?>.<,-]*$/i;
 export const emailRegex =
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+const filterEmptyValues = (obj: any) => {
+  return (
+    obj &&
+    Object?.fromEntries(
+      Object?.entries(obj)?.filter(([_, v]) => v !== '' && v !== undefined),
+    )
+  );
+};
+
+export const tabBarPercentageCalculations = (
+  PartnerProgram: any,
+  AttributeFieldData: any,
+  UniqueFormData: any,
+  CommonFormData: any,
+) => {
+  const allContent =
+    PartnerProgram &&
+    JSON.parse(PartnerProgram)
+      .flatMap((section: any) => section?.content)
+      .filter(
+        (item: any) =>
+          item?.name !== 'Line Break' && item?.name !== 'Text Content',
+      );
+  const totalCount = [AttributeFieldData, allContent]?.flatMap(
+    (array) => array,
+  );
+
+  const uniqueFormData = UniqueFormData && JSON?.parse(UniqueFormData);
+  const commonFormData = CommonFormData && JSON?.parse(CommonFormData);
+
+  const filteredObj1 = filterEmptyValues(uniqueFormData);
+  const filteredObj2 = filterEmptyValues(commonFormData);
+
+  const mergedObj = {...filteredObj1, ...filteredObj2};
+  const filledValueLength = Object.keys(mergedObj).length;
+
+  const fillupPercentage = (filledValueLength / totalCount?.length) * 100;
+  return Math.round(fillupPercentage);
+};

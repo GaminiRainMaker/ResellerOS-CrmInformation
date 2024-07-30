@@ -16,6 +16,11 @@ const OsStatusWrapper: FC<OsStatusWrapperProps> = ({value}) => {
       textColor: `${token?.colorInfo}`,
       border: `${token?.colorInfo}`,
     },
+    New: {
+      color: `${token?.colorInfoBgHover}`,
+      textColor: `${token?.colorInfo}`,
+      border: `${token?.colorInfo}`,
+    },
     'In Review': {
       color: `${token?.colorInfoBgHover}`,
       textColor: `${token?.colorInfo}`,

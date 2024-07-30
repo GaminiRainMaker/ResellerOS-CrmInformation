@@ -81,9 +81,7 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
                       ? token.colorInfo
                       : token.colorInfoBg,
                 }}
-                onClick={() =>
-                  dispatch(setDealReg(element))
-                }
+                onClick={() => dispatch(setDealReg(element))}
               >
                 <Space>
                   <OsProgress
@@ -130,6 +128,7 @@ const DealRegCustomTabs: React.FC<DealRegCustomTabsInterface> = ({
                     cursor="pointer"
                     name="Button 1"
                   >
+                    {formatStatus(element?.Partner?.partner)} -{' '}
                     {formatStatus(element?.PartnerProgram?.partner_program)}
                   </Typography>
                 </Space>

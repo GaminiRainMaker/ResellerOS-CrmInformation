@@ -56,6 +56,7 @@ const DealReg: React.FC = () => {
     customer: null,
   });
   const searchQuery = useDebounceHook(query, 500);
+  const [statusValue, setStatusValue] = useState<string>('All');
 
   const rowSelection = {
     onChange: (selectedRowKeys: any) => {
@@ -161,7 +162,11 @@ const DealReg: React.FC = () => {
       dataIndex: 'status',
       key: 'status',
       width: 187,
-      render: (text: string) => <OsStatusWrapper value={text} />,
+      render: (text: string) => (
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+          <OsStatusWrapper value={text} />
+        </div>
+      ),
     },
   ];
 
@@ -175,124 +180,142 @@ const DealReg: React.FC = () => {
     ),
   };
 
-  useEffect(() => {
+  const processDealRegData = (
+    dealRegData: any[],
+    status: string,
+  ): SeparatedData => {
     const separatedData: SeparatedData = {};
-    DealRegData?.forEach((item: any) => {
-      const opportunityId = item?.opportunity_id;
-      const contactId = item?.contact_id;
-      const customerId = item?.customer_id;
-      const dealRegId = item?.id;
-      const opportunityTitle = item?.Opportunity?.title;
-      if (!separatedData[opportunityId]) {
-        separatedData[opportunityId] = {
-          opportunity_id: opportunityId,
-          contact_id: contactId,
-          customer_id: customerId,
-          dealReg_id: dealRegId,
+
+    const filteredDealRegData =
+      status === 'All'
+        ? dealRegData
+        : dealRegData?.filter((item: any) => item?.status === status);
+
+    filteredDealRegData?.forEach((item: any) => {
+      const {
+        opportunity_id,
+        contact_id,
+        customer_id,
+        id: dealReg_id,
+        Opportunity,
+      } = item;
+      const opportunityTitle = Opportunity?.title;
+
+      if (!separatedData[opportunity_id]) {
+        separatedData[opportunity_id] = {
+          opportunity_id,
+          contact_id,
+          customer_id,
+          dealReg_id,
           title: opportunityTitle,
           data: [],
         };
       }
-      separatedData[opportunityId]?.data.push(item);
+
+      separatedData[opportunity_id]?.data.push(item);
     });
+    return separatedData;
+  };
+
+  useEffect(() => {
+    const separatedData = processDealRegData(DealRegData, statusValue);
     setFinalDealRegData(Object.values(separatedData));
-  }, [DealRegData]);
+  }, [DealRegData, statusValue]);
+
+  const generateTabContent = (status: string) => {
+    return (
+      <>
+        {finalDealRegData && finalDealRegData.length > 0 ? (
+          finalDealRegData.map((itemDeal: any) => (
+            <OsCollapse
+              defaultActiveKey={['1']}
+              items={[
+                {
+                  key: '1',
+                  label: (
+                    <Row justify="space-between">
+                      <Col>
+                        <p>{itemDeal.title}</p>
+                      </Col>
+                      <Col>
+                        <Space
+                          align="center"
+                          onClick={(e) => {
+                            router.push(
+                              `/dealRegDetailNew?id=${itemDeal.dealReg_id}&opportunityId=${itemDeal.opportunity_id}&customerId=${itemDeal.customer_id}&contactId=${itemDeal.contact_id}`,
+                            );
+                            e.stopPropagation();
+                          }}
+                        >
+                          <p>Deal Registration</p>
+                          <ArrowTopRightOnSquareIcon
+                            cursor="pointer"
+                            style={{marginTop: '5px'}}
+                            width={20}
+                          />
+                        </Space>
+                      </Col>
+                    </Row>
+                  ),
+                  children: (
+                    <OsTable
+                      columns={DealRegColumns}
+                      dataSource={itemDeal.data}
+                      scroll
+                      loading={dealLoading}
+                      locale={locale}
+                    />
+                  ),
+                },
+              ]}
+            />
+          ))
+        ) : (
+          <OsTable
+            columns={[]}
+            dataSource={[]}
+            scroll
+            loading={false}
+            locale={locale}
+          />
+        )}
+      </>
+    );
+  };
 
   const tabItems: TabsProps['items'] = [
     {
-      label: <Typography name="Body 4/Regular">All</Typography>,
+      label: (
+        <Typography name="Body 4/Regular" onClick={() => setStatusValue('All')}>
+          All
+        </Typography>
+      ),
       key: '1',
-      children: (
-        <>
-          {finalDealRegData?.length > 0 ? (
-            <>
-              {finalDealRegData?.map((itemDeal: any) => (
-                <OsCollapse
-                  defaultActiveKey={['1']}
-                  items={[
-                    {
-                      key: '1',
-                      label: (
-                        <>
-                          <Row justify="space-between">
-                            <Col>
-                              <p>{itemDeal?.title}</p>
-                            </Col>
-                            <Col>
-                              <Space
-                                align="center"
-                                onClick={(e) => {
-                                  router?.push(
-                                    `/dealRegDetail?id=${itemDeal?.dealReg_id}&opportunityId=${itemDeal?.opportunity_id}&customerId=${itemDeal?.customer_id}&contactId=${itemDeal?.contact_id}`,
-                                  );
-                                  e?.stopPropagation();
-                                }}
-                              >
-                                <p>Deal Registration</p>
-                                <ArrowTopRightOnSquareIcon
-                                  cursor="pointer"
-                                  style={{marginTop: '5px'}}
-                                  width={20}
-                                />
-                              </Space>
-                            </Col>
-                          </Row>
-                        </>
-                      ),
-                      children: (
-                        <OsTable
-                          columns={DealRegColumns}
-                          dataSource={itemDeal?.data}
-                          // rowSelection={rowSelection}
-                          scroll
-                          loading={dealLoading}
-                          locale={locale}
-                        />
-                      ),
-                    },
-                  ]}
-                />
-              ))}
-            </>
-          ) : (
-            <OsTable
-              columns={[]}
-              dataSource={[]}
-              scroll
-              loading={false}
-              locale={locale}
-            />
-          )}
-        </>
-      ),
+      children: generateTabContent('All'),
     },
     {
-      label: <Typography name="Body 4/Regular">In Progress</Typography>,
+      label: (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => setStatusValue('In Progress')}
+        >
+          In Progress
+        </Typography>
+      ),
       key: '2',
-      children: (
-        <OsTable
-          columns={DealRegColumns}
-          dataSource={[]}
-          // rowSelection={rowSelection}
-          scroll
-          loading={dealLoading}
-          locale={locale}
-        />
-      ),
+      children: generateTabContent('In Progress'),
     },
     {
-      label: <Typography name="Body 4/Regular">Completed</Typography>,
-      key: '3',
-      children: (
-        <OsTable
-          columns={DealRegColumns}
-          dataSource={[]}
-          // rowSelection={rowSelection}
-          scroll
-          loading={dealLoading}
-          locale={locale}
-        />
+      label: (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => setStatusValue('Completed')}
+        >
+          Completed
+        </Typography>
       ),
+      key: '3',
+      children: generateTabContent('Completed'),
     },
   ];
 
