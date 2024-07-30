@@ -6,8 +6,10 @@ import {formatStatus} from '@/app/utils/CONSTANTS';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 
 const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
+  const [token] = useThemeToken();
   const [tabItems, setTabItems] = useState([]);
   const {data: DealRegData} = useAppSelector((state) => state.dealReg);
   const {data: AttributeFieldData} = useAppSelector(
@@ -29,7 +31,7 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
           AttributeFieldData,
           element?.unique_form_data,
           element?.common_form_data,
-          true
+          true,
         );
 
         if (tabPercentage === 100) {
@@ -73,6 +75,26 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
           placeholder="Select Dealreg Forms"
         />
       </SelectFormItem>
+      <br />
+
+      <div style={{display: 'flex', flexDirection: 'column'}}>
+        <Typography
+          name="Body 3/Bold"
+          color={token?.colorLink}
+          style={{marginBottom: '6px'}}
+        >
+          Note:
+        </Typography>
+        <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
+          <ul style={{listStyleType: 'disc', marginLeft: '20px'}}>
+            <li>
+              Only forms that are 100% complete are displayed here. Please
+              ensure all required fields are filled out to see your form in this
+              list.
+            </li>
+          </ul>
+        </Typography>
+      </div>
     </Form>
   );
 };
