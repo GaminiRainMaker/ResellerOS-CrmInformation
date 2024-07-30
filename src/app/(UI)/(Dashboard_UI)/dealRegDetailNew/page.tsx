@@ -39,6 +39,7 @@ const DealRegDetail = () => {
     data: DealRegData,
     dealReg,
     loading: dealRegLoading,
+    getDealRegForNewLoading,
   } = useAppSelector((state) => state.dealReg);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -162,7 +163,7 @@ const DealRegDetail = () => {
           </Space>
         </Col>
       </Row>
-      <GlobalLoader loading={dealRegLoading}>
+      <GlobalLoader loading={getDealRegForNewLoading}>
         <DealRegCustomTabs form={FormData} />
       </GlobalLoader>
 

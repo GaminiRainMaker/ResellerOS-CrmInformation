@@ -10,13 +10,16 @@ import {
 import CustomProgress from '@/app/components/common/os-progress/DealregProgressBar';
 import Typography from '@/app/components/common/typography';
 import {formatStatus} from '@/app/utils/CONSTANTS';
-import {tabBarPercentageCalculations} from '@/app/utils/base';
-import {useSearchParams} from 'next/navigation';
+import {
+  tabBarPercentageCalculations,
+  tabBarPercentageNewCalculations,
+} from '@/app/utils/base';
 import {useEffect, useState} from 'react';
 import {queryAttributeField} from '../../../../../redux/actions/attributeField';
 import {
   getDealRegById,
   updateDealRegById,
+  updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import DealRegDetailForm from './DealRegDetailForm';
@@ -24,13 +27,9 @@ import DealRegDetailForm from './DealRegDetailForm';
 const DealRegCustomTabs: React.FC<any> = ({form}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const searchParams = useSearchParams();
-  const getOpportunityId = searchParams.get('opportunityId');
-  const {
-    data: DealRegData,
-    dealReg,
-    getDealRegForNew,
-  } = useAppSelector((state) => state.dealReg);
+  const {data: DealRegData, getDealRegForNew} = useAppSelector(
+    (state) => state.dealReg,
+  );
   const [activeKey, setActiveKey] = useState<number>();
   const [tabItems, setTabItems] = useState([]);
   const {data: AttributeFieldData} = useAppSelector(
@@ -51,20 +50,33 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
   }, [activeKey]);
 
   useEffect(() => {
-    if (getDealRegForNew && getDealRegForNew.length > 0) {
-      let finalDealReg = getDealRegForNew[0];
+    if (getDealRegForNew && Object.keys(getDealRegForNew).length > 0) {
+      let finalDealReg = getDealRegForNew;
+      const tabPercentage = tabBarPercentageCalculations(
+        finalDealReg?.PartnerProgram?.form_data,
+        AttributeFieldData,
+        finalDealReg?.unique_form_data,
+        finalDealReg?.common_form_data,
+      );
       const obj = {
         common_form_data:
           finalDealReg?.common_form_data &&
           finalDealReg?.common_form_data.length > 0
-            ? JSON.parse(finalDealReg?.common_form_data[0])
+            ? JSON?.parse(finalDealReg?.common_form_data?.[0])
             : {},
         unique_form_data:
           finalDealReg?.unique_form_data &&
           finalDealReg?.unique_form_data.length > 0
-            ? JSON.parse(finalDealReg?.unique_form_data[0])
+            ? JSON?.parse(finalDealReg?.unique_form_data?.[0])
             : {},
         id: finalDealReg?.id,
+        unique_template:
+          finalDealReg?.PartnerProgram?.form_data &&
+          finalDealReg?.PartnerProgram?.form_data?.length > 0
+            ? JSON.parse(finalDealReg?.PartnerProgram?.form_data?.[0])
+            : {},
+        common_template: AttributeFieldData,
+        tabPercentage: tabPercentage,
       };
       setFormData(obj);
     }
@@ -79,6 +91,10 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
 
     const commonFieldObject: any = {};
     const uniqueFieldObject: any = {};
+    let finalCommonFieldObject: any = {};
+    let finalUniqueFieldObject: any = {};
+    let finalDealReg: any = {};
+
     if (commonFieldFormData) {
       for (const [key, value] of Object?.entries(commonFieldFormData)) {
         if (key?.startsWith('c_')) {
@@ -88,45 +104,59 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
         }
       }
 
+      if (getDealRegForNew && Object?.keys(getDealRegForNew).length > 0) {
+        finalDealReg = getDealRegForNew;
+        const parsedCommonFormData = finalDealReg?.common_form_data?.[0]
+          ? JSON.parse(finalDealReg.common_form_data[0])
+          : {};
+        const parsedUniqueFormData = finalDealReg?.unique_form_data?.[0]
+          ? JSON.parse(finalDealReg.unique_form_data[0])
+          : {};
+
+        finalCommonFieldObject = {
+          ...parsedCommonFormData,
+          ...commonFieldObject,
+        };
+        finalUniqueFieldObject = {
+          ...parsedUniqueFormData,
+          ...uniqueFieldObject,
+        };
+      }
+
+      const tabPercentage = tabBarPercentageNewCalculations(
+        finalDealReg?.PartnerProgram?.form_data,
+        AttributeFieldData,
+        finalUniqueFieldObject,
+        finalCommonFieldObject,
+      );
+
       const obj = {
-        common_form_data: [JSON.stringify(commonFieldObject)],
-        unique_form_data: [JSON.stringify(uniqueFieldObject)],
+        common_form_data: [JSON.stringify(finalCommonFieldObject)],
+        unique_form_data: [JSON.stringify(finalUniqueFieldObject)],
         id: activeKey,
       };
       const formObj = {
-        common_form_data: commonFieldObject,
-        unique_form_data: uniqueFieldObject,
+        common_form_data: finalCommonFieldObject,
+        unique_form_data: finalUniqueFieldObject,
         id: activeKey,
+        unique_template:
+          finalDealReg?.PartnerProgram?.form_data &&
+          finalDealReg?.PartnerProgram?.form_data?.length > 0
+            ? JSON.parse(finalDealReg?.PartnerProgram?.form_data?.[0])
+            : {},
+        common_template: AttributeFieldData,
+        tabPercentage: tabPercentage,
       };
       setFormData(formObj);
       if (obj) {
-        console.log('objobj', obj, 'formObj', formObj);
-
-        dispatch(updateDealRegById(obj)).then((d) => {
-          if (d?.payload) {
-            // const statusData = d?.payload?.reduce(
-            //   (acc: any[], element: any) => {
-            //     if (element?.id === dealReg?.id) {
-            //       const tabPercentage = tabBarPercentageCalculations(
-            //         element?.PartnerProgram?.form_data,
-            //         AttributeFieldData,
-            //         element?.unique_form_data,
-            //         element?.common_form_data,
-            //       );
-            //       if (tabPercentage > 0 && tabPercentage < 100) {
-            //         acc.push({
-            //           id: element?.id,
-            //           status: 'In Progress',
-            //         });
-            //       }
-            //     }
-            //     return acc;
-            //   },
-            //   [],
-            // );
-            // dispatch(updateDealRegStatus(statusData))
-          }
-        });
+        await dispatch(updateDealRegById(obj));
+        if (activeKey && tabPercentage > 0 && tabPercentage < 100) {
+          const statusObj = {
+            id: activeKey,
+            status: 'In Progress',
+          };
+          dispatch(updateDealRegStatus(statusObj));
+        }
       }
     }
   };
@@ -149,9 +179,6 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
           element?.unique_form_data,
           element?.common_form_data,
         );
-
-        console.log('tabPercentage', tabPercentage);
-
         const headerStyle = {
           background: isActive ? token.colorInfo : token.colorInfoBg,
         };
@@ -179,7 +206,7 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
                   <CustomProgress
                     isActive={isActive}
                     token={token}
-                    percent={tabPercentage}
+                    percent={isActive ? formData?.tabPercentage : tabPercentage}
                   />
                   <Typography
                     style={{color: textColor}}
@@ -229,67 +256,3 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
 };
 
 export default DealRegCustomTabs;
-
-// const tabItems = useMemo(() => {
-//   if (!DealRegData) return [];
-//   return DealRegData?.map((element: any) => {
-//     const {partner_program_id, Partner, PartnerProgram} = element;
-//     const isActive = activeKey?.toString() === partner_program_id?.toString();
-
-//     const tabPercentage = tabBarPercentageCalculations(
-//       element?.PartnerProgram?.form_data,
-//       AttributeFieldData,
-//       element?.unique_form_data,
-//       element?.common_form_data,
-//     );
-//     const headerStyle = {
-//       background: isActive ? token.colorInfo : token.colorInfoBg,
-//     };
-//     const textColor = isActive
-//       ? token.colorBgContainer
-//       : token?.colorTextDisabled;
-//     return {
-//       key: partner_program_id,
-//       label: (
-//         <Row
-//           key={partner_program_id}
-//           gutter={[0, 10]}
-//           style={{width: 'fit-content', margin: '24px 0px'}}
-//         >
-//           <DealRegCustomTabHeaderStyle
-//             token={token}
-//             style={headerStyle}
-//             onClick={() => {
-//               dispatch(setDealReg(element));
-//             }}
-//           >
-//             <Space>
-//               <CustomProgress
-//                 isActive={isActive}
-//                 token={token}
-//                 percent={tabPercentage}
-//               />
-//               <Typography
-//                 style={{color: textColor}}
-//                 cursor="pointer"
-//                 name="Button 1"
-//               >
-//                 {`${formatStatus(Partner?.partner)} - ${formatStatus(PartnerProgram?.partner_program)}`}
-//               </Typography>
-//             </Space>
-//           </DealRegCustomTabHeaderStyle>
-//         </Row>
-//       ),
-
-//       children: (
-//         <div key={partner_program_id}>
-//           <DealRegDetailForm
-//             data={element}
-//             activeKey={activeKey}
-//             form={form}
-//           />
-//         </div>
-//       ),
-//     };
-//   });
-// }, [DealRegData, activeKey]);
