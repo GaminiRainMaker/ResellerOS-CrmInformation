@@ -1,10 +1,15 @@
 import {Space} from '@/app/components/common/antd/Space';
 import Typography from '@/app/components/common/typography';
-import {ShareIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {
+  PencilSquareIcon,
+  ShareIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline';
 import {GlobalToken} from 'antd';
 import {SetStateAction} from 'react';
 import DecryptedPassword from './partnerPassword/DecryptedPassword';
 import {formatStatus} from '@/app/utils/CONSTANTS';
+import {decrypt} from '@/app/utils/base';
 
 export function getMyTeamColumns(token: GlobalToken) {
   const columns = [
@@ -162,7 +167,7 @@ export function getMyTeamAdminColumns(token: GlobalToken) {
 
 export function getMyPartnerColumns(
   token: GlobalToken,
-  setShowShareCredentialModal: {
+  setShowModal: {
     (value: SetStateAction<boolean>): void;
     (arg0: boolean): void;
   },
@@ -172,7 +177,9 @@ export function getMyPartnerColumns(
     (value: SetStateAction<boolean>): void;
     (arg0: boolean): void;
   },
+  partnerPasswordForm: any,
 ) {
+  const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
   const columns = [
     {
       title: (
@@ -259,14 +266,32 @@ export function getMyPartnerColumns(
       width: 187,
       render: (text: string, record: any) => (
         <Space size={18}>
-          <ShareIcon
+          <PencilSquareIcon
             height={24}
             width={24}
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
-            onClick={() => {
+            onClick={async () => {
+              const [iv, encryptedData] = record?.password?.split(':');
+              const decrypted = await decrypt(
+                encryptedData,
+                SECRET_KEY as string,
+                iv,
+              );
+
+              let newObj = {
+                created_by: record?.created_by,
+                partner_program_id: record?.partner_program_id,
+                email: record?.email,
+                partner_id: record?.partner_id,
+                username: record?.username,
+                password: decrypted,
+                shared_password: record?.shared_password,
+                id: record?.id,
+              };
+              partnerPasswordForm.setFieldsValue(newObj);
               setPartnerPasswordId(record?.id);
-              setShowShareCredentialModal(true);
+              setShowModal(true);
             }}
           />
           <TrashIcon
@@ -366,6 +391,44 @@ export function getSharedPasswordColumns(token: GlobalToken) {
         );
       },
     },
+    // {
+    //   title: (
+    //     <Typography
+    //       name="Body 4/Medium"
+    //       className="dragHandler"
+    //       color={token?.colorPrimaryText}
+    //     >
+    //       Action
+    //     </Typography>
+    //   ),
+    //   dataIndex: 'action',
+    //   key: 'action',
+    //   width: 187,
+    //   render: (text: string, record: any) => (
+    //     <Space size={18}>
+    //       <PencilSquareIcon
+    //         height={24}
+    //         width={24}
+    //         color={token.colorInfoBorder}
+    //         style={{cursor: 'pointer'}}
+    //         onClick={() => {
+    //           setPartnerPasswordId(record?.id);
+    //           setShowShareCredentialModal(true);
+    //         }}
+    //       />
+    //       <TrashIcon
+    //         height={24}
+    //         width={24}
+    //         color={token.colorError}
+    //         style={{cursor: 'pointer'}}
+    //         onClick={() => {
+    //           setDeleteIds([record?.id]);
+    //           setShowModalDelete(true);
+    //         }}
+    //       />
+    //     </Space>
+    //   ),
+    // },
   ];
 
   return columns;

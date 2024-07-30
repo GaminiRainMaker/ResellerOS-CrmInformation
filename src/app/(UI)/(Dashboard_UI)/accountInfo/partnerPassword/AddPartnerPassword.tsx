@@ -8,29 +8,32 @@ import OsInputPassword from '@/app/components/common/os-input/InputPassword';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {partnerProgramFilter} from '@/app/utils/base';
-import {Form} from 'antd';
+import {decrypt, encrypt, partnerProgramFilter} from '@/app/utils/base';
+import {Checkbox, Form} from 'antd';
 import Image from 'next/image';
 import {useEffect, useState} from 'react';
 import eyeSlashIcon from '../../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
 import eyeIcon from '../../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
-import {getAllPartnerandProgram} from '../../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 
 const AddPartnerPassword: React.FC<any> = ({
   onFinish,
   drawer,
   partnerPasswordForm,
+  sharedPassword,
+  setSharedPassword,
+  setPartnerId,
+  partnerId,
+  partnerData,
 }) => {
   const [token] = useThemeToken();
+  const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
   const dispatch = useAppDispatch();
-  const {data: partnerData} = useAppSelector((state) => state.partner);
+
   const {userInformation} = useAppSelector((state) => state.user);
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
+  const [activeProgramOptions, setActiveProgramOptions] = useState<any>();
 
-  useEffect(() => {
-    dispatch(getAllPartnerandProgram(''));
-  }, []);
   useEffect(() => {
     const FilterArrayDataa = partnerProgramFilter(
       'user',
@@ -39,14 +42,39 @@ const AddPartnerPassword: React.FC<any> = ({
       2,
       true,
     );
-
     setAllFilterPartnerData(FilterArrayDataa?.filterData);
   }, [partnerData]);
-
   const partnerOptions = allPartnerFilterData?.map((partner: any) => ({
     label: <CustomTextCapitalization text={partner?.partner} />,
     value: partner?.id,
   }));
+
+  const handlePartnerProgramOPtions = (value: any) => {
+    let findIndex = allPartnerFilterData?.findIndex(
+      (item: any) => item?.id === value,
+    );
+    let newArrForOptions: any = [];
+    let previousValue: any =
+      allPartnerFilterData?.length > 0 ? [...allPartnerFilterData] : [];
+    previousValue?.[findIndex || 0]?.PartnerPrograms?.map((items: any) => {
+      newArrForOptions?.push({
+        label: <CustomTextCapitalization text={items?.partner_program} />,
+        value: items?.id,
+      });
+    });
+
+    if (newArrForOptions?.length === 1) {
+      partnerPasswordForm?.setFieldValue(
+        'partner_program_id',
+        newArrForOptions?.[0]?.value,
+      );
+    }
+    setActiveProgramOptions(newArrForOptions);
+  };
+
+  useEffect(() => {
+    handlePartnerProgramOPtions(partnerId);
+  }, [partnerId, allPartnerFilterData]);
 
   return (
     <>
@@ -96,6 +124,32 @@ const AddPartnerPassword: React.FC<any> = ({
                 placeholder="Select"
                 style={{width: '100%'}}
                 options={partnerOptions}
+                onChange={(e: any) => {
+                  setPartnerId(e);
+                }}
+              />
+            </SelectFormItem>
+          </Col>
+          <Col span={12}>
+            <SelectFormItem
+              label={
+                <Typography name="Body 4/Medium">Partner Program</Typography>
+              }
+              name={'partner_program_id'}
+              rules={[
+                {
+                  required: true,
+                  message: 'Partner Program is required!',
+                },
+              ]}
+            >
+              <CommonSelect
+                allowClear
+                disabled={!partnerId}
+                placeholder="Select"
+                style={{width: '100%'}}
+                options={activeProgramOptions}
+                // onChange={(e: any) => {handlePartnerProgramOPtions(e)}}
               />
             </SelectFormItem>
           </Col>
@@ -176,6 +230,22 @@ const AddPartnerPassword: React.FC<any> = ({
             </SelectFormItem>
           </Col>
         </Row>
+        {userInformation?.MasterAdmin && (
+          <Row style={{marginTop: '20px'}}>
+            <Checkbox
+              style={{width: '20px', height: '20px'}}
+              onChange={(e: any) => {
+                setSharedPassword(e.target.checked);
+                partnerPasswordForm?.setFieldValue(
+                  'shared_password',
+                  e.target.checked,
+                );
+              }}
+              checked={sharedPassword}
+            />{' '}
+            <Typography name="Body 4/Medium">Shared Password</Typography>
+          </Row>
+        )}
       </Form>
     </>
   );
