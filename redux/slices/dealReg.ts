@@ -21,6 +21,7 @@ type DealRegState = {
   submitDealRegData: boolean;
   getDealRegForNew: any;
   getDealRegForNewLoading: boolean;
+  finalUpdatedDealRegData: any;
 };
 const initialState: DealRegState = {
   loading: false,
@@ -31,6 +32,7 @@ const initialState: DealRegState = {
   submitDealRegData: false,
   getDealRegForNew: {},
   getDealRegForNewLoading: false,
+  finalUpdatedDealRegData: [],
 };
 
 const dealRegSlice = createSlice({
@@ -48,6 +50,9 @@ const dealRegSlice = createSlice({
     },
     setDealRegForNew: (state, action) => {
       state.getDealRegForNew = action.payload;
+    },
+    setFinalUpdatedDealRegData: (state, action) => {
+      state.finalUpdatedDealRegData = action.payload;
     },
   },
   extraReducers(builder) {
@@ -182,5 +187,6 @@ export const {
   setDealRegUpdateData,
   setSubmitDealRegData,
   setDealRegForNew,
+  setFinalUpdatedDealRegData,
 } = dealRegSlice.actions;
 export default dealRegSlice?.reducer;

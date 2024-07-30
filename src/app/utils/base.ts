@@ -1252,11 +1252,16 @@ export const calculateTabBarPercentage = (
     .flatMap((array) => array);
 
   const uniqueFormData = parseForms
-    ? JSON.parse(UniqueFormData)
-    : UniqueFormData;
+    ? UniqueFormData
+      ? UniqueFormData && JSON?.parse(UniqueFormData)
+      : {}
+    : UniqueFormData || {};
+
   const commonFormData = parseForms
-    ? JSON.parse(CommonFormData)
-    : CommonFormData;
+    ? CommonFormData
+      ? CommonFormData && JSON?.parse(CommonFormData)
+      : {}
+    : CommonFormData || {};
 
   const filteredObj1 = filterRequiredAndNonEmptyValues(uniqueFormData);
   const filteredObj2 = filterRequiredAndNonEmptyValues(commonFormData);
@@ -1264,14 +1269,6 @@ export const calculateTabBarPercentage = (
   const mergedObj = {...filteredObj1, ...filteredObj2};
 
   const filledValueLength = Object.keys(mergedObj).length;
-
-  console.log(
-    'filledValue',
-    filledValueLength,
-    'Total',
-    totalCount?.length,
-  );
-
   const fillupPercentage = (filledValueLength / totalCount?.length) * 100;
   return Math.round(fillupPercentage);
 };
