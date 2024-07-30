@@ -1227,6 +1227,7 @@ export const tabBarPercentageCalculations = (
   AttributeFieldData: any,
   UniqueFormData: any,
   CommonFormData: any,
+  parsed?: boolean,
 ) => {
   const allContent =
     PartnerProgram &&
@@ -1242,6 +1243,36 @@ export const tabBarPercentageCalculations = (
 
   const uniqueFormData = UniqueFormData && JSON?.parse(UniqueFormData);
   const commonFormData = CommonFormData && JSON?.parse(CommonFormData);
+
+  const filteredObj1 = filterEmptyValues(uniqueFormData);
+  const filteredObj2 = filterEmptyValues(commonFormData);
+
+  const mergedObj = {...filteredObj1, ...filteredObj2};
+  const filledValueLength = Object.keys(mergedObj).length;
+
+  const fillupPercentage = (filledValueLength / totalCount?.length) * 100;
+  return Math.round(fillupPercentage);
+};
+export const tabBarPercentageNewCalculations = (
+  PartnerProgram: any,
+  AttributeFieldData: any,
+  UniqueFormData: any,
+  CommonFormData: any,
+) => {
+  const allContent =
+    PartnerProgram &&
+    JSON.parse(PartnerProgram)
+      .flatMap((section: any) => section?.content)
+      .filter(
+        (item: any) =>
+          item?.name !== 'Line Break' && item?.name !== 'Text Content',
+      );
+  const totalCount = [AttributeFieldData, allContent]?.flatMap(
+    (array) => array,
+  );
+
+  const uniqueFormData = UniqueFormData;
+  const commonFormData = CommonFormData;
 
   const filteredObj1 = filterEmptyValues(uniqueFormData);
   const filteredObj2 = filterEmptyValues(commonFormData);
