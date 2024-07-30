@@ -19,7 +19,6 @@ import Typography from '@/app/components/common/typography';
 import {MailOutlined} from '@ant-design/icons';
 import {Form, Radio, TimePicker} from 'antd';
 import {useEffect, useState} from 'react';
-import {useAppSelector} from '../../../../../redux/hook';
 import {UniqueFieldsProps} from './dealReg.interface';
 
 const UniqueFields: React.FC<UniqueFieldsProps> = ({
@@ -32,8 +31,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
   const allContent = JSON.parse(data?.form_data).flatMap(
     (section: any) => section.content,
   );
-
-  const {dealReg} = useAppSelector((state) => state.dealReg);
   const [uniqueTemplateData, setUniqueTemplateData] = useState<any>();
 
   const getInputComponent = (itemCon: any) => {
