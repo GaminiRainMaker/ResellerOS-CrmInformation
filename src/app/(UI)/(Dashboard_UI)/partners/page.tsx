@@ -50,25 +50,22 @@ const Partners: React.FC = () => {
   const [queryDataa, setQueryData] = useState<any>();
   const [requestPartnerLoading, setRequestPartnerLoading] =
     useState<boolean>(false);
-  const [userInformations, setUserInformation] = useState<any>();
+  const [userData, setUserData] = useState<any>();
 
   useEffect(() => {
     dispatch(getUnassignedProgram());
     dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
-      setUserInformation(payload?.payload);
+      setUserData(payload?.payload);
     });
     dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
       setAllPartnerData(payload?.payload);
     });
   }, []);
 
-  let organizationNameForRequest = userInformations?.organization;
+  let organizationNameForRequest = userData?.organization;
   const searchQuery = useDebounceHook(queryDataa, 500);
-
+  console.log('userInformationsuserInformations', userData);
   useEffect(() => {
-    dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
-      setUserInformation(payload?.payload);
-    });
     dispatch(getAllPartnerandProgramFilterData(searchQuery))?.then(
       (payload: any) => {
         setAllPartnerData(payload?.payload);
@@ -89,7 +86,7 @@ const Partners: React.FC = () => {
   // useEffect(() => {
   //   const FilterArrayDataa = partnerProgramFilter(
   //     'user',
-  //     userInformations,
+  //     userData,
   //     allPartnerData,
   //     activeTab,
   //   );
@@ -365,21 +362,22 @@ const Partners: React.FC = () => {
       ),
     },
   ];
-  // console.log('userInformationuserInformation', userInformations);
-  const handleAddNewAssignedPartnerProgramRequest = async (id: number) => {
+  // console.log('userInformationuserInformation', userData);
+  const handleAddNewAssignedPartnerProgramRequest = async (
+    id: number,
+    userData: any,
+  ) => {
     // setLoadingForRequest(true);
     const partnerObj = {
-      organization: userInformations?.organization
-        ? userInformations?.organization
+      organization: userData?.organization
+        ? userData?.organization
         : organizationNameForRequest,
-      requested_by: userInformations?.id,
+      requested_by: userData?.id,
       new_request: false,
       partner_program_id: id,
       userResquest: true,
     };
 
-    console.log('userInformationuserInformation', userInformations, partnerObj);
-    return;
     await dispatch(insertAssignPartnerProgram(partnerObj));
     await dispatch(getAllPartnerandProgramFilterData({}))?.then(
       (payload: any) => {
@@ -405,7 +403,7 @@ const Partners: React.FC = () => {
             buttontype="PRIMARY"
             text="Request"
             clickHandler={() => {
-              handleAddNewAssignedPartnerProgramRequest(record?.id);
+              handleAddNewAssignedPartnerProgramRequest(record?.id, userData);
             }}
           />
         ),
@@ -415,7 +413,7 @@ const Partners: React.FC = () => {
     } else {
       setPartnerProgramColumns(PartnerProgramColumns);
     }
-  }, [activeTab]);
+  }, [activeTab, userData]);
 
   const tabItems = [
     {

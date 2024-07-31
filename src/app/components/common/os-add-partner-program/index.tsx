@@ -66,7 +66,9 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
       dispatch(insertPartnerProgram(partnerProgramObj)).then((d: any) => {
         if (d?.payload) {
           form?.resetFields();
-          getAllPartnerData();
+          if (getAllPartnerData) {
+            getAllPartnerData();
+          }
           setOpen && setOpen(false);
         }
       });

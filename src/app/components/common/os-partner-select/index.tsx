@@ -31,6 +31,9 @@ const OsPartnerSelect: FC<{
   notApprovedData?: boolean;
   form?: any;
   allPartnerData?: any;
+  setAllPartnerData?: any;
+  getTheData?: any;
+  setGetTheData?: any;
 }> = ({
   organizationName,
   name = 'partner',
@@ -42,6 +45,9 @@ const OsPartnerSelect: FC<{
   isAddNewPartner = false,
   notApprovedData = false,
   allPartnerData,
+  setAllPartnerData,
+  getTheData,
+  setGetTheData,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -59,10 +65,12 @@ const OsPartnerSelect: FC<{
   const [openAddPartnerModal, setOpenAddPartnerModal] =
     useState<boolean>(false);
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
+
   const [selectedPartnerId, setSelectedPartnerId] = useState<number>();
-  useEffect(() => {
-    setAllFilterPartnerData(allPartnerData);
-  }, [allPartnerData]);
+  // useEffect(() => {
+  //   setAllFilterPartnerData(allPartnerData);
+  // }, [allPartnerData, JSON.stringify(allPartnerData)]);
+
   const [partnerOptions, setPartnerOptions] = useState<any>();
 
   useEffect(() => {
@@ -83,6 +91,27 @@ const OsPartnerSelect: FC<{
     partnerApprovedObjects?.push(partner);
   });
 
+  const getPartnerProgram = async () => {
+    if (pathname === '/partners') {
+      dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
+        setAllPartnerData(payload?.payload?.AllPartner);
+        setAllFilterPartnerData(payload?.payload?.AllPartner);
+        let newOptionArr: any = [];
+        allPartnerFilterData?.map((items: any) => {
+          payload?.payload?.AllPartner?.push({
+            label: <CustomTextCapitalization text={items?.partner} />,
+            value: items?.id,
+          });
+        });
+        setPartnerOptions(newOptionArr);
+      });
+    }
+    setGetTheData(false);
+  };
+
+  useEffect(() => {
+    getPartnerProgram();
+  }, [getTheData]);
   const setFinalData = (e: any) => {
     const filteredData = allPartnerFilterData?.filter(
       (item: any) => item?.id === e,
@@ -109,15 +138,18 @@ const OsPartnerSelect: FC<{
           placeholder="Select"
           allowClear
           style={{width: '100%'}}
-          options={partnerOptions?.sort((a: any, b: any) => {
-            if (a.label < b.label) {
-              return -1;
-            }
-            if (a.label > b.label) {
-              return 1;
-            }
-            return 0;
-          })}
+          options={
+            partnerOptions &&
+            partnerOptions?.sort((a: any, b: any) => {
+              if (a.label < b.label) {
+                return -1;
+              }
+              if (a.label > b.label) {
+                return 1;
+              }
+              return 0;
+            })
+          }
           onChange={(e) => {
             setPartnerValue && setPartnerValue(e);
             form?.setFieldsValue({

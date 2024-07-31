@@ -29,16 +29,10 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
   const pathname = usePathname();
   const [allPartnerData, setAllPartnerData] = useState<any>();
   const [partnerValue, setPartnerValue] = useState<number>();
+  const [getTheData, setGetTheData] = useState<boolean>(false);
 
-  const getPartnerProgram = async () => {
-    if (pathname === '/partners') {
-      dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
-        setAllPartnerData(payload?.payload);
-      });
-    }
-  };
   useEffect(() => {
-    getPartnerProgram();
+    setGetTheData(true);
   }, []);
   const onFinish = async (value: any) => {
     if (!partnerValue) {
@@ -56,6 +50,8 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
         await dispatch(insertAssignPartnerProgram(partnerObj));
       }
       form?.resetFields();
+      setGetTheData(true);
+
       dispatch(
         getAssignPartnerProgramByOrganization({
           organization: userInformation?.organization,
@@ -114,7 +110,10 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                 isSuperAdmin={false}
                 notApprovedData
                 isAddNewPartner
-                allPartnerData={allPartnerData?.AllPartner}
+                allPartnerData={allPartnerData}
+                setAllPartnerData={setAllPartnerData}
+                getTheData={getTheData}
+                setGetTheData={setGetTheData}
               />
             </Col>
 
@@ -126,7 +125,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                 isRequired
                 isAddNewProgram
                 notApprovedData
-                allPartnerData={allPartnerData?.AllPartner}
+                allPartnerData={allPartnerData}
               />
             </Col>
           </Row>
