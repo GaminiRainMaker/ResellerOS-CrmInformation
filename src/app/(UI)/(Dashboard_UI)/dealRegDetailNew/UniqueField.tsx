@@ -17,9 +17,8 @@ import FormUpload from '@/app/components/common/os-upload/FormUpload';
 import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
 import Typography from '@/app/components/common/typography';
 import {MailOutlined} from '@ant-design/icons';
-import {Form, Radio, TimePicker} from 'antd';
+import {DatePicker, Form, Radio, TimePicker} from 'antd';
 import {useEffect, useState} from 'react';
-import {useAppSelector} from '../../../../../redux/hook';
 import {UniqueFieldsProps} from './dealReg.interface';
 
 const UniqueFields: React.FC<UniqueFieldsProps> = ({
@@ -32,8 +31,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
   const allContent = JSON.parse(data?.form_data).flatMap(
     (section: any) => section.content,
   );
-
-  const {dealReg} = useAppSelector((state) => state.dealReg);
   const [uniqueTemplateData, setUniqueTemplateData] = useState<any>();
 
   const getInputComponent = (itemCon: any) => {
@@ -116,7 +113,9 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 {...commonProps}
               />
             ) : itemCon?.name === 'Date' ? (
-              <CommonDatePicker format={itemCon?.dateformat} />
+              // <CommonDatePicker {...commonProps} />
+              // <DatePicker />
+              <></>
             ) : itemCon?.name === 'Email' ? (
               <OsInput
                 type="email"
@@ -150,24 +149,22 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
         return (
           <>
             {itemCon?.labelOptions?.map(
-              (itemLabelOp: any, itemLabelInde: number) => {
+              (itemLabelOp: any, itemLabelIndex: number) => {
                 const totalFloorValue = Math.floor(
                   24 / itemCon?.columnRequired,
                 );
                 return (
-                  <ToggleColStyled span={totalFloorValue} key={itemLabelInde}>
+                  <ToggleColStyled span={totalFloorValue} key={itemLabelIndex}>
                     {itemCon?.name === 'Radio Button' ? (
-                      <Radio value={itemLabelInde} checked={!!initialValue}>
-                        {itemLabelOp}
-                      </Radio>
+                      <Radio.Group {...commonProps}>
+                        <Radio>{itemLabelOp}</Radio>
+                      </Radio.Group>
                     ) : itemCon?.name === 'Toggle' ? (
                       <>
-                        <Switch checked={!!initialValue} /> {itemLabelOp}
+                        <Switch {...commonProps} /> {itemLabelOp}
                       </>
                     ) : (
-                      <Checkbox value={itemLabelOp} checked={!!initialValue}>
-                        {itemLabelOp}
-                      </Checkbox>
+                      <Checkbox {...commonProps}>{itemLabelOp}</Checkbox>
                     )}
                   </ToggleColStyled>
                 );
