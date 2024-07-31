@@ -36,7 +36,7 @@ const EditFiledDetails: React.FC<FormBuilderInterFace> = ({
   );
 
   return (
-    <div style={{position: 'relative', height: 800, overflow: 'hidden'}}>
+    <div style={{position: 'relative', height: 800, overflow: 'auto'}}>
       {NameofTheCurrentFiled === 'Table' && renderComponent(EditTableFields)}
       {['Checkbox', 'Radio Button', 'Toggle'].includes(NameofTheCurrentFiled) &&
         renderComponent(EditCheckBoxField)}

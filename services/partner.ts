@@ -22,4 +22,10 @@ export const PARTNER_API = {
     get(API.PARTNER.getAllPartnerandProgram) as Promise<AxiosResponse<[]>>,
   filterData: (data: any) =>
     post(API.PARTNER.filterData, data) as Promise<AxiosResponse<[]>>,
+  filterDataAdmin: (data: any) =>
+    post(API.PARTNER.filterDataAdmin, data) as Promise<AxiosResponse<[]>>,
+  approvedForOrg: (data: any) =>
+    post(API.PARTNER.approvedForOrg, data) as Promise<AxiosResponse<[]>>,
+  CanAddedToOrg: (data: any) =>
+    post(API.PARTNER.CanAddedToOrg, data) as Promise<AxiosResponse<[]>>,
 };

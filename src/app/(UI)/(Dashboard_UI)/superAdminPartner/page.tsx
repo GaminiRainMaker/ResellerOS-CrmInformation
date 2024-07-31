@@ -31,7 +31,7 @@ import {updateAssignPartnerProgramById} from '../../../../../redux/actions/assig
 import {
   deletePartner,
   getAllPartnerandProgram,
-  getAllPartnerandProgramFilterData,
+  getAllPartnerandProgramFilterDataForAdmin,
 } from '../../../../../redux/actions/partner';
 import {
   deletePartnerProgram,
@@ -94,9 +94,11 @@ const SuperAdminPartner: React.FC = () => {
   const [superAdminPartnerAnalyticData, setSuperAdminPartnerAnalyticData] =
     useState<any>();
   const getAllPartnerData = async () => {
-    dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
-      setAllPartnerData(payload?.payload);
-    });
+    dispatch(getAllPartnerandProgramFilterDataForAdmin({}))?.then(
+      (payload: any) => {
+        setAllPartnerData(payload?.payload);
+      },
+    );
   };
   useEffect(() => {
     // dispatch(getAllPartnerandProgram(''));
@@ -105,7 +107,7 @@ const SuperAdminPartner: React.FC = () => {
   const searchQuery = useDebounceHook(queryDataa, 500);
 
   useEffect(() => {
-    dispatch(getAllPartnerandProgramFilterData(searchQuery))?.then(
+    dispatch(getAllPartnerandProgramFilterDataForAdmin(searchQuery))?.then(
       (payload: any) => {
         setAllPartnerData(payload?.payload);
       },
@@ -124,33 +126,35 @@ const SuperAdminPartner: React.FC = () => {
     }
   }, [getTabId]);
 
-  useEffect(() => {
-    const FilterArrayDataa = partnerProgramFilter(
-      'super',
-      userInformation,
-      allPartnerData,
-      activeTab,
-    );
-    setSuperAdminPartnerAnalyticData(FilterArrayDataa);
-    const newArrForTab3: any = [];
-    if (activeTab === 2) {
-      FilterArrayDataa?.filterData?.map((items: any) => {
-        items?.PartnerPrograms?.map((itemInner: any) => {
-          const newObj: any = {
-            ...itemInner,
-            partner_email: items?.email,
-            partner_name: items?.partner,
-          };
-          newArrForTab3?.push(newObj);
-        });
-      });
-    }
-    if (activeTab === 2) {
-      setAllFilterPartnerData(newArrForTab3);
-    } else {
-      setAllFilterPartnerData(FilterArrayDataa?.filterData);
-    }
-  }, [JSON.stringify(allPartnerData), activeTab]);
+  console.log('allPartnerDataallPartnerData', allPartnerData);
+
+  // useEffect(() => {
+  //   const FilterArrayDataa = partnerProgramFilter(
+  //     'super',
+  //     userInformation,
+  //     allPartnerData,
+  //     activeTab,
+  //   );
+  //   setSuperAdminPartnerAnalyticData(FilterArrayDataa);
+  //   const newArrForTab3: any = [];
+  //   if (activeTab === 2) {
+  //     FilterArrayDataa?.filterData?.map((items: any) => {
+  //       items?.PartnerPrograms?.map((itemInner: any) => {
+  //         const newObj: any = {
+  //           ...itemInner,
+  //           partner_email: items?.email,
+  //           partner_name: items?.partner,
+  //         };
+  //         newArrForTab3?.push(newObj);
+  //       });
+  //     });
+  //   }
+  //   if (activeTab === 2) {
+  //     setAllFilterPartnerData(newArrForTab3);
+  //   } else {
+  //     setAllFilterPartnerData(FilterArrayDataa?.filterData);
+  //   }
+  // }, [JSON.stringify(allPartnerData), activeTab]);
 
   const updateRequest = async (type: boolean, id: number, requesId: number) => {
     const Data = {
@@ -159,9 +163,11 @@ const SuperAdminPartner: React.FC = () => {
       requested_by: requesId,
     };
     await dispatch(updateAssignPartnerProgramById(Data));
-    dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
-      setAllPartnerData(payload?.payload);
-    });
+    dispatch(getAllPartnerandProgramFilterDataForAdmin({}))?.then(
+      (payload: any) => {
+        setAllPartnerData(payload?.payload);
+      },
+    );
   };
 
   const deleteSelectedPartnerProgramIds = async () => {
@@ -213,7 +219,7 @@ const SuperAdminPartner: React.FC = () => {
       dataIndex: 'partner_program',
       key: 'partner_program',
       render: (text: string, record: any) => (
-        <CustomTextCapitalization text={record?.partner_name} />
+        <CustomTextCapitalization text={record?.Partner?.partner} />
       ),
       width: 200,
     },
@@ -227,7 +233,7 @@ const SuperAdminPartner: React.FC = () => {
       key: 'description',
       render: (text: any, record: any) => (
         <Typography name="Body 4/Regular">
-          {record?.partner_email ?? '--'}
+          {record?.Partner?.email ?? '--'}
         </Typography>
       ),
       width: 200,
@@ -546,7 +552,7 @@ const SuperAdminPartner: React.FC = () => {
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
           }}
-          dataSource={allPartnerFilterData}
+          dataSource={allPartnerData?.AllPartner}
           scroll
           locale={locale}
           loading={false}
@@ -563,7 +569,7 @@ const SuperAdminPartner: React.FC = () => {
       children: (
         <OsTable
           columns={PartnerProgramColumnsTab3}
-          dataSource={allPartnerFilterData}
+          dataSource={allPartnerData?.requested}
           scroll
           locale={locale}
           loading={false}
@@ -594,7 +600,7 @@ const SuperAdminPartner: React.FC = () => {
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
           }}
           // dataSource={allApprovedObjects}
-          dataSource={allPartnerFilterData}
+          dataSource={allPartnerData?.DeclinedData}
           scroll
           locale={locale}
           loading={false}
@@ -790,7 +796,14 @@ const SuperAdminPartner: React.FC = () => {
       <OsModal
         loading={insertProgramLoading}
         body={
-          <AddPartnerProgram form={form} setOpen={setShowAddProgramModal} />
+          <AddPartnerProgram
+            form={form}
+            setOpen={setShowAddProgramModal}
+            partnerData={allPartnerData?.AllPartner}
+            setUpdateTheObject={setUpdateTheObject}
+            updateTheObject={updateTheObject}
+            getAllPartnerData={getAllPartnerData}
+          />
         }
         width={800}
         open={showAddProgramModal}
@@ -860,6 +873,7 @@ const SuperAdminPartner: React.FC = () => {
       >
         <AddPartnerProgram
           form={form}
+          partnerData={allPartnerData?.AllPartner}
           setOpen={setShowPartnerProgramDrawer}
           formPartnerData={formPartnerProgramData}
           drawer

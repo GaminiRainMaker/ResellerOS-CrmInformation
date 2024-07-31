@@ -5,7 +5,7 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
   getAssignPartnerProgramByOrganization,
   insertAssignPartnerProgram,
@@ -14,6 +14,9 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsPartnerProgramSelect from '../os-partner-program-select';
 import OsPartnerSelect from '../os-partner-select';
 import {RequestPartnerInterface} from './os-add-partner.interface';
+import {usePathname} from 'next/navigation';
+import {getAllPartnerandProgramFilterData} from '../../../../../redux/actions/partner';
+import {rectIntersection} from '@dnd-kit/core';
 
 const RequestPartner: React.FC<RequestPartnerInterface> = ({
   form,
@@ -23,9 +26,24 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
+  const pathname = usePathname();
+  const [allPartnerData, setAllPartnerData] = useState<any>();
   const [partnerValue, setPartnerValue] = useState<number>();
 
+  const getPartnerProgram = async () => {
+    if (pathname === '/partners') {
+      dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
+        setAllPartnerData(payload?.payload);
+      });
+    }
+  };
+  useEffect(() => {
+    getPartnerProgram();
+  }, []);
   const onFinish = async (value: any) => {
+    if (!partnerValue) {
+      return;
+    }
     try {
       setRequestPartnerLoading(true);
       const partnerObj = {
@@ -96,6 +114,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                 isSuperAdmin={false}
                 notApprovedData
                 isAddNewPartner
+                allPartnerData={allPartnerData?.AllPartner}
               />
             </Col>
 
@@ -107,6 +126,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                 isRequired
                 isAddNewProgram
                 notApprovedData
+                allPartnerData={allPartnerData?.AllPartner}
               />
             </Col>
           </Row>

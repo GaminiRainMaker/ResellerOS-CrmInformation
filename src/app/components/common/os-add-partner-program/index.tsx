@@ -27,6 +27,7 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
   setUpdateTheObject,
   updateTheObject,
   getAllPartnerData,
+  partnerData,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -45,6 +46,7 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
       user_id: userInformation?.id,
       partner: partnerValue ?? partnerId,
     };
+
     if (drawer) {
       await dispatch(
         updatePartnerProgramById({
@@ -64,13 +66,15 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
       dispatch(insertPartnerProgram(partnerProgramObj)).then((d: any) => {
         if (d?.payload) {
           form?.resetFields();
-          dispatch(getAllPartnerandProgram(''));
+          getAllPartnerData();
           setOpen && setOpen(false);
         }
       });
     }
     form?.resetFields();
-    setUpdateTheObject({});
+    if (setUpdateTheObject) {
+      setUpdateTheObject({});
+    }
   };
 
   useEffect(() => {
@@ -117,6 +121,7 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
               // form={form}
               setPartnerValue={setPartnerValue}
               isRequired
+              allPartnerData={partnerData}
             />
           )}
           <Form.Item

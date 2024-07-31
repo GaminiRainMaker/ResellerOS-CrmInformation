@@ -27,7 +27,7 @@ import {
   insertDealReg,
   queryDealReg,
 } from '../../../../../redux/actions/dealReg';
-import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
+import {getAllPartnerandProgramApprovedForOrganization} from '../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
 
@@ -43,7 +43,6 @@ const NewRegistrationForm: FC<any> = ({
   const getCustomerId = Number(searchParams.get('customerId'));
   const dispatch = useAppDispatch();
   const {data: dataAddress} = useAppSelector((state) => state.customer);
-  const {data: partnerData} = useAppSelector((state) => state.partner);
   const {userInformation} = useAppSelector((state) => state.user);
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [formStep, setFormStep] = useState<number>(0);
@@ -57,7 +56,11 @@ const NewRegistrationForm: FC<any> = ({
     useState<any>();
 
   useEffect(() => {
-    dispatch(getAllPartnerandProgram(''));
+    dispatch(getAllPartnerandProgramApprovedForOrganization({}))?.then(
+      (payload: any) => {
+        setAllFilterPartnerData(payload?.payload);
+      },
+    );
   }, []);
 
   useEffect(() => {
@@ -66,17 +69,17 @@ const NewRegistrationForm: FC<any> = ({
     }
   }, [isDealRegDetail]);
 
-  useEffect(() => {
-    const FilterArrayDataa = partnerProgramFilter(
-      'user',
-      userInformation,
-      partnerData,
-      2,
-      true,
-    );
+  // useEffect(() => {
+  //   const FilterArrayDataa = partnerProgramFilter(
+  //     'user',
+  //     userInformation,
+  //     partnerData,
+  //     2,
+  //     true,
+  //   );
 
-    setAllFilterPartnerData(FilterArrayDataa?.filterData);
-  }, [partnerData]);
+  //   setAllFilterPartnerData(FilterArrayDataa?.filterData);
+  // }, [partnerData]);
   const dataForTheObjects = form.getFieldsValue();
 
   useEffect(() => {

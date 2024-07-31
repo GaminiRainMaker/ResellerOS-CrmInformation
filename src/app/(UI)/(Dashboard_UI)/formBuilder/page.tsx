@@ -91,6 +91,7 @@ const FormBuilder = () => {
               setActiveSectionIndex={setActiveSectionIndex}
               setSelectedColumnIndex={setSelectedColumnIndex}
               setContentActiveIndex={setContentActiveIndex}
+              setIsOpenDrawer={setIsOpenDrawer}
               previewFile={false}
             />
           </Content>
@@ -104,6 +105,7 @@ const FormBuilder = () => {
               display: 'flex',
               justifyContent: 'end',
               padding: '10px',
+              // overflow: 'auto',
             }}
           >
             <XMarkIcon
@@ -150,6 +152,7 @@ const FormBuilder = () => {
               setActiveSectionIndex={setActiveSectionIndex}
               setSelectedColumnIndex={setSelectedColumnIndex}
               setContentActiveIndex={setContentActiveIndex}
+              setIsOpenDrawer={setIsOpenDrawer}
               // eslint-disable-next-line react/jsx-boolean-value
               previewFile
               // previewFile={true}

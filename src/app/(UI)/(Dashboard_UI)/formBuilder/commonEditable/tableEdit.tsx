@@ -309,7 +309,7 @@ const EditTableFields: React.FC<EditableFiledsCommonInterface> = ({
             </Typography>
           </div>{' '}
           <Form layout="vertical">
-            <div style={{height: '20vh' || '25vh', overflow: 'auto'}}>
+            <div>
               {cartItems?.[sectionIndex || 0]?.content?.[
                 contentIndex || 0
               ]?.ColumnsData?.[selectedColumnIndex || 0]?.options?.map(

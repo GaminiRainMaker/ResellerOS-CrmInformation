@@ -14,4 +14,5 @@ export interface AddPartnerInterface {
   setUpdateTheObject?: any;
   updateTheObject?: any;
   getAllPartnerData?: any;
+  partnerData?: any;
 }

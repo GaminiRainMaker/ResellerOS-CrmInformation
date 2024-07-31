@@ -10,6 +10,7 @@ import {useEffect, useState} from 'react';
 import MyProfile from './myProfile';
 import MyTeam from './myTeam';
 import PartnerPassword from './partnerPassword';
+import {useAppSelector} from '../../../../../redux/hook';
 
 const AccountInfo = () => {
   const searchParams = useSearchParams();
@@ -17,6 +18,7 @@ const AccountInfo = () => {
   const router = useRouter();
   const getRole = searchParams.get('role');
   const getId = searchParams.get('id');
+  const {userInformation} = useAppSelector((state) => state.user);
   const organization = searchParams.get('organization');
   const isSuperAdminProfile = searchParams.get('isSuperAdminProfile');
   const getOrganization = searchParams.get('organization');

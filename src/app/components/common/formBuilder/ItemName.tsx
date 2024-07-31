@@ -15,6 +15,7 @@ const ItemName: FC<ItemNameInterface> = ({
   cartItems,
   setCartItems,
   onClick,
+  setCollapsed,
 }) => {
   const [token] = useThemeToken();
 
@@ -22,6 +23,7 @@ const ItemName: FC<ItemNameInterface> = ({
     const temp: any = [...cartItems];
     temp?.[sectionInde || 0]?.content?.splice(contentIn, 1);
     setCartItems(temp);
+    setCollapsed(false);
   };
 
   return (

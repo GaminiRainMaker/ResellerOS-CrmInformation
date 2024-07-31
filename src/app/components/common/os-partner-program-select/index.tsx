@@ -21,6 +21,7 @@ const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
   isRequired = false,
   isAddNewProgram = false,
   notApprovedData = false,
+  allPartnerData,
 }) => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
@@ -33,41 +34,23 @@ const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
   const [finalProgramOptions, setFinalProgramOptions] = useState<any>();
   const dispatch = useAppDispatch();
   const pathname = usePathname();
-  const [allApprovedIdsOrganization, setAllApprovedIdsForOrganization] =
-    useState<any>();
-
-  useEffect(() => {
-    dispatch(
-      getAssignPartnerProgramByOrganization({
-        // organization: userInformation?.organization,
-        organization: organizationName,
-      }),
-    )?.then((payload: any) => {
-      let newArrOfIds: any = [];
-      if (
-        payload?.payload?.approved?.length > 0 &&
-        pathname === '/userManagement'
-      ) {
-        payload?.payload?.approved?.map((items: any) => {
-          newArrOfIds?.push(items?.partner_program_id);
-        });
-      }
-      setAllApprovedIdsForOrganization(newArrOfIds);
-    });
-  }, []);
 
   useEffect(() => {
     let partnerProgramsRequestOptions: any = [];
-    partnerRequestData?.[0]?.PartnerPrograms?.map((program: any) => {
-      if (!allApprovedIdsOrganization?.includes(program?.id)) {
+
+    let findIndexOfThePartner = allPartnerData?.findIndex(
+      (item: any) => item?.id === partnerId,
+    );
+    allPartnerData?.[findIndexOfThePartner]?.PartnerPrograms?.map(
+      (program: any) => {
         partnerProgramsRequestOptions?.push({
           label: <CustomTextCapitalization text={program?.partner_program} />,
           value: program?.id,
         });
-      }
-    });
+      },
+    );
     setFinalProgramOptions(partnerProgramsRequestOptions);
-  }, [partnerRequestData, allApprovedIdsOrganization]);
+  }, [allPartnerData, partnerId]);
 
   return (
     <>

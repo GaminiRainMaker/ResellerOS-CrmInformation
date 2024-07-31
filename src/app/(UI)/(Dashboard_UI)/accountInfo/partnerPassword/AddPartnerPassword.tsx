@@ -29,21 +29,14 @@ const AddPartnerPassword: React.FC<any> = ({
   const [token] = useThemeToken();
   const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
   const dispatch = useAppDispatch();
-
   const {userInformation} = useAppSelector((state) => state.user);
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [activeProgramOptions, setActiveProgramOptions] = useState<any>();
 
   useEffect(() => {
-    const FilterArrayDataa = partnerProgramFilter(
-      'user',
-      userInformation,
-      partnerData,
-      2,
-      true,
-    );
-    setAllFilterPartnerData(FilterArrayDataa?.filterData);
+    setAllFilterPartnerData(partnerData);
   }, [partnerData]);
+
   const partnerOptions = allPartnerFilterData?.map((partner: any) => ({
     label: <CustomTextCapitalization text={partner?.partner} />,
     value: partner?.id,

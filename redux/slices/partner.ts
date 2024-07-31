@@ -9,6 +9,9 @@ import {
   getAllPartner,
   getAllPartnerandProgram,
   getAllPartnerandProgramFilterData,
+  getAllPartnerandProgramFilterDataForAdmin,
+  getAllPartnerandProgramApprovedForOrganization,
+  getPartnerCanAddedToOrganization,
 } from '../actions/partner';
 
 type PartnerState = {
@@ -144,6 +147,63 @@ const partnerSlice = createSlice({
       )
       .addCase(
         getAllPartnerandProgramFilterData.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getAllPartnerandProgramFilterDataForAdmin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getAllPartnerandProgramFilterDataForAdmin.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getAllPartnerandProgramFilterDataForAdmin.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(
+        getAllPartnerandProgramApprovedForOrganization.pending,
+        (state) => {
+          state.loading = true;
+          state.error = null;
+        },
+      )
+      .addCase(
+        getAllPartnerandProgramApprovedForOrganization.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getAllPartnerandProgramApprovedForOrganization.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getPartnerCanAddedToOrganization.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getPartnerCanAddedToOrganization.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getPartnerCanAddedToOrganization.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

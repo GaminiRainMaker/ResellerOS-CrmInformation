@@ -19,6 +19,7 @@ import {setAllResellerRecord} from '../../../../../redux/slices/user';
 import CommonSelect from '@/app/components/common/os-select';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import {Option} from 'antd/es/mentions';
+import {getPartnerCanAddedToOrganization} from '../../../../../redux/actions/partner';
 
 const UserManagement = () => {
   const dispatch = useAppDispatch();
@@ -31,6 +32,7 @@ const UserManagement = () => {
   );
   const [showPartnerProgramAssignModal, setShowPartnerProgramAssignModal] =
     useState<boolean>(false);
+
   const [selectedRecordData, setSelectedRecordData] = useState<any>();
   const updatedResellerData = userData?.filter(
     (d: any) => d?.organization !== 'rainmakercloud',
@@ -318,7 +320,13 @@ const UserManagement = () => {
       <OsModal
         loading={AssignPartnerProgramLoading}
         title="Assign Partner Program"
-        body={<AssignPartnerProgram form={form} onFinish={onFinish} organizationCurrent ={ selectedRecordData?.organization}/>}
+        body={
+          <AssignPartnerProgram
+            form={form}
+            onFinish={onFinish}
+            organizationCurrent={selectedRecordData?.organization}
+          />
+        }
         bodyPadding={40}
         width={638}
         open={showPartnerProgramAssignModal}

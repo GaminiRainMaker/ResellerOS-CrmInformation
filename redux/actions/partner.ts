@@ -84,4 +84,36 @@ export const getAllPartnerandProgramFilterData = createAsyncThunk(
     }
   },
 );
-
+export const getAllPartnerandProgramFilterDataForAdmin = createAsyncThunk(
+  'partner/getAllPartnerandProgramFilterDataForAdmin',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PARTNER_API.filterDataAdmin(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+export const getAllPartnerandProgramApprovedForOrganization = createAsyncThunk(
+  'partner/getAllPartnerandProgramApprovedForOrganization',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PARTNER_API.approvedForOrg(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+export const getPartnerCanAddedToOrganization = createAsyncThunk(
+  'partner/getPartnerCanAddedToOrganization',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PARTNER_API.CanAddedToOrg(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

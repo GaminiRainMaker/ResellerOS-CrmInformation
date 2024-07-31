@@ -2,16 +2,27 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import OsPartnerProgramSelect from '@/app/components/common/os-partner-program-select';
 import OsPartnerSelect from '@/app/components/common/os-partner-select';
 import {Form} from 'antd';
-import {FC, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {UserManagementInterface} from './userManagement.interface';
+import {getPartnerCanAddedToOrganization} from '../../../../../redux/actions/partner';
+import {useAppDispatch} from '../../../../../redux/hook';
 
 const AssignPartnerProgram: FC<UserManagementInterface> = ({
   form,
   onFinish,
   organizationCurrent,
 }) => {
+  const [partnerToBeAssigned, setPartnerToBeAssigned] = useState<any>();
+  const dispatch = useAppDispatch();
   const [partnerValue, setPartnerValue] = useState<number>();
 
+  useEffect(() => {
+    dispatch(
+      getPartnerCanAddedToOrganization({organization: organizationCurrent}),
+    )?.then((payload: any) => {
+      setPartnerToBeAssigned(payload?.payload);
+    });
+  }, [organizationCurrent]);
   return (
     <Form
       layout="vertical"
@@ -31,6 +42,7 @@ const AssignPartnerProgram: FC<UserManagementInterface> = ({
             partnerProgramName="partner_program_id"
             isRequired
             isSuperAdmin
+            allPartnerData={partnerToBeAssigned}
           />
         </Col>
 
@@ -42,6 +54,7 @@ const AssignPartnerProgram: FC<UserManagementInterface> = ({
             form={form}
             isRequired
             notApprovedData
+            allPartnerData={partnerToBeAssigned}
           />
         </Col>
       </Row>

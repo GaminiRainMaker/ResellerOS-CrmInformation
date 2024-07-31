@@ -28,7 +28,8 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
 import AddPartnerPassword from './AddPartnerPassword';
 import DecryptedPassword from './DecryptedPassword';
-import {getAllPartnerandProgram} from '../../../../../../redux/actions/partner';
+import {getAllPartnerandProgramFilterData} from '../../../../../../redux/actions/partner';
+import {getUserByTokenAccess} from '../../../../../../redux/actions/user';
 
 const PartnerPassword = () => {
   const [token] = useThemeToken();
@@ -44,12 +45,11 @@ const PartnerPassword = () => {
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
 
   const [deleteIds, setDeleteIds] = useState<any>();
-  const {data: partnerData} = useAppSelector((state) => state.partner);
 
   const [partnerPasswordId, setPartnerPasswordId] = useState<any>();
   const [finalSharedPasswordData, setFinalSharedPasswordData] = useState<any>();
   const [finalMyPasswordData, setFinalMyPasswordData] = useState<any>();
-  const {userInformation} = useAppSelector((state) => state.user);
+  const [userInformation, setUserInformation] = useState<any>();
   const [sharedPassword, setSharedPassword] = useState<boolean>(false);
   const [partnerId, setPartnerId] = useState<any>();
 
@@ -75,9 +75,17 @@ const PartnerPassword = () => {
       }
     });
   };
+  const [partnerDataa, setPartnerDataa] = useState<any>();
+
   useEffect(() => {
-    dispatch(getAllPartnerandProgram(''));
+    dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
+      setPartnerDataa(payload?.payload?.approved);
+    });
+    dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
+      setUserInformation(payload?.payload);
+    });
   }, []);
+  console.log('partnerDataapartnerDataa', partnerDataa);
 
   const MyPartnerColumns = [
     {
@@ -258,7 +266,6 @@ const PartnerPassword = () => {
       ),
     }),
   );
-
   const tabItems: TabsProps['items'] = [
     {
       label: (
@@ -274,15 +281,20 @@ const PartnerPassword = () => {
       ),
       key: '1',
       children: (
-        <OsTable
-          columns={
-            userInformation?.MasterAdmin ? FinalColumnData : MyPartnerColumns
-          }
-          dataSource={finalSharedPasswordData}
-          scroll
-          loading={loading}
-          locale={locale}
-        />
+        <>
+          {' '}
+          {userInformation && (
+            <OsTable
+              columns={
+                userInformation?.is_admin ? FinalColumnData : MyPartnerColumns
+              }
+              dataSource={finalSharedPasswordData}
+              scroll
+              loading={loading}
+              locale={locale}
+            />
+          )}
+        </>
       ),
     },
     {
@@ -474,7 +486,7 @@ const PartnerPassword = () => {
             setSharedPassword={setSharedPassword}
             setPartnerId={setPartnerId}
             partnerId={partnerId}
-            partnerData={partnerData}
+            partnerData={partnerDataa}
           />
         }
         width={600}

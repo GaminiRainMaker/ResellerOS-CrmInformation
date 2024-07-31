@@ -30,6 +30,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import PartnerAnalytics from './partnerAnalytics';
 import OsInput from '@/app/components/common/os-input';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
+import {getUserByTokenAccess} from '../../../../../redux/actions/user';
 
 const Partners: React.FC = () => {
   const [token] = useThemeToken();
@@ -44,23 +45,30 @@ const Partners: React.FC = () => {
   const [allPartnerData, setAllPartnerData] = useState<any>();
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [allPartnerAnalyticData, setAllAnalyticPartnerData] = useState<any>();
-  const {userInformation} = useAppSelector((state) => state.user);
   const [formData, setformData] = useState<any>();
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
   const [queryDataa, setQueryData] = useState<any>();
   const [requestPartnerLoading, setRequestPartnerLoading] =
     useState<boolean>(false);
+  const [userInformations, setUserInformation] = useState<any>();
 
   useEffect(() => {
     dispatch(getUnassignedProgram());
+    dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
+      setUserInformation(payload?.payload);
+    });
     dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
       setAllPartnerData(payload?.payload);
     });
   }, []);
-  let organizationNameForRequest = userInformation?.organization;
+
+  let organizationNameForRequest = userInformations?.organization;
   const searchQuery = useDebounceHook(queryDataa, 500);
 
   useEffect(() => {
+    dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
+      setUserInformation(payload?.payload);
+    });
     dispatch(getAllPartnerandProgramFilterData(searchQuery))?.then(
       (payload: any) => {
         setAllPartnerData(payload?.payload);
@@ -78,33 +86,33 @@ const Partners: React.FC = () => {
       setActiveTab(Number(getTabId));
     }
   }, [getTabId]);
-  useEffect(() => {
-    const FilterArrayDataa = partnerProgramFilter(
-      'user',
-      userInformation,
-      allPartnerData,
-      activeTab,
-    );
-    setAllAnalyticPartnerData(FilterArrayDataa);
-    const newArrForTab3: any = [];
-    if (activeTab === 3) {
-      FilterArrayDataa?.filterData?.map((items: any) => {
-        items?.PartnerPrograms?.map((itemInner: any) => {
-          const newObj: any = {
-            ...itemInner,
-            partner_email: items?.email,
-            partner_name: items?.partner,
-          };
-          newArrForTab3?.push(newObj);
-        });
-      });
-    }
-    if (activeTab === 3) {
-      setAllFilterPartnerData(newArrForTab3);
-    } else {
-      setAllFilterPartnerData(FilterArrayDataa?.filterData);
-    }
-  }, [allPartnerData, activeTab]);
+  // useEffect(() => {
+  //   const FilterArrayDataa = partnerProgramFilter(
+  //     'user',
+  //     userInformations,
+  //     allPartnerData,
+  //     activeTab,
+  //   );
+  //   setAllAnalyticPartnerData(FilterArrayDataa);
+  //   const newArrForTab3: any = [];
+  //   if (activeTab === 3) {
+  //     FilterArrayDataa?.filterData?.map((items: any) => {
+  //       items?.PartnerPrograms?.map((itemInner: any) => {
+  //         const newObj: any = {
+  //           ...itemInner,
+  //           partner_email: items?.email,
+  //           partner_name: items?.partner,
+  //         };
+  //         newArrForTab3?.push(newObj);
+  //       });
+  //     });
+  //   }
+  //   if (activeTab === 3) {
+  //     setAllFilterPartnerData(newArrForTab3);
+  //   } else {
+  //     setAllFilterPartnerData(FilterArrayDataa?.filterData);
+  //   }
+  // }, [allPartnerData, activeTab]);
 
   const locale = {
     emptyText: (
@@ -261,7 +269,8 @@ const Partners: React.FC = () => {
       dataIndex: 'partner_program',
       key: 'partner_program',
       render: (text: string, record: any) => (
-        <CustomTextCapitalization text={record?.partner_name} />
+        console.log('recordrecord', record),
+        (<CustomTextCapitalization text={record?.Partner?.partner} />)
       ),
     },
     {
@@ -274,7 +283,7 @@ const Partners: React.FC = () => {
       key: 'description',
       render: (text: any, record: any) => (
         <Typography name="Body 4/Regular">
-          {record?.partner_email ?? '--'}
+          {record?.Partner?.email ?? '--'}
         </Typography>
       ),
     },
@@ -356,18 +365,21 @@ const Partners: React.FC = () => {
       ),
     },
   ];
-
+  // console.log('userInformationuserInformation', userInformations);
   const handleAddNewAssignedPartnerProgramRequest = async (id: number) => {
-    setLoadingForRequest(true);
+    // setLoadingForRequest(true);
     const partnerObj = {
-      organization: userInformation?.organization
-        ? userInformation?.organization
+      organization: userInformations?.organization
+        ? userInformations?.organization
         : organizationNameForRequest,
-      requested_by: userInformation?.id,
+      requested_by: userInformations?.id,
       new_request: false,
       partner_program_id: id,
-      userResquest:true
+      userResquest: true,
     };
+
+    console.log('userInformationuserInformation', userInformations, partnerObj);
+    return;
     await dispatch(insertAssignPartnerProgram(partnerObj));
     await dispatch(getAllPartnerandProgramFilterData({}))?.then(
       (payload: any) => {
@@ -435,7 +447,7 @@ const Partners: React.FC = () => {
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
           }}
-          dataSource={allPartnerFilterData}
+          dataSource={allPartnerData?.AllPartner}
           scroll
           locale={locale}
           loading={loadingForRequest}
@@ -473,7 +485,7 @@ const Partners: React.FC = () => {
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
           }}
-          dataSource={allPartnerFilterData}
+          dataSource={allPartnerData?.approved}
           scroll
           locale={locale}
           loading={false}
@@ -496,7 +508,7 @@ const Partners: React.FC = () => {
       children: (
         <OsTable
           columns={PartnerProgramColumnsTab3}
-          dataSource={allPartnerFilterData}
+          dataSource={allPartnerData?.requested}
           scroll
           locale={locale}
           loading={false}

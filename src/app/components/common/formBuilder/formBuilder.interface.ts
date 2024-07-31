@@ -5,5 +5,6 @@ export interface ItemNameInterface {
   ItemConindex?: any;
   setCartItems?: any;
   cartItems?: any;
+  setCollapsed?: any;
   onClick?: any;
 }

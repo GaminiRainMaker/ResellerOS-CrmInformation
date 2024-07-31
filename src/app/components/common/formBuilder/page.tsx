@@ -62,6 +62,7 @@ const FormBuilderMain: React.FC<any> = ({
   sectionIndexActive,
   setNewValue,
   collapsed,
+  setIsOpenDrawer,
 }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -90,6 +91,7 @@ const FormBuilderMain: React.FC<any> = ({
     const temp: any = [...cartItems];
     temp?.splice(sectionInde, 1);
     setCartItems(temp);
+    setCollapsed(false);
   };
 
   useEffect(() => {
@@ -292,6 +294,7 @@ const FormBuilderMain: React.FC<any> = ({
                                 isPreview={!previewFile}
                                 ItemConindex={ItemConindex}
                                 Sectidx={Sectidx}
+                                setCollapsed={setCollapsed}
                                 onClick={(e: any) => {
                                   e?.preventDefault();
                                   setCollapsed(true);
@@ -412,6 +415,7 @@ const FormBuilderMain: React.FC<any> = ({
                                 cartItems={cartItems}
                                 setCartItems={setCartItems}
                                 isPreview={!previewFile}
+                                setCollapsed={setCollapsed}
                                 onClick={(e: any) => {
                                   e?.preventDefault();
                                   setCollapsed(true);
@@ -589,6 +593,7 @@ const FormBuilderMain: React.FC<any> = ({
                                 Sectidx={Sectidx}
                                 setCartItems={setCartItems}
                                 isPreview={!previewFile}
+                                setCollapsed={setCollapsed}
                                 onClick={(e: any) => {
                                   e?.preventDefault();
                                   setCollapsed(true);
@@ -648,6 +653,7 @@ const FormBuilderMain: React.FC<any> = ({
                               <ItemName
                                 itemName={itemCon?.name}
                                 ItemConindex={ItemConindex}
+                                setCollapsed={setCollapsed}
                                 Sectidx={Sectidx}
                                 cartItems={cartItems}
                                 setCartItems={setCartItems}
@@ -728,6 +734,7 @@ const FormBuilderMain: React.FC<any> = ({
                               <ItemName
                                 itemName={itemCon?.name}
                                 ItemConindex={ItemConindex}
+                                setCollapsed={setCollapsed}
                                 Sectidx={Sectidx}
                                 cartItems={cartItems}
                                 setCartItems={setCartItems}
@@ -853,6 +860,7 @@ const FormBuilderMain: React.FC<any> = ({
                                 itemName={itemCon?.name}
                                 ItemConindex={ItemConindex}
                                 Sectidx={Sectidx}
+                                setCollapsed={setCollapsed}
                                 cartItems={cartItems}
                                 setCartItems={setCartItems}
                                 isPreview={!previewFile}

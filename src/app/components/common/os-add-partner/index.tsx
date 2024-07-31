@@ -53,7 +53,9 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
         }),
       );
       getAllPartnerData();
-      setUpdateTheObject({});
+      if (setUpdateTheObject) {
+        setUpdateTheObject({});
+      }
       setOpen && setOpen(false);
     } else {
       await dispatch(insertPartner(partnerObj)).then((d: any) => {
@@ -65,7 +67,9 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
       });
     }
     form?.resetFields();
-    setUpdateTheObject({});
+    if (setUpdateTheObject) {
+      setUpdateTheObject({});
+    }
   };
 
   useEffect(() => {
