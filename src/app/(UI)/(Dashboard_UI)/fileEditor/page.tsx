@@ -176,12 +176,33 @@ const EditorFile = () => {
               });
             }
             formattedArray1 = Object.values(formattedData1);
+
             newAllgetOArr?.push(formattedArray1);
             newArrrrAll?.push(formattedArray1);
-            setQuoteItems(newArrrrAll);
+
             setNanonetsLoading(false);
           });
         }
+      }
+      if (newArrrrAll) {
+        let newUpdatedArr: any = [];
+        newArrrrAll?.map((items: any, index: number) => {
+          const replaceKeyInObject = (obj: any, oldKey: any, newKey: any) => {
+            const {[oldKey]: oldValue, ...rest} = obj; // Extract old value and rest of the object
+            return {
+              [newKey]: oldValue, // Create a new object with new key and old value
+              ...rest, // Spread the rest of the properties
+            };
+          };
+
+          // Transform the array
+          let newArrssr = items.map((item: any) =>
+            replaceKeyInObject(item, '', `emptyHeader${index + 1}`),
+          );
+          newUpdatedArr?.push(newArrssr);
+        });
+
+        setQuoteItems(newUpdatedArr);
       }
     });
   };
@@ -280,13 +301,34 @@ const EditorFile = () => {
                   formattedArray1 = Object.values(formattedData1);
                   newAllgetOArr?.push(formattedArray1);
                   newArrrrAll?.push(formattedArray1);
-                  setQuoteItems(newArrrrAll);
-                  // if (newArrrrAll?.length === 1) {
-                  //   mergeTableData(newArrrrAll);
-                  // }
+
                   setNanonetsLoading(false);
                 });
               }
+            }
+            if (newArrrrAll) {
+              let newUpdatedArr: any = [];
+              newArrrrAll?.map((items: any, index: number) => {
+                const replaceKeyInObject = (
+                  obj: any,
+                  oldKey: any,
+                  newKey: any,
+                ) => {
+                  const {[oldKey]: oldValue, ...rest} = obj; // Extract old value and rest of the object
+                  return {
+                    [newKey]: oldValue, // Create a new object with new key and old value
+                    ...rest, // Spread the rest of the properties
+                  };
+                };
+
+                // Transform the array
+                let newArrssr = items.map((item: any) =>
+                  replaceKeyInObject(item, '', `emptyHeader${index + 1}`),
+                );
+                newUpdatedArr?.push(newArrssr);
+              });
+
+              setQuoteItems(newUpdatedArr);
             }
           });
       }
@@ -380,6 +422,7 @@ const EditorFile = () => {
   };
   const mergeTableData = (quoteItemsData: any) => {
     const flattenedArray = quoteItemsData?.flat();
+
     const uniqueKeys = Array.from(
       new Set(flattenedArray.flatMap((obj: any) => Object.keys(obj))),
     );
