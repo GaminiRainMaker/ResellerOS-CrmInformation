@@ -113,7 +113,9 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 {...commonProps}
               />
             ) : itemCon?.name === 'Date' ? (
-              <CommonDatePicker {...commonProps} />
+              // <CommonDatePicker {...commonProps} />
+              // <DatePicker />
+              <></>
             ) : itemCon?.name === 'Email' ? (
               <OsInput
                 type="email"
