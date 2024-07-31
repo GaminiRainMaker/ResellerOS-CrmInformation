@@ -178,7 +178,7 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
   };
 
   useEffect(() => {
-    if (!DealRegData) {
+    if (!finalUpdatedDealRegData) {
       setTabItems([]);
       return;
     }
@@ -251,15 +251,7 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
       });
 
     setTabItems(newTabItems);
-  }, [
-    DealRegData,
-    activeKey,
-    AttributeFieldData,
-    token,
-    dispatch,
-    form,
-    formData,
-  ]);
+  }, [finalUpdatedDealRegData, activeKey, token, dispatch, formData]);
 
   return (
     <>
