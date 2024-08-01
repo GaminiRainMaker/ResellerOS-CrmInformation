@@ -61,7 +61,7 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
       onFinish={onFinish}
     >
       <SelectFormItem
-        label={<Typography name="Body 4/Medium">Dealreg Form</Typography>}
+        label={<Typography name="Body 4/Medium">DealReg Form</Typography>}
         name="id"
         rules={[
           {
