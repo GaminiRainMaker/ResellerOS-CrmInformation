@@ -25,11 +25,12 @@ const AddPartnerPassword: React.FC<any> = ({
   setPartnerId,
   partnerId,
   partnerData,
+  userInformation,
 }) => {
   const [token] = useThemeToken();
   const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
   const dispatch = useAppDispatch();
-  const {userInformation} = useAppSelector((state) => state.user);
+  // const {userInformation} = useAppSelector((state) => state.user);
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [activeProgramOptions, setActiveProgramOptions] = useState<any>();
 
@@ -154,6 +155,9 @@ const AddPartnerPassword: React.FC<any> = ({
               rules={[
                 {
                   required: true,
+                  message: 'username is required.',
+                },
+                {
                   pattern: /^[A-Za-z\s]+$/,
                   message: 'Please enter valid username.',
                 },
@@ -225,7 +229,7 @@ const AddPartnerPassword: React.FC<any> = ({
             </SelectFormItem>
           </Col>
         </Row>
-        {userInformation?.MasterAdmin && (
+        {userInformation?.is_admin && (
           <Row style={{marginTop: '20px'}}>
             <Checkbox
               style={{width: '20px', height: '20px'}}

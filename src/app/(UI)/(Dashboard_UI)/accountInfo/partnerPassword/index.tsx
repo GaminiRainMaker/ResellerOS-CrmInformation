@@ -582,6 +582,7 @@ const PartnerPassword = () => {
             setPartnerId={setPartnerId}
             partnerId={partnerId}
             partnerData={partnerDataa}
+            userInformation={userInformation}
           />
         }
         width={600}
