@@ -2,7 +2,6 @@ import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import {Switch} from '@/app/components/common/antd/Switch';
-import CommonDatePicker from '@/app/components/common/os-date-picker';
 import {
   SectionColStyledInner,
   SectionColStyledInnerContent,
@@ -17,7 +16,7 @@ import FormUpload from '@/app/components/common/os-upload/FormUpload';
 import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
 import Typography from '@/app/components/common/typography';
 import {MailOutlined} from '@ant-design/icons';
-import {DatePicker, Form, Radio, TimePicker} from 'antd';
+import {Form, Radio, TimePicker} from 'antd';
 import {useEffect, useState} from 'react';
 import {UniqueFieldsProps} from './dealReg.interface';
 
@@ -267,7 +266,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 }
                 required={allContentItem.required}
                 rules={
-                  allContentItem?.name === 'Email'
+                  allContentItem?.name || allContentItem.label === 'Email'
                     ? [
                         {
                           type: 'email',

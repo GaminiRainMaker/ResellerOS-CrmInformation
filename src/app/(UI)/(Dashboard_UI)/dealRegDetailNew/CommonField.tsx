@@ -180,6 +180,12 @@ const CommonFields: FC<CommonFieldsProps> = ({
                         </Typography>
                       }
                       rules={[
+                        child?.name || child.label === 'Email'
+                          ? {
+                              type: 'email',
+                              message: 'Please enter a valid email address!',
+                            }
+                          : {},
                         {
                           required: child?.is_required,
                           message: 'This field is required!',
