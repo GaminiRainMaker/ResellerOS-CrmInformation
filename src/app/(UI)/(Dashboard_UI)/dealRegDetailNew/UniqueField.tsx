@@ -233,7 +233,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           const alignment = allContentItem?.Alignemnt || 'left';
           const fontSize = allContentItem?.FontSize || 'default';
           const required = allContentItem?.required;
-          console.log('allContentItem', allContentItem);
 
           if (allContentItem?.name === 'Text Content') {
             return (

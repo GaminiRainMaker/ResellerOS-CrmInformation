@@ -32,9 +32,7 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
   } = useAppSelector((state) => state.dealReg);
   const [activeKey, setActiveKey] = useState<number>();
   const [tabItems, setTabItems] = useState([]);
-  const {data: AttributeFieldData} = useAppSelector(
-    (state) => state.attributeField,
-  );
+  const {queryData} = useAppSelector((state) => state.attributeField);
   const [formData, setFormData] = useState<any>();
 
   useEffect(() => {
@@ -70,7 +68,7 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
           finalDealReg?.PartnerProgram?.form_data?.length > 0
             ? JSON.parse(finalDealReg?.PartnerProgram?.form_data?.[0])
             : {},
-        common_template: AttributeFieldData,
+        common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
       };
@@ -128,7 +126,7 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
 
       const tabPercentage = calculateTabBarPercentage(
         finalDealReg?.PartnerProgram?.form_data,
-        AttributeFieldData,
+        queryData,
         finalUniqueFieldObject,
         finalCommonFieldObject,
       );
@@ -147,7 +145,7 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
           finalDealReg?.PartnerProgram?.form_data?.length > 0
             ? JSON.parse(finalDealReg?.PartnerProgram?.form_data?.[0])
             : {},
-        common_template: AttributeFieldData,
+        common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
       };
@@ -157,7 +155,7 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
         unique_form_data: [JSON.stringify(finalUniqueFieldObject)],
         id: activeKey,
         unique_template: finalDealReg?.PartnerProgram?.form_data,
-        common_template: AttributeFieldData,
+        common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
       };
@@ -191,7 +189,7 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
 
         const tabPercentage: number = calculateTabBarPercentage(
           element?.PartnerProgram?.form_data,
-          AttributeFieldData,
+          queryData,
           element?.unique_form_data,
           element?.common_form_data,
           true,

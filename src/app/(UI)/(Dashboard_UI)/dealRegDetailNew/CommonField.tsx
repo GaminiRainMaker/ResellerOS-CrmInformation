@@ -11,7 +11,7 @@ import Typography from '@/app/components/common/typography';
 import {MailOutlined} from '@ant-design/icons';
 import {Collapse, Form, Radio, TimePicker} from 'antd';
 import {FC, useEffect, useState} from 'react';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {useAppSelector} from '../../../../../redux/hook';
 import {
   AttributeData,
   CommonFieldsProps,
@@ -25,11 +25,7 @@ const CommonFields: FC<CommonFieldsProps> = ({
   handleBlur,
   formData,
 }) => {
-  const dispatch = useAppDispatch();
-  const {data: AttributeFieldData} = useAppSelector(
-    (state) => state.attributeField,
-  );
-  const {dealReg, getDealRegForNew} = useAppSelector((state) => state.dealReg);
+  const {queryData} = useAppSelector((state) => state.attributeField);
   const [commonTemplateData, setCommonTemplateData] = useState<any>();
 
   useEffect(() => {
@@ -79,7 +75,7 @@ const CommonFields: FC<CommonFieldsProps> = ({
     }));
   };
 
-  const template = transformData(AttributeFieldData);
+  const template = transformData(queryData);
 
   const getInputComponent = (child: TransformedChild) => {
     const fieldName = convertToSnakeCase(child?.label);
@@ -143,7 +139,6 @@ const CommonFields: FC<CommonFieldsProps> = ({
       form={form}
       layout="vertical"
       style={{width: '100%', background: 'white', borderRadius: '12px'}}
-      // initialValues={commonTemplateData}
     >
       {template?.map((section, index) => (
         <Collapse key={index} accordion style={{width: '100%'}} ghost>
@@ -155,7 +150,9 @@ const CommonFields: FC<CommonFieldsProps> = ({
                   justifyContent: 'start',
                 }}
               >
-                <Typography name="Body 2/Medium">{section?.title}</Typography>
+                <Typography name="Body 2/Medium">
+                  {section?.title?.replace(/_/g, ' ')}
+                </Typography>
               </Space>
             }
             key={index}

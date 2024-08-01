@@ -12,9 +12,7 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
   const [token] = useThemeToken();
   const [tabItems, setTabItems] = useState([]);
   const {finalUpdatedDealRegData} = useAppSelector((state) => state.dealReg);
-  const {data: AttributeFieldData} = useAppSelector(
-    (state) => state.attributeField,
-  );
+  const {queryData} = useAppSelector((state) => state.attributeField);
 
   useEffect(() => {
     if (!finalUpdatedDealRegData) {
@@ -29,7 +27,7 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
           const {Partner, PartnerProgram} = element;
           const tabPercentage = calculateTabBarPercentage(
             element?.PartnerProgram?.form_data,
-            AttributeFieldData,
+            queryData,
             element?.unique_form_data,
             element?.common_form_data,
             true,
@@ -51,7 +49,7 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
         .filter((item: any) => item !== null);
 
     setTabItems(newTabItems);
-  }, [finalUpdatedDealRegData, AttributeFieldData]);
+  }, [finalUpdatedDealRegData, queryData]);
 
   return (
     <Form
