@@ -28,6 +28,9 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
   setUpdateTheObject,
   updateTheObject,
   getAllPartnerData,
+  setPartnerOptions,
+  partnerOptions,
+  setPartnerValue,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -60,7 +63,26 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
     } else {
       await dispatch(insertPartner(partnerObj)).then((d: any) => {
         if (d?.payload) {
-          dispatch(getAllPartnerandProgram(''));
+          if (partnerOptions) {
+            let newObj = {
+              label: d?.payload?.partner,
+              value: d?.payload?.id,
+            };
+            form?.setFieldsValue({
+              partner_id: d?.payload?.id,
+            });
+            setPartnerValue(d?.payload?.id);
+            if (newObj) {
+              let newArr: any =
+                partnerOptions?.length > 0
+                  ? [newObj, ...partnerOptions]
+                  : [newObj];
+              setPartnerOptions(newArr);
+            }
+          }
+          if (getAllPartnerData) {
+            getAllPartnerData();
+          }
           form?.resetFields();
           setOpen && setOpen(false);
         }

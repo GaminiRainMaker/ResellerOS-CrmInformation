@@ -6,22 +6,18 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
 import {useEffect, useState} from 'react';
-import {
-  getAssignPartnerProgramByOrganization,
-  insertAssignPartnerProgram,
-} from '../../../../../redux/actions/assignPartnerProgram';
+import {insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsPartnerProgramSelect from '../os-partner-program-select';
 import OsPartnerSelect from '../os-partner-select';
 import {RequestPartnerInterface} from './os-add-partner.interface';
 import {usePathname} from 'next/navigation';
-import {getAllPartnerandProgramFilterData} from '../../../../../redux/actions/partner';
-import {rectIntersection} from '@dnd-kit/core';
 
 const RequestPartner: React.FC<RequestPartnerInterface> = ({
   form,
   setOpen,
   setRequestPartnerLoading,
+  getPartnerData,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -50,13 +46,9 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
         await dispatch(insertAssignPartnerProgram(partnerObj));
       }
       form?.resetFields();
+      getPartnerData();
       setGetTheData(true);
 
-      dispatch(
-        getAssignPartnerProgramByOrganization({
-          organization: userInformation?.organization,
-        }),
-      );
       setRequestPartnerLoading(false);
     } catch (error) {
       // Handle errors here
@@ -104,6 +96,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
               <OsPartnerSelect
                 name="partner_id"
                 setPartnerValue={setPartnerValue}
+                partnerValue={partnerValue}
                 // form={form}
                 partnerProgramName="partner_program_id"
                 isRequired
