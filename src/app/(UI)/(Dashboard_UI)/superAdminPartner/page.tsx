@@ -182,11 +182,7 @@ const SuperAdminPartner: React.FC = () => {
       requested_by: requesId,
     };
     await dispatch(updateAssignPartnerProgramById(Data));
-    dispatch(getAllPartnerandProgramFilterDataForAdmin({}))?.then(
-      (payload: any) => {
-        setAllPartnerData(payload?.payload);
-      },
-    );
+    getAllPartnerData();
   };
 
   const deleteSelectedPartnerProgramIds = async () => {
@@ -284,7 +280,7 @@ const SuperAdminPartner: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Partner Program New
+          New Partner Program
         </Typography>
       ),
       dataIndex: 'description',
@@ -336,7 +332,9 @@ const SuperAdminPartner: React.FC = () => {
             }
           }}
         >
-          {record?.form_data ? 'View' : 'Create Template'}
+          {record?.form_data?.length > 0 && !record?.form_data?.includes(null)
+            ? 'View'
+            : 'Create Template'}
         </Typography>
       ),
       width: 200,
@@ -358,7 +356,10 @@ const SuperAdminPartner: React.FC = () => {
             buttontype="PRIMARY"
             text="Approve"
             clickHandler={() => {
-              if (record?.form_data) {
+              if (
+                record?.form_data?.length > 0 &&
+                !record?.form_data?.includes(null)
+              ) {
                 updateRequest(
                   true,
                   record?.AssignPartnerProgram?.id,
@@ -367,7 +368,7 @@ const SuperAdminPartner: React.FC = () => {
               } else {
                 notification?.open({
                   message:
-                    'Please create the  template for this partner program to approve.',
+                    'Please create a template for this partner program for approval.',
                   type: 'info',
                 });
               }
@@ -442,7 +443,9 @@ const SuperAdminPartner: React.FC = () => {
             }
           }}
         >
-          {record?.form_data ? 'View' : 'Create Template'}
+          {record?.form_data?.length > 0 && !record?.form_data?.includes(null)
+            ? 'View'
+            : 'Create Template'}
         </Typography>
       ),
     },
