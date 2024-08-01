@@ -13,12 +13,14 @@ type AttributeFieldState = {
   error: string | null;
   data: any;
   attributeField: any;
+  queryData: any;
 };
 const initialState: AttributeFieldState = {
   loading: false,
   error: null,
   data: [],
   attributeField: [],
+  queryData: [],
 };
 
 const attributeFieldSlice = createSlice({
@@ -93,7 +95,7 @@ const attributeFieldSlice = createSlice({
         queryAttributeField.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.queryData = action.payload;
         },
       )
       .addCase(

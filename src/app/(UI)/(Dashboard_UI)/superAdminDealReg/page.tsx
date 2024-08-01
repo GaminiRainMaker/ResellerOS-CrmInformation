@@ -59,7 +59,7 @@ const SuperAdminDealReg = () => {
   const dispatch = useAppDispatch();
   const {data: attributeSectionData, loading: attributeSectionLoading} =
     useAppSelector((state) => state.attributeSection);
-  const {loading: attributeFieldLoading, data: attributeFieldData} =
+  const {loading: attributeFieldLoading, queryData: attributeFieldData} =
     useAppSelector((state) => state.attributeField);
   const {getFormDataProgramData, loading: templatedataLoading} = useAppSelector(
     (state) => state.partnerProgram,
@@ -83,6 +83,7 @@ const SuperAdminDealReg = () => {
   const [fieldDeleteId, setFieldDeleteId] = useState<any>();
   const [showFieldDeleteModal, setShowFieldDeleteModal] =
     useState<boolean>(false);
+  const [buttonState, setButtonState] = useState<string>('Primary');
 
   const [query, setQuery] = useState<{
     fieldLabel: string | null;
@@ -348,6 +349,14 @@ const SuperAdminDealReg = () => {
         dispatch(queryAttributeSection(sectionSearchQuery));
         setShowStandardAttributeSection(false);
         form?.resetFields();
+      } else {
+        notification.open({
+          message: 'Attribute Section is already exist with this name.',
+          type: 'info',
+        });
+        dispatch(queryAttributeSection(sectionSearchQuery));
+        setShowStandardAttributeSection(false);
+        form?.resetFields();
       }
     });
   };
@@ -384,19 +393,18 @@ const SuperAdminDealReg = () => {
 
   const onFinish2 = () => {
     const attributeFiledData = form?.getFieldsValue();
-    attributeFiledData.label = attributeFiledData.label.toLowerCase();
     dispatch(insertAttributeField(attributeFiledData))?.then((d) => {
       if (d?.payload) {
         dispatch(queryAttributeField(searchQuery));
-        setshowStandardAttributeField(false);
+        if (buttonState === 'Primary') setshowStandardAttributeField(false);
         form?.resetFields();
-      }
-      if (d?.payload === undefined) {
+      } else {
         notification?.open({
           message:
             'An attribute field with the same label in this attribute section already exists.',
           type: 'error',
         });
+        dispatch(queryAttributeField(searchQuery));
         setshowStandardAttributeField(false);
         form?.resetFields();
       }
@@ -405,20 +413,26 @@ const SuperAdminDealReg = () => {
 
   const uniqueAttributeSection = Array.from(
     new Set(
-      attributeFieldData?.map(
-        (customer: any) => customer?.AttributeSection?.name,
-      ),
+      attributeFieldData
+        ? attributeFieldData?.length > 0
+          ? attributeFieldData
+              .map((customer: any) => customer?.AttributeSection?.name)
+              .filter(Boolean)
+          : []
+        : [],
     ),
   );
+
   const uniqueAttributeLabel = Array.from(
     new Set(attributeFieldData?.map((customer: any) => customer?.label)),
   );
 
   const uniqueAttributeSectionOptions = Array.from(
     new Set(
-      attributeSectionData?.map(
-        (attributeSectionIndex: any) => attributeSectionIndex?.name,
-      ),
+      attributeSectionData &&
+        attributeSectionData?.map(
+          (attributeSectionIndex: any) => attributeSectionIndex?.name,
+        ),
     ),
   );
 
@@ -605,7 +619,7 @@ const SuperAdminDealReg = () => {
                       >
                         {uniqueAttributeLabel?.map((customer: any) => (
                           <Option key={customer} value={customer}>
-                            {customer}
+                            {customer.replace(/_/g, ' ')}
                           </Option>
                         ))}
                       </CommonSelect>
@@ -630,9 +644,9 @@ const SuperAdminDealReg = () => {
                         }}
                         value={query?.sectionName}
                       >
-                        {uniqueAttributeSection?.map((customer: any) => (
-                          <Option key={customer} value={customer}>
-                            {customer}
+                        {uniqueAttributeSection?.map((name: any) => (
+                          <Option key={name} value={name}>
+                            {name.replace(/_/g, ' ')}
                           </Option>
                         ))}
                       </CommonSelect>
@@ -682,9 +696,9 @@ const SuperAdminDealReg = () => {
                         }}
                         value={attributeSectionQuery?.sectionName}
                       >
-                        {uniqueAttributeSectionOptions?.map((data: any) => (
-                          <Option key={data} value={data}>
-                            {data}
+                        {uniqueAttributeSectionOptions?.map((name: any) => (
+                          <Option key={name} value={name}>
+                            {name.replace(/_/g, ' ')}
                           </Option>
                         ))}
                       </CommonSelect>
@@ -743,8 +757,8 @@ const SuperAdminDealReg = () => {
       />
 
       <OsModal
-        loading={false}
-        thirdLoading={attributeFieldLoading}
+        loading={buttonState === 'Secondary' ? attributeFieldLoading : false}
+        thirdLoading={buttonState === 'Primary' ? attributeFieldLoading : false}
         body={<AddStandardAttributeField form={form} onFinish={onFinish2} />}
         width={700}
         open={showStandardAttributeField}
@@ -752,13 +766,16 @@ const SuperAdminDealReg = () => {
           setshowStandardAttributeField(false);
           form?.resetFields();
         }}
-        onOk={() => {}}
+        onOk={() => {
+          setButtonState('Secondary');
+          form?.submit();
+        }}
         thirdButtonfunction={() => {
+          setButtonState('Primary');
           form?.submit();
         }}
         thirdButtonText="Create"
         primaryButtonText="Save and Create New"
-        // secondaryButtonText='Cancel'
         footerPadding={40}
       />
 
