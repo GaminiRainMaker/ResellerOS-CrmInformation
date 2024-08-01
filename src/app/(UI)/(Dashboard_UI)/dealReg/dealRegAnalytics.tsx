@@ -10,17 +10,6 @@ import {
 } from '@heroicons/react/24/outline';
 import {useAppSelector} from '../../../../../redux/hook';
 
-interface SeparatedData {
-  [opportunityId: number]: {
-    opportunity_id: number;
-    dealReg_id: number;
-    contact_id: number;
-    customer_id: number;
-    data: any[];
-    title: string;
-  };
-}
-
 const DealRegAnalytics = () => {
   const [token] = useThemeToken();
   const {data: DealRegData} = useAppSelector((state) => state.dealReg);
