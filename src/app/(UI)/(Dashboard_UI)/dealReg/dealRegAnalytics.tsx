@@ -8,23 +8,59 @@ import {
   ClockIcon,
   QueueListIcon,
 } from '@heroicons/react/24/outline';
+import {useAppSelector} from '../../../../../redux/hook';
 
-const DealRegAnalytics = (props: any) => {
+interface SeparatedData {
+  [opportunityId: number]: {
+    opportunity_id: number;
+    dealReg_id: number;
+    contact_id: number;
+    customer_id: number;
+    data: any[];
+    title: string;
+  };
+}
+
+const DealRegAnalytics = () => {
   const [token] = useThemeToken();
+  const {data: DealRegData} = useAppSelector((state) => state.dealReg);
 
-  const uniquePartnerIds = new Set();
-  props?.data?.forEach((item: any) => {
-    item?.data?.forEach((childItem: any) => {
-      uniquePartnerIds?.add(childItem?.partner_id);
+  const getUniqueCounts = (data: any) => {
+    const uniqueOpportunityIds = new Set();
+    const uniquePartnerIds = new Set();
+    const statusCounts = {
+      'In Progress': 0,
+      Completed: 0,
+    };
+
+    data?.forEach((item: any) => {
+      if (item.opportunity_id !== null) {
+        uniqueOpportunityIds.add(item.opportunity_id);
+      }
+      if (item.partner_id !== null) {
+        uniquePartnerIds.add(item.partner_id);
+      }
+      if (item.status === 'In Progress') {
+        statusCounts['In Progress']++;
+      } else if (item.status === 'Completed') {
+        statusCounts['Completed']++;
+      }
     });
-  });
+
+    return {
+      uniqueOpportunityCount: uniqueOpportunityIds.size,
+      uniquePartnerCount: uniquePartnerIds.size,
+      statusCounts: statusCounts,
+    };
+  };
+  const counts = getUniqueCounts(DealRegData);
 
   const analyticsData = [
     {
       key: 1,
       primary: (
         <Typography name="Heading 3/Medium">
-          {props?.data?.length ?? 0}
+          {counts?.uniqueOpportunityCount ?? 0}
         </Typography>
       ),
       secondry: 'Total Forms',
@@ -35,7 +71,7 @@ const DealRegAnalytics = (props: any) => {
       key: 2,
       primary: (
         <Typography name="Heading 3/Medium">
-          {uniquePartnerIds?.size ?? 0}
+          {counts?.uniquePartnerCount ?? 0}
         </Typography>
       ),
       secondry: 'Partners',
@@ -44,14 +80,23 @@ const DealRegAnalytics = (props: any) => {
     },
     {
       key: 3,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
+      primary: (
+        <Typography name="Heading 3/Medium">
+          {' '}
+          {counts?.statusCounts?.Completed ?? 0}
+        </Typography>
+      ),
       secondry: 'Completed',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
     },
     {
       key: 4,
-      primary: <Typography name="Heading 3/Medium">0</Typography>,
+      primary: (
+        <Typography name="Heading 3/Medium">
+          {counts?.statusCounts?.['In Progress'] ?? 0}
+        </Typography>
+      ),
       secondry: 'In Progress',
       icon: <ClockIcon width={24} color={token?.colorWarning} />,
       iconBg: token?.colorWarningBg,
