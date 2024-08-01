@@ -19,8 +19,8 @@ import {
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import DealRegDetailForm from './DealRegDetailForm';
 import {setFinalUpdatedDealRegData} from '../../../../../redux/slices/dealReg';
+import DealRegDetailForm from './DealRegDetailForm';
 
 const DealRegCustomTabs: React.FC<any> = ({form}) => {
   const dispatch = useAppDispatch();
