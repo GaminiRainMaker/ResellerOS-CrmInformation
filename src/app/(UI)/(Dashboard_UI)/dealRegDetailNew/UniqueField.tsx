@@ -37,6 +37,10 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     const fieldName = convertToSnakeCase(itemCon?.label);
     const initialValue = uniqueTemplateData?.[fieldName];
     const commonProps = {defaultValue: initialValue, onBlur: handleBlur};
+    const rules =
+      itemCon?.name === 'Email'
+        ? [{type: 'email', message: 'Please enter a valid email address!'}]
+        : [];
     switch (itemCon?.name) {
       case 'Table':
         return (
@@ -136,10 +140,11 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
         }));
         return (
           <CommonSelect
+            allowClear
             options={optionssMulti}
             style={{width: '100%'}}
             mode={itemCon?.type}
-            defaultValue={initialValue}
+            {...commonProps}
           />
         );
 
@@ -153,6 +158,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 const totalFloorValue = Math.floor(
                   24 / itemCon?.columnRequired,
                 );
+                console.log('itemLabelOp', itemLabelOp);
                 return (
                   <ToggleColStyled span={totalFloorValue} key={itemLabelIndex}>
                     {itemCon?.name === 'Radio Button' ? (
@@ -227,6 +233,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           const alignment = allContentItem?.Alignemnt || 'left';
           const fontSize = allContentItem?.FontSize || 'default';
           const required = allContentItem?.required;
+          console.log('allContentItem', allContentItem);
 
           if (allContentItem?.name === 'Text Content') {
             return (
@@ -260,6 +267,16 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                   </Typography>
                 }
                 required={allContentItem.required}
+                rules={
+                  allContentItem?.name === 'Email'
+                    ? [
+                        {
+                          type: 'email',
+                          message: 'Please enter a valid email address!',
+                        },
+                      ]
+                    : []
+                }
               >
                 {getInputComponent(allContentItem)}
               </SelectFormItem>

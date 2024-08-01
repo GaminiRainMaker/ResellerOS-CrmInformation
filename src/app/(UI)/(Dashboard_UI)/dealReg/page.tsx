@@ -330,7 +330,7 @@ const DealReg: React.FC = () => {
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
-        <DealRegAnalytics data={finalDealRegData} />
+        <DealRegAnalytics />
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
