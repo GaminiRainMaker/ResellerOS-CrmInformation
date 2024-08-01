@@ -4,7 +4,10 @@ import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {FC, useEffect, useState} from 'react';
 import {insertAddAddress} from '../../../../../redux/actions/address';
-import {insertbillingContact} from '../../../../../redux/actions/billingContact';
+import {
+  getAllbillingContact,
+  insertbillingContact,
+} from '../../../../../redux/actions/billingContact';
 import {
   getAllCustomer,
   insertCustomer,
@@ -102,6 +105,7 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
             (data1: any) => {
               if (data1?.payload) {
                 dispatch(getAllCustomer({}));
+                dispatch(getAllbillingContact(''));
                 form.resetFields();
                 setOpen(false);
               }
