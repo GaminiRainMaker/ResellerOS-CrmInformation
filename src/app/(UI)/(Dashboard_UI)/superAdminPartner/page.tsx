@@ -781,7 +781,15 @@ const SuperAdminPartner: React.FC = () => {
 
       <OsModal
         loading={insertPartnerLoading}
-        body={<AddPartner form={form} setOpen={setShowAddPartnerModal} />}
+        body={
+          <AddPartner
+            form={form}
+            setOpen={setShowAddPartnerModal}
+            setUpdateTheObject={setUpdateTheObject}
+            updateTheObject={updateTheObject}
+            getAllPartnerData={getAllPartnerData}
+          />
+        }
         width={800}
         open={showAddPartnerModal}
         onCancel={() => {

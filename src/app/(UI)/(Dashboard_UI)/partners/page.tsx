@@ -21,10 +21,7 @@ import {useEffect, useState} from 'react';
 import {useSearchParams} from 'next/navigation';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import {insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
-import {
-  getAllPartnerandProgram,
-  getAllPartnerandProgramFilterData,
-} from '../../../../../redux/actions/partner';
+import {getAllPartnerandProgramFilterData} from '../../../../../redux/actions/partner';
 import {getUnassignedProgram} from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import PartnerAnalytics from './partnerAnalytics';
@@ -52,19 +49,24 @@ const Partners: React.FC = () => {
     useState<boolean>(false);
   const [userData, setUserData] = useState<any>();
 
+  const getPartnerData = async () => {
+    await dispatch(getAllPartnerandProgramFilterData({}))?.then(
+      (payload: any) => {
+        setAllPartnerData(payload?.payload);
+      },
+    );
+  };
+
   useEffect(() => {
     dispatch(getUnassignedProgram());
     dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
       setUserData(payload?.payload);
     });
-    dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
-      setAllPartnerData(payload?.payload);
-    });
+    getPartnerData();
   }, []);
 
   let organizationNameForRequest = userData?.organization;
   const searchQuery = useDebounceHook(queryDataa, 500);
-  console.log('userInformationsuserInformations', userData);
   useEffect(() => {
     dispatch(getAllPartnerandProgramFilterData(searchQuery))?.then(
       (payload: any) => {
@@ -379,11 +381,7 @@ const Partners: React.FC = () => {
     };
 
     await dispatch(insertAssignPartnerProgram(partnerObj));
-    await dispatch(getAllPartnerandProgramFilterData({}))?.then(
-      (payload: any) => {
-        setAllPartnerData(payload?.payload);
-      },
-    );
+    getPartnerData();
     setLoadingForRequest(false);
   };
 
@@ -604,6 +602,7 @@ const Partners: React.FC = () => {
             form={form}
             setOpen={setShowModal}
             setRequestPartnerLoading={setRequestPartnerLoading}
+            getPartnerData={getPartnerData}
           />
         }
         width={800}

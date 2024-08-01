@@ -34,6 +34,7 @@ const OsPartnerSelect: FC<{
   setAllPartnerData?: any;
   getTheData?: any;
   setGetTheData?: any;
+  partnerValue?: any;
 }> = ({
   organizationName,
   name = 'partner',
@@ -48,14 +49,13 @@ const OsPartnerSelect: FC<{
   setAllPartnerData,
   getTheData,
   setGetTheData,
+  partnerValue,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const pathname = usePathname();
   const [form] = Form.useForm();
-  const {userInformation, allResellerRecord} = useAppSelector(
-    (state) => state.user,
-  );
+  // partnerData?.AllPartner
   const {data: PartnerData, insertPartnerLoading} = useAppSelector(
     (state) => state.partner,
   );
@@ -65,17 +65,11 @@ const OsPartnerSelect: FC<{
   const [openAddPartnerModal, setOpenAddPartnerModal] =
     useState<boolean>(false);
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
-
   const [selectedPartnerId, setSelectedPartnerId] = useState<number>();
-  // useEffect(() => {
-  //   setAllFilterPartnerData(allPartnerData);
-  // }, [allPartnerData, JSON.stringify(allPartnerData)]);
-
   const [partnerOptions, setPartnerOptions] = useState<any>();
 
   useEffect(() => {
     let newOptionArr: any = [];
-
     allPartnerFilterData?.map((items: any) => {
       newOptionArr?.push({
         label: <CustomTextCapitalization text={items?.partner} />,
@@ -84,6 +78,18 @@ const OsPartnerSelect: FC<{
     });
     setPartnerOptions(newOptionArr);
   }, [allPartnerFilterData]);
+  useEffect(() => {
+    if (allPartnerData && allPartnerData?.length > 0) {
+      let newOptionArr: any = [];
+      allPartnerData?.map((items: any) => {
+        newOptionArr?.push({
+          label: <CustomTextCapitalization text={items?.partner} />,
+          value: items?.id,
+        });
+      });
+      setPartnerOptions(newOptionArr);
+    }
+  }, [allPartnerData]);
 
   const partnerApprovedObjects: any[] = [];
   AssignPartnerProgramData?.approved?.forEach((entry: any) => {
@@ -91,14 +97,14 @@ const OsPartnerSelect: FC<{
     partnerApprovedObjects?.push(partner);
   });
 
-  const getPartnerProgram = async () => {
+  const getPartnerProgramData = async () => {
     if (pathname === '/partners') {
       dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
         setAllPartnerData(payload?.payload?.AllPartner);
         setAllFilterPartnerData(payload?.payload?.AllPartner);
         let newOptionArr: any = [];
-        allPartnerFilterData?.map((items: any) => {
-          payload?.payload?.AllPartner?.push({
+        payload?.payload?.AllPartner?.map((items: any) => {
+          newOptionArr?.push({
             label: <CustomTextCapitalization text={items?.partner} />,
             value: items?.id,
           });
@@ -106,11 +112,13 @@ const OsPartnerSelect: FC<{
         setPartnerOptions(newOptionArr);
       });
     }
-    setGetTheData(false);
+    if (setGetTheData) {
+      setGetTheData(false);
+    }
   };
 
   useEffect(() => {
-    getPartnerProgram();
+    getPartnerProgramData();
   }, [getTheData]);
   const setFinalData = (e: any) => {
     const filteredData = allPartnerFilterData?.filter(
@@ -127,6 +135,12 @@ const OsPartnerSelect: FC<{
   }, [PartnerData, allPartnerFilterData]);
 
   //
+
+  // useEffect(() => {
+  //   form?.setFieldsValue({
+  //     partner_id: partnerValue,
+  //   });
+  // }, [partnerValue]);
   return (
     <>
       <Form.Item
@@ -138,6 +152,7 @@ const OsPartnerSelect: FC<{
           placeholder="Select"
           allowClear
           style={{width: '100%'}}
+          // value={partnerValue ? partnerValue : ''}
           options={
             partnerOptions &&
             partnerOptions?.sort((a: any, b: any) => {
@@ -191,7 +206,15 @@ const OsPartnerSelect: FC<{
       </Form.Item>
       <OsModal
         loading={insertPartnerLoading}
-        body={<AddPartner form={form} setOpen={setOpenAddPartnerModal} />}
+        body={
+          <AddPartner
+            form={form}
+            setOpen={setOpenAddPartnerModal}
+            setPartnerOptions={setPartnerOptions}
+            partnerOptions={partnerOptions}
+            setPartnerValue={setPartnerValue}
+          />
+        }
         width={600}
         open={openAddPartnerModal}
         onCancel={() => {

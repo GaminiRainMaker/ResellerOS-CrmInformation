@@ -110,6 +110,8 @@ const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
             form={form}
             setOpen={setOpenAddProgramModal}
             partnerId={partnerId}
+            setFinalProgramOptions={setFinalProgramOptions}
+            finalProgramOptions={finalProgramOptions}
           />
         }
         width={600}
