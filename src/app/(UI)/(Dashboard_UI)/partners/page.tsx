@@ -50,11 +50,28 @@ const Partners: React.FC = () => {
   const [userData, setUserData] = useState<any>();
 
   const getPartnerData = async () => {
+    let allPartnerObj: any;
     await dispatch(getAllPartnerandProgramFilterData({}))?.then(
       (payload: any) => {
+        allPartnerObj = payload?.payload;
         setAllPartnerData(payload?.payload);
       },
     );
+    let countForActivePartnerProgram = 0;
+
+    if (allPartnerObj?.approved?.length > 0 && allPartnerObj?.approved) {
+      allPartnerObj?.approved?.map((items: any) => {
+        countForActivePartnerProgram =
+          countForActivePartnerProgram + items?.PartnerPrograms?.length;
+      });
+    }
+    let newObj = {
+      requested: allPartnerObj?.requested?.length,
+      allPartner: allPartnerObj?.AllPartner?.length,
+      activePartner: allPartnerObj?.approved?.length,
+      ActivePartnerProgram: countForActivePartnerProgram,
+    };
+    setAllAnalyticPartnerData(newObj);
   };
 
   useEffect(() => {

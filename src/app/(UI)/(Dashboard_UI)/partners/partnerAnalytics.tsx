@@ -1,17 +1,13 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable no-param-reassign */
-import { Col, Row } from '@/app/components/common/antd/Grid';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
-import {
-  PencilIcon,
-  TagIcon,
-  UserGroupIcon
-} from '@heroicons/react/24/outline';
-import { FC, useEffect, useState } from 'react';
-import { useAppSelector } from '../../../../../redux/hook';
+import {PencilIcon, TagIcon, UserGroupIcon} from '@heroicons/react/24/outline';
+import {FC, useEffect, useState} from 'react';
+import {useAppSelector} from '../../../../../redux/hook';
 
 const PartnerAnalytics: FC<any> = ({data}) => {
   const [token] = useThemeToken();
@@ -22,7 +18,7 @@ const PartnerAnalytics: FC<any> = ({data}) => {
   const {userInformation} = useAppSelector((state) => state.user);
   const [activeCount, setActiveCount] = useState<number>(0);
   const [inActiveCount, setInActiveCount] = useState<number>(0);
-
+  console.log('datadata', data);
 
   useEffect(() => {
     if (PartnerData && PartnerData?.approved) {
@@ -47,7 +43,7 @@ const PartnerAnalytics: FC<any> = ({data}) => {
     {
       key: 1,
       primary: (
-        <Typography name="Heading 3/Medium">{data?.userAllPartner}</Typography>
+        <Typography name="Heading 3/Medium">{data?.allPartner}</Typography>
       ),
       secondry: 'All Partners',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
@@ -56,27 +52,28 @@ const PartnerAnalytics: FC<any> = ({data}) => {
     {
       key: 2,
       primary: (
-        <Typography name="Heading 3/Medium">
-          {data?.userActivePartner}
-        </Typography>
+        <Typography name="Heading 3/Medium">{data?.activePartner}</Typography>
       ),
       secondry: 'Active Partners',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
-      key: 4,
-      primary: <Typography name="Heading 3/Medium">1</Typography>,
+      key: 3,
+      primary: (
+        <Typography name="Heading 3/Medium">
+          {' '}
+          {data?.ActivePartnerProgram}
+        </Typography>
+      ),
       secondry: 'Active Partner Programs',
       icon: <PencilIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },
     {
-      key: 5,
+      key: 4,
       primary: (
-        <Typography name="Heading 3/Medium">
-          {data?.userRequestedPartner}
-        </Typography>
+        <Typography name="Heading 3/Medium">{data?.requested}</Typography>
       ),
       secondry: 'Requested',
       icon: <TagIcon width={24} color={token?.colorWarning} />,
