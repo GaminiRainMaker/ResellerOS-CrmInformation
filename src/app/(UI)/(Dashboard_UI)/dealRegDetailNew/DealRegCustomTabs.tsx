@@ -81,10 +81,9 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
   }, [dispatch]);
 
   const updateDealRegFinalData = (activeKey: any, formObj: any) => {
-    const updatedData = DealRegData?.map((item: any) =>
+    const updatedData = finalUpdatedDealRegData?.map((item: any) =>
       item?.id === activeKey ? {...item, ...formObj} : item,
     );
-    console.log('updatedData', updatedData);
     dispatch(setFinalUpdatedDealRegData(updatedData));
   };
 
