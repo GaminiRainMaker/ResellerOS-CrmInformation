@@ -30,7 +30,6 @@ import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCa
 import {updateAssignPartnerProgramById} from '../../../../../redux/actions/assignPartnerProgram';
 import {
   deletePartner,
-  getAllPartnerandProgram,
   getAllPartnerandProgramFilterDataForAdmin,
 } from '../../../../../redux/actions/partner';
 import {
@@ -96,9 +95,29 @@ const SuperAdminPartner: React.FC = () => {
   const getAllPartnerData = async () => {
     dispatch(getAllPartnerandProgramFilterDataForAdmin({}))?.then(
       (payload: any) => {
+        let countForActivePartnerProgram = 0;
+
+        if (
+          payload?.payload?.AllPartner?.length > 0 &&
+          payload?.payload?.AllPartner
+        ) {
+          payload?.payload?.AllPartner?.map((items: any) => {
+            countForActivePartnerProgram =
+              countForActivePartnerProgram + items?.PartnerPrograms?.length;
+          });
+        }
+        let newObj = {
+          requested: payload?.payload?.requested?.length,
+          allPartner: payload?.payload?.AllPartner?.length,
+          Declined: payload?.payload?.DeclinedData?.length,
+          PartnerProgram: countForActivePartnerProgram,
+        };
+        setSuperAdminPartnerAnalyticData(newObj);
         setAllPartnerData(payload?.payload);
       },
     );
+
+    // setAllAnalyticPartnerData(newObj);
   };
   useEffect(() => {
     // dispatch(getAllPartnerandProgram(''));

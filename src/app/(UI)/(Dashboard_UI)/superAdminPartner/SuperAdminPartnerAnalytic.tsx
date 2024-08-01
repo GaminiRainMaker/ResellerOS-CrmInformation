@@ -18,7 +18,9 @@ const SuperAdminPartnerAnalytics: FC<any> = ({data}) => {
   const analyticsData = [
     {
       key: 1,
-      primary: <Typography name="Heading 3/Medium">{6}</Typography>,
+      primary: (
+        <Typography name="Heading 3/Medium">{data?.allPartner}</Typography>
+      ),
       secondry: 'Partners',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
@@ -26,7 +28,7 @@ const SuperAdminPartnerAnalytics: FC<any> = ({data}) => {
     {
       key: 2,
       primary: (
-        <Typography name="Heading 3/Medium">{data?.superAllPartner}</Typography>
+        <Typography name="Heading 3/Medium">{data?.PartnerProgram}</Typography>
       ),
       secondry: 'Partner Programs',
       icon: (
@@ -37,9 +39,7 @@ const SuperAdminPartnerAnalytics: FC<any> = ({data}) => {
     {
       key: 3,
       primary: (
-        <Typography name="Heading 3/Medium">
-          {data?.superRequestedPartner}
-        </Typography>
+        <Typography name="Heading 3/Medium">{data?.requested}</Typography>
       ),
       secondry: 'In Request',
       icon: <ClipboardDocumentCheckIcon width={24} color={token?.colorLink} />,
@@ -47,11 +47,9 @@ const SuperAdminPartnerAnalytics: FC<any> = ({data}) => {
     },
 
     {
-      key: 5,
+      key: 4,
       primary: (
-        <Typography name="Heading 3/Medium">
-          {data?.superRejectedPartner}
-        </Typography>
+        <Typography name="Heading 3/Medium">{data?.Declined}</Typography>
       ),
       secondry: 'Rejected',
       icon: <XMarkIcon width={24} color={token?.colorError} />,
