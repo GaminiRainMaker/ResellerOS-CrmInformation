@@ -20,6 +20,7 @@ export const queryPartnerPassword = createAsyncThunk(
     try {
       let obj = {
         partner_name: query?.partner_name,
+        partner_program_name: query?.partner_program_name,
       };
       const res = await PARTNER_PASSWORD_API.query(obj);
       return res.data;

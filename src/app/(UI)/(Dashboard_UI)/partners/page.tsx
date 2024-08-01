@@ -328,7 +328,7 @@ const Partners: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Partner Program New
+          New Partner Program
         </Typography>
       ),
       dataIndex: 'description',

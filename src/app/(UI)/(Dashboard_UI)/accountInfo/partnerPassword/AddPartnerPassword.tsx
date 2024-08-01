@@ -62,13 +62,13 @@ const AddPartnerPassword: React.FC<any> = ({
         newArrForOptions?.[0]?.value,
       );
     }
+
     setActiveProgramOptions(newArrForOptions);
   };
 
   useEffect(() => {
     handlePartnerProgramOPtions(partnerId);
   }, [partnerId, allPartnerFilterData]);
-
   return (
     <>
       {!drawer && (
@@ -119,6 +119,7 @@ const AddPartnerPassword: React.FC<any> = ({
                 options={partnerOptions}
                 onChange={(e: any) => {
                   setPartnerId(e);
+                  partnerPasswordForm?.setFieldValue('partner_program_id', '');
                 }}
               />
             </SelectFormItem>
@@ -152,6 +153,7 @@ const AddPartnerPassword: React.FC<any> = ({
               name="username"
               rules={[
                 {
+                  required: true,
                   pattern: /^[A-Za-z\s]+$/,
                   message: 'Please enter valid username.',
                 },

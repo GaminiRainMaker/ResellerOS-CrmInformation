@@ -55,13 +55,17 @@ const PartnerPassword = () => {
 
   const [query, setQuery] = useState<{
     partner_name: string | null;
+    partner_program_name: string | null;
   }>({
     partner_name: '',
+    partner_program_name: '',
   });
   const [sharedQuery, setSharedQuery] = useState<{
     partner_name: string | null;
+    partner_program_name: string | null;
   }>({
     partner_name: '',
+    partner_program_name: '',
   });
   const searchQuery = useDebounceHook(query, 500);
 
@@ -85,7 +89,6 @@ const PartnerPassword = () => {
       setUserInformation(payload?.payload);
     });
   }, []);
-  console.log('partnerDataapartnerDataa', partnerDataa);
 
   const MyPartnerColumns = [
     {
@@ -104,6 +107,25 @@ const PartnerPassword = () => {
       render: (text: string, record: any) => (
         <Typography hoverOnText name="Body 4/Regular">
           {formatStatus(record?.Partner?.partner) ?? '--'}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography
+          name="Body 4/Medium"
+          className="dragHandler"
+          color={token?.colorPrimaryText}
+        >
+          Partner Program Name
+        </Typography>
+      ),
+      dataIndex: 'partner',
+      key: 'partner',
+      width: 130,
+      render: (text: string, record: any) => (
+        <Typography hoverOnText name="Body 4/Regular">
+          {formatStatus(record?.PartnerProgram?.partner_program) ?? '--'}
         </Typography>
       ),
     },
@@ -223,6 +245,7 @@ const PartnerPassword = () => {
   useEffect(() => {
     dispatch(queryPartnerPassword(searchQuery));
   }, [searchQuery]);
+  console.log('searchQuerysearchQuery', searchQuery);
 
   useEffect(() => {
     if (partnerPasswordData) {
@@ -250,7 +273,7 @@ const PartnerPassword = () => {
       value: finalSharedPasswordDataItem?.Partner?.partner,
       label: (
         <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-          {finalSharedPasswordDataItem?.Partner?.partner}
+          {formatStatus(finalSharedPasswordDataItem?.Partner?.partner)}
         </Typography>
       ),
     }),
@@ -261,7 +284,33 @@ const PartnerPassword = () => {
       value: finalMyPasswordDataItem?.Partner?.partner,
       label: (
         <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-          {finalMyPasswordDataItem?.Partner?.partner}
+          {formatStatus(finalMyPasswordDataItem?.Partner?.partner)}
+        </Typography>
+      ),
+    }),
+  );
+
+  const sharedPartnerProgramPasswordOptions = finalSharedPasswordData?.map(
+    (finalSharedPasswordDataItem: any) => ({
+      value: finalSharedPasswordDataItem?.PartnerProgram?.partner_program,
+      label: (
+        <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+          {formatStatus(
+            finalSharedPasswordDataItem?.PartnerProgram?.partner_program,
+          )}
+        </Typography>
+      ),
+    }),
+  );
+
+  const myPartnerProgramPasswordOptions = finalMyPasswordData?.map(
+    (finalMyPasswordDataItem: any) => ({
+      value: finalMyPasswordDataItem?.PartnerProgram?.id,
+      label: (
+        <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+          {formatStatus(
+            finalMyPasswordDataItem?.PartnerProgram?.partner_program,
+          )}
         </Typography>
       ),
     }),
@@ -273,7 +322,7 @@ const PartnerPassword = () => {
           name="Body 4/Regular"
           onClick={() => {
             setActiveKey(1);
-            setQuery({partner_name: ''});
+            setQuery({partner_name: '', partner_program_name: ''});
           }}
         >
           Shared Passwords
@@ -303,7 +352,7 @@ const PartnerPassword = () => {
           name="Body 4/Regular"
           onClick={() => {
             setActiveKey(2);
-            setQuery({partner_name: ''});
+            setQuery({partner_name: '', partner_program_name: ''});
           }}
         >
           My Passwords
@@ -444,6 +493,52 @@ const PartnerPassword = () => {
                       });
                     }}
                     value={query?.partner_name}
+                  />
+                )}
+              </Space>
+              <Space direction="vertical" size={0}>
+                <Typography name="Body 4/Medium">
+                  Partner Program Name
+                </Typography>
+                {activeKey === 1 ? (
+                  <CommonSelect
+                    style={{width: '200px'}}
+                    options={sharedPartnerProgramPasswordOptions}
+                    placeholder="Search here"
+                    showSearch
+                    onSearch={(e: any) => {
+                      setQuery({
+                        ...query,
+                        partner_program_name: e,
+                      });
+                    }}
+                    onChange={(e: any) => {
+                      setQuery({
+                        ...query,
+                        partner_program_name: e,
+                      });
+                    }}
+                    value={query?.partner_program_name}
+                  />
+                ) : (
+                  <CommonSelect
+                    style={{width: '200px'}}
+                    placeholder="Search here"
+                    options={myPartnerProgramPasswordOptions}
+                    showSearch
+                    onSearch={(e: any) => {
+                      setQuery({
+                        ...query,
+                        partner_program_name: e,
+                      });
+                    }}
+                    onChange={(e: any) => {
+                      setQuery({
+                        ...query,
+                        partner_program_name: e,
+                      });
+                    }}
+                    value={query?.partner_program_name}
                   />
                 )}
               </Space>
