@@ -129,6 +129,8 @@ const CustomHeader = () => {
     userInformation?.MasterAdmin && userInformation?.Role === 'superAdmin'
       ? 'SuperAdminProfile'
       : 'reseller';
+
+      
   const items: MenuProps['items'] = [
     {
       key: '1',
@@ -154,7 +156,7 @@ const CustomHeader = () => {
           cursor="pointer"
           onClick={() =>
             window.open(
-              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=partnerPassword&isSuperAdminProfile=${isSuperAdminProfile}`,
+              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=myProfile&isSuperAdminProfile=${isSuperAdminProfile}&self=true`,
             )
           }
         >

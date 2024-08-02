@@ -283,5 +283,7 @@ export const API = {
     DeleteLineItemSyncingById: '/lineItemSyncing/deleteLineItemSyncingById',
     GetLineItemSyncingById: '/lineItemSyncing/getLineItemSyncingById',
     QUERY: 'lineItemSyncing/query',
+    SalesForceAdd: '/lineItemSyncing/insertLineItemSyncingForSalesForce',
+    SalesForceGet: '/lineItemSyncing/queryLineItemSyncinForSalesFOrce',
   },
 };

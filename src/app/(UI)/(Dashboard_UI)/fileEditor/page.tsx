@@ -44,7 +44,11 @@ import {
 } from '../../../../../redux/actions/auth';
 import {HiddenColumns} from 'handsontable/plugins';
 import OsInput from '@/app/components/common/os-input';
-import {queryLineItemSyncing} from '../../../../../redux/actions/LineItemSyncing';
+import {
+  queryLineItemSyncing,
+  queryLineItemSyncingForSalesForce,
+} from '../../../../../redux/actions/LineItemSyncing';
+import CommonSelect from '@/app/components/common/os-select';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
@@ -63,12 +67,16 @@ const EditorFile = () => {
   const [returnBackModal, setReturnModalBack] = useState<boolean>(false);
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
   const [showAddColumnModal, setShowAddColumnModal] = useState<boolean>(false);
+  const [showUpdateColumnModal, setShowUpdateColumnModal] =
+    useState<boolean>(false);
   const [newHeaderName, setNewHeaderName] = useState<any>();
+  const [oldColumnName, setOldColumnName] = useState<any>();
   const salesToken = searchParams.get('key');
   const SaleQuoteId = searchParams.get('quote_Id');
   const EditSalesLineItems = searchParams.get('editLine');
   const salesForceUrl = searchParams.get('instance_url');
   const salesForceFiledId = searchParams.get('file_Id');
+  const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
   // quoteId,instance_url,fileId
   // ============================== SalesForce Implementations ======================================
 
@@ -358,7 +366,13 @@ const EditorFile = () => {
 
   useEffect(() => {
     if (!salesForceUrl) {
-      dispatch(queryLineItemSyncing({}));
+      dispatch(queryLineItemSyncing({}))?.then((payload: any) => {
+        setLineItemSyncingData(payload?.payload);
+      });
+    } else {
+      dispatch(queryLineItemSyncingForSalesForce({}))?.then((payload: any) => {
+        setLineItemSyncingData(payload?.payload);
+      });
     }
   }, []);
 
@@ -651,6 +665,45 @@ const EditorFile = () => {
     setNewHeaderName('');
   };
 
+  const UpdateTheColumnName = async (type: any, old: string, newVal: any) => {
+    let newArr: any = [...mergedValue];
+    const renameKey = (arr: any, oldKey: any, newKey: any) => {
+      return arr.map((obj: any) => {
+        // Create a new object preserving the order of keys
+        let newObj: any = {};
+        for (let key of Object.keys(obj)) {
+          if (key === oldKey) {
+            // Rename the old key to new key
+            newObj[newKey] = obj[key];
+          } else {
+            // Copy the other keys as they are
+            newObj[key] = obj[key];
+          }
+        }
+        return newObj;
+      });
+    };
+    let updatedArr = renameKey(newArr, old, newVal);
+    setMergedVaalues(updatedArr);
+    notification.open({
+      message: `Column header ${old} sucessfully changed to ${newVal}.`,
+      type: 'success',
+    });
+    setOldColumnName('');
+    setNewHeaderName('');
+
+    if (type === 'close') {
+      setShowUpdateColumnModal(false);
+    }
+  };
+  const [existingColumnOptions, setExistingColumnName] = useState<any>();
+  useEffect(() => {
+    let newArr: any = [];
+    mergeedColumn?.map((items: any) => {
+      newArr?.push({label: items, value: items});
+    });
+    setExistingColumnName(newArr);
+  }, [mergeedColumn]);
   return (
     <GlobalLoader loading={nanonetsLoading}>
       {ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true' ? (
@@ -744,28 +797,38 @@ const EditorFile = () => {
                   overflow: 'auto',
                 }}
               >
-                <Space
-                  onClick={(e) => {
-                    e?.preventDefault();
-                  }}
-                  size={25}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'end',
-                    marginRight: '50px',
-                    right: '0',
-                    bottom: '0',
-                    marginBottom: '20px',
-                  }}
-                >
-                  <OsButton
-                    text="Add New Column"
-                    buttontype="PRIMARY"
-                    clickHandler={() => {
-                      setShowAddColumnModal(true);
-                    }}
-                  />
-                </Space>
+                {ExistingQuoteItemss === 'false' &&
+                  EditSalesLineItems === 'false' && (
+                    <Space
+                      onClick={(e) => {
+                        e?.preventDefault();
+                      }}
+                      size={25}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'end',
+                        marginRight: '50px',
+                        right: '0',
+                        bottom: '0',
+                        marginBottom: '20px',
+                      }}
+                    >
+                      <OsButton
+                        text="Update Column Name"
+                        buttontype="PRIMARY"
+                        clickHandler={() => {
+                          setShowUpdateColumnModal(true);
+                        }}
+                      />
+                      <OsButton
+                        text="Add New Column"
+                        buttontype="PRIMARY"
+                        clickHandler={() => {
+                          setShowAddColumnModal(true);
+                        }}
+                      />
+                    </Space>
+                  )}
                 <HotTable
                   data={mergedValue}
                   allowRemoveColumn
@@ -982,6 +1045,7 @@ const EditorFile = () => {
               nanonetsLoading={nanonetsLoading}
               routingConditions={checkForNewFile}
               manualFlow={false}
+              lineItemSyncingData={lineItemSyncingData}
             />
           }
           width={600}
@@ -1030,7 +1094,79 @@ const EditorFile = () => {
           // open={false}
         />
       )}
-
+      <OsModal
+        title="Update  Column Name"
+        bodyPadding={30}
+        body={
+          <Row gutter={[16, 24]} justify="space-between">
+            <Col span={12}>
+              <CommonSelect
+                style={{width: '100%'}}
+                value={oldColumnName}
+                placeholder="Please select the column header name"
+                options={existingColumnOptions}
+                onChange={(e: any) => {
+                  setNewHeaderName('');
+                  setOldColumnName(e);
+                }}
+              />
+            </Col>
+            <Col span={12}>
+              <OsInput
+                style={{width: '100%'}}
+                placeholder="Please add new column header name"
+                value={newHeaderName}
+                onChange={(e: any) => {
+                  setNewHeaderName(e?.target?.value);
+                }}
+              />
+            </Col>
+            <div
+              style={{
+                display: 'flex',
+                width: '100%',
+                justifyContent: 'flex-end',
+              }}
+            >
+              {' '}
+              <div style={{marginRight: '30px'}}>
+                <OsButton
+                  // style={{marginRight: '100px'}}
+                  disabled={
+                    newHeaderName?.length > 0 && oldColumnName?.length > 0
+                      ? false
+                      : true
+                  }
+                  text="Update"
+                  buttontype="SECONDARY"
+                  clickHandler={() => {
+                    UpdateTheColumnName('open', oldColumnName, newHeaderName);
+                  }}
+                />{' '}
+              </div>
+              <OsButton
+                disabled={
+                  newHeaderName?.length > 0 && oldColumnName?.length > 0
+                    ? false
+                    : true
+                }
+                text="Update & Close"
+                buttontype="PRIMARY"
+                clickHandler={() => {
+                  UpdateTheColumnName('close', oldColumnName, newHeaderName);
+                }}
+              />
+            </div>
+          </Row>
+        }
+        width={900}
+        open={showUpdateColumnModal}
+        onCancel={() => {
+          setShowUpdateColumnModal(false);
+          setNewHeaderName('');
+          setOldColumnName('');
+        }}
+      />
       <OsModal
         title="Add New Column"
         bodyPadding={30}

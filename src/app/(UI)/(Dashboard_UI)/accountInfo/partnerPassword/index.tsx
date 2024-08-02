@@ -80,7 +80,6 @@ const PartnerPassword = () => {
     });
   };
   const [partnerDataa, setPartnerDataa] = useState<any>();
-
   useEffect(() => {
     dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
       setPartnerDataa(payload?.payload?.approved);
@@ -245,7 +244,6 @@ const PartnerPassword = () => {
   useEffect(() => {
     dispatch(queryPartnerPassword(searchQuery));
   }, [searchQuery]);
-  console.log('searchQuerysearchQuery', searchQuery);
 
   useEffect(() => {
     if (partnerPasswordData) {
@@ -337,7 +335,9 @@ const PartnerPassword = () => {
               columns={
                 userInformation?.is_admin ? FinalColumnData : MyPartnerColumns
               }
-              dataSource={finalSharedPasswordData}
+              dataSource={
+                !userInformation?.is_dealReg ? [] : finalSharedPasswordData
+              }
               scroll
               loading={loading}
               locale={locale}
@@ -361,7 +361,7 @@ const PartnerPassword = () => {
       key: '2',
       children: (
         <OsTable
-          columns={FinalColumnData}
+          columns={!userInformation?.is_dealReg ? [] : FinalColumnData}
           dataSource={finalMyPasswordData}
           scroll
           loading={loading}
@@ -431,6 +431,14 @@ const PartnerPassword = () => {
               buttontype="PRIMARY"
               icon={<PlusIcon />}
               clickHandler={() => {
+                if (!userInformation?.is_dealReg) {
+                  notification?.open({
+                    message:
+                      'You do not have the access for  dealreg. You need to have dealreg access to access partner password',
+                    type: 'info',
+                  });
+                  return;
+                }
                 setShowModal(true);
                 partnerPasswordForm.resetFields();
                 setPartnerPasswordId('');

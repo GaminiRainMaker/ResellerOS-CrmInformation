@@ -29,7 +29,7 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {
   insertLineItemSyncing,
-  queryLineItemSyncing,
+  insertLineItemSyncingForSalesForce,
 } from '../../../../../redux/actions/LineItemSyncing';
 import {addSalesForceDataa} from '../../../../../redux/actions/auth';
 import {getContractInBulkByProductCode} from '../../../../../redux/actions/contractProduct';
@@ -58,6 +58,7 @@ type UpdatedDataItem = {
   quote_header: string;
   status: string;
   quote_file_id: number;
+  is_salesforce: boolean;
 };
 
 interface EditPdfDataInterface {
@@ -70,6 +71,7 @@ interface EditPdfDataInterface {
   manualFlow?: any;
   checkForNewFileForSalesForce?: any;
   currentFileName?: any;
+  lineItemSyncingData?: any;
 }
 const SyncTableData: FC<EditPdfDataInterface> = ({
   setMergedVaalues,
@@ -81,6 +83,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   manualFlow,
   checkForNewFileForSalesForce,
   currentFileName,
+  lineItemSyncingData,
 }) => {
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -90,12 +93,12 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const {data: syncTableData, loading: syncDataLoading} = useAppSelector(
     (state) => state.syncTable,
   );
-  const {data: LineItemSyncingData} = useAppSelector(
-    (state) => state.LineItemSyncing,
-  );
-  const ApprovedQuoteMappingData = LineItemSyncingData?.filter(
-    (LineItemSyncingItem: any) => LineItemSyncingItem?.status === 'Approved',
-  );
+
+  const ApprovedQuoteMappingData =
+    lineItemSyncingData &&
+    lineItemSyncingData?.filter(
+      (LineItemSyncingItem: any) => LineItemSyncingItem?.status === 'Approved',
+    );
 
   const [token] = useThemeToken();
   const searchParams = useSearchParams();
@@ -253,11 +256,15 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             quote_header: newVal,
             status: 'Pending',
             quote_file_id: Number(getQuoteFileId),
+            is_salesforce: SaleQuoteId ? true : false,
           }),
         );
 
     if (updatedData && !SaleQuoteId) {
       dispatch(insertLineItemSyncing(updatedData));
+    } else if (updatedData && SaleQuoteId) {
+      insertLineItemSyncingForSalesForce;
+      dispatch(insertLineItemSyncingForSalesForce(updatedData));
     }
 
     mergedValue?.map((obj: any) => {
