@@ -797,38 +797,38 @@ const EditorFile = () => {
                   overflow: 'auto',
                 }}
               >
-                {ExistingQuoteItemss === 'false' ||
-                  (EditSalesLineItems === 'false' && (
-                    <Space
-                      onClick={(e) => {
-                        e?.preventDefault();
+                {(ExistingQuoteItemss === 'false' ||
+                  EditSalesLineItems === 'false') && (
+                  <Space
+                    onClick={(e) => {
+                      e?.preventDefault();
+                    }}
+                    size={25}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'end',
+                      marginRight: '50px',
+                      right: '0',
+                      bottom: '0',
+                      marginBottom: '20px',
+                    }}
+                  >
+                    <OsButton
+                      text="Update Column Name"
+                      buttontype="PRIMARY"
+                      clickHandler={() => {
+                        setShowUpdateColumnModal(true);
                       }}
-                      size={25}
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'end',
-                        marginRight: '50px',
-                        right: '0',
-                        bottom: '0',
-                        marginBottom: '20px',
+                    />
+                    <OsButton
+                      text="Add New Column"
+                      buttontype="PRIMARY"
+                      clickHandler={() => {
+                        setShowAddColumnModal(true);
                       }}
-                    >
-                      <OsButton
-                        text="Update Column Name"
-                        buttontype="PRIMARY"
-                        clickHandler={() => {
-                          setShowUpdateColumnModal(true);
-                        }}
-                      />
-                      <OsButton
-                        text="Add New Column"
-                        buttontype="PRIMARY"
-                        clickHandler={() => {
-                          setShowAddColumnModal(true);
-                        }}
-                      />
-                    </Space>
-                  ))}
+                    />
+                  </Space>
+                )}
                 <HotTable
                   data={mergedValue}
                   allowRemoveColumn
