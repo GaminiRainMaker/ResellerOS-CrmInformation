@@ -54,10 +54,6 @@ const DealRegDrawer: FC<any> = ({form, onFinish}) => {
     });
   }, [customerData]);
 
-  // console.log('customerValue', customerValue);
-  // console.log('customerData', customerData);
-  // console.log('contactValue', contactValue);
-
   return (
     <GlobalLoader loading={customerData?.length <= 0 || !customerValue}>
       <Form
