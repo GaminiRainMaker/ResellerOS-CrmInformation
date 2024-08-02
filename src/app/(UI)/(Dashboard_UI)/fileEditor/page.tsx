@@ -797,8 +797,8 @@ const EditorFile = () => {
                   overflow: 'auto',
                 }}
               >
-                {ExistingQuoteItemss === 'false' &&
-                  EditSalesLineItems === 'false' && (
+                {ExistingQuoteItemss === 'false' ||
+                  (EditSalesLineItems === 'false' && (
                     <Space
                       onClick={(e) => {
                         e?.preventDefault();
@@ -828,7 +828,7 @@ const EditorFile = () => {
                         }}
                       />
                     </Space>
-                  )}
+                  ))}
                 <HotTable
                   data={mergedValue}
                   allowRemoveColumn
