@@ -249,7 +249,7 @@ const DealReg: React.FC = () => {
                           align="center"
                           onClick={(e) => {
                             router.push(
-                              `/dealRegDetailNew?id=${itemDeal.dealReg_id}&opportunityId=${itemDeal.opportunity_id}&customerId=${itemDeal.customer_id}&contactId=${itemDeal.contact_id}`,
+                              `/dealRegDetail?id=${itemDeal.dealReg_id}&opportunityId=${itemDeal.opportunity_id}&customerId=${itemDeal.customer_id}&contactId=${itemDeal.contact_id}`,
                             );
                             e.stopPropagation();
                           }}
