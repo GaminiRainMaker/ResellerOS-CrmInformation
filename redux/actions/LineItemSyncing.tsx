@@ -13,6 +13,17 @@ export const insertLineItemSyncing = createAsyncThunk(
     }
   },
 );
+export const insertLineItemSyncingForSalesForce = createAsyncThunk(
+  'lineItemSyncing/addLineItemSyncingForSalesForce',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await LINEITEM_SYNCING_API.SalesForceAdd(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);
 
 export const updateLineItemSyncing = createAsyncThunk(
   'lineItemSyncing/updateLineItemSyncing',
@@ -59,6 +70,22 @@ export const queryLineItemSyncing = createAsyncThunk(
       //     quote_header: query?.quote_header,
       //   };
       const res = await LINEITEM_SYNCING_API.query(query);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+
+export const queryLineItemSyncingForSalesForce = createAsyncThunk(
+  'lineItemSyncing/queryLineItemSyncinForSalesFOrce',
+  async (query: any, thunkApi) => {
+    try {
+      //   const obj = {
+      //     pdf_header: query?.pdf_header,
+      //     quote_header: query?.quote_header,
+      //   };
+      const res = await LINEITEM_SYNCING_API.SalesForceGet(query);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

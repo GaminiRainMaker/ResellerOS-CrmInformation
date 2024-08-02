@@ -4,6 +4,7 @@ import {get, patch, post} from './index';
 
 export const LINEITEM_SYNCING_API = {
   post: (data: any) => post(API.LINEITEM_SYNCING.INDEX, data),
+  SalesForceAdd: (data: any) => post(API.LINEITEM_SYNCING.SalesForceAdd, data),
   patch: (data: any) =>
     patch(API.LINEITEM_SYNCING.INDEX, data) as Promise<AxiosResponse<any>>,
   getById: (id: number) =>
@@ -16,6 +17,10 @@ export const LINEITEM_SYNCING_API = {
     post(API.LINEITEM_SYNCING.QUERY, data) as Promise<AxiosResponse<any>>,
   deleteById: (data: any) =>
     post(API.LINEITEM_SYNCING.DeleteLineItemSyncingById, data) as Promise<
+      AxiosResponse<any>
+    >,
+  SalesForceGet: (data: any) =>
+    post(API.LINEITEM_SYNCING.SalesForceGet, data) as Promise<
       AxiosResponse<any>
     >,
 };

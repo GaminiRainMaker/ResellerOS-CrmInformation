@@ -3,7 +3,9 @@ import {
   deleteLineItemSyncings,
   getLineItemSyncingBYId,
   insertLineItemSyncing,
+  insertLineItemSyncingForSalesForce,
   queryLineItemSyncing,
+  queryLineItemSyncingForSalesForce,
   updateLineItemSyncing,
 } from '../actions/LineItemSyncing';
 
@@ -116,6 +118,42 @@ const LineItemSyncingSlice = createSlice({
       )
       .addCase(
         deleteLineItemSyncings.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(queryLineItemSyncingForSalesForce.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        queryLineItemSyncingForSalesForce.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.lineItemSyncing = action.payload;
+        },
+      )
+      .addCase(
+        queryLineItemSyncingForSalesForce.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(insertLineItemSyncingForSalesForce.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        insertLineItemSyncingForSalesForce.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.lineItemSyncing = action.payload;
+        },
+      )
+      .addCase(
+        insertLineItemSyncingForSalesForce.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
