@@ -19,8 +19,12 @@ const ResponseDetailForm: FC<any> = ({activeKey, formData}) => {
     form.setFieldsValue({
       partner_approval_id: formData?.partner_approval_id,
       partner_deal_id: formData?.partner_deal_id,
-      expiration_date: moment(formData?.expiration_date),
-      submitted_date: moment(formData?.submitted_date),
+      expiration_date: formData?.expiration_date
+        ? moment(formData?.expiration_date)
+        : null,
+      submitted_date: formData?.submitted_date
+        ? moment(formData?.submitted_date)
+        : null,
       status: formData?.status,
     });
   }, [formData]);
