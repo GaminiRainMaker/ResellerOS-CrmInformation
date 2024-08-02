@@ -9,7 +9,7 @@ import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
 import React from 'react';
 import {EditableFiledsCommonInterface} from '../formBuilder.interface';
-import {CollapseSpaceStyle} from '../../dealRegDetail/DealRegDetailForm/styled-components';
+import { CollapseSpaceStyle } from '../../dealRegDetail/styled-component';
 
 const CurrencyEditField: React.FC<EditableFiledsCommonInterface> = ({
   sectionIndex,

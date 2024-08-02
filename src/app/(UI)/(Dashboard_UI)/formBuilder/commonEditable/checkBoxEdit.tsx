@@ -11,7 +11,7 @@ import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import React, {useState} from 'react';
 import {EditableFiledsCommonInterface} from '../formBuilder.interface';
-import {CollapseSpaceStyle} from '../../dealRegDetail/DealRegDetailForm/styled-components';
+import {CollapseSpaceStyle} from '../../dealRegDetail/styled-component';
 
 const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
   sectionIndex,
@@ -148,7 +148,7 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
             </Typography>
           </div>{' '}
           <Form layout="vertical">
-            <div >
+            <div>
               {cartItems?.[sectionIndex || 0]?.content?.[
                 contentIndex || 0
               ]?.labelOptions?.map((itemOption: any, indexOp: number) => (

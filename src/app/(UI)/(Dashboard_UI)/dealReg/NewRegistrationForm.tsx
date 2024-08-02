@@ -16,7 +16,6 @@ import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-s
 import OsOpportunitySelect from '@/app/components/common/os-opportunity-select';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {partnerProgramFilter} from '@/app/utils/base';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useSearchParams} from 'next/navigation';
@@ -29,7 +28,7 @@ import {
 } from '../../../../../redux/actions/dealReg';
 import {getAllPartnerandProgramApprovedForOrganization} from '../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
+import {CollapseSpaceStyle} from '../dealRegDetail/styled-component';
 
 const NewRegistrationForm: FC<any> = ({
   isDealRegDetail = false,

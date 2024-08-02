@@ -10,7 +10,7 @@ import Typography from '@/app/components/common/typography';
 import {Form, Radio, RadioChangeEvent} from 'antd';
 import React from 'react';
 import {EditableFiledsCommonInterface} from '../formBuilder.interface';
-import {CollapseSpaceStyle} from '../../dealRegDetail/DealRegDetailForm/styled-components';
+import {CollapseSpaceStyle} from '../../dealRegDetail/styled-component';
 
 const TimeEditFileds: React.FC<EditableFiledsCommonInterface> = ({
   sectionIndex,

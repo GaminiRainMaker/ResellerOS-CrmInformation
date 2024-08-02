@@ -17,9 +17,9 @@ import {Form, message} from 'antd';
 import React from 'react';
 import {convertFileToBase64} from '@/app/utils/base';
 import {EditableFiledsCommonInterface} from '../formBuilder.interface';
-import {CollapseSpaceStyle} from '../../dealRegDetail/DealRegDetailForm/styled-components';
 import {uploadToAws} from '../../../../../../redux/actions/upload';
 import {useAppDispatch} from '../../../../../../redux/hook';
+import { CollapseSpaceStyle } from '../../dealRegDetail/styled-component';
 
 const AttachmentEditFileds: React.FC<EditableFiledsCommonInterface> = ({
   sectionIndex,

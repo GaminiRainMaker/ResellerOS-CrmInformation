@@ -13,8 +13,8 @@ import Typography from '@/app/components/common/typography';
 import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Form, Input} from 'antd';
 import React, {useState} from 'react';
-import {CollapseSpaceStyle} from '../../dealRegDetail/DealRegDetailForm/styled-components';
 import {EditableFiledsCommonInterface} from '../formBuilder.interface';
+import { CollapseSpaceStyle } from '../../dealRegDetail/styled-component';
 
 const EditTableFields: React.FC<EditableFiledsCommonInterface> = ({
   sectionIndex,

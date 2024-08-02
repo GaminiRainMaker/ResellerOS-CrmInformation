@@ -1,4 +1,3 @@
-
 import {Row} from '@/app/components/common/antd/Grid';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
@@ -8,7 +7,7 @@ import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
 import React from 'react';
 import {EditableFiledsCommonInterface} from '../formBuilder.interface';
-import {CollapseSpaceStyle} from '../../dealRegDetail/DealRegDetailForm/styled-components';
+import {CollapseSpaceStyle} from '../../dealRegDetail/styled-component';
 
 const EditFiledDetailsForTextContent: React.FC<
   EditableFiledsCommonInterface

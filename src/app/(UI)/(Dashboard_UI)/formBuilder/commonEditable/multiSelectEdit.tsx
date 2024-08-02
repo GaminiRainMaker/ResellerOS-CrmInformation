@@ -9,11 +9,10 @@ import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {Form, Input} from 'antd';
+import {Form} from 'antd';
 import React from 'react';
+import {CollapseSpaceStyle} from '../../dealRegDetail/styled-component';
 import {EditableFiledsCommonInterface} from '../formBuilder.interface';
-import {CollapseSpaceStyle} from '../../dealRegDetail/DealRegDetailForm/styled-components';
-import OsButton from '@/app/components/common/os-button';
 
 const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
   sectionIndex,

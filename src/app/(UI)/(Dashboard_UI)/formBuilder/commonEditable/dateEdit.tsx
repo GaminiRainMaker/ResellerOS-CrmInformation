@@ -11,8 +11,8 @@ import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {DatePicker, Form} from 'antd';
 import React from 'react';
-import {CollapseSpaceStyle} from '../../dealRegDetail/DealRegDetailForm/styled-components';
 import {EditableFiledsCommonInterface} from '../formBuilder.interface';
+import {CollapseSpaceStyle} from '../../dealRegDetail/styled-component';
 
 const EditFiledDetailsForDate: React.FC<EditableFiledsCommonInterface> = ({
   sectionIndex,
