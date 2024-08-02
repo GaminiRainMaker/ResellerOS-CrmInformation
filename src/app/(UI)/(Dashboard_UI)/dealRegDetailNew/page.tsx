@@ -5,7 +5,6 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
-import OsDrawer from '@/app/components/common/os-drawer';
 import OsDropdown from '@/app/components/common/os-dropdown';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
@@ -18,30 +17,28 @@ import {useEffect, useState} from 'react';
 import {
   getDealRegByOpportunityId,
   getDealRegByPartnerProgramId,
-  updateDealRegById,
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {setDealReg} from '../../../../../redux/slices/dealReg';
+import {
+  setDealReg,
+  setOpenDealRegDrawer,
+} from '../../../../../redux/slices/dealReg';
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs from './DealRegCustomTabs';
-import DealRegDrawer from './DealRegDrawer';
 import SubmitDealRegForms from './SubmitDealRegForms';
 
 const DealRegDetail = () => {
   const [FormData] = Form.useForm();
-  const [drawerForm] = Form.useForm();
   const [submitDealRegForm] = Form.useForm();
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const {
     data: DealRegData,
-    dealReg,
     loading: dealRegLoading,
     getDealRegForNewLoading,
   } = useAppSelector((state) => state.dealReg);
-  const [openDrawer, setOpenDrawer] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showSubmitFormModal, setShowSubmitFormModal] = useState(false);
   const searchParams = useSearchParams();
@@ -91,30 +88,17 @@ const DealRegDetail = () => {
     {
       key: '1',
       label: (
-        <Typography onClick={() => setOpenDrawer(true)} name="Body 3/Regular">
+        <Typography
+          onClick={() => {
+            dispatch(setOpenDealRegDrawer(true));
+          }}
+          name="Body 3/Regular"
+        >
           Edit Form Details
         </Typography>
       ),
     },
   ];
-
-  const onDrawerUpdate = async () => {
-    const DrawerData = drawerForm.getFieldsValue();
-    const updateValues = {
-      id: dealReg?.id,
-      customer_id: DrawerData?.customer_id,
-      contact_id: DrawerData?.contact_id,
-    };
-    if (updateValues) {
-      await dispatch(updateDealRegById(updateValues)).then((response) => {
-        if (response?.payload) {
-          dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-        }
-      });
-      setOpenDrawer(false);
-      drawerForm.resetFields();
-    }
-  };
 
   const submitDealRegFormFun = async () => {
     const SubmitDealRegForm = submitDealRegForm.getFieldsValue();
@@ -166,29 +150,6 @@ const DealRegDetail = () => {
       <GlobalLoader loading={getDealRegForNewLoading}>
         <DealRegCustomTabs form={FormData} />
       </GlobalLoader>
-
-      <OsDrawer
-        title={<Typography name="Body 1/Regular">Form Settings</Typography>}
-        placement="right"
-        onClose={() => {
-          setOpenDrawer(false);
-          drawerForm.resetFields();
-        }}
-        open={openDrawer}
-        width={450}
-        footer={
-          <Row style={{width: '100%', float: 'right'}}>
-            <OsButton
-              btnStyle={{width: '100%'}}
-              buttontype="PRIMARY"
-              text="Update Changes"
-              clickHandler={drawerForm.submit}
-            />
-          </Row>
-        }
-      >
-        <DealRegDrawer form={drawerForm} onFinish={onDrawerUpdate} />
-      </OsDrawer>
 
       <OsModal
         loading={dealRegLoading}

@@ -13,43 +13,46 @@ import {useAppSelector} from '../../../../../redux/hook';
 const DealRegAnalytics = () => {
   const [token] = useThemeToken();
   const {data: DealRegData} = useAppSelector((state) => state.dealReg);
+  const {userInformation} = useAppSelector((state) => state.user);
+
+  const finalData = userInformation?.Admin
+    ? DealRegData
+    : DealRegData?.filter(
+        (dealRegDataItem: any) =>
+          dealRegDataItem?.user_id === userInformation?.id,
+      );
 
   const getUniqueCounts = (data: any) => {
     const uniqueOpportunityIds = new Set();
-    const uniquePartnerIds = new Set();
     const statusCounts = {
       'In Progress': 0,
       Completed: 0,
     };
 
     data?.forEach((item: any) => {
-      if (item.opportunity_id !== null) {
-        uniqueOpportunityIds.add(item.opportunity_id);
+      if (item?.opportunity_id !== null) {
+        uniqueOpportunityIds?.add(item?.opportunity_id);
       }
-      if (item.partner_id !== null) {
-        uniquePartnerIds.add(item.partner_id);
-      }
-      if (item.status === 'In Progress') {
+      if (item?.status === 'In Progress') {
         statusCounts['In Progress']++;
-      } else if (item.status === 'Completed') {
+      } else if (item?.status === 'Completed') {
         statusCounts['Completed']++;
       }
     });
 
     return {
       uniqueOpportunityCount: uniqueOpportunityIds.size,
-      uniquePartnerCount: uniquePartnerIds.size,
       statusCounts: statusCounts,
     };
   };
-  const counts = getUniqueCounts(DealRegData);
+  const counts = getUniqueCounts(finalData);
 
   const analyticsData = [
     {
       key: 1,
       primary: (
         <Typography name="Heading 3/Medium">
-          {counts?.uniqueOpportunityCount ?? 0}
+          {finalData?.length ?? 0}
         </Typography>
       ),
       secondry: 'Total Forms',
@@ -60,10 +63,10 @@ const DealRegAnalytics = () => {
       key: 2,
       primary: (
         <Typography name="Heading 3/Medium">
-          {counts?.uniquePartnerCount ?? 0}
+          {counts?.uniqueOpportunityCount ?? 0}
         </Typography>
       ),
-      secondry: 'Partners',
+      secondry: 'Opportunity',
       icon: <ClipboardDocumentCheckIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
     },

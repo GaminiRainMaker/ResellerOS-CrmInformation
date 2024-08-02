@@ -8,6 +8,9 @@ import Typography from '@/app/components/common/typography';
 import {FC} from 'react';
 import CommonFields from './CommonField';
 import UniqueFields from './UniqueField';
+import OsDrawer from '@/app/components/common/os-drawer';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {setOpenDealRegDrawer} from '../../../../../redux/slices/dealReg';
 
 const DealRegDetailForm: FC<any> = ({
   data,
@@ -17,6 +20,10 @@ const DealRegDetailForm: FC<any> = ({
   formData,
 }) => {
   const [token] = useThemeToken();
+  const dispatch = useAppDispatch();
+  const {openDealRegDrawer} = useAppSelector((state) => state.dealReg);
+
+  console.log('openDealRegDrawer', openDealRegDrawer);
 
   const CommonFieldsItems = [
     {
@@ -58,10 +65,7 @@ const DealRegDetailForm: FC<any> = ({
   ];
 
   return (
-    <Row>
-      <Space style={{width: '100%'}} size={24} direction="vertical">
-        <OsCollapseAdmin items={CommonFieldsItems} />
-      </Space>
+    <>
       <>
         {data?.PartnerProgram?.form_data && (
           <Space
@@ -76,7 +80,21 @@ const DealRegDetailForm: FC<any> = ({
           </Space>
         )}
       </>
-    </Row>
+
+      <OsDrawer
+        title={<Typography name="Body 1/Regular">Form Settings</Typography>}
+        placement="right"
+        onClose={() => {
+          dispatch(setOpenDealRegDrawer(false));
+        }}
+        open={openDealRegDrawer}
+        width={450}
+      >
+        <Space style={{width: '100%'}} size={24} direction="vertical">
+          <OsCollapseAdmin items={CommonFieldsItems} />
+        </Space>
+      </OsDrawer>
+    </>
   );
 };
 

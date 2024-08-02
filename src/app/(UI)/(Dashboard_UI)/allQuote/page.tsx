@@ -18,8 +18,8 @@ import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import GreenCheckIcon from '../../../../../public/assets/static/greenCheckIcon.svg';
 import CancelIcon from '../../../../../public/assets/static/CancelIcon.svg';
+import GreenCheckIcon from '../../../../../public/assets/static/greenCheckIcon.svg';
 
 import {
   deleteQuoteById,
@@ -28,13 +28,12 @@ import {
   updateQuoteStatusById,
 } from '../../../../../redux/actions/quote';
 
+import DailogModal from '@/app/components/common/os-modal/DialogModal';
 import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import QuoteAnalytics from './analytics';
 import {tabItems} from './constants';
 import {getColumns, getExistingQuoteColumns} from './tableColumns';
-import DailogModal from '@/app/components/common/os-modal/DialogModal';
-import {CheckCircleIcon, XCircleIcon} from '@heroicons/react/24/outline';
 
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();

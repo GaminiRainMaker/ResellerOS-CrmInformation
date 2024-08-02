@@ -18,6 +18,7 @@ import {
   TransformedChild,
   TransformedData,
 } from './dealReg.interface';
+import {ChildCollapse} from './styled-component';
 
 const CommonFields: FC<CommonFieldsProps> = ({
   form,
@@ -141,7 +142,7 @@ const CommonFields: FC<CommonFieldsProps> = ({
       style={{width: '100%', background: 'white', borderRadius: '12px'}}
     >
       {template?.map((section, index) => (
-        <Collapse key={index} accordion style={{width: '100%'}} ghost>
+        <ChildCollapse key={index} accordion style={{width: '100%'}} ghost>
           <Panel
             header={
               <Space
@@ -157,15 +158,11 @@ const CommonFields: FC<CommonFieldsProps> = ({
             }
             key={index}
           >
-            <Row>
+            <Row gutter={[0, 16]}>
               {section?.children?.map((child, Childndex) => {
                 const required = child?.is_required;
                 return (
-                  <Col
-                    span={12}
-                    style={{padding: '24px', paddingTop: '0px'}}
-                    key={child.id}
-                  >
+                  <Col span={24} key={child.id}>
                     <SelectFormItem
                       name={
                         'c_' +
@@ -199,7 +196,8 @@ const CommonFields: FC<CommonFieldsProps> = ({
               })}
             </Row>
           </Panel>
-        </Collapse>
+          <br/>
+        </ChildCollapse>
       ))}
     </Form>
   );

@@ -49,6 +49,7 @@ const DealReg: React.FC = () => {
   const {data: DealRegData, loading: dealLoading} = useAppSelector(
     (state) => state.dealReg,
   );
+  const {userInformation} = useAppSelector((state) => state.user);
   const [finalDealRegData, setFinalDealRegData] = useState<any>();
   const [query, setQuery] = useState<{
     customer: string | null;
@@ -185,11 +186,17 @@ const DealReg: React.FC = () => {
     status: string,
   ): SeparatedData => {
     const separatedData: SeparatedData = {};
+    const finalData = userInformation?.Admin
+      ? dealRegData
+      : dealRegData?.filter(
+          (dealRegDataItem: any) =>
+            dealRegDataItem?.user_id === userInformation?.id,
+        );
 
     const filteredDealRegData =
       status === 'All'
-        ? dealRegData
-        : dealRegData?.filter((item: any) => item?.status === status);
+        ? finalData
+        : finalData?.filter((item: any) => item?.status === status);
 
     filteredDealRegData?.forEach((item: any) => {
       const {
