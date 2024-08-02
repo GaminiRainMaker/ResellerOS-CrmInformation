@@ -4,11 +4,12 @@ import OsInput from '@/app/components/common/os-input';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {Form} from 'antd';
-import {FC, useEffect} from 'react';
-import {useAppDispatch} from '../../../../../redux/hook';
-import {updateDealRegById} from '../../../../../redux/actions/dealReg';
 import {dealRegStatusOptions} from '@/app/utils/CONSTANTS';
+import {Form} from 'antd';
+import moment from 'moment';
+import {FC, useEffect} from 'react';
+import {updateDealRegById} from '../../../../../redux/actions/dealReg';
+import {useAppDispatch} from '../../../../../redux/hook';
 
 const ResponseDetailForm: FC<any> = ({activeKey, formData}) => {
   const [form] = Form.useForm();
@@ -18,8 +19,8 @@ const ResponseDetailForm: FC<any> = ({activeKey, formData}) => {
     form.setFieldsValue({
       partner_approval_id: formData?.partner_approval_id,
       partner_deal_id: formData?.partner_deal_id,
-      // expiration_date: formData?.expiration_date,
-      // submitted_date: formData?.submitted_date,
+      expiration_date: moment(formData?.expiration_date),
+      submitted_date: moment(formData?.submitted_date),
       status: formData?.status,
     });
   }, [formData]);
