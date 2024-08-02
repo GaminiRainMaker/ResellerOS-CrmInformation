@@ -313,6 +313,7 @@ const PartnerPassword = () => {
       ),
     }),
   );
+
   const tabItems: TabsProps['items'] = [
     {
       label: (
@@ -433,8 +434,7 @@ const PartnerPassword = () => {
               clickHandler={() => {
                 if (!userInformation?.is_dealReg) {
                   notification?.open({
-                    message:
-                      'You do not have the access for  dealreg. You need to have dealreg access to access partner password',
+                    message: `You don't have DealReg AI permission to create new passwords, Please contact your Admin.`,
                     type: 'info',
                   });
                   return;
