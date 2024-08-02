@@ -9,7 +9,7 @@ import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-s
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {MailOutlined} from '@ant-design/icons';
-import {Collapse, Form, Radio, TimePicker} from 'antd';
+import {Form, Radio, TimePicker} from 'antd';
 import {FC, useEffect, useState} from 'react';
 import {useAppSelector} from '../../../../../redux/hook';
 import {
@@ -196,7 +196,7 @@ const CommonFields: FC<CommonFieldsProps> = ({
               })}
             </Row>
           </Panel>
-          <br/>
+          <br />
         </ChildCollapse>
       ))}
     </Form>

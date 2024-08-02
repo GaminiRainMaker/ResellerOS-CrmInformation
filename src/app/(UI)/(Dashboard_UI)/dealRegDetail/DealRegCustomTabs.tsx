@@ -51,7 +51,6 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
   useEffect(() => {
     if (getDealRegForNew && Object.keys(getDealRegForNew).length > 0) {
       let finalDealReg = getDealRegForNew;
-      console.log('finalDealReg', finalDealReg);
       const obj = {
         common_form_data:
           finalDealReg?.common_form_data &&
