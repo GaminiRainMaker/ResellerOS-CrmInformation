@@ -316,13 +316,49 @@ const DealReg: React.FC = () => {
       label: (
         <Typography
           name="Body 4/Regular"
-          onClick={() => setStatusValue('Completed')}
+          onClick={() => setStatusValue('Submitted')}
         >
-          Completed
+          Submitted
         </Typography>
       ),
       key: '3',
-      children: generateTabContent('Completed'),
+      children: generateTabContent('Submitted'),
+    },
+    {
+      label: (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => setStatusValue('Approved')}
+        >
+          Approved
+        </Typography>
+      ),
+      key: '4',
+      children: generateTabContent('Approved'),
+    },
+    {
+      label: (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => setStatusValue('Rejected')}
+        >
+          Rejected
+        </Typography>
+      ),
+      key: '5',
+      children: generateTabContent('Rejected'),
+    },
+    {
+      label: (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => setStatusValue('Expired')}
+        >
+          Expired
+        </Typography>
+      ),
+      key: '6',
+      children: generateTabContent('Expired'),
     },
   ];
 

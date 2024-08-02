@@ -74,6 +74,17 @@ const DealRegAnalytics = () => {
       key: 3,
       primary: (
         <Typography name="Heading 3/Medium">
+          {counts?.statusCounts?.['In Progress'] ?? 0}
+        </Typography>
+      ),
+      secondry: 'In Progress',
+      icon: <ClockIcon width={24} color={token?.colorWarning} />,
+      iconBg: token?.colorWarningBg,
+    },
+    {
+      key: 4,
+      primary: (
+        <Typography name="Heading 3/Medium">
           {' '}
           {counts?.statusCounts?.Approved ?? 0}
         </Typography>
@@ -81,17 +92,6 @@ const DealRegAnalytics = () => {
       secondry: 'Approved',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
-    },
-    {
-      key: 4,
-      primary: (
-        <Typography name="Heading 3/Medium">
-          {counts?.statusCounts?.['In Progress'] ?? 0}
-        </Typography>
-      ),
-      secondry: 'In Progress',
-      icon: <ClockIcon width={24} color={token?.colorWarning} />,
-      iconBg: token?.colorWarningBg,
     },
   ];
 
