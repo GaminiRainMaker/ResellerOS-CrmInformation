@@ -86,6 +86,11 @@ const OsStatusWrapper: FC<OsStatusWrapperProps> = ({value}) => {
       textColor: `${token?.colorError}`,
       border: `${token?.colorError}`,
     },
+    Expired: {
+      color: `${token?.colorErrorBg}`,
+      textColor: `${token?.colorError}`,
+      border: `${token?.colorError}`,
+    },
     'Invite Sent': {
       color: `${token?.colorWarningBg}`,
       textColor: `${token?.colorWarning}`,

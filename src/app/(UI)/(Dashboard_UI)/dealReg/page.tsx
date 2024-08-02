@@ -302,6 +302,15 @@ const DealReg: React.FC = () => {
     },
     {
       label: (
+        <Typography name="Body 4/Regular" onClick={() => setStatusValue('New')}>
+          New
+        </Typography>
+      ),
+      key: '9',
+      children: generateTabContent('New'),
+    },
+    {
+      label: (
         <Typography
           name="Body 4/Regular"
           onClick={() => setStatusValue('In Progress')}
