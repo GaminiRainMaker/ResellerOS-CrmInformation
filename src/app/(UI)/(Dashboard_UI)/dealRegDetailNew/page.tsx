@@ -104,7 +104,7 @@ const DealRegDetail = () => {
     const SubmitDealRegForm = submitDealRegForm.getFieldsValue();
     const SubmitDealRegFormData = {
       ...SubmitDealRegForm,
-      status: 'Completed',
+      status: 'Approved',
     };
     if (SubmitDealRegFormData) {
       await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(

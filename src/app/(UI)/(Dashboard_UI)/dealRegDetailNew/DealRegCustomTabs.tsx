@@ -22,9 +22,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setFinalUpdatedDealRegData} from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
 
-const DealRegCustomTabs: React.FC<any> = ({
-  form
-}) => {
+const DealRegCustomTabs: React.FC<any> = ({form}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const {
@@ -53,6 +51,7 @@ const DealRegCustomTabs: React.FC<any> = ({
   useEffect(() => {
     if (getDealRegForNew && Object.keys(getDealRegForNew).length > 0) {
       let finalDealReg = getDealRegForNew;
+      console.log('finalDealReg', finalDealReg);
       const obj = {
         common_form_data:
           finalDealReg?.common_form_data &&
@@ -73,6 +72,11 @@ const DealRegCustomTabs: React.FC<any> = ({
         common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
+        partner_approval_id: finalDealReg?.partner_approval_id,
+        partner_deal_id: finalDealReg?.partner_deal_id,
+        expiration_date: finalDealReg?.expiration_date,
+        submitted_date: finalDealReg?.submitted_date,
+        status: finalDealReg?.status,
       };
       setFormData(obj);
     }
@@ -149,6 +153,11 @@ const DealRegCustomTabs: React.FC<any> = ({
         common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
+        partner_approval_id: finalDealReg?.partner_approval_id,
+        partner_deal_id: finalDealReg?.partner_deal_id,
+        expiration_date: finalDealReg?.expiration_date,
+        submitted_date: finalDealReg?.submitted_date,
+        status: finalDealReg?.status,
       };
 
       const newObj = {
@@ -159,6 +168,11 @@ const DealRegCustomTabs: React.FC<any> = ({
         common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
+        partner_approval_id: finalDealReg?.partner_approval_id,
+        partner_deal_id: finalDealReg?.partner_deal_id,
+        expiration_date: finalDealReg?.expiration_date,
+        submitted_date: finalDealReg?.submitted_date,
+        status: finalDealReg?.status,
       };
       setFormData(formObj);
       updateDealRegFinalData(activeKey, newObj);
