@@ -186,13 +186,13 @@ const AllQuote: React.FC = () => {
 
   const editQuote = (quoteId: string) => {
     if (activeTab === '5') {
-      router.push(`/generateQuote?id=${quoteId}&inReviewQuote=${true}`);
+      router.push(`/generateQuote?id=${quoteId}&isView=${true}`);
     } else {
-      router.push(`/generateQuote?id=${quoteId}&inReviewQuote=${false}`);
+      router.push(`/generateQuote?id=${quoteId}&isView=${false}`);
     }
   };
   const quoteNameNavigation = (quoteId: string) => {
-    window.open(`/generateQuote?id=${quoteId}&inReviewQuote=${false}`);
+    window.open(`/generateQuote?id=${quoteId}&isView=${false}`);
   };
 
   const updateStatus = () => {

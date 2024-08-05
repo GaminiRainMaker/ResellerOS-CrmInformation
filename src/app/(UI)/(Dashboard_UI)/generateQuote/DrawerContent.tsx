@@ -28,7 +28,7 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const getQuoteId = searchParams.get('id');
-  const getInReviewQuote = searchParams.get('inReviewQuote');
+  const isView = searchParams.get('isView');
   const {data: dataAddress} = useAppSelector((state) => state.customer);
   const {quoteById, quoteByIdLoading} = useAppSelector((state) => state.quote);
   const [customerValue, setCustomerValue] = useState<number>();
@@ -151,7 +151,7 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
             >
               <CommonStageSelect
                 options={
-                  getInReviewQuote === 'true'
+                  isView === 'true'
                     ? quoteReviewStatusOptions
                     : quoteStatusOptions
                 }
@@ -166,19 +166,19 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
 
           <Col span={24}>
             <Form.Item label="Quote Name" name="file_name">
-              <OsInput disabled={getInReviewQuote === 'true' ? true : false} />
+              <OsInput disabled={isView === 'true' ? true : false} />
             </Form.Item>
 
             <OsCustomerSelect
               setCustomerValue={setCustomerValue}
               customerValue={customerValue}
-              isDisable={getInReviewQuote === 'true' ? true : false}
+              isDisable={isView === 'true' ? true : false}
             />
 
             <OsOpportunitySelect
               form={form}
               customerValue={customerValue}
-              isDisable={getInReviewQuote === 'true' ? true : false}
+              isDisable={isView === 'true' ? true : false}
             />
 
             <Form.Item label="Contacts" name="contact_id">
@@ -186,14 +186,14 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
                 style={{width: '100%'}}
                 placeholder="Contacts"
                 options={billingOptionsData}
-                disabled={getInReviewQuote === 'true' ? true : false}
+                disabled={isView === 'true' ? true : false}
               />
             </Form.Item>
 
             <Form.Item label=" Quote Note" name="quote_notes">
               <OsInput
                 placeholder="Notes"
-                disabled={getInReviewQuote === 'true' ? true : false}
+                disabled={isView === 'true' ? true : false}
               />
             </Form.Item>
 
@@ -204,7 +204,7 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
                 prefix={'$'}
                 formatter={currencyFormatter}
                 parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
-                disabled={getInReviewQuote === 'true' ? true : false}
+                disabled={isView === 'true' ? true : false}
                 style={{
                   width: '100%',
                 }}
@@ -219,7 +219,7 @@ const DrawerContent: FC<any> = ({form, onFinish}) => {
                 prefix={'$'}
                 formatter={currencyFormatter}
                 parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
-                disabled={getInReviewQuote === 'true' ? true : false}
+                disabled={isView === 'true' ? true : false}
                 style={{
                   width: '100%',
                 }}

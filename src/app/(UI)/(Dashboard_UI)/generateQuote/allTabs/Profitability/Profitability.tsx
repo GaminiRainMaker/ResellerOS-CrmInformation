@@ -64,7 +64,7 @@ const Profitablity: FC<any> = ({
   const [token] = useThemeToken();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
-  const isDealReg = searchParams.get('isView');
+  const isView = searchParams.get('isView');
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
     (state) => state.profitability,
   );
@@ -286,7 +286,7 @@ const Profitablity: FC<any> = ({
   };
 
   const renderEditableInput = (field: string) => {
-    if (isDealReg) {
+    if (isView) {
       return true;
     } else {
       const editableField = tableColumnDataShow.find(
@@ -404,7 +404,7 @@ const Profitablity: FC<any> = ({
           color={token.colorError}
           style={{cursor: 'pointer'}}
           onClick={() => {
-            if (isDealReg) {
+            if (isView) {
               notification.open({
                 message: "You can't delete bundle in view mode.",
                 type: 'info',
@@ -947,7 +947,7 @@ const Profitablity: FC<any> = ({
                           >
                             Qty:
                             <OsInputNumber
-                              disabled={isDealReg ? true : false}
+                              disabled={isView ? true : false}
                               defaultValue={finalDataItem?.quantity}
                               style={{
                                 width: '60px',
@@ -1187,7 +1187,7 @@ const Profitablity: FC<any> = ({
                                     >
                                       Qty:
                                       <OsInputNumber
-                                        disabled={isDealReg ? true : false}
+                                        disabled={isView ? true : false}
                                         defaultValue={finalDataItem?.quantity}
                                         style={{
                                           width: '60px',
@@ -1224,7 +1224,7 @@ const Profitablity: FC<any> = ({
                                       }}
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        if (isDealReg) {
+                                        if (isView) {
                                           notification.open({
                                             message:
                                               "You can't edit bundle in view mode.",

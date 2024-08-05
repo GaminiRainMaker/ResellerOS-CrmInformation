@@ -46,7 +46,7 @@ const ReviewQuotes: FC<any> = ({
   const router = useRouter();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
-  const isDealReg = searchParams.get('isView');
+  const isView = searchParams.get('isView');
   const {abbreviate} = useAbbreviationHook(0);
   const [form] = Form.useForm();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -401,7 +401,7 @@ const ReviewQuotes: FC<any> = ({
                                     color={token?.colorBgContainer}
                                     onClick={(e) => {
                                       e?.stopPropagation();
-                                      if (isDealReg) {
+                                      if (isView) {
                                         notification.open({
                                           message:
                                             "You can't use in view mode.",
@@ -424,7 +424,7 @@ const ReviewQuotes: FC<any> = ({
                                     width={25}
                                     color={token?.colorBgContainer}
                                     onClick={(e) => {
-                                      if (isDealReg) {
+                                      if (isView) {
                                         notification.open({
                                           message:
                                             "You can't use in view mode.",

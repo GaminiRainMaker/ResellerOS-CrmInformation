@@ -34,7 +34,7 @@ const AttachmentDocument: FC<any> = ({
   const [token] = useThemeToken();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
-  const isDealReg = searchParams.get('isView');
+  const isView = searchParams.get('isView');
   const [attachmentForm] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
   const {data: attachmentDocumentData, loading} = useAppSelector(
@@ -154,7 +154,7 @@ const AttachmentDocument: FC<any> = ({
             color={token.colorError}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              if (isDealReg) {
+              if (isView) {
                 notification.open({
                   message: "You can't delete attachment in view mode.",
                   type: 'info',

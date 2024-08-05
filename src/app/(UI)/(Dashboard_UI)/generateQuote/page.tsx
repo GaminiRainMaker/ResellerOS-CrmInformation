@@ -74,7 +74,7 @@ const GenerateQuote: React.FC = () => {
   const searchParams = useSearchParams();
   const [api, contextHolder] = notification.useNotification();
   const getQuoteID = searchParams.get('id');
-  const isDealReg = searchParams.get('isView');
+  const isView = searchParams.get('isView');
   const [activeTab, setActiveTab] = useState<any>('1');
   const {loading} = useAppSelector((state) => state.quoteLineItem);
   const {quoteById} = useAppSelector((state) => state.quote);
@@ -480,7 +480,7 @@ const GenerateQuote: React.FC = () => {
           color={token?.colorInfoBorder}
           cursor="pointer"
           onClick={() => {
-            if (isDealReg) {
+            if (isView) {
               notification.open({
                 message: "You can't navigate to 'All Quotes' in view mode.",
                 type: 'info',
@@ -546,7 +546,7 @@ const GenerateQuote: React.FC = () => {
                 text="Edit Quote Header"
                 buttontype="SECONDARY"
                 clickHandler={() => {
-                  if (isDealReg) {
+                  if (isView) {
                     notification.open({
                       message: "You can't open setting in view mode.",
                       type: 'info',
@@ -561,7 +561,7 @@ const GenerateQuote: React.FC = () => {
                   }
                 }}
               />
-              {!isDealReg && (
+              {!isView && (
                 <>
                   <AddQuote
                     loading={loading}
@@ -603,7 +603,7 @@ const GenerateQuote: React.FC = () => {
               <OsButton
                 buttontype="PRIMARY_ICON"
                 clickHandler={() => {
-                  if (isDealReg) {
+                  if (isView) {
                     notification.open({
                       message: "You can't use in view mode.",
                       type: 'info',
@@ -626,7 +626,7 @@ const GenerateQuote: React.FC = () => {
             tabBarExtraContent={
               <Space>
                 {' '}
-                {activeTab === '6' && !isDealReg && (
+                {activeTab === '6' && !isView && (
                   <div style={{marginTop: '20px'}}>
                     <OsButton
                       text="Add Attachment"
@@ -672,7 +672,7 @@ const GenerateQuote: React.FC = () => {
                       />
                     )}
 
-                    {activeTab === '2' && !isDealReg && (
+                    {activeTab === '2' && !isView && (
                       <Space>
                         <OsDropdown menu={{items}} />
                       </Space>
