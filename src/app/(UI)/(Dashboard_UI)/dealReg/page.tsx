@@ -426,12 +426,7 @@ const DealReg: React.FC = () => {
             activeKey={activeTab}
             tabBarExtraContent={
               <Space size={12} align="center">
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">
-                    Registration Form
-                  </Typography>
-                  <OsInput style={{width: '180px'}} placeholder="Search Here" />
-                </Space>
+                
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Customer Account</Typography>
                   <CommonSelect
