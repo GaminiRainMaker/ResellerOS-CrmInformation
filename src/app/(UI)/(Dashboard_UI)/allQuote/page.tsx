@@ -34,6 +34,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import QuoteAnalytics from './analytics';
 import {tabItems} from './constants';
 import {getColumns, getExistingQuoteColumns} from './tableColumns';
+import { getResultedValue } from '@/app/utils/base';
 
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -66,6 +67,7 @@ const AllQuote: React.FC = () => {
     ids: null,
     status: '',
   });
+  const isView = getResultedValue(userInformation);
 
   useEffect(() => {
     dispatch(getAllSyncTable('QuoteLineItem'));
@@ -186,13 +188,13 @@ const AllQuote: React.FC = () => {
 
   const editQuote = (quoteId: string) => {
     if (activeTab === '5') {
-      router.push(`/generateQuote?id=${quoteId}&isView=${true}`);
+      router.push(`/generateQuote?id=${quoteId}&isView=${isView}`);
     } else {
-      router.push(`/generateQuote?id=${quoteId}&isView=${false}`);
+      router.push(`/generateQuote?id=${quoteId}&isView=${isView}`);
     }
   };
   const quoteNameNavigation = (quoteId: string) => {
-    window.open(`/generateQuote?id=${quoteId}&isView=${false}`);
+    window.open(`/generateQuote?id=${quoteId}&isView=${isView}`);
   };
 
   const updateStatus = () => {

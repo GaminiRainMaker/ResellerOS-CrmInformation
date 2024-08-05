@@ -495,13 +495,7 @@ const GenerateQuote: React.FC = () => {
     {
       key: '2',
       title: (
-        <Typography
-          name="Heading 3/Medium"
-          color={token?.colorPrimaryText}
-          onClick={() => {
-            router?.push(`/generateQuote?id=${getQuoteID}`);
-          }}
-        >
+        <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
           {quoteById?.file_name ??
             formatDate(quoteById?.createdAt, 'MM/DD/YYYY | HH:MM')}
         </Typography>

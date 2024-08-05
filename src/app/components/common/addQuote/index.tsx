@@ -5,6 +5,7 @@ import OsModal from '@/app/components/common/os-modal';
 import {
   convertFileToBase64,
   getLineItemsWithNonRepitive,
+  getResultedValue,
   getValuesOFLineItemsThoseNotAddedBefore,
 } from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
@@ -59,6 +60,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
   const [typeOfAddQuote, setTypeOfAddQuote] = useState<number>(1);
   const [allValuesForManual, setAllValuesForManual] = useState<boolean>(false);
+  const isView = getResultedValue(userInformation);
+
   useEffect(() => {
     if (existingQuoteId || existingGenerateQuoteId) {
       const dddd = existingQuoteId ?? existingGenerateQuoteId;
@@ -407,7 +410,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
       );
     }
     if (newArrWithManual?.length === 0) {
-      router.push(`/generateQuote?id=${quotesArr[0]?.id}&isView=${false}`);
+      router.push(`/generateQuote?id=${quotesArr[0]?.id}&isView=${isView}`);
       if (isGenerateQuotePage) {
         location.reload();
       }

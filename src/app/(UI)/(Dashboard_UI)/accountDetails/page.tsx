@@ -16,7 +16,7 @@ import {CheckCircleIcon, TagIcon} from '@heroicons/react/24/outline';
 
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import EmptyContainer from '@/app/components/common/os-empty-container';
-import {formatDate} from '@/app/utils/base';
+import {formatDate, getResultedValue} from '@/app/utils/base';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect} from 'react';
 import {getCustomerBYId} from '../../../../../redux/actions/customer';
@@ -28,14 +28,14 @@ const AccountDetails = () => {
   const [token] = useThemeToken();
   const router = useRouter();
   const {abbreviate} = useAbbreviationHook(0);
-
+  const {userInformation} = useAppSelector((state) => state.user);
   const {loading, customerDataById: customerData} = useAppSelector(
     (state) => state.customer,
   );
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const getCustomerID = searchParams.get('id');
-
+  const isView = getResultedValue(userInformation) ;
   const quotes =
     customerData &&
     customerData?.Opportunities?.flatMap(
@@ -137,7 +137,7 @@ const AccountDetails = () => {
           name="Body 4/Regular"
           color={token?.colorInfo}
           onClick={() => {
-            router.push(`/generateQuote?id=${record?.id}`);
+            router.push(`/generateQuote?id=${record?.id}&isView=${isView}`);
           }}
         >
           {record?.file_name ??

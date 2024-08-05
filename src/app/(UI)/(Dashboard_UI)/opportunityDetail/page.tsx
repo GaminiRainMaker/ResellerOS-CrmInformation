@@ -18,7 +18,7 @@ import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {formatDate} from '@/app/utils/base';
+import {formatDate, getResultedValue} from '@/app/utils/base';
 import {Form} from 'antd';
 import {TabsProps} from 'antd/lib';
 import {useRouter, useSearchParams} from 'next/navigation';
@@ -54,7 +54,7 @@ const OpportunityDetails = () => {
   const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
   const [finalDealRegData, setFinalDealRegData] = useState<React.Key[]>([]);
   const [statusValue, setStatusValue] = useState<string>('All');
-  const isDealReg = userInformation?.DealReg;
+  const isView = getResultedValue(userInformation);
 
   const {loading: QuoteLoading} = useAppSelector((state) => state.quote);
   useEffect(() => {
@@ -246,11 +246,7 @@ const OpportunityDetails = () => {
         <Typography
           name="Body 4/Regular"
           onClick={() => {
-            if (isDealReg) {
-              router.push(`/generateQuote?id=${record.id}&isView=${isDealReg}`);
-            } else {
-              router.push(`/generateQuote?id=${record.id}`);
-            }
+            router.push(`/generateQuote?id=${record.id}&isView=${isView}`);
           }}
           hoverOnText
           color={token?.colorInfo}
@@ -423,7 +419,6 @@ const OpportunityDetails = () => {
       ),
     },
   ];
-
 
   const dealRegTabItems: TabsProps['items'] = [
     {
@@ -650,7 +645,7 @@ const OpportunityDetails = () => {
           />
         </Row>
         <br />
-        {isDealReg && (
+        {isView && (
           <>
             <Row justify="space-between" align="middle">
               <Col>

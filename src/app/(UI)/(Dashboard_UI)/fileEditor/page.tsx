@@ -20,14 +20,26 @@ import {Space} from '@/app/components/common/antd/Space';
 import OsButton from '@/app/components/common/os-button';
 import OsModal from '@/app/components/common/os-modal';
 import {formatStatus} from '@/app/utils/CONSTANTS';
-import {sendDataToNanonets, updateTables} from '@/app/utils/base';
-import {TrashIcon, XCircleIcon} from '@heroicons/react/24/outline';
+import {getResultedValue, sendDataToNanonets, updateTables} from '@/app/utils/base';
+import {TrashIcon} from '@heroicons/react/24/outline';
 import {Col, Row, notification} from 'antd';
 import Typography from 'antd/es/typography/Typography';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {addClassesToRows, alignHeaders} from './hooksCallbacks';
 
+import GlobalLoader from '@/app/components/common/os-global-loader';
+import OsInput from '@/app/components/common/os-input';
+import CommonSelect from '@/app/components/common/os-select';
 import 'handsontable/dist/handsontable.min.css';
+import {
+  queryLineItemSyncing,
+  queryLineItemSyncingForSalesForce,
+} from '../../../../../redux/actions/LineItemSyncing';
+import {
+  addSalesForceDataa,
+  getSalesForceDataaForEditAsItIs,
+  getSalesForceFileData,
+} from '../../../../../redux/actions/auth';
 import {
   UpdateQuoteFileById,
   getQuoteFileById,
@@ -35,20 +47,6 @@ import {
 import {getQuoteLineItemByQuoteIdForEditTable} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
-import GlobalLoader from '@/app/components/common/os-global-loader';
-import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
-import {
-  addSalesForceDataa,
-  getSalesForceDataaForEditAsItIs,
-  getSalesForceFileData,
-} from '../../../../../redux/actions/auth';
-import {HiddenColumns} from 'handsontable/plugins';
-import OsInput from '@/app/components/common/os-input';
-import {
-  queryLineItemSyncing,
-  queryLineItemSyncingForSalesForce,
-} from '../../../../../redux/actions/LineItemSyncing';
-import CommonSelect from '@/app/components/common/os-select';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
@@ -77,6 +75,8 @@ const EditorFile = () => {
   const salesForceUrl = searchParams.get('instance_url');
   const salesForceFiledId = searchParams.get('file_Id');
   const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
+  const isView = getResultedValue(userInformation);
+
   // quoteId,instance_url,fileId
   // ============================== SalesForce Implementations ======================================
 
@@ -628,7 +628,7 @@ const EditorFile = () => {
       Number(getQUoteId),
     );
 
-    router?.push(`/generateQuote?id=${getQUoteId}&tab=2`);
+    router?.push(`/generateQuote?id=${getQUoteId}&tab=2&isView=${isView}`);
   };
 
   const CancelEditing = () => {
@@ -638,7 +638,7 @@ const EditorFile = () => {
       id: getQuoteFileId,
     };
     dispatch(UpdateQuoteFileById(data));
-    router?.push(`/generateQuote?id=${getQUoteId}`);
+    router?.push(`/generateQuote?id=${getQUoteId}&isView=${isView}`);
   };
 
   const syncShow = (value: string) => {
@@ -650,7 +650,7 @@ const EditorFile = () => {
     }
   };
   const checkForNewFile = async () => {
-    router.push(`/generateQuote?id=${Number(getQUoteId)}`);
+    router.push(`/generateQuote?id=${Number(getQUoteId)}&isView=${isView}`);
   };
 
   const AddNewCloumnToMergedTable = async (value: any) => {
@@ -1079,7 +1079,7 @@ const EditorFile = () => {
                     text="Return to Review Quotes"
                     buttontype="PRIMARY"
                     clickHandler={() => {
-                      router?.push(`/generateQuote?id=${Number(getQUoteId)}`);
+                      router?.push(`/generateQuote?id=${Number(getQUoteId)}&isView=${isView}`);
                     }}
                   />
                 </Space>
@@ -1088,7 +1088,7 @@ const EditorFile = () => {
           }
           width={600}
           onCancel={() => {
-            router?.push(`/generateQuote?id=${Number(getQUoteId)}`);
+            router?.push(`/generateQuote?id=${Number(getQUoteId)}&isView=${isView}`);
           }}
           open={returnBackModal}
           // open={false}

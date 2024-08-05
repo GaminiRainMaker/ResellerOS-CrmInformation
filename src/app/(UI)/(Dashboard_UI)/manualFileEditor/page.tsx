@@ -19,7 +19,7 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {addClassesToRows, alignHeaders} from '../fileEditor/hooksCallbacks';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import 'handsontable/dist/handsontable.min.css';
-import {useAppDispatch} from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {formatStatus} from '@/app/utils/CONSTANTS';
 import OsModal from '@/app/components/common/os-modal';
 import SyncTableData from '../fileEditor/syncTableforpdfEditor';
@@ -32,6 +32,7 @@ import {getfileByQuoteIdWithManual} from '../../../../../redux/actions/quoteFile
 import {getSalesForceFileData} from '../../../../../redux/actions/auth';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
+import {getResultedValue} from '@/app/utils/base';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
@@ -40,6 +41,7 @@ const EditorFile = () => {
   const router = useRouter();
   const getQuoteID = searchParams.get('id');
   const SaleQuoteId = searchParams.get('quote_Id');
+  const {userInformation} = useAppSelector((state) => state.user);
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [arrayOflineItem, setArrayOflineItem] = useState<any>([]);
@@ -56,6 +58,7 @@ const EditorFile = () => {
   const salesForceUrl = searchParams.get('instance_url');
   const [showUpdateColumnModal, setShowUpdateColumnModal] =
     useState<boolean>(false);
+  const isView = getResultedValue(userInformation);
 
   const addNewLine = () => {
     let newArr = [
@@ -276,11 +279,11 @@ const EditorFile = () => {
         location?.reload();
         return;
       } else {
-        router.push(`/generateQuote?id=${Number(getQuoteID)}`);
+        router.push(`/generateQuote?id=${Number(getQuoteID)}&isView=${isView}`);
         window.history.replaceState(
           null,
           '',
-          `/generateQuote?id=${Number(getQuoteID)}`,
+          `/generateQuote?id=${Number(getQuoteID)}&isView=${isView}`,
         );
         location?.reload();
       }
@@ -514,8 +517,6 @@ const EditorFile = () => {
           text="Sync Table"
           buttontype="PRIMARY"
           clickHandler={() => {
-            // router.push(`/generateQuote?id=${Number(getQuoteID)}`);
-
             if (saveNewHeader) {
               syncShow('sync');
             } else {
