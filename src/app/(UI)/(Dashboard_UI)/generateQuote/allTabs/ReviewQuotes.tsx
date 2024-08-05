@@ -46,6 +46,7 @@ const ReviewQuotes: FC<any> = ({
   const router = useRouter();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
+  const isDealReg = searchParams.get('isView');
   const {abbreviate} = useAbbreviationHook(0);
   const [form] = Form.useForm();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -58,7 +59,6 @@ const ReviewQuotes: FC<any> = ({
   const [buttonType, setButtonType] = useState<string>('');
   const [api, contextHolder] = notification.useNotification();
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
-
   const [showExportAs, setShowExportAs] = useState<boolean>(false);
   const [showExportToTable, setShowExportToTable] = useState<boolean>(false);
   const [showSubmitButton, setShowSubmitButton] = useState<boolean>(false);
@@ -68,6 +68,7 @@ const ReviewQuotes: FC<any> = ({
   const [finalReviewCol, setFinalReviewCol] = useState<any>();
   const [fileVerificationLoading, setFileVerificationLoading] = useState(false);
   const [pageChange, setPageChange] = useState<any>();
+
   const filterDataByValue = (data: any, filterValue: any) => {
     const groupedData: any = {};
     data?.forEach((item: any) => {
@@ -334,6 +335,7 @@ const ReviewQuotes: FC<any> = ({
     }
   };
 
+  console;
 
   return (
     <GlobalLoader loading={quoteFileDataLoading}>
@@ -399,8 +401,16 @@ const ReviewQuotes: FC<any> = ({
                                     color={token?.colorBgContainer}
                                     onClick={(e) => {
                                       e?.stopPropagation();
-                                      setShowVerificationFileModal(true);
-                                      setFileData(finalDataItem);
+                                      if (isDealReg) {
+                                        notification.open({
+                                          message:
+                                            'You can not use on view mode.',
+                                          type: 'info',
+                                        });
+                                      } else {
+                                        setShowVerificationFileModal(true);
+                                        setFileData(finalDataItem);
+                                      }
                                     }}
                                   />
                                 }
@@ -414,83 +424,85 @@ const ReviewQuotes: FC<any> = ({
                                     width={25}
                                     color={token?.colorBgContainer}
                                     onClick={(e) => {
-                                      // setConditionsForTheButtons({
-                                      //   ...conditionsForTheButtons,
-                                      //   exportAs: false,
-                                      //   exportTable: false,
-                                      //   maunalExport: false,
-                                      // });
-                                      if (!finalDataItem?.maunalAdded) {
-                                        if (
-                                          finalDataItem?.QuoteLineItem
-                                            ?.length === 0
-                                        ) {
+                                      if (isDealReg) {
+                                        notification.open({
+                                          message:
+                                            'You can not use on view mode.',
+                                          type: 'info',
+                                        });
+                                      } else {
+                                        if (!finalDataItem?.maunalAdded) {
+                                          if (
+                                            finalDataItem?.QuoteLineItem
+                                              ?.length === 0
+                                          ) {
+                                            setConditionsForTheButtons({
+                                              ...conditionsForTheButtons,
+                                              exportAs: false,
+                                            });
+                                            setShowExportAs(false);
+                                          } else {
+                                            setConditionsForTheButtons({
+                                              ...conditionsForTheButtons,
+                                              exportAs: true,
+                                            });
+                                            setShowExportAs(true);
+                                          }
+                                          if (
+                                            !finalDataItem?.title
+                                              ?.toLowerCase()
+                                              ?.split('.')
+                                              ?.includes('pdf')
+                                          ) {
+                                            setConditionsForTheButtons({
+                                              ...conditionsForTheButtons,
+                                              exportTable: false,
+                                            });
+                                            setShowExportToTable(false);
+                                          } else {
+                                            setConditionsForTheButtons({
+                                              ...conditionsForTheButtons,
+                                              exportTable: true,
+                                            });
+                                            setShowExportToTable(true);
+                                          }
+                                          if (
+                                            finalDataItem?.QuoteLineItem
+                                              ?.length === 0 &&
+                                            !finalDataItem?.title
+                                              ?.toLowerCase()
+                                              ?.split('.')
+                                              ?.includes('pdf')
+                                          ) {
+                                            setConditionsForTheButtons({
+                                              ...conditionsForTheButtons,
+                                              maunalExport: true,
+                                            });
+                                            setShowSubmitButton(true);
+                                          } else {
+                                            setConditionsForTheButtons({
+                                              ...conditionsForTheButtons,
+                                              maunalExport: false,
+                                            });
+                                            setShowSubmitButton(false);
+                                          }
+                                        }
+                                        if (finalDataItem?.maunalAdded) {
                                           setConditionsForTheButtons({
                                             ...conditionsForTheButtons,
                                             exportAs: false,
-                                          });
-                                          setShowExportAs(false);
-                                        } else {
-                                          setConditionsForTheButtons({
-                                            ...conditionsForTheButtons,
-                                            exportAs: true,
-                                          });
-                                          setShowExportAs(true);
-                                        }
-                                        if (
-                                          !finalDataItem?.title
-                                            ?.toLowerCase()
-                                            ?.split('.')
-                                            ?.includes('pdf')
-                                        ) {
-                                          setConditionsForTheButtons({
-                                            ...conditionsForTheButtons,
                                             exportTable: false,
-                                          });
-                                          setShowExportToTable(false);
-                                        } else {
-                                          setConditionsForTheButtons({
-                                            ...conditionsForTheButtons,
-                                            exportTable: true,
-                                          });
-                                          setShowExportToTable(true);
-                                        }
-                                        if (
-                                          finalDataItem?.QuoteLineItem
-                                            ?.length === 0 &&
-                                          !finalDataItem?.title
-                                            ?.toLowerCase()
-                                            ?.split('.')
-                                            ?.includes('pdf')
-                                        ) {
-                                          setConditionsForTheButtons({
-                                            ...conditionsForTheButtons,
                                             maunalExport: true,
                                           });
                                           setShowSubmitButton(true);
-                                        } else {
-                                          setConditionsForTheButtons({
-                                            ...conditionsForTheButtons,
-                                            maunalExport: false,
-                                          });
-                                          setShowSubmitButton(false);
+                                          setShowExportToTable(false);
+                                          setShowExportAs(false);
                                         }
-                                      }
-                                      if (finalDataItem?.maunalAdded) {
-                                        setConditionsForTheButtons({
-                                          ...conditionsForTheButtons,
-                                          exportAs: false,
-                                          exportTable: false,
-                                          maunalExport: true,
-                                        });
-                                        setShowSubmitButton(true);
-                                        setShowExportToTable(false);
-                                        setShowExportAs(false);
-                                      }
 
+                                        setShowRaiseConcernModal(true);
+                                        setFileData(finalDataItem);
+                                      }
                                       e?.stopPropagation();
-                                      setShowRaiseConcernModal(true);
-                                      setFileData(finalDataItem);
                                     }}
                                   />
                                 }
