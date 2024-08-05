@@ -6,7 +6,7 @@ import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {formatDate} from '@/app/utils/base';
 import {CheckIcon, XMarkIcon} from '@heroicons/react/24/outline';
-import {GlobalToken} from 'antd';
+import {Checkbox, GlobalToken} from 'antd';
 import {SetStateAction} from 'react';
 
 function newQuoteMappingColumns(
@@ -84,6 +84,19 @@ function newQuoteMappingColumns(
         >
           {record?.QuoteFile?.file_name}
         </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Sales Force
+        </Typography>
+      ),
+      dataIndex: 'is_salesforce',
+      key: 'is_salesforce',
+      width: 173,
+      render: (text: string, record: any) => (
+        <Checkbox disabled checked={record?.is_salesforce ? true : false} />
       ),
     },
     {
@@ -244,6 +257,19 @@ function approvedQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
+          Sales Force
+        </Typography>
+      ),
+      dataIndex: 'is_salesforce',
+      key: 'is_salesforce',
+      width: 173,
+      render: (text: string, record: any) => (
+        <Checkbox disabled checked={record?.is_salesforce ? true : false} />
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
           Status
         </Typography>
       ),
@@ -382,6 +408,19 @@ function rejectQuoteMappingColumns(
         >
           {record?.QuoteFile?.file_name}
         </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Sales Force
+        </Typography>
+      ),
+      dataIndex: 'is_salesforce',
+      key: 'is_salesforce',
+      width: 173,
+      render: (text: string, record: any) => (
+        <Checkbox disabled checked={record?.is_salesforce ? true : false} />
       ),
     },
     {

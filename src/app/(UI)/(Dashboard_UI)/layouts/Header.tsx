@@ -118,6 +118,7 @@ const CustomHeader = () => {
       });
     }
   }, []);
+  
 
   useEffect(() => {
     if (!salesForceUrl) {

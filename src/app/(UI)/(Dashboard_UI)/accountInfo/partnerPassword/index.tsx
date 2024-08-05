@@ -313,6 +313,7 @@ const PartnerPassword = () => {
       ),
     }),
   );
+
   const tabItems: TabsProps['items'] = [
     {
       label: (
@@ -433,8 +434,7 @@ const PartnerPassword = () => {
               clickHandler={() => {
                 if (!userInformation?.is_dealReg) {
                   notification?.open({
-                    message:
-                      'You do not have the access for  dealreg. You need to have dealreg access to access partner password',
+                    message: `You don't have DealReg AI permission to create new passwords, Please contact your Admin.`,
                     type: 'info',
                   });
                   return;
@@ -464,6 +464,7 @@ const PartnerPassword = () => {
                 <Typography name="Body 4/Medium">Partner Name</Typography>
                 {activeKey === 1 ? (
                   <CommonSelect
+                    disabled={!userInformation?.is_dealReg}
                     style={{width: '200px'}}
                     options={sharedPartnerPasswordOptions}
                     placeholder="Search here"
@@ -484,6 +485,7 @@ const PartnerPassword = () => {
                   />
                 ) : (
                   <CommonSelect
+                    disabled={!userInformation?.is_dealReg}
                     style={{width: '200px'}}
                     placeholder="Search here"
                     options={myPartnerPasswordOptions}
@@ -510,6 +512,7 @@ const PartnerPassword = () => {
                 </Typography>
                 {activeKey === 1 ? (
                   <CommonSelect
+                    disabled={!userInformation?.is_dealReg}
                     style={{width: '200px'}}
                     options={sharedPartnerProgramPasswordOptions}
                     placeholder="Search here"
@@ -532,6 +535,7 @@ const PartnerPassword = () => {
                   <CommonSelect
                     style={{width: '200px'}}
                     placeholder="Search here"
+                    disabled={!userInformation?.is_dealReg}
                     options={myPartnerProgramPasswordOptions}
                     showSearch
                     onSearch={(e: any) => {

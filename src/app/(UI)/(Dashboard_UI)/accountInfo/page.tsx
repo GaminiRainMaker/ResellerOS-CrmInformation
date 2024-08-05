@@ -23,6 +23,7 @@ const AccountInfo = () => {
   const isSuperAdminProfile = searchParams.get('isSuperAdminProfile');
   const getOrganization = searchParams.get('organization');
 
+  
   const tabs = [
     {
       key: 1,
