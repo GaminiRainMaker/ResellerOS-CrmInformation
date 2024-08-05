@@ -54,6 +54,7 @@ const OpportunityDetails = () => {
   const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
   const [finalDealRegData, setFinalDealRegData] = useState<React.Key[]>([]);
   const [statusValue, setStatusValue] = useState<string>('All');
+  const isDealReg = userInformation?.DealReg;
 
   const {loading: QuoteLoading} = useAppSelector((state) => state.quote);
   useEffect(() => {
@@ -245,7 +246,11 @@ const OpportunityDetails = () => {
         <Typography
           name="Body 4/Regular"
           onClick={() => {
-            router.push(`/generateQuote?id=${record.id}`);
+            if (isDealReg) {
+              router.push(`/generateQuote?id=${record.id}&isView=${isDealReg}`);
+            } else {
+              router.push(`/generateQuote?id=${record.id}`);
+            }
           }}
           hoverOnText
           color={token?.colorInfo}
@@ -419,8 +424,6 @@ const OpportunityDetails = () => {
     },
   ];
 
-  const isQuoteAI = userInformation?.QuoteAI;
-  const isDealReg = userInformation?.DealReg;
 
   const dealRegTabItems: TabsProps['items'] = [
     {
