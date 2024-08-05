@@ -21,7 +21,7 @@ import OsButton from '@/app/components/common/os-button';
 import OsModal from '@/app/components/common/os-modal';
 import {formatStatus} from '@/app/utils/CONSTANTS';
 import {sendDataToNanonets, updateTables} from '@/app/utils/base';
-import {TrashIcon, XCircleIcon} from '@heroicons/react/24/outline';
+import {TrashIcon} from '@heroicons/react/24/outline';
 import {Col, Row, notification} from 'antd';
 import Typography from 'antd/es/typography/Typography';
 import {useRouter, useSearchParams} from 'next/navigation';
@@ -36,13 +36,11 @@ import {getQuoteLineItemByQuoteIdForEditTable} from '../../../../../redux/action
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
 import GlobalLoader from '@/app/components/common/os-global-loader';
-import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import {
   addSalesForceDataa,
   getSalesForceDataaForEditAsItIs,
   getSalesForceFileData,
 } from '../../../../../redux/actions/auth';
-import {HiddenColumns} from 'handsontable/plugins';
 import OsInput from '@/app/components/common/os-input';
 import {
   queryLineItemSyncing,
@@ -704,6 +702,7 @@ const EditorFile = () => {
     });
     setExistingColumnName(newArr);
   }, [mergeedColumn]);
+
   return (
     <GlobalLoader loading={nanonetsLoading}>
       {ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true' ? (
@@ -754,7 +753,7 @@ const EditorFile = () => {
                   );
                 }
               }}
-              navigableHeaders
+              // navigableHeaders
             />
           </div>
           <br />
@@ -867,7 +866,7 @@ const EditorFile = () => {
                       );
                     }
                   }}
-                  navigableHeaders
+                  // navigableHeaders
                 />
               </div>
               <br />
@@ -952,7 +951,8 @@ const EditorFile = () => {
                             autoWrapRow
                             autoWrapCol
                             licenseKey="non-commercial-and-evaluation"
-                            dropdownMenu
+                            fillHandle
+                            dropdownMenu={true}
                             hiddenColumns={{
                               indicators: true,
                             }}
@@ -991,7 +991,7 @@ const EditorFile = () => {
                                 );
                               }
                             }}
-                            navigableHeaders
+                            // navigableHeaders
                           />
                         </div>
                       </div>

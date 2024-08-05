@@ -486,7 +486,6 @@ const EditorFile = () => {
             );
           }
         }}
-        navigableHeaders
       />
       <br />
       <Space
