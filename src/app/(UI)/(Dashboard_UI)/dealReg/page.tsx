@@ -210,7 +210,7 @@ const DealReg: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Action
+          Actions
         </Typography>
       ),
       dataIndex: 'Action',

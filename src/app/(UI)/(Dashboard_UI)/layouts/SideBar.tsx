@@ -864,7 +864,7 @@ const SideBar = () => {
     //     </Typography>,
     //     '12',
     //   ),
-    isQuoteAI &&
+    (isQuoteAI || isDealReg) &&
       Role === 'reseller' &&
       getItem(
         <Typography

@@ -157,6 +157,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 const totalFloorValue = Math.floor(
                   24 / itemCon?.columnRequired,
                 );
+                console.log('RecordDataa', itemCon);
                 return (
                   <ToggleColStyled span={totalFloorValue} key={itemLabelIndex}>
                     {itemCon?.name === 'Radio Button' ? (

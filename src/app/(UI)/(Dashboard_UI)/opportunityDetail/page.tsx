@@ -277,7 +277,7 @@ const OpportunityDetails = () => {
 
   return (
     <>
-      <Space direction="vertical" size={24} style={{width: '100%'}}>
+      <Space direction="vertical" size={12} style={{width: '100%'}}>
         <OsBreadCrumb items={menuItems} />
 
         <OpportunityAnalyticCard
@@ -288,7 +288,7 @@ const OpportunityDetails = () => {
           setShowModalDelete={setShowModalDelete}
         />
 
-        <Row justify="space-between">
+        <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium">All Quotes</Typography>
           </Col>
@@ -307,9 +307,10 @@ const OpportunityDetails = () => {
           </Col>
         </Row>
         <Row
-          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+          style={{background: 'white', padding: '8px 12px', borderRadius: '12px'}}
         >
           <OsTabs
+            style={{margin: '0px'}}
             onChange={(e) => {
               setActiveTab(e);
             }}
