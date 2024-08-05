@@ -26,7 +26,7 @@ const OpportunityAnalyticCard: FC<OsOpportunityAnalyicCardInterface> = ({
       style={{
         background: 'white',
         borderRadius: '12px',
-        padding: '36px 24px',
+        padding: '18px 12px',
       }}
     >
       <Col>

@@ -19,7 +19,7 @@ import {
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
 import {PencilSquareIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {Badge, Form} from 'antd';
+import {Badge, Form, notification} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {
@@ -64,6 +64,7 @@ const Profitablity: FC<any> = ({
   const [token] = useThemeToken();
   const searchParams = useSearchParams();
   const getQuoteID = searchParams.get('id');
+  const isView = searchParams.get('isView');
   const {data: profitabilityDataByQuoteId, loading} = useAppSelector(
     (state) => state.profitability,
   );
@@ -285,10 +286,14 @@ const Profitablity: FC<any> = ({
   };
 
   const renderEditableInput = (field: string) => {
-    const editableField = tableColumnDataShow.find(
-      (item: any) => item.field_name === field,
-    );
-    return !editableField?.is_editable;
+    if (isView === 'true') {
+      return true;
+    } else {
+      const editableField = tableColumnDataShow.find(
+        (item: any) => item.field_name === field,
+      );
+      return !editableField?.is_editable;
+    }
   };
 
   useEffect(() => {
@@ -399,8 +404,15 @@ const Profitablity: FC<any> = ({
           color={token.colorError}
           style={{cursor: 'pointer'}}
           onClick={() => {
-            setSelectedRowData([record]);
-            setShowRemoveBundleLineItemModal(true);
+            if (isView === 'true') {
+              notification.open({
+                message: "You can't delete bundle in view mode.",
+                type: 'info',
+              });
+            } else {
+              setSelectedRowData([record]);
+              setShowRemoveBundleLineItemModal(true);
+            }
           }}
         />
       );
@@ -543,7 +555,6 @@ const Profitablity: FC<any> = ({
       key: 'product_family',
       width: 285,
       render(text: any, record: any) {
-        console.log('453453', record, text);
         return {
           children: (
             <CommonSelect
@@ -935,6 +946,7 @@ const Profitablity: FC<any> = ({
                           >
                             Qty:
                             <OsInputNumber
+                              disabled={isView === 'true' ? true : false}
                               defaultValue={finalDataItem?.quantity}
                               style={{
                                 width: '60px',
@@ -971,13 +983,21 @@ const Profitablity: FC<any> = ({
                             }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              setShowBundleDrawer(true);
-                              setBundleRecordId(finalDataItem?.bundleId);
-                              BundleForm.setFieldsValue({
-                                name: finalDataItem?.name,
-                                quantity: finalDataItem?.quantity,
-                                description: finalDataItem?.description,
-                              });
+                              if (isView === 'true') {
+                                notification.open({
+                                  message:
+                                    "You can't edit bundle in view mode.",
+                                  type: 'info',
+                                });
+                              } else {
+                                setShowBundleDrawer(true);
+                                setBundleRecordId(finalDataItem?.bundleId);
+                                BundleForm.setFieldsValue({
+                                  name: finalDataItem?.name,
+                                  quantity: finalDataItem?.quantity,
+                                  description: finalDataItem?.description,
+                                });
+                              }
                             }}
                           />
                         </Col>
@@ -1174,6 +1194,9 @@ const Profitablity: FC<any> = ({
                                     >
                                       Qty:
                                       <OsInputNumber
+                                        disabled={
+                                          isView === 'true' ? true : false
+                                        }
                                         defaultValue={finalDataItem?.quantity}
                                         style={{
                                           width: '60px',
@@ -1210,16 +1233,24 @@ const Profitablity: FC<any> = ({
                                       }}
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        setShowBundleDrawer(true);
-                                        setBundleRecordId(
-                                          finalDataItem?.bundleId,
-                                        );
-                                        BundleForm.setFieldsValue({
-                                          name: finalDataItem?.name,
-                                          quantity: finalDataItem?.quantity,
-                                          description:
-                                            finalDataItem?.description,
-                                        });
+                                        if (isView === 'true') {
+                                          notification.open({
+                                            message:
+                                              "You can't edit bundle in view mode.",
+                                            type: 'info',
+                                          });
+                                        } else {
+                                          setBundleRecordId(
+                                            finalDataItem?.bundleId,
+                                          );
+                                          BundleForm.setFieldsValue({
+                                            name: finalDataItem?.name,
+                                            quantity: finalDataItem?.quantity,
+                                            description:
+                                              finalDataItem?.description,
+                                          });
+                                          setShowBundleDrawer(true);
+                                        }
                                       }}
                                     />
                                   </Col>

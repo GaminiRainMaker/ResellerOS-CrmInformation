@@ -1,12 +1,15 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable array-callback-return */
-import {Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
+import OsDrawer from '@/app/components/common/os-drawer';
 import Typography from '@/app/components/common/typography';
 import {FC} from 'react';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {setOpenDealRegDrawer} from '../../../../../redux/slices/dealReg';
 import CommonFields from './CommonField';
+import ResponseDetailForm from './ResponseDetailForm';
 import UniqueFields from './UniqueField';
 
 const DealRegDetailForm: FC<any> = ({
@@ -17,6 +20,8 @@ const DealRegDetailForm: FC<any> = ({
   formData,
 }) => {
   const [token] = useThemeToken();
+  const dispatch = useAppDispatch();
+  const {openDealRegDrawer} = useAppSelector((state) => state.dealReg);
 
   const CommonFieldsItems = [
     {
@@ -57,10 +62,33 @@ const DealRegDetailForm: FC<any> = ({
     },
   ];
 
+  const ResponseDetails = [
+    {
+      key: '2',
+      label: (
+        <Typography name="Heading 3/Medium" color={token?.colorLinkHover}>
+          Response Details
+        </Typography>
+      ),
+      children: (
+        <ResponseDetailForm activeKey={activeKey} formData={formData} />
+      ),
+    },
+  ];
+
   return (
-    <Row>
-      <Space style={{width: '100%'}} size={24} direction="vertical">
-        <OsCollapseAdmin items={CommonFieldsItems} />
+    <>
+      <Space
+        style={{
+          width: '100%',
+          background: 'white',
+          padding: '24px',
+          borderRadius: '12px',
+        }}
+        size={24}
+        direction="vertical"
+      >
+        <OsCollapseAdmin items={ResponseDetails} />
       </Space>
       <>
         {data?.PartnerProgram?.form_data && (
@@ -76,7 +104,21 @@ const DealRegDetailForm: FC<any> = ({
           </Space>
         )}
       </>
-    </Row>
+
+      <OsDrawer
+        title={<Typography name="Body 1/Regular">Form Settings</Typography>}
+        placement="right"
+        onClose={() => {
+          dispatch(setOpenDealRegDrawer(false));
+        }}
+        open={openDealRegDrawer}
+        width={450}
+      >
+        <Space style={{width: '100%'}} size={24} direction="vertical">
+          <OsCollapseAdmin items={CommonFieldsItems} />
+        </Space>
+      </OsDrawer>
+    </>
   );
 };
 

@@ -19,6 +19,8 @@ import {MailOutlined} from '@ant-design/icons';
 import {Form, Radio, TimePicker} from 'antd';
 import {useEffect, useState} from 'react';
 import {UniqueFieldsProps} from './dealReg.interface';
+import CommonDatePicker from '@/app/components/common/os-date-picker';
+import moment from 'moment';
 
 const UniqueFields: React.FC<UniqueFieldsProps> = ({
   data,
@@ -36,10 +38,10 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     const fieldName = convertToSnakeCase(itemCon?.label);
     const initialValue = uniqueTemplateData?.[fieldName];
     const commonProps = {defaultValue: initialValue, onBlur: handleBlur};
-    const rules =
-      itemCon?.name === 'Email'
-        ? [{type: 'email', message: 'Please enter a valid email address!'}]
-        : [];
+    if (itemCon?.name === 'Date' && initialValue) {
+      commonProps.defaultValue = moment(initialValue);
+    }
+
     switch (itemCon?.name) {
       case 'Table':
         return (
@@ -116,9 +118,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 {...commonProps}
               />
             ) : itemCon?.name === 'Date' ? (
-              // <CommonDatePicker {...commonProps} />
-              // <DatePicker />
-              <></>
+              <CommonDatePicker {...commonProps} />
             ) : itemCon?.name === 'Email' ? (
               <OsInput
                 type="email"
@@ -157,7 +157,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 const totalFloorValue = Math.floor(
                   24 / itemCon?.columnRequired,
                 );
-                console.log('itemLabelOp', itemLabelOp);
+                console.log('RecordDataa', itemCon);
                 return (
                   <ToggleColStyled span={totalFloorValue} key={itemLabelIndex}>
                     {itemCon?.name === 'Radio Button' ? (

@@ -71,6 +71,11 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
         common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
+        partner_approval_id: finalDealReg?.partner_approval_id,
+        partner_deal_id: finalDealReg?.partner_deal_id,
+        expiration_date: finalDealReg?.expiration_date,
+        submitted_date: finalDealReg?.submitted_date,
+        status: finalDealReg?.status,
       };
       setFormData(obj);
     }
@@ -147,6 +152,11 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
         common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
+        partner_approval_id: finalDealReg?.partner_approval_id,
+        partner_deal_id: finalDealReg?.partner_deal_id,
+        expiration_date: finalDealReg?.expiration_date,
+        submitted_date: finalDealReg?.submitted_date,
+        status: finalDealReg?.status,
       };
 
       const newObj = {
@@ -157,6 +167,11 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
         common_template: queryData,
         Partner: finalDealReg?.Partner,
         PartnerProgram: finalDealReg?.PartnerProgram,
+        partner_approval_id: finalDealReg?.partner_approval_id,
+        partner_deal_id: finalDealReg?.partner_deal_id,
+        expiration_date: finalDealReg?.expiration_date,
+        submitted_date: finalDealReg?.submitted_date,
+        status: finalDealReg?.status,
       };
       setFormData(formObj);
       updateDealRegFinalData(activeKey, newObj);

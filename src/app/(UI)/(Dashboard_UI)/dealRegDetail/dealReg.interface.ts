@@ -61,3 +61,15 @@ export interface UniqueFieldsProps {
   handleBlur: () => void;
   formData: any;
 }
+
+
+export interface SeparatedData {
+  [opportunityId: number]: {
+    opportunity_id: number;
+    dealReg_id: number;
+    contact_id: number;
+    customer_id: number;
+    data: any[];
+    title: string;
+  };
+}

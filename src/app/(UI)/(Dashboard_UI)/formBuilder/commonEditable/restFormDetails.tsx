@@ -8,8 +8,8 @@ import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {Form} from 'antd';
 import React from 'react';
-import {CollapseSpaceStyle} from '../../dealRegDetail/DealRegDetailForm/styled-components';
 import {EditableFiledsCommonInterface} from '../formBuilder.interface';
+import { CollapseSpaceStyle } from '../../dealRegDetail/styled-component';
 
 const EditCommonRestFields: React.FC<EditableFiledsCommonInterface> = ({
   sectionIndex,

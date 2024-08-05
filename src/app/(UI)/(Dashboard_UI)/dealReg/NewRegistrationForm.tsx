@@ -16,7 +16,6 @@ import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-s
 import OsOpportunitySelect from '@/app/components/common/os-opportunity-select';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {partnerProgramFilter} from '@/app/utils/base';
 import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useSearchParams} from 'next/navigation';
@@ -29,7 +28,7 @@ import {
 } from '../../../../../redux/actions/dealReg';
 import {getAllPartnerandProgramApprovedForOrganization} from '../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {CollapseSpaceStyle} from '../dealRegDetail/DealRegDetailForm/styled-components';
+import {CollapseSpaceStyle} from '../dealRegDetail/styled-component';
 
 const NewRegistrationForm: FC<any> = ({
   isDealRegDetail = false,
@@ -124,36 +123,36 @@ const NewRegistrationForm: FC<any> = ({
     findPartnerProgramsById(choosenIdProgram);
   };
 
-  useEffect(() => {
-    let customerWithAddresses: any;
+  // useEffect(() => {
+  //   let customerWithAddresses: any;
 
-    if (isDealRegDetail) {
-      customerWithAddresses = dataAddress?.find(
-        (customer: any) => customer?.id === getCustomerId,
-      );
-    } else {
-      customerWithAddresses = dataAddress?.find(
-        (customer: any) => customer?.id === customerValue,
-      );
-    }
+  //   if (isDealRegDetail) {
+  //     customerWithAddresses = dataAddress?.find(
+  //       (customer: any) => customer?.id === getCustomerId,
+  //     );
+  //   } else {
+  //     customerWithAddresses = dataAddress?.find(
+  //       (customer: any) => customer?.id === customerValue,
+  //     );
+  //   }
 
-    const addresses = customerWithAddresses?.Addresses;
-    const {
-      billing_address_line,
-      billing_city,
-      billing_country,
-      billing_pin_code,
-      billing_state,
-    } = addresses?.[0] ?? {};
-    setAddressData({
-      street_1: billing_address_line,
-      street_2: billing_address_line,
-      city: billing_city,
-      state: billing_state,
-      country: billing_country,
-      zip_code: billing_pin_code,
-    });
-  }, [customerValue || getCustomerId]);
+  //   const addresses = customerWithAddresses?.Addresses;
+  //   const {
+  //     billing_address_line,
+  //     billing_city,
+  //     billing_country,
+  //     billing_pin_code,
+  //     billing_state,
+  //   } = addresses?.[0] ?? {};
+  //   setAddressData({
+  //     street_1: billing_address_line,
+  //     street_2: billing_address_line,
+  //     city: billing_city,
+  //     state: billing_state,
+  //     country: billing_country,
+  //     zip_code: billing_pin_code,
+  //   });
+  // }, [customerValue || getCustomerId]);
 
   const registeredFormFinish = async () => {
     const data = form.getFieldsValue();
@@ -216,6 +215,7 @@ const NewRegistrationForm: FC<any> = ({
           contact_id: getContactId,
           customer_id: getCustomerId,
           status: 'New',
+          user_id: userInformation?.id,
         }));
       } else {
         newData = combinedData?.map((obj: any) => ({
@@ -224,6 +224,7 @@ const NewRegistrationForm: FC<any> = ({
           ...addressData,
           organization: userInformation?.organization,
           status: 'New',
+          user_id: userInformation?.id,
         }));
       }
 
@@ -234,6 +235,12 @@ const NewRegistrationForm: FC<any> = ({
           } else {
             dispatch(queryDealReg(''));
           }
+        } else {
+          notification?.open({
+            message: 'This Combination is already exists.',
+            type: 'info',
+          });
+          dispatch(queryDealReg(''));
         }
       });
       setShowModal(false);

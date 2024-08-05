@@ -74,6 +74,7 @@ const GenerateQuote: React.FC = () => {
   const searchParams = useSearchParams();
   const [api, contextHolder] = notification.useNotification();
   const getQuoteID = searchParams.get('id');
+  const isView = searchParams.get('isView');
   const [activeTab, setActiveTab] = useState<any>('1');
   const {loading} = useAppSelector((state) => state.quoteLineItem);
   const {quoteById} = useAppSelector((state) => state.quote);
@@ -479,7 +480,12 @@ const GenerateQuote: React.FC = () => {
           color={token?.colorInfoBorder}
           cursor="pointer"
           onClick={() => {
-            router?.push('/allQuote');
+            if (isView === 'true') {
+              notification.open({
+                message: "You can't navigate to 'All Quotes' in view mode.",
+                type: 'info',
+              });
+            } else router?.push('/allQuote');
           }}
         >
           All Quotes
@@ -489,13 +495,7 @@ const GenerateQuote: React.FC = () => {
     {
       key: '2',
       title: (
-        <Typography
-          name="Heading 3/Medium"
-          color={token?.colorPrimaryText}
-          onClick={() => {
-            router?.push(`/generateQuote?id=${getQuoteID}`);
-          }}
-        >
+        <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
           {quoteById?.file_name ??
             formatDate(quoteById?.createdAt, 'MM/DD/YYYY | HH:MM')}
         </Typography>
@@ -540,7 +540,12 @@ const GenerateQuote: React.FC = () => {
                 text="Edit Quote Header"
                 buttontype="SECONDARY"
                 clickHandler={() => {
-                  if (quoteFileUnverifiedById?.length > 0) {
+                  if (isView === 'true') {
+                    notification.open({
+                      message: "You can't open setting in view mode.",
+                      type: 'info',
+                    });
+                  } else if (quoteFileUnverifiedById?.length > 0) {
                     notification.open({
                       message: 'Please verify all the files first.',
                       type: 'info',
@@ -550,43 +555,54 @@ const GenerateQuote: React.FC = () => {
                   }
                 }}
               />
-              <AddQuote
-                loading={loading}
-                buttonText="Add Quote"
-                setUploadFileData={setUploadFileData}
-                uploadFileData={uploadFileData}
-                isGenerateQuote
-                existingGenerateQuoteId={Number(getQuoteID)}
-                quoteDetails={objectForSyncingValues}
-                isGenerateQuotePage
-              />
-              <OsButton
-                loading={
-                  statusValue === 'Needs Review' ? statusUpdateLoading : false
-                }
-                text=" Mark as Complete"
-                buttontype="PRIMARY"
-                clickHandler={() => {
-                  if (
-                    quoteFileUnverifiedById &&
-                    quoteFileUnverifiedById?.length > 0
-                  ) {
-                    notification?.open({
-                      message:
-                        'Please verify all the files first to mark as Complete this Quote',
-                      type: 'info',
-                    });
-                    return;
-                  }
-                  setStatusValue('Needs Review');
-                  commonUpdateCompleteAndDraftMethod('Needs Review');
-                }}
-              />
+              {isView === 'false' && (
+                <>
+                  <AddQuote
+                    loading={loading}
+                    buttonText="Add Quote"
+                    setUploadFileData={setUploadFileData}
+                    uploadFileData={uploadFileData}
+                    isGenerateQuote
+                    existingGenerateQuoteId={Number(getQuoteID)}
+                    quoteDetails={objectForSyncingValues}
+                    isGenerateQuotePage
+                  />
+                  <OsButton
+                    loading={
+                      statusValue === 'Needs Review'
+                        ? statusUpdateLoading
+                        : false
+                    }
+                    text=" Mark as Complete"
+                    buttontype="PRIMARY"
+                    clickHandler={() => {
+                      if (
+                        quoteFileUnverifiedById &&
+                        quoteFileUnverifiedById?.length > 0
+                      ) {
+                        notification?.open({
+                          message:
+                            'Please verify all the files first to mark as Complete this Quote',
+                          type: 'info',
+                        });
+                        return;
+                      }
+                      setStatusValue('Needs Review');
+                      commonUpdateCompleteAndDraftMethod('Needs Review');
+                    }}
+                  />
+                </>
+              )}
 
               <OsButton
                 buttontype="PRIMARY_ICON"
                 clickHandler={() => {
-                  setShowDocumentModal(true);
+                  if (isView === 'true') {
+                    notification.open({
+                      message: "You can't use in view mode.",
+                      type: 'info',
+                    });
+                  } else setShowDocumentModal(true);
                 }}
                 icon={<ArrowDownTrayIcon width={24} />}
               />
@@ -604,7 +620,7 @@ const GenerateQuote: React.FC = () => {
             tabBarExtraContent={
               <Space>
                 {' '}
-                {activeTab === '6' && (
+                {activeTab === '6' && isView === 'false' && (
                   <div style={{marginTop: '20px'}}>
                     <OsButton
                       text="Add Attachment"
@@ -650,7 +666,7 @@ const GenerateQuote: React.FC = () => {
                       />
                     )}
 
-                    {activeTab === '2' && (
+                    {activeTab === '2' && isView === 'false' && (
                       <Space>
                         <OsDropdown menu={{items}} />
                       </Space>

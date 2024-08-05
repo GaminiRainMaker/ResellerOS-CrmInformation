@@ -7,7 +7,7 @@ import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
-import {formatDate} from '@/app/utils/base';
+import {formatDate, getResultedValue} from '@/app/utils/base';
 import {HotTable} from '@handsontable/react';
 import {ArrowDownTrayIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {useRouter, useSearchParams} from 'next/navigation';
@@ -28,10 +28,11 @@ const UpdateGenerateQuote = () => {
   const {concernQuoteLineItemData} = useAppSelector(
     (state) => state.quoteLineItem,
   );
-
+  const {userInformation} = useAppSelector((state) => state.user);
   const [inputData, setInputData] = useState<any>(concernQuoteLineItemData);
   const router = useRouter();
   const hotRef = useRef(null);
+  const isView = getResultedValue(userInformation);
 
   useEffect(() => {
     dispatch(getQuoteById(Number(getUserID)));
@@ -46,7 +47,7 @@ const UpdateGenerateQuote = () => {
           color={token?.colorInfoBorder}
           cursor="pointer"
           onClick={() => {
-            router?.push(`/generateQuote?id=${getUserID}`);
+            router?.push(`/generateQuote?id=${getUserID}&isView=${isView}`);
           }}
         >
           All Quotes
@@ -318,7 +319,7 @@ const UpdateGenerateQuote = () => {
         resultItem,
       );
     });
-    router?.push(`/generateQuote?id=${getUserID}`);
+    router?.push(`/generateQuote?id=${getUserID}&isView=${isView}`);
   };
 
   return (

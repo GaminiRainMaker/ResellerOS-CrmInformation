@@ -8,15 +8,14 @@ import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCa
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import OsCollapse from '@/app/components/common/os-collapse';
 import EmptyContainer from '@/app/components/common/os-empty-container';
-import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
+import {formatDate} from '@/app/utils/base';
 import {ArrowTopRightOnSquareIcon, PlusIcon} from '@heroicons/react/24/outline';
 import {TabsProps} from 'antd';
 import {Option} from 'antd/es/mentions';
@@ -24,20 +23,9 @@ import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {queryDealReg} from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {SeparatedData} from '../dealRegDetail/dealReg.interface';
 import NewRegistrationForm from './NewRegistrationForm';
 import DealRegAnalytics from './dealRegAnalytics';
-import {formatDate} from '@/app/utils/base';
-
-interface SeparatedData {
-  [opportunityId: number]: {
-    opportunity_id: number;
-    dealReg_id: number;
-    contact_id: number;
-    customer_id: number;
-    data: any[];
-    title: string;
-  };
-}
 
 const DealReg: React.FC = () => {
   const [token] = useThemeToken();
@@ -49,6 +37,7 @@ const DealReg: React.FC = () => {
   const {data: DealRegData, loading: dealLoading} = useAppSelector(
     (state) => state.dealReg,
   );
+  const {userInformation} = useAppSelector((state) => state.user);
   const [finalDealRegData, setFinalDealRegData] = useState<any>();
   const [query, setQuery] = useState<{
     customer: string | null;
@@ -64,20 +53,7 @@ const DealReg: React.FC = () => {
     },
   };
 
-  const DealRegColumns = [
-    // {
-    //   title: (
-    //     <Typography name="Body 4/Medium" className="dragHandler">
-    //       Registration Forms
-    //     </Typography>
-    //   ),
-    //   dataIndex: 'title',
-    //   key: 'title',
-    //   width: 266,
-    //   render: (text: string) => (
-    //     <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-    //   ),
-    // },
+  const dealRegFormColumns = [
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -156,6 +132,25 @@ const DealReg: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
+          Created By
+        </Typography>
+      ),
+      dataIndex: 'created_by',
+      key: 'created_by',
+      width: 187,
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.User?.first_name && record?.User?.last_name
+            ? `${record.User?.first_name} ${record.User?.last_name}`
+            : record?.User?.first_name
+              ? record.User?.first_name
+              : record?.User?.user_name}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
           Status
         </Typography>
       ),
@@ -166,6 +161,57 @@ const DealReg: React.FC = () => {
         <div style={{display: 'flex', justifyContent: 'center'}}>
           <OsStatusWrapper value={text} />
         </div>
+      ),
+    },
+  ];
+  const DealRegColumns = [
+    // {
+    //   title: (
+    //     <Typography name="Body 4/Medium" className="dragHandler">
+    //       Registration Forms
+    //     </Typography>
+    //   ),
+    //   dataIndex: 'title',
+    //   key: 'title',
+    //   width: 266,
+    //   render: (text: string) => (
+    //     <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+    //   ),
+    // },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Opportunity
+        </Typography>
+      ),
+      dataIndex: 'opportunity',
+      key: 'opportunity',
+      width: 200,
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">{record?.title}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Actions
+        </Typography>
+      ),
+      dataIndex: 'Action',
+      key: 'Action',
+      width: 187,
+      render: (text: string, record: any) => (
+        <ArrowTopRightOnSquareIcon
+          height={24}
+          width={24}
+          color={token.colorInfoBorder}
+          style={{cursor: 'pointer'}}
+          onClick={() => {
+            router.push(
+              `/dealRegDetail?id=${record.dealReg_id}&opportunityId=${record.opportunity_id}&customerId=${record.customer_id}&contactId=${record.contact_id}`,
+            );
+          }}
+        />
       ),
     },
   ];
@@ -185,11 +231,17 @@ const DealReg: React.FC = () => {
     status: string,
   ): SeparatedData => {
     const separatedData: SeparatedData = {};
+    const finalData = userInformation?.Admin
+      ? dealRegData
+      : dealRegData?.filter(
+          (dealRegDataItem: any) =>
+            dealRegDataItem?.user_id === userInformation?.id,
+        );
 
     const filteredDealRegData =
       status === 'All'
-        ? dealRegData
-        : dealRegData?.filter((item: any) => item?.status === status);
+        ? finalData
+        : finalData?.filter((item: any) => item?.status === status);
 
     filteredDealRegData?.forEach((item: any) => {
       const {
@@ -224,62 +276,29 @@ const DealReg: React.FC = () => {
 
   const generateTabContent = (status: string) => {
     return (
-      <>
-        {finalDealRegData && finalDealRegData.length > 0 ? (
-          finalDealRegData.map((itemDeal: any) => (
-            <OsCollapse
-              defaultActiveKey={['1']}
-              items={[
-                {
-                  key: '1',
-                  label: (
-                    <Row justify="space-between">
-                      <Col>
-                        <p>{itemDeal.title}</p>
-                      </Col>
-                      <Col>
-                        <Space
-                          align="center"
-                          onClick={(e) => {
-                            router.push(
-                              `/dealRegDetailNew?id=${itemDeal.dealReg_id}&opportunityId=${itemDeal.opportunity_id}&customerId=${itemDeal.customer_id}&contactId=${itemDeal.contact_id}`,
-                            );
-                            e.stopPropagation();
-                          }}
-                        >
-                          <p>Deal Registration</p>
-                          <ArrowTopRightOnSquareIcon
-                            cursor="pointer"
-                            style={{marginTop: '5px'}}
-                            width={20}
-                          />
-                        </Space>
-                      </Col>
-                    </Row>
-                  ),
-                  children: (
-                    <OsTable
-                      columns={DealRegColumns}
-                      dataSource={itemDeal.data}
-                      scroll
-                      loading={dealLoading}
-                      locale={locale}
-                    />
-                  ),
-                },
-              ]}
-            />
-          ))
-        ) : (
-          <OsTable
-            columns={[]}
-            dataSource={[]}
-            scroll
-            loading={false}
-            locale={locale}
-          />
-        )}
-      </>
+      <OsTable
+        columns={DealRegColumns}
+        expandable={{
+          // eslint-disable-next-line react/no-unstable-nested-components
+          expandedRowRender: (record: any) => {
+            return (
+              <OsTable
+                columns={dealRegFormColumns}
+                dataSource={record?.data}
+                scroll
+                loading={false}
+                paginationProps={false}
+              />
+            );
+          },
+          rowExpandable: (record: any) => record.title !== 'Not Expandable',
+        }}
+        dataSource={finalDealRegData}
+        scroll
+        locale={locale}
+        loading={false}
+        drag
+      />
     );
   };
 
@@ -292,6 +311,15 @@ const DealReg: React.FC = () => {
       ),
       key: '1',
       children: generateTabContent('All'),
+    },
+    {
+      label: (
+        <Typography name="Body 4/Regular" onClick={() => setStatusValue('New')}>
+          New
+        </Typography>
+      ),
+      key: '9',
+      children: generateTabContent('New'),
     },
     {
       label: (
@@ -309,13 +337,49 @@ const DealReg: React.FC = () => {
       label: (
         <Typography
           name="Body 4/Regular"
-          onClick={() => setStatusValue('Completed')}
+          onClick={() => setStatusValue('Submitted')}
         >
-          Completed
+          Submitted
         </Typography>
       ),
       key: '3',
-      children: generateTabContent('Completed'),
+      children: generateTabContent('Submitted'),
+    },
+    {
+      label: (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => setStatusValue('Approved')}
+        >
+          Approved
+        </Typography>
+      ),
+      key: '4',
+      children: generateTabContent('Approved'),
+    },
+    {
+      label: (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => setStatusValue('Rejected')}
+        >
+          Rejected
+        </Typography>
+      ),
+      key: '5',
+      children: generateTabContent('Rejected'),
+    },
+    {
+      label: (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => setStatusValue('Expired')}
+        >
+          Expired
+        </Typography>
+      ),
+      key: '6',
+      children: generateTabContent('Expired'),
     },
   ];
 
@@ -356,12 +420,6 @@ const DealReg: React.FC = () => {
             activeKey={activeTab}
             tabBarExtraContent={
               <Space size={12} align="center">
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">
-                    Registration Form
-                  </Typography>
-                  <OsInput style={{width: '180px'}} placeholder="Search Here" />
-                </Space>
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Customer Account</Typography>
                   <CommonSelect
