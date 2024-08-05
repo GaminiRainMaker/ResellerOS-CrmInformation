@@ -148,6 +148,25 @@ const DealReg: React.FC = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
+          Created By
+        </Typography>
+      ),
+      dataIndex: 'created_by',
+      key: 'created_by',
+      width: 187,
+      render: (text: string, record: any) => (
+        <Typography  name="Body 4/Regular">
+          {record?.User?.first_name && record?.User?.last_name
+            ? `${record.User?.first_name} ${record.User?.last_name}`
+            : record?.User?.first_name
+              ? record.User?.first_name
+              : record?.User?.user_name}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
           Status
         </Typography>
       ),
