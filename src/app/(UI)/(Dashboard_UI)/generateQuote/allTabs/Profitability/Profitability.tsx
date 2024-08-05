@@ -406,7 +406,7 @@ const Profitablity: FC<any> = ({
           onClick={() => {
             if (isDealReg) {
               notification.open({
-                message: 'You can not delete bundle on view mode.',
+                message: "You can't delete bundle in view mode.",
                 type: 'info',
               });
             } else {
@@ -1227,7 +1227,7 @@ const Profitablity: FC<any> = ({
                                         if (isDealReg) {
                                           notification.open({
                                             message:
-                                              'You can not edit bundle on view mode.',
+                                              "You can't edit bundle in view mode.",
                                             type: 'info',
                                           });
                                         } else {

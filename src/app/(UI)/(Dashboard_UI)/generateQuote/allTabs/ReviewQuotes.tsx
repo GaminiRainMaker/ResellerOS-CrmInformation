@@ -404,7 +404,7 @@ const ReviewQuotes: FC<any> = ({
                                       if (isDealReg) {
                                         notification.open({
                                           message:
-                                            'You can not use on view mode.',
+                                            "You can't use in view mode.",
                                           type: 'info',
                                         });
                                       } else {
@@ -427,7 +427,7 @@ const ReviewQuotes: FC<any> = ({
                                       if (isDealReg) {
                                         notification.open({
                                           message:
-                                            'You can not use on view mode.',
+                                            "You can't use in view mode.",
                                           type: 'info',
                                         });
                                       } else {

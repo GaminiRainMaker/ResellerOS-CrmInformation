@@ -480,9 +480,12 @@ const GenerateQuote: React.FC = () => {
           color={token?.colorInfoBorder}
           cursor="pointer"
           onClick={() => {
-            if (!isDealReg) {
-              router?.push('/allQuote');
-            }
+            if (isDealReg) {
+              notification.open({
+                message: "You can't navigate to 'All Quotes' in view mode.",
+                type: 'info',
+              });
+            } else router?.push('/allQuote');
           }}
         >
           All Quotes
@@ -545,7 +548,7 @@ const GenerateQuote: React.FC = () => {
                 clickHandler={() => {
                   if (isDealReg) {
                     notification.open({
-                      message: 'You can not open setting on view mode.',
+                      message: "You can't open setting in view mode.",
                       type: 'info',
                     });
                   } else if (quoteFileUnverifiedById?.length > 0) {
@@ -602,7 +605,7 @@ const GenerateQuote: React.FC = () => {
                 clickHandler={() => {
                   if (isDealReg) {
                     notification.open({
-                      message: 'You can not use on view mode.',
+                      message: "You can't use in view mode.",
                       type: 'info',
                     });
                   } else setShowDocumentModal(true);
@@ -623,7 +626,7 @@ const GenerateQuote: React.FC = () => {
             tabBarExtraContent={
               <Space>
                 {' '}
-                {activeTab === '6' && (
+                {activeTab === '6' && !isDealReg && (
                   <div style={{marginTop: '20px'}}>
                     <OsButton
                       text="Add Attachment"
