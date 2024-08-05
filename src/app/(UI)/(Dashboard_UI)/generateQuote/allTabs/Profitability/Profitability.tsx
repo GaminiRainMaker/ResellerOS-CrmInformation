@@ -286,7 +286,7 @@ const Profitablity: FC<any> = ({
   };
 
   const renderEditableInput = (field: string) => {
-    if (isView) {
+    if (isView === 'true') {
       return true;
     } else {
       const editableField = tableColumnDataShow.find(
@@ -404,7 +404,7 @@ const Profitablity: FC<any> = ({
           color={token.colorError}
           style={{cursor: 'pointer'}}
           onClick={() => {
-            if (isView) {
+            if (isView === 'true') {
               notification.open({
                 message: "You can't delete bundle in view mode.",
                 type: 'info',
@@ -555,7 +555,6 @@ const Profitablity: FC<any> = ({
       key: 'product_family',
       width: 285,
       render(text: any, record: any) {
-        console.log('453453', record, text);
         return {
           children: (
             <CommonSelect
@@ -947,7 +946,7 @@ const Profitablity: FC<any> = ({
                           >
                             Qty:
                             <OsInputNumber
-                              disabled={isView ? true : false}
+                              disabled={isView === 'true' ? true : false}
                               defaultValue={finalDataItem?.quantity}
                               style={{
                                 width: '60px',
@@ -984,13 +983,21 @@ const Profitablity: FC<any> = ({
                             }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              setShowBundleDrawer(true);
-                              setBundleRecordId(finalDataItem?.bundleId);
-                              BundleForm.setFieldsValue({
-                                name: finalDataItem?.name,
-                                quantity: finalDataItem?.quantity,
-                                description: finalDataItem?.description,
-                              });
+                              if (isView === 'true') {
+                                notification.open({
+                                  message:
+                                    "You can't edit bundle in view mode.",
+                                  type: 'info',
+                                });
+                              } else {
+                                setShowBundleDrawer(true);
+                                setBundleRecordId(finalDataItem?.bundleId);
+                                BundleForm.setFieldsValue({
+                                  name: finalDataItem?.name,
+                                  quantity: finalDataItem?.quantity,
+                                  description: finalDataItem?.description,
+                                });
+                              }
                             }}
                           />
                         </Col>
@@ -1187,7 +1194,9 @@ const Profitablity: FC<any> = ({
                                     >
                                       Qty:
                                       <OsInputNumber
-                                        disabled={isView ? true : false}
+                                        disabled={
+                                          isView === 'true' ? true : false
+                                        }
                                         defaultValue={finalDataItem?.quantity}
                                         style={{
                                           width: '60px',
@@ -1224,7 +1233,7 @@ const Profitablity: FC<any> = ({
                                       }}
                                       onClick={(e) => {
                                         e.stopPropagation();
-                                        if (isView) {
+                                        if (isView === 'true') {
                                           notification.open({
                                             message:
                                               "You can't edit bundle in view mode.",

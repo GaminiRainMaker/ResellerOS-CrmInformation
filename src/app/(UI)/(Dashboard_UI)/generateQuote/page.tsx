@@ -480,7 +480,7 @@ const GenerateQuote: React.FC = () => {
           color={token?.colorInfoBorder}
           cursor="pointer"
           onClick={() => {
-            if (isView) {
+            if (isView === 'true') {
               notification.open({
                 message: "You can't navigate to 'All Quotes' in view mode.",
                 type: 'info',
@@ -546,7 +546,7 @@ const GenerateQuote: React.FC = () => {
                 text="Edit Quote Header"
                 buttontype="SECONDARY"
                 clickHandler={() => {
-                  if (isView) {
+                  if (isView === 'true') {
                     notification.open({
                       message: "You can't open setting in view mode.",
                       type: 'info',
@@ -561,7 +561,7 @@ const GenerateQuote: React.FC = () => {
                   }
                 }}
               />
-              {!isView && (
+              {isView === 'false' && (
                 <>
                   <AddQuote
                     loading={loading}
@@ -603,7 +603,7 @@ const GenerateQuote: React.FC = () => {
               <OsButton
                 buttontype="PRIMARY_ICON"
                 clickHandler={() => {
-                  if (isView) {
+                  if (isView === 'true') {
                     notification.open({
                       message: "You can't use in view mode.",
                       type: 'info',
@@ -626,7 +626,7 @@ const GenerateQuote: React.FC = () => {
             tabBarExtraContent={
               <Space>
                 {' '}
-                {activeTab === '6' && !isView && (
+                {activeTab === '6' && isView === 'false' && (
                   <div style={{marginTop: '20px'}}>
                     <OsButton
                       text="Add Attachment"
@@ -672,7 +672,7 @@ const GenerateQuote: React.FC = () => {
                       />
                     )}
 
-                    {activeTab === '2' && !isView && (
+                    {activeTab === '2' && isView === 'false' && (
                       <Space>
                         <OsDropdown menu={{items}} />
                       </Space>

@@ -401,7 +401,7 @@ const ReviewQuotes: FC<any> = ({
                                     color={token?.colorBgContainer}
                                     onClick={(e) => {
                                       e?.stopPropagation();
-                                      if (isView) {
+                                      if (isView === 'true') {
                                         notification.open({
                                           message:
                                             "You can't use in view mode.",
@@ -424,7 +424,7 @@ const ReviewQuotes: FC<any> = ({
                                     width={25}
                                     color={token?.colorBgContainer}
                                     onClick={(e) => {
-                                      if (isView) {
+                                      if (isView === 'true') {
                                         notification.open({
                                           message:
                                             "You can't use in view mode.",

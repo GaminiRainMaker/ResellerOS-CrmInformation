@@ -154,7 +154,7 @@ const AttachmentDocument: FC<any> = ({
             color={token.colorError}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              if (isView) {
+              if (isView === 'true') {
                 notification.open({
                   message: "You can't delete attachment in view mode.",
                   type: 'info',
