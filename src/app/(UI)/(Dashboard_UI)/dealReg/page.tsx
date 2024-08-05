@@ -31,17 +31,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import NewRegistrationForm from './NewRegistrationForm';
 import DealRegAnalytics from './dealRegAnalytics';
 import {formatDate} from '@/app/utils/base';
-
-interface SeparatedData {
-  [opportunityId: number]: {
-    opportunity_id: number;
-    dealReg_id: number;
-    contact_id: number;
-    customer_id: number;
-    data: any[];
-    title: string;
-  };
-}
+import {SeparatedData} from '../dealRegDetail/dealReg.interface';
 
 const DealReg: React.FC = () => {
   const [token] = useThemeToken();
@@ -155,7 +145,7 @@ const DealReg: React.FC = () => {
       key: 'created_by',
       width: 187,
       render: (text: string, record: any) => (
-        <Typography  name="Body 4/Regular">
+        <Typography name="Body 4/Regular">
           {record?.User?.first_name && record?.User?.last_name
             ? `${record.User?.first_name} ${record.User?.last_name}`
             : record?.User?.first_name

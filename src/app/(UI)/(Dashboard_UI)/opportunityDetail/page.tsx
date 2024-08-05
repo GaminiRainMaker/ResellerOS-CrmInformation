@@ -5,6 +5,7 @@
 import AddQuote from '@/app/components/common/addQuote';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
+import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import AddOpportunity from '@/app/components/common/os-add-opportunity';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
@@ -19,6 +20,7 @@ import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {formatDate} from '@/app/utils/base';
 import {Form} from 'antd';
+import {TabsProps} from 'antd/lib';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {
@@ -26,9 +28,9 @@ import {
   getOpportunityById,
   updateOpportunity,
 } from '../../../../../redux/actions/opportunity';
+import {updateQuoteCustomerId} from '../../../../../redux/actions/quote';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {tabItems} from '../allQuote/constants';
-import {updateQuoteCustomerId} from '../../../../../redux/actions/quote';
 
 const OpportunityDetails = () => {
   const [token] = useThemeToken();
@@ -50,6 +52,8 @@ const OpportunityDetails = () => {
   const [customerValue, setCustomerValue] = useState<number>();
   const [activeTab, setActiveTab] = useState<any>('1');
   const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
+  const [finalDealRegData, setFinalDealRegData] = useState<React.Key[]>([]);
+  const [statusValue, setStatusValue] = useState<string>('All');
 
   const {loading: QuoteLoading} = useAppSelector((state) => state.quote);
   useEffect(() => {
@@ -140,6 +144,30 @@ const OpportunityDetails = () => {
     }
   }, [activeTab, opportunityData?.Quotes]);
 
+  const processDealRegData = (dealRegData: any[], status: string) => {
+    const finalData = userInformation?.Admin
+      ? dealRegData
+      : dealRegData?.filter(
+          (dealRegDataItem: any) =>
+            dealRegDataItem?.user_id === userInformation?.id,
+        );
+
+    const filteredDealRegData =
+      status === 'All'
+        ? finalData
+        : finalData?.filter((item: any) => item?.status === status);
+
+    return filteredDealRegData;
+  };
+
+  useEffect(() => {
+    const separatedData = processDealRegData(
+      opportunityData?.DealRegs,
+      statusValue,
+    );
+    setFinalDealRegData(separatedData);
+  }, [opportunityData?.DealRegs, statusValue]);
+
   const menuItems = [
     {
       key: '1',
@@ -189,6 +217,10 @@ const OpportunityDetails = () => {
         }
       />
     ),
+  };
+
+  const dealRegLocal = {
+    emptyText: <EmptyContainer title="No Files" />,
   };
 
   const deleteSelectedIds = async () => {
@@ -275,6 +307,272 @@ const OpportunityDetails = () => {
     });
   };
 
+  const dealRegFormColumns = [
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Generated Date
+        </Typography>
+      ),
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      width: 187,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">
+          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Type
+        </Typography>
+      ),
+      dataIndex: 'type',
+      key: 'type',
+      width: 187,
+      render: (text: string) => <CustomTextCapitalization text={text} />,
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Customer Account
+        </Typography>
+      ),
+      dataIndex: 'account',
+      key: 'account',
+      width: 187,
+      render: (text: string, record: any) => (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => {
+            window.open(`/accountDetails?id=${record?.Customer?.id}`);
+          }}
+          hoverOnText
+        >
+          {record?.Customer?.name ?? '--'}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Partner
+        </Typography>
+      ),
+      dataIndex: 'partner_id',
+      key: 'partner_id',
+      width: 187,
+      render: (text: string, record: any) => (
+        <CustomTextCapitalization text={record?.Partner?.partner} />
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Partner Program
+        </Typography>
+      ),
+      dataIndex: 'partner_program_id',
+      key: 'partner_program_id',
+      width: 187,
+      render: (text: string, record: any) => (
+        <CustomTextCapitalization
+          text={record?.PartnerProgram?.partner_program}
+        />
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Created By
+        </Typography>
+      ),
+      dataIndex: 'created_by',
+      key: 'created_by',
+      width: 187,
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.User?.first_name && record?.User?.last_name
+            ? `${record.User?.first_name} ${record.User?.last_name}`
+            : record?.User?.first_name
+              ? record.User?.first_name
+              : record?.User?.user_name}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Status
+        </Typography>
+      ),
+      dataIndex: 'status',
+      key: 'status',
+      width: 187,
+      render: (text: string) => (
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+          <OsStatusWrapper value={text} />
+        </div>
+      ),
+    },
+  ];
+
+  const isQuoteAI = userInformation?.QuoteAI;
+  const isDealReg = userInformation?.DealReg;
+
+  const dealRegTabItems: TabsProps['items'] = [
+    {
+      label: (
+        <Typography name="Body 4/Regular" onClick={() => setStatusValue('All')}>
+          All
+        </Typography>
+      ),
+      key: '1',
+      children: (
+        <OsTable
+          columns={dealRegFormColumns}
+          dataSource={finalDealRegData}
+          scroll
+          loading={false}
+          paginationProps={false}
+          scrolly={200}
+          locale={dealRegLocal}
+        />
+      ),
+    },
+    {
+      label: (
+        <Typography name="Body 4/Regular" onClick={() => setStatusValue('New')}>
+          New
+        </Typography>
+      ),
+      key: '9',
+      children: (
+        <OsTable
+          columns={dealRegFormColumns}
+          dataSource={finalDealRegData}
+          scroll
+          loading={false}
+          paginationProps={false}
+          scrolly={200}
+          locale={dealRegLocal}
+        />
+      ),
+    },
+    {
+      label: (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => setStatusValue('In Progress')}
+        >
+          In Progress
+        </Typography>
+      ),
+      key: '2',
+      children: (
+        <OsTable
+          columns={dealRegFormColumns}
+          dataSource={finalDealRegData}
+          scroll
+          loading={false}
+          paginationProps={false}
+          scrolly={200}
+          locale={dealRegLocal}
+        />
+      ),
+    },
+    {
+      label: (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => setStatusValue('Submitted')}
+        >
+          Submitted
+        </Typography>
+      ),
+      key: '3',
+      children: (
+        <OsTable
+          columns={dealRegFormColumns}
+          dataSource={finalDealRegData}
+          scroll
+          loading={false}
+          paginationProps={false}
+          scrolly={200}
+          locale={dealRegLocal}
+        />
+      ),
+    },
+    {
+      label: (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => setStatusValue('Approved')}
+        >
+          Approved
+        </Typography>
+      ),
+      key: '4',
+      children: (
+        <OsTable
+          columns={dealRegFormColumns}
+          dataSource={finalDealRegData}
+          scroll
+          loading={false}
+          paginationProps={false}
+          scrolly={200}
+          locale={dealRegLocal}
+        />
+      ),
+    },
+    {
+      label: (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => setStatusValue('Rejected')}
+        >
+          Rejected
+        </Typography>
+      ),
+      key: '5',
+      children: (
+        <OsTable
+          columns={dealRegFormColumns}
+          dataSource={finalDealRegData}
+          scroll
+          loading={false}
+          paginationProps={false}
+          scrolly={200}
+          locale={dealRegLocal}
+        />
+      ),
+    },
+    {
+      label: (
+        <Typography
+          name="Body 4/Regular"
+          onClick={() => setStatusValue('Expired')}
+        >
+          Expired
+        </Typography>
+      ),
+      key: '6',
+      children: (
+        <OsTable
+          columns={dealRegFormColumns}
+          dataSource={finalDealRegData}
+          scroll
+          loading={false}
+          paginationProps={false}
+          scrolly={200}
+          locale={dealRegLocal}
+        />
+      ),
+    },
+  ];
+
   return (
     <>
       <Space direction="vertical" size={12} style={{width: '100%'}}>
@@ -307,7 +605,11 @@ const OpportunityDetails = () => {
           </Col>
         </Row>
         <Row
-          style={{background: 'white', padding: '8px 12px', borderRadius: '12px'}}
+          style={{
+            background: 'white',
+            padding: '8px 12px',
+            borderRadius: '12px',
+          }}
         >
           <OsTabs
             style={{margin: '0px'}}
@@ -336,6 +638,7 @@ const OpportunityDetails = () => {
                     scroll
                     loading={loading}
                     locale={locale}
+                    scrolly={200}
                   />
                 ),
                 ...tabItem,
@@ -343,6 +646,25 @@ const OpportunityDetails = () => {
             }
           />
         </Row>
+        <br />
+        {isDealReg && (
+          <>
+            <Row justify="space-between" align="middle">
+              <Col>
+                <Typography name="Heading 3/Medium">All DealReg</Typography>
+              </Col>
+            </Row>
+            <Row
+              style={{
+                background: 'white',
+                padding: '8px 12px',
+                borderRadius: '12px',
+              }}
+            >
+              <OsTabs style={{margin: '0px'}} items={dealRegTabItems} />
+            </Row>
+          </>
+        )}
       </Space>
 
       <OsDrawer
