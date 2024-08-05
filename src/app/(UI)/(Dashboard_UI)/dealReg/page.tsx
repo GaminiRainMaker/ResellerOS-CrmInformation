@@ -17,7 +17,11 @@ import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {ArrowTopRightOnSquareIcon, PlusIcon} from '@heroicons/react/24/outline';
+import {
+  ArrowTopRightOnSquareIcon,
+  PencilSquareIcon,
+  PlusIcon,
+} from '@heroicons/react/24/outline';
 import {TabsProps} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
@@ -65,20 +69,7 @@ const DealReg: React.FC = () => {
     },
   };
 
-  const DealRegColumns = [
-    // {
-    //   title: (
-    //     <Typography name="Body 4/Medium" className="dragHandler">
-    //       Registration Forms
-    //     </Typography>
-    //   ),
-    //   dataIndex: 'title',
-    //   key: 'title',
-    //   width: 266,
-    //   render: (text: string) => (
-    //     <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-    //   ),
-    // },
+  const dealRegFormColumns = [
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -170,6 +161,57 @@ const DealReg: React.FC = () => {
       ),
     },
   ];
+  const DealRegColumns = [
+    // {
+    //   title: (
+    //     <Typography name="Body 4/Medium" className="dragHandler">
+    //       Registration Forms
+    //     </Typography>
+    //   ),
+    //   dataIndex: 'title',
+    //   key: 'title',
+    //   width: 266,
+    //   render: (text: string) => (
+    //     <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+    //   ),
+    // },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Opportunity
+        </Typography>
+      ),
+      dataIndex: 'opportunity',
+      key: 'opportunity',
+      width: 200,
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">{record?.title}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Action
+        </Typography>
+      ),
+      dataIndex: 'Action',
+      key: 'Action',
+      width: 187,
+      render: (text: string, record: any) => (
+        <PencilSquareIcon
+          height={24}
+          width={24}
+          color={token.colorInfoBorder}
+          style={{cursor: 'pointer'}}
+          onClick={() => {
+            router.push(
+              `/dealRegDetail?id=${record.dealReg_id}&opportunityId=${record.opportunity_id}&customerId=${record.customer_id}&contactId=${record.contact_id}`,
+            );
+          }}
+        />
+      ),
+    },
+  ];
 
   const locale = {
     emptyText: (
@@ -231,62 +273,29 @@ const DealReg: React.FC = () => {
 
   const generateTabContent = (status: string) => {
     return (
-      <>
-        {finalDealRegData && finalDealRegData.length > 0 ? (
-          finalDealRegData.map((itemDeal: any) => (
-            <OsCollapse
-              defaultActiveKey={['1']}
-              items={[
-                {
-                  key: '1',
-                  label: (
-                    <Row justify="space-between">
-                      <Col>
-                        <p>{itemDeal.title}</p>
-                      </Col>
-                      <Col>
-                        <Space
-                          align="center"
-                          onClick={(e) => {
-                            router.push(
-                              `/dealRegDetail?id=${itemDeal.dealReg_id}&opportunityId=${itemDeal.opportunity_id}&customerId=${itemDeal.customer_id}&contactId=${itemDeal.contact_id}`,
-                            );
-                            e.stopPropagation();
-                          }}
-                        >
-                          <p>Deal Registration</p>
-                          <ArrowTopRightOnSquareIcon
-                            cursor="pointer"
-                            style={{marginTop: '5px'}}
-                            width={20}
-                          />
-                        </Space>
-                      </Col>
-                    </Row>
-                  ),
-                  children: (
-                    <OsTable
-                      columns={DealRegColumns}
-                      dataSource={itemDeal.data}
-                      scroll
-                      loading={dealLoading}
-                      locale={locale}
-                    />
-                  ),
-                },
-              ]}
-            />
-          ))
-        ) : (
-          <OsTable
-            columns={[]}
-            dataSource={[]}
-            scroll
-            loading={false}
-            locale={locale}
-          />
-        )}
-      </>
+      <OsTable
+        columns={DealRegColumns}
+        expandable={{
+          // eslint-disable-next-line react/no-unstable-nested-components
+          expandedRowRender: (record: any) => {
+            return (
+              <OsTable
+                columns={dealRegFormColumns}
+                dataSource={record?.data}
+                scroll
+                loading={false}
+                paginationProps={false}
+              />
+            );
+          },
+          rowExpandable: (record: any) => record.title !== 'Not Expandable',
+        }}
+        dataSource={finalDealRegData}
+        scroll
+        locale={locale}
+        loading={false}
+        drag
+      />
     );
   };
 

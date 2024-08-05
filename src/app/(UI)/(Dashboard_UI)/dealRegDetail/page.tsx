@@ -104,7 +104,7 @@ const DealRegDetail = () => {
     const SubmitDealRegForm = submitDealRegForm.getFieldsValue();
     const SubmitDealRegFormData = {
       ...SubmitDealRegForm,
-      status: 'Approved',
+      status: 'Submitted',
     };
     if (SubmitDealRegFormData) {
       await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
@@ -128,7 +128,7 @@ const DealRegDetail = () => {
         <Col>
           <Space size={8}>
             <OsButton
-              text="Approve Form"
+              text="Submit Form"
               buttontype="SECONDARY"
               clickHandler={() => {
                 setShowSubmitFormModal(true);

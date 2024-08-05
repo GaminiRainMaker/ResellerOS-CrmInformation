@@ -307,10 +307,10 @@ export const PartnerData = [
 export const dealRegStatusOptions = [
   {value: 'New', label: 'New'},
   {value: 'In Progress', label: 'In Progress'},
-  {value: 'Submitted', label: 'Submitted'},
+  // {value: 'Submitted', label: 'Submitted'},
   {value: 'Rejected', label: 'Rejected'},
   {value: 'Expired', label: 'Expired'},
-  // {value: 'Approved', label: 'Approved'},
+  {value: 'Approved', label: 'Approved'},
   // {value: 'Cancelled', label: 'Cancelled'},
   // {value: 'Closed Lost', label: 'Closed Lost'},
   // {value: 'Closed Won', label: 'Closed Won'},
