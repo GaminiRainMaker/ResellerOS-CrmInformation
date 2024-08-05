@@ -55,6 +55,7 @@ const OpportunityDetails = () => {
   const [finalDealRegData, setFinalDealRegData] = useState<React.Key[]>([]);
   const [statusValue, setStatusValue] = useState<string>('All');
   const isView = getResultedValue(userInformation);
+  const isDealReg = userInformation?.DealReg ?? false;
 
   const {loading: QuoteLoading} = useAppSelector((state) => state.quote);
   useEffect(() => {
@@ -583,24 +584,25 @@ const OpportunityDetails = () => {
           setDeleteIds={setDeleteIds}
           setShowModalDelete={setShowModalDelete}
         />
-
-        <Row justify="space-between" align="middle">
+        <Row justify="space-between" align="middle" style={{marginTop: '10px'}}>
           <Col>
             <Typography name="Heading 3/Medium">All Quotes</Typography>
           </Col>
-          <Col style={{float: 'right'}}>
-            <AddQuote
-              uploadFileData={uploadFileData}
-              setUploadFileData={setUploadFileData}
-              loading={QuoteLoading}
-              buttonText="Add Quote"
-              setShowToggleTable={setShowToggleTable}
-              showToggleTable={showToggleTable}
-              Quotecolumns={Quotecolumns}
-              opportunityId={opportunityData?.id}
-              customerId={opportunityData?.customer_id}
-            />
-          </Col>
+          {!isDealReg && (
+            <Col style={{float: 'right'}}>
+              <AddQuote
+                uploadFileData={uploadFileData}
+                setUploadFileData={setUploadFileData}
+                loading={QuoteLoading}
+                buttonText="Add Quote"
+                setShowToggleTable={setShowToggleTable}
+                showToggleTable={showToggleTable}
+                Quotecolumns={Quotecolumns}
+                opportunityId={opportunityData?.id}
+                customerId={opportunityData?.customer_id}
+              />
+            </Col>
+          )}
         </Row>
         <Row
           style={{
@@ -644,10 +646,13 @@ const OpportunityDetails = () => {
             }
           />
         </Row>
-        <br />
-        {isView && (
+        {isDealReg && (
           <>
-            <Row justify="space-between" align="middle">
+            <Row
+              justify="space-between"
+              align="middle"
+              style={{marginTop: '10px'}}
+            >
               <Col>
                 <Typography name="Heading 3/Medium">All DealReg</Typography>
               </Col>
