@@ -183,11 +183,17 @@ const SuperAdminPartner: React.FC = () => {
                     isRead={itemNoti?.is_read}
                     justify="space-between"
                     onClick={() => {
-                      router.push(
-                        userInformation?.Admin
-                          ? `/superAdminPartner?tab=2`
-                          : '/partners?tab=2',
-                      );
+                      if (itemNoti?.type === 'formBuilder') {
+                        router.push(
+                          `/formBuilder?id=${itemNoti?.partner_program_id}`,
+                        );
+                      } else {
+                        router.push(
+                          userInformation?.Admin
+                            ? `/superAdminPartner?tab=2`
+                            : '/partners?tab=2',
+                        );
+                      }
                     }}
                   >
                     <Col>
@@ -263,11 +269,17 @@ const SuperAdminPartner: React.FC = () => {
                     isRead={itemNoti?.is_read}
                     justify="space-between"
                     onClick={() => {
-                      router.push(
-                        userInformation?.Admin
-                          ? `/superAdminPartner?tab=2`
-                          : '/partners?tab=2',
-                      );
+                      if (itemNoti?.type === 'formBuilder') {
+                        router.push(
+                          `/formBuilder?id=${itemNoti?.partner_program_id}`,
+                        );
+                      } else {
+                        router.push(
+                          userInformation?.Admin
+                            ? `/superAdminPartner?tab=2`
+                            : '/partners?tab=2',
+                        );
+                      }
                     }}
                   >
                     <Col>

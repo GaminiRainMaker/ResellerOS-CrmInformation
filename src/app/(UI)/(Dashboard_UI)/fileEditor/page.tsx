@@ -12,7 +12,11 @@
 'use client';
 
 import '@handsontable/pikaday/css/pikaday.css';
-import {HotTable} from '@handsontable/react';
+const HotTable = dynamic(() => import('@handsontable/react'), {
+  ssr: false,
+});
+
+// import {HotTable} from '@handsontable/react';
 import {useEffect, useState} from 'react';
 import './styles.css';
 
@@ -51,6 +55,7 @@ import {
 import {getQuoteLineItemByQuoteIdForEditTable} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
+import dynamic from 'next/dynamic';
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
