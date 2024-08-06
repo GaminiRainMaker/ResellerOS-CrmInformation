@@ -26,7 +26,7 @@ const DealRegAnalytics = () => {
     const uniqueOpportunityIds = new Set();
     const statusCounts = {
       'In Progress': 0,
-      Approved: 0,
+      Submitted: 0,
     };
 
     data?.forEach((item: any) => {
@@ -35,8 +35,8 @@ const DealRegAnalytics = () => {
       }
       if (item?.status === 'In Progress') {
         statusCounts['In Progress']++;
-      } else if (item?.status === 'Approved') {
-        statusCounts['Approved']++;
+      } else if (item?.status === 'Submitted') {
+        statusCounts['Submitted']++;
       }
     });
 
@@ -86,10 +86,10 @@ const DealRegAnalytics = () => {
       primary: (
         <Typography name="Heading 3/Medium">
           {' '}
-          {counts?.statusCounts?.Approved ?? 0}
+          {counts?.statusCounts?.Submitted ?? 0}
         </Typography>
       ),
-      secondry: 'Approved',
+      secondry: 'Submitted',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
     },

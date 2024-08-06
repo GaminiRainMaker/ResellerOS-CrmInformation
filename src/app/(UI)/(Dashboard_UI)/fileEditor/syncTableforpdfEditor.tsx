@@ -60,6 +60,12 @@ type UpdatedDataItem = {
   quote_file_id: number;
   is_salesforce: boolean;
 };
+type SalesUpdatedDataItem = {
+  pdf_header: string;
+  quote_header: string;
+  status: string;
+  is_salesforce: boolean;
+};
 
 interface EditPdfDataInterface {
   setMergedVaalues?: any;
@@ -263,8 +269,21 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     if (updatedData && !SaleQuoteId) {
       dispatch(insertLineItemSyncing(updatedData));
     } else if (updatedData && SaleQuoteId) {
-      insertLineItemSyncingForSalesForce;
-      dispatch(insertLineItemSyncingForSalesForce(updatedData));
+      const NewupdatedData: SalesUpdatedDataItem[] =
+        syncedNewValue &&
+        syncedNewValue?.length > 0 &&
+        syncedNewValue
+          ?.filter((item: DataItem) => item.newVal !== '')
+          .map(
+            ({preVal, newVal}: DataItem): SalesUpdatedDataItem => ({
+              pdf_header: preVal,
+              quote_header: newVal,
+              status: 'Pending',
+              is_salesforce: SaleQuoteId ? true : false,
+            }),
+          );
+
+      dispatch(insertLineItemSyncingForSalesForce(NewupdatedData));
     }
 
     mergedValue?.map((obj: any) => {

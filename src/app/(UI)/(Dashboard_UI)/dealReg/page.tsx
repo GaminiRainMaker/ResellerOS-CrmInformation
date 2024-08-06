@@ -8,30 +8,24 @@ import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCa
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import OsCollapse from '@/app/components/common/os-collapse';
 import EmptyContainer from '@/app/components/common/os-empty-container';
-import OsInput from '@/app/components/common/os-input';
 import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {
-  ArrowTopRightOnSquareIcon,
-  PencilSquareIcon,
-  PlusIcon,
-} from '@heroicons/react/24/outline';
+import {formatDate} from '@/app/utils/base';
+import {ArrowTopRightOnSquareIcon, PlusIcon} from '@heroicons/react/24/outline';
 import {TabsProps} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {queryDealReg} from '../../../../../redux/actions/dealReg';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {SeparatedData} from '../dealRegDetail/dealReg.interface';
 import NewRegistrationForm from './NewRegistrationForm';
 import DealRegAnalytics from './dealRegAnalytics';
-import {formatDate} from '@/app/utils/base';
-import {SeparatedData} from '../dealRegDetail/dealReg.interface';
 
 const DealReg: React.FC = () => {
   const [token] = useThemeToken();
@@ -207,7 +201,7 @@ const DealReg: React.FC = () => {
       key: 'Action',
       width: 187,
       render: (text: string, record: any) => (
-        <PencilSquareIcon
+        <ArrowTopRightOnSquareIcon
           height={24}
           width={24}
           color={token.colorInfoBorder}
@@ -426,12 +420,6 @@ const DealReg: React.FC = () => {
             activeKey={activeTab}
             tabBarExtraContent={
               <Space size={12} align="center">
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">
-                    Registration Form
-                  </Typography>
-                  <OsInput style={{width: '180px'}} placeholder="Search Here" />
-                </Space>
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Customer Account</Typography>
                   <CommonSelect
