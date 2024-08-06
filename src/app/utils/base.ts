@@ -28,8 +28,17 @@ import {insertValidation} from '../../../redux/actions/validation';
 import {setQuoteFileUnverifiedById} from '../../../redux/slices/quoteFile';
 
 export const getResultedValue = (userInformation: any) => {
-  const {QuoteAI, DealReg} = userInformation ?? {};
-  return QuoteAI && DealReg ? false : !QuoteAI && DealReg;
+  console.log('function', userInformation);
+  if (userInformation) {
+    const {QuoteAI, DealReg} = userInformation;
+    if (QuoteAI && DealReg) {
+      return false;
+    } else if (QuoteAI) {
+      return false;
+    } else if (!QuoteAI && DealReg) {
+      return true;
+    }
+  }
 };
 
 export const calculateProfitabilityData = (
