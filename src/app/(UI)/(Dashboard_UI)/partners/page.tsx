@@ -28,6 +28,7 @@ import PartnerAnalytics from './partnerAnalytics';
 import OsInput from '@/app/components/common/os-input';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import {getUserByTokenAccess} from '../../../../../redux/actions/user';
+import {addNotificationFOrProgramRequest} from '../../../../../redux/actions/notifications';
 
 const Partners: React.FC = () => {
   const [token] = useThemeToken();
@@ -72,6 +73,22 @@ const Partners: React.FC = () => {
       ActivePartnerProgram: countForActivePartnerProgram,
     };
     setAllAnalyticPartnerData(newObj);
+  };
+
+  const addNotificationFortemplate = async (
+    partner_program_id: number,
+    name: string,
+  ) => {
+    let newObj = {
+      title: 'Reseller Resuested Program Template',
+      description: `Reseller reequest for ${name} partner program tenplate `,
+      type_id: partner_program_id,
+      type: 'formBuilder',
+      partner_program_id: partner_program_id,
+    };
+
+    await dispatch(addNotificationFOrProgramRequest(newObj));
+    getPartnerData();
   };
 
   useEffect(() => {
@@ -175,6 +192,7 @@ const Partners: React.FC = () => {
       ),
       dataIndex: 'template',
       key: 'template',
+      width: 400,
       render: (text: string, record: any) => (
         <Typography
           name="Body 4/Medium"
@@ -195,9 +213,27 @@ const Partners: React.FC = () => {
             }
           }}
         >
-          {record?.form_data && !record?.form_data?.includes(null)
-            ? 'View'
-            : 'No Template'}
+          {record?.form_data && !record?.form_data?.includes(null) ? (
+            'View'
+          ) : (
+            <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
+              {' '}
+              <div style={{marginTop: '10px'}}> {'No Template'}</div>{' '}
+              <OsButton
+                disabled={record?.Notifications?.length > 0}
+                clickHandler={() => {
+                  addNotificationFortemplate(
+                    Number(record?.id),
+                    record?.partner_program,
+                  );
+                }}
+                text={
+                  record?.Notifications?.length > 0 ? 'Requested' : 'Request'
+                }
+                buttontype="PRIMARY"
+              />
+            </div>
+          )}
         </Typography>
       ),
     },
@@ -362,6 +398,7 @@ const Partners: React.FC = () => {
       ),
       dataIndex: 'template',
       key: 'template',
+      width: 400,
       render: (text: string, record: any) => (
         <Typography
           name="Body 4/Medium"
@@ -376,7 +413,27 @@ const Partners: React.FC = () => {
             }
           }}
         >
-          {record?.form_data ? 'View' : 'No Template'}
+          {record?.form_data ? (
+            'View'
+          ) : (
+            <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
+              {' '}
+              <div style={{marginTop: '10px'}}> {'No Template'}</div>{' '}
+              <OsButton
+                disabled={record?.Notifications?.length > 0}
+                clickHandler={() => {
+                  addNotificationFortemplate(
+                    Number(record?.id),
+                    record?.partner_program,
+                  );
+                }}
+                text={
+                  record?.Notifications?.length > 0 ? 'Requested' : 'Request'
+                }
+                buttontype="PRIMARY"
+              />
+            </div>
+          )}
         </Typography>
       ),
     },

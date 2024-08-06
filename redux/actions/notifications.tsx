@@ -46,3 +46,15 @@ export const getEarlierNotifications = createAsyncThunk(
     }
   },
 );
+
+export const addNotificationFOrProgramRequest = createAsyncThunk(
+  'notification/addNotificationFOrProgramRequest',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await NOTIFICATIONS_API.post(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);
