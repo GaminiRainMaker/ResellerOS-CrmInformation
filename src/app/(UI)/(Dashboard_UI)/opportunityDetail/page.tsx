@@ -249,7 +249,9 @@ const OpportunityDetails = () => {
         <Typography
           name="Body 4/Regular"
           onClick={() => {
-            router.push(`/generateQuote?id=${record.id}&isView=${isView}`);
+            router.push(
+              `/generateQuote?id=${record.id}&isView=${getResultedValue(userInformation)}`,
+            );
           }}
           hoverOnText
           color={token?.colorInfo}
