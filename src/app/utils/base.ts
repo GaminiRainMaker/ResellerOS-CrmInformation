@@ -1273,3 +1273,18 @@ export const calculateTabBarPercentage = (
   const fillupPercentage = (filledValueLength / totalCount?.length) * 100;
   return Math.round(fillupPercentage);
 };
+
+// export const FormatJsonForSalesForce = (formData: any) => {
+//   let uniqueformdata = formData?.unique_form_data;
+//   let uniquetemplate = formData?.unique_template;
+
+//   let newArrr :any = [];
+//   uniquetemplate?.map((items:any)=>{
+//     let newArrForContent:any=[]
+//     if(items?.name !== "Text Content"){
+//       let findIndex = uniqueformdata?.find((itemIn:any)=> Object.keys(itemIn) )
+//     }
+//   })
+
+//   console.log('43543543543', uniqueformdata, uniquetemplate);
+// };

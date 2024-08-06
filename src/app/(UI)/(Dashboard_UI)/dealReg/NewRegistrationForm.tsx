@@ -49,7 +49,10 @@ const NewRegistrationForm: FC<any> = ({
   const [registeredPartnerData, setRegisteredPartnerData] = useState<any>();
   const [addressData, setAddressData] = useState<any>();
   const [partnerProgramOptions, setPartnerProgrramOptions] = useState();
+  const [selefPartnerOptions, setSelfPartnerOptions] = useState<any>();
   const [partnerOptions, setPartnerOptions] = useState<any>();
+  const [allAddedSelfPartnerProgramIDs, setAllAddedSelfPartnerProgramIDs] =
+    useState<any>();
   const [choosenIdProgram, setChoosedIdProgram] = useState<any>();
   const [allAddedPartnerProgramIDs, setAllAddedPartnerProgramIDs] =
     useState<any>();
@@ -83,6 +86,7 @@ const NewRegistrationForm: FC<any> = ({
 
   useEffect(() => {
     let partnerOptions: any = [];
+    let selfPartnerOptions: any = [];
 
     allPartnerFilterData?.map((partner: any) => {
       let newCheckArrForHaveProgrmIds: any = [];
@@ -92,13 +96,22 @@ const NewRegistrationForm: FC<any> = ({
         }
       });
       if (newCheckArrForHaveProgrmIds?.length > 0) {
-        partnerOptions?.push({
-          label: <CustomTextCapitalization text={partner?.partner} />,
-          value: partner?.id,
-        });
+        if (partner?.organization == userInformation?.organization) {
+          selfPartnerOptions?.push({
+            label: <CustomTextCapitalization text={partner?.partner} />,
+            value: partner?.id,
+          });
+        } else {
+          partnerOptions?.push({
+            label: <CustomTextCapitalization text={partner?.partner} />,
+            value: partner?.id,
+          });
+        }
       }
     });
+
     setPartnerOptions(partnerOptions);
+    setSelfPartnerOptions(selfPartnerOptions);
   }, [allPartnerFilterData, dataForTheObjects?.registeredPartners]);
 
   const findPartnerProgramsById = (chosenId: number) => {
@@ -246,7 +259,6 @@ const NewRegistrationForm: FC<any> = ({
       setShowModal(false);
     }
   };
-
   return (
     <>
       <Form
@@ -459,7 +471,7 @@ const NewRegistrationForm: FC<any> = ({
                                     <CommonSelect
                                       placeholder="Select"
                                       style={{width: '100%', height: '36px'}}
-                                      options={partnerOptions}
+                                      options={selefPartnerOptions}
                                       onChange={(value) => {
                                         findPartnerProgramsById(value);
                                       }}
@@ -485,6 +497,14 @@ const NewRegistrationForm: FC<any> = ({
                                     <CommonSelect
                                       placeholder="Select"
                                       options={partnerProgramOptions}
+                                      onChange={(e: any) => {
+                                        let AllIds: any =
+                                          allAddedPartnerProgramIDs?.length > 0
+                                            ? [...allAddedPartnerProgramIDs]
+                                            : [];
+                                        AllIds?.push(e);
+                                        setAllAddedPartnerProgramIDs(AllIds);
+                                      }}
                                       style={{width: '100%', height: '36px'}}
                                     />
                                   </SelectFormItem>
