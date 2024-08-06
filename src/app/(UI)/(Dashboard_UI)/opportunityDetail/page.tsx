@@ -322,8 +322,18 @@ const OpportunityDetails = () => {
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">
+      render: (text: string, record: any) => (
+        <Typography
+          name="Body 4/Regular"
+          style={{cursor: 'pointer'}}
+          hoverOnText
+          color={token?.colorInfo}
+          onClick={() => {
+            router.push(
+              `/dealRegDetail?id=${record.id}&opportunityId=${record.opportunity_id}&customerId=${record.customer_id}&contactId=${record.contact_id}`,
+            );
+          }}
+        >
           {formatDate(text, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),

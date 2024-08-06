@@ -43,14 +43,10 @@ const DealRegDetail = () => {
   const [showSubmitFormModal, setShowSubmitFormModal] = useState(false);
   const searchParams = useSearchParams();
   const getOpportunityId = searchParams.get('opportunityId');
-  const getPartnerProgramId = searchParams.get('program_id');
 
   useEffect(() => {
     if (getOpportunityId) {
       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-    }
-    if (getPartnerProgramId) {
-      dispatch(getDealRegByPartnerProgramId(Number(getPartnerProgramId)));
     }
   }, []);
 

@@ -214,7 +214,7 @@ const DealReg: React.FC = () => {
           style={{cursor: 'pointer'}}
           onClick={() => {
             router.push(
-              `/dealRegDetail?id=${record.dealReg_id}&opportunityId=${record.opportunity_id}&customerId=${record.customer_id}&contactId=${record.contact_id}`,
+              `/dealRegDetail?opportunityId=${record.opportunity_id}&customerId=${record.customer_id}&contactId=${record.contact_id}`,
             );
           }}
         />

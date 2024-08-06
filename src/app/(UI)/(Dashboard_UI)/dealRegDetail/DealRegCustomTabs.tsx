@@ -11,6 +11,7 @@ import CustomProgress from '@/app/components/common/os-progress/DealregProgressB
 import Typography from '@/app/components/common/typography';
 import {formatStatus} from '@/app/utils/CONSTANTS';
 import {calculateTabBarPercentage} from '@/app/utils/base';
+import {useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {queryAttributeField} from '../../../../../redux/actions/attributeField';
 import {
@@ -25,6 +26,7 @@ import DealRegDetailForm from './DealRegDetailForm';
 const DealRegCustomTabs: React.FC<any> = ({form}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
+  const searchParams = useSearchParams();
   const {
     data: DealRegData,
     getDealRegForNew,
@@ -34,9 +36,12 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
   const [tabItems, setTabItems] = useState([]);
   const {queryData} = useAppSelector((state) => state.attributeField);
   const [formData, setFormData] = useState<any>();
+  const getDealRegId = searchParams.get('id');
 
   useEffect(() => {
-    if (DealRegData && DealRegData.length > 0) {
+    if (getDealRegId && DealRegData && DealRegData.length > 0) {
+      setActiveKey(Number(getDealRegId));
+    } else if (DealRegData && DealRegData.length > 0) {
       setActiveKey(DealRegData[0]?.id);
     }
     dispatch(setFinalUpdatedDealRegData(DealRegData));
