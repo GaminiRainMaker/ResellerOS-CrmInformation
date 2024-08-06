@@ -11,14 +11,15 @@ import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-s
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {
+  AccountOptions,
+  PartnerOptions,
+  OpportunityOptions,
   attributeFieldDataTypeOptions,
   attributeFieldMapToOptions,
 } from '@/app/utils/CONSTANTS';
 import {Form} from 'antd';
-import {FC, useEffect} from 'react';
-import {
-  queryAttributeSection,
-} from '../../../../../redux/actions/attributeSection';
+import {FC, useEffect, useState} from 'react';
+import {queryAttributeSection} from '../../../../../redux/actions/attributeSection';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {AddStandardAttributeFieldInterface} from './superAdminDealReg.interface';
 
@@ -29,6 +30,7 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
+  const [mapOptions, setMapOptions] = useState<any>();
 
   const {data: attributeSectionData} = useAppSelector(
     (state) => state.attributeSection,
@@ -44,6 +46,18 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
       value: attributeSectionItem?.id,
     }),
   );
+
+  const setMapFromValuefun = (value: string) => {
+    if (value === 'Customer') {
+      setMapOptions(AccountOptions);
+    } else if (value === 'Opportunity') {
+      setMapOptions(OpportunityOptions);
+    } else if (value === 'Partner') {
+      setMapOptions(PartnerOptions);
+    } else {
+      setMapOptions([]);
+    }
+  };
 
   return (
     <>
@@ -167,6 +181,13 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
                   placeholder="Select"
                   style={{width: '100%'}}
                   options={attributeFieldMapToOptions}
+                  onChange={(e: string) => {
+                    setMapFromValuefun(e);
+                  }}
+                  allowClear
+                  onClear={() => {
+                    form.resetFields(['map_to']);
+                  }}
                 />
               </SelectFormItem>
             </Col>
@@ -179,7 +200,12 @@ const AddStandardAttributeField: FC<AddStandardAttributeFieldInterface> = ({
                 }
                 name="map_to"
               >
-                <CommonSelect placeholder="Select" style={{width: '100%'}} />
+                <CommonSelect
+                  placeholder="Select"
+                  style={{width: '100%'}}
+                  allowClear
+                  options={mapOptions}
+                />
               </SelectFormItem>
             </Col>
             <Col span={24}>

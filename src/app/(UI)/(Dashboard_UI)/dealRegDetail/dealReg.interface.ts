@@ -8,7 +8,7 @@ export interface AttributeData {
   data_type: string;
   order: number;
   map_from: string;
-  map_to: string | null;
+  map_to: string;
   help_text: string;
   attribute_section_id: number;
   is_active: boolean;
@@ -30,6 +30,7 @@ export interface AttributeData {
 }
 
 export interface TransformedChild {
+  [x: string]: any;
   id: number;
   label: string;
   data_type: string;
@@ -39,8 +40,10 @@ export interface TransformedChild {
   is_required: boolean;
   is_view: boolean;
   map_from: string;
+  map_to: string;
   name: string | null;
   order: number;
+  value?: any;
 }
 
 export interface TransformedData {
@@ -61,7 +64,6 @@ export interface UniqueFieldsProps {
   handleBlur: () => void;
   formData: any;
 }
-
 
 export interface SeparatedData {
   [opportunityId: number]: {

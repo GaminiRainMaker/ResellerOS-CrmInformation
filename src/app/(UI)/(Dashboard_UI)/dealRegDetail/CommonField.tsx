@@ -27,6 +27,7 @@ const CommonFields: FC<CommonFieldsProps> = ({
   formData,
 }) => {
   const {queryData} = useAppSelector((state) => state.attributeField);
+  const {data: DealRegData} = useAppSelector((state) => state.dealReg);
   const [commonTemplateData, setCommonTemplateData] = useState<any>();
 
   useEffect(() => {
@@ -63,6 +64,7 @@ const CommonFields: FC<CommonFieldsProps> = ({
           is_required: item.is_required,
           is_view: item.is_view,
           map_from: item.map_from,
+          map_to: item.map_to,
           name: item.name,
           order: item.order,
         });
@@ -77,6 +79,30 @@ const CommonFields: FC<CommonFieldsProps> = ({
   };
 
   const template = transformData(queryData);
+
+  useEffect(() => {
+    template?.forEach((section: any) => {
+      section?.children?.forEach((child: any, Childndex: any) => {
+        const required = child?.is_required;
+        if (child?.map_from && child?.map_to) {
+          const relevantData: any = DealRegData.find(
+            (item: any) => item?.id === activeKey,
+          );
+          if (relevantData && relevantData[child?.map_from]) {
+            let name =
+              'c_' +
+              convertToSnakeCase(child?.label) +
+              Childndex +
+              activeKey +
+              (required ? '_required' : '');
+            form.setFieldsValue({
+              [name]: relevantData[child?.map_from][child?.map_to],
+            });
+          }
+        }
+      });
+    });
+  }, []);
 
   const getInputComponent = (child: TransformedChild) => {
     const fieldName = convertToSnakeCase(child?.label);

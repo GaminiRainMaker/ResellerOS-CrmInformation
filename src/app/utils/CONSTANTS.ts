@@ -551,15 +551,15 @@ export const attributeFieldDataTypeOptions = [
 export const attributeFieldMapToOptions = [
   {
     label: 'Account',
-    value: 'account',
+    value: 'Customer',
   },
   {
     label: 'Opportunity',
-    value: 'opportunity',
+    value: 'Opportunity',
   },
   {
-    label: 'Partner Registration',
-    value: 'partner_registration',
+    label: 'Partner',
+    value: 'Partner',
   },
 ];
 
@@ -667,5 +667,58 @@ export const dummyValidationData = [
     createdAt: '2024-05-29T10:07:29.407Z',
     updatedAt: '2024-05-29T10:07:29.407Z',
     quote_config_id: null,
+  },
+];
+
+export const AccountOptions = [
+  {
+    label: 'Customer Name',
+    value: 'name',
+  },
+  {
+    label: 'Currency',
+    value: 'currency',
+  },
+  {
+    label: 'Industry',
+    value: 'industry',
+  },
+  {
+    label: 'Website',
+    value: 'website',
+  },
+];
+
+export const OpportunityOptions = [
+  {
+    label: 'Opportunity',
+    value: 'title',
+  },
+  {
+    label: 'Amount',
+    value: 'amount',
+  },
+  {
+    label: 'Stage',
+    value: 'stages',
+  },
+];
+
+export const PartnerOptions = [
+  {
+    label: 'Partner Name',
+    value: 'partner',
+  },
+  {
+    label: 'Email',
+    value: 'email',
+  },
+  {
+    label: 'Website',
+    value: 'website',
+  },
+  {
+    label: 'Industry',
+    value: 'industry',
   },
 ];
