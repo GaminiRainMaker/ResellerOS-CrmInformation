@@ -85,7 +85,7 @@ const CommonFields: FC<CommonFieldsProps> = ({
       section?.children?.forEach((child: any, Childndex: any) => {
         const required = child?.is_required;
         if (child?.map_from && child?.map_to) {
-          const relevantData: any = DealRegData.find(
+          const relevantData = DealRegData?.find(
             (item: any) => item?.id === activeKey,
           );
           if (relevantData && relevantData[child?.map_from]) {
