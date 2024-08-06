@@ -60,7 +60,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
   const [typeOfAddQuote, setTypeOfAddQuote] = useState<number>(1);
   const [allValuesForManual, setAllValuesForManual] = useState<boolean>(false);
-  const isView = getResultedValue(userInformation);
 
   useEffect(() => {
     if (existingQuoteId || existingGenerateQuoteId) {
@@ -410,7 +409,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
       );
     }
     if (newArrWithManual?.length === 0) {
-      router.push(`/generateQuote?id=${quotesArr[0]?.id}&isView=${isView}`);
+      router.push(`/generateQuote?id=${quotesArr[0]?.id}&isView=${getResultedValue(userInformation)}`);
       if (isGenerateQuotePage) {
         location.reload();
       }

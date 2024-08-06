@@ -84,7 +84,6 @@ const EditorFile = () => {
   const salesForceUrl = searchParams.get('instance_url');
   const salesForceFiledId = searchParams.get('file_Id');
   const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
-  const isView = getResultedValue(userInformation);
 
   // quoteId,instance_url,fileId
   // ============================== SalesForce Implementations ======================================
@@ -637,7 +636,9 @@ const EditorFile = () => {
       Number(getQUoteId),
     );
 
-    router?.push(`/generateQuote?id=${getQUoteId}&tab=2&isView=${isView}`);
+    router?.push(
+      `/generateQuote?id=${getQUoteId}&tab=2&isView=${getResultedValue(userInformation)}`,
+    );
   };
 
   const CancelEditing = () => {
@@ -647,7 +648,9 @@ const EditorFile = () => {
       id: getQuoteFileId,
     };
     dispatch(UpdateQuoteFileById(data));
-    router?.push(`/generateQuote?id=${getQUoteId}&isView=${isView}`);
+    router?.push(
+      `/generateQuote?id=${getQUoteId}&isView=${getResultedValue(userInformation)}`,
+    );
   };
 
   const syncShow = (value: string) => {
@@ -659,7 +662,9 @@ const EditorFile = () => {
     }
   };
   const checkForNewFile = async () => {
-    router.push(`/generateQuote?id=${Number(getQUoteId)}&isView=${isView}`);
+    router.push(
+      `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue(userInformation)}`,
+    );
   };
 
   const AddNewCloumnToMergedTable = async (value: any) => {
@@ -1091,7 +1096,7 @@ const EditorFile = () => {
                     buttontype="PRIMARY"
                     clickHandler={() => {
                       router?.push(
-                        `/generateQuote?id=${Number(getQUoteId)}&isView=${isView}`,
+                        `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue(userInformation)}`,
                       );
                     }}
                   />
@@ -1102,7 +1107,7 @@ const EditorFile = () => {
           width={600}
           onCancel={() => {
             router?.push(
-              `/generateQuote?id=${Number(getQUoteId)}&isView=${isView}`,
+              `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue(userInformation)}`,
             );
           }}
           open={returnBackModal}

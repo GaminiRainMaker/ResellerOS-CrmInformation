@@ -35,7 +35,7 @@ const AccountDetails = () => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const getCustomerID = searchParams.get('id');
-  const isView = getResultedValue(userInformation) ;
+
   const quotes =
     customerData &&
     customerData?.Opportunities?.flatMap(
@@ -137,7 +137,9 @@ const AccountDetails = () => {
           name="Body 4/Regular"
           color={token?.colorInfo}
           onClick={() => {
-            router.push(`/generateQuote?id=${record?.id}&isView=${isView}`);
+            router.push(
+              `/generateQuote?id=${record?.id}&isView=${getResultedValue(userInformation)}`,
+            );
           }}
         >
           {record?.file_name ??

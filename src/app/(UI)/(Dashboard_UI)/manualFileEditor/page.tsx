@@ -58,7 +58,6 @@ const EditorFile = () => {
   const salesForceUrl = searchParams.get('instance_url');
   const [showUpdateColumnModal, setShowUpdateColumnModal] =
     useState<boolean>(false);
-  const isView = getResultedValue(userInformation);
 
   const addNewLine = () => {
     let newArr = [
@@ -279,11 +278,13 @@ const EditorFile = () => {
         location?.reload();
         return;
       } else {
-        router.push(`/generateQuote?id=${Number(getQuoteID)}&isView=${isView}`);
+        router.push(
+          `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue(userInformation)}`,
+        );
         window.history.replaceState(
           null,
           '',
-          `/generateQuote?id=${Number(getQuoteID)}&isView=${isView}`,
+          `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue(userInformation)}`,
         );
         location?.reload();
       }

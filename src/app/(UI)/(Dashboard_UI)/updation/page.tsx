@@ -32,7 +32,6 @@ const UpdateGenerateQuote = () => {
   const [inputData, setInputData] = useState<any>(concernQuoteLineItemData);
   const router = useRouter();
   const hotRef = useRef(null);
-  const isView = getResultedValue(userInformation);
 
   useEffect(() => {
     dispatch(getQuoteById(Number(getUserID)));
@@ -47,7 +46,9 @@ const UpdateGenerateQuote = () => {
           color={token?.colorInfoBorder}
           cursor="pointer"
           onClick={() => {
-            router?.push(`/generateQuote?id=${getUserID}&isView=${isView}`);
+            router?.push(
+              `/generateQuote?id=${getUserID}&isView=${getResultedValue(userInformation)}`,
+            );
           }}
         >
           All Quotes
@@ -319,7 +320,9 @@ const UpdateGenerateQuote = () => {
         resultItem,
       );
     });
-    router?.push(`/generateQuote?id=${getUserID}&isView=${isView}`);
+    router?.push(
+      `/generateQuote?id=${getUserID}&isView=${getResultedValue(userInformation)}`,
+    );
   };
 
   return (
