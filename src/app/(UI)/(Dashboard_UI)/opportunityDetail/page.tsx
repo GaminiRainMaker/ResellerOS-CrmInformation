@@ -233,6 +233,8 @@ const OpportunityDetails = () => {
     setShowModalDelete(false);
   };
 
+  console.log('isView', isView);
+
   const Quotecolumns = [
     {
       title: (
