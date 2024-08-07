@@ -67,6 +67,7 @@ export interface UniqueFieldsProps {
 
 export interface SeparatedData {
   [opportunityId: number]: {
+    key: number;
     opportunity_id: number;
     dealReg_id: number;
     contact_id: number;

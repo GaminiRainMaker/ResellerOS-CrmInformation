@@ -17,7 +17,7 @@ import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {formatDate} from '@/app/utils/base';
 import {ArrowTopRightOnSquareIcon, PlusIcon} from '@heroicons/react/24/outline';
-import {TabsProps} from 'antd';
+import {Table, TabsProps} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -255,6 +255,7 @@ const DealReg: React.FC = () => {
 
       if (!separatedData[opportunity_id]) {
         separatedData[opportunity_id] = {
+          key: opportunity_id,
           opportunity_id,
           contact_id,
           customer_id,
@@ -294,10 +295,10 @@ const DealReg: React.FC = () => {
           rowExpandable: (record: any) => record.title !== 'Not Expandable',
         }}
         dataSource={finalDealRegData}
-        scroll
+        // scroll
         locale={locale}
         loading={false}
-        drag
+        // drag
       />
     );
   };
