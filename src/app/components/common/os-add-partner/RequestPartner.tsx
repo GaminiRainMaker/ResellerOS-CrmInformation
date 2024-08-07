@@ -59,7 +59,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
       setOpen(false);
     }
   };
-
+  console.log('allPartnerDataallPartnerData', allPartnerData);
   return (
     <>
       <Row

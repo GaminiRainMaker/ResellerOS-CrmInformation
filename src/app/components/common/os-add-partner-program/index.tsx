@@ -17,6 +17,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {AddPartnerInterface} from '../os-add-partner/os-add-partner.interface';
 import OsPartnerSelect from '../os-partner-select';
+import {usePathname} from 'next/navigation';
 
 const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
   form,
@@ -33,6 +34,7 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
+  const pathname = usePathname();
   const {userInformation} = useAppSelector((state) => state.user);
   const [partnerValue, setPartnerValue] = useState<number>();
   useEffect(() => {
@@ -64,6 +66,9 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
         }
       });
     } else {
+      if (pathname === '/partners') {
+        partnerProgramObj.admin_approved = false;
+      }
       dispatch(insertPartnerProgram(partnerProgramObj)).then((d: any) => {
         if (d?.payload) {
           form?.resetFields();
@@ -76,7 +81,7 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
               let newArr: any =
                 finalProgramOptions?.length > 0
                   ? [newObj, ...finalProgramOptions]
-                  : [];
+                  : [newObj];
               setFinalProgramOptions(newArr);
             }
           }

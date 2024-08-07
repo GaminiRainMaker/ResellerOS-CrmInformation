@@ -122,7 +122,6 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
         const parsedUniqueFormData = finalDealReg?.unique_form_data?.[0]
           ? JSON.parse(finalDealReg.unique_form_data[0])
           : {};
-
         finalCommonFieldObject = {
           ...parsedCommonFormData,
           ...commonFieldObject,

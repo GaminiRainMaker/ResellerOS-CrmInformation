@@ -175,11 +175,19 @@ const SuperAdminPartner: React.FC = () => {
   //   }
   // }, [JSON.stringify(allPartnerData), activeTab]);
 
-  const updateRequest = async (type: boolean, id: number, requesId: number) => {
+  const updateRequest = async (
+    type: boolean,
+    id: number,
+    requesId: number,
+    partner_id: number,
+    partner_program_id: number,
+  ) => {
     const Data = {
       id,
       is_approved: type,
       requested_by: requesId,
+      partner_id,
+      partner_program_id,
     };
     await dispatch(updateAssignPartnerProgramById(Data));
     getAllPartnerData();
@@ -364,6 +372,8 @@ const SuperAdminPartner: React.FC = () => {
                   true,
                   record?.AssignPartnerProgram?.id,
                   record?.AssignPartnerProgram?.requested_by,
+                  record?.Partner?.id,
+                  record?.id,
                 );
               } else {
                 notification?.open({
@@ -383,6 +393,8 @@ const SuperAdminPartner: React.FC = () => {
                 false,
                 record?.AssignPartnerProgram?.id,
                 record?.AssignPartnerProgram?.requested_by,
+                record?.Partner?.id,
+                record?.id,
               );
             }}
           />
@@ -692,6 +704,8 @@ const SuperAdminPartner: React.FC = () => {
                   true,
                   record?.AssignPartnerProgram?.id,
                   record?.AssignPartnerProgram?.requested_by,
+                  record?.Partner?.id,
+                  record?.id,
                 );
               }}
             />{' '}
@@ -703,6 +717,8 @@ const SuperAdminPartner: React.FC = () => {
                   false,
                   record?.AssignPartnerProgram?.id,
                   record?.AssignPartnerProgram?.requested_by,
+                  record?.Partner?.id,
+                  record?.id,
                 );
               }}
             />

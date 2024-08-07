@@ -18,6 +18,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import CommonSelect from '../os-select';
 import {AddPartnerInterface} from './os-add-partner.interface';
+import {usePathname} from 'next/navigation';
 
 const AddPartner: React.FC<AddPartnerInterface> = ({
   form,
@@ -33,6 +34,8 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
   setPartnerValue,
 }) => {
   const [token] = useThemeToken();
+
+  const pathname = usePathname();
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
 
@@ -61,6 +64,9 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
       }
       setOpen && setOpen(false);
     } else {
+      if (pathname === '/partners') {
+        partnerObj.admin_approved = false;
+      }
       await dispatch(insertPartner(partnerObj)).then((d: any) => {
         if (d?.payload) {
           if (partnerOptions) {
@@ -68,9 +74,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
               label: d?.payload?.partner,
               value: d?.payload?.id,
             };
-            form?.setFieldsValue({
-              partner_id: d?.payload?.id,
-            });
+            form?.setFieldsValue(['partner_id', d?.payload?.id]);
             setPartnerValue(d?.payload?.id);
             if (newObj) {
               let newArr: any =

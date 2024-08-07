@@ -34,14 +34,22 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
   );
   const [uniqueTemplateData, setUniqueTemplateData] = useState<any>();
 
+  const convertToSnakeCase = (input: string): string => {
+    return input
+      ?.toLowerCase()
+      ?.replace(/\s+/g, '_')
+      ?.replace(/[^a-z0-9_]/g, '');
+  };
   const getInputComponent = (itemCon: any) => {
     const fieldName = convertToSnakeCase(itemCon?.label);
     const initialValue = uniqueTemplateData?.[fieldName];
+    console.log('435345345345', fieldName, initialValue, uniqueTemplateData);
+
     const commonProps = {defaultValue: initialValue, onBlur: handleBlur};
+
     if (itemCon?.name === 'Date' && initialValue) {
       commonProps.defaultValue = moment(initialValue);
     }
-
     switch (itemCon?.name) {
       case 'Table':
         return (
@@ -197,13 +205,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     }
   };
 
-  const convertToSnakeCase = (input: string): string => {
-    return input
-      ?.toLowerCase()
-      ?.replace(/\s+/g, '_')
-      ?.replace(/[^a-z0-9_]/g, '');
-  };
-
   useEffect(() => {
     if (formData && formData?.unique_form_data) {
       const uniqueFormData = formData?.unique_form_data;
@@ -233,6 +234,15 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           const fontSize = allContentItem?.FontSize || 'default';
           const required = allContentItem?.required;
 
+          // console.log(
+          //   '456463453453',
+          //   'u_' +
+          //     convertToSnakeCase(allContentItem.label) +
+          //     itemIndex +
+          //     activeKey +
+          //     (required ? '_required' : ''),
+          //   uniqueTemplateData,
+          // );
           if (allContentItem?.name === 'Text Content') {
             return (
               <Col span={24} style={{textAlign: alignment, padding: '24px'}}>
@@ -242,6 +252,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
               </Col>
             );
           }
+
           return (
             <Col
               span={allContentItem.name === 'Line Break' ? 24 : 12}

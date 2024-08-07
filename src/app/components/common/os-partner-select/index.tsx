@@ -152,6 +152,7 @@ const OsPartnerSelect: FC<{
           placeholder="Select"
           allowClear
           style={{width: '100%'}}
+          showSearch
           // value={partnerValue ? partnerValue : ''}
           options={
             partnerOptions &&

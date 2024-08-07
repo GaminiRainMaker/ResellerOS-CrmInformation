@@ -34,7 +34,6 @@ const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
   const [finalProgramOptions, setFinalProgramOptions] = useState<any>();
   const dispatch = useAppDispatch();
   const pathname = usePathname();
-
   useEffect(() => {
     let partnerProgramsRequestOptions: any = [];
 
@@ -43,10 +42,16 @@ const OsPartnerProgramSelect: FC<OsPartnerProgramSelectInterface> = ({
     );
     allPartnerData?.[findIndexOfThePartner]?.PartnerPrograms?.map(
       (program: any) => {
-        partnerProgramsRequestOptions?.push({
-          label: <CustomTextCapitalization text={program?.partner_program} />,
-          value: program?.id,
-        });
+        if (
+          !program?.AssignPartnerProgram ||
+          (program?.AssignPartnerProgram &&
+            program?.AssignPartnerProgram?.is_approved === false)
+        ) {
+          partnerProgramsRequestOptions?.push({
+            label: <CustomTextCapitalization text={program?.partner_program} />,
+            value: program?.id,
+          });
+        }
       },
     );
     setFinalProgramOptions(partnerProgramsRequestOptions);

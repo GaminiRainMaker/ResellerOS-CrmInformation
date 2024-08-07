@@ -213,27 +213,9 @@ const Partners: React.FC = () => {
             }
           }}
         >
-          {record?.form_data && !record?.form_data?.includes(null) ? (
-            'View'
-          ) : (
-            <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
-              {' '}
-              <div style={{marginTop: '10px'}}> {'No Template'}</div>{' '}
-              <OsButton
-                disabled={record?.Notifications?.length > 0}
-                clickHandler={() => {
-                  addNotificationFortemplate(
-                    Number(record?.id),
-                    record?.partner_program,
-                  );
-                }}
-                text={
-                  record?.Notifications?.length > 0 ? 'Requested' : 'Request'
-                }
-                buttontype="PRIMARY"
-              />
-            </div>
-          )}
+          {record?.form_data && !record?.form_data?.includes(null)
+            ? 'View'
+            : 'No Template'}
         </Typography>
       ),
     },
@@ -413,27 +395,9 @@ const Partners: React.FC = () => {
             }
           }}
         >
-          {record?.form_data ? (
-            'View'
-          ) : (
-            <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
-              {' '}
-              <div style={{marginTop: '10px'}}> {'No Template'}</div>{' '}
-              <OsButton
-                disabled={record?.Notifications?.length > 0}
-                clickHandler={() => {
-                  addNotificationFortemplate(
-                    Number(record?.id),
-                    record?.partner_program,
-                  );
-                }}
-                text={
-                  record?.Notifications?.length > 0 ? 'Requested' : 'Request'
-                }
-                buttontype="PRIMARY"
-              />
-            </div>
-          )}
+          {record?.form_data && !record?.form_data?.includes(null)
+            ? 'View'
+            : 'No Template'}
         </Typography>
       ),
     },
@@ -471,13 +435,48 @@ const Partners: React.FC = () => {
         dataIndex: 'Action',
         key: 'Action',
         render: (_: string, record: any) => (
-          <OsButton
-            buttontype="PRIMARY"
-            text="Request"
-            clickHandler={() => {
-              handleAddNewAssignedPartnerProgramRequest(record?.id, userData);
-            }}
-          />
+          console.log('recordrecord', record),
+          (
+            <>
+              {!record?.AssignPartnerProgram ? (
+                <OsButton
+                  buttontype="PRIMARY"
+                  text="Request"
+                  clickHandler={() => {
+                    handleAddNewAssignedPartnerProgramRequest(
+                      record?.id,
+                      userData,
+                    );
+                  }}
+                />
+              ) : (
+                <>
+                  <Typography
+                    name="Body 4/Medium"
+                    hoverOnText
+                    color={token?.colorLink}
+                  >
+                    {record?.AssignPartnerProgram?.is_approved ? (
+                      'Appproved for your Organization'
+                    ) : record?.AssignPartnerProgram?.is_approved === null ? (
+                      'Requested For the Access'
+                    ) : (
+                      <OsButton
+                        buttontype="PRIMARY"
+                        text="Request"
+                        clickHandler={() => {
+                          handleAddNewAssignedPartnerProgramRequest(
+                            record?.id,
+                            userData,
+                          );
+                        }}
+                      />
+                    )}
+                  </Typography>
+                </>
+              )}
+            </>
+          )
         ),
       };
       newArr?.push(newObj);
