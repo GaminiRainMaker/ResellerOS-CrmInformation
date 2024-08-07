@@ -25,7 +25,7 @@ import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import CommonStageSelect from '@/app/components/common/os-stage-select';
-import OsTable from '@/app/components/common/os-table';
+import CommonTable from '@/app/components/common/os-table/CommonTable';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
 import {StageValue} from '@/app/utils/CONSTANTS';
@@ -57,10 +57,10 @@ const CrmOpportunity: React.FC = () => {
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const {
-    data: opportunityData,
     loading,
     deletedCount: countDeletedOpp,
     opportunity,
+    queryOpportunityData,
   } = useAppSelector((state) => state.Opportunity);
   const {filteredData: customerData} = useAppSelector(
     (state) => state.customer,
@@ -76,16 +76,21 @@ const CrmOpportunity: React.FC = () => {
   const [query, setQuery] = useState<{
     opportunity: string | null;
     customer: string | null;
+    pageSize: number;
+    pageNumber: number;
   }>({
     opportunity: null,
     customer: null,
+    pageSize: 10,
+    pageNumber: 1,
   });
   const searchQuery = useDebounceHook(query, 500);
 
   useEffect(() => {
     dispatch(queryOpportunity(searchQuery));
+
     dispatch(queryContact(''));
-    dispatch(queryCustomer(''));
+    dispatch(queryCustomer({}));
     dispatch(getAllOpportunity());
   }, [searchQuery]);
 
@@ -104,14 +109,14 @@ const CrmOpportunity: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{customerData?.length}</div>,
+      primary: <div>{customerData?.total ?? 0}</div>,
       secondry: 'Customers',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
-      primary: <div>{opportunity?.length}</div>,
+      primary: <div>{queryOpportunityData?.total ?? 0}</div>,
       secondry: 'Opportunities',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
@@ -282,32 +287,27 @@ const CrmOpportunity: React.FC = () => {
   };
 
   useEffect(() => {
-    if (activeTab && opportunityData?.length > 0) {
+    if (activeTab && queryOpportunityData?.opportunity?.length > 0) {
+      const finalData = queryOpportunityData?.opportunity;
       const quoteItems =
         activeTab === '5'
-          ? opportunityData?.filter((item: any) => item.stages === 'Develop')
+          ? finalData?.filter((item: any) => item.stages === 'Develop')
           : activeTab == '1'
-            ? opportunityData
+            ? finalData
             : activeTab === '6'
-              ? opportunityData?.filter((item: any) => item.stages === 'Commit')
+              ? finalData?.filter((item: any) => item.stages === 'Commit')
               : activeTab === '4'
-                ? opportunityData?.filter(
-                    (item: any) => item.stages === 'Negotiate',
-                  )
+                ? finalData?.filter((item: any) => item.stages === 'Negotiate')
                 : activeTab === '3'
-                  ? opportunityData?.filter(
-                      (item: any) => item.stages === 'Qualify',
-                    )
+                  ? finalData?.filter((item: any) => item.stages === 'Qualify')
                   : activeTab === '2'
-                    ? opportunityData?.filter(
-                        (item: any) => item.stages === 'Prove',
-                      )
-                    : opportunityData;
+                    ? finalData?.filter((item: any) => item.stages === 'Prove')
+                    : finalData;
       setActiveOpportunity(quoteItems);
     } else {
       setActiveOpportunity([]);
     }
-  }, [activeTab, opportunityData]);
+  }, [activeTab, queryOpportunityData]);
 
   const tabItems: TabsProps['items'] = [
     {
@@ -366,11 +366,19 @@ const CrmOpportunity: React.FC = () => {
   ];
 
   const uniqueOpportunity = Array?.from(
-    new Set(opportunityData?.map((opportunity: any) => opportunity?.title)),
+    new Set(
+      queryOpportunityData?.opportunity?.map(
+        (opportunity: any) => opportunity?.title,
+      ),
+    ),
   );
 
   const uniqueCustomer = Array?.from(
-    new Set(opportunityData?.map((contact: any) => contact?.Customer?.name)),
+    new Set(
+      queryOpportunityData?.opportunity?.map(
+        (contact: any) => contact?.Customer?.name,
+      ),
+    ),
   );
 
   const onFinish = () => {
@@ -402,6 +410,14 @@ const CrmOpportunity: React.FC = () => {
         setShowDrawer(false);
         form.resetFields();
       }
+    });
+  };
+
+  const handleTableChange = (pagination: any) => {
+    setQuery({
+      ...query,
+      pageSize: pagination.pageSize,
+      pageNumber: pagination.current,
     });
   };
 
@@ -536,6 +552,8 @@ const CrmOpportunity: React.FC = () => {
                       setQuery({
                         opportunity: null,
                         customer: null,
+                        pageSize: query.pageSize,
+                        pageNumber: query.pageNumber,
                       });
                     }}
                   >
@@ -548,14 +566,21 @@ const CrmOpportunity: React.FC = () => {
               key: `${index + 1}`,
               label: tabItem?.label,
               children: (
-                <OsTable
+                <CommonTable
                   key={tabItem?.key}
                   columns={OpportunityColumns}
                   dataSource={activeOpportunity}
-                  scroll
                   loading={loading}
                   locale={locale}
                   rowSelection={rowSelection}
+                  pagination={{
+                    current: query?.pageNumber,
+                    pageSize: query?.pageSize,
+                    total: queryOpportunityData?.total,
+                    showSizeChanger: true,
+                  }}
+                  onChange={handleTableChange}
+                  rowKey="id"
                 />
               ),
               ...tabItem,

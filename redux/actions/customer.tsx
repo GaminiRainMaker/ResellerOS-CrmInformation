@@ -74,11 +74,7 @@ export const queryCustomer = createAsyncThunk(
   'customer/query',
   async (query: any, thunkApi) => {
     try {
-      const obj = {
-        customer: query?.customer,
-        contact: query?.contact,
-      };
-      const res = await CUSTOMER_API.query(obj);
+      const res = await CUSTOMER_API.query(query);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

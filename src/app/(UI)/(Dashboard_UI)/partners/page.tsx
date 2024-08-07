@@ -45,7 +45,15 @@ const Partners: React.FC = () => {
   const [allPartnerAnalyticData, setAllAnalyticPartnerData] = useState<any>();
   const [formData, setformData] = useState<any>();
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
-  const [queryDataa, setQueryData] = useState<any>();
+  const [queryDataa, setQueryData] = useState<{
+    partnerQuery: string;
+    partnerprogramQuery: string;
+    size: number;
+  }>({
+    partnerQuery: '',
+    partnerprogramQuery: '',
+    size: 10,
+  });
   const [requestPartnerLoading, setRequestPartnerLoading] =
     useState<boolean>(false);
   const [userData, setUserData] = useState<any>();
@@ -101,6 +109,7 @@ const Partners: React.FC = () => {
 
   let organizationNameForRequest = userData?.organization;
   const searchQuery = useDebounceHook(queryDataa, 500);
+
   useEffect(() => {
     dispatch(getAllPartnerandProgramFilterData(searchQuery))?.then(
       (payload: any) => {
@@ -656,7 +665,11 @@ const Partners: React.FC = () => {
                     style={{cursor: 'pointer'}}
                     color={token?.colorLink}
                     onClick={() => {
-                      setQueryData({});
+                      setQueryData({
+                        partnerQuery: '',
+                        partnerprogramQuery: '',
+                        size: 10,
+                      });
                     }}
                   >
                     Reset

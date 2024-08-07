@@ -74,11 +74,7 @@ export const queryOpportunity = createAsyncThunk(
   'opportunity/query',
   async (query: any, thunkApi) => {
     try {
-      const obj = {
-        customer: query?.customer,
-        opportunity: query?.opportunity,
-      };
-      const res = await OPPORTUNITY_API.query(obj);
+      const res = await OPPORTUNITY_API.query(query);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

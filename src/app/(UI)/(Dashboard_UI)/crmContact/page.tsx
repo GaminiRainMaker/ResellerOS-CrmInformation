@@ -62,7 +62,7 @@ const CrmAccount: React.FC = () => {
   const {filteredData: customerData} = useAppSelector(
     (state) => state.customer,
   );
-  const {data: opportunityData} = useAppSelector((state) => state.Opportunity);
+  const {queryOpportunityData} = useAppSelector((state) => state.Opportunity);
   const {
     loading,
     filteredData,
@@ -80,8 +80,8 @@ const CrmAccount: React.FC = () => {
 
   useEffect(() => {
     dispatch(queryContact(searchQuery));
-    dispatch(queryCustomer(''));
-    dispatch(queryOpportunity(''));
+    dispatch(queryCustomer({}));
+    dispatch(queryOpportunity({}));
     dispatch(getAllbillingContact(''));
   }, [searchQuery]);
 
@@ -118,14 +118,14 @@ const CrmAccount: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{customerData?.length}</div>,
+      primary: <div>{customerData?.total ?? 0}</div>,
       secondry: 'Customers',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
-      primary: <div>{opportunityData?.length}</div>,
+      primary: <div>{queryOpportunityData?.total ?? 0}</div>,
       secondry: 'Opportunities',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
