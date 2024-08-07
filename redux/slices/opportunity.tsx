@@ -22,6 +22,7 @@ type OpportunityState = {
   deletedCount?: any;
   stageValue?: string;
   getAllOpportunityDataByOrganization: any;
+  queryOpportunityData: any;
 };
 const initialState: OpportunityState = {
   loading: false,
@@ -33,6 +34,10 @@ const initialState: OpportunityState = {
   getAllOpportunityDataByOrganization: [],
   deletedCount: null,
   stageValue: '',
+  queryOpportunityData: {
+    data: [],
+    total: 0,
+  },
 };
 
 const opportunitySlice = createSlice({
@@ -163,7 +168,7 @@ const opportunitySlice = createSlice({
         queryOpportunity.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
-          state.data = action.payload;
+          state.queryOpportunityData = action.payload;
         },
       )
       .addCase(

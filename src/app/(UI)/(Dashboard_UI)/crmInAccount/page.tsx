@@ -54,7 +54,11 @@ import {queryOpportunity} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';
 import {setCustomerProfile} from '../../../../../redux/slices/customer';
-import { AlphabetsRegex, AlphabetsRegexWithSpecialChr, emailRegex } from '@/app/utils/base';
+import {
+  AlphabetsRegex,
+  AlphabetsRegexWithSpecialChr,
+  emailRegex,
+} from '@/app/utils/base';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -79,7 +83,7 @@ const CrmInformation: React.FC = () => {
   const {filteredData: billingData} = useAppSelector(
     (state) => state.billingContact,
   );
-  const {data: OpportunityData} = useAppSelector((state) => state.Opportunity);
+  const {queryOpportunityData} = useAppSelector((state) => state.Opportunity);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deletedData, setDeletedData] = useState<any>();
@@ -105,7 +109,7 @@ const CrmInformation: React.FC = () => {
       behavior: 'smooth',
     });
     dispatch(queryCustomer(searchQuery));
-    dispatch(queryOpportunity(''));
+    dispatch(queryOpportunity({}));
     dispatch(queryContact(''));
     dispatch(getAllCustomer(''));
   }, [searchQuery]);
@@ -170,7 +174,7 @@ const CrmInformation: React.FC = () => {
     },
     {
       key: 2,
-      primary: <div>{OpportunityData?.length}</div>,
+      primary: <div>{queryOpportunityData?.total ?? 0}</div>,
       secondry: 'Opportunities',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
