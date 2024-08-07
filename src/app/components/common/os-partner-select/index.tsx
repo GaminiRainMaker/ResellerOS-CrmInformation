@@ -4,7 +4,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import {partnerProgramFilter} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form} from 'antd';
+import {Form, Select} from 'antd';
 import {FC, useEffect, useState} from 'react';
 import {getAllPartnerandProgramFilterData} from '../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -18,6 +18,7 @@ import CommonSelect from '../os-select';
 import Typography from '../typography';
 import {getAssignPartnerProgramByOrganization} from '../../../../../redux/actions/assignPartnerProgram';
 import {usePathname} from 'next/navigation';
+import {Option} from 'antd/es/mentions';
 
 const OsPartnerSelect: FC<{
   // form: FormInstance;
@@ -67,12 +68,13 @@ const OsPartnerSelect: FC<{
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [selectedPartnerId, setSelectedPartnerId] = useState<number>();
   const [partnerOptions, setPartnerOptions] = useState<any>();
+  const [searchOPtions, setSearchOptions] = useState<any>();
 
   useEffect(() => {
     let newOptionArr: any = [];
     allPartnerFilterData?.map((items: any) => {
       newOptionArr?.push({
-        label: <CustomTextCapitalization text={items?.partner} />,
+        label: items?.partner,
         value: items?.id,
       });
     });
@@ -83,7 +85,7 @@ const OsPartnerSelect: FC<{
       let newOptionArr: any = [];
       allPartnerData?.map((items: any) => {
         newOptionArr?.push({
-          label: <CustomTextCapitalization text={items?.partner} />,
+          label: items?.partner,
           value: items?.id,
         });
       });
@@ -105,7 +107,7 @@ const OsPartnerSelect: FC<{
         let newOptionArr: any = [];
         payload?.payload?.AllPartner?.map((items: any) => {
           newOptionArr?.push({
-            label: <CustomTextCapitalization text={items?.partner} />,
+            label: items?.partner,
             value: items?.id,
           });
         });
@@ -141,6 +143,30 @@ const OsPartnerSelect: FC<{
   //     partner_id: partnerValue,
   //   });
   // }, [partnerValue]);
+
+  // useEffect(()=>{
+  //   if(searchOPtions?.length > 0){
+
+  //   }
+
+  // },[searchOPtions])
+
+  const [filterOptionsPartner, setFilterOptionsPartner] = useState<any>();
+  useEffect(() => {
+    let newArrr: any = partnerOptions?.length > 0 ? [...partnerOptions] : [];
+    let newOptions: any = [];
+    newArrr?.filter((item: any) => {
+      if (
+        item?.label?.charAt(0)?.toLowerCase() ==
+        searchOPtions?.charAt(0)?.toLowerCase()
+      ) {
+        newOptions?.push(item);
+      }
+    });
+
+    setFilterOptionsPartner(newOptions);
+  }, [searchOPtions]);
+  console.log('34543543', searchOPtions?.length > 0, filterOptionsPartner);
   return (
     <>
       <Form.Item
@@ -153,18 +179,23 @@ const OsPartnerSelect: FC<{
           allowClear
           style={{width: '100%'}}
           showSearch
+          onSearch={(e) => {
+            setSearchOptions(e);
+          }}
           // value={partnerValue ? partnerValue : ''}
           options={
-            partnerOptions &&
-            partnerOptions?.sort((a: any, b: any) => {
-              if (a.label < b.label) {
-                return -1;
-              }
-              if (a.label > b.label) {
-                return 1;
-              }
-              return 0;
-            })
+            searchOPtions?.length > 0
+              ? filterOptionsPartner
+              : partnerOptions &&
+                partnerOptions?.sort((a: any, b: any) => {
+                  if (a.label < b.label) {
+                    return -1;
+                  }
+                  if (a.label > b.label) {
+                    return 1;
+                  }
+                  return 0;
+                })
           }
           onChange={(e) => {
             setPartnerValue && setPartnerValue(e);
