@@ -35,7 +35,7 @@ const initialState: OpportunityState = {
   deletedCount: null,
   stageValue: '',
   queryOpportunityData: {
-    data: [],
+    opportunity: [],
     total: 0,
   },
 };

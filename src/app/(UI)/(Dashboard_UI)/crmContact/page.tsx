@@ -80,7 +80,7 @@ const CrmAccount: React.FC = () => {
 
   useEffect(() => {
     dispatch(queryContact(searchQuery));
-    dispatch(queryCustomer(''));
+    dispatch(queryCustomer({}));
     dispatch(queryOpportunity({}));
     dispatch(getAllbillingContact(''));
   }, [searchQuery]);
@@ -118,7 +118,7 @@ const CrmAccount: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{customerData?.length}</div>,
+      primary: <div>{customerData?.total ?? 0}</div>,
       secondry: 'Customers',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,

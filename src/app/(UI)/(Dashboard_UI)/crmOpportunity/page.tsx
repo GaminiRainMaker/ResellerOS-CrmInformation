@@ -25,11 +25,11 @@ import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import CommonStageSelect from '@/app/components/common/os-stage-select';
-import OsTable from '@/app/components/common/os-table';
+import CommonTable from '@/app/components/common/os-table/CommonTable';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import OsTabs from '@/app/components/common/os-tabs';
 import {StageValue} from '@/app/utils/CONSTANTS';
-import {Form, MenuProps, Table, TabsProps} from 'antd';
+import {Form, MenuProps, TabsProps} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -44,7 +44,6 @@ import {
   updateOpportunity,
 } from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import CommonTable from '@/app/components/common/os-table/CommonTable';
 
 const CrmOpportunity: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -91,7 +90,7 @@ const CrmOpportunity: React.FC = () => {
     dispatch(queryOpportunity(searchQuery));
 
     dispatch(queryContact(''));
-    dispatch(queryCustomer(''));
+    dispatch(queryCustomer({}));
     dispatch(getAllOpportunity());
   }, [searchQuery]);
 
@@ -110,14 +109,14 @@ const CrmOpportunity: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{customerData?.length}</div>,
+      primary: <div>{customerData?.total ?? 0}</div>,
       secondry: 'Customers',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
-      primary: <div>{opportunity?.length}</div>,
+      primary: <div>{queryOpportunityData?.total ?? 0}</div>,
       secondry: 'Opportunities',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
@@ -553,8 +552,8 @@ const CrmOpportunity: React.FC = () => {
                       setQuery({
                         opportunity: null,
                         customer: null,
-                        pageSize: 10,
-                        pageNumber: 1,
+                        pageSize: query.pageSize,
+                        pageNumber: query.pageNumber,
                       });
                     }}
                   >
