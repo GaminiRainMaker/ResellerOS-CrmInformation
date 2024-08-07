@@ -13,7 +13,7 @@ import {formatStatus} from '@/app/utils/CONSTANTS';
 import {calculateTabBarPercentage} from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import {queryAttributeField} from '../../../../../redux/actions/attributeField';
+import {queryAttributeFieldForForm} from '../../../../../redux/actions/attributeField';
 import {
   getDealRegById,
   updateDealRegById,
@@ -81,13 +81,14 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
         expiration_date: finalDealReg?.expiration_date,
         submitted_date: finalDealReg?.submitted_date,
         status: finalDealReg?.status,
+        type: finalDealReg?.type,
       };
       setFormData(obj);
     }
   }, [getDealRegForNew]);
 
   useEffect(() => {
-    dispatch(queryAttributeField(''));
+    dispatch(queryAttributeFieldForForm(''));
   }, [dispatch]);
 
   const updateDealRegFinalData = (activeKey: any, formObj: any) => {
@@ -131,12 +132,13 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
           ...uniqueFieldObject,
         };
       }
-
       const tabPercentage = calculateTabBarPercentage(
         finalDealReg?.PartnerProgram?.form_data,
         queryData,
         finalUniqueFieldObject,
         finalCommonFieldObject,
+        false,
+        finalDealReg?.type,
       );
 
       const obj = {
@@ -202,15 +204,15 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
     const newTabItems =
       finalUpdatedDealRegData &&
       finalUpdatedDealRegData?.map((element: any) => {
-        const {Partner, PartnerProgram, id} = element;
+        const {Partner, PartnerProgram, id, type} = element;
         const isActive = activeKey?.toString() === id?.toString();
-
         const tabPercentage: number = calculateTabBarPercentage(
           element?.PartnerProgram?.form_data,
           queryData,
           element?.unique_form_data,
           element?.common_form_data,
           true,
+          type,
         );
         const headerStyle = {
           background: isActive ? token.colorInfo : token.colorInfoBg,

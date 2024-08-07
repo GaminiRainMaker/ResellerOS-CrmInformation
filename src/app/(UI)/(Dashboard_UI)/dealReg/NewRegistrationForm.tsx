@@ -194,7 +194,7 @@ const NewRegistrationForm: FC<any> = ({
         ...(registeredPartnerData.selfRegisteredPartners ?? [])?.map(
           (obj: any) => ({
             ...obj,
-            type: 'self registered',
+            type: 'self_registered',
           }),
         ),
       ];

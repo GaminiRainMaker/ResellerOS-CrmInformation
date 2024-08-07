@@ -28,7 +28,10 @@ const initialState: CustomerState = {
   error: null,
   data: [],
   customer: [],
-  filteredData: [],
+  filteredData: {
+    account: [],
+    total: 0,
+  },
   customerProfileByIdData: {},
   customerProfile: '',
   customerDataById: {},

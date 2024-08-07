@@ -249,6 +249,7 @@ export const API = {
     QUERY: 'attributeField/query',
     DeleteById: '/attributeField/deleteById',
     UpdateAttributeFieldById: '/attributeField/updateAttributeFieldById',
+    QueryAttributeFieldForForm: '/attributeField/queryAttributeFieldForForm',
   },
   NOTIFICATION: {
     INDEX: '/notification',

@@ -53,3 +53,19 @@ export const queryAttributeField = createAsyncThunk(
     }
   },
 );
+
+export const queryAttributeFieldForForm = createAsyncThunk(
+  'attributeField/queryAttributeFieldForForm',
+  async (query: any, thunkApi) => {
+    try {
+      const obj = {
+        fieldLabel: query?.fieldLabel,
+        sectionName: query?.sectionName,
+      };
+      const res = await ATTRIBUTE_FIELD_API.queryAttributeFieldForForm(obj);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

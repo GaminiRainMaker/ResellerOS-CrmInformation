@@ -29,9 +29,14 @@ import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
-import OsTable from '@/app/components/common/os-table';
+import CommonTable from '@/app/components/common/os-table/CommonTable';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import {Form, MenuProps, notification} from 'antd';
+import {
+  AlphabetsRegex,
+  AlphabetsRegexWithSpecialChr,
+  emailRegex,
+} from '@/app/utils/base';
+import {Form, MenuProps} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -45,7 +50,6 @@ import {
 } from '../../../../../redux/actions/billingContact';
 import {
   deleteCustomers,
-  getAllCustomer,
   insertCustomer,
   queryCustomer,
   updateCustomer,
@@ -54,7 +58,6 @@ import {queryOpportunity} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';
 import {setCustomerProfile} from '../../../../../redux/slices/customer';
-import { AlphabetsRegex, AlphabetsRegexWithSpecialChr, emailRegex } from '@/app/utils/base';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -70,16 +73,13 @@ const CrmInformation: React.FC = () => {
   const [activeKeyForTabs, setActiveKeyForTabs] = useState<any>(1);
   const [newAddContact, setNewAddContact] = useState<Boolean>(false);
 
-  const {
-    loading,
-    filteredData,
-    customerProfile,
-    data: customerAllData,
-  } = useAppSelector((state) => state.customer);
+  const {loading, filteredData, customerProfile} = useAppSelector(
+    (state) => state.customer,
+  );
   const {filteredData: billingData} = useAppSelector(
     (state) => state.billingContact,
   );
-  const {data: OpportunityData} = useAppSelector((state) => state.Opportunity);
+  const {queryOpportunityData} = useAppSelector((state) => state.Opportunity);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deletedData, setDeletedData] = useState<any>();
@@ -93,9 +93,13 @@ const CrmInformation: React.FC = () => {
   const [query, setQuery] = useState<{
     customer: string | null;
     contact: string | null;
+    pageSize: number;
+    pageNumber: number;
   }>({
     customer: null,
     contact: null,
+    pageSize: 10,
+    pageNumber: 1,
   });
   const searchQuery = useDebounceHook(query, 500);
 
@@ -105,9 +109,8 @@ const CrmInformation: React.FC = () => {
       behavior: 'smooth',
     });
     dispatch(queryCustomer(searchQuery));
-    dispatch(queryOpportunity(''));
+    dispatch(queryOpportunity({}));
     dispatch(queryContact(''));
-    dispatch(getAllCustomer(''));
   }, [searchQuery]);
 
   const getCustomers = () => {
@@ -125,7 +128,6 @@ const CrmInformation: React.FC = () => {
     await dispatch(deleteCustomers(data));
     setTimeout(() => {
       dispatch(queryCustomer(query));
-      dispatch(getAllCustomer(''));
       dispatch(queryContact(''));
     }, 1000);
     setDeleteIds([]);
@@ -163,14 +165,14 @@ const CrmInformation: React.FC = () => {
   const analyticsData = [
     {
       key: 1,
-      primary: <div>{customerAllData?.length}</div>,
+      primary: <div>{filteredData?.total ?? 0}</div>,
       secondry: 'Customers',
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
     {
       key: 2,
-      primary: <div>{OpportunityData?.length}</div>,
+      primary: <div>{queryOpportunityData?.total ?? 0}</div>,
       secondry: 'Opportunities',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
@@ -340,7 +342,7 @@ const CrmInformation: React.FC = () => {
   ];
 
   const uniqueCustomer = Array.from(
-    new Set(filteredData?.map((customer: any) => customer.name)),
+    new Set(filteredData?.account?.map((customer: any) => customer.name)),
   );
 
   const locale = {
@@ -391,7 +393,6 @@ const CrmInformation: React.FC = () => {
         }
         dispatch(setCustomerProfile(''));
         dispatch(queryCustomer(searchQuery));
-        dispatch(getAllCustomer(''));
         dispatch(queryContact(''));
       });
 
@@ -416,11 +417,21 @@ const CrmInformation: React.FC = () => {
       queryCustomer({
         customer: null,
         contact: null,
+        pageSize: query.pageSize,
+        pageNumber: query.pageNumber,
       }),
     );
     setShowDrawer(false);
     dispatch(setBillingContact({}));
     form.resetFields();
+  };
+
+  const handleTableChange = (pagination: any) => {
+    setQuery({
+      ...query,
+      pageSize: pagination.pageSize,
+      pageNumber: pagination.current,
+    });
   };
 
   return (
@@ -529,6 +540,8 @@ const CrmInformation: React.FC = () => {
                     setQuery({
                       customer: null,
                       contact: null,
+                      pageSize: query.pageSize,
+                      pageNumber: query.pageNumber,
                     });
                   }}
                 >
@@ -537,14 +550,21 @@ const CrmInformation: React.FC = () => {
               </div>
             </Space>
           </Row>
-
-          <OsTable
-            locale={locale}
-            columns={AccountColumns}
-            dataSource={filteredData}
-            rowSelection={rowSelection}
+          <CommonTable
             scroll
+            columns={AccountColumns}
+            dataSource={filteredData?.account}
             loading={loading}
+            locale={locale}
+            rowSelection={rowSelection}
+            pagination={{
+              current: query?.pageNumber,
+              pageSize: query?.pageSize,
+              total: filteredData?.total,
+              showSizeChanger: true,
+            }}
+            onChange={handleTableChange}
+            rowKey="id"
           />
         </div>
       </Space>

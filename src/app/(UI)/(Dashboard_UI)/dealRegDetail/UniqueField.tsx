@@ -243,6 +243,8 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           //     (required ? '_required' : ''),
           //   uniqueTemplateData,
           // );
+          // console.log('allContentItem', allContentItem);
+
           if (allContentItem?.name === 'Text Content') {
             return (
               <Col span={24} style={{textAlign: alignment, padding: '24px'}}>

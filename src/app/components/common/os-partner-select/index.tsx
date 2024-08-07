@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/indent */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react/no-unstable-nested-components */
-import {partnerProgramFilter} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
+import {usePathname} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {getAllPartnerandProgramFilterData} from '../../../../../redux/actions/partner';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -16,8 +16,6 @@ import AddPartner from '../os-add-partner';
 import OsModal from '../os-modal';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
-import {getAssignPartnerProgramByOrganization} from '../../../../../redux/actions/assignPartnerProgram';
-import {usePathname} from 'next/navigation';
 
 const OsPartnerSelect: FC<{
   // form: FormInstance;
@@ -120,6 +118,7 @@ const OsPartnerSelect: FC<{
   useEffect(() => {
     getPartnerProgramData();
   }, [getTheData]);
+  
   const setFinalData = (e: any) => {
     const filteredData = allPartnerFilterData?.filter(
       (item: any) => item?.id === e,

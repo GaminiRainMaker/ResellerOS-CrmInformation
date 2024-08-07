@@ -8,6 +8,8 @@ export const ATTRIBUTE_FIELD_API = {
   post: (data: any) => post(API.ATTRIBUTE_FIELD.INDEX, data),
   query: (data: any) =>
     post(API.ATTRIBUTE_FIELD.QUERY, data) as Promise<AxiosResponse<[]>>,
+  queryAttributeFieldForForm: (data: any) =>
+    post(API.ATTRIBUTE_FIELD.QueryAttributeFieldForForm, data) as Promise<AxiosResponse<[]>>,
   getById: (id: number) =>
     get(`${API.ATTRIBUTE_FIELD.INDEX}/${id}`) as Promise<AxiosResponse<any>>,
   patch: (data: any) =>

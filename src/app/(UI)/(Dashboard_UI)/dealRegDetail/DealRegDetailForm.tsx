@@ -91,18 +91,19 @@ const DealRegDetailForm: FC<any> = ({
         <OsCollapseAdmin items={ResponseDetails} />
       </Space>
       <>
-        {data?.PartnerProgram?.form_data && (
-          <Space
-            size={24}
-            direction="vertical"
-            style={{
-              width: '100%',
-              marginTop: '30px',
-            }}
-          >
-            <OsCollapseAdmin items={UniqueFieldsItems} />
-          </Space>
-        )}
+        {data?.PartnerProgram?.form_data &&
+          data?.type !== 'self_registered' && (
+            <Space
+              size={24}
+              direction="vertical"
+              style={{
+                width: '100%',
+                marginTop: '30px',
+              }}
+            >
+              <OsCollapseAdmin items={UniqueFieldsItems} />
+            </Space>
+          )}
       </>
 
       <OsDrawer
