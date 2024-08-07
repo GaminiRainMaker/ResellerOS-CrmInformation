@@ -233,6 +233,8 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           const fontSize = allContentItem?.FontSize || 'default';
           const required = allContentItem?.required;
 
+          console.log('allContentItem', allContentItem);
+
           if (allContentItem?.name === 'Text Content') {
             return (
               <Col span={24} style={{textAlign: alignment, padding: '24px'}}>

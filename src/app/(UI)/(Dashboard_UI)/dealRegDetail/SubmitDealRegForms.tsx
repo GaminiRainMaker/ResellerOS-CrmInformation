@@ -31,6 +31,7 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
             element?.unique_form_data,
             element?.common_form_data,
             true,
+            element?.type,
           );
 
           if (tabPercentage === 100) {

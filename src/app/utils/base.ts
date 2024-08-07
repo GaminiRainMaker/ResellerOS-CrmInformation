@@ -1237,8 +1237,16 @@ export const calculateTabBarPercentage = (
   UniqueFormData: any,
   CommonFormData: any,
   parseForms: boolean = false,
+  type: string,
 ) => {
+  // const allContent =
+  //   PartnerProgram &&
+  //   JSON.parse(PartnerProgram)
+  //     .flatMap((section: any) => section?.content)
+  //     .filter((item: any) => item?.required);
+
   const allContent =
+    type !== 'self_registered' &&
     PartnerProgram &&
     JSON.parse(PartnerProgram)
       .flatMap((section: any) => section?.content)
@@ -1249,14 +1257,21 @@ export const calculateTabBarPercentage = (
   );
 
   const totalCount = [filteAttributeFieldData, allContent]
-    .filter((array) => array !== undefined && array !== null)
+    .filter((array) => array !== undefined && array !== null && array !== false)
     .flatMap((array) => array);
 
-  const uniqueFormData = parseForms
-    ? UniqueFormData
-      ? UniqueFormData && JSON?.parse(UniqueFormData)
-      : {}
-    : UniqueFormData || {};
+  // const uniqueFormData = parseForms
+  //   ? UniqueFormData
+  //     ? UniqueFormData && JSON?.parse(UniqueFormData)
+  //     : {}
+  //   : UniqueFormData || {};
+
+  const uniqueFormData =
+    parseForms && type !== 'self_registered'
+      ? UniqueFormData
+        ? UniqueFormData && JSON?.parse(UniqueFormData)
+        : {}
+      : UniqueFormData || {};
 
   const commonFormData = parseForms
     ? CommonFormData
