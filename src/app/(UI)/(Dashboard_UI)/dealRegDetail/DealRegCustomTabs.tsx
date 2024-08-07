@@ -13,7 +13,7 @@ import {formatStatus} from '@/app/utils/CONSTANTS';
 import {calculateTabBarPercentage} from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import {queryAttributeField} from '../../../../../redux/actions/attributeField';
+import {queryAttributeFieldForForm} from '../../../../../redux/actions/attributeField';
 import {
   getDealRegById,
   updateDealRegById,
@@ -87,7 +87,7 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
   }, [getDealRegForNew]);
 
   useEffect(() => {
-    dispatch(queryAttributeField(''));
+    dispatch(queryAttributeFieldForForm(''));
   }, [dispatch]);
 
   const updateDealRegFinalData = (activeKey: any, formObj: any) => {
