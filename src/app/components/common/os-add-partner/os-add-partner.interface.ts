@@ -14,7 +14,7 @@ export interface AddPartnerInterface {
   partnerId?: number;
   setUpdateTheObject?: any;
   updateTheObject?: any;
-  getAllPartnerData?: any;
+  getPartnerDataForSuperAdmin?: any;
   partnerData?: any;
   setPartnerOptions?: any;
   partnerOptions?: any;

@@ -27,7 +27,7 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
   partnerId,
   setUpdateTheObject,
   updateTheObject,
-  getAllPartnerData,
+  getPartnerDataForSuperAdmin,
   partnerData,
   setFinalProgramOptions,
   finalProgramOptions,
@@ -59,7 +59,7 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
       ).then((d: any) => {
         if (d?.payload) {
           form?.resetFields();
-          getAllPartnerData();
+          getPartnerDataForSuperAdmin();
           setUpdateTheObject({});
           // dispatch(getAllPartnerandProgram(''));
           setOpen && setOpen(false);
@@ -85,8 +85,8 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
               setFinalProgramOptions(newArr);
             }
           }
-          if (getAllPartnerData) {
-            getAllPartnerData();
+          if (getPartnerDataForSuperAdmin) {
+            getPartnerDataForSuperAdmin();
           }
           setOpen && setOpen(false);
         }
@@ -142,7 +142,7 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
               // form={form}
               setPartnerValue={setPartnerValue}
               isRequired
-              allPartnerData={partnerData}
+              allPartnerDataForSuperAdmin={partnerData}
             />
           )}
           <Form.Item

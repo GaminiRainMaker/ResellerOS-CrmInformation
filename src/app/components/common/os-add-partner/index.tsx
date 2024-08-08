@@ -28,7 +28,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
   partnerId,
   setUpdateTheObject,
   updateTheObject,
-  getAllPartnerData,
+  getPartnerDataForSuperAdmin,
   setPartnerOptions,
   partnerOptions,
   setPartnerValue,
@@ -58,7 +58,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
           id: updateTheObject ? updateTheObject?.id : formPartnerData?.id,
         }),
       );
-      getAllPartnerData();
+      getPartnerDataForSuperAdmin();
       if (setUpdateTheObject) {
         setUpdateTheObject({});
       }
@@ -84,8 +84,8 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
               setPartnerOptions(newArr);
             }
           }
-          if (getAllPartnerData) {
-            getAllPartnerData();
+          if (getPartnerDataForSuperAdmin) {
+            getPartnerDataForSuperAdmin();
           }
           form?.resetFields();
           setOpen && setOpen(false);
@@ -161,7 +161,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
                 label="Email"
                 name="email"
                 rules={[
-                  {required: true, message: 'Please Enter email!'},
+                  // {required: true, message: 'Please Enter email!'},
                   {
                     pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                     message: 'Please enter valid email.',
