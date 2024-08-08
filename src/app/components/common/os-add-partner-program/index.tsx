@@ -7,7 +7,7 @@ import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
-import {Form} from 'antd';
+import {Form, notification} from 'antd';
 import {useEffect, useState} from 'react';
 import {getAllPartnerandProgram} from '../../../../../redux/actions/partner';
 import {
@@ -86,6 +86,12 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
           if (getPartnerDataForSuperAdmin) {
             getPartnerDataForSuperAdmin();
           }
+          setOpen && setOpen(false);
+        } else {
+          notification.open({
+            message: 'Partner program with the same name already exists.',
+            type: 'error',
+          });
           setOpen && setOpen(false);
         }
       });

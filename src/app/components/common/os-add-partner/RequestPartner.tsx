@@ -18,6 +18,7 @@ import OsModal from '../os-modal';
 import {SelectFormItem} from '../os-oem-select/oem-select-styled';
 import CommonSelect from '../os-select';
 import {RequestPartnerInterface} from './os-add-partner.interface';
+import CustomTextCapitalization from '../hooks/CustomTextCapitalizationHook';
 
 const RequestPartner: React.FC<RequestPartnerInterface> = ({
   form,
@@ -106,11 +107,12 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
       mergedArray?.length > 0 &&
       mergedArray?.map((partner: any) => ({
         value: JSON.stringify(partner),
-        label: (
-          <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-            {partner?.partner}
-          </Typography>
-        ),
+        // label: (
+        //   <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+        //     {partner?.partner}
+        //   </Typography>
+        // ),
+        label: <CustomTextCapitalization text={partner?.partner} />,
         key: partner?.id,
       }));
     setPartnerOptions(partnerOptions);
@@ -129,22 +131,24 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
       mergedArray?.length > 0 &&
       mergedArray?.map((program: any) => ({
         value: JSON.stringify(program),
-        label: (
-          <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-            {program?.partner_program}
-          </Typography>
-        ),
+        // label: (
+        //   <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+        //     {program?.partner_program}
+        //   </Typography>
+        // ),
+        label: <CustomTextCapitalization text={program?.partner_program} />,
+
         key: program?.id,
       }));
     setPartnerProgramOptions(partnerProgram);
   }, [partnerVal, insertProgramData]);
 
   useEffect(() => {
-    if (Object.keys(insertPartnerData)?.length > 0) {
+    if (insertPartnerData && Object?.keys(insertPartnerData)?.length > 0) {
       form.setFieldsValue({partner_id: JSON.stringify(insertPartnerData)});
       setPartnerVal(insertPartnerData?.id);
     }
-    if (Object.keys(insertProgramData)?.length > 0) {
+    if (insertProgramData && Object?.keys(insertProgramData)?.length > 0) {
       form.setFieldsValue({
         partner_program_id: JSON.stringify(insertProgramData),
       });

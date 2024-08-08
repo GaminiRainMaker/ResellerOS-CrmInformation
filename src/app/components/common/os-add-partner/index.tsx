@@ -8,7 +8,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
 import {industryOptions} from '@/app/utils/CONSTANTS';
-import {Form} from 'antd';
+import {Form, notification} from 'antd';
 import {useEffect} from 'react';
 import {
   getAllPartnerandProgram,
@@ -88,6 +88,12 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
             getPartnerDataForSuperAdmin();
           }
           form?.resetFields();
+          setOpen && setOpen(false);
+        } else {
+          notification.open({
+            message: 'Partner with the same name already exists.',
+            type: 'error',
+          });
           setOpen && setOpen(false);
         }
       });
