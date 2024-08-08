@@ -1313,3 +1313,17 @@ export const calculateTabBarPercentage = (
 
 //   console.log('43543543543', uniqueformdata, uniquetemplate);
 // };
+
+const isEmptyObject = (obj: any) => Object.keys(obj)?.length === 0;
+
+export const mergeArrayWithObject = (arr1: any, obj2: any) => {
+  const safeArray1 = Array.isArray(arr1) ? arr1 : [];
+  const safeObject2 =
+    obj2 &&
+    typeof obj2 === 'object' &&
+    !Array.isArray(obj2) &&
+    !isEmptyObject(obj2)
+      ? obj2
+      : null;
+  return safeObject2 ? [...safeArray1, safeObject2] : safeArray1;
+};

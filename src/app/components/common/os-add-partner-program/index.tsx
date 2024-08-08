@@ -29,8 +29,6 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
   updateTheObject,
   getPartnerDataForSuperAdmin,
   partnerData,
-  setFinalProgramOptions,
-  finalProgramOptions,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -72,19 +70,19 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
       dispatch(insertPartnerProgram(partnerProgramObj)).then((d: any) => {
         if (d?.payload) {
           form?.resetFields();
-          if (finalProgramOptions) {
-            let newObj = {
-              label: d?.payload?.partner_program,
-              value: d?.payload?.id,
-            };
-            if (newObj) {
-              let newArr: any =
-                finalProgramOptions?.length > 0
-                  ? [newObj, ...finalProgramOptions]
-                  : [newObj];
-              setFinalProgramOptions(newArr);
-            }
-          }
+          // if (finalProgramOptions) {
+          //   let newObj = {
+          //     label: d?.payload?.partner_program,
+          //     value: d?.payload?.id,
+          //   };
+          //   if (newObj) {
+          //     let newArr: any =
+          //       finalProgramOptions?.length > 0
+          //         ? [newObj, ...finalProgramOptions]
+          //         : [newObj];
+          //     setFinalProgramOptions(newArr);
+          //   }
+          // }
           if (getPartnerDataForSuperAdmin) {
             getPartnerDataForSuperAdmin();
           }
