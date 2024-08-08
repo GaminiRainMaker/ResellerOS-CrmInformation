@@ -404,7 +404,7 @@ const DealReg: React.FC = () => {
           </Col>
           <Col style={{display: 'flex', alignItems: 'center'}}>
             <OsButton
-              text="New Registration Form"
+              text="New Registration"
               buttontype="PRIMARY"
               icon={<PlusIcon />}
               clickHandler={() => setShowModal((p) => !p)}
