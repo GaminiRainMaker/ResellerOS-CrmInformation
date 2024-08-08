@@ -8,6 +8,7 @@ export const API = {
     salesforceFileGet: '/auth/getSalesForceDataa',
     salesforceDataAsItIs: '/auth/getSalesForceDataaForEditAsItIs',
     salesforceAddUpdate: '/auth/addSalesForceDataa',
+    runSalesForceBot: '/auth/runSalesForceBot',
   },
   QUOTE: {
     INDEX: '/quote',

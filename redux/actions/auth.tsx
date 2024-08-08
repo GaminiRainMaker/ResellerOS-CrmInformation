@@ -96,3 +96,15 @@ export const contactSales = createAsyncThunk(
     }
   },
 );
+
+export const runSalesForceBot = createAsyncThunk(
+  'auth/runSalesForceBot',
+  async (data: any, thunkApi) => {
+    try {
+      const res: any = await AUTH_API.runSalesForceBot(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
