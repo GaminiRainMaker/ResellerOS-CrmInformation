@@ -92,7 +92,7 @@ const SuperAdminPartner: React.FC = () => {
   const [allPartnerData, setAllPartnerData] = useState<any>();
   const [superAdminPartnerAnalyticData, setSuperAdminPartnerAnalyticData] =
     useState<any>();
-  const getAllPartnerData = async () => {
+  const getPartnerDataForSuperAdmin = async () => {
     dispatch(getAllPartnerandProgramFilterDataForAdmin({}))?.then(
       (payload: any) => {
         let countForActivePartnerProgram = 0;
@@ -121,7 +121,7 @@ const SuperAdminPartner: React.FC = () => {
   };
   useEffect(() => {
     // dispatch(getAllPartnerandProgram(''));
-    getAllPartnerData();
+    getPartnerDataForSuperAdmin();
   }, []);
   const searchQuery = useDebounceHook(queryDataa, 500);
 
@@ -190,13 +190,13 @@ const SuperAdminPartner: React.FC = () => {
       partner_program_id,
     };
     await dispatch(updateAssignPartnerProgramById(Data));
-    getAllPartnerData();
+    getPartnerDataForSuperAdmin();
   };
 
   const deleteSelectedPartnerProgramIds = async () => {
     const data = {id: deletePartnerProgramIds};
     await dispatch(deletePartnerProgram(data)).then(async () => {
-      await getAllPartnerData();
+      await getPartnerDataForSuperAdmin();
     });
     setDeletePartnerProgramIds([]);
     setShowPartnerProgramDeleteModal(false);
@@ -205,7 +205,7 @@ const SuperAdminPartner: React.FC = () => {
   const deleteSelectedPartnerIds = async () => {
     const data = {id: deletePartnerIds};
     await dispatch(deletePartner(data)).then(async () => {
-      await getAllPartnerData();
+      await getPartnerDataForSuperAdmin();
       // dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
       //   setAllPartnerData(payload?.payload);
       // });
@@ -825,7 +825,7 @@ const SuperAdminPartner: React.FC = () => {
             setOpen={setShowAddPartnerModal}
             setUpdateTheObject={setUpdateTheObject}
             updateTheObject={updateTheObject}
-            getAllPartnerData={getAllPartnerData}
+            getPartnerDataForSuperAdmin={getPartnerDataForSuperAdmin}
           />
         }
         width={800}
@@ -848,7 +848,7 @@ const SuperAdminPartner: React.FC = () => {
             partnerData={allPartnerData?.AllPartner}
             setUpdateTheObject={setUpdateTheObject}
             updateTheObject={updateTheObject}
-            getAllPartnerData={getAllPartnerData}
+            getPartnerDataForSuperAdmin={getPartnerDataForSuperAdmin}
           />
         }
         width={800}
@@ -890,7 +890,7 @@ const SuperAdminPartner: React.FC = () => {
           drawer={true}
           setUpdateTheObject={setUpdateTheObject}
           updateTheObject={updateTheObject}
-          getAllPartnerData={getAllPartnerData}
+          getPartnerDataForSuperAdmin={getPartnerDataForSuperAdmin}
         />
       </OsDrawer>
 
@@ -925,7 +925,7 @@ const SuperAdminPartner: React.FC = () => {
           drawer
           setUpdateTheObject={setUpdateTheObject}
           updateTheObject={updateTheObject}
-          getAllPartnerData={getAllPartnerData}
+          getPartnerDataForSuperAdmin={getPartnerDataForSuperAdmin}
         />
       </OsDrawer>
 

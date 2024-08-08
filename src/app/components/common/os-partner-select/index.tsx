@@ -16,6 +16,7 @@ import AddPartner from '../os-add-partner';
 import OsModal from '../os-modal';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 
 const OsPartnerSelect: FC<{
   // form: FormInstance;
@@ -28,7 +29,7 @@ const OsPartnerSelect: FC<{
   isAddNewPartner?: boolean;
   notApprovedData?: boolean;
   form?: any;
-  allPartnerData?: any;
+  allPartnerDataForSuperAdmin?: any;
   setAllPartnerData?: any;
   getTheData?: any;
   setGetTheData?: any;
@@ -43,7 +44,7 @@ const OsPartnerSelect: FC<{
   isSuperAdmin = true,
   isAddNewPartner = false,
   notApprovedData = false,
-  allPartnerData,
+  allPartnerDataForSuperAdmin,
   setAllPartnerData,
   getTheData,
   setGetTheData,
@@ -78,17 +79,20 @@ const OsPartnerSelect: FC<{
     setPartnerOptions(newOptionArr);
   }, [allPartnerFilterData]);
   useEffect(() => {
-    if (allPartnerData && allPartnerData?.length > 0) {
+    if (
+      allPartnerDataForSuperAdmin &&
+      allPartnerDataForSuperAdmin?.length > 0
+    ) {
       let newOptionArr: any = [];
-      allPartnerData?.map((items: any) => {
+      allPartnerDataForSuperAdmin?.map((items: any) => {
         newOptionArr?.push({
-          label: items?.partner,
+          label: formatStatus(items?.partner),
           value: items?.id,
         });
       });
       setPartnerOptions(newOptionArr);
     }
-  }, [allPartnerData]);
+  }, [allPartnerDataForSuperAdmin]);
 
   const partnerApprovedObjects: any[] = [];
   AssignPartnerProgramData?.approved?.forEach((entry: any) => {
@@ -119,7 +123,7 @@ const OsPartnerSelect: FC<{
   useEffect(() => {
     getPartnerProgramData();
   }, [getTheData]);
-  
+
   const setFinalData = (e: any) => {
     const filteredData = allPartnerFilterData?.filter(
       (item: any) => item?.id === e,
@@ -164,7 +168,6 @@ const OsPartnerSelect: FC<{
 
     setFilterOptionsPartner(newOptions);
   }, [searchOPtions]);
-  console.log('34543543', searchOPtions?.length > 0, filterOptionsPartner);
   return (
     <>
       <Form.Item
