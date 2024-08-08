@@ -117,3 +117,15 @@ export const getPartnerCanAddedToOrganization = createAsyncThunk(
     }
   },
 );
+export const getAllPartnerandProgramFilterDataForOrganizationOnly =
+  createAsyncThunk(
+    'partner/getAllPartnerandProgramFilterDataForOrganizationOnly',
+    async (data: any, thunkApi) => {
+      try {
+        const res = await PARTNER_API.getAllPartnerandProgramFilterDataForOrganizationOnly(data);
+        return res.data;
+      } catch (error: any) {
+        return thunkApi.rejectWithValue(error?.message);
+      }
+    },
+  );

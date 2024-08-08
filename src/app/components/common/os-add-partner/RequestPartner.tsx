@@ -12,6 +12,15 @@ import OsPartnerProgramSelect from '../os-partner-program-select';
 import OsPartnerSelect from '../os-partner-select';
 import {RequestPartnerInterface} from './os-add-partner.interface';
 import {usePathname} from 'next/navigation';
+import {SelectFormItem} from '../os-oem-select/oem-select-styled';
+import CommonSelect from '../os-select';
+import {
+  getAllPartnerandProgramFilterData,
+  getAllPartnerandProgramFilterDataForOrganizationOnly,
+} from '../../../../../redux/actions/partner';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import OsModal from '../os-modal';
+import AddPartner from '.';
 
 const RequestPartner: React.FC<RequestPartnerInterface> = ({
   form,
@@ -22,14 +31,22 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
+  const {
+    AllPartnerandProgramFilterData,
+    insertPartnerData,
+    insertPartnerLoading,
+  } = useAppSelector((state) => state.partner);
   const pathname = usePathname();
-  const [allPartnerData, setAllPartnerData] = useState<any>();
+  const [partnerOptions, setPartnerOptions] = useState<any>();
   const [partnerValue, setPartnerValue] = useState<number>();
   const [getTheData, setGetTheData] = useState<boolean>(false);
+  const [openAddPartnerModal, setOpenAddPartnerModal] =
+    useState<boolean>(false);
 
   useEffect(() => {
     setGetTheData(true);
   }, []);
+
   const onFinish = async (value: any) => {
     if (!partnerValue) {
       return;
@@ -59,6 +76,35 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
       setOpen(false);
     }
   };
+
+  useEffect(() => {
+    dispatch(getAllPartnerandProgramFilterDataForOrganizationOnly({}));
+  }, []);
+
+  console.log(
+    'AllPartnerandProgramFilterData',
+    AllPartnerandProgramFilterData,
+    'insertPartnerData',
+    insertPartnerData,
+
+    'partnerOptions',
+    partnerOptions,
+  );
+
+  useEffect(() => {
+    const opportunityOptions = AllPartnerandProgramFilterData?.map(
+      (opportunity: any) => ({
+        value: opportunity.id,
+        label: (
+          <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+            {opportunity.title}
+          </Typography>
+        ),
+      }),
+    );
+    setPartnerOptions(opportunityOptions);
+  }, [AllPartnerandProgramFilterData]);
+
   return (
     <>
       <Row
@@ -92,7 +138,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
         >
           <Row justify="space-between" gutter={[24, 24]}>
             <Col sm={24} md={12}>
-              <OsPartnerSelect
+              {/* <OsPartnerSelect
                 name="partner_id"
                 setPartnerValue={setPartnerValue}
                 partnerValue={partnerValue}
@@ -106,11 +152,42 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                 setAllPartnerData={setAllPartnerData}
                 getTheData={getTheData}
                 setGetTheData={setGetTheData}
-              />
+              /> */}
+
+              <SelectFormItem>
+                <CommonSelect
+                  placeholder="Select Partner"
+                  style={{width: '100%'}}
+                  dropdownRender={(menu) => (
+                    <>
+                      <Space
+                        style={{cursor: 'pointer'}}
+                        size={8}
+                        onClick={() => setOpenAddPartnerModal(true)}
+                      >
+                        <PlusIcon
+                          width={24}
+                          color={token?.colorInfoBorder}
+                          style={{marginTop: '5px'}}
+                        />
+                        <Typography
+                          color={token?.colorPrimaryText}
+                          name="Body 3/Regular"
+                          cursor="pointer"
+                        >
+                          Request Partner
+                        </Typography>
+                      </Space>
+
+                      {menu}
+                    </>
+                  )}
+                />
+              </SelectFormItem>
             </Col>
 
             <Col sm={24} md={12}>
-              <OsPartnerProgramSelect
+              {/* <OsPartnerProgramSelect
                 name="partner_program_id"
                 partnerId={partnerValue}
                 form={form}
@@ -118,11 +195,25 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                 isAddNewProgram
                 notApprovedData
                 allPartnerData={allPartnerData}
-              />
+              /> */}
             </Col>
           </Row>
         </Form>
       </Space>
+
+      <OsModal
+        loading={insertPartnerLoading}
+        body={<AddPartner form={form} setOpen={setOpenAddPartnerModal} />}
+        width={600}
+        open={openAddPartnerModal}
+        onCancel={() => {
+          setOpenAddPartnerModal((p) => !p);
+        }}
+        footer
+        primaryButtonText="Create"
+        onOk={form?.submit}
+        footerPadding={30}
+      />
     </>
   );
 };

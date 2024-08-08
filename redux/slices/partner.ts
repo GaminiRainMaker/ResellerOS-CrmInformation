@@ -12,23 +12,28 @@ import {
   getAllPartnerandProgramFilterDataForAdmin,
   getAllPartnerandProgramApprovedForOrganization,
   getPartnerCanAddedToOrganization,
+  getAllPartnerandProgramFilterDataForOrganizationOnly,
 } from '../actions/partner';
 
 type PartnerState = {
   loading: boolean;
   insertPartnerLoading: boolean;
+  insertPartnerData: any;
   error: string | null;
   data: any;
   partner: any;
   partnerRequestData: any;
+  AllPartnerandProgramFilterData: any;
 };
 const initialState: PartnerState = {
   loading: false,
   insertPartnerLoading: false,
+  insertPartnerData: {},
   error: null,
   data: [],
   partner: [],
   partnerRequestData: {},
+  AllPartnerandProgramFilterData: [],
 };
 
 const partnerSlice = createSlice({
@@ -50,7 +55,7 @@ const partnerSlice = createSlice({
       })
       .addCase(insertPartner.fulfilled, (state, action: PayloadAction<any>) => {
         state.insertPartnerLoading = false;
-        state.data = [action.payload];
+        state.insertPartnerData = action.payload;
       })
       .addCase(insertPartner.rejected, (state, action: PayloadAction<any>) => {
         state.insertPartnerLoading = false;
@@ -204,6 +209,27 @@ const partnerSlice = createSlice({
       )
       .addCase(
         getPartnerCanAddedToOrganization.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(
+        getAllPartnerandProgramFilterDataForOrganizationOnly.pending,
+        (state) => {
+          state.loading = true;
+          state.error = null;
+        },
+      )
+      .addCase(
+        getAllPartnerandProgramFilterDataForOrganizationOnly.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.AllPartnerandProgramFilterData = action.payload;
+        },
+      )
+      .addCase(
+        getAllPartnerandProgramFilterDataForOrganizationOnly.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
