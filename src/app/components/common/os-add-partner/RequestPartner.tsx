@@ -4,26 +4,20 @@ import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import Typography from '@/app/components/common/typography';
+import {mergeArrayWithObject} from '@/app/utils/base';
+import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useEffect, useState} from 'react';
-import {insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import OsPartnerProgramSelect from '../os-partner-program-select';
-import OsPartnerSelect from '../os-partner-select';
-import {RequestPartnerInterface} from './os-add-partner.interface';
-import {usePathname} from 'next/navigation';
-import {SelectFormItem} from '../os-oem-select/oem-select-styled';
-import CommonSelect from '../os-select';
-import {
-  getAllPartnerandProgramFilterData,
-  getAllPartnerandProgramFilterDataForOrganizationOnly,
-} from '../../../../../redux/actions/partner';
-import {PlusIcon} from '@heroicons/react/24/outline';
-import OsModal from '../os-modal';
 import AddPartner from '.';
-import {mergeArrayWithObject} from '@/app/utils/base';
+import {insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
+import {getAllPartnerandProgramFilterDataForOrganizationOnly} from '../../../../../redux/actions/partner';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import useDebounceHook from '../hooks/useDebounceHook';
 import AddPartnerProgram from '../os-add-partner-program';
+import OsModal from '../os-modal';
+import {SelectFormItem} from '../os-oem-select/oem-select-styled';
+import CommonSelect from '../os-select';
+import {RequestPartnerInterface} from './os-add-partner.interface';
 
 const RequestPartner: React.FC<RequestPartnerInterface> = ({
   form,
@@ -44,11 +38,9 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
   const {insertProgramLoading, insertProgramData} = useAppSelector(
     (state) => state.partnerProgram,
   );
-  const pathname = usePathname();
   const [partnerOptions, setPartnerOptions] = useState<any>();
   const [partnerProgramOptions, setPartnerProgramOptions] = useState<any>();
   const [partnerVal, setPartnerVal] = useState<number>();
-  const [partnerValue, setPartnerValue] = useState<number>();
   const [getTheData, setGetTheData] = useState<boolean>(false);
   const [openAddPartnerModal, setOpenAddPartnerModal] =
     useState<boolean>(false);
@@ -78,10 +70,10 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
         ...value,
         organization: userInformation?.organization,
         requested_by: userInformation?.id,
+        partner_id: JSON.parse(value?.partner_id)?.id,
+        partner_program_id: JSON.parse(value?.partner_program_id)?.id,
         new_request: true,
       };
-      console.log('partnerObj', partnerObj);
-      return;
       if (partnerObj) {
         await dispatch(insertAssignPartnerProgram(partnerObj));
       }
@@ -113,7 +105,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
       mergedArray &&
       mergedArray?.length > 0 &&
       mergedArray?.map((partner: any) => ({
-        value: partner?.partner,
+        value: JSON.stringify(partner),
         label: (
           <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
             {partner?.partner}
@@ -122,9 +114,6 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
         key: partner?.id,
       }));
     setPartnerOptions(partnerOptions);
-    // if (insertPartnerData) {
-    //   form.setFieldsValue(['partner_id', insertPartnerData?.id]);
-    // }
   }, [JSON.stringify(AllPartnerandProgramFilterData), insertPartnerData]);
 
   useEffect(() => {
@@ -139,7 +128,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
       mergedArray &&
       mergedArray?.length > 0 &&
       mergedArray?.map((program: any) => ({
-        value: program?.partner_program,
+        value: JSON.stringify(program),
         label: (
           <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
             {program?.partner_program}
@@ -148,10 +137,19 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
         key: program?.id,
       }));
     setPartnerProgramOptions(partnerProgram);
-    // if (insertProgramData) {
-    //   form.setFieldsValue(['partner_program_id', insertProgramData?.id]);
-    // }
   }, [partnerVal, insertProgramData]);
+
+  useEffect(() => {
+    if (Object.keys(insertPartnerData)?.length > 0) {
+      form.setFieldsValue({partner_id: JSON.stringify(insertPartnerData)});
+      setPartnerVal(insertPartnerData?.id);
+    }
+    if (Object.keys(insertProgramData)?.length > 0) {
+      form.setFieldsValue({
+        partner_program_id: JSON.stringify(insertProgramData),
+      });
+    }
+  }, [insertPartnerData, insertProgramData]);
 
   return (
     <>
@@ -200,7 +198,6 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                   allowClear
                   showSearch
                   placeholder="Select Partner"
-                  // defaultValue={insertPartnerData?.partner}
                   style={{width: '100%'}}
                   options={partnerOptions}
                   dropdownRender={(menu) => (
@@ -234,7 +231,6 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                     });
                   }}
                   onChange={(e, record: any) => {
-                    console.log('dataaa', record?.key);
                     setPartnerVal(record?.key);
                   }}
                   onClear={() =>
@@ -262,7 +258,6 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                 ]}
               >
                 <CommonSelect
-                  // defaultValue={insertProgramData?.partner_program}
                   allowClear
                   showSearch
                   placeholder="Select Partner Program"
@@ -297,9 +292,6 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                       ...query,
                       program: e,
                     });
-                  }}
-                  onChange={(e, record: any) => {
-                    console.log('dataaa', record?.key);
                   }}
                   onClear={() =>
                     setQuery({
