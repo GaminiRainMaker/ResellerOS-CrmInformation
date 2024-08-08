@@ -27,6 +27,7 @@ import {
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs from './DealRegCustomTabs';
 import SubmitDealRegForms from './SubmitDealRegForms';
+import {runSalesForceBot} from '../../../../../redux/actions/auth';
 
 const DealRegDetail = () => {
   const [FormData] = Form.useForm();
@@ -115,6 +116,10 @@ const DealRegDetail = () => {
     }
   };
 
+  const launchBotSalesForce = () => {
+    dispatch(runSalesForceBot({}));
+  };
+  //
   return (
     <div>
       <Row justify="space-between" align="middle">
@@ -123,6 +128,11 @@ const DealRegDetail = () => {
         </Col>
         <Col>
           <Space size={8}>
+            <OsButton
+              text="Launch Bot"
+              buttontype="SECONDARY"
+              clickHandler={launchBotSalesForce}
+            />
             <OsButton
               text="Submit Form"
               buttontype="SECONDARY"

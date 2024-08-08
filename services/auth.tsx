@@ -10,6 +10,7 @@ export const AUTH_API = {
   SendForgotPasswordEmail: (data: any) =>
     post(API.AUTH.Send_Forgot_Password_Email, data),
   ContactSales: (data: any) => post(API.AUTH.Contact_Sales, data),
+  runSalesForceBot: (data: any) => post(API.AUTH.runSalesForceBot, data),
   get: () => get(API.AUTH.salesforceFileGet),
   postSalesGet: (data: any) => post(API.AUTH.salesforceFileGet, data),
   getAsItIs: (data: any) => post(API.AUTH.salesforceDataAsItIs, data),

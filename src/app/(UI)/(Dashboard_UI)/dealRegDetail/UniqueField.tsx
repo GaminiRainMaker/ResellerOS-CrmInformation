@@ -226,6 +226,28 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     }
   }, [form, formData]);
 
+  useEffect(() => {
+    let newArrForTheSalesForceJson: any = [];
+
+    allContent?.map((allContentItem: any, itemIndex: number) => {
+      const required = allContentItem?.required;
+
+      console.log(
+        '456463453453',
+        allContent,
+        'u_' +
+          convertToSnakeCase(allContentItem.label) +
+          itemIndex +
+          activeKey +
+          (required ? '_required' : ''),
+        uniqueTemplateData,
+      );
+      let newObj;
+      if (allContentItem?.name === 'Text Content') {
+      }
+    });
+  });
+
   return (
     <Form
       layout="vertical"
@@ -237,8 +259,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           const alignment = allContentItem?.Alignemnt || 'left';
           const fontSize = allContentItem?.FontSize || 'default';
           const required = allContentItem?.required;
-
-          console.log('allContentItem', allContentItem);
 
           if (allContentItem?.name === 'Text Content') {
             return (

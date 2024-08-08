@@ -6,6 +6,7 @@ import {
   contactSales,
   getSalesForceDataaForEditAsItIs,
   getSalesForceFileData,
+  runSalesForceBot,
   sendForgotPasswordEmail,
   sendNewUserEmail,
   signUpAuth,
@@ -156,6 +157,24 @@ const authSlice = createSlice({
       )
       .addCase(
         addSalesForceDataa.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(runSalesForceBot.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        runSalesForceBot.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          // state.data = action.payload;
+        },
+      )
+      .addCase(
+        runSalesForceBot.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
