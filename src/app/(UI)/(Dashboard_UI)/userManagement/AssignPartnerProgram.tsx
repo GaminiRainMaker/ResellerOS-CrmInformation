@@ -73,7 +73,7 @@ const AssignPartnerProgram: FC<UserManagementInterface> = ({
               partnerProgramName="partner_program_id"
               isRequired
               isSuperAdmin
-              allPartnerData={partnerToBeAssigned}
+              allPartnerDataForSuperAdmin={partnerToBeAssigned}
             />
           </Col>
 
