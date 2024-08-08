@@ -228,25 +228,42 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
 
   useEffect(() => {
     let newArrForTheSalesForceJson: any = [];
+    let newFinalArr: any = [];
+    let count = 0;
+    if (allContent && allContent?.length > 0) {
+      allContent?.map((allContentItem: any, itemIndex: number) => {
+        const required = allContentItem?.required;
+        let newObj;
 
-    allContent?.map((allContentItem: any, itemIndex: number) => {
-      const required = allContentItem?.required;
-
-      console.log(
-        '456463453453',
-        allContent,
-        'u_' +
+        let labelVal =
+          'u_' +
           convertToSnakeCase(allContentItem.label) +
           itemIndex +
           activeKey +
-          (required ? '_required' : ''),
-        uniqueTemplateData,
-      );
-      let newObj;
-      if (allContentItem?.name === 'Text Content') {
-      }
-    });
-  });
+          (required ? '_required' : '');
+        console.log('labelVallabelVal', labelVal);
+        if (allContentItem?.name === 'Text Content') {
+          count = count + 1;
+          newObj = {
+            type: 'title',
+            name: allContentItem?.sectionTitle,
+            objectNo: count,
+          };
+          newArrForTheSalesForceJson?.push(newObj);
+        } else {
+          newObj = {
+            type: 'content',
+            name: allContentItem?.label,
+            objectNo: count,
+            valueGet: uniqueTemplateData?.[labelVal],
+          };
+          newArrForTheSalesForceJson?.push(newObj);
+        }
+      });
+    }
+
+    console.log('newArrForTheSalesForceJson', newArrForTheSalesForceJson);
+  }, [allContent]);
 
   return (
     <Form
