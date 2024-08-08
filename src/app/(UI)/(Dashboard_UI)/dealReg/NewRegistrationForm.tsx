@@ -471,7 +471,7 @@ const NewRegistrationForm: FC<any> = ({
                                     <CommonSelect
                                       placeholder="Select"
                                       style={{width: '100%', height: '36px'}}
-                                      options={selefPartnerOptions}
+                                      options={partnerOptions}
                                       onChange={(value) => {
                                         findPartnerProgramsById(value);
                                       }}

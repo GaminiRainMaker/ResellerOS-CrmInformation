@@ -238,6 +238,7 @@ export const formbuildernewObject = (newItem: string) => {
       required: false,
       requiredLabel: true,
       filedType: 'multiple',
+      label: 'Checkbox',
     };
   } else if (newItem === 'Text' || newItem === 'Email') {
     newObjAddedon = {

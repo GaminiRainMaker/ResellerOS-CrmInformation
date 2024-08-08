@@ -43,7 +43,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
   const getInputComponent = (itemCon: any) => {
     const fieldName = convertToSnakeCase(itemCon?.label);
     const initialValue = uniqueTemplateData?.[fieldName];
-    console.log('435345345345', fieldName, initialValue, uniqueTemplateData);
 
     const commonProps = {defaultValue: initialValue, onBlur: handleBlur};
 
@@ -165,7 +164,12 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 const totalFloorValue = Math.floor(
                   24 / itemCon?.columnRequired,
                 );
-                console.log('RecordDataa', itemCon);
+                console.log(
+                  'RecordDataa',
+                  itemLabelOp,
+                  'labelOptions',
+                  itemCon,
+                );
                 return (
                   <ToggleColStyled span={totalFloorValue} key={itemLabelIndex}>
                     {itemCon?.name === 'Radio Button' ? (
@@ -234,16 +238,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           const fontSize = allContentItem?.FontSize || 'default';
           const required = allContentItem?.required;
 
-          // console.log(
-          //   '456463453453',
-          //   'u_' +
-          //     convertToSnakeCase(allContentItem.label) +
-          //     itemIndex +
-          //     activeKey +
-          //     (required ? '_required' : ''),
-          //   uniqueTemplateData,
-          // );
-          // console.log('allContentItem', allContentItem);
+          console.log('allContentItem', allContentItem);
 
           if (allContentItem?.name === 'Text Content') {
             return (
