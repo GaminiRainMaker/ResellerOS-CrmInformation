@@ -36,7 +36,7 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
   const [tabItems, setTabItems] = useState([]);
   const {queryData} = useAppSelector((state) => state.attributeField);
   const [formData, setFormData] = useState<any>();
-  const getDealRegId = searchParams.get('id');
+  const getDealRegId = searchParams && searchParams.get('id');
 
   useEffect(() => {
     if (getDealRegId && DealRegData && DealRegData.length > 0) {
@@ -204,68 +204,68 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
     const newTabItems =
       finalUpdatedDealRegData &&
       finalUpdatedDealRegData?.map((element: any) => {
-        const {Partner, PartnerProgram, id, type} = element;
-        const isActive = activeKey?.toString() === id?.toString();
-        const tabPercentage: number = calculateTabBarPercentage(
-          element?.PartnerProgram?.form_data,
-          queryData,
-          element?.unique_form_data,
-          element?.common_form_data,
-          true,
-          type,
-        );
-        const headerStyle = {
-          background: isActive ? token.colorInfo : token.colorInfoBg,
-        };
-
-        const textColor = isActive
-          ? token.colorBgContainer
-          : token?.colorTextDisabled;
-
-        return {
-          key: id,
-          label: (
-            <Row
-              key={id}
-              gutter={[0, 10]}
-              style={{width: 'fit-content', margin: '24px 0px'}}
-            >
-              <DealRegCustomTabHeaderStyle
-                token={token}
-                style={headerStyle}
-                onClick={() => {
-                  setActiveKey(id);
-                }}
+        if (element) {
+          const {Partner, PartnerProgram, id, type} = element;
+          const isActive = activeKey?.toString() === id?.toString();
+          const tabPercentage: number = calculateTabBarPercentage(
+            element?.PartnerProgram?.form_data,
+            queryData,
+            element?.unique_form_data,
+            element?.common_form_data,
+            true,
+            type,
+          );
+          const headerStyle = {
+            background: isActive ? token.colorInfo : token.colorInfoBg,
+          };
+          const textColor = isActive
+            ? token.colorBgContainer
+            : token?.colorTextDisabled;
+          return {
+            key: id,
+            label: (
+              <Row
+                key={id}
+                gutter={[0, 10]}
+                style={{width: 'fit-content', margin: '24px 0px'}}
               >
-                <Space>
-                  <CustomProgress
-                    isActive={isActive}
-                    token={token}
-                    percent={tabPercentage}
-                  />
-                  <Typography
-                    style={{color: textColor}}
-                    cursor="pointer"
-                    name="Button 1"
-                  >
-                    {`${formatStatus(Partner?.partner)} - ${formatStatus(PartnerProgram?.partner_program)}`}
-                  </Typography>
-                </Space>
-              </DealRegCustomTabHeaderStyle>
-            </Row>
-          ),
-          children: (
-            <div key={id}>
-              <DealRegDetailForm
-                data={element}
-                activeKey={activeKey}
-                form={form}
-                handleBlur={onFinish}
-                formData={formData}
-              />
-            </div>
-          ),
-        };
+                <DealRegCustomTabHeaderStyle
+                  token={token}
+                  style={headerStyle}
+                  onClick={() => {
+                    setActiveKey(id);
+                  }}
+                >
+                  <Space>
+                    <CustomProgress
+                      isActive={isActive}
+                      token={token}
+                      percent={tabPercentage}
+                    />
+                    <Typography
+                      style={{color: textColor}}
+                      cursor="pointer"
+                      name="Button 1"
+                    >
+                      {`${formatStatus(Partner?.partner)} - ${formatStatus(PartnerProgram?.partner_program)}`}
+                    </Typography>
+                  </Space>
+                </DealRegCustomTabHeaderStyle>
+              </Row>
+            ),
+            children: (
+              <div key={id}>
+                <DealRegDetailForm
+                  data={element}
+                  activeKey={activeKey}
+                  form={form}
+                  handleBlur={onFinish}
+                  formData={formData}
+                />
+              </div>
+            ),
+          };
+        }
       });
 
     setTabItems(newTabItems);
