@@ -244,28 +244,28 @@ const DealReg: React.FC = () => {
         : finalData?.filter((item: any) => item?.status === status);
 
     filteredDealRegData?.forEach((item: any) => {
-      const {
-        opportunity_id,
-        contact_id,
-        customer_id,
-        id: dealReg_id,
-        Opportunity,
-      } = item;
-      const opportunityTitle = Opportunity?.title;
-
-      if (!separatedData[opportunity_id]) {
-        separatedData[opportunity_id] = {
-          key: opportunity_id,
+      if (item) {
+        const {
           opportunity_id,
           contact_id,
           customer_id,
-          dealReg_id,
-          title: opportunityTitle,
-          data: [],
-        };
+          id: dealReg_id,
+          Opportunity,
+        } = item;
+        const opportunityTitle = Opportunity?.title;
+        if (!separatedData[opportunity_id]) {
+          separatedData[opportunity_id] = {
+            key: opportunity_id,
+            opportunity_id,
+            contact_id,
+            customer_id,
+            dealReg_id,
+            title: opportunityTitle,
+            data: [],
+          };
+        }
+        separatedData[opportunity_id]?.data.push(item);
       }
-
-      separatedData[opportunity_id]?.data.push(item);
     });
     return separatedData;
   };
@@ -284,6 +284,7 @@ const DealReg: React.FC = () => {
           expandedRowRender: (record: any) => {
             return (
               <OsTable
+              rowKey={record?.id}
                 columns={dealRegFormColumns}
                 dataSource={record?.data}
                 scroll

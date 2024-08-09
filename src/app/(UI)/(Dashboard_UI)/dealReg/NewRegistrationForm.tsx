@@ -247,6 +247,7 @@ const NewRegistrationForm: FC<any> = ({
             type: 'info',
           });
           dispatch(queryDealReg(''));
+          dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
         }
       });
       setShowModal(false);
