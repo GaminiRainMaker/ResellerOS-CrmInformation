@@ -284,6 +284,7 @@ const DealReg: React.FC = () => {
           expandedRowRender: (record: any) => {
             return (
               <OsTable
+              rowKey={record?.id}
                 columns={dealRegFormColumns}
                 dataSource={record?.data}
                 scroll

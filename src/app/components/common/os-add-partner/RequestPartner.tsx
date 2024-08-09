@@ -107,11 +107,6 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
       mergedArray?.length > 0 &&
       mergedArray?.map((partner: any) => ({
         value: JSON.stringify(partner),
-        // label: (
-        //   <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-        //     {partner?.partner}
-        //   </Typography>
-        // ),
         label: <CustomTextCapitalization text={partner?.partner} />,
         key: partner?.id,
       }));
@@ -131,13 +126,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
       mergedArray?.length > 0 &&
       mergedArray?.map((program: any) => ({
         value: JSON.stringify(program),
-        // label: (
-        //   <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
-        //     {program?.partner_program}
-        //   </Typography>
-        // ),
         label: <CustomTextCapitalization text={program?.partner_program} />,
-
         key: program?.id,
       }));
     setPartnerProgramOptions(partnerProgram);
@@ -237,13 +226,14 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                   onChange={(e, record: any) => {
                     setPartnerVal(record?.key);
                   }}
-                  onClear={() =>
+                  onClear={() => {
                     setQuery({
                       ...query,
                       partner: null,
                       program: null,
-                    })
-                  }
+                    });
+                    form.resetFields(['partner_program_id']);
+                  }}
                 />
               </SelectFormItem>
             </Col>
@@ -262,6 +252,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                 ]}
               >
                 <CommonSelect
+                  disabled={!partnerVal}
                   allowClear
                   showSearch
                   placeholder="Select Partner Program"
