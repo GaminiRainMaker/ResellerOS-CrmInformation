@@ -353,7 +353,13 @@ const Partners: React.FC = () => {
       key: 'description',
       render: (text: any, record: any) => (
         <Checkbox
-          checked={record?.AssignPartnerProgram?.new_request}
+          checked={
+            record?.AssignPartnerProgram?.new_request
+              ? true
+              : !record?.AssignPartnerProgram
+                ? true
+                : false
+          }
           disabled
         />
       ),
@@ -597,6 +603,7 @@ const Partners: React.FC = () => {
     }
   }, [activeTab, userData]);
 
+  console.log('allPartnerDataallPartnerData', allPartnerData);
   const [allTabItem, setAllTabItem] = useState<any>();
   const tabItems = [
     {
@@ -806,7 +813,7 @@ const Partners: React.FC = () => {
           }}
           name="Body 4/Regular"
         >
-          Requested By Reseller
+          Organization Request
         </Typography>
       ),
       key: '4',
@@ -822,6 +829,14 @@ const Partners: React.FC = () => {
       ),
     },
   ];
+  useEffect(() => {
+    if (userInformation?.Admin) {
+      setAllTabItem(tabItemsAdmin);
+    } else {
+      setAllTabItem(tabItems);
+    }
+  }, [userInformation, allPartnerData]);
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -851,7 +866,7 @@ const Partners: React.FC = () => {
           {userInformation && (
             <OsTabs
               activeKey={activeTab?.toString()}
-              items={tabItemsAdmin}
+              items={allTabItem}
               // items={userInformation?.Admin ? tabItemsAdmin : tabItems}
               tabBarExtraContent={
                 <Space size={12} align="center">

@@ -86,7 +86,9 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
           //     setFinalProgramOptions(newArr);
           //   }
           // }
-          setPartnerProgramNewId(newObj);
+          if (setPartnerProgramNewId) {
+            setPartnerProgramNewId(newObj);
+          }
           if (getPartnerDataForSuperAdmin) {
             getPartnerDataForSuperAdmin();
           }

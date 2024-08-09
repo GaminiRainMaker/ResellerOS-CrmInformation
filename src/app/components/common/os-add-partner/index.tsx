@@ -74,7 +74,9 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
             name: d?.payload?.partner,
             value: d?.payload?.id,
           };
-          setPartnerNewId(newObj);
+          if (setPartnerNewId) {
+            setPartnerNewId(newObj);
+          }
           if (partnerOptions) {
             form?.setFieldsValue(['partner_id', d?.payload?.id]);
             setPartnerValue(d?.payload?.id);
