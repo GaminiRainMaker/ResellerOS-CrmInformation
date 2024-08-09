@@ -20,7 +20,10 @@ import {Checkbox, Form} from 'antd';
 import {useEffect, useState} from 'react';
 import {useSearchParams} from 'next/navigation';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
-import {insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
+import {
+  insertAssignPartnerProgram,
+  updateForTheResellerRequest,
+} from '../../../../../redux/actions/assignPartnerProgram';
 import {getAllPartnerandProgramFilterData} from '../../../../../redux/actions/partner';
 import {getUnassignedProgram} from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -29,6 +32,7 @@ import OsInput from '@/app/components/common/os-input';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import {getUserByTokenAccess} from '../../../../../redux/actions/user';
 import {addNotificationFOrProgramRequest} from '../../../../../redux/actions/notifications';
+import {useWindowRect} from '@dnd-kit/core/dist/hooks/utilities';
 
 const Partners: React.FC = () => {
   const [token] = useThemeToken();
@@ -36,7 +40,7 @@ const Partners: React.FC = () => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
   const [loadingForRequest, setLoadingForRequest] = useState<boolean>(false);
-
+  const {userInformation} = useAppSelector((state) => state.user);
   const getTabId = searchParams.get('tab');
   const [showModal, setShowModal] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<number>(1);
@@ -44,7 +48,10 @@ const Partners: React.FC = () => {
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [allPartnerAnalyticData, setAllAnalyticPartnerData] = useState<any>();
   const [formData, setformData] = useState<any>();
+  const [partnerNewId, setPartnerNewId] = useState<any>();
+  const [partnerProgramNewId, setPartnerProgramNewId] = useState<any>();
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
+
   const [queryDataa, setQueryData] = useState<{
     partnerQuery: string;
     partnerprogramQuery: string;
@@ -81,22 +88,6 @@ const Partners: React.FC = () => {
       ActivePartnerProgram: countForActivePartnerProgram,
     };
     setAllAnalyticPartnerData(newObj);
-  };
-
-  const addNotificationFortemplate = async (
-    partner_program_id: number,
-    name: string,
-  ) => {
-    let newObj = {
-      title: 'Reseller Resuested Program Template',
-      description: `Reseller reequest for ${name} partner program tenplate `,
-      type_id: partner_program_id,
-      type: 'formBuilder',
-      partner_program_id: partner_program_id,
-    };
-
-    await dispatch(addNotificationFOrProgramRequest(newObj));
-    getPartnerData();
   };
 
   useEffect(() => {
@@ -411,6 +402,114 @@ const Partners: React.FC = () => {
       ),
     },
   ];
+
+  const updateTheResellerequest = async (record: any, typeOn: any) => {
+    let obj = {
+      type: typeOn,
+      id: record?.AssignPartnerProgram?.id,
+    };
+    await dispatch(updateForTheResellerRequest(obj));
+
+    getPartnerData();
+  };
+  const PartnerProgramColumnsTab4 = [
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Partner Name
+        </Typography>
+      ),
+      dataIndex: 'partner_program',
+      key: 'partner_program',
+      render: (text: string, record: any) => (
+        console.log('recordrecord', record),
+        (<CustomTextCapitalization text={record?.Partner?.partner} />)
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Partner Email
+        </Typography>
+      ),
+      dataIndex: 'description',
+      key: 'description',
+      render: (text: any, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.Partner?.email ?? '--'}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Partner Program Name
+        </Typography>
+      ),
+      dataIndex: 'partner_program',
+      key: 'partner_program',
+      render: (text: string) => <CustomTextCapitalization text={text} />,
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Partner Program Description
+        </Typography>
+      ),
+      dataIndex: 'description',
+      key: 'description',
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Requested User
+        </Typography>
+      ),
+      dataIndex: 'description',
+      key: 'description',
+      render: (text: any, record: any) => (
+        <Typography name="Body 4/Regular">
+          {record?.AssignPartnerProgram?.User?.user_name ?? '--'}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Action
+        </Typography>
+      ),
+      dataIndex: 'action',
+      key: 'action',
+      width: 300,
+      render: (text: string, record: any) => (
+        <Space direction="horizontal">
+          {' '}
+          <OsButton
+            btnStyle={{height: '32px'}}
+            buttontype="PRIMARY"
+            text="Approve"
+            clickHandler={() => {
+              updateTheResellerequest(record, 'admin_request');
+            }}
+          />{' '}
+          <OsButton
+            btnStyle={{height: '32px'}}
+            buttontype="SECONDARY"
+            text="Decline"
+            clickHandler={() => {
+              updateTheResellerequest(record, 'is_deleted');
+            }}
+          />
+        </Space>
+      ),
+    },
+  ];
+
   // console.log('userInformationuserInformation', userData);
   const handleAddNewAssignedPartnerProgramRequest = async (
     id: number,
@@ -425,6 +524,7 @@ const Partners: React.FC = () => {
       new_request: false,
       partner_program_id: id,
       userResquest: true,
+      admin_request: userData?.is_admin ? true : false,
     };
 
     await dispatch(insertAssignPartnerProgram(partnerObj));
@@ -467,6 +567,8 @@ const Partners: React.FC = () => {
                   >
                     {record?.AssignPartnerProgram?.is_approved ? (
                       'Appproved for your Organization'
+                    ) : !record?.AssignPartnerProgram?.admin_request ? (
+                      `'Need admin approval to request super admin`
                     ) : record?.AssignPartnerProgram?.is_approved === null ? (
                       'Requested For the Access'
                     ) : (
@@ -495,6 +597,7 @@ const Partners: React.FC = () => {
     }
   }, [activeTab, userData]);
 
+  const [allTabItem, setAllTabItem] = useState<any>();
   const tabItems = [
     {
       label: (
@@ -595,7 +698,130 @@ const Partners: React.FC = () => {
       ),
     },
   ];
-
+  const tabItemsAdmin = [
+    {
+      label: (
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setActiveTab(1);
+          }}
+          name="Body 4/Regular"
+        >
+          All Partners
+        </Typography>
+      ),
+      key: '1',
+      children: (
+        <OsTable
+          columns={PartnerColumns}
+          expandable={{
+            // eslint-disable-next-line react/no-unstable-nested-components
+            expandedRowRender: (record: any) => (
+              <OsTable
+                columns={partnerProgramColumns}
+                dataSource={record?.PartnerPrograms}
+                scroll
+                loading={loadingForRequest}
+                paginationProps={false}
+              />
+            ),
+            rowExpandable: (record: any) => record.name !== 'Not Expandable',
+          }}
+          dataSource={allPartnerData?.AllPartner}
+          scroll
+          locale={locale}
+          loading={loadingForRequest}
+          drag
+        />
+      ),
+    },
+    {
+      label: (
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setActiveTab(2);
+          }}
+          name="Body 4/Regular"
+        >
+          Active Partners
+        </Typography>
+      ),
+      key: '2',
+      children: (
+        <OsTable
+          columns={PartnerColumns}
+          drag
+          expandable={{
+            // eslint-disable-next-line react/no-unstable-nested-components
+            expandedRowRender: (record: any) => (
+              <OsTable
+                columns={partnerProgramColumns}
+                dataSource={record?.PartnerPrograms}
+                scroll
+                loading={false}
+                paginationProps={false}
+              />
+            ),
+            rowExpandable: (record: any) => record.name !== 'Not Expandable',
+          }}
+          dataSource={allPartnerData?.approved}
+          scroll
+          locale={locale}
+          loading={false}
+        />
+      ),
+    },
+    {
+      label: (
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setActiveTab(3);
+          }}
+          name="Body 4/Regular"
+        >
+          Requested
+        </Typography>
+      ),
+      key: '3',
+      children: (
+        <OsTable
+          columns={PartnerProgramColumnsTab3}
+          dataSource={allPartnerData?.requested}
+          scroll
+          locale={locale}
+          loading={false}
+          drag
+        />
+      ),
+    },
+    {
+      label: (
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setActiveTab(4);
+          }}
+          name="Body 4/Regular"
+        >
+          Requested By Reseller
+        </Typography>
+      ),
+      key: '4',
+      children: (
+        <OsTable
+          columns={PartnerProgramColumnsTab4}
+          dataSource={allPartnerData?.RequestedRessellerData}
+          scroll
+          locale={locale}
+          loading={false}
+          drag
+        />
+      ),
+    },
+  ];
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -622,62 +848,67 @@ const Partners: React.FC = () => {
         <Row
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
-          <OsTabs
-            activeKey={activeTab?.toString()}
-            items={tabItems}
-            tabBarExtraContent={
-              <Space size={12} align="center">
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Partner</Typography>
-                  <OsInput
-                    value={queryDataa?.partnerQuery}
-                    onChange={(e: any) => {
-                      setQueryData({
-                        ...queryDataa,
-                        partnerQuery: e?.target?.value,
-                      });
-                    }}
-                  />
-                </Space>
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Partner Program</Typography>
-                  <OsInput
-                    value={queryDataa?.partnerprogramQuery}
-                    onChange={(e: any) => {
-                      setQueryData({
-                        ...queryDataa,
-                        partnerprogramQuery: e?.target?.value,
-                      });
-                    }}
-                  />
-                </Space>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: '20px',
-                  }}
-                >
-                  <Typography
-                    cursor="pointer"
-                    name="Button 1"
-                    style={{cursor: 'pointer'}}
-                    color={token?.colorLink}
-                    onClick={() => {
-                      setQueryData({
-                        partnerQuery: '',
-                        partnerprogramQuery: '',
-                        size: 10,
-                      });
+          {userInformation && (
+            <OsTabs
+              activeKey={activeTab?.toString()}
+              items={tabItemsAdmin}
+              // items={userInformation?.Admin ? tabItemsAdmin : tabItems}
+              tabBarExtraContent={
+                <Space size={12} align="center">
+                  <Space direction="vertical" size={0}>
+                    <Typography name="Body 4/Medium">Partner</Typography>
+                    <OsInput
+                      value={queryDataa?.partnerQuery}
+                      onChange={(e: any) => {
+                        setQueryData({
+                          ...queryDataa,
+                          partnerQuery: e?.target?.value,
+                        });
+                      }}
+                    />
+                  </Space>
+                  <Space direction="vertical" size={0}>
+                    <Typography name="Body 4/Medium">
+                      Partner Program
+                    </Typography>
+                    <OsInput
+                      value={queryDataa?.partnerprogramQuery}
+                      onChange={(e: any) => {
+                        setQueryData({
+                          ...queryDataa,
+                          partnerprogramQuery: e?.target?.value,
+                        });
+                      }}
+                    />
+                  </Space>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginTop: '20px',
                     }}
                   >
-                    Reset
-                  </Typography>
-                </div>
-              </Space>
-            }
-          />
+                    <Typography
+                      cursor="pointer"
+                      name="Button 1"
+                      style={{cursor: 'pointer'}}
+                      color={token?.colorLink}
+                      onClick={() => {
+                        setQueryData({
+                          partnerQuery: '',
+                          partnerprogramQuery: '',
+                          size: 10,
+                        });
+                      }}
+                    >
+                      Reset
+                    </Typography>
+                  </div>
+                </Space>
+              }
+            />
+          )}
         </Row>
       </Space>
 
@@ -689,17 +920,22 @@ const Partners: React.FC = () => {
             setOpen={setShowModal}
             setRequestPartnerLoading={setRequestPartnerLoading}
             getPartnerData={getPartnerData}
+            setPartnerNewId={setPartnerNewId}
+            partnerNewId={partnerNewId}
+            partnerProgramNewId={partnerProgramNewId}
+            setPartnerProgramNewId={setPartnerProgramNewId}
+            setShowModal={setShowModal}
           />
         }
-        width={800}
+        width={500}
         open={showModal}
         onCancel={() => {
           setShowModal((p) => !p);
+          setPartnerProgramNewId({});
+          setPartnerNewId({});
           form.resetFields();
         }}
         footer
-        primaryButtonText="Request"
-        onOk={form?.submit}
         footerPadding={30}
       />
 
@@ -715,27 +951,6 @@ const Partners: React.FC = () => {
               // eslint-disable-next-line react/jsx-boolean-value
               previewFile
             />
-            {/* <Space
-              align="end"
-              size={8}
-              style={{display: 'flex', justifyContent: 'end'}}
-            >
-              <OsButton
-                buttontype="PRIMARY"
-                text="Delete"
-                clickHandler={() => {
-                  deletePartnerProgramFormDa(formData?.Id);
-                }}
-              />
-              <OsButton
-                buttontype="SECONDARY"
-                text="EDIT"
-                color="red"
-                clickHandler={() => {
-                  router?.push(`/formBuilder?id=${formData?.Id}`);
-                }}
-              />{' '}
-            </Space> */}
           </>
         }
         width={900}

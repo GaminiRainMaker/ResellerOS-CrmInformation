@@ -94,3 +94,15 @@ export const deletePartnerProgramFormData = createAsyncThunk(
     }
   },
 );
+
+export const upadteToRequestPartnerandprogramfromAmin = createAsyncThunk(
+  'partnerProgram/upadteToRequestPartnerandprogramfromAmin',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PARTNER_PROGRAM_API.requestAdmin(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

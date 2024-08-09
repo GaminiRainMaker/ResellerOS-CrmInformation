@@ -5,8 +5,15 @@ export interface RequestPartnerInterface {
   setRequestPartnerLoading: (B: boolean) => void;
   form: FormInstance;
   getPartnerData?: any;
+  partnerProgramNewId?: any;
+  setPartnerProgramNewId?: any;
+  partnerNewId?: any;
+  setPartnerNewId?: any;
+  setShowModal?: any;
 }
 export interface AddPartnerInterface {
+  setPartnerNewId?: any;
+  setPartnerProgramNewId?: any;
   setOpen?: (B: boolean) => void;
   form: FormInstance;
   drawer?: boolean;

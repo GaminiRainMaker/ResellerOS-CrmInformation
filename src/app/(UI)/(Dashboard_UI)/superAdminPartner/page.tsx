@@ -36,6 +36,7 @@ import {
   deletePartnerProgram,
   deletePartnerProgramFormData,
   getAllPartnerProgram,
+  upadteToRequestPartnerandprogramfromAmin,
 } from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SuperAdminPartnerAnalytics from './SuperAdminPartnerAnalytic';
@@ -110,15 +111,19 @@ const SuperAdminPartner: React.FC = () => {
           requested: payload?.payload?.requested?.length,
           allPartner: payload?.payload?.AllPartner?.length,
           Declined: payload?.payload?.DeclinedData?.length,
-          PartnerProgram: countForActivePartnerProgram,
+          combinedArr: countForActivePartnerProgram,
         };
         setSuperAdminPartnerAnalyticData(newObj);
+
         setAllPartnerData(payload?.payload);
       },
     );
 
     // setAllAnalyticPartnerData(newObj);
   };
+
+  console.log('allPartnerDataallPartnerData', allPartnerData);
+
   useEffect(() => {
     // dispatch(getAllPartnerandProgram(''));
     getPartnerDataForSuperAdmin();
@@ -145,36 +150,6 @@ const SuperAdminPartner: React.FC = () => {
     }
   }, [getTabId]);
 
-  console.log('allPartnerDataallPartnerData', allPartnerData);
-
-  // useEffect(() => {
-  //   const FilterArrayDataa = partnerProgramFilter(
-  //     'super',
-  //     userInformation,
-  //     allPartnerData,
-  //     activeTab,
-  //   );
-  //   setSuperAdminPartnerAnalyticData(FilterArrayDataa);
-  //   const newArrForTab3: any = [];
-  //   if (activeTab === 2) {
-  //     FilterArrayDataa?.filterData?.map((items: any) => {
-  //       items?.PartnerPrograms?.map((itemInner: any) => {
-  //         const newObj: any = {
-  //           ...itemInner,
-  //           partner_email: items?.email,
-  //           partner_name: items?.partner,
-  //         };
-  //         newArrForTab3?.push(newObj);
-  //       });
-  //     });
-  //   }
-  //   if (activeTab === 2) {
-  //     setAllFilterPartnerData(newArrForTab3);
-  //   } else {
-  //     setAllFilterPartnerData(FilterArrayDataa?.filterData);
-  //   }
-  // }, [JSON.stringify(allPartnerData), activeTab]);
-
   const updateRequest = async (
     type: boolean,
     id: number,
@@ -200,6 +175,25 @@ const SuperAdminPartner: React.FC = () => {
     });
     setDeletePartnerProgramIds([]);
     setShowPartnerProgramDeleteModal(false);
+  };
+
+  const updateTheAuthorization = async (
+    value: boolean,
+    partner_id: any,
+    partner_program_id: any,
+    typeOf: any,
+  ) => {
+    let data = {
+      partner_id: partner_id,
+      partner_program_id: partner_program_id,
+      type: typeOf,
+      valueUpdate: value,
+    };
+
+    await dispatch(upadteToRequestPartnerandprogramfromAmin(data));
+    getPartnerDataForSuperAdmin();
+
+    // valueUpdate
   };
 
   const deleteSelectedPartnerIds = async () => {
@@ -295,7 +289,13 @@ const SuperAdminPartner: React.FC = () => {
       key: 'description',
       render: (text: any, record: any) => (
         <Checkbox
-          checked={record?.AssignPartnerProgram?.new_request}
+          checked={
+            record?.AssignPartnerProgram?.new_request
+              ? true
+              : !record?.AssignPartnerProgram
+                ? true
+                : false
+          }
           disabled
         />
       ),
@@ -311,7 +311,8 @@ const SuperAdminPartner: React.FC = () => {
       key: 'description',
       render: (text: any, record: any) => (
         <Typography name="Body 4/Regular">
-          {record?.AssignPartnerProgram?.User?.user_name ?? '--'}
+          {record?.AssignPartnerProgram?.User?.user_name ??
+            record?.organization}
         </Typography>
       ),
       width: 200,
@@ -364,23 +365,32 @@ const SuperAdminPartner: React.FC = () => {
             buttontype="PRIMARY"
             text="Approve"
             clickHandler={() => {
-              if (
-                record?.form_data?.length > 0 &&
-                !record?.form_data?.includes(null)
-              ) {
-                updateRequest(
+              if (!record?.AssignPartnerProgram) {
+                updateTheAuthorization(
                   true,
-                  record?.AssignPartnerProgram?.id,
-                  record?.AssignPartnerProgram?.requested_by,
                   record?.Partner?.id,
                   record?.id,
+                  'approve',
                 );
               } else {
-                notification?.open({
-                  message:
-                    'Please create a template for this partner program for approval.',
-                  type: 'info',
-                });
+                if (
+                  record?.form_data?.length > 0 &&
+                  !record?.form_data?.includes(null)
+                ) {
+                  updateRequest(
+                    true,
+                    record?.AssignPartnerProgram?.id,
+                    record?.AssignPartnerProgram?.requested_by,
+                    record?.Partner?.id,
+                    record?.id,
+                  );
+                } else {
+                  notification?.open({
+                    message:
+                      'Please create a template for this partner program for approval.',
+                    type: 'info',
+                  });
+                }
               }
             }}
           />{' '}
@@ -389,13 +399,22 @@ const SuperAdminPartner: React.FC = () => {
             buttontype="SECONDARY"
             text="Decline"
             clickHandler={() => {
-              updateRequest(
-                false,
-                record?.AssignPartnerProgram?.id,
-                record?.AssignPartnerProgram?.requested_by,
-                record?.Partner?.id,
-                record?.id,
-              );
+              if (!record?.AssignPartnerProgram) {
+                updateTheAuthorization(
+                  true,
+                  record?.Partner?.id,
+                  record?.id,
+                  'delete',
+                );
+              } else {
+                updateRequest(
+                  false,
+                  record?.AssignPartnerProgram?.id,
+                  record?.AssignPartnerProgram?.requested_by,
+                  record?.Partner?.id,
+                  record?.id,
+                );
+              }
             }}
           />
         </Space>
@@ -697,29 +716,60 @@ const SuperAdminPartner: React.FC = () => {
           <Space direction="horizontal">
             {' '}
             <OsButton
+              btnStyle={{height: '32px'}}
               buttontype="PRIMARY"
               text="Approve"
               clickHandler={() => {
-                updateRequest(
-                  true,
-                  record?.AssignPartnerProgram?.id,
-                  record?.AssignPartnerProgram?.requested_by,
-                  record?.Partner?.id,
-                  record?.id,
-                );
+                if (!record?.AssignPartnerProgram) {
+                  updateTheAuthorization(
+                    true,
+                    record?.Partner?.id,
+                    record?.id,
+                    'approve',
+                  );
+                } else {
+                  if (
+                    record?.form_data?.length > 0 &&
+                    !record?.form_data?.includes(null)
+                  ) {
+                    updateRequest(
+                      true,
+                      record?.AssignPartnerProgram?.id,
+                      record?.AssignPartnerProgram?.requested_by,
+                      record?.Partner?.id,
+                      record?.id,
+                    );
+                  } else {
+                    notification?.open({
+                      message:
+                        'Please create a template for this partner program for approval.',
+                      type: 'info',
+                    });
+                  }
+                }
               }}
             />{' '}
             <OsButton
+              btnStyle={{height: '32px'}}
               buttontype="SECONDARY"
               text="Decline"
               clickHandler={() => {
-                updateRequest(
-                  false,
-                  record?.AssignPartnerProgram?.id,
-                  record?.AssignPartnerProgram?.requested_by,
-                  record?.Partner?.id,
-                  record?.id,
-                );
+                if (!record?.AssignPartnerProgram) {
+                  updateTheAuthorization(
+                    true,
+                    record?.Partner?.id,
+                    record?.id,
+                    'delete',
+                  );
+                } else {
+                  updateRequest(
+                    false,
+                    record?.AssignPartnerProgram?.id,
+                    record?.AssignPartnerProgram?.requested_by,
+                    record?.Partner?.id,
+                    record?.id,
+                  );
+                }
               }}
             />
           </Space>

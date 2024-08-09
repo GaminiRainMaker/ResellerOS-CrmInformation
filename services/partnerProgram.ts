@@ -8,6 +8,7 @@ export const PARTNER_PROGRAM_API = {
   getUnassignedProgram: () =>
     get(API.PARTNER_PROGRAM.GetUnassignedProgram) as Promise<AxiosResponse<[]>>,
   post: (data: any) => post(API.PARTNER_PROGRAM.INDEX, data),
+  requestAdmin: (data: any) => post(API.PARTNER_PROGRAM.REQ_ADMIN, data),
   query: (data: any) =>
     post(API.PARTNER_PROGRAM.QUERY, data) as Promise<AxiosResponse<[]>>,
   getById: (id: number) =>

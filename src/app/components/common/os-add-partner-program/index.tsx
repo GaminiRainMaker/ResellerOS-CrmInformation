@@ -18,6 +18,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {AddPartnerInterface} from '../os-add-partner/os-add-partner.interface';
 import OsPartnerSelect from '../os-partner-select';
 import {usePathname} from 'next/navigation';
+import OsButton from '../os-button';
 
 const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
   form,
@@ -29,12 +30,14 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
   updateTheObject,
   getPartnerDataForSuperAdmin,
   partnerData,
+  setPartnerProgramNewId,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const pathname = usePathname();
   const {userInformation} = useAppSelector((state) => state.user);
   const [partnerValue, setPartnerValue] = useState<number>();
+
   useEffect(() => {
     form?.resetFields();
     if (updateTheObject) {
@@ -64,17 +67,17 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
         }
       });
     } else {
-      if (pathname === '/partners') {
-        partnerProgramObj.admin_approved = false;
+      if (pathname === '/superAdminPartner') {
+        partnerProgramObj.admin_approved = true;
       }
       dispatch(insertPartnerProgram(partnerProgramObj)).then((d: any) => {
         if (d?.payload) {
           form?.resetFields();
           // if (finalProgramOptions) {
-          //   let newObj = {
-          //     label: d?.payload?.partner_program,
-          //     value: d?.payload?.id,
-          //   };
+          let newObj = {
+            name: d?.payload?.partner_program,
+            value: d?.payload?.id,
+          };
           //   if (newObj) {
           //     let newArr: any =
           //       finalProgramOptions?.length > 0
@@ -83,6 +86,7 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
           //     setFinalProgramOptions(newArr);
           //   }
           // }
+          setPartnerProgramNewId(newObj);
           if (getPartnerDataForSuperAdmin) {
             getPartnerDataForSuperAdmin();
           }

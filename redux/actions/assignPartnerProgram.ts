@@ -26,7 +26,6 @@ export const getAssignPartnerProgramByOrganization = createAsyncThunk(
   },
 );
 
-
 export const deleteAssignPartnerProgram = createAsyncThunk(
   'assignPartnerProgram/deleteAssignPartnerProgram',
   async (data: any, thunkApi) => {
@@ -45,6 +44,19 @@ export const updateAssignPartnerProgramById = createAsyncThunk(
     try {
       const res =
         await ASSIGN_PARTNER_PROGRAM_API.updateAssignPartnerProgramById(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+
+export const updateForTheResellerRequest = createAsyncThunk(
+  'assignPartnerProgram/updateForTheResellerRequest',
+  async (data: any, thunkApi) => {
+    try {
+      const res =
+        await ASSIGN_PARTNER_PROGRAM_API.updateForTheResellerRequest(data);
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error?.message);

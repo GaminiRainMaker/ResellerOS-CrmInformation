@@ -10,6 +10,7 @@ import {
   updatePartnerProgramById,
   getUnassignedProgram,
   getFormDataProgram,
+  upadteToRequestPartnerandprogramfromAmin,
 } from '../actions/partnerProgram';
 
 type PartnerProgramState = {
@@ -180,6 +181,24 @@ const partnerProgramSlice = createSlice({
       )
       .addCase(
         getFormDataProgram.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(upadteToRequestPartnerandprogramfromAmin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        upadteToRequestPartnerandprogramfromAmin.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.getFormDataProgramData = action.payload;
+        },
+      )
+      .addCase(
+        upadteToRequestPartnerandprogramfromAmin.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

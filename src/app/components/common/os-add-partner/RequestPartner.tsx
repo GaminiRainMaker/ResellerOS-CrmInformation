@@ -8,6 +8,8 @@ import {mergeArrayWithObject} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form} from 'antd';
 import {useEffect, useState} from 'react';
+import OsButton from '@/app/components/common/os-button';
+
 import AddPartner from '.';
 import {insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
 import {getAllPartnerandProgramFilterDataForOrganizationOnly} from '../../../../../redux/actions/partner';
@@ -19,12 +21,20 @@ import {SelectFormItem} from '../os-oem-select/oem-select-styled';
 import CommonSelect from '../os-select';
 import {RequestPartnerInterface} from './os-add-partner.interface';
 import CustomTextCapitalization from '../hooks/CustomTextCapitalizationHook';
+import OsInput from '../os-input';
+import {upadteToRequestPartnerandprogramfromAmin} from '../../../../../redux/actions/partnerProgram';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 
 const RequestPartner: React.FC<RequestPartnerInterface> = ({
   form,
   setOpen,
   setRequestPartnerLoading,
   getPartnerData,
+  partnerProgramNewId,
+  setPartnerProgramNewId,
+  partnerNewId,
+  setPartnerNewId,
+  setShowModal,
 }) => {
   const [token] = useThemeToken();
   const [addPartnerform] = Form.useForm();
@@ -43,6 +53,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
   const [partnerProgramOptions, setPartnerProgramOptions] = useState<any>();
   const [partnerVal, setPartnerVal] = useState<number>();
   const [getTheData, setGetTheData] = useState<boolean>(false);
+
   const [openAddPartnerModal, setOpenAddPartnerModal] =
     useState<boolean>(false);
   const [openAddProgramModal, setOpenAddProgramModal] =
@@ -56,6 +67,19 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
   });
 
   const searchQuery = useDebounceHook(query, 400);
+  const requestForNewPartnerAndPartnerProgram = async () => {
+    let data = {
+      partner_id: partnerNewId?.value,
+      partner_program_id: partnerProgramNewId?.value,
+      type: 'approve',
+      valueUpdate: false,
+    };
+
+    dispatch(upadteToRequestPartnerandprogramfromAmin(data));
+    setPartnerNewId({});
+    setPartnerProgramNewId({});
+    setShowModal(false);
+  };
 
   useEffect(() => {
     setGetTheData(true);
@@ -190,61 +214,20 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
             <Col sm={24} md={12}>
               <SelectFormItem
                 label={<Typography name="Body 4/Medium">Partner</Typography>}
-                name="partner_id"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Partner is required!',
-                  },
-                ]}
               >
-                <CommonSelect
-                  allowClear
-                  showSearch
-                  placeholder="Select Partner"
-                  style={{width: '100%'}}
-                  options={partnerOptions}
-                  dropdownRender={(menu) => (
-                    <>
-                      <Space
-                        style={{cursor: 'pointer'}}
-                        size={8}
-                        onClick={() => setOpenAddPartnerModal(true)}
-                      >
-                        <PlusIcon
-                          width={24}
-                          color={token?.colorInfoBorder}
-                          style={{marginTop: '5px'}}
-                        />
-                        <Typography
-                          color={token?.colorPrimaryText}
-                          name="Body 3/Regular"
-                          cursor="pointer"
-                        >
-                          Request Partner
-                        </Typography>
-                      </Space>
-
-                      {menu}
-                    </>
-                  )}
-                  onSearch={(e) => {
-                    setQuery({
-                      ...query,
-                      partner: e,
-                    });
-                  }}
-                  onChange={(e, record: any) => {
-                    setPartnerVal(record?.key);
-                  }}
-                  onClear={() =>
-                    setQuery({
-                      ...query,
-                      partner: null,
-                      program: null,
-                    })
-                  }
-                />
+                {partnerNewId?.value ? (
+                  <OsInput
+                    disabled
+                    style={{width: '70%'}}
+                    value={formatStatus(partnerNewId?.name)}
+                  />
+                ) : (
+                  <OsButton
+                    clickHandler={() => setOpenAddPartnerModal(true)}
+                    text="Request Partner"
+                    buttontype="SECONDARY"
+                  />
+                )}
               </SelectFormItem>
             </Col>
 
@@ -253,67 +236,51 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                 label={
                   <Typography name="Body 4/Medium">Partner Program</Typography>
                 }
-                name="partner_program_id"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Partner Program is required!',
-                  },
-                ]}
               >
-                <CommonSelect
-                  allowClear
-                  showSearch
-                  placeholder="Select Partner Program"
-                  style={{width: '100%'}}
-                  options={partnerProgramOptions}
-                  dropdownRender={(menu) => (
-                    <>
-                      <Space
-                        style={{cursor: 'pointer'}}
-                        size={8}
-                        onClick={() => setOpenAddProgramModal(true)}
-                      >
-                        <PlusIcon
-                          width={24}
-                          color={token?.colorInfoBorder}
-                          style={{marginTop: '5px'}}
-                        />
-                        <Typography
-                          color={token?.colorPrimaryText}
-                          name="Body 3/Regular"
-                          cursor="pointer"
-                        >
-                          Request Partner Program
-                        </Typography>
-                      </Space>
-
-                      {menu}
-                    </>
-                  )}
-                  onSearch={(e) => {
-                    setQuery({
-                      ...query,
-                      program: e,
-                    });
-                  }}
-                  onClear={() =>
-                    setQuery({
-                      ...query,
-                      program: null,
-                    })
-                  }
-                />
+                {partnerProgramNewId?.value ? (
+                  <OsInput
+                    disabled
+                    style={{width: '70%'}}
+                    value={formatStatus(partnerProgramNewId?.name)}
+                  />
+                ) : (
+                  <OsButton
+                    disabled={!partnerNewId?.value}
+                    clickHandler={() => setOpenAddProgramModal(true)}
+                    text="Request Partner"
+                    buttontype="SECONDARY"
+                  />
+                )}
               </SelectFormItem>
             </Col>
           </Row>
         </Form>
+        <div
+          // direction="vertical"
+          style={{
+            display: 'flex',
+            justifyContent: 'end',
+            width: '100%',
+            // background: 'red',
+          }}
+        >
+          <OsButton
+            // style={{float: 'right'}}
+            text="Request"
+            buttontype="PRIMARY"
+            clickHandler={requestForNewPartnerAndPartnerProgram}
+          />
+        </div>
       </Space>
 
       <OsModal
         loading={insertPartnerLoading}
         body={
-          <AddPartner form={addPartnerform} setOpen={setOpenAddPartnerModal} />
+          <AddPartner
+            form={addPartnerform}
+            setPartnerNewId={setPartnerNewId}
+            setOpen={setOpenAddPartnerModal}
+          />
         }
         width={600}
         open={openAddPartnerModal}
@@ -333,6 +300,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
             form={addPartnerProgram}
             setOpen={setOpenAddProgramModal}
             partnerId={partnerVal}
+            setPartnerProgramNewId={setPartnerProgramNewId}
           />
         }
         width={600}

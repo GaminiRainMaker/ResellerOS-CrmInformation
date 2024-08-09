@@ -32,6 +32,7 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
   setPartnerOptions,
   partnerOptions,
   setPartnerValue,
+  setPartnerNewId,
 }) => {
   const [token] = useThemeToken();
 
@@ -64,25 +65,19 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
       }
       setOpen && setOpen(false);
     } else {
-      if (pathname === '/partners') {
-        partnerObj.admin_approved = false;
+      if (pathname === '/superAdminPartner') {
+        partnerObj.admin_approved = true;
       }
       await dispatch(insertPartner(partnerObj)).then((d: any) => {
         if (d?.payload) {
+          let newObj = {
+            name: d?.payload?.partner,
+            value: d?.payload?.id,
+          };
+          setPartnerNewId(newObj);
           if (partnerOptions) {
-            let newObj = {
-              label: d?.payload?.partner,
-              value: d?.payload?.id,
-            };
             form?.setFieldsValue(['partner_id', d?.payload?.id]);
             setPartnerValue(d?.payload?.id);
-            if (newObj) {
-              let newArr: any =
-                partnerOptions?.length > 0
-                  ? [newObj, ...partnerOptions]
-                  : [newObj];
-              setPartnerOptions(newArr);
-            }
           }
           if (getPartnerDataForSuperAdmin) {
             getPartnerDataForSuperAdmin();

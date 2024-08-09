@@ -191,7 +191,8 @@ export const API = {
     filterDataAdmin: 'partner/getAllPartnerandProgramFilterDataForAdmin',
     approvedForOrg: 'partner/getAllPartnerandProgramApprovedForOrganization',
     CanAddedToOrg: 'partner/getPartnerCanAddedToOrganization',
-    GetAllPartnerandProgramFilterDataForOrganizationOnly: 'partner/getAllPartnerandProgramFilterDataForOrganizationOnly',
+    GetAllPartnerandProgramFilterDataForOrganizationOnly:
+      'partner/getAllPartnerandProgramFilterDataForOrganizationOnly',
   },
   PARTNER_PROGRAM: {
     INDEX: '/partnerProgram',
@@ -202,6 +203,7 @@ export const API = {
     deletePartnerFormData: '/partnerProgram/deletePartnerProgramFormData',
     GetUnassignedProgram: '/partnerProgram/getUnassignedProgram',
     GetFormDataProgram: '/partnerProgram/getFormDataProgram',
+    REQ_ADMIN: '/partnerProgram/upadteToRequestPartnerandprogramfromAmin',
   },
   DISTRIBUTOR: {
     INDEX: '/distributor',
@@ -239,6 +241,8 @@ export const API = {
     DeleteById: '/assignPartnerProgram/deleteById',
     UpdateAssignPartnerProgramById:
       '/assignPartnerProgram/updateAssignPartnerProgramById',
+    updateForTheResellerRequest:
+      '/assignPartnerProgram/updateForTheResellerRequest',
   },
   ATTRIBUTE_SECTION: {
     INDEX: '/attributeSection',

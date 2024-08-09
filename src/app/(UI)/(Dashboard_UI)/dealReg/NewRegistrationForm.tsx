@@ -44,11 +44,17 @@ const NewRegistrationForm: FC<any> = ({
   const {data: dataAddress} = useAppSelector((state) => state.customer);
   const {userInformation} = useAppSelector((state) => state.user);
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
+  const [allSeldPartnerFilterData, setAllSelfFilterPartnerData] =
+    useState<any>();
+
   const [formStep, setFormStep] = useState<number>(0);
   const [customerValue, setCustomerValue] = useState<number>();
   const [registeredPartnerData, setRegisteredPartnerData] = useState<any>();
   const [addressData, setAddressData] = useState<any>();
   const [partnerProgramOptions, setPartnerProgrramOptions] = useState();
+  const [partnerProgramOptionsForSelf, setPartnerProgrramOptionsForSelf] =
+    useState();
+
   const [selefPartnerOptions, setSelfPartnerOptions] = useState<any>();
   const [partnerOptions, setPartnerOptions] = useState<any>();
   const [allAddedSelfPartnerProgramIDs, setAllAddedSelfPartnerProgramIDs] =
@@ -71,24 +77,13 @@ const NewRegistrationForm: FC<any> = ({
     }
   }, [isDealRegDetail]);
 
-  // useEffect(() => {
-  //   const FilterArrayDataa = partnerProgramFilter(
-  //     'user',
-  //     userInformation,
-  //     partnerData,
-  //     2,
-  //     true,
-  //   );
-
-  //   setAllFilterPartnerData(FilterArrayDataa?.filterData);
-  // }, [partnerData]);
   const dataForTheObjects = form.getFieldsValue();
 
   useEffect(() => {
     let partnerOptions: any = [];
     let selfPartnerOptions: any = [];
 
-    allPartnerFilterData?.map((partner: any) => {
+    allPartnerFilterData?.AllPartner?.map((partner: any) => {
       let newCheckArrForHaveProgrmIds: any = [];
       partner?.PartnerPrograms?.map((items: any) => {
         if (!allAddedPartnerProgramIDs?.includes(items?.id)) {
@@ -96,17 +91,24 @@ const NewRegistrationForm: FC<any> = ({
         }
       });
       if (newCheckArrForHaveProgrmIds?.length > 0) {
-        if (partner?.organization == userInformation?.organization) {
-          selfPartnerOptions?.push({
-            label: <CustomTextCapitalization text={partner?.partner} />,
-            value: partner?.id,
-          });
-        } else {
-          partnerOptions?.push({
-            label: <CustomTextCapitalization text={partner?.partner} />,
-            value: partner?.id,
-          });
+        partnerOptions?.push({
+          label: <CustomTextCapitalization text={partner?.partner} />,
+          value: partner?.id,
+        });
+      }
+    });
+    allPartnerFilterData?.AllPartnerForSelf?.map((partner: any) => {
+      let newCheckArrForHaveProgrmIds: any = [];
+      partner?.PartnerPrograms?.map((items: any) => {
+        if (!allAddedPartnerProgramIDs?.includes(items?.id)) {
+          newCheckArrForHaveProgrmIds?.push(items?.id);
         }
+      });
+      if (newCheckArrForHaveProgrmIds?.length > 0) {
+        selfPartnerOptions?.push({
+          label: <CustomTextCapitalization text={partner?.partner} />,
+          value: partner?.id,
+        });
       }
     });
 
@@ -114,8 +116,30 @@ const NewRegistrationForm: FC<any> = ({
     setSelfPartnerOptions(selfPartnerOptions);
   }, [allPartnerFilterData, dataForTheObjects?.registeredPartners]);
 
+  const findPartnerProgramsForSelfById = (chosenId: number) => {
+    const filteredData = allPartnerFilterData?.AllPartnerForSelf?.filter(
+      (item: any) => item?.id === chosenId,
+    );
+
+    if (filteredData) {
+      let partnerPrograms: any = [];
+      filteredData?.[0]?.PartnerPrograms?.map((program: any) => {
+        if (!allAddedPartnerProgramIDs?.includes(program?.id)) {
+          partnerPrograms?.push({
+            label: <CustomTextCapitalization text={program?.partner_program} />,
+            value: program?.id,
+          });
+        }
+      });
+      setPartnerProgrramOptionsForSelf(partnerPrograms);
+    }
+  };
+  const onHitDeleteTheObjectForSelf = () => {
+    findPartnerProgramsForSelfById(choosenIdProgram);
+  };
+
   const findPartnerProgramsById = (chosenId: number) => {
-    const filteredData = allPartnerFilterData?.filter(
+    const filteredData = allPartnerFilterData?.AllPartner?.filter(
       (item: any) => item?.id === chosenId,
     );
 
@@ -135,37 +159,6 @@ const NewRegistrationForm: FC<any> = ({
   const onHitDeleteTheObject = () => {
     findPartnerProgramsById(choosenIdProgram);
   };
-
-  // useEffect(() => {
-  //   let customerWithAddresses: any;
-
-  //   if (isDealRegDetail) {
-  //     customerWithAddresses = dataAddress?.find(
-  //       (customer: any) => customer?.id === getCustomerId,
-  //     );
-  //   } else {
-  //     customerWithAddresses = dataAddress?.find(
-  //       (customer: any) => customer?.id === customerValue,
-  //     );
-  //   }
-
-  //   const addresses = customerWithAddresses?.Addresses;
-  //   const {
-  //     billing_address_line,
-  //     billing_city,
-  //     billing_country,
-  //     billing_pin_code,
-  //     billing_state,
-  //   } = addresses?.[0] ?? {};
-  //   setAddressData({
-  //     street_1: billing_address_line,
-  //     street_2: billing_address_line,
-  //     city: billing_city,
-  //     state: billing_state,
-  //     country: billing_country,
-  //     zip_code: billing_pin_code,
-  //   });
-  // }, [customerValue || getCustomerId]);
 
   const registeredFormFinish = async () => {
     const data = form.getFieldsValue();
@@ -471,9 +464,9 @@ const NewRegistrationForm: FC<any> = ({
                                     <CommonSelect
                                       placeholder="Select"
                                       style={{width: '100%', height: '36px'}}
-                                      options={partnerOptions}
+                                      options={selefPartnerOptions}
                                       onChange={(value) => {
-                                        findPartnerProgramsById(value);
+                                        findPartnerProgramsForSelfById(value);
                                       }}
                                     />
                                   </SelectFormItem>
@@ -496,7 +489,7 @@ const NewRegistrationForm: FC<any> = ({
                                   >
                                     <CommonSelect
                                       placeholder="Select"
-                                      options={partnerProgramOptions}
+                                      options={partnerProgramOptionsForSelf}
                                       onChange={(e: any) => {
                                         let AllIds: any =
                                           allAddedPartnerProgramIDs?.length > 0
