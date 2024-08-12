@@ -13,6 +13,7 @@ import {
   getAllPartnerandProgramApprovedForOrganization,
   getPartnerCanAddedToOrganization,
   getAllPartnerandProgramFilterDataForOrganizationOnly,
+  upadteRequestForOrgNewPartnerApproval,
 } from '../actions/partner';
 
 type PartnerState = {
@@ -230,6 +231,24 @@ const partnerSlice = createSlice({
       )
       .addCase(
         getAllPartnerandProgramFilterDataForOrganizationOnly.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(upadteRequestForOrgNewPartnerApproval.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        upadteRequestForOrgNewPartnerApproval.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.AllPartnerandProgramFilterData = action.payload;
+        },
+      )
+      .addCase(
+        upadteRequestForOrgNewPartnerApproval.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

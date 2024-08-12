@@ -24,7 +24,10 @@ import {
   insertAssignPartnerProgram,
   updateForTheResellerRequest,
 } from '../../../../../redux/actions/assignPartnerProgram';
-import {getAllPartnerandProgramFilterData} from '../../../../../redux/actions/partner';
+import {
+  getAllPartnerandProgramFilterData,
+  upadteRequestForOrgNewPartnerApproval,
+} from '../../../../../redux/actions/partner';
 import {getUnassignedProgram} from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import PartnerAnalytics from './partnerAnalytics';
@@ -33,6 +36,8 @@ import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import {getUserByTokenAccess} from '../../../../../redux/actions/user';
 import {addNotificationFOrProgramRequest} from '../../../../../redux/actions/notifications';
 import {useWindowRect} from '@dnd-kit/core/dist/hooks/utilities';
+import CommonSelect from '@/app/components/common/os-select';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 
 const Partners: React.FC = () => {
   const [token] = useThemeToken();
@@ -51,6 +56,9 @@ const Partners: React.FC = () => {
   const [partnerNewId, setPartnerNewId] = useState<any>();
   const [partnerProgramNewId, setPartnerProgramNewId] = useState<any>();
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
+
+  const [partnerOptions, setPartnerOptions] = useState<any>();
+  const [partnerProgramOptions, setPartnerProgramOptions] = useState<any>();
 
   const [queryDataa, setQueryData] = useState<{
     partnerQuery: string;
@@ -87,6 +95,29 @@ const Partners: React.FC = () => {
       activePartner: allPartnerObj?.approved?.length,
       ActivePartnerProgram: countForActivePartnerProgram,
     };
+
+    let newArrOfPartner: any = [];
+    let newArrOfPartnerProgram: any = [];
+
+    allPartnerObj?.AllPartner?.map((items: any) => {
+      let newObjPatner = {
+        label: formatStatus(items?.partner),
+        value: items?.partner,
+      };
+      newArrOfPartner?.push(newObjPatner);
+      if (items?.PartnerPrograms?.length) {
+        items?.PartnerPrograms?.map((itemPro: any) => {
+          let newObjPatnerPfro = {
+            label: formatStatus(itemPro?.partner_program),
+            value: itemPro?.partner_program,
+          };
+          newArrOfPartnerProgram?.push(newObjPatnerPfro);
+        });
+      }
+    });
+    setPartnerOptions(newArrOfPartner);
+    setPartnerProgramOptions(newArrOfPartnerProgram);
+
     setAllAnalyticPartnerData(newObj);
   };
 
@@ -104,6 +135,27 @@ const Partners: React.FC = () => {
   useEffect(() => {
     dispatch(getAllPartnerandProgramFilterData(searchQuery))?.then(
       (payload: any) => {
+        let newArrOfPartner: any = [];
+        let newArrOfPartnerProgram: any = [];
+
+        payload?.payload?.AllPartner?.map((items: any) => {
+          let newObjPatner = {
+            label: formatStatus(items?.partner),
+            value: items?.partner,
+          };
+          newArrOfPartner?.push(newObjPatner);
+          if (items?.PartnerPrograms?.length) {
+            items?.PartnerPrograms?.map((itemPro: any) => {
+              let newObjPatnerPfro = {
+                label: formatStatus(itemPro?.partner_program),
+                value: itemPro?.partner_program,
+              };
+              newArrOfPartnerProgram?.push(newObjPatnerPfro);
+            });
+          }
+        });
+        setPartnerOptions(newArrOfPartner);
+        setPartnerProgramOptions(newArrOfPartnerProgram);
         setAllPartnerData(payload?.payload);
       },
     );
@@ -148,6 +200,9 @@ const Partners: React.FC = () => {
   // }, [allPartnerData, activeTab]);
 
   const locale = {
+    emptyText: <EmptyContainer title="No Files" />,
+  };
+  const localeWithButton = {
     emptyText: (
       <EmptyContainer
         title="No Files"
@@ -414,7 +469,23 @@ const Partners: React.FC = () => {
       type: typeOn,
       id: record?.AssignPartnerProgram?.id,
     };
+    return;
     await dispatch(updateForTheResellerRequest(obj));
+
+    getPartnerData();
+  };
+
+  const updateTheResellerequestForPartnerNew = async (
+    record: any,
+    typeOn: any,
+  ) => {
+    let obj = {
+      type: typeOn,
+      partner_id: record?.Partner?.id,
+      partner_program_id: record?.id,
+    };
+
+    await dispatch(upadteRequestForOrgNewPartnerApproval(obj));
 
     getPartnerData();
   };
@@ -500,7 +571,11 @@ const Partners: React.FC = () => {
             buttontype="PRIMARY"
             text="Approve"
             clickHandler={() => {
-              updateTheResellerequest(record, 'admin_request');
+              if (record?.AssignPartnerProgram) {
+                updateTheResellerequest(record, 'admin_request');
+              } else {
+                updateTheResellerequestForPartnerNew(record, 'admin_request');
+              }
             }}
           />{' '}
           <OsButton
@@ -508,7 +583,11 @@ const Partners: React.FC = () => {
             buttontype="SECONDARY"
             text="Decline"
             clickHandler={() => {
-              updateTheResellerequest(record, 'is_deleted');
+              if (record?.AssignPartnerProgram) {
+                updateTheResellerequest(record, 'is_deleted');
+              } else {
+                updateTheResellerequestForPartnerNew(record, 'admin_request');
+              }
             }}
           />
         </Space>
@@ -637,7 +716,7 @@ const Partners: React.FC = () => {
           }}
           dataSource={allPartnerData?.AllPartner}
           scroll
-          locale={locale}
+          locale={activeTab === 1 ? locale : localeWithButton}
           loading={loadingForRequest}
           drag
         />
@@ -675,7 +754,7 @@ const Partners: React.FC = () => {
           }}
           dataSource={allPartnerData?.approved}
           scroll
-          locale={locale}
+          locale={activeTab === 1 ? locale : localeWithButton}
           loading={false}
         />
       ),
@@ -698,7 +777,7 @@ const Partners: React.FC = () => {
           columns={PartnerProgramColumnsTab3}
           dataSource={allPartnerData?.requested}
           scroll
-          locale={locale}
+          locale={activeTab === 1 ? locale : localeWithButton}
           loading={false}
           drag
         />
@@ -737,7 +816,7 @@ const Partners: React.FC = () => {
           }}
           dataSource={allPartnerData?.AllPartner}
           scroll
-          locale={locale}
+          locale={activeTab === 1 ? locale : localeWithButton}
           loading={loadingForRequest}
           drag
         />
@@ -775,7 +854,7 @@ const Partners: React.FC = () => {
           }}
           dataSource={allPartnerData?.approved}
           scroll
-          locale={locale}
+          locale={activeTab === 1 ? locale : localeWithButton}
           loading={false}
         />
       ),
@@ -798,7 +877,7 @@ const Partners: React.FC = () => {
           columns={PartnerProgramColumnsTab3}
           dataSource={allPartnerData?.requested}
           scroll
-          locale={locale}
+          locale={activeTab === 1 ? locale : localeWithButton}
           loading={false}
           drag
         />
@@ -813,7 +892,7 @@ const Partners: React.FC = () => {
           }}
           name="Body 4/Regular"
         >
-          Organization Request
+          Organization Requests
         </Typography>
       ),
       key: '4',
@@ -822,7 +901,7 @@ const Partners: React.FC = () => {
           columns={PartnerProgramColumnsTab4}
           dataSource={allPartnerData?.RequestedRessellerData}
           scroll
-          locale={locale}
+          locale={activeTab === 1 ? locale : localeWithButton}
           loading={false}
           drag
         />
@@ -872,43 +951,62 @@ const Partners: React.FC = () => {
                 <Space size={12} align="center">
                   <Space direction="vertical" size={0}>
                     <Typography name="Body 4/Medium">Partner</Typography>
-                    <OsInput
-                      value={queryDataa?.partnerQuery}
-                      onChange={(e: any) => {
+                    <CommonSelect
+                      style={{width: '200px'}}
+                      placeholder="Search here"
+                      showSearch
+                      options={partnerOptions}
+                      onSearch={(e) => {
                         setQueryData({
                           ...queryDataa,
-                          partnerQuery: e?.target?.value,
+                          partnerQuery: e,
                         });
                       }}
+                      onChange={(e) => {
+                        setQueryData({
+                          ...queryDataa,
+                          partnerQuery: e,
+                        });
+                      }}
+                      value={queryDataa?.partnerQuery}
                     />
                   </Space>
+
                   <Space direction="vertical" size={0}>
                     <Typography name="Body 4/Medium">
+                      {' '}
                       Partner Program
                     </Typography>
-                    <OsInput
-                      value={queryDataa?.partnerprogramQuery}
-                      onChange={(e: any) => {
+                    <CommonSelect
+                      style={{width: '200px'}}
+                      placeholder="Search here"
+                      options={partnerProgramOptions}
+                      showSearch
+                      onSearch={(e) => {
                         setQueryData({
                           ...queryDataa,
-                          partnerprogramQuery: e?.target?.value,
+                          partnerprogramQuery: e,
                         });
                       }}
+                      onChange={(e) => {
+                        setQueryData({
+                          ...queryDataa,
+                          partnerprogramQuery: e,
+                        });
+                      }}
+                      value={queryDataa?.partnerprogramQuery}
                     />
                   </Space>
+
                   <div
                     style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginTop: '20px',
+                      marginTop: '15px',
                     }}
                   >
                     <Typography
                       cursor="pointer"
                       name="Button 1"
-                      style={{cursor: 'pointer'}}
-                      color={token?.colorLink}
+                      color={'#C6CDD5'}
                       onClick={() => {
                         setQueryData({
                           partnerQuery: '',
@@ -921,6 +1019,58 @@ const Partners: React.FC = () => {
                     </Typography>
                   </div>
                 </Space>
+                // <Space size={12} align="center">
+                //   <Space direction="vertical" size={0}>
+                //     <Typography name="Body 4/Medium">Partner</Typography>
+                //     <OsInput
+                //       value={queryDataa?.partnerQuery}
+                //       onChange={(e: any) => {
+                //         setQueryData({
+                //           ...queryDataa,
+                //           partnerQuery: e?.target?.value,
+                //         });
+                //       }}
+                //     />
+                //   </Space>
+                //   <Space direction="vertical" size={0}>
+                //     <Typography name="Body 4/Medium">
+                //       Partner Program
+                //     </Typography>
+                //     <OsInput
+                //       value={queryDataa?.partnerprogramQuery}
+                //       onChange={(e: any) => {
+                //         setQueryData({
+                //           ...queryDataa,
+                //           partnerprogramQuery: e?.target?.value,
+                //         });
+                //       }}
+                //     />
+                //   </Space>
+                //   <div
+                //     style={{
+                //       display: 'flex',
+                //       alignItems: 'center',
+                //       justifyContent: 'center',
+                //       marginTop: '20px',
+                //     }}
+                //   >
+                //     <Typography
+                //       cursor="pointer"
+                //       name="Button 1"
+                //       style={{cursor: 'pointer'}}
+                //       color={token?.colorLink}
+                //       onClick={() => {
+                //         setQueryData({
+                //           partnerQuery: '',
+                //           partnerprogramQuery: '',
+                //           size: 10,
+                //         });
+                //       }}
+                //     >
+                //       Reset
+                //     </Typography>
+                //   </div>
+                // </Space>
               }
             />
           )}
@@ -942,7 +1092,7 @@ const Partners: React.FC = () => {
             setShowModal={setShowModal}
           />
         }
-        width={500}
+        width={700}
         open={showModal}
         onCancel={() => {
           setShowModal((p) => !p);

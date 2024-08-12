@@ -70,6 +70,9 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
       if (pathname === '/superAdminPartner') {
         partnerProgramObj.admin_approved = true;
       }
+      if (!userInformation?.Admin) {
+        partnerProgramObj.admin_request = false;
+      }
       dispatch(insertPartnerProgram(partnerProgramObj)).then((d: any) => {
         if (d?.payload) {
           form?.resetFields();

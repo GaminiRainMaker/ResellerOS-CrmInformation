@@ -42,6 +42,8 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SuperAdminPartnerAnalytics from './SuperAdminPartnerAnalytic';
 import OsInput from '@/app/components/common/os-input';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
+import {formatStatus} from '@/app/utils/CONSTANTS';
+import CommonSelect from '@/app/components/common/os-select';
 
 export interface SeparatedData {
   [partnerId: number]: {
@@ -91,6 +93,9 @@ const SuperAdminPartner: React.FC = () => {
     (state) => state.partnerProgram,
   );
   const [allPartnerData, setAllPartnerData] = useState<any>();
+
+  const [partnerOptions, setPartnerOptions] = useState<any>();
+  const [partnerProgramOptions, setPartnerProgramOptions] = useState<any>();
   const [superAdminPartnerAnalyticData, setSuperAdminPartnerAnalyticData] =
     useState<any>();
   const getPartnerDataForSuperAdmin = async () => {
@@ -114,6 +119,27 @@ const SuperAdminPartner: React.FC = () => {
           combinedArr: countForActivePartnerProgram,
         };
         setSuperAdminPartnerAnalyticData(newObj);
+        let newArrOfPartner: any = [];
+        let newArrOfPartnerProgram: any = [];
+
+        payload?.payload?.AllPartner?.map((items: any) => {
+          let newObjPatner = {
+            label: formatStatus(items?.partner),
+            value: items?.partner,
+          };
+          newArrOfPartner?.push(newObjPatner);
+          if (items?.PartnerPrograms?.length) {
+            items?.PartnerPrograms?.map((itemPro: any) => {
+              let newObjPatnerPfro = {
+                label: formatStatus(itemPro?.partner_program),
+                value: itemPro?.partner_program,
+              };
+              newArrOfPartnerProgram?.push(newObjPatnerPfro);
+            });
+          }
+        });
+        setPartnerOptions(newArrOfPartner);
+        setPartnerProgramOptions(newArrOfPartnerProgram);
 
         setAllPartnerData(payload?.payload);
       },
@@ -121,8 +147,6 @@ const SuperAdminPartner: React.FC = () => {
 
     // setAllAnalyticPartnerData(newObj);
   };
-
-  console.log('allPartnerDataallPartnerData', allPartnerData);
 
   useEffect(() => {
     // dispatch(getAllPartnerandProgram(''));
@@ -133,6 +157,27 @@ const SuperAdminPartner: React.FC = () => {
   useEffect(() => {
     dispatch(getAllPartnerandProgramFilterDataForAdmin(searchQuery))?.then(
       (payload: any) => {
+        let newArrOfPartner: any = [];
+        let newArrOfPartnerProgram: any = [];
+
+        payload?.payload?.AllPartner?.map((items: any) => {
+          let newObjPatner = {
+            label: formatStatus(items?.partner),
+            value: items?.partner,
+          };
+          newArrOfPartner?.push(newObjPatner);
+          if (items?.PartnerPrograms?.length) {
+            items?.PartnerPrograms?.map((itemPro: any) => {
+              let newObjPatnerPfro = {
+                label: formatStatus(itemPro?.partner_program),
+                value: itemPro?.partner_program,
+              };
+              newArrOfPartnerProgram?.push(newObjPatnerPfro);
+            });
+          }
+        });
+        setPartnerOptions(newArrOfPartner);
+        setPartnerProgramOptions(newArrOfPartnerProgram);
         setAllPartnerData(payload?.payload);
       },
     );
@@ -565,7 +610,7 @@ const SuperAdminPartner: React.FC = () => {
                     width={24}
                     onClick={() => {
                       let newObj = {
-                        partner: record?.partner,
+                        partner: formatStatus(record?.partner),
                         industry: record?.industry,
                         email: record?.email,
                         website: record?.website,
@@ -678,7 +723,7 @@ const SuperAdminPartner: React.FC = () => {
                 let newObj = {
                   partner: record?.partner,
                   description: record?.description,
-                  partner_program: record?.partner_program,
+                  partner_program: formatStatus(record?.partner_program),
                   id: record?.id,
                 };
                 setUpdateTheObject(newObj);
@@ -819,49 +864,117 @@ const SuperAdminPartner: React.FC = () => {
               <Space size={12} align="center">
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Partner</Typography>
-                  <OsInput
+                  <CommonSelect
+                    style={{width: '200px'}}
+                    placeholder="Search here"
+                    showSearch
+                    options={partnerOptions}
+                    onSearch={(e) => {
+                      setQueryData({
+                        ...queryDataa,
+                        partnerQuery: e,
+                      });
+                    }}
+                    onChange={(e) => {
+                      setQueryData({
+                        ...queryDataa,
+                        partnerQuery: e,
+                      });
+                    }}
                     value={queryDataa?.partnerQuery}
-                    onChange={(e: any) => {
-                      setQueryData({
-                        ...queryDataa,
-                        partnerQuery: e?.target?.value,
-                      });
-                    }}
                   />
                 </Space>
+
                 <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Partner Program</Typography>
-                  <OsInput
-                    value={queryDataa?.partnerprogramQuery}
-                    onChange={(e: any) => {
+                  <Typography name="Body 4/Medium"> Partner Program</Typography>
+                  <CommonSelect
+                    style={{width: '200px'}}
+                    placeholder="Search here"
+                    options={partnerProgramOptions}
+                    showSearch
+                    onSearch={(e) => {
                       setQueryData({
                         ...queryDataa,
-                        partnerprogramQuery: e?.target?.value,
+                        partnerprogramQuery: e,
                       });
                     }}
+                    onChange={(e) => {
+                      setQueryData({
+                        ...queryDataa,
+                        partnerprogramQuery: e,
+                      });
+                    }}
+                    value={queryDataa?.partnerprogramQuery}
                   />
                 </Space>
+
                 <div
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: '20px',
+                    marginTop: '15px',
                   }}
                 >
                   <Typography
                     cursor="pointer"
                     name="Button 1"
-                    style={{cursor: 'pointer'}}
-                    color={token?.colorLink}
+                    color={'#C6CDD5'}
                     onClick={() => {
-                      setQueryData({});
+                      setQueryData({
+                        partnerQuery: '',
+                        partnerprogramQuery: '',
+                        size: 10,
+                      });
                     }}
                   >
                     Reset
                   </Typography>
                 </div>
               </Space>
+              // <Space size={12} align="center">
+              //   <Space direction="vertical" size={0}>
+              //     <Typography name="Body 4/Medium">Partner</Typography>
+              //     <OsInput
+              //       value={queryDataa?.partnerQuery}
+              //       onChange={(e: any) => {
+              //         setQueryData({
+              //           ...queryDataa,
+              //           partnerQuery: e?.target?.value,
+              //         });
+              //       }}
+              //     />
+              //   </Space>
+              //   <Space direction="vertical" size={0}>
+              //     <Typography name="Body 4/Medium">Partner Program</Typography>
+              //     <OsInput
+              //       value={queryDataa?.partnerprogramQuery}
+              //       onChange={(e: any) => {
+              //         setQueryData({
+              //           ...queryDataa,
+              //           partnerprogramQuery: e?.target?.value,
+              //         });
+              //       }}
+              //     />
+              //   </Space>
+              //   <div
+              //     style={{
+              //       display: 'flex',
+              //       alignItems: 'center',
+              //       justifyContent: 'center',
+              //       marginTop: '20px',
+              //     }}
+              //   >
+              //     <Typography
+              //       cursor="pointer"
+              //       name="Button 1"
+              //       style={{cursor: 'pointer'}}
+              //       color={token?.colorLink}
+              //       onClick={() => {
+              //         setQueryData({});
+              //       }}
+              //     >
+              //       Reset
+              //     </Typography>
+              //   </div>
+              // </Space>
             }
           />
         </Row>

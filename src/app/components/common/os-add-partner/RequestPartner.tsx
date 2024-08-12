@@ -211,11 +211,19 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                     value={formatStatus(partnerNewId?.name)}
                   />
                 ) : (
-                  <OsButton
-                    clickHandler={() => setOpenAddPartnerModal(true)}
-                    text="Request Partner"
-                    buttontype="SECONDARY"
-                  />
+                  <Typography
+                    name="Body 3/Regular"
+                    color={token?.colorLinkHover}
+                    onClick={() => setOpenAddPartnerModal(true)}
+                  >
+                    {' '}
+                    + Add New Partner
+                  </Typography>
+                  // <OsButton
+                  //   clickHandler={() => setOpenAddPartnerModal(true)}
+                  //   text="Request Partner"
+                  //   buttontype="SECONDARY"
+                  // />
                 )}
               </SelectFormItem>
             </Col>
@@ -233,12 +241,24 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
                     value={formatStatus(partnerProgramNewId?.name)}
                   />
                 ) : (
-                  <OsButton
-                    disabled={!partnerNewId?.value}
-                    clickHandler={() => setOpenAddProgramModal(true)}
-                    text="Request Partner"
-                    buttontype="SECONDARY"
-                  />
+                  <Typography
+                    name="Body 3/Regular"
+                    color={token?.colorLinkHover}
+                    onClick={() => {
+                      if (partnerNewId?.value) {
+                        setOpenAddProgramModal(true);
+                      }
+                    }}
+                  >
+                    {' '}
+                    + Add New Program Partner
+                  </Typography>
+                  // <OsButton
+                  //   disabled={!partnerNewId?.value}
+                  //   clickHandler={() => setOpenAddProgramModal(true)}
+                  //   text="Request Partner"
+                  //   buttontype="SECONDARY"
+                  // />
                 )}
               </SelectFormItem>
             </Col>

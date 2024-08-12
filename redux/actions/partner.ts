@@ -129,3 +129,15 @@ export const getAllPartnerandProgramFilterDataForOrganizationOnly =
       }
     },
   );
+  export const upadteRequestForOrgNewPartnerApproval =
+  createAsyncThunk(
+    'partner/upadteRequestForOrgNewPartnerApproval',
+    async (data: any, thunkApi) => {
+      try {
+        const res = await PARTNER_API.upadteRequestForOrgNewPartnerApproval(data);
+        return res.data;
+      } catch (error: any) {
+        return thunkApi.rejectWithValue(error?.message);
+      }
+    },
+  );

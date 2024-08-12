@@ -39,7 +39,6 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
-
   useEffect(() => {
     form?.resetFields();
     if (updateTheObject) {
@@ -67,6 +66,9 @@ const AddPartner: React.FC<AddPartnerInterface> = ({
     } else {
       if (pathname === '/superAdminPartner') {
         partnerObj.admin_approved = true;
+      }
+      if (!userInformation?.Admin) {
+        partnerObj.admin_request = false;
       }
       await dispatch(insertPartner(partnerObj)).then((d: any) => {
         if (d?.payload) {

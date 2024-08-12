@@ -215,7 +215,7 @@ export const formbuildernewObject = (newItem: string) => {
     newObjAddedon = {
       name: newItem,
       label: 'Label',
-      type: 'text',
+      type: newItem,
       required: false,
       requiredLabel: true,
       hintext: false,
@@ -234,10 +234,11 @@ export const formbuildernewObject = (newItem: string) => {
       name: newItem,
       placeholdertext: 'placeholder text',
       labelOptions: [],
+      type: 'Checkbox',
       columnRequired: 1,
       required: false,
       requiredLabel: true,
-      filedType: 'multiple',
+      filedType: 'Checkbox',
       label: 'Checkbox',
     };
   } else if (newItem === 'Text' || newItem === 'Email') {
@@ -254,6 +255,7 @@ export const formbuildernewObject = (newItem: string) => {
     newObjAddedon = {
       pdfUrl: null,
       required: false,
+      type: 'Attachment',
       name: newItem,
     };
   }

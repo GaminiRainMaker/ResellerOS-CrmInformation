@@ -193,6 +193,8 @@ export const API = {
     CanAddedToOrg: 'partner/getPartnerCanAddedToOrganization',
     GetAllPartnerandProgramFilterDataForOrganizationOnly:
       'partner/getAllPartnerandProgramFilterDataForOrganizationOnly',
+    upadteRequestForOrgNewPartnerApproval:
+      'partner/upadteRequestForOrgNewPartnerApproval',
   },
   PARTNER_PROGRAM: {
     INDEX: '/partnerProgram',
