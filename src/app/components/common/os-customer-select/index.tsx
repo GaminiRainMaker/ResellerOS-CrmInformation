@@ -134,6 +134,7 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
         rules={[{required: isRequired, message: 'Please Select Customer!'}]}
       >
         <CommonSelect
+          data-testid="custom_select"
           disabled={isDisable}
           placeholder="Select"
           allowClear
