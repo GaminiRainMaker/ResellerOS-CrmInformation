@@ -112,11 +112,17 @@ const SuperAdminPartner: React.FC = () => {
               countForActivePartnerProgram + items?.PartnerPrograms?.length;
           });
         }
+
+        console.log(
+          '43543543543',
+          payload?.payload?.AllPartner,
+          countForActivePartnerProgram,
+        );
         let newObj = {
           requested: payload?.payload?.requested?.length,
           allPartner: payload?.payload?.AllPartner?.length,
           Declined: payload?.payload?.DeclinedData?.length,
-          combinedArr: countForActivePartnerProgram,
+          PartnerProgram: countForActivePartnerProgram,
         };
         setSuperAdminPartnerAnalyticData(newObj);
         let newArrOfPartner: any = [];
