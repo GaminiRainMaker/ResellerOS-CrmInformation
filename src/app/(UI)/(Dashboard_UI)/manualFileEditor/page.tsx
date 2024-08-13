@@ -33,6 +33,9 @@ import {getSalesForceFileData} from '../../../../../redux/actions/auth';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import {getResultedValue} from '@/app/utils/base';
+import {registerAllModules} from 'handsontable/registry';
+
+registerAllModules();
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();

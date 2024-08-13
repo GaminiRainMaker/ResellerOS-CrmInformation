@@ -28,6 +28,7 @@ import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs from './DealRegCustomTabs';
 import SubmitDealRegForms from './SubmitDealRegForms';
 import {runSalesForceBot} from '../../../../../redux/actions/auth';
+import { lauchPlayWright } from '../../../../../redux/actions/playwright';
 
 const DealRegDetail = () => {
   const [FormData] = Form.useForm();
@@ -43,7 +44,7 @@ const DealRegDetail = () => {
   const [showModal, setShowModal] = useState(false);
   const [showSubmitFormModal, setShowSubmitFormModal] = useState(false);
   const searchParams = useSearchParams();
-  const getOpportunityId = searchParams.get('opportunityId');
+  const getOpportunityId = searchParams && searchParams.get('opportunityId');
 
   useEffect(() => {
     if (getOpportunityId) {
@@ -116,10 +117,19 @@ const DealRegDetail = () => {
     }
   };
 
-  const launchBotSalesForce = () => {
-    dispatch(runSalesForceBot({}));
+
+  const launchBotSalesForce = async () => {
+    try {
+      const response = await dispatch(lauchPlayWright([]));
+      if (lauchPlayWright.fulfilled.match(response)) {
+        console.log('Script executed successfully:', response.payload);
+      } else {
+        console.error('Error running script:', response.payload);
+      }
+    } catch (error) {
+      console.error('Error running script:', error);
+    }
   };
-  //
   return (
     <div>
       <Row justify="space-between" align="middle">
