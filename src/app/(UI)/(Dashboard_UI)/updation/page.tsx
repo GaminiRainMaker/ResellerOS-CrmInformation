@@ -18,6 +18,9 @@ import {updateQuoteLineItemById} from '../../../../../redux/actions/quotelineite
 import {updateRebateQuoteLineItemById} from '../../../../../redux/actions/rebateQuoteLineitem';
 import {updateValidationById} from '../../../../../redux/actions/validation';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {registerAllModules} from 'handsontable/registry';
+
+registerAllModules();
 
 const UpdateGenerateQuote = () => {
   const [token] = useThemeToken();

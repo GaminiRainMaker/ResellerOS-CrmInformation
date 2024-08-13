@@ -72,7 +72,6 @@ const CrmInformation: React.FC = () => {
   const [shipppingAddress, setShippingAddress] = useState<any>();
   const [activeKeyForTabs, setActiveKeyForTabs] = useState<any>(1);
   const [newAddContact, setNewAddContact] = useState<Boolean>(false);
-
   const {loading, filteredData, customerProfile} = useAppSelector(
     (state) => state.customer,
   );
@@ -179,7 +178,7 @@ const CrmInformation: React.FC = () => {
     },
     {
       key: 3,
-      primary: <div>{billingData?.length}</div>,
+      primary: <div>{billingData?.length ?? 0}</div>,
       secondry: 'Contacts',
       icon: <PhoneIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
@@ -193,7 +192,7 @@ const CrmInformation: React.FC = () => {
     },
     {
       key: 5,
-      primary: <div>{deletedData?.length}</div>,
+      primary: <div>{deletedData?.length ?? 0}</div>,
       secondry: 'Deleted',
       icon: <TrashIcon width={24} color={token?.colorError} />,
       iconBg: token?.colorErrorBg,
