@@ -24,7 +24,7 @@ const BundleSection: FC<any> = ({
   setShowBundleDrawer,
   setSelectedRowIds,
 }) => {
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const getQuoteId = searchParams.get('id');
   const dispatch = useAppDispatch();
   const {data: bundleData} = useAppSelector((state) => state.bundle);

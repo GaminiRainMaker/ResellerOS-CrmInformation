@@ -107,7 +107,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     );
 
   const [token] = useThemeToken();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const getQuoteID = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
 

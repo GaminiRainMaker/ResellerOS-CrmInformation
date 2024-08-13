@@ -40,7 +40,7 @@ registerAllModules();
 const EditorFile = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const router = useRouter();
   const getQuoteID = searchParams.get('id');
   const SaleQuoteId = searchParams.get('quote_Id');

@@ -25,7 +25,7 @@ const MyProfileCard: FC<any> = ({data}) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const [userRole, setUserRole] = useState<string>('');
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const getUserID = searchParams.get('id');
   const loginAccount = searchParams.get('self');
   useEffect(() => {

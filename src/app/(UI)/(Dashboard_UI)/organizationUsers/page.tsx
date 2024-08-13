@@ -19,7 +19,7 @@ import {Option} from 'antd/es/mentions';
 const OrganizationUsers = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const getOrganization = searchParams.get('organization');
   const router = useRouter();
   const {data: userData, loading} = useAppSelector((state) => state.user);

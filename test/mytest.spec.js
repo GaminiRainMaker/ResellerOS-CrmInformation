@@ -36,7 +36,7 @@ test('test', async ({page}) => {
       messageDiv.style.display = 'none';
     });
   });
-  async function waitForUserInput(selector, timeout = 30000) {
+  async function waitForUserInput(selector, timeout = 90000) {
     const start = Date.now();
     while (Date.now() - start < timeout) {
       const value = await page.getByTestId(selector).innerText();

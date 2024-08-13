@@ -63,7 +63,7 @@ registerAllModules();
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const getQUoteId = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
   const [quoteItems, setQuoteItems] = useState<any>([]);

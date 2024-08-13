@@ -43,7 +43,7 @@ const Partners: React.FC = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const [loadingForRequest, setLoadingForRequest] = useState<boolean>(false);
   const {userInformation} = useAppSelector((state) => state.user);
   const getTabId = searchParams.get('tab');

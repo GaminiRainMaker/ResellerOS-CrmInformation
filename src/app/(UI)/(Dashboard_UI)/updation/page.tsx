@@ -25,7 +25,7 @@ registerAllModules();
 const UpdateGenerateQuote = () => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const getUserID = searchParams.get('id');
   const {quoteById, loading} = useAppSelector((state) => state.quote);
   const {concernQuoteLineItemData} = useAppSelector(
