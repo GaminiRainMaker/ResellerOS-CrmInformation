@@ -29,6 +29,7 @@
     "@emotion/styled": "^11.11.0",
     "@handsontable/react": "^14.3.0",
     "@heroicons/react": "^2.0.18",
+    "@playwright/test": "^1.46.0",
     "@react-pdf/renderer": "^3.4.4",
     "@reduxjs/toolkit": "^1.9.7",
     "antd": "^5.17.4",
