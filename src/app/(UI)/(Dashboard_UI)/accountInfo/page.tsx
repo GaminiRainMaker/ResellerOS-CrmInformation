@@ -13,7 +13,7 @@ import PartnerPassword from './partnerPassword';
 import {useAppSelector} from '../../../../../redux/hook';
 
 const AccountInfo = () => {
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const [token] = useThemeToken();
   const router = useRouter();
   const getRole = searchParams.get('role');
@@ -23,7 +23,6 @@ const AccountInfo = () => {
   const isSuperAdminProfile = searchParams.get('isSuperAdminProfile');
   const getOrganization = searchParams.get('organization');
 
-  
   const tabs = [
     {
       key: 1,

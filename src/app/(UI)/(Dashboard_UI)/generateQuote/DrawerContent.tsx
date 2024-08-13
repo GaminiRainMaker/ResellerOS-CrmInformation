@@ -26,7 +26,7 @@ import CommonStageSelect from '@/app/components/common/os-stage-select';
 
 const DrawerContent: FC<any> = ({form, onFinish}) => {
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const getQuoteId = searchParams.get('id');
   const isView = searchParams.get('isView');
   const {data: dataAddress} = useAppSelector((state) => state.customer);

@@ -71,7 +71,7 @@ const GenerateQuote: React.FC = () => {
   const [form] = Form.useForm();
   const [addDocForm] = Form.useForm();
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const [api, contextHolder] = notification.useNotification();
   const getQuoteID = searchParams.get('id');
   const isView = searchParams.get('isView');

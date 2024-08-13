@@ -25,10 +25,12 @@ import {setBillingContact} from '../../../../../redux/slices/billingAddress';
 const DetailCard = () => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
-  const getCustomerID = searchParams.get('id');
+  const searchParams = useSearchParams()!;
+  const getCustomerID = searchParams && searchParams.get('id');
   const [form] = Form.useForm();
-  const {customerDataById: customerData} = useAppSelector((state) => state.customer);
+  const {customerDataById: customerData} = useAppSelector(
+    (state) => state.customer,
+  );
   const [showAllContactModal, setShowAllContactModal] =
     useState<boolean>(false);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);

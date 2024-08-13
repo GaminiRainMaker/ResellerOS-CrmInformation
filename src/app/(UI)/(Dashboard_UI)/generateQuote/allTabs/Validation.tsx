@@ -36,7 +36,7 @@ const Validation: FC<any> = ({
   const {abbreviate} = useAbbreviationHook(0);
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const {data: ValidationData, loading} = useAppSelector(
     (state) => state.validation,
   );

@@ -42,7 +42,7 @@ const ContractProductMain: React.FC = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const [showModal, setShowModal] = useState<boolean>(false);
   const [contractObject, setContractObject] = useState<any>();
   const [loadingContract, setLoadingContract] = useState<boolean>(false);

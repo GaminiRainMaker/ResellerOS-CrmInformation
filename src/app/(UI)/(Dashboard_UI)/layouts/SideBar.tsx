@@ -55,7 +55,7 @@ const SideBar = () => {
   const [crmChildKey, setCrmChildKey] = useState<number>(0);
   const {userInformation} = useAppSelector((state) => state.user);
   const {cacheAvailableSeats} = useAppSelector((state) => state.cacheFLow);
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const salesForceUrl = searchParams.get('instance_url');
 
   type MenuItem = Required<MenuProps>['items'][number];
@@ -105,6 +105,11 @@ const SideBar = () => {
   const pathname = usePathname();
 
   useEffect(() => {
+    if (pathname === null) {
+      // Handle the case where pathname is null
+      setSelectedKey(0);
+      return;
+    }
     if (pathname?.includes('dashboard')) {
       setSelectedKey(1);
     } else if (pathname?.includes('unprocessedQuote')) {

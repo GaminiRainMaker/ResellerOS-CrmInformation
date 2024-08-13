@@ -12,7 +12,7 @@ import Typography from '../typography';
 import {CustomTabStyle} from './styled-components';
 
 const AdminCustomTabs: FC<any> = (tabs) => {
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const getTab = searchParams.get('tab');
   const pathname = usePathname();
   const [activekeysall, setActivekeysall] = useState<number>(1);

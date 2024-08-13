@@ -37,7 +37,7 @@ const MyProfile = () => {
   const [userDetailForm] = Form.useForm();
   const [changePasswordForm] = Form.useForm();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const getUserID = searchParams.get('id');
   const getOrganization = searchParams.get('organization');
   const getRole = searchParams.get('role');
@@ -54,7 +54,7 @@ const MyProfile = () => {
   const {getAllQuotesDataByOrganization} = useAppSelector(
     (state) => state.quote,
   );
-  
+
   const analyticsData = [
     {
       key: 1,

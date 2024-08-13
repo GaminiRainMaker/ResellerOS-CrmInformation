@@ -47,8 +47,8 @@ const ContentSection: FC<AuthLayoutInterface> = ({
   const router = useRouter();
   const dispatch = useAppDispatch();
   const pathName = usePathname();
-  const searchParams = useSearchParams();
-  const getUserId = searchParams.get('id');
+  const searchParams = useSearchParams()!;
+  const getUserId = searchParams && searchParams.get('id');
   const [signUpData, setSignUpData] = useState<any>();
   const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
   const {loading} = useAppSelector((state) => state.auth);

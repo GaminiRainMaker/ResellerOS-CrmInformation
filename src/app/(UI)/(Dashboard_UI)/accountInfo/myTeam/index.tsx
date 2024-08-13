@@ -19,7 +19,7 @@ const MyTeam = () => {
   const dispatch = useAppDispatch();
   const MyTeamColumns = getMyTeamColumns(token);
   const MyTeamAdminColumns = getMyTeamAdminColumns(token);
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const getOrganization = searchParams.get('organization');
   const {data: userData, loading} = useAppSelector((state) => state.user);
   const [activeKey, setActiveKey] = useState<number>(1);

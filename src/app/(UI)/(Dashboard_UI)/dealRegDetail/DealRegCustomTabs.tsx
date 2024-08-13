@@ -26,7 +26,7 @@ import DealRegDetailForm from './DealRegDetailForm';
 const DealRegCustomTabs: React.FC<any> = ({form}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const {
     data: DealRegData,
     getDealRegForNew,

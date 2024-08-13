@@ -33,8 +33,8 @@ const AccountDetails = () => {
     (state) => state.customer,
   );
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
-  const getCustomerID = searchParams.get('id');
+  const searchParams = useSearchParams()!;
+  const getCustomerID = searchParams && searchParams.get('id');
 
   const quotes =
     customerData &&

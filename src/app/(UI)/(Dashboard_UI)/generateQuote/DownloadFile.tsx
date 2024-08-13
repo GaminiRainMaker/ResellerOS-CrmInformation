@@ -28,7 +28,7 @@ const DownloadFile: FC<any> = ({form, objectForSyncingValues}) => {
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const getQuoteID = searchParams.get('id');
   const [pdfUrl, setPdfUrl] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);

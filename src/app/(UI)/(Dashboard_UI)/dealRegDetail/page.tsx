@@ -28,7 +28,7 @@ import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs from './DealRegCustomTabs';
 import SubmitDealRegForms from './SubmitDealRegForms';
 import {runSalesForceBot} from '../../../../../redux/actions/auth';
-import { lauchPlayWright } from '../../../../../redux/actions/playwright';
+import {lauchPlayWright} from '../../../../../redux/actions/playwright';
 
 const DealRegDetail = () => {
   const [FormData] = Form.useForm();
@@ -43,7 +43,7 @@ const DealRegDetail = () => {
   } = useAppSelector((state) => state.dealReg);
   const [showModal, setShowModal] = useState(false);
   const [showSubmitFormModal, setShowSubmitFormModal] = useState(false);
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const getOpportunityId = searchParams && searchParams.get('opportunityId');
 
   useEffect(() => {
@@ -116,7 +116,6 @@ const DealRegDetail = () => {
       submitDealRegForm.resetFields();
     }
   };
-
 
   const launchBotSalesForce = async () => {
     try {

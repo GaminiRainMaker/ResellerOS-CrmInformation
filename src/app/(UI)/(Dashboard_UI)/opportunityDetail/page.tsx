@@ -37,7 +37,7 @@ const OpportunityDetails = () => {
   const router = useRouter();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const opportunityId = searchParams.get('id');
   const {loading, opportunityById: opportunityData} = useAppSelector(
     (state) => state.Opportunity,

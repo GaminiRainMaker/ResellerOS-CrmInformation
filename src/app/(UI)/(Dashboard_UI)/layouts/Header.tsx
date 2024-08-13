@@ -84,7 +84,7 @@ const CustomHeader = () => {
   const [token] = useThemeToken();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const loginAccount = searchParams.get('self');
   const {userInformation, searchDataa, loginUserInformation} = useAppSelector(
     (state) => state.user,
@@ -118,7 +118,6 @@ const CustomHeader = () => {
       });
     }
   }, []);
-  
 
   useEffect(() => {
     if (!salesForceUrl) {
@@ -131,7 +130,6 @@ const CustomHeader = () => {
       ? 'SuperAdminProfile'
       : 'reseller';
 
-      
   const items: MenuProps['items'] = [
     {
       key: '1',

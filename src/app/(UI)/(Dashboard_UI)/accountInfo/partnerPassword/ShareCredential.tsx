@@ -18,7 +18,7 @@ const ShareCredential: FC<any> = ({
   shareCredentialsIds,
   partnerPasswordId,
 }) => {
-  const searchParams = useSearchParams();
+  const searchParams = useSearchParams()!;
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const getOrganization = searchParams.get('organization');
