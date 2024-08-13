@@ -6,6 +6,8 @@
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import FormBuilderMain from '@/app/components/common/formBuilder/page';
+import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import AddPartner from '@/app/components/common/os-add-partner';
 import AddPartnerProgram from '@/app/components/common/os-add-partner-program';
@@ -14,10 +16,11 @@ import OsDrawer from '@/app/components/common/os-drawer';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {partnerProgramFilter} from '@/app/utils/base';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 import {
   PencilSquareIcon,
   PlusIcon,
@@ -26,7 +29,6 @@ import {
 import {Checkbox, Form, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import {updateAssignPartnerProgramById} from '../../../../../redux/actions/assignPartnerProgram';
 import {
   deletePartner,
@@ -37,13 +39,11 @@ import {
   deletePartnerProgramFormData,
   getAllPartnerProgram,
   upadteToRequestPartnerandprogramfromAmin,
+  updatePartnerProgramById,
 } from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import AddPartnerProgramScript from './AddPartnerProgramScript';
 import SuperAdminPartnerAnalytics from './SuperAdminPartnerAnalytic';
-import OsInput from '@/app/components/common/os-input';
-import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
-import {formatStatus} from '@/app/utils/CONSTANTS';
-import CommonSelect from '@/app/components/common/os-select';
 
 export interface SeparatedData {
   [partnerId: number]: {
@@ -56,9 +56,10 @@ export interface SeparatedData {
 const SuperAdminPartner: React.FC = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
+  const [programScriptForm] = Form.useForm();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
-  const getTabId = searchParams.get('tab');
+  const getTabId = searchParams && searchParams.get('tab');
   const router = useRouter();
   const [formPartnerData, setFormPartnerData] = useState<any>();
   const [formPartnerProgramData, setFormPartnerProgramData] = useState<any>();
@@ -83,21 +84,20 @@ const SuperAdminPartner: React.FC = () => {
   } = useAppSelector((state) => state.partner);
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
   const [formData, setformData] = useState<any>();
-  const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [partnerProgramColumns, setPartnerProgramColumns] = useState<any>();
-  const {userInformation} = useAppSelector((state) => state.user);
   const [queryDataa, setQueryData] = useState<any>();
   const [updateTheObject, setUpdateTheObject] = useState<any>();
-
   const {insertProgramLoading} = useAppSelector(
     (state) => state.partnerProgram,
   );
   const [allPartnerData, setAllPartnerData] = useState<any>();
-
   const [partnerOptions, setPartnerOptions] = useState<any>();
   const [partnerProgramOptions, setPartnerProgramOptions] = useState<any>();
+  const [showScriptModal, setShowScriptModal] = useState<boolean>(false);
   const [superAdminPartnerAnalyticData, setSuperAdminPartnerAnalyticData] =
     useState<any>();
+  const [selectPartnerProgramId, setSelectPartnerProgramId] = useState<any>();
+
   const getPartnerDataForSuperAdmin = async () => {
     dispatch(getAllPartnerandProgramFilterDataForAdmin({}))?.then(
       (payload: any) => {
@@ -525,6 +525,37 @@ const SuperAdminPartner: React.FC = () => {
         </Typography>
       ),
     },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Script
+        </Typography>
+      ),
+      dataIndex: 'script',
+      key: 'script',
+      render: (text: string, record: any) => (
+        <Typography
+          name="Body 4/Medium"
+          hoverOnText
+          color={token?.colorLink}
+          onClick={() => {
+            if (record?.script && !record?.script?.includes(null)) {
+              programScriptForm?.setFieldsValue({
+                script: JSON.parse(record?.script),
+              });
+            } else {
+              programScriptForm?.resetFields();
+            }
+            setSelectPartnerProgramId(record?.id);
+            setShowScriptModal(true);
+          }}
+        >
+          {record?.script?.length > 0 && !record?.script?.includes(null)
+            ? 'View Script'
+            : 'Create Script'}
+        </Typography>
+      ),
+    },
   ];
 
   const PartnerColumnsData = [
@@ -538,7 +569,6 @@ const SuperAdminPartner: React.FC = () => {
       key: 'partner',
       render: (text: string) => <CustomTextCapitalization text={text} />,
     },
-
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -826,6 +856,19 @@ const SuperAdminPartner: React.FC = () => {
       setPartnerProgramColumns(PartnerProgramColumns);
     }
   }, [activeTab]);
+
+  const programScript = async () => {
+    const programScriptData = programScriptForm?.getFieldsValue();
+    let obj = {
+      id: selectPartnerProgramId,
+      script: [JSON?.stringify(programScriptData?.script)],
+    };
+    await dispatch(updatePartnerProgramById(obj));
+    setSelectPartnerProgramId('');
+    programScriptForm?.resetFields();
+    setShowScriptModal(false);
+  };
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -1149,7 +1192,27 @@ const SuperAdminPartner: React.FC = () => {
         open={openPreviewModal}
         onCancel={() => {
           setOpenPreviewModal(false);
+          programScriptForm?.resetFields();
         }}
+      />
+
+      <OsModal
+        loading={insertProgramLoading}
+        title="Add Script"
+        bodyPadding={22}
+        body={
+          <AddPartnerProgramScript
+            form={programScriptForm}
+            onFinish={programScript}
+          />
+        }
+        width={583}
+        open={showScriptModal}
+        onOk={programScriptForm?.submit}
+        onCancel={() => {
+          setShowScriptModal(false);
+        }}
+        primaryButtonText={'Save'}
       />
     </>
   );
