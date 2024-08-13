@@ -57,6 +57,10 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
 import dynamic from 'next/dynamic';
 
+import {registerAllModules} from 'handsontable/registry';
+
+registerAllModules();
+
 const EditorFile = () => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
@@ -747,7 +751,7 @@ const EditorFile = () => {
                 indicators: true,
                 columns: salesForceUrl ? [0, 1] : [0, 1],
               }}
-              contextMenu
+              contextMenu={true}
               multiColumnSorting
               filters
               rowHeaders
@@ -860,7 +864,7 @@ const EditorFile = () => {
                   hiddenColumns={{
                     indicators: true,
                   }}
-                  contextMenu
+                  contextMenu={true}
                   multiColumnSorting
                   filters
                   rowHeaders
@@ -972,7 +976,7 @@ const EditorFile = () => {
                             hiddenColumns={{
                               indicators: true,
                             }}
-                            contextMenu
+                            contextMenu={true}
                             multiColumnSorting
                             filters
                             rowHeaders

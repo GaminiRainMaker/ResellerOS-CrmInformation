@@ -3670,7 +3670,7 @@
   resolved "https://registry.yarnpkg.com/@handsontable/pikaday/-/pikaday-1.0.0.tgz#21a432b727791d48f4f231094d999b1a4b5f6f5f"
   integrity sha512-1VN6N38t5/DcjJ7y7XUYrDx1LuzvvzlrFdBdMG90Qo1xc8+LXHqbWbsTEm5Ec5gXTEbDEO53vUT35R+2COmOyg==
 
-"@handsontable/react@^14.3.0":
+"@handsontable/react@14.5.0":
   version "14.5.0"
   resolved "https://registry.yarnpkg.com/@handsontable/react/-/react-14.5.0.tgz#03c36918a30dd76b2f98dc4cf69dae17a81f8f02"
   integrity sha512-Z6weZTELY1hqgW8TDno000xScd+I1sQ0DcswX2AdnCCwvvQkmC74xmIREalwtFE9CCi0Y/kiSvq/G0bYgl//pQ==
@@ -7813,7 +7813,7 @@ handlebars@4.7.7:
   optionalDependencies:
     uglify-js "^3.1.4"
 
-handsontable@^14.3.0:
+handsontable@14.5.0:
   version "14.5.0"
   resolved "https://registry.yarnpkg.com/handsontable/-/handsontable-14.5.0.tgz#d6ea14a23b4884345057e80c41896807ed1e19c2"
   integrity sha512-fxCjDZS4z2LFwrmHXqtEKIcfrPxoD8+5AmX7r3pEYp2rjIhmtYKA45DFQ/3PP8PYvSFW8BGR58ZaKecMpGfJXg==

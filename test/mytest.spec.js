@@ -13,8 +13,25 @@ test('test', async ({page}) => {
   await page.locator('button:has-text("Add Opportunity")').nth(0).click();
   await page.getByLabel('Customer').click();
 
+  await page.evaluate(() => {
+    // Create a new div element
+    const messageDiv = document.createElement('div');
+    messageDiv.id = 'customMessage';
+    messageDiv.style.position = 'fixed';
+    messageDiv.style.top = '20px';
+    messageDiv.style.left = '20px';
+    messageDiv.style.padding = '10px';
+    messageDiv.style.backgroundColor = 'yellow';
+    messageDiv.style.border = '2px solid black';
+    messageDiv.style.zIndex = '1000';
+    messageDiv.innerText = 'Please fill in the select field manually.';
+
+    // Append the message to the body
+    document.body.appendChild(messageDiv);
+  });
+
   // Function to repeatedly check if the select element has the expected value
-  async function waitForSelectValue(selector, timeout = 30000) {
+  async function waitForUserInput(selector, timeout = 30000) {
     const start = Date.now();
 
     while (Date.now() - start < timeout) {
@@ -33,11 +50,13 @@ test('test', async ({page}) => {
     );
   }
 
-  await waitForSelectValue('custom_select');
-
-  const selectedOption = await page.getByTestId('custom_select').innerText();
-  // expect(selectedOption).not.toBeEmpty();
-  console.log('selectedOption', selectedOption);
+  await waitForUserInput('custom_select');
+  await page.evaluate(() => {
+    const messageDiv = document.getElementById('customMessage');
+    if (messageDiv) {
+      messageDiv.remove();
+    }
+  });
 
   // await page.waitForFunction(async () => {
   //   const value = await page
