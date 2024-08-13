@@ -273,7 +273,7 @@ const EditFiledDetailsForDate: React.FC<EditableFiledsCommonInterface> = ({
       changeValue: 'required',
     },
     {
-      name: 'Uer Fill',
+      name: 'User Fill',
       key: 2,
       value: CommonIndexOfUse?.user_fill,
       changeValue: 'user_fill',
