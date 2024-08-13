@@ -204,6 +204,7 @@ const FormBuilderMain: React.FC<any> = ({
       setCollapsed(false);
     }
   }, [cartItems]);
+  console.log('cartItemscartItems', cartItems);
 
   return (
     <>

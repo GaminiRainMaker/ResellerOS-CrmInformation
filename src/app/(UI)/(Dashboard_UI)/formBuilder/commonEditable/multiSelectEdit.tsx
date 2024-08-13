@@ -297,14 +297,20 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
       changeValue: 'required',
     },
     {
-      name: 'Label',
+      name: 'Uer Fill',
       key: 2,
+      value: CommonIndexOfUse?.user_fill,
+      changeValue: 'user_fill',
+    },
+    {
+      name: 'Label',
+      key:3,
       value: CommonIndexOfUse?.requiredLabel,
       changeValue: 'requiredLabel',
     },
     {
       name: 'Hint Text',
-      key: 3,
+      key:4,
       value: CommonIndexOfUse?.hintext,
       changeValue: 'hintext',
     },

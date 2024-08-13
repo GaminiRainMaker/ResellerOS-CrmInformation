@@ -19,7 +19,7 @@ import {convertFileToBase64} from '@/app/utils/base';
 import {EditableFiledsCommonInterface} from '../formBuilder.interface';
 import {uploadToAws} from '../../../../../../redux/actions/upload';
 import {useAppDispatch} from '../../../../../../redux/hook';
-import { CollapseSpaceStyle } from '../../dealRegDetail/styled-component';
+import {CollapseSpaceStyle} from '../../dealRegDetail/styled-component';
 
 const AttachmentEditFileds: React.FC<EditableFiledsCommonInterface> = ({
   sectionIndex,
@@ -111,14 +111,20 @@ const AttachmentEditFileds: React.FC<EditableFiledsCommonInterface> = ({
       changeValue: 'required',
     },
     {
-      name: 'Label',
+      name: 'Uer Fill',
       key: 2,
+      value: CommonIndexOfUse?.user_fill,
+      changeValue: 'user_fill',
+    },
+    {
+      name: 'Label',
+      key: 3,
       value: CommonIndexOfUse?.requiredLabel,
       changeValue: 'requiredLabel',
     },
     {
       name: 'Hint Text',
-      key: 3,
+      key: 4,
       value: CommonIndexOfUse?.hintext,
       changeValue: 'hintext',
     },
@@ -176,7 +182,7 @@ const AttachmentEditFileds: React.FC<EditableFiledsCommonInterface> = ({
           {optionsType?.map((itemOption: any, index: number) => (
             <>
               {' '}
-              {index === 0 && (
+              {(index === 0 || index === 1) && (
                 <Row style={{width: '100%'}}>
                   <Col
                     style={{

@@ -14,7 +14,7 @@ import {ArrowsPointingOutIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {Form, Input} from 'antd';
 import React, {useState} from 'react';
 import {EditableFiledsCommonInterface} from '../formBuilder.interface';
-import { CollapseSpaceStyle } from '../../dealRegDetail/styled-component';
+import {CollapseSpaceStyle} from '../../dealRegDetail/styled-component';
 
 const EditTableFields: React.FC<EditableFiledsCommonInterface> = ({
   sectionIndex,
@@ -510,14 +510,20 @@ const EditTableFields: React.FC<EditableFiledsCommonInterface> = ({
       changeValue: 'required',
     },
     {
-      name: 'Label',
+      name: 'Uer Fill',
       key: 2,
+      value: CommonIndexOfUse?.user_fill,
+      changeValue: 'user_fill',
+    },
+    {
+      name: 'Label',
+      key: 3,
       value: CommonIndexOfUse?.requiredLabel,
       changeValue: 'requiredLabel',
     },
     {
       name: 'Hint Text',
-      key: 3,
+      key: 4,
       value: CommonIndexOfUse?.hintext,
       changeValue: 'hintext',
     },
@@ -536,7 +542,7 @@ const EditTableFields: React.FC<EditableFiledsCommonInterface> = ({
           {optionsType?.map((itemOption: any, index: number) => (
             <>
               {' '}
-              {index === 0 && (
+              {(index === 0 || index === 1) && (
                 <Row style={{width: '100%'}}>
                   <Col
                     style={{

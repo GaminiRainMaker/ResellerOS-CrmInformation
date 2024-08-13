@@ -126,6 +126,7 @@ export const formbuildernewObject = (newItem: string) => {
       name: newItem,
       label: 'Label',
       required: false,
+      user_fill: false,
       noOfRowsData: ['row1', 'row2'],
       noOfRows: 2,
       noOfColumn: 2,
@@ -151,6 +152,7 @@ export const formbuildernewObject = (newItem: string) => {
       name: newItem,
       label: 'Label',
       type: 'multiple',
+      user_fill: false,
       required: false,
       requiredLabel: true,
       hintext: false,
@@ -165,6 +167,7 @@ export const formbuildernewObject = (newItem: string) => {
     newObjAddedon = {
       name: newItem,
       label: 'Label',
+      user_fill: false,
       type: 'Time',
       required: false,
       requiredLabel: true,
@@ -177,6 +180,7 @@ export const formbuildernewObject = (newItem: string) => {
     newObjAddedon = {
       name: newItem,
       label: 'Label',
+      user_fill: false,
       type: 'Date',
       required: false,
       requiredLabel: true,
@@ -203,6 +207,7 @@ export const formbuildernewObject = (newItem: string) => {
     newObjAddedon = {
       name: newItem,
       label: 'Label',
+      user_fill: false,
       type: 'text',
       required: false,
       requiredLabel: true,
@@ -217,6 +222,7 @@ export const formbuildernewObject = (newItem: string) => {
       label: 'Label',
       type: newItem,
       required: false,
+      user_fill: false,
       requiredLabel: true,
       hintext: false,
       hintTextValue: 'Hint Value',
@@ -225,6 +231,7 @@ export const formbuildernewObject = (newItem: string) => {
   } else if (newItem === 'Text Content') {
     newObjAddedon = {
       name: newItem,
+
       sectionTitle: 'Section Title',
       Alignemnt: 'left',
       FontSize: 'Heading 2',
@@ -234,6 +241,7 @@ export const formbuildernewObject = (newItem: string) => {
       name: newItem,
       placeholdertext: 'placeholder text',
       labelOptions: [],
+      user_fill: false,
       type: 'Checkbox',
       columnRequired: 1,
       required: false,
@@ -247,6 +255,7 @@ export const formbuildernewObject = (newItem: string) => {
       label: 'Label',
       type: 'text',
       required: false,
+      user_fill: false,
       requiredLabel: true,
       hintext: false,
       hintTextValue: 'hint Vlaue',
@@ -255,6 +264,7 @@ export const formbuildernewObject = (newItem: string) => {
     newObjAddedon = {
       pdfUrl: null,
       required: false,
+      user_fill: false,
       type: 'Attachment',
       name: newItem,
     };
