@@ -58,7 +58,6 @@ import {queryOpportunity} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';
 import {setCustomerProfile} from '../../../../../redux/slices/customer';
-import {lauchPlayWright} from '../../../../../redux/actions/playwright';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -434,19 +433,6 @@ const CrmInformation: React.FC = () => {
     });
   };
 
-  const handleRunScript = async () => {
-    try {
-      const response = await dispatch(lauchPlayWright([]));
-      if (lauchPlayWright.fulfilled.match(response)) {
-        console.log('Script executed successfully:', response.payload);
-      } else {
-        console.error('Error running script:', response.payload);
-      }
-    } catch (error) {
-      console.error('Error running script:', error);
-    }
-  };
-
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -484,13 +470,6 @@ const CrmInformation: React.FC = () => {
                 gap: '8px',
               }}
             >
-              <OsButton
-                text="Run Script"
-                buttontype="PRIMARY"
-                clickHandler={() => {
-                  handleRunScript();
-                }}
-              />
               <OsButton
                 text="Add Customer Account"
                 buttontype="PRIMARY"

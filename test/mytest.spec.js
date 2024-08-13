@@ -1,4 +1,4 @@
-import {test, expect} from '@playwright/test';
+import {test} from '@playwright/test';
 
 test('test', async ({page}) => {
   await page.goto('https://www.app.reselleros.com/login');
@@ -14,37 +14,38 @@ test('test', async ({page}) => {
   await page.getByLabel('Customer').click();
 
   await page.evaluate(() => {
-    // Create a new div element
     const messageDiv = document.createElement('div');
     messageDiv.id = 'customMessage';
     messageDiv.style.position = 'fixed';
     messageDiv.style.top = '20px';
     messageDiv.style.left = '20px';
     messageDiv.style.padding = '10px';
-    messageDiv.style.backgroundColor = 'yellow';
-    messageDiv.style.border = '2px solid black';
+    messageDiv.style.backgroundColor = 'white';
+    messageDiv.style.width = '250px';
+    messageDiv.style.height = '120px';
+    messageDiv.style.border = '1px solid #000';
+    messageDiv.style.borderRadius = '12px';
     messageDiv.style.zIndex = '1000';
-    messageDiv.innerText = 'Please fill in the select field manually.';
-
-    // Append the message to the body
+    messageDiv.innerHTML = `
+    <h3>Customer value</h3>
+  <p>This field is required to fill up the form.</p>
+    <button id="close-popup">Close</button>
+  `;
     document.body.appendChild(messageDiv);
+    document.getElementById('close-popup').addEventListener('click', () => {
+      messageDiv.style.display = 'none';
+    });
   });
-
-  // Function to repeatedly check if the select element has the expected value
   async function waitForUserInput(selector, timeout = 30000) {
     const start = Date.now();
-
     while (Date.now() - start < timeout) {
       const value = await page.getByTestId(selector).innerText();
-      console.log('valuevalue', value);
-
       if (value && value !== 'Select') {
         return true;
       }
       // Wait for a short period before checking again
       await page.waitForTimeout(500); // Adjust this value as needed
     }
-
     throw new Error(
       `Timeout: Select element did not get the value within ${timeout / 1000} seconds.`,
     );
@@ -57,14 +58,6 @@ test('test', async ({page}) => {
       messageDiv.remove();
     }
   });
-
-  // await page.waitForFunction(async () => {
-  //   const value = await page
-  //     .getByTestId('custom_select')
-  //     .evaluate('el => el.options[el.selectedIndex].text');
-  //   return value ? true : false;
-  // });
-
   await page.getByPlaceholder('Enter Text').fill('Opportunity Demo');
   await page.getByPlaceholder('Enter Amount').fill('2,352,4563');
   await page.getByLabel('Stages').click();
