@@ -58,6 +58,7 @@ import {queryOpportunity} from '../../../../../redux/actions/opportunity';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setBillingContact} from '../../../../../redux/slices/billingAddress';
 import {setCustomerProfile} from '../../../../../redux/slices/customer';
+import {lauchPlayWright} from '../../../../../redux/actions/playwright';
 
 const CrmInformation: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -72,7 +73,6 @@ const CrmInformation: React.FC = () => {
   const [shipppingAddress, setShippingAddress] = useState<any>();
   const [activeKeyForTabs, setActiveKeyForTabs] = useState<any>(1);
   const [newAddContact, setNewAddContact] = useState<Boolean>(false);
-
   const {loading, filteredData, customerProfile} = useAppSelector(
     (state) => state.customer,
   );
@@ -179,7 +179,7 @@ const CrmInformation: React.FC = () => {
     },
     {
       key: 3,
-      primary: <div>{billingData?.length}</div>,
+      primary: <div>{billingData?.length ?? 0}</div>,
       secondry: 'Contacts',
       icon: <PhoneIcon width={24} color={token?.colorLink} />,
       iconBg: token?.colorLinkActive,
@@ -193,7 +193,7 @@ const CrmInformation: React.FC = () => {
     },
     {
       key: 5,
-      primary: <div>{deletedData?.length}</div>,
+      primary: <div>{deletedData?.length ?? 0}</div>,
       secondry: 'Deleted',
       icon: <TrashIcon width={24} color={token?.colorError} />,
       iconBg: token?.colorErrorBg,
@@ -434,6 +434,19 @@ const CrmInformation: React.FC = () => {
     });
   };
 
+  const handleRunScript = async () => {
+    try {
+      const response = await dispatch(lauchPlayWright([]));
+      if (lauchPlayWright.fulfilled.match(response)) {
+        console.log('Script executed successfully:', response.payload);
+      } else {
+        console.error('Error running script:', response.payload);
+      }
+    } catch (error) {
+      console.error('Error running script:', error);
+    }
+  };
+
   return (
     <>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
@@ -471,6 +484,13 @@ const CrmInformation: React.FC = () => {
                 gap: '8px',
               }}
             >
+              <OsButton
+                text="Run Script"
+                buttontype="PRIMARY"
+                clickHandler={() => {
+                  handleRunScript();
+                }}
+              />
               <OsButton
                 text="Add Customer Account"
                 buttontype="PRIMARY"
