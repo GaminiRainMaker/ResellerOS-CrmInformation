@@ -13,13 +13,8 @@ export default async function handler(
     try {
       const {data} = req.body;
 
-      // Prepare the command to run the Playwright script with data
-      //   const command = `npx playwright test --project chromium --headed'${JSON.stringify(data)}'`;
-
-      //   // Execute the Playwright script
-      //   await execPromise(command);
       const {stdout, stderr} = await execPromise(
-        'npx playwright test test/mytest.spec.js --project chromium --headed',
+        'npx playwright test test/salesForce.spec.js --project chromium --headed',
       );
 
       if (stderr) {

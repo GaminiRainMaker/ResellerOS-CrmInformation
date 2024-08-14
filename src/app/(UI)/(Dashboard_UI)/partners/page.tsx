@@ -6,20 +6,23 @@
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import FormBuilderMain from '@/app/components/common/formBuilder/page';
+import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import RequestPartner from '@/app/components/common/os-add-partner/RequestPartner';
 import OsButton from '@/app/components/common/os-button';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
+import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {formatDate, partnerProgramFilter} from '@/app/utils/base';
+import {formatStatus} from '@/app/utils/CONSTANTS';
+import {formatDate} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Checkbox, Form} from 'antd';
-import {useEffect, useState} from 'react';
 import {useSearchParams} from 'next/navigation';
-import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
+import {useEffect, useState} from 'react';
 import {
   insertAssignPartnerProgram,
   updateForTheResellerRequest,
@@ -29,15 +32,9 @@ import {
   upadteRequestForOrgNewPartnerApproval,
 } from '../../../../../redux/actions/partner';
 import {getUnassignedProgram} from '../../../../../redux/actions/partnerProgram';
+import {getUserByTokenAccess} from '../../../../../redux/actions/user';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import PartnerAnalytics from './partnerAnalytics';
-import OsInput from '@/app/components/common/os-input';
-import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
-import {getUserByTokenAccess} from '../../../../../redux/actions/user';
-import {addNotificationFOrProgramRequest} from '../../../../../redux/actions/notifications';
-import {useWindowRect} from '@dnd-kit/core/dist/hooks/utilities';
-import CommonSelect from '@/app/components/common/os-select';
-import {formatStatus} from '@/app/utils/CONSTANTS';
 
 const Partners: React.FC = () => {
   const [token] = useThemeToken();
