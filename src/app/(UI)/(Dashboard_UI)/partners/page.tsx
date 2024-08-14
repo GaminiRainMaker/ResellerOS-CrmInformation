@@ -405,13 +405,7 @@ const Partners: React.FC = () => {
       key: 'description',
       render: (text: any, record: any) => (
         <Checkbox
-          checked={
-            record?.AssignPartnerProgram?.new_request
-              ? true
-              : !record?.AssignPartnerProgram
-                ? true
-                : false
-          }
+          checked={!record?.AssignPartnerProgram ? true : false}
           disabled
         />
       ),
