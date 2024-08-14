@@ -31,7 +31,6 @@ const UpdateGenerateQuote = () => {
   const {concernQuoteLineItemData} = useAppSelector(
     (state) => state.quoteLineItem,
   );
-  const {userInformation} = useAppSelector((state) => state.user);
   const [inputData, setInputData] = useState<any>(concernQuoteLineItemData);
   const router = useRouter();
   const hotRef = useRef(null);
@@ -50,7 +49,7 @@ const UpdateGenerateQuote = () => {
           cursor="pointer"
           onClick={() => {
             router?.push(
-              `/generateQuote?id=${getUserID}&isView=${getResultedValue(userInformation)}`,
+              `/generateQuote?id=${getUserID}&isView=${getResultedValue()}`,
             );
           }}
         >
@@ -324,7 +323,7 @@ const UpdateGenerateQuote = () => {
       );
     });
     router?.push(
-      `/generateQuote?id=${getUserID}&isView=${getResultedValue(userInformation)}`,
+      `/generateQuote?id=${getUserID}&isView=${getResultedValue()}`,
     );
   };
 

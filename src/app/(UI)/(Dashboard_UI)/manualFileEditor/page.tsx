@@ -44,7 +44,6 @@ const EditorFile = () => {
   const router = useRouter();
   const getQuoteID = searchParams.get('id');
   const SaleQuoteId = searchParams.get('quote_Id');
-  const {userInformation} = useAppSelector((state) => state.user);
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [arrayOflineItem, setArrayOflineItem] = useState<any>([]);
@@ -282,12 +281,12 @@ const EditorFile = () => {
         return;
       } else {
         router.push(
-          `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue(userInformation)}`,
+          `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue()}`,
         );
         window.history.replaceState(
           null,
           '',
-          `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue(userInformation)}`,
+          `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue()}`,
         );
         location?.reload();
       }

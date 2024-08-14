@@ -54,7 +54,7 @@ const OpportunityDetails = () => {
   const [activeQuotes, setActiveQuotes] = useState<React.Key[]>([]);
   const [finalDealRegData, setFinalDealRegData] = useState<React.Key[]>([]);
   const [statusValue, setStatusValue] = useState<string>('All');
-  const isView = getResultedValue(userInformation);
+  const isView = getResultedValue();
   const isDealReg = userInformation?.DealReg ?? false;
 
   const {loading: QuoteLoading} = useAppSelector((state) => state.quote);
@@ -250,7 +250,7 @@ const OpportunityDetails = () => {
           name="Body 4/Regular"
           onClick={() => {
             router.push(
-              `/generateQuote?id=${record.id}&isView=${getResultedValue(userInformation)}`,
+              `/generateQuote?id=${record.id}&isView=${getResultedValue()}`,
             );
           }}
           hoverOnText

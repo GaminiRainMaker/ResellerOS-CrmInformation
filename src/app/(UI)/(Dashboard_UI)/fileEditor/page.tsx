@@ -641,7 +641,7 @@ const EditorFile = () => {
     );
 
     router?.push(
-      `/generateQuote?id=${getQUoteId}&tab=2&isView=${getResultedValue(userInformation)}`,
+      `/generateQuote?id=${getQUoteId}&tab=2&isView=${getResultedValue()}`,
     );
   };
 
@@ -653,7 +653,7 @@ const EditorFile = () => {
     };
     dispatch(UpdateQuoteFileById(data));
     router?.push(
-      `/generateQuote?id=${getQUoteId}&isView=${getResultedValue(userInformation)}`,
+      `/generateQuote?id=${getQUoteId}&isView=${getResultedValue()}`,
     );
   };
 
@@ -667,7 +667,7 @@ const EditorFile = () => {
   };
   const checkForNewFile = async () => {
     router.push(
-      `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue(userInformation)}`,
+      `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
     );
   };
 
@@ -799,7 +799,7 @@ const EditorFile = () => {
               />
             )}
             <OsButton
-              text="Save LineItems"
+              text="Save Line Items"
               buttontype="PRIMARY"
               clickHandler={updateData}
             />
@@ -1100,7 +1100,7 @@ const EditorFile = () => {
                     buttontype="PRIMARY"
                     clickHandler={() => {
                       router?.push(
-                        `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue(userInformation)}`,
+                        `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
                       );
                     }}
                   />
@@ -1111,7 +1111,7 @@ const EditorFile = () => {
           width={600}
           onCancel={() => {
             router?.push(
-              `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue(userInformation)}`,
+              `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
             );
           }}
           open={returnBackModal}
