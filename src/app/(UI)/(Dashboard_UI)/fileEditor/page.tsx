@@ -799,7 +799,7 @@ const EditorFile = () => {
               />
             )}
             <OsButton
-              text="Save LineItems"
+              text="Save Line Items"
               buttontype="PRIMARY"
               clickHandler={updateData}
             />
