@@ -28,19 +28,30 @@ import {insertValidation} from '../../../redux/actions/validation';
 import {setQuoteFileUnverifiedById} from '../../../redux/slices/quoteFile';
 
 export const getResultedValue = () => {
-  const storedData = localStorage.getItem('userInfo');
-  if (storedData) {
-    let daata = JSON.parse(storedData);
-    const {QuoteAI, DealReg} = daata;
-    if (QuoteAI && DealReg) {
-      return false;
-    } else if (QuoteAI) {
-      return false;
-    } else if (!QuoteAI && DealReg) {
-      return true;
+  if (typeof window !== 'undefined') {
+    const storedData = localStorage.getItem('userInfo');
+    if (storedData) {
+      try {
+        const permissions = JSON?.parse(storedData);
+        const {QuoteAI, DealReg} = permissions;
+        if (QuoteAI && DealReg) {
+          return false;
+        } else if (QuoteAI) {
+          return false;
+        } else if (!QuoteAI && DealReg) {
+          return true;
+        }
+
+        return permissions;
+      } catch (error) {
+        console.error('Error parsing stored data:', error);
+        return null;
+      }
     }
-    return JSON.parse(storedData);
+
+    return null;
   }
+
   return null;
 };
 
