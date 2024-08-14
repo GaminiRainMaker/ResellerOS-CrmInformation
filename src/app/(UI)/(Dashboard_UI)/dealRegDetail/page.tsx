@@ -28,7 +28,10 @@ import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs from './DealRegCustomTabs';
 import SubmitDealRegForms from './SubmitDealRegForms';
 import {runSalesForceBot} from '../../../../../redux/actions/auth';
-import {lauchPlayWright} from '../../../../../redux/actions/playwright';
+import {
+  lauchPlayWright,
+  lauchSalesPlayWright,
+} from '../../../../../redux/actions/playwright';
 
 const DealRegDetail = () => {
   const [FormData] = Form.useForm();
@@ -129,6 +132,19 @@ const DealRegDetail = () => {
       console.error('Error running script:', error);
     }
   };
+  const lauchSalesPlayBot = async () => {
+    try {
+      const response = await dispatch(lauchSalesPlayWright([]));
+      if (lauchSalesPlayWright.fulfilled.match(response)) {
+        console.log('Script executed successfully:', response.payload);
+      } else {
+        console.error('Error running script:', response.payload);
+      }
+    } catch (error) {
+      console.error('Error running script:', error);
+    }
+  };
+
   return (
     <div>
       <Row justify="space-between" align="middle">
@@ -137,6 +153,11 @@ const DealRegDetail = () => {
         </Col>
         <Col>
           <Space size={8}>
+            <OsButton
+              text="Create SalesForce Account"
+              buttontype="SECONDARY"
+              clickHandler={lauchSalesPlayBot}
+            />
             <OsButton
               text="Launch Bot"
               buttontype="SECONDARY"
