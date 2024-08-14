@@ -27,10 +27,11 @@ import {insertRebateQuoteLineItem} from '../../../redux/actions/rebateQuoteLinei
 import {insertValidation} from '../../../redux/actions/validation';
 import {setQuoteFileUnverifiedById} from '../../../redux/slices/quoteFile';
 
-export const getResultedValue = (userInformation: any) => {
-  console.log('function', userInformation);
-  if (userInformation) {
-    const {QuoteAI, DealReg} = userInformation;
+export const getResultedValue = () => {
+  const storedData = localStorage.getItem('userInfo');
+  if (storedData) {
+    let daata = JSON.parse(storedData);
+    const {QuoteAI, DealReg} = daata;
     if (QuoteAI && DealReg) {
       return false;
     } else if (QuoteAI) {
@@ -38,7 +39,9 @@ export const getResultedValue = (userInformation: any) => {
     } else if (!QuoteAI && DealReg) {
       return true;
     }
+    return JSON.parse(storedData);
   }
+  return null;
 };
 
 export const calculateProfitabilityData = (

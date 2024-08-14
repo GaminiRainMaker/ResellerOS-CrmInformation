@@ -28,7 +28,6 @@ const AccountDetails = () => {
   const [token] = useThemeToken();
   const router = useRouter();
   const {abbreviate} = useAbbreviationHook(0);
-  const {userInformation} = useAppSelector((state) => state.user);
   const {loading, customerDataById: customerData} = useAppSelector(
     (state) => state.customer,
   );
@@ -138,7 +137,7 @@ const AccountDetails = () => {
           color={token?.colorInfo}
           onClick={() => {
             router.push(
-              `/generateQuote?id=${record?.id}&isView=${getResultedValue(userInformation)}`,
+              `/generateQuote?id=${record?.id}&isView=${getResultedValue()}`,
             );
           }}
         >

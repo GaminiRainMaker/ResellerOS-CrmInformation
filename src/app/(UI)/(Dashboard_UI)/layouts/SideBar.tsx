@@ -63,7 +63,13 @@ const SideBar = () => {
   useEffect(() => {
     if (!!userInformation && !salesForceUrl) {
       dispatch(getUserByTokenAccess('')).then((payload: any) => {
-        dispatch(
+        const relevantData = {
+          QuoteAI: payload?.payload?.is_quote,
+          DealReg: payload?.payload?.is_dealReg,
+        };
+
+        localStorage.setItem('userInfo', JSON.stringify(relevantData));
+        return dispatch(
           setUserInformation({
             id: payload?.payload?.id,
             organization: payload?.payload?.organization,

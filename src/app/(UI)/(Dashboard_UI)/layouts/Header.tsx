@@ -497,6 +497,7 @@ const CustomHeader = () => {
                         cursor: 'pointer',
                       }}
                       onClick={() => {
+                        localStorage.removeItem('userInfo');
                         Cookies.remove('token');
                         Cookies.remove('id');
                         router.push('/login');

@@ -188,17 +188,17 @@ const AllQuote: React.FC = () => {
   const editQuote = (quoteId: string) => {
     if (activeTab === '5') {
       router.push(
-        `/generateQuote?id=${quoteId}&isView=${getResultedValue(userInformation)}`,
+        `/generateQuote?id=${quoteId}&isView=${getResultedValue()}`,
       );
     } else {
       router.push(
-        `/generateQuote?id=${quoteId}&isView=${getResultedValue(userInformation)}`,
+        `/generateQuote?id=${quoteId}&isView=${getResultedValue()}`,
       );
     }
   };
   const quoteNameNavigation = (quoteId: string) => {
     window.open(
-      `/generateQuote?id=${quoteId}&isView=${getResultedValue(userInformation)}`,
+      `/generateQuote?id=${quoteId}&isView=${getResultedValue()}`,
     );
   };
 
