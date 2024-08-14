@@ -666,33 +666,41 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                 align="center"
                 name="Body 3/Medium"
               >
-                Quote LineItem Header
+                Quote Line Item Header
               </Typography>
             </Row>
             <Divider />
-            {syncedNewValue?.map((item: any, indexOfCol: number) => (
-              <Row style={{marginTop: '6px'}}>
-                <CommonSelect
-                  onChange={(e) => {
-                    syncTableToLineItems(item, e, indexOfCol);
-                  }}
-                  allowClear
-                  onClear={() => {
-                    if (!item?.newVal) {
-                      return;
-                    }
-                    if (item?.newVal) {
-                      handleChange();
-                    }
-                  }}
-                  defaultValue={formatStatus(
-                    item?.newVal?.toString()?.toUpperCase(),
-                  )}
-                  style={{width: '250px'}}
-                  options={syncTableQuoteLItemValues}
-                />
-              </Row>
-            ))}
+            {syncedNewValue?.map((item: any, indexOfCol: number) => {
+              let newLabel = syncTableQuoteLItemValues?.find(
+                (items: any) =>
+                  items?.value?.toString()?.toUpperCase() ===
+                  item?.newVal?.toString()?.toUpperCase(),
+              );
+
+              return (
+                <Row style={{marginTop: '6px'}}>
+                  <CommonSelect
+                    onChange={(e) => {
+                      syncTableToLineItems(item, e, indexOfCol);
+                    }}
+                    allowClear
+                    onClear={() => {
+                      if (!item?.newVal) {
+                        return;
+                      }
+                      if (item?.newVal) {
+                        handleChange();
+                      }
+                    }}
+                    defaultValue={formatStatus(
+                      newLabel?.label?.toString()?.toUpperCase(),
+                    )}
+                    style={{width: '250px'}}
+                    options={syncTableQuoteLItemValues}
+                  />
+                </Row>
+              );
+            })}
           </Col>
         </Row>
         <Row

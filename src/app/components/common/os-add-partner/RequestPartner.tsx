@@ -97,7 +97,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
         requested_by: userInformation?.id,
         partner_id: JSON.parse(value?.partner_id)?.id,
         partner_program_id: JSON.parse(value?.partner_program_id)?.id,
-        new_request: true,
+        new_request: false,
       };
       if (partnerObj) {
         await dispatch(insertAssignPartnerProgram(partnerObj));
