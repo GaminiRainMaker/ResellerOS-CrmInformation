@@ -19,7 +19,7 @@ export default async function handler(
       //   // Execute the Playwright script
       //   await execPromise(command);
       const {stdout, stderr} = await execPromise(
-        'npx playwright test --project chromium --headed',
+        'npx playwright test test/mytest.spec.js --project chromium --headed',
       );
 
       if (stderr) {
