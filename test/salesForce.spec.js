@@ -10,8 +10,10 @@ test('test', async ({page}) => {
   await page.getByLabel('Password').fill('sfdc12345@');
   await page.getByRole('button', {name: 'Log In'}).click();
   await page.getByRole('link', {name: 'Accounts'}).click();
-  await page.getByRole('button', {name: 'New'}).click();
 
+  await page.waitForTimeout(2000); 
+
+  await page.getByRole('button', {name: 'New'}).click();
   await page.getByLabel('*Account Name').click();
   await page.getByLabel('*Account Name').fill('Devops');
   await page.getByLabel('Account Number').click();
@@ -23,7 +25,7 @@ test('test', async ({page}) => {
 
   await page.getByRole('textbox', {name: 'Phone'}).fill('114546532356');
   await page.getByRole('combobox', {name: 'Ownership'}).click();
-    await page.getByText('Private').click();
+  await page.getByText('Private').click();
 
   //   await page.evaluate(() => {
   //     const messageDiv = document.createElement('div');
