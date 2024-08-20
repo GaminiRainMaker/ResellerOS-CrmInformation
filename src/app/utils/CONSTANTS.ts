@@ -73,6 +73,7 @@ export const quoteLineItemColumnForSync = [
   {value: 'description', label: 'DESCRIPTION'},
 ];
 
+
 export const SaleForceQuoteLineItemColumnSync = [
   {label: 'Line Number', value: 'line_number'},
   {label: 'MPN', value: 'mpn'},
