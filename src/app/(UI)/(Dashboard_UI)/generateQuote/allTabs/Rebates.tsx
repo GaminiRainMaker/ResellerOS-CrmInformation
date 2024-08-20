@@ -480,7 +480,7 @@ const Rebates: FC<any> = ({
       ) : (
         <EmptyContainer
           title="There is no columns for Rebates"
-          subTitle="Please Update from admin Configuration Tab or Request to admin to update the columns."
+          subTitle="Please update the columns from the Admin Configuration Tab or request the admin to do so."
         />
       )}
     </>

@@ -16,8 +16,14 @@ import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {formatDate} from '@/app/utils/base';
-import {ArrowTopRightOnSquareIcon, PlusIcon} from '@heroicons/react/24/outline';
-import {Table, TabsProps} from 'antd';
+import {
+  ArrowTopRightOnSquareIcon,
+  MinusCircleIcon,
+  MinusIcon,
+  PlusCircleIcon,
+  PlusIcon,
+} from '@heroicons/react/24/outline';
+import {TabsProps} from 'antd';
 import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -26,6 +32,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {SeparatedData} from '../dealRegDetail/dealReg.interface';
 import NewRegistrationForm from './NewRegistrationForm';
 import DealRegAnalytics from './dealRegAnalytics';
+import {StyledTable} from './styled-components';
 
 const DealReg: React.FC = () => {
   const [token] = useThemeToken();
@@ -277,14 +284,16 @@ const DealReg: React.FC = () => {
 
   const generateTabContent = (status: string) => {
     return (
-      <OsTable
+      <StyledTable
+        bordered
+        token={token}
         columns={DealRegColumns}
         expandable={{
           // eslint-disable-next-line react/no-unstable-nested-components
           expandedRowRender: (record: any) => {
             return (
               <OsTable
-              rowKey={record?.id}
+                rowKey={record?.id}
                 columns={dealRegFormColumns}
                 dataSource={record?.data}
                 scroll
@@ -294,6 +303,12 @@ const DealReg: React.FC = () => {
             );
           },
           rowExpandable: (record: any) => record.title !== 'Not Expandable',
+          expandIcon: ({expanded, onExpand, record}) =>
+            expanded ? (
+              <MinusIcon width={20} onClick={(e: any) => onExpand(record, e)} />
+            ) : (
+              <PlusIcon width={20} onClick={(e: any) => onExpand(record, e)} />
+            ),
         }}
         dataSource={finalDealRegData}
         // scroll

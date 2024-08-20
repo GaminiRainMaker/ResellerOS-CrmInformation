@@ -22,6 +22,7 @@ import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {formatStatus} from '@/app/utils/CONSTANTS';
 import {
+  MinusIcon,
   PencilSquareIcon,
   PlusIcon,
   TrashIcon,
@@ -685,6 +686,18 @@ const SuperAdminPartner: React.FC = () => {
               />
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
+            expandIcon: ({expanded, onExpand, record}: any) =>
+              expanded ? (
+                <MinusIcon
+                  width={20}
+                  onClick={(e: any) => onExpand(record, e)}
+                />
+              ) : (
+                <PlusIcon
+                  width={20}
+                  onClick={(e: any) => onExpand(record, e)}
+                />
+              ),
           }}
           dataSource={allPartnerData?.AllPartner}
           scroll
@@ -732,6 +745,18 @@ const SuperAdminPartner: React.FC = () => {
               />
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
+            expandIcon: ({expanded, onExpand, record}: any) =>
+              expanded ? (
+                <MinusIcon
+                  width={20}
+                  onClick={(e: any) => onExpand(record, e)}
+                />
+              ) : (
+                <PlusIcon
+                  width={20}
+                  onClick={(e: any) => onExpand(record, e)}
+                />
+              ),
           }}
           // dataSource={allApprovedObjects}
           dataSource={allPartnerData?.DeclinedData}
@@ -965,7 +990,12 @@ const SuperAdminPartner: React.FC = () => {
                   <Typography
                     cursor="pointer"
                     name="Button 1"
-                    color={'#C6CDD5'}
+                    color={
+                      queryDataa?.partnerQuery ||
+                      queryDataa?.partnerprogramQuery
+                        ? '#0D0D0D'
+                        : '#C6CDD5'
+                    }
                     onClick={() => {
                       setQueryData({
                         partnerQuery: '',
