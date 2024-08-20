@@ -1126,6 +1126,7 @@ const EditorFile = () => {
                       router?.push(
                         `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
                       );
+                      CancelEditing();
                     }}
                   />
                 </Space>
