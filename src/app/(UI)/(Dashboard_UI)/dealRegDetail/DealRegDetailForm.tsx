@@ -99,6 +99,9 @@ const DealRegDetailForm: FC<any> = ({
               style={{
                 width: '100%',
                 marginTop: '30px',
+                background: 'white',
+                padding: '24px',
+                borderRadius: '12px',
               }}
             >
               <OsCollapseAdmin items={UniqueFieldsItems} />
