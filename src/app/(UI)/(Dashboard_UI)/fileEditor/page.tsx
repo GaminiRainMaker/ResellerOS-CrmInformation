@@ -239,7 +239,6 @@ const EditorFile = () => {
         dispatch(getQuoteLineItemByQuoteIdForEditTable(newObj)).then(
           (d: any) => {
             if (d?.payload) {
-              console.log('d?.payload', d?.payload);
               // const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
               setQuoteItems(d?.payload);
             }
@@ -366,7 +365,10 @@ const EditorFile = () => {
       quoteItems?.map((itemsss: any) => {
         if (itemsss) {
           const newObj: any = {...itemsss};
-          newObj.cost = itemsss?.list_price;
+          newObj.MSRP = itemsss?.list_price;
+          newObj.cost = itemsss?.adjusted_price;
+
+          delete newObj?.adjusted_price;
           delete newObj?.list_price;
 
           newArrr?.push(newObj);
@@ -527,19 +529,61 @@ const EditorFile = () => {
 
     setMergedVaalues(newArrr);
   };
+  const [mergeedColumn, setMergeedColumn] = useState<any>();
+  const [updateLineItemColumn, setUpdateLineItemColumn] = useState<any>();
+  const [updateLineItemColumnData, setUpdateLineItemColumnData] =
+    useState<any>();
+  console.log(
+    'updateLineItemColumnData',
+    updateLineItemColumn,
+    updateLineItemsValue,
+  );
+  useEffect(() => {
+    const updateLineItemColumnArr: any = [];
+    const updateLineItemColumnDataArr: any = [];
+    const keysss =
+      updateLineItemsValue?.length > 0 &&
+      Object.keys(updateLineItemsValue?.[0]);
+    if (keysss) {
+      keysss?.map((item: any) => {
+        if (item) {
+          if (
+            item === 'id' ||
+            item === 'quote_id' ||
+            item === 'organization' ||
+            item === 'Id' ||
+            item === 'quoteId' ||
+            item === 'product_id'
+          ) {
+            const dataObj = {data: item, readOnly: true};
+            updateLineItemColumnDataArr?.push(dataObj);
+          } else {
+            const dataObj = {data: item};
+            updateLineItemColumnData?.push(dataObj);
+          }
+          updateLineItemColumnArr?.push(formatStatus(item));
+        }
+      });
+    }
+    setUpdateLineItemColumn(updateLineItemColumnArr);
+    setUpdateLineItemColumnData(updateLineItemColumnDataArr);
+  }, [updateLineItemsValue]);
 
-  const mergeedColumn: any = [];
-  const keys =
-    ExistingQuoteItemss === 'true'
-      ? quoteItems?.length > 0 && Object.keys(quoteItems?.[0])
-      : mergedValue?.length > 0 && Object.keys(mergedValue?.[0]);
-  if (keys) {
-    keys?.map((item: any) => {
-      if (item) {
-        mergeedColumn?.push(item);
-      }
-    });
-  }
+  useEffect(() => {
+    const mergeedColumnArr: any = [];
+    const keys =
+      ExistingQuoteItemss === 'true'
+        ? quoteItems?.length > 0 && Object.keys(quoteItems?.[0])
+        : mergedValue?.length > 0 && Object.keys(mergedValue?.[0]);
+    if (keys) {
+      keys?.map((item: any) => {
+        if (item) {
+          mergeedColumnArr?.push(item);
+        }
+      });
+    }
+    setMergeedColumn(mergeedColumnArr);
+  }, [ExistingQuoteItemss, quoteItems, mergedValue]);
 
   // ======================================== FOr Update LineItems=====================================
 
@@ -580,32 +624,6 @@ const EditorFile = () => {
 
     setUpdateLineItemsValue(newArrr);
   };
-
-  const updateLineItemColumn: any = [];
-  const updateLineItemColumnData: any = [];
-  const keysss =
-    updateLineItemsValue?.length > 0 && Object.keys(updateLineItemsValue?.[0]);
-  if (keysss) {
-    keysss?.map((item: any) => {
-      if (item) {
-        if (
-          item === 'id' ||
-          item === 'quote_id' ||
-          item === 'organization' ||
-          item === 'Id' ||
-          item === 'quoteId' ||
-          item === 'product_id'
-        ) {
-          const dataObj = {data: item, readOnly: true};
-          updateLineItemColumnData?.push(dataObj);
-        } else {
-          const dataObj = {data: item};
-          updateLineItemColumnData?.push(dataObj);
-        }
-        updateLineItemColumn?.push(formatStatus(item));
-      }
-    });
-  }
 
   const updateData = async () => {
     notification.open({
@@ -655,6 +673,12 @@ const EditorFile = () => {
     router?.push(
       `/generateQuote?id=${getQUoteId}&isView=${getResultedValue()}`,
     );
+    window.history.replaceState(
+      null,
+      '',
+      `/generateQuote?id=${getQUoteId}&isView=${getResultedValue()}`,
+    );
+    location?.reload();
   };
 
   const syncShow = (value: string) => {
@@ -722,7 +746,7 @@ const EditorFile = () => {
     });
     setExistingColumnName(newArr);
   }, [mergeedColumn]);
-
+  console.log('34543543', quoteItems);
   return (
     <GlobalLoader loading={nanonetsLoading}>
       {ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true' ? (
@@ -740,7 +764,7 @@ const EditorFile = () => {
               columnHeaderHeight={40}
               height="auto"
               colHeaders={updateLineItemColumn}
-              columns={updateLineItemColumnData}
+              // columns={z}
               width="auto"
               minSpareRows={0}
               autoWrapRow

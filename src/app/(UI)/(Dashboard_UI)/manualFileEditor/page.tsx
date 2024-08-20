@@ -12,7 +12,12 @@
 'use client';
 
 import '@handsontable/pikaday/css/pikaday.css';
-import {HotTable} from '@handsontable/react';
+import '@handsontable/pikaday/css/pikaday.css';
+const HotTable = dynamic(() => import('@handsontable/react'), {
+  ssr: false,
+});
+
+// import {HotTable} from '@handsontable/react';
 import {useEffect, useState} from 'react';
 import './styles.css';
 import {useRouter, useSearchParams} from 'next/navigation';
@@ -34,6 +39,7 @@ import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import {getResultedValue} from '@/app/utils/base';
 import {registerAllModules} from 'handsontable/registry';
+import dynamic from 'next/dynamic';
 
 registerAllModules();
 
@@ -60,6 +66,7 @@ const EditorFile = () => {
   const salesForceUrl = searchParams.get('instance_url');
   const [showUpdateColumnModal, setShowUpdateColumnModal] =
     useState<boolean>(false);
+  const [existingColumnOptions, setExistingColumnName] = useState<any>();
 
   const addNewLine = () => {
     let newArr = [
@@ -119,21 +126,22 @@ const EditorFile = () => {
     setArrayOflineItem(transformedData);
   };
   useEffect(() => {
-    const mergeedColumn: any = [];
-    const keys =
-      arrayOflineItem?.length > 0 && Object.keys(arrayOflineItem?.[0]);
-    if (keys) {
-      keys?.map((item: any) => {
-        if (item) {
-          mergeedColumn?.push(formatStatus(item));
-        }
-      });
+    if (arrayOflineItem?.length > 0 && arrayOflineItem) {
+      const mergeedColumn: any = [];
+      const keys =
+        arrayOflineItem?.length > 0 && Object.keys(arrayOflineItem?.[0]);
+      if (keys) {
+        keys?.map((item: any) => {
+          if (item) {
+            mergeedColumn?.push(formatStatus(item));
+          }
+        });
+      }
+      setMergeedColumnHeader(mergeedColumn);
     }
-    setMergeedColumnHeader(mergeedColumn);
   }, [arrayOflineItem]);
-
-  useEffect(() => {
-    if (arrayOflineItem?.length > 1 && !saveNewHeader) {
+  const removeDuplicates = () => {
+    if (arrayOflineItem && arrayOflineItem?.length > 1) {
       const removeDuplicateValues = (obj: any) => {
         const seenValues = new Set();
         const newObj: any = {};
@@ -156,7 +164,15 @@ const EditorFile = () => {
 
       setArrayOflineItem(cleanedData);
     }
-  }, [arrayOflineItem]);
+    syncShow('sync');
+  };
+  // useEffect(() => {
+  //   if (saveNewHeader) {
+  //     return;
+  //   } else {
+  //     removeDuplicates();
+  //   }
+  // }, [arrayOflineItem]);
 
   const deleteRowsItems = (indexOfDeletion: number, NumberOf: number) => {
     const newArrr = arrayOflineItem?.length > 0 ? [...arrayOflineItem] : [];
@@ -334,16 +350,16 @@ const EditorFile = () => {
     setShowAddColumnModal(false);
     setNewHeaderName('');
   };
-  const [existingColumnOptions, setExistingColumnName] = useState<any>();
   useEffect(() => {
-    let newArr: any = [];
-    mergeedColumnHeader?.map((items: any) => {
-      newArr?.push({label: items, value: items});
-    });
-    setExistingColumnName(newArr);
+    if (mergeedColumnHeader && mergeedColumnHeader?.length > 0) {
+      let newArr: any = [];
+      mergeedColumnHeader?.map((items: any) => {
+        newArr?.push({label: items, value: items});
+      });
+      setExistingColumnName(newArr);
+    }
   }, [mergeedColumnHeader]);
 
-  let typeOFAdd: any;
   return (
     <GlobalLoader loading={nanonetsLoading}>
       {currentFileData && (

@@ -403,11 +403,13 @@ export const updateTables = async (
         product_code: item.product_code,
         // line_amount: useRemoveDollarAndCommahook(item?.line_amount),
         list_price: useRemoveDollarAndCommahook(
-          item?.cost ? item?.cost : item?.list_price,
+          item?.MSRP ? item?.MSRP : item?.list_price,
         ),
         description: item.description,
         quantity: useRemoveDollarAndCommahook(item?.quantity),
-        adjusted_price: useRemoveDollarAndCommahook(item?.adjusted_price),
+        adjusted_price: useRemoveDollarAndCommahook(
+          item?.cost ? item?.cost : item?.adjusted_price,
+        ),
         line_number: item.line_number,
         organization: userInformation.organization,
         quote_config_id: item.quote_config_id,
