@@ -43,8 +43,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
   const getInputComponent = (itemCon: any) => {
     const fieldName = convertToSnakeCase(itemCon?.label);
     const initialValue = uniqueTemplateData?.[fieldName];
-    console.log('435345345345', fieldName, initialValue, uniqueTemplateData);
-
     const commonProps = {defaultValue: initialValue, onBlur: handleBlur};
 
     if (itemCon?.name === 'Date' && initialValue) {
@@ -287,7 +285,10 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
 
           if (allContentItem?.name === 'Text Content') {
             return (
-              <Col span={24} style={{textAlign: alignment, padding: '24px'}}>
+              <Col
+                span={24}
+                style={{textAlign: alignment, padding: '12px 0px'}}
+              >
                 <p style={{fontSize: fontSize === 'h2' ? 24 : 16}}>
                   {allContentItem?.sectionTitle}
                 </p>
@@ -299,7 +300,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
             <Col
               span={allContentItem.name === 'Line Break' ? 24 : 12}
               style={{
-                padding: '24px',
+                padding: '12px',
                 paddingTop: '0px',
               }}
               key={itemIndex}
