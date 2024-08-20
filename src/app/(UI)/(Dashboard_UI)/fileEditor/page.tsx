@@ -239,7 +239,6 @@ const EditorFile = () => {
         dispatch(getQuoteLineItemByQuoteIdForEditTable(newObj)).then(
           (d: any) => {
             if (d?.payload) {
-              console.log('d?.payload', d?.payload);
               // const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
               setQuoteItems(d?.payload);
             }
@@ -366,7 +365,10 @@ const EditorFile = () => {
       quoteItems?.map((itemsss: any) => {
         if (itemsss) {
           const newObj: any = {...itemsss};
-          newObj.cost = itemsss?.list_price;
+          newObj.MSRP = itemsss?.list_price;
+          newObj.cost = itemsss?.adjusted_price;
+
+          delete newObj?.adjusted_price;
           delete newObj?.list_price;
 
           newArrr?.push(newObj);
@@ -531,7 +533,11 @@ const EditorFile = () => {
   const [updateLineItemColumn, setUpdateLineItemColumn] = useState<any>();
   const [updateLineItemColumnData, setUpdateLineItemColumnData] =
     useState<any>();
-
+  console.log(
+    'updateLineItemColumnData',
+    updateLineItemColumn,
+    updateLineItemsValue,
+  );
   useEffect(() => {
     const updateLineItemColumnArr: any = [];
     const updateLineItemColumnDataArr: any = [];
@@ -740,7 +746,7 @@ const EditorFile = () => {
     });
     setExistingColumnName(newArr);
   }, [mergeedColumn]);
-
+  console.log('34543543', quoteItems);
   return (
     <GlobalLoader loading={nanonetsLoading}>
       {ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true' ? (
@@ -758,7 +764,7 @@ const EditorFile = () => {
               columnHeaderHeight={40}
               height="auto"
               colHeaders={updateLineItemColumn}
-              columns={updateLineItemColumnData}
+              // columns={z}
               width="auto"
               minSpareRows={0}
               autoWrapRow
