@@ -19,6 +19,7 @@ import {formatDate} from '@/app/utils/base';
 import {
   ArrowTopRightOnSquareIcon,
   MinusCircleIcon,
+  MinusIcon,
   PlusCircleIcon,
   PlusIcon,
 } from '@heroicons/react/24/outline';
@@ -284,6 +285,7 @@ const DealReg: React.FC = () => {
   const generateTabContent = (status: string) => {
     return (
       <StyledTable
+        bordered
         token={token}
         columns={DealRegColumns}
         expandable={{
@@ -303,15 +305,9 @@ const DealReg: React.FC = () => {
           rowExpandable: (record: any) => record.title !== 'Not Expandable',
           expandIcon: ({expanded, onExpand, record}) =>
             expanded ? (
-              <MinusCircleIcon
-                width={20}
-                onClick={(e: any) => onExpand(record, e)}
-              />
+              <MinusIcon width={20} onClick={(e: any) => onExpand(record, e)} />
             ) : (
-              <PlusCircleIcon
-                width={20}
-                onClick={(e: any) => onExpand(record, e)}
-              />
+              <PlusIcon width={20} onClick={(e: any) => onExpand(record, e)} />
             ),
         }}
         dataSource={finalDealRegData}

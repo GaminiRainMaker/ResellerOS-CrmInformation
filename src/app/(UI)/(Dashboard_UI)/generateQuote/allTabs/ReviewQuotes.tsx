@@ -153,7 +153,7 @@ const ReviewQuotes: FC<any> = ({
   };
 
   const locale = {
-    emptyText: <EmptyContainer title="There are no Quotes to review" />,
+    emptyText: <EmptyContainer title="No data." />,
   };
 
   const InputDetailQuoteLineItemcolumns = [
@@ -542,7 +542,7 @@ const ReviewQuotes: FC<any> = ({
       ) : (
         <EmptyContainer
           title="There is no columns for Review Quotes"
-          subTitle="Please Update from admin Configuration Tab or Request to admin to update the columns."
+          subTitle="Please update the columns from the Admin Configuration Tab or request the admin to do so."
         />
       )}
 

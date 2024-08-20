@@ -243,7 +243,7 @@ const NewRegistrationForm: FC<any> = ({
           }
         } else {
           notification?.open({
-            message: 'This Combination is already exists.',
+            message: 'This Combination already exists.',
             type: 'info',
           });
           dispatch(queryDealReg(''));

@@ -19,7 +19,7 @@ import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
 import {formatStatus} from '@/app/utils/CONSTANTS';
 import {formatDate} from '@/app/utils/base';
-import {PlusIcon} from '@heroicons/react/24/outline';
+import {MinusIcon, PlusIcon} from '@heroicons/react/24/outline';
 import {Checkbox, Form} from 'antd';
 import {useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
@@ -646,7 +646,7 @@ const Partners: React.FC = () => {
                     ) : !record?.AssignPartnerProgram?.admin_request ? (
                       `'Need admin approval to request super admin`
                     ) : record?.AssignPartnerProgram?.is_approved === null ? (
-                      'Requested For the Access'
+                      'Requested for Access'
                     ) : (
                       <OsButton
                         buttontype="PRIMARY"
@@ -704,6 +704,18 @@ const Partners: React.FC = () => {
               />
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
+            expandIcon: ({expanded, onExpand, record}: any) =>
+              expanded ? (
+                <MinusIcon
+                  width={20}
+                  onClick={(e: any) => onExpand(record, e)}
+                />
+              ) : (
+                <PlusIcon
+                  width={20}
+                  onClick={(e: any) => onExpand(record, e)}
+                />
+              ),
           }}
           dataSource={allPartnerData?.AllPartner}
           scroll
@@ -742,6 +754,18 @@ const Partners: React.FC = () => {
               />
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
+            expandIcon: ({expanded, onExpand, record}: any) =>
+              expanded ? (
+                <MinusIcon
+                  width={20}
+                  onClick={(e: any) => onExpand(record, e)}
+                />
+              ) : (
+                <PlusIcon
+                  width={20}
+                  onClick={(e: any) => onExpand(record, e)}
+                />
+              ),
           }}
           dataSource={allPartnerData?.approved}
           scroll
@@ -804,6 +828,18 @@ const Partners: React.FC = () => {
               />
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
+            expandIcon: ({expanded, onExpand, record}: any) =>
+              expanded ? (
+                <MinusIcon
+                  width={20}
+                  onClick={(e: any) => onExpand(record, e)}
+                />
+              ) : (
+                <PlusIcon
+                  width={20}
+                  onClick={(e: any) => onExpand(record, e)}
+                />
+              ),
           }}
           dataSource={allPartnerData?.AllPartner}
           scroll
@@ -842,6 +878,18 @@ const Partners: React.FC = () => {
               />
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
+            expandIcon: ({expanded, onExpand, record}: any) =>
+              expanded ? (
+                <MinusIcon
+                  width={20}
+                  onClick={(e: any) => onExpand(record, e)}
+                />
+              ) : (
+                <PlusIcon
+                  width={20}
+                  onClick={(e: any) => onExpand(record, e)}
+                />
+              ),
           }}
           dataSource={allPartnerData?.approved}
           scroll
