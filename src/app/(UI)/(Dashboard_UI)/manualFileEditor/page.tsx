@@ -342,6 +342,8 @@ const EditorFile = () => {
     });
     setExistingColumnName(newArr);
   }, [mergeedColumnHeader]);
+
+  let typeOFAdd: any;
   return (
     <GlobalLoader loading={nanonetsLoading}>
       {currentFileData && (

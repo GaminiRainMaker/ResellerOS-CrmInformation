@@ -1406,7 +1406,7 @@ const Profitablity: FC<any> = ({
         setDeleteIds={setSelectedRowIds}
         showModalDelete={showRemoveBundleLineItemModal}
         deleteSelectedIds={removeBundleLineItemsFunction}
-        description="Are you sure you want to delete lineItem from this Bundle?"
+        description="Are you sure you want to delete line item from this Bundle?"
         heading="Delete LineItem from Bundle"
       />
     </GlobalLoader>
