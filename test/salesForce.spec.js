@@ -2,15 +2,13 @@ import {test, expect} from '@playwright/test';
 
 test('test', async ({page}) => {
   await page.goto(
-    'https://partners.salesforce.com/pdx/s/manage/leads?language=en_US',
-  );
-  await page.goto(
-    'https://partners.salesforce.com/pdx/s/login/?language=en_US&startURL=%2Fpdx%2Fs%2Fmanage%2Fleads',
+    'https://partners.salesforce.com/pdx/s/login/?language=en_US',
   );
   await page
     .locator('c-pc-login-tbid')
     .getByRole('button', {name: 'Log in'})
     .click();
+
   await page.getByRole('button', {name: 'Continue with Salesforce'}).click();
   await page.getByLabel('Username').click();
   await page.getByLabel('Username').fill('rjaiswal@rainmakercloud.com');
@@ -67,12 +65,13 @@ test('test', async ({page}) => {
           lastValue = value;
           lastTypedTime = Date?.now();
         }
-        // Check if the user has stopped typing for the specified delay
-        if (value?.trim() !== '' && Date?.now() - lastTypedTime >= typingDelay) {
+        if (
+          value?.trim() !== '' &&
+          Date?.now() - lastTypedTime >= typingDelay
+        ) {
           return true;
         }
-        // Wait for a short period before checking again
-        await page.waitForTimeout(500); // Adjust this value as needed
+        await page.waitForTimeout(500);
       }
       throw new Error(
         `Timeout: Input field did not get a value within ${timeout / 1000} seconds.`,
@@ -85,65 +84,65 @@ test('test', async ({page}) => {
     console.log('There is no verification required');
   }
 
-  await page.goto('https://partners.salesforce.com/pdx/s/manage/leads');
+  await page.waitForTimeout(7000);
 
+  await page.getByRole('menuitem', {name: 'Manage Submenu'}).click();
+  await page.getByRole('menuitem', {name: 'Leads/Deals'}).click();
   await page.getByRole('button', {name: 'New Lead/Deal'}).click();
-
   await page.getByRole('button', {name: 'Next'}).click();
+  await page.locator('#input-185').click();
   await page.locator('#input-185').fill('ASUS');
-  await page.locator('#input-193').fill('1301, New York');
-  await page.locator('#input-220').fill('');
-  await page.locator('#input-220').fill('2');
+  await page.locator('#input-193').click();
+  await page.locator('#input-193').fill('New York');
+  await page.locator('#input-198').click();
   await page.locator('#input-198').fill('New York');
   await page
     .locator('#select-201')
     .selectOption('USStatesList.a15300000015jARAAY');
-  await page.locator('#input-206').fill('13611');
+  await page.locator('#input-206').click();
+  await page.locator('#input-206').fill('13011');
+  await page.locator('#RADIO-LABEL-0-207 span').first().click();
+  await page.locator('#input-220').fill('');
+  await page.locator('#input-220').click();
+  await page.locator('#input-220').fill('2');
   await page.locator('lightning-primitive-input-checkbox span').nth(1).click();
   await page.getByRole('button', {name: 'Next'}).click();
-  await page.locator('#RADIO-LABEL-0-302 span').first().click();
-  await page.getByRole('button', {name: 'Next'}).click();
-  await page.locator('#input-375').fill('Demo');
-  await page.locator('#input-380').click();
-  await page.locator('#input-380').fill('test');
-  await page.locator('#input-390').click();
-  await page.locator('#input-390').fill('demo@gmail.com');
-  await page.locator('#input-395').click();
-  await page.locator('#input-395').fill('4245234555333');
-  await page.locator('#input-385').click();
-  await page.locator('#input-385').fill('Devops');
+  await page.locator('#input-280').fill('Demo');
+  await page.locator('#input-285').click();
+  await page.locator('#input-285').fill('lastname');
+  await page.locator('#input-295').click();
+  await page.locator('#input-295').fill('demo@gmail.com');
+  await page.locator('#input-300').click();
+  await page.locator('#input-300').fill('1234567890');
+  await page.locator('#input-290').click();
+  await page.locator('#input-290').fill('Devops');
   await page
     .locator('flowruntime-input-wrapper2')
     .filter({hasText: 'Validation of Customer Consent'})
     .locator('span')
     .nth(1)
     .click();
-  //   await page.getByRole('button', {name: 'Next'}).click();
-  //   await page.getByPlaceholder('you@example.com').click();
-  //   await page
-  //     .getByPlaceholder('you@example.com')
-  //     .fill('rjaiswal@rainmaker-llc.com');
-  //   await page.getByLabel('Phone').click();
-  //   await page.getByLabel('Phone').fill('12345678907');
-  //   await page.getByRole('button', {name: 'Next'}).click();
-  //   await page.getByRole('button', {name: 'Next'}).click();
-  //   await page.getByRole('button', {name: 'Next'}).click();
-  //   await page.getByPlaceholder('you@example.com').click({
-  //     clickCount: 3,
-  //   });
-  //   await page.getByPlaceholder('you@example.com').click();
-  //   await page.getByPlaceholder('you@example.com').dblclick();
-  //   await page.getByPlaceholder('you@example.com').fill('demo@gmal.com');
-  //   await page.getByLabel('Phone').click();
-  //   await page.getByPlaceholder('you@example.com').click();
-  //   await page.getByLabel('Phone').click();
-  //   await page.getByLabel('Phone').fill('65635634563653');
-  //   await page.getByRole('button', {name: 'Next'}).click();
-  //   await page.getByRole('button', {name: 'Next'}).click();
-  //   await page
-  //     .locator('#select-550')
-  //     .selectOption('Product_Interest_Choices.Artificial Intelligence');
-  //   await page.locator('#CHECKBOX-LABEL-0-551 span').first().click();
+  await page.getByRole('button', {name: 'Next'}).click();
+  await page.getByPlaceholder('you@example.com').click();
+  await page.getByPlaceholder('you@example.com').press('ControlOrMeta+a');
+  await page.getByPlaceholder('you@example.com').fill('demo@gmail.com');
+  await page.getByLabel('Phone').click();
+  await page.getByLabel('Phone').fill('1234567890');
+  await page.getByRole('button', {name: 'Next'}).click();
+  await page.getByRole('button', {name: 'Next'}).click();
+  await page
+    .locator('#select-397')
+    .selectOption('Product_Interest_Choices.Artificial Intelligence');
+  await page.locator('#CHECKBOX-LABEL-0-398 span').first().click();
+  await page.locator('#input-429').click();
+  await page.locator('#input-429').fill('Testing');
+  await page.locator('#input-437').click();
+  await page.locator('#input-437').fill('Testing');
+  await page.locator('#input-441').click();
+  await page.locator('#input-441').fill('Testing');
+  await page.locator('#input-455').click();
+  await page.locator('#input-455').fill('ADKSFJS58SNVSK');
+  await page.locator('lightning-primitive-input-checkbox span').nth(1).click();
 
   await page.pause();
 });
