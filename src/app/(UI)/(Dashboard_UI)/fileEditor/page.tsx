@@ -15,6 +15,7 @@ import '@handsontable/pikaday/css/pikaday.css';
 const HotTable = dynamic(() => import('@handsontable/react'), {
   ssr: false,
 });
+import {HyperFormula} from 'hyperformula';
 
 // import {HotTable} from '@handsontable/react';
 import {useEffect, useState} from 'react';
@@ -746,7 +747,12 @@ const EditorFile = () => {
     });
     setExistingColumnName(newArr);
   }, [mergeedColumn]);
-  console.log('34543543', quoteItems);
+
+  const hyperformulaInstance = HyperFormula.buildEmpty({
+    // to use an external HyperFormula instance,
+    // initialize it with the `'internal-use-in-handsontable'` license key
+    licenseKey: 'internal-use-in-handsontable',
+  });
   return (
     <GlobalLoader loading={nanonetsLoading}>
       {ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true' ? (
@@ -883,6 +889,10 @@ const EditorFile = () => {
                   width="auto"
                   minSpareRows={0}
                   autoWrapRow
+                  formulas={{
+                    engine: hyperformulaInstance,
+                  }}
+                  stretchH="all"
                   autoWrapCol
                   licenseKey="non-commercial-and-evaluation"
                   hiddenColumns={{
@@ -992,6 +1002,10 @@ const EditorFile = () => {
                             colHeaders={allHeaderValue}
                             width="auto"
                             minSpareRows={0}
+                            formulas={{
+                              engine: hyperformulaInstance,
+                            }}
+                            stretchH="all"
                             autoWrapRow
                             autoWrapCol
                             licenseKey="non-commercial-and-evaluation"

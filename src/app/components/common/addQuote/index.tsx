@@ -409,7 +409,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
       );
     }
     if (newArrWithManual?.length === 0) {
-      router.push(`/generateQuote?id=${quotesArr[0]?.id}&isView=${getResultedValue()}`);
+      return;
+      router.push(
+        `/generateQuote?id=${quotesArr[0]?.id}&isView=${getResultedValue()}`,
+      );
       if (isGenerateQuotePage) {
         location.reload();
       }
@@ -449,6 +452,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
         );
       }
       if (newArrWithManual?.length > 0) {
+        return;
         router.push(`/manualFileEditor?id=${latestQuoteId}`);
       }
     }
