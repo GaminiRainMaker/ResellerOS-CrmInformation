@@ -109,8 +109,14 @@ const ReviewQuotes: FC<any> = ({
         item?.QuoteLineItems.forEach((quoteLineItem: any) => {
           groupedData[name].QuoteLineItem.push(quoteLineItem);
           groupedData[name].totalAdjustedPrice += Number(
-            useRemoveDollarAndCommahook(quoteLineItem?.adjusted_price ?? 0) *
-              useRemoveDollarAndCommahook(quoteLineItem?.quantity ?? 0),
+            useRemoveDollarAndCommahook(
+              quoteLineItem?.adjusted_price
+                ? quoteLineItem?.adjusted_price
+                : (0 ?? 0),
+            ) *
+              useRemoveDollarAndCommahook(
+                quoteLineItem?.quantity ? quoteLineItem?.quantity : (0 ?? 0),
+              ),
           );
         });
       }
@@ -204,7 +210,7 @@ const ReviewQuotes: FC<any> = ({
       sorter: (a: any, b: any) => a.adjusted_price - b.adjusted_price,
       width: 187,
       render: (text: any) => {
-        const value = useRemoveDollarAndCommahook(text);
+        const value = useRemoveDollarAndCommahook(text ? text : 0);
         return (
           <Typography name="Body 4/Medium">
             {text === null ? 0.0 : `${abbreviate(value ?? 0.0)}`}
