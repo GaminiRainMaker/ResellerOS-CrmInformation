@@ -409,7 +409,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
       );
     }
     if (newArrWithManual?.length === 0) {
-      router.push(`/generateQuote?id=${quotesArr[0]?.id}&isView=${getResultedValue()}`);
+      router.push(
+        `/generateQuote?id=${quotesArr[0]?.id}&isView=${getResultedValue()}`,
+      );
       if (isGenerateQuotePage) {
         location.reload();
       }
