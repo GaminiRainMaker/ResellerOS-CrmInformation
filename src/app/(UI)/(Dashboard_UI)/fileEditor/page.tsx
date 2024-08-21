@@ -64,6 +64,7 @@ registerAllModules();
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
+
   const searchParams = useSearchParams()!;
   const getQUoteId = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
@@ -753,6 +754,25 @@ const EditorFile = () => {
     // initialize it with the `'internal-use-in-handsontable'` license key
     licenseKey: 'internal-use-in-handsontable',
   });
+
+  const dataNew = [
+    ['107', '538', '0.75', '10', '=A94*(B94*C94)+D94'],
+    ['15', '563', '0.32', '6', '=A95*(B95*C95)+D95'],
+    ['168', '572', '0.71', '6', '=A96*(B96*C96)+D96'],
+    ['135', '217', '0.49', '12', '=A97*(B97*C97)+D97'],
+    ['11', '595', '0.03', '13', '=A98*(B98*C98)+D98'],
+    ['41', '739', '0.88', '11', '=A99*(B99*C99)+D99'],
+    ['144', '289', '0.87', '13', '=A100*(B100*C100)+D100'],
+    ['Sum', 'Average', 'Average', 'Sum', 'Sum'],
+    [
+      '=SUM(A1:A7)',
+      '=AVERAGE(B1:B7)',
+      '=AVERAGE(C1:C7)',
+      '=SUM(D1:D7)',
+      '=SUM(E1:E7)',
+    ],
+  ];
+console.log("543543534", mergedValue)
   return (
     <GlobalLoader loading={nanonetsLoading}>
       {ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true' ? (
@@ -890,7 +910,7 @@ const EditorFile = () => {
                   minSpareRows={0}
                   autoWrapRow
                   formulas={{
-                    engine: hyperformulaInstance,
+                    engine: HyperFormula,
                   }}
                   stretchH="all"
                   autoWrapCol
@@ -991,6 +1011,7 @@ const EditorFile = () => {
                             }}
                           />
                         </Space>
+
                         <div style={{overflow: 'auto'}}>
                           <HotTable
                             data={itemss}
@@ -1003,7 +1024,7 @@ const EditorFile = () => {
                             width="auto"
                             minSpareRows={0}
                             formulas={{
-                              engine: hyperformulaInstance,
+                              engine: HyperFormula,
                             }}
                             stretchH="all"
                             autoWrapRow

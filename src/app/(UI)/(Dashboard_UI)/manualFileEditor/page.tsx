@@ -18,6 +18,8 @@ const HotTable = dynamic(() => import('@handsontable/react'), {
 });
 
 // import {HotTable} from '@handsontable/react';
+import {HyperFormula} from 'hyperformula';
+
 import {useEffect, useState} from 'react';
 import './styles.css';
 import {useRouter, useSearchParams} from 'next/navigation';
@@ -470,6 +472,10 @@ const EditorFile = () => {
           300, 300,
         ]}
         height="auto"
+        formulas={{
+          engine: HyperFormula,
+        }}
+        stretchH="all"
         colHeaders={mergeedColumnHeader}
         width="auto"
         minSpareRows={0}
