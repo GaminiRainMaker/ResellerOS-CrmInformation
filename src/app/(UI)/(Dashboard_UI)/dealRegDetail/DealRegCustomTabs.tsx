@@ -23,7 +23,7 @@ import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setFinalUpdatedDealRegData} from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
 
-const DealRegCustomTabs: React.FC<any> = ({form}) => {
+const DealRegCustomTabs: React.FC<any> = ({form, formData, setFormData}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const searchParams = useSearchParams()!;
@@ -35,7 +35,6 @@ const DealRegCustomTabs: React.FC<any> = ({form}) => {
   const [activeKey, setActiveKey] = useState<number>();
   const [tabItems, setTabItems] = useState([]);
   const {queryData} = useAppSelector((state) => state.attributeField);
-  const [formData, setFormData] = useState<any>();
   const getDealRegId = searchParams && searchParams.get('id');
 
   useEffect(() => {

@@ -1355,3 +1355,30 @@ export const mergeArrayWithObject = (arr1: any, obj2: any) => {
       : null;
   return safeObject2 ? [...safeArray1, safeObject2] : safeArray1;
 };
+
+export const transformDataKeys = (data: any) => {
+  const transformedData: any = {};
+
+  for (const key in data) {
+    if (data.hasOwnProperty(key)) {
+      // Step 1: Remove 'u_'
+      let newKey = key.replace(/^u_/, '');
+
+      // Step 2: Remove digits
+      newKey = newKey.replace(/\d+/g, '');
+
+      // Step 3: Replace underscores with spaces and capitalize first letter of each word
+      newKey = newKey
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+
+      // Step 4: Remove the word "Required"
+      newKey = newKey.replace(/\bRequired\b/, '').trim();
+
+      // Add the transformed key and original value to the new object
+      transformedData[newKey] = data[key];
+    }
+  }
+
+  return transformedData;
+};

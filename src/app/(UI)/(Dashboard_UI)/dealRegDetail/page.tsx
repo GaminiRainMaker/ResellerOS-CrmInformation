@@ -32,9 +32,11 @@ import {
   lauchPlayWright,
   lauchSalesPlayWright,
 } from '../../../../../redux/actions/playwright';
+import {decrypt, transformDataKeys} from '@/app/utils/base';
+const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
 
 const DealRegDetail = () => {
-  const [FormData] = Form.useForm();
+  const [getFormData] = Form.useForm();
   const [submitDealRegForm] = Form.useForm();
   const [token] = useThemeToken();
   const router = useRouter();
@@ -48,6 +50,7 @@ const DealRegDetail = () => {
   const [showSubmitFormModal, setShowSubmitFormModal] = useState(false);
   const searchParams = useSearchParams()!;
   const getOpportunityId = searchParams && searchParams.get('opportunityId');
+  const [formData, setFormData] = useState<any>();
 
   useEffect(() => {
     if (getOpportunityId) {
@@ -122,12 +125,26 @@ const DealRegDetail = () => {
 
   const launchBotSalesForce = async () => {
     try {
-      const response = await dispatch(lauchPlayWright([]));
-      if (lauchPlayWright.fulfilled.match(response)) {
-        console.log('Script executed successfully:', response.payload);
-      } else {
-        console.error('Error running script:', response.payload);
-      }
+      const {PartnerProgram, unique_form_data} = formData;
+
+      const [iv, encryptedData] =
+        PartnerProgram?.PartnerPassword?.password?.split(':');
+      const decrypted = await decrypt(encryptedData, SECRET_KEY as string, iv);
+
+      const newFormData = transformDataKeys(unique_form_data);
+      let finalObj = {
+        email: PartnerProgram?.PartnerPassword?.email,
+        password: decrypted,
+        data: newFormData,
+      };
+
+      console.log('finalObj', finalObj, PartnerProgram);
+      // const response = await dispatch(lauchPlayWright(finalObj));
+      // if (lauchPlayWright.fulfilled.match(response)) {
+      //   console.log('Script executed successfully:', response.payload);
+      // } else {
+      //   console.error('Error running script:', response.payload);
+      // }
     } catch (error) {
       console.error('Error running script:', error);
     }
@@ -154,7 +171,7 @@ const DealRegDetail = () => {
         <Col>
           <Space size={8}>
             <OsButton
-              text="Create SalesForce Account"
+              text="Create Salesforce Account"
               buttontype="SECONDARY"
               clickHandler={lauchSalesPlayBot}
             />
@@ -184,7 +201,11 @@ const DealRegDetail = () => {
         </Col>
       </Row>
       <GlobalLoader loading={getDealRegForNewLoading}>
-        <DealRegCustomTabs form={FormData} />
+        <DealRegCustomTabs
+          form={getFormData}
+          formData={formData}
+          setFormData={setFormData}
+        />
       </GlobalLoader>
 
       <OsModal
