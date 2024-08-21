@@ -136,9 +136,10 @@ const DealRegDetail = () => {
         email: PartnerProgram?.PartnerPassword?.email,
         password: decrypted,
         data: newFormData,
+        script: PartnerProgram?.script,
       };
 
-      console.log('finalObj', finalObj, PartnerProgram);
+      console.log('finalObj', finalObj);
       // const response = await dispatch(lauchPlayWright(finalObj));
       // if (lauchPlayWright.fulfilled.match(response)) {
       //   console.log('Script executed successfully:', response.payload);
