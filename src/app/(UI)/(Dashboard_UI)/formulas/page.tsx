@@ -43,6 +43,7 @@ const FormulaMain: React.FC = () => {
   const [deleteId, setDeleteId] = useState<any>();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [recordId, setRecordId] = useState<any>();
+  const [activeValue, setActiveValue] = useState<boolean>(false);
 
   useEffect(() => {
     setLoadingContract(true);
@@ -78,6 +79,7 @@ const FormulaMain: React.FC = () => {
     {
       title: 'Formula',
       dataIndex: 'formula',
+      width: '400px',
       key: 'formula',
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
@@ -103,9 +105,9 @@ const FormulaMain: React.FC = () => {
               form.setFieldsValue({
                 title: record?.title,
                 description: record?.description,
-                is_active: record?.is_active,
                 formula: record?.formula,
               });
+              setActiveValue(record?.is_active);
               setOpenDrawer(true);
             }}
             color={token.colorInfoBorder}
@@ -135,6 +137,7 @@ const FormulaMain: React.FC = () => {
     if (recordId) {
       newObj.id = recordId;
     }
+    newObj.is_active = activeValue;
     setLoadingContract(true);
 
     await dispatch(insertFormula(newObj));
@@ -142,6 +145,7 @@ const FormulaMain: React.FC = () => {
     setLoadingContract(false);
     setContractObject('');
     setShowModal(false);
+    setActiveValue(false);
   };
 
   const deleteContractById = async () => {
@@ -190,13 +194,20 @@ const FormulaMain: React.FC = () => {
 
       <OsModal
         body={
-          <AddFormula onFinish={AddNewFormula} form={form} drawer={false} />
+          <AddFormula
+            onFinish={AddNewFormula}
+            form={form}
+            drawer={false}
+            setActiveValue={setActiveValue}
+            activeValue={activeValue}
+          />
         }
         width={800}
         open={showModal}
         onCancel={() => {
           setShowModal(false);
           setContractObject('');
+          setActiveValue(false);
         }}
         footer
         primaryButtonText="Add"
@@ -220,6 +231,7 @@ const FormulaMain: React.FC = () => {
         onClose={() => {
           setOpenDrawer(false);
           form?.resetFields();
+          setActiveValue(false);
         }}
         open={openDrawer}
         width={450}
@@ -238,7 +250,13 @@ const FormulaMain: React.FC = () => {
           </Row>
         }
       >
-        <AddFormula onFinish={AddNewFormula} form={form} drawer={true} />
+        <AddFormula
+          onFinish={AddNewFormula}
+          form={form}
+          drawer={true}
+          setActiveValue={setActiveValue}
+          activeValue={activeValue}
+        />
       </OsDrawer>
 
       <DeleteModal

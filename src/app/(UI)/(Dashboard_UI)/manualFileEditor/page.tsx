@@ -42,6 +42,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import {getResultedValue} from '@/app/utils/base';
 import {registerAllModules} from 'handsontable/registry';
 import dynamic from 'next/dynamic';
+import {getAllFormulas} from '../../../../../redux/actions/formulas';
 
 registerAllModules();
 
@@ -68,7 +69,10 @@ const EditorFile = () => {
   const salesForceUrl = searchParams.get('instance_url');
   const [showUpdateColumnModal, setShowUpdateColumnModal] =
     useState<boolean>(false);
+  const [showAddFormula, setShowAddFormula] = useState<boolean>(false);
   const [existingColumnOptions, setExistingColumnName] = useState<any>();
+  const [formulaOptions, setFormulaOptions] = useState<any>();
+  const [formulaSelected, setFormulaSelected] = useState<any>();
 
   const addNewLine = () => {
     let newArr = [
@@ -94,6 +98,46 @@ const EditorFile = () => {
 
     setArrayOflineItem(newArr);
   };
+
+  let newArr = [
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z',
+  ];
+  useEffect(() => {
+    dispatch(getAllFormulas())?.then((payload: any) => {
+      let newArr: any;
+      payload?.payload?.filter((items: any) => {
+        if (items?.is_active) {
+          newArr?.push({label: items?.title, value: items?.formula});
+        }
+      });
+      setFormulaOptions(newArr);
+    });
+  }, []);
 
   useEffect(() => {
     addNewLine();
@@ -453,6 +497,13 @@ const EditorFile = () => {
                     }}
                   />
                   <OsButton
+                    text="Apply Formula"
+                    buttontype="PRIMARY"
+                    clickHandler={() => {
+                      setShowAddFormula(true);
+                    }}
+                  />
+                  <OsButton
                     text="Add New Column"
                     buttontype="PRIMARY"
                     clickHandler={() => {
@@ -727,6 +778,80 @@ const EditorFile = () => {
         }
         width={900}
         open={showUpdateColumnModal}
+        onCancel={() => {
+          setShowUpdateColumnModal(false);
+          setNewHeaderName('');
+          setOldColumnName('');
+        }}
+      />
+
+      <OsModal
+        title="Apply Formula"
+        bodyPadding={30}
+        body={
+          <Row gutter={[16, 24]} justify="space-between">
+            <Col span={12}>
+              <CommonSelect
+                style={{width: '100%'}}
+                value={oldColumnName}
+                placeholder="Please select the formula"
+                options={formulaOptions}
+                onChange={(e: any) => {
+                  setNewHeaderName('');
+                  setOldColumnName(e);
+                }}
+              />
+            </Col>
+            <Col span={12}>
+              <OsInput
+                style={{width: '100%'}}
+                placeholder="Please add new column header name"
+                value={newHeaderName}
+                onChange={(e: any) => {
+                  setNewHeaderName(e?.target?.value);
+                }}
+              />
+            </Col>
+            <div
+              style={{
+                display: 'flex',
+                width: '100%',
+                justifyContent: 'flex-end',
+              }}
+            >
+              {' '}
+              <div style={{marginRight: '30px'}}>
+                <OsButton
+                  // style={{marginRight: '100px'}}
+                  disabled={
+                    newHeaderName?.length > 0 && oldColumnName?.length > 0
+                      ? false
+                      : true
+                  }
+                  text="Update"
+                  buttontype="SECONDARY"
+                  clickHandler={() => {
+                    UpdateTheColumnName('open', oldColumnName, newHeaderName);
+                  }}
+                />{' '}
+              </div>
+              <OsButton
+                disabled={
+                  newHeaderName?.length > 0 && oldColumnName?.length > 0
+                    ? false
+                    : true
+                }
+                text="Update & Close"
+                buttontype="PRIMARY"
+                clickHandler={() => {
+                  UpdateTheColumnName('close', oldColumnName, newHeaderName);
+                }}
+              />
+            </div>
+          </Row>
+        }
+        width={900}
+        open={showAddFormula}
         onCancel={() => {
           setShowUpdateColumnModal(false);
           setNewHeaderName('');

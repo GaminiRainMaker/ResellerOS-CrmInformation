@@ -9,8 +9,15 @@ import {useAppDispatch} from '../../../../../redux/hook';
 import {Form} from 'antd';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
+import OsCustomerSelect from '@/app/components/common/os-customer-select';
 
-const AddFormula: React.FC<any> = ({drawer, form, onFinish}) => {
+const AddFormula: React.FC<any> = ({
+  drawer,
+  form,
+  onFinish,
+  setActiveValue,
+  activeValue,
+}) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
 
@@ -119,7 +126,21 @@ const AddFormula: React.FC<any> = ({drawer, form, onFinish}) => {
                   // },
                 ]}
               >
-                <OsInput placeholder="Enter Text" />
+                <CommonSelect
+                  style={{width: '100%'}}
+                  defaultValue={activeValue}
+                  options={[
+                    {label: 'Yes', value: 'true'},
+                    {label: 'No', value: 'false'},
+                  ]}
+                  onChange={(e) => {
+                    if (e === 'true') {
+                      setActiveValue(true);
+                    } else {
+                      setActiveValue(false);
+                    }
+                  }}
+                />
               </SelectFormItem>{' '}
             </Col>
           </Row>
