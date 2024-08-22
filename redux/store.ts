@@ -41,6 +41,7 @@ import formStackSync from './slices/formStackSync';
 import contractConfiguration from './slices/contractConfiguration';
 import attachmentDocument from './slices/attachmentDocument';
 import LineItemSyncing from './slices/LineItemSyncing';
+import formulas from './slices/formulas';
 
 // Configure redux store
 const store = configureStore({
@@ -85,6 +86,7 @@ const store = configureStore({
     contractConfiguration,
     attachmentDocument,
     LineItemSyncing,
+    formulas,
   },
   middleware: [thunk],
   devTools: true,

@@ -109,6 +109,9 @@ export const API = {
     INDEX: '/contract',
     QUERY: '/contract/query',
   },
+  FORMULA: {
+    INDEX: '/Formulas',
+  },
   CONTRACT_PRODUCT: {
     INDEX: '/contractProduct',
     QUERY: '/contractProduct/deleteContractProduct',
