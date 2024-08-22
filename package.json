@@ -29,6 +29,7 @@
     "@emotion/styled": "^11.11.0",
     "@handsontable/react": "14.5.0",
     "@heroicons/react": "^2.0.18",
+    "@jest/core": "^29.7.0",
     "@playwright/test": "^1.46.0",
     "@react-pdf/renderer": "^3.4.4",
     "@reduxjs/toolkit": "^1.9.7",
