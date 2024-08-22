@@ -1,75 +1,57 @@
-import type {NextApiRequest, NextApiResponse} from 'next';
-import {chromium} from 'playwright';
-import {runCLI} from '@jest/core';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { runCLI } from '@jest/core';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   if (req.method === 'POST') {
-    const {email, password, data, script} = req.body?.data;
+    const data = req.body.data;
 
     // Log the incoming request data for debugging
-    console.log('Received request data:', {email, password, data, script});
+    console.log('Received request data:', data);
 
-    const config = {
-      testRegex:
-        'npx playwright test test/salesForce.spec.js --project chromium --headed',
-      testEnvironmentOptions: {
-        data: data,
-      },
-    };
+    // Create a temporary config file to pass data
+    const configFilePath = path.join(process.cwd(), 'jest.config.js');
 
-    await runCLI({config}, [process.cwd()])
-      .then(() => {
-        res.status(200).json({message: 'Test executed successfully'});
-      })
-      .catch((error: any) => {
-        res.status(500).json({message: 'Test execution failed', error});
-      });
+    const configContent = `
+      module.exports = {
+        testRegex: 'npx playwright test test/sampleTest.spec.js --project chromium --headed',
+        testEnvironmentOptions: {
+          data: ${JSON.stringify(data)},
+        },
+      };
+    `;
 
-    // try {
-    //   // Parse the script from the string array
-    //   const userScript = JSON.parse(script[0]);
+    try {
+      // Write the temporary config file
+      await fs.writeFile(configFilePath, configContent);
 
-    //   // Create a dynamic function to execute the user script
-    //   // const runScript = new Function(
-    //   //   'email',
-    //   //   'password',
-    //   //   'data',
-    //   //   'browser',
-    //   //   `
-    //   //   return (async () => {
-    //   //     const page = await browser.newPage();
-    //   //     try {
-    //   //       ${userScript}
-    //   //     } catch (e) {
-    //   //       console.error('Error in user script:', e);
-    //   //       throw e;
-    //   //     } finally {
-    //   //       await page.close();
-    //   //     }
-    //   //   })();
-    //   // `,
-    //   // );
+      // Prepare arguments for runCLI
+      const argv = {
+        config: configFilePath,
+        _: [], // This represents other positional arguments if needed, it's required by yargs but can be left empty
+        $0: '', // Represents the script name, also required by yargs but can be an empty string
+      };
 
-    //   // // Launch a Playwright browser instance
-    //   // const browser = await chromium.launch({headless: true});
-    //   // console.log('browser2345678', browser);
+      await runCLI(argv, [process.cwd()])
+        .then(() => {
+          res.status(200).json({ message: 'Test executed successfully' });
+        })
+        .catch((error: any) => {
+          res.status(500).json({ message: 'Test execution failed', error });
+        })
+        .finally(async () => {
+          // Clean up: remove the temporary config file
+          await fs.unlink(configFilePath);
+        });
 
-    //   // // Execute the user script
-    //   // await runScript(email, password, data, browser);
+    } catch (error) {
+      res.status(500).json({ message: 'Error writing config file', error });
+    }
 
-    //   // Close the browser
-    //   // await browser.close();
-
-    //   res.status(200).json({message: 'Script executed successfully.'});
-    // } catch (error: any) {
-    //   console.error('Error executing script:', error);
-    //   res
-    //     .status(500)
-    //     .json({error: 'Script execution failed.', details: error.message});
-    // }
   } else {
     res.setHeader('Allow', ['POST']);
     res.status(405).end(`Method ${req.method} Not Allowed`);
