@@ -29,9 +29,10 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
   handleBlur,
   formData,
 }) => {
-  const allContent = JSON.parse(data?.form_data).flatMap(
-    (section: any) => section.content,
-  );
+  const allContent =
+    data?.form_data?.length > 0 &&
+    data?.form_data?.[0] &&
+    JSON.parse(data?.form_data[0]).flatMap((section: any) => section.content);
   const [uniqueTemplateData, setUniqueTemplateData] = useState<any>();
 
   const convertToSnakeCase = (input: string): string => {

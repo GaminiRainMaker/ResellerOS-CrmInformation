@@ -140,7 +140,7 @@ const DealRegDetail = () => {
       };
 
       console.log('finalObj', finalObj);
-      // const response = await dispatch(lauchPlayWright(finalObj));
+      const response = await dispatch(lauchPlayWright(finalObj));
       // if (lauchPlayWright.fulfilled.match(response)) {
       //   console.log('Script executed successfully:', response.payload);
       // } else {

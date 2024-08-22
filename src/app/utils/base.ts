@@ -1277,16 +1277,12 @@ export const calculateTabBarPercentage = (
   parseForms: boolean = false,
   type: string,
 ) => {
-  // const allContent =
-  //   PartnerProgram &&
-  //   JSON.parse(PartnerProgram)
-  //     .flatMap((section: any) => section?.content)
-  //     .filter((item: any) => item?.required);
 
   const allContent =
     type !== 'self_registered' &&
-    PartnerProgram &&
-    JSON.parse(PartnerProgram)
+    PartnerProgram?.length > 0 &&
+    PartnerProgram?.[0] &&
+    JSON?.parse(PartnerProgram?.[0])
       .flatMap((section: any) => section?.content)
       .filter((item: any) => item?.required);
 
