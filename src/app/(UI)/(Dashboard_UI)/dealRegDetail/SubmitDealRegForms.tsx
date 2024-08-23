@@ -71,7 +71,6 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
       >
         <CommonSelect
           options={tabItems}
-          mode="multiple"
           style={{width: '100%'}}
           placeholder="Select Dealreg Forms"
         />

@@ -45,6 +45,7 @@ const DealRegDetail = () => {
     data: DealRegData,
     loading: dealRegLoading,
     getDealRegForNewLoading,
+    finalUpdatedDealRegData,
   } = useAppSelector((state) => state.dealReg);
   const [showModal, setShowModal] = useState(false);
   const [showSubmitFormModal, setShowSubmitFormModal] = useState(false);
@@ -110,6 +111,11 @@ const DealRegDetail = () => {
       ...SubmitDealRegForm,
       status: 'Submitted',
     };
+
+    const finalScriptData = finalUpdatedDealRegData?.filter(
+      (item: any) => item?.id === SubmitDealRegFormData?.id,
+    );
+
     if (SubmitDealRegFormData) {
       await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
         (response) => {
@@ -118,6 +124,38 @@ const DealRegDetail = () => {
           }
         },
       );
+      try {
+        const {PartnerProgram, unique_form_data} = finalScriptData?.[0];
+
+        const [iv, encryptedData] =
+          PartnerProgram?.PartnerPassword?.password?.split(':');
+        const decrypted = await decrypt(
+          encryptedData,
+          SECRET_KEY as string,
+          iv,
+        );
+
+        const newFormData = transformDataKeys(unique_form_data);
+        let finalObj = {
+          email: PartnerProgram?.PartnerPassword?.email,
+          password: decrypted,
+          data: newFormData,
+          script: PartnerProgram?.script,
+        };
+        const processScriptData = processScript(
+          PartnerProgram?.script,
+          finalObj,
+        );
+        const response = await dispatch(lauchPlayWright([processScriptData]));
+        if (lauchPlayWright.fulfilled.match(response)) {
+          console.log('Script executed successfully:', response.payload);
+        } else {
+          console.error('Error running script:', response.payload);
+        }
+      } catch (error) {
+        console.error('Error running script:', error);
+      }
+
       setShowSubmitFormModal(false);
       submitDealRegForm.resetFields();
     }
@@ -170,16 +208,16 @@ const DealRegDetail = () => {
         </Col>
         <Col>
           <Space size={8}>
-            <OsButton
+            {/* <OsButton
               text="Create Salesforce Account"
               buttontype="SECONDARY"
               clickHandler={lauchSalesPlayBot}
-            />
-            <OsButton
+            /> */}
+            {/* <OsButton
               text="Launch Bot"
               buttontype="SECONDARY"
               clickHandler={launchBotSalesForce}
-            />
+            /> */}
             <OsButton
               text="Submit Form"
               buttontype="SECONDARY"
