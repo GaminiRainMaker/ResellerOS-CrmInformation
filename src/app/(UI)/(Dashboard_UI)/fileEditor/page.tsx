@@ -94,6 +94,8 @@ const EditorFile = () => {
     useState<boolean>(false);
   const [newHeaderName, setNewHeaderName] = useState<any>();
   const [oldColumnName, setOldColumnName] = useState<any>();
+  const [oldColumnName1, setOldColumnName1] = useState<any>();
+  const [typeOfFormula, setTypeOfFormula] = useState<any>();
   const salesToken = searchParams.get('key');
   const SaleQuoteId = searchParams.get('quote_Id');
   const EditSalesLineItems = searchParams.get('editLine');
@@ -891,7 +893,73 @@ const EditorFile = () => {
       newName,
     );
     setMergedVaalues(result);
-    setRunScriptTOGetValues(true);
+    setOldColumnName('');
+    setOldColumnName1('');
+    setNewHeaderName('');
+    setFormulaSelected('');
+
+    setShowApplyFormula(false);
+  };
+
+  const applyformulaforSumAverage = (
+    formulaTemplate: any,
+    FromMap: any,
+    newColumnName: any,
+    MapTo: any,
+  ) => {
+    let newArrr = [...mergedValue];
+    const keys = Object.keys(mergedValue?.[0]);
+    // =====================for from map
+    const index = keys.indexOf(FromMap);
+    let indexToApply = index;
+    // Alpabet extration
+    let column1 = newArrForAlpa[indexToApply];
+    // ====================for toMap========
+
+    const indexNew = keys.indexOf(MapTo);
+    let indexToApplynew = indexNew;
+    // Alpabet extration
+    let column2 = newArrForAlpa[indexToApplynew];
+
+    // Function to extract function name from the formula
+    function extractFunctionName(formula: any) {
+      const regex = /^=(\w+)\(/;
+      const match = formula.match(regex);
+      return match ? match[1] : null;
+    }
+
+    // Function to generate the formula based on function name and row index
+    function generateFormula(
+      functionName: any,
+      rowIndex: any,
+      col1: any,
+      col2: any,
+    ) {
+      // Construct formula based on function name, row index, and column letters
+      return `=${functionName}(${col1}${rowIndex}:${col2}${rowIndex})`;
+    }
+
+    // Extract the function name from the formula template
+    const functionName = extractFunctionName(formulaTemplate);
+
+    // Update array with new column and formula
+    newArrr = newArrr.map((item, index) => {
+      // Formula is based on the index (1-based)
+      let rowIndex = index + 1;
+      let formula = generateFormula(functionName, rowIndex, column1, column2);
+      // Return the updated object
+      return {
+        ...item,
+        [newColumnName]: formula,
+      };
+    });
+
+    // Output the updated array
+    setMergedVaalues(newArrr);
+    setOldColumnName('');
+    setOldColumnName1('');
+    setNewHeaderName('');
+    setFormulaSelected('');
     setShowApplyFormula(false);
   };
   const afterFormulasValuesUpdate = (changes: any) => {
@@ -1518,10 +1586,11 @@ const EditorFile = () => {
                 value={formulaSelected}
                 placeholder="Please select the formula"
                 options={formulaOptions}
-                onChange={(e: any) => {
+                onChange={(e: any, label: any) => {
                   setNewHeaderName('');
                   setOldColumnName('');
                   setFormulaSelected(e);
+                  setTypeOfFormula(label?.label);
                 }}
               />
             </Col>
@@ -1532,7 +1601,11 @@ const EditorFile = () => {
                   <CommonSelect
                     style={{width: '100%'}}
                     value={oldColumnName}
-                    placeholder="Please select the column header name"
+                    placeholder={
+                      typeOfFormula?.toString()?.toLowerCase() === 'split'
+                        ? 'Please select the column header name'
+                        : 'Please select the column you want to map from'
+                    }
                     options={existingColumnOptions}
                     onChange={(e: any) => {
                       setNewHeaderName('');
@@ -1540,7 +1613,27 @@ const EditorFile = () => {
                     }}
                   />
                 </Col>
-                <Col span={12}>
+                {typeOfFormula?.toString()?.toLowerCase() !== 'split' && (
+                  <Col span={12}>
+                    <CommonSelect
+                      style={{width: '100%'}}
+                      value={oldColumnName1}
+                      placeholder="Please select the column to you want to map"
+                      options={existingColumnOptions}
+                      onChange={(e: any) => {
+                        setNewHeaderName('');
+                        setOldColumnName1(e);
+                      }}
+                    />
+                  </Col>
+                )}
+                <Col
+                  span={
+                    typeOfFormula?.toString()?.toLowerCase() === 'split'
+                      ? 12
+                      : 24
+                  }
+                >
                   <OsInput
                     style={{width: '100%'}}
                     placeholder="Please add new column header name"
@@ -1572,7 +1665,20 @@ const EditorFile = () => {
                   text="Apply"
                   buttontype="SECONDARY"
                   clickHandler={() => {
-                    applyFormula(formulaSelected, oldColumnName, newHeaderName);
+                    if (typeOfFormula?.toString()?.toLowerCase() === 'split') {
+                      applyFormula(
+                        formulaSelected,
+                        oldColumnName,
+                        newHeaderName,
+                      );
+                    } else {
+                      applyformulaforSumAverage(
+                        formulaSelected,
+                        oldColumnName,
+                        newHeaderName,
+                        oldColumnName1,
+                      );
+                    }
                   }}
                 />{' '}
               </div>
