@@ -16,6 +16,53 @@ export const selectData = [
   {value: 'File Name', label: 'File Name'},
 ];
 
+export const changeTheALpabetsFromFormula = (formula: any) => {
+  function extractColumnLetters(formula: any) {
+    // Regex to match cell references and capture the column part
+    const cellRefRegex = /\b([A-Z]+)(\d+)\b/g;
+    const columnLetters = new Set(); // Use a Set to avoid duplicates
+    let match;
+
+    // Find all matches and extract column letters
+    while ((match = cellRefRegex.exec(formula)) !== null) {
+      columnLetters.add(match[1]);
+    }
+
+    // Convert Set to Array and sort
+    return Array.from(columnLetters).sort();
+  }
+
+  // Function to replace old column letters with a new column letter
+  function replaceColumnLetters(
+    formula: any,
+    oldColumnLetters: any,
+    newColumnLetter: any,
+  ) {
+    oldColumnLetters.forEach((oldCol: any) => {
+      // Regex to match the old column letter and capture the row number
+      const columnRegex = new RegExp(`\\b${oldCol}(\\d+)\\b`, 'g');
+      // Replace all occurrences of the old column letter with the new column letter
+      formula = formula.replace(columnRegex, `${newColumnLetter}$1`);
+    });
+
+    return formula;
+  }
+
+  // Example usage
+  const newColumnLetter = 'N';
+
+  // Extract old column letters from the formula
+  const oldColumnLetters = extractColumnLetters(formula);
+
+  // Replace old column letters with the new column letter
+  const updatedFormula = replaceColumnLetters(
+    formula,
+    oldColumnLetters,
+    newColumnLetter,
+  );
+
+  return updatedFormula;
+};
 export const quoteStatusOptions = [
   {value: 'In Progress', label: 'In Progress'},
 ];
@@ -72,7 +119,6 @@ export const quoteLineItemColumnForSync = [
   {value: 'adjusted_price', label: 'COST'},
   {value: 'description', label: 'DESCRIPTION'},
 ];
-
 
 export const SaleForceQuoteLineItemColumnSync = [
   {label: 'Line Number', value: 'line_number'},

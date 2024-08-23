@@ -29,6 +29,7 @@ import {
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import OsDrawer from '@/app/components/common/os-drawer';
 import AddFormula from './addFormula';
+import {changeTheALpabetsFromFormula} from '@/app/utils/CONSTANTS';
 
 const FormulaMain: React.FC = () => {
   const [token] = useThemeToken();
@@ -139,9 +140,12 @@ const FormulaMain: React.FC = () => {
     }
     newObj.is_active = activeValue;
     setLoadingContract(true);
-
+    let result = changeTheALpabetsFromFormula(newObj?.formula);
+    delete newObj.formula;
+    newObj.formula = result;
     await dispatch(insertFormula(newObj));
     dispatch(getAllFormulas());
+    form?.resetFields();
     setLoadingContract(false);
     setContractObject('');
     setShowModal(false);

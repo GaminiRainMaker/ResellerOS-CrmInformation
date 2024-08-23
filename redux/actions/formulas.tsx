@@ -37,3 +37,15 @@ export const deleteFormula = createAsyncThunk(
     }
   },
 );
+
+export const getFormulaByFormula = createAsyncThunk(
+  'contract/getFormulaByFormula',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await FORMULA_API.GET_FORMULA(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

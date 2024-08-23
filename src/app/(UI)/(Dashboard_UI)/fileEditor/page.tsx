@@ -24,7 +24,10 @@ import './styles.css';
 import {Space} from '@/app/components/common/antd/Space';
 import OsButton from '@/app/components/common/os-button';
 import OsModal from '@/app/components/common/os-modal';
-import {formatStatus} from '@/app/utils/CONSTANTS';
+import {
+  changeTheALpabetsFromFormula,
+  formatStatus,
+} from '@/app/utils/CONSTANTS';
 import {
   getResultedValue,
   sendDataToNanonets,
@@ -32,7 +35,7 @@ import {
 } from '@/app/utils/base';
 import {TrashIcon} from '@heroicons/react/24/outline';
 import {Col, Row, notification} from 'antd';
-import Typography from 'antd/es/typography/Typography';
+
 import {useRouter, useSearchParams} from 'next/navigation';
 import {addClassesToRows, alignHeaders} from './hooksCallbacks';
 
@@ -59,7 +62,13 @@ import SyncTableData from './syncTableforpdfEditor';
 import dynamic from 'next/dynamic';
 
 import {registerAllModules} from 'handsontable/registry';
-import {getAllFormulas} from '../../../../../redux/actions/formulas';
+import {
+  getAllFormulas,
+  getFormulaByFormula,
+  insertFormula,
+} from '../../../../../redux/actions/formulas';
+import {identity} from 'lodash';
+import Typography from '@/app/components/common/typography';
 
 registerAllModules();
 
@@ -96,6 +105,10 @@ const EditorFile = () => {
   const [showApplyFormula, setShowApplyFormula] = useState<boolean>(false);
   const [runSriptToGetValues, setRunScriptTOGetValues] =
     useState<boolean>(false);
+
+  const [openAddNewFormulaModal, setOpenAddNewFormulaModal] =
+    useState<boolean>(false);
+  const [valueOfNewFormula, setValueOfNewFormula] = useState<any>();
 
   // quoteId,instance_url,fileId
   // ============================== SalesForce Implementations ======================================
@@ -563,6 +576,17 @@ const EditorFile = () => {
     keyValue: string,
     changedValue: any,
   ) => {
+    if (changedValue?.includes('=')) {
+      let result = changeTheALpabetsFromFormula(changedValue);
+
+      dispatch(getFormulaByFormula({formula: result}))?.then((payload: any) => {
+        console.log('43543543543', payload?.payload);
+        if (payload?.payload === null) {
+          setValueOfNewFormula(changedValue);
+          setOpenAddNewFormulaModal(true);
+        }
+      });
+    }
     const changedArr = mergedValue?.map((itemTop: any, indexOfTop: number) => {
       if (indexOfTop === rowIndex) {
         return {
@@ -573,6 +597,7 @@ const EditorFile = () => {
       return itemTop;
     });
     setMergedVaalues(changedArr);
+    setRunScriptTOGetValues(true);
   };
 
   const deleteRowsItems = (indexOfDeletion: number, NumberOf: number) => {
@@ -587,11 +612,7 @@ const EditorFile = () => {
   const [updateLineItemColumn, setUpdateLineItemColumn] = useState<any>();
   const [updateLineItemColumnData, setUpdateLineItemColumnData] =
     useState<any>();
-  console.log(
-    'updateLineItemColumnData',
-    updateLineItemColumn,
-    updateLineItemsValue,
-  );
+
   useEffect(() => {
     const updateLineItemColumnArr: any = [];
     const updateLineItemColumnDataArr: any = [];
@@ -642,7 +663,7 @@ const EditorFile = () => {
     let result = new Array(minLength).fill(null).map((_, index) => {
       return `${newArrForAlpa[index]} ${mergeedColumnArr[index]}`;
     });
-    setMergeedColumn(result);
+    setMergeedColumn(mergeedColumnArr);
   }, [ExistingQuoteItemss, quoteItems, mergedValue]);
 
   // ======================================== FOr Update LineItems=====================================
@@ -819,34 +840,21 @@ const EditorFile = () => {
     setExistingColumnName(newArr);
   }, [mergeedColumn]);
 
-  const hyperformulaInstance = HyperFormula.buildEmpty({
-    // to use an external HyperFormula instance,
-    // initialize it with the `'internal-use-in-handsontable'` license key
-    licenseKey: 'internal-use-in-handsontable',
-  });
-
-  const dataNew = [
-    ['107', '538', '0.75', '10', '=A94*(B94*C94)+D94'],
-    ['15', '563', '0.32', '6', '=A95*(B95*C95)+D95'],
-    ['168', '572', '0.71', '6', '=A96*(B96*C96)+D96'],
-    ['135', '217', '0.49', '12', '=A97*(B97*C97)+D97'],
-    ['11', '595', '0.03', '13', '=A98*(B98*C98)+D98'],
-    ['41', '739', '0.88', '11', '=A99*(B99*C99)+D99'],
-    ['144', '289', '0.87', '13', '=A100*(B100*C100)+D100'],
-    ['Sum', 'Average', 'Average', 'Sum', 'Sum'],
-    [
-      '=SUM(A1:A7)',
-      '=AVERAGE(B1:B7)',
-      '=AVERAGE(C1:C7)',
-      '=SUM(D1:D7)',
-      '=SUM(E1:E7)',
-    ],
-  ];
-
   const applyFormula = (formulaTemplate: any, oldName: any, newName: any) => {
     const keys = Object.keys(mergedValue?.[0]);
     const newArrrUpadted = mergedValue?.length > 0 ? [...mergedValue] : [];
 
+    // function concatenateAfterFirstWithSpace(array: any) {
+    //   // Check if there are at least two elements
+    //   if (array.length < 2) {
+    //     return ''; // or handle the case where there aren't enough elements
+    //   }
+
+    //   // Join all elements after the first one into a single string with space separation
+    //   return array.slice(1).join(' ');
+    // }
+
+    // let resulsst = concatenateAfterFirstWithSpace(oldName?.split(' '));
     // Find the index of the key 'ap'
     const index = keys.indexOf(oldName);
     let indexToApply = index;
@@ -865,7 +873,7 @@ const EditorFile = () => {
         // Create the cell reference for the formula using the specified column letter
         const cellReference = `${columnLetter}${index + 1}`;
         // Generate the formula by replacing `B1` with the actual cell reference
-        const formula = formulaTemplate.replace(/A1/g, cellReference);
+        const formula = formulaTemplate.replace(/N1/g, cellReference);
 
         // Return a new object with the computed property
         return {
@@ -886,50 +894,51 @@ const EditorFile = () => {
     setRunScriptTOGetValues(true);
     setShowApplyFormula(false);
   };
-
   const afterFormulasValuesUpdate = (changes: any) => {
     if (runSriptToGetValues) {
-      let newArrr: any = [...mergedValue];
+      // Preventing unnecessary state updates
+      const newArrr = [...mergedValue];
 
       const getPropertyNames = (obj: any) => Object.keys(obj);
 
-      // Function to apply a single update
-      const applyUpdate = (arr: any, update: any) => {
-        let col = update.address?.col;
-        let row = update.address?.row;
-        let value = update?.newValue;
-
-        // const {col, row, value} = update;
+      changes.forEach((update: any) => {
+        const col = update.address?.col;
+        const row = update.address?.row;
+        const value: any = update?.newValue;
 
         // Ensure value is a string
         const stringValue = String(value);
 
-        if (row < arr.length) {
-          const propertyNames = getPropertyNames(arr[row]);
+        if (row < newArrr.length) {
+          const propertyNames = getPropertyNames(newArrr[row]);
 
-          // Ensure col is within bounds of the property names array
           if (col >= 0 && col < propertyNames.length) {
             const propertyName = propertyNames[col];
-            arr[row] = {
-              ...arr[row],
+            newArrr[row] = {
+              ...newArrr[row],
               [propertyName]: stringValue,
             };
           }
         }
-      };
-      changes.forEach((update: any) => applyUpdate(newArrr, update));
-      // applyUpdate(newArrr, update);
+      });
 
-      // Apply all updates
+      // Check if newArrr is different from mergedValue before updating state
+      if (JSON.stringify(newArrr) !== JSON.stringify(mergedValue)) {
+        setMergedVaalues(newArrr);
+      }
 
-      // Output the result
-      setMergedVaalues(newArrr);
-
-      setRunScriptTOGetValues(false);
+      // Optionally, you might want to set runScriptToGetValues to false here if needed
+      // setRunScriptToGetValues(false);
     }
   };
 
-  console.log('4354353532', mergedValue);
+  const addFormulaTOStoredFormulas = async (value: any) => {
+    let result = changeTheALpabetsFromFormula(value);
+    await dispatch(insertFormula({formula: result}));
+    setValueOfNewFormula('');
+    setOpenAddNewFormulaModal(false);
+  };
+
   return (
     <GlobalLoader loading={nanonetsLoading}>
       {ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true' ? (
@@ -1165,6 +1174,7 @@ const EditorFile = () => {
                       <div>
                         <Space direction="horizontal" style={{width: '100%'}}>
                           <Typography
+                            name="Body 3/Regular"
                             onClick={() => mergeTableData(quoteItems)}
                           >
                             Table {indexOFTable + 1}
@@ -1310,7 +1320,10 @@ const EditorFile = () => {
                 align="center"
               >
                 <Space direction="vertical" align="center" size={1}>
-                  <Typography style={{fontSize: '20px', textAlign: 'center'}}>
+                  <Typography
+                    name="Body 3/Regular"
+                    style={{fontSize: '20px', textAlign: 'center'}}
+                  >
                     {
                       'This file is already updated. Please review the other file on Review Quotes'
                     }
@@ -1444,6 +1457,53 @@ const EditorFile = () => {
         open={showAddColumnModal}
         onCancel={() => {
           setShowAddColumnModal(false);
+        }}
+      />
+
+      <OsModal
+        title="Add New Formula "
+        bodyPadding={30}
+        body={
+          <Row style={{width: '100%', padding: '15px'}}>
+            <Space
+              style={{width: '100%'}}
+              size={24}
+              direction="vertical"
+              align="center"
+            >
+              <Space direction="vertical" align="center" size={1}>
+                <Typography name="Body 2/Regular">
+                  {'Add New Formula'}
+                </Typography>
+                <Typography name="Body 3/Regular">
+                  {'Do you want to add this formula to our stored formulas ? '}
+                </Typography>
+              </Space>
+
+              <Space size={12}>
+                <OsButton
+                  text={`No`}
+                  buttontype="SECONDARY"
+                  clickHandler={() => {
+                    setValueOfNewFormula('');
+                    setOpenAddNewFormulaModal(false);
+                  }}
+                />
+                <OsButton
+                  text="Yes, Add"
+                  buttontype="PRIMARY"
+                  clickHandler={() => {
+                    addFormulaTOStoredFormulas(valueOfNewFormula);
+                  }}
+                />
+              </Space>
+            </Space>
+          </Row>
+        }
+        width={900}
+        open={openAddNewFormulaModal}
+        onCancel={() => {
+          setOpenAddNewFormulaModal(false);
         }}
       />
 

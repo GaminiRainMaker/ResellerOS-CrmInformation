@@ -111,6 +111,7 @@ export const API = {
   },
   FORMULA: {
     INDEX: '/Formulas',
+    GET_FORMULA:'/Formulas/getFormulaByFormula'
   },
   CONTRACT_PRODUCT: {
     INDEX: '/contractProduct',
