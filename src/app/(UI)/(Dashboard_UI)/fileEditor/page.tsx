@@ -24,7 +24,10 @@ import './styles.css';
 import {Space} from '@/app/components/common/antd/Space';
 import OsButton from '@/app/components/common/os-button';
 import OsModal from '@/app/components/common/os-modal';
-import {formatStatus} from '@/app/utils/CONSTANTS';
+import {
+  changeTheALpabetsFromFormula,
+  formatStatus,
+} from '@/app/utils/CONSTANTS';
 import {
   getResultedValue,
   sendDataToNanonets,
@@ -32,7 +35,7 @@ import {
 } from '@/app/utils/base';
 import {TrashIcon} from '@heroicons/react/24/outline';
 import {Col, Row, notification} from 'antd';
-import Typography from 'antd/es/typography/Typography';
+
 import {useRouter, useSearchParams} from 'next/navigation';
 import {addClassesToRows, alignHeaders} from './hooksCallbacks';
 
@@ -59,11 +62,19 @@ import SyncTableData from './syncTableforpdfEditor';
 import dynamic from 'next/dynamic';
 
 import {registerAllModules} from 'handsontable/registry';
+import {
+  getAllFormulas,
+  getFormulaByFormula,
+  insertFormula,
+} from '../../../../../redux/actions/formulas';
+import {identity} from 'lodash';
+import Typography from '@/app/components/common/typography';
 
 registerAllModules();
 
 const EditorFile = () => {
   const dispatch = useAppDispatch();
+
   const searchParams = useSearchParams()!;
   const getQUoteId = searchParams.get('id');
   const getQuoteFileId = searchParams.get('fileId');
@@ -83,12 +94,23 @@ const EditorFile = () => {
     useState<boolean>(false);
   const [newHeaderName, setNewHeaderName] = useState<any>();
   const [oldColumnName, setOldColumnName] = useState<any>();
+  const [oldColumnName1, setOldColumnName1] = useState<any>();
+  const [typeOfFormula, setTypeOfFormula] = useState<any>();
   const salesToken = searchParams.get('key');
   const SaleQuoteId = searchParams.get('quote_Id');
   const EditSalesLineItems = searchParams.get('editLine');
   const salesForceUrl = searchParams.get('instance_url');
   const salesForceFiledId = searchParams.get('file_Id');
   const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
+  const [formulaOptions, setFormulaOptions] = useState<any>();
+  const [formulaSelected, setFormulaSelected] = useState<any>();
+  const [showApplyFormula, setShowApplyFormula] = useState<boolean>(false);
+  const [runSriptToGetValues, setRunScriptTOGetValues] =
+    useState<boolean>(false);
+
+  const [openAddNewFormulaModal, setOpenAddNewFormulaModal] =
+    useState<boolean>(false);
+  const [valueOfNewFormula, setValueOfNewFormula] = useState<any>();
 
   // quoteId,instance_url,fileId
   // ============================== SalesForce Implementations ======================================
@@ -355,11 +377,56 @@ const EditorFile = () => {
     }
   }, [ExistingQuoteItemss, quoteFileById]);
 
+  let newArrForAlpa = [
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z',
+  ];
   useEffect(() => {
     if (quoteItems?.length === 1) {
       mergeTableData(quoteItems);
     }
   }, [quoteItems]);
+
+  useEffect(() => {
+    dispatch(getAllFormulas())?.then((payload: any) => {
+      let newArr: any = [];
+      payload?.payload?.map((items: any) => {
+        if (items?.is_active) {
+          let newObj = {
+            label: items?.title,
+            value: items?.formula,
+          };
+
+          newArr?.push(newObj);
+        }
+      });
+      setFormulaOptions(newArr);
+    });
+  }, []);
   useEffect(() => {
     const newArrr: any = [];
     if (quoteItems && quoteItems.length > 0) {
@@ -476,6 +543,7 @@ const EditorFile = () => {
 
     // Apply transformation
     let result = transformObjects(resultArray);
+
     setMergedVaalues(result);
   };
 
@@ -510,6 +578,17 @@ const EditorFile = () => {
     keyValue: string,
     changedValue: any,
   ) => {
+    if (changedValue?.includes('=')) {
+      let result = changeTheALpabetsFromFormula(changedValue);
+
+      dispatch(getFormulaByFormula({formula: result}))?.then((payload: any) => {
+        console.log('43543543543', payload?.payload);
+        if (payload?.payload === null) {
+          setValueOfNewFormula(changedValue);
+          setOpenAddNewFormulaModal(true);
+        }
+      });
+    }
     const changedArr = mergedValue?.map((itemTop: any, indexOfTop: number) => {
       if (indexOfTop === rowIndex) {
         return {
@@ -520,6 +599,7 @@ const EditorFile = () => {
       return itemTop;
     });
     setMergedVaalues(changedArr);
+    setRunScriptTOGetValues(true);
   };
 
   const deleteRowsItems = (indexOfDeletion: number, NumberOf: number) => {
@@ -534,11 +614,7 @@ const EditorFile = () => {
   const [updateLineItemColumn, setUpdateLineItemColumn] = useState<any>();
   const [updateLineItemColumnData, setUpdateLineItemColumnData] =
     useState<any>();
-  console.log(
-    'updateLineItemColumnData',
-    updateLineItemColumn,
-    updateLineItemsValue,
-  );
+
   useEffect(() => {
     const updateLineItemColumnArr: any = [];
     const updateLineItemColumnDataArr: any = [];
@@ -583,6 +659,12 @@ const EditorFile = () => {
         }
       });
     }
+
+    let minLength = Math.min(mergeedColumnArr.length, newArrForAlpa.length);
+
+    let result = new Array(minLength).fill(null).map((_, index) => {
+      return `${newArrForAlpa[index]} ${mergeedColumnArr[index]}`;
+    });
     setMergeedColumn(mergeedColumnArr);
   }, [ExistingQuoteItemss, quoteItems, mergedValue]);
 
@@ -726,7 +808,19 @@ const EditorFile = () => {
         return newObj;
       });
     };
-    let updatedArr = renameKey(newArr, old, newVal);
+    function concatenateAfterFirstWithSpace(array: any) {
+      // Check if there are at least two elements
+      if (array.length < 2) {
+        return ''; // or handle the case where there aren't enough elements
+      }
+
+      // Join all elements after the first one into a single string with space separation
+      return array.slice(1).join(' ');
+    }
+
+    let result = concatenateAfterFirstWithSpace(old?.split(' '));
+    let updatedArr = renameKey(newArr, result, newVal);
+
     setMergedVaalues(updatedArr);
     notification.open({
       message: `Column header ${old} sucessfully changed to ${newVal}.`,
@@ -748,11 +842,171 @@ const EditorFile = () => {
     setExistingColumnName(newArr);
   }, [mergeedColumn]);
 
-  const hyperformulaInstance = HyperFormula.buildEmpty({
-    // to use an external HyperFormula instance,
-    // initialize it with the `'internal-use-in-handsontable'` license key
-    licenseKey: 'internal-use-in-handsontable',
-  });
+  const applyFormula = (formulaTemplate: any, oldName: any, newName: any) => {
+    const keys = Object.keys(mergedValue?.[0]);
+    const newArrrUpadted = mergedValue?.length > 0 ? [...mergedValue] : [];
+
+    // function concatenateAfterFirstWithSpace(array: any) {
+    //   // Check if there are at least two elements
+    //   if (array.length < 2) {
+    //     return ''; // or handle the case where there aren't enough elements
+    //   }
+
+    //   // Join all elements after the first one into a single string with space separation
+    //   return array.slice(1).join(' ');
+    // }
+
+    // let resulsst = concatenateAfterFirstWithSpace(oldName?.split(' '));
+    // Find the index of the key 'ap'
+    const index = keys.indexOf(oldName);
+    let indexToApply = index;
+    // Alpabet extration
+    let columnLetter = newArrForAlpa[indexToApply];
+
+    // Generate the new array with the computed property
+
+    function generateObjectsWithFormula(
+      arr: any,
+      formulaTemplate: any,
+      columnLetter: any,
+      newName: any,
+    ) {
+      return arr.map((item: any, index: any) => {
+        // Create the cell reference for the formula using the specified column letter
+        const cellReference = `${columnLetter}${index + 1}`;
+        // Generate the formula by replacing `B1` with the actual cell reference
+        const formula = formulaTemplate.replace(/N1/g, cellReference);
+
+        // Return a new object with the computed property
+        return {
+          ...item,
+          [newName]: formula,
+        };
+      });
+    }
+
+    // Generate the new array with the computed property
+    const result = generateObjectsWithFormula(
+      newArrrUpadted,
+      formulaTemplate,
+      columnLetter,
+      newName,
+    );
+    setMergedVaalues(result);
+    setOldColumnName('');
+    setOldColumnName1('');
+    setNewHeaderName('');
+    setFormulaSelected('');
+
+    setShowApplyFormula(false);
+  };
+
+  const applyformulaforSumAverage = (
+    formulaTemplate: any,
+    FromMap: any,
+    newColumnName: any,
+    MapTo: any,
+  ) => {
+    let newArrr = [...mergedValue];
+    const keys = Object.keys(mergedValue?.[0]);
+    // =====================for from map
+    const index = keys.indexOf(FromMap);
+    let indexToApply = index;
+    // Alpabet extration
+    let column1 = newArrForAlpa[indexToApply];
+    // ====================for toMap========
+
+    const indexNew = keys.indexOf(MapTo);
+    let indexToApplynew = indexNew;
+    // Alpabet extration
+    let column2 = newArrForAlpa[indexToApplynew];
+
+    // Function to extract function name from the formula
+    function extractFunctionName(formula: any) {
+      const regex = /^=(\w+)\(/;
+      const match = formula.match(regex);
+      return match ? match[1] : null;
+    }
+
+    // Function to generate the formula based on function name and row index
+    function generateFormula(
+      functionName: any,
+      rowIndex: any,
+      col1: any,
+      col2: any,
+    ) {
+      // Construct formula based on function name, row index, and column letters
+      return `=${functionName}(${col1}${rowIndex}:${col2}${rowIndex})`;
+    }
+
+    // Extract the function name from the formula template
+    const functionName = extractFunctionName(formulaTemplate);
+
+    // Update array with new column and formula
+    newArrr = newArrr.map((item, index) => {
+      // Formula is based on the index (1-based)
+      let rowIndex = index + 1;
+      let formula = generateFormula(functionName, rowIndex, column1, column2);
+      // Return the updated object
+      return {
+        ...item,
+        [newColumnName]: formula,
+      };
+    });
+
+    // Output the updated array
+    setMergedVaalues(newArrr);
+    setOldColumnName('');
+    setOldColumnName1('');
+    setNewHeaderName('');
+    setFormulaSelected('');
+    setShowApplyFormula(false);
+  };
+  const afterFormulasValuesUpdate = (changes: any) => {
+    if (runSriptToGetValues) {
+      // Preventing unnecessary state updates
+      const newArrr = [...mergedValue];
+
+      const getPropertyNames = (obj: any) => Object.keys(obj);
+
+      changes.forEach((update: any) => {
+        const col = update.address?.col;
+        const row = update.address?.row;
+        const value: any = update?.newValue;
+
+        // Ensure value is a string
+        const stringValue = String(value);
+
+        if (row < newArrr.length) {
+          const propertyNames = getPropertyNames(newArrr[row]);
+
+          if (col >= 0 && col < propertyNames.length) {
+            const propertyName = propertyNames[col];
+            newArrr[row] = {
+              ...newArrr[row],
+              [propertyName]: stringValue,
+            };
+          }
+        }
+      });
+
+      // Check if newArrr is different from mergedValue before updating state
+      if (JSON.stringify(newArrr) !== JSON.stringify(mergedValue)) {
+        setMergedVaalues(newArrr);
+      }
+
+      // Optionally, you might want to set runScriptToGetValues to false here if needed
+      // setRunScriptToGetValues(false);
+    }
+  };
+
+  const addFormulaTOStoredFormulas = async (value: any) => {
+    let result = changeTheALpabetsFromFormula(value);
+    await dispatch(insertFormula({formula: result}));
+    setValueOfNewFormula('');
+    setOpenAddNewFormulaModal(false);
+  };
+
   return (
     <GlobalLoader loading={nanonetsLoading}>
       {ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true' ? (
@@ -870,6 +1124,13 @@ const EditorFile = () => {
                       }}
                     />
                     <OsButton
+                      text="Apply Formula"
+                      buttontype="PRIMARY"
+                      clickHandler={() => {
+                        setShowApplyFormula(true);
+                      }}
+                    />
+                    <OsButton
                       text="Add New Column"
                       buttontype="PRIMARY"
                       clickHandler={() => {
@@ -890,8 +1151,9 @@ const EditorFile = () => {
                   minSpareRows={0}
                   autoWrapRow
                   formulas={{
-                    engine: hyperformulaInstance,
+                    engine: HyperFormula,
                   }}
+                  afterFormulasValuesUpdate={afterFormulasValuesUpdate}
                   stretchH="all"
                   autoWrapCol
                   licenseKey="non-commercial-and-evaluation"
@@ -980,6 +1242,7 @@ const EditorFile = () => {
                       <div>
                         <Space direction="horizontal" style={{width: '100%'}}>
                           <Typography
+                            name="Body 3/Regular"
                             onClick={() => mergeTableData(quoteItems)}
                           >
                             Table {indexOFTable + 1}
@@ -991,6 +1254,7 @@ const EditorFile = () => {
                             }}
                           />
                         </Space>
+
                         <div style={{overflow: 'auto'}}>
                           <HotTable
                             data={itemss}
@@ -1003,7 +1267,7 @@ const EditorFile = () => {
                             width="auto"
                             minSpareRows={0}
                             formulas={{
-                              engine: hyperformulaInstance,
+                              engine: HyperFormula,
                             }}
                             stretchH="all"
                             autoWrapRow
@@ -1124,7 +1388,10 @@ const EditorFile = () => {
                 align="center"
               >
                 <Space direction="vertical" align="center" size={1}>
-                  <Typography style={{fontSize: '20px', textAlign: 'center'}}>
+                  <Typography
+                    name="Body 3/Regular"
+                    style={{fontSize: '20px', textAlign: 'center'}}
+                  >
                     {
                       'This file is already updated. Please review the other file on Review Quotes'
                     }
@@ -1258,6 +1525,173 @@ const EditorFile = () => {
         open={showAddColumnModal}
         onCancel={() => {
           setShowAddColumnModal(false);
+        }}
+      />
+
+      <OsModal
+        title="Add New Formula "
+        bodyPadding={30}
+        body={
+          <Row style={{width: '100%', padding: '15px'}}>
+            <Space
+              style={{width: '100%'}}
+              size={24}
+              direction="vertical"
+              align="center"
+            >
+              <Space direction="vertical" align="center" size={1}>
+                <Typography name="Body 2/Regular">
+                  {'Add New Formula'}
+                </Typography>
+                <Typography name="Body 3/Regular">
+                  {'Do you want to add this formula to our stored formulas ? '}
+                </Typography>
+              </Space>
+
+              <Space size={12}>
+                <OsButton
+                  text={`No`}
+                  buttontype="SECONDARY"
+                  clickHandler={() => {
+                    setValueOfNewFormula('');
+                    setOpenAddNewFormulaModal(false);
+                  }}
+                />
+                <OsButton
+                  text="Yes, Add"
+                  buttontype="PRIMARY"
+                  clickHandler={() => {
+                    addFormulaTOStoredFormulas(valueOfNewFormula);
+                  }}
+                />
+              </Space>
+            </Space>
+          </Row>
+        }
+        width={900}
+        open={openAddNewFormulaModal}
+        onCancel={() => {
+          setOpenAddNewFormulaModal(false);
+        }}
+      />
+
+      <OsModal
+        title="Apply Formula"
+        bodyPadding={30}
+        body={
+          <Row gutter={[16, 24]} justify="space-between">
+            <Col span={24}>
+              <CommonSelect
+                style={{width: '100%'}}
+                value={formulaSelected}
+                placeholder="Please select the formula"
+                options={formulaOptions}
+                onChange={(e: any, label: any) => {
+                  setNewHeaderName('');
+                  setOldColumnName('');
+                  setFormulaSelected(e);
+                  setTypeOfFormula(label?.label);
+                }}
+              />
+            </Col>
+            {formulaSelected && (
+              <>
+                {' '}
+                <Col span={12}>
+                  <CommonSelect
+                    style={{width: '100%'}}
+                    value={oldColumnName}
+                    placeholder={
+                      typeOfFormula?.toString()?.toLowerCase() === 'split'
+                        ? 'Please select the column header name'
+                        : 'Please select the column you want to map from'
+                    }
+                    options={existingColumnOptions}
+                    onChange={(e: any) => {
+                      setNewHeaderName('');
+                      setOldColumnName(e);
+                    }}
+                  />
+                </Col>
+                {typeOfFormula?.toString()?.toLowerCase() !== 'split' && (
+                  <Col span={12}>
+                    <CommonSelect
+                      style={{width: '100%'}}
+                      value={oldColumnName1}
+                      placeholder="Please select the column to you want to map"
+                      options={existingColumnOptions}
+                      onChange={(e: any) => {
+                        setNewHeaderName('');
+                        setOldColumnName1(e);
+                      }}
+                    />
+                  </Col>
+                )}
+                <Col
+                  span={
+                    typeOfFormula?.toString()?.toLowerCase() === 'split'
+                      ? 12
+                      : 24
+                  }
+                >
+                  <OsInput
+                    style={{width: '100%'}}
+                    placeholder="Please add new column header name"
+                    value={newHeaderName}
+                    onChange={(e: any) => {
+                      setNewHeaderName(e?.target?.value);
+                    }}
+                  />
+                </Col>
+              </>
+            )}
+
+            <div
+              style={{
+                display: 'flex',
+                width: '100%',
+                justifyContent: 'flex-end',
+              }}
+            >
+              {' '}
+              <div style={{marginRight: '30px'}}>
+                <OsButton
+                  // style={{marginRight: '100px'}}
+                  disabled={
+                    newHeaderName?.length > 0 && oldColumnName?.length > 0
+                      ? false
+                      : true
+                  }
+                  text="Apply"
+                  buttontype="SECONDARY"
+                  clickHandler={() => {
+                    if (typeOfFormula?.toString()?.toLowerCase() === 'split') {
+                      applyFormula(
+                        formulaSelected,
+                        oldColumnName,
+                        newHeaderName,
+                      );
+                    } else {
+                      applyformulaforSumAverage(
+                        formulaSelected,
+                        oldColumnName,
+                        newHeaderName,
+                        oldColumnName1,
+                      );
+                    }
+                  }}
+                />{' '}
+              </div>
+            </div>
+          </Row>
+        }
+        width={900}
+        open={showApplyFormula}
+        onCancel={() => {
+          setShowApplyFormula(false);
+          setFormulaSelected('');
+          setNewHeaderName('');
+          setOldColumnName('');
         }}
       />
     </GlobalLoader>
