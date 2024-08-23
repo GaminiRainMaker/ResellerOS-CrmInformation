@@ -32,7 +32,7 @@ import {
   lauchPlayWright,
   lauchSalesPlayWright,
 } from '../../../../../redux/actions/playwright';
-import {decrypt, transformDataKeys} from '@/app/utils/base';
+import {decrypt, processScript, transformDataKeys} from '@/app/utils/base';
 const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
 
 const DealRegDetail = () => {
@@ -138,14 +138,16 @@ const DealRegDetail = () => {
         data: newFormData,
         script: PartnerProgram?.script,
       };
+      const processScriptData = processScript(PartnerProgram?.script, finalObj);
 
-      console.log('finalObj', finalObj);
-      const response = await dispatch(lauchPlayWright(finalObj));
-      // if (lauchPlayWright.fulfilled.match(response)) {
-      //   console.log('Script executed successfully:', response.payload);
-      // } else {
-      //   console.error('Error running script:', response.payload);
-      // }
+      console.log('processScript', processScriptData, 'finalObj', finalObj);
+
+      const response = await dispatch(lauchPlayWright([processScriptData]));
+      if (lauchPlayWright.fulfilled.match(response)) {
+        console.log('Script executed successfully:', response.payload);
+      } else {
+        console.error('Error running script:', response.payload);
+      }
     } catch (error) {
       console.error('Error running script:', error);
     }

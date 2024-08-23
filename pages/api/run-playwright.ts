@@ -7,7 +7,7 @@ export default async function handler(
 ) {
   if (req.method === 'POST') {
     const data = req.body.data;
-    const script = JSON.parse(data?.script[0]);
+    const script = JSON.parse(data[0]);
 
     // Log the incoming request data for debugging
 

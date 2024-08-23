@@ -1277,7 +1277,6 @@ export const calculateTabBarPercentage = (
   parseForms: boolean = false,
   type: string,
 ) => {
-
   const allContent =
     type !== 'self_registered' &&
     PartnerProgram?.length > 0 &&
@@ -1377,4 +1376,43 @@ export const transformDataKeys = (data: any) => {
   }
 
   return transformedData;
+};
+
+
+export const processScript = (script: any, finalObj: any) => {
+  // If the script is an array, join it into a single string
+  if (Array.isArray(script)) {
+    script = script.join(' ');
+  }
+
+  // Escape special characters in labels for use in regular expressions
+  const escapeRegExp = (string: string) => {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  };
+
+  // Replace the email and password in the script
+  let processedScript = script
+    .replace(
+      /getByLabel\('Username'\)\.fill\(.+?\)/i,
+      `getByLabel('Username').fill('${finalObj.email}')`,
+    )
+    .replace(
+      /getByLabel\('Password'\)\.fill\(.+?\)/i,
+      `getByLabel('Password').fill('${finalObj.password}')`,
+    );
+
+  // Replace other form fields in the script based on the label and finalObj.data
+  for (const [label, value] of Object.entries(finalObj.data)) {
+    const escapedLabel = escapeRegExp(label);
+    const regex = new RegExp(
+      `getByLabel\\('${escapedLabel}'\\)\\.fill\\(.+?\\)`,
+      'i',
+    );
+    processedScript = processedScript.replace(
+      regex,
+      `getByLabel('${label}').fill('${value}')`,
+    );
+  }
+
+  return processedScript;
 };
