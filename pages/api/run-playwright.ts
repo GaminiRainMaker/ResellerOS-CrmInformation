@@ -1,7 +1,8 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { runCLI } from '@jest/core';
-import { promises as fs } from 'fs';
+import type {NextApiRequest, NextApiResponse} from 'next';
+import {run} from 'jest-cli';
+import {promises as fs} from 'fs';
 import path from 'path';
+import { chromium } from 'playwright';
 
 export default async function handler(
   req: NextApiRequest,
@@ -14,44 +15,34 @@ export default async function handler(
     console.log('Received request data:', data);
 
     // Create a temporary config file to pass data
-    const configFilePath = path.join(process.cwd(), 'jest.config.js');
+    // const configFilePath = path.join(process.cwd(), 'jest.config.js');
 
     const configContent = `
       module.exports = {
-        testRegex: 'npx playwright test test/sampleTest.spec.js --project chromium --headed',
+        testRegex: 'tests/sampleTest.spec.js',
         testEnvironmentOptions: {
-          data: ${JSON.stringify(data)},
+          data: ${data},
         },
       };
     `;
 
     try {
-      // Write the temporary config file
-      await fs.writeFile(configFilePath, configContent);
+      // Launch Chromium
+      const browser = await chromium.launch({headless: false});
+      const context = await browser.newContext();
+      const page = await context.newPage();
 
-      // Prepare arguments for runCLI
-      const argv = {
-        config: configFilePath,
-        _: [], // This represents other positional arguments if needed, it's required by yargs but can be left empty
-        $0: '', // Represents the script name, also required by yargs but can be an empty string
-      };
+      // Dynamically execute the script
+      const executeScript = new Function('page', data?.script);
+      await executeScript(page);
 
-      await runCLI(argv, [process.cwd()])
-        .then(() => {
-          res.status(200).json({ message: 'Test executed successfully' });
-        })
-        .catch((error: any) => {
-          res.status(500).json({ message: 'Test execution failed', error });
-        })
-        .finally(async () => {
-          // Clean up: remove the temporary config file
-          await fs.unlink(configFilePath);
-        });
+      await browser.close();
 
-    } catch (error) {
-      res.status(500).json({ message: 'Error writing config file', error });
-    }
-
+      res.status(200).json({ message: 'Script executed successfully' });
+  } catch (error: any) {
+      console.error(error);
+      res.status(500).json({ message: 'Error executing script', error: error.message });
+  }
   } else {
     res.setHeader('Allow', ['POST']);
     res.status(405).end(`Method ${req.method} Not Allowed`);

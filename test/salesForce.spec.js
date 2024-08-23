@@ -83,9 +83,6 @@ test('test', async ({page}) => {
   } else {
     console.log('There is no verification required');
   }
-
-  await page.waitForTimeout(7000);
-
   await page.getByRole('menuitem', {name: 'Manage Submenu'}).click();
   await page.getByRole('menuitem', {name: 'Leads/Deals'}).click();
   await page.getByRole('button', {name: 'New Lead/Deal'}).click();
