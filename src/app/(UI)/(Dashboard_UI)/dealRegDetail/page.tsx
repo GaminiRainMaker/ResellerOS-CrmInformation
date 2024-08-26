@@ -117,13 +117,6 @@ const DealRegDetail = () => {
     );
     // ZIP/Postal Code
     if (SubmitDealRegFormData) {
-      await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
-        (response) => {
-          if (response?.payload) {
-            dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-          }
-        },
-      );
       try {
         const {PartnerProgram, unique_form_data} = finalScriptData?.[0];
         const finalUniqueData =
@@ -154,6 +147,13 @@ const DealRegDetail = () => {
         } else {
           console.error('Error running script:', response.payload);
         }
+        await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
+          (response) => {
+            if (response?.payload) {
+              dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+            }
+          },
+        );
       } catch (error) {
         console.error('Error running script:', error);
       }
