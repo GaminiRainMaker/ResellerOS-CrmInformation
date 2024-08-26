@@ -45,6 +45,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddPartnerProgramScript from './AddPartnerProgramScript';
 import SuperAdminPartnerAnalytics from './SuperAdminPartnerAnalytic';
+import {createPlaywrightScript} from '../../../../../redux/actions/playwright';
 
 export interface SeparatedData {
   [partnerId: number]: {
@@ -555,6 +556,7 @@ const SuperAdminPartner: React.FC = () => {
             }
             setSelectPartnerProgramId(record?.id);
             setShowScriptModal(true);
+            dispatch(createPlaywrightScript(''));
           }}
         >
           {record?.script?.length > 0 && !record?.script?.includes(null)

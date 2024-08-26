@@ -48,3 +48,27 @@ export const lauchSalesPlayWright = createAsyncThunk(
     }
   },
 );
+
+export const createPlaywrightScript = createAsyncThunk(
+  'playWright/createPlaywrightScript',
+  async (data: any, thunkApi) => {
+    try {
+      const response = await fetch('/api/create-playwright-script', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        return thunkApi.rejectWithValue(result.error);
+      }
+
+      return result.message;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);
