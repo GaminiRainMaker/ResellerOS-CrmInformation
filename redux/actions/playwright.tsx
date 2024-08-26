@@ -4,8 +4,6 @@ export const lauchPlayWright = createAsyncThunk(
   'playWright/lauchPlayWright',
   async (data: any, thunkApi) => {
     try {
-      console.log('shvhshdvvhdsvf1111', data);
-
       const response = await fetch('/api/run-playwright', {
         method: 'POST',
         headers: {
