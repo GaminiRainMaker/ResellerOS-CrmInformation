@@ -140,7 +140,7 @@ const DealRegDetail = () => {
           PartnerProgram?.script,
           finalObj,
         );
-        debugger;
+        console.log('shvhshdvvhdsvf', processScriptData);
         const response = await dispatch(lauchPlayWright([processScriptData]));
         if (lauchPlayWright.fulfilled.match(response)) {
           console.log('Script executed successfully:', response.payload);
