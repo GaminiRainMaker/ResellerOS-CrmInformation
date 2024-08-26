@@ -126,6 +126,8 @@ const DealRegDetail = () => {
       );
       try {
         const {PartnerProgram, unique_form_data} = finalScriptData?.[0];
+        const finalUniqueData =
+          unique_form_data && JSON?.parse(unique_form_data);
 
         const [iv, encryptedData] =
           PartnerProgram?.PartnerPassword?.password?.split(':');
@@ -134,8 +136,7 @@ const DealRegDetail = () => {
           SECRET_KEY as string,
           iv,
         );
-
-        const newFormData = transformDataKeys(unique_form_data);
+        const newFormData = transformDataKeys(finalUniqueData);
         let finalObj = {
           email: PartnerProgram?.PartnerPassword?.email,
           password: decrypted,
