@@ -29,6 +29,7 @@ import {
   formatStatus,
 } from '@/app/utils/CONSTANTS';
 import {
+  concatenateAfterFirstWithSpace,
   getResultedValue,
   sendDataToNanonets,
   updateTables,
@@ -844,15 +845,6 @@ const EditorFile = () => {
         return newObj;
       });
     };
-    function concatenateAfterFirstWithSpace(array: any) {
-      // Check if there are at least two elements
-      if (array.length < 2) {
-        return ''; // or handle the case where there aren't enough elements
-      }
-
-      // Join all elements after the first one into a single string with space separation
-      return array.slice(1).join(' ');
-    }
 
     let result = concatenateAfterFirstWithSpace(old?.split(' '));
     let updatedArr = renameKey(newArr, result, newVal);
@@ -892,9 +884,10 @@ const EditorFile = () => {
     //   return array.slice(1).join(' ');
     // }
 
-    // let resulsst = concatenateAfterFirstWithSpace(oldName?.split(' '));
+    let resulsst = concatenateAfterFirstWithSpace(oldName?.split(' '));
     // Find the index of the key 'ap'
-    const index = keys.indexOf(oldName);
+    console.log('ewr342343', keys, resulsst);
+    const index = keys.indexOf(resulsst);
     let indexToApply = index;
     // Alpabet extration
     let columnLetter = newArrForAlpa[indexToApply];
