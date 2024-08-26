@@ -38,6 +38,7 @@
     "aws": "^0.0.3-2",
     "aws-amplify": "^6.0.5",
     "axios": "^1.6.1",
+    "child_process": "^1.0.2",
     "dotenv": "^16.4.5",
     "fs": "^0.0.1-security",
     "handsontable": "14.5.0",
