@@ -115,7 +115,7 @@ const DealRegDetail = () => {
     const finalScriptData = finalUpdatedDealRegData?.filter(
       (item: any) => item?.id === SubmitDealRegFormData?.id,
     );
-
+    // ZIP/Postal Code
     if (SubmitDealRegFormData) {
       await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
         (response) => {

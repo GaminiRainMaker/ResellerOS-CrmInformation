@@ -5,7 +5,7 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable react-hooks/rules-of-hooks */
 
-import {InputNumberProps} from 'antd';
+import {FormInstance, InputNumberProps} from 'antd';
 import axios from 'axios';
 import moment from 'moment';
 import {
@@ -1444,4 +1444,52 @@ export const processScript = (script: any, finalObj: any) => {
   }
 
   return processedScript;
+};
+
+export const convertToSnakeCase = (input: string): string => {
+  return (
+    input &&
+    input
+      ?.toLowerCase()
+      ?.replace(/(?:\s+|[^a-z0-9\/])/g, '_') // Replace spaces and non-alphanumeric characters with underscores, except slashes
+      ?.replace(/\/+/g, '/')
+  ); // Preserve slashes as they are
+};
+
+export const radioValidator = (
+  data: any,
+  value: any,
+  form: FormInstance,
+) => {
+  data?.forEach((element: any) => {
+    const finalName = 'u_' + convertToSnakeCase(element) + '_radio';
+    if (element !== value.name) {
+      form.setFieldsValue({
+        [finalName]: false,
+      });
+    } else {
+      form.setFieldsValue({
+        [finalName]: true,
+      });
+    }
+  });
+};
+
+export const filterRadioData = (data: any) => {
+  const filteredData: any = {};
+
+  for (const key in data) {
+    // Check if the key contains '_radio'
+    if (key.includes('_radio')) {
+      // Include only keys with a truthy value
+      if (data[key]) {
+        filteredData[key] = data[key];
+      }
+    } else {
+      // Keep all other fields intact
+      filteredData[key] = data[key];
+    }
+  }
+
+  return filteredData;
 };
