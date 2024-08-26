@@ -118,6 +118,17 @@ export const getQuoteFileByQuoteIdAll = createAsyncThunk(
     }
   },
 );
+export const getQuoteFileByIdForFormulas = createAsyncThunk(
+  'quoteFile/getQuoteFileByIdForFormulas',
+  async (id: any, thunkApi) => {
+    try {
+      const res = await QUOTE_FILE_API.getQuoteFileByIdForFormulas(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
 export const updateFileForQuoteJson = createAsyncThunk(
   'quoteFile/updateQuoteFileByIdForQuoteJson',
   async (data: any, thunkApi) => {

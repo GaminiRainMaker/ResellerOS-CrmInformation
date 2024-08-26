@@ -4,7 +4,9 @@ import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
   deleteFormula,
   getAllFormulas,
+  getAllFormulasByDistributorAndOem,
   getFormulaByFormula,
+  getFormulaByFormulaAndOemDist,
   insertFormula,
 } from '../actions/formulas';
 
@@ -83,6 +85,42 @@ const formulaSlice = createSlice({
       )
       .addCase(
         getFormulaByFormula.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getFormulaByFormulaAndOemDist.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getFormulaByFormulaAndOemDist.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getFormulaByFormulaAndOemDist.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getAllFormulasByDistributorAndOem.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getAllFormulasByDistributorAndOem.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getAllFormulasByDistributorAndOem.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

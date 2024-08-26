@@ -14,6 +14,7 @@ import {
   getQuoteFileByQuoteIdAll,
   getQuoteFileCount,
   getfileByQuoteIdWithManual,
+  getQuoteFileByIdForFormulas,
 } from '../actions/quoteFile';
 
 type QuoteFileState = {
@@ -261,6 +262,24 @@ const quoteFileSlice = createSlice({
       )
       .addCase(
         getfileByQuoteIdWithManual.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getQuoteFileByIdForFormulas.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getQuoteFileByIdForFormulas.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.getQuoteFileDataCount = action.payload;
+        },
+      )
+      .addCase(
+        getQuoteFileByIdForFormulas.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

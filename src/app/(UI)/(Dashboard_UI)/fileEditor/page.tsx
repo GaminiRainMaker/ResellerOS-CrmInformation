@@ -55,6 +55,7 @@ import {
 import {
   UpdateQuoteFileById,
   getQuoteFileById,
+  getQuoteFileByIdForFormulas,
 } from '../../../../../redux/actions/quoteFile';
 import {getQuoteLineItemByQuoteIdForEditTable} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -64,7 +65,8 @@ import dynamic from 'next/dynamic';
 import {registerAllModules} from 'handsontable/registry';
 import {
   getAllFormulas,
-  getFormulaByFormula,
+  getAllFormulasByDistributorAndOem,
+  getFormulaByFormulaAndOemDist,
   insertFormula,
 } from '../../../../../redux/actions/formulas';
 import {identity} from 'lodash';
@@ -112,6 +114,35 @@ const EditorFile = () => {
     useState<boolean>(false);
   const [valueOfNewFormula, setValueOfNewFormula] = useState<any>();
 
+  const [fileData, setFileData] = useState<any>({});
+
+  const getQuoteFileByIdForFormulads = async () => {
+    await dispatch(getQuoteFileByIdForFormulas(getQuoteFileId))?.then(
+      (payload: any) => {
+        setFileData(payload?.payload?.QuoteConfiguration);
+      },
+    );
+  };
+  useEffect(() => {
+    if (!salesForceUrl && getQuoteFileId) {
+      dispatch(getAllFormulasByDistributorAndOem(fileData))?.then(
+        (payload: any) => {
+          let newArr: any = [];
+          payload?.payload?.map((items: any) => {
+            if (items?.is_active) {
+              let newObj = {
+                label: items?.title,
+                value: items?.formula,
+              };
+
+              newArr?.push(newObj);
+            }
+          });
+          setFormulaOptions(newArr);
+        },
+      );
+    }
+  }, [fileData]);
   // quoteId,instance_url,fileId
   // ============================== SalesForce Implementations ======================================
 
@@ -254,6 +285,7 @@ const EditorFile = () => {
     if (salesForceUrl && !getQuoteFileId) {
       fetchSaleForceDataa();
     } else {
+      getQuoteFileByIdForFormulads();
       if (ExistingQuoteItemss === 'true') {
         let newObj = {
           id: Number(getQUoteId),
@@ -411,22 +443,22 @@ const EditorFile = () => {
     }
   }, [quoteItems]);
 
-  useEffect(() => {
-    dispatch(getAllFormulas())?.then((payload: any) => {
-      let newArr: any = [];
-      payload?.payload?.map((items: any) => {
-        if (items?.is_active) {
-          let newObj = {
-            label: items?.title,
-            value: items?.formula,
-          };
+  // useEffect(() => {
+  //   dispatch(getAllFormulas())?.then((payload: any) => {
+  //     let newArr: any = [];
+  //     payload?.payload?.map((items: any) => {
+  //       if (items?.is_active) {
+  //         let newObj = {
+  //           label: items?.title,
+  //           value: items?.formula,
+  //         };
 
-          newArr?.push(newObj);
-        }
-      });
-      setFormulaOptions(newArr);
-    });
-  }, []);
+  //         newArr?.push(newObj);
+  //       }
+  //     });
+  //     setFormulaOptions(newArr);
+  //   });
+  // }, []);
   useEffect(() => {
     const newArrr: any = [];
     if (quoteItems && quoteItems.length > 0) {
@@ -580,9 +612,13 @@ const EditorFile = () => {
   ) => {
     if (changedValue?.includes('=')) {
       let result = changeTheALpabetsFromFormula(changedValue);
-
-      dispatch(getFormulaByFormula({formula: result}))?.then((payload: any) => {
-        console.log('43543543543', payload?.payload);
+      let newObj: any = {formula: result};
+      if (fileData?.distributor_id) {
+        newObj.distributor_id = fileData?.distributor_id;
+      } else if (fileData?.oem_id) {
+        newObj.oem_id = fileData?.oem_id;
+      }
+      dispatch(getFormulaByFormulaAndOemDist(newObj))?.then((payload: any) => {
         if (payload?.payload === null) {
           setValueOfNewFormula(changedValue);
           setOpenAddNewFormulaModal(true);
@@ -1002,7 +1038,13 @@ const EditorFile = () => {
 
   const addFormulaTOStoredFormulas = async (value: any) => {
     let result = changeTheALpabetsFromFormula(value);
-    await dispatch(insertFormula({formula: result}));
+    let newObj: any = {formula: result};
+    if (fileData?.distributor_id) {
+      newObj.distributor_id = fileData?.distributor_id;
+    } else if (fileData?.oem_id) {
+      newObj.oem_id = fileData?.oem_id;
+    }
+    await dispatch(insertFormula(newObj));
     setValueOfNewFormula('');
     setOpenAddNewFormulaModal(false);
   };
