@@ -115,15 +115,8 @@ const DealRegDetail = () => {
     const finalScriptData = finalUpdatedDealRegData?.filter(
       (item: any) => item?.id === SubmitDealRegFormData?.id,
     );
-
+    // ZIP/Postal Code
     if (SubmitDealRegFormData) {
-      await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
-        (response) => {
-          if (response?.payload) {
-            dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-          }
-        },
-      );
       try {
         const {PartnerProgram, unique_form_data} = finalScriptData?.[0];
         const finalUniqueData =
@@ -147,12 +140,20 @@ const DealRegDetail = () => {
           PartnerProgram?.script,
           finalObj,
         );
+        debugger;
         const response = await dispatch(lauchPlayWright([processScriptData]));
         if (lauchPlayWright.fulfilled.match(response)) {
           console.log('Script executed successfully:', response.payload);
         } else {
           console.error('Error running script:', response.payload);
         }
+        await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
+          (response) => {
+            if (response?.payload) {
+              dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+            }
+          },
+        );
       } catch (error) {
         console.error('Error running script:', error);
       }

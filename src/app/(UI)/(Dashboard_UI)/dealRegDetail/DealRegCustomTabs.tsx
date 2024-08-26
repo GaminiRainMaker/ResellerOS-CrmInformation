@@ -10,7 +10,7 @@ import {
 import CustomProgress from '@/app/components/common/os-progress/DealregProgressBar';
 import Typography from '@/app/components/common/typography';
 import {formatStatus} from '@/app/utils/CONSTANTS';
-import {calculateTabBarPercentage} from '@/app/utils/base';
+import {calculateTabBarPercentage, filterRadioData} from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {queryAttributeFieldForForm} from '../../../../../redux/actions/attributeField';
@@ -113,7 +113,7 @@ const DealRegCustomTabs: React.FC<any> = ({form, formData, setFormData}) => {
           uniqueFieldObject[key] = value;
         }
       }
-
+      const uniqueFieldObjectResult = filterRadioData(uniqueFieldObject);
       if (getDealRegForNew && Object?.keys(getDealRegForNew).length > 0) {
         finalDealReg = getDealRegForNew;
         const parsedCommonFormData = finalDealReg?.common_form_data?.[0]
@@ -128,7 +128,7 @@ const DealRegCustomTabs: React.FC<any> = ({form, formData, setFormData}) => {
         };
         finalUniqueFieldObject = {
           ...parsedUniqueFormData,
-          ...uniqueFieldObject,
+          ...uniqueFieldObjectResult,
         };
       }
       const tabPercentage = calculateTabBarPercentage(

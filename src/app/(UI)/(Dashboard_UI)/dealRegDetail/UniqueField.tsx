@@ -21,6 +21,7 @@ import {useEffect, useState} from 'react';
 import {UniqueFieldsProps} from './dealReg.interface';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import moment from 'moment';
+import {convertToSnakeCase, radioValidator} from '@/app/utils/base';
 
 const UniqueFields: React.FC<UniqueFieldsProps> = ({
   data,
@@ -34,13 +35,8 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     data?.form_data?.[0] &&
     JSON.parse(data?.form_data[0]).flatMap((section: any) => section.content);
   const [uniqueTemplateData, setUniqueTemplateData] = useState<any>();
+  const [isChecked, setIsChecked] = useState<string>('');
 
-  const convertToSnakeCase = (input: string): string => {
-    return input
-      ?.toLowerCase()
-      ?.replace(/(?:\s+|[^a-z0-9\/])/g, '_') // Replace spaces and non-alphanumeric characters with underscores, except slashes
-      ?.replace(/\/+/g, '/'); // Preserve slashes as they are
-  };
   const getInputComponent = (itemCon: any) => {
     const fieldName = convertToSnakeCase(itemCon?.label);
     const initialValue = uniqueTemplateData?.[fieldName];
@@ -153,7 +149,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
             {...commonProps}
           />
         );
-
       case 'Checkbox':
       case 'Radio Button':
       case 'Toggle':
@@ -164,21 +159,50 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 const totalFloorValue = Math.floor(
                   24 / itemCon?.columnRequired,
                 );
-                console.log('RecordDataa', itemCon);
                 return (
-                  <ToggleColStyled span={totalFloorValue} key={itemLabelIndex}>
-                    {itemCon?.name === 'Radio Button' ? (
-                      <Radio.Group {...commonProps}>
-                        <Radio>{itemLabelOp}</Radio>
-                      </Radio.Group>
-                    ) : itemCon?.name === 'Toggle' ? (
-                      <>
-                        <Switch {...commonProps} /> {itemLabelOp}
-                      </>
-                    ) : (
-                      <Checkbox {...commonProps}>{itemLabelOp}</Checkbox>
-                    )}
-                  </ToggleColStyled>
+                  <SelectFormItem
+                    name={
+                      'u_' +
+                      convertToSnakeCase(itemLabelOp) +
+                      (itemCon?.name === 'Radio Button' ? '_radio' : '')
+                    }
+                    label={
+                      <Typography name="Body 4/Medium">
+                        {itemLabelOp}
+                      </Typography>
+                    }
+                  >
+                    <ToggleColStyled
+                      span={totalFloorValue}
+                      key={itemLabelIndex}
+                    >
+                      {itemCon?.name === 'Radio Button' ? (
+                        <Radio.Group
+                          name={itemLabelOp}
+                          onChange={(e: any) => {
+                            setIsChecked(e.target.name);
+                            radioValidator(
+                              itemCon?.labelOptions,
+                              e.target,
+                              form,
+                            );
+                          }}
+                          value={isChecked}
+                        >
+                          <Radio value={itemLabelOp} {...commonProps} />{' '}
+                        </Radio.Group>
+                      ) : itemCon?.name === 'Toggle' ? (
+                        <>
+                          <Switch />
+                        </>
+                      ) : (
+                        <Checkbox
+                        // checked={isChecked}
+                        // onChange={(e) => handleChange(e.target)}
+                        />
+                      )}
+                    </ToggleColStyled>
+                  </SelectFormItem>
                 );
               },
             )}
@@ -267,9 +291,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
 
     //   })
     // }
-
   }, [allContent]);
-
   return (
     <Form
       layout="vertical"
