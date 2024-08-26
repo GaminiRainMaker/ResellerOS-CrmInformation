@@ -32,9 +32,11 @@ import {
   lauchPlayWright,
   lauchSalesPlayWright,
 } from '../../../../../redux/actions/playwright';
+import {decrypt, processScript, transformDataKeys} from '@/app/utils/base';
+const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
 
 const DealRegDetail = () => {
-  const [FormData] = Form.useForm();
+  const [getFormData] = Form.useForm();
   const [submitDealRegForm] = Form.useForm();
   const [token] = useThemeToken();
   const router = useRouter();
@@ -43,11 +45,13 @@ const DealRegDetail = () => {
     data: DealRegData,
     loading: dealRegLoading,
     getDealRegForNewLoading,
+    finalUpdatedDealRegData,
   } = useAppSelector((state) => state.dealReg);
   const [showModal, setShowModal] = useState(false);
   const [showSubmitFormModal, setShowSubmitFormModal] = useState(false);
   const searchParams = useSearchParams()!;
   const getOpportunityId = searchParams && searchParams.get('opportunityId');
+  const [formData, setFormData] = useState<any>();
 
   useEffect(() => {
     if (getOpportunityId) {
@@ -107,6 +111,11 @@ const DealRegDetail = () => {
       ...SubmitDealRegForm,
       status: 'Submitted',
     };
+
+    const finalScriptData = finalUpdatedDealRegData?.filter(
+      (item: any) => item?.id === SubmitDealRegFormData?.id,
+    );
+
     if (SubmitDealRegFormData) {
       await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
         (response) => {
@@ -115,6 +124,39 @@ const DealRegDetail = () => {
           }
         },
       );
+      try {
+        const {PartnerProgram, unique_form_data} = finalScriptData?.[0];
+        const finalUniqueData =
+          unique_form_data && JSON?.parse(unique_form_data);
+
+        const [iv, encryptedData] =
+          PartnerProgram?.PartnerPassword?.password?.split(':');
+        const decrypted = await decrypt(
+          encryptedData,
+          SECRET_KEY as string,
+          iv,
+        );
+        const newFormData = transformDataKeys(finalUniqueData);
+        let finalObj = {
+          email: PartnerProgram?.PartnerPassword?.email,
+          password: decrypted,
+          data: newFormData,
+          script: PartnerProgram?.script,
+        };
+        const processScriptData = processScript(
+          PartnerProgram?.script,
+          finalObj,
+        );
+        const response = await dispatch(lauchPlayWright([processScriptData]));
+        if (lauchPlayWright.fulfilled.match(response)) {
+          console.log('Script executed successfully:', response.payload);
+        } else {
+          console.error('Error running script:', response.payload);
+        }
+      } catch (error) {
+        console.error('Error running script:', error);
+      }
+
       setShowSubmitFormModal(false);
       submitDealRegForm.resetFields();
     }
@@ -122,7 +164,21 @@ const DealRegDetail = () => {
 
   const launchBotSalesForce = async () => {
     try {
-      const response = await dispatch(lauchPlayWright([]));
+      const {PartnerProgram, unique_form_data} = formData;
+
+      const [iv, encryptedData] =
+        PartnerProgram?.PartnerPassword?.password?.split(':');
+      const decrypted = await decrypt(encryptedData, SECRET_KEY as string, iv);
+
+      const newFormData = transformDataKeys(unique_form_data);
+      let finalObj = {
+        email: PartnerProgram?.PartnerPassword?.email,
+        password: decrypted,
+        data: newFormData,
+        script: PartnerProgram?.script,
+      };
+      const processScriptData = processScript(PartnerProgram?.script, finalObj);
+      const response = await dispatch(lauchPlayWright([processScriptData]));
       if (lauchPlayWright.fulfilled.match(response)) {
         console.log('Script executed successfully:', response.payload);
       } else {
@@ -153,16 +209,16 @@ const DealRegDetail = () => {
         </Col>
         <Col>
           <Space size={8}>
-            <OsButton
-              text="Create SalesForce Account"
+            {/* <OsButton
+              text="Create Salesforce Account"
               buttontype="SECONDARY"
               clickHandler={lauchSalesPlayBot}
-            />
-            <OsButton
+            /> */}
+            {/* <OsButton
               text="Launch Bot"
               buttontype="SECONDARY"
               clickHandler={launchBotSalesForce}
-            />
+            /> */}
             <OsButton
               text="Submit Form"
               buttontype="SECONDARY"
@@ -184,7 +240,11 @@ const DealRegDetail = () => {
         </Col>
       </Row>
       <GlobalLoader loading={getDealRegForNewLoading}>
-        <DealRegCustomTabs form={FormData} />
+        <DealRegCustomTabs
+          form={getFormData}
+          formData={formData}
+          setFormData={setFormData}
+        />
       </GlobalLoader>
 
       <OsModal

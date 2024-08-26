@@ -1,37 +1,45 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {exec} from 'child_process';
-import util from 'util';
-
-// Promisify exec to use with async/await
-const execPromise = util.promisify(exec);
+import {chromium} from 'playwright';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   if (req.method === 'POST') {
+    const data = req.body.data;
+    const script = JSON.parse(data[0]);
+
+    // Log the incoming request data for debugging
+
+    // Create a temporary config file to pass data
+    // const configFilePath = path.join(process.cwd(), 'jest.config.js');
+
+    const executeScript = new Function(
+      'page',
+      `
+      return (async () => {
+          ${script}
+      })();
+  `,
+    );
     try {
-      const {data} = req.body;
+      // Launch Chromium
+      const browser = await chromium.launch({headless: false});
+      const context = await browser.newContext();
+      const page = await context.newPage();
+      console.log(data?.script, 'sdfbsdbf');
 
-      // Prepare the command to run the Playwright script with data
-      //   const command = `npx playwright test --project chromium --headed'${JSON.stringify(data)}'`;
+      // Dynamically execute the script
+      await executeScript(page);
 
-      //   // Execute the Playwright script
-      //   await execPromise(command);
-      const {stdout, stderr} = await execPromise(
-        'npx playwright test test/mytest.spec.js --project chromium --headed',
-      );
+      await browser.close();
 
-      if (stderr) {
-        console.error(stderr);
-        return res.status(500).json({error: stderr});
-      }
-
-      return res.status(200).json({output: stdout});
+      res.status(200).json({message: 'Script executed successfully'});
     } catch (error: any) {
+      console.error(error);
       res
         .status(500)
-        .json({error: 'Failed to execute script', details: error.message});
+        .json({message: 'Error executing script', error: error.message});
     }
   } else {
     res.setHeader('Allow', ['POST']);

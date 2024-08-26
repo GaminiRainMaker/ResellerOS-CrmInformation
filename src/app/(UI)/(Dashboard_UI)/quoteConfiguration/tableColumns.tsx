@@ -119,7 +119,7 @@ function getColumns(
           name={`model_${index}`}
           placeholder="Write here"
           style={{height: '38px'}}
-          value={text}
+          defaultValue={text}
           onChange={(e) => {
             setQuoteConfig((prev: any) =>
               prev.map((prevItem: any, prevIndex: number) => {

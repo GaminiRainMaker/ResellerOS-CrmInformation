@@ -12,7 +12,8 @@
     "check-lint": "eslint . --ext ts --ext tsx --ext js",
     "format": "prettier --write .",
     "test": "yarn check-format && yarn check-lint && yarn check-types && yarn build",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "npx playwright install"
   },
   "engines": {
     "npm": "please-use-yarn"

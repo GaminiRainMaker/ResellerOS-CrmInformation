@@ -212,6 +212,7 @@ const FormulaMain: React.FC = () => {
           setShowModal(false);
           setContractObject('');
           setActiveValue(false);
+          form?.resetFields();
         }}
         footer
         primaryButtonText="Add"

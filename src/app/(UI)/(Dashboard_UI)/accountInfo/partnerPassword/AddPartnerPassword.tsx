@@ -194,12 +194,12 @@ const AddPartnerPassword: React.FC<any> = ({
                   min: 8,
                   message: 'Password must be at least 8 characters long.',
                 },
-                {
-                  pattern:
-                    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-                  message:
-                    'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.',
-                },
+                // {
+                //   pattern:
+                //     /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+                //   message:
+                //     'Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character.',
+                // },
               ]}
             >
               <OsInputPassword

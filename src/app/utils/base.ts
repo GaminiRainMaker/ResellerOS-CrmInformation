@@ -1277,16 +1277,11 @@ export const calculateTabBarPercentage = (
   parseForms: boolean = false,
   type: string,
 ) => {
-  // const allContent =
-  //   PartnerProgram &&
-  //   JSON.parse(PartnerProgram)
-  //     .flatMap((section: any) => section?.content)
-  //     .filter((item: any) => item?.required);
-
   const allContent =
     type !== 'self_registered' &&
-    PartnerProgram &&
-    JSON.parse(PartnerProgram)
+    PartnerProgram?.length > 0 &&
+    PartnerProgram?.[0] &&
+    JSON?.parse(PartnerProgram?.[0])
       .flatMap((section: any) => section?.content)
       .filter((item: any) => item?.required);
 
@@ -1354,4 +1349,99 @@ export const mergeArrayWithObject = (arr1: any, obj2: any) => {
       ? obj2
       : null;
   return safeObject2 ? [...safeArray1, safeObject2] : safeArray1;
+};
+
+export const transformDataKeys = (data: any) => {
+  const transformedData: any = {};
+
+  for (const key in data) {
+    if (data.hasOwnProperty(key)) {
+      // Step 1: Remove 'u_'
+      let newKey = key.replace(/^u_/, '');
+
+      // Step 2: Remove digits
+      newKey = newKey.replace(/\d+/g, '');
+
+      // Step 3: Handle '/' for capitalization
+      if (newKey.includes('/')) {
+        newKey = newKey
+          .split('/')
+          .map((part, index) => {
+            if (index === 0) {
+              // Fully capitalize the part before the slash
+              return part.replace(/_/g, ' ').toUpperCase();
+            } else {
+              // Capitalize only the first letter of each word after the slash
+              return part
+                .replace(/_/g, ' ')
+                .replace(/\b\w/g, (char) => char.toUpperCase());
+            }
+          })
+          .join('/');
+      } else {
+        // Handle regular keys without '/'
+        newKey = newKey
+          .replace(/_/g, ' ')
+          .replace(/\b\w/g, (char) => char.toUpperCase());
+      }
+
+      // Step 4: Remove the word "Required"
+      newKey = newKey.replace(/\bRequired\b/i, '').trim();
+
+      // Add the transformed key and original value to the new object
+      transformedData[newKey] = data[key];
+    }
+  }
+
+  return transformedData;
+};
+
+export const processScript = (script: any, finalObj: any) => {
+  // If the script is an array, join it into a single string
+  if (Array.isArray(script)) {
+    script = script.join(' ');
+  }
+
+  // Escape special characters in labels for use in regular expressions
+  const escapeRegExp = (string: string) => {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  };
+
+  // Replace the email and password in the script
+  let processedScript = script
+    .replace(
+      /getByLabel\('Username'\)\.fill\(.+?\)/i,
+      `getByLabel('Username').fill('${finalObj.email}')`,
+    )
+    .replace(
+      /getByLabel\('Password'\)\.fill\(.+?\)/i,
+      `getByLabel('Password').fill('${finalObj.password}')`,
+    );
+
+  // Replace other form fields in the script based on the label and finalObj.data
+  for (const [label, value] of Object.entries(finalObj.data)) {
+    const escapedLabel = escapeRegExp(label);
+
+    // Handle `fill` actions
+    const fillRegex = new RegExp(
+      `getByLabel\\('${escapedLabel}'\\)\\.fill\\(.+?\\)`,
+      'i',
+    );
+    processedScript = processedScript.replace(
+      fillRegex,
+      `getByLabel('${label}').fill('${value}')`,
+    );
+
+    // Handle `selectOption` actions
+    const selectOptionRegex = new RegExp(
+      `getByLabel\\('${escapedLabel}'\\)\\.selectOption\\(.+?\\)`,
+      'i',
+    );
+    processedScript = processedScript.replace(
+      selectOptionRegex,
+      `getByLabel('${label}').selectOption('${value}')`,
+    );
+  }
+
+  return processedScript;
 };
