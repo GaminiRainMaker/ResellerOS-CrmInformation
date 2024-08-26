@@ -233,10 +233,10 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
             <OsInput
               style={{width: '100%'}}
               placeholder="Label"
-              defaultValue={CommonIndexOfUse?.placeholdertext}
-              value={CommonIndexOfUse?.placeholdertext}
+              defaultValue={CommonIndexOfUse?.label}
+              value={CommonIndexOfUse?.label}
               onChange={(e: any) => {
-                changeFieldValues(e?.target?.value, 'placeholdertext');
+                changeFieldValues(e?.target?.value, 'label');
               }}
             />
           </Form.Item>

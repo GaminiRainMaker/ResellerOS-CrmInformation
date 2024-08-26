@@ -751,7 +751,7 @@ const FormBuilderMain: React.FC<any> = ({
                             )}
                             <Typography name="Body 4/Medium">
                               {itemCon?.requiredLabel &&
-                                itemCon?.placeholdertext}{' '}
+                                itemCon?.label}{' '}
                               {itemCon?.required && (
                                 <span style={{color: 'red'}}>*</span>
                               )}
@@ -885,7 +885,30 @@ const FormBuilderMain: React.FC<any> = ({
                         );
                       }
                       if (itemCon?.name === 'Line Break')
-                        return <StyledDivider />;
+                        return (
+                          <>
+                            {' '}
+                            {!previewFile && (
+                              <ItemName
+                                itemName={itemCon?.name}
+                                cartItems={cartItems}
+                                setCartItems={setCartItems}
+                                isPreview={!previewFile}
+                                ItemConindex={ItemConindex}
+                                Sectidx={Sectidx}
+                                setCollapsed={setCollapsed}
+                                onClick={(e: any) => {
+                                  e?.preventDefault();
+                                  setCollapsed(true);
+                                  setActiveContentIndex(ItemConindex);
+                                  setActiveSectionIndex(Sectidx);
+                                  form.resetFields();
+                                }}
+                              />
+                            )}
+                            <StyledDivider />
+                          </>
+                        );
                     })}
                   </>
                 </SectionRowStyled>

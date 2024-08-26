@@ -48,12 +48,13 @@ const ItemName: FC<ItemNameInterface> = ({
               }}
               color={token?.colorError}
             />
-
-            <ArrowsPointingOutIcon
-              cursor="pointer"
-              width={18}
-              color={token?.colorInfo}
-            />
+            {itemName !== 'Line Break' && (
+              <ArrowsPointingOutIcon
+                cursor="pointer"
+                width={18}
+                color={token?.colorInfo}
+              />
+            )}
           </Space>
         </Col>
       )}

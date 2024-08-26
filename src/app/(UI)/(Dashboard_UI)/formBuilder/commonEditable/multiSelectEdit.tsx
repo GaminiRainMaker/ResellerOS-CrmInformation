@@ -269,7 +269,8 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
                   }
                   style={{width: '100%'}}
                   options={
-                    NameofTheCurrentFiled === 'Multi-Select'
+                    NameofTheCurrentFiled === 'Multi-Select' ||
+                    NameofTheCurrentFiled === 'Drop Down'
                       ? [
                           {label: 'Mutiple', value: 'multiple'},
                           {label: 'Single', value: 'tag'},

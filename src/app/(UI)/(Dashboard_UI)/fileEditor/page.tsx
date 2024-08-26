@@ -663,7 +663,7 @@ const EditorFile = () => {
     let result = new Array(minLength).fill(null).map((_, index) => {
       return `${newArrForAlpa[index]} ${mergeedColumnArr[index]}`;
     });
-    setMergeedColumn(mergeedColumnArr);
+    setMergeedColumn(result);
   }, [ExistingQuoteItemss, quoteItems, mergedValue]);
 
   // ======================================== FOr Update LineItems=====================================

@@ -234,7 +234,7 @@ export const formbuildernewObject = (newItem: string) => {
     newObjAddedon = {
       name: newItem,
       label: 'Label',
-      type: newItem,
+      type: 'multiple',
       required: false,
       user_fill: false,
       requiredLabel: true,
@@ -256,12 +256,12 @@ export const formbuildernewObject = (newItem: string) => {
       placeholdertext: 'placeholder text',
       labelOptions: [],
       user_fill: false,
-      type: 'Checkbox',
+      type: 'multiple',
       columnRequired: 1,
       required: false,
       requiredLabel: true,
       filedType: 'Checkbox',
-      label: 'Checkbox',
+      label: 'Label',
     };
   } else if (newItem === 'Text' || newItem === 'Email') {
     newObjAddedon = {
