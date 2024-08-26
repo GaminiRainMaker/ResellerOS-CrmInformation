@@ -29,6 +29,7 @@ import {
   formatStatus,
 } from '@/app/utils/CONSTANTS';
 import {
+  concatenateAfterFirstWithSpace,
   getResultedValue,
   sendDataToNanonets,
   updateTables,
@@ -55,6 +56,8 @@ import {
 import {
   UpdateQuoteFileById,
   getQuoteFileById,
+  getQuoteFileByIdForFormulas,
+  getfileByQuoteIdWithManual,
 } from '../../../../../redux/actions/quoteFile';
 import {getQuoteLineItemByQuoteIdForEditTable} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -64,7 +67,8 @@ import dynamic from 'next/dynamic';
 import {registerAllModules} from 'handsontable/registry';
 import {
   getAllFormulas,
-  getFormulaByFormula,
+  getAllFormulasByDistributorAndOem,
+  getFormulaByFormulaAndOemDist,
   insertFormula,
 } from '../../../../../redux/actions/formulas';
 import {identity} from 'lodash';
@@ -112,6 +116,33 @@ const EditorFile = () => {
     useState<boolean>(false);
   const [valueOfNewFormula, setValueOfNewFormula] = useState<any>();
 
+  const [fileData, setFileData] = useState<any>({});
+
+  const getQuoteFileByIdForFormulads = async () => {
+    await dispatch(getQuoteFileByIdForFormulas(getQuoteFileId))?.then(
+      (payload: any) => {
+        setFileData(payload?.payload?.QuoteConfiguration);
+      },
+    );
+  };
+  useEffect(() => {
+    dispatch(getAllFormulasByDistributorAndOem(fileData ? fileData : {}))?.then(
+      (payload: any) => {
+        let newArr: any = [];
+        payload?.payload?.map((items: any) => {
+          if (items?.is_active) {
+            let newObj = {
+              label: items?.title,
+              value: items?.formula,
+            };
+
+            newArr?.push(newObj);
+          }
+        });
+        setFormulaOptions(newArr);
+      },
+    );
+  }, [fileData]);
   // quoteId,instance_url,fileId
   // ============================== SalesForce Implementations ======================================
 
@@ -254,6 +285,7 @@ const EditorFile = () => {
     if (salesForceUrl && !getQuoteFileId) {
       fetchSaleForceDataa();
     } else {
+      getQuoteFileByIdForFormulads();
       if (ExistingQuoteItemss === 'true') {
         let newObj = {
           id: Number(getQUoteId),
@@ -411,22 +443,22 @@ const EditorFile = () => {
     }
   }, [quoteItems]);
 
-  useEffect(() => {
-    dispatch(getAllFormulas())?.then((payload: any) => {
-      let newArr: any = [];
-      payload?.payload?.map((items: any) => {
-        if (items?.is_active) {
-          let newObj = {
-            label: items?.title,
-            value: items?.formula,
-          };
+  // useEffect(() => {
+  //   dispatch(getAllFormulas())?.then((payload: any) => {
+  //     let newArr: any = [];
+  //     payload?.payload?.map((items: any) => {
+  //       if (items?.is_active) {
+  //         let newObj = {
+  //           label: items?.title,
+  //           value: items?.formula,
+  //         };
 
-          newArr?.push(newObj);
-        }
-      });
-      setFormulaOptions(newArr);
-    });
-  }, []);
+  //         newArr?.push(newObj);
+  //       }
+  //     });
+  //     setFormulaOptions(newArr);
+  //   });
+  // }, []);
   useEffect(() => {
     const newArrr: any = [];
     if (quoteItems && quoteItems.length > 0) {
@@ -580,9 +612,13 @@ const EditorFile = () => {
   ) => {
     if (changedValue?.includes('=')) {
       let result = changeTheALpabetsFromFormula(changedValue);
-
-      dispatch(getFormulaByFormula({formula: result}))?.then((payload: any) => {
-        console.log('43543543543', payload?.payload);
+      let newObj: any = {formula: result};
+      if (fileData?.distributor_id) {
+        newObj.distributor_id = fileData?.distributor_id;
+      } else if (fileData?.oem_id) {
+        newObj.oem_id = fileData?.oem_id;
+      }
+      dispatch(getFormulaByFormulaAndOemDist(newObj))?.then((payload: any) => {
         if (payload?.payload === null) {
           setValueOfNewFormula(changedValue);
           setOpenAddNewFormulaModal(true);
@@ -772,10 +808,68 @@ const EditorFile = () => {
       CancelEditing();
     }
   };
+
+  const checkForNewFileForSalesForce = async () => {
+    notification?.open({
+      message: 'The Line Items are created! Please close the modal!',
+    });
+
+    let data = {
+      token: salesToken,
+      FileId: null,
+      urls: salesForceUrl,
+      quoteId: SaleQuoteId,
+    };
+
+    dispatch(getSalesForceFileData(data))?.then((payload: any) => {
+      if (payload?.payload) {
+        let newObj = {
+          file_name: payload?.payload?.title,
+          FileId: payload?.payload?.fileId,
+        };
+        notification?.open({
+          message: 'Please Update Line Items for new manual File',
+          type: 'info',
+        });
+      } else {
+        notification?.open({
+          message: 'The Line Items are created! Please close the modal!',
+        });
+      }
+    });
+  };
+
   const checkForNewFile = async () => {
-    router.push(
-      `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
+    let isExist: boolean = false;
+    let dataNew: any;
+
+    await dispatch(getfileByQuoteIdWithManual(Number(getQUoteId)))?.then(
+      (payload: any) => {
+        if (payload?.payload) {
+          router.push(
+            `fileEditor?id=${Number(getQUoteId)}&fileId=${payload?.payload?.id}&quoteExist=false`,
+          );
+          window.history.replaceState(
+            null,
+            '',
+            `fileEditor?id=${Number(getQUoteId)}&fileId=${payload?.payload?.id}&quoteExist=false`,
+          );
+          location?.reload();
+        } else {
+          router.push(
+            `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
+          );
+          window.history.replaceState(
+            null,
+            '',
+            `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
+          );
+          location?.reload();
+        }
+      },
     );
+
+    setShowModal(false);
   };
 
   const AddNewCloumnToMergedTable = async (value: any) => {
@@ -808,15 +902,6 @@ const EditorFile = () => {
         return newObj;
       });
     };
-    function concatenateAfterFirstWithSpace(array: any) {
-      // Check if there are at least two elements
-      if (array.length < 2) {
-        return ''; // or handle the case where there aren't enough elements
-      }
-
-      // Join all elements after the first one into a single string with space separation
-      return array.slice(1).join(' ');
-    }
 
     let result = concatenateAfterFirstWithSpace(old?.split(' '));
     let updatedArr = renameKey(newArr, result, newVal);
@@ -856,9 +941,10 @@ const EditorFile = () => {
     //   return array.slice(1).join(' ');
     // }
 
-    // let resulsst = concatenateAfterFirstWithSpace(oldName?.split(' '));
+    let resulsst = concatenateAfterFirstWithSpace(oldName?.split(' '));
     // Find the index of the key 'ap'
-    const index = keys.indexOf(oldName);
+    console.log('ewr342343', keys, resulsst);
+    const index = keys.indexOf(resulsst);
     let indexToApply = index;
     // Alpabet extration
     let columnLetter = newArrForAlpa[indexToApply];
@@ -1002,7 +1088,13 @@ const EditorFile = () => {
 
   const addFormulaTOStoredFormulas = async (value: any) => {
     let result = changeTheALpabetsFromFormula(value);
-    await dispatch(insertFormula({formula: result}));
+    let newObj: any = {formula: result};
+    if (fileData?.distributor_id) {
+      newObj.distributor_id = fileData?.distributor_id;
+    } else if (fileData?.oem_id) {
+      newObj.oem_id = fileData?.oem_id;
+    }
+    await dispatch(insertFormula(newObj));
     setValueOfNewFormula('');
     setOpenAddNewFormulaModal(false);
   };
@@ -1366,6 +1458,7 @@ const EditorFile = () => {
               setNanonetsLoading={setNanonetsLoading}
               nanonetsLoading={nanonetsLoading}
               routingConditions={checkForNewFile}
+              checkForNewFileForSalesForce={checkForNewFileForSalesForce}
               manualFlow={false}
               lineItemSyncingData={lineItemSyncingData}
             />

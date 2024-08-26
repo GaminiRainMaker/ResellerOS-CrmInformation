@@ -44,7 +44,15 @@ const FormulaMain: React.FC = () => {
   const [deleteId, setDeleteId] = useState<any>();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
   const [recordId, setRecordId] = useState<any>();
-  const [activeValue, setActiveValue] = useState<boolean>(false);
+  const [selectValue, setSelectValue] = useState<{
+    oem_id: number | null;
+    distributor_id: number | null;
+    is_active: boolean | null;
+  }>({
+    oem_id: null,
+    distributor_id: null,
+    is_active: false,
+  });
 
   useEffect(() => {
     setLoadingContract(true);
@@ -93,6 +101,20 @@ const FormulaMain: React.FC = () => {
       render: (text: boolean) => <Checkbox defaultChecked={text} />,
     },
     {
+      title: 'Oem/Distributor',
+      dataIndex: 'oem_id',
+      key: 'oem_id',
+      render: (text: string, record: any, index: number) => (
+        <Space size={18}>
+          {record?.Oem
+            ? record?.Oem?.oem
+            : record?.Distributor
+              ? record?.Distributor?.distributor
+              : '----'}
+        </Space>
+      ),
+    },
+    {
       title: 'Action',
       dataIndex: 'actions',
       key: 'actions',
@@ -108,7 +130,11 @@ const FormulaMain: React.FC = () => {
                 description: record?.description,
                 formula: record?.formula,
               });
-              setActiveValue(record?.is_active);
+              setSelectValue({
+                is_active: record?.is_active,
+                oem_id: record?.oem_id,
+                distributor_id: record?.distributor_id,
+              });
               setOpenDrawer(true);
             }}
             color={token.colorInfoBorder}
@@ -138,7 +164,13 @@ const FormulaMain: React.FC = () => {
     if (recordId) {
       newObj.id = recordId;
     }
-    newObj.is_active = activeValue;
+    newObj.is_active = selectValue?.is_active;
+    if (selectValue?.oem_id) {
+      newObj.oem_id = selectValue?.oem_id;
+    }
+    if (selectValue?.distributor_id) {
+      newObj.distributor_id = selectValue?.distributor_id;
+    }
     setLoadingContract(true);
     let result = changeTheALpabetsFromFormula(newObj?.formula);
     delete newObj.formula;
@@ -149,7 +181,11 @@ const FormulaMain: React.FC = () => {
     setLoadingContract(false);
     setContractObject('');
     setShowModal(false);
-    setActiveValue(false);
+    setSelectValue({
+      is_active: false,
+      oem_id: null,
+      distributor_id: null,
+    });
   };
 
   const deleteContractById = async () => {
@@ -202,8 +238,8 @@ const FormulaMain: React.FC = () => {
             onFinish={AddNewFormula}
             form={form}
             drawer={false}
-            setActiveValue={setActiveValue}
-            activeValue={activeValue}
+            setSelectValue={setSelectValue}
+            selectValue={selectValue}
           />
         }
         width={800}
@@ -211,7 +247,11 @@ const FormulaMain: React.FC = () => {
         onCancel={() => {
           setShowModal(false);
           setContractObject('');
-          setActiveValue(false);
+          setSelectValue({
+            is_active: false,
+            oem_id: null,
+            distributor_id: null,
+          });
           form?.resetFields();
         }}
         footer
@@ -236,7 +276,11 @@ const FormulaMain: React.FC = () => {
         onClose={() => {
           setOpenDrawer(false);
           form?.resetFields();
-          setActiveValue(false);
+          setSelectValue({
+            is_active: false,
+            oem_id: null,
+            distributor_id: null,
+          });
         }}
         open={openDrawer}
         width={450}
@@ -259,8 +303,8 @@ const FormulaMain: React.FC = () => {
           onFinish={AddNewFormula}
           form={form}
           drawer={true}
-          setActiveValue={setActiveValue}
-          activeValue={activeValue}
+          setSelectValue={setSelectValue}
+          selectValue={selectValue}
         />
       </OsDrawer>
 

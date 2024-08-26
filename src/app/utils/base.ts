@@ -1445,6 +1445,15 @@ export const processScript = (script: any, finalObj: any) => {
 
   return processedScript;
 };
+export function concatenateAfterFirstWithSpace(array: any) {
+  // Check if there are at least two elements
+  if (array.length < 2) {
+    return ''; // or handle the case where there aren't enough elements
+  }
+
+  // Join all elements after the first one into a single string with space separation
+  return array.slice(1).join(' ');
+}
 
 export const convertToSnakeCase = (input: string): string => {
   return (

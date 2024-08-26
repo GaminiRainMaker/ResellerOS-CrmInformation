@@ -49,3 +49,25 @@ export const getFormulaByFormula = createAsyncThunk(
     }
   },
 );
+export const getFormulaByFormulaAndOemDist = createAsyncThunk(
+  'contract/getFormulaByFormulaAndOemDist',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await FORMULA_API.GET_WITH_OEM_DISTRIIBUTER(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+export const getAllFormulasByDistributorAndOem = createAsyncThunk(
+  'contract/getAllFormulasByDistributorAndOem',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await FORMULA_API.GET_FORMULA_BY_OEM_DIST(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

@@ -111,7 +111,9 @@ export const API = {
   },
   FORMULA: {
     INDEX: '/Formulas',
-    GET_FORMULA:'/Formulas/getFormulaByFormula'
+    GET_FORMULA: '/Formulas/getFormulaByFormula',
+    GET_FORMULA_BY_OEM_DIST: '/Formulas/getAllFormulasByDistributorAndOem',
+    getWithOemDist: '/Formulas/getFormulaByFormulaAndOemDist',
   },
   CONTRACT_PRODUCT: {
     INDEX: '/contractProduct',
@@ -237,6 +239,7 @@ export const API = {
     QuoteFileVerification: '/quoteFile/quoteFileVerification',
     GetQuoteFileById: '/quoteFile/getQuoteFileById',
     getQuoteFileByQuoteIdAll: '/quoteFile/getQuoteFileByQuoteIdAll',
+    getQuoteFileByIdForFormulas: '/quoteFile/getQuoteFileByIdForFormulas',
     postJson: '/quoteFile/updateQuoteFileByIdForQuoteJson',
     getQuoteFileCount: '/quoteFile/getQuoteFileCount',
     getfileByQuoteIdWithManualadd: '/quoteFile/getfileByQuoteIdWithManual',

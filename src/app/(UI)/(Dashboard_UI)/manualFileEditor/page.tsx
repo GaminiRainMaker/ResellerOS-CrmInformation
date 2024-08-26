@@ -35,7 +35,10 @@ import {notification, Space} from 'antd';
 import Typography from '@/app/components/common/typography';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import {Col, Row} from '@/app/components/common/antd/Grid';
-import {getfileByQuoteIdWithManual} from '../../../../../redux/actions/quoteFile';
+import {
+  getfileByQuoteIdWithManual,
+  getQuoteFileById,
+} from '../../../../../redux/actions/quoteFile';
 import {getSalesForceFileData} from '../../../../../redux/actions/auth';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
@@ -53,6 +56,7 @@ const EditorFile = () => {
   const router = useRouter();
   const getQuoteID = searchParams.get('id');
   const SaleQuoteId = searchParams.get('quote_Id');
+  const getQuoteFileId = searchParams.get('fileId');
   const [nanonetsLoading, setNanonetsLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [arrayOflineItem, setArrayOflineItem] = useState<any>([]);
@@ -245,14 +249,14 @@ const EditorFile = () => {
         setCurrentFileData(newObj);
       });
     } else {
-      dispatch(getfileByQuoteIdWithManual(Number(getQuoteID)))?.then(
+      dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then(
         (payload: any) => {
           setCurrentFileData(payload?.payload);
-          window.history.replaceState(
-            null,
-            '',
-            `manualFileEditor?id=${Number(getQuoteID)}&fileId=${Number(payload?.payload?.id)}`,
-          );
+          // window.history.replaceState(
+          //   null,
+          //   '',
+          //   `manualFileEditor?id=${Number(getQuoteID)}&fileId=${Number(payload?.payload?.id)}`,
+          // );
         },
       );
     }
@@ -287,72 +291,79 @@ const EditorFile = () => {
   };
 
   const checkForNewFileForSalesForce = async () => {
-    let data = {
-      token: salesToken,
-      FileId: null,
-      urls: salesForceUrl,
-      quoteId: SaleQuoteId,
-    };
-
-    setShowModal(false);
-    setShowConfirmHeader(false);
-    setSaveNewHeader(false);
-    addNewLine();
-    dispatch(getSalesForceFileData(data))?.then((payload: any) => {
-      if (payload?.payload) {
-        let newObj = {
-          file_name: payload?.payload?.title,
-          FileId: payload?.payload?.fileId,
-        };
-        setCurrentFileData(newObj);
-        notification?.open({
-          message: 'Please Update Line Items for new manual File',
-          type: 'info',
-        });
-      } else {
-        notification?.open({
-          message: 'The Line Items are created! Please close the modal!',
-        });
-      }
+    notification?.open({
+      message: 'The Line Items are created! Please close the modal!',
     });
+
+    // let data = {
+    //   token: salesToken,
+    //   FileId: null,
+    //   urls: salesForceUrl,
+    //   quoteId: SaleQuoteId,
+    // };
+
+    // setShowModal(false);
+    // setShowConfirmHeader(false);
+    // setSaveNewHeader(false);
+    // addNewLine();
+    // dispatch(getSalesForceFileData(data))?.then((payload: any) => {
+    //   if (payload?.payload) {
+    //     let newObj = {
+    //       file_name: payload?.payload?.title,
+    //       FileId: payload?.payload?.fileId,
+    //     };
+    //     setCurrentFileData(newObj);
+    //     notification?.open({
+    //       message: 'Please Update Line Items for new manual File',
+    //       type: 'info',
+    //     });
+    //   } else {
+    //     notification?.open({
+    //       message: 'The Line Items are created! Please close the modal!',
+    //     });
+    //   }
+    // });
   };
 
   const checkForNewFile = async () => {
-    let isExist: boolean = false;
-    let dataNew: any;
-    setSaveNewHeader(false);
-    addNewLine();
-    await dispatch(getfileByQuoteIdWithManual(Number(getQuoteID)))?.then(
-      (payload: any) => {
-        if (payload?.payload) {
-          setCurrentFileData(payload?.payload);
-          isExist = true;
-          dataNew = payload?.payload;
-        } else {
-          isExist = false;
-        }
-      },
+    router.push(
+      `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue()}`,
     );
+    // let isExist: boolean = false;
+    // let dataNew: any;
+    // setSaveNewHeader(false);
+    // addNewLine();
+    // await dispatch(getfileByQuoteIdWithManual(Number(getQuoteID)))?.then(
+    //   (payload: any) => {
+    //     if (payload?.payload) {
+    //       setCurrentFileData(payload?.payload);
+    //       isExist = true;
+    //       dataNew = payload?.payload;
+    //     } else {
+    //       isExist = false;
+    //     }
+    //   },
+    // );
 
-    setShowModal(false);
-    setShowConfirmHeader(false);
-    if (SaleQuoteId) {
-    } else {
-      if (isExist) {
-        location?.reload();
-        return;
-      } else {
-        router.push(
-          `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue()}`,
-        );
-        window.history.replaceState(
-          null,
-          '',
-          `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue()}`,
-        );
-        location?.reload();
-      }
-    }
+    // setShowModal(false);
+    // setShowConfirmHeader(false);
+    // if (SaleQuoteId) {
+    // } else {
+    //   if (isExist) {
+    //     location?.reload();
+    //     return;
+    //   } else {
+    //     router.push(
+    //       `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue()}`,
+    //     );
+    //     window.history.replaceState(
+    //       null,
+    //       '',
+    //       `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue()}`,
+    //     );
+    //     location?.reload();
+    //   }
+    // }
   };
   const UpdateTheColumnName = async (type: any, old: string, newVal: any) => {
     let newArr: any = [...arrayOflineItem];
