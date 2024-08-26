@@ -110,7 +110,11 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
     if (updatedArr && updatedArr?.length > 0) {
       updatedArr?.map((items: any) => {
-        if (items?.manualquote) {
+        if (
+          (items?.manualquote &&
+            !items?.file?.type.includes('spreadsheetml')) ||
+          items?.model_id === 'a02fffb7-5221-44a2-8eb1-85781a0ecd67'
+        ) {
           let newObj = {
             ...items,
             file_name: items?.file?.name,
@@ -207,6 +211,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
         for (let i = 0; i < quotesArr.length; i++) {
           let newObj = {
             ...quotesArr[i],
+            organization: userInformation?.organization,
             // quote_name: Date.now(),
           };
           const response = await dispatch(insertQuote([newObj]));
@@ -405,8 +410,11 @@ const AddQuote: FC<AddQuoteInterface> = ({
         });
       }
       router.push(
-        `/manualFileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}`,
+        `/fileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${latestestFIleId}&quoteExist=false`,
       );
+      // router.push(
+      //   `/manualFileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}`,
+      // );
     }
     if (newArrWithManual?.length === 0) {
       router.push(
@@ -451,7 +459,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
         );
       }
       if (newArrWithManual?.length > 0) {
-        router.push(`/manualFileEditor?id=${latestQuoteId}`);
+        router.push(
+          `/fileEditor?id=${latestQuoteId}&fileId=${latestQuoteFIleId}&quoteExist=false`,
+        );
+        // router.push(`/manualFileEditor?id=${latestQuoteId}`);
       }
     }
 

@@ -57,6 +57,7 @@ import {
   UpdateQuoteFileById,
   getQuoteFileById,
   getQuoteFileByIdForFormulas,
+  getfileByQuoteIdWithManual,
 } from '../../../../../redux/actions/quoteFile';
 import {getQuoteLineItemByQuoteIdForEditTable} from '../../../../../redux/actions/quotelineitem';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -126,22 +127,22 @@ const EditorFile = () => {
   };
   useEffect(() => {
     if (!salesForceUrl && getQuoteFileId) {
-      dispatch(getAllFormulasByDistributorAndOem(fileData))?.then(
-        (payload: any) => {
-          let newArr: any = [];
-          payload?.payload?.map((items: any) => {
-            if (items?.is_active) {
-              let newObj = {
-                label: items?.title,
-                value: items?.formula,
-              };
+      dispatch(
+        getAllFormulasByDistributorAndOem(fileData ? fileData : {}),
+      )?.then((payload: any) => {
+        let newArr: any = [];
+        payload?.payload?.map((items: any) => {
+          if (items?.is_active) {
+            let newObj = {
+              label: items?.title,
+              value: items?.formula,
+            };
 
-              newArr?.push(newObj);
-            }
-          });
-          setFormulaOptions(newArr);
-        },
-      );
+            newArr?.push(newObj);
+          }
+        });
+        setFormulaOptions(newArr);
+      });
     }
   }, [fileData]);
   // quoteId,instance_url,fileId
@@ -809,10 +810,68 @@ const EditorFile = () => {
       CancelEditing();
     }
   };
+
+  const checkForNewFileForSalesForce = async () => {
+    notification?.open({
+      message: 'The Line Items are created! Please close the modal!',
+    });
+
+    let data = {
+      token: salesToken,
+      FileId: null,
+      urls: salesForceUrl,
+      quoteId: SaleQuoteId,
+    };
+
+    dispatch(getSalesForceFileData(data))?.then((payload: any) => {
+      if (payload?.payload) {
+        let newObj = {
+          file_name: payload?.payload?.title,
+          FileId: payload?.payload?.fileId,
+        };
+        notification?.open({
+          message: 'Please Update Line Items for new manual File',
+          type: 'info',
+        });
+      } else {
+        notification?.open({
+          message: 'The Line Items are created! Please close the modal!',
+        });
+      }
+    });
+  };
+
   const checkForNewFile = async () => {
-    router.push(
-      `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
+    let isExist: boolean = false;
+    let dataNew: any;
+
+    await dispatch(getfileByQuoteIdWithManual(Number(getQUoteId)))?.then(
+      (payload: any) => {
+        if (payload?.payload) {
+          router.push(
+            `fileEditor?id=${Number(getQUoteId)}&fileId=${payload?.payload?.id}&quoteExist=false`,
+          );
+          window.history.replaceState(
+            null,
+            '',
+            `fileEditor?id=${Number(getQUoteId)}&fileId=${payload?.payload?.id}&quoteExist=false`,
+          );
+          location?.reload();
+        } else {
+          router.push(
+            `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
+          );
+          window.history.replaceState(
+            null,
+            '',
+            `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
+          );
+          location?.reload();
+        }
+      },
     );
+
+    setShowModal(false);
   };
 
   const AddNewCloumnToMergedTable = async (value: any) => {
@@ -1401,6 +1460,7 @@ const EditorFile = () => {
               setNanonetsLoading={setNanonetsLoading}
               nanonetsLoading={nanonetsLoading}
               routingConditions={checkForNewFile}
+              checkForNewFileForSalesForce={checkForNewFileForSalesForce}
               manualFlow={false}
               lineItemSyncingData={lineItemSyncingData}
             />

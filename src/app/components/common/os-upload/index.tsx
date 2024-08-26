@@ -76,6 +76,7 @@ const OsUpload: React.FC<any> = ({
     setLoading(true);
     for (let i = 0; i < uploadFileData.length; i++) {
       let obj: any = {...uploadFileData[i]};
+
       if (obj?.manualquote) {
         if (!obj?.distributor_name && !obj?.oem_name) {
           obj.error = true;
@@ -90,7 +91,11 @@ const OsUpload: React.FC<any> = ({
         }
       }
 
-      if (!obj.error && obj?.model_id) {
+      if (
+        !obj.error &&
+        (obj?.model_id || obj?.file?.type.includes('spreadsheetml')) &&
+        obj?.model_id !== 'a02fffb7-5221-44a2-8eb1-85781a0ecd67'
+      ) {
         // eslint-disable-next-line no-await-in-loop
         const response: any = await sendDataToNanonets(
           obj?.model_id,
