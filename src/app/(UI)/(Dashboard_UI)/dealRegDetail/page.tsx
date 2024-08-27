@@ -153,7 +153,7 @@ const DealRegDetail = () => {
         );
         if (lauchSalesPlayWright.fulfilled.match(response)) {
           await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
-            (response) => {
+            (response: {payload: any}) => {
               if (response?.payload) {
                 dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
               }
