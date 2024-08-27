@@ -12,7 +12,7 @@ export default async function handler(
   if (req.method === 'POST') {
     try {
       const {stdout: stdout1, stderr: stderr1} = await execPromise(
-        './node_modules/.bin/playwright test test/salesForce.spec.js --project chromium --headed',
+        'npx playwright test test/salesForce.spec.js --project chromium --headed',
       );
 
       if (stderr1) {
