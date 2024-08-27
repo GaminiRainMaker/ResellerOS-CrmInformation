@@ -78,6 +78,7 @@ interface EditPdfDataInterface {
   checkForNewFileForSalesForce?: any;
   currentFileName?: any;
   lineItemSyncingData?: any;
+  CurrentFileId?: any;
 }
 const SyncTableData: FC<EditPdfDataInterface> = ({
   setMergedVaalues,
@@ -90,6 +91,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   checkForNewFileForSalesForce,
   currentFileName,
   lineItemSyncingData,
+  CurrentFileId,
 }) => {
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -343,7 +345,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         // documentId: salesForceFiledId,
         urls: salesForceUrl,
         QuoteId: SaleQuoteId,
-        FileId: manualFlow ? currentFileId : salesForceFiledId,
+        FileId: manualFlow ? salesForceFiledId : CurrentFileId?.fileId,
         // FileId: '0Q09I0000002Bc5SAE',
         action: 'ExportFileToTable',
         lineItem: newArrWIthFileName,
