@@ -159,12 +159,14 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 const totalFloorValue = Math.floor(
                   24 / itemCon?.columnRequired,
                 );
+                const userfill = itemCon?.user_fill;
                 return (
                   <SelectFormItem
                     name={
                       'u_' +
                       convertToSnakeCase(itemLabelOp) +
-                      (itemCon?.name === 'Radio Button' ? '_radio' : '')
+                      (itemCon?.name === 'Radio Button' ? '_radio' : '') +
+                      (userfill ? '_userfill' : '')
                     }
                     label={
                       <Typography name="Body 4/Medium">
@@ -303,7 +305,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           const alignment = allContentItem?.Alignemnt || 'left';
           const fontSize = allContentItem?.FontSize || 'default';
           const required = allContentItem?.required;
-
+          const userfill = allContentItem?.user_fill;
           if (allContentItem?.name === 'Text Content') {
             return (
               <Col
@@ -332,7 +334,8 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                   convertToSnakeCase(allContentItem.label) +
                   itemIndex +
                   activeKey +
-                  (required ? '_required' : '')
+                  (required ? '_required' : '') +
+                  (userfill ? '_userfill' : '')
                 }
                 label={
                   <Typography name="Body 4/Medium">
