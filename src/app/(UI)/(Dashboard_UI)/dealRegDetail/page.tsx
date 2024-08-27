@@ -148,10 +148,8 @@ const DealRegDetail = () => {
         const processScriptData = processScript1(finalData);
         console.log('finalData', finalData, processScriptData);
 
-        const response = await dispatch(
-          lauchSalesPlayWright([processScriptData]),
-        );
-        if (lauchSalesPlayWright.fulfilled.match(response)) {
+        const response = await dispatch(lauchPlayWright([processScriptData]));
+        if (lauchPlayWright.fulfilled.match(response)) {
           await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
             (response: {payload: any}) => {
               if (response?.payload) {

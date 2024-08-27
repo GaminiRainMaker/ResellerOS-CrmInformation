@@ -1,20 +1,11 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
-import {exec} from 'child_process';
 import {chromium} from 'playwright';
-import util from 'util';
-
-const execPromise = util.promisify(exec);
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   if (req.method === 'POST') {
-    const {stdout, stderr} = await execPromise('npx playwright install');
-    if (stderr) {
-      console.error(stderr);
-      return res.status(500).json({error: stderr});
-    }
     const data = req.body.data;
     const script = JSON.parse(data[0]);
 
