@@ -193,6 +193,7 @@ const EditorFile = () => {
     };
 
     let pathTOGo = salesFOrceManual === 'true' ? data : dataSingle;
+    console.log('34543534', pathTOGo);
     dispatch(getSalesForceFileData(pathTOGo))?.then(async (payload: any) => {
       if (!payload?.payload?.body) {
         notification?.open({
@@ -904,7 +905,9 @@ const EditorFile = () => {
       urls: salesForceUrl,
       quoteId: SaleQuoteId,
     };
-    if (salesFOrceManual === 'true') {
+    console.log('3453453', salesFOrceManual === 'true');
+
+    if (salesFOrceManual === 'false') {
       notification?.open({
         message: 'Please close the modal!. All the files are updated',
         type: 'info',
@@ -913,6 +916,7 @@ const EditorFile = () => {
 
       return;
     }
+    console.log('3453453', salesFOrceManual === 'true');
     dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
       if (payload?.payload) {
         if (!payload?.payload?.body) {
