@@ -32,8 +32,14 @@ import {
   lauchPlayWright,
   lauchSalesPlayWright,
 } from '../../../../../redux/actions/playwright';
-import {decrypt, processScript, transformDataKeys} from '@/app/utils/base';
+import {
+  decrypt,
+  processFormData,
+  processScript,
+  processScript1,
+} from '@/app/utils/base';
 const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
+import {test, expect, Page} from '@playwright/test';
 
 const DealRegDetail = () => {
   const [getFormData] = Form.useForm();
@@ -115,12 +121,14 @@ const DealRegDetail = () => {
     const finalScriptData = finalUpdatedDealRegData?.filter(
       (item: any) => item?.id === SubmitDealRegFormData?.id,
     );
-    // ZIP/Postal Code
     if (SubmitDealRegFormData) {
       try {
         const {PartnerProgram, unique_form_data} = finalScriptData?.[0];
         const finalUniqueData =
           unique_form_data && JSON?.parse(unique_form_data);
+        const template =
+          PartnerProgram?.form_data &&
+          JSON?.parse(PartnerProgram?.form_data)?.[0]?.content;
 
         const [iv, encryptedData] =
           PartnerProgram?.PartnerPassword?.password?.split(':');
@@ -129,17 +137,38 @@ const DealRegDetail = () => {
           SECRET_KEY as string,
           iv,
         );
-        const newFormData = transformDataKeys(finalUniqueData);
-        let finalObj = {
+        const newFormData = processFormData(template, finalUniqueData);
+        console.log('newFormData', newFormData);
+        const finalData = {
           email: PartnerProgram?.PartnerPassword?.email,
           password: decrypted,
           data: newFormData,
           script: PartnerProgram?.script,
         };
-        const processScriptData = processScript(
-          PartnerProgram?.script,
-          finalObj,
-        );
+        // let finalData: any = {};
+        // test('process script with page', async ({page}: {page: Page}) => {
+        //   // Example finalData
+        //   finalData = {
+        //     email: PartnerProgram?.PartnerPassword?.email,
+        //     password: decrypted,
+        //     data: newFormData,
+        //     script: PartnerProgram?.script,
+        //   };
+
+        //   // Process the script
+        //   const processScriptData = await processScript(finalData, page);
+
+        //   // Use `processScriptData` as needed, e.g., execute the script
+        //   console.log('processScriptData', processScriptData);
+
+        // });
+        const processScriptData = processScript1(finalData);
+        // console.log(
+        //   'finalData',
+        //   finalData,
+        //   'processScriptData',
+        //   processScriptData,
+        // );
         const response = await dispatch(lauchPlayWright([processScriptData]));
         if (lauchPlayWright.fulfilled.match(response)) {
           console.log('Script executed successfully:', response.payload);
@@ -162,32 +191,6 @@ const DealRegDetail = () => {
     }
   };
 
-  const launchBotSalesForce = async () => {
-    try {
-      const {PartnerProgram, unique_form_data} = formData;
-
-      const [iv, encryptedData] =
-        PartnerProgram?.PartnerPassword?.password?.split(':');
-      const decrypted = await decrypt(encryptedData, SECRET_KEY as string, iv);
-
-      const newFormData = transformDataKeys(unique_form_data);
-      let finalObj = {
-        email: PartnerProgram?.PartnerPassword?.email,
-        password: decrypted,
-        data: newFormData,
-        script: PartnerProgram?.script,
-      };
-      const processScriptData = processScript(PartnerProgram?.script, finalObj);
-      const response = await dispatch(lauchPlayWright([processScriptData]));
-      if (lauchPlayWright.fulfilled.match(response)) {
-        console.log('Script executed successfully:', response.payload);
-      } else {
-        console.error('Error running script:', response.payload);
-      }
-    } catch (error) {
-      console.error('Error running script:', error);
-    }
-  };
   const lauchSalesPlayBot = async () => {
     try {
       const response = await dispatch(lauchSalesPlayWright([]));
