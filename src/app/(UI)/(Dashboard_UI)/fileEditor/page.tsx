@@ -104,6 +104,7 @@ const EditorFile = () => {
   const salesToken = searchParams.get('key');
   const SaleQuoteId = searchParams.get('quote_Id');
   const EditSalesLineItems = searchParams.get('editLine');
+  const salesFOrceManual = searchParams.get('manual');
   const salesForceUrl = searchParams.get('instance_url');
   const salesForceFiledId = searchParams.get('file_Id');
   const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
@@ -148,7 +149,7 @@ const EditorFile = () => {
       },
     );
   }, [fileData]);
-
+  console.log('4353453453', salesFOrceManual);
   // quoteId,instance_url,fileId
   // ============================== SalesForce Implementations ======================================
 
@@ -178,12 +179,12 @@ const EditorFile = () => {
     }
 
     // Work in case of export to tables
-    // let data = {
-    //   token: salesToken,
-    //   FileId: salesForceFiledId,
-    //   urls: salesForceUrl,
-    //   quoteId: null,
-    // };
+    let dataSingle = {
+      token: salesToken,
+      FileId: salesForceFiledId,
+      urls: salesForceUrl,
+      quoteId: null,
+    };
     let data = {
       token: salesToken,
       FileId: null,
@@ -191,7 +192,8 @@ const EditorFile = () => {
       quoteId: SaleQuoteId,
     };
 
-    dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
+    let pathTOGo = salesFOrceManual === 'true' ? data : dataSingle;
+    dispatch(getSalesForceFileData(pathTOGo))?.then(async (payload: any) => {
       if (!payload?.payload?.body) {
         notification?.open({
           message: 'Please close the modal!. All the files are updated',
@@ -911,8 +913,9 @@ const EditorFile = () => {
             type: 'info',
           });
           setNanonetsLoading(false);
-          return;
+
           location?.reload();
+          return;
         }
         let newObj = {
           file_name: payload?.payload?.title,
