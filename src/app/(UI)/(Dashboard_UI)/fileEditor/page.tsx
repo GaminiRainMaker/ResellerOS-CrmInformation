@@ -463,6 +463,34 @@ const EditorFile = () => {
     'Y :',
     'Z :',
   ];
+  let newArrForAlpaForFormulas = [
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z',
+  ];
   useEffect(() => {
     if (quoteItems?.length === 1) {
       mergeTableData(quoteItems);
@@ -1011,7 +1039,7 @@ const EditorFile = () => {
     const index = keys.indexOf(resulsst);
     let indexToApply = index;
     // Alpabet extration
-    let columnLetter = newArrForAlpa[indexToApply];
+    let columnLetter = newArrForAlpaForFormulas[indexToApply];
 
     // Generate the new array with the computed property
 
@@ -1063,13 +1091,13 @@ const EditorFile = () => {
     const index = keys.indexOf(FromMap);
     let indexToApply = index;
     // Alpabet extration
-    let column1 = newArrForAlpa[indexToApply];
+    let column1 = newArrForAlpaForFormulas[indexToApply];
     // ====================for toMap========
 
     const indexNew = keys.indexOf(MapTo);
     let indexToApplynew = indexNew;
     // Alpabet extration
-    let column2 = newArrForAlpa[indexToApplynew];
+    let column2 = newArrForAlpaForFormulas[indexToApplynew];
 
     // Function to extract function name from the formula
     function extractFunctionName(formula: any) {
