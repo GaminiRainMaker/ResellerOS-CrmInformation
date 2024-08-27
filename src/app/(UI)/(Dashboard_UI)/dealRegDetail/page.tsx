@@ -138,27 +138,22 @@ const DealRegDetail = () => {
           iv,
         );
         const newFormData = processFormData(template, finalUniqueData);
-        console.log('newFormData', newFormData);
         const finalData = {
           email: PartnerProgram?.PartnerPassword?.email,
           password: decrypted,
           data: newFormData,
           script: PartnerProgram?.script,
         };
-        const processScriptData = processScript1(finalData);
 
-        const response = await dispatch(lauchPlayWright([processScriptData]));
-        if (lauchPlayWright.fulfilled.match(response)) {
-          const response = await dispatch(
-            lauchSalesPlayWright([processScriptData]),
-          );
-          if (lauchSalesPlayWright.fulfilled.match(response)) {
-            console.log('Script executed successfully:', response.payload);
-          } else {
-            console.error('Error running script:', response.payload);
-          }
+        const processScriptData = processScript1(finalData);
+        console.log('finalData', finalData, processScriptData);
+
+        const response = await dispatch(
+          lauchSalesPlayWright([processScriptData]),
+        );
+        if (lauchSalesPlayWright.fulfilled.match(response)) {
           await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
-            (response) => {
+            (response: {payload: any}) => {
               if (response?.payload) {
                 dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
               }
