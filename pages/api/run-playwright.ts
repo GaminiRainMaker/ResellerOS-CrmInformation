@@ -1,13 +1,13 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
-const {execSync} = require('child_process');
+import {execSync} from 'child_process';
 import {chromium} from 'playwright';
+execSync('npx playwright install', {stdio: 'inherit'});
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   if (req.method === 'POST') {
-    execSync('npx playwright install', {stdio: 'inherit'});
     const data = req.body.data;
     const script = JSON.parse(data[0]);
 
