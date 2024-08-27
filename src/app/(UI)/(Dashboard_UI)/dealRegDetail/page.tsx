@@ -145,43 +145,26 @@ const DealRegDetail = () => {
           data: newFormData,
           script: PartnerProgram?.script,
         };
-        // let finalData: any = {};
-        // test('process script with page', async ({page}: {page: Page}) => {
-        //   // Example finalData
-        //   finalData = {
-        //     email: PartnerProgram?.PartnerPassword?.email,
-        //     password: decrypted,
-        //     data: newFormData,
-        //     script: PartnerProgram?.script,
-        //   };
-
-        //   // Process the script
-        //   const processScriptData = await processScript(finalData, page);
-
-        //   // Use `processScriptData` as needed, e.g., execute the script
-        //   console.log('processScriptData', processScriptData);
-
-        // });
         const processScriptData = processScript1(finalData);
-        // console.log(
-        //   'finalData',
-        //   finalData,
-        //   'processScriptData',
-        //   processScriptData,
-        // );
+
         const response = await dispatch(lauchPlayWright([processScriptData]));
         if (lauchPlayWright.fulfilled.match(response)) {
-          console.log('Script executed successfully:', response.payload);
-        } else {
-          console.error('Error running script:', response.payload);
+          const response = await dispatch(
+            lauchSalesPlayWright([processScriptData]),
+          );
+          if (lauchSalesPlayWright.fulfilled.match(response)) {
+            console.log('Script executed successfully:', response.payload);
+          } else {
+            console.error('Error running script:', response.payload);
+          }
+          await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
+            (response) => {
+              if (response?.payload) {
+                dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+              }
+            },
+          );
         }
-        await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
-          (response) => {
-            if (response?.payload) {
-              dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-            }
-          },
-        );
       } catch (error) {
         console.error('Error running script:', error);
       }

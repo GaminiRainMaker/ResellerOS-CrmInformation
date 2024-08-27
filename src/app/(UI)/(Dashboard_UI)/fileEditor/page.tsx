@@ -29,6 +29,7 @@ import {
   formatStatus,
 } from '@/app/utils/CONSTANTS';
 import {
+  checkFunctionInArray,
   concatenateAfterFirstWithSpace,
   getResultedValue,
   sendDataToNanonets,
@@ -117,6 +118,9 @@ const EditorFile = () => {
   const [valueOfNewFormula, setValueOfNewFormula] = useState<any>();
 
   const [fileData, setFileData] = useState<any>({});
+  const [decliendFormulas, setDecliendFormulas] = useState<any>();
+  const [finalArrForMerged, setFinalArrayForMerged] = useState<any>();
+  const [currentFIle, setCurrentFile] = useState<any>();
 
   const getQuoteFileByIdForFormulads = async () => {
     await dispatch(getQuoteFileByIdForFormulas(getQuoteFileId))?.then(
@@ -125,6 +129,7 @@ const EditorFile = () => {
       },
     );
   };
+
   useEffect(() => {
     dispatch(getAllFormulasByDistributorAndOem(fileData ? fileData : {}))?.then(
       (payload: any) => {
@@ -143,6 +148,7 @@ const EditorFile = () => {
       },
     );
   }, [fileData]);
+
   // quoteId,instance_url,fileId
   // ============================== SalesForce Implementations ======================================
 
@@ -178,7 +184,23 @@ const EditorFile = () => {
       urls: salesForceUrl,
       quoteId: null,
     };
+    // let data = {
+    //   token: salesToken,
+    //   FileId: null,
+    //   urls: salesForceUrl,
+    //   quoteId: SaleQuoteId,
+    // };
+    // dispatch(getSalesForceFileData(data))?.then((payload: any) => {
+    //   let newObj = {
+    //     file_name: payload?.payload?.title,
+    //     FileId: payload?.payload?.fileId,
+    //   };
+    //   console.log('3242342', newObj);
+    // });
+    // return;
     dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
+      console.log('345332432', payload?.payload?.title);
+      setCurrentFile({file_name: payload?.payload?.title});
       setNanonetsLoading(true);
       const binaryString = atob(payload?.payload?.body);
 
@@ -410,32 +432,32 @@ const EditorFile = () => {
   }, [ExistingQuoteItemss, quoteFileById]);
 
   let newArrForAlpa = [
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-    'F',
-    'G',
-    'H',
-    'I',
-    'J',
-    'K',
-    'L',
-    'M',
-    'N',
-    'O',
-    'P',
-    'Q',
-    'R',
-    'S',
-    'T',
-    'U',
-    'V',
-    'W',
-    'X',
-    'Y',
-    'Z',
+    'A :',
+    'B :',
+    'C :',
+    'D :',
+    'E :',
+    'F :',
+    'G :',
+    'H :',
+    'I :',
+    'J :',
+    'K :',
+    'L :',
+    'M :',
+    'N :',
+    'O :',
+    'P :',
+    'Q :',
+    'R :',
+    'S :',
+    'T :',
+    'U :',
+    'V :',
+    'W :',
+    'X :',
+    'Y :',
+    'Z :',
   ];
   useEffect(() => {
     if (quoteItems?.length === 1) {
@@ -501,18 +523,21 @@ const EditorFile = () => {
       setMissingId(missingIds);
     }
   }, [updateLineItemsValue]);
-
   useEffect(() => {
     if (!salesForceUrl) {
       dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then(
         (payload: any) => {
           if (payload?.payload === null) {
             setReturnModalBack(true);
+          } else {
+            setCurrentFile(payload?.payload);
           }
         },
       );
     }
   }, [getQuoteFileId]);
+
+  console.log('2343243221', currentFIle);
 
   const updateRowsValueforTable = (
     indexOFTable: number,
@@ -575,8 +600,27 @@ const EditorFile = () => {
 
     // Apply transformation
     let result = transformObjects(resultArray);
+    function cleanKeys(obj: any) {
+      const cleanedObj: any = {};
+      // Iterate over each key-value pair in the object
+      for (const [key, value] of Object.entries(obj)) {
+        // Remove special characters (e.g., periods, spaces) from the key
+        const cleanedKey: any = key.replace(/[^\w]/g, '');
+        cleanedObj[cleanedKey] = value;
+      }
+      return cleanedObj;
+    }
 
-    setMergedVaalues(result);
+    function cleanArray(arr: any) {
+      // Apply the cleanKeys function to each object in the array
+      return arr.map(cleanKeys);
+    }
+
+    // Clean the array
+    let cleanedArr = cleanArray(result);
+
+    setMergedVaalues(cleanedArr);
+    setFinalArrayForMerged(cleanedArr);
   };
 
   const deleteTable = (indexOfTable: number) => {
@@ -620,8 +664,11 @@ const EditorFile = () => {
       }
       dispatch(getFormulaByFormulaAndOemDist(newObj))?.then((payload: any) => {
         if (payload?.payload === null) {
-          setValueOfNewFormula(changedValue);
-          setOpenAddNewFormulaModal(true);
+          let isExist = checkFunctionInArray(decliendFormulas, changedValue);
+          if (!isExist) {
+            setValueOfNewFormula(changedValue);
+            setOpenAddNewFormulaModal(true);
+          }
         }
       });
     }
@@ -635,7 +682,6 @@ const EditorFile = () => {
       return itemTop;
     });
     setMergedVaalues(changedArr);
-    setRunScriptTOGetValues(true);
   };
 
   const deleteRowsItems = (indexOfDeletion: number, NumberOf: number) => {
@@ -903,7 +949,7 @@ const EditorFile = () => {
       });
     };
 
-    let result = concatenateAfterFirstWithSpace(old?.split(' '));
+    let result = concatenateAfterFirstWithSpace(old);
     let updatedArr = renameKey(newArr, result, newVal);
 
     setMergedVaalues(updatedArr);
@@ -941,9 +987,8 @@ const EditorFile = () => {
     //   return array.slice(1).join(' ');
     // }
 
-    let resulsst = concatenateAfterFirstWithSpace(oldName?.split(' '));
+    let resulsst = concatenateAfterFirstWithSpace(oldName);
     // Find the index of the key 'ap'
-    console.log('ewr342343', keys, resulsst);
     const index = keys.indexOf(resulsst);
     let indexToApply = index;
     // Alpabet extration
@@ -1048,42 +1093,55 @@ const EditorFile = () => {
     setFormulaSelected('');
     setShowApplyFormula(false);
   };
+  const addNewValueForChangesHit = () => {
+    let newArrrr: any = [...mergedValue];
+    let valuess = newArrrr[0];
+    console.log(
+      '234324324',
+      valuess,
+      mergeedColumn?.reduce((a: any, v: any) => ({...a, [v]: v}), {}),
+    );
+    let newObj = mergeedColumn?.reduce(
+      (a: any, v: any) => ({...a, [v]: v}),
+      {},
+    );
+    newArrrr?.push(newObj);
+    setRunScriptTOGetValues(true);
+    setMergedVaalues(newArrrr);
+  };
   const afterFormulasValuesUpdate = (changes: any) => {
-    if (runSriptToGetValues) {
-      // Preventing unnecessary state updates
-      const newArrr = [...mergedValue];
+    // setFinalArrayForMerged(changes);
+    // if (!runSriptToGetValues) {
 
-      const getPropertyNames = (obj: any) => Object.keys(obj);
+    const newArrr = [...mergedValue];
+    // const newArrr = [...mergedValue];
 
-      changes.forEach((update: any) => {
-        const col = update.address?.col;
-        const row = update.address?.row;
-        const value: any = update?.newValue;
+    const getPropertyNames = (obj: any) => Object.keys(obj);
+    changes.forEach((update: any) => {
+      const col = update.address?.col;
+      const row = update.address?.row;
+      const value: any = update?.newValue;
 
-        // Ensure value is a string
-        const stringValue = String(value);
-
-        if (row < newArrr.length) {
-          const propertyNames = getPropertyNames(newArrr[row]);
-
-          if (col >= 0 && col < propertyNames.length) {
-            const propertyName = propertyNames[col];
-            newArrr[row] = {
-              ...newArrr[row],
-              [propertyName]: stringValue,
-            };
-          }
+      const stringValue = String(value);
+      if (row < newArrr.length) {
+        const propertyNames = getPropertyNames(newArrr[row]);
+        if (col >= 0 && col < propertyNames.length) {
+          const propertyName = propertyNames[col];
+          newArrr[row] = {
+            ...newArrr[row],
+            [propertyName]: stringValue,
+          };
         }
-      });
-
-      // Check if newArrr is different from mergedValue before updating state
-      if (JSON.stringify(newArrr) !== JSON.stringify(mergedValue)) {
-        setMergedVaalues(newArrr);
       }
-
-      // Optionally, you might want to set runScriptToGetValues to false here if needed
-      // setRunScriptToGetValues(false);
+    });
+    // Check if newArrr is different from mergedValue before updating state
+    if (JSON.stringify(newArrr) !== JSON.stringify(finalArrForMerged)) {
+      // setMergedVaalues(newArrr);
+      setFinalArrayForMerged(newArrr);
     }
+    // =SUM(A1:G1)
+
+    // }
   };
 
   const addFormulaTOStoredFormulas = async (value: any) => {
@@ -1101,6 +1159,11 @@ const EditorFile = () => {
 
   return (
     <GlobalLoader loading={nanonetsLoading}>
+      <Space size={0} style={{marginBottom: '20px'}}>
+        {' '}
+        <Typography name="Body 1/Bold">{currentFIle?.file_name}</Typography>
+      </Space>
+
       {ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true' ? (
         <>
           <div
@@ -1306,6 +1369,7 @@ const EditorFile = () => {
                   buttontype="PRIMARY"
                   clickHandler={() => {
                     syncShow('sync');
+                    // addNewValueForChangesHit();
                   }}
                 />
               </Space>
@@ -1453,7 +1517,7 @@ const EditorFile = () => {
           // loading={loading}
           body={
             <SyncTableData
-              mergedValue={mergedValue}
+              mergedValue={finalArrForMerged}
               setMergedVaalues={setMergedVaalues}
               setNanonetsLoading={setNanonetsLoading}
               nanonetsLoading={nanonetsLoading}
@@ -1646,6 +1710,11 @@ const EditorFile = () => {
                   text={`No`}
                   buttontype="SECONDARY"
                   clickHandler={() => {
+                    let newArrr: any =
+                      decliendFormulas?.length > 0 ? [...decliendFormulas] : [];
+
+                    newArrr?.push(valueOfNewFormula);
+                    setDecliendFormulas(newArrr);
                     setValueOfNewFormula('');
                     setOpenAddNewFormulaModal(false);
                   }}

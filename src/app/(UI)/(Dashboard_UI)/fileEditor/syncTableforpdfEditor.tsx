@@ -133,7 +133,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       // }
     });
   }
-
   useEffect(() => {
     const newSyncTableData =
       syncedNewValue?.length > 0 ? [...syncedNewValue] : [];

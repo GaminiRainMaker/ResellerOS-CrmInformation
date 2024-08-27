@@ -1628,14 +1628,46 @@ export const processScript = async (finalObj: FinalObj, page: any) => {
   return processedScript;
 };
 
-export function concatenateAfterFirstWithSpace(array: any) {
-  // Check if there are at least two elements
-  if (array.length < 2) {
-    return ''; // or handle the case where there aren't enough elements
+export function extractFunctionName(formula: any) {
+  // Extract the function name from the formula (e.g., 'SUM' from '=SUM(A1:A0)')
+  const match = formula.match(/^=(\w+)\(/);
+  return match ? match[1] : null;
+}
+
+export function containsFunctionFormula(formula: any, functionName: any) {
+  // Check if the formula contains the specified function
+  const regex = new RegExp(`=${functionName}\\(`, 'i');
+  return regex.test(formula);
+}
+
+export function checkFunctionInArray(arr: any, formulaToCheck: any) {
+  // Extract the function name from formulaToCheck
+  const functionName = extractFunctionName(formulaToCheck);
+
+  if (!functionName) {
+    // If no function name is found, return false
+    return false;
   }
 
-  // Join all elements after the first one into a single string with space separation
-  return array.slice(1).join(' ');
+  // Check if the array contains any formula with the specified function and if formulaToCheck contains it
+  return (
+    arr?.some((formula: any) =>
+      containsFunctionFormula(formula, functionName),
+    ) && containsFunctionFormula(formulaToCheck, functionName)
+  );
+}
+export function concatenateAfterFirstWithSpace(inputString: any) {
+  let colonIndex = inputString.indexOf(':');
+
+  // Check if colon exists in the string
+  if (colonIndex !== -1) {
+    // Extract the part after the colon and trim any extra spaces
+    let result = inputString.substring(colonIndex + 1).trim();
+    return result;
+  } else {
+    // Return the original string if no colon is found
+    return inputString;
+  }
 }
 
 export const convertToSnakeCase = (input: string): string => {
