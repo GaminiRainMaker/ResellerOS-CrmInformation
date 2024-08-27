@@ -904,7 +904,6 @@ const EditorFile = () => {
       urls: salesForceUrl,
       quoteId: SaleQuoteId,
     };
-
     if (salesFOrceManual === 'true') {
       notification?.open({
         message: 'Please close the modal!. All the files are updated',
@@ -913,36 +912,35 @@ const EditorFile = () => {
       setNanonetsLoading(false);
 
       return;
-    } else {
-      dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
-        if (payload?.payload) {
-          if (!payload?.payload?.body) {
-            notification?.open({
-              message: 'Please close the modal!. All the files are updated',
-              type: 'info',
-            });
-            setNanonetsLoading(false);
-
-            location?.reload();
-            return;
-          }
-          let newObj = {
-            file_name: payload?.payload?.title,
-            fileId: payload?.payload?.fileId,
-          };
-          setCurrentFile(newObj);
+    }
+    dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
+      if (payload?.payload) {
+        if (!payload?.payload?.body) {
           notification?.open({
-            message: 'Please Update Line Items for new File',
+            message: 'Please close the modal!. All the files are updated',
             type: 'info',
           });
-          location?.reload();
-        } else {
-          notification?.open({
-            message: 'The Line Items are created! Please close the modal!',
-          });
+          setNanonetsLoading(false);
+
+          // location?.reload();
+          return;
         }
-      });
-    }
+        let newObj = {
+          file_name: payload?.payload?.title,
+          fileId: payload?.payload?.fileId,
+        };
+        setCurrentFile(newObj);
+        notification?.open({
+          message: 'Please Update Line Items for new File',
+          type: 'info',
+        });
+        location?.reload();
+      } else {
+        notification?.open({
+          message: 'The Line Items are created! Please close the modal!',
+        });
+      }
+    });
   };
 
   const checkForNewFile = async () => {
