@@ -10,13 +10,6 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   if (req.method === 'POST') {
-    const {stdout: stdout2, stderr: stderr2} = await execPromise(
-      'npm install -g npm@latest',
-    );
-    if (stderr2) {
-      console.error(stderr2);
-      return res.status(500).json({error: stderr2});
-    }
     const {stdout, stderr} = await execPromise('npx playwright install');
     if (stderr) {
       console.error(stderr);
