@@ -29,6 +29,7 @@ import DealRegCustomTabs from './DealRegCustomTabs';
 import SubmitDealRegForms from './SubmitDealRegForms';
 import {runSalesForceBot} from '../../../../../redux/actions/auth';
 import {
+  installPlaywright,
   lauchPlayWright,
   lauchSalesPlayWright,
 } from '../../../../../redux/actions/playwright';
@@ -140,7 +141,10 @@ const DealRegDetail = () => {
           PartnerProgram?.script,
           finalObj,
         );
-        const response = await dispatch(lauchPlayWright([processScriptData]));
+
+        const response = await dispatch(
+          lauchSalesPlayWright([processScriptData]),
+        );
         if (lauchPlayWright.fulfilled.match(response)) {
           console.log('Script executed successfully:', response.payload);
         } else {
