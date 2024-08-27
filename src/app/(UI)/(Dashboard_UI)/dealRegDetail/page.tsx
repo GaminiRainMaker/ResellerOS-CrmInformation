@@ -29,7 +29,6 @@ import DealRegCustomTabs from './DealRegCustomTabs';
 import SubmitDealRegForms from './SubmitDealRegForms';
 import {runSalesForceBot} from '../../../../../redux/actions/auth';
 import {
-  installPlaywright,
   lauchPlayWright,
   lauchSalesPlayWright,
 } from '../../../../../redux/actions/playwright';
