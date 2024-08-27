@@ -179,8 +179,10 @@ const DealRegDetail = () => {
         script: PartnerProgram?.script,
       };
       const processScriptData = processScript(PartnerProgram?.script, finalObj);
-      const response = await dispatch(lauchPlayWright([processScriptData]));
-      if (lauchPlayWright.fulfilled.match(response)) {
+      const response = await dispatch(
+        lauchSalesPlayWright([processScriptData]),
+      );
+      if (lauchSalesPlayWright.fulfilled.match(response)) {
         console.log('Script executed successfully:', response.payload);
       } else {
         console.error('Error running script:', response.payload);
@@ -215,11 +217,11 @@ const DealRegDetail = () => {
               buttontype="SECONDARY"
               clickHandler={lauchSalesPlayBot}
             /> */}
-            {/* <OsButton
+            <OsButton
               text="Launch Bot"
               buttontype="SECONDARY"
               clickHandler={launchBotSalesForce}
-            /> */}
+            />
             <OsButton
               text="Submit Form"
               buttontype="SECONDARY"
