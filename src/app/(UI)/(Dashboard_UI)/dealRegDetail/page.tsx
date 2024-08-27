@@ -141,9 +141,7 @@ const DealRegDetail = () => {
           finalObj,
         );
 
-        const response = await dispatch(
-          lauchSalesPlayWright([processScriptData]),
-        );
+        const response = await dispatch(lauchPlayWright([processScriptData]));
         if (lauchPlayWright.fulfilled.match(response)) {
           console.log('Script executed successfully:', response.payload);
         } else {

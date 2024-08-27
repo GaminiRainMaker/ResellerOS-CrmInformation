@@ -13,7 +13,7 @@ export default async function handler(
     try {
       const {data} = req.body;
       const {stdout: stdout2, stderr: stderr2} = await execPromise(
-        'npm install -g npm@latest ',
+        'npm install -g npm@latest',
       );
       if (stderr2) {
         console.error(stderr2);
