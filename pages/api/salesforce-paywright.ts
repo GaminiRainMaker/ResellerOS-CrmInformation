@@ -1,10 +1,7 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {exec} from 'child_process';
 import util from 'util';
-import path from 'path';
 
-// Construct the absolute path to Playwright binary
-const playwrightPath = path.resolve('node_modules/.bin/playwright');
 // Promisify exec to use with async/await
 const execPromise = util.promisify(exec);
 
@@ -15,7 +12,7 @@ export default async function handler(
   if (req.method === 'POST') {
     try {
       const {stdout: stdout1, stderr: stderr1} = await execPromise(
-        `${playwrightPath} test test/salesForce.spec.js --project chromium --headed`,
+        `npx playwright test test/salesForce.spec.js --project chromium --headed`,
       );
 
       if (stderr1) {
