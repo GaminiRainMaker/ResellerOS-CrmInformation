@@ -237,10 +237,17 @@ const EditorFile = () => {
     if (SaleQuoteId) {
       let data = {
         token: salesToken,
-        FileId: null,
+        FileId: salesForceFiledId,
         urls: salesForceUrl,
-        quoteId: SaleQuoteId,
+        quoteId: null,
       };
+      // Work in case of export to tables
+      // let data = {
+      //   token: salesToken,
+      //   FileId: salesForceFiledId,
+      //   urls: salesForceUrl,
+      //   quoteId: null,
+      // };
       dispatch(getSalesForceFileData(data))?.then((payload: any) => {
         let newObj = {
           file_name: payload?.payload?.title,
@@ -294,35 +301,6 @@ const EditorFile = () => {
     notification?.open({
       message: 'The Line Items are created! Please close the modal!',
     });
-
-    // let data = {
-    //   token: salesToken,
-    //   FileId: null,
-    //   urls: salesForceUrl,
-    //   quoteId: SaleQuoteId,
-    // };
-
-    // setShowModal(false);
-    // setShowConfirmHeader(false);
-    // setSaveNewHeader(false);
-    // addNewLine();
-    // dispatch(getSalesForceFileData(data))?.then((payload: any) => {
-    //   if (payload?.payload) {
-    //     let newObj = {
-    //       file_name: payload?.payload?.title,
-    //       FileId: payload?.payload?.fileId,
-    //     };
-    //     setCurrentFileData(newObj);
-    //     notification?.open({
-    //       message: 'Please Update Line Items for new manual File',
-    //       type: 'info',
-    //     });
-    //   } else {
-    //     notification?.open({
-    //       message: 'The Line Items are created! Please close the modal!',
-    //     });
-    //   }
-    // });
   };
 
   const checkForNewFile = async () => {

@@ -178,29 +178,33 @@ const EditorFile = () => {
     }
 
     // Work in case of export to tables
-    let data = {
-      token: salesToken,
-      FileId: salesForceFiledId,
-      urls: salesForceUrl,
-      quoteId: null,
-    };
     // let data = {
     //   token: salesToken,
-    //   FileId: null,
+    //   FileId: salesForceFiledId,
     //   urls: salesForceUrl,
-    //   quoteId: SaleQuoteId,
+    //   quoteId: null,
     // };
-    // dispatch(getSalesForceFileData(data))?.then((payload: any) => {
-    //   let newObj = {
-    //     file_name: payload?.payload?.title,
-    //     FileId: payload?.payload?.fileId,
-    //   };
-    //   console.log('3242342', newObj);
-    // });
-    // return;
+    let data = {
+      token: salesToken,
+      FileId: null,
+      urls: salesForceUrl,
+      quoteId: SaleQuoteId,
+    };
+
     dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
-      console.log('345332432', payload?.payload?.title);
-      setCurrentFile({file_name: payload?.payload?.title});
+      if (!payload?.payload?.body) {
+        notification?.open({
+          message: 'Please close the modal!. All the files are updated',
+          type: 'info',
+        });
+        setNanonetsLoading(false);
+        return;
+        setMergedVaalues([]);
+      }
+      setCurrentFile({
+        file_name: payload?.payload?.title,
+        fileId: payload?.payload?.fileId,
+      });
       setNanonetsLoading(true);
       const binaryString = atob(payload?.payload?.body);
 
@@ -537,8 +541,6 @@ const EditorFile = () => {
     }
   }, [getQuoteFileId]);
 
-  console.log('2343243221', currentFIle);
-
   const updateRowsValueforTable = (
     indexOFTable: number,
     rowIndex: number,
@@ -854,11 +856,17 @@ const EditorFile = () => {
       CancelEditing();
     }
   };
+  let data = {
+    token: salesToken,
+    FileId: null,
+    urls: salesForceUrl,
+    quoteId: SaleQuoteId,
+  };
 
   const checkForNewFileForSalesForce = async () => {
-    notification?.open({
-      message: 'The Line Items are created! Please close the modal!',
-    });
+    // notification?.open({
+    //   message: 'The Line Items are created! Please close the modal!',
+    // });
 
     let data = {
       token: salesToken,
@@ -867,16 +875,27 @@ const EditorFile = () => {
       quoteId: SaleQuoteId,
     };
 
-    dispatch(getSalesForceFileData(data))?.then((payload: any) => {
+    dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
       if (payload?.payload) {
+        if (!payload?.payload?.body) {
+          notification?.open({
+            message: 'Please close the modal!. All the files are updated',
+            type: 'info',
+          });
+          setNanonetsLoading(false);
+          return;
+          location?.reload();
+        }
         let newObj = {
           file_name: payload?.payload?.title,
-          FileId: payload?.payload?.fileId,
+          fileId: payload?.payload?.fileId,
         };
+        setCurrentFile(newObj);
         notification?.open({
-          message: 'Please Update Line Items for new manual File',
+          message: 'Please Update Line Items for new File',
           type: 'info',
         });
+        location?.reload();
       } else {
         notification?.open({
           message: 'The Line Items are created! Please close the modal!',
@@ -1500,11 +1519,13 @@ const EditorFile = () => {
                         }}
                       />
                     )}
-                    <OsButton
-                      text="Merge Table"
-                      buttontype="PRIMARY"
-                      clickHandler={() => mergeTableData(quoteItems)}
-                    />
+                    {quoteItems?.length > 0 && (
+                      <OsButton
+                        text="Merge Table"
+                        buttontype="PRIMARY"
+                        clickHandler={() => mergeTableData(quoteItems)}
+                      />
+                    )}
                   </Space>
                 </>
               )}
@@ -1525,6 +1546,7 @@ const EditorFile = () => {
               checkForNewFileForSalesForce={checkForNewFileForSalesForce}
               manualFlow={false}
               lineItemSyncingData={lineItemSyncingData}
+              CurrentFileId={currentFIle}
             />
           }
           width={600}
