@@ -905,34 +905,44 @@ const EditorFile = () => {
       quoteId: SaleQuoteId,
     };
 
-    dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
-      if (payload?.payload) {
-        if (!payload?.payload?.body) {
+    if (salesFOrceManual === 'true') {
+      notification?.open({
+        message: 'Please close the modal!. All the files are updated',
+        type: 'info',
+      });
+      setNanonetsLoading(false);
+
+      return;
+    } else {
+      dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
+        if (payload?.payload) {
+          if (!payload?.payload?.body) {
+            notification?.open({
+              message: 'Please close the modal!. All the files are updated',
+              type: 'info',
+            });
+            setNanonetsLoading(false);
+
+            location?.reload();
+            return;
+          }
+          let newObj = {
+            file_name: payload?.payload?.title,
+            fileId: payload?.payload?.fileId,
+          };
+          setCurrentFile(newObj);
           notification?.open({
-            message: 'Please close the modal!. All the files are updated',
+            message: 'Please Update Line Items for new File',
             type: 'info',
           });
-          setNanonetsLoading(false);
-
           location?.reload();
-          return;
+        } else {
+          notification?.open({
+            message: 'The Line Items are created! Please close the modal!',
+          });
         }
-        let newObj = {
-          file_name: payload?.payload?.title,
-          fileId: payload?.payload?.fileId,
-        };
-        setCurrentFile(newObj);
-        notification?.open({
-          message: 'Please Update Line Items for new File',
-          type: 'info',
-        });
-        location?.reload();
-      } else {
-        notification?.open({
-          message: 'The Line Items are created! Please close the modal!',
-        });
-      }
-    });
+      });
+    }
   };
 
   const checkForNewFile = async () => {
