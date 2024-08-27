@@ -131,10 +131,8 @@ const EditorFile = () => {
   };
 
   useEffect(() => {
-    if (!salesForceUrl && getQuoteFileId) {
-      dispatch(
-        getAllFormulasByDistributorAndOem(fileData ? fileData : {}),
-      )?.then((payload: any) => {
+    dispatch(getAllFormulasByDistributorAndOem(fileData ? fileData : {}))?.then(
+      (payload: any) => {
         let newArr: any = [];
         payload?.payload?.map((items: any) => {
           if (items?.is_active) {
@@ -147,8 +145,8 @@ const EditorFile = () => {
           }
         });
         setFormulaOptions(newArr);
-      });
-    }
+      },
+    );
   }, [fileData]);
 
   // quoteId,instance_url,fileId
