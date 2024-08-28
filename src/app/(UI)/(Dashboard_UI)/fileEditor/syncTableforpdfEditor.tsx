@@ -355,6 +355,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         action: 'ExportFileToTable',
         lineItem: newArrWIthFileName,
       };
+      
       await dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
         let messgaeForApi = payload?.payload?.message;
         notification.open({
