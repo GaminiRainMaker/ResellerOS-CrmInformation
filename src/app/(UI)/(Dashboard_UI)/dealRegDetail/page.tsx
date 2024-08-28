@@ -155,6 +155,7 @@ const DealRegDetail = () => {
             },
           );
         }
+        
       } catch (error) {
         console.error('Error running script:', error);
       }
