@@ -9,7 +9,12 @@ import OsDropdown from '@/app/components/common/os-dropdown';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
-import {decrypt, processFormData, processScript1} from '@/app/utils/base';
+import {
+  decrypt,
+  processFormData,
+  processScript,
+  processScript1,
+} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {MenuProps} from 'antd';
 import Form from 'antd/es/form';
@@ -20,7 +25,7 @@ import {
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
 import {
-  lauchPlayWright1,
+  // lauchPlayWright1,
   lauchSalesPlayWright,
 } from '../../../../../redux/actions/playwright';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -138,18 +143,18 @@ const DealRegDetail = () => {
         };
 
         const processScriptData = processScript1(finalData);
-        console.log('finalData', finalData, processScriptData, finalUniqueData);
+        console.log('finalData', processScriptData);
 
-        const response = await dispatch(lauchPlayWright1([processScriptData]));
-        if (lauchPlayWright1.fulfilled.match(response)) {
-          await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
-            (response: {payload: any}) => {
-              if (response?.payload) {
-                dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-              }
-            },
-          );
-        }
+        // const response = await dispatch(lauchPlayWright1([processScriptData]));
+        // if (lauchPlayWright1.fulfilled.match(response)) {
+        //   await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
+        //     (response: {payload: any}) => {
+        //       if (response?.payload) {
+        //         dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+        //       }
+        //     },
+        //   );
+        // }
       } catch (error) {
         console.error('Error running script:', error);
       }
