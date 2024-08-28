@@ -391,16 +391,17 @@ const EditorFile = () => {
                               )
                               .text?.includes('Price')
                           ? item?.text
-                              ?.toString()
-                              .match(/\d+(\.\d+)?/g)
-                              ?.map(Number)
-                              ?.toString()
-                              .match(/\d+(\.\d+)?/g)
-                              ?.map(Number)
-                              ?.toString()
-                          : item.text;
+                          : // ?.toString()
+                            // .match(/\d+(\.\d+)?/g)
+                            // ?.map(Number)
+                            // ?.toString()
+                            // .match(/\d+(\.\d+)?/g)
+                            // ?.map(Number)
+                            // ?.toString()
+                            item.text;
                     });
                   }
+
                   formattedArray1 = Object.values(formattedData1);
                   newAllgetOArr?.push(formattedArray1);
                   newArrrrAll?.push(formattedArray1);
@@ -1039,15 +1040,7 @@ const EditorFile = () => {
     const keys = Object.keys(mergedValue?.[0]);
     const newArrrUpadted = mergedValue?.length > 0 ? [...mergedValue] : [];
 
-    // function concatenateAfterFirstWithSpace(array: any) {
-    //   // Check if there are at least two elements
-    //   if (array.length < 2) {
-    //     return ''; // or handle the case where there aren't enough elements
-    //   }
 
-    //   // Join all elements after the first one into a single string with space separation
-    //   return array.slice(1).join(' ');
-    // }
 
     let resulsst = concatenateAfterFirstWithSpace(oldName);
     // Find the index of the key 'ap'

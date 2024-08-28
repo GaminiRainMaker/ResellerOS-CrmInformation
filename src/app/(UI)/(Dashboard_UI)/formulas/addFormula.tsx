@@ -30,6 +30,7 @@ const AddFormula: React.FC<any> = ({
   const [distributerOPtions, setDistributerOptions] = useState<any>();
 
   const [oemOptions, setOemOptions] = useState<any>();
+
   const getOptionsData = async () => {
     setLoadingFormula(true);
     await dispatch(queryOEM({}))?.then((payload: any) => {
@@ -171,7 +172,7 @@ const AddFormula: React.FC<any> = ({
                 >
                   <CommonSelect
                     style={{width: '100%'}}
-                    defaultValue={selectValue?.is_active}
+                    defaultValue={selectValue?.is_active?.toString()}
                     options={[
                       {label: 'Yes', value: 'true'},
                       {label: 'No', value: 'false'},

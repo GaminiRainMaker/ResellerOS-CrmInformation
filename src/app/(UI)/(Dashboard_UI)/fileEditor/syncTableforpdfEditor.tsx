@@ -116,6 +116,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const salesToken = searchParams.get('key');
   const salesForceFiledId = searchParams.get('file_Id');
   const SaleQuoteId = searchParams.get('quote_Id');
+  const salesFOrceManual = searchParams.get('manual');
+
   const salesForceUrl = searchParams.get('instance_url');
   const [syncTableQuoteLItemValues, setSyncTableQuoteLItemValues] =
     useState<any>(
@@ -345,7 +347,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         // documentId: salesForceFiledId,
         urls: salesForceUrl,
         QuoteId: SaleQuoteId,
-        FileId: manualFlow ? salesForceFiledId : CurrentFileId?.fileId,
+        FileId:
+          manualFlow || salesFOrceManual === 'false'
+            ? salesForceFiledId
+            : CurrentFileId?.fileId,
         // FileId: '0Q09I0000002Bc5SAE',
         action: 'ExportFileToTable',
         lineItem: newArrWIthFileName,

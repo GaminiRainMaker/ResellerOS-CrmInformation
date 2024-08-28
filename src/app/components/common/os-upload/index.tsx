@@ -93,8 +93,9 @@ const OsUpload: React.FC<any> = ({
 
       if (
         !obj.error &&
-        (obj?.model_id || obj?.file?.type.includes('spreadsheetml')) &&
-        obj?.model_id !== 'a02fffb7-5221-44a2-8eb1-85781a0ecd67'
+        ((obj?.model_id &&
+          obj?.model_id !== 'a02fffb7-5221-44a2-8eb1-85781a0ecd67') ||
+          obj?.file?.type.includes('spreadsheetml'))
       ) {
         // eslint-disable-next-line no-await-in-loop
         const response: any = await sendDataToNanonets(

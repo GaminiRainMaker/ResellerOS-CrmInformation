@@ -111,9 +111,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
     if (updatedArr && updatedArr?.length > 0) {
       updatedArr?.map((items: any) => {
         if (
-          (items?.manualquote &&
-            !items?.file?.type.includes('spreadsheetml')) ||
-          items?.model_id === 'a02fffb7-5221-44a2-8eb1-85781a0ecd67'
+          (items?.manualquote ||
+            items?.model_id === 'a02fffb7-5221-44a2-8eb1-85781a0ecd67') &&
+          !items?.file?.type.includes('spreadsheetml')
         ) {
           let newObj = {
             ...items,

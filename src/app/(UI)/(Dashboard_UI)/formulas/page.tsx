@@ -37,7 +37,6 @@ const FormulaMain: React.FC = () => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams()!;
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [contractObject, setContractObject] = useState<any>();
   const [loadingContract, setLoadingContract] = useState<boolean>(false);
   const {data: formulaData} = useAppSelector((state) => state.formulas);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
@@ -51,7 +50,7 @@ const FormulaMain: React.FC = () => {
   }>({
     oem_id: null,
     distributor_id: null,
-    is_active: false,
+    is_active: null,
   });
 
   useEffect(() => {
@@ -164,7 +163,9 @@ const FormulaMain: React.FC = () => {
     if (recordId) {
       newObj.id = recordId;
     }
-    newObj.is_active = selectValue?.is_active;
+    if (newObj.is_active !== null) {
+      newObj.is_active = selectValue?.is_active;
+    }
     if (selectValue?.oem_id) {
       newObj.oem_id = selectValue?.oem_id;
     }
@@ -179,10 +180,9 @@ const FormulaMain: React.FC = () => {
     dispatch(getAllFormulas());
     form?.resetFields();
     setLoadingContract(false);
-    setContractObject('');
     setShowModal(false);
     setSelectValue({
-      is_active: false,
+      is_active: null,
       oem_id: null,
       distributor_id: null,
     });
@@ -246,9 +246,8 @@ const FormulaMain: React.FC = () => {
         open={showModal}
         onCancel={() => {
           setShowModal(false);
-          setContractObject('');
           setSelectValue({
-            is_active: false,
+            is_active: null,
             oem_id: null,
             distributor_id: null,
           });
@@ -277,7 +276,7 @@ const FormulaMain: React.FC = () => {
           setOpenDrawer(false);
           form?.resetFields();
           setSelectValue({
-            is_active: false,
+            is_active: null,
             oem_id: null,
             distributor_id: null,
           });
