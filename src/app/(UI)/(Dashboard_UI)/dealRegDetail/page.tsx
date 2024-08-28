@@ -9,6 +9,7 @@ import OsDropdown from '@/app/components/common/os-dropdown';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
+import {decrypt, processFormData, processScript1} from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {MenuProps} from 'antd';
 import Form from 'antd/es/form';
@@ -16,9 +17,12 @@ import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {
   getDealRegByOpportunityId,
-  getDealRegByPartnerProgramId,
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
+import {
+  lauchPlayWright1,
+  lauchSalesPlayWright,
+} from '../../../../../redux/actions/playwright';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {
   setDealReg,
@@ -27,19 +31,7 @@ import {
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs from './DealRegCustomTabs';
 import SubmitDealRegForms from './SubmitDealRegForms';
-import {runSalesForceBot} from '../../../../../redux/actions/auth';
-import {
-  lauchPlayWright,
-  lauchSalesPlayWright,
-} from '../../../../../redux/actions/playwright';
-import {
-  decrypt,
-  processFormData,
-  processScript,
-  processScript1,
-} from '@/app/utils/base';
 const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
-import {test, expect, Page} from '@playwright/test';
 
 const DealRegDetail = () => {
   const [getFormData] = Form.useForm();
@@ -146,12 +138,10 @@ const DealRegDetail = () => {
         };
 
         const processScriptData = processScript1(finalData);
-        console.log('finalData', finalData, processScriptData);
+        console.log('finalData', finalData, processScriptData, finalUniqueData);
 
-        const response = await dispatch(
-          lauchSalesPlayWright([processScriptData]),
-        );
-        if (lauchSalesPlayWright.fulfilled.match(response)) {
+        const response = await dispatch(lauchPlayWright1([processScriptData]));
+        if (lauchPlayWright1.fulfilled.match(response)) {
           await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
             (response: {payload: any}) => {
               if (response?.payload) {
@@ -198,7 +188,7 @@ const DealRegDetail = () => {
             {/* <OsButton
               text="Launch Bot"
               buttontype="SECONDARY"
-              clickHandler={launchBotSalesForce}
+              clickHandler={}
             /> */}
             <OsButton
               text="Submit Form"
