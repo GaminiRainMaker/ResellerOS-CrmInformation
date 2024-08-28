@@ -47,7 +47,7 @@ import AddPartnerProgramScript from './AddPartnerProgramScript';
 import SuperAdminPartnerAnalytics from './SuperAdminPartnerAnalytic';
 import {
   createPlaywrightScript,
-  // launchPlaywrightCodegen,
+  launchPlaywrightCodegen,
 } from '../../../../../redux/actions/playwright';
 
 export interface SeparatedData {
@@ -559,7 +559,7 @@ const SuperAdminPartner: React.FC = () => {
             }
             setSelectPartnerProgramId(record?.id);
             setShowScriptModal(true);
-            // dispatch(launchPlaywrightCodegen());
+            dispatch(launchPlaywrightCodegen());
           }}
         >
           {record?.script?.length > 0 && !record?.script?.includes(null)

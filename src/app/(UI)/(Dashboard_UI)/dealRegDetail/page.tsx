@@ -25,7 +25,7 @@ import {
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
 import {
-  // lauchPlayWright1,
+  lauchPlayWright1,
   lauchSalesPlayWright,
 } from '../../../../../redux/actions/playwright';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -145,16 +145,16 @@ const DealRegDetail = () => {
         const processScriptData = processScript1(finalData);
         console.log('finalData', processScriptData);
 
-        // const response = await dispatch(lauchPlayWright1([processScriptData]));
-        // if (lauchPlayWright1.fulfilled.match(response)) {
-        //   await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
-        //     (response: {payload: any}) => {
-        //       if (response?.payload) {
-        //         dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-        //       }
-        //     },
-        //   );
-        // }
+        const response = await dispatch(lauchPlayWright1([processScriptData]));
+        if (lauchPlayWright1.fulfilled.match(response)) {
+          await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
+            (response: {payload: any}) => {
+              if (response?.payload) {
+                dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+              }
+            },
+          );
+        }
       } catch (error) {
         console.error('Error running script:', error);
       }

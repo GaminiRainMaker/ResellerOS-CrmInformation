@@ -25,33 +25,33 @@ export const lauchPlayWright = createAsyncThunk(
   },
 );
 
-// export const lauchPlayWright1 = createAsyncThunk(
-//   'playWright/lauchPlayWright1',
-//   async (scriptData: any, thunkApi) => {
-//     try {
-//       const response = await fetch(
-//         'http://localhost:4000/api/playwright/execute-script',
-//         {
-//           method: 'POST',
-//           headers: {
-//             'Content-Type': 'application/json',
-//           },
-//           body: JSON.stringify({data: [JSON.stringify(scriptData)]}),
-//         },
-//       );
+export const lauchPlayWright1 = createAsyncThunk(
+  'playWright/lauchPlayWright1',
+  async (scriptData: any, thunkApi) => {
+    try {
+      const response = await fetch(
+        'http://localhost:4000/api/playwright/execute-script',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({data: [JSON.stringify(scriptData)]}),
+        },
+      );
 
-//       const result = await response.json();
+      const result = await response.json();
 
-//       if (!response.ok) {
-//         return thunkApi.rejectWithValue(result.error);
-//       }
+      if (!response.ok) {
+        return thunkApi.rejectWithValue(result.error);
+      }
 
-//       return result.message;
-//     } catch (error: any) {
-//       return thunkApi.rejectWithValue(error.message);
-//     }
-//   },
-// );
+      return result.message;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);
 
 export const lauchSalesPlayWright = createAsyncThunk(
   'playWright/lauchSalesPlayWright',
@@ -102,29 +102,29 @@ export const createPlaywrightScript = createAsyncThunk(
   },
 );
 
-// export const launchPlaywrightCodegen = createAsyncThunk(
-//   'playwright/launchCodegen',
-//   async (_, thunkApi) => {
-//     try {
-//       const response = await fetch(
-//         'http://localhost:4000/api/playwright/launch-playwright',
-//         {
-//           method: 'POST',
-//           headers: {
-//             'Content-Type': 'application/json',
-//           },
-//         },
-//       );
+export const launchPlaywrightCodegen = createAsyncThunk(
+  'playwright/launchCodegen',
+  async (_, thunkApi) => {
+    try {
+      const response = await fetch(
+        'http://localhost:4000/api/playwright/launch-playwright',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
 
-//       const result = await response.json();
+      const result = await response.json();
 
-//       if (!response.ok) {
-//         return thunkApi.rejectWithValue(result.error);
-//       }
+      if (!response.ok) {
+        return thunkApi.rejectWithValue(result.error);
+      }
 
-//       return result.message;
-//     } catch (error: any) {
-//       return thunkApi.rejectWithValue(error.message);
-//     }
-//   },
-// );
+      return result.message;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);
