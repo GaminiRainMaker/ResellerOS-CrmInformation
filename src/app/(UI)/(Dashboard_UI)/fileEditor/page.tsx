@@ -268,14 +268,14 @@ const EditorFile = () => {
                         .find((titleRow: any) => titleRow.col === item.col)
                         .text?.includes('Price')
                     ? item?.text
-                        ?.toString()
-                        .match(/\d+(\.\d+)?/g)
-                        ?.map(Number)
-                        ?.toString()
-                        .match(/\d+(\.\d+)?/g)
-                        ?.map(Number)
-                        ?.toString()
-                    : item.text;
+                    : // ?.toString()
+                      // .match(/\d+(\.\d+)?/g)
+                      // ?.map(Number)
+                      // ?.toString()
+                      // .match(/\d+(\.\d+)?/g)
+                      // ?.map(Number)
+                      // ?.toString()
+                      item.text;
               });
             }
             formattedArray1 = Object.values(formattedData1);
@@ -1039,8 +1039,6 @@ const EditorFile = () => {
   const applyFormula = (formulaTemplate: any, oldName: any, newName: any) => {
     const keys = Object.keys(mergedValue?.[0]);
     const newArrrUpadted = mergedValue?.length > 0 ? [...mergedValue] : [];
-
-
 
     let resulsst = concatenateAfterFirstWithSpace(oldName);
     // Find the index of the key 'ap'
