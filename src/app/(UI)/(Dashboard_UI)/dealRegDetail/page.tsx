@@ -191,11 +191,11 @@ const DealRegDetail = () => {
               buttontype="SECONDARY"
               clickHandler={lauchSalesPlayBot}
             /> */}
-            {/* <OsButton
-              text="Launch Bot"
+            <OsButton
+              text="Download File"
               buttontype="SECONDARY"
-              clickHandler={}
-            /> */}
+              // clickHandler={}
+            />
             <OsButton
               text="Submit Form"
               buttontype="SECONDARY"
