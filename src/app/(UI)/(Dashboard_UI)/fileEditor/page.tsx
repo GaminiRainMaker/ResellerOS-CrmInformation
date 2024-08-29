@@ -193,7 +193,6 @@ const EditorFile = () => {
     };
 
     let pathTOGo = salesFOrceManual === 'true' ? data : dataSingle;
-    console.log('34543534', pathTOGo);
     dispatch(getSalesForceFileData(pathTOGo))?.then(async (payload: any) => {
       if (!payload?.payload?.body) {
         notification?.open({
@@ -1581,6 +1580,7 @@ const EditorFile = () => {
               manualFlow={false}
               lineItemSyncingData={lineItemSyncingData}
               CurrentFileId={currentFIle}
+              currentFileData={currentFIle}
             />
           }
           width={600}

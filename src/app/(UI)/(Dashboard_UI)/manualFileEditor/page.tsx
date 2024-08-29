@@ -661,6 +661,7 @@ const EditorFile = () => {
               currentFileName={currentFileData?.file_name}
               manualFlow={true}
               checkForNewFileForSalesForce={checkForNewFileForSalesForce}
+              currentFileData={currentFileData}
             />
           }
           width={600}

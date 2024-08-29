@@ -79,6 +79,7 @@ interface EditPdfDataInterface {
   currentFileName?: any;
   lineItemSyncingData?: any;
   CurrentFileId?: any;
+  currentFileData?: any;
 }
 const SyncTableData: FC<EditPdfDataInterface> = ({
   setMergedVaalues,
@@ -92,6 +93,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   currentFileName,
   lineItemSyncingData,
   CurrentFileId,
+  currentFileData,
 }) => {
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -323,8 +325,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     requiredOutput?.map((items: any) => {
       newArrWIthFileName?.push({
         ...items,
-        file_name: manualFlow ? currentFileName : null,
-        file_id: manualFlow ? currentFileId : null,
+        file_name: currentFileData?.file_name,
+        file_id: currentFileData?.fileId,
       });
     });
 
@@ -347,15 +349,12 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         // documentId: salesForceFiledId,
         urls: salesForceUrl,
         QuoteId: SaleQuoteId,
-        FileId:
-          manualFlow || salesFOrceManual === 'false'
-            ? salesForceFiledId
-            : CurrentFileId?.fileId,
+        FileId: currentFileData?.fileId,
         // FileId: '0Q09I0000002Bc5SAE',
         action: 'ExportFileToTable',
         lineItem: newArrWIthFileName,
       };
-      
+
       await dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
         let messgaeForApi = payload?.payload?.message;
         notification.open({
