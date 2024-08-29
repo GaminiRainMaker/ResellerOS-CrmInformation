@@ -249,6 +249,7 @@ const EditorFile = () => {
       //   quoteId: null,
       // };
       dispatch(getSalesForceFileData(data))?.then((payload: any) => {
+
         let newObj = {
           file_name: payload?.payload?.title,
           FileId: payload?.payload?.fileId,
@@ -269,6 +270,7 @@ const EditorFile = () => {
     }
   }, []);
 
+  console.log('3454354353', currentFileData);
   const updateRowsValue = (
     rowIndex: number,
     keyValue: string,

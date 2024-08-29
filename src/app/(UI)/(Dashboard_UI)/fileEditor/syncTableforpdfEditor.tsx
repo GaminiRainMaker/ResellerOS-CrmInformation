@@ -326,7 +326,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       newArrWIthFileName?.push({
         ...items,
         file_name: currentFileData?.file_name,
-        file_id: currentFileData?.fileId,
+        file_id: manualFlow ? salesForceFiledId : currentFileData?.fileId,
       });
     });
 
@@ -349,7 +349,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         // documentId: salesForceFiledId,
         urls: salesForceUrl,
         QuoteId: SaleQuoteId,
-        FileId: currentFileData?.fileId,
+        FileId: manualFlow ? salesForceFiledId : currentFileData?.fileId,
         // FileId: '0Q09I0000002Bc5SAE',
         action: 'ExportFileToTable',
         lineItem: newArrWIthFileName,
