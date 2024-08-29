@@ -55,6 +55,7 @@ const DealRegDetail = () => {
   const searchParams = useSearchParams()!;
   const getOpportunityId = searchParams && searchParams.get('opportunityId');
   const [formData, setFormData] = useState<any>();
+  const [downloadLink, setDownloadLink] = useState('#');
 
   useEffect(() => {
     if (getOpportunityId) {
@@ -155,7 +156,6 @@ const DealRegDetail = () => {
             },
           );
         }
-        
       } catch (error) {
         console.error('Error running script:', error);
       }
@@ -178,6 +178,21 @@ const DealRegDetail = () => {
     }
   };
 
+  const getDownloadLink = () => {
+    const os = navigator.platform.startsWith('Win') ? 'windows' : 'mac';
+    console.log('OS detected:', os);
+    const scriptUrl =
+      os === 'windows'
+        ? '/playwright-files/install_playwright.ps1'
+        : '/playwright-files/install_playwright.sh';
+
+    return scriptUrl;
+  };
+
+  useEffect(() => {
+    setDownloadLink(getDownloadLink());
+  }, []);
+
   return (
     <div>
       <Row justify="space-between" align="middle">
@@ -191,11 +206,9 @@ const DealRegDetail = () => {
               buttontype="SECONDARY"
               clickHandler={lauchSalesPlayBot}
             /> */}
-            <OsButton
-              text="Download File"
-              buttontype="SECONDARY"
-              // clickHandler={}
-            />
+            <a href={downloadLink} download>
+              <OsButton text="Download File" buttontype="SECONDARY" />
+            </a>
             <OsButton
               text="Submit Form"
               buttontype="SECONDARY"
