@@ -88,7 +88,8 @@ const EditorFile = () => {
   const router = useRouter();
   const ExistingQuoteItemss = searchParams.get('quoteExist');
   const {userInformation} = useAppSelector((state) => state.user);
-  const {quoteFileById} = useAppSelector((state) => state.quoteFile);
+  // const {quoteFileById} = useAppSelector((state) => state.quoteFile);
+  const [quoteFileById, setQuoteFileById] = useState<any>();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [updateLineItemsValue, setUpdateLineItemsValue] = useState<any>();
   const [missingId, setMissingId] = useState<number[]>([]);
@@ -107,6 +108,7 @@ const EditorFile = () => {
   const salesFOrceManual = searchParams.get('manual');
   const salesForceUrl = searchParams.get('instance_url');
   const salesForceFiledId = searchParams.get('file_Id');
+  const fullStackManul = searchParams.get('manualFlow');
   const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
   const [formulaOptions, setFormulaOptions] = useState<any>();
   const [formulaSelected, setFormulaSelected] = useState<any>();
@@ -149,7 +151,6 @@ const EditorFile = () => {
       },
     );
   }, [fileData]);
-  console.log('4353453453', salesFOrceManual);
   // quoteId,instance_url,fileId
   // ============================== SalesForce Implementations ======================================
 
@@ -560,15 +561,31 @@ const EditorFile = () => {
   }, [updateLineItemsValue]);
   useEffect(() => {
     if (!salesForceUrl) {
-      dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then(
-        (payload: any) => {
+      if (fullStackManul === 'true') {
+        let data = {
+          id: getQUoteId,
+          type_of_file: 'export',
+        };
+        dispatch(getfileByQuoteIdWithManual(data))?.then((payload: any) => {
           if (payload?.payload === null) {
-            setReturnModalBack(true);
+            // setReturnModalBack(true);
           } else {
+            setQuoteFileById(payload?.payload);
             setCurrentFile(payload?.payload);
           }
-        },
-      );
+        });
+      } else {
+        dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then(
+          (payload: any) => {
+            if (payload?.payload === null) {
+              // setReturnModalBack(true);
+            } else {
+              setQuoteFileById(payload?.payload);
+              setCurrentFile(payload?.payload);
+            }
+          },
+        );
+      }
     }
   }, [getQuoteFileId]);
 
@@ -887,12 +904,6 @@ const EditorFile = () => {
       CancelEditing();
     }
   };
-  let data = {
-    token: salesToken,
-    FileId: null,
-    urls: salesForceUrl,
-    quoteId: SaleQuoteId,
-  };
 
   const checkForNewFileForSalesForce = async () => {
     // notification?.open({
@@ -905,7 +916,6 @@ const EditorFile = () => {
       urls: salesForceUrl,
       quoteId: SaleQuoteId,
     };
-    console.log('3453453', salesFOrceManual === 'true');
 
     if (salesFOrceManual === 'false') {
       notification?.open({
@@ -916,7 +926,6 @@ const EditorFile = () => {
 
       return;
     }
-    console.log('3453453', salesFOrceManual === 'true');
     dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
       if (payload?.payload) {
         if (!payload?.payload?.body) {
@@ -948,34 +957,51 @@ const EditorFile = () => {
   };
 
   const checkForNewFile = async () => {
-    let isExist: boolean = false;
-    let dataNew: any;
-
-    await dispatch(getfileByQuoteIdWithManual(Number(getQUoteId)))?.then(
-      (payload: any) => {
-        if (payload?.payload) {
-          router.push(
-            `fileEditor?id=${Number(getQUoteId)}&fileId=${payload?.payload?.id}&quoteExist=false`,
-          );
-          window.history.replaceState(
-            null,
-            '',
-            `fileEditor?id=${Number(getQUoteId)}&fileId=${payload?.payload?.id}&quoteExist=false`,
-          );
-          location?.reload();
-        } else {
-          router.push(
-            `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
-          );
-          window.history.replaceState(
-            null,
-            '',
-            `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
-          );
-          location?.reload();
-        }
-      },
-    );
+    if (fullStackManul === 'false') {
+      window.history.replaceState(
+        null,
+        '',
+        `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
+      );
+      location?.reload();
+    } else {
+      let data = {
+        id: getQUoteId,
+        type_of_file: 'export',
+      };
+      await dispatch(getfileByQuoteIdWithManual(data))?.then(
+        async (payload: any) => {
+          if (payload?.payload && payload?.payload !== null) {
+            location?.reload();
+          }
+          if (payload?.payload === null) {
+            let dataNew = {
+              id: getQUoteId,
+              type_of_file: 'manual',
+            };
+            await dispatch(getfileByQuoteIdWithManual(dataNew))?.then(
+              (payload: any) => {
+                if (payload?.payload === null) {
+                  window.history.replaceState(
+                    null,
+                    '',
+                    `/generateQuote?id=${Number(getQUoteId)}&isView=${getResultedValue()}`,
+                  );
+                  location?.reload();
+                } else {
+                  window.history.replaceState(
+                    null,
+                    '',
+                    `/manualFileEditor?id=${getQUoteId}&fileId=${null}&manualFlow=true`,
+                  );
+                  location?.reload();
+                }
+              },
+            );
+          }
+        },
+      );
+    }
 
     setShowModal(false);
   };

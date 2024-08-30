@@ -302,12 +302,14 @@ const ReviewQuotes: FC<any> = ({
     } else if (buttonType === 'fifth') {
       setShowRaiseConcernModal(false);
       form?.resetFields();
-      router?.push(`manualFileEditor?id=${getQuoteID}&fileId=${fileData?.id}`);
+      router?.push(
+        `manualFileEditor?id=${getQuoteID}&fileId=${fileData?.id}&manualFlow=false`,
+      );
     } else {
       setShowRaiseConcernModal(false);
       form?.resetFields();
       router?.push(
-        `/fileEditor?id=${getQuoteID}&fileId=${fileData?.id}&quoteExist=false`,
+        `/fileEditor?id=${getQuoteID}&fileId=${fileData?.id}&quoteExist=false&manualFlow=true`,
       );
     }
     setShowExportAs(false);

@@ -71,6 +71,9 @@ const EditorFile = () => {
   const [showAddColumnModal, setShowAddColumnModal] = useState<boolean>(false);
   const [newHeaderName, setNewHeaderName] = useState<any>();
   const salesForceUrl = searchParams.get('instance_url');
+  const fullStackManul = searchParams.get('manualFlow');
+  const salesFOrceManual = searchParams.get('manual');
+
   const [showUpdateColumnModal, setShowUpdateColumnModal] =
     useState<boolean>(false);
   const [showAddFormula, setShowAddFormula] = useState<boolean>(false);
@@ -249,7 +252,6 @@ const EditorFile = () => {
       //   quoteId: null,
       // };
       dispatch(getSalesForceFileData(data))?.then((payload: any) => {
-
         let newObj = {
           file_name: payload?.payload?.title,
           FileId: payload?.payload?.fileId,
@@ -257,20 +259,24 @@ const EditorFile = () => {
         setCurrentFileData(newObj);
       });
     } else {
-      dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then(
-        (payload: any) => {
+      if (fullStackManul === 'true') {
+        let data = {
+          id: getQuoteID,
+          type_of_file: 'manual',
+        };
+        dispatch(getfileByQuoteIdWithManual(data))?.then((payload: any) => {
           setCurrentFileData(payload?.payload);
-          // window.history.replaceState(
-          //   null,
-          //   '',
-          //   `manualFileEditor?id=${Number(getQuoteID)}&fileId=${Number(payload?.payload?.id)}`,
-          // );
-        },
-      );
+        });
+      } else {
+        dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then(
+          (payload: any) => {
+            setCurrentFileData(payload?.payload);
+          },
+        );
+      }
     }
   }, []);
 
-  console.log('3454354353', currentFileData);
   const updateRowsValue = (
     rowIndex: number,
     keyValue: string,
@@ -306,44 +312,34 @@ const EditorFile = () => {
   };
 
   const checkForNewFile = async () => {
-    router.push(
-      `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue()}`,
-    );
-    // let isExist: boolean = false;
-    // let dataNew: any;
-    // setSaveNewHeader(false);
-    // addNewLine();
-    // await dispatch(getfileByQuoteIdWithManual(Number(getQuoteID)))?.then(
-    //   (payload: any) => {
-    //     if (payload?.payload) {
-    //       setCurrentFileData(payload?.payload);
-    //       isExist = true;
-    //       dataNew = payload?.payload;
-    //     } else {
-    //       isExist = false;
-    //     }
-    //   },
-    // );
-
-    // setShowModal(false);
-    // setShowConfirmHeader(false);
-    // if (SaleQuoteId) {
-    // } else {
-    //   if (isExist) {
-    //     location?.reload();
-    //     return;
-    //   } else {
-    //     router.push(
-    //       `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue()}`,
-    //     );
-    //     window.history.replaceState(
-    //       null,
-    //       '',
-    //       `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue()}`,
-    //     );
-    //     location?.reload();
-    //   }
-    // }
+    if (fullStackManul === 'false') {
+      window.history.replaceState(
+        null,
+        '',
+        `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue()}`,
+      );
+      location?.reload();
+    } else {
+      let data = {
+        id: getQuoteID,
+        type_of_file: 'manual',
+      };
+      await dispatch(getfileByQuoteIdWithManual(data))?.then(
+        async (payload: any) => {
+          if (payload?.payload && payload?.payload !== null) {
+            location?.reload();
+          }
+          if (payload?.payload === null) {
+            window.history.replaceState(
+              null,
+              '',
+              `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue()}`,
+            );
+            location?.reload();
+          }
+        },
+      );
+    }
   };
   const UpdateTheColumnName = async (type: any, old: string, newVal: any) => {
     let newArr: any = [...arrayOflineItem];

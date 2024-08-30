@@ -119,6 +119,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const salesForceFiledId = searchParams.get('file_Id');
   const SaleQuoteId = searchParams.get('quote_Id');
   const salesFOrceManual = searchParams.get('manual');
+  const fullStackManul = searchParams.get('manualFlow');
 
   const salesForceUrl = searchParams.get('instance_url');
   const [syncTableQuoteLItemValues, setSyncTableQuoteLItemValues] =
@@ -139,6 +140,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       // }
     });
   }
+
   useEffect(() => {
     const newSyncTableData =
       syncedNewValue?.length > 0 ? [...syncedNewValue] : [];
@@ -266,7 +268,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             pdf_header: preVal,
             quote_header: newVal,
             status: 'Pending',
-            quote_file_id: Number(getQuoteFileId),
+            quote_file_id:
+              fullStackManul === 'true'
+                ? currentFileData?.id
+                : Number(getQuoteFileId),
             is_salesforce: SaleQuoteId ? true : false,
           }),
         );
@@ -330,6 +335,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       });
     });
 
+    // salesFOrceManual === "false"
     if (SaleQuoteId && newArrWIthFileName?.length > 0) {
       const findProduct = syncedNewValue?.find(
         (items: any) => items?.newVal === 'product_code',
@@ -469,11 +475,14 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             );
             // console.log('4354354353454', itemsOfProduct, itemsToAdd);
             const obj1: any = {
-              quote_file_id: getQuoteFileId
-                ? getQuoteFileId
-                : quoteFileById?.[0]?.id
-                  ? quoteFileById?.[0]?.id
-                  : getQuoteFileId,
+              quote_file_id:
+                fullStackManul === 'true'
+                  ? currentFileData?.id
+                  : getQuoteFileId
+                    ? getQuoteFileId
+                    : quoteFileById?.[0]?.id
+                      ? quoteFileById?.[0]?.id
+                      : getQuoteFileId,
               quote_id: Number(getQuoteID),
               product_id: itemsToAdd?.id,
               product_code: itemsToAdd?.product_code,
@@ -587,13 +596,16 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       dispatch(insertOpportunityLineItem(finalOpportunityArray));
     }
     let fileIdLatest = searchParams.get('fileId');
-    dispatch(
+    await dispatch(
       quoteFileVerification({
-        id: fileIdLatest
-          ? fileIdLatest
-          : quoteFileById?.[0]?.id
-            ? quoteFileById?.[0]?.id
-            : fileIdLatest,
+        id:
+          fullStackManul === 'true'
+            ? currentFileData?.id
+            : fileIdLatest
+              ? fileIdLatest
+              : quoteFileById?.[0]?.id
+                ? quoteFileById?.[0]?.id
+                : fileIdLatest,
       }),
     );
     routingConditions();

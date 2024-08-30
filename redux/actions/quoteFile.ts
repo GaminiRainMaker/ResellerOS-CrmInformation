@@ -51,9 +51,9 @@ export const quoteFileVerification = createAsyncThunk(
 );
 export const getfileByQuoteIdWithManual = createAsyncThunk(
   'quoteFile/getfileByQuoteIdWithManual',
-  async (id: any, thunkApi) => {
+  async (data: any, thunkApi) => {
     try {
-      const res = await QUOTE_FILE_API.getfileByQuoteIdWithManualadd(id);
+      const res = await QUOTE_FILE_API.getfileByQuoteIdWithManualadd(data);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);
