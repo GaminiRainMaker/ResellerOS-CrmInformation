@@ -367,7 +367,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           message: messgaeForApi,
           type: 'info',
         });
-        if (manualFlow) {
+        if (salesFOrceManual === 'false') {
           notification.open({
             message: 'Please close the review quotes window',
             type: 'info',
@@ -376,7 +376,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       });
 
       setNanonetsLoading(false);
-      if (!manualFlow) {
+      if (salesFOrceManual === 'true') {
         setTimeout(() => {
           checkForNewFileForSalesForce();
         }, 2000);

@@ -191,6 +191,7 @@ const EditorFile = () => {
       FileId: null,
       urls: salesForceUrl,
       quoteId: SaleQuoteId,
+      file_type: 'ExportFileToTable',
     };
 
     let pathTOGo = salesFOrceManual === 'true' ? data : dataSingle;
@@ -915,6 +916,7 @@ const EditorFile = () => {
       FileId: null,
       urls: salesForceUrl,
       quoteId: SaleQuoteId,
+      file_type: 'ExportFileToTable',
     };
 
     if (salesFOrceManual === 'false') {
@@ -925,35 +927,47 @@ const EditorFile = () => {
       setNanonetsLoading(false);
 
       return;
-    }
-    dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
-      if (payload?.payload) {
-        if (!payload?.payload?.body) {
-          notification?.open({
-            message: 'Please close the modal!. All the files are updated',
-            type: 'info',
-          });
-          setNanonetsLoading(false);
+    } else {
+      dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
+        if (payload?.payload) {
+          if (!payload?.payload?.body) {
+            let newObj = {
+              token: salesToken,
+              FileId: null,
+              urls: salesForceUrl,
+              quoteId: SaleQuoteId,
+              file_type: 'Manual',
+            };
+            dispatch(getSalesForceFileData(newObj))?.then((payload: any) => {
+              if (!payload?.payload?.body) {
+                notification?.open({
+                  message: 'Please close the modal!. All the files are updated',
+                  type: 'info',
+                });
+              }
+              if (payload?.payload?.body) {
+                window.history.replaceState(
+                  null,
+                  '',
+                  `/manualFileEditor?quote_Id=${SaleQuoteId}&key=${salesToken}&instance_url=${salesForceUrl}&file_Id=${null}&editLine=false&manual=true`,
+                );
+                location?.reload();
+              }
+            });
 
-          // location?.reload();
-          return;
+            return;
+          } else {
+            if (payload?.payload?.body) {
+              location?.reload();
+            }
+          }
+        } else {
+          notification?.open({
+            message: 'The Line Items are created! Please close the modal!',
+          });
         }
-        let newObj = {
-          file_name: payload?.payload?.title,
-          fileId: payload?.payload?.fileId,
-        };
-        setCurrentFile(newObj);
-        notification?.open({
-          message: 'Please Update Line Items for new File',
-          type: 'info',
-        });
-        location?.reload();
-      } else {
-        notification?.open({
-          message: 'The Line Items are created! Please close the modal!',
-        });
-      }
-    });
+      });
+    }
   };
 
   const checkForNewFile = async () => {

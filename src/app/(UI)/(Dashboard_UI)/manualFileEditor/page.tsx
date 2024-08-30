@@ -244,6 +244,14 @@ const EditorFile = () => {
         urls: salesForceUrl,
         quoteId: null,
       };
+
+      let newObj = {
+        file_type: 'Manual',
+        token: salesToken,
+        FileId: null,
+        urls: salesForceUrl,
+        quoteId: SaleQuoteId,
+      };
       // Work in case of export to tables
       // let data = {
       //   token: salesToken,
@@ -251,7 +259,8 @@ const EditorFile = () => {
       //   urls: salesForceUrl,
       //   quoteId: null,
       // };
-      dispatch(getSalesForceFileData(data))?.then((payload: any) => {
+      let pathTOGo = salesFOrceManual === 'true' ? newObj : data;
+      dispatch(getSalesForceFileData(pathTOGo))?.then((payload: any) => {
         let newObj = {
           file_name: payload?.payload?.title,
           FileId: payload?.payload?.fileId,
@@ -306,9 +315,28 @@ const EditorFile = () => {
   };
 
   const checkForNewFileForSalesForce = async () => {
-    notification?.open({
-      message: 'The Line Items are created! Please close the modal!',
-    });
+    if (salesFOrceManual === 'true') {
+      let newObj = {
+        file_type: 'Manual',
+        token: salesToken,
+        FileId: null,
+        urls: salesForceUrl,
+        quoteId: SaleQuoteId,
+      };
+      dispatch(getSalesForceFileData(newObj))?.then((payload: any) => {
+        if (payload?.payload?.body) {
+          location?.reload();
+        } else {
+          notification?.open({
+            message: 'The Line Items are created! Please close the modal!',
+          });
+        }
+      });
+    } else {
+      notification?.open({
+        message: 'The Line Items are created! Please close the modal!',
+      });
+    }
   };
 
   const checkForNewFile = async () => {
