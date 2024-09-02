@@ -309,7 +309,7 @@ const ReviewQuotes: FC<any> = ({
       setShowRaiseConcernModal(false);
       form?.resetFields();
       router?.push(
-        `/fileEditor?id=${getQuoteID}&fileId=${fileData?.id}&quoteExist=false&manualFlow=true`,
+        `/fileEditor?id=${getQuoteID}&fileId=${fileData?.id}&quoteExist=false&manualFlow=false`,
       );
     }
     setShowExportAs(false);

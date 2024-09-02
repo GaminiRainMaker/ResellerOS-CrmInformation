@@ -243,6 +243,7 @@ const EditorFile = () => {
         FileId: salesForceFiledId,
         urls: salesForceUrl,
         quoteId: null,
+        file_type: null,
       };
 
       let newObj = {
@@ -325,7 +326,7 @@ const EditorFile = () => {
       };
       dispatch(getSalesForceFileData(newObj))?.then((payload: any) => {
         if (payload?.payload?.body) {
-          location?.reload();
+          // location?.reload();
         } else {
           notification?.open({
             message: 'The Line Items are created! Please close the modal!',

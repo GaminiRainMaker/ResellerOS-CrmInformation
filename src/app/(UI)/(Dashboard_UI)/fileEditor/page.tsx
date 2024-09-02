@@ -132,6 +132,7 @@ const EditorFile = () => {
       },
     );
   };
+  console.log('345345435', currentFIle);
 
   useEffect(() => {
     dispatch(getAllFormulasByDistributorAndOem(fileData ? fileData : {}))?.then(
@@ -178,13 +179,13 @@ const EditorFile = () => {
       );
       return;
     }
-
     // Work in case of export to tables
     let dataSingle = {
       token: salesToken,
       FileId: salesForceFiledId,
       urls: salesForceUrl,
       quoteId: null,
+      file_type: null,
     };
     let data = {
       token: salesToken,
@@ -207,7 +208,7 @@ const EditorFile = () => {
       }
       setCurrentFile({
         file_name: payload?.payload?.title,
-        fileId: payload?.payload?.fileId,
+        FileId: payload?.payload?.fileId,
       });
       setNanonetsLoading(true);
       const binaryString = atob(payload?.payload?.body);
@@ -911,14 +912,6 @@ const EditorFile = () => {
     //   message: 'The Line Items are created! Please close the modal!',
     // });
 
-    let data = {
-      token: salesToken,
-      FileId: null,
-      urls: salesForceUrl,
-      quoteId: SaleQuoteId,
-      file_type: 'ExportFileToTable',
-    };
-
     if (salesFOrceManual === 'false') {
       notification?.open({
         message: 'Please close the modal!. All the files are updated',
@@ -928,43 +921,45 @@ const EditorFile = () => {
 
       return;
     } else {
-      dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
-        if (payload?.payload) {
-          if (!payload?.payload?.body) {
-            let newObj = {
-              token: salesToken,
-              FileId: null,
-              urls: salesForceUrl,
-              quoteId: SaleQuoteId,
-              file_type: 'Manual',
-            };
-            dispatch(getSalesForceFileData(newObj))?.then((payload: any) => {
-              if (!payload?.payload?.body) {
-                notification?.open({
-                  message: 'Please close the modal!. All the files are updated',
-                  type: 'info',
-                });
-              }
-              if (payload?.payload?.body) {
-                window.history.replaceState(
-                  null,
-                  '',
-                  `/manualFileEditor?quote_Id=${SaleQuoteId}&key=${salesToken}&instance_url=${salesForceUrl}&file_Id=${null}&editLine=false&manual=true`,
-                );
-                location?.reload();
-              }
-            });
+      let data = {
+        token: salesToken,
+        FileId: null,
+        urls: salesForceUrl,
+        quoteId: SaleQuoteId,
+        file_type: 'ExportFileToTable',
+      };
 
-            return;
-          } else {
+      dispatch(getSalesForceFileData(data))?.then(async (payload: any) => {
+        if (!payload?.payload?.body) {
+          let newObj = {
+            token: salesToken,
+            FileId: null,
+            urls: salesForceUrl,
+            quoteId: SaleQuoteId,
+            file_type: 'Manual',
+          };
+          dispatch(getSalesForceFileData(newObj))?.then((payload: any) => {
+            if (!payload?.payload?.body) {
+              notification?.open({
+                message: 'Please close the modal!. All the files are updated',
+                type: 'info',
+              });
+            }
             if (payload?.payload?.body) {
+              window.history.replaceState(
+                null,
+                '',
+                `/manualFileEditor?quote_Id=${SaleQuoteId}&key=${salesToken}&instance_url=${salesForceUrl}&file_Id=${null}&editLine=false&manual=true`,
+              );
               location?.reload();
             }
-          }
-        } else {
-          notification?.open({
-            message: 'The Line Items are created! Please close the modal!',
           });
+
+          return;
+        } else {
+          if (payload?.payload?.body) {
+            location?.reload();
+          }
         }
       });
     }

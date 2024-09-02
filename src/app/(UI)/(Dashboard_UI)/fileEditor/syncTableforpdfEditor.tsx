@@ -122,6 +122,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const fullStackManul = searchParams.get('manualFlow');
 
   const salesForceUrl = searchParams.get('instance_url');
+
+  // currentFileData?.FileId
   const [syncTableQuoteLItemValues, setSyncTableQuoteLItemValues] =
     useState<any>(
       SaleQuoteId
@@ -194,7 +196,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     setSyncTableQuoteLItemValues(newSyncOptionChecks);
     setNewSyncedValue(newSyncTableData);
   }, []);
-
+  console.log('3543534534', currentFileData);
   const syncTableToLineItems = (
     preValue: string,
     newSyncValue: string,
@@ -271,7 +273,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             quote_file_id:
               fullStackManul === 'true'
                 ? currentFileData?.id
-                : Number(getQuoteFileId),
+                : salesFOrceManual === 'true'
+                  ? currentFileData?.FileId
+                  : Number(getQuoteFileId),
             is_salesforce: SaleQuoteId ? true : false,
           }),
         );
@@ -331,7 +335,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       newArrWIthFileName?.push({
         ...items,
         file_name: currentFileData?.file_name,
-        file_id: manualFlow ? salesForceFiledId : currentFileData?.fileId,
+        file_id:
+          salesFOrceManual === 'true'
+            ? currentFileData?.FileId
+            : salesForceFiledId,
       });
     });
 
@@ -355,7 +362,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         // documentId: salesForceFiledId,
         urls: salesForceUrl,
         QuoteId: SaleQuoteId,
-        FileId: manualFlow ? salesForceFiledId : currentFileData?.fileId,
+        FileId:
+          salesFOrceManual === 'true'
+            ? currentFileData?.FileId
+            : salesForceFiledId,
         // FileId: '0Q09I0000002Bc5SAE',
         action: 'ExportFileToTable',
         lineItem: newArrWIthFileName,
@@ -478,11 +488,13 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               quote_file_id:
                 fullStackManul === 'true'
                   ? currentFileData?.id
-                  : getQuoteFileId
-                    ? getQuoteFileId
-                    : quoteFileById?.[0]?.id
-                      ? quoteFileById?.[0]?.id
-                      : getQuoteFileId,
+                  : salesFOrceManual === 'true'
+                    ? currentFileData?.FileId
+                    : getQuoteFileId
+                      ? getQuoteFileId
+                      : quoteFileById?.[0]?.id
+                        ? quoteFileById?.[0]?.id
+                        : getQuoteFileId,
               quote_id: Number(getQuoteID),
               product_id: itemsToAdd?.id,
               product_code: itemsToAdd?.product_code,
