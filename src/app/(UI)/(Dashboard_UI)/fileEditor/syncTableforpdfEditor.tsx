@@ -196,7 +196,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     setSyncTableQuoteLItemValues(newSyncOptionChecks);
     setNewSyncedValue(newSyncTableData);
   }, []);
-  console.log('3543534534', currentFileData);
   const syncTableToLineItems = (
     preValue: string,
     newSyncValue: string,

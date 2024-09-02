@@ -198,9 +198,36 @@ const EditorFile = () => {
     let pathTOGo = salesFOrceManual === 'true' ? data : dataSingle;
     dispatch(getSalesForceFileData(pathTOGo))?.then(async (payload: any) => {
       if (!payload?.payload?.body) {
-        notification?.open({
-          message: 'Please close the modal!. All the files are updated',
-          type: 'info',
+        if (salesFOrceManual === 'false') {
+          notification?.open({
+            message: 'Please close the modal!. All the files are updated',
+            type: 'info',
+          });
+          return;
+        }
+
+        let newObj = {
+          token: salesToken,
+          FileId: null,
+          urls: salesForceUrl,
+          quoteId: SaleQuoteId,
+          file_type: 'Manual',
+        };
+        dispatch(getSalesForceFileData(newObj))?.then((payload: any) => {
+          if (!payload?.payload?.body) {
+            notification?.open({
+              message: 'Please close the modal!. All the files are updated',
+              type: 'info',
+            });
+          }
+          if (payload?.payload?.body) {
+            window.history.replaceState(
+              null,
+              '',
+              `/manualFileEditor?quote_Id=${SaleQuoteId}&key=${salesToken}&instance_url=${salesForceUrl}&file_Id=${null}&editLine=false&manual=true`,
+            );
+            location?.reload();
+          }
         });
         setNanonetsLoading(false);
         return;
@@ -1180,22 +1207,7 @@ const EditorFile = () => {
     setFormulaSelected('');
     setShowApplyFormula(false);
   };
-  const addNewValueForChangesHit = () => {
-    let newArrrr: any = [...mergedValue];
-    let valuess = newArrrr[0];
-    console.log(
-      '234324324',
-      valuess,
-      mergeedColumn?.reduce((a: any, v: any) => ({...a, [v]: v}), {}),
-    );
-    let newObj = mergeedColumn?.reduce(
-      (a: any, v: any) => ({...a, [v]: v}),
-      {},
-    );
-    newArrrr?.push(newObj);
-    setRunScriptTOGetValues(true);
-    setMergedVaalues(newArrrr);
-  };
+
   const afterFormulasValuesUpdate = (changes: any) => {
     // setFinalArrayForMerged(changes);
     // if (!runSriptToGetValues) {
