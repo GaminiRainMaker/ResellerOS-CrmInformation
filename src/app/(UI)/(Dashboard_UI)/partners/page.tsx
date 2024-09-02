@@ -969,7 +969,7 @@ const Partners: React.FC = () => {
           {activeTab === 1 && (
             <Col style={{display: 'flex', alignItems: 'center'}}>
               <OsButton
-                text="Request Partner"
+                text="Request Partner and Partner Program"
                 buttontype="PRIMARY"
                 icon={<PlusIcon />}
                 clickHandler={() => setShowModal((p) => !p)}

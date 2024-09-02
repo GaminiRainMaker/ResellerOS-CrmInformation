@@ -71,6 +71,8 @@ const NewRegistrationForm: FC<any> = ({
     );
   }, []);
 
+  console.log('3453432', allAddedPartnerProgramIDs);
+
   useEffect(() => {
     if (isDealRegDetail) {
       dispatch(getAllCustomer({}));
@@ -162,6 +164,7 @@ const NewRegistrationForm: FC<any> = ({
 
   const registeredFormFinish = async () => {
     const data = form.getFieldsValue();
+
     if (
       (data?.registeredPartners === undefined ||
         data?.registeredPartners?.length <= 0) &&
@@ -279,141 +282,150 @@ const NewRegistrationForm: FC<any> = ({
                     children: (
                       <Form.List name="registeredPartners">
                         {(fields, {add, remove}) => (
-                          <>
-                            {fields?.map(({key, name, ...restField}) => (
-                              <Row
-                                justify="space-between"
-                                align="middle"
-                                gutter={[16, 16]}
-                                key={key}
-                                style={{
-                                  marginBottom: '8px',
-                                }}
-                              >
-                                <Col span={10}>
-                                  <SelectFormItem
-                                    label={
-                                      <Typography name="Body 4/Medium">
-                                        Partner
-                                      </Typography>
-                                    }
-                                    {...restField}
-                                    name={[name, 'partner_id']}
-                                    rules={[
-                                      {
-                                        required: true,
-                                        message: 'Partner is required!',
-                                      },
-                                    ]}
-                                  >
-                                    <CommonSelect
-                                      placeholder="Select"
-                                      style={{width: '100%', height: '36px'}}
-                                      options={partnerOptions}
-                                      onChange={(value) => {
-                                        findPartnerProgramsById(value);
-                                        setChoosedIdProgram(value);
-                                      }}
-                                    />
-                                  </SelectFormItem>
-                                </Col>
-                                <Col span={10}>
-                                  <SelectFormItem
-                                    label={
-                                      <Typography name="Body 4/Medium">
-                                        Partner Program
-                                      </Typography>
-                                    }
-                                    {...restField}
-                                    name={[name, 'partner_program_id']}
-                                    rules={[
-                                      {
-                                        required: true,
-                                        message: 'Partner Program is required!',
-                                      },
-                                    ]}
-                                  >
-                                    <CommonSelect
-                                      placeholder="Select"
-                                      options={partnerProgramOptions}
-                                      onChange={(e: any) => {
-                                        let AllIds: any =
-                                          allAddedPartnerProgramIDs?.length > 0
-                                            ? [...allAddedPartnerProgramIDs]
-                                            : [];
-                                        AllIds?.push(e);
-                                        setAllAddedPartnerProgramIDs(AllIds);
-                                      }}
-                                      style={{width: '100%', height: '36px'}}
-                                    />
-                                  </SelectFormItem>
-                                </Col>
-                                <Col
-                                  span={4}
+                          console.log('34432432', fields),
+                          (
+                            <>
+                              {fields?.map(({key, name, ...restField}) => (
+                                <Row
+                                  justify="space-between"
+                                  align="middle"
+                                  gutter={[16, 16]}
+                                  key={key}
                                   style={{
-                                    paddingTop: '25px',
+                                    marginBottom: '8px',
                                   }}
                                 >
-                                  <TrashIcon
-                                    width={25}
-                                    color={token?.colorError}
-                                    onClick={
-                                      () => {
-                                        let dataa = form.getFieldsValue();
-
-                                        if (dataa?.registeredPartners[name]) {
-                                          let newArrr: any =
+                                  <Col span={10}>
+                                    <SelectFormItem
+                                      label={
+                                        <Typography name="Body 4/Medium">
+                                          Partner
+                                        </Typography>
+                                      }
+                                      {...restField}
+                                      name={[name, 'partner_id']}
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message: 'Partner is required!',
+                                        },
+                                      ]}
+                                    >
+                                      <CommonSelect
+                                        placeholder="Select"
+                                        style={{width: '100%', height: '36px'}}
+                                        options={partnerOptions}
+                                        onChange={(value) => {
+                                          findPartnerProgramsById(value);
+                                          setChoosedIdProgram(value);
+                                        }}
+                                      />
+                                    </SelectFormItem>
+                                  </Col>
+                                  <Col span={10}>
+                                    <SelectFormItem
+                                      label={
+                                        <Typography name="Body 4/Medium">
+                                          Partner Program
+                                        </Typography>
+                                      }
+                                      {...restField}
+                                      name={[name, 'partner_program_id']}
+                                      rules={[
+                                        {
+                                          required: true,
+                                          message:
+                                            'Partner Program is required!',
+                                        },
+                                      ]}
+                                    >
+                                      <CommonSelect
+                                        placeholder="Select"
+                                        options={partnerProgramOptions}
+                                        onChange={(e: any) => {
+                                          let AllIds: any =
                                             allAddedPartnerProgramIDs?.length >
                                             0
                                               ? [...allAddedPartnerProgramIDs]
                                               : [];
+                                          AllIds?.push(e);
+                                          setAllAddedPartnerProgramIDs(AllIds);
+                                        }}
+                                        style={{width: '100%', height: '36px'}}
+                                      />
+                                    </SelectFormItem>
+                                  </Col>
+                                  <Col
+                                    span={4}
+                                    style={{
+                                      paddingTop: '25px',
+                                    }}
+                                  >
+                                    <TrashIcon
+                                      width={25}
+                                      color={token?.colorError}
+                                      onClick={
+                                        () => {
+                                          let dataa = form.getFieldsValue();
 
-                                          let findIndexOfId = newArrr.findIndex(
-                                            (item: number) =>
-                                              item ===
-                                              dataa?.registeredPartners[name]
-                                                ?.partner_program_id,
-                                          );
-                                          newArrr.splice(findIndexOfId, 1);
-                                          setAllAddedPartnerProgramIDs(newArrr);
+                                          if (dataa?.registeredPartners[name]) {
+                                            let newArrr: any =
+                                              allAddedPartnerProgramIDs?.length >
+                                              0
+                                                ? [...allAddedPartnerProgramIDs]
+                                                : [];
+
+                                            let findIndexOfId =
+                                              newArrr.findIndex(
+                                                (item: number) =>
+                                                  item ===
+                                                  dataa?.registeredPartners[
+                                                    name
+                                                  ]?.partner_program_id,
+                                              );
+                                            newArrr.splice(findIndexOfId, 1);
+                                            setAllAddedPartnerProgramIDs(
+                                              newArrr,
+                                            );
+                                          }
+                                          remove(name);
+                                          onHitDeleteTheObject();
                                         }
-                                        remove(name);
-                                        onHitDeleteTheObject();
-                                      }
 
-                                      // remove(name)
-                                    }
-                                    cursor="pointer"
-                                  />
-                                </Col>
-                              </Row>
-                            ))}
-                            <Form.Item>
-                              <Space
-                                size={4}
-                                style={{
-                                  width: '100%',
-                                  cursor: 'pointer',
-                                }}
-                                onClick={() => {
-                                  add();
-                                }}
-                              >
-                                <PlusIcon
-                                  width={24}
-                                  color={token?.colorLink}
-                                  style={{marginTop: '5px'}}
-                                />
-                                <Typography
-                                  name="Body 3/Bold"
-                                  color={token?.colorLink}
-                                  cursor="pointer"
+                                        // remove(name)
+                                      }
+                                      cursor="pointer"
+                                    />
+                                  </Col>
+                                </Row>
+                              ))}
+                              <Form.Item>
+                                <Space
+                                  size={4}
+                                  style={{
+                                    width: '100%',
+                                    cursor: 'pointer',
+                                  }}
+                                  onClick={() => {
+                                    add();
+                                  }}
                                 >
-                                  Add Partner and Partner Program
-                                </Typography>
-                              </Space>
-                            </Form.Item>
-                          </>
+                                  <PlusIcon
+                                    width={24}
+                                    color={token?.colorLink}
+                                    style={{marginTop: '5px'}}
+                                  />
+                                  <Typography
+                                    name="Body 3/Bold"
+                                    color={token?.colorLink}
+                                    cursor="pointer"
+                                  >
+                                    Add Partner and Partner Program
+                                  </Typography>
+                                </Space>
+                              </Form.Item>
+                            </>
+                          )
                         )}
                       </Form.List>
                     ),

@@ -619,8 +619,8 @@ const PartnerPassword = () => {
         deleteSelectedIds={deleteSelectedIds}
         description={
           activeKey === 1
-            ? 'Are you sure you want to delete this shared partner Password ?'
-            : 'Are you sure you want to delete this partner Password?'
+            ? 'Are you sure you want to delete this shared Partner Password ?'
+            : 'Are you sure you want to delete this Partner Password?'
         }
         heading="Delete Partner Password"
       />

@@ -211,7 +211,6 @@ const FieldDisplayConfiguration: FC<any> = () => {
     ...thirdFieldDisplayConfigurationFields,
   ];
 
-
   return (
     <>
       <TabContainerStyle>
@@ -308,7 +307,7 @@ const FieldDisplayConfiguration: FC<any> = () => {
                             tableSelectionType="checkbox"
                             columns={allColumns}
                             dataSource={tableColumnDataShow}
-                            defaultPageSize={15}
+                            defaultPageSize={10}
                             scrolly={200}
                           />
                         )}
