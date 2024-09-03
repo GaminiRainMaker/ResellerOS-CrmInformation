@@ -15,6 +15,7 @@ import {queryOEM} from '../../../../../redux/actions/oem';
 import {queryDistributor} from '../../../../../redux/actions/distributor';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import {Istok_Web} from 'next/font/google';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 
 const AddFormula: React.FC<any> = ({
   drawer,
@@ -37,7 +38,7 @@ const AddFormula: React.FC<any> = ({
       let newArrForOem: any = [];
       payload?.payload?.map((items: any) => {
         let newObj: any = {
-          label: items?.oem,
+          label: formatStatus(items?.oem),
           value: items?.id,
         };
         newArrForOem?.push(newObj);
@@ -48,7 +49,7 @@ const AddFormula: React.FC<any> = ({
       let newArrForDistributor: any = [];
       payload?.payload?.map((items: any) => {
         let newObj: any = {
-          label: items?.distributor,
+          label: formatStatus(items?.distributor),
           value: items?.id,
         };
         newArrForDistributor?.push(newObj);
@@ -124,7 +125,7 @@ const AddFormula: React.FC<any> = ({
                   rules={[
                     {
                       required: true,
-                      message: 'formula is required!',
+                      message: 'Formula is required!',
                     },
                     // {
                     //   pattern: /^[A-Za-z\s]+$/,
@@ -144,7 +145,7 @@ const AddFormula: React.FC<any> = ({
                   rules={[
                     {
                       required: true,
-                      message: 'description is required!',
+                      message: 'Description is required!',
                     },
                     // {
                     //   pattern: /^[A-Za-z\s]+$/,
@@ -159,16 +160,6 @@ const AddFormula: React.FC<any> = ({
                 <SelectFormItem
                   label={<Typography name="Body 4/Medium">Active</Typography>}
                   name="is_active"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'formula is required!',
-                    },
-                    // {
-                    //   pattern: /^[A-Za-z\s]+$/,
-                    //   message: 'Please enter valid text.',
-                    // },
-                  ]}
                 >
                   <CommonSelect
                     style={{width: '100%'}}

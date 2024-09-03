@@ -620,7 +620,6 @@ const Partners: React.FC = () => {
         dataIndex: 'Action',
         key: 'Action',
         render: (_: string, record: any) => (
-          console.log('recordrecord', record),
           (
             <>
               {!record?.AssignPartnerProgram ? (
@@ -644,7 +643,7 @@ const Partners: React.FC = () => {
                     {record?.AssignPartnerProgram?.is_approved ? (
                       'Appproved for your Organization'
                     ) : !record?.AssignPartnerProgram?.admin_request ? (
-                      `'Need admin approval to request super admin`
+                      `'Sent for admin approval to request access from the Super Admin.`
                     ) : record?.AssignPartnerProgram?.is_approved === null ? (
                       'Requested for Access'
                     ) : (

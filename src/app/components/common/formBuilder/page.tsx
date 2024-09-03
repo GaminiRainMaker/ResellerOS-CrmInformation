@@ -45,6 +45,7 @@ import {
 } from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import ItemName from './ItemName';
+import GlobalLoader from '../os-global-loader';
 
 const FormBuilderMain: React.FC<any> = ({
   cartItems,
@@ -69,6 +70,7 @@ const FormBuilderMain: React.FC<any> = ({
   const searchParams = useSearchParams()!;
   const pathname = usePathname();
   // dealRegDetail
+  const [formLoading, setFormLoading] = useState<boolean>(false);
 
   let pathnameForFlow = pathname === '/dealRegDetail';
   const getPartnerProgramID = searchParams.get('id');
@@ -96,6 +98,7 @@ const FormBuilderMain: React.FC<any> = ({
 
   useEffect(() => {
     if (!openPreviewModal && getPartnerProgramID) {
+      setFormLoading(true);
       dispatch(getPartnerProgramById(Number(getPartnerProgramID)))?.then(
         (payload: any) => {
           if (payload?.payload?.form_data?.[0]?.[0]) {
@@ -106,6 +109,9 @@ const FormBuilderMain: React.FC<any> = ({
           }
         },
       );
+      setTimeout(() => {
+        setFormLoading(false);
+      }, 1000);
     }
   }, []);
 
@@ -205,9 +211,8 @@ const FormBuilderMain: React.FC<any> = ({
     }
   }, [cartItems]);
   console.log('cartItemscartItems', cartItems);
-
   return (
-    <>
+    <GlobalLoader loading={formLoading}>
       {contextHolder}
       {!previewFile && (
         <Row
@@ -920,7 +925,7 @@ const FormBuilderMain: React.FC<any> = ({
           <RowStyledForForm>+ Drop Filed</RowStyledForForm>
         )}
       </div>
-    </>
+    </GlobalLoader>
   );
 };
 export default FormBuilderMain;

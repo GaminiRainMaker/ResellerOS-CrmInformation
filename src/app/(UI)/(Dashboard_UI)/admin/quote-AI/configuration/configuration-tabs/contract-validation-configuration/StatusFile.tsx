@@ -53,7 +53,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
       serialNumber: (dataSource.length + 1).toString(),
       fieldName: '',
       operator: '',
-      valueType: 'input',
+      valueType: '',
       value: '',
     };
     setDataSource([...dataSource, newRow]);
@@ -201,7 +201,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
         ) : (
           <CommonSelect
             allowClear
-            value={text}
+            // value={text ?? text}
             placeholder="Select Fields"
             onChange={(value) => handleInputChange(value, record.key, 'value')}
             style={{width: '100%', height: 'auto'}}
@@ -237,7 +237,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
       contract_status: contractStatus ?? initialData?.contract_status,
       custom_input:
         customLogic === 'custom_logic'
-          ? customInputLogic ?? initialData?.custom_input
+          ? (customInputLogic ?? initialData?.custom_input)
           : '',
       is_active: isActive ?? initialData?.is_active,
       json: [JSON?.stringify(dataSource)],
@@ -271,6 +271,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
             children: (
               <Space size={24} direction="vertical" style={{width: '100%'}}>
                 <Table
+                  style={{boxShadow: ' 5px 5px 5px 5px grey'}}
                   dataSource={dataSource}
                   columns={columns}
                   pagination={false}
