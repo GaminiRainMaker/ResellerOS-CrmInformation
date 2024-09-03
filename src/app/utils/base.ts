@@ -216,7 +216,7 @@ export const formbuildernewObject = (newItem: string) => {
       hintext: false,
       hintTextValue: 'hint Vlaue',
       defaultcountry: 'US',
-      dataformat: '333-333-3333',
+      dataformat: ' (333) 333-3333',
     };
   } else if (newItem === 'Currency') {
     newObjAddedon = {

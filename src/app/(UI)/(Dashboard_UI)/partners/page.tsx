@@ -614,13 +614,12 @@ const Partners: React.FC = () => {
       const newObj: any = {
         title: (
           <Typography name="Body 4/Medium" className="dragHandler">
-            Action
+            {activeTab === 1 ? 'Partner Program Status' : 'Action'}
           </Typography>
         ),
         dataIndex: 'Action',
         key: 'Action',
         render: (_: string, record: any) => (
-          console.log('recordrecord', record),
           (
             <>
               {!record?.AssignPartnerProgram ? (
@@ -644,7 +643,7 @@ const Partners: React.FC = () => {
                     {record?.AssignPartnerProgram?.is_approved ? (
                       'Appproved for your Organization'
                     ) : !record?.AssignPartnerProgram?.admin_request ? (
-                      `'Need admin approval to request super admin`
+                      `'Sent for admin approval to request access from the Super Admin.`
                     ) : record?.AssignPartnerProgram?.is_approved === null ? (
                       'Requested for Access'
                     ) : (
