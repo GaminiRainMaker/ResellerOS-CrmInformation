@@ -51,7 +51,7 @@ const ElectronBot = () => {
 
         <Typography name="Body 3/Medium">
           <Typography name="Body 3/Bold">Step 3:</Typography> Click the button
-          below to download the ElectroNeek App.
+          below to download the ResellerOS Electron App.
         </Typography>
 
         <a
