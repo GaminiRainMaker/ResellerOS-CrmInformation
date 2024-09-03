@@ -331,14 +331,29 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     let requiredOutput = alllArrayValue.map((obj: any) => cleanObject(obj));
     let newArrWIthFileName: any = [];
     requiredOutput?.map((items: any) => {
-      newArrWIthFileName?.push({
+      let newObj = {
         ...items,
         file_name: currentFileData?.file_name,
         file_id:
           salesFOrceManual === 'true'
             ? currentFileData?.FileId
             : salesForceFiledId,
-      });
+      };
+      delete newObj.product_code;
+      let string = items?.product_code?.trim();
+
+      // Remove any remaining spaces and newlines within the string
+      let newProductCode = string.replace(/\s+/g, '');
+      newObj.product_code = newProductCode;
+      newArrWIthFileName?.push(newObj);
+      // newArrWIthFileName?.push({
+      //   ...items,
+      //   file_name: currentFileData?.file_name,
+      //   file_id:
+      //     salesFOrceManual === 'true'
+      //       ? currentFileData?.FileId
+      //       : salesForceFiledId,
+      // });
     });
 
     // salesFOrceManual === "false"
