@@ -36,6 +36,7 @@ import {
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs from './DealRegCustomTabs';
 import SubmitDealRegForms from './SubmitDealRegForms';
+import ElectronBot from './ElectronBot';
 const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
 
 const DealRegDetail = () => {
@@ -52,6 +53,7 @@ const DealRegDetail = () => {
   } = useAppSelector((state) => state.dealReg);
   const [showModal, setShowModal] = useState(false);
   const [showSubmitFormModal, setShowSubmitFormModal] = useState(false);
+  const [electronBotModal, showElectronBotModal] = useState(false);
   const searchParams = useSearchParams()!;
   const getOpportunityId = searchParams && searchParams.get('opportunityId');
   const [formData, setFormData] = useState<any>();
@@ -155,7 +157,6 @@ const DealRegDetail = () => {
             },
           );
         }
-        
       } catch (error) {
         console.error('Error running script:', error);
       }
@@ -191,11 +192,15 @@ const DealRegDetail = () => {
               buttontype="SECONDARY"
               clickHandler={lauchSalesPlayBot}
             /> */}
-            {/* <OsButton
-              text="Launch Bot"
+
+            <OsButton
+              text="Intial Setup"
               buttontype="SECONDARY"
-              clickHandler={}
-            /> */}
+              clickHandler={() => {
+                showElectronBotModal(true);
+              }}
+            />
+
             <OsButton
               text="Submit Form"
               buttontype="SECONDARY"
@@ -256,6 +261,20 @@ const DealRegDetail = () => {
           submitDealRegForm?.resetFields();
         }}
         primaryButtonText={'Save'}
+      />
+
+      <OsModal
+        // loading={dealRegLoading}
+        title="Electron Bot Setup"
+        bodyPadding={22}
+        body={<ElectronBot />}
+        width={583}
+        open={electronBotModal}
+        // onOk={submitDealRegForm?.submit}
+        onCancel={() => {
+          showElectronBotModal(false);
+        }}
+        // primaryButtonText={'Save'}
       />
     </div>
   );
