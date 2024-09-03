@@ -29,5 +29,3 @@ npm install -g playwright
 
 # Launch Playwright with Chromium
 npx playwright install
-
-playwright open
