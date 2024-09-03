@@ -574,10 +574,12 @@ const FormBuilderMain: React.FC<any> = ({
                       ) {
                         const optionssMulti: any = [];
                         itemCon?.options?.map((itemoo: any) => {
-                          optionssMulti?.push({
-                            label: itemoo,
-                            value: itemoo,
-                          });
+                          if (itemoo && itemoo?.length > 0) {
+                            optionssMulti?.push({
+                              label: itemoo,
+                              value: itemoo,
+                            });
+                          }
                         });
                         return (
                           <Col
@@ -750,8 +752,7 @@ const FormBuilderMain: React.FC<any> = ({
                               />
                             )}
                             <Typography name="Body 4/Medium">
-                              {itemCon?.requiredLabel &&
-                                itemCon?.label}{' '}
+                              {itemCon?.requiredLabel && itemCon?.label}{' '}
                               {itemCon?.required && (
                                 <span style={{color: 'red'}}>*</span>
                               )}

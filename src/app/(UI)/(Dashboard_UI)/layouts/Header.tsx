@@ -143,26 +143,26 @@ const CustomHeader = () => {
             );
           }}
         >
-          My Account{' '}
+          My Settings
         </Typography>
       ),
     },
-    {
-      key: '2',
-      label: (
-        <Typography
-          name="Body 3/Regular"
-          cursor="pointer"
-          onClick={() =>
-            window.open(
-              `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=myProfile&isSuperAdminProfile=${isSuperAdminProfile}&self=true`,
-            )
-          }
-        >
-          Settings{' '}
-        </Typography>
-      ),
-    },
+    // {
+    //   key: '2',
+    //   label: (
+    //     <Typography
+    //       name="Body 3/Regular"
+    //       cursor="pointer"
+    //       onClick={() =>
+    //         window.open(
+    //           `/accountInfo?id=${userInformation?.id}&organization=${userInformation?.organization}&tab=myProfile&isSuperAdminProfile=${isSuperAdminProfile}&self=true`,
+    //         )
+    //       }
+    //     >
+    //       Settings{' '}
+    //     </Typography>
+    //   ),
+    // },
     {
       key: '3',
       label: (

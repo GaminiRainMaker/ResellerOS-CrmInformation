@@ -292,7 +292,7 @@ const FieldDisplayConfiguration: FC<any> = () => {
                     key: '1',
                     label: (
                       <Typography name="Body 2/Medium">
-                        Selected Fields
+                        Select Fields
                       </Typography>
                     ),
                     children: (

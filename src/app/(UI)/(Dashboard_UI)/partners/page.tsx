@@ -614,7 +614,7 @@ const Partners: React.FC = () => {
       const newObj: any = {
         title: (
           <Typography name="Body 4/Medium" className="dragHandler">
-            Action
+            {activeTab === 1 ? 'Partner Program Status' : 'Action'}
           </Typography>
         ),
         dataIndex: 'Action',
