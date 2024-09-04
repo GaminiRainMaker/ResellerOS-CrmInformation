@@ -1,0 +1,10 @@
+Node.js Minimum Requirements for macOS
+
+- Operating System: macOS 10.15 (Catalina) or later
+- Processor: Intel Core i5 or better
+- RAM: 4 GB or more
+- Disk Space: 1 GB free space
+
+Installation Notes:
+- Ensure that your macOS is updated to the latest version.
+- You can install Node.js using Homebrew or by downloading the installer from the Node.js website.
