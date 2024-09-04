@@ -268,11 +268,13 @@ const ContactEditFields: React.FC<EditableFiledsCommonInterface> = ({
                 changeFieldValues(e, 'dataformat');
               }}
               value={CommonIndexOfUse?.dataformat}
+              defaultValue={'(333) 333-3333'}
               style={{width: '100%'}}
               options={[
                 {label: '3-3-3', value: '3-3-3'},
                 {label: '33-33-33', value: '33-33-33'},
                 {label: '333-333-333', value: '333-333-333'},
+                {label: ' (333) 333-3333', value: ' (333) 333-3333'},
               ]}
             />
           </Form.Item>

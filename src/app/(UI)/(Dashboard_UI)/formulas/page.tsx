@@ -29,7 +29,10 @@ import {
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import OsDrawer from '@/app/components/common/os-drawer';
 import AddFormula from './addFormula';
-import {changeTheALpabetsFromFormula} from '@/app/utils/CONSTANTS';
+import {
+  changeTheALpabetsFromFormula,
+  formatStatus,
+} from '@/app/utils/CONSTANTS';
 
 const FormulaMain: React.FC = () => {
   const [token] = useThemeToken();
@@ -97,18 +100,18 @@ const FormulaMain: React.FC = () => {
       title: 'Active',
       dataIndex: 'is_active',
       key: 'is_active',
-      render: (text: boolean) => <Checkbox defaultChecked={text} />,
+      render: (text: boolean) => <Checkbox checked={text} />,
     },
     {
-      title: 'Oem/Distributor',
+      title: 'OEM/Distributor',
       dataIndex: 'oem_id',
       key: 'oem_id',
       render: (text: string, record: any, index: number) => (
         <Space size={18}>
           {record?.Oem
-            ? record?.Oem?.oem
+            ? formatStatus(record?.Oem?.oem)
             : record?.Distributor
-              ? record?.Distributor?.distributor
+              ? formatStatus(record?.Distributor?.distributor)
               : '----'}
         </Space>
       ),
@@ -312,8 +315,8 @@ const FormulaMain: React.FC = () => {
         setDeleteIds={setDeleteId}
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteContractById}
-        description="Are you sure you want to delete this contract?"
-        heading="Delete Contract"
+        description="Are you sure you want to delete this formula?"
+        heading="Delete Formula"
       />
     </>
   );
