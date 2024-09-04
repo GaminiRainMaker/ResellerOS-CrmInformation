@@ -315,8 +315,8 @@ const FormulaMain: React.FC = () => {
         setDeleteIds={setDeleteId}
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteContractById}
-        description="Are you sure you want to delete this contract?"
-        heading="Delete Contract"
+        description="Are you sure you want to delete this formula?"
+        heading="Delete Formula"
       />
     </>
   );

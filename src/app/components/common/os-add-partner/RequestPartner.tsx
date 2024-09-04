@@ -184,7 +184,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
           align="left"
           color={token?.colorLinkHover}
         >
-          Request New Partner
+          Add new Partner and Partner Program
         </Typography>
       </Row>
 

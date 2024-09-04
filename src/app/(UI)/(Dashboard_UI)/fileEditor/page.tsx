@@ -132,7 +132,6 @@ const EditorFile = () => {
       },
     );
   };
-  console.log('345345435', currentFIle);
 
   useEffect(() => {
     dispatch(getAllFormulasByDistributorAndOem(fileData ? fileData : {}))?.then(
@@ -345,6 +344,7 @@ const EditorFile = () => {
     } else {
       getQuoteFileByIdForFormulads();
       if (ExistingQuoteItemss === 'true') {
+        setNanonetsLoading(true);
         let newObj = {
           id: Number(getQUoteId),
           fileId: Number(getQuoteFileId),
@@ -354,6 +354,7 @@ const EditorFile = () => {
             if (d?.payload) {
               // const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
               setQuoteItems(d?.payload);
+              setNanonetsLoading(false);
             }
           },
         );
@@ -1263,7 +1264,8 @@ const EditorFile = () => {
         <Typography name="Body 1/Bold">{currentFIle?.file_name}</Typography>
       </Space>
 
-      {ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true' ? (
+      {(ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true') &&
+      quoteItems?.length > 0 ? (
         <>
           <div
             style={{

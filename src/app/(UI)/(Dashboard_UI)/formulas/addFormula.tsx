@@ -16,6 +16,7 @@ import {queryDistributor} from '../../../../../redux/actions/distributor';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import {Istok_Web} from 'next/font/google';
 import {formatStatus} from '@/app/utils/CONSTANTS';
+import {ChevronDownIcon} from '@heroicons/react/24/outline';
 
 const AddFormula: React.FC<any> = ({
   drawer,
@@ -203,7 +204,16 @@ const AddFormula: React.FC<any> = ({
                 >
                   <CommonSelect
                     style={{width: '100%'}}
+                    disabled={selectValue?.oem_id ? true : false}
                     defaultValue={selectValue?.distributor_id}
+                    suffixIcon={
+                      <ChevronDownIcon
+                        width={24}
+                        color={token?.colorInfoBorder}
+                        // style={{marginRight: '10px'}}
+                      />
+                    }
+                    allowClear={true}
                     options={distributerOPtions}
                     onChange={(e) => {
                       setSelectValue({
@@ -231,8 +241,17 @@ const AddFormula: React.FC<any> = ({
                 >
                   <CommonSelect
                     style={{width: '100%'}}
+                    suffixIcon={
+                      <ChevronDownIcon
+                        width={24}
+                        color={token?.colorInfoBorder}
+                        // style={{marginRight: '10px'}}
+                      />
+                    }
+                    allowClear={true}
                     defaultValue={selectValue?.oem_id}
                     options={oemOptions}
+                    disabled={selectValue?.distributor_id ? true : false}
                     onChange={(e) => {
                       setSelectValue({
                         ...selectValue,
