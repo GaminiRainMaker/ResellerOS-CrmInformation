@@ -288,42 +288,42 @@ const QuoteMappings = () => {
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
           <OsTabs
-            tabBarExtraContent={
-              <Space size={12} align="center">
-                <Space direction="vertical" size={0}>
-                  <Typography name="Body 4/Medium">Search here</Typography>
-                  <OsInput
-                    style={{width: '250px'}}
-                    placeholder="Search here"
-                    onChange={(e) => {
-                      setQuery({
-                        ...query,
-                        searchValue: e?.target?.value,
-                      });
-                    }}
-                    value={query?.searchValue}
-                  />
-                </Space>
-                <div
-                  style={{
-                    marginTop: '15px',
-                  }}
-                >
-                  <Typography
-                    cursor="pointer"
-                    name="Button 1"
-                    color={query?.searchValue ? '#0D0D0D' : '#C6CDD5'}
-                    onClick={() => {
-                      setQuery({
-                        searchValue: '',
-                      });
-                    }}
-                  >
-                    Reset
-                  </Typography>
-                </div>
-              </Space>
-            }
+            // tabBarExtraContent={
+            //   <Space size={12} align="center">
+            //     <Space direction="vertical" size={0}>
+            //       <Typography name="Body 4/Medium">Search here</Typography>
+            //       <OsInput
+            //         style={{width: '250px'}}
+            //         placeholder="Search here"
+            //         onChange={(e) => {
+            //           setQuery({
+            //             ...query,
+            //             searchValue: e?.target?.value,
+            //           });
+            //         }}
+            //         value={query?.searchValue}
+            //       />
+            //     </Space>
+            //     <div
+            //       style={{
+            //         marginTop: '15px',
+            //       }}
+            //     >
+            //       <Typography
+            //         cursor="pointer"
+            //         name="Button 1"
+            //         color={query?.searchValue ? '#0D0D0D' : '#C6CDD5'}
+            //         onClick={() => {
+            //           setQuery({
+            //             searchValue: '',
+            //           });
+            //         }}
+            //       >
+            //         Reset
+            //       </Typography>
+            //     </div>
+            //   </Space>
+            // }
             items={superAdmintabItems}
           />
         </Row>
@@ -334,7 +334,7 @@ const QuoteMappings = () => {
         body={
           <OSDialog
             title="Change Status to"
-            description="Are you sure, you want to mark the status to approve for the following mapping:"
+            description={`Are you sure you want to mark the status to "Approve" for the following mapping?`}
             thirdLineText={
               recordData
                 ? `“${recordData?.pdf_header}” to  “${formatHeader(recordData?.quote_header)}”`
@@ -364,7 +364,7 @@ const QuoteMappings = () => {
         body={
           <OSDialog
             title="Change Status to"
-            description="Are you sure, you want to mark the status to rejected for the following mapping:"
+            description={`Are you sure you want to mark the status to "Rejected" for the following mapping?`}
             thirdLineText={
               recordData
                 ? `“${recordData?.pdf_header}” to  “${formatHeader(recordData?.quote_header)}”`

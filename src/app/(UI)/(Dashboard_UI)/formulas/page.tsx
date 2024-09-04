@@ -100,7 +100,7 @@ const FormulaMain: React.FC = () => {
       title: 'Active',
       dataIndex: 'is_active',
       key: 'is_active',
-      render: (text: boolean) => <Checkbox checked={text} />,
+      render: (text: boolean) => <Checkbox disabled checked={text} />,
     },
     {
       title: 'OEM/Distributor',

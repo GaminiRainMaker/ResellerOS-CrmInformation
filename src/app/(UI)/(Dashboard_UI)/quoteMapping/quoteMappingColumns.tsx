@@ -80,7 +80,7 @@ function newQuoteMappingColumns(
           onClick={() => {
             window.open(record?.QuoteFile?.pdf_url);
           }}
-          style={{cursor: 'pointer', textDecoration: 'underline'}}
+          style={{cursor: 'pointer'}}
         >
           {record?.QuoteFile?.file_name}
         </Typography>
@@ -248,7 +248,7 @@ function approvedQuoteMappingColumns(
           onClick={() => {
             window.open(record?.QuoteFile?.pdf_url);
           }}
-          style={{cursor: 'pointer', textDecoration: 'underline'}}
+          style={{cursor: 'pointer'}}
         >
           {record?.QuoteFile?.file_name}
         </Typography>
@@ -404,7 +404,7 @@ function rejectQuoteMappingColumns(
           onClick={() => {
             window.open(record?.QuoteFile?.pdf_url);
           }}
-          style={{cursor: 'pointer', textDecoration: 'underline'}}
+          style={{cursor: 'pointer'}}
         >
           {record?.QuoteFile?.file_name}
         </Typography>
