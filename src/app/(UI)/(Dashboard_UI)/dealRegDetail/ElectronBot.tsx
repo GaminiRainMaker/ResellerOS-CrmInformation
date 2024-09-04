@@ -1,32 +1,41 @@
-import React, {useEffect, useState} from 'react';
-import Typography from '@/app/components/common/typography';
 import {Space} from '@/app/components/common/antd/Space';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
-import {DownOutlined} from '@ant-design/icons';
-import {Button} from 'antd';
-import {InformationCircleIcon} from '@heroicons/react/24/outline';
 import OsTooltip from '@/app/components/common/os-tooltip';
+import Typography from '@/app/components/common/typography';
+import {InformationCircleIcon} from '@heroicons/react/24/outline';
+import {useEffect, useState} from 'react';
 
 const ElectronBot = () => {
-  const [downloadLink, setDownloadLink] = useState('#');
-
-  const getDownloadLink = () => {
-    const os = navigator.platform.startsWith('Win') ? 'windows' : 'mac';
-    console.log('OS detected:', os);
-    const scriptUrl =
-      os === 'windows'
-        ? '/playwright-files/install_playwright.ps1'
-        : '/playwright-files/install_playwright.sh';
-
-    return scriptUrl;
-  };
+  const [os, setOs] = useState('');
+  const [token] = useThemeToken();
 
   useEffect(() => {
-    setDownloadLink(getDownloadLink());
+    const platform = navigator.platform.toLowerCase();
+    if (platform.includes('win')) {
+      setOs('windows');
+    } else if (platform.includes('mac')) {
+      setOs('mac');
+    } else if (platform.includes('linux')) {
+      setOs('linux');
+    }
   }, []);
 
+  const getLink = () => {
+    switch (os) {
+      case 'windows':
+        return '/docs/windows-requirements.txt';
+      case 'mac':
+        return '/docs/mac-requirements.txt';
+      case 'linux':
+        return '/docs/linux-requirements.txt';
+      default:
+        return '#';
+    }
+  };
+
   return (
-    <div style={{padding: '10px'}}>
+    <div style={{padding: '10px', marginTop: '10px'}}>
       <Space direction="vertical" size="middle">
         <Typography name="Body 3/Medium">
           <Typography name="Body 3/Bold">Step 1:</Typography> Download Node.js
@@ -67,9 +76,7 @@ const ElectronBot = () => {
             </OsTooltip>
           </div>
         </Space>
-
-        {/* Step 2: Download Electron App */}
-
+        <br />
         <Typography name="Body 3/Medium">
           <Typography name="Body 3/Bold">Step 2:</Typography> Click the button
           below to download the ResellerOS Electron App.
@@ -109,6 +116,43 @@ const ElectronBot = () => {
           </div>
         </Space>
       </Space>
+      <br />
+      <br />
+      <br />
+      <div style={{display: 'flex', flexDirection: 'column'}}>
+        <Typography
+          name="Body 3/Bold"
+          color={token?.colorLink}
+          style={{marginBottom: '6px'}}
+        >
+          Note:
+        </Typography>
+        <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
+          <ul style={{listStyleType: 'disc', marginLeft: '20px'}}>
+            <li>
+              <a
+                href={getLink()}
+                download
+                style={{
+                  textDecoration: 'none',
+                  color: 'inherit',
+                }}
+              >
+                <span
+                  style={{
+                    textDecoration: 'underline',
+                    color: 'blue',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Download
+                </span>{' '}
+                Node.js Requirements for {os || 'Your OS'}
+              </a>
+            </li>
+          </ul>
+        </Typography>
+      </div>
     </div>
   );
 };
