@@ -23,9 +23,3 @@ if (-Not (Get-Command node -ErrorAction SilentlyContinue)) {
 } else {
     Write-Host "Node.js is already installed."
 }
-
-# Install Playwright globally
-npm install -g playwright
-
-# Launch Playwright with Chromium
-npx playwright install

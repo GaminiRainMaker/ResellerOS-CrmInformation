@@ -4,6 +4,8 @@ import {Space} from '@/app/components/common/antd/Space';
 import OsButton from '@/app/components/common/os-button';
 import {DownOutlined} from '@ant-design/icons';
 import {Button} from 'antd';
+import {InformationCircleIcon} from '@heroicons/react/24/outline';
+import OsTooltip from '@/app/components/common/os-tooltip';
 
 const ElectronBot = () => {
   const [downloadLink, setDownloadLink] = useState('#');
@@ -27,41 +29,85 @@ const ElectronBot = () => {
     <div style={{padding: '10px'}}>
       <Space direction="vertical" size="middle">
         <Typography name="Body 3/Medium">
-          <Typography name="Body 3/Bold">Step 1:</Typography> Download the file.
+          <Typography name="Body 3/Bold">Step 1:</Typography> Download Node.js
+          according to your operating system.
         </Typography>
+        <Space size={20}>
+          <a
+            href="https://nodejs.org/en"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <OsButton buttontype="PRIMARY" text="Download Node.js" />
+          </a>
 
-        <a href={downloadLink} download>
-          <OsButton buttontype="PRIMARY" text="Download File" />
-        </a>
+          <div style={{position: 'relative', display: 'inline-block'}}>
+            <a href={'videoLink'} target="_blank" rel="noopener noreferrer">
+              <OsButton buttontype="SECONDARY" text="Watch Video" />
+            </a>
+            <OsTooltip
+              color="white"
+              title={
+                <Typography name="Body 3/Medium">
+                  <Typography name="Body 3/Bold">Watch the video:</Typography>{' '}
+                  Follow the steps shown in the video to download and install
+                  Node.js.
+                </Typography>
+              }
+              overlayStyle={{marginLeft: '500px', width: '800px'}}
+            >
+              <InformationCircleIcon
+                width={25}
+                style={{
+                  position: 'absolute',
+                  top: '-15px',
+                  right: '-25px',
+                }}
+              />{' '}
+            </OsTooltip>
+          </div>
+        </Space>
+
+        {/* Step 2: Download Electron App */}
 
         <Typography name="Body 3/Medium">
-          <Typography name="Body 3/Bold">Step 2:</Typography> Move it to the
-          folder where the file is downloaded using CMD, and then run the
-          following command:
-        </Typography>
-        <pre
-          style={{
-            backgroundColor: '#f5f5f5',
-            padding: '10px',
-            borderRadius: '5px',
-          }}
-        >
-          powershell -ExecutionPolicy Bypass -File "install_playwright.ps1"
-        </pre>
-
-        <Typography name="Body 3/Medium">
-          <Typography name="Body 3/Bold">Step 3:</Typography> Click the button
+          <Typography name="Body 3/Bold">Step 2:</Typography> Click the button
           below to download the ResellerOS Electron App.
         </Typography>
+        <Space size={20}>
+          <a
+            href={'https://reselller-os.s3.amazonaws.com/MyApp-win32-x64.zip'}
+            download
+          >
+            <OsButton text="Download Electron App" buttontype="PRIMARY" />
+          </a>
 
-        <a
-          href={
-            'https://reselller-os.s3.amazonaws.com/ResellerOS-Electron-App.zip'
-          }
-          download
-        >
-          <OsButton text="Download Electron App" buttontype="PRIMARY" />
-        </a>
+          <div style={{position: 'relative', display: 'inline-block'}}>
+            <a href={'videoLink'} target="_blank" rel="noopener noreferrer">
+              <OsButton buttontype="SECONDARY" text="Watch Video" />
+            </a>
+            <OsTooltip
+              color="white"
+              title={
+                <Typography name="Body 3/Medium">
+                  <Typography name="Body 3/Bold">Watch the video:</Typography>{' '}
+                  Follow the steps shown in the video to download the electron
+                  app and install Playwright.
+                </Typography>
+              }
+              overlayStyle={{marginLeft: '500px', width: '800px'}}
+            >
+              <InformationCircleIcon
+                width={25}
+                style={{
+                  position: 'absolute',
+                  top: '-15px',
+                  right: '-25px',
+                }}
+              />{' '}
+            </OsTooltip>
+          </div>
+        </Space>
       </Space>
     </div>
   );
