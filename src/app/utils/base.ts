@@ -171,7 +171,7 @@ export const formbuildernewObject = (newItem: string) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue: 'hint Vlaue',
+      hintTextValue: '',
       options: [],
     };
   } else if (newItem === 'Line Break') {
@@ -187,7 +187,7 @@ export const formbuildernewObject = (newItem: string) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue: 'hint Vlaue',
+      hintTextValue: '',
       timeformat: 'HH:mm',
       use12hours: true,
     };
@@ -200,7 +200,7 @@ export const formbuildernewObject = (newItem: string) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue: 'hint Vlaue',
+      hintTextValue: '',
       dateformat: 'mm/dd/yyyy',
       weekStartOn: 'sunday',
       StartDate: '',
@@ -214,7 +214,7 @@ export const formbuildernewObject = (newItem: string) => {
       required: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue: 'hint Vlaue',
+      hintTextValue: '',
       defaultcountry: 'US',
       dataformat: ' (333) 333-3333',
     };
@@ -249,7 +249,7 @@ export const formbuildernewObject = (newItem: string) => {
 
       sectionTitle: 'Section Title',
       Alignemnt: 'left',
-      FontSize: 'Heading 2',
+      FontSize: 'h2',
     };
   } else if (newItem === 'Checkbox') {
     newObjAddedon = {
@@ -273,7 +273,7 @@ export const formbuildernewObject = (newItem: string) => {
       user_fill: false,
       requiredLabel: true,
       hintext: false,
-      hintTextValue: 'hint Vlaue',
+      hintTextValue: '',
     };
   } else if (newItem === 'Attachment') {
     newObjAddedon = {

@@ -322,9 +322,7 @@ const UpdateGenerateQuote = () => {
         resultItem,
       );
     });
-    router?.push(
-      `/generateQuote?id=${getUserID}&isView=${getResultedValue()}`,
-    );
+    router?.push(`/generateQuote?id=${getUserID}&isView=${getResultedValue()}`);
   };
 
   return (

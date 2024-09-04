@@ -55,7 +55,7 @@ const AddNewStandardAttributeSection: FC<
                 rules={[
                   {
                     required: true,
-                    message: 'Please Enter Section Name!',
+                    message: 'Please enter the section name!',
                   },
                 ]}
                 label={
@@ -65,7 +65,10 @@ const AddNewStandardAttributeSection: FC<
                 }
                 name="name"
               >
-                <OsInput placeholder="Write Attribute Section here" style={{width: '100%'}} />
+                <OsInput
+                  placeholder="Write Attribute Section here"
+                  style={{width: '100%'}}
+                />
               </SelectFormItem>
             </Col>
 
@@ -76,11 +79,14 @@ const AddNewStandardAttributeSection: FC<
                 rules={[
                   {
                     required: true,
-                    message: 'Please Write the Order in number!',
+                    message: 'Please write the order in number!',
                   },
                 ]}
               >
-                <OsInputNumber placeholder="Write the Order here" style={{width: '100%'}} />
+                <OsInputNumber
+                  placeholder="Write the Order here"
+                  style={{width: '100%'}}
+                />
               </SelectFormItem>
             </Col>
 

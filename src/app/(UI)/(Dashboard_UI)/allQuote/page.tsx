@@ -187,19 +187,13 @@ const AllQuote: React.FC = () => {
 
   const editQuote = (quoteId: string) => {
     if (activeTab === '5') {
-      router.push(
-        `/generateQuote?id=${quoteId}&isView=${getResultedValue()}`,
-      );
+      router.push(`/generateQuote?id=${quoteId}&isView=${getResultedValue()}`);
     } else {
-      router.push(
-        `/generateQuote?id=${quoteId}&isView=${getResultedValue()}`,
-      );
+      router.push(`/generateQuote?id=${quoteId}&isView=${getResultedValue()}`);
     }
   };
   const quoteNameNavigation = (quoteId: string) => {
-    window.open(
-      `/generateQuote?id=${quoteId}&isView=${getResultedValue()}`,
-    );
+    window.open(`/generateQuote?id=${quoteId}&isView=${getResultedValue()}`);
   };
 
   const updateStatus = () => {
@@ -412,7 +406,11 @@ const AllQuote: React.FC = () => {
                     dataSource={activeQuotes}
                     scroll
                     loading={loading}
-                    locale={emptyContainer}
+                    locale={
+                      activeTab?.includes('1') || activeTab?.includes('2')
+                        ? locale
+                        : localeforOtherStatus
+                    }
                     rowSelection={rowSelection}
                   />
                 ),
