@@ -51,7 +51,13 @@ const ElectronBot = () => {
           </a>
 
           <div style={{position: 'relative', display: 'inline-block'}}>
-            <a href={'videoLink'} target="_blank" rel="noopener noreferrer">
+            <a
+              href={
+                'https://reselller-os.s3.amazonaws.com/Node-installation-process.mkv'
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <OsButton buttontype="SECONDARY" text="Watch Video" />
             </a>
             <OsTooltip
@@ -90,7 +96,13 @@ const ElectronBot = () => {
           </a>
 
           <div style={{position: 'relative', display: 'inline-block'}}>
-            <a href={'videoLink'} target="_blank" rel="noopener noreferrer">
+            <a
+              href={
+                'https://reselller-os.s3.amazonaws.com/Electron+APP+and+Playwright+installation+process.mkv'
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <OsButton buttontype="SECONDARY" text="Watch Video" />
             </a>
             <OsTooltip
