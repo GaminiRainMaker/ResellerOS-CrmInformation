@@ -620,49 +620,47 @@ const Partners: React.FC = () => {
         dataIndex: 'Action',
         key: 'Action',
         render: (_: string, record: any) => (
-          (
-            <>
-              {!record?.AssignPartnerProgram ? (
-                <OsButton
-                  buttontype="PRIMARY"
-                  text="Request"
-                  clickHandler={() => {
-                    handleAddNewAssignedPartnerProgramRequest(
-                      record?.id,
-                      userData,
-                    );
-                  }}
-                />
-              ) : (
-                <>
-                  <Typography
-                    name="Body 4/Medium"
-                    hoverOnText
-                    color={token?.colorLink}
-                  >
-                    {record?.AssignPartnerProgram?.is_approved ? (
-                      'Appproved for your Organization'
-                    ) : !record?.AssignPartnerProgram?.admin_request ? (
-                      `'Sent for admin approval to request access from the Super Admin.`
-                    ) : record?.AssignPartnerProgram?.is_approved === null ? (
-                      'Requested for Access'
-                    ) : (
-                      <OsButton
-                        buttontype="PRIMARY"
-                        text="Request"
-                        clickHandler={() => {
-                          handleAddNewAssignedPartnerProgramRequest(
-                            record?.id,
-                            userData,
-                          );
-                        }}
-                      />
-                    )}
-                  </Typography>
-                </>
-              )}
-            </>
-          )
+          <>
+            {!record?.AssignPartnerProgram ? (
+              <OsButton
+                buttontype="PRIMARY"
+                text="Request"
+                clickHandler={() => {
+                  handleAddNewAssignedPartnerProgramRequest(
+                    record?.id,
+                    userData,
+                  );
+                }}
+              />
+            ) : (
+              <>
+                <Typography
+                  name="Body 4/Medium"
+                  hoverOnText
+                  color={token?.colorLink}
+                >
+                  {record?.AssignPartnerProgram?.is_approved ? (
+                    'Appproved for your Organization'
+                  ) : !record?.AssignPartnerProgram?.admin_request ? (
+                    `'Sent for admin approval to request access from the Super Admin!.`
+                  ) : record?.AssignPartnerProgram?.is_approved === null ? (
+                    'Requested for Access'
+                  ) : (
+                    <OsButton
+                      buttontype="PRIMARY"
+                      text="Request"
+                      clickHandler={() => {
+                        handleAddNewAssignedPartnerProgramRequest(
+                          record?.id,
+                          userData,
+                        );
+                      }}
+                    />
+                  )}
+                </Typography>
+              </>
+            )}
+          </>
         ),
       };
       newArr?.push(newObj);

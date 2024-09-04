@@ -53,7 +53,7 @@ const FormulaMain: React.FC = () => {
   }>({
     oem_id: null,
     distributor_id: null,
-    is_active: null,
+    is_active: false,
   });
 
   useEffect(() => {
@@ -185,7 +185,7 @@ const FormulaMain: React.FC = () => {
     setLoadingContract(false);
     setShowModal(false);
     setSelectValue({
-      is_active: null,
+      is_active: false,
       oem_id: null,
       distributor_id: null,
     });
@@ -250,7 +250,7 @@ const FormulaMain: React.FC = () => {
         onCancel={() => {
           setShowModal(false);
           setSelectValue({
-            is_active: null,
+            is_active: false,
             oem_id: null,
             distributor_id: null,
           });
@@ -279,7 +279,7 @@ const FormulaMain: React.FC = () => {
           setOpenDrawer(false);
           form?.resetFields();
           setSelectValue({
-            is_active: null,
+            is_active: false,
             oem_id: null,
             distributor_id: null,
           });

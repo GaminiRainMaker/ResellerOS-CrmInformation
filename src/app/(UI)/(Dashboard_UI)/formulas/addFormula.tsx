@@ -6,7 +6,7 @@ import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
 import {useAppDispatch} from '../../../../../redux/hook';
-import {Form} from 'antd';
+import {Checkbox, Form, Select} from 'antd';
 import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import OsCustomerSelect from '@/app/components/common/os-customer-select';
@@ -62,6 +62,8 @@ const AddFormula: React.FC<any> = ({
   useEffect(() => {
     getOptionsData();
   }, []);
+
+  console.log('234324234', selectValue);
 
   return (
     <>
@@ -162,15 +164,10 @@ const AddFormula: React.FC<any> = ({
                   label={<Typography name="Body 4/Medium">Active</Typography>}
                   name="is_active"
                 >
-                  <CommonSelect
-                    style={{width: '100%'}}
-                    defaultValue={selectValue?.is_active?.toString()}
-                    options={[
-                      {label: 'Yes', value: 'true'},
-                      {label: 'No', value: 'false'},
-                    ]}
+                  <Checkbox
+                    checked={selectValue?.is_active}
                     onChange={(e) => {
-                      if (e === 'true') {
+                      if (e?.target?.checked) {
                         setSelectValue({
                           ...selectValue,
                           is_active: true,
@@ -186,33 +183,20 @@ const AddFormula: React.FC<any> = ({
                 </SelectFormItem>{' '}
               </Col>
               <Col sm={24} md={drawer ? 24 : 12}>
-                <SelectFormItem
-                  label={
-                    <Typography name="Body 4/Medium">Distributer</Typography>
-                  }
-                  name="distributor_id"
-                  // rules={[
-                  //   {
-                  //     required: true,
-                  //     message: 'formula is required!',
-                  //   },
-                  //   // {
-                  //   //   pattern: /^[A-Za-z\s]+$/,
-                  //   //   message: 'Please enter valid text.',
-                  //   // },
-                  // ]}
-                >
+                <Typography name="Body 4/Medium">Distributer</Typography>
+
+                {distributerOPtions && (
                   <CommonSelect
                     style={{width: '100%'}}
                     disabled={selectValue?.oem_id ? true : false}
-                    defaultValue={selectValue?.distributor_id}
-                    suffixIcon={
-                      <ChevronDownIcon
-                        width={24}
-                        color={token?.colorInfoBorder}
-                        // style={{marginRight: '10px'}}
-                      />
-                    }
+                    value={selectValue?.distributor_id}
+                    // suffixIcon={
+                    //   <ChevronDownIcon
+                    //     width={24}
+                    //     color={token?.colorInfoBorder}
+                    //     // style={{marginRight: '10px'}}
+                    //   />
+                    // }
                     allowClear={true}
                     options={distributerOPtions}
                     onChange={(e) => {
@@ -222,44 +206,30 @@ const AddFormula: React.FC<any> = ({
                       });
                     }}
                   />
-                </SelectFormItem>{' '}
+                )}
               </Col>
               <Col sm={24} md={drawer ? 24 : 12}>
-                <SelectFormItem
-                  label={<Typography name="Body 4/Medium">Oem</Typography>}
-                  name="oem_id"
-                  // rules={[
-                  //   {
-                  //     required: true,
-                  //     message: 'formula is required!',
-                  //   },
-                  //   // {
-                  //   //   pattern: /^[A-Za-z\s]+$/,
-                  //   //   message: 'Please enter valid text.',
-                  //   // },
-                  // ]}
-                >
-                  <CommonSelect
-                    style={{width: '100%'}}
-                    suffixIcon={
-                      <ChevronDownIcon
-                        width={24}
-                        color={token?.colorInfoBorder}
-                        // style={{marginRight: '10px'}}
-                      />
-                    }
-                    allowClear={true}
-                    defaultValue={selectValue?.oem_id}
-                    options={oemOptions}
-                    disabled={selectValue?.distributor_id ? true : false}
-                    onChange={(e) => {
-                      setSelectValue({
-                        ...selectValue,
-                        oem_id: e,
-                      });
-                    }}
-                  />
-                </SelectFormItem>{' '}
+                <Typography name="Body 4/Medium">Oem</Typography>
+                <CommonSelect
+                  style={{width: '100%'}}
+                  suffixIcon={
+                    <ChevronDownIcon
+                      width={24}
+                      color={token?.colorInfoBorder}
+                      // style={{marginRight: '10px'}}
+                    />
+                  }
+                  allowClear={true}
+                  value={selectValue?.oem_id}
+                  options={oemOptions}
+                  disabled={selectValue?.distributor_id ? true : false}
+                  onChange={(e) => {
+                    setSelectValue({
+                      ...selectValue,
+                      oem_id: e,
+                    });
+                  }}
+                />
               </Col>
             </Row>
           </Space>
