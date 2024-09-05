@@ -208,9 +208,13 @@ const FieldDisplayConfiguration: FC<any> = () => {
 
   const allColumns = [
     ...FieldDisplayConfigurationFields,
-    ...(selectedTable !== 'Rebates' ? FiledDisplayConfigurationUniqueItem : []),
+    ...(selectedTable !== 'Rebates' && selectedTable !== 'Input Details'
+      ? FiledDisplayConfigurationUniqueItem
+      : []),
     ...thirdFieldDisplayConfigurationFields,
   ];
+
+  console.log('selectedTableselectedTable', selectedTable);
 
   return (
     <>

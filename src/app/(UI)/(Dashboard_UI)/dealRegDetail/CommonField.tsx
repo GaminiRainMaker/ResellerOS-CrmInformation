@@ -19,6 +19,7 @@ import {
   TransformedData,
 } from './dealReg.interface';
 import {ChildCollapse} from './styled-component';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 
 const CommonFields: FC<CommonFieldsProps> = ({
   form,
@@ -199,7 +200,7 @@ const CommonFields: FC<CommonFieldsProps> = ({
                       }
                       label={
                         <Typography name="Body 4/Medium">
-                          {child?.label}
+                          {formatStatus(child?.label)}
                         </Typography>
                       }
                       rules={[

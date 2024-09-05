@@ -417,6 +417,8 @@ const PartnerPassword = () => {
     }
   };
 
+  console.log('23232312123', userInformation?.is_admin);
+
   return (
     <>
       <Space size={5} direction="vertical" style={{width: '100%'}}>
@@ -432,7 +434,17 @@ const PartnerPassword = () => {
               buttontype="PRIMARY"
               icon={<PlusIcon />}
               clickHandler={() => {
-                if (!userInformation?.is_dealReg) {
+                if (!userInformation?.is_dealReg && userInformation?.is_admin) {
+                  notification?.open({
+                    message: `You don't have DealReg AI permission to create new passwords, Please get the access first.`,
+                    type: 'info',
+                  });
+                  return;
+                }
+                if (
+                  !userInformation?.is_dealReg &&
+                  !userInformation?.is_admin
+                ) {
                   notification?.open({
                     message: `You don't have DealReg AI permission to create new passwords, Please contact your Admin.`,
                     type: 'info',

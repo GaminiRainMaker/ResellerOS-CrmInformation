@@ -10,7 +10,7 @@ import {
 } from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form, message} from 'antd';
-import {useRouter} from 'next/navigation';
+import {usePathname, useRouter} from 'next/navigation';
 import {FC, useEffect, useState} from 'react';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {
@@ -55,6 +55,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const {userInformation} = useAppSelector((state) => state.user);
   const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const [form] = Form.useForm();
+  let pathname = usePathname();
   const [loading, setLoading] = useState<boolean>(false);
   const [finalLoading, setFinalLoading] = useState<boolean>(false);
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
@@ -136,6 +137,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
     try {
       setFinalLoading(true);
+      setLoading(true);
       for (let i = 0; i < newArrWithoutManual.length; i++) {
         let quoteLineItemArr: any = [];
         const lineItemData: FormattedData = {};
@@ -366,9 +368,13 @@ const AddQuote: FC<AddQuoteInterface> = ({
       if (finalOpportunityArray && syncTableData?.length > 0) {
         await dispatch(insertOpportunityLineItem(finalOpportunityArray));
       }
-      setFinalLoading(false);
+      if (pathname !== '/allQuote') {
+        setFinalLoading(false);
+        setLoading(false);
+      }
     } catch (err) {
       setFinalLoading(false);
+      setLoading(false);
       console.log('object', err);
     }
     await dispatch(getQuotesByDateFilter({}));
@@ -471,6 +477,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           },
         );
       }
+      setLoading(false);
       if (newArrWithManual?.length > 0) {
         if (countOfExportFiles > 0) {
           router.push(

@@ -30,17 +30,17 @@ const SuperAdminDealRegAnalytic = ({data}: any) => {
       icon: <UserGroupIcon width={24} color={token?.colorInfo} />,
       iconBg: token?.colorInfoBgHover,
     },
-    {
-      key: 2,
-      primary: (
-        <Typography name="Heading 3/Medium">
-          {activeTemplateCount?.length ?? 0}
-        </Typography>
-      ),
-      secondry: 'Active Templates',
-      icon: <PencilIcon width={24} color={token?.colorLink} />,
-      iconBg: token?.colorLinkActive,
-    },
+    // {
+    //   key: 2,
+    //   primary: (
+    //     <Typography name="Heading 3/Medium">
+    //       {activeTemplateCount?.length ?? 0}
+    //     </Typography>
+    //   ),
+    //   secondry: 'Active Templates',
+    //   icon: <PencilIcon width={24} color={token?.colorLink} />,
+    //   iconBg: token?.colorLinkActive,
+    // },
     {
       key: 3,
       primary: (

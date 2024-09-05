@@ -252,14 +252,14 @@ const AllQuote: React.FC = () => {
   };
 
   const dropDownItems = [
-    {
-      key: '1',
-      label: (
-        <Typography name="Body 3/Regular" cursor="pointer">
-          Download Selected
-        </Typography>
-      ),
-    },
+    // {
+    //   key: '1',
+    //   label: (
+    //     <Typography name="Body 3/Regular" cursor="pointer">
+    //       Download Selected
+    //     </Typography>
+    //   ),
+    // },
     {
       key: '2',
       label: (

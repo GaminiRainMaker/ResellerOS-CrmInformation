@@ -651,6 +651,8 @@ const Partners: React.FC = () => {
                       text="Request"
                       clickHandler={() => {
                         handleAddNewAssignedPartnerProgramRequest(
+
+                          
                           record?.id,
                           userData,
                         );
