@@ -79,6 +79,7 @@ const RequestPartner: React.FC<RequestPartnerInterface> = ({
     setPartnerNewId({});
     setPartnerProgramNewId({});
     setShowModal(false);
+    getPartnerData();
   };
 
   useEffect(() => {

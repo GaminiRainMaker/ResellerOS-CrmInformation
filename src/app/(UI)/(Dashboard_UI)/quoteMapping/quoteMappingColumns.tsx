@@ -89,7 +89,7 @@ function newQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Sales Force
+          Salesforce
         </Typography>
       ),
       dataIndex: 'is_salesforce',
@@ -257,7 +257,7 @@ function approvedQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Sales Force
+          Salesforce
         </Typography>
       ),
       dataIndex: 'is_salesforce',
@@ -413,7 +413,7 @@ function rejectQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Sales Force
+          Salesforce
         </Typography>
       ),
       dataIndex: 'is_salesforce',
