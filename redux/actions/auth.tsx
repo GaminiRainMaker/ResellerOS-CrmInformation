@@ -108,3 +108,27 @@ export const runSalesForceBot = createAsyncThunk(
     }
   },
 );
+
+export const getSalesForceFields = createAsyncThunk(
+  'auth/getSalesForceFields',
+  async (data: any, thunkApi) => {
+    try {
+      const res: any = await AUTH_API.getFields(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+
+export const addSalesForceDataaForAccount = createAsyncThunk(
+  'auth/addSalesForceDataaForAccount',
+  async (data: any, thunkApi) => {
+    try {
+      const res: any = await AUTH_API.addForAccount(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
