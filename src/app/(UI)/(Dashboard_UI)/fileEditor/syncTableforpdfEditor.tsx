@@ -431,6 +431,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           },
         );
 
+        
         setNanonetsLoading(false);
         return;
       } else {

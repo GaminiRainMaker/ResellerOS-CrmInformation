@@ -130,14 +130,21 @@ const EditorFile = () => {
       };
 
       dispatch(getSalesForceFields(newObj))?.then((payload: any) => {
-        let keysss = Object.keys(payload?.payload);
-        let arrOfOptions: any = [];
-        if (keysss) {
-          keysss?.map((items: any) => {
-            arrOfOptions?.push({label: formatStatus(items), value: items});
-          });
+        if (payload?.payload) {
+          let keysss = Object.keys(payload?.payload);
+          let arrOfOptions: any = [];
+          if (keysss) {
+            keysss?.map((items: any) => {
+              arrOfOptions?.push({
+                label: payload?.payload[items],
+                value: items,
+              });
+            });
+          }
+          console.log('dsfdsfdsfsd', arrOfOptions);
+
+          setAccoutSyncOptions(arrOfOptions);
         }
-        setAccoutSyncOptions(arrOfOptions);
       });
     }
   }, []);
