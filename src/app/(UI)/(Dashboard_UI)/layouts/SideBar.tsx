@@ -704,7 +704,20 @@ const SideBar = () => {
             name="Button 1"
             color={token?.colorTextSecondary}
           >
+            {' '}
             <OsAvatar
+              icon={
+                <ShoppingBagIcon
+                  color={
+                    selectedKey === 8 || selectedKey === 7
+                      ? token?.colorLink
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            {/* <OsAvatar
               icon={
                 <UserGroupIcon
                   color={
@@ -715,8 +728,7 @@ const SideBar = () => {
                   width={24}
                 />
               }
-            />
-
+            /> */}
             <Typography
               cursor="pointer"
               name="Button 1"
