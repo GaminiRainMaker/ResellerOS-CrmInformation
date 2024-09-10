@@ -125,6 +125,16 @@ const EditorFile = () => {
   const [finalArrForMerged, setFinalArrayForMerged] = useState<any>();
   const [currentFIle, setCurrentFile] = useState<any>();
 
+  const [query, setQuery] = useState<{
+    searchValue: string;
+    asserType: boolean;
+    salesforce: boolean;
+  }>({
+    searchValue: '',
+    asserType: false,
+    salesforce: salesForceUrl ? true : false,
+  });
+
   const getQuoteFileByIdForFormulads = async () => {
     await dispatch(getQuoteFileByIdForFormulas(getQuoteFileId))?.then(
       (payload: any) => {
@@ -567,15 +577,9 @@ const EditorFile = () => {
   }, [quoteFileById]);
 
   useEffect(() => {
-    if (!salesForceUrl) {
-      dispatch(queryLineItemSyncing({}))?.then((payload: any) => {
-        setLineItemSyncingData(payload?.payload);
-      });
-    } else {
-      dispatch(queryLineItemSyncingForSalesForce({}))?.then((payload: any) => {
-        setLineItemSyncingData(payload?.payload);
-      });
-    }
+    dispatch(queryLineItemSyncingForSalesForce(query))?.then((payload: any) => {
+      setLineItemSyncingData(payload?.payload);
+    });
   }, []);
 
   // EditSalesLineItems

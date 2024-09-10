@@ -62,6 +62,7 @@ type UpdatedDataItem = {
   status: string;
   quote_file_id: number;
   is_salesforce: boolean;
+  assert_mapping: boolean;
 };
 type SalesUpdatedDataItem = {
   pdf_header: string;
@@ -287,7 +288,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                 : salesFOrceManual === 'true'
                   ? currentFileData?.FileId
                   : Number(getQuoteFileId),
-            is_salesforce: SaleQuoteId ? true : false,
+            is_salesforce:
+              SaleQuoteId || salesFOrceAccoutFlow === 'true' ? true : false,
+            assert_mapping: salesFOrceAccoutFlow === 'true' ? true : false,
           }),
         );
 
@@ -388,7 +391,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
       if (!findName || findName === undefined) {
         notification.open({
-          message: 'Name is madatory. Please Sync Name to Proceed',
+          message:
+            ' Assert Name is madatory. Please Sync  Assert Name to Proceed',
           type: 'error',
         });
         setNanonetsLoading(false);
@@ -431,7 +435,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           },
         );
 
-        
         setNanonetsLoading(false);
         return;
       } else {

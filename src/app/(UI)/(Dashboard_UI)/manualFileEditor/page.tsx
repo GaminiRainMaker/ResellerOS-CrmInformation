@@ -49,6 +49,10 @@ import {getResultedValue} from '@/app/utils/base';
 import {registerAllModules} from 'handsontable/registry';
 import dynamic from 'next/dynamic';
 import {getAllFormulas} from '../../../../../redux/actions/formulas';
+import {
+  queryLineItemSyncing,
+  queryLineItemSyncingForSalesForce,
+} from '../../../../../redux/actions/LineItemSyncing';
 
 registerAllModules();
 
@@ -78,12 +82,24 @@ const EditorFile = () => {
   const salesFOrceManual = searchParams.get('manual');
   const salesFOrceAccoutId = searchParams.get('AccountId');
   const salesFOrceAccoutFlow = searchParams.get('accoutFlow');
+  const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
+
   const [accoutSyncOptions, setAccoutSyncOptions] = useState<any>();
   const [showUpdateColumnModal, setShowUpdateColumnModal] =
     useState<boolean>(false);
   const [showAddFormula, setShowAddFormula] = useState<boolean>(false);
   const [existingColumnOptions, setExistingColumnName] = useState<any>();
   const [formulaOptions, setFormulaOptions] = useState<any>();
+
+  const [query, setQuery] = useState<{
+    searchValue: string;
+    asserType: boolean;
+    salesforce: boolean;
+  }>({
+    searchValue: '',
+    asserType: salesFOrceAccoutFlow === 'true' ? true : false,
+    salesforce: salesForceUrl ? true : false,
+  });
 
   const addNewLine = () => {
     let newArr = [
@@ -121,6 +137,12 @@ const EditorFile = () => {
   //     setFormulaOptions(newArr);
   //   });
   // }, []);
+
+  useEffect(() => {
+    dispatch(queryLineItemSyncingForSalesForce(query))?.then((payload: any) => {
+      setLineItemSyncingData(payload?.payload);
+    });
+  }, []);
   useEffect(() => {
     if (salesFOrceAccoutId) {
       let newObj = {
@@ -141,7 +163,6 @@ const EditorFile = () => {
               });
             });
           }
-          console.log('dsfdsfdsfsd', arrOfOptions);
 
           setAccoutSyncOptions(arrOfOptions);
         }
@@ -657,6 +678,7 @@ const EditorFile = () => {
               checkForNewFileForSalesForce={checkForNewFileForSalesForce}
               currentFileData={currentFileData}
               accoutSyncOptions={accoutSyncOptions}
+              lineItemSyncingData={lineItemSyncingData}
             />
           }
           width={600}
