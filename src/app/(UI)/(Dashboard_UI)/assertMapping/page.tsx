@@ -268,7 +268,7 @@ const QuoteMappings = () => {
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              Assest Mappings
+              Asset Mappings
             </Typography>
           </Col>
           <Col>

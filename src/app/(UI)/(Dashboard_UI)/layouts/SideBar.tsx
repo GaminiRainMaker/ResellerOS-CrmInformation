@@ -699,7 +699,7 @@ const SideBar = () => {
             onClick={() => {
               setSelectedKey(7);
               setCrmChildKey(0);
-              router?.push('/dealReg');
+              router?.push('/assertMapping');
             }}
             name="Button 1"
             color={token?.colorTextSecondary}
@@ -717,18 +717,6 @@ const SideBar = () => {
                 />
               }
             />
-            {/* <OsAvatar
-              icon={
-                <UserGroupIcon
-                  color={
-                    selectedKey === 8 || selectedKey === 7
-                      ? token?.colorLink
-                      : token?.colorTextSecondary
-                  }
-                  width={24}
-                />
-              }
-            /> */}
             <Typography
               cursor="pointer"
               name="Button 1"
@@ -746,45 +734,45 @@ const SideBar = () => {
         '7',
         '',
         [
-          getItem(
-            <Space
-              size={12}
-              onClick={() => {
-                setSelectedKey(7);
-                router?.push('/dealReg');
-              }}
-            >
-              <OsAvatar
-                icon={
-                  selectedKey === 7 ? (
-                    <Image
-                      src={ActiveCrmIcon}
-                      alt="ActiveCrmIcon"
-                      style={{width: '15px', height: '15px'}}
-                    />
-                  ) : (
-                    <Image
-                      src={InActiveCrmIcon}
-                      alt="InActiveCrmIcon"
-                      style={{width: '15px', height: '15px'}}
-                    />
-                  )
-                }
-              />
-              <Typography
-                name="Button 1"
-                cursor="pointer"
-                color={
-                  selectedKey === 7
-                    ? token.colorPrimaryBorder
-                    : token?.colorTextSecondary
-                }
-              >
-                DealReg AI
-              </Typography>
-            </Space>,
-            '7',
-          ),
+          // getItem(
+          //   <Space
+          //     size={12}
+          //     onClick={() => {
+          //       setSelectedKey(7);
+          //       router?.push('/dealReg');
+          //     }}
+          //   >
+          //     <OsAvatar
+          //       icon={
+          //         selectedKey === 7 ? (
+          //           <Image
+          //             src={ActiveCrmIcon}
+          //             alt="ActiveCrmIcon"
+          //             style={{width: '15px', height: '15px'}}
+          //           />
+          //         ) : (
+          //           <Image
+          //             src={InActiveCrmIcon}
+          //             alt="InActiveCrmIcon"
+          //             style={{width: '15px', height: '15px'}}
+          //           />
+          //         )
+          //       }
+          //     />
+          //     <Typography
+          //       name="Button 1"
+          //       cursor="pointer"
+          //       color={
+          //         selectedKey === 7
+          //           ? token.colorPrimaryBorder
+          //           : token?.colorTextSecondary
+          //       }
+          //     >
+          //       DealReg AI
+          //     </Typography>
+          //   </Space>,
+          //   '7',
+          // ),
           getItem(
             <Space
               size={12}
@@ -819,7 +807,7 @@ const SideBar = () => {
                     : token?.colorTextSecondary
                 }
               >
-                Assest Mappings
+                Asset Mappings
               </Typography>
             </Space>,
             '8',
