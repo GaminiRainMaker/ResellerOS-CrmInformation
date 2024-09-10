@@ -819,7 +819,7 @@ const SideBar = () => {
                     : token?.colorTextSecondary
                 }
               >
-                Assert Mappings
+                Assest Mappings
               </Typography>
             </Space>,
             '8',
