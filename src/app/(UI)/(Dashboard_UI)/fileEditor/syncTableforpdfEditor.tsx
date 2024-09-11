@@ -389,7 +389,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         (items: any) => items?.newVal === 'Name',
       );
 
-      if (!findName || findName === undefined) {
+      if (
+        (!findName || findName === undefined) &&
+        salesFOrceAccoutFlow === 'true'
+      ) {
         notification.open({
           message:
             ' Assert Name is madatory. Please Sync  Assert Name to Proceed',
@@ -670,7 +673,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     }
 
     if (newrrLineItems && newrrLineItems.length > 0) {
-      dispatch(insertQuoteLineItem(newrrLineItems)).then((d) => {
+      dispatch(insertQuoteLineItem(newrrLineItems)).then((d: any) => {
         if (rebateDataArray && rebateDataArray.length > 0) {
           const data = genericFun(d?.payload, rebateDataArray);
           dispatch(insertRebateQuoteLineItem(data));
