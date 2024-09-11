@@ -21,6 +21,7 @@ import Form from 'antd/es/form';
 import {useRouter, useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {
+  dealRegFormScript,
   getDealRegByOpportunityId,
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
@@ -147,7 +148,8 @@ const DealRegDetail = () => {
         const processScriptData = processScript1(finalData);
         console.log('finalData', processScriptData);
 
-        const response = await dispatch(lauchPlayWright1([processScriptData]));
+        const response = await dispatch(dealRegFormScript([processScriptData]));
+        // const response = await dispatch(lauchPlayWright1([processScriptData]));
         if (lauchPlayWright1.fulfilled.match(response)) {
           await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
             (response: {payload: any}) => {
@@ -157,6 +159,7 @@ const DealRegDetail = () => {
             },
           );
         }
+        console.log('response data', response);
       } catch (error) {
         console.error('Error running script:', error);
       }
