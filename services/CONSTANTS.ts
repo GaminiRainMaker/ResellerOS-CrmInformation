@@ -9,6 +9,8 @@ export const API = {
     salesforceDataAsItIs: '/auth/getSalesForceDataaForEditAsItIs',
     salesforceAddUpdate: '/auth/addSalesForceDataa',
     runSalesForceBot: '/auth/runSalesForceBot',
+    addForAccount: '/auth/addSalesForceDataaForAccount',
+    getFields: '/auth/getSalesForceFields',
   },
   QUOTE: {
     INDEX: '/quote',

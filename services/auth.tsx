@@ -15,4 +15,7 @@ export const AUTH_API = {
   postSalesGet: (data: any) => post(API.AUTH.salesforceFileGet, data),
   getAsItIs: (data: any) => post(API.AUTH.salesforceDataAsItIs, data),
   addUpdateSales: (data: any) => post(API.AUTH.salesforceAddUpdate, data),
+  addForAccount: (data: any) => post(API.AUTH.addForAccount, data),
+
+  getFields: (data: any) => post(API.AUTH.getFields, data),
 };

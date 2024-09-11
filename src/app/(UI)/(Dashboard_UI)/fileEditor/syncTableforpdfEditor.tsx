@@ -31,7 +31,10 @@ import {
   insertLineItemSyncing,
   insertLineItemSyncingForSalesForce,
 } from '../../../../../redux/actions/LineItemSyncing';
-import {addSalesForceDataa} from '../../../../../redux/actions/auth';
+import {
+  addSalesForceDataa,
+  addSalesForceDataaForAccount,
+} from '../../../../../redux/actions/auth';
 import {getContractInBulkByProductCode} from '../../../../../redux/actions/contractProduct';
 import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {
@@ -59,6 +62,7 @@ type UpdatedDataItem = {
   status: string;
   quote_file_id: number;
   is_salesforce: boolean;
+  assert_mapping: boolean;
 };
 type SalesUpdatedDataItem = {
   pdf_header: string;
@@ -80,6 +84,7 @@ interface EditPdfDataInterface {
   lineItemSyncingData?: any;
   CurrentFileId?: any;
   currentFileData?: any;
+  accoutSyncOptions?: any;
 }
 const SyncTableData: FC<EditPdfDataInterface> = ({
   setMergedVaalues,
@@ -94,6 +99,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   lineItemSyncingData,
   CurrentFileId,
   currentFileData,
+  accoutSyncOptions,
 }) => {
   const dispatch = useAppDispatch();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -103,12 +109,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const {data: syncTableData, loading: syncDataLoading} = useAppSelector(
     (state) => state.syncTable,
   );
-
-  const ApprovedQuoteMappingData =
-    lineItemSyncingData &&
-    lineItemSyncingData?.filter(
-      (LineItemSyncingItem: any) => LineItemSyncingItem?.status === 'Approved',
-    );
 
   const [token] = useThemeToken();
   const searchParams = useSearchParams()!;
@@ -120,10 +120,15 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const SaleQuoteId = searchParams.get('quote_Id');
   const salesFOrceManual = searchParams.get('manual');
   const fullStackManul = searchParams.get('manualFlow');
-
+  const salesFOrceAccoutId = searchParams.get('AccountId');
+  const salesFOrceAccoutFlow = searchParams.get('accoutFlow');
   const salesForceUrl = searchParams.get('instance_url');
 
-  // currentFileData?.FileId
+  const ApprovedQuoteMappingData: any =
+    lineItemSyncingData &&
+    lineItemSyncingData?.filter(
+      (LineItemSyncingItem: any) => LineItemSyncingItem?.status === 'Approved',
+    );
   const [syncTableQuoteLItemValues, setSyncTableQuoteLItemValues] =
     useState<any>(
       SaleQuoteId
@@ -142,11 +147,19 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       // }
     });
   }
+  useEffect(() => {
+    if (salesFOrceAccoutFlow && salesFOrceAccoutFlow === 'true') {
+      setSyncTableQuoteLItemValues(accoutSyncOptions);
+    }
+  }, [accoutSyncOptions]);
 
   useEffect(() => {
     const newSyncTableData =
       syncedNewValue?.length > 0 ? [...syncedNewValue] : [];
-    let newSyncOptionChecks = syncTableQuoteLItemValues;
+    let newSyncOptionChecks =
+      salesFOrceAccoutFlow === 'true'
+        ? accoutSyncOptions
+        : syncTableQuoteLItemValues;
 
     mergeedColumn?.map((mergeItem: string, indexMerge: number) => {
       const NewFilterOption = newSyncOptionChecks?.find((item: any) =>
@@ -275,7 +288,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                 : salesFOrceManual === 'true'
                   ? currentFileData?.FileId
                   : Number(getQuoteFileId),
-            is_salesforce: SaleQuoteId ? true : false,
+            is_salesforce:
+              SaleQuoteId || salesFOrceAccoutFlow === 'true' ? true : false,
+            assert_mapping: salesFOrceAccoutFlow === 'true' ? true : false,
           }),
         );
 
@@ -333,18 +348,24 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     requiredOutput?.map((items: any) => {
       let newObj = {
         ...items,
-        file_name: currentFileData?.file_name,
-        file_id:
-          salesFOrceManual === 'true'
-            ? currentFileData?.FileId
-            : salesForceFiledId,
       };
+      if (salesFOrceAccoutFlow === 'true') {
+        newObj.AccountId = salesFOrceAccoutId;
+      } else {
+        (newObj.file_name = currentFileData?.file_name),
+          (newObj.file_id =
+            salesFOrceManual === 'true'
+              ? currentFileData?.FileId
+              : salesForceFiledId);
+      }
       delete newObj.product_code;
       let string = items?.product_code?.trim();
 
       // Remove any remaining spaces and newlines within the string
-      let newProductCode = string.replace(/\s+/g, '');
-      newObj.product_code = newProductCode;
+      let newProductCode = string && string.replace(/\s+/g, '');
+      if (newProductCode) {
+        newObj.product_code = newProductCode;
+      }
       newArrWIthFileName?.push(newObj);
       // newArrWIthFileName?.push({
       //   ...items,
@@ -357,12 +378,33 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     });
 
     // salesFOrceManual === "false"
-    if (SaleQuoteId && newArrWIthFileName?.length > 0) {
+    if (
+      (SaleQuoteId && newArrWIthFileName?.length > 0) ||
+      (salesFOrceAccoutFlow === 'true' && newArrWIthFileName?.length > 0)
+    ) {
       const findProduct = syncedNewValue?.find(
         (items: any) => items?.newVal === 'product_code',
       );
+      const findName = syncedNewValue?.find(
+        (items: any) => items?.newVal === 'Name',
+      );
 
-      if (!findProduct || findProduct === undefined) {
+      if (
+        (!findName || findName === undefined) &&
+        salesFOrceAccoutFlow === 'true'
+      ) {
+        notification.open({
+          message:
+            ' Assert Name is madatory. Please Sync  Assert Name to Proceed',
+          type: 'error',
+        });
+        setNanonetsLoading(false);
+        return;
+      }
+      if (
+        (!findProduct || findProduct === undefined) &&
+        salesFOrceAccoutFlow !== 'true'
+      ) {
         notification.open({
           message:
             'Product Code is madatory. Please Sync Product Code to Proceed',
@@ -371,41 +413,70 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         setNanonetsLoading(false);
         return;
       }
-      let newdata = {
-        token: salesToken,
-        // documentId: salesForceFiledId,
-        urls: salesForceUrl,
-        QuoteId: SaleQuoteId,
-        FileId:
-          salesFOrceManual === 'true'
-            ? currentFileData?.FileId
-            : salesForceFiledId,
-        // FileId: '0Q09I0000002Bc5SAE',
-        action: 'ExportFileToTable',
-        lineItem: newArrWIthFileName,
-      };
 
-      await dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
-        let messgaeForApi = payload?.payload?.message;
-        notification.open({
-          message: messgaeForApi,
-          type: 'info',
-        });
-        if (salesFOrceManual === 'false') {
+      if (salesFOrceAccoutFlow === 'true') {
+        let newdata = {
+          token: salesToken,
+          AccountId: salesFOrceAccoutId,
+          urls: salesForceUrl,
+          lineItem: newArrWIthFileName,
+        };
+
+        await dispatch(addSalesForceDataaForAccount(newdata))?.then(
+          (payload: any) => {
+            let messgaeForApi = payload?.payload?.message;
+            notification.open({
+              message: messgaeForApi,
+              type: 'info',
+            });
+            if (salesFOrceManual === 'false') {
+              notification.open({
+                message: 'Please close the  window',
+                type: 'info',
+              });
+            }
+          },
+        );
+
+        setNanonetsLoading(false);
+        return;
+      } else {
+        let newdata = {
+          token: salesToken,
+          // documentId: salesForceFiledId,
+          urls: salesForceUrl,
+          QuoteId: SaleQuoteId,
+          FileId:
+            salesFOrceManual === 'true'
+              ? currentFileData?.FileId
+              : salesForceFiledId,
+          // FileId: '0Q09I0000002Bc5SAE',
+          action: 'ExportFileToTable',
+          lineItem: newArrWIthFileName,
+        };
+
+        await dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
+          let messgaeForApi = payload?.payload?.message;
           notification.open({
-            message: 'Please close the review quotes window',
+            message: messgaeForApi,
             type: 'info',
           });
-        }
-      });
+          if (salesFOrceManual === 'false') {
+            notification.open({
+              message: 'Please close the review quotes window',
+              type: 'info',
+            });
+          }
+        });
 
-      setNanonetsLoading(false);
-      if (salesFOrceManual === 'true') {
-        setTimeout(() => {
-          checkForNewFileForSalesForce();
-        }, 2000);
+        setNanonetsLoading(false);
+        if (salesFOrceManual === 'true') {
+          setTimeout(() => {
+            checkForNewFileForSalesForce();
+          }, 2000);
+        }
+        return;
       }
-      return;
     }
     const newrrLineItems: any = [];
     const rebateDataArray: any = [];
@@ -602,7 +673,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     }
 
     if (newrrLineItems && newrrLineItems.length > 0) {
-      dispatch(insertQuoteLineItem(newrrLineItems)).then((d) => {
+      dispatch(insertQuoteLineItem(newrrLineItems)).then((d: any) => {
         if (rebateDataArray && rebateDataArray.length > 0) {
           const data = genericFun(d?.payload, rebateDataArray);
           dispatch(insertRebateQuoteLineItem(data));
@@ -642,7 +713,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const handleChange = () => {
     // This defines which option we are using salesforce or full stack
     let optionsTOAdd = SaleQuoteId
-      ? SaleForceQuoteLineItemColumnSync
+      ? salesFOrceAccoutFlow === 'true'
+        ? accoutSyncOptions
+        : SaleForceQuoteLineItemColumnSync
       : quoteLineItemColumnForSync;
     let newArrOfOptions: any = [];
     // This defines the options already added to the synced values
@@ -740,7 +813,11 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                       newLabel?.label?.toString()?.toUpperCase(),
                     )}
                     style={{width: '250px'}}
-                    options={syncTableQuoteLItemValues}
+                    options={
+                      salesFOrceAccoutFlow === 'true'
+                        ? accoutSyncOptions
+                        : syncTableQuoteLItemValues
+                    }
                   />
                 </Row>
               );

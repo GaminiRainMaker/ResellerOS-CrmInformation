@@ -125,6 +125,16 @@ const EditorFile = () => {
   const [finalArrForMerged, setFinalArrayForMerged] = useState<any>();
   const [currentFIle, setCurrentFile] = useState<any>();
 
+  const [query, setQuery] = useState<{
+    searchValue: string;
+    asserType: boolean;
+    salesforce: boolean;
+  }>({
+    searchValue: '',
+    asserType: false,
+    salesforce: salesForceUrl ? true : false,
+  });
+
   const getQuoteFileByIdForFormulads = async () => {
     await dispatch(getQuoteFileByIdForFormulas(getQuoteFileId))?.then(
       (payload: any) => {
@@ -567,15 +577,9 @@ const EditorFile = () => {
   }, [quoteFileById]);
 
   useEffect(() => {
-    if (!salesForceUrl) {
-      dispatch(queryLineItemSyncing({}))?.then((payload: any) => {
-        setLineItemSyncingData(payload?.payload);
-      });
-    } else {
-      dispatch(queryLineItemSyncingForSalesForce({}))?.then((payload: any) => {
-        setLineItemSyncingData(payload?.payload);
-      });
-    }
+    dispatch(queryLineItemSyncingForSalesForce(query))?.then((payload: any) => {
+      setLineItemSyncingData(payload?.payload);
+    });
   }, []);
 
   // EditSalesLineItems
@@ -776,7 +780,7 @@ const EditorFile = () => {
   const [updateLineItemColumn, setUpdateLineItemColumn] = useState<any>();
   const [updateLineItemColumnData, setUpdateLineItemColumnData] =
     useState<any>();
-
+  console.log('updateLineItemsValueupdateLineItemsValue', updateLineItemsValue);
   useEffect(() => {
     const updateLineItemColumnArr: any = [];
     const updateLineItemColumnDataArr: any = [];
@@ -1079,7 +1083,7 @@ const EditorFile = () => {
 
     setMergedVaalues(updatedArr);
     notification.open({
-      message: `Column header ${old} sucessfully changed to ${newVal}.`,
+      message: `Column header ${old} successfully changed to ${newVal}.`,
       type: 'success',
     });
     setOldColumnName('');
@@ -1265,7 +1269,7 @@ const EditorFile = () => {
       </Space>
 
       {(ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true') &&
-      quoteItems?.length > 0 ? (
+      updateLineItemsValue?.length > 0 ? (
         <>
           <div
             style={{

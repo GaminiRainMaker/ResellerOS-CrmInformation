@@ -22,15 +22,14 @@ import {
 } from '../../../../../redux/actions/LineItemSyncing';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {
-  approvedQuoteMappingColumns,
-  newQuoteMappingColumns,
-  rejectQuoteMappingColumns,
-} from './quoteMappingColumns';
+  approvedAssertMappingColumns,
+  newAssertMappingColumns,
+  rejectAssertMappingColumns,
+} from './assertMapping';
 
 const QuoteMappings = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  
   const [form] = Form.useForm();
   const router = useRouter();
   const {data: LineItemSyncingData, loading} = useAppSelector(
@@ -42,7 +41,7 @@ const QuoteMappings = () => {
     asserType: boolean;
   }>({
     searchValue: '',
-    asserType: false,
+    asserType: true,
   });
   const [showApproveModal, setShowApproveModal] = useState<boolean>(false);
   const [showRejectModal, setShowRejectModal] = useState<boolean>(false);
@@ -58,7 +57,7 @@ const QuoteMappings = () => {
     emptyText: <EmptyContainer title="No Quote Mappings" />,
   };
 
-  const QuoteMappingNewColumns = newQuoteMappingColumns(
+  const QuoteMappingNewColumns = newAssertMappingColumns(
     token,
     router,
     setShowApproveModal,
@@ -66,14 +65,14 @@ const QuoteMappings = () => {
     setSelectedId,
     setRecordData,
   );
-  const QuoteMappingApprovedColumns = approvedQuoteMappingColumns(
+  const QuoteMappingApprovedColumns = approvedAssertMappingColumns(
     token,
     router,
     setShowRejectModal,
     setSelectedId,
     setRecordData,
   );
-  const QuoteMappingRejectedColumns = rejectQuoteMappingColumns(
+  const QuoteMappingRejectedColumns = rejectAssertMappingColumns(
     token,
     router,
     setShowApproveModal,
@@ -269,7 +268,7 @@ const QuoteMappings = () => {
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-              Quote Mappings
+              Asset Mappings
             </Typography>
           </Col>
           <Col>

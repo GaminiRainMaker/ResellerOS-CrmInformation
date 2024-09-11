@@ -59,7 +59,7 @@ const Dashboard = () => {
 
   const onFinish = () => {
     const data = form?.getFieldsValue();
-    dispatch(contactSales(data)).then((d) => {
+    dispatch(contactSales(data)).then((d: any) => {
       if (d?.payload) {
         setShowModal(false);
         form.resetFields();
