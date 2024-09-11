@@ -379,7 +379,7 @@ const EditorFile = () => {
     let updatedArr = renameKey(newArr, old, newVal);
     setArrayOflineItem(updatedArr);
     notification.open({
-      message: `Column header ${old} sucessfully changed to ${newVal}.`,
+      message: `Column header ${old} successfully changed to ${newVal}.`,
       type: 'success',
     });
     setOldColumnName('');
