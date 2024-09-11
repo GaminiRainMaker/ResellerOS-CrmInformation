@@ -780,7 +780,7 @@ const EditorFile = () => {
   const [updateLineItemColumn, setUpdateLineItemColumn] = useState<any>();
   const [updateLineItemColumnData, setUpdateLineItemColumnData] =
     useState<any>();
-
+  console.log('updateLineItemsValueupdateLineItemsValue', updateLineItemsValue);
   useEffect(() => {
     const updateLineItemColumnArr: any = [];
     const updateLineItemColumnDataArr: any = [];
@@ -1269,7 +1269,7 @@ const EditorFile = () => {
       </Space>
 
       {(ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true') &&
-      quoteItems?.length > 0 ? (
+      updateLineItemsValue?.length > 0 ? (
         <>
           <div
             style={{
