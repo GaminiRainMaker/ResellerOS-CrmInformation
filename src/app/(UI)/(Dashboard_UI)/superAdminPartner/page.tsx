@@ -46,10 +46,7 @@ import {
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddPartnerProgramScript from './AddPartnerProgramScript';
 import SuperAdminPartnerAnalytics from './SuperAdminPartnerAnalytic';
-import {
-  createPlaywrightScript,
-  launchPlaywrightCodegen,
-} from '../../../../../redux/actions/playwright';
+
 
 export interface SeparatedData {
   [partnerId: number]: {
