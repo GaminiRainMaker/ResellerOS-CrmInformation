@@ -39,16 +39,14 @@ import {
   deletePartnerProgram,
   deletePartnerProgramFormData,
   getAllPartnerProgram,
+  launchPlayWright,
   upadteToRequestPartnerandprogramfromAmin,
   updatePartnerProgramById,
 } from '../../../../../redux/actions/partnerProgram';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import AddPartnerProgramScript from './AddPartnerProgramScript';
 import SuperAdminPartnerAnalytics from './SuperAdminPartnerAnalytic';
-import {
-  createPlaywrightScript,
-  launchPlaywrightCodegen,
-} from '../../../../../redux/actions/playwright';
+
 
 export interface SeparatedData {
   [partnerId: number]: {
@@ -559,7 +557,8 @@ const SuperAdminPartner: React.FC = () => {
             }
             setSelectPartnerProgramId(record?.id);
             setShowScriptModal(true);
-            dispatch(launchPlaywrightCodegen());
+            // dispatch(launchPlaywrightCodegen());
+            dispatch(launchPlayWright({}));
           }}
         >
           {record?.script?.length > 0 && !record?.script?.includes(null)

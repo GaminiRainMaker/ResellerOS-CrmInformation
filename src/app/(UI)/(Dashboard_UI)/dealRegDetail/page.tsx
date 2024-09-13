@@ -1,7 +1,7 @@
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
@@ -15,20 +15,17 @@ import {
   processScript,
   processScript1,
 } from '@/app/utils/base';
-import {PlusIcon} from '@heroicons/react/24/outline';
-import {MenuProps} from 'antd';
+import { PlusIcon } from '@heroicons/react/24/outline';
+import { MenuProps } from 'antd';
 import Form from 'antd/es/form';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
+  dealRegFormScript,
   getDealRegByOpportunityId,
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
-import {
-  lauchPlayWright1,
-  lauchSalesPlayWright,
-} from '../../../../../redux/actions/playwright';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import {
   setDealReg,
   setOpenDealRegDrawer,
@@ -116,13 +113,12 @@ const DealRegDetail = () => {
       ...SubmitDealRegForm,
       status: 'Submitted',
     };
-
     const finalScriptData = finalUpdatedDealRegData?.filter(
       (item: any) => item?.id === SubmitDealRegFormData?.id,
     );
     if (SubmitDealRegFormData) {
       try {
-        const {PartnerProgram, unique_form_data} = finalScriptData?.[0];
+        const { PartnerProgram, unique_form_data } = finalScriptData?.[0];
         const finalUniqueData =
           unique_form_data && JSON?.parse(unique_form_data);
         const template =
@@ -143,41 +139,26 @@ const DealRegDetail = () => {
           data: newFormData,
           script: PartnerProgram?.script,
         };
-
         const processScriptData = processScript1(finalData);
-        console.log('finalData', processScriptData);
-
-        const response = await dispatch(lauchPlayWright1([processScriptData]));
-        if (lauchPlayWright1.fulfilled.match(response)) {
+        const response = await dispatch(dealRegFormScript([processScriptData]));
+        if (response) {
           await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
-            (response: {payload: any}) => {
+            (response: { payload: any }) => {
               if (response?.payload) {
                 dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
               }
             },
           );
         }
+        console.log('response data', response);
       } catch (error) {
         console.error('Error running script:', error);
       }
-
       setShowSubmitFormModal(false);
       submitDealRegForm.resetFields();
     }
   };
 
-  const lauchSalesPlayBot = async () => {
-    try {
-      const response = await dispatch(lauchSalesPlayWright([]));
-      if (lauchSalesPlayWright.fulfilled.match(response)) {
-        console.log('Script executed successfully:', response.payload);
-      } else {
-        console.error('Error running script:', response.payload);
-      }
-    } catch (error) {
-      console.error('Error running script:', error);
-    }
-  };
 
   return (
     <div>
@@ -187,12 +168,6 @@ const DealRegDetail = () => {
         </Col>
         <Col>
           <Space size={8}>
-            {/* <OsButton
-              text="Create Salesforce Account"
-              buttontype="SECONDARY"
-              clickHandler={lauchSalesPlayBot}
-            /> */}
-
             <OsButton
               text="Intial Setup"
               buttontype="SECONDARY"
@@ -216,8 +191,7 @@ const DealRegDetail = () => {
                 setShowModal(true);
               }}
             />
-
-            <OsDropdown menu={{items: dropDownItemss}} />
+            <OsDropdown menu={{ items: dropDownItemss }} />
           </Space>
         </Col>
       </Row>
@@ -237,7 +211,7 @@ const DealRegDetail = () => {
         }
         width={583}
         open={showModal}
-        onOk={() => {}}
+        onOk={() => { }}
         onCancel={() => {
           setShowModal((p) => !p);
         }}
@@ -274,7 +248,7 @@ const DealRegDetail = () => {
         onCancel={() => {
           showElectronBotModal(false);
         }}
-        // primaryButtonText={'Save'}
+      // primaryButtonText={'Save'}
       />
     </div>
   );

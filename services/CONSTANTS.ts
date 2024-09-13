@@ -183,6 +183,7 @@ export const API = {
     GetDealRegByPartnerProgramId: '/dealReg/getDealRegByPartnerProgramId',
     UpdateDealRegStatus: '/dealReg/updateDealRegStatus',
     GetDealRegById: '/dealReg/getDealRegById',
+    DealRegFormScript: '/dealReg/dealRegFormScript',
   },
   DEALREGADDRESS: {
     INDEX: '/dealRegAddress',
@@ -214,6 +215,7 @@ export const API = {
     GetUnassignedProgram: '/partnerProgram/getUnassignedProgram',
     GetFormDataProgram: '/partnerProgram/getFormDataProgram',
     REQ_ADMIN: '/partnerProgram/upadteToRequestPartnerandprogramfromAmin',
+    LaunchPlayWright: '/partnerProgram/launchPlayWright',
   },
   DISTRIBUTOR: {
     INDEX: '/distributor',

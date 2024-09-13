@@ -99,3 +99,15 @@ export const updateDealRegStatus = createAsyncThunk(
     }
   },
 );
+
+export const dealRegFormScript = createAsyncThunk(
+  'dealReg/dealRegFormScript',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await DEALREG_API.dealRegFormScript(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
