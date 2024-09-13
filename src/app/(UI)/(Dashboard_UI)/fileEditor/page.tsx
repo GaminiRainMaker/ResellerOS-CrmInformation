@@ -362,9 +362,11 @@ const EditorFile = () => {
         dispatch(getQuoteLineItemByQuoteIdForEditTable(newObj)).then(
           (d: any) => {
             if (d?.payload) {
+              if (d?.payload?.length < 50) {
+                setNanonetsLoading(false);
+              }
               // const dataa: any = JSON?.parse(d?.payload?.quote_json?.[0]);
               setQuoteItems(d?.payload);
-              setNanonetsLoading(false);
             }
           },
         );
@@ -573,8 +575,9 @@ const EditorFile = () => {
         }
       });
       setUpdateLineItemsValue(newArrr);
+      setNanonetsLoading(false);
     }
-  }, [quoteFileById]);
+  }, [quoteFileById, quoteItems]);
 
   useEffect(() => {
     dispatch(queryLineItemSyncingForSalesForce(query))?.then((payload: any) => {
@@ -848,6 +851,7 @@ const EditorFile = () => {
       });
       return;
     }
+
     const changedArr = updateLineItemsValue?.map(
       (itemTop: any, indexOfTop: number) => {
         if (indexOfTop === rowIndex) {

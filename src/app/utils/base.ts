@@ -370,12 +370,12 @@ export const updateTables = async (
     const allProductCodes: any = [];
     const allReabatesWithProductCodeData: any = [];
     const allContractWithProductCodeData: any = [];
-    if (edited) {
-      quoteLineItemData?.forEach((item: any) => {
-        dispatch(updateQuoteLineItemById(item));
-      });
-      dispatch(DeleteQuoteLineItemById({Ids: missingId}));
-    }
+    // if (edited) {
+    //   quoteLineItemData?.forEach((item: any) => {
+    //     dispatch(updateQuoteLineItemById(item));
+    //   });
+    //   dispatch(DeleteQuoteLineItemById({Ids: missingId}));
+    // }
     quoteLineItemData?.map((productItems: any) => {
       allProductCodes?.push(productItems.product_code);
     });

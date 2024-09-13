@@ -343,7 +343,6 @@ const ReviewQuotes: FC<any> = ({
     }
   };
 
-  console.log('34654353453', fileData);
   return (
     <GlobalLoader loading={quoteFileDataLoading}>
       {contextHolder}
