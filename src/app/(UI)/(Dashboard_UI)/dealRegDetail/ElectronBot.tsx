@@ -63,7 +63,7 @@ const ElectronBot = () => {
   const getPlaywrightVideoLink = () => {
     switch (os) {
       case 'windows':
-        return 'https://reselller-os.s3.amazonaws.com/Electron+APP+and+Playwright+installation+process.mkv';
+        return 'https://reselller-os.s3.amazonaws.com/ResellerOS_Electron_App_installation_process.mkv';
       case 'mac':
         return 'https://reselller-os.s3.amazonaws.com/Electron+APP+and+Playwright+installation+process-mac.mkv';
       case 'linux':
