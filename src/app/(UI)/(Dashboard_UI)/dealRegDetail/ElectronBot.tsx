@@ -1,10 +1,10 @@
-import {Space} from '@/app/components/common/antd/Space';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsTooltip from '@/app/components/common/os-tooltip';
 import Typography from '@/app/components/common/typography';
-import {InformationCircleIcon} from '@heroicons/react/24/outline';
-import {useEffect, useState} from 'react';
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
+import { useEffect, useState } from 'react';
 
 const ElectronBot = () => {
   const [os, setOs] = useState('');
@@ -21,7 +21,7 @@ const ElectronBot = () => {
     }
   }, []);
 
-  const getLink = () => {
+  const getNodeJsRequirementsLink = () => {
     switch (os) {
       case 'windows':
         return '/docs/windows-requirements.txt';
@@ -34,8 +34,47 @@ const ElectronBot = () => {
     }
   };
 
+  const getVideoLink = () => {
+    switch (os) {
+      case 'windows':
+        return 'https://reselller-os.s3.amazonaws.com/Node-installation-process.mkv';
+      case 'mac':
+        return 'https://reselller-os.s3.amazonaws.com/Node-installation-process-mac.mkv';
+      case 'linux':
+        return 'https://reselller-os.s3.amazonaws.com/Node-installation-process-linux.mkv';
+      default:
+        return '#';
+    }
+  };
+
+  const getElectronAppLink = () => {
+    switch (os) {
+      case 'windows':
+        return 'https://reselller-os.s3.amazonaws.com/ResellerOS+App.exe';
+      case 'mac':
+        return 'https://reselller-os.s3.amazonaws.com/MyApp-darwin-x64.zip';
+      case 'linux':
+        return 'https://reselller-os.s3.amazonaws.com/MyApp-linux-x64.zip';
+      default:
+        return '#';
+    }
+  };
+
+  const getPlaywrightVideoLink = () => {
+    switch (os) {
+      case 'windows':
+        return 'https://reselller-os.s3.amazonaws.com/ResellerOS_Electron_App_installation_process.mkv';
+      case 'mac':
+        return 'https://reselller-os.s3.amazonaws.com/Electron+APP+and+Playwright+installation+process-mac.mkv';
+      case 'linux':
+        return 'https://reselller-os.s3.amazonaws.com/Electron+APP+and+Playwright+installation+process-linux.mkv';
+      default:
+        return '#';
+    }
+  };
+
   return (
-    <div style={{padding: '10px', marginTop: '10px'}}>
+    <div style={{ padding: '10px', marginTop: '10px' }}>
       <Space direction="vertical" size="middle">
         <Typography name="Body 3/Medium">
           <Typography name="Body 3/Bold">Step 1:</Typography> Download Node.js
@@ -50,11 +89,9 @@ const ElectronBot = () => {
             <OsButton buttontype="PRIMARY" text="Download Node.js" />
           </a>
 
-          <div style={{position: 'relative', display: 'inline-block'}}>
+          <div style={{ position: 'relative', display: 'inline-block' }}>
             <a
-              href={
-                'https://reselller-os.s3.amazonaws.com/Node-installation-process.mkv'
-              }
+              href={getVideoLink()}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -69,7 +106,7 @@ const ElectronBot = () => {
                   Node.js.
                 </Typography>
               }
-              overlayStyle={{marginLeft: '500px', width: '800px'}}
+              overlayStyle={{ marginLeft: '500px', width: '800px' }}
             >
               <InformationCircleIcon
                 width={25}
@@ -89,17 +126,15 @@ const ElectronBot = () => {
         </Typography>
         <Space size={20}>
           <a
-            href={'https://reselller-os.s3.amazonaws.com/MyApp-win32-x64.zip'}
+            href={getElectronAppLink()}
             download
           >
             <OsButton text="Download Electron App" buttontype="PRIMARY" />
           </a>
 
-          <div style={{position: 'relative', display: 'inline-block'}}>
+          <div style={{ position: 'relative', display: 'inline-block' }}>
             <a
-              href={
-                'https://reselller-os.s3.amazonaws.com/Electron+APP+and+Playwright+installation+process.mkv'
-              }
+              href={getPlaywrightVideoLink()}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -114,7 +149,7 @@ const ElectronBot = () => {
                   app and install Playwright.
                 </Typography>
               }
-              overlayStyle={{marginLeft: '500px', width: '800px'}}
+              overlayStyle={{ marginLeft: '500px', width: '800px' }}
             >
               <InformationCircleIcon
                 width={25}
@@ -131,19 +166,19 @@ const ElectronBot = () => {
       <br />
       <br />
       <br />
-      <div style={{display: 'flex', flexDirection: 'column'}}>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
         <Typography
           name="Body 3/Bold"
           color={token?.colorLink}
-          style={{marginBottom: '6px'}}
+          style={{ marginBottom: '6px' }}
         >
           Note:
         </Typography>
         <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
-          <ul style={{listStyleType: 'disc', marginLeft: '20px'}}>
+          <ul style={{ listStyleType: 'disc', marginLeft: '20px' }}>
             <li>
               <a
-                href={getLink()}
+                href={getNodeJsRequirementsLink()}
                 download
                 style={{
                   textDecoration: 'none',

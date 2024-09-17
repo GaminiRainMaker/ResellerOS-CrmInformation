@@ -1,6 +1,6 @@
 Node.js Minimum Requirements for Windows
 
-- Operating System: Windows 10 or later
+- Operating System: Windows 7 or later
 - Processor: 1 GHz or faster with x64 architecture
 - RAM: 2 GB or more
 - Disk Space: 1 GB free space
