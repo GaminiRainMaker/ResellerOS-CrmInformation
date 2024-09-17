@@ -886,6 +886,28 @@ const EditorFile = () => {
       message: 'Kindly wait a moment while we wrap things up.',
       type: 'info',
     });
+    // let newArrFOrUpdation: any = [];
+    // let newArrForAddition: any = [];
+
+
+    // if (updateLineItemsValue && updateLineItemsValue?.length > 0) {
+    //   updateLineItemsValue?.map((items: any) => {
+    //     if (items?.id === null) {
+    //       let newObj = {
+    //         ...items
+    //       }
+    //       delete newObj.id
+    //       newArrForAddition?.push(newObj)
+    //     } else {
+    //       newArrFOrUpdation?.push(items)
+
+    //     }
+
+    //   })
+    // }
+
+    // console.log("34534523423", newArrFOrUpdation, newArrForAddition)
+    // return
 
     if (EditSalesLineItems === 'true') {
       let newdata = {
@@ -1267,7 +1289,7 @@ const EditorFile = () => {
     setValueOfNewFormula('');
     setOpenAddNewFormulaModal(false);
   };
-
+  console.log("updateLineItemsValueupdateLineItemsValue", updateLineItemsValue)
   return (
     <GlobalLoader loading={nanonetsLoading}>
       <Space size={0} style={{ marginBottom: '20px' }}>
@@ -1306,7 +1328,7 @@ const EditorFile = () => {
               multiColumnSorting
               filters
               rowHeaders
-              allowInsertRow={false}
+              allowInsertRow={true}
               allowInsertColumn
               afterGetColHeader={alignHeaders}
               beforeRenderer={() => {

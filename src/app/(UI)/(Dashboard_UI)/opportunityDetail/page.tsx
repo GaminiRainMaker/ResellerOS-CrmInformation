@@ -175,7 +175,7 @@ const OpportunityDetails = () => {
     );
     setFinalDealRegData(separatedData);
   }, [opportunityData?.DealRegs, statusValue]);
-
+  console.log("4564354353", opportunityData)
   const menuItems = [
     {
       key: '1',
