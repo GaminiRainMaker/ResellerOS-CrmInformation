@@ -132,3 +132,16 @@ export const addSalesForceDataaForAccount = createAsyncThunk(
     }
   },
 );
+
+
+export const getExcelData = createAsyncThunk(
+  'auth/getExcelData',
+  async (data: any, thunkApi) => {
+    try {
+      const res: any = await AUTH_API.getExcelData(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

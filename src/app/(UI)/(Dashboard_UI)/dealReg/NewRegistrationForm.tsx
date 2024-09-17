@@ -4,31 +4,31 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import OsContactSelect from '@/app/components/common/os-contact-select';
 import OsCustomerSelect from '@/app/components/common/os-customer-select';
-import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
 import OsOpportunitySelect from '@/app/components/common/os-opportunity-select';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {Form, notification} from 'antd';
-import {useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
-import {getAllCustomer} from '../../../../../redux/actions/customer';
+import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { Form, notification } from 'antd';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { FC, useEffect, useState } from 'react';
+import { getAllCustomer } from '../../../../../redux/actions/customer';
 import {
   getDealRegByOpportunityId,
   insertDealReg,
   queryDealReg,
 } from '../../../../../redux/actions/dealReg';
-import {getAllPartnerandProgramApprovedForOrganization} from '../../../../../redux/actions/partner';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {CollapseSpaceStyle} from '../dealRegDetail/styled-component';
+import { getAllPartnerandProgramApprovedForOrganization } from '../../../../../redux/actions/partner';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { CollapseSpaceStyle } from '../dealRegDetail/styled-component';
 
 const NewRegistrationForm: FC<any> = ({
   isDealRegDetail = false,
@@ -40,9 +40,10 @@ const NewRegistrationForm: FC<any> = ({
   const getOpportunityId = Number(searchParams.get('opportunityId'));
   const getContactId = Number(searchParams.get('contactId'));
   const getCustomerId = Number(searchParams.get('customerId'));
+  let pathname = usePathname()
   const dispatch = useAppDispatch();
-  const {data: dataAddress} = useAppSelector((state) => state.customer);
-  const {userInformation} = useAppSelector((state) => state.user);
+  const { data: dataAddress } = useAppSelector((state) => state.customer);
+  const { userInformation } = useAppSelector((state) => state.user);
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [allSeldPartnerFilterData, setAllSelfFilterPartnerData] =
     useState<any>();
@@ -254,6 +255,9 @@ const NewRegistrationForm: FC<any> = ({
         }
       });
       setShowModal(false);
+      if (pathname === '/opportunityDetail') {
+        location.reload()
+      }
     }
   };
   return (
@@ -261,7 +265,7 @@ const NewRegistrationForm: FC<any> = ({
       <Form
         name="dynamic_form_nest_item"
         onFinish={registeredFormFinish}
-        style={{maxWidth: 600}}
+        style={{ maxWidth: 600 }}
         form={form}
         autoComplete="off"
         layout="vertical"
@@ -281,10 +285,10 @@ const NewRegistrationForm: FC<any> = ({
                     ),
                     children: (
                       <Form.List name="registeredPartners">
-                        {(fields, {add, remove}) => (
+                        {(fields, { add, remove }) => (
                           <>
                             {fields?.map(
-                              ({key, name, ...restField}) => (
+                              ({ key, name, ...restField }) => (
                                 console.log('43543534534', key, name),
                                 (
                                   <Row
@@ -349,7 +353,7 @@ const NewRegistrationForm: FC<any> = ({
                                           onChange={(e: any) => {
                                             let AllIds: any =
                                               allAddedPartnerProgramIDs?.length >
-                                              0
+                                                0
                                                 ? [...allAddedPartnerProgramIDs]
                                                 : [];
                                             AllIds?.push(e);
@@ -382,10 +386,10 @@ const NewRegistrationForm: FC<any> = ({
                                             ) {
                                               let newArrr: any =
                                                 allAddedPartnerProgramIDs?.length >
-                                                0
+                                                  0
                                                   ? [
-                                                      ...allAddedPartnerProgramIDs,
-                                                    ]
+                                                    ...allAddedPartnerProgramIDs,
+                                                  ]
                                                   : [];
 
                                               let findIndexOfId =
@@ -428,7 +432,7 @@ const NewRegistrationForm: FC<any> = ({
                                 <PlusIcon
                                   width={24}
                                   color={token?.colorLink}
-                                  style={{marginTop: '5px'}}
+                                  style={{ marginTop: '5px' }}
                                 />
                                 <Typography
                                   name="Body 3/Bold"
@@ -460,9 +464,9 @@ const NewRegistrationForm: FC<any> = ({
                     ),
                     children: (
                       <Form.List name="selfRegisteredPartners">
-                        {(fields, {add, remove}) => (
+                        {(fields, { add, remove }) => (
                           <>
-                            {fields?.map(({key, name, ...restField}) => (
+                            {fields?.map(({ key, name, ...restField }) => (
                               <Row
                                 justify="space-between"
                                 align="middle"
@@ -490,7 +494,7 @@ const NewRegistrationForm: FC<any> = ({
                                   >
                                     <CommonSelect
                                       placeholder="Select"
-                                      style={{width: '100%', height: '36px'}}
+                                      style={{ width: '100%', height: '36px' }}
                                       options={selefPartnerOptions}
                                       onChange={(value) => {
                                         findPartnerProgramsForSelfById(value);
@@ -525,7 +529,7 @@ const NewRegistrationForm: FC<any> = ({
                                         AllIds?.push(e);
                                         setAllAddedPartnerProgramIDs(AllIds);
                                       }}
-                                      style={{width: '100%', height: '36px'}}
+                                      style={{ width: '100%', height: '36px' }}
                                     />
                                   </SelectFormItem>
                                 </Col>
@@ -558,7 +562,7 @@ const NewRegistrationForm: FC<any> = ({
                                 <PlusIcon
                                   width={24}
                                   color={token?.colorLink}
-                                  style={{marginTop: '5px'}}
+                                  style={{ marginTop: '5px' }}
                                 />
                                 <Typography
                                   name="Body 3/Bold"

@@ -3,8 +3,8 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import FormBuilderMain from '@/app/components/common/formBuilder/page';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
@@ -20,17 +20,17 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {formatStatus} from '@/app/utils/CONSTANTS';
+import { formatStatus } from '@/app/utils/CONSTANTS';
 import {
   MinusIcon,
   PencilSquareIcon,
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-import {Checkbox, Form, notification} from 'antd';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {updateAssignPartnerProgramById} from '../../../../../redux/actions/assignPartnerProgram';
+import { Checkbox, Form, notification } from 'antd';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { updateAssignPartnerProgramById } from '../../../../../redux/actions/assignPartnerProgram';
 import {
   deletePartner,
   getAllPartnerandProgramFilterDataForAdmin,
@@ -43,7 +43,7 @@ import {
   upadteToRequestPartnerandprogramfromAmin,
   updatePartnerProgramById,
 } from '../../../../../redux/actions/partnerProgram';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import AddPartnerProgramScript from './AddPartnerProgramScript';
 import SuperAdminPartnerAnalytics from './SuperAdminPartnerAnalytic';
 
@@ -90,7 +90,7 @@ const SuperAdminPartner: React.FC = () => {
   const [partnerProgramColumns, setPartnerProgramColumns] = useState<any>();
   const [queryDataa, setQueryData] = useState<any>();
   const [updateTheObject, setUpdateTheObject] = useState<any>();
-  const {insertProgramLoading} = useAppSelector(
+  const { insertProgramLoading } = useAppSelector(
     (state) => state.partnerProgram,
   );
   const [allPartnerData, setAllPartnerData] = useState<any>();
@@ -210,6 +210,8 @@ const SuperAdminPartner: React.FC = () => {
     requesId: number,
     partner_id: number,
     partner_program_id: number,
+    partnerName: string,
+    partnerProgramName: string,
   ) => {
     const Data = {
       id,
@@ -217,13 +219,16 @@ const SuperAdminPartner: React.FC = () => {
       requested_by: requesId,
       partner_id,
       partner_program_id,
+      partnerName: formatStatus(partnerName),
+      partnerProgramName: formatStatus(partnerProgramName)
     };
+
     await dispatch(updateAssignPartnerProgramById(Data));
     getPartnerDataForSuperAdmin();
   };
 
   const deleteSelectedPartnerProgramIds = async () => {
-    const data = {id: deletePartnerProgramIds};
+    const data = { id: deletePartnerProgramIds };
     await dispatch(deletePartnerProgram(data)).then(async () => {
       await getPartnerDataForSuperAdmin();
     });
@@ -251,7 +256,7 @@ const SuperAdminPartner: React.FC = () => {
   };
 
   const deleteSelectedPartnerIds = async () => {
-    const data = {id: deletePartnerIds};
+    const data = { id: deletePartnerIds };
     await dispatch(deletePartner(data)).then(async () => {
       await getPartnerDataForSuperAdmin();
       // dispatch(getAllPartnerandProgramFilterData({}))?.then((payload: any) => {
@@ -388,7 +393,7 @@ const SuperAdminPartner: React.FC = () => {
             if (record?.form_data) {
               setOpenPreviewModal(true);
               const formDataObject = JSON?.parse(record?.form_data);
-              setformData({formObject: formDataObject, Id: record?.id});
+              setformData({ formObject: formDataObject, Id: record?.id });
               // open modal to view form
             } else {
               router?.push(`/formBuilder?id=${record?.id}`);
@@ -415,7 +420,7 @@ const SuperAdminPartner: React.FC = () => {
         <Space direction="horizontal">
           {' '}
           <OsButton
-            btnStyle={{height: '32px'}}
+            btnStyle={{ height: '32px' }}
             buttontype="PRIMARY"
             text="Approve"
             clickHandler={() => {
@@ -437,6 +442,8 @@ const SuperAdminPartner: React.FC = () => {
                     record?.AssignPartnerProgram?.requested_by,
                     record?.Partner?.id,
                     record?.id,
+                    record?.Partner?.partner,
+                    record?.partner_program
                   );
                 } else {
                   notification?.open({
@@ -449,7 +456,7 @@ const SuperAdminPartner: React.FC = () => {
             }}
           />{' '}
           <OsButton
-            btnStyle={{height: '32px'}}
+            btnStyle={{ height: '32px' }}
             buttontype="SECONDARY"
             text="Decline"
             clickHandler={() => {
@@ -467,6 +474,8 @@ const SuperAdminPartner: React.FC = () => {
                   record?.AssignPartnerProgram?.requested_by,
                   record?.Partner?.id,
                   record?.id,
+                  record?.Partner?.partner,
+                  record?.partner_program
                 );
               }
             }}
@@ -662,13 +671,13 @@ const SuperAdminPartner: React.FC = () => {
                       setShowPartnerDrawer(true);
                     }}
                     color={token.colorInfoBorder}
-                    style={{cursor: 'pointer'}}
+                    style={{ cursor: 'pointer' }}
                   />
                   <TrashIcon
                     height={24}
                     width={24}
                     color={token.colorError}
-                    style={{cursor: 'pointer'}}
+                    style={{ cursor: 'pointer' }}
                     onClick={() => {
                       setDeletePartnerIds(record?.id);
                       setShowPartnerDeleteModal(true);
@@ -690,7 +699,7 @@ const SuperAdminPartner: React.FC = () => {
               />
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
-            expandIcon: ({expanded, onExpand, record}: any) =>
+            expandIcon: ({ expanded, onExpand, record }: any) =>
               expanded ? (
                 <MinusIcon
                   width={20}
@@ -749,7 +758,7 @@ const SuperAdminPartner: React.FC = () => {
               />
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
-            expandIcon: ({expanded, onExpand, record}: any) =>
+            expandIcon: ({ expanded, onExpand, record }: any) =>
               expanded ? (
                 <MinusIcon
                   width={20}
@@ -795,13 +804,13 @@ const SuperAdminPartner: React.FC = () => {
                 setShowPartnerProgramDrawer(true);
               }}
               color={token.colorInfoBorder}
-              style={{cursor: 'pointer'}}
+              style={{ cursor: 'pointer' }}
             />
             <TrashIcon
               height={24}
               width={24}
               color={token.colorError}
-              style={{cursor: 'pointer'}}
+              style={{ cursor: 'pointer' }}
               onClick={() => {
                 setDeletePartnerProgramIds(record?.id);
                 setShowPartnerProgramDeleteModal(true);
@@ -826,7 +835,7 @@ const SuperAdminPartner: React.FC = () => {
           <Space direction="horizontal">
             {' '}
             <OsButton
-              btnStyle={{height: '32px'}}
+              btnStyle={{ height: '32px' }}
               buttontype="PRIMARY"
               text="Approve"
               clickHandler={() => {
@@ -836,6 +845,7 @@ const SuperAdminPartner: React.FC = () => {
                     record?.Partner?.id,
                     record?.id,
                     'approve',
+
                   );
                 } else {
                   if (
@@ -848,6 +858,8 @@ const SuperAdminPartner: React.FC = () => {
                       record?.AssignPartnerProgram?.requested_by,
                       record?.Partner?.id,
                       record?.id,
+                      record?.Partner?.partner,
+                      record?.partner_program
                     );
                   } else {
                     notification?.open({
@@ -860,7 +872,7 @@ const SuperAdminPartner: React.FC = () => {
               }}
             />{' '}
             <OsButton
-              btnStyle={{height: '32px'}}
+              btnStyle={{ height: '32px' }}
               buttontype="SECONDARY"
               text="Decline"
               clickHandler={() => {
@@ -878,6 +890,8 @@ const SuperAdminPartner: React.FC = () => {
                     record?.AssignPartnerProgram?.requested_by,
                     record?.Partner?.id,
                     record?.id,
+                    record?.Partner?.partner,
+                    record?.partner_program
                   );
                 }
               }}
@@ -906,7 +920,7 @@ const SuperAdminPartner: React.FC = () => {
 
   return (
     <>
-      <Space size={24} direction="vertical" style={{width: '100%'}}>
+      <Space size={24} direction="vertical" style={{ width: '100%' }}>
         <SuperAdminPartnerAnalytics data={superAdminPartnerAnalyticData} />
         <Row justify="space-between" align="middle">
           <Col>
@@ -914,8 +928,8 @@ const SuperAdminPartner: React.FC = () => {
               All Partners
             </Typography>
           </Col>
-          <Col style={{display: 'flex', alignItems: 'center'}}>
-            <Space size={12} style={{height: '48px'}}>
+          <Col style={{ display: 'flex', alignItems: 'center' }}>
+            <Space size={12} style={{ height: '48px' }}>
               <OsButton
                 text="New Partner"
                 buttontype="PRIMARY"
@@ -933,7 +947,7 @@ const SuperAdminPartner: React.FC = () => {
         </Row>
 
         <Row
-          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+          style={{ background: 'white', padding: '24px', borderRadius: '12px' }}
         >
           <OsTabs
             activeKey={activeTab?.toString()}
@@ -943,7 +957,7 @@ const SuperAdminPartner: React.FC = () => {
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Partner</Typography>
                   <CommonSelect
-                    style={{width: '200px'}}
+                    style={{ width: '200px' }}
                     placeholder="Search here"
                     showSearch
                     options={partnerOptions}
@@ -966,7 +980,7 @@ const SuperAdminPartner: React.FC = () => {
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium"> Partner Program</Typography>
                   <CommonSelect
-                    style={{width: '200px'}}
+                    style={{ width: '200px' }}
                     placeholder="Search here"
                     options={partnerProgramOptions}
                     showSearch
@@ -996,7 +1010,7 @@ const SuperAdminPartner: React.FC = () => {
                     name="Button 1"
                     color={
                       queryDataa?.partnerQuery ||
-                      queryDataa?.partnerprogramQuery
+                        queryDataa?.partnerprogramQuery
                         ? '#0D0D0D'
                         : '#C6CDD5'
                     }
@@ -1119,9 +1133,9 @@ const SuperAdminPartner: React.FC = () => {
         open={showPartnerDrawer}
         width={450}
         footer={
-          <Row style={{width: '100%', float: 'right'}}>
+          <Row style={{ width: '100%', float: 'right' }}>
             <OsButton
-              btnStyle={{width: '100%'}}
+              btnStyle={{ width: '100%' }}
               buttontype="PRIMARY"
               text="Update Changes"
               clickHandler={form?.submit}
@@ -1153,9 +1167,9 @@ const SuperAdminPartner: React.FC = () => {
         open={showPartnerProgramDrawer}
         width={450}
         footer={
-          <Row style={{width: '100%', float: 'right'}}>
+          <Row style={{ width: '100%', float: 'right' }}>
             <OsButton
-              btnStyle={{width: '100%'}}
+              btnStyle={{ width: '100%' }}
               buttontype="PRIMARY"
               text="Update Changes"
               clickHandler={form?.submit}
@@ -1208,7 +1222,7 @@ const SuperAdminPartner: React.FC = () => {
             <Space
               align="end"
               size={8}
-              style={{display: 'flex', justifyContent: 'end'}}
+              style={{ display: 'flex', justifyContent: 'end' }}
             >
               <OsButton
                 buttontype="PRIMARY"

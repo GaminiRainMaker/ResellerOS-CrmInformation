@@ -2,14 +2,14 @@
 
 'use client';
 
-import {CustomUpload} from '@/app/(UI)/(Dashboard_UI)/layouts/Header';
+import { CustomUpload } from '@/app/(UI)/(Dashboard_UI)/layouts/Header';
 import ImgCrop from 'antd-img-crop';
-import {FC} from 'react';
-import {Avatar} from '../antd/Avatar';
-import {Space} from '../antd/Space';
+import { FC } from 'react';
+import { Avatar } from '../antd/Avatar';
+import { Space } from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import Typography from '../typography';
-import {AvatarStyled} from './styled-components';
+import { AvatarStyled } from './styled-components';
 import OsButton from '../os-button';
 
 const TableNameColumn: FC<any> = ({
@@ -44,14 +44,13 @@ const TableNameColumn: FC<any> = ({
       const tempValue: string = text?.split(' ')?.[0];
       const remainingText = text && text?.split(' ').slice(1).join(' ');
       return (
-        <span style={{cursor}}>
-          <span style={{fontWeight: 800}}>{tempValue}</span> {remainingText}
+        <span style={{ cursor }}>
+          <span style={{ fontWeight: 800 }}>{tempValue}</span> {remainingText}
         </span>
       );
     }
-    return <span style={{cursor}}>{text}</span>;
+    return <span style={{ cursor }}>{text}</span>;
   };
-
   return (
     <>
       <Space
@@ -78,7 +77,7 @@ const TableNameColumn: FC<any> = ({
                 icon={fallbackIcon}
                 shape="circle"
                 size={size}
-                style={{cursor: imgCursor}}
+                style={{ cursor: imgCursor }}
               />
             </CustomUpload>
           </ImgCrop>
@@ -91,7 +90,7 @@ const TableNameColumn: FC<any> = ({
           />
         )}
 
-        <span style={{cursor}}>
+        <span style={{ cursor }}>
           <Typography
             maxWidth={maxWidth}
             cursor={cursor}
@@ -113,17 +112,23 @@ const TableNameColumn: FC<any> = ({
             as="div"
             name={secondaryTextTypography}
             color={secondaryTextColor}
+
           >
-            {getStyledText(secondaryText, isBoldRequired)}
+            <div dangerouslySetInnerHTML={{ __html: secondaryText }} />
           </Typography>
+
+          {/* {/* {getStyledText(secondaryText, isBoldRequired)}
+            {`${secondaryText}`}  */}
+
         </span>
-      </Space>
+      </Space >
       {isSubscription && (
-        <Space size={12} style={{marginLeft: '60px'}}>
+        <Space size={12} style={{ marginLeft: '60px' }}>
           <OsButton buttontype="SECONDARY" text="Renew Subscription" />
           <OsButton buttontype="PRIMARY" text="Change Plan" />
         </Space>
-      )}
+      )
+      }
     </>
   );
 };
