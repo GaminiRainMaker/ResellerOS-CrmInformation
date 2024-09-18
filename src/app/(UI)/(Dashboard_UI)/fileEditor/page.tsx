@@ -188,7 +188,6 @@ const EditorFile = () => {
       };
       dispatch(getSalesForceDataaForEditAsItIs(newdata))?.then(
         (payload: any) => {
-          console.log("3454353435", payload?.payload?.qliFields)
           if (payload?.payload?.qliFields) {
             let keysss = Object.keys(payload?.payload?.qliFields);
             let arrOfOptions: any = [];
@@ -615,11 +614,15 @@ const EditorFile = () => {
 
           newArrr?.push(newObj);
         }
+
       });
+
+
       setUpdateLineItemsValue(newArrr);
       setNanonetsLoading(false);
     }
   }, [quoteFileById, quoteItems]);
+
 
   useEffect(() => {
     dispatch(queryLineItemSyncingForSalesForce(query))?.then((payload: any) => {
@@ -937,7 +940,11 @@ const EditorFile = () => {
           let newObj = {
             ...items
           }
+          newObj.adjusted_price = items?.cost
+          newObj.list_price = items?.MSRP
           delete newObj.id
+          delete newObj.MSRP
+          delete newObj.cost
           newArrForAddition?.push(newObj)
         } else {
           newArrFOrUpdation?.push(items)
@@ -947,7 +954,6 @@ const EditorFile = () => {
       })
     }
 
-    console.log("34534523423", newArrFOrUpdation, newArrForAddition)
 
     if (newArrForAddition && newArrForAddition?.length > 0) {
       const lineItem = newArrForAddition
@@ -1013,27 +1019,33 @@ const EditorFile = () => {
             product_id: itemsToAdd?.id,
             product_code: itemsToAdd?.product_code,
             line_amount: itemsToAdd?.line_amount,
-            list_price: itemsToAdd?.list_price,
+            list_price: itemssProduct?.list_price,
             description: itemsToAdd?.description,
             quantity: itemsToAdd?.quantity,
-            adjusted_price: itemsToAdd?.adjusted_price,
+            adjusted_price: itemssProduct?.adjusted_price,
             line_number: itemsToAdd?.line_number,
             organization: userInformation.organization,
           };
           finalLineItems?.push(obj1);
         });
       }
+
       await dispatch(insertQuoteLineItem(finalLineItems))?.then((payload: any) => {
         if (payload?.payload && payload?.payload?.length > 0) {
           payload?.payload?.map((items: any) => {
-            newArrFOrUpdation?.push(items)
+            let newObj = {
+              ...items
+            }
+            newObj.cost = items?.adjusted_price
+            newObj.MSRP = items?.list_price
+
+            newArrFOrUpdation?.push(newObj)
           })
         }
       })
 
 
     }
-
 
     if (EditSalesLineItems === 'true') {
       let newdata = {
