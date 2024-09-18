@@ -31,7 +31,9 @@ import {
 import {
   checkFunctionInArray,
   concatenateAfterFirstWithSpace,
+  getLineItemsWithNonRepitive,
   getResultedValue,
+  getValuesOFLineItemsThoseNotAddedBefore,
   sendDataToNanonets,
   updateTables,
 } from '@/app/utils/base';
@@ -61,7 +63,7 @@ import {
   getQuoteFileByIdForFormulas,
   getfileByQuoteIdWithManual,
 } from '../../../../../redux/actions/quoteFile';
-import { getQuoteLineItemByQuoteIdForEditTable } from '../../../../../redux/actions/quotelineitem';
+import { getQuoteLineItemByQuoteIdForEditTable, insertQuoteLineItem } from '../../../../../redux/actions/quotelineitem';
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
 import dynamic from 'next/dynamic';
@@ -75,6 +77,7 @@ import {
 } from '../../../../../redux/actions/formulas';
 import { identity } from 'lodash';
 import Typography from '@/app/components/common/typography';
+import { getBulkProductIsExisting, insertProductsInBulk } from '../../../../../redux/actions/product';
 
 registerAllModules();
 
@@ -886,28 +889,115 @@ const EditorFile = () => {
       message: 'Kindly wait a moment while we wrap things up.',
       type: 'info',
     });
-    // let newArrFOrUpdation: any = [];
-    // let newArrForAddition: any = [];
+
+    let finalLineItems: any = [];
+    let newArrFOrUpdation: any = [];
+    let newArrForAddition: any = [];
 
 
-    // if (updateLineItemsValue && updateLineItemsValue?.length > 0) {
-    //   updateLineItemsValue?.map((items: any) => {
-    //     if (items?.id === null) {
-    //       let newObj = {
-    //         ...items
-    //       }
-    //       delete newObj.id
-    //       newArrForAddition?.push(newObj)
-    //     } else {
-    //       newArrFOrUpdation?.push(items)
+    if (updateLineItemsValue && updateLineItemsValue?.length > 0) {
+      updateLineItemsValue?.map((items: any) => {
+        if (items?.id === null) {
+          let newObj = {
+            ...items
+          }
+          delete newObj.id
+          newArrForAddition?.push(newObj)
+        } else {
+          newArrFOrUpdation?.push(items)
 
-    //     }
+        }
 
-    //   })
-    // }
+      })
+    }
 
-    // console.log("34534523423", newArrFOrUpdation, newArrForAddition)
-    // return
+    console.log("34534523423", newArrFOrUpdation, newArrForAddition)
+
+    if (newArrForAddition && newArrForAddition?.length > 0) {
+      const lineItem = newArrForAddition
+      let allProductCodes: any = [];
+      let allProductCodeDataa: any = [];
+      lineItem?.map((itemsPro: any) => {
+        allProductCodes?.push(
+          itemsPro?.product_code
+            ? itemsPro?.product_code?.replace(/\s/g, '')
+            : 'NEWCODE0123',
+        );
+      });
+      let valuessOfAlreayExist = await dispatch(
+        getBulkProductIsExisting(allProductCodes),
+      );
+      if (valuessOfAlreayExist?.payload?.length > 0) {
+        allProductCodeDataa = valuessOfAlreayExist?.payload;
+      }
+      let newArrValues = getLineItemsWithNonRepitive(
+        newArrForAddition,
+      );
+
+
+      if (valuessOfAlreayExist?.payload?.length > 0) {
+        // ======To get items that are  non added Values==============
+        let newInsertionData = getValuesOFLineItemsThoseNotAddedBefore(
+          lineItem,
+          allProductCodeDataa,
+        );
+
+        if (newInsertionData?.length > 0) {
+          await dispatch(insertProductsInBulk(newInsertionData))?.then(
+            (payload: any) => {
+              payload?.payload?.map((itemsBulk: any) => {
+                allProductCodeDataa?.push(itemsBulk);
+              });
+            },
+          );
+        }
+      } else {
+        await dispatch(insertProductsInBulk(newArrValues))?.then(
+          (payload: any) => {
+            payload?.payload?.map((itemsBulk: any) => {
+              allProductCodeDataa?.push(itemsBulk);
+            });
+          },
+        );
+      }
+
+      if (lineItem) {
+        lineItem?.map((itemssProduct: any) => {
+          let productCode = itemssProduct?.product_code
+            ? itemssProduct?.product_code?.replace(/\s/g, '')
+            : 'NEWCODE0123';
+          let itemsToAdd = allProductCodeDataa?.find(
+            (productItemFind: any) =>
+              productItemFind?.product_code?.replace(/\s/g, '') ===
+              productCode,
+          );
+          const obj1: any = {
+            quote_id: getQUoteId,
+            quote_file_id: getQuoteFileId,
+            product_id: itemsToAdd?.id,
+            product_code: itemsToAdd?.product_code,
+            line_amount: itemsToAdd?.line_amount,
+            list_price: itemsToAdd?.list_price,
+            description: itemsToAdd?.description,
+            quantity: itemsToAdd?.quantity,
+            adjusted_price: itemsToAdd?.adjusted_price,
+            line_number: itemsToAdd?.line_number,
+            organization: userInformation.organization,
+          };
+          finalLineItems?.push(obj1);
+        });
+      }
+      await dispatch(insertQuoteLineItem(finalLineItems))?.then((payload: any) => {
+        if (payload?.payload && payload?.payload?.length > 0) {
+          payload?.payload?.map((items: any) => {
+            newArrFOrUpdation?.push(items)
+          })
+        }
+      })
+
+
+    }
+
 
     if (EditSalesLineItems === 'true') {
       let newdata = {
@@ -928,7 +1018,7 @@ const EditorFile = () => {
     await updateTables(
       getQUoteId,
       quoteFileById,
-      updateLineItemsValue,
+      newArrFOrUpdation,
       userInformation,
       dispatch,
       missingId,
@@ -936,11 +1026,13 @@ const EditorFile = () => {
       Number(getQUoteId),
     );
 
+
+
     router?.push(
       `/generateQuote?id=${getQUoteId}&tab=2&isView=${getResultedValue()}`,
     );
   };
-
+  console.log("345435435", updateLineItemsValue)
   const CancelEditing = () => {
     const data = {
       issue_type: null,
