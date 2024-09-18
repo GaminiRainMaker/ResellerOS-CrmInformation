@@ -182,6 +182,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
               };
             }
           });
+
           quoteObj = {
             ...quoteItem,
             nanonets_id: result?.id,
@@ -203,6 +204,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
             ],
           };
         }
+
         if (singleQuote || quoteId) {
           if (i === 0) {
             quotesArr.push(quoteObj);
@@ -217,6 +219,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           quotesArr.push(quoteObj);
         }
       }
+
       if (quotesArr.length > 0 && !quoteId) {
         for (let i = 0; i < quotesArr.length; i++) {
           let newObj = {
@@ -426,16 +429,19 @@ const AddQuote: FC<AddQuoteInterface> = ({
       }
 
       if (countOfExportFiles > 0) {
+        return
         router.push(
           `/fileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&quoteExist=false&manualFlow=true`,
         );
       } else {
+        return
         router.push(
           `/manualFileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&manualFlow=true`,
         );
       }
     }
     if (newArrWithManual?.length === 0) {
+      return
       router.push(
         `/generateQuote?id=${quotesArr[0]?.id}&isView=${getResultedValue()}`,
       );
@@ -481,10 +487,12 @@ const AddQuote: FC<AddQuoteInterface> = ({
       setLoading(false);
       if (newArrWithManual?.length > 0) {
         if (countOfExportFiles > 0) {
+          return
           router.push(
             `/fileEditor?id=${latestQuoteId}&fileId=${null}&quoteExist=false&manualFlow=true`,
           );
         } else {
+          return
           router.push(
             `/manualFileEditor?id=${latestQuoteId}&fileId=${null}&manualFlow=true`,
           );
