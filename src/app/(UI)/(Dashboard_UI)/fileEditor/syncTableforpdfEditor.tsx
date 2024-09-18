@@ -7,7 +7,7 @@
 
 'use client';
 
-import {Divider} from '@/app/components/common/antd/Divider';
+import { Divider } from '@/app/components/common/antd/Divider';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
@@ -24,9 +24,9 @@ import {
   getValuesOFLineItemsThoseNotAddedBefore,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
-import {Col, Row, notification} from 'antd';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
+import { Col, Row, notification } from 'antd';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { FC, useEffect, useState } from 'react';
 import {
   insertLineItemSyncing,
   insertLineItemSyncingForSalesForce,
@@ -35,20 +35,20 @@ import {
   addSalesForceDataa,
   addSalesForceDataaForAccount,
 } from '../../../../../redux/actions/auth';
-import {getContractInBulkByProductCode} from '../../../../../redux/actions/contractProduct';
-import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
+import { getContractInBulkByProductCode } from '../../../../../redux/actions/contractProduct';
+import { insertOpportunityLineItem } from '../../../../../redux/actions/opportunityLineItem';
 import {
   getBulkProductIsExisting,
   insertProductsInBulk,
 } from '../../../../../redux/actions/product';
-import {insertProfitability} from '../../../../../redux/actions/profitability';
-import {updateQuoteJsonAndManual} from '../../../../../redux/actions/quote';
-import {quoteFileVerification} from '../../../../../redux/actions/quoteFile';
-import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
-import {getRebatesInBulkByProductCode} from '../../../../../redux/actions/rebate';
-import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
-import {insertValidation} from '../../../../../redux/actions/validation';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { insertProfitability } from '../../../../../redux/actions/profitability';
+import { updateQuoteJsonAndManual } from '../../../../../redux/actions/quote';
+import { quoteFileVerification } from '../../../../../redux/actions/quoteFile';
+import { insertQuoteLineItem } from '../../../../../redux/actions/quotelineitem';
+import { getRebatesInBulkByProductCode } from '../../../../../redux/actions/rebate';
+import { insertRebateQuoteLineItem } from '../../../../../redux/actions/rebateQuoteLineitem';
+import { insertValidation } from '../../../../../redux/actions/validation';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 
 type DataItem = {
   preVal: string;
@@ -102,11 +102,11 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   accoutSyncOptions,
 }) => {
   const dispatch = useAppDispatch();
-  const {userInformation} = useAppSelector((state) => state.user);
+  const { userInformation } = useAppSelector((state) => state.user);
   const [syncedNewValue, setNewSyncedValue] = useState<any>();
-  const {quoteFileById} = useAppSelector((state) => state.quoteFile);
+  const { quoteFileById } = useAppSelector((state) => state.quoteFile);
 
-  const {data: syncTableData, loading: syncDataLoading} = useAppSelector(
+  const { data: syncTableData, loading: syncDataLoading } = useAppSelector(
     (state) => state.syncTable,
   );
 
@@ -136,6 +136,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         : quoteLineItemColumnForSync,
       // ,
     );
+
+
+  console.log("accoutSyncOptionsaccoutSyncOptions", accoutSyncOptions)
   const router = useRouter();
   const mergeedColumn: any = [];
   const keys = mergedValue?.length > 0 && Object.keys(mergedValue?.[0]);
@@ -148,7 +151,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     });
   }
   useEffect(() => {
-    if (salesFOrceAccoutFlow && salesFOrceAccoutFlow === 'true') {
+    if ((salesFOrceAccoutFlow && salesFOrceAccoutFlow === 'true') || salesForceUrl) {
       setSyncTableQuoteLItemValues(accoutSyncOptions);
     }
   }, [accoutSyncOptions]);
@@ -157,7 +160,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     const newSyncTableData =
       syncedNewValue?.length > 0 ? [...syncedNewValue] : [];
     let newSyncOptionChecks =
-      salesFOrceAccoutFlow === 'true'
+      salesFOrceAccoutFlow === 'true' || salesForceUrl
         ? accoutSyncOptions
         : syncTableQuoteLItemValues;
 
@@ -278,7 +281,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       syncedNewValue
         ?.filter((item: DataItem) => item.newVal !== '')
         .map(
-          ({preVal, newVal}: DataItem): UpdatedDataItem => ({
+          ({ preVal, newVal }: DataItem): UpdatedDataItem => ({
             pdf_header: preVal,
             quote_header: newVal,
             status: 'Pending',
@@ -303,7 +306,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         syncedNewValue
           ?.filter((item: DataItem) => item.newVal !== '')
           .map(
-            ({preVal, newVal}: DataItem): SalesUpdatedDataItem => ({
+            ({ preVal, newVal }: DataItem): SalesUpdatedDataItem => ({
               pdf_header: preVal,
               quote_header: newVal,
               status: 'Pending',
@@ -665,7 +668,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
       resultArrForAllArr?.map((itemss: any) => {
         const singleObjects = itemss.reduce(
-          (obj: any, item: any) => Object.assign(obj, {[item.key]: item.value}),
+          (obj: any, item: any) => Object.assign(obj, { [item.key]: item.value }),
           {},
         );
         finalOpportunityArray?.push(singleObjects);
@@ -713,7 +716,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const handleChange = () => {
     // This defines which option we are using salesforce or full stack
     let optionsTOAdd = SaleQuoteId
-      ? salesFOrceAccoutFlow === 'true'
+      ? salesFOrceAccoutFlow === 'true' || salesForceUrl
         ? accoutSyncOptions
         : SaleForceQuoteLineItemColumnSync
       : quoteLineItemColumnForSync;
@@ -757,10 +760,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           }}
         >
           <Col>
-            <Row style={{marginTop: '6px'}}>
+            <Row style={{ marginTop: '6px' }}>
               {' '}
               <Typography
-                style={{marginLeft: '10px'}}
+                style={{ marginLeft: '10px' }}
                 align="center"
                 name="Body 3/Medium"
               >
@@ -769,17 +772,17 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             </Row>
             <Divider />
             {mergeedColumn?.map((item: any) => (
-              <Row style={{marginTop: '6px'}}>
+              <Row style={{ marginTop: '6px' }}>
                 <OsInput disabled value={formatStatus(item)} />
               </Row>
             ))}
           </Col>
 
           <Col>
-            <Row style={{marginTop: '6px'}}>
+            <Row style={{ marginTop: '6px' }}>
               {' '}
               <Typography
-                style={{marginLeft: '10px'}}
+                style={{ marginLeft: '10px' }}
                 align="center"
                 name="Body 3/Medium"
               >
@@ -795,7 +798,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               );
 
               return (
-                <Row style={{marginTop: '6px'}}>
+                <Row style={{ marginTop: '6px' }}>
                   <CommonSelect
                     onChange={(e) => {
                       syncTableToLineItems(item, e, indexOfCol);
@@ -812,9 +815,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                     defaultValue={formatStatus(
                       newLabel?.label?.toString()?.toUpperCase(),
                     )}
-                    style={{width: '250px'}}
+                    style={{ width: '250px' }}
                     options={
-                      salesFOrceAccoutFlow === 'true'
+                      salesFOrceAccoutFlow === 'true' || salesForceUrl
                         ? accoutSyncOptions
                         : syncTableQuoteLItemValues
                     }

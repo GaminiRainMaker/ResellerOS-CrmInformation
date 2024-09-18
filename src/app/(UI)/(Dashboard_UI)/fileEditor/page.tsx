@@ -119,6 +119,7 @@ const EditorFile = () => {
   const [showApplyFormula, setShowApplyFormula] = useState<boolean>(false);
   const [runSriptToGetValues, setRunScriptTOGetValues] =
     useState<boolean>(false);
+  const [accoutSyncOptions, setAccoutSyncOptions] = useState<any>();
 
   const [openAddNewFormulaModal, setOpenAddNewFormulaModal] =
     useState<boolean>(false);
@@ -187,6 +188,21 @@ const EditorFile = () => {
       };
       dispatch(getSalesForceDataaForEditAsItIs(newdata))?.then(
         (payload: any) => {
+          console.log("3454353435", payload?.payload?.qliFields)
+          if (payload?.payload?.qliFields) {
+            let keysss = Object.keys(payload?.payload?.qliFields);
+            let arrOfOptions: any = [];
+            if (keysss) {
+              keysss?.map((items: any) => {
+                arrOfOptions?.push({
+                  label: payload?.payload[items],
+                  value: items,
+                });
+              });
+            }
+
+            setAccoutSyncOptions(arrOfOptions);
+          }
           setUpdateLineItemsValue(payload?.payload);
           setNanonetsLoading(false);
           return;
@@ -212,6 +228,7 @@ const EditorFile = () => {
 
     let pathTOGo = salesFOrceManual === 'true' ? data : dataSingle;
     dispatch(getSalesForceFileData(pathTOGo))?.then(async (payload: any) => {
+
       if (!payload?.payload?.body) {
         if (salesFOrceManual === 'false') {
           notification?.open({
@@ -220,6 +237,7 @@ const EditorFile = () => {
           });
           return;
         }
+
 
         let newObj = {
           token: salesToken,
@@ -235,6 +253,7 @@ const EditorFile = () => {
               type: 'info',
             });
           }
+
           if (payload?.payload?.body) {
             window.history.replaceState(
               null,
@@ -247,6 +266,23 @@ const EditorFile = () => {
         setNanonetsLoading(false);
         return;
         setMergedVaalues([]);
+      }
+      if (payload?.payload) {
+        let newObjFromSalesFOrce = JSON.parse(payload?.payload?.qliFields)
+        let keysss = Object.keys(newObjFromSalesFOrce);
+        let arrOfOptions: any = [];
+
+        if (keysss) {
+          keysss?.map((items: any) => {
+            arrOfOptions?.push({
+              label: newObjFromSalesFOrce[items],
+              value: items,
+            });
+          });
+        }
+
+
+        setAccoutSyncOptions(arrOfOptions);
       }
       setCurrentFile({
         file_name: payload?.payload?.title,
@@ -1755,6 +1791,7 @@ const EditorFile = () => {
               lineItemSyncingData={lineItemSyncingData}
               CurrentFileId={currentFIle}
               currentFileData={currentFIle}
+              accoutSyncOptions={accoutSyncOptions}
             />
           }
           width={600}
