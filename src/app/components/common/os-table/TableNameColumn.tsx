@@ -36,6 +36,7 @@ const TableNameColumn: FC<any> = ({
   isSubscription,
   secondarySize,
   marginBottom = 0,
+  isNotification
 }) => {
   const [token] = useThemeToken();
 
@@ -91,6 +92,7 @@ const TableNameColumn: FC<any> = ({
         )}
 
         <span style={{ cursor }}>
+
           <Typography
             maxWidth={maxWidth}
             cursor={cursor}
@@ -103,7 +105,7 @@ const TableNameColumn: FC<any> = ({
           >
             {primaryText}
           </Typography>
-          <Typography
+          {isNotification ? (<Typography
             // tooltip={tooltip ? secondaryText : ''}
             maxWidth={maxWidth}
             // onClick={onClick}
@@ -115,7 +117,20 @@ const TableNameColumn: FC<any> = ({
 
           >
             <div dangerouslySetInnerHTML={{ __html: secondaryText }} />
-          </Typography>
+          </Typography>) : (<Typography
+            // tooltip={tooltip ? secondaryText : ''}
+            maxWidth={maxWidth}
+            // onClick={onClick}
+            align="left"
+            ellipsis={secondaryEllipsis}
+            as="div"
+            name={secondaryTextTypography}
+            color={secondaryTextColor}
+
+          >{getStyledText(secondaryText, isBoldRequired)}
+            {/* <div dangerouslySetInnerHTML={{ __html: secondaryText }} /> */}
+          </Typography>)}
+
 
           {/* {/* {getStyledText(secondaryText, isBoldRequired)}
             {`${secondaryText}`}  */}

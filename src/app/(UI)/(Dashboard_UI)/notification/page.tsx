@@ -201,6 +201,7 @@ const SuperAdminPartner: React.FC = () => {
                       <TableNameColumn
                         key={itemNoti?.id}
                         justifyContent="start"
+                        isNotification={true}
                         secondaryText={itemNoti?.description}
                         primaryTextTypography="Body 1/Medium"
                         cursor="pointer"
@@ -301,6 +302,7 @@ const SuperAdminPartner: React.FC = () => {
                             : itemNoti?.User?.profile_image
                         }
                         isBoldRequired
+                        isNotification={true}
                         isSubscription={itemNoti?.type === 'subscription'}
                       />
                     </Col>

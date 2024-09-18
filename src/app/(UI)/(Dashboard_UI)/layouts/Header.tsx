@@ -5,11 +5,11 @@
 
 'use client';
 
-import {Dropdown} from '@/app/components/common/antd/DropDown';
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Dropdown } from '@/app/components/common/antd/DropDown';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {Divider} from '@/app/components/common/antd/Divider';
-import {Space} from '@/app/components/common/antd/Space';
+import { Divider } from '@/app/components/common/antd/Divider';
+import { Space } from '@/app/components/common/antd/Space';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -17,7 +17,7 @@ import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import SearchSelect from '@/app/components/common/os-select/SearchSelect';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
-import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
+import { AvatarStyled } from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import styled from '@emotion/styled';
 import {
@@ -27,19 +27,19 @@ import {
   UserCircleIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
-import {Avatar, Badge, Layout, Upload} from 'antd';
-import {MenuProps} from 'antd/es/menu';
+import { Avatar, Badge, Layout, Upload } from 'antd';
+import { MenuProps } from 'antd/es/menu';
 import Cookies from 'js-cookie';
 import Image from 'next/image';
-import {useRouter, useSearchParams} from 'next/navigation';
-import React, {useEffect, useState} from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import creditCard from '../../../../../public/assets/static/card-pos.svg';
 import HeaderLogo from '../../../../../public/assets/static/headerLogo.svg';
 import DownArrow from '../../../../../public/assets/static/iconsax-svg/Svg/All/bold/arrow-down.svg';
 import SearchImg from '../../../../../public/assets/static/iconsax-svg/Svg/All/outline/search-normal-1.svg';
-import {getCountOfNotification} from '../../../../../redux/actions/notifications';
-import {getGloabalySearchDataa} from '../../../../../redux/actions/user';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { getCountOfNotification } from '../../../../../redux/actions/notifications';
+import { getGloabalySearchDataa } from '../../../../../redux/actions/user';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 
 export const CustomUpload = styled(Upload)`
   .ant-upload-list-text {
@@ -86,7 +86,7 @@ const CustomHeader = () => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams()!;
   const loginAccount = searchParams.get('self');
-  const {userInformation, searchDataa, loginUserInformation} = useAppSelector(
+  const { userInformation, searchDataa, loginUserInformation } = useAppSelector(
     (state) => state.user,
   );
   const {
@@ -258,7 +258,7 @@ const CustomHeader = () => {
       const allDataArr: any = [];
       const optionsForSearch: any = [];
       searchDataa?.data?.map((itemGlob: any) => {
-        const newObj = {...itemGlob, typeRoute: searchDataa?.type};
+        const newObj = { ...itemGlob, typeRoute: searchDataa?.type };
 
         const optionObj = {
           label: (
@@ -318,7 +318,7 @@ const CustomHeader = () => {
                   }}
                   showSearch
                   value={query?.searchText}
-                  style={{width: '100%'}}
+                  style={{ width: '100%' }}
                   placeholder="Search"
                   allowClear
                   prefixIcon={<Image src={SearchImg} alt="SearchImg" />}
@@ -356,7 +356,7 @@ const CustomHeader = () => {
                   marginLeft: 200,
                   marginTop: 20,
                 }}
-                menu={{items}}
+                menu={{ items }}
                 dropdownRender={() => (
                   <div style={dropDownStyle}>
                     {notificationCount?.length > 0 ? (
@@ -401,7 +401,7 @@ const CustomHeader = () => {
                               primaryTextTypography="Body 1/Medium"
                               logo={
                                 notificationDataItem?.type === 'subscription' ||
-                                notificationDataItem?.type === 'quote'
+                                  notificationDataItem?.type === 'quote'
                                   ? null
                                   : notificationDataItem?.User?.profile_image
                               }
@@ -419,6 +419,7 @@ const CustomHeader = () => {
                               justifyContent="start"
                               maxWidth={320}
                               marginBottom={10}
+                              isNotification={true}
                             />
                           );
                         })}
@@ -426,7 +427,7 @@ const CustomHeader = () => {
                     ) : (
                       <Typography
                         name="Body 3/Medium"
-                        style={{display: 'flex', justifyContent: 'center'}}
+                        style={{ display: 'flex', justifyContent: 'center' }}
                       >
                         No New Notifications
                       </Typography>
@@ -462,7 +463,7 @@ const CustomHeader = () => {
               </Dropdown>
 
               <Dropdown
-                menu={{items}}
+                menu={{ items }}
                 dropdownRender={(menu: any) => (
                   <div style={contentStyle}>
                     <Space>
@@ -505,7 +506,7 @@ const CustomHeader = () => {
                     >
                       <ArrowLeftStartOnRectangleIcon
                         width={24}
-                        style={{marginTop: '5px'}}
+                        style={{ marginTop: '5px' }}
                         color={token?.colorError}
                       />
                       <Typography name="Body 3/Regular" cursor="pointer">
@@ -537,7 +538,7 @@ const CustomHeader = () => {
                     <Image
                       src={DownArrow}
                       alt="DownArrow"
-                      style={{cursor: 'pointer'}}
+                      style={{ cursor: 'pointer' }}
                     />
                   </Space>
                 </a>

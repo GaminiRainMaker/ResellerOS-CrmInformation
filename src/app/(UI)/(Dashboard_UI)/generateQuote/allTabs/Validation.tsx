@@ -331,6 +331,7 @@ const Validation: FC<any> = ({
                   />
                 )
               }
+              isNotification={false}
               iconBg={
                 status === 'Correct'
                   ? token?.colorSuccessBg
