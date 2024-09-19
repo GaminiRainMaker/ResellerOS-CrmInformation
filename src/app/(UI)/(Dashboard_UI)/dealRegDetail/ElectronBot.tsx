@@ -51,8 +51,6 @@ const ElectronBot = () => {
     switch (os) {
       case 'windows':
         return 'https://reselller-os.s3.amazonaws.com/ResellerOS+App.exe';
-      case 'mac':
-        return 'https://reselller-os.s3.amazonaws.com/MyApp-darwin-x64.zip';
       case 'linux':
         return 'https://reselller-os.s3.amazonaws.com/MyApp-linux-x64.zip';
       default:
@@ -90,11 +88,7 @@ const ElectronBot = () => {
           </a>
 
           <div style={{ position: 'relative', display: 'inline-block' }}>
-            <a
-              href={getVideoLink()}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href={getVideoLink()} target="_blank" rel="noopener noreferrer">
               <OsButton buttontype="SECONDARY" text="Watch Video" />
             </a>
             <OsTooltip
@@ -125,13 +119,48 @@ const ElectronBot = () => {
           below to download the ResellerOS Electron App.
         </Typography>
         <Space size={20}>
-          <a
-            href={getElectronAppLink()}
-            download
-          >
-            <OsButton text="Download Electron App" buttontype="PRIMARY" />
-          </a>
+          {os !== 'mac' ? (
+            <a href={getElectronAppLink()} download>
+              <OsButton text="Download Electron App" buttontype="PRIMARY" />
+            </a>
+          ) : (
+            <Space>
+              <Space
+                direction="vertical"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: "center"
+                }}
+              >
+                {' '}
+                <a href='https://reselller-os.s3.amazonaws.com/ResellerOS+App-0.1.0-arm64-mac.zip' download>
+                  <OsButton text="Electron App" buttontype="PRIMARY" />
+                </a>
+                <Typography name="Body 4/Regular">
+                  For Chip
+                </Typography>
+              </Space>
 
+              <Space
+                direction="vertical"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: "center"
+                }}
+              >
+                <a href='https://reselller-os.s3.amazonaws.com/ResellerOS+App-0.1.0-mac.zip' download>
+                  <OsButton text="Electron App" buttontype="PRIMARY" />
+                </a>
+                <Typography name="Body 4/Regular">
+                  For intel Processor
+                </Typography>
+              </Space>
+            </Space>
+          )}
           <div style={{ position: 'relative', display: 'inline-block' }}>
             <a
               href={getPlaywrightVideoLink()}
