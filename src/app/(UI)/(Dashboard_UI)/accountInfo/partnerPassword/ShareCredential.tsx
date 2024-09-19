@@ -122,6 +122,7 @@ const ShareCredential: FC<any> = ({
                               ?.charAt(0)
                               ?.toUpperCase()}`}
                             iconBg="#1EB159"
+                            isNotification={false}
                           />
 
                           <Space size={8} align="center">

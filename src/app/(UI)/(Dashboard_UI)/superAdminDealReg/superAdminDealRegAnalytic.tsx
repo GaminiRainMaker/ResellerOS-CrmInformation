@@ -99,6 +99,7 @@ const SuperAdminDealRegAnalytic = ({data}: any) => {
             secondaryText={item?.secondry}
             fallbackIcon={item?.icon}
             iconBg={item?.iconBg}
+            isNotification={false}
           />
         </Col>
       ))}

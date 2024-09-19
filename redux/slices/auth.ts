@@ -5,6 +5,7 @@ import {
   addSalesForceDataa,
   addSalesForceDataaForAccount,
   contactSales,
+  getExcelData,
   getSalesForceDataaForEditAsItIs,
   getSalesForceFields,
   getSalesForceFileData,
@@ -217,7 +218,19 @@ const authSlice = createSlice({
           state.loading = false;
           state.error = action.payload;
         },
-      );
+      )
+      .addCase(getExcelData.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getExcelData.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        // state.data = action.payload;
+      })
+      .addCase(getExcelData.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 

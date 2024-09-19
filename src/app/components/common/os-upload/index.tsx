@@ -1,15 +1,15 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable consistent-return */
 /* eslint-disable react-hooks/exhaustive-deps */
-import {sendDataToNanonets} from '@/app/utils/base';
-import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
-import {Form} from 'antd';
-import React, {useEffect, useState} from 'react';
-import {getQuotesByExistingQuoteFilter} from '../../../../../redux/actions/quote';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {Col, Row} from '../antd/Grid';
-import {Space} from '../antd/Space';
-import {Switch} from '../antd/Switch';
+import { sendDataToNanonets } from '@/app/utils/base';
+import { FolderArrowDownIcon } from '@heroicons/react/24/outline';
+import { Form } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { getQuotesByExistingQuoteFilter } from '../../../../../redux/actions/quote';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { Col, Row } from '../antd/Grid';
+import { Space } from '../antd/Space';
+import { Switch } from '../antd/Switch';
 import useThemeToken from '../hooks/useThemeToken';
 import OsCustomerSelect from '../os-customer-select';
 import GlobalLoader from '../os-global-loader';
@@ -17,7 +17,7 @@ import OsOpportunitySelect from '../os-opportunity-select';
 import OsTable from '../os-table';
 import Typography from '../typography';
 import UploadCard from './UploadCard';
-import {OSDraggerStyle} from './styled-components';
+import { OSDraggerStyle } from './styled-components';
 
 const OsUpload: React.FC<any> = ({
   beforeUpload,
@@ -45,12 +45,12 @@ const OsUpload: React.FC<any> = ({
   const [customerValue, setCustomerValue] = useState<number>();
   const [opportunityValue, setOpportunityValue] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
-  const {getExistingQuoteFilterData, getExistingQuoteFilterLoading} =
+  const { getExistingQuoteFilterData, getExistingQuoteFilterLoading } =
     useAppSelector((state) => state.quote);
   useEffect(() => {
     const newrrr: any = [...fileList];
     if (uploadFileData && uploadFileData?.length > 0) {
-      newrrr?.push({nsss: uploadFileData?.data?.result?.[0]?.input});
+      newrrr?.push({ nsss: uploadFileData?.data?.result?.[0]?.input });
     }
     setFileList(newrrr);
   }, [uploadFileData]);
@@ -75,7 +75,7 @@ const OsUpload: React.FC<any> = ({
     const newArr = [];
     setLoading(true);
     for (let i = 0; i < uploadFileData.length; i++) {
-      let obj: any = {...uploadFileData[i]};
+      let obj: any = { ...uploadFileData[i] };
 
       if (obj?.manualquote) {
         if (!obj?.distributor_name && !obj?.oem_name) {
@@ -102,7 +102,7 @@ const OsUpload: React.FC<any> = ({
           obj?.model_id,
           obj?.file,
         );
-        obj = {...obj, ...response};
+        obj = { ...obj, ...response };
       }
 
       newArr.push(obj);
@@ -145,10 +145,10 @@ const OsUpload: React.FC<any> = ({
       }),
     );
   }, [customerValue, opportunityValue, opportunityDetailId]);
-
+  console.log("34543534", opportunityDetailId, customerDetailId)
   return (
     <GlobalLoader loading={cardLoading || loading}>
-      <Space size={24} direction="vertical" style={{width: '100%'}}>
+      <Space size={24} direction="vertical" style={{ width: '100%' }}>
         <OSDraggerStyle
           beforeUpload={beforeUpload}
           showUploadList={false}
@@ -162,7 +162,7 @@ const OsUpload: React.FC<any> = ({
           >
             <Typography
               name="Body 4/Medium"
-              style={{textDecoration: 'underline', cursor: 'pointer'}}
+              style={{ textDecoration: 'underline', cursor: 'pointer' }}
               color={token?.colorPrimary}
             >
               Click to Upload
@@ -184,7 +184,7 @@ const OsUpload: React.FC<any> = ({
           form={form}
           onFinish={onFinish}
         >
-          {!isGenerateQuote && (
+          {!isGenerateQuote && !opportunityDetailId && (
             <Row gutter={[16, 16]}>
               <Col sm={24} md={12}>
                 <OsCustomerSelect

@@ -3,8 +3,8 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import FormBuilderMain from '@/app/components/common/formBuilder/page';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
@@ -14,17 +14,17 @@ import OsDrawer from '@/app/components/common/os-drawer';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
-import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form, notification} from 'antd';
-import {Option} from 'antd/es/mentions';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import { PlusIcon } from '@heroicons/react/24/outline';
+import { Form, notification } from 'antd';
+import { Option } from 'antd/es/mentions';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
   deleteAttributeField,
   insertAttributeField,
@@ -42,7 +42,7 @@ import {
   getFormDataProgram,
   updatePartnerProgramById,
 } from '../../../../../redux/actions/partnerProgram';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import AddNewStandardAttributeSection from './AddNewStandardAttributeSection';
 import AddStandardAttributeField from './AddStandardAttributeField';
 import SuperAdminDealRegAnalytic from './superAdminDealRegAnalytic';
@@ -57,11 +57,11 @@ const SuperAdminDealReg = () => {
   const [form] = Form.useForm();
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const {data: attributeSectionData, loading: attributeSectionLoading} =
+  const { data: attributeSectionData, loading: attributeSectionLoading } =
     useAppSelector((state) => state.attributeSection);
-  const {loading: attributeFieldLoading, queryData: attributeFieldData} =
+  const { loading: attributeFieldLoading, queryData: attributeFieldData } =
     useAppSelector((state) => state.attributeField);
-  const {getFormDataProgramData, loading: templatedataLoading} = useAppSelector(
+  const { getFormDataProgramData, loading: templatedataLoading } = useAppSelector(
     (state) => state.partnerProgram,
   );
   const [showStandardAttributeField, setshowStandardAttributeField] =
@@ -130,7 +130,7 @@ const SuperAdminDealReg = () => {
     if (record?.form_data) {
       setOpenPreviewModal(true);
       const formDataObject = JSON?.parse(record?.form_data);
-      setformData({formObject: formDataObject, Id: record?.id});
+      setformData({ formObject: formDataObject, Id: record?.id });
     }
   };
 
@@ -174,7 +174,7 @@ const SuperAdminDealReg = () => {
   };
 
   const deleteSelectedSection = async () => {
-    const data = {Ids: sectionDeleteId};
+    const data = { Ids: sectionDeleteId };
     await dispatch(deleteAttributeSection(data)).then((d) => {
       if (d?.payload) {
         dispatch(queryAttributeSection(sectionSearchQuery));
@@ -185,7 +185,7 @@ const SuperAdminDealReg = () => {
     });
   };
   const deleteSelectedField = async () => {
-    const data = {Ids: fieldDeleteId};
+    const data = { Ids: fieldDeleteId };
     await dispatch(deleteAttributeField(data)).then((d) => {
       if (d?.payload) {
         dispatch(queryAttributeField(searchQuery));
@@ -211,7 +211,7 @@ const SuperAdminDealReg = () => {
 
   const updateTemplate = (recordid: number, value: boolean) => {
     dispatch(
-      updatePartnerProgramById({id: recordid, form_data_active: value}),
+      updatePartnerProgramById({ id: recordid, form_data_active: value }),
     ).then((d) => {
       if (d?.payload) {
         dispatch(getFormDataProgram(templateSearchQuery));
@@ -416,8 +416,8 @@ const SuperAdminDealReg = () => {
       attributeFieldData
         ? attributeFieldData?.length > 0
           ? attributeFieldData
-              .map((customer: any) => customer?.AttributeSection?.name)
-              .filter(Boolean)
+            .map((customer: any) => customer?.AttributeSection?.name)
+            .filter(Boolean)
           : []
         : [],
     ),
@@ -430,9 +430,9 @@ const SuperAdminDealReg = () => {
   const uniqueAttributeSectionOptions = Array.from(
     new Set(
       attributeSectionData &&
-        attributeSectionData?.map(
-          (attributeSectionIndex: any) => attributeSectionIndex?.name,
-        ),
+      attributeSectionData?.map(
+        (attributeSectionIndex: any) => attributeSectionIndex?.name,
+      ),
     ),
   );
 
@@ -475,7 +475,7 @@ const SuperAdminDealReg = () => {
 
   return (
     <>
-      <Space size={24} direction="vertical" style={{width: '100%'}}>
+      <Space size={24} direction="vertical" style={{ width: '100%' }}>
         <SuperAdminDealRegAnalytic data={analyticData} />
         <Row justify="space-between" align="middle">
           <Col>
@@ -483,8 +483,8 @@ const SuperAdminDealReg = () => {
               All Registered Forms
             </Typography>
           </Col>
-          <Col style={{display: 'flex', alignItems: 'center'}}>
-            <Space size={12} style={{height: '48px'}}>
+          <Col style={{ display: 'flex', alignItems: 'center' }}>
+            <Space size={12} style={{ height: '48px' }}>
               <OsButton
                 text="New Standard Attribute Section"
                 buttontype="SECONDARY"
@@ -506,7 +506,7 @@ const SuperAdminDealReg = () => {
           </Col>
         </Row>
         <Row
-          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+          style={{ background: 'white', padding: '24px', borderRadius: '12px' }}
         >
           <OsTabs
             tabBarExtraContent={
@@ -515,7 +515,7 @@ const SuperAdminDealReg = () => {
                   <Space size={12}>
                     <SelectFormItem label="Partner">
                       <CommonSelect
-                        style={{width: '180px'}}
+                        style={{ width: '180px' }}
                         placeholder="Search Here"
                         showSearch
                         onSearch={(e) => {
@@ -542,7 +542,7 @@ const SuperAdminDealReg = () => {
 
                     <SelectFormItem label="Partner Program">
                       <CommonSelect
-                        style={{width: '180px'}}
+                        style={{ width: '180px' }}
                         placeholder="Search Here"
                         showSearch
                         onSearch={(e) => {
@@ -581,7 +581,7 @@ const SuperAdminDealReg = () => {
                         name="Button 1"
                         color={
                           templateQuery?.partner ||
-                          templateQuery?.partnerProgram
+                            templateQuery?.partnerProgram
                             ? '#0D0D0D'
                             : '#C6CDD5'
                         }
@@ -600,7 +600,7 @@ const SuperAdminDealReg = () => {
                   <Space size={12}>
                     <SelectFormItem label="Attribute Label">
                       <CommonSelect
-                        style={{width: '180px'}}
+                        style={{ width: '180px' }}
                         placeholder="Search Here"
                         showSearch
                         onSearch={(e) => {
@@ -627,7 +627,7 @@ const SuperAdminDealReg = () => {
 
                     <SelectFormItem label="Attribute Section">
                       <CommonSelect
-                        style={{width: '180px'}}
+                        style={{ width: '180px' }}
                         placeholder="Search Here"
                         showSearch
                         onSearch={(e) => {
@@ -679,7 +679,7 @@ const SuperAdminDealReg = () => {
                   <Space size={12}>
                     <SelectFormItem label="Attribute Section">
                       <CommonSelect
-                        style={{width: '180px'}}
+                        style={{ width: '180px' }}
                         placeholder="Search Here"
                         showSearch
                         onSearch={(e) => {
@@ -794,7 +794,7 @@ const SuperAdminDealReg = () => {
             <Space
               align="end"
               size={8}
-              style={{display: 'flex', justifyContent: 'end'}}
+              style={{ display: 'flex', justifyContent: 'end' }}
             >
               <OsButton
                 buttontype="PRIMARY"
@@ -832,11 +832,11 @@ const SuperAdminDealReg = () => {
         open={showSectionDrawer}
         width={450}
         footer={
-          <Row style={{width: '100%', float: 'right'}}>
+          <Row style={{ width: '100%', float: 'right' }}>
             {' '}
             <OsButton
               loading={attributeSectionLoading}
-              btnStyle={{width: '100%'}}
+              btnStyle={{ width: '100%' }}
               buttontype="PRIMARY"
               text="Update Changes"
               clickHandler={() => {
@@ -871,11 +871,11 @@ const SuperAdminDealReg = () => {
         open={showFieldDrawer}
         width={450}
         footer={
-          <Row style={{width: '100%', float: 'right'}}>
+          <Row style={{ width: '100%', float: 'right' }}>
             {' '}
             <OsButton
               loading={attributeFieldLoading}
-              btnStyle={{width: '100%'}}
+              btnStyle={{ width: '100%' }}
               buttontype="PRIMARY"
               text="Update Changes"
               clickHandler={() => {

@@ -11,6 +11,7 @@ export const API = {
     runSalesForceBot: '/auth/runSalesForceBot',
     addForAccount: '/auth/addSalesForceDataaForAccount',
     getFields: '/auth/getSalesForceFields',
+    getExcelData: '/auth/fetchAndParseExcel',
   },
   QUOTE: {
     INDEX: '/quote',

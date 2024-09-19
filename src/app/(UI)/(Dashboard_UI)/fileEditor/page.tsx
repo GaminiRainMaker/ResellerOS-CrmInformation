@@ -15,13 +15,13 @@ import '@handsontable/pikaday/css/pikaday.css';
 const HotTable = dynamic(() => import('@handsontable/react'), {
   ssr: false,
 });
-import {HyperFormula} from 'hyperformula';
+import { HyperFormula } from 'hyperformula';
 
 // import {HotTable} from '@handsontable/react';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import './styles.css';
 
-import {Space} from '@/app/components/common/antd/Space';
+import { Space } from '@/app/components/common/antd/Space';
 import OsButton from '@/app/components/common/os-button';
 import OsModal from '@/app/components/common/os-modal';
 import {
@@ -31,15 +31,17 @@ import {
 import {
   checkFunctionInArray,
   concatenateAfterFirstWithSpace,
+  getLineItemsWithNonRepitive,
   getResultedValue,
+  getValuesOFLineItemsThoseNotAddedBefore,
   sendDataToNanonets,
   updateTables,
 } from '@/app/utils/base';
-import {TrashIcon} from '@heroicons/react/24/outline';
-import {Col, Row, notification} from 'antd';
+import { TrashIcon } from '@heroicons/react/24/outline';
+import { Col, Row, notification } from 'antd';
 
-import {useRouter, useSearchParams} from 'next/navigation';
-import {addClassesToRows, alignHeaders} from './hooksCallbacks';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { addClassesToRows, alignHeaders } from './hooksCallbacks';
 
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsInput from '@/app/components/common/os-input';
@@ -53,6 +55,7 @@ import {
   addSalesForceDataa,
   getSalesForceDataaForEditAsItIs,
   getSalesForceFileData,
+  getExcelData
 } from '../../../../../redux/actions/auth';
 import {
   UpdateQuoteFileById,
@@ -60,20 +63,21 @@ import {
   getQuoteFileByIdForFormulas,
   getfileByQuoteIdWithManual,
 } from '../../../../../redux/actions/quoteFile';
-import {getQuoteLineItemByQuoteIdForEditTable} from '../../../../../redux/actions/quotelineitem';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { getQuoteLineItemByQuoteIdForEditTable, insertQuoteLineItem } from '../../../../../redux/actions/quotelineitem';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import SyncTableData from './syncTableforpdfEditor';
 import dynamic from 'next/dynamic';
 
-import {registerAllModules} from 'handsontable/registry';
+import { registerAllModules } from 'handsontable/registry';
 import {
   getAllFormulas,
   getAllFormulasByDistributorAndOem,
   getFormulaByFormulaAndOemDist,
   insertFormula,
 } from '../../../../../redux/actions/formulas';
-import {identity} from 'lodash';
+import { identity } from 'lodash';
 import Typography from '@/app/components/common/typography';
+import { getBulkProductIsExisting, insertProductsInBulk } from '../../../../../redux/actions/product';
 
 registerAllModules();
 
@@ -87,7 +91,7 @@ const EditorFile = () => {
   const [mergedValue, setMergedVaalues] = useState<any>();
   const router = useRouter();
   const ExistingQuoteItemss = searchParams.get('quoteExist');
-  const {userInformation} = useAppSelector((state) => state.user);
+  const { userInformation } = useAppSelector((state) => state.user);
   // const {quoteFileById} = useAppSelector((state) => state.quoteFile);
   const [quoteFileById, setQuoteFileById] = useState<any>();
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -115,6 +119,7 @@ const EditorFile = () => {
   const [showApplyFormula, setShowApplyFormula] = useState<boolean>(false);
   const [runSriptToGetValues, setRunScriptTOGetValues] =
     useState<boolean>(false);
+  const [accoutSyncOptions, setAccoutSyncOptions] = useState<any>();
 
   const [openAddNewFormulaModal, setOpenAddNewFormulaModal] =
     useState<boolean>(false);
@@ -142,6 +147,8 @@ const EditorFile = () => {
       },
     );
   };
+
+
 
   useEffect(() => {
     dispatch(getAllFormulasByDistributorAndOem(fileData ? fileData : {}))?.then(
@@ -181,6 +188,20 @@ const EditorFile = () => {
       };
       dispatch(getSalesForceDataaForEditAsItIs(newdata))?.then(
         (payload: any) => {
+          if (payload?.payload?.qliFields) {
+            let keysss = Object.keys(payload?.payload?.qliFields);
+            let arrOfOptions: any = [];
+            if (keysss) {
+              keysss?.map((items: any) => {
+                arrOfOptions?.push({
+                  label: payload?.payload[items],
+                  value: items,
+                });
+              });
+            }
+
+            setAccoutSyncOptions(arrOfOptions);
+          }
           setUpdateLineItemsValue(payload?.payload);
           setNanonetsLoading(false);
           return;
@@ -206,6 +227,7 @@ const EditorFile = () => {
 
     let pathTOGo = salesFOrceManual === 'true' ? data : dataSingle;
     dispatch(getSalesForceFileData(pathTOGo))?.then(async (payload: any) => {
+
       if (!payload?.payload?.body) {
         if (salesFOrceManual === 'false') {
           notification?.open({
@@ -214,6 +236,7 @@ const EditorFile = () => {
           });
           return;
         }
+
 
         let newObj = {
           token: salesToken,
@@ -229,6 +252,7 @@ const EditorFile = () => {
               type: 'info',
             });
           }
+
           if (payload?.payload?.body) {
             window.history.replaceState(
               null,
@@ -241,6 +265,23 @@ const EditorFile = () => {
         setNanonetsLoading(false);
         return;
         setMergedVaalues([]);
+      }
+      if (payload?.payload) {
+        let newObjFromSalesFOrce = JSON.parse(payload?.payload?.qliFields)
+        let keysss = Object.keys(newObjFromSalesFOrce);
+        let arrOfOptions: any = [];
+
+        if (keysss) {
+          keysss?.map((items: any) => {
+            arrOfOptions?.push({
+              label: newObjFromSalesFOrce[items],
+              value: items,
+            });
+          });
+        }
+
+
+        setAccoutSyncOptions(arrOfOptions);
       }
       setCurrentFile({
         file_name: payload?.payload?.title,
@@ -299,14 +340,14 @@ const EditorFile = () => {
                   item.label?.toLowerCase()
                     ? item.label?.toLowerCase()
                     : titles.find((titleRow: any) => titleRow.col === item.col)
-                        .text
+                      .text
                 ] = item.label?.toLowerCase()
-                  ? item.label?.toLowerCase()?.includes('Price')
-                  : titles
-                        .find((titleRow: any) => titleRow.col === item.col)
-                        .text?.includes('Price')
-                    ? item?.text
-                    : // ?.toString()
+                    ? item.label?.toLowerCase()?.includes('Price')
+                    : titles
+                      .find((titleRow: any) => titleRow.col === item.col)
+                      .text?.includes('Price')
+                      ? item?.text
+                      : // ?.toString()
                       // .match(/\d+(\.\d+)?/g)
                       // ?.map(Number)
                       // ?.toString()
@@ -329,7 +370,7 @@ const EditorFile = () => {
         let newUpdatedArr: any = [];
         newArrrrAll?.map((items: any, index: number) => {
           const replaceKeyInObject = (obj: any, oldKey: any, newKey: any) => {
-            const {[oldKey]: oldValue, ...rest} = obj; // Extract old value and rest of the object
+            const { [oldKey]: oldValue, ...rest } = obj; // Extract old value and rest of the object
             return {
               [newKey]: oldValue, // Create a new object with new key and old value
               ...rest, // Spread the rest of the properties
@@ -423,17 +464,17 @@ const EditorFile = () => {
                         item.label?.toLowerCase()
                           ? item.label?.toLowerCase()
                           : titles.find(
-                              (titleRow: any) => titleRow.col === item.col,
-                            ).text
+                            (titleRow: any) => titleRow.col === item.col,
+                          ).text
                       ] = item.label?.toLowerCase()
-                        ? item.label?.toLowerCase()?.includes('Price')
-                        : titles
-                              .find(
-                                (titleRow: any) => titleRow.col === item.col,
-                              )
-                              .text?.includes('Price')
-                          ? item?.text
-                          : // ?.toString()
+                          ? item.label?.toLowerCase()?.includes('Price')
+                          : titles
+                            .find(
+                              (titleRow: any) => titleRow.col === item.col,
+                            )
+                            .text?.includes('Price')
+                            ? item?.text
+                            : // ?.toString()
                             // .match(/\d+(\.\d+)?/g)
                             // ?.map(Number)
                             // ?.toString()
@@ -460,7 +501,7 @@ const EditorFile = () => {
                   oldKey: any,
                   newKey: any,
                 ) => {
-                  const {[oldKey]: oldValue, ...rest} = obj; // Extract old value and rest of the object
+                  const { [oldKey]: oldValue, ...rest } = obj; // Extract old value and rest of the object
                   return {
                     [newKey]: oldValue, // Create a new object with new key and old value
                     ...rest, // Spread the rest of the properties
@@ -564,7 +605,7 @@ const EditorFile = () => {
     if (quoteItems && quoteItems.length > 0) {
       quoteItems?.map((itemsss: any) => {
         if (itemsss) {
-          const newObj: any = {...itemsss};
+          const newObj: any = { ...itemsss };
           newObj.MSRP = itemsss?.list_price;
           newObj.cost = itemsss?.adjusted_price;
 
@@ -573,11 +614,15 @@ const EditorFile = () => {
 
           newArrr?.push(newObj);
         }
+
       });
+
+
       setUpdateLineItemsValue(newArrr);
       setNanonetsLoading(false);
     }
   }, [quoteFileById, quoteItems]);
+
 
   useEffect(() => {
     dispatch(queryLineItemSyncingForSalesForce(query))?.then((payload: any) => {
@@ -743,7 +788,7 @@ const EditorFile = () => {
   ) => {
     if (changedValue?.includes('=')) {
       let result = changeTheALpabetsFromFormula(changedValue);
-      let newObj: any = {formula: result};
+      let newObj: any = { formula: result };
       if (fileData?.distributor_id) {
         newObj.distributor_id = fileData?.distributor_id;
       } else if (fileData?.oem_id) {
@@ -801,10 +846,10 @@ const EditorFile = () => {
             item === 'quoteId' ||
             item === 'product_id'
           ) {
-            const dataObj = {data: item, readOnly: true};
+            const dataObj = { data: item, readOnly: true };
             updateLineItemColumnDataArr?.push(dataObj);
           } else {
-            const dataObj = {data: item};
+            const dataObj = { data: item };
             updateLineItemColumnData?.push(dataObj);
           }
           updateLineItemColumnArr?.push(formatStatus(item));
@@ -884,6 +929,124 @@ const EditorFile = () => {
       type: 'info',
     });
 
+    let finalLineItems: any = [];
+    let newArrFOrUpdation: any = [];
+    let newArrForAddition: any = [];
+
+
+    if (updateLineItemsValue && updateLineItemsValue?.length > 0) {
+      updateLineItemsValue?.map((items: any) => {
+        if (items?.id === null) {
+          let newObj = {
+            ...items
+          }
+          newObj.adjusted_price = items?.cost
+          newObj.list_price = items?.MSRP
+          delete newObj.id
+          delete newObj.MSRP
+          delete newObj.cost
+          newArrForAddition?.push(newObj)
+        } else {
+          newArrFOrUpdation?.push(items)
+
+        }
+
+      })
+    }
+
+
+    if (newArrForAddition && newArrForAddition?.length > 0) {
+      const lineItem = newArrForAddition
+      let allProductCodes: any = [];
+      let allProductCodeDataa: any = [];
+      lineItem?.map((itemsPro: any) => {
+        allProductCodes?.push(
+          itemsPro?.product_code
+            ? itemsPro?.product_code?.replace(/\s/g, '')
+            : 'NEWCODE0123',
+        );
+      });
+      let valuessOfAlreayExist = await dispatch(
+        getBulkProductIsExisting(allProductCodes),
+      );
+      if (valuessOfAlreayExist?.payload?.length > 0) {
+        allProductCodeDataa = valuessOfAlreayExist?.payload;
+      }
+      let newArrValues = getLineItemsWithNonRepitive(
+        newArrForAddition,
+      );
+
+
+      if (valuessOfAlreayExist?.payload?.length > 0) {
+        // ======To get items that are  non added Values==============
+        let newInsertionData = getValuesOFLineItemsThoseNotAddedBefore(
+          lineItem,
+          allProductCodeDataa,
+        );
+
+        if (newInsertionData?.length > 0) {
+          await dispatch(insertProductsInBulk(newInsertionData))?.then(
+            (payload: any) => {
+              payload?.payload?.map((itemsBulk: any) => {
+                allProductCodeDataa?.push(itemsBulk);
+              });
+            },
+          );
+        }
+      } else {
+        await dispatch(insertProductsInBulk(newArrValues))?.then(
+          (payload: any) => {
+            payload?.payload?.map((itemsBulk: any) => {
+              allProductCodeDataa?.push(itemsBulk);
+            });
+          },
+        );
+      }
+
+      if (lineItem) {
+        lineItem?.map((itemssProduct: any) => {
+          let productCode = itemssProduct?.product_code
+            ? itemssProduct?.product_code?.replace(/\s/g, '')
+            : 'NEWCODE0123';
+          let itemsToAdd = allProductCodeDataa?.find(
+            (productItemFind: any) =>
+              productItemFind?.product_code?.replace(/\s/g, '') ===
+              productCode,
+          );
+          const obj1: any = {
+            quote_id: getQUoteId,
+            quote_file_id: getQuoteFileId,
+            product_id: itemsToAdd?.id,
+            product_code: itemsToAdd?.product_code,
+            line_amount: itemsToAdd?.line_amount,
+            list_price: itemssProduct?.list_price,
+            description: itemsToAdd?.description,
+            quantity: itemsToAdd?.quantity,
+            adjusted_price: itemssProduct?.adjusted_price,
+            line_number: itemsToAdd?.line_number,
+            organization: userInformation.organization,
+          };
+          finalLineItems?.push(obj1);
+        });
+      }
+
+      await dispatch(insertQuoteLineItem(finalLineItems))?.then((payload: any) => {
+        if (payload?.payload && payload?.payload?.length > 0) {
+          payload?.payload?.map((items: any) => {
+            let newObj = {
+              ...items
+            }
+            newObj.cost = items?.adjusted_price
+            newObj.MSRP = items?.list_price
+
+            newArrFOrUpdation?.push(newObj)
+          })
+        }
+      })
+
+
+    }
+
     if (EditSalesLineItems === 'true') {
       let newdata = {
         token: salesToken,
@@ -895,7 +1058,7 @@ const EditorFile = () => {
         lineItem: updateLineItemsValue,
       };
 
-      dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {});
+      dispatch(addSalesForceDataa(newdata))?.then((payload: any) => { });
       setNanonetsLoading(false);
       return;
     }
@@ -903,7 +1066,7 @@ const EditorFile = () => {
     await updateTables(
       getQUoteId,
       quoteFileById,
-      updateLineItemsValue,
+      newArrFOrUpdation,
       userInformation,
       dispatch,
       missingId,
@@ -911,11 +1074,13 @@ const EditorFile = () => {
       Number(getQUoteId),
     );
 
+
+
     router?.push(
       `/generateQuote?id=${getQUoteId}&tab=2&isView=${getResultedValue()}`,
     );
   };
-
+  console.log("345435435", updateLineItemsValue)
   const CancelEditing = () => {
     const data = {
       issue_type: null,
@@ -1056,7 +1221,7 @@ const EditorFile = () => {
     let resultantArr: any = [];
 
     newArr?.map((items: any) => {
-      resultantArr?.push({...items, [value]: ''});
+      resultantArr?.push({ ...items, [value]: '' });
     });
     setMergedVaalues(resultantArr);
     setShowAddColumnModal(false);
@@ -1101,7 +1266,7 @@ const EditorFile = () => {
   useEffect(() => {
     let newArr: any = [];
     mergeedColumn?.map((items: any) => {
-      newArr?.push({label: items, value: items});
+      newArr?.push({ label: items, value: items });
     });
     setExistingColumnName(newArr);
   }, [mergeedColumn]);
@@ -1254,7 +1419,7 @@ const EditorFile = () => {
 
   const addFormulaTOStoredFormulas = async (value: any) => {
     let result = changeTheALpabetsFromFormula(value);
-    let newObj: any = {formula: result};
+    let newObj: any = { formula: result };
     if (fileData?.distributor_id) {
       newObj.distributor_id = fileData?.distributor_id;
     } else if (fileData?.oem_id) {
@@ -1264,16 +1429,16 @@ const EditorFile = () => {
     setValueOfNewFormula('');
     setOpenAddNewFormulaModal(false);
   };
-
+  console.log("updateLineItemsValueupdateLineItemsValue", updateLineItemsValue)
   return (
     <GlobalLoader loading={nanonetsLoading}>
-      <Space size={0} style={{marginBottom: '20px'}}>
+      <Space size={0} style={{ marginBottom: '20px' }}>
         {' '}
         <Typography name="Body 1/Bold">{currentFIle?.file_name}</Typography>
       </Space>
 
       {(ExistingQuoteItemss === 'true' || EditSalesLineItems === 'true') &&
-      updateLineItemsValue?.length > 0 ? (
+        updateLineItemsValue?.length > 0 ? (
         <>
           <div
             style={{
@@ -1303,7 +1468,7 @@ const EditorFile = () => {
               multiColumnSorting
               filters
               rowHeaders
-              allowInsertRow={false}
+              allowInsertRow={true}
               allowInsertColumn
               afterGetColHeader={alignHeaders}
               beforeRenderer={() => {
@@ -1321,7 +1486,7 @@ const EditorFile = () => {
                   );
                 }
               }}
-              // navigableHeaders
+            // navigableHeaders
             />
           </div>
           <br />
@@ -1366,43 +1531,43 @@ const EditorFile = () => {
               >
                 {(ExistingQuoteItemss === 'false' ||
                   EditSalesLineItems === 'false') && (
-                  <Space
-                    onClick={(e) => {
-                      e?.preventDefault();
-                    }}
-                    size={25}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'end',
-                      marginRight: '50px',
-                      right: '0',
-                      bottom: '0',
-                      marginBottom: '20px',
-                    }}
-                  >
-                    <OsButton
-                      text="Update Column Name"
-                      buttontype="PRIMARY"
-                      clickHandler={() => {
-                        setShowUpdateColumnModal(true);
+                    <Space
+                      onClick={(e) => {
+                        e?.preventDefault();
                       }}
-                    />
-                    <OsButton
-                      text="Apply Formula"
-                      buttontype="PRIMARY"
-                      clickHandler={() => {
-                        setShowApplyFormula(true);
+                      size={25}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'end',
+                        marginRight: '50px',
+                        right: '0',
+                        bottom: '0',
+                        marginBottom: '20px',
                       }}
-                    />
-                    <OsButton
-                      text="Add New Column"
-                      buttontype="PRIMARY"
-                      clickHandler={() => {
-                        setShowAddColumnModal(true);
-                      }}
-                    />
-                  </Space>
-                )}
+                    >
+                      <OsButton
+                        text="Update Column Name"
+                        buttontype="PRIMARY"
+                        clickHandler={() => {
+                          setShowUpdateColumnModal(true);
+                        }}
+                      />
+                      <OsButton
+                        text="Apply Formula"
+                        buttontype="PRIMARY"
+                        clickHandler={() => {
+                          setShowApplyFormula(true);
+                        }}
+                      />
+                      <OsButton
+                        text="Add New Column"
+                        buttontype="PRIMARY"
+                        clickHandler={() => {
+                          setShowAddColumnModal(true);
+                        }}
+                      />
+                    </Space>
+                  )}
                 <HotTable
                   data={mergedValue}
                   allowRemoveColumn
@@ -1446,7 +1611,7 @@ const EditorFile = () => {
                       );
                     }
                   }}
-                  // navigableHeaders
+                // navigableHeaders
                 />
               </div>
               <br />
@@ -1484,7 +1649,7 @@ const EditorFile = () => {
               </Space>
             </>
           ) : (
-            <div style={{position: 'absolute', width: '100%'}}>
+            <div style={{ position: 'absolute', width: '100%' }}>
               <div
                 style={{
                   position: 'relative',
@@ -1505,7 +1670,7 @@ const EditorFile = () => {
                     }
                     return (
                       <div>
-                        <Space direction="horizontal" style={{width: '100%'}}>
+                        <Space direction="horizontal" style={{ width: '100%' }}>
                           <Typography
                             name="Body 3/Regular"
                             onClick={() => mergeTableData(quoteItems)}
@@ -1513,14 +1678,14 @@ const EditorFile = () => {
                             Table {indexOFTable + 1}
                           </Typography>
                           <TrashIcon
-                            style={{color: 'red', width: '20px'}}
+                            style={{ color: 'red', width: '20px' }}
                             onClick={() => {
                               deleteTable(indexOFTable);
                             }}
                           />
                         </Space>
 
-                        <div style={{overflow: 'auto'}}>
+                        <div style={{ overflow: 'auto' }}>
                           <HotTable
                             data={itemss}
                             colWidths={[
@@ -1578,7 +1743,7 @@ const EditorFile = () => {
                                 );
                               }
                             }}
-                            // navigableHeaders
+                          // navigableHeaders
                           />
                         </div>
                       </div>
@@ -1638,6 +1803,7 @@ const EditorFile = () => {
               lineItemSyncingData={lineItemSyncingData}
               CurrentFileId={currentFIle}
               currentFileData={currentFIle}
+              accoutSyncOptions={accoutSyncOptions}
             />
           }
           width={600}
@@ -1650,9 +1816,9 @@ const EditorFile = () => {
       {!salesForceUrl && (
         <OsModal
           body={
-            <Row style={{width: '100%', padding: '15px'}}>
+            <Row style={{ width: '100%', padding: '15px' }}>
               <Space
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 size={24}
                 direction="vertical"
                 align="center"
@@ -1660,7 +1826,7 @@ const EditorFile = () => {
                 <Space direction="vertical" align="center" size={1}>
                   <Typography
                     name="Body 3/Regular"
-                    style={{fontSize: '20px', textAlign: 'center'}}
+                    style={{ fontSize: '20px', textAlign: 'center' }}
                   >
                     {
                       'This file is already updated. Please review the other file on Review Quotes'
@@ -1691,7 +1857,7 @@ const EditorFile = () => {
             );
           }}
           open={returnBackModal}
-          // open={false}
+        // open={false}
         />
       )}
       <OsModal
@@ -1701,7 +1867,7 @@ const EditorFile = () => {
           <Row gutter={[16, 24]} justify="space-between">
             <Col span={12}>
               <CommonSelect
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 value={oldColumnName}
                 placeholder="Please select the column header name"
                 options={existingColumnOptions}
@@ -1713,7 +1879,7 @@ const EditorFile = () => {
             </Col>
             <Col span={12}>
               <OsInput
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 placeholder="Please add new column header name"
                 value={newHeaderName}
                 onChange={(e: any) => {
@@ -1729,7 +1895,7 @@ const EditorFile = () => {
               }}
             >
               {' '}
-              <div style={{marginRight: '30px'}}>
+              <div style={{ marginRight: '30px' }}>
                 <OsButton
                   // style={{marginRight: '100px'}}
                   disabled={
@@ -1774,7 +1940,7 @@ const EditorFile = () => {
           <Row gutter={[16, 24]} justify="space-between">
             <Col span={21}>
               <OsInput
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 placeholder="Please add the column header name"
                 onChange={(e: any) => {
                   setNewHeaderName(e?.target?.value);
@@ -1802,9 +1968,9 @@ const EditorFile = () => {
         title="Add New Formula "
         bodyPadding={30}
         body={
-          <Row style={{width: '100%', padding: '15px'}}>
+          <Row style={{ width: '100%', padding: '15px' }}>
             <Space
-              style={{width: '100%'}}
+              style={{ width: '100%' }}
               size={24}
               direction="vertical"
               align="center"
@@ -1857,7 +2023,7 @@ const EditorFile = () => {
           <Row gutter={[16, 24]} justify="space-between">
             <Col span={24}>
               <CommonSelect
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 value={formulaSelected}
                 placeholder="Please select the formula"
                 options={formulaOptions}
@@ -1874,7 +2040,7 @@ const EditorFile = () => {
                 {' '}
                 <Col span={12}>
                   <CommonSelect
-                    style={{width: '100%'}}
+                    style={{ width: '100%' }}
                     value={oldColumnName}
                     placeholder={
                       typeOfFormula?.toString()?.toLowerCase() === 'split'
@@ -1891,7 +2057,7 @@ const EditorFile = () => {
                 {typeOfFormula?.toString()?.toLowerCase() !== 'split' && (
                   <Col span={12}>
                     <CommonSelect
-                      style={{width: '100%'}}
+                      style={{ width: '100%' }}
                       value={oldColumnName1}
                       placeholder="Please select the column to you want to map"
                       options={existingColumnOptions}
@@ -1910,7 +2076,7 @@ const EditorFile = () => {
                   }
                 >
                   <OsInput
-                    style={{width: '100%'}}
+                    style={{ width: '100%' }}
                     placeholder="Please add new column header name"
                     value={newHeaderName}
                     onChange={(e: any) => {
@@ -1929,7 +2095,7 @@ const EditorFile = () => {
               }}
             >
               {' '}
-              <div style={{marginRight: '30px'}}>
+              <div style={{ marginRight: '30px' }}>
                 <OsButton
                   // style={{marginRight: '100px'}}
                   disabled={
