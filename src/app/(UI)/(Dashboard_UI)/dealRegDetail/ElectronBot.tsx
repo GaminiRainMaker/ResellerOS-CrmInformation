@@ -139,7 +139,7 @@ const ElectronBot = () => {
                   <OsButton text="Electron App" buttontype="PRIMARY" />
                 </a>
                 <Typography name="Body 4/Regular">
-                  For Chip
+                  For M Chip Users
                 </Typography>
               </Space>
 
@@ -156,7 +156,8 @@ const ElectronBot = () => {
                   <OsButton text="Electron App" buttontype="PRIMARY" />
                 </a>
                 <Typography name="Body 4/Regular">
-                  For intel Processor
+                  For
+                  Intel Processor Users
                 </Typography>
               </Space>
             </Space>
