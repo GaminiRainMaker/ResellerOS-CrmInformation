@@ -249,7 +249,7 @@ const EditorFile = () => {
         let pathTOGo = salesFOrceManual === 'true' ? newObj : data;
         dispatch(getSalesForceFileData(pathTOGo))?.then((payload: any) => {
           if (payload?.payload) {
-            let newObjFromSalesFOrce = JSON.parse(payload?.payload?.qliFields)
+            let newObjFromSalesFOrce = JSON?.parse(payload?.payload?.qliFields)
             let keysss = Object.keys(newObjFromSalesFOrce);
             let arrOfOptions: any = [];
 
