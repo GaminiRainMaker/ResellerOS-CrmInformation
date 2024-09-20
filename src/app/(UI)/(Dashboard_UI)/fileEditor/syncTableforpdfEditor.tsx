@@ -380,12 +380,13 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     });
 
     // salesFOrceManual === "false"
+    console.log("354353453", syncedNewValue)
     if (
       (SaleQuoteId && newArrWIthFileName?.length > 0) ||
       (salesFOrceAccoutFlow === 'true' && newArrWIthFileName?.length > 0)
     ) {
       const findProduct = syncedNewValue?.find(
-        (items: any) => items?.newVal === 'product_code',
+        (items: any) => items?.newVal === 'rosquoteai__Product_Code__c',
       );
       const findName = syncedNewValue?.find(
         (items: any) => items?.newVal === 'Name',
