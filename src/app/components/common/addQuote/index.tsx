@@ -224,6 +224,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
             ...quotesArr[i],
             organization: userInformation?.organization,
             // quote_name: Date.now(),
+
           };
           const response = await dispatch(insertQuote([newObj]));
           // eslint-disable-next-line no-unsafe-optional-chaining
@@ -427,16 +428,19 @@ const AddQuote: FC<AddQuoteInterface> = ({
       }
 
       if (countOfExportFiles > 0) {
+        
         router.push(
           `/fileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&quoteExist=false&manualFlow=true`,
         );
       } else {
+        
         router.push(
           `/manualFileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&manualFlow=true`,
         );
       }
     }
     if (newArrWithManual?.length === 0) {
+      
       router.push(
         `/generateQuote?id=${quotesArr[0]?.id}&isView=${getResultedValue()}`,
       );
@@ -482,10 +486,12 @@ const AddQuote: FC<AddQuoteInterface> = ({
       setLoading(false);
       if (newArrWithManual?.length > 0) {
         if (countOfExportFiles > 0) {
+          
           router.push(
             `/fileEditor?id=${latestQuoteId}&fileId=${null}&quoteExist=false&manualFlow=true`,
           );
         } else {
+          
           router.push(
             `/manualFileEditor?id=${latestQuoteId}&fileId=${null}&manualFlow=true`,
           );

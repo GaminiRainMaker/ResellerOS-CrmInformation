@@ -934,6 +934,30 @@ const EditorFile = () => {
     let newArrForAddition: any = [];
 
 
+    if (EditSalesLineItems === 'true') {
+      let newArrWithFileId: any = []
+      updateLineItemsValue?.map((itemss: any) => {
+        let newObj = {
+          ...itemss,
+          file_id: salesForceFiledId
+        }
+        newArrWithFileId?.push(newObj)
+      })
+      let newdata = {
+        token: salesToken,
+        // documentId: salesForceFiledId,
+        urls: salesForceUrl,
+        QuoteId: SaleQuoteId,
+        FileId: salesForceFiledId,
+        action: 'EditDataAsIs',
+        lineItem: newArrWithFileId,
+      };
+      // file_id
+      dispatch(addSalesForceDataa(newdata))?.then((payload: any) => { });
+      setNanonetsLoading(false);
+      return;
+    }
+
     if (updateLineItemsValue && updateLineItemsValue?.length > 0) {
       updateLineItemsValue?.map((items: any) => {
         if (items?.id === null) {
@@ -1038,29 +1062,12 @@ const EditorFile = () => {
             }
             newObj.cost = items?.adjusted_price
             newObj.MSRP = items?.list_price
-
             newArrFOrUpdation?.push(newObj)
           })
         }
       })
 
 
-    }
-
-    if (EditSalesLineItems === 'true') {
-      let newdata = {
-        token: salesToken,
-        // documentId: salesForceFiledId,
-        urls: salesForceUrl,
-        QuoteId: SaleQuoteId,
-        FileId: salesForceFiledId,
-        action: 'EditDataAsIs',
-        lineItem: updateLineItemsValue,
-      };
-
-      dispatch(addSalesForceDataa(newdata))?.then((payload: any) => { });
-      setNanonetsLoading(false);
-      return;
     }
 
     await updateTables(

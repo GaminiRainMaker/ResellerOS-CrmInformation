@@ -137,8 +137,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       // ,
     );
 
-
-  console.log("accoutSyncOptionsaccoutSyncOptions", accoutSyncOptions)
+  console.log("SaleForceQuoteLineItemColumnSync", SaleForceQuoteLineItemColumnSync)
   const router = useRouter();
   const mergeedColumn: any = [];
   const keys = mergedValue?.length > 0 && Object.keys(mergedValue?.[0]);
@@ -338,7 +337,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       // currentFileName
       Object.keys(obj).forEach((key) => {
         // Only add to the cleaned object if key is not empty and value is defined
-        if (key !== '' && obj[key] !== undefined) {
+        if (key !== '' && obj[key] !== undefined && obj[key] !== '') {
           cleanedObj[key] = obj[key];
         }
       });
@@ -355,19 +354,20 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       if (salesFOrceAccoutFlow === 'true') {
         newObj.AccountId = salesFOrceAccoutId;
       } else {
-        (newObj.file_name = currentFileData?.file_name),
-          (newObj.file_id =
+        (newObj.rosquoteai__File_Name__c = currentFileData?.file_name),
+          (newObj.rosquoteai__SF_File_Id__c =
             salesFOrceManual === 'true'
               ? currentFileData?.FileId
               : salesForceFiledId);
       }
-      delete newObj.product_code;
-      let string = items?.product_code?.trim();
+      let string = items?.rosquoteai__Product_Code__c?.trim();
+
+      delete newObj.rosquoteai__Product_Code__c;
 
       // Remove any remaining spaces and newlines within the string
       let newProductCode = string && string.replace(/\s+/g, '');
       if (newProductCode) {
-        newObj.product_code = newProductCode;
+        newObj.rosquoteai__Product_Code__c = newProductCode;
       }
       newArrWIthFileName?.push(newObj);
       // newArrWIthFileName?.push({
@@ -386,7 +386,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       (salesFOrceAccoutFlow === 'true' && newArrWIthFileName?.length > 0)
     ) {
       const findProduct = syncedNewValue?.find(
-        (items: any) => items?.newVal === 'product_code',
+        (items: any) => items?.newVal === 'rosquoteai__Product_Code__c',
       );
       const findName = syncedNewValue?.find(
         (items: any) => items?.newVal === 'Name',
@@ -416,13 +416,28 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         setNanonetsLoading(false);
         return;
       }
-
+      let cleanObjecto = (obj: any) => {
+        let cleanedObj: any = {};
+        // Iterate through the keys of the object
+        // currentFileName
+        Object.keys(obj).forEach((key) => {
+          // Only add to the cleaned object if key is not empty and value is defined
+          if (key !== '' && obj[key] !== undefined && obj[key] !== '') {
+            cleanedObj[key] = obj[key];
+          }
+        });
+        return cleanedObj;
+      }
       if (salesFOrceAccoutFlow === 'true') {
+
+        let requiredOutput = newArrWIthFileName.map((obj: any) => cleanObjecto(obj));
+
+
         let newdata = {
           token: salesToken,
           AccountId: salesFOrceAccoutId,
           urls: salesForceUrl,
-          lineItem: newArrWIthFileName,
+          lineItem: requiredOutput,
         };
 
         await dispatch(addSalesForceDataaForAccount(newdata))?.then(
@@ -748,7 +763,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   useEffect(() => {
     handleChange();
   }, [syncedNewValue]);
-
+  console.log("accoutSyncOptionsaccoutSyncOptions", accoutSyncOptions)
   return (
     <>
       <GlobalLoader loading={nanonetsLoading}>
