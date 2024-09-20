@@ -54,6 +54,7 @@ const DealRegDetail = () => {
   const searchParams = useSearchParams()!;
   const getOpportunityId = searchParams && searchParams.get('opportunityId');
   const [formData, setFormData] = useState<any>();
+  const [localIp, setLocalIp] = useState('');
 
   useEffect(() => {
     if (getOpportunityId) {
@@ -107,6 +108,22 @@ const DealRegDetail = () => {
     },
   ];
 
+
+  useEffect(() => {
+    const fetchIp = async () => {
+      try {
+        const response = await fetch('/api/getLocalIp');
+        const data = await response.json();
+        setLocalIp(data.ip);
+      } catch (error) {
+        console.error('Error fetching the IP address:', error);
+      }
+    };
+
+    fetchIp();
+  }, []);
+
+
   const submitDealRegFormFun = async () => {
     const SubmitDealRegForm = submitDealRegForm.getFieldsValue();
     const SubmitDealRegFormData = {
@@ -140,7 +157,11 @@ const DealRegDetail = () => {
           script: PartnerProgram?.script,
         };
         const processScriptData = processScript1(finalData);
-        const response = await dispatch(dealRegFormScript([processScriptData]));
+        const finalAppData = {
+          script: [processScriptData],
+          IP: localIp
+        }
+        const response = await dispatch(dealRegFormScript(finalAppData));
         if (response) {
           await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
             (response: { payload: any }) => {
