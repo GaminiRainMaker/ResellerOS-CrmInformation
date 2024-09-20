@@ -138,7 +138,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     );
 
 
-  console.log("accoutSyncOptionsaccoutSyncOptions", accoutSyncOptions)
   const router = useRouter();
   const mergeedColumn: any = [];
   const keys = mergedValue?.length > 0 && Object.keys(mergedValue?.[0]);
