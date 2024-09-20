@@ -50,7 +50,7 @@ const ElectronBot = () => {
   const getElectronAppLink = () => {
     switch (os) {
       case 'windows':
-        return 'https://reselller-os.s3.amazonaws.com/ResellerOS+App.exe';
+        return 'https://reselller-os.s3.amazonaws.com/ResellerOS+App+Setup+0.1.0.exe';
       case 'mac':
         return 'https://reselller-os.s3.amazonaws.com/ResellerOS+App-0.1.0-mac.zip';
       case 'linux':
