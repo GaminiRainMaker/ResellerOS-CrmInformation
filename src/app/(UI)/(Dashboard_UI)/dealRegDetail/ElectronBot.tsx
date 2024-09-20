@@ -51,6 +51,8 @@ const ElectronBot = () => {
     switch (os) {
       case 'windows':
         return 'https://reselller-os.s3.amazonaws.com/ResellerOS+App.exe';
+      case 'mac':
+        return 'https://reselller-os.s3.amazonaws.com/ResellerOS+App-0.1.0-mac.zip';
       case 'linux':
         return 'https://reselller-os.s3.amazonaws.com/MyApp-linux-x64.zip';
       default:
@@ -119,11 +121,11 @@ const ElectronBot = () => {
           below to download the ResellerOS Electron App.
         </Typography>
         <Space size={20}>
-          {os !== 'mac' ? (
+          {/* {os !== 'mac' ? ( */}
             <a href={getElectronAppLink()} download>
               <OsButton text="Download Electron App" buttontype="PRIMARY" />
             </a>
-          ) : (
+          {/* ) : (
             <Space>
               <Space
                 direction="vertical"
@@ -161,7 +163,7 @@ const ElectronBot = () => {
                 </Typography>
               </Space>
             </Space>
-          )}
+          )} */}
           <div style={{ position: 'relative', display: 'inline-block' }}>
             <a
               href={getPlaywrightVideoLink()}
