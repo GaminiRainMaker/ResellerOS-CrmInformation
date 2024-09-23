@@ -202,6 +202,20 @@ const EditorFile = () => {
 
             setAccoutSyncOptions(arrOfOptions);
           }
+          let newSortedArr: any = []
+          if (payload?.payload) {
+            //   payload?.payload?.map((items: any) => {
+            //     let sortedKeys = Object.keys(items).sort();
+
+            //     // Create a new object with sorted keys
+            //     let sortedObj: any = {};
+            //     sortedKeys.forEach(key => {
+            //       sortedObj[key] = items[key];
+            //     });
+            //     newSortedArr?.push(sortedObj)
+
+            //   })
+          }
           setUpdateLineItemsValue(payload?.payload);
           setNanonetsLoading(false);
           return;
@@ -830,6 +844,7 @@ const EditorFile = () => {
     useState<any>();
   useEffect(() => {
     const updateLineItemColumnArr: any = [];
+    // let newObj = { data: "QuoteId", readOnly: true }
     const updateLineItemColumnDataArr: any = [];
     const keysss =
       updateLineItemsValue?.length > 0 &&
@@ -868,7 +883,6 @@ const EditorFile = () => {
     setUpdateLineItemColumn(updateLineItemColumnArr);
     setUpdateLineItemColumnData(updateLineItemColumnDataArr);
   }, [updateLineItemsValue]);
-
   useEffect(() => {
     const mergeedColumnArr: any = [];
     const keys =
@@ -948,7 +962,7 @@ const EditorFile = () => {
       updateLineItemsValue?.map((itemss: any) => {
         let newObj = {
           ...itemss,
-          file_id: salesForceFiledId
+          rosquoteai__SF_File_Id__c: salesForceFiledId
         }
         newArrWithFileId?.push(newObj)
       })

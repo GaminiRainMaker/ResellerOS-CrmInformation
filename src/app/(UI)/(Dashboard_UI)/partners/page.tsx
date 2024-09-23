@@ -53,7 +53,7 @@ const Partners: React.FC = () => {
   const [partnerNewId, setPartnerNewId] = useState<any>();
   const [partnerProgramNewId, setPartnerProgramNewId] = useState<any>();
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
-
+  const [disableRequest, setDisableRequest] = useState<any>([]);
   const [partnerOptions, setPartnerOptions] = useState<any>();
   const [partnerProgramOptions, setPartnerProgramOptions] = useState<any>();
 
@@ -592,6 +592,10 @@ const Partners: React.FC = () => {
     userData: any,
   ) => {
     // setLoadingForRequest(true);
+    let newrr = disableRequest?.length > 0 ? [...disableRequest] : [];
+    newrr?.push(id);
+
+    setDisableRequest(newrr);
     const partnerObj = {
       organization: userData?.organization
         ? userData?.organization
@@ -605,6 +609,7 @@ const Partners: React.FC = () => {
 
     await dispatch(insertAssignPartnerProgram(partnerObj));
     getPartnerData();
+
     setLoadingForRequest(false);
   };
 
@@ -625,6 +630,7 @@ const Partners: React.FC = () => {
               <OsButton
                 buttontype="PRIMARY"
                 text="Request"
+                disabled={disableRequest?.includes(record?.id) ? true : false}
                 clickHandler={() => {
                   handleAddNewAssignedPartnerProgramRequest(
                     record?.id,
@@ -649,10 +655,12 @@ const Partners: React.FC = () => {
                     <OsButton
                       buttontype="PRIMARY"
                       text="Request"
+                      // disabled={
+                      //   disableRequest?.includes(record?.id) ? true : false
+                      // }
                       clickHandler={() => {
+
                         handleAddNewAssignedPartnerProgramRequest(
-
-
                           record?.id,
                           userData,
                         );
