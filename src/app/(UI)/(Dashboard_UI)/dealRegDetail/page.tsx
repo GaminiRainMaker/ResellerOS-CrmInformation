@@ -130,35 +130,9 @@ const DealRegDetail = () => {
       ...SubmitDealRegForm,
       status: 'Submitted',
     };
-    const finalScriptData = finalUpdatedDealRegData?.filter(
-      (item: any) => item?.id === SubmitDealRegFormData?.id,
-    );
     if (SubmitDealRegFormData) {
       try {
-        const { PartnerProgram, unique_form_data } = finalScriptData?.[0];
-        const finalUniqueData =
-          unique_form_data && JSON?.parse(unique_form_data);
-        const template =
-          PartnerProgram?.form_data &&
-          JSON?.parse(PartnerProgram?.form_data)?.[0]?.content;
-
-        const [iv, encryptedData] =
-          PartnerProgram?.PartnerPassword?.password?.split(':');
-        const decrypted = await decrypt(
-          encryptedData,
-          SECRET_KEY as string,
-          iv,
-        );
-        const newFormData = processFormData(template, finalUniqueData);
-        const finalData = {
-          email: PartnerProgram?.PartnerPassword?.email,
-          password: decrypted,
-          data: newFormData,
-          script: PartnerProgram?.script,
-        };
-        const processScriptData = processScript1(finalData);
         const finalAppData = {
-          script: [processScriptData],
           IP: localIp,
           dealRegId: SubmitDealRegFormData?.id
         }
