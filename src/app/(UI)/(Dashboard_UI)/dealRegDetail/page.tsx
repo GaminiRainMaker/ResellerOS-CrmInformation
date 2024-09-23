@@ -159,7 +159,8 @@ const DealRegDetail = () => {
         const processScriptData = processScript1(finalData);
         const finalAppData = {
           script: [processScriptData],
-          IP: localIp
+          IP: localIp,
+          dealRegId: SubmitDealRegFormData?.id
         }
         const response = await dispatch(dealRegFormScript(finalAppData));
         if (response) {
@@ -255,7 +256,7 @@ const DealRegDetail = () => {
           setShowSubmitFormModal(false);
           submitDealRegForm?.resetFields();
         }}
-        primaryButtonText={'Save'}
+        primaryButtonText={'Submit'}
       />
 
       <OsModal
