@@ -380,7 +380,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       // });
     });
 
-    // salesFOrceManual === "false"
     if (
       (SaleQuoteId && newArrWIthFileName?.length > 0) ||
       (salesFOrceAccoutFlow === 'true' && newArrWIthFileName?.length > 0)
@@ -416,28 +415,28 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         setNanonetsLoading(false);
         return;
       }
-      let cleanObjecto = (obj: any) => {
-        let cleanedObj: any = {};
-        // Iterate through the keys of the object
-        // currentFileName
-        Object.keys(obj).forEach((key) => {
-          // Only add to the cleaned object if key is not empty and value is defined
-          if (key !== '' && obj[key] !== undefined && obj[key] !== '') {
-            cleanedObj[key] = obj[key];
-          }
-        });
-        return cleanedObj;
-      }
+      // let cleanObjecto = (obj: any) => {
+      //   let cleanedObj: any = {};
+      //   // Iterate through the keys of the object
+      //   // currentFileName
+      //   Object.keys(obj).forEach((key) => {
+      //     // Only add to the cleaned object if key is not empty and value is defined
+      //     if (key !== '' && obj[key] !== undefined && obj[key] !== '') {
+      //       cleanedObj[key] = obj[key];
+      //     }
+      //   });
+      //   return cleanedObj;
+      // }
       if (salesFOrceAccoutFlow === 'true') {
 
-        let requiredOutput = newArrWIthFileName.map((obj: any) => cleanObjecto(obj));
+        // let requiredOutput = newArrWIthFileName.map((obj: any) => cleanObjecto(obj));
 
 
         let newdata = {
           token: salesToken,
           AccountId: salesFOrceAccoutId,
           urls: salesForceUrl,
-          lineItem: requiredOutput,
+          lineItem: newArrWIthFileName,
         };
 
         await dispatch(addSalesForceDataaForAccount(newdata))?.then(

@@ -828,7 +828,6 @@ const EditorFile = () => {
   const [updateLineItemColumn, setUpdateLineItemColumn] = useState<any>();
   const [updateLineItemColumnData, setUpdateLineItemColumnData] =
     useState<any>();
-  console.log('updateLineItemsValueupdateLineItemsValue', updateLineItemsValue);
   useEffect(() => {
     const updateLineItemColumnArr: any = [];
     const updateLineItemColumnDataArr: any = [];
@@ -852,7 +851,17 @@ const EditorFile = () => {
             const dataObj = { data: item };
             updateLineItemColumnData?.push(dataObj);
           }
-          updateLineItemColumnArr?.push(formatStatus(item));
+          if (salesForceUrl) {
+
+            let cleanedString = item.replace(/^rosquoteai__|__c$/g, '');
+            let finalResult = cleanedString.replace(/_/g, ' ');
+            updateLineItemColumnArr?.push(formatStatus(finalResult))
+
+
+          } else {
+            updateLineItemColumnArr?.push(formatStatus(item));
+
+          }
         }
       });
     }
@@ -1436,7 +1445,6 @@ const EditorFile = () => {
     setValueOfNewFormula('');
     setOpenAddNewFormulaModal(false);
   };
-  console.log("updateLineItemsValueupdateLineItemsValue", updateLineItemsValue)
   return (
     <GlobalLoader loading={nanonetsLoading}>
       <Space size={0} style={{ marginBottom: '20px' }}>
