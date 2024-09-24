@@ -381,8 +381,8 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                           message: 'Zip Code is required!',
                         },
                         {
-                          pattern: /^[0-9]+$/,
-                          message: 'Please enter valid zip code.',
+                          pattern: /^[0-9]{5}$/,
+                          message: 'Please enter a valid zip code (exactly 5 digits).',
                         },
                       ]}
                     >
@@ -512,8 +512,8 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                           message: 'Zip Code is required!',
                         },
                         {
-                          pattern: /^[0-9]+$/,
-                          message: 'Please enter valid zip code.',
+                          pattern: /^[0-9]{5}$/,
+                          message: 'Please enter a valid zip code (exactly 5 digits).',
                         },
                       ]}
                     >
