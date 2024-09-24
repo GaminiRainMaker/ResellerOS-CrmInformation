@@ -9,12 +9,6 @@ import OsDropdown from '@/app/components/common/os-dropdown';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
-import {
-  decrypt,
-  processFormData,
-  processScript,
-  processScript1,
-} from '@/app/utils/base';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { MenuProps } from 'antd';
 import Form from 'antd/es/form';
@@ -32,9 +26,8 @@ import {
 } from '../../../../../redux/slices/dealReg';
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs from './DealRegCustomTabs';
-import SubmitDealRegForms from './SubmitDealRegForms';
 import ElectronBot from './ElectronBot';
-const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
+import SubmitDealRegForms from './SubmitDealRegForms';
 
 const DealRegDetail = () => {
   const [getFormData] = Form.useForm();
@@ -55,6 +48,7 @@ const DealRegDetail = () => {
   const getOpportunityId = searchParams && searchParams.get('opportunityId');
   const [formData, setFormData] = useState<any>();
   const [localIp, setLocalIp] = useState('');
+  const { userInformation } = useAppSelector((state) => state.user);
 
   useEffect(() => {
     if (getOpportunityId) {
@@ -109,22 +103,6 @@ const DealRegDetail = () => {
   ];
 
 
-  useEffect(() => {
-    const fetchIp = async () => {
-      try {
-        const response = await fetch('/api/getLocalIp');
-        const data = await response.json();
-        console.log('Ipadress', data)
-        setLocalIp(data.ip);
-      } catch (error) {
-        console.error('Error fetching the IP address:', error);
-      }
-    };
-
-    fetchIp();
-  }, []);
-
-
   const submitDealRegFormFun = async () => {
     const SubmitDealRegForm = submitDealRegForm.getFieldsValue();
     const SubmitDealRegFormData = {
@@ -135,7 +113,8 @@ const DealRegDetail = () => {
       try {
         const finalAppData = {
           IP: localIp,
-          dealRegId: SubmitDealRegFormData?.id
+          dealRegId: SubmitDealRegFormData?.id,
+          userId: userInformation?.id
         }
         const response = await dispatch(dealRegFormScript(finalAppData));
         if (response) {
