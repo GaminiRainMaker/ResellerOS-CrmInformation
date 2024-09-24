@@ -1,13 +1,13 @@
 'use client';
 
-import {Avatar} from '@/app/components/common/antd/Avatar';
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Avatar } from '@/app/components/common/antd/Avatar';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
-import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
+import { AvatarStyled } from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {
   CheckBadgeIcon,
@@ -16,22 +16,22 @@ import {
   MapPinIcon,
   PhoneIcon,
 } from '@heroicons/react/24/outline';
-import {Form, Tag} from 'antd';
-import {useEffect, useState} from 'react';
-import {contactSales} from '../../../../../redux/actions/auth';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { Form, Tag } from 'antd';
+import { useEffect, useState } from 'react';
+import { contactSales } from '../../../../../redux/actions/auth';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import ContactSales from './ContactSales';
-import {CustomCardStyle} from './styled-components';
+import { CustomCardStyle } from './styled-components';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const {isSubscribed, loading: cacheFlowLoading} = useAppSelector(
+  const { isSubscribed, loading: cacheFlowLoading } = useAppSelector(
     (state) => state.cacheFLow,
   );
-  const {loading} = useAppSelector((state) => state.auth);
-  const {userInformation} = useAppSelector((state) => state.user);
+  const { loading } = useAppSelector((state) => state.auth);
+  const { userInformation } = useAppSelector((state) => state.user);
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const ContactData = [
@@ -77,8 +77,8 @@ const Dashboard = () => {
   return (
     <GlobalLoader loading={cacheFlowLoading}>
       {isSubscribed &&
-      userInformation?.Role === 'reseller' &&
-      (userInformation?.DealReg || userInformation?.QuoteAI) ? (
+        userInformation?.Role === 'reseller' &&
+        (userInformation?.DealReg || userInformation?.QuoteAI) ? (
         <Tag
           style={{
             display: 'flex',
@@ -88,7 +88,7 @@ const Dashboard = () => {
           }}
           color="success"
         >
-          <Row justify="space-between" style={{width: '100%'}} align="middle">
+          <Row justify="space-between" style={{ width: '100%' }} align="middle">
             <Col span={12}>
               <>
                 <Avatar
@@ -124,7 +124,7 @@ const Dashboard = () => {
           }}
           color="success"
         >
-          <Row justify="space-between" style={{width: '100%'}} align="middle">
+          <Row justify="space-between" style={{ width: '100%' }} align="middle">
             <Col span={12}>
               <>
                 <Avatar
@@ -171,7 +171,7 @@ const Dashboard = () => {
             >
               <Row
                 justify="space-between"
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 align="middle"
               >
                 <Col span={12}>
@@ -203,7 +203,7 @@ const Dashboard = () => {
                         color={token?.colorError}
                         name="Body 3/Medium"
                         as="span"
-                        // style={{display: 'flex', flexWrap: 'wrap'}}
+                      // style={{display: 'flex', flexWrap: 'wrap'}}
                       >
                         Unlock premium features and exclusive content by
                         subscribing to our web application today!
@@ -222,7 +222,7 @@ const Dashboard = () => {
                   <Typography
                     color={token?.colorLink}
                     name="Button 1"
-                    style={{fontWeight: 700}}
+                    style={{ fontWeight: 700 }}
                     hoverOnText
                   >
                     Subscribe Now
