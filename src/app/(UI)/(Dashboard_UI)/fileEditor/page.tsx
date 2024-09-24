@@ -200,6 +200,7 @@ const EditorFile = () => {
               });
             }
 
+            
             setAccoutSyncOptions(arrOfOptions);
           }
           let newSortedArr: any = []

@@ -61,6 +61,9 @@ const NewRegistrationForm: FC<any> = ({
   const [allAddedSelfPartnerProgramIDs, setAllAddedSelfPartnerProgramIDs] =
     useState<any>();
   const [choosenIdProgram, setChoosedIdProgram] = useState<any>();
+  const [regesteriedPartner, setRegesteriedPartner] = useState<any>()
+  const [selfRegesteriedPartner, setSelfRegesteriedPartner] = useState<any>()
+
   const [allAddedPartnerProgramIDs, setAllAddedPartnerProgramIDs] =
     useState<any>();
 
@@ -72,7 +75,6 @@ const NewRegistrationForm: FC<any> = ({
     );
   }, []);
 
-  console.log('3453432', allAddedPartnerProgramIDs);
 
   useEffect(() => {
     if (isDealRegDetail) {
@@ -165,6 +167,7 @@ const NewRegistrationForm: FC<any> = ({
 
   const registeredFormFinish = async () => {
     const data = form.getFieldsValue();
+
 
     if (
       (data?.registeredPartners === undefined ||
@@ -260,6 +263,20 @@ const NewRegistrationForm: FC<any> = ({
       }
     }
   };
+
+  const addNewPartnerFOrReg = () => {
+    let newArr = regesteriedPartner?.length > 0  ? [...regesteriedPartner] : []
+    let newObj = {
+      partner_id : '',
+      partner_program_id : '',
+      type : 'regestered',
+      optionsForProgram : []
+    }
+
+  }
+
+    // setRegesteriedPartner
+  
   return (
     <>
       <Form

@@ -1,22 +1,23 @@
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
-import {useAppDispatch} from '../../../../../redux/hook';
-import {Checkbox, Form, Select} from 'antd';
-import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import { useAppDispatch } from '../../../../../redux/hook';
+import { Form, Select } from 'antd';
+import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import OsCustomerSelect from '@/app/components/common/os-customer-select';
-import {useEffect, useState} from 'react';
-import {queryOEM} from '../../../../../redux/actions/oem';
-import {queryDistributor} from '../../../../../redux/actions/distributor';
+import { useEffect, useState } from 'react';
+import { queryOEM } from '../../../../../redux/actions/oem';
+import { queryDistributor } from '../../../../../redux/actions/distributor';
 import GlobalLoader from '@/app/components/common/os-global-loader';
-import {Istok_Web} from 'next/font/google';
-import {formatStatus} from '@/app/utils/CONSTANTS';
-import {ChevronDownIcon} from '@heroicons/react/24/outline';
+import { Istok_Web } from 'next/font/google';
+import { formatStatus } from '@/app/utils/CONSTANTS';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { Checkbox } from '@/app/components/common/antd/Checkbox';
 
 const AddFormula: React.FC<any> = ({
   drawer,
@@ -165,6 +166,7 @@ const AddFormula: React.FC<any> = ({
                   name="is_active"
                 >
                   <Checkbox
+                    // style={{border:"1px solid"}}
                     checked={selectValue?.is_active}
                     onChange={(e) => {
                       if (e?.target?.checked) {
@@ -187,7 +189,7 @@ const AddFormula: React.FC<any> = ({
 
                 {distributerOPtions && (
                   <CommonSelect
-                    style={{width: '100%'}}
+                    style={{ width: '100%' }}
                     disabled={selectValue?.oem_id ? true : false}
                     value={selectValue?.distributor_id}
                     // suffixIcon={
@@ -211,12 +213,12 @@ const AddFormula: React.FC<any> = ({
               <Col sm={24} md={drawer ? 24 : 12}>
                 <Typography name="Body 4/Medium">Oem</Typography>
                 <CommonSelect
-                  style={{width: '100%'}}
+                  style={{ width: '100%' }}
                   suffixIcon={
                     <ChevronDownIcon
                       width={24}
                       color={token?.colorInfoBorder}
-                      // style={{marginRight: '10px'}}
+                    // style={{marginRight: '10px'}}
                     />
                   }
                   allowClear={true}

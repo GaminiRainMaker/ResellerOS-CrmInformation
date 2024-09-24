@@ -362,10 +362,10 @@ const CrmInformation: React.FC = () => {
       !emailRegex?.test(objectValuesForContact?.billing_email) ||
       !objectValuesForContact?.billing_email ||
       !objectValuesForContact?.billing_first_name ||
-      !objectValuesForContact?.billing_last_name ||
+      // !objectValuesForContact?.billing_last_name ||
       !objectValuesForContact?.billing_role ||
       !AlphabetsRegex?.test(objectValuesForContact?.billing_first_name) ||
-      !AlphabetsRegex?.test(objectValuesForContact?.billing_last_name) ||
+      // !AlphabetsRegex?.test(objectValuesForContact?.billing_last_name) ||
       !AlphabetsRegexWithSpecialChr?.test(objectValuesForContact?.billing_role)
     ) {
       setErrorFileds(true);

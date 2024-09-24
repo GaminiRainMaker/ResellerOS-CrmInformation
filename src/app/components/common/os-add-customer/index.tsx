@@ -204,7 +204,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
               imageUpload
               debounceFn={debounceFn}
               recordId={billingContact?.id}
-              
+
               justifyContent="start"
               secondaryTextColor={token?.colorPrimary}
               primaryText={
@@ -713,7 +713,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                   });
                                 }}
                               />
-                              {errorFileds && (
+                              {/* {errorFileds && (
                                 <>
                                   {!objectValuesForContact?.billing_last_name ? (
                                     <div style={{ color: 'red' }}>
@@ -729,7 +729,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                     )
                                   )}
                                 </>
-                              )}
+                              )} */}
                             </Col>
                           </Row>
 
@@ -837,14 +837,14 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                         ) ||
                                         !objectValuesForContact?.billing_email ||
                                         !objectValuesForContact?.billing_first_name ||
-                                        !objectValuesForContact?.billing_last_name ||
+                                        // !objectValuesForContact?.billing_last_name ||
                                         !objectValuesForContact?.billing_role ||
                                         !AlphabetsRegex?.test(
                                           objectValuesForContact?.billing_first_name,
                                         ) ||
-                                        !AlphabetsRegex?.test(
-                                          objectValuesForContact?.billing_last_name,
-                                        ) ||
+                                        // !AlphabetsRegex?.test(
+                                        //   objectValuesForContact?.billing_last_name,
+                                        // ) ||
                                         !AlphabetsRegexWithSpecialChr?.test(
                                           objectValuesForContact?.billing_role,
                                         )

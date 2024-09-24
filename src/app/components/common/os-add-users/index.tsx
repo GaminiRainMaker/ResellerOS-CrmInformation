@@ -1,34 +1,34 @@
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {CheckCircleIcon} from '@heroicons/react/20/solid';
+import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import {
   PencilSquareIcon,
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-import {Form} from 'antd';
-import {useEffect, useState} from 'react';
-import {sendNewUserEmail} from '../../../../../redux/actions/auth';
+import { Form } from 'antd';
+import { useEffect, useState } from 'react';
+import { sendNewUserEmail } from '../../../../../redux/actions/auth';
 import {
   createUser,
   deleteUser,
   getUserByOrganization,
   updateUserById,
 } from '../../../../../redux/actions/user';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import OsDrawer from '../os-drawer';
 import OsModal from '../os-modal';
 import DeleteModal from '../os-modal/DeleteModal';
 import DailogModal from '../os-modal/DialogModal';
 import OsStatusWrapper from '../os-status';
 import AddUsers from './AddUser';
-import {useRouter} from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 const AddUser = () => {
   const dispatch = useAppDispatch();
@@ -49,13 +49,14 @@ const AddUser = () => {
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
 
   const deleteSelectedIds = async () => {
-    const dataa = {id: deleteIds};
+    const dataa = { id: deleteIds };
     await dispatch(deleteUser(dataa));
     setTimeout(() => {
       dispatch(getUserByOrganization(userInformation?.organization));
     }, 1000);
     setDeleteIds([]);
     setShowModalDelete(false);
+    location?.reload()
   };
 
   const UserColumns = [
@@ -131,7 +132,7 @@ const AddUser = () => {
       key: 'status',
       width: 173,
       render: (text: string, record: any) => (
-        <div style={{display: 'flex', justifyContent: 'center'}}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
           <OsStatusWrapper
             value={record?.is_email_invite ? 'Invite Sent' : 'Verified'}
           />
@@ -153,7 +154,7 @@ const AddUser = () => {
             height={24}
             width={24}
             color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
             onClick={() => {
               setOpen(true);
               setAddUserType('update');
@@ -164,7 +165,7 @@ const AddUser = () => {
             height={24}
             width={24}
             color={token.colorError}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
             onClick={() => {
               setDeleteIds([record?.id]);
               setShowModalDelete(true);
@@ -192,7 +193,7 @@ const AddUser = () => {
     };
     if (userNewData) {
       if (addUserType === 'insert') {
-        dispatch(createUser({...userDataobj, is_email_invite: true})).then(
+        dispatch(createUser({ ...userDataobj, is_email_invite: true })).then(
           (d: any) => {
             if (d?.payload) {
               const obj = {
@@ -226,7 +227,7 @@ const AddUser = () => {
 
   return (
     <>
-      <Space direction="vertical" size={24} style={{width: '100%'}}>
+      <Space direction="vertical" size={24} style={{ width: '100%' }}>
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
@@ -300,9 +301,9 @@ const AddUser = () => {
         open={open}
         width={450}
         footer={
-          <Row style={{width: '100%', float: 'right'}}>
+          <Row style={{ width: '100%', float: 'right' }}>
             <OsButton
-              btnStyle={{width: '100%'}}
+              btnStyle={{ width: '100%' }}
               buttontype="PRIMARY"
               text="Update Changes"
               clickHandler={() => form.submit()}
