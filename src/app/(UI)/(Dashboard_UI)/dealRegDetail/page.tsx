@@ -9,12 +9,6 @@ import OsDropdown from '@/app/components/common/os-dropdown';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
-import {
-  decrypt,
-  processFormData,
-  processScript,
-  processScript1,
-} from '@/app/utils/base';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { MenuProps } from 'antd';
 import Form from 'antd/es/form';
@@ -32,9 +26,8 @@ import {
 } from '../../../../../redux/slices/dealReg';
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs from './DealRegCustomTabs';
-import SubmitDealRegForms from './SubmitDealRegForms';
 import ElectronBot from './ElectronBot';
-const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
+import SubmitDealRegForms from './SubmitDealRegForms';
 
 const DealRegDetail = () => {
   const [getFormData] = Form.useForm();
@@ -55,6 +48,7 @@ const DealRegDetail = () => {
   const getOpportunityId = searchParams && searchParams.get('opportunityId');
   const [formData, setFormData] = useState<any>();
   const [localIp, setLocalIp] = useState('');
+  const { userInformation } = useAppSelector((state) => state.user);
 
   useEffect(() => {
     if (getOpportunityId) {
@@ -109,57 +103,18 @@ const DealRegDetail = () => {
   ];
 
 
-  useEffect(() => {
-    const fetchIp = async () => {
-      try {
-        const response = await fetch('/api/getLocalIp');
-        const data = await response.json();
-        setLocalIp(data.ip);
-      } catch (error) {
-        console.error('Error fetching the IP address:', error);
-      }
-    };
-
-    fetchIp();
-  }, []);
-
-
   const submitDealRegFormFun = async () => {
     const SubmitDealRegForm = submitDealRegForm.getFieldsValue();
     const SubmitDealRegFormData = {
       ...SubmitDealRegForm,
       status: 'Submitted',
     };
-    const finalScriptData = finalUpdatedDealRegData?.filter(
-      (item: any) => item?.id === SubmitDealRegFormData?.id,
-    );
     if (SubmitDealRegFormData) {
       try {
-        const { PartnerProgram, unique_form_data } = finalScriptData?.[0];
-        const finalUniqueData =
-          unique_form_data && JSON?.parse(unique_form_data);
-        const template =
-          PartnerProgram?.form_data &&
-          JSON?.parse(PartnerProgram?.form_data)?.[0]?.content;
-
-        const [iv, encryptedData] =
-          PartnerProgram?.PartnerPassword?.password?.split(':');
-        const decrypted = await decrypt(
-          encryptedData,
-          SECRET_KEY as string,
-          iv,
-        );
-        const newFormData = processFormData(template, finalUniqueData);
-        const finalData = {
-          email: PartnerProgram?.PartnerPassword?.email,
-          password: decrypted,
-          data: newFormData,
-          script: PartnerProgram?.script,
-        };
-        const processScriptData = processScript1(finalData);
         const finalAppData = {
-          script: [processScriptData],
-          IP: localIp
+          IP: localIp,
+          dealRegId: SubmitDealRegFormData?.id,
+          userId: userInformation?.id
         }
         const response = await dispatch(dealRegFormScript(finalAppData));
         if (response) {
@@ -255,7 +210,7 @@ const DealRegDetail = () => {
           setShowSubmitFormModal(false);
           submitDealRegForm?.resetFields();
         }}
-        primaryButtonText={'Save'}
+        primaryButtonText={'Submit'}
       />
 
       <OsModal

@@ -112,10 +112,10 @@ const ReviewQuotes: FC<any> = ({
             useRemoveDollarAndCommahook(
               quoteLineItem?.adjusted_price
                 ? quoteLineItem?.adjusted_price
-                : (0 ?? 0),
+                : 0,
             ) *
             useRemoveDollarAndCommahook(
-              quoteLineItem?.quantity ? quoteLineItem?.quantity : (0 ?? 0),
+              quoteLineItem?.quantity ? quoteLineItem?.quantity : 0,
             ),
           );
         });
