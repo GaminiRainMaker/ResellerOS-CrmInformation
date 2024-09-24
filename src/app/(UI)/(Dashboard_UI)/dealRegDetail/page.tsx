@@ -114,6 +114,7 @@ const DealRegDetail = () => {
       try {
         const response = await fetch('/api/getLocalIp');
         const data = await response.json();
+        console.log('Ipadress', data)
         setLocalIp(data.ip);
       } catch (error) {
         console.error('Error fetching the IP address:', error);
