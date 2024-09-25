@@ -100,9 +100,8 @@ const SuperAdminPartner: React.FC = () => {
   const [superAdminPartnerAnalyticData, setSuperAdminPartnerAnalyticData] =
     useState<any>();
   const [selectPartnerProgramId, setSelectPartnerProgramId] = useState<any>();
-  const {
-    userInformation
-  } = useAppSelector((state) => state.user);
+  const { userInformation } = useAppSelector((state) => state.user);
+
 
   const getPartnerDataForSuperAdmin = async () => {
     dispatch(getAllPartnerandProgramFilterDataForAdmin({}))?.then(
@@ -119,11 +118,6 @@ const SuperAdminPartner: React.FC = () => {
           });
         }
 
-        console.log(
-          '43543543543',
-          payload?.payload?.AllPartner,
-          countForActivePartnerProgram,
-        );
         let newObj = {
           requested: payload?.payload?.requested?.length,
           allPartner: payload?.payload?.AllPartner?.length,
@@ -165,6 +159,7 @@ const SuperAdminPartner: React.FC = () => {
     getPartnerDataForSuperAdmin();
   }, []);
   const searchQuery = useDebounceHook(queryDataa, 500);
+  console.log('userInformation', userInformation)
 
   useEffect(() => {
     dispatch(getAllPartnerandProgramFilterDataForAdmin(searchQuery))?.then(
