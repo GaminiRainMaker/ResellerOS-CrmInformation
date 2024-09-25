@@ -33,6 +33,10 @@ export const PARTNER_PROGRAM_API = {
     post(API.PARTNER_PROGRAM.GetFormDataProgram, data) as Promise<
       AxiosResponse<[]>
     >,
-  launchPlayWright: () =>
-    get(API.PARTNER_PROGRAM.LaunchPlayWright) as Promise<AxiosResponse<[]>>,
+  launchPlayWright: (data: any) => {
+    console.log('Launching Playwright with data:', data); // Log the incoming data
+    return post(API.PARTNER_PROGRAM.LaunchPlayWright, data) as Promise<
+      AxiosResponse<[]>
+    >;
+  },
 };

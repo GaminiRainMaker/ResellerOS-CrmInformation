@@ -46,6 +46,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import AddPartnerProgramScript from './AddPartnerProgramScript';
 import SuperAdminPartnerAnalytics from './SuperAdminPartnerAnalytic';
+import { getUserByTokenAccess } from '../../../../../redux/actions/user';
 
 
 export interface SeparatedData {
@@ -100,6 +101,16 @@ const SuperAdminPartner: React.FC = () => {
   const [superAdminPartnerAnalyticData, setSuperAdminPartnerAnalyticData] =
     useState<any>();
   const [selectPartnerProgramId, setSelectPartnerProgramId] = useState<any>();
+  const [userId, setUserId] = useState<any>()
+
+  useEffect(() => {
+    dispatch(getUserByTokenAccess('')).then((res: any) => {
+      if (res) {
+        setUserId(res?.payload?.id)
+      }
+    })
+  }, [])
+
 
   const getPartnerDataForSuperAdmin = async () => {
     dispatch(getAllPartnerandProgramFilterDataForAdmin({}))?.then(
@@ -116,11 +127,6 @@ const SuperAdminPartner: React.FC = () => {
           });
         }
 
-        console.log(
-          '43543543543',
-          payload?.payload?.AllPartner,
-          countForActivePartnerProgram,
-        );
         let newObj = {
           requested: payload?.payload?.requested?.length,
           allPartner: payload?.payload?.AllPartner?.length,
@@ -158,7 +164,6 @@ const SuperAdminPartner: React.FC = () => {
   };
 
   useEffect(() => {
-    // dispatch(getAllPartnerandProgram(''));
     getPartnerDataForSuperAdmin();
   }, []);
   const searchQuery = useDebounceHook(queryDataa, 500);
@@ -566,8 +571,11 @@ const SuperAdminPartner: React.FC = () => {
             }
             setSelectPartnerProgramId(record?.id);
             setShowScriptModal(true);
-            // dispatch(launchPlaywrightCodegen());
-            dispatch(launchPlayWright({}));
+            const userData = {
+              userID: userId
+            }
+            console.log('userData', userId, userData)
+            dispatch(launchPlayWright(userData));
           }}
         >
           {record?.script?.length > 0 && !record?.script?.includes(null)
@@ -904,7 +912,7 @@ const SuperAdminPartner: React.FC = () => {
     } else {
       setPartnerProgramColumns(PartnerProgramColumns);
     }
-  }, [activeTab]);
+  }, [activeTab, userId]);
 
   const programScript = async () => {
     const programScriptData = programScriptForm?.getFieldsValue();

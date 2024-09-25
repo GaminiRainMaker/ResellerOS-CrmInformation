@@ -1,7 +1,7 @@
-import {Checkbox} from '@/app/components/common/antd/Checkbox';
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
-import {Switch} from '@/app/components/common/antd/Switch';
+import { Checkbox } from '@/app/components/common/antd/Checkbox';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
+import { Switch } from '@/app/components/common/antd/Switch';
 import {
   SectionColStyledInner,
   SectionColStyledInnerContent,
@@ -10,19 +10,21 @@ import {
   ToggleColStyled,
 } from '@/app/components/common/os-div-row-col/styled-component';
 import OsInput from '@/app/components/common/os-input';
-import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import FormUpload from '@/app/components/common/os-upload/FormUpload';
 import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
 import Typography from '@/app/components/common/typography';
-import {MailOutlined} from '@ant-design/icons';
-import {Form, Radio, TimePicker} from 'antd';
-import {useEffect, useState} from 'react';
-import {UniqueFieldsProps} from './dealReg.interface';
+import { MailOutlined } from '@ant-design/icons';
+import { Form, Radio, TimePicker } from 'antd';
+import { useEffect, useState } from 'react';
+import { UniqueFieldsProps } from './dealReg.interface';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import moment from 'moment';
-import {convertToSnakeCase, radioValidator} from '@/app/utils/base';
-
+import { convertToSnakeCase, radioValidator } from '@/app/utils/base';
+interface CheckboxState {
+  [key: string]: boolean;
+}
 const UniqueFields: React.FC<UniqueFieldsProps> = ({
   data,
   form,
@@ -35,71 +37,18 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     data?.form_data?.[0] &&
     JSON.parse(data?.form_data[0]).flatMap((section: any) => section.content);
   const [uniqueTemplateData, setUniqueTemplateData] = useState<any>();
-  const [isChecked, setIsChecked] = useState<string>('');
+  const [radioValues, setRadioValues] = useState<{ [key: string]: any }>({});
 
   const getInputComponent = (itemCon: any) => {
     const fieldName = convertToSnakeCase(itemCon?.label);
     const initialValue = uniqueTemplateData?.[fieldName];
-    const commonProps = {defaultValue: initialValue, onBlur: handleBlur};
+    const commonProps = { defaultValue: initialValue, onBlur: handleBlur };
 
     if (itemCon?.name === 'Date' && initialValue) {
       commonProps.defaultValue = moment(initialValue);
     }
-    switch (itemCon?.name) {
-      case 'Table':
-        return (
-          <SectionRowStyledInner>
-            {itemCon?.ColumnsData?.map(
-              (itemColum: any, indexOfColumn: number) => {
-                const totalCol = itemCon?.ColumnsData?.length;
-                const totalFloorValue = Math.floor(24 / totalCol);
-                return (
-                  <SectionColStyledInner
-                    span={totalFloorValue}
-                    key={indexOfColumn}
-                  >
-                    {itemColum?.title}
-                  </SectionColStyledInner>
-                );
-              },
-            )}
-            {itemCon?.noOfRowsData?.map(
-              (rowsMapItem: string, rowIndex: number) => (
-                <Row style={{width: '100%'}} key={rowIndex}>
-                  {itemCon?.ColumnsData?.map(
-                    (itemColum: any, colIndex: number) => {
-                      const totalFloorValue = Math.floor(
-                        24 / itemCon?.ColumnsData?.length,
-                      );
-                      return (
-                        <SectionColStyledInnerContent
-                          span={totalFloorValue}
-                          key={colIndex}
-                        >
-                          {itemColum?.type === 'single' ||
-                          itemColum?.type === 'multiple' ? (
-                            <CommonSelect
-                              variant="borderless"
-                              mode={itemColum?.type}
-                              style={{border: 'none', width: '100%'}}
-                            />
-                          ) : (
-                            <OsInput
-                              variant="borderless"
-                              type={itemColum?.type}
-                              style={{border: 'none'}}
-                            />
-                          )}
-                        </SectionColStyledInnerContent>
-                      );
-                    },
-                  )}
-                </Row>
-              ),
-            )}
-          </SectionRowStyledInner>
-        );
 
+    switch (itemCon?.name) {
       case 'Text':
       case 'Email':
       case 'Contact':
@@ -112,7 +61,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
               <TimePicker
                 use12Hours={itemCon?.use12hours}
                 format={itemCon?.timeformat}
-                style={{width: '100%', height: '44px'}}
+                style={{ width: '100%', height: '44px' }}
               />
             ) : itemCon?.name === 'Currency' ? (
               <OsInput
@@ -133,7 +82,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
             )}
           </>
         );
-
       case 'Multi-Select':
       case 'Drop Down':
         const optionssMulti = itemCon?.options?.map((itemoo: any) => ({
@@ -144,87 +92,93 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           <CommonSelect
             allowClear
             options={optionssMulti}
-            style={{width: '100%'}}
+            style={{ width: '100%' }}
             mode={itemCon?.type}
             {...commonProps}
           />
         );
+
       case 'Checkbox':
-      case 'Radio Button':
       case 'Toggle':
         return (
           <>
-            {itemCon?.labelOptions?.map(
-              (itemLabelOp: any, itemLabelIndex: number) => {
-                const totalFloorValue = Math.floor(
-                  24 / itemCon?.columnRequired,
-                );
-                const userfill = itemCon?.user_fill;
-                return (
-                  <SelectFormItem
-                    name={
-                      'u_' +
-                      convertToSnakeCase(itemLabelOp) +
-                      (itemCon?.name === 'Radio Button' ? '_radio' : '') +
-                      (userfill ? '_userfill' : '')
-                    }
-                    label={
-                      <Typography name="Body 4/Medium">
-                        {itemLabelOp}
-                      </Typography>
-                    }
+            {itemCon?.name === 'Checkbox' || itemCon?.name === 'Toggle' ? (
+              itemCon?.labelOptions?.map(
+                (itemLabelOp: any, itemLabelIndex: number) => (
+                  <Col
+                    span={Math.floor(24 / itemCon?.columnRequired)}
+                    key={itemLabelIndex}
                   >
-                    <ToggleColStyled
-                      span={totalFloorValue}
-                      key={itemLabelIndex}
-                    >
-                      {itemCon?.name === 'Radio Button' ? (
-                        <Radio.Group
-                          name={itemLabelOp}
-                          onChange={(e: any) => {
-                            setIsChecked(e.target.name);
-                            radioValidator(
-                              itemCon?.labelOptions,
-                              e.target,
-                              form,
-                            );
-                          }}
-                          value={isChecked}
+                    {itemCon?.name === 'Toggle' ? (
+                      <>
+                        <Switch
+                        // checked={
+                        //   checkboxState[itemLabelOp as keyof CheckboxState]
+                        // }
+                        // onChange={() => handleToggleChange(itemLabelOp)}
                         >
-                          <Radio value={itemLabelOp} {...commonProps} />{' '}
-                        </Radio.Group>
-                      ) : itemCon?.name === 'Toggle' ? (
-                        <>
-                          <Switch />
-                        </>
-                      ) : (
-                        <Checkbox
-                        // checked={isChecked}
-                        // onChange={(e) => handleChange(e.target)}
-                        />
-                      )}
-                    </ToggleColStyled>
-                  </SelectFormItem>
-                );
-              },
+                        </Switch>  {itemLabelOp}
+                      </>
+                    ) : (
+                      <Checkbox
+                      // checked={form.getFieldValue(itemLabelOp) === 'true'}
+                      // onChange={(e) => handleCheckboxChange(itemLabelOp, e)}
+                      >
+                        {itemLabelOp}
+                      </Checkbox>
+                    )}
+                  </Col>
+                ),
+              )
+            ) : (
+              <></>
             )}
           </>
         );
 
-      case 'Attachment':
+      case 'Radio Button':
         return (
-          <Space direction="vertical">
-            {itemCon?.pdfUrl ? (
-              <FormUploadCard uploadFileData={itemCon?.pdfUrl} />
-            ) : (
-              <FormUpload />
-            )}
-          </Space>
+          <>
+            <Radio.Group
+              onChange={(e) => {
+                const value = e.target.value;
+                setRadioValues((prev) => ({
+                  ...prev,
+                  [itemCon.label]: value,
+                }));
+                form.setFieldValue(
+                  'u_' +
+                  convertToSnakeCase(itemCon.label) +
+                  activeKey +
+                  (itemCon.required ? '_required' : '') +
+                  (itemCon.user_fill ? '_userfill' : ''),
+                  value,
+                );
+              }}
+              value={radioValues[itemCon.label]}
+            >
+              {itemCon?.labelOptions?.map(
+                (itemLabelOp: any, itemLabelIndex: number) => {
+                  const totalFloorValue = Math.floor(
+                    24 / itemCon?.columnRequired,
+                  );
+                  return (
+                    <ToggleColStyled
+                      span={totalFloorValue}
+                      key={itemLabelIndex}
+                    >
+                      <Radio value={itemLabelOp} {...commonProps}>
+                        {itemLabelOp}
+                      </Radio>
+                    </ToggleColStyled>
+                  );
+                },
+              )}
+            </Radio.Group>
+          </>
         );
-
       case 'Line Break':
         return <StyledDivider />;
-
       default:
         return null;
     }
@@ -281,23 +235,14 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
         }
       });
     }
-
-    // if(newArrForTheSalesForceJson && newArrForTheSalesForceJson?.length > 0){
-    //   newArrForTheSalesForceJson?.map((items:any)=>{
-    //     let InnerContent :any=[];
-    //     newArrForTheSalesForceJson?.map((itemsIn:any)=>{
-    //       if(itemsIn?.type !== 'title' && ){
-
-    //       }
-    //     })
-
-    //   })
-    // }
   }, [allContent]);
+
+  console.log('formData', formData?.unique_form_data);
+
   return (
     <Form
       layout="vertical"
-      style={{width: '100%', background: 'white', borderRadius: '12px'}}
+      style={{ width: '100%', background: 'white', borderRadius: '12px' }}
       form={form}
     >
       <Row>
@@ -310,9 +255,9 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
             return (
               <Col
                 span={24}
-                style={{textAlign: alignment, padding: '12px 0px'}}
+                style={{ textAlign: alignment, padding: '12px 0px' }}
               >
-                <p style={{fontSize: fontSize === 'h2' ? 24 : 16}}>
+                <p style={{ fontSize: fontSize === 'h2' ? 24 : 16 }}>
                   {allContentItem?.sectionTitle}
                 </p>
               </Col>
@@ -346,9 +291,9 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 rules={[
                   allContentItem.label === 'Email'
                     ? {
-                        type: 'email',
-                        message: 'Please enter a valid email address!',
-                      }
+                      type: 'email',
+                      message: 'Please enter a valid email address!',
+                    }
                     : {},
                   {
                     required: allContentItem.required,
