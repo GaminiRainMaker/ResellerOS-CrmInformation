@@ -112,6 +112,7 @@ const DealRegAnalytics = () => {
             secondaryText={item?.secondry}
             fallbackIcon={item?.icon}
             iconBg={item?.iconBg}
+            isNotification={false}
           />
         </Col>
       ))}

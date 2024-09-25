@@ -80,7 +80,7 @@ function newQuoteMappingColumns(
           onClick={() => {
             window.open(record?.QuoteFile?.pdf_url);
           }}
-          style={{cursor: 'pointer', textDecoration: 'underline'}}
+          style={{cursor: 'pointer'}}
         >
           {record?.QuoteFile?.file_name}
         </Typography>
@@ -89,7 +89,7 @@ function newQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Sales Force
+          Salesforce
         </Typography>
       ),
       dataIndex: 'is_salesforce',
@@ -248,7 +248,7 @@ function approvedQuoteMappingColumns(
           onClick={() => {
             window.open(record?.QuoteFile?.pdf_url);
           }}
-          style={{cursor: 'pointer', textDecoration: 'underline'}}
+          style={{cursor: 'pointer'}}
         >
           {record?.QuoteFile?.file_name}
         </Typography>
@@ -257,7 +257,7 @@ function approvedQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Sales Force
+          Salesforce
         </Typography>
       ),
       dataIndex: 'is_salesforce',
@@ -404,7 +404,7 @@ function rejectQuoteMappingColumns(
           onClick={() => {
             window.open(record?.QuoteFile?.pdf_url);
           }}
-          style={{cursor: 'pointer', textDecoration: 'underline'}}
+          style={{cursor: 'pointer'}}
         >
           {record?.QuoteFile?.file_name}
         </Typography>
@@ -413,7 +413,7 @@ function rejectQuoteMappingColumns(
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Sales Force
+          Salesforce
         </Typography>
       ),
       dataIndex: 'is_salesforce',

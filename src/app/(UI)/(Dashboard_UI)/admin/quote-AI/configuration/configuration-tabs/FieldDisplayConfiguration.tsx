@@ -3,7 +3,7 @@
 
 'use client';
 
-import {Checkbox} from '@/app/components/common/antd/Checkbox';
+// import {Checkbox} from '@/app/components/common/antd/Checkbox';
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
 import {Switch} from '@/app/components/common/antd/Switch';
@@ -24,6 +24,7 @@ import {
   useAppSelector,
 } from '../../../../../../../../redux/hook';
 import {TabContainerStyle} from './styled-components';
+import {Checkbox} from 'antd';
 
 const FieldDisplayConfiguration: FC<any> = () => {
   const [token] = useThemeToken();
@@ -207,10 +208,13 @@ const FieldDisplayConfiguration: FC<any> = () => {
 
   const allColumns = [
     ...FieldDisplayConfigurationFields,
-    ...(selectedTable !== 'Rebates' ? FiledDisplayConfigurationUniqueItem : []),
+    ...(selectedTable !== 'Rebates' && selectedTable !== 'Input Details'
+      ? FiledDisplayConfigurationUniqueItem
+      : []),
     ...thirdFieldDisplayConfigurationFields,
   ];
 
+  console.log('selectedTableselectedTable', selectedTable);
 
   return (
     <>
@@ -293,7 +297,7 @@ const FieldDisplayConfiguration: FC<any> = () => {
                     key: '1',
                     label: (
                       <Typography name="Body 2/Medium">
-                        Selected Fields
+                        Select Fields
                       </Typography>
                     ),
                     children: (
@@ -308,7 +312,7 @@ const FieldDisplayConfiguration: FC<any> = () => {
                             tableSelectionType="checkbox"
                             columns={allColumns}
                             dataSource={tableColumnDataShow}
-                            defaultPageSize={15}
+                            defaultPageSize={10}
                             scrolly={200}
                           />
                         )}

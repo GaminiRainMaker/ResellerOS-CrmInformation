@@ -231,7 +231,10 @@ const EditFiledDetailsForDate: React.FC<EditableFiledsCommonInterface> = ({
                 name="no_of_columns"
               >
                 <CommonSelect
-                  disabled={NameofTheCurrentFiled === 'Time'}
+                  disabled={
+                    NameofTheCurrentFiled === 'Time' ||
+                    NameofTheCurrentFiled === 'Date'
+                  }
                   onChange={(e: any) => {
                     changeFieldValues(e, 'type');
                   }}
@@ -363,7 +366,10 @@ const EditFiledDetailsForDate: React.FC<EditableFiledsCommonInterface> = ({
                 defaultValue={CommonIndexOfUse?.columnRequired}
                 value={CommonIndexOfUse?.columnRequired}
                 onChange={(e: any) => {
-                  changeFieldValues(e?.target?.value, 'columnRequired');
+                  // changeFieldValues(e?.target?.value, 'columnRequired');
+                  if (e?.target?.value > 0) {
+                    changeFieldValues(e?.target?.value, 'columnRequired');
+                  }
                 }}
               />
             </>

@@ -196,7 +196,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           email: formValues?.email,
           password: formValues?.password,
         }),
-      ).then((payload) => {
+      ).then((payload: any) => {
         if (payload?.payload?.status) {
           dispatch(
             setUserInformation({
@@ -267,7 +267,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
           password: formValues?.password,
           organization: organizationValue,
         }),
-      ).then((payload) => {
+      ).then((payload: any) => {
         if (payload?.payload === undefined || !payload?.payload) {
           notification?.open({
             message:
@@ -505,7 +505,7 @@ const ContentSection: FC<AuthLayoutInterface> = ({
         width={700}
         setShowDailogModal={setShowDailogModal}
         showDailogModal={showDailogModal}
-        title="Your Forgot Password request raised sucessfully"
+        title="Your Forgot Password request raised successfully"
         subTitle="Check your inbox for instructions to create a new password."
         icon={
           <CheckCircleIcon width={35} height={35} color={token?.colorSuccess} />

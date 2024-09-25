@@ -1,7 +1,7 @@
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
@@ -9,34 +9,25 @@ import OsDropdown from '@/app/components/common/os-dropdown';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
-import {
-  decrypt,
-  processFormData,
-  processScript,
-  processScript1,
-} from '@/app/utils/base';
-import {PlusIcon} from '@heroicons/react/24/outline';
-import {MenuProps} from 'antd';
+import { PlusIcon } from '@heroicons/react/24/outline';
+import { MenuProps } from 'antd';
 import Form from 'antd/es/form';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
+  dealRegFormScript,
   getDealRegByOpportunityId,
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
-import {
-  lauchPlayWright1,
-  lauchSalesPlayWright,
-} from '../../../../../redux/actions/playwright';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import {
   setDealReg,
   setOpenDealRegDrawer,
 } from '../../../../../redux/slices/dealReg';
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs from './DealRegCustomTabs';
+import ElectronBot from './ElectronBot';
 import SubmitDealRegForms from './SubmitDealRegForms';
-const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
 
 const DealRegDetail = () => {
   const [getFormData] = Form.useForm();
@@ -52,9 +43,12 @@ const DealRegDetail = () => {
   } = useAppSelector((state) => state.dealReg);
   const [showModal, setShowModal] = useState(false);
   const [showSubmitFormModal, setShowSubmitFormModal] = useState(false);
+  const [electronBotModal, showElectronBotModal] = useState(false);
   const searchParams = useSearchParams()!;
   const getOpportunityId = searchParams && searchParams.get('opportunityId');
   const [formData, setFormData] = useState<any>();
+  const [localIp, setLocalIp] = useState('');
+  const { userInformation } = useAppSelector((state) => state.user);
 
   useEffect(() => {
     if (getOpportunityId) {
@@ -108,75 +102,39 @@ const DealRegDetail = () => {
     },
   ];
 
+
   const submitDealRegFormFun = async () => {
     const SubmitDealRegForm = submitDealRegForm.getFieldsValue();
     const SubmitDealRegFormData = {
       ...SubmitDealRegForm,
       status: 'Submitted',
     };
-
-    const finalScriptData = finalUpdatedDealRegData?.filter(
-      (item: any) => item?.id === SubmitDealRegFormData?.id,
-    );
     if (SubmitDealRegFormData) {
       try {
-        const {PartnerProgram, unique_form_data} = finalScriptData?.[0];
-        const finalUniqueData =
-          unique_form_data && JSON?.parse(unique_form_data);
-        const template =
-          PartnerProgram?.form_data &&
-          JSON?.parse(PartnerProgram?.form_data)?.[0]?.content;
-
-        const [iv, encryptedData] =
-          PartnerProgram?.PartnerPassword?.password?.split(':');
-        const decrypted = await decrypt(
-          encryptedData,
-          SECRET_KEY as string,
-          iv,
-        );
-        const newFormData = processFormData(template, finalUniqueData);
-        const finalData = {
-          email: PartnerProgram?.PartnerPassword?.email,
-          password: decrypted,
-          data: newFormData,
-          script: PartnerProgram?.script,
-        };
-
-        const processScriptData = processScript1(finalData);
-        console.log('finalData', processScriptData);
-
-        const response = await dispatch(lauchPlayWright1([processScriptData]));
-        if (lauchPlayWright1.fulfilled.match(response)) {
+        const finalAppData = {
+          IP: localIp,
+          dealRegId: SubmitDealRegFormData?.id,
+          userId: userInformation?.id
+        }
+        const response = await dispatch(dealRegFormScript(finalAppData));
+        if (response) {
           await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
-            (response: {payload: any}) => {
+            (response: { payload: any }) => {
               if (response?.payload) {
                 dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
               }
             },
           );
         }
-        
+        console.log('response data', response);
       } catch (error) {
         console.error('Error running script:', error);
       }
-
       setShowSubmitFormModal(false);
       submitDealRegForm.resetFields();
     }
   };
 
-  const lauchSalesPlayBot = async () => {
-    try {
-      const response = await dispatch(lauchSalesPlayWright([]));
-      if (lauchSalesPlayWright.fulfilled.match(response)) {
-        console.log('Script executed successfully:', response.payload);
-      } else {
-        console.error('Error running script:', response.payload);
-      }
-    } catch (error) {
-      console.error('Error running script:', error);
-    }
-  };
 
   return (
     <div>
@@ -186,16 +144,14 @@ const DealRegDetail = () => {
         </Col>
         <Col>
           <Space size={8}>
-            {/* <OsButton
-              text="Create Salesforce Account"
+            <OsButton
+              text="Intial Setup"
               buttontype="SECONDARY"
-              clickHandler={lauchSalesPlayBot}
-            /> */}
-            {/* <OsButton
-              text="Launch Bot"
-              buttontype="SECONDARY"
-              clickHandler={}
-            /> */}
+              clickHandler={() => {
+                showElectronBotModal(true);
+              }}
+            />
+
             <OsButton
               text="Submit Form"
               buttontype="SECONDARY"
@@ -211,8 +167,7 @@ const DealRegDetail = () => {
                 setShowModal(true);
               }}
             />
-
-            <OsDropdown menu={{items: dropDownItemss}} />
+            <OsDropdown menu={{ items: dropDownItemss }} />
           </Space>
         </Col>
       </Row>
@@ -232,7 +187,7 @@ const DealRegDetail = () => {
         }
         width={583}
         open={showModal}
-        onOk={() => {}}
+        onOk={() => { }}
         onCancel={() => {
           setShowModal((p) => !p);
         }}
@@ -255,7 +210,21 @@ const DealRegDetail = () => {
           setShowSubmitFormModal(false);
           submitDealRegForm?.resetFields();
         }}
-        primaryButtonText={'Save'}
+        primaryButtonText={'Submit'}
+      />
+
+      <OsModal
+        // loading={dealRegLoading}
+        title="Electron Bot Setup"
+        bodyPadding={22}
+        body={<ElectronBot />}
+        width={583}
+        open={electronBotModal}
+        // onOk={submitDealRegForm?.submit}
+        onCancel={() => {
+          showElectronBotModal(false);
+        }}
+      // primaryButtonText={'Save'}
       />
     </div>
   );

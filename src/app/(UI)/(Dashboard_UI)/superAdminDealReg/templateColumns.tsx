@@ -395,7 +395,7 @@ function standardAttributesSection(
       dataIndex: 'is_active',
       key: 'is_active',
       width: 187,
-      render: (text: boolean) => <Checkbox checked={text} />,
+      render: (text: boolean) => <Checkbox disabled checked={text} />,
     },
     {
       title: (
@@ -410,7 +410,7 @@ function standardAttributesSection(
       dataIndex: 'is_required',
       key: 'is_required',
       width: 187,
-      render: (text: boolean) => <Checkbox checked={text} />,
+      render: (text: boolean) => <Checkbox disabled checked={text} />,
     },
     {
       title: (
@@ -425,7 +425,7 @@ function standardAttributesSection(
       dataIndex: 'is_view',
       key: 'is_view',
       width: 187,
-      render: (text: boolean) => <Checkbox checked={text} />,
+      render: (text: boolean) => <Checkbox disabled checked={text} />,
     },
     {
       title: 'Actions',

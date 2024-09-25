@@ -9,6 +9,9 @@ export const API = {
     salesforceDataAsItIs: '/auth/getSalesForceDataaForEditAsItIs',
     salesforceAddUpdate: '/auth/addSalesForceDataa',
     runSalesForceBot: '/auth/runSalesForceBot',
+    addForAccount: '/auth/addSalesForceDataaForAccount',
+    getFields: '/auth/getSalesForceFields',
+    getExcelData: '/auth/fetchAndParseExcel',
   },
   QUOTE: {
     INDEX: '/quote',
@@ -181,6 +184,7 @@ export const API = {
     GetDealRegByPartnerProgramId: '/dealReg/getDealRegByPartnerProgramId',
     UpdateDealRegStatus: '/dealReg/updateDealRegStatus',
     GetDealRegById: '/dealReg/getDealRegById',
+    DealRegFormScript: '/dealReg/dealRegFormScript',
   },
   DEALREGADDRESS: {
     INDEX: '/dealRegAddress',
@@ -212,6 +216,7 @@ export const API = {
     GetUnassignedProgram: '/partnerProgram/getUnassignedProgram',
     GetFormDataProgram: '/partnerProgram/getFormDataProgram',
     REQ_ADMIN: '/partnerProgram/upadteToRequestPartnerandprogramfromAmin',
+    LaunchPlayWright: '/partnerProgram/launchPlayWright',
   },
   DISTRIBUTOR: {
     INDEX: '/distributor',

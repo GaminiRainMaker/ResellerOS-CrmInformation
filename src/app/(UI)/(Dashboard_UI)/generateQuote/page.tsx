@@ -1,8 +1,8 @@
 'use client';
 
 import AddQuote from '@/app/components/common/addQuote';
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
@@ -12,15 +12,15 @@ import OsModal from '@/app/components/common/os-modal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {AttachmentOptions, selectData} from '@/app/utils/CONSTANTS';
-import {formatDate} from '@/app/utils/base';
-import {ArrowDownTrayIcon} from '@heroicons/react/24/outline';
-import {Badge, Form, MenuProps, notification} from 'antd';
+import { AttachmentOptions, selectData } from '@/app/utils/CONSTANTS';
+import { formatDate } from '@/app/utils/base';
+import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import { Badge, Form, MenuProps, notification } from 'antd';
 import TabPane from 'antd/es/tabs/TabPane';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {getAllBundle} from '../../../../../redux/actions/bundle';
-import {getAllContractSetting} from '../../../../../redux/actions/contractSetting';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getAllBundle } from '../../../../../redux/actions/bundle';
+import { getAllContractSetting } from '../../../../../redux/actions/contractSetting';
 import {
   getQuoteById,
   getQuoteByIdForFormStack,
@@ -31,8 +31,8 @@ import {
   getQuoteFileByQuoteId,
   getQuoteFileCount,
 } from '../../../../../redux/actions/quoteFile';
-import {getAllTableColumn} from '../../../../../redux/actions/tableColumn';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { getAllTableColumn } from '../../../../../redux/actions/tableColumn';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 const DownloadFile = dynamic(() => import('./DownloadFile'), {
   ssr: false,
 });
@@ -60,8 +60,8 @@ const ReviewQuotes = dynamic(() => import('./allTabs/ReviewQuotes'), {
 });
 
 import dynamic from 'next/dynamic';
-import {getRebateQuoteLineItemByQuoteId} from '../../../../../redux/actions/rebateQuoteLineitem';
-import {getAllValidationByQuoteId} from '../../../../../redux/actions/validation';
+import { getRebateQuoteLineItemByQuoteId } from '../../../../../redux/actions/rebateQuoteLineitem';
+import { getAllValidationByQuoteId } from '../../../../../redux/actions/validation';
 import DrawerContent from './DrawerContent';
 import GenerateQuoteAnalytics from './analytics';
 
@@ -76,8 +76,8 @@ const GenerateQuote: React.FC = () => {
   const getQuoteID = searchParams.get('id');
   const isView = searchParams.get('isView');
   const [activeTab, setActiveTab] = useState<any>('1');
-  const {loading} = useAppSelector((state) => state.quoteLineItem);
-  const {quoteById} = useAppSelector((state) => state.quote);
+  const { loading } = useAppSelector((state) => state.quoteLineItem);
+  const { quoteById } = useAppSelector((state) => state.quote);
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
   const [selectTedRowData, setSelectedRowData] = useState<any>([]);
   const [uploadFileData, setUploadFileData] = useState<any>([]);
@@ -89,15 +89,15 @@ const GenerateQuote: React.FC = () => {
     useState<boolean>(false);
   const [collapseActiveKeys, setCollapseActiveKeys] = useState<any>([]);
   const [selectedFilter, setSelectedFilter] = useState<string>('File Name');
-  const {data: tableColumnData} = useAppSelector((state) => state.tableColumn);
-  const {data: contractSettingData} = useAppSelector(
+  const { data: tableColumnData } = useAppSelector((state) => state.tableColumn);
+  const { data: contractSettingData } = useAppSelector(
     (state) => state.contractSetting,
   );
   const [tableColumnDataShow, setTableColumnDataShow] = useState<[]>();
   const [statusValue, setStatusValue] = useState<string>('');
   const [statusUpdateLoading, setStatusUpdateLoading] =
     useState<boolean>(false);
-  const {quoteFileUnverifiedById, getQuoteFileDataCount} = useAppSelector(
+  const { quoteFileUnverifiedById, getQuoteFileDataCount } = useAppSelector(
     (state) => state.quoteFile,
   );
   const [showUpdateLineItemModal, setShowUpdateLineItemModal] =
@@ -342,7 +342,7 @@ const GenerateQuote: React.FC = () => {
       name: (
         <Badge count={getQuoteFileDataCount}>
           <Typography
-            style={{padding: '10px'}}
+            style={{ padding: '10px' }}
             name="Body 4/Regular"
             cursor="pointer"
             color={token?.colorTextBase}
@@ -527,7 +527,7 @@ const GenerateQuote: React.FC = () => {
   return (
     <>
       {contextHolder}
-      <Space size={12} direction="vertical" style={{width: '100%'}}>
+      <Space size={12} direction="vertical" style={{ width: '100%' }}>
         <GenerateQuoteAnalytics />
 
         <Row justify="space-between" align="middle">
@@ -610,7 +610,7 @@ const GenerateQuote: React.FC = () => {
           </Col>
         </Row>
         <Row
-          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+          style={{ background: 'white', padding: '24px', borderRadius: '12px' }}
         >
           <OsTabs
             onChange={(e) => {
@@ -621,7 +621,7 @@ const GenerateQuote: React.FC = () => {
               <Space>
                 {' '}
                 {activeTab === '6' && isView === 'false' && (
-                  <div style={{marginTop: '20px'}}>
+                  <div style={{ marginTop: '20px' }}>
                     <OsButton
                       text="Add Attachment"
                       buttontype="PRIMARY"
@@ -642,7 +642,7 @@ const GenerateQuote: React.FC = () => {
                     {activeTab === '6' ? (
                       <CommonSelect
                         key={1}
-                        style={{width: '319px'}}
+                        style={{ width: '319px' }}
                         placeholder="Select Grouping here"
                         options={AttachmentOptions}
                         onChange={(e) => {
@@ -655,7 +655,7 @@ const GenerateQuote: React.FC = () => {
                       <CommonSelect
                         key={2}
                         disabled={activeTab === '1'}
-                        style={{width: '319px'}}
+                        style={{ width: '319px' }}
                         placeholder="Select Grouping here"
                         options={selectData}
                         onChange={(e) => {
@@ -669,7 +669,7 @@ const GenerateQuote: React.FC = () => {
 
                     {activeTab === '2' && isView === 'false' && (
                       <Space>
-                        <OsDropdown menu={{items}} />
+                        <OsDropdown menu={{ items }} />
                       </Space>
                     )}
                   </Space>
@@ -697,9 +697,9 @@ const GenerateQuote: React.FC = () => {
         open={open}
         width={450}
         footer={
-          <Row style={{width: '100%', float: 'right'}}>
+          <Row style={{ width: '100%', float: 'right' }}>
             <OsButton
-              btnStyle={{width: '100%'}}
+              btnStyle={{ width: '100%' }}
               buttontype="PRIMARY"
               text="Update Changes"
               clickHandler={form.submit}

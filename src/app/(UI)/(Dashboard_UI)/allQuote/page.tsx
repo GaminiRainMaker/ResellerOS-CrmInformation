@@ -5,8 +5,8 @@
 'use client';
 
 import AddQuote from '@/app/components/common/addQuote';
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
@@ -16,8 +16,8 @@ import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import CancelIcon from '../../../../../public/assets/static/CancelIcon.svg';
 import GreenCheckIcon from '../../../../../public/assets/static/greenCheckIcon.svg';
 
@@ -29,21 +29,21 @@ import {
 } from '../../../../../redux/actions/quote';
 
 import DailogModal from '@/app/components/common/os-modal/DialogModal';
-import {getAllSyncTable} from '../../../../../redux/actions/syncTable';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { getAllSyncTable } from '../../../../../redux/actions/syncTable';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import QuoteAnalytics from './analytics';
-import {tabItems} from './constants';
-import {getColumns, getExistingQuoteColumns} from './tableColumns';
-import {getResultedValue} from '@/app/utils/base';
+import { tabItems } from './constants';
+import { getColumns, getExistingQuoteColumns } from './tableColumns';
+import { getResultedValue } from '@/app/utils/base';
 
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const [activeTab, setActiveTab] = useState<any>('1');
-  const {loading, filteredByDate: filteredData} = useAppSelector(
+  const { loading, filteredByDate: filteredData } = useAppSelector(
     (state) => state.quote,
   );
-  const {userInformation} = useAppSelector((state) => state.user);
+  const { userInformation } = useAppSelector((state) => state.user);
   const router = useRouter();
   const [uploadFileData, setUploadFileData] = useState<any>([]);
   const [quoteData, setQuoteData] = useState<React.Key[]>([]);
@@ -110,55 +110,55 @@ const AllQuote: React.FC = () => {
       const quoteItems =
         activeTab === '3'
           ? quoteData?.filter((item: any) =>
-              userInformation?.Admin
-                ? item?.status?.includes('In Progress')
-                : userInformation?.id === item?.user_id &&
-                  item?.status?.includes('In Progress'),
-            )
+            userInformation?.Admin
+              ? item?.status?.includes('In Progress')
+              : userInformation?.id === item?.user_id &&
+              item?.status?.includes('In Progress'),
+          )
           : activeTab === '5'
             ? quoteData?.filter((item: any) =>
-                userInformation?.Admin
-                  ? item?.status?.includes('Needs Review') &&
-                    item?.user_id !== userInformation?.id
-                  : item?.status?.includes('Needs Review') &&
-                    item?.approver_id === userInformation?.id,
-              )
+              userInformation?.Admin
+                ? item?.status?.includes('Needs Review') &&
+                item?.user_id !== userInformation?.id
+                : item?.status?.includes('Needs Review') &&
+                item?.approver_id === userInformation?.id,
+            )
             : activeTab === '4'
               ? quoteData?.filter((item: any) =>
-                  userInformation?.Admin
-                    ? item?.status?.includes('Needs Review')
-                    : item?.status?.includes('Needs Review') &&
-                      item?.completed_by === userInformation?.id,
-                )
+                userInformation?.Admin
+                  ? item?.status?.includes('Needs Review')
+                  : item?.status?.includes('Needs Review') &&
+                  item?.completed_by === userInformation?.id,
+              )
               : activeTab === '1'
                 ? userInformation?.Admin
                   ? quoteData
                   : quoteData?.filter(
-                      (item: any) =>
-                        item?.user_id === userInformation?.id ||
-                        item?.approver_id === userInformation?.id,
-                    )
+                    (item: any) =>
+                      item?.user_id === userInformation?.id ||
+                      item?.approver_id === userInformation?.id,
+                  )
                 : activeTab === '6'
                   ? quoteData?.filter((item: any) =>
-                      userInformation?.Admin
-                        ? item?.status?.includes('Approved')
-                        : item?.status?.includes('Approved') &&
-                          item?.user_id === userInformation?.id,
-                    )
+                    userInformation?.Admin
+                      ? item?.status?.includes('Approved')
+                      : item?.status?.includes('Approved') &&
+                      item?.user_id === userInformation?.id,
+                  )
                   : activeTab === '7'
                     ? quoteData?.filter((item: any) =>
-                        userInformation?.Admin
-                          ? item?.status?.includes('Rejected')
-                          : item?.status?.includes('Rejected') &&
-                            item?.user_id === userInformation?.id,
-                      )
+                      userInformation?.Admin
+                        ? item?.status?.includes('Rejected')
+                        : item?.status?.includes('Rejected') &&
+                        item?.user_id === userInformation?.id,
+                    )
                     : activeTab === '2'
                       ? quoteData?.filter((item: any) =>
-                          userInformation?.Admin
-                            ? item?.status?.includes('Drafts')
-                            : userInformation?.id === item?.user_id &&
-                              item?.status?.includes('Drafts'),
-                        )
+                        userInformation?.Admin
+                          ? item?.status?.includes('Drafts')
+                          : userInformation?.id === item?.user_id &&
+                          item?.status?.includes('Drafts'),
+                      )
                       : [];
       let newArrr = [...quoteItems];
       let sortedArrr = newArrr?.sort((a: any, b: any) => {
@@ -187,19 +187,13 @@ const AllQuote: React.FC = () => {
 
   const editQuote = (quoteId: string) => {
     if (activeTab === '5') {
-      router.push(
-        `/generateQuote?id=${quoteId}&isView=${getResultedValue()}`,
-      );
+      router.push(`/generateQuote?id=${quoteId}&isView=${getResultedValue()}`);
     } else {
-      router.push(
-        `/generateQuote?id=${quoteId}&isView=${getResultedValue()}`,
-      );
+      router.push(`/generateQuote?id=${quoteId}&isView=${getResultedValue()}`);
     }
   };
   const quoteNameNavigation = (quoteId: string) => {
-    window.open(
-      `/generateQuote?id=${quoteId}&isView=${getResultedValue()}`,
-    );
+    window.open(`/generateQuote?id=${quoteId}&isView=${getResultedValue()}`);
   };
 
   const updateStatus = () => {
@@ -215,7 +209,7 @@ const AllQuote: React.FC = () => {
   };
 
   const deleteQuote = async () => {
-    const data = {Ids: deleteIds};
+    const data = { Ids: deleteIds };
     await dispatch(deleteQuoteById(data));
     setTimeout(() => {
       dispatch(getQuotesByDateFilter({}));
@@ -258,14 +252,14 @@ const AllQuote: React.FC = () => {
   };
 
   const dropDownItems = [
-    {
-      key: '1',
-      label: (
-        <Typography name="Body 3/Regular" cursor="pointer">
-          Download Selected
-        </Typography>
-      ),
-    },
+    // {
+    //   key: '1',
+    //   label: (
+    //     <Typography name="Body 3/Regular" cursor="pointer">
+    //       Download Selected
+    //     </Typography>
+    //   ),
+    // },
     {
       key: '2',
       label: (
@@ -294,7 +288,7 @@ const AllQuote: React.FC = () => {
 
   return (
     <>
-      <Space size={24} direction="vertical" style={{width: '100%'}}>
+      <Space size={24} direction="vertical" style={{ width: '100%' }}>
         <QuoteAnalytics />
         <Row justify="space-between" align="middle">
           <Col>
@@ -329,13 +323,13 @@ const AllQuote: React.FC = () => {
               />
 
               <Space>
-                <OsDropdown menu={{items: dropDownItems}} />
+                <OsDropdown menu={{ items: dropDownItems }} />
               </Space>
             </div>
           </Col>
         </Row>
         <Row
-          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+          style={{ background: 'white', padding: '24px', borderRadius: '12px' }}
         >
           <OsTabs
             onChange={(e) => {
@@ -351,7 +345,7 @@ const AllQuote: React.FC = () => {
                     placeholder="MM-DD-YYYY"
                     format="MM-DD-YYYY"
                     onChange={(v: any) => {
-                      const obj: any = {...fromToDates};
+                      const obj: any = { ...fromToDates };
                       obj.afterDays = v;
                       setFromToDates(v);
                     }}
@@ -364,7 +358,7 @@ const AllQuote: React.FC = () => {
                     placeholder="MM-DD-YYYY"
                     format="MM-DD-YYYY"
                     onChange={(v: any) => {
-                      const obj: any = {...fromToDates};
+                      const obj: any = { ...fromToDates };
                       obj.beforeDays = v;
                       setFromToDates(v);
                     }}
@@ -381,10 +375,10 @@ const AllQuote: React.FC = () => {
                   <Typography
                     cursor="pointer"
                     name="Button 1"
-                    style={{cursor: 'pointer'}}
+                    style={{ cursor: 'pointer' }}
                     color={token?.colorLink}
                     onClick={() => {
-                      setFromToDates({beforeDays: null, afterDays: null});
+                      setFromToDates({ beforeDays: null, afterDays: null });
                     }}
                   >
                     Reset
@@ -412,7 +406,11 @@ const AllQuote: React.FC = () => {
                     dataSource={activeQuotes}
                     scroll
                     loading={loading}
-                    locale={emptyContainer}
+                    locale={
+                      activeTab?.includes('1') || activeTab?.includes('2')
+                        ? locale
+                        : localeforOtherStatus
+                    }
                     rowSelection={rowSelection}
                   />
                 ),

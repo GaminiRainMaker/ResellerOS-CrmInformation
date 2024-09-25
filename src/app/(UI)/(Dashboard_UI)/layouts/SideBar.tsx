@@ -134,9 +134,9 @@ const SideBar = () => {
     } else if (pathname?.includes('superAdminDealReg')) {
       setSelectedKey(7);
     } else if (pathname?.includes('dealReg')) {
+      setSelectedKey(7);
+    } else if (pathname?.includes('assertMapping')) {
       setSelectedKey(8);
-    } else if (pathname?.includes(' Orders AI')) {
-      setSelectedKey(9);
     } else if (pathname?.includes('partners')) {
       setSelectedKey(10);
     } else if (pathname?.includes('superAdminPartner')) {
@@ -690,13 +690,137 @@ const SideBar = () => {
         </Typography>,
         '7',
       ),
+    isAdmin &&
+      Role === 'superAdmin' &&
+      getItem(
+        <Space>
+          <Typography
+            cursor="pointer"
+            onClick={() => {
+              setSelectedKey(7);
+              setCrmChildKey(0);
+              router?.push('/assertMapping');
+            }}
+            name="Button 1"
+            color={token?.colorTextSecondary}
+          >
+            {' '}
+            <OsAvatar
+              icon={
+                <ShoppingBagIcon
+                  color={
+                    selectedKey === 8 || selectedKey === 7
+                      ? token?.colorLink
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              color={
+                selectedKey === 8 || selectedKey === 7
+                  ? token?.colorLink
+                  : token?.colorTextSecondary
+              }
+              style={{marginLeft: '12px'}}
+            >
+              Order AI{' '}
+            </Typography>
+          </Typography>
+        </Space>,
+        '7',
+        '',
+        [
+          // getItem(
+          //   <Space
+          //     size={12}
+          //     onClick={() => {
+          //       setSelectedKey(7);
+          //       router?.push('/dealReg');
+          //     }}
+          //   >
+          //     <OsAvatar
+          //       icon={
+          //         selectedKey === 7 ? (
+          //           <Image
+          //             src={ActiveCrmIcon}
+          //             alt="ActiveCrmIcon"
+          //             style={{width: '15px', height: '15px'}}
+          //           />
+          //         ) : (
+          //           <Image
+          //             src={InActiveCrmIcon}
+          //             alt="InActiveCrmIcon"
+          //             style={{width: '15px', height: '15px'}}
+          //           />
+          //         )
+          //       }
+          //     />
+          //     <Typography
+          //       name="Button 1"
+          //       cursor="pointer"
+          //       color={
+          //         selectedKey === 7
+          //           ? token.colorPrimaryBorder
+          //           : token?.colorTextSecondary
+          //       }
+          //     >
+          //       DealReg AI
+          //     </Typography>
+          //   </Space>,
+          //   '7',
+          // ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(8);
+                router?.push('/assertMapping');
+              }}
+            >
+              <OsAvatar
+                icon={
+                  selectedKey === 8 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                name="Button 1"
+                cursor="pointer"
+                color={
+                  selectedKey === 8
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                Asset Mappings
+              </Typography>
+            </Space>,
+            '8',
+          ),
+        ],
+      ),
     isDealReg &&
       Role === 'superAdmin' &&
       getItem(
         <Typography
           cursor="pointer"
           onClick={() => {
-            setSelectedKey(8);
+            setSelectedKey(9);
             setCrmChildKey(0);
             router?.push('/superAdminDealReg');
           }}
@@ -708,7 +832,7 @@ const SideBar = () => {
               icon={
                 <ReceiptPercentIcon
                   color={
-                    selectedKey === 8
+                    selectedKey === 9
                       ? token?.colorLink
                       : token?.colorTextSecondary
                   }
@@ -724,7 +848,7 @@ const SideBar = () => {
                 marginTop: '1px',
               }}
               color={
-                selectedKey === 8 ? token?.colorLink : token?.colorTextSecondary
+                selectedKey === 9 ? token?.colorLink : token?.colorTextSecondary
               }
             >
               {' '}
@@ -732,7 +856,7 @@ const SideBar = () => {
             </Typography>
           </Space>
         </Typography>,
-        '8',
+        '9',
       ),
     // isOrderAI &&
     //   getItem(

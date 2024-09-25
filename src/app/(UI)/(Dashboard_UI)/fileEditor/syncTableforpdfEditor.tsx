@@ -7,7 +7,7 @@
 
 'use client';
 
-import {Divider} from '@/app/components/common/antd/Divider';
+import { Divider } from '@/app/components/common/antd/Divider';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
@@ -24,28 +24,31 @@ import {
   getValuesOFLineItemsThoseNotAddedBefore,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
-import {Col, Row, notification} from 'antd';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
+import { Col, Row, notification } from 'antd';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { FC, useEffect, useState } from 'react';
 import {
   insertLineItemSyncing,
   insertLineItemSyncingForSalesForce,
 } from '../../../../../redux/actions/LineItemSyncing';
-import {addSalesForceDataa} from '../../../../../redux/actions/auth';
-import {getContractInBulkByProductCode} from '../../../../../redux/actions/contractProduct';
-import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
+import {
+  addSalesForceDataa,
+  addSalesForceDataaForAccount,
+} from '../../../../../redux/actions/auth';
+import { getContractInBulkByProductCode } from '../../../../../redux/actions/contractProduct';
+import { insertOpportunityLineItem } from '../../../../../redux/actions/opportunityLineItem';
 import {
   getBulkProductIsExisting,
   insertProductsInBulk,
 } from '../../../../../redux/actions/product';
-import {insertProfitability} from '../../../../../redux/actions/profitability';
-import {updateQuoteJsonAndManual} from '../../../../../redux/actions/quote';
-import {quoteFileVerification} from '../../../../../redux/actions/quoteFile';
-import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
-import {getRebatesInBulkByProductCode} from '../../../../../redux/actions/rebate';
-import {insertRebateQuoteLineItem} from '../../../../../redux/actions/rebateQuoteLineitem';
-import {insertValidation} from '../../../../../redux/actions/validation';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { insertProfitability } from '../../../../../redux/actions/profitability';
+import { updateQuoteJsonAndManual } from '../../../../../redux/actions/quote';
+import { quoteFileVerification } from '../../../../../redux/actions/quoteFile';
+import { insertQuoteLineItem } from '../../../../../redux/actions/quotelineitem';
+import { getRebatesInBulkByProductCode } from '../../../../../redux/actions/rebate';
+import { insertRebateQuoteLineItem } from '../../../../../redux/actions/rebateQuoteLineitem';
+import { insertValidation } from '../../../../../redux/actions/validation';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 
 type DataItem = {
   preVal: string;
@@ -59,6 +62,7 @@ type UpdatedDataItem = {
   status: string;
   quote_file_id: number;
   is_salesforce: boolean;
+  assert_mapping: boolean;
 };
 type SalesUpdatedDataItem = {
   pdf_header: string;
@@ -80,6 +84,7 @@ interface EditPdfDataInterface {
   lineItemSyncingData?: any;
   CurrentFileId?: any;
   currentFileData?: any;
+  accoutSyncOptions?: any;
 }
 const SyncTableData: FC<EditPdfDataInterface> = ({
   setMergedVaalues,
@@ -94,21 +99,16 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   lineItemSyncingData,
   CurrentFileId,
   currentFileData,
+  accoutSyncOptions,
 }) => {
   const dispatch = useAppDispatch();
-  const {userInformation} = useAppSelector((state) => state.user);
+  const { userInformation } = useAppSelector((state) => state.user);
   const [syncedNewValue, setNewSyncedValue] = useState<any>();
-  const {quoteFileById} = useAppSelector((state) => state.quoteFile);
+  const { quoteFileById } = useAppSelector((state) => state.quoteFile);
 
-  const {data: syncTableData, loading: syncDataLoading} = useAppSelector(
+  const { data: syncTableData, loading: syncDataLoading } = useAppSelector(
     (state) => state.syncTable,
   );
-
-  const ApprovedQuoteMappingData =
-    lineItemSyncingData &&
-    lineItemSyncingData?.filter(
-      (LineItemSyncingItem: any) => LineItemSyncingItem?.status === 'Approved',
-    );
 
   const [token] = useThemeToken();
   const searchParams = useSearchParams()!;
@@ -119,8 +119,16 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const salesForceFiledId = searchParams.get('file_Id');
   const SaleQuoteId = searchParams.get('quote_Id');
   const salesFOrceManual = searchParams.get('manual');
-
+  const fullStackManul = searchParams.get('manualFlow');
+  const salesFOrceAccoutId = searchParams.get('AccountId');
+  const salesFOrceAccoutFlow = searchParams.get('accoutFlow');
   const salesForceUrl = searchParams.get('instance_url');
+
+  const ApprovedQuoteMappingData: any =
+    lineItemSyncingData &&
+    lineItemSyncingData?.filter(
+      (LineItemSyncingItem: any) => LineItemSyncingItem?.status === 'Approved',
+    );
   const [syncTableQuoteLItemValues, setSyncTableQuoteLItemValues] =
     useState<any>(
       SaleQuoteId
@@ -128,6 +136,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         : quoteLineItemColumnForSync,
       // ,
     );
+
+  console.log("SaleForceQuoteLineItemColumnSync", SaleForceQuoteLineItemColumnSync)
   const router = useRouter();
   const mergeedColumn: any = [];
   const keys = mergedValue?.length > 0 && Object.keys(mergedValue?.[0]);
@@ -140,9 +150,18 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     });
   }
   useEffect(() => {
+    if ((salesFOrceAccoutFlow && salesFOrceAccoutFlow === 'true') || salesForceUrl) {
+      setSyncTableQuoteLItemValues(accoutSyncOptions);
+    }
+  }, [accoutSyncOptions]);
+
+  useEffect(() => {
     const newSyncTableData =
       syncedNewValue?.length > 0 ? [...syncedNewValue] : [];
-    let newSyncOptionChecks = syncTableQuoteLItemValues;
+    let newSyncOptionChecks =
+      salesFOrceAccoutFlow === 'true' || salesForceUrl
+        ? accoutSyncOptions
+        : syncTableQuoteLItemValues;
 
     mergeedColumn?.map((mergeItem: string, indexMerge: number) => {
       const NewFilterOption = newSyncOptionChecks?.find((item: any) =>
@@ -192,7 +211,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     setSyncTableQuoteLItemValues(newSyncOptionChecks);
     setNewSyncedValue(newSyncTableData);
   }, []);
-
   const syncTableToLineItems = (
     preValue: string,
     newSyncValue: string,
@@ -262,12 +280,19 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       syncedNewValue
         ?.filter((item: DataItem) => item.newVal !== '')
         .map(
-          ({preVal, newVal}: DataItem): UpdatedDataItem => ({
+          ({ preVal, newVal }: DataItem): UpdatedDataItem => ({
             pdf_header: preVal,
             quote_header: newVal,
             status: 'Pending',
-            quote_file_id: Number(getQuoteFileId),
-            is_salesforce: SaleQuoteId ? true : false,
+            quote_file_id:
+              fullStackManul === 'true'
+                ? currentFileData?.id
+                : salesFOrceManual === 'true'
+                  ? currentFileData?.FileId
+                  : Number(getQuoteFileId),
+            is_salesforce:
+              SaleQuoteId || salesFOrceAccoutFlow === 'true' ? true : false,
+            assert_mapping: salesFOrceAccoutFlow === 'true' ? true : false,
           }),
         );
 
@@ -280,7 +305,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         syncedNewValue
           ?.filter((item: DataItem) => item.newVal !== '')
           .map(
-            ({preVal, newVal}: DataItem): SalesUpdatedDataItem => ({
+            ({ preVal, newVal }: DataItem): SalesUpdatedDataItem => ({
               pdf_header: preVal,
               quote_header: newVal,
               status: 'Pending',
@@ -312,7 +337,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       // currentFileName
       Object.keys(obj).forEach((key) => {
         // Only add to the cleaned object if key is not empty and value is defined
-        if (key !== '' && obj[key] !== undefined) {
+        if (key !== '' && obj[key] !== undefined && obj[key] !== '') {
           cleanedObj[key] = obj[key];
         }
       });
@@ -323,19 +348,65 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     let requiredOutput = alllArrayValue.map((obj: any) => cleanObject(obj));
     let newArrWIthFileName: any = [];
     requiredOutput?.map((items: any) => {
-      newArrWIthFileName?.push({
+      let newObj = {
         ...items,
-        file_name: currentFileData?.file_name,
-        file_id: manualFlow ? salesForceFiledId : currentFileData?.fileId,
-      });
+      };
+      if (salesFOrceAccoutFlow === 'true') {
+        newObj.AccountId = salesFOrceAccoutId;
+      } else {
+        (newObj.rosquoteai__File_Name__c = currentFileData?.file_name),
+          (newObj.rosquoteai__SF_File_Id__c =
+            salesFOrceManual === 'true'
+              ? currentFileData?.FileId
+              : salesForceFiledId);
+      }
+      let string = items?.rosquoteai__Product_Code__c?.trim();
+
+      delete newObj.rosquoteai__Product_Code__c;
+
+      // Remove any remaining spaces and newlines within the string
+      let newProductCode = string && string.replace(/\s+/g, '');
+      if (newProductCode) {
+        newObj.rosquoteai__Product_Code__c = newProductCode;
+      }
+      newArrWIthFileName?.push(newObj);
+      // newArrWIthFileName?.push({
+      //   ...items,
+      //   file_name: currentFileData?.file_name,
+      //   file_id:
+      //     salesFOrceManual === 'true'
+      //       ? currentFileData?.FileId
+      //       : salesForceFiledId,
+      // });
     });
 
-    if (SaleQuoteId && newArrWIthFileName?.length > 0) {
+    if (
+      (SaleQuoteId && newArrWIthFileName?.length > 0) ||
+      (salesFOrceAccoutFlow === 'true' && newArrWIthFileName?.length > 0)
+    ) {
       const findProduct = syncedNewValue?.find(
-        (items: any) => items?.newVal === 'product_code',
+        (items: any) => items?.newVal === 'rosquoteai__Product_Code__c',
+      );
+      const findName = syncedNewValue?.find(
+        (items: any) => items?.newVal === 'Name',
       );
 
-      if (!findProduct || findProduct === undefined) {
+      if (
+        (!findName || findName === undefined) &&
+        salesFOrceAccoutFlow === 'true'
+      ) {
+        notification.open({
+          message:
+            ' Assert Name is madatory. Please Sync  Assert Name to Proceed',
+          type: 'error',
+        });
+        setNanonetsLoading(false);
+        return;
+      }
+      if (
+        (!findProduct || findProduct === undefined) &&
+        salesFOrceAccoutFlow !== 'true'
+      ) {
         notification.open({
           message:
             'Product Code is madatory. Please Sync Product Code to Proceed',
@@ -344,38 +415,85 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         setNanonetsLoading(false);
         return;
       }
-      let newdata = {
-        token: salesToken,
-        // documentId: salesForceFiledId,
-        urls: salesForceUrl,
-        QuoteId: SaleQuoteId,
-        FileId: manualFlow ? salesForceFiledId : currentFileData?.fileId,
-        // FileId: '0Q09I0000002Bc5SAE',
-        action: 'ExportFileToTable',
-        lineItem: newArrWIthFileName,
-      };
+      // let cleanObjecto = (obj: any) => {
+      //   let cleanedObj: any = {};
+      //   // Iterate through the keys of the object
+      //   // currentFileName
+      //   Object.keys(obj).forEach((key) => {
+      //     // Only add to the cleaned object if key is not empty and value is defined
+      //     if (key !== '' && obj[key] !== undefined && obj[key] !== '') {
+      //       cleanedObj[key] = obj[key];
+      //     }
+      //   });
+      //   return cleanedObj;
+      // }
+      if (salesFOrceAccoutFlow === 'true') {
 
-      await dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
-        let messgaeForApi = payload?.payload?.message;
-        notification.open({
-          message: messgaeForApi,
-          type: 'info',
-        });
-        if (manualFlow) {
+        // let requiredOutput = newArrWIthFileName.map((obj: any) => cleanObjecto(obj));
+
+
+        let newdata = {
+          token: salesToken,
+          AccountId: salesFOrceAccoutId,
+          urls: salesForceUrl,
+          lineItem: newArrWIthFileName,
+        };
+
+        await dispatch(addSalesForceDataaForAccount(newdata))?.then(
+          (payload: any) => {
+            let messgaeForApi = payload?.payload?.message;
+            notification.open({
+              message: messgaeForApi,
+              type: 'info',
+            });
+            if (salesFOrceManual === 'false') {
+              notification.open({
+                message: 'Please close the  window',
+                type: 'info',
+              });
+            }
+          },
+        );
+
+        setNanonetsLoading(false);
+        return;
+      } else {
+        let newdata = {
+          token: salesToken,
+          // documentId: salesForceFiledId,
+          urls: salesForceUrl,
+          QuoteId: SaleQuoteId,
+          FileId:
+            salesFOrceManual === 'true'
+              ? currentFileData?.FileId
+              : salesForceFiledId,
+          // FileId: '0Q09I0000002Bc5SAE',
+          action: 'ExportFileToTable',
+          lineItem: newArrWIthFileName,
+        };
+
+        await dispatch(addSalesForceDataa(newdata))?.then((payload: any) => {
+          let messgaeForApi = payload?.payload?.message;
           notification.open({
-            message: 'Please close the review quotes window',
+            message: messgaeForApi,
             type: 'info',
           });
-        }
-      });
+          if (salesFOrceManual === 'false') {
+            notification.open({
+              message: 'Please close the review quotes window',
+              type: 'info',
+            });
+          }
+        });
 
-      setNanonetsLoading(false);
-      if (!manualFlow) {
-        setTimeout(() => {
-          checkForNewFileForSalesForce();
-        }, 2000);
+        setNanonetsLoading(false);
+        if (salesFOrceManual === 'true') {
+          setTimeout(() => {
+            checkForNewFileForSalesForce();
+          }, 2000);
+        }
+        return;
       }
-      return;
     }
     const newrrLineItems: any = [];
     const rebateDataArray: any = [];
@@ -469,11 +587,16 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             );
             // console.log('4354354353454', itemsOfProduct, itemsToAdd);
             const obj1: any = {
-              quote_file_id: getQuoteFileId
-                ? getQuoteFileId
-                : quoteFileById?.[0]?.id
-                  ? quoteFileById?.[0]?.id
-                  : getQuoteFileId,
+              quote_file_id:
+                fullStackManul === 'true'
+                  ? currentFileData?.id
+                  : salesFOrceManual === 'true'
+                    ? currentFileData?.FileId
+                    : getQuoteFileId
+                      ? getQuoteFileId
+                      : quoteFileById?.[0]?.id
+                        ? quoteFileById?.[0]?.id
+                        : getQuoteFileId,
               quote_id: Number(getQuoteID),
               product_id: itemsToAdd?.id,
               product_code: itemsToAdd?.product_code,
@@ -559,7 +682,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
 
       resultArrForAllArr?.map((itemss: any) => {
         const singleObjects = itemss.reduce(
-          (obj: any, item: any) => Object.assign(obj, {[item.key]: item.value}),
+          (obj: any, item: any) => Object.assign(obj, { [item.key]: item.value }),
           {},
         );
         finalOpportunityArray?.push(singleObjects);
@@ -567,7 +690,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     }
 
     if (newrrLineItems && newrrLineItems.length > 0) {
-      dispatch(insertQuoteLineItem(newrrLineItems)).then((d) => {
+      dispatch(insertQuoteLineItem(newrrLineItems)).then((d: any) => {
         if (rebateDataArray && rebateDataArray.length > 0) {
           const data = genericFun(d?.payload, rebateDataArray);
           dispatch(insertRebateQuoteLineItem(data));
@@ -587,13 +710,16 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       dispatch(insertOpportunityLineItem(finalOpportunityArray));
     }
     let fileIdLatest = searchParams.get('fileId');
-    dispatch(
+    await dispatch(
       quoteFileVerification({
-        id: fileIdLatest
-          ? fileIdLatest
-          : quoteFileById?.[0]?.id
-            ? quoteFileById?.[0]?.id
-            : fileIdLatest,
+        id:
+          fullStackManul === 'true'
+            ? currentFileData?.id
+            : fileIdLatest
+              ? fileIdLatest
+              : quoteFileById?.[0]?.id
+                ? quoteFileById?.[0]?.id
+                : fileIdLatest,
       }),
     );
     routingConditions();
@@ -604,7 +730,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   const handleChange = () => {
     // This defines which option we are using salesforce or full stack
     let optionsTOAdd = SaleQuoteId
-      ? SaleForceQuoteLineItemColumnSync
+      ? salesFOrceAccoutFlow === 'true' || salesForceUrl
+        ? accoutSyncOptions
+        : SaleForceQuoteLineItemColumnSync
       : quoteLineItemColumnForSync;
     let newArrOfOptions: any = [];
     // This defines the options already added to the synced values
@@ -634,7 +762,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   useEffect(() => {
     handleChange();
   }, [syncedNewValue]);
-
+  console.log("accoutSyncOptionsaccoutSyncOptions", accoutSyncOptions)
   return (
     <>
       <GlobalLoader loading={nanonetsLoading}>
@@ -646,10 +774,10 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           }}
         >
           <Col>
-            <Row style={{marginTop: '6px'}}>
+            <Row style={{ marginTop: '6px' }}>
               {' '}
               <Typography
-                style={{marginLeft: '10px'}}
+                style={{ marginLeft: '10px' }}
                 align="center"
                 name="Body 3/Medium"
               >
@@ -658,17 +786,17 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             </Row>
             <Divider />
             {mergeedColumn?.map((item: any) => (
-              <Row style={{marginTop: '6px'}}>
+              <Row style={{ marginTop: '6px' }}>
                 <OsInput disabled value={formatStatus(item)} />
               </Row>
             ))}
           </Col>
 
           <Col>
-            <Row style={{marginTop: '6px'}}>
+            <Row style={{ marginTop: '6px' }}>
               {' '}
               <Typography
-                style={{marginLeft: '10px'}}
+                style={{ marginLeft: '10px' }}
                 align="center"
                 name="Body 3/Medium"
               >
@@ -684,7 +812,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
               );
 
               return (
-                <Row style={{marginTop: '6px'}}>
+                <Row style={{ marginTop: '6px' }}>
                   <CommonSelect
                     onChange={(e) => {
                       syncTableToLineItems(item, e, indexOfCol);
@@ -701,8 +829,12 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                     defaultValue={formatStatus(
                       newLabel?.label?.toString()?.toUpperCase(),
                     )}
-                    style={{width: '250px'}}
-                    options={syncTableQuoteLItemValues}
+                    style={{ width: '250px' }}
+                    options={
+                      salesFOrceAccoutFlow === 'true' || salesForceUrl
+                        ? accoutSyncOptions
+                        : syncTableQuoteLItemValues
+                    }
                   />
                 </Row>
               );

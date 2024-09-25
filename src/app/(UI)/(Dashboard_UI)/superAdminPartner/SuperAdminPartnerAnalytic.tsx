@@ -74,6 +74,7 @@ const SuperAdminPartnerAnalytics: FC<any> = ({data}) => {
             secondaryText={item?.secondry}
             fallbackIcon={item?.icon}
             iconBg={item?.iconBg}
+            isNotification={false}
           />
         </Col>
       ))}

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {API} from './CONSTANTS';
-import {post, get} from './index';
+import { API } from './CONSTANTS';
+import { post, get } from './index';
 
 export const AUTH_API = {
   // get: () => get(API.BUNDLE.INDEX) as Promise<AxiosResponse<[]>>,
@@ -15,4 +15,9 @@ export const AUTH_API = {
   postSalesGet: (data: any) => post(API.AUTH.salesforceFileGet, data),
   getAsItIs: (data: any) => post(API.AUTH.salesforceDataAsItIs, data),
   addUpdateSales: (data: any) => post(API.AUTH.salesforceAddUpdate, data),
+  addForAccount: (data: any) => post(API.AUTH.addForAccount, data),
+  getExcelData: (data: any) => post(API.AUTH.getExcelData, data),
+
+
+  getFields: (data: any) => post(API.AUTH.getFields, data),
 };

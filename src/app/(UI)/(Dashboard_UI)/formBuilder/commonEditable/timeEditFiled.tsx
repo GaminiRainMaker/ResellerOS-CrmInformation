@@ -218,7 +218,9 @@ const TimeEditFileds: React.FC<EditableFiledsCommonInterface> = ({
                 defaultValue={CommonIndexOfUse?.columnRequired}
                 value={CommonIndexOfUse?.columnRequired}
                 onChange={(e: any) => {
-                  changeFieldValues(e?.target?.value, 'columnRequired');
+                  if (e?.target?.value > 0) {
+                    changeFieldValues(e?.target?.value, 'columnRequired');
+                  }
                 }}
               />
             </>

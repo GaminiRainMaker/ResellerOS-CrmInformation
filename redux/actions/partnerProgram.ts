@@ -106,3 +106,15 @@ export const upadteToRequestPartnerandprogramfromAmin = createAsyncThunk(
     }
   },
 );
+
+export const launchPlayWright = createAsyncThunk(
+  'partnerProgram/launchPlayWright',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PARTNER_PROGRAM_API.launchPlayWright();
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

@@ -3,19 +3,19 @@
 
 'use client';
 
-import {Space} from '@/app/components/common/antd/Space';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import CommonSelect from '@/app/components/common/os-select';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
-import {ExclamationCircleIcon, UsersIcon} from '@heroicons/react/24/outline';
-import {Col, Row} from 'antd';
+import { ExclamationCircleIcon, UsersIcon } from '@heroicons/react/24/outline';
+import { Col, Row } from 'antd';
 import moment from 'moment';
 import Image from 'next/image';
-import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import creditCard from '../../../../../public/assets/static/card-pos.svg';
 import doubleCheckIcon from '../../../../../public/assets/static/doubleCheckIcon.svg';
@@ -24,7 +24,7 @@ import {
   getEarlierNotifications,
   getRecentNotifications,
 } from '../../../../../redux/actions/notifications';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import {
   CustomNotificationCard,
   CustomNotificationWrapper,
@@ -42,8 +42,8 @@ const SuperAdminPartner: React.FC = () => {
   const router = useRouter();
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
-  const {userInformation} = useAppSelector((state) => state.user);
-  const {earlierNotification, recentNotification, loading} = useAppSelector(
+  const { userInformation } = useAppSelector((state) => state.user);
+  const { earlierNotification, recentNotification, loading } = useAppSelector(
     (state) => state.notification,
   );
   const [recentData, setRecentData] = useState<any>(recentNotification);
@@ -98,7 +98,6 @@ const SuperAdminPartner: React.FC = () => {
       setEarlierData(earlierNotification);
     }
   };
-
   return (
     <>
       <GlobalLoader loading={loading}>
@@ -113,7 +112,7 @@ const SuperAdminPartner: React.FC = () => {
               <CommonSelect
                 defaultValue="all_notifications"
                 placeholder="Select"
-                style={{width: '200px', background: 'none'}}
+                style={{ width: '200px', background: 'none' }}
                 options={notificatoinOptions}
                 onChange={(e: any) => {
                   filterOptionFun(e);
@@ -126,7 +125,7 @@ const SuperAdminPartner: React.FC = () => {
                   <Image
                     src={doubleCheckIcon}
                     alt="doubleCheckIcon"
-                    style={{cursor: 'pointer', width: '18px', height: '16px'}}
+                    style={{ cursor: 'pointer', width: '18px', height: '16px' }}
                     sizes="10px"
                   />
                 }
@@ -167,7 +166,7 @@ const SuperAdminPartner: React.FC = () => {
                   <Image
                     src={creditCard}
                     alt="creditCard"
-                    style={{cursor: 'pointer', width: '24px', height: '24px'}}
+                    style={{ cursor: 'pointer', width: '24px', height: '24px' }}
                   />
                 );
                 fallBackBg = ' #E6E7EE';
@@ -178,6 +177,7 @@ const SuperAdminPartner: React.FC = () => {
                 fallBackBg = token?.colorInfoBgHover;
               }
               return (
+
                 <CustomNotificationWrapper>
                   <CustomNotificationCard
                     isRead={itemNoti?.is_read}
@@ -196,10 +196,12 @@ const SuperAdminPartner: React.FC = () => {
                       }
                     }}
                   >
+
                     <Col>
                       <TableNameColumn
                         key={itemNoti?.id}
                         justifyContent="start"
+                        isNotification={true}
                         secondaryText={itemNoti?.description}
                         primaryTextTypography="Body 1/Medium"
                         cursor="pointer"
@@ -209,7 +211,7 @@ const SuperAdminPartner: React.FC = () => {
                         iconBg={fallBackBg}
                         logo={
                           itemNoti?.type === 'subscription' ||
-                          itemNoti?.type === 'quote'
+                            itemNoti?.type === 'quote'
                             ? null
                             : itemNoti?.User?.profile_image
                         }
@@ -252,7 +254,7 @@ const SuperAdminPartner: React.FC = () => {
                   <Image
                     src={creditCard}
                     alt="creditCard"
-                    style={{cursor: 'pointer', width: '24px', height: '24px'}}
+                    style={{ cursor: 'pointer', width: '24px', height: '24px' }}
                   />
                 );
                 fallBackBg = ' #E6E7EE';
@@ -295,11 +297,12 @@ const SuperAdminPartner: React.FC = () => {
                         iconBg={fallBackBg}
                         logo={
                           itemNoti?.type === 'subscription' ||
-                          itemNoti?.type === 'quote'
+                            itemNoti?.type === 'quote'
                             ? null
                             : itemNoti?.User?.profile_image
                         }
                         isBoldRequired
+                        isNotification={true}
                         isSubscription={itemNoti?.type === 'subscription'}
                       />
                     </Col>

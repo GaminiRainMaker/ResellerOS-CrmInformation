@@ -8,11 +8,11 @@ import {
   getResultedValue,
   getValuesOFLineItemsThoseNotAddedBefore,
 } from '@/app/utils/base';
-import {PlusIcon} from '@heroicons/react/24/outline';
-import {Form, message} from 'antd';
-import {useRouter} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
-import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
+import { PlusIcon } from '@heroicons/react/24/outline';
+import { Form, message } from 'antd';
+import { usePathname, useRouter } from 'next/navigation';
+import { FC, useEffect, useState } from 'react';
+import { insertOpportunityLineItem } from '../../../../../redux/actions/opportunityLineItem';
 import {
   getBulkProductIsExisting,
   insertProductsInBulk,
@@ -23,16 +23,16 @@ import {
   insertQuote,
   updateQuoteWithNewlineItemAddByID,
 } from '../../../../../redux/actions/quote';
-import {insertQuoteFile} from '../../../../../redux/actions/quoteFile';
-import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
+import { insertQuoteFile } from '../../../../../redux/actions/quoteFile';
+import { insertQuoteLineItem } from '../../../../../redux/actions/quotelineitem';
 import {
   uploadExcelFileToAws,
   uploadToAws,
 } from '../../../../../redux/actions/upload';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import OsButton from '../os-button';
 import OsUpload from '../os-upload';
-import {AddQuoteInterface, FormattedData} from './types';
+import { AddQuoteInterface, FormattedData } from './types';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
@@ -52,14 +52,16 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const [showModal, setShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const {userInformation} = useAppSelector((state) => state.user);
-  const {data: syncTableData} = useAppSelector((state) => state.syncTable);
+  const { userInformation } = useAppSelector((state) => state.user);
+  const { data: syncTableData } = useAppSelector((state) => state.syncTable);
   const [form] = Form.useForm();
+  let pathname = usePathname();
   const [loading, setLoading] = useState<boolean>(false);
   const [finalLoading, setFinalLoading] = useState<boolean>(false);
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
   const [typeOfAddQuote, setTypeOfAddQuote] = useState<number>(1);
   const [allValuesForManual, setAllValuesForManual] = useState<boolean>(false);
+
 
   useEffect(() => {
     if (existingQuoteId || existingGenerateQuoteId) {
@@ -72,7 +74,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
   }, [existingQuoteId, existingGenerateQuoteId]);
 
   const beforeUpload = (file: File) => {
-    const obj: any = {...file};
+    const obj: any = { ...file };
     let pathUsedToUpload = file?.type?.split('.')?.includes('spreadsheetml')
       ? uploadExcelFileToAws
       : uploadToAws;
@@ -82,7 +84,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
         obj.base64 = base64String;
         obj.file = file;
         setLoading(true);
-        dispatch(pathUsedToUpload({document: base64String})).then(
+        dispatch(pathUsedToUpload({ document: base64String })).then(
           (payload: any) => {
             const pdfUrl = payload?.payload?.data?.Location;
             obj.pdf_url = pdfUrl;
@@ -107,17 +109,25 @@ const AddQuote: FC<AddQuoteInterface> = ({
     let singleAddOnQuoteId: any;
     let newArrWithManual: any = [];
     let newArrWithoutManual: any = [];
+    let countOfExportFiles: number = 0;
 
     if (updatedArr && updatedArr?.length > 0) {
       updatedArr?.map((items: any) => {
         if (
-          (items?.manualquote ||
-            items?.model_id === 'a02fffb7-5221-44a2-8eb1-85781a0ecd67') &&
-          !items?.file?.type.includes('spreadsheetml')
+          items?.manualquote ||
+          (items?.model_id === 'a02fffb7-5221-44a2-8eb1-85781a0ecd67' &&
+            !items?.file?.type.includes('spreadsheetml'))
         ) {
+          if (
+            items?.model_id === 'a02fffb7-5221-44a2-8eb1-85781a0ecd67' &&
+            !items?.file?.type.includes('spreadsheetml')
+          ) {
+            countOfExportFiles = countOfExportFiles + 1;
+          }
           let newObj = {
             ...items,
             file_name: items?.file?.name,
+            type_of_file: items?.manualquote ? 'manual' : 'export',
           };
           newArrWithManual?.push(newObj);
         } else {
@@ -128,7 +138,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
     try {
       setFinalLoading(true);
-
+      setLoading(true);
       for (let i = 0; i < newArrWithoutManual.length; i++) {
         let quoteLineItemArr: any = [];
         const lineItemData: FormattedData = {};
@@ -172,6 +182,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
               };
             }
           });
+
           quoteObj = {
             ...quoteItem,
             nanonets_id: result?.id,
@@ -213,11 +224,12 @@ const AddQuote: FC<AddQuoteInterface> = ({
             ...quotesArr[i],
             organization: userInformation?.organization,
             // quote_name: Date.now(),
+
           };
           const response = await dispatch(insertQuote([newObj]));
           // eslint-disable-next-line no-unsafe-optional-chaining
 
-          quotesArr[i] = {...response?.payload?.data[0], ...quotesArr[i]};
+          quotesArr[i] = { ...response?.payload?.data[0], ...quotesArr[i] };
         }
       } else {
         const payload = await dispatch(getQuoteById(quoteId));
@@ -347,7 +359,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
         resultArrForAllArr?.map((itemss: any) => {
           const singleObjects = itemss.reduce(
             (obj: any, item: any) =>
-              Object.assign(obj, {[item.key]: item.value}),
+              Object.assign(obj, { [item.key]: item.value }),
             {},
           );
           finalOpportunityArray?.push(singleObjects);
@@ -359,9 +371,13 @@ const AddQuote: FC<AddQuoteInterface> = ({
       if (finalOpportunityArray && syncTableData?.length > 0) {
         await dispatch(insertOpportunityLineItem(finalOpportunityArray));
       }
-      setFinalLoading(false);
+      if (pathname !== '/allQuote') {
+        setFinalLoading(false);
+        setLoading(false);
+      }
     } catch (err) {
       setFinalLoading(false);
+      setLoading(false);
       console.log('object', err);
     }
     await dispatch(getQuotesByDateFilter({}));
@@ -402,6 +418,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           training_work: itemss?.training_work,
           distributor_name: itemss?.distributor_name,
           oem_name: itemss?.oem_name,
+          type_of_file: itemss?.type_of_file,
         };
         const insertedQuoteFile = await dispatch(
           insertQuoteFile(quoteFile),
@@ -409,14 +426,21 @@ const AddQuote: FC<AddQuoteInterface> = ({
           latestestFIleId = payload?.payload?.id;
         });
       }
-      router.push(
-        `/fileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${latestestFIleId}&quoteExist=false`,
-      );
-      // router.push(
-      //   `/manualFileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}`,
-      // );
+
+      if (countOfExportFiles > 0) {
+        
+        router.push(
+          `/fileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&quoteExist=false&manualFlow=true`,
+        );
+      } else {
+        
+        router.push(
+          `/manualFileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&manualFlow=true`,
+        );
+      }
     }
     if (newArrWithManual?.length === 0) {
+      
       router.push(
         `/generateQuote?id=${quotesArr[0]?.id}&isView=${getResultedValue()}`,
       );
@@ -449,6 +473,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
               training_work: itemss?.training_work,
               distributor_name: itemss?.distributor_name,
               oem_name: itemss?.oem_name,
+              type_of_file: itemss?.type_of_file,
             };
             const insertedQuoteFile = await dispatch(
               insertQuoteFile(quoteFile),
@@ -458,10 +483,22 @@ const AddQuote: FC<AddQuoteInterface> = ({
           },
         );
       }
+      setLoading(false);
       if (newArrWithManual?.length > 0) {
-        router.push(
-          `/fileEditor?id=${latestQuoteId}&fileId=${latestQuoteFIleId}&quoteExist=false`,
-        );
+        if (countOfExportFiles > 0) {
+          
+          router.push(
+            `/fileEditor?id=${latestQuoteId}&fileId=${null}&quoteExist=false&manualFlow=true`,
+          );
+        } else {
+          
+          router.push(
+            `/manualFileEditor?id=${latestQuoteId}&fileId=${null}&manualFlow=true`,
+          );
+        }
+        // router.push(
+        //   `/fileEditor?id=${latestQuoteId}&fileId=${latestQuoteFIleId}&quoteExist=false`,
+        // );
         // router.push(`/manualFileEditor?id=${latestQuoteId}`);
       }
     }
@@ -485,7 +522,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
     oem: string,
     distributer: string,
     fileName: string,
-  ) => {};
+  ) => { };
 
   const resetFields = () => {
     setShowModal(false);

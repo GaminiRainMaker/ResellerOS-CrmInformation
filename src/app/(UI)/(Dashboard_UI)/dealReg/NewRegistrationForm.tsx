@@ -4,31 +4,31 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import OsContactSelect from '@/app/components/common/os-contact-select';
 import OsCustomerSelect from '@/app/components/common/os-customer-select';
-import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
 import OsOpportunitySelect from '@/app/components/common/os-opportunity-select';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {Form, notification} from 'antd';
-import {useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
-import {getAllCustomer} from '../../../../../redux/actions/customer';
+import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { Form, notification } from 'antd';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { FC, useEffect, useState } from 'react';
+import { getAllCustomer } from '../../../../../redux/actions/customer';
 import {
   getDealRegByOpportunityId,
   insertDealReg,
   queryDealReg,
 } from '../../../../../redux/actions/dealReg';
-import {getAllPartnerandProgramApprovedForOrganization} from '../../../../../redux/actions/partner';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {CollapseSpaceStyle} from '../dealRegDetail/styled-component';
+import { getAllPartnerandProgramApprovedForOrganization } from '../../../../../redux/actions/partner';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { CollapseSpaceStyle } from '../dealRegDetail/styled-component';
 
 const NewRegistrationForm: FC<any> = ({
   isDealRegDetail = false,
@@ -40,9 +40,10 @@ const NewRegistrationForm: FC<any> = ({
   const getOpportunityId = Number(searchParams.get('opportunityId'));
   const getContactId = Number(searchParams.get('contactId'));
   const getCustomerId = Number(searchParams.get('customerId'));
+  let pathname = usePathname()
   const dispatch = useAppDispatch();
-  const {data: dataAddress} = useAppSelector((state) => state.customer);
-  const {userInformation} = useAppSelector((state) => state.user);
+  const { data: dataAddress } = useAppSelector((state) => state.customer);
+  const { userInformation } = useAppSelector((state) => state.user);
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [allSeldPartnerFilterData, setAllSelfFilterPartnerData] =
     useState<any>();
@@ -60,6 +61,9 @@ const NewRegistrationForm: FC<any> = ({
   const [allAddedSelfPartnerProgramIDs, setAllAddedSelfPartnerProgramIDs] =
     useState<any>();
   const [choosenIdProgram, setChoosedIdProgram] = useState<any>();
+  const [regesteriedPartner, setRegesteriedPartner] = useState<any>()
+  const [selfRegesteriedPartner, setSelfRegesteriedPartner] = useState<any>()
+
   const [allAddedPartnerProgramIDs, setAllAddedPartnerProgramIDs] =
     useState<any>();
 
@@ -70,6 +74,7 @@ const NewRegistrationForm: FC<any> = ({
       },
     );
   }, []);
+
 
   useEffect(() => {
     if (isDealRegDetail) {
@@ -162,6 +167,8 @@ const NewRegistrationForm: FC<any> = ({
 
   const registeredFormFinish = async () => {
     const data = form.getFieldsValue();
+
+
     if (
       (data?.registeredPartners === undefined ||
         data?.registeredPartners?.length <= 0) &&
@@ -251,14 +258,31 @@ const NewRegistrationForm: FC<any> = ({
         }
       });
       setShowModal(false);
+      if (pathname === '/opportunityDetail') {
+        location.reload()
+      }
     }
   };
+
+  const addNewPartnerFOrReg = () => {
+    let newArr = regesteriedPartner?.length > 0  ? [...regesteriedPartner] : []
+    let newObj = {
+      partner_id : '',
+      partner_program_id : '',
+      type : 'regestered',
+      optionsForProgram : []
+    }
+
+  }
+
+    // setRegesteriedPartner
+  
   return (
     <>
       <Form
         name="dynamic_form_nest_item"
         onFinish={registeredFormFinish}
-        style={{maxWidth: 600}}
+        style={{ maxWidth: 600 }}
         form={form}
         autoComplete="off"
         layout="vertical"
@@ -278,116 +302,139 @@ const NewRegistrationForm: FC<any> = ({
                     ),
                     children: (
                       <Form.List name="registeredPartners">
-                        {(fields, {add, remove}) => (
+                        {(fields, { add, remove }) => (
                           <>
-                            {fields?.map(({key, name, ...restField}) => (
-                              <Row
-                                justify="space-between"
-                                align="middle"
-                                gutter={[16, 16]}
-                                key={key}
-                                style={{
-                                  marginBottom: '8px',
-                                }}
-                              >
-                                <Col span={10}>
-                                  <SelectFormItem
-                                    label={
-                                      <Typography name="Body 4/Medium">
-                                        Partner
-                                      </Typography>
-                                    }
-                                    {...restField}
-                                    name={[name, 'partner_id']}
-                                    rules={[
-                                      {
-                                        required: true,
-                                        message: 'Partner is required!',
-                                      },
-                                    ]}
+                            {fields?.map(
+                              ({ key, name, ...restField }) => (
+                                console.log('43543534534', key, name),
+                                (
+                                  <Row
+                                    justify="space-between"
+                                    align="middle"
+                                    gutter={[16, 16]}
+                                    key={key}
+                                    style={{
+                                      marginBottom: '8px',
+                                    }}
                                   >
-                                    <CommonSelect
-                                      placeholder="Select"
-                                      style={{width: '100%', height: '36px'}}
-                                      options={partnerOptions}
-                                      onChange={(value) => {
-                                        findPartnerProgramsById(value);
-                                        setChoosedIdProgram(value);
-                                      }}
-                                    />
-                                  </SelectFormItem>
-                                </Col>
-                                <Col span={10}>
-                                  <SelectFormItem
-                                    label={
-                                      <Typography name="Body 4/Medium">
-                                        Partner Program
-                                      </Typography>
-                                    }
-                                    {...restField}
-                                    name={[name, 'partner_program_id']}
-                                    rules={[
-                                      {
-                                        required: true,
-                                        message: 'Partner Program is required!',
-                                      },
-                                    ]}
-                                  >
-                                    <CommonSelect
-                                      placeholder="Select"
-                                      options={partnerProgramOptions}
-                                      onChange={(e: any) => {
-                                        let AllIds: any =
-                                          allAddedPartnerProgramIDs?.length > 0
-                                            ? [...allAddedPartnerProgramIDs]
-                                            : [];
-                                        AllIds?.push(e);
-                                        setAllAddedPartnerProgramIDs(AllIds);
-                                      }}
-                                      style={{width: '100%', height: '36px'}}
-                                    />
-                                  </SelectFormItem>
-                                </Col>
-                                <Col
-                                  span={4}
-                                  style={{
-                                    paddingTop: '25px',
-                                  }}
-                                >
-                                  <TrashIcon
-                                    width={25}
-                                    color={token?.colorError}
-                                    onClick={
-                                      () => {
-                                        let dataa = form.getFieldsValue();
-
-                                        if (dataa?.registeredPartners[name]) {
-                                          let newArrr: any =
-                                            allAddedPartnerProgramIDs?.length >
-                                            0
-                                              ? [...allAddedPartnerProgramIDs]
-                                              : [];
-
-                                          let findIndexOfId = newArrr.findIndex(
-                                            (item: number) =>
-                                              item ===
-                                              dataa?.registeredPartners[name]
-                                                ?.partner_program_id,
-                                          );
-                                          newArrr.splice(findIndexOfId, 1);
-                                          setAllAddedPartnerProgramIDs(newArrr);
+                                    <Col span={10}>
+                                      <SelectFormItem
+                                        label={
+                                          <Typography name="Body 4/Medium">
+                                            Partner
+                                          </Typography>
                                         }
-                                        remove(name);
-                                        onHitDeleteTheObject();
-                                      }
+                                        {...restField}
+                                        name={[name, 'partner_id']}
+                                        rules={[
+                                          {
+                                            required: true,
+                                            message: 'Partner is required!',
+                                          },
+                                        ]}
+                                      >
+                                        <CommonSelect
+                                          placeholder="Select"
+                                          style={{
+                                            width: '100%',
+                                            height: '36px',
+                                          }}
+                                          options={partnerOptions}
+                                          onChange={(value) => {
+                                            findPartnerProgramsById(value);
+                                            setChoosedIdProgram(value);
+                                          }}
+                                        />
+                                      </SelectFormItem>
+                                    </Col>
+                                    <Col span={10}>
+                                      <SelectFormItem
+                                        label={
+                                          <Typography name="Body 4/Medium">
+                                            Partner Program
+                                          </Typography>
+                                        }
+                                        {...restField}
+                                        name={[name, 'partner_program_id']}
+                                        rules={[
+                                          {
+                                            required: true,
+                                            message:
+                                              'Partner Program is required!',
+                                          },
+                                        ]}
+                                      >
+                                        <CommonSelect
+                                          placeholder="Select"
+                                          options={partnerProgramOptions}
+                                          onChange={(e: any) => {
+                                            let AllIds: any =
+                                              allAddedPartnerProgramIDs?.length >
+                                                0
+                                                ? [...allAddedPartnerProgramIDs]
+                                                : [];
+                                            AllIds?.push(e);
+                                            setAllAddedPartnerProgramIDs(
+                                              AllIds,
+                                            );
+                                          }}
+                                          style={{
+                                            width: '100%',
+                                            height: '36px',
+                                          }}
+                                        />
+                                      </SelectFormItem>
+                                    </Col>
+                                    <Col
+                                      span={4}
+                                      style={{
+                                        paddingTop: '25px',
+                                      }}
+                                    >
+                                      <TrashIcon
+                                        width={25}
+                                        color={token?.colorError}
+                                        onClick={
+                                          () => {
+                                            let dataa = form.getFieldsValue();
 
-                                      // remove(name)
-                                    }
-                                    cursor="pointer"
-                                  />
-                                </Col>
-                              </Row>
-                            ))}
+                                            if (
+                                              dataa?.registeredPartners[name]
+                                            ) {
+                                              let newArrr: any =
+                                                allAddedPartnerProgramIDs?.length >
+                                                  0
+                                                  ? [
+                                                    ...allAddedPartnerProgramIDs,
+                                                  ]
+                                                  : [];
+
+                                              let findIndexOfId =
+                                                newArrr.findIndex(
+                                                  (item: number) =>
+                                                    item ===
+                                                    dataa?.registeredPartners[
+                                                      name
+                                                    ]?.partner_program_id,
+                                                );
+                                              newArrr.splice(findIndexOfId, 1);
+                                              setAllAddedPartnerProgramIDs(
+                                                newArrr,
+                                              );
+                                            }
+                                            remove(name);
+                                            onHitDeleteTheObject();
+                                          }
+
+                                          // remove(name)
+                                        }
+                                        cursor="pointer"
+                                      />
+                                    </Col>
+                                  </Row>
+                                )
+                              ),
+                            )}
                             <Form.Item>
                               <Space
                                 size={4}
@@ -402,7 +449,7 @@ const NewRegistrationForm: FC<any> = ({
                                 <PlusIcon
                                   width={24}
                                   color={token?.colorLink}
-                                  style={{marginTop: '5px'}}
+                                  style={{ marginTop: '5px' }}
                                 />
                                 <Typography
                                   name="Body 3/Bold"
@@ -434,9 +481,9 @@ const NewRegistrationForm: FC<any> = ({
                     ),
                     children: (
                       <Form.List name="selfRegisteredPartners">
-                        {(fields, {add, remove}) => (
+                        {(fields, { add, remove }) => (
                           <>
-                            {fields?.map(({key, name, ...restField}) => (
+                            {fields?.map(({ key, name, ...restField }) => (
                               <Row
                                 justify="space-between"
                                 align="middle"
@@ -464,7 +511,7 @@ const NewRegistrationForm: FC<any> = ({
                                   >
                                     <CommonSelect
                                       placeholder="Select"
-                                      style={{width: '100%', height: '36px'}}
+                                      style={{ width: '100%', height: '36px' }}
                                       options={selefPartnerOptions}
                                       onChange={(value) => {
                                         findPartnerProgramsForSelfById(value);
@@ -499,7 +546,7 @@ const NewRegistrationForm: FC<any> = ({
                                         AllIds?.push(e);
                                         setAllAddedPartnerProgramIDs(AllIds);
                                       }}
-                                      style={{width: '100%', height: '36px'}}
+                                      style={{ width: '100%', height: '36px' }}
                                     />
                                   </SelectFormItem>
                                 </Col>
@@ -532,7 +579,7 @@ const NewRegistrationForm: FC<any> = ({
                                 <PlusIcon
                                   width={24}
                                   color={token?.colorLink}
-                                  style={{marginTop: '5px'}}
+                                  style={{ marginTop: '5px' }}
                                 />
                                 <Typography
                                   name="Body 3/Bold"

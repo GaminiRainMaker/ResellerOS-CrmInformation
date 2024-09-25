@@ -1,20 +1,23 @@
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
-import {useAppDispatch} from '../../../../../redux/hook';
-import {Form} from 'antd';
-import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import { useAppDispatch } from '../../../../../redux/hook';
+import { Form, Select } from 'antd';
+import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import OsCustomerSelect from '@/app/components/common/os-customer-select';
-import {useEffect, useState} from 'react';
-import {queryOEM} from '../../../../../redux/actions/oem';
-import {queryDistributor} from '../../../../../redux/actions/distributor';
+import { useEffect, useState } from 'react';
+import { queryOEM } from '../../../../../redux/actions/oem';
+import { queryDistributor } from '../../../../../redux/actions/distributor';
 import GlobalLoader from '@/app/components/common/os-global-loader';
-import {Istok_Web} from 'next/font/google';
+import { Istok_Web } from 'next/font/google';
+import { formatStatus } from '@/app/utils/CONSTANTS';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { Checkbox } from '@/app/components/common/antd/Checkbox';
 
 const AddFormula: React.FC<any> = ({
   drawer,
@@ -37,7 +40,7 @@ const AddFormula: React.FC<any> = ({
       let newArrForOem: any = [];
       payload?.payload?.map((items: any) => {
         let newObj: any = {
-          label: items?.oem,
+          label: formatStatus(items?.oem),
           value: items?.id,
         };
         newArrForOem?.push(newObj);
@@ -48,7 +51,7 @@ const AddFormula: React.FC<any> = ({
       let newArrForDistributor: any = [];
       payload?.payload?.map((items: any) => {
         let newObj: any = {
-          label: items?.distributor,
+          label: formatStatus(items?.distributor),
           value: items?.id,
         };
         newArrForDistributor?.push(newObj);
@@ -60,6 +63,8 @@ const AddFormula: React.FC<any> = ({
   useEffect(() => {
     getOptionsData();
   }, []);
+
+  console.log('234324234', selectValue);
 
   return (
     <>
@@ -124,7 +129,7 @@ const AddFormula: React.FC<any> = ({
                   rules={[
                     {
                       required: true,
-                      message: 'formula is required!',
+                      message: 'Formula is required!',
                     },
                     // {
                     //   pattern: /^[A-Za-z\s]+$/,
@@ -144,7 +149,7 @@ const AddFormula: React.FC<any> = ({
                   rules={[
                     {
                       required: true,
-                      message: 'description is required!',
+                      message: 'Description is required!',
                     },
                     // {
                     //   pattern: /^[A-Za-z\s]+$/,
@@ -159,26 +164,12 @@ const AddFormula: React.FC<any> = ({
                 <SelectFormItem
                   label={<Typography name="Body 4/Medium">Active</Typography>}
                   name="is_active"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'formula is required!',
-                    },
-                    // {
-                    //   pattern: /^[A-Za-z\s]+$/,
-                    //   message: 'Please enter valid text.',
-                    // },
-                  ]}
                 >
-                  <CommonSelect
-                    style={{width: '100%'}}
-                    defaultValue={selectValue?.is_active?.toString()}
-                    options={[
-                      {label: 'Yes', value: 'true'},
-                      {label: 'No', value: 'false'},
-                    ]}
+                  <Checkbox
+                    // style={{border:"1px solid"}}
+                    checked={selectValue?.is_active}
                     onChange={(e) => {
-                      if (e === 'true') {
+                      if (e?.target?.checked) {
                         setSelectValue({
                           ...selectValue,
                           is_active: true,
@@ -194,25 +185,21 @@ const AddFormula: React.FC<any> = ({
                 </SelectFormItem>{' '}
               </Col>
               <Col sm={24} md={drawer ? 24 : 12}>
-                <SelectFormItem
-                  label={
-                    <Typography name="Body 4/Medium">Distributer</Typography>
-                  }
-                  name="distributor_id"
-                  // rules={[
-                  //   {
-                  //     required: true,
-                  //     message: 'formula is required!',
-                  //   },
-                  //   // {
-                  //   //   pattern: /^[A-Za-z\s]+$/,
-                  //   //   message: 'Please enter valid text.',
-                  //   // },
-                  // ]}
-                >
+                <Typography name="Body 4/Medium">Distributer</Typography>
+
+                {distributerOPtions && (
                   <CommonSelect
-                    style={{width: '100%'}}
-                    defaultValue={selectValue?.distributor_id}
+                    style={{ width: '100%' }}
+                    disabled={selectValue?.oem_id ? true : false}
+                    value={selectValue?.distributor_id}
+                    // suffixIcon={
+                    //   <ChevronDownIcon
+                    //     width={24}
+                    //     color={token?.colorInfoBorder}
+                    //     // style={{marginRight: '10px'}}
+                    //   />
+                    // }
+                    allowClear={true}
                     options={distributerOPtions}
                     onChange={(e) => {
                       setSelectValue({
@@ -221,35 +208,30 @@ const AddFormula: React.FC<any> = ({
                       });
                     }}
                   />
-                </SelectFormItem>{' '}
+                )}
               </Col>
               <Col sm={24} md={drawer ? 24 : 12}>
-                <SelectFormItem
-                  label={<Typography name="Body 4/Medium">Oem</Typography>}
-                  name="oem_id"
-                  // rules={[
-                  //   {
-                  //     required: true,
-                  //     message: 'formula is required!',
-                  //   },
-                  //   // {
-                  //   //   pattern: /^[A-Za-z\s]+$/,
-                  //   //   message: 'Please enter valid text.',
-                  //   // },
-                  // ]}
-                >
-                  <CommonSelect
-                    style={{width: '100%'}}
-                    defaultValue={selectValue?.oem_id}
-                    options={oemOptions}
-                    onChange={(e) => {
-                      setSelectValue({
-                        ...selectValue,
-                        oem_id: e,
-                      });
-                    }}
-                  />
-                </SelectFormItem>{' '}
+                <Typography name="Body 4/Medium">Oem</Typography>
+                <CommonSelect
+                  style={{ width: '100%' }}
+                  suffixIcon={
+                    <ChevronDownIcon
+                      width={24}
+                      color={token?.colorInfoBorder}
+                    // style={{marginRight: '10px'}}
+                    />
+                  }
+                  allowClear={true}
+                  value={selectValue?.oem_id}
+                  options={oemOptions}
+                  disabled={selectValue?.distributor_id ? true : false}
+                  onChange={(e) => {
+                    setSelectValue({
+                      ...selectValue,
+                      oem_id: e,
+                    });
+                  }}
+                />
               </Col>
             </Row>
           </Space>

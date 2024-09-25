@@ -3,8 +3,8 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import FormBuilderMain from '@/app/components/common/formBuilder/page';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
@@ -17,12 +17,12 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {formatStatus} from '@/app/utils/CONSTANTS';
-import {formatDate} from '@/app/utils/base';
-import {MinusIcon, PlusIcon} from '@heroicons/react/24/outline';
-import {Checkbox, Form} from 'antd';
-import {useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import { formatStatus } from '@/app/utils/CONSTANTS';
+import { formatDate } from '@/app/utils/base';
+import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { Checkbox, Form } from 'antd';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
   insertAssignPartnerProgram,
   updateForTheResellerRequest,
@@ -31,9 +31,9 @@ import {
   getAllPartnerandProgramFilterData,
   upadteRequestForOrgNewPartnerApproval,
 } from '../../../../../redux/actions/partner';
-import {getUnassignedProgram} from '../../../../../redux/actions/partnerProgram';
-import {getUserByTokenAccess} from '../../../../../redux/actions/user';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { getUnassignedProgram } from '../../../../../redux/actions/partnerProgram';
+import { getUserByTokenAccess } from '../../../../../redux/actions/user';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import PartnerAnalytics from './partnerAnalytics';
 
 const Partners: React.FC = () => {
@@ -42,7 +42,7 @@ const Partners: React.FC = () => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams()!;
   const [loadingForRequest, setLoadingForRequest] = useState<boolean>(false);
-  const {userInformation} = useAppSelector((state) => state.user);
+  const { userInformation } = useAppSelector((state) => state.user);
   const getTabId = searchParams.get('tab');
   const [showModal, setShowModal] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<number>(1);
@@ -53,7 +53,7 @@ const Partners: React.FC = () => {
   const [partnerNewId, setPartnerNewId] = useState<any>();
   const [partnerProgramNewId, setPartnerProgramNewId] = useState<any>();
   const [openPreviewModal, setOpenPreviewModal] = useState<boolean>(false);
-
+  const [disableRequest, setDisableRequest] = useState<any>([]);
   const [partnerOptions, setPartnerOptions] = useState<any>();
   const [partnerProgramOptions, setPartnerProgramOptions] = useState<any>();
 
@@ -260,7 +260,7 @@ const Partners: React.FC = () => {
               const formDataObject = record?.form_data
                 ? JSON?.parse(record?.form_data)
                 : '';
-              setformData({formObject: formDataObject, Id: record?.id});
+              setformData({ formObject: formDataObject, Id: record?.id });
               // open modal to view form
             }
           }}
@@ -442,7 +442,7 @@ const Partners: React.FC = () => {
             if (record?.form_data) {
               setOpenPreviewModal(true);
               const formDataObject = JSON?.parse(record?.form_data);
-              setformData({formObject: formDataObject, Id: record?.id});
+              setformData({ formObject: formDataObject, Id: record?.id });
               // open modal to view form
             }
           }}
@@ -558,7 +558,7 @@ const Partners: React.FC = () => {
         <Space direction="horizontal">
           {' '}
           <OsButton
-            btnStyle={{height: '32px'}}
+            btnStyle={{ height: '32px' }}
             buttontype="PRIMARY"
             text="Approve"
             clickHandler={() => {
@@ -570,7 +570,7 @@ const Partners: React.FC = () => {
             }}
           />{' '}
           <OsButton
-            btnStyle={{height: '32px'}}
+            btnStyle={{ height: '32px' }}
             buttontype="SECONDARY"
             text="Decline"
             clickHandler={() => {
@@ -592,6 +592,10 @@ const Partners: React.FC = () => {
     userData: any,
   ) => {
     // setLoadingForRequest(true);
+    let newrr = disableRequest?.length > 0 ? [...disableRequest] : [];
+    newrr?.push(id);
+
+    setDisableRequest(newrr);
     const partnerObj = {
       organization: userData?.organization
         ? userData?.organization
@@ -605,6 +609,7 @@ const Partners: React.FC = () => {
 
     await dispatch(insertAssignPartnerProgram(partnerObj));
     getPartnerData();
+
     setLoadingForRequest(false);
   };
 
@@ -614,56 +619,58 @@ const Partners: React.FC = () => {
       const newObj: any = {
         title: (
           <Typography name="Body 4/Medium" className="dragHandler">
-            Action
+            {activeTab === 1 ? 'Partner Program Status' : 'Action'}
           </Typography>
         ),
         dataIndex: 'Action',
         key: 'Action',
         render: (_: string, record: any) => (
-          console.log('recordrecord', record),
-          (
-            <>
-              {!record?.AssignPartnerProgram ? (
-                <OsButton
-                  buttontype="PRIMARY"
-                  text="Request"
-                  clickHandler={() => {
-                    handleAddNewAssignedPartnerProgramRequest(
-                      record?.id,
-                      userData,
-                    );
-                  }}
-                />
-              ) : (
-                <>
-                  <Typography
-                    name="Body 4/Medium"
-                    hoverOnText
-                    color={token?.colorLink}
-                  >
-                    {record?.AssignPartnerProgram?.is_approved ? (
-                      'Appproved for your Organization'
-                    ) : !record?.AssignPartnerProgram?.admin_request ? (
-                      `'Need admin approval to request super admin`
-                    ) : record?.AssignPartnerProgram?.is_approved === null ? (
-                      'Requested for Access'
-                    ) : (
-                      <OsButton
-                        buttontype="PRIMARY"
-                        text="Request"
-                        clickHandler={() => {
-                          handleAddNewAssignedPartnerProgramRequest(
-                            record?.id,
-                            userData,
-                          );
-                        }}
-                      />
-                    )}
-                  </Typography>
-                </>
-              )}
-            </>
-          )
+          <>
+            {!record?.AssignPartnerProgram ? (
+              <OsButton
+                buttontype="PRIMARY"
+                text="Request"
+                disabled={disableRequest?.includes(record?.id) ? true : false}
+                clickHandler={() => {
+                  handleAddNewAssignedPartnerProgramRequest(
+                    record?.id,
+                    userData,
+                  );
+                }}
+              />
+            ) : (
+              <>
+                <Typography
+                  name="Body 4/Medium"
+                  hoverOnText
+                  color={token?.colorLink}
+                >
+                  {record?.AssignPartnerProgram?.is_approved ? (
+                    'Appproved for your Organization'
+                  ) : !record?.AssignPartnerProgram?.admin_request ? (
+                    `'Sent for admin approval to request access from the Super Admin!.`
+                  ) : record?.AssignPartnerProgram?.is_approved === null ? (
+                    'Requested for Access'
+                  ) : (
+                    <OsButton
+                      buttontype="PRIMARY"
+                      text="Request"
+                      // disabled={
+                      //   disableRequest?.includes(record?.id) ? true : false
+                      // }
+                      clickHandler={() => {
+
+                        handleAddNewAssignedPartnerProgramRequest(
+                          record?.id,
+                          userData,
+                        );
+                      }}
+                    />
+                  )}
+                </Typography>
+              </>
+            )}
+          </>
         ),
       };
       newArr?.push(newObj);
@@ -704,7 +711,7 @@ const Partners: React.FC = () => {
               />
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
-            expandIcon: ({expanded, onExpand, record}: any) =>
+            expandIcon: ({ expanded, onExpand, record }: any) =>
               expanded ? (
                 <MinusIcon
                   width={20}
@@ -754,7 +761,7 @@ const Partners: React.FC = () => {
               />
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
-            expandIcon: ({expanded, onExpand, record}: any) =>
+            expandIcon: ({ expanded, onExpand, record }: any) =>
               expanded ? (
                 <MinusIcon
                   width={20}
@@ -828,7 +835,7 @@ const Partners: React.FC = () => {
               />
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
-            expandIcon: ({expanded, onExpand, record}: any) =>
+            expandIcon: ({ expanded, onExpand, record }: any) =>
               expanded ? (
                 <MinusIcon
                   width={20}
@@ -878,7 +885,7 @@ const Partners: React.FC = () => {
               />
             ),
             rowExpandable: (record: any) => record.name !== 'Not Expandable',
-            expandIcon: ({expanded, onExpand, record}: any) =>
+            expandIcon: ({ expanded, onExpand, record }: any) =>
               expanded ? (
                 <MinusIcon
                   width={20}
@@ -957,7 +964,7 @@ const Partners: React.FC = () => {
 
   return (
     <>
-      <Space size={24} direction="vertical" style={{width: '100%'}}>
+      <Space size={24} direction="vertical" style={{ width: '100%' }}>
         <PartnerAnalytics data={allPartnerAnalyticData} />
         <Row justify="space-between" align="middle">
           <Col>
@@ -967,9 +974,9 @@ const Partners: React.FC = () => {
           </Col>
 
           {activeTab === 1 && (
-            <Col style={{display: 'flex', alignItems: 'center'}}>
+            <Col style={{ display: 'flex', alignItems: 'center' }}>
               <OsButton
-                text="Request Partner"
+                text="Request Partner and Partner Program"
                 buttontype="PRIMARY"
                 icon={<PlusIcon />}
                 clickHandler={() => setShowModal((p) => !p)}
@@ -979,7 +986,7 @@ const Partners: React.FC = () => {
         </Row>
 
         <Row
-          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+          style={{ background: 'white', padding: '24px', borderRadius: '12px' }}
         >
           {userInformation && (
             <OsTabs
@@ -991,7 +998,7 @@ const Partners: React.FC = () => {
                   <Space direction="vertical" size={0}>
                     <Typography name="Body 4/Medium">Partner</Typography>
                     <CommonSelect
-                      style={{width: '200px'}}
+                      style={{ width: '200px' }}
                       placeholder="Search here"
                       showSearch
                       options={partnerOptions}
@@ -1017,7 +1024,7 @@ const Partners: React.FC = () => {
                       Partner Program
                     </Typography>
                     <CommonSelect
-                      style={{width: '200px'}}
+                      style={{ width: '200px' }}
                       placeholder="Search here"
                       options={partnerProgramOptions}
                       showSearch

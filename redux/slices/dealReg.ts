@@ -10,6 +10,7 @@ import {
   updateDealRegById,
   queryDealReg,
   updateDealRegStatus,
+  dealRegFormScript,
 } from '../actions/dealReg';
 
 type DealRegState = {
@@ -179,6 +180,23 @@ const dealRegSlice = createSlice({
       )
       .addCase(
         updateDealRegStatus.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(dealRegFormScript.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        dealRegFormScript.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+        },
+      )
+      .addCase(
+        dealRegFormScript.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

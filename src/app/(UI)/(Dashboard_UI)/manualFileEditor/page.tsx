@@ -18,34 +18,41 @@ const HotTable = dynamic(() => import('@handsontable/react'), {
 });
 
 // import {HotTable} from '@handsontable/react';
-import {HyperFormula} from 'hyperformula';
+import { HyperFormula } from 'hyperformula';
 
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import './styles.css';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {addClassesToRows, alignHeaders} from '../fileEditor/hooksCallbacks';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { addClassesToRows, alignHeaders } from '../fileEditor/hooksCallbacks';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import 'handsontable/dist/handsontable.min.css';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {formatStatus} from '@/app/utils/CONSTANTS';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { formatStatus } from '@/app/utils/CONSTANTS';
 import OsModal from '@/app/components/common/os-modal';
 import SyncTableData from '../fileEditor/syncTableforpdfEditor';
 import OsButton from '@/app/components/common/os-button';
-import {notification, Space} from 'antd';
+import { notification, Space } from 'antd';
 import Typography from '@/app/components/common/typography';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 import {
   getfileByQuoteIdWithManual,
   getQuoteFileById,
 } from '../../../../../redux/actions/quoteFile';
-import {getSalesForceFileData} from '../../../../../redux/actions/auth';
+import {
+  getSalesForceFields,
+  getSalesForceFileData,
+} from '../../../../../redux/actions/auth';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
-import {getResultedValue} from '@/app/utils/base';
-import {registerAllModules} from 'handsontable/registry';
+import { getResultedValue } from '@/app/utils/base';
+import { registerAllModules } from 'handsontable/registry';
 import dynamic from 'next/dynamic';
-import {getAllFormulas} from '../../../../../redux/actions/formulas';
+import { getAllFormulas } from '../../../../../redux/actions/formulas';
+import {
+  queryLineItemSyncing,
+  queryLineItemSyncingForSalesForce,
+} from '../../../../../redux/actions/LineItemSyncing';
 
 registerAllModules();
 
@@ -71,12 +78,28 @@ const EditorFile = () => {
   const [showAddColumnModal, setShowAddColumnModal] = useState<boolean>(false);
   const [newHeaderName, setNewHeaderName] = useState<any>();
   const salesForceUrl = searchParams.get('instance_url');
+  const fullStackManul = searchParams.get('manualFlow');
+  const salesFOrceManual = searchParams.get('manual');
+  const salesFOrceAccoutId = searchParams.get('AccountId');
+  const salesFOrceAccoutFlow = searchParams.get('accoutFlow');
+  const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
+
+  const [accoutSyncOptions, setAccoutSyncOptions] = useState<any>();
   const [showUpdateColumnModal, setShowUpdateColumnModal] =
     useState<boolean>(false);
   const [showAddFormula, setShowAddFormula] = useState<boolean>(false);
   const [existingColumnOptions, setExistingColumnName] = useState<any>();
   const [formulaOptions, setFormulaOptions] = useState<any>();
-  const [formulaSelected, setFormulaSelected] = useState<any>();
+
+  const [query, setQuery] = useState<{
+    searchValue: string;
+    asserType: boolean;
+    salesforce: boolean;
+  }>({
+    searchValue: '',
+    asserType: salesFOrceAccoutFlow === 'true' ? true : false,
+    salesforce: salesForceUrl ? true : false,
+  });
 
   const addNewLine = () => {
     let newArr = [
@@ -103,49 +126,53 @@ const EditorFile = () => {
     setArrayOflineItem(newArr);
   };
 
-  let newArr = [
-    'A',
-    'B',
-    'C',
-    'D',
-    'E',
-    'F',
-    'G',
-    'H',
-    'I',
-    'J',
-    'K',
-    'L',
-    'M',
-    'N',
-    'O',
-    'P',
-    'Q',
-    'R',
-    'S',
-    'T',
-    'U',
-    'V',
-    'W',
-    'X',
-    'Y',
-    'Z',
-  ];
+  // useEffect(() => {
+  //   dispatch(getAllFormulas())?.then((payload: any) => {
+  //     let newArr: any;
+  //     payload?.payload?.filter((items: any) => {
+  //       if (items?.is_active) {
+  //         newArr?.push({label: items?.title, value: items?.formula});
+  //       }
+  //     });
+  //     setFormulaOptions(newArr);
+  //   });
+  // }, []);
+
   useEffect(() => {
-    dispatch(getAllFormulas())?.then((payload: any) => {
-      let newArr: any;
-      payload?.payload?.filter((items: any) => {
-        if (items?.is_active) {
-          newArr?.push({label: items?.title, value: items?.formula});
-        }
-      });
-      setFormulaOptions(newArr);
+    dispatch(queryLineItemSyncingForSalesForce(query))?.then((payload: any) => {
+      setLineItemSyncingData(payload?.payload);
     });
   }, []);
+  useEffect(() => {
+    if (salesFOrceAccoutId) {
+      let newObj = {
+        token: salesToken,
 
+        urls: salesForceUrl,
+      };
+
+      dispatch(getSalesForceFields(newObj))?.then((payload: any) => {
+        if (payload?.payload) {
+          let keysss = Object.keys(payload?.payload);
+          let arrOfOptions: any = [];
+          if (keysss) {
+            keysss?.map((items: any) => {
+              arrOfOptions?.push({
+                label: payload?.payload[items],
+                value: items,
+              });
+            });
+          }
+
+          setAccoutSyncOptions(arrOfOptions);
+        }
+      });
+    }
+  }, []);
   useEffect(() => {
     addNewLine();
   }, []);
+
   const AddNewHeaderToTheObject = () => {
     setSaveNewHeader(true);
     setShowConfirmHeader(false);
@@ -190,39 +217,6 @@ const EditorFile = () => {
       setMergeedColumnHeader(mergeedColumn);
     }
   }, [arrayOflineItem]);
-  const removeDuplicates = () => {
-    if (arrayOflineItem && arrayOflineItem?.length > 1) {
-      const removeDuplicateValues = (obj: any) => {
-        const seenValues = new Set();
-        const newObj: any = {};
-
-        for (const key in obj) {
-          const value = obj[key];
-          if (!seenValues.has(value)) {
-            seenValues.add(value);
-            newObj[key] = value;
-          }
-        }
-
-        return newObj;
-      };
-
-      // Remove duplicates from each object in the array
-      const cleanedData = arrayOflineItem.map((obj: any) =>
-        removeDuplicateValues(obj),
-      );
-
-      setArrayOflineItem(cleanedData);
-    }
-    syncShow('sync');
-  };
-  // useEffect(() => {
-  //   if (saveNewHeader) {
-  //     return;
-  //   } else {
-  //     removeDuplicates();
-  //   }
-  // }, [arrayOflineItem]);
 
   const deleteRowsItems = (indexOfDeletion: number, NumberOf: number) => {
     const newArrr = arrayOflineItem?.length > 0 ? [...arrayOflineItem] : [];
@@ -234,43 +228,69 @@ const EditorFile = () => {
   };
   useEffect(() => {
     // SaleQuoteId
-    if (SaleQuoteId) {
-      let data = {
-        token: salesToken,
-        FileId: salesForceFiledId,
-        urls: salesForceUrl,
-        quoteId: null,
-      };
-      // Work in case of export to tables
-      // let data = {
-      //   token: salesToken,
-      //   FileId: salesForceFiledId,
-      //   urls: salesForceUrl,
-      //   quoteId: null,
-      // };
-      dispatch(getSalesForceFileData(data))?.then((payload: any) => {
+    if (!salesFOrceAccoutId) {
+      if (SaleQuoteId) {
+        let data = {
+          token: salesToken,
+          FileId: salesForceFiledId,
+          urls: salesForceUrl,
+          quoteId: null,
+          file_type: null,
+        };
 
         let newObj = {
-          file_name: payload?.payload?.title,
-          FileId: payload?.payload?.fileId,
+          file_type: 'Manual',
+          token: salesToken,
+          FileId: null,
+          urls: salesForceUrl,
+          quoteId: SaleQuoteId,
         };
-        setCurrentFileData(newObj);
-      });
-    } else {
-      dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then(
-        (payload: any) => {
-          setCurrentFileData(payload?.payload);
-          // window.history.replaceState(
-          //   null,
-          //   '',
-          //   `manualFileEditor?id=${Number(getQuoteID)}&fileId=${Number(payload?.payload?.id)}`,
-          // );
-        },
-      );
+
+        let pathTOGo = salesFOrceManual === 'true' ? newObj : data;
+        dispatch(getSalesForceFileData(pathTOGo))?.then((payload: any) => {
+          if (payload?.payload) {
+            let newObjFromSalesFOrce = JSON?.parse(payload?.payload?.qliFields)
+            let keysss = Object.keys(newObjFromSalesFOrce);
+            let arrOfOptions: any = [];
+
+            if (keysss) {
+              keysss?.map((items: any) => {
+                arrOfOptions?.push({
+                  label: newObjFromSalesFOrce[items],
+                  value: items,
+                });
+              });
+            }
+
+
+            setAccoutSyncOptions(arrOfOptions);
+          }
+          let newObj = {
+            file_name: payload?.payload?.title,
+            FileId: payload?.payload?.fileId,
+          };
+          setCurrentFileData(newObj);
+        });
+      } else {
+        if (fullStackManul === 'true') {
+          let data = {
+            id: getQuoteID,
+            type_of_file: 'manual',
+          };
+          dispatch(getfileByQuoteIdWithManual(data))?.then((payload: any) => {
+            setCurrentFileData(payload?.payload);
+          });
+        } else {
+          dispatch(getQuoteFileById(Number(getQuoteFileId)))?.then(
+            (payload: any) => {
+              setCurrentFileData(payload?.payload);
+            },
+          );
+        }
+      }
     }
   }, []);
 
-  console.log('3454354353', currentFileData);
   const updateRowsValue = (
     rowIndex: number,
     keyValue: string,
@@ -295,55 +315,65 @@ const EditorFile = () => {
       setShowModal(true);
     }
     // if (value === 'cancel') {
+
     //   CancelEditing();
     // }
   };
 
   const checkForNewFileForSalesForce = async () => {
-    notification?.open({
-      message: 'The Line Items are created! Please close the modal!',
-    });
+    if (salesFOrceManual === 'true') {
+      let newObj = {
+        file_type: 'Manual',
+        token: salesToken,
+        FileId: null,
+        urls: salesForceUrl,
+        quoteId: SaleQuoteId,
+      };
+      dispatch(getSalesForceFileData(newObj))?.then((payload: any) => {
+        if (payload?.payload?.body) {
+          location?.reload();
+        } else {
+          notification?.open({
+            message: 'The Line Items are created! Please close the modal!',
+          });
+        }
+      });
+    } else {
+      notification?.open({
+        message: 'The Line Items are created! Please close the modal!',
+      });
+    }
   };
 
   const checkForNewFile = async () => {
-    router.push(
-      `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue()}`,
-    );
-    // let isExist: boolean = false;
-    // let dataNew: any;
-    // setSaveNewHeader(false);
-    // addNewLine();
-    // await dispatch(getfileByQuoteIdWithManual(Number(getQuoteID)))?.then(
-    //   (payload: any) => {
-    //     if (payload?.payload) {
-    //       setCurrentFileData(payload?.payload);
-    //       isExist = true;
-    //       dataNew = payload?.payload;
-    //     } else {
-    //       isExist = false;
-    //     }
-    //   },
-    // );
-
-    // setShowModal(false);
-    // setShowConfirmHeader(false);
-    // if (SaleQuoteId) {
-    // } else {
-    //   if (isExist) {
-    //     location?.reload();
-    //     return;
-    //   } else {
-    //     router.push(
-    //       `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue()}`,
-    //     );
-    //     window.history.replaceState(
-    //       null,
-    //       '',
-    //       `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue()}`,
-    //     );
-    //     location?.reload();
-    //   }
-    // }
+    if (fullStackManul === 'false') {
+      window.history.replaceState(
+        null,
+        '',
+        `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue()}`,
+      );
+      location?.reload();
+    } else {
+      let data = {
+        id: getQuoteID,
+        type_of_file: 'manual',
+      };
+      await dispatch(getfileByQuoteIdWithManual(data))?.then(
+        async (payload: any) => {
+          if (payload?.payload && payload?.payload !== null) {
+            location?.reload();
+          }
+          if (payload?.payload === null) {
+            window.history.replaceState(
+              null,
+              '',
+              `/generateQuote?id=${Number(getQuoteID)}&isView=${getResultedValue()}`,
+            );
+            location?.reload();
+          }
+        },
+      );
+    }
   };
   const UpdateTheColumnName = async (type: any, old: string, newVal: any) => {
     let newArr: any = [...arrayOflineItem];
@@ -366,7 +396,7 @@ const EditorFile = () => {
     let updatedArr = renameKey(newArr, old, newVal);
     setArrayOflineItem(updatedArr);
     notification.open({
-      message: `Column header ${old} sucessfully changed to ${newVal}.`,
+      message: `Column header ${old} successfully changed to ${newVal}.`,
       type: 'success',
     });
     setOldColumnName('');
@@ -381,7 +411,7 @@ const EditorFile = () => {
     let resultantArr: any = [];
 
     newArr?.map((items: any) => {
-      resultantArr?.push({...items, [value]: ''});
+      resultantArr?.push({ ...items, [value]: '' });
     });
     setArrayOflineItem(resultantArr);
     setShowAddColumnModal(false);
@@ -391,7 +421,7 @@ const EditorFile = () => {
     if (mergeedColumnHeader && mergeedColumnHeader?.length > 0) {
       let newArr: any = [];
       mergeedColumnHeader?.map((items: any) => {
-        newArr?.push({label: items, value: items});
+        newArr?.push({ label: items, value: items });
       });
       setExistingColumnName(newArr);
     }
@@ -403,23 +433,23 @@ const EditorFile = () => {
         <Typography
           name="Body 1/Bold"
           // color={token?.colorLink}
-          style={{marginBottom: '6px'}}
+          style={{ marginBottom: '6px' }}
         >
           {currentFileData?.file_name}
         </Typography>
       )}
-      <Row gutter={[32, 16]} style={{marginTop: '10px', marginBottom: '40px'}}>
+      <Row gutter={[32, 16]} style={{ marginTop: '10px', marginBottom: '40px' }}>
         <Col span={12}>
-          <div style={{display: 'flex', flexDirection: 'column'}}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
             <Typography
               name="Body 3/Bold"
               color={token?.colorLink}
-              style={{marginBottom: '6px'}}
+              style={{ marginBottom: '6px' }}
             >
               Note:
             </Typography>
             <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
-              <ul style={{listStyleType: 'disc', marginLeft: '20px'}}>
+              <ul style={{ listStyleType: 'disc', marginLeft: '20px' }}>
                 <li>Data needs to be copied from an Excel file only.</li>
                 <li>
                   The first row will contain the headers of your file data.
@@ -487,13 +517,13 @@ const EditorFile = () => {
                       setShowUpdateColumnModal(true);
                     }}
                   />
-                  <OsButton
+                  {/* <OsButton
                     text="Apply Formula"
                     buttontype="PRIMARY"
                     clickHandler={() => {
                       setShowAddFormula(true);
                     }}
-                  />
+                  /> */}
                   <OsButton
                     text="Add New Column"
                     buttontype="PRIMARY"
@@ -600,9 +630,9 @@ const EditorFile = () => {
       <OsModal
         // title={'Share Credentials in Team'}
         body={
-          <Row style={{width: '100%', padding: '15px'}}>
+          <Row style={{ width: '100%', padding: '15px' }}>
             <Space
-              style={{width: '100%'}}
+              style={{ width: '100%' }}
               size={24}
               direction="vertical"
               align="center"
@@ -610,7 +640,7 @@ const EditorFile = () => {
               <Space direction="vertical" align="center" size={1}>
                 <Typography
                   name="Heading 3/Medium"
-                  style={{display: 'flex', textAlign: 'center'}}
+                  style={{ display: 'flex', textAlign: 'center' }}
                 >
                   Your first row is going to be the headers of the data.
                 </Typography>
@@ -664,6 +694,8 @@ const EditorFile = () => {
               manualFlow={true}
               checkForNewFileForSalesForce={checkForNewFileForSalesForce}
               currentFileData={currentFileData}
+              accoutSyncOptions={accoutSyncOptions}
+              lineItemSyncingData={lineItemSyncingData}
             />
           }
           width={600}
@@ -680,7 +712,7 @@ const EditorFile = () => {
           <Row gutter={[16, 24]} justify="space-between">
             <Col span={21}>
               <OsInput
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 placeholder="Please add the column header name"
                 onChange={(e: any) => {
                   setNewHeaderName(e?.target?.value);
@@ -710,7 +742,7 @@ const EditorFile = () => {
           <Row gutter={[16, 24]} justify="space-between">
             <Col span={12}>
               <CommonSelect
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 value={oldColumnName}
                 placeholder="Please select the column header name"
                 options={existingColumnOptions}
@@ -722,7 +754,7 @@ const EditorFile = () => {
             </Col>
             <Col span={12}>
               <OsInput
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 placeholder="Please add new column header name"
                 value={newHeaderName}
                 onChange={(e: any) => {
@@ -738,7 +770,7 @@ const EditorFile = () => {
               }}
             >
               {' '}
-              <div style={{marginRight: '30px'}}>
+              <div style={{ marginRight: '30px' }}>
                 <OsButton
                   // style={{marginRight: '100px'}}
                   disabled={
@@ -784,7 +816,7 @@ const EditorFile = () => {
           <Row gutter={[16, 24]} justify="space-between">
             <Col span={12}>
               <CommonSelect
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 value={oldColumnName}
                 placeholder="Please select the formula"
                 options={formulaOptions}
@@ -796,7 +828,7 @@ const EditorFile = () => {
             </Col>
             <Col span={12}>
               <OsInput
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 placeholder="Please add new column header name"
                 value={newHeaderName}
                 onChange={(e: any) => {
@@ -812,7 +844,7 @@ const EditorFile = () => {
               }}
             >
               {' '}
-              <div style={{marginRight: '30px'}}>
+              <div style={{ marginRight: '30px' }}>
                 <OsButton
                   // style={{marginRight: '100px'}}
                   disabled={
