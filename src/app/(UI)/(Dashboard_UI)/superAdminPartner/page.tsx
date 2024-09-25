@@ -567,6 +567,7 @@ const SuperAdminPartner: React.FC = () => {
             const userData = {
               userID: userInformation?.id
             }
+            console.log('userData', userData, userInformation)
             dispatch(launchPlayWright(userData));
           }}
         >
