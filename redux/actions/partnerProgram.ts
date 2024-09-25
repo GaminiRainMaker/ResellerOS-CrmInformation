@@ -110,11 +110,13 @@ export const upadteToRequestPartnerandprogramfromAmin = createAsyncThunk(
 export const launchPlayWright = createAsyncThunk(
   'partnerProgram/launchPlayWright',
   async (data: any, thunkApi) => {
+    console.log('dataa', data);
     try {
       const res = await PARTNER_PROGRAM_API.launchPlayWright(data);
       return res.data;
-    } catch (error) {
-      return thunkApi.rejectWithValue(error);
+    } catch (error: any) {
+      console.error('API error:', error); // Log the error for debugging
+      return thunkApi.rejectWithValue(error?.response?.data || error.message);
     }
   },
 );

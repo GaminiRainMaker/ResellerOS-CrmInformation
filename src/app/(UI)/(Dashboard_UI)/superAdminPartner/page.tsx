@@ -569,7 +569,7 @@ const SuperAdminPartner: React.FC = () => {
             }
             setSelectPartnerProgramId(record?.id);
             setShowScriptModal(true);
-            dispatch(launchPlayWright({ userID: userInformation.id }))
+            dispatch(launchPlayWright({ userID: userInformation.id }));
           }}
         >
           {record?.script?.length > 0 && !record?.script?.includes(null)
