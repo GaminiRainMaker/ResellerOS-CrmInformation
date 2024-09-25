@@ -109,9 +109,9 @@ export const upadteToRequestPartnerandprogramfromAmin = createAsyncThunk(
 
 export const launchPlayWright = createAsyncThunk(
   'partnerProgram/launchPlayWright',
-  async (id: any, thunkApi) => {
+  async (data: any, thunkApi) => {
     try {
-      const res = await PARTNER_PROGRAM_API.launchPlayWright(id);
+      const res = await PARTNER_PROGRAM_API.launchPlayWright(data);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);
