@@ -528,9 +528,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                           message: 'Please enter valid country.',
                         },
                       ]}
-                      label={
-                        <Typography name="Body 4/Medium">Country</Typography>
-                      }
+                      label={<Typography name="Body 4/Medium">Country</Typography>}
                       name="billing_country"
                     >
                       <OsInput placeholder="Enter here" />
