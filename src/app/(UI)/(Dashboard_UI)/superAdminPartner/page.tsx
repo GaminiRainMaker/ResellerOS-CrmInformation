@@ -46,6 +46,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import AddPartnerProgramScript from './AddPartnerProgramScript';
 import SuperAdminPartnerAnalytics from './SuperAdminPartnerAnalytic';
+import { getUserByTokenAccess } from '../../../../../redux/actions/user';
 
 
 export interface SeparatedData {
@@ -100,7 +101,15 @@ const SuperAdminPartner: React.FC = () => {
   const [superAdminPartnerAnalyticData, setSuperAdminPartnerAnalyticData] =
     useState<any>();
   const [selectPartnerProgramId, setSelectPartnerProgramId] = useState<any>();
-  const { userInformation } = useAppSelector((state) => state.user);
+  const [userId, setUserId] = useState<any>()
+
+  useEffect(() => {
+    dispatch(getUserByTokenAccess('')).then((res: any) => {
+      if (res) {
+        setUserId(res?.payload?.id)
+      }
+    })
+  }, [])
 
 
   const getPartnerDataForSuperAdmin = async () => {
@@ -155,11 +164,9 @@ const SuperAdminPartner: React.FC = () => {
   };
 
   useEffect(() => {
-    // dispatch(getAllPartnerandProgram(''));
     getPartnerDataForSuperAdmin();
   }, []);
   const searchQuery = useDebounceHook(queryDataa, 500);
-  console.log('userInformation', userInformation)
 
   useEffect(() => {
     dispatch(getAllPartnerandProgramFilterDataForAdmin(searchQuery))?.then(
@@ -565,9 +572,9 @@ const SuperAdminPartner: React.FC = () => {
             setSelectPartnerProgramId(record?.id);
             setShowScriptModal(true);
             const userData = {
-              userID: userInformation?.id
+              userID: userId
             }
-            console.log('userData', userData, userInformation)
+            console.log('userData', userId, userData)
             dispatch(launchPlayWright(userData));
           }}
         >
@@ -905,7 +912,7 @@ const SuperAdminPartner: React.FC = () => {
     } else {
       setPartnerProgramColumns(PartnerProgramColumns);
     }
-  }, [activeTab]);
+  }, [activeTab, userId]);
 
   const programScript = async () => {
     const programScriptData = programScriptForm?.getFieldsValue();
