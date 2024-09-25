@@ -110,13 +110,15 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                     key={itemLabelIndex}
                   >
                     {itemCon?.name === 'Toggle' ? (
-                      <Switch
-                      // checked={
-                      //   checkboxState[itemLabelOp as keyof CheckboxState]
-                      // }
-                      // onChange={() => handleToggleChange(itemLabelOp)}
-                      >
-                      </Switch>
+                      <>
+                        <Switch
+                        // checked={
+                        //   checkboxState[itemLabelOp as keyof CheckboxState]
+                        // }
+                        // onChange={() => handleToggleChange(itemLabelOp)}
+                        >
+                        </Switch>  {itemLabelOp}
+                      </>
                     ) : (
                       <Checkbox
                       // checked={form.getFieldValue(itemLabelOp) === 'true'}
