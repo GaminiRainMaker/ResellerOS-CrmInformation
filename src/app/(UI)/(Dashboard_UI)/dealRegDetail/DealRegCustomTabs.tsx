@@ -1,7 +1,7 @@
 'use client';
 
-import {Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import {
   CustmDealRegTab,
@@ -9,21 +9,21 @@ import {
 } from '@/app/components/common/os-custom-tab/styled-components';
 import CustomProgress from '@/app/components/common/os-progress/DealregProgressBar';
 import Typography from '@/app/components/common/typography';
-import {formatStatus} from '@/app/utils/CONSTANTS';
-import {calculateTabBarPercentage, filterRadioData} from '@/app/utils/base';
-import {useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {queryAttributeFieldForForm} from '../../../../../redux/actions/attributeField';
+import { formatStatus } from '@/app/utils/CONSTANTS';
+import { calculateTabBarPercentage, filterRadioData } from '@/app/utils/base';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { queryAttributeFieldForForm } from '../../../../../redux/actions/attributeField';
 import {
   getDealRegById,
   updateDealRegById,
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {setFinalUpdatedDealRegData} from '../../../../../redux/slices/dealReg';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { setFinalUpdatedDealRegData } from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
 
-const DealRegCustomTabs: React.FC<any> = ({form, formData, setFormData}) => {
+const DealRegCustomTabs: React.FC<any> = ({ form, formData, setFormData }) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const searchParams = useSearchParams()!;
@@ -34,7 +34,7 @@ const DealRegCustomTabs: React.FC<any> = ({form, formData, setFormData}) => {
   } = useAppSelector((state) => state.dealReg);
   const [activeKey, setActiveKey] = useState<number>();
   const [tabItems, setTabItems] = useState([]);
-  const {queryData} = useAppSelector((state) => state.attributeField);
+  const { queryData } = useAppSelector((state) => state.attributeField);
   const getDealRegId = searchParams && searchParams.get('id');
 
   useEffect(() => {
@@ -58,18 +58,18 @@ const DealRegCustomTabs: React.FC<any> = ({form, formData, setFormData}) => {
       const obj = {
         common_form_data:
           finalDealReg?.common_form_data &&
-          finalDealReg?.common_form_data.length > 0
+            finalDealReg?.common_form_data.length > 0
             ? JSON?.parse(finalDealReg?.common_form_data?.[0])
             : {},
         unique_form_data:
           finalDealReg?.unique_form_data &&
-          finalDealReg?.unique_form_data.length > 0
+            finalDealReg?.unique_form_data.length > 0
             ? JSON?.parse(finalDealReg?.unique_form_data?.[0])
             : {},
         id: finalDealReg?.id,
         unique_template:
           finalDealReg?.PartnerProgram?.form_data &&
-          finalDealReg?.PartnerProgram?.form_data?.length > 0
+            finalDealReg?.PartnerProgram?.form_data?.length > 0
             ? JSON.parse(finalDealReg?.PartnerProgram?.form_data?.[0])
             : {},
         common_template: queryData,
@@ -92,7 +92,7 @@ const DealRegCustomTabs: React.FC<any> = ({form, formData, setFormData}) => {
 
   const updateDealRegFinalData = (activeKey: any, formObj: any) => {
     const updatedData = finalUpdatedDealRegData?.map((item: any) =>
-      item?.id === activeKey ? {...item, ...formObj} : item,
+      item?.id === activeKey ? { ...item, ...formObj } : item,
     );
     dispatch(setFinalUpdatedDealRegData(updatedData));
   };
@@ -151,7 +151,7 @@ const DealRegCustomTabs: React.FC<any> = ({form, formData, setFormData}) => {
         id: activeKey,
         unique_template:
           finalDealReg?.PartnerProgram?.form_data &&
-          finalDealReg?.PartnerProgram?.form_data?.length > 0
+            finalDealReg?.PartnerProgram?.form_data?.length > 0
             ? JSON.parse(finalDealReg?.PartnerProgram?.form_data?.[0])
             : {},
         common_template: queryData,
@@ -204,7 +204,7 @@ const DealRegCustomTabs: React.FC<any> = ({form, formData, setFormData}) => {
       finalUpdatedDealRegData &&
       finalUpdatedDealRegData?.map((element: any) => {
         if (element) {
-          const {Partner, PartnerProgram, id, type} = element;
+          const { Partner, PartnerProgram, id, type } = element;
           const isActive = activeKey?.toString() === id?.toString();
           const tabPercentage: number = calculateTabBarPercentage(
             element?.PartnerProgram?.form_data,
@@ -226,7 +226,7 @@ const DealRegCustomTabs: React.FC<any> = ({form, formData, setFormData}) => {
               <Row
                 key={id}
                 gutter={[0, 10]}
-                style={{width: 'fit-content', margin: '24px 0px'}}
+                style={{ width: 'fit-content', margin: '24px 0px' }}
               >
                 <DealRegCustomTabHeaderStyle
                   token={token}
@@ -242,7 +242,7 @@ const DealRegCustomTabs: React.FC<any> = ({form, formData, setFormData}) => {
                       percent={tabPercentage}
                     />
                     <Typography
-                      style={{color: textColor}}
+                      style={{ color: textColor }}
                       cursor="pointer"
                       name="Button 1"
                     >

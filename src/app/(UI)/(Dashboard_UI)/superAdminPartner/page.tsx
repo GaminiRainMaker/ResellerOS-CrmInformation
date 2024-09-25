@@ -100,6 +100,9 @@ const SuperAdminPartner: React.FC = () => {
   const [superAdminPartnerAnalyticData, setSuperAdminPartnerAnalyticData] =
     useState<any>();
   const [selectPartnerProgramId, setSelectPartnerProgramId] = useState<any>();
+  const {
+    userInformation
+  } = useAppSelector((state) => state.user);
 
   const getPartnerDataForSuperAdmin = async () => {
     dispatch(getAllPartnerandProgramFilterDataForAdmin({}))?.then(
@@ -566,8 +569,7 @@ const SuperAdminPartner: React.FC = () => {
             }
             setSelectPartnerProgramId(record?.id);
             setShowScriptModal(true);
-            // dispatch(launchPlaywrightCodegen());
-            dispatch(launchPlayWright({}));
+            dispatch(launchPlayWright({ userID: userInformation.id }))
           }}
         >
           {record?.script?.length > 0 && !record?.script?.includes(null)

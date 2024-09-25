@@ -69,7 +69,7 @@ const dealRegSlice = createSlice({
       })
       .addCase(insertDealReg.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.data = [action.payload];
+        state.data = action.payload;
       })
       .addCase(insertDealReg.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
