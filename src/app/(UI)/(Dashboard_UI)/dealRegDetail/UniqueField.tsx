@@ -39,43 +39,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
   const [uniqueTemplateData, setUniqueTemplateData] = useState<any>();
   const [radioValues, setRadioValues] = useState<{[key: string]: any}>({});
 
-  // const [checkboxState, setCheckboxState] = useState<CheckboxState>({});
-
-  // const handleCheckboxChange = (label: string, e: any) => {
-  //   const newValue = e.target.checked ? 'true' : 'false';
-  //   const formValues = form.getFieldsValue(); // Get current form values
-
-  //   form.setFieldsValue({
-  //     [label]: newValue,
-  //   });
-
-  //   console.log('Updated form values:', {
-  //     ...formValues,
-  //     [label]: newValue,
-  //   });
-  // };
-
-  // const handleToggleChange = (label: string) => {
-  //   setCheckboxState((prev: any) => {
-  //     const newState = !prev[label];
-  //     console.log(`New state for ${label}: ${newState}`);
-
-  //     const formValues = form.getFieldsValue(); // Get current form values
-  //     const finalValues = {
-  //       ...formValues,
-  //       [label]: newState ? 'on' : 'off',
-  //       'Validation of Customer Consent': 'true',
-  //     };
-
-  //     console.log('finalValues', finalValues);
-
-  //     return {
-  //       ...prev,
-  //       [label]: newState,
-  //     };
-  //   });
-  // };
-
   const getInputComponent = (itemCon: any) => {
     const fieldName = convertToSnakeCase(itemCon?.label);
     const initialValue = uniqueTemplateData?.[fieldName];
