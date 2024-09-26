@@ -1,20 +1,20 @@
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import OsInputPassword from '@/app/components/common/os-input/InputPassword';
-import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {decrypt, encrypt, partnerProgramFilter} from '@/app/utils/base';
-import {Checkbox, Form} from 'antd';
+import { decrypt, encrypt, partnerProgramFilter } from '@/app/utils/base';
+import { Checkbox, Form } from 'antd';
 import Image from 'next/image';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import eyeSlashIcon from '../../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
 import eyeIcon from '../../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
-import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../../redux/hook';
 
 const AddPartnerPassword: React.FC<any> = ({
   onFinish,
@@ -33,6 +33,7 @@ const AddPartnerPassword: React.FC<any> = ({
   // const {userInformation} = useAppSelector((state) => state.user);
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [activeProgramOptions, setActiveProgramOptions] = useState<any>();
+  const [userNameEmail, setUserNameEmail] = useState<any>();
 
   useEffect(() => {
     setAllFilterPartnerData(partnerData);
@@ -70,6 +71,9 @@ const AddPartnerPassword: React.FC<any> = ({
   useEffect(() => {
     handlePartnerProgramOPtions(partnerId);
   }, [partnerId, allPartnerFilterData]);
+
+
+
   return (
     <>
       {!drawer && (
@@ -116,7 +120,7 @@ const AddPartnerPassword: React.FC<any> = ({
               <CommonSelect
                 allowClear
                 placeholder="Select"
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 options={partnerOptions}
                 onChange={(e: any) => {
                   setPartnerId(e);
@@ -142,9 +146,9 @@ const AddPartnerPassword: React.FC<any> = ({
                 allowClear
                 disabled={!partnerId}
                 placeholder="Select"
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
                 options={activeProgramOptions}
-                // onChange={(e: any) => {handlePartnerProgramOPtions(e)}}
+              // onChange={(e: any) => {handlePartnerProgramOPtions(e)}}
               />
             </SelectFormItem>
           </Col>
@@ -154,16 +158,16 @@ const AddPartnerPassword: React.FC<any> = ({
               name="username"
               rules={[
                 {
-                  required: true,
-                  message: 'username is required.',
-                },
-                {
                   pattern: /^[A-Za-z\s]+$/,
                   message: 'Please enter valid username.',
                 },
               ]}
             >
-              <OsInput placeholder="Enter Text" />
+              <OsInput
+                placeholder="Enter Text"
+
+              />
+
             </SelectFormItem>
           </Col>
 
@@ -178,7 +182,11 @@ const AddPartnerPassword: React.FC<any> = ({
                 },
               ]}
             >
-              <OsInput placeholder="Enter Text" />
+              <OsInput
+                placeholder="Enter Text"
+
+              />
+
             </SelectFormItem>
           </Col>
           <Col span={12}>
@@ -211,7 +219,7 @@ const AddPartnerPassword: React.FC<any> = ({
                       alt="eyeIcon"
                       width={24}
                       height={24}
-                      style={{cursor: 'pointer'}}
+                      style={{ cursor: 'pointer' }}
                     />
                   ) : (
                     <Image
@@ -219,20 +227,20 @@ const AddPartnerPassword: React.FC<any> = ({
                       alt="eyeSlashIcon"
                       width={24}
                       height={24}
-                      style={{cursor: 'pointer'}}
+                      style={{ cursor: 'pointer' }}
                     />
                   )
                 }
                 placeholder="Minimum 8 characters"
-                style={{width: '100%'}}
+                style={{ width: '100%' }}
               />
             </SelectFormItem>
           </Col>
         </Row>
         {userInformation?.is_admin && (
-          <Row style={{marginTop: '20px'}}>
+          <Row style={{ marginTop: '20px' }}>
             <Checkbox
-              style={{width: '20px', height: '20px'}}
+              style={{ width: '20px', height: '20px' }}
               onChange={(e: any) => {
                 setSharedPassword(e.target.checked);
                 partnerPasswordForm?.setFieldValue(

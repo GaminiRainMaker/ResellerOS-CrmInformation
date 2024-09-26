@@ -1,5 +1,5 @@
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
@@ -10,32 +10,32 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {decrypt, encrypt} from '@/app/utils/base';
-import {formatStatus} from '@/app/utils/CONSTANTS';
+import { decrypt, encrypt } from '@/app/utils/base';
+import { formatStatus } from '@/app/utils/CONSTANTS';
 import {
   PencilSquareIcon,
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-import {Form, TabsProps, notification} from 'antd';
-import {useEffect, useState} from 'react';
+import { Form, TabsProps, notification } from 'antd';
+import { useEffect, useState } from 'react';
 import {
   deletePartnerPassword,
   insertPartnerPassword,
   queryPartnerPassword,
   updatePartnerPasswordById,
 } from '../../../../../../redux/actions/partnerPassword';
-import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../../redux/hook';
 import AddPartnerPassword from './AddPartnerPassword';
 import DecryptedPassword from './DecryptedPassword';
-import {getAllPartnerandProgramFilterData} from '../../../../../../redux/actions/partner';
-import {getUserByTokenAccess} from '../../../../../../redux/actions/user';
+import { getAllPartnerandProgramFilterData } from '../../../../../../redux/actions/partner';
+import { getUserByTokenAccess } from '../../../../../../redux/actions/user';
 
 const PartnerPassword = () => {
   const [token] = useThemeToken();
   const [partnerPasswordForm] = Form.useForm();
   const dispatch = useAppDispatch();
-  const {data: partnerPasswordData, loading} = useAppSelector(
+  const { data: partnerPasswordData, loading } = useAppSelector(
     (state) => state.partnerPassword,
   );
 
@@ -52,6 +52,7 @@ const PartnerPassword = () => {
   const [userInformation, setUserInformation] = useState<any>();
   const [sharedPassword, setSharedPassword] = useState<boolean>(false);
   const [partnerId, setPartnerId] = useState<any>();
+
 
   const [query, setQuery] = useState<{
     partner_name: string | null;
@@ -70,7 +71,7 @@ const PartnerPassword = () => {
   const searchQuery = useDebounceHook(query, 500);
 
   const deleteSelectedIds = () => {
-    const data = {Ids: deleteIds};
+    const data = { Ids: deleteIds };
     dispatch(deletePartnerPassword(data)).then((d) => {
       if (d?.payload) {
         dispatch(queryPartnerPassword(searchQuery));
@@ -199,7 +200,7 @@ const PartnerPassword = () => {
           height={24}
           width={24}
           color={token.colorInfoBorder}
-          style={{cursor: 'pointer'}}
+          style={{ cursor: 'pointer' }}
           onClick={async () => {
             const [iv, encryptedData] = record?.password?.split(':');
             const decrypted = await decrypt(
@@ -229,7 +230,7 @@ const PartnerPassword = () => {
           height={24}
           width={24}
           color={token.colorError}
-          style={{cursor: 'pointer'}}
+          style={{ cursor: 'pointer' }}
           onClick={() => {
             setDeleteIds([record?.id]);
             setShowModalDelete(true);
@@ -321,7 +322,7 @@ const PartnerPassword = () => {
           name="Body 4/Regular"
           onClick={() => {
             setActiveKey(1);
-            setQuery({partner_name: '', partner_program_name: ''});
+            setQuery({ partner_name: '', partner_program_name: '' });
           }}
         >
           Shared Passwords
@@ -353,7 +354,7 @@ const PartnerPassword = () => {
           name="Body 4/Regular"
           onClick={() => {
             setActiveKey(2);
-            setQuery({partner_name: '', partner_program_name: ''});
+            setQuery({ partner_name: '', partner_program_name: '' });
           }}
         >
           My Passwords
@@ -374,12 +375,20 @@ const PartnerPassword = () => {
 
   const onFinish = async () => {
     const formData = partnerPasswordForm.getFieldsValue();
+    if (!formData?.username && !formData?.email) {
+      notification?.open({
+        message: 'either of the email usernames is required.',
+        type: 'error'
+      })
+      return
+    }
 
     if (formData) {
-      const {iv, data} = await encrypt(
+      const { iv, data } = await encrypt(
         formData?.password,
         SECRET_KEY as string,
       );
+
       let obj = {
         created_by: userInformation?.id,
         partner_program_id: formData?.partner_program_id,
@@ -421,7 +430,7 @@ const PartnerPassword = () => {
 
   return (
     <>
-      <Space size={5} direction="vertical" style={{width: '100%'}}>
+      <Space size={5} direction="vertical" style={{ width: '100%' }}>
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
@@ -477,7 +486,7 @@ const PartnerPassword = () => {
                 {activeKey === 1 ? (
                   <CommonSelect
                     disabled={!userInformation?.is_dealReg}
-                    style={{width: '200px'}}
+                    style={{ width: '200px' }}
                     options={sharedPartnerPasswordOptions}
                     placeholder="Search here"
                     showSearch
@@ -498,7 +507,7 @@ const PartnerPassword = () => {
                 ) : (
                   <CommonSelect
                     disabled={!userInformation?.is_dealReg}
-                    style={{width: '200px'}}
+                    style={{ width: '200px' }}
                     placeholder="Search here"
                     options={myPartnerPasswordOptions}
                     showSearch
@@ -525,7 +534,7 @@ const PartnerPassword = () => {
                 {activeKey === 1 ? (
                   <CommonSelect
                     disabled={!userInformation?.is_dealReg}
-                    style={{width: '200px'}}
+                    style={{ width: '200px' }}
                     options={sharedPartnerProgramPasswordOptions}
                     placeholder="Search here"
                     showSearch
@@ -545,7 +554,7 @@ const PartnerPassword = () => {
                   />
                 ) : (
                   <CommonSelect
-                    style={{width: '200px'}}
+                    style={{ width: '200px' }}
                     placeholder="Search here"
                     disabled={!userInformation?.is_dealReg}
                     options={myPartnerProgramPasswordOptions}
@@ -617,6 +626,7 @@ const PartnerPassword = () => {
           setPartnerPasswordId('');
           setSharedPassword(false);
           setPartnerId('');
+
         }}
         onOk={partnerPasswordForm.submit}
         primaryButtonText={partnerPasswordId ? 'Update' : 'Save'}
