@@ -3,7 +3,7 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
   deletePartnerProgram,
-  deletePartnerProgramFormData,
+  deletePartnerProgramTemplateData,
   getAllPartnerProgram,
   getPartnerProgramById,
   insertPartnerProgram,
@@ -132,19 +132,19 @@ const partnerProgramSlice = createSlice({
           state.error = action.payload;
         },
       )
-      .addCase(deletePartnerProgramFormData.pending, (state) => {
+      .addCase(deletePartnerProgramTemplateData.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(
-        deletePartnerProgramFormData.fulfilled,
+        deletePartnerProgramTemplateData.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.data = action.payload;
         },
       )
       .addCase(
-        deletePartnerProgramFormData.rejected,
+        deletePartnerProgramTemplateData.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
