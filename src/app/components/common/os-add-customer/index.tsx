@@ -30,7 +30,11 @@ import { SelectFormItem } from '../os-oem-select/oem-select-styled';
 import TableNameColumn from '../os-table/TableNameColumn';
 import { AddCustomertInterface } from './os-add-customer-interface';
 import { CustomerTabsStyle } from './styled-components';
-import { AlphabetsRegex, AlphabetsRegexWithSpecialChr, emailRegex } from '@/app/utils/base';
+import {
+  AlphabetsRegex,
+  AlphabetsRegexWithSpecialChr,
+  emailRegex,
+} from '@/app/utils/base';
 
 const AddCustomer: React.FC<AddCustomertInterface> = ({
   drawer,
@@ -160,7 +164,6 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
     billingContact,
   ]);
 
-
   return (
     <>
       {!drawer && (
@@ -204,7 +207,6 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
               imageUpload
               debounceFn={debounceFn}
               recordId={billingContact?.id}
-
               justifyContent="start"
               secondaryTextColor={token?.colorPrimary}
               primaryText={
@@ -382,7 +384,8 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                         },
                         {
                           pattern: /^[0-9]{5}$/,
-                          message: 'Please enter a valid zip code (exactly 5 digits).',
+                          message:
+                            'Please enter a valid zip code (exactly 5 digits).',
                         },
                       ]}
                     >
@@ -421,37 +424,41 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
               key: '2',
               children: (
                 <Row gutter={[16, 16]}>
-                  <Col span={24}>
-                    <Checkbox
-                      style={{ marginRight: '10px' }}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          const data = form.getFieldsValue();
+                  {!drawer && (
+                    <Col span={24}>
+                      <Checkbox
+                        style={{ marginRight: '10px' }}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            const data = form.getFieldsValue();
 
-                          form.setFieldsValue({
-                            billing_address_line: data?.shiping_address_line,
-                            billing_city: data?.shiping_city,
-                            billing_state: data?.shiping_state,
-                            billing_pin_code: data?.shiping_pin_code,
-                            billing_country: data?.shiping_country,
-                            bill_preVale: true,
-                          });
-                        } else {
-                          form.resetFields([
-                            'billing_address_line',
-                            'billing_city',
-                            'billing_state',
-                            'billing_pin_code',
-                            'billing_country',
-                            'bill_preVale',
-                          ]);
-                        }
-                      }}
-                    />
-                    <Typography name="Body 3/Regular">
-                      Same as Shipping Address
-                    </Typography>
-                  </Col>
+                            form.setFieldsValue({
+                              billing_address_line: data?.shiping_address_line,
+                              billing_city: data?.shiping_city,
+                              billing_state: data?.shiping_state,
+                              billing_pin_code: data?.shiping_pin_code,
+                              billing_country: data?.shiping_country,
+                              bill_preVale: true,
+                            });
+                          } else {
+                            form.resetFields([
+                              'billing_address_line',
+                              'billing_city',
+                              'billing_state',
+                              'billing_pin_code',
+                              'billing_country',
+                              'bill_preVale',
+                            ]);
+                          }
+                        }}
+                      />
+
+                      <Typography name="Body 3/Regular">
+                        Same as Shipping Address
+                      </Typography>
+                    </Col>
+                  )}
+
                   <Col span={24}>
                     <SelectFormItem
                       label={
@@ -513,7 +520,8 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                         },
                         {
                           pattern: /^[0-9]{5}$/,
-                          message: 'Please enter a valid zip code (exactly 5 digits).',
+                          message:
+                            'Please enter a valid zip code (exactly 5 digits).',
                         },
                       ]}
                     >
@@ -528,7 +536,9 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                           message: 'Please enter valid country.',
                         },
                       ]}
-                      label={<Typography name="Body 4/Medium">Country</Typography>}
+                      label={
+                        <Typography name="Body 4/Medium">Country</Typography>
+                      }
                       name="billing_country"
                     >
                       <OsInput placeholder="Enter here" />
@@ -589,13 +599,13 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
                                               {item?.billing_role}
                                             </Typography>
                                           }
-                                          fallbackIcon={`${item?.billing_first_name
+                                          fallbackIcon={`${item?.billing_first_name ? item?.billing_first_name
                                             ?.toString()
                                             ?.charAt(0)
-                                            ?.toUpperCase()}${item?.billing_last_name
+                                            ?.toUpperCase() : ''}${item?.billing_last_name ? item?.billing_last_name
                                               ?.toString()
                                               ?.charAt(0)
-                                              ?.toUpperCase()}`}
+                                              ?.toUpperCase() : ''}`}
                                           iconBg="#1EB159"
                                           isNotification={false}
                                         />

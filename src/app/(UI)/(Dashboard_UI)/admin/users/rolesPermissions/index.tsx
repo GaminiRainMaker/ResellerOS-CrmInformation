@@ -346,8 +346,8 @@ const RolesAndPermission = () => {
                     />
 
                     <Typography name="Body 4/Medium" color={token?.colorError}>
-                      {`The Limit for ${StatementForExpired} permissions has completed. You cannot
-                  assign this permission to anyone else.`}
+                      {`The Limit for ${StatementForExpired} permissions has completed. You cannot assign these permission to anyone else.
+                 `}
                     </Typography>
                   </Space>
                 </Col>
