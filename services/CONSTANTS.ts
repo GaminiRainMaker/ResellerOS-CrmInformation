@@ -212,7 +212,7 @@ export const API = {
     DeleteById: '/partnerProgram/deleteById',
     UpdatePartnerProgramById: '/partnerProgram/updatePartnerProgramById',
     GetPartnerProgramById: '/partnerProgram/getPartnerProgramById',
-    deletePartnerFormData: '/partnerProgram/deletePartnerProgramFormData',
+    deletePartnerProgramTemplateData: '/partnerProgram/deletePartnerProgramTemplateData',
     GetUnassignedProgram: '/partnerProgram/getUnassignedProgram',
     GetFormDataProgram: '/partnerProgram/getFormDataProgram',
     REQ_ADMIN: '/partnerProgram/upadteToRequestPartnerandprogramfromAmin',

@@ -37,7 +37,7 @@ import {
 } from '../../../../../redux/actions/partner';
 import {
   deletePartnerProgram,
-  deletePartnerProgramFormData,
+  deletePartnerProgramTemplateData,
   getAllPartnerProgram,
   launchPlayWright,
   upadteToRequestPartnerandprogramfromAmin,
@@ -103,6 +103,8 @@ const SuperAdminPartner: React.FC = () => {
     useState<any>();
   const [selectPartnerProgramId, setSelectPartnerProgramId] = useState<any>();
   const [userId, setUserId] = useState<any>()
+  const [loginTemplateData, setLoginTemplateData] = useState<any>();
+  const [openLoginPreviewModal, setOpenLoginPreviewModal] = useState<boolean>(false);
 
   useEffect(() => {
     dispatch(getUserByTokenAccess('')).then((res: any) => {
@@ -283,9 +285,14 @@ const SuperAdminPartner: React.FC = () => {
     setShowPartnerDeleteModal(false);
   };
 
-  const deletePartnerProgramFormDa = async (id: number) => {
-    dispatch(deletePartnerProgramFormData(id));
+  const deletePartnerProgramTemplate = async (id: number, type: string) => {
+    const obj = {
+      id: id,
+      type: type
+    }
+    dispatch(deletePartnerProgramTemplateData(obj));
     setOpenPreviewModal(false);
+    setOpenLoginPreviewModal(false)
     setTimeout(() => {
       dispatch(getAllPartnerProgram());
     }, 1000);
@@ -540,6 +547,42 @@ const SuperAdminPartner: React.FC = () => {
             updateLoginStep(record?.id, e);
           }}
         />
+      ),
+      width: 150,
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Login Template
+        </Typography>
+      ),
+      dataIndex: 'login_template',
+      key: 'login_template',
+      render: (text: string, record: any) => (
+        <Typography
+          name="Body 4/Medium"
+          hoverOnText
+          color={token?.colorLink}
+          onClick={() => {
+            if (
+              record?.login_template &&
+              record?.login_template?.length > 0 &&
+              !record?.login_template?.includes(null)
+            ) {
+              setOpenLoginPreviewModal(true);
+              setLoginTemplateData({
+                formObject: JSON?.parse(record?.login_template),
+                Id: record?.id,
+              });
+            } else {
+              router?.push(`/formBuilder?id=${record?.id}&loginTemplate=true`);
+            }
+          }}
+        >
+          {record?.login_template?.length > 0 && !record?.login_template?.includes(null)
+            ? 'View'
+            : 'Create Login Template'}
+        </Typography>
       ),
       width: 150,
     },
@@ -1266,7 +1309,7 @@ const SuperAdminPartner: React.FC = () => {
                 buttontype="PRIMARY"
                 text="Delete"
                 clickHandler={() => {
-                  deletePartnerProgramFormDa(formData?.Id);
+                  deletePartnerProgramTemplate(formData?.Id, 'form_data');
                 }}
               />
               <OsButton
@@ -1287,6 +1330,50 @@ const SuperAdminPartner: React.FC = () => {
           programScriptForm?.resetFields();
         }}
       />
+
+
+      <OsModal
+        bodyPadding={22}
+        loading={loading}
+        body={
+          <>
+            {' '}
+            <FormBuilderMain
+              cartItems={loginTemplateData?.formObject}
+              form={form}
+              // eslint-disable-next-line react/jsx-boolean-value
+              previewFile
+            />
+            <Space
+              align="end"
+              size={8}
+              style={{ display: 'flex', justifyContent: 'end' }}
+            >
+              <OsButton
+                buttontype="PRIMARY"
+                text="Delete"
+                clickHandler={() => {
+                  deletePartnerProgramTemplate(loginTemplateData?.Id, 'login_template');
+                }}
+              />
+              <OsButton
+                buttontype="SECONDARY"
+                text="EDIT"
+                color="red"
+                clickHandler={() => {
+                  router?.push(`/formBuilder?id=${loginTemplateData?.Id}&loginTemplate=true`);
+                }}
+              />{' '}
+            </Space>
+          </>
+        }
+        width={900}
+        open={openLoginPreviewModal}
+        onCancel={() => {
+          setOpenLoginPreviewModal(false);
+        }}
+      />
+
 
       <OsModal
         loading={insertProgramLoading}

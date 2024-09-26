@@ -38,7 +38,7 @@ import {
   updateAttributeSectionById,
 } from '../../../../../redux/actions/attributeSection';
 import {
-  deletePartnerProgramFormData,
+  deletePartnerProgramTemplateData,
   getFormDataProgram,
   updatePartnerProgramById,
 } from '../../../../../redux/actions/partnerProgram';
@@ -197,7 +197,11 @@ const SuperAdminDealReg = () => {
 
   const deleteSelectedTemplate = async () => {
     if (templateDeleteIds) {
-      await dispatch(deletePartnerProgramFormData(templateDeleteIds))?.then(
+      const obj = {
+        id: templateDeleteIds,
+        type: 'form_data'
+      }
+      await dispatch(deletePartnerProgramTemplateData(obj))?.then(
         (d) => {
           if (d?.payload) {
             dispatch(getFormDataProgram(templateSearchQuery));

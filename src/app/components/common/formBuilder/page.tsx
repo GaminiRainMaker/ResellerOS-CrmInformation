@@ -7,15 +7,15 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import {MailOutlined, PlayCircleOutlined} from '@ant-design/icons';
-import {useDroppable} from '@dnd-kit/core';
+import { MailOutlined, PlayCircleOutlined } from '@ant-design/icons';
+import { useDroppable } from '@dnd-kit/core';
 import 'react-phone-number-input/style.css';
 
 import ContactInput from '@/app/components/common/os-contact';
@@ -32,18 +32,18 @@ import {
 } from '@/app/components/common/os-div-row-col/styled-component';
 import FormUpload from '@/app/components/common/os-upload/FormUpload';
 import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
-import {formatStatus} from '@/app/utils/CONSTANTS';
-import {formbuildernewObject} from '@/app/utils/base';
-import {TrashIcon} from '@heroicons/react/24/outline';
-import {Checkbox, Radio, Switch, TimePicker, notification} from 'antd';
+import { formatStatus } from '@/app/utils/CONSTANTS';
+import { formbuildernewObject } from '@/app/utils/base';
+import { TrashIcon } from '@heroicons/react/24/outline';
+import { Checkbox, Radio, Switch, TimePicker, notification } from 'antd';
 import moment from 'moment';
-import {usePathname, useRouter, useSearchParams} from 'next/navigation';
-import React, {useEffect, useState} from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import {
   getPartnerProgramById,
   updatePartnerProgramById,
 } from '../../../../../redux/actions/partnerProgram';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import ItemName from './ItemName';
 import GlobalLoader from '../os-global-loader';
 
@@ -74,10 +74,11 @@ const FormBuilderMain: React.FC<any> = ({
 
   let pathnameForFlow = pathname === '/dealRegDetail';
   const getPartnerProgramID = searchParams.get('id');
+  const isLoginTemplate = searchParams.get('loginTemplate');
   const [holdelSelectedValue, setHoldSelectedValue] = useState<any>();
   const [radioValue, setRadioValue] = useState<any>();
   const [token] = useThemeToken();
-  const {data: partnerData, loading: partnerProgramLoading} = useAppSelector(
+  const { data: partnerData, loading: partnerProgramLoading } = useAppSelector(
     (state) => state.partnerProgram,
   );
   const [api, contextHolder] = notification.useNotification();
@@ -96,16 +97,27 @@ const FormBuilderMain: React.FC<any> = ({
     setCollapsed(false);
   };
 
+  console.log('isLoginTemplate', isLoginTemplate === 'true')
+
   useEffect(() => {
     if (!openPreviewModal && getPartnerProgramID) {
       setFormLoading(true);
       dispatch(getPartnerProgramById(Number(getPartnerProgramID)))?.then(
         (payload: any) => {
-          if (payload?.payload?.form_data?.[0]?.[0]) {
-            const formData: any = JSON?.parse(
-              payload?.payload?.form_data?.[0]?.[0],
-            );
-            setCartItems(formData);
+          if (isLoginTemplate === 'true') {
+            if (payload?.payload?.login_template?.[0]?.[0]) {
+              const formData: any = JSON?.parse(
+                payload?.payload?.login_template?.[0]?.[0],
+              );
+              setCartItems(formData);
+            }
+          } else {
+            if (payload?.payload?.form_data?.[0]?.[0]) {
+              const formData: any = JSON?.parse(
+                payload?.payload?.form_data?.[0]?.[0],
+              );
+              setCartItems(formData);
+            }
           }
         },
       );
@@ -162,15 +174,23 @@ const FormBuilderMain: React.FC<any> = ({
     onDragOver: (e: any) => e.preventDefault(),
   });
 
-  const {setNodeRef} = useDroppable({
+  const { setNodeRef } = useDroppable({
     id: 'cart-droppable',
   });
 
   const addFormData = async () => {
-    const objNew = {
-      form_data: [JSON?.stringify(cartItems)],
-      id: Number(getPartnerProgramID),
-    };
+    let objNew = {}
+    if (isLoginTemplate === 'true') {
+      objNew = {
+        login_template: [JSON?.stringify(cartItems)],
+        id: Number(getPartnerProgramID),
+      };
+    } else {
+      objNew = {
+        form_data: [JSON?.stringify(cartItems)],
+        id: Number(getPartnerProgramID),
+      };
+    }
     if (cartItems?.[0]?.content?.length > 0) {
       dispatch(updatePartnerProgramById(objNew));
       router.push(`/superAdminPartner`);
@@ -272,7 +292,7 @@ const FormBuilderMain: React.FC<any> = ({
                     Section {Sectidx + 1}
                     <TrashIcon
                       cursor="pointer"
-                      style={{marginLeft: '20px'}}
+                      style={{ marginLeft: '20px' }}
                       width={18}
                       onClick={() => {
                         deleteSelectedIntem(Sectidx);
@@ -336,7 +356,7 @@ const FormBuilderMain: React.FC<any> = ({
                                 )}
                               {itemCon?.noOfRowsData?.map(
                                 (rowsMapItem: string) => (
-                                  <Row style={{width: '100%'}}>
+                                  <Row style={{ width: '100%' }}>
                                     {itemCon?.ColumnsData?.map(
                                       (itemColum: any) => {
                                         const totalSpanVaue = 24;
@@ -361,7 +381,7 @@ const FormBuilderMain: React.FC<any> = ({
                                               span={totalFloorValue}
                                             >
                                               {itemColum?.type === 'single' ||
-                                              itemColum?.type === 'multiple' ? (
+                                                itemColum?.type === 'multiple' ? (
                                                 <CommonSelect
                                                   variant="borderless"
                                                   mode={itemColum?.type}
@@ -437,7 +457,7 @@ const FormBuilderMain: React.FC<any> = ({
                             <Typography name="Body 4/Medium">
                               {itemCon?.requiredLabel && itemCon?.label}{' '}
                               {itemCon?.required && (
-                                <span style={{color: 'red'}}>*</span>
+                                <span style={{ color: 'red' }}>*</span>
                               )}
                             </Typography>
                             <SectionDivStyled1>
@@ -521,7 +541,7 @@ const FormBuilderMain: React.FC<any> = ({
                                     limitMaxLength
                                     defaultCountry={itemCon?.defaultcountry}
                                     max={11}
-                                    // countryCallingCodeEditable={false}
+                                  // countryCallingCodeEditable={false}
                                   />
                                 </>
                               ) : itemCon?.name === 'Email' ||
@@ -558,7 +578,7 @@ const FormBuilderMain: React.FC<any> = ({
                               {item?.content?.length - 1 === ItemConindex &&
                                 !previewFile && (
                                   <OsButton
-                                    style={{marginLeft: '10px'}}
+                                    style={{ marginLeft: '10px' }}
                                     buttontype="PRIMARY_ICON"
                                     icon="+"
                                     clickHandler={() => {
@@ -614,7 +634,7 @@ const FormBuilderMain: React.FC<any> = ({
                             <Typography name="Body 4/Medium">
                               {itemCon?.requiredLabel && itemCon?.label}{' '}
                               {itemCon?.required && (
-                                <span style={{color: 'red'}}>*</span>
+                                <span style={{ color: 'red' }}>*</span>
                               )}
                             </Typography>
                             <SectionDivStyled1>
@@ -634,7 +654,7 @@ const FormBuilderMain: React.FC<any> = ({
                               {item?.content?.length - 1 === ItemConindex &&
                                 !previewFile && (
                                   <OsButton
-                                    style={{marginLeft: '10px'}}
+                                    style={{ marginLeft: '10px' }}
                                     buttontype="PRIMARY_ICON"
                                     icon="+"
                                     clickHandler={() => {
@@ -759,7 +779,7 @@ const FormBuilderMain: React.FC<any> = ({
                             <Typography name="Body 4/Medium">
                               {itemCon?.requiredLabel && itemCon?.label}{' '}
                               {itemCon?.required && (
-                                <span style={{color: 'red'}}>*</span>
+                                <span style={{ color: 'red' }}>*</span>
                               )}
                             </Typography>
                             <SectionDivStyled1>
@@ -806,7 +826,7 @@ const FormBuilderMain: React.FC<any> = ({
                                                 ) {
                                                   const temp: any =
                                                     holdelSelectedValue?.length >
-                                                    0
+                                                      0
                                                       ? [...holdelSelectedValue]
                                                       : [];
                                                   temp?.push(e?.[0]);
