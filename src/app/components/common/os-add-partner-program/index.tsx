@@ -19,6 +19,7 @@ import {AddPartnerInterface} from '../os-add-partner/os-add-partner.interface';
 import OsPartnerSelect from '../os-partner-select';
 import {usePathname} from 'next/navigation';
 import OsButton from '../os-button';
+import CommonSelect from '../os-select';
 
 const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
   form,
@@ -151,6 +152,7 @@ const AddPartnerProgram: React.FC<AddPartnerInterface> = ({
         >
           {!partnerId && (
             <OsPartnerSelect
+            // drawer
               name="partner"
               // form={form}
               setPartnerValue={setPartnerValue}

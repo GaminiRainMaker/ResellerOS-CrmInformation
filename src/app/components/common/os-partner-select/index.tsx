@@ -34,6 +34,7 @@ const OsPartnerSelect: FC<{
   getTheData?: any;
   setGetTheData?: any;
   partnerValue?: any;
+  disabled?:boolean
 }> = ({
   organizationName,
   name = 'partner',
