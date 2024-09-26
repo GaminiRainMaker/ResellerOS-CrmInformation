@@ -47,6 +47,7 @@ import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import AddPartnerProgramScript from './AddPartnerProgramScript';
 import SuperAdminPartnerAnalytics from './SuperAdminPartnerAnalytic';
 import { getUserByTokenAccess } from '../../../../../redux/actions/user';
+import { Switch } from '@/app/components/common/antd/Switch';
 
 
 export interface SeparatedData {
@@ -208,6 +209,16 @@ const SuperAdminPartner: React.FC = () => {
       setActiveTab(Number(getTabId));
     }
   }, [getTabId]);
+
+
+  const updateLoginStep = async (id: number, value: boolean) => {
+    let obj = {
+      id: id,
+      login_step: value,
+    };
+    await dispatch(updatePartnerProgramById(obj));
+  };
+
 
   const updateRequest = async (
     type: boolean,
@@ -512,6 +523,25 @@ const SuperAdminPartner: React.FC = () => {
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Login Step
+        </Typography>
+      ),
+      dataIndex: 'login_step',
+      key: 'login_step',
+      render: (text: any, record: any) => (
+        <Switch
+          defaultChecked={text}
+          size="default"
+          onChange={(e) => {
+            updateLoginStep(record?.id, e);
+          }}
+        />
+      ),
+      width: 150,
     },
     {
       title: (
