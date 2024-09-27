@@ -561,6 +561,15 @@ const Profitablity: FC<any> = ({
             <CommonSelect
               disabled={renderEditableInput('Product Family')}
               allowClear
+              onClear={() => {
+                handleFieldChange(
+                  record,
+                  'product_family',
+                  '',
+                  selectedFilter,
+                  'select',
+                );
+              }}
               style={{ width: '200px', height: '36px' }}
               placeholder="Select"
               defaultValue={text ?? record?.Product?.product_family}
@@ -1305,7 +1314,7 @@ const Profitablity: FC<any> = ({
       )}
 
       <OsModal
-        title={'Update LineItems'}
+        title={'Update Line Items'}
         loading={loading}
         body={
           <UpdatingLineItems

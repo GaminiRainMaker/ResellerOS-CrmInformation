@@ -38,7 +38,7 @@ const FormStackMain: React.FC = () => {
             setActiveTab(1);
           }}
         >
-          Sync FormStack Value
+          Sync Formstack Value
         </Typography>
       ),
       key: '1',
@@ -52,7 +52,7 @@ const FormStackMain: React.FC = () => {
             setActiveTab(2);
           }}
         >
-          FormStack API KEY
+          Formstack API KEY
         </Typography>
       ),
       key: '2',

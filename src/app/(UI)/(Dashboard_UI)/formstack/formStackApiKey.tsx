@@ -181,7 +181,7 @@ const FormStackApiKey: FC<FormStackInterface> = ({setActiveTab}) => {
             <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
               <ul style={{listStyleType: 'disc', marginLeft: '20px'}}>
                 <li>
-                  If you do not have a FormStack account, please{' '}
+                  If you do not have a Formstack account, please{' '}
                   <Typography
                     name="Body 4/Medium"
                     color={token?.colorLink}

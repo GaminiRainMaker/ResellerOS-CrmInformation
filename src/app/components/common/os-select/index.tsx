@@ -1,7 +1,7 @@
-import {ChevronDownIcon} from '@heroicons/react/24/outline';
-import {FC} from 'react';
-import {OsSelectProps} from './os-select.interface';
-import {SelectStyled} from './styled-components';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { FC } from 'react';
+import { OsSelectProps } from './os-select.interface';
+import { SelectStyled } from './styled-components';
 import useThemeToken from '../hooks/useThemeToken';
 
 const CommonSelect: FC<OsSelectProps> = ({
@@ -14,7 +14,7 @@ const CommonSelect: FC<OsSelectProps> = ({
   return (
     <SelectStyled
       {...rest}
-      value={value}
+      value={value ?? ''}
       suffixIcon={
         suffixIcon ?? (
           <ChevronDownIcon width={24} color={token?.colorInfoBorder} />

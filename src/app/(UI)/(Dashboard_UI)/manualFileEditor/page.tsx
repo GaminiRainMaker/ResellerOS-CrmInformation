@@ -18,23 +18,23 @@ const HotTable = dynamic(() => import('@handsontable/react'), {
 });
 
 // import {HotTable} from '@handsontable/react';
-import { HyperFormula } from 'hyperformula';
+import {HyperFormula} from 'hyperformula';
 
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import './styles.css';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { addClassesToRows, alignHeaders } from '../fileEditor/hooksCallbacks';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {addClassesToRows, alignHeaders} from '../fileEditor/hooksCallbacks';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import 'handsontable/dist/handsontable.min.css';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { formatStatus } from '@/app/utils/CONSTANTS';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 import OsModal from '@/app/components/common/os-modal';
 import SyncTableData from '../fileEditor/syncTableforpdfEditor';
 import OsButton from '@/app/components/common/os-button';
-import { notification, Space } from 'antd';
+import {notification, Space} from 'antd';
 import Typography from '@/app/components/common/typography';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
-import { Col, Row } from '@/app/components/common/antd/Grid';
+import {Col, Row} from '@/app/components/common/antd/Grid';
 import {
   getfileByQuoteIdWithManual,
   getQuoteFileById,
@@ -45,10 +45,10 @@ import {
 } from '../../../../../redux/actions/auth';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
-import { getResultedValue } from '@/app/utils/base';
-import { registerAllModules } from 'handsontable/registry';
+import {getResultedValue} from '@/app/utils/base';
+import {registerAllModules} from 'handsontable/registry';
 import dynamic from 'next/dynamic';
-import { getAllFormulas } from '../../../../../redux/actions/formulas';
+import {getAllFormulas} from '../../../../../redux/actions/formulas';
 import {
   queryLineItemSyncing,
   queryLineItemSyncingForSalesForce,
@@ -87,7 +87,6 @@ const EditorFile = () => {
   const [accoutSyncOptions, setAccoutSyncOptions] = useState<any>();
   const [showUpdateColumnModal, setShowUpdateColumnModal] =
     useState<boolean>(false);
-  const [showAddFormula, setShowAddFormula] = useState<boolean>(false);
   const [existingColumnOptions, setExistingColumnName] = useState<any>();
   const [formulaOptions, setFormulaOptions] = useState<any>();
 
@@ -249,7 +248,7 @@ const EditorFile = () => {
         let pathTOGo = salesFOrceManual === 'true' ? newObj : data;
         dispatch(getSalesForceFileData(pathTOGo))?.then((payload: any) => {
           if (payload?.payload) {
-            let newObjFromSalesFOrce = JSON?.parse(payload?.payload?.qliFields)
+            let newObjFromSalesFOrce = JSON?.parse(payload?.payload?.qliFields);
             let keysss = Object.keys(newObjFromSalesFOrce);
             let arrOfOptions: any = [];
 
@@ -261,7 +260,6 @@ const EditorFile = () => {
                 });
               });
             }
-
 
             setAccoutSyncOptions(arrOfOptions);
           }
@@ -411,7 +409,7 @@ const EditorFile = () => {
     let resultantArr: any = [];
 
     newArr?.map((items: any) => {
-      resultantArr?.push({ ...items, [value]: '' });
+      resultantArr?.push({...items, [value]: ''});
     });
     setArrayOflineItem(resultantArr);
     setShowAddColumnModal(false);
@@ -421,7 +419,7 @@ const EditorFile = () => {
     if (mergeedColumnHeader && mergeedColumnHeader?.length > 0) {
       let newArr: any = [];
       mergeedColumnHeader?.map((items: any) => {
-        newArr?.push({ label: items, value: items });
+        newArr?.push({label: items, value: items});
       });
       setExistingColumnName(newArr);
     }
@@ -433,23 +431,23 @@ const EditorFile = () => {
         <Typography
           name="Body 1/Bold"
           // color={token?.colorLink}
-          style={{ marginBottom: '6px' }}
+          style={{marginBottom: '6px'}}
         >
           {currentFileData?.file_name}
         </Typography>
       )}
-      <Row gutter={[32, 16]} style={{ marginTop: '10px', marginBottom: '40px' }}>
+      <Row gutter={[32, 16]} style={{marginTop: '10px', marginBottom: '40px'}}>
         <Col span={12}>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{display: 'flex', flexDirection: 'column'}}>
             <Typography
               name="Body 3/Bold"
               color={token?.colorLink}
-              style={{ marginBottom: '6px' }}
+              style={{marginBottom: '6px'}}
             >
               Note:
             </Typography>
             <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
-              <ul style={{ listStyleType: 'disc', marginLeft: '20px' }}>
+              <ul style={{listStyleType: 'disc', marginLeft: '20px'}}>
                 <li>Data needs to be copied from an Excel file only.</li>
                 <li>
                   The first row will contain the headers of your file data.
@@ -630,9 +628,9 @@ const EditorFile = () => {
       <OsModal
         // title={'Share Credentials in Team'}
         body={
-          <Row style={{ width: '100%', padding: '15px' }}>
+          <Row style={{width: '100%', padding: '15px'}}>
             <Space
-              style={{ width: '100%' }}
+              style={{width: '100%'}}
               size={24}
               direction="vertical"
               align="center"
@@ -640,7 +638,7 @@ const EditorFile = () => {
               <Space direction="vertical" align="center" size={1}>
                 <Typography
                   name="Heading 3/Medium"
-                  style={{ display: 'flex', textAlign: 'center' }}
+                  style={{display: 'flex', textAlign: 'center'}}
                 >
                   Your first row is going to be the headers of the data.
                 </Typography>
@@ -712,7 +710,7 @@ const EditorFile = () => {
           <Row gutter={[16, 24]} justify="space-between">
             <Col span={21}>
               <OsInput
-                style={{ width: '100%' }}
+                style={{width: '100%'}}
                 placeholder="Please add the column header name"
                 onChange={(e: any) => {
                   setNewHeaderName(e?.target?.value);
@@ -741,8 +739,10 @@ const EditorFile = () => {
         body={
           <Row gutter={[16, 24]} justify="space-between">
             <Col span={12}>
+              <Typography name="Body 3/Regular">Select column</Typography>
+
               <CommonSelect
-                style={{ width: '100%' }}
+                style={{width: '100%'}}
                 value={oldColumnName}
                 placeholder="Please select the column header name"
                 options={existingColumnOptions}
@@ -753,8 +753,10 @@ const EditorFile = () => {
               />
             </Col>
             <Col span={12}>
+              <Typography name="Body 3/Regular">Column New name</Typography>
+
               <OsInput
-                style={{ width: '100%' }}
+                style={{width: '100%'}}
                 placeholder="Please add new column header name"
                 value={newHeaderName}
                 onChange={(e: any) => {
@@ -770,7 +772,7 @@ const EditorFile = () => {
               }}
             >
               {' '}
-              <div style={{ marginRight: '30px' }}>
+              <div style={{marginRight: '30px'}}>
                 <OsButton
                   // style={{marginRight: '100px'}}
                   disabled={
@@ -802,80 +804,6 @@ const EditorFile = () => {
         }
         width={900}
         open={showUpdateColumnModal}
-        onCancel={() => {
-          setShowUpdateColumnModal(false);
-          setNewHeaderName('');
-          setOldColumnName('');
-        }}
-      />
-
-      <OsModal
-        title="Apply Formula"
-        bodyPadding={30}
-        body={
-          <Row gutter={[16, 24]} justify="space-between">
-            <Col span={12}>
-              <CommonSelect
-                style={{ width: '100%' }}
-                value={oldColumnName}
-                placeholder="Please select the formula"
-                options={formulaOptions}
-                onChange={(e: any) => {
-                  setNewHeaderName('');
-                  setOldColumnName(e);
-                }}
-              />
-            </Col>
-            <Col span={12}>
-              <OsInput
-                style={{ width: '100%' }}
-                placeholder="Please add new column header name"
-                value={newHeaderName}
-                onChange={(e: any) => {
-                  setNewHeaderName(e?.target?.value);
-                }}
-              />
-            </Col>
-            <div
-              style={{
-                display: 'flex',
-                width: '100%',
-                justifyContent: 'flex-end',
-              }}
-            >
-              {' '}
-              <div style={{ marginRight: '30px' }}>
-                <OsButton
-                  // style={{marginRight: '100px'}}
-                  disabled={
-                    newHeaderName?.length > 0 && oldColumnName?.length > 0
-                      ? false
-                      : true
-                  }
-                  text="Update"
-                  buttontype="SECONDARY"
-                  clickHandler={() => {
-                    UpdateTheColumnName('open', oldColumnName, newHeaderName);
-                  }}
-                />{' '}
-              </div>
-              <OsButton
-                disabled={
-                  newHeaderName?.length > 0 && oldColumnName?.length > 0
-                    ? false
-                    : true
-                }
-                text="Update & Close"
-                buttontype="PRIMARY"
-                clickHandler={() => {
-                  UpdateTheColumnName('close', oldColumnName, newHeaderName);
-                }}
-              />
-            </div>
-          </Row>
-        }
-        width={900}
-        open={showAddFormula}
         onCancel={() => {
           setShowUpdateColumnModal(false);
           setNewHeaderName('');
