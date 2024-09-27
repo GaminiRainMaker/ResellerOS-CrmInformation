@@ -153,23 +153,6 @@ const PartnerPassword = () => {
           className="dragHandler"
           color={token?.colorPrimaryText}
         >
-          Email
-        </Typography>
-      ),
-      dataIndex: 'email',
-      key: 'email',
-      width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography
-          name="Body 4/Medium"
-          className="dragHandler"
-          color={token?.colorPrimaryText}
-        >
           Password
         </Typography>
       ),
@@ -425,8 +408,6 @@ const PartnerPassword = () => {
       }
     }
   };
-
-  console.log('23232312123', userInformation?.is_admin);
 
   return (
     <>
