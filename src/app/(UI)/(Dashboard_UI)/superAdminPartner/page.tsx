@@ -293,9 +293,7 @@ const SuperAdminPartner: React.FC = () => {
     dispatch(deletePartnerProgramTemplateData(obj));
     setOpenPreviewModal(false);
     setOpenLoginPreviewModal(false)
-    setTimeout(() => {
-      dispatch(getAllPartnerProgram());
-    }, 1000);
+    dispatch(getAllPartnerandProgramFilterDataForAdmin({}))
   };
 
   const locale = {
@@ -796,7 +794,7 @@ const SuperAdminPartner: React.FC = () => {
           dataSource={allPartnerData?.AllPartner}
           scroll
           locale={locale}
-          loading={false}
+          loading={loading}
         />
       ),
     },
@@ -813,7 +811,7 @@ const SuperAdminPartner: React.FC = () => {
           dataSource={allPartnerData?.requested}
           scroll
           locale={locale}
-          loading={false}
+          loading={loading}
         />
       ),
     },
@@ -852,11 +850,10 @@ const SuperAdminPartner: React.FC = () => {
                 />
               ),
           }}
-          // dataSource={allApprovedObjects}
           dataSource={allPartnerData?.DeclinedData}
           scroll
           locale={locale}
-          loading={false}
+          loading={loading}
         />
       ),
     },

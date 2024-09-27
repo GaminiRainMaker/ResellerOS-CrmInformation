@@ -156,31 +156,6 @@ const AddPartnerPassword: React.FC<any> = ({
             <SelectFormItem
               label={<Typography name="Body 4/Medium">Username</Typography>}
               name="username"
-              rules={[
-                {
-                  pattern: /^[A-Za-z\s]+$/,
-                  message: 'Please enter valid username.',
-                },
-              ]}
-            >
-              <OsInput
-                placeholder="Enter Text"
-
-              />
-
-            </SelectFormItem>
-          </Col>
-
-          <Col span={12}>
-            <SelectFormItem
-              label={<Typography name="Body 4/Medium">Email</Typography>}
-              name="email"
-              rules={[
-                {
-                  pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: 'Please enter valid email.',
-                },
-              ]}
             >
               <OsInput
                 placeholder="Enter Text"
