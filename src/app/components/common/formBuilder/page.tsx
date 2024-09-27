@@ -925,7 +925,7 @@ const FormBuilderMain: React.FC<any> = ({
                                 setCollapsed={setCollapsed}
                                 onClick={(e: any) => {
                                   e?.preventDefault();
-                                  setCollapsed(true);
+                                  // setCollapsed(true);
                                   setActiveContentIndex(ItemConindex);
                                   setActiveSectionIndex(Sectidx);
                                   form.resetFields();
