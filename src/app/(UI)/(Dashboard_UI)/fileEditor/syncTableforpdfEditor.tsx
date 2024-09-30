@@ -137,7 +137,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       // ,
     );
 
-  console.log("SaleForceQuoteLineItemColumnSync", SaleForceQuoteLineItemColumnSync)
   const router = useRouter();
   const mergeedColumn: any = [];
   const keys = mergedValue?.length > 0 && Object.keys(mergedValue?.[0]);
@@ -768,7 +767,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
   useEffect(() => {
     handleChange();
   }, [syncedNewValue]);
-  console.log("accoutSyncOptionsaccoutSyncOptions", accoutSyncOptions)
   return (
     <>
       <GlobalLoader loading={nanonetsLoading}>

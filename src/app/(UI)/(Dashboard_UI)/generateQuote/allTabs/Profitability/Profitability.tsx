@@ -1054,7 +1054,6 @@ const Profitablity: FC<any> = ({
       </div>
     );
   };
-  console.log("45645543543", finalData)
   return (
     <GlobalLoader loading={profitabilityDataByQuoteId?.length < 0}>
       {finalProfitTableCol && finalProfitTableCol?.length > 0 ? (

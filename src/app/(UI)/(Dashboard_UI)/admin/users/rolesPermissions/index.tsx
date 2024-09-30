@@ -123,7 +123,6 @@ const RolesAndPermission = () => {
       key: 'is_quote',
       width: 173,
       render: (text: any, record: any) => {
-        console.log("435435343", record)
         return (
           <Checkbox
             disabled={record.isQuoteDisabled ?? false}

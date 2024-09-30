@@ -96,7 +96,6 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
     JSON.stringify(quoteConfigData),
     distributorValue,
   ]);
-  console.log("234234324", finalOemOptions)
   return (
     <>
       <SelectFormItem

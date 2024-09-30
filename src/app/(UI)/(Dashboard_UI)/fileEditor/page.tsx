@@ -1442,7 +1442,6 @@ const EditorFile = () => {
     setOpenAddNewFormulaModal(false);
   };
 
-  console.log("quoteItemsquoteItems", quoteItems)
   return (
     <GlobalLoader loading={nanonetsLoading}>
       <Space size={0} style={{ marginBottom: '20px' }}>
