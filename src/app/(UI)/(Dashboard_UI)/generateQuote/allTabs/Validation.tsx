@@ -54,6 +54,8 @@ const Validation: FC<any> = ({
 
   useEffect(() => {
     dispatch(getAllContract());
+    dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
+
   }, [])
 
   const contractVehicleOptions = contactData?.filter((item: any) => item?.organization === userInformation?.organization).map((option: any) => ({
