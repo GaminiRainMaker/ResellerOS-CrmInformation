@@ -523,58 +523,6 @@ const Validation: FC<any> = ({
                                     </Typography>
                                   </Badge>
                                 </Col>
-                                <Col xs={24} sm={12} md={12} lg={6} xl={6}>
-                                  <span
-                                    style={{
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                    }}
-                                  >
-                                    Ext Price:{' '}
-                                    <Typography
-                                      name="Body 4/Medium"
-                                      color={token?.colorBgContainer}
-                                      ellipsis
-                                      tooltip
-                                      as="div"
-                                      style={{ marginLeft: '2px' }}
-                                    >
-                                      $
-                                      {abbreviate(
-                                        Number(
-                                          finalDataItem?.totalExtendedPrice ??
-                                          0.0,
-                                        ),
-                                      )}
-                                    </Typography>
-                                  </span>
-                                </Col>
-                                <Col xs={24} sm={12} md={12} lg={4} xl={4}>
-                                  <span
-                                    style={{
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                    }}
-                                  >
-                                    Contract Price:{' '}
-                                    <Typography
-                                      name="Body 4/Medium"
-                                      color={token?.colorBgContainer}
-                                      ellipsis
-                                      tooltip
-                                      as="div"
-                                      style={{ marginLeft: '2px' }}
-                                    >
-                                      $
-                                      {abbreviate(
-                                        Number(
-                                          finalDataItem?.totalContractPrice ??
-                                          0.0,
-                                        ),
-                                      )}
-                                    </Typography>
-                                  </span>
-                                </Col>
                               </Row>
                             ),
                             children: (
