@@ -107,6 +107,7 @@ const ContractValidationConfiguration = () => {
                     setIsSelectLogic(false);
                     setContractStatus(e);
                   }}
+                  value={contractStatus}
                 />
               </Space>
               {contractStatus && (

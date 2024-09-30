@@ -1,5 +1,5 @@
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
@@ -9,10 +9,10 @@ import {
   ContractOperatorsOptions,
   quotLineItemsColumnsSync,
 } from '@/app/utils/CONSTANTS';
-import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
-import {Input, Select, Table} from 'antd';
-import {ColumnsType} from 'antd/lib/table';
-import {useEffect, useState} from 'react';
+import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { Input, Select, Table } from 'antd';
+import { ColumnsType } from 'antd/lib/table';
+import { useEffect, useState } from 'react';
 import {
   getContractConfiguartion,
   insertUpdateContractConfiguartion,
@@ -21,9 +21,9 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../../../../../redux/hook';
-import {RowData, StatusFileProps} from '../configuration.interface';
+import { RowData, StatusFileProps } from '../configuration.interface';
 
-const {Option} = Select;
+const { Option } = Select;
 
 const StatusFile: React.FC<StatusFileProps> = ({
   initialData,
@@ -36,8 +36,8 @@ const StatusFile: React.FC<StatusFileProps> = ({
   const [dataSource, setDataSource] = useState<RowData[]>([]);
   const [count, setCount] = useState(0);
   const dispatch = useAppDispatch();
-  const {loading} = useAppSelector((state) => state.contractConfiguration);
-  const [fieldTypes, setFieldTypes] = useState<{[key: string]: string}>({});
+  const { loading } = useAppSelector((state) => state.contractConfiguration);
+  const [fieldTypes, setFieldTypes] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     if (initialData?.json?.length > 0) {
@@ -77,7 +77,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
   ) => {
     const newDataSource = dataSource?.map((item) => {
       if (item.key === key) {
-        const newItem = {...item, [column]: value};
+        const newItem = { ...item, [column]: value };
         if (column === 'valueType' && value === 'input') {
           newItem.value = '';
         }
@@ -95,6 +95,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
       }
       return item;
     });
+    console.log('newDataSource', newDataSource)
     setDataSource(newDataSource);
   };
 
@@ -143,7 +144,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
           onChange={(value) =>
             handleInputChange(value, record.key, 'fieldName')
           }
-          style={{width: '100%', height: '34px'}}
+          style={{ width: '100%', height: '34px' }}
           options={quotLineItemsColumnsSync}
         />
       ),
@@ -159,7 +160,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
           placeholder="Select Operator"
           value={text}
           onChange={(value) => handleInputChange(value, record.key, 'operator')}
-          style={{width: '100%', height: '34px'}}
+          style={{ width: '100%', height: '34px' }}
           options={ContractOperatorsOptions}
         />
       ),
@@ -177,7 +178,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
           onChange={(value) =>
             handleInputChange(value, record.key, 'valueType')
           }
-          style={{width: '100%', height: '34px'}}
+          style={{ width: '100%', height: '34px' }}
         >
           <Option value="input">Input</Option>
           <Option value="formula">Formula</Option>
@@ -201,10 +202,12 @@ const StatusFile: React.FC<StatusFileProps> = ({
         ) : (
           <CommonSelect
             allowClear
-            // value={text ?? text}
+            value={text ?? text}
             placeholder="Select Fields"
-            onChange={(value) => handleInputChange(value, record.key, 'value')}
-            style={{width: '100%', height: 'auto'}}
+            onChange={(value) => {
+              handleInputChange(value, record.key, 'value')
+            }}
+            style={{ width: '100%', height: 'auto' }}
             mode="multiple"
           >
             {getFieldOptions(fieldTypes[record.key] || '')}
@@ -216,12 +219,12 @@ const StatusFile: React.FC<StatusFileProps> = ({
       title: 'Action',
       key: 'action',
       render: (_, record) => (
-        <span style={{display: 'flex', justifyContent: 'center'}}>
+        <span style={{ display: 'flex', justifyContent: 'center' }}>
           <TrashIcon
             height={24}
             width={24}
             color={token.colorError}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
             onClick={() => handleDelete(record.key)}
           />
         </span>
@@ -269,9 +272,9 @@ const StatusFile: React.FC<StatusFileProps> = ({
             key: '1',
             label: <Typography name="Body 2/Medium">Fields</Typography>,
             children: (
-              <Space size={24} direction="vertical" style={{width: '100%'}}>
+              <Space size={24} direction="vertical" style={{ width: '100%' }}>
                 <Table
-                  style={{boxShadow: ' 5px 5px 5px 5px grey'}}
+                  style={{ boxShadow: ' 5px 5px 5px 5px grey' }}
                   dataSource={dataSource}
                   columns={columns}
                   pagination={false}
@@ -285,7 +288,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
                       buttontype="PRIMARY"
                       icon={<PlusIcon width={24} />}
                       clickHandler={handleAdd}
-                      style={{marginBottom: 16}}
+                      style={{ marginBottom: 16 }}
                     />{' '}
                   </Col>
                   <Col>
@@ -294,7 +297,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
                       text="Save"
                       buttontype="PRIMARY"
                       clickHandler={handleSave}
-                      style={{marginBottom: 16}}
+                      style={{ marginBottom: 16 }}
                     />
                   </Col>
                 </Row>
