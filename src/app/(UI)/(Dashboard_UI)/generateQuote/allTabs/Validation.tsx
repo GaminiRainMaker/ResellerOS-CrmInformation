@@ -64,6 +64,7 @@ const Validation: FC<any> = ({
       return;
     }
 
+
     const convertToTitleCase = (input: string) => {
       if (!input) return '';
       return input
@@ -99,13 +100,13 @@ const Validation: FC<any> = ({
           default:
             name = undefined;
         }
-        console.log('Dataaaa', name, filterValue, item);
-
         if (!name) return;
 
         if (name.includes('_') || name === name.toLowerCase()) {
           name = convertToTitleCase(name);
         }
+
+
 
         if (!groupedData[name]) {
           groupedData[name] = {
@@ -147,7 +148,6 @@ const Validation: FC<any> = ({
       filterDataByValue(ValidationData, selectedFilter);
     }
   }, [JSON.stringify(ValidationData), selectedFilter]);
-
   const renderEditableInput = (field: string) => {
     const editableField = tableColumnDataShow.find(
       (item: any) => item.field_name === field,
@@ -228,7 +228,7 @@ const Validation: FC<any> = ({
           placeholder="Select"
           defaultValue={text}
           onChange={(e) => { }}
-          options={pricingMethod}
+          options={[]}
         />
       ),
     },
@@ -477,6 +477,8 @@ const Validation: FC<any> = ({
   //     }
   //   });
   // }, [validationDataData]);
+
+  console.log('validationFinalData', validationFinalData)
 
   return (
     <>
