@@ -163,7 +163,7 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
   const debounceFn = useCallback(_debounce(handleNotification, 500), [
     billingContact,
   ]);
-
+  console.log("324324234", billingContact, customerData)
   return (
     <>
       {!drawer && (
@@ -216,16 +216,16 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
               }
               secondaryText={
                 <Typography name="Body 4/Regular">
-                  {drawer && `ID: ${billingContact?.id}`}
+                  {drawer && `ID: ${customerData?.id ? customerData?.id : billingContact?.id}`}
                 </Typography>
               }
               fallbackIcon={
                 drawer ? (
-                  `${billingContact?.name
+                  `${customerData?.name
                     ?.toString()
                     ?.charAt(0)
                     ?.toUpperCase() ??
-                  billingContact?.name?.toString()?.charAt(0)?.toUpperCase()
+                  customerData?.name?.toString()?.charAt(0)?.toUpperCase()
                   }`
                 ) : (
                   <UserCircleIcon />
