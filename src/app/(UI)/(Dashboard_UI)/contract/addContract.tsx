@@ -1,18 +1,40 @@
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
-import {useAppDispatch} from '../../../../../redux/hook';
-import {Form} from 'antd';
-import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { Form } from 'antd';
+import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
+import { useEffect } from 'react';
+import { queryAllOrganizations } from '../../../../../redux/actions/user';
 
-const AddContract: React.FC<any> = ({drawer, form, onFinish}) => {
+const AddContract: React.FC<any> = ({ drawer, form, onFinish }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
+  const { userInformation, allOrganization } = useAppSelector((state) => state.user);
+  const capitalizeFirstLetter = (str: string | undefined) => {
+    if (!str) {
+      return '';
+    }
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+  useEffect(() => {
+    dispatch(queryAllOrganizations(''))
+  }, [])
+
+
+  const selectOptions = allOrganization.map((option: any) => ({
+    label: (
+      <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+        {capitalizeFirstLetter(option)}
+      </Typography>
+    ),
+    value: option
+  }));
 
   return (
     <>
@@ -44,7 +66,7 @@ const AddContract: React.FC<any> = ({drawer, form, onFinish}) => {
         <Space
           size={16}
           direction="vertical"
-          style={{width: '100%', padding: drawer ? '' : '24px 40px 20px 40px'}}
+          style={{ width: '100%', padding: drawer ? '' : '24px 40px 20px 40px' }}
         >
           <Row justify="space-between" gutter={[24, 24]}>
             <Col sm={24} md={drawer ? 24 : 12}>
@@ -88,9 +110,29 @@ const AddContract: React.FC<any> = ({drawer, form, onFinish}) => {
                 <OsInput placeholder="Enter Text" />
               </SelectFormItem>{' '}
             </Col>
+
+            {userInformation?.Role === "superAdmin" && < Col sm={24} md={drawer ? 24 : 12}>
+              <SelectFormItem
+                label={<Typography name="Body 4/Medium">Organization</Typography>}
+                name="organization"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Organization is required!',
+                  },
+                ]}
+              >
+                <CommonSelect
+                  allowClear
+                  style={{ width: '100%' }}
+                  options={selectOptions}
+                  placeholder="Select Organization"
+                />
+              </SelectFormItem>{' '}
+            </Col>}
           </Row>
         </Space>
-      </Form>
+      </Form >
     </>
   );
 };

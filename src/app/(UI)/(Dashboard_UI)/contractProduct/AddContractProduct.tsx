@@ -1,15 +1,17 @@
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsInput from '@/app/components/common/os-input';
 import Typography from '@/app/components/common/typography';
-import {useAppDispatch} from '../../../../../redux/hook';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import CommonSelect from '@/app/components/common/os-select';
-import {Form} from 'antd';
+import { Form } from 'antd';
 import OsCustomerSelect from '@/app/components/common/os-customer-select';
-import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
+import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
+import { useEffect } from 'react';
+import { queryAllOrganizations } from '../../../../../redux/actions/user';
 
 const AddContractProduct: React.FC<any> = ({
   optionsForContract,
@@ -20,6 +22,26 @@ const AddContractProduct: React.FC<any> = ({
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
+  const { userInformation, allOrganization } = useAppSelector((state) => state.user);
+  const capitalizeFirstLetter = (str: string | undefined) => {
+    if (!str) {
+      return '';
+    }
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+  useEffect(() => {
+    dispatch(queryAllOrganizations(''))
+  }, [])
+
+
+  const selectOptions = allOrganization.map((option: any) => ({
+    label: (
+      <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+        {capitalizeFirstLetter(option)}
+      </Typography>
+    ),
+    value: option
+  }));
 
   return (
     <>
@@ -51,7 +73,7 @@ const AddContractProduct: React.FC<any> = ({
         <Space
           size={16}
           direction="vertical"
-          style={{width: '100%', padding: drawer ? '' : '24px 40px 20px 40px'}}
+          style={{ width: '100%', padding: drawer ? '' : '24px 40px 20px 40px' }}
         >
           <Row justify="space-between" gutter={[24, 24]}>
             <Col sm={24} md={drawer ? 24 : 12}>
@@ -66,7 +88,7 @@ const AddContractProduct: React.FC<any> = ({
                 ]}
               >
                 <CommonSelect
-                  style={{width: '100%'}}
+                  style={{ width: '100%' }}
                   options={optionsForContract || []}
                 />
               </SelectFormItem>
@@ -146,7 +168,7 @@ const AddContractProduct: React.FC<any> = ({
                 ]}
               >
                 <CommonSelect
-                  style={{width: '100%'}}
+                  style={{ width: '100%' }}
                   options={[
                     {
                       value: 'New',
@@ -181,18 +203,39 @@ const AddContractProduct: React.FC<any> = ({
               >
                 {drawer ? (
                   <CommonSelect
-                    style={{width: '100%'}}
+                    style={{ width: '100%' }}
                     options={productOptions || []}
                   />
                 ) : (
                   <CommonSelect
-                    style={{width: '100%'}}
+                    style={{ width: '100%' }}
                     mode="multiple"
                     options={productOptions || []}
                   />
                 )}
               </SelectFormItem>
             </Col>
+
+
+            {userInformation?.Role === "superAdmin" && < Col sm={24} md={drawer ? 24 : 12}>
+              <SelectFormItem
+                label={<Typography name="Body 4/Medium">Organization</Typography>}
+                name="organization"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Organization is required!',
+                  },
+                ]}
+              >
+                <CommonSelect
+                  allowClear
+                  style={{ width: '100%' }}
+                  options={selectOptions}
+                  placeholder="Select Organization"
+                />
+              </SelectFormItem>{' '}
+            </Col>}
           </Row>
         </Space>
       </Form>

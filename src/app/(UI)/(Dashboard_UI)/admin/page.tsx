@@ -7,6 +7,8 @@ import Users from '../../../components/common/os-add-users';
 import Configuration from './quote-AI/configuration';
 import {useRouter} from 'next/navigation';
 import FormStackMain from '../formstack/page';
+import ContractMain from '../contract/page';
+import ContractProductMain from '../contractProduct/page';
 
 const AdminPage = () => {
   const tabs = [
@@ -25,6 +27,18 @@ const AdminPage = () => {
           name: 'Add Products',
           superChild: <Products />,
           route: `/admin?tab=AddProducts`,
+        },
+        {
+          key: 11,
+          name: 'Add Contracts',
+          superChild: <ContractMain />,
+          route: `/admin?tab=AddContracts`,
+        },
+        {
+          key: 12,
+          name: 'Add Contract Products',
+          superChild: <ContractProductMain />,
+          route: `/admin?tab=AddContractProducts`,
         },
       ],
     },

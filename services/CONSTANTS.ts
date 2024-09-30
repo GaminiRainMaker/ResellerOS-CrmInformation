@@ -65,6 +65,8 @@ export const API = {
     profileImage: '/user/getUserProfileImage',
     GetSeats: '/user/getOranizationSeats',
     UpdateUserPasswordForNew: '/user/updateUserPasswordForNew',
+    GetAllOrganizations: '/user/queryAllOrganizations',
+
   },
   PRODUCT: {
     INDEX: '/product',

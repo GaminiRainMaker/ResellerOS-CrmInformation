@@ -166,3 +166,15 @@ export const getOranizationSeats = createAsyncThunk(
     }
   },
 );
+
+export const queryAllOrganizations = createAsyncThunk(
+  'user/queryAllOrganizations',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await USERAPI.getAllOrganizations();
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
