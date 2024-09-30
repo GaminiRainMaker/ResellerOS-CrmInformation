@@ -5,7 +5,7 @@ export const CardStyle = styled.div`
   width: 192px;
   height: 164px;
   border-radius: 12px;
-  background: #f8fafb;
+  // background: #f8fafb;
   position: relative;
   padding: 12px;
   display: flex;

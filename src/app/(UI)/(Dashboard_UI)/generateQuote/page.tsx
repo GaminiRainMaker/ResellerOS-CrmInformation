@@ -254,7 +254,7 @@ const GenerateQuote: React.FC = () => {
                 const message =
                   bundleCount === 1
                     ? 'For this Line item bundle is already created.'
-                    : 'For these Line items bundle is already created.';
+                    : 'A bundle has already been created for these line items.';
                 notification.open({
                   message,
                   type: 'info',
