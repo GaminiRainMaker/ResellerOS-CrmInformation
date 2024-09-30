@@ -229,7 +229,7 @@ const Validation: FC<any> = ({
           placeholder="Select"
           defaultValue={text}
           onChange={(e) => { }}
-          options={pricingMethod}
+          options={[]}
         />
       ),
     },
