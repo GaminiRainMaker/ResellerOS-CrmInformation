@@ -1,6 +1,6 @@
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
+import { Col, Row } from '@/app/components/common/antd/Grid';
 import useAbbreviationHook from '@/app/components/common/hooks/useAbbreviationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsCollapse from '@/app/components/common/os-collapse';
@@ -10,18 +10,18 @@ import CommonSelect from '@/app/components/common/os-select';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
-import {pricingMethod} from '@/app/utils/CONSTANTS';
-import {getContractStatus} from '@/app/utils/base';
+import { pricingMethod } from '@/app/utils/CONSTANTS';
+import { getContractStatus } from '@/app/utils/base';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline';
-import {Badge, Form} from 'antd';
-import {useSearchParams} from 'next/navigation';
-import {FC, useEffect, useState} from 'react';
-import {getContractConfiguartion} from '../../../../../../redux/actions/contractConfiguration';
-import {useAppDispatch, useAppSelector} from '../../../../../../redux/hook';
+import { Badge, Form } from 'antd';
+import { useSearchParams } from 'next/navigation';
+import { FC, useEffect, useState } from 'react';
+import { getContractConfiguartion } from '../../../../../../redux/actions/contractConfiguration';
+import { useAppDispatch, useAppSelector } from '../../../../../../redux/hook';
 
 const Validation: FC<any> = ({
   tableColumnDataShow,
@@ -33,20 +33,20 @@ const Validation: FC<any> = ({
   collapseActiveKeys,
   setCollapseActiveKeys,
 }) => {
-  const {abbreviate} = useAbbreviationHook(0);
+  const { abbreviate } = useAbbreviationHook(0);
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams()!;
-  const {data: ValidationData, loading} = useAppSelector(
+  const { data: ValidationData, loading } = useAppSelector(
     (state) => state.validation,
   );
-  const {data: ContractSettingData} = useAppSelector(
+  const { data: ContractSettingData } = useAppSelector(
     (state) => state.contractSetting,
   );
-  const {data: contractConfigurationData} = useAppSelector(
+  const { data: contractConfigurationData } = useAppSelector(
     (state) => state.contractConfiguration,
   );
-  const {quoteById} = useAppSelector((state) => state.quote);
+  const { quoteById } = useAppSelector((state) => state.quote);
   const [validationFinalData, setValidationFinalData] = useState<any>([]);
   const [contract, setContract] = useState<{
     type: string;
@@ -57,9 +57,8 @@ const Validation: FC<any> = ({
   });
 
   const filterDataByValue = (data: any[], filterValue?: string) => {
-    const groupedData: {[key: string]: any} = {};
+    const groupedData: { [key: string]: any } = {};
     const arrayData: any[] = [];
-
     if (!data || data.length === 0) {
       setValidationFinalData([]);
       return;
@@ -129,8 +128,8 @@ const Validation: FC<any> = ({
         groupedData[name].totalGrossProfitPercentage =
           groupedData[name].totalExtendedPrice !== 0
             ? (groupedData[name].totalGrossProfit /
-                groupedData[name].totalExtendedPrice) *
-              100
+              groupedData[name].totalExtendedPrice) *
+            100
             : 0;
 
         groupedData[name].QuoteLineItem.push(item);
@@ -185,7 +184,7 @@ const Validation: FC<any> = ({
     value: any,
     updatedSelectedFilter: string,
     type: string,
-  ) => {};
+  ) => { };
 
   const ValidationQuoteLineItemcolumns = [
     {
@@ -199,7 +198,7 @@ const Validation: FC<any> = ({
             height: '36px',
           }}
           value={text}
-          onChange={(v) => {}}
+          onChange={(v) => { }}
         />
       ),
       width: 111,
@@ -225,10 +224,10 @@ const Validation: FC<any> = ({
         <CommonSelect
           allowClear
           disabled={renderEditableInput('Pricing Method')}
-          style={{width: '100%', height: '34px'}}
+          style={{ width: '100%', height: '34px' }}
           placeholder="Select"
           defaultValue={text}
-          onChange={(e) => {}}
+          onChange={(e) => { }}
           options={pricingMethod}
         />
       ),
@@ -241,7 +240,7 @@ const Validation: FC<any> = ({
       render: (text: string, record: any) => (
         <CommonSelect
           allowClear
-          style={{width: '100%', height: '34px'}}
+          style={{ width: '100%', height: '34px' }}
           placeholder="Select"
           defaultValue={text}
           options={pricingMethod}
@@ -271,7 +270,7 @@ const Validation: FC<any> = ({
               height: '36px',
             }}
             value={text}
-            onChange={(v) => {}}
+            onChange={(v) => { }}
           />
         </Form.Item>
       ),
@@ -378,7 +377,7 @@ const Validation: FC<any> = ({
     setFinalValidationTableCol(newArr);
   }, [tableColumnDataShow]);
 
-  const rowSelection = () => {};
+  const rowSelection = () => { };
 
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Validation." />,
@@ -522,7 +521,7 @@ const Validation: FC<any> = ({
                                     count={finalDataItem?.QuoteLineItem?.length}
                                   >
                                     <Typography
-                                      style={{padding: '5px 8px 0px 0px'}}
+                                      style={{ padding: '5px 8px 0px 0px' }}
                                       name="Body 4/Medium"
                                       color={token?.colorBgContainer}
                                       ellipsis
@@ -548,13 +547,13 @@ const Validation: FC<any> = ({
                                       ellipsis
                                       tooltip
                                       as="div"
-                                      style={{marginLeft: '2px'}}
+                                      style={{ marginLeft: '2px' }}
                                     >
                                       $
                                       {abbreviate(
                                         Number(
                                           finalDataItem?.totalExtendedPrice ??
-                                            0.0,
+                                          0.0,
                                         ),
                                       )}
                                     </Typography>
@@ -574,13 +573,13 @@ const Validation: FC<any> = ({
                                       ellipsis
                                       tooltip
                                       as="div"
-                                      style={{marginLeft: '2px'}}
+                                      style={{ marginLeft: '2px' }}
                                     >
                                       $
                                       {abbreviate(
                                         Number(
                                           finalDataItem?.totalGrossProfit ??
-                                            0.0,
+                                          0.0,
                                         ),
                                       )}
                                     </Typography>

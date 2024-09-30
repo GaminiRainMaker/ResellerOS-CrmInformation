@@ -279,7 +279,10 @@ const DealReg: React.FC = () => {
 
   useEffect(() => {
     const separatedData = processDealRegData(DealRegData, statusValue);
-    setFinalDealRegData(Object.values(separatedData));
+    let sortedArrr = Object.values(separatedData)?.sort((a: any, b: any) => {
+      return b.dealReg_id - a.dealReg_id;
+    });
+    setFinalDealRegData(sortedArrr);
   }, [DealRegData, statusValue]);
 
   const generateTabContent = (status: string) => {
@@ -318,7 +321,7 @@ const DealReg: React.FC = () => {
       />
     );
   };
-
+  console.log("3r3432432420", finalDealRegData)
   const tabItems: TabsProps['items'] = [
     {
       label: (

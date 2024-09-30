@@ -40,7 +40,6 @@ const AccountDetails = () => {
     customerData?.Opportunities?.flatMap(
       (opportunity: any) => opportunity?.Quotes,
     );
-
   useEffect(() => {
     dispatch(getCustomerBYId(getCustomerID));
   }, [getCustomerID]);

@@ -24,7 +24,7 @@ import {
   getValuesOFLineItemsThoseNotAddedBefore,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
-import { Col, Row, notification } from 'antd';
+import { Col, Row, Select, notification } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
 import {
@@ -702,7 +702,13 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         if (newrrLineItems && newrrLineItems.length > 0) {
           const data = genericFun(d?.payload, newrrLineItems);
 
+
+          if (data) {
+            dispatch(insertValidation(data));
+          }
           dispatch(insertProfitability(data));
+          // Added to add lineItems to validations
+
         }
       });
     }
@@ -829,6 +835,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                     defaultValue={formatStatus(
                       newLabel?.label?.toString()?.toUpperCase(),
                     )}
+                    // value={formatStatus(
+                    //   newLabel?.label?.toString()?.toUpperCase(),
+                    // )}
                     style={{ width: '250px' }}
                     options={
                       salesFOrceAccoutFlow === 'true' || salesForceUrl

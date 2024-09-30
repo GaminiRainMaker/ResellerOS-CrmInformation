@@ -198,7 +198,7 @@ const GenerateQuote: React.FC = () => {
       tabsname = 'Input Details';
     }
     let filteredArray: any = [];
-    if (tableColumnData && activeTab) {
+    if (tableColumnData && activeTab && tableColumnData?.length > 0) {
       filteredArray = tableColumnData?.filter((item: any) =>
         item?.table_name?.includes(tabsname),
       );
