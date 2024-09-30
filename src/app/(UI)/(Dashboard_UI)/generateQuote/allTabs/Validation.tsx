@@ -22,6 +22,9 @@ import { useSearchParams } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
 import { getContractConfiguartion } from '../../../../../../redux/actions/contractConfiguration';
 import { useAppDispatch, useAppSelector } from '../../../../../../redux/hook';
+import { getAllContract } from '../../../../../../redux/actions/contract';
+import { getContractProductByContractVehicle } from '../../../../../../redux/actions/contractProduct';
+import { getAllValidationByQuoteId, updateValidationById } from '../../../../../../redux/actions/validation';
 
 const Validation: FC<any> = ({
   tableColumnDataShow,
@@ -37,24 +40,26 @@ const Validation: FC<any> = ({
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams()!;
+  const getQuoteID = searchParams.get('id');
   const { data: ValidationData, loading } = useAppSelector(
     (state) => state.validation,
-  );
-  const { data: ContractSettingData } = useAppSelector(
-    (state) => state.contractSetting,
   );
   const { data: contractConfigurationData } = useAppSelector(
     (state) => state.contractConfiguration,
   );
-  const { quoteById } = useAppSelector((state) => state.quote);
   const [validationFinalData, setValidationFinalData] = useState<any>([]);
-  const [contract, setContract] = useState<{
-    type: string;
-    record: any;
-  }>({
-    type: '',
-    record: {},
-  });
+  const { userInformation } = useAppSelector((state) => state.user);
+  const { data: contactData } = useAppSelector((state) => state.contract);
+  const { data: contractProductData } = useAppSelector((state) => state.contractProduct);
+
+  useEffect(() => {
+    dispatch(getAllContract());
+  }, [])
+
+  const contractVehicleOptions = contactData?.filter((item: any) => item?.organization === userInformation?.organization).map((option: any) => ({
+    label: option?.contract_vehicle_name,
+    value: option?.id
+  }));
 
   const filterDataByValue = (data: any[], filterValue?: string) => {
     const groupedData: { [key: string]: any } = {};
@@ -148,6 +153,7 @@ const Validation: FC<any> = ({
       filterDataByValue(ValidationData, selectedFilter);
     }
   }, [JSON.stringify(ValidationData), selectedFilter]);
+
   const renderEditableInput = (field: string) => {
     const editableField = tableColumnDataShow.find(
       (item: any) => item.field_name === field,
@@ -158,33 +164,55 @@ const Validation: FC<any> = ({
     return true;
   };
 
-  const renderRequiredInput = (field: string) => {
-    const requiredField = tableColumnDataShow.find(
-      (item: any) => item.field_name === field,
-    );
-    if (requiredField?.is_required) {
-      return true;
+
+
+  const contractVehicleStatus = async (value: number, record: any) => {
+    try {
+      console.log('value', value, record);
+      const productCode = record?.product_code;
+
+      // Await the dispatch to get the contract product
+      const res = await dispatch(getContractProductByContractVehicle(value));
+
+      // Ensure res?.payload is an array
+      const contractProducts = res?.payload || [];
+      let obj: { id: number; contract_status: string, contract_vehicle: number, contract_price: string };
+
+      // Find the matched product by contract_product_name
+      const matchedProduct = contractProducts.find((item: any) => item.contract_product_name === productCode);
+      console.log('contractProductData', matchedProduct, productCode);
+      console.log('matchedProduct', matchedProduct)
+      // Set contract status based on the matched product
+      if (matchedProduct) {
+        obj = {
+          id: record?.id,
+          contract_status: 'Correct',
+          contract_vehicle: value,
+          contract_price: matchedProduct?.contract_price
+        };
+      } else {
+        obj = {
+          id: record?.id,
+          contract_status: 'Reject',
+          contract_vehicle: value,
+          contract_price: ''
+        };
+      }
+      console.log('objobjobj', obj);
+
+      // Dispatch the updated contract status
+      const updateRes = await dispatch(updateValidationById(obj));
+
+      if (updateRes?.payload) {
+        // Dispatch to get all validation data by quote ID
+        await dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
+      }
+    } catch (error) {
+      console.error('Error fetching or updating contract products:', error);
+      // Handle the error appropriately (e.g., show error message, retry, etc.)
     }
-    return false;
   };
 
-  const handleKeyDown = (e: any, record: any) => {
-    if (e.key === 'Enter') {
-      // setKeyPressed(record?.id);
-    }
-  };
-
-  const handleBlur = (record: any) => {
-    // setKeyPressed(record?.id);
-  };
-
-  const handleFieldChange = (
-    record: any,
-    field: string,
-    value: any,
-    updatedSelectedFilter: string,
-    type: string,
-  ) => { };
 
   const ValidationQuoteLineItemcolumns = [
     {
@@ -234,8 +262,8 @@ const Validation: FC<any> = ({
     },
     {
       title: 'Contract',
-      dataIndex: 'contract',
-      key: 'contract',
+      dataIndex: 'contract_vehicle',
+      key: 'contract_vehicle',
       width: 200,
       render: (text: string, record: any) => (
         <CommonSelect
@@ -243,7 +271,10 @@ const Validation: FC<any> = ({
           style={{ width: '100%', height: '34px' }}
           placeholder="Select"
           defaultValue={text}
-          options={pricingMethod}
+          options={contractVehicleOptions}
+          onChange={(e) => {
+            contractVehicleStatus(e, record)
+          }}
         />
       ),
     },
@@ -253,26 +284,15 @@ const Validation: FC<any> = ({
       key: 'line_amount',
       width: 130,
       render: (text: string, record: any) => (
-        <Form.Item
-          className="formmarginBottom"
-          name={`line_amount ${record?.id}`}
-          rules={[
-            {
-              required: renderRequiredInput('Amount'),
-              message: 'This Field id Required',
-            },
-          ]}
-          initialValue={text}
-        >
-          <OsInput
-            disabled={renderEditableInput('Amount')}
-            style={{
-              height: '36px',
-            }}
-            value={text}
-            onChange={(v) => { }}
-          />
-        </Form.Item>
+
+        <OsInput
+          disabled={renderEditableInput('Amount')}
+          style={{
+            height: '36px',
+          }}
+          value={text}
+          onChange={(v) => { }}
+        />
       ),
     },
     {
@@ -302,11 +322,13 @@ const Validation: FC<any> = ({
       dataIndex: 'contract_price',
       key: 'contract_price',
       width: 150,
-      render: (text: number) => (
-        <Typography name="Body 4/Medium">
+      render: (text: number, record: any) => {
+        console.log('record', record)
+        return <Typography name="Body 4/Medium">
           {text ? `$ ${abbreviate(text ?? 0)}` : 0}
         </Typography>
-      ),
+      }
+
     },
     {
       title: 'Contract Status',
@@ -314,7 +336,8 @@ const Validation: FC<any> = ({
       key: 'contract_status',
       width: 180,
       render(text: string, record: any) {
-        const status = contractStatus(record);
+        const status = record?.contract_status
+        // const status = contractStatus(record);
         return {
           children: (
             <TableNameColumn
@@ -375,7 +398,7 @@ const Validation: FC<any> = ({
       }
     });
     setFinalValidationTableCol(newArr);
-  }, [tableColumnDataShow]);
+  }, [tableColumnDataShow, contactData]);
 
   const rowSelection = () => { };
 
@@ -383,26 +406,6 @@ const Validation: FC<any> = ({
     emptyText: <EmptyContainer title="There is no data for Validation." />,
   };
 
-  const contractStatusCheck = (record: any) => {
-    const matchingField = ContractSettingData.matching_filed;
-
-    const value =
-      ContractSettingData.object_name === 'quote'
-        ? quoteById?.[matchingField]
-        : ContractSettingData.object_name === 'opportunity'
-          ? quoteById?.Opportunity?.[matchingField]
-          : ContractSettingData.object_name === 'quote_line_item'
-            ? record?.[matchingField]
-            : null;
-
-    if (value) {
-      const result = record?.product_code === value ? 'success' : 'reject';
-      return result;
-    }
-    if (!value) {
-      return 'reject';
-    }
-  };
 
   useEffect(() => {
     dispatch(getContractConfiguartion({}));
@@ -461,24 +464,7 @@ const Validation: FC<any> = ({
     return status;
   };
 
-  // useEffect(() => {
-  //   validationDataData?.map((validationDataItem: any) => {
-  //     if (validationDataItem?.rowId === validationDataItem?.id) {
-  //       const obj = {
-  //         id: validationDataItem?.id,
-  //         line_number: validationDataItem?.line_number,
-  //         list_price: validationDataItem?.list_price,
-  //         pricing_method: validationDataItem?.pricing_method,
-  //         line_amount: validationDataItem?.line_amount,
-  //         unit_price: validationDataItem?.unit_price,
-  //         exit_price: validationDataItem?.exit_price,
-  //       };
-  //       dispatch(updateValidationById({...obj}));
-  //     }
-  //   });
-  // }, [validationDataData]);
-
-  console.log('validationFinalData', validationFinalData)
+  console.log('contractVehicleOptions', contractVehicleOptions, 'contactData', contactData)
 
   return (
     <>
