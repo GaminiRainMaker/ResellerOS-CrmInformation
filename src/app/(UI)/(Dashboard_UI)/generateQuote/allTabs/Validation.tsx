@@ -122,15 +122,17 @@ const Validation: FC<any> = ({
             totalExtendedPrice: 0,
             totalGrossProfit: 0,
             totalGrossProfitPercentage: 0,
+            totalContractPrice: 0,
+
           };
         }
 
         const extendedPrice = item?.exit_price || 0;
         const grossProfit = item?.gross_profit || 0;
-
+        const totalContractPrice = Number(item?.contract_price) || 0;
         groupedData[name].totalExtendedPrice += extendedPrice;
         groupedData[name].totalGrossProfit += grossProfit;
-
+        groupedData[name].totalContractPrice += totalContractPrice;
         groupedData[name].totalGrossProfitPercentage =
           groupedData[name].totalExtendedPrice !== 0
             ? (groupedData[name].totalGrossProfit /
@@ -566,7 +568,7 @@ const Validation: FC<any> = ({
                                       $
                                       {abbreviate(
                                         Number(
-                                          finalDataItem?.totalGrossProfit ??
+                                          finalDataItem?.totalContractPrice ??
                                           0.0,
                                         ),
                                       )}
