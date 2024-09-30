@@ -459,6 +459,8 @@ export const updateTables1 = async (
       }
       finalLineItems.push(obj1);
     }
+    await dispatch(insertValidation(profitabilityArray));
+
     if (finalLineItems.length > 0) {
       let count = 0;
 
@@ -484,11 +486,11 @@ export const updateTables1 = async (
             serial_number: index + count + 1,
           });
         });
-        if (newContractProductArr)
-          await dispatch(insertValidation(newContractProductArr));
+        // if (newContractProductArr)
+        // await dispatch(insertValidation(newContractProductArr));
       }
-      if (profitabilityArray)
-        await dispatch(insertProfitability(profitabilityArray));
+
+      await dispatch(insertProfitability(profitabilityArray));
 
       await dispatch(quoteFileVerification({id: fileData?.id})).then(
         (verificationResponse: any) => {

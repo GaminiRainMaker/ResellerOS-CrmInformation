@@ -14,7 +14,7 @@ const CommonSelect: FC<OsSelectProps> = ({
   return (
     <SelectStyled
       {...rest}
-      value={value ?? ''}
+      value={value}
       suffixIcon={
         suffixIcon ?? (
           <ChevronDownIcon width={24} color={token?.colorInfoBorder} />

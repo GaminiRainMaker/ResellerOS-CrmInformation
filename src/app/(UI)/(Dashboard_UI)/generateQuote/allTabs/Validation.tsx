@@ -59,7 +59,6 @@ const Validation: FC<any> = ({
   const filterDataByValue = (data: any[], filterValue?: string) => {
     const groupedData: { [key: string]: any } = {};
     const arrayData: any[] = [];
-
     if (!data || data.length === 0) {
       setValidationFinalData([]);
       return;
