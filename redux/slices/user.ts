@@ -16,6 +16,7 @@ import {
   getUserProfileData,
   updateUserPasswordForNew,
   getOranizationSeats,
+  queryAllOrganizations,
 } from '../actions/user';
 
 type UserState = {
@@ -30,6 +31,7 @@ type UserState = {
   createUserData: any;
   updateUserPasswordData: any;
   userProfile: string;
+  allOrganization: any;
 };
 const initialState: UserState = {
   loading: false,
@@ -43,6 +45,7 @@ const initialState: UserState = {
   createUserData: {},
   updateUserPasswordData: {},
   userProfile: '',
+  allOrganization: [],
 };
 
 const userSlice = createSlice({
@@ -288,6 +291,24 @@ const userSlice = createSlice({
           state.loading = false;
           state.error = action.payload;
         },
+      )
+      .addCase(queryAllOrganizations.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        queryAllOrganizations.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.allOrganization = action.payload;
+        },
+      )
+      .addCase(
+        queryAllOrganizations.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
       );
   },
 });
@@ -299,4 +320,3 @@ export const {
   setUserProfile,
 } = userSlice.actions;
 export default userSlice?.reducer;
-
