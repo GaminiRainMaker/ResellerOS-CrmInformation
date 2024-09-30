@@ -163,7 +163,6 @@ const AddCustomer: React.FC<AddCustomertInterface> = ({
   const debounceFn = useCallback(_debounce(handleNotification, 500), [
     billingContact,
   ]);
-  console.log("324324234", billingContact, customerData)
   return (
     <>
       {!drawer && (
