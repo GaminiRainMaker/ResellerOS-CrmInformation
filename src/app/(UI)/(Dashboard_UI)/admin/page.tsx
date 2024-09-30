@@ -29,13 +29,13 @@ const AdminPage = () => {
           route: `/admin?tab=AddProducts`,
         },
         {
-          key: 11,
+          key: 6,
           name: 'Add Contracts',
           superChild: <ContractMain />,
           route: `/admin?tab=AddContracts`,
         },
         {
-          key: 12,
+          key: 7,
           name: 'Add Contract Products',
           superChild: <ContractProductMain />,
           route: `/admin?tab=AddContractProducts`,

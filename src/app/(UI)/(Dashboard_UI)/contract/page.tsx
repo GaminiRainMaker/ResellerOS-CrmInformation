@@ -37,8 +37,7 @@ const ContractMain: React.FC = () => {
   const searchParams = useSearchParams()!;
   const [showModal, setShowModal] = useState<boolean>(false);
   const [contractObject, setContractObject] = useState<any>();
-  const [loadingContract, setLoadingContract] = useState<boolean>(false);
-  const { data: contactData } = useAppSelector((state) => state.contract);
+  const { data: contactData, loading } = useAppSelector((state) => state.contract);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<any>();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
@@ -47,9 +46,7 @@ const ContractMain: React.FC = () => {
   const [contractFinalData, setContractFinalData] = useState<any>()
 
   useEffect(() => {
-    setLoadingContract(true);
     dispatch(getAllContract());
-    setLoadingContract(false);
   }, []);
 
   const locale = {
@@ -134,10 +131,8 @@ const ContractMain: React.FC = () => {
     if (recordId) {
       newObj.id = recordId;
     }
-    setLoadingContract(true);
     await dispatch(insertContract(newObj));
     dispatch(getAllContract());
-    setLoadingContract(false);
     setContractObject('');
     setShowModal(false);
     form?.resetFields();
@@ -182,7 +177,7 @@ const ContractMain: React.FC = () => {
             dataSource={contractFinalData || []}
             scroll
             locale={locale}
-            loading={loadingContract}
+            loading={loading}
           />
         </Row>
       </Space>
@@ -226,7 +221,7 @@ const ContractMain: React.FC = () => {
           <Row style={{ width: '100%', float: 'right' }}>
             {' '}
             <OsButton
-              loading={loadingContract}
+              loading={loading}
               btnStyle={{ width: '100%' }}
               buttontype="PRIMARY"
               text="Update Changes"
