@@ -16,9 +16,10 @@ import { pricingMethod, selectDataForProduct } from '@/app/utils/CONSTANTS';
 import {
   calculateProfitabilityData,
   currencyFormatter,
+  getContractStatus,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
-import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon, ExclamationCircleIcon, PencilSquareIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import { Badge, Form, notification } from 'antd';
 import { useSearchParams } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
@@ -40,6 +41,10 @@ import UpdatingLineItems from '../../UpdatingLineItems';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
+import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
+import { getContractProductByContractVehicle } from '../../../../../../../redux/actions/contractProduct';
+import { getAllContract } from '../../../../../../../redux/actions/contract';
+import { getContractConfiguartion } from '../../../../../../../redux/actions/contractConfiguration';
 
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
@@ -57,7 +62,7 @@ const Profitablity: FC<any> = ({
   showRemoveBundleLineItemModal,
   setShowRemoveBundleLineItemModal,
   collapseActiveKeys,
-  setCollapseActiveKeys,
+  setCollapseActiveKeys, activeKey
 }) => {
   const dispatch = useAppDispatch();
   const [BundleForm] = Form.useForm();
@@ -77,6 +82,11 @@ const Profitablity: FC<any> = ({
   const [showBundleDrawer, setShowBundleDrawer] = useState<boolean>(false);
   const [bundleRecordId, setBundleRecordId] = useState<any>();
   const [pageChange, setPageChange] = useState<any>();
+  const { data: contractConfigurationData } = useAppSelector(
+    (state) => state.contractConfiguration,
+  );
+  const { userInformation } = useAppSelector((state) => state.user);
+  const { data: contactData } = useAppSelector((state) => state.contract);
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
       id: number;
@@ -267,6 +277,12 @@ const Profitablity: FC<any> = ({
   };
 
   useEffect(() => {
+    dispatch(getAllContract());
+    dispatch(getContractConfiguartion({}));
+
+  }, [])
+
+  useEffect(() => {
     dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
   }, [getQuoteID]);
 
@@ -275,6 +291,7 @@ const Profitablity: FC<any> = ({
       filterDataByValue(profitabilityDataByQuoteId, selectedFilter);
     }
   }, [JSON.stringify(profitabilityDataByQuoteId), selectedFilter]);
+
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Profitability" />,
   };
@@ -371,9 +388,84 @@ const Profitablity: FC<any> = ({
     },
   };
 
+
+  const contractVehicleOptions = contactData?.filter((item: any) => item?.organization === userInformation?.organization).map((option: any) => ({
+    label: option?.contract_vehicle_name,
+    value: option?.id
+  }));
+
+  console.log('contractVehicleOptions', contractVehicleOptions)
+
   useEffect(() => {
     if (tableColumnDataShow && tableColumnDataShow.length > 0) {
+      let validationArr: any = [{
+        title: 'Contract Vehicle',
+        dataIndex: 'contract_vehicle',
+        key: 'contract_vehicle',
+        width: 200,
+        render: (text: string, record: any) => {
+          let finalValue = contractVehicleOptions?.find((item: any) => item?.value === text)
+          console.log('contractVehicleOptions123', contractVehicleOptions, finalValue)
+          return <CommonSelect
+            allowClear
+            style={{ width: '100%', height: '34px' }}
+            placeholder="Select"
+            defaultValue={finalValue?.label}
+            options={contractVehicleOptions}
+            onChange={(e) => {
+              contractVehicleStatus(e, record)
+            }}
+          />
+        },
+      },
+      {
+        title: 'Contract Price ($)',
+        dataIndex: 'contract_price',
+        key: 'contract_price',
+        width: 150,
+        render: (text: number, record: any) => {
+          return <Typography name="Body 4/Medium">
+            {text ? `$ ${abbreviate(text ?? 0)}` : 0}
+          </Typography>
+        }
+
+      },
+      {
+        title: 'Contract Status',
+        dataIndex: 'contract_status',
+        key: 'contract_status',
+        width: 180,
+        render(text: string, record: any) {
+          const status = record?.contract_status
+          return {
+            children: (
+              <TableNameColumn
+                fallbackIcon={
+                  status === 'success' ? (
+                    <CheckCircleIcon width={24} color={token?.colorSuccess} />
+                  ) : status === 'warning' ? (
+                    <ExclamationCircleIcon width={24} color={token?.colorWarning} />
+                  ) : (
+                    <XCircleIcon width={24} color={token?.colorError} />
+                  )
+                }
+                isNotification={false}
+                iconBg={
+                  status === 'success'
+                    ? token?.colorSuccessBg
+                    : status === 'warning'
+                      ? token?.colorWarningBg
+                      : token?.colorErrorBg
+                }
+              />
+            ),
+          };
+        },
+      },
+      ]
+      let ddd = 4
       const newArr: any = [];
+      console.log('newArrnewArr', newArr)
       ProfitabilityQuoteLineItemcolumns?.forEach((itemCol: any) => {
         let shouldPush = false;
         tableColumnDataShow?.forEach((item: any) => {
@@ -391,6 +483,12 @@ const Profitablity: FC<any> = ({
           newArr?.push(itemCol);
         }
       });
+      if (ddd === 4) {
+        validationArr?.map((item: any) => {
+          newArr.push(item)
+        })
+      }
+
       setFinalProfitTableCol(newArr);
     }
   }, [JSON.stringify(tableColumnDataShow)]);
@@ -1054,6 +1152,149 @@ const Profitablity: FC<any> = ({
       </div>
     );
   };
+
+
+  const contractVehicleStatus = async (value: number | null | undefined, record: any) => {
+    try {
+      const productCode = record?.product_code;
+
+      // Check if the value is null or undefined and handle accordingly
+      if (value === null || value === undefined) {
+        let updateObject = {
+          id: record?.id,
+          contract_status: 'Reject',
+          contract_vehicle: null,
+          contract_price: '',
+        };
+
+        // Dispatch to update the contract status with null contract_vehicle
+        const updateResponse = await dispatch(updateProfitabilityById(updateObject));
+
+        if (updateResponse?.payload) {
+          // Fetch updated validation data for the current quote
+          await dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+        }
+
+        return; // Exit the function early
+      }
+
+      // Fetch the contract products for the given contract vehicle
+      const response = await dispatch(getContractProductByContractVehicle(value));
+
+      // Ensure res?.payload is an array, defaulting to an empty array if not
+      const contractProducts = response?.payload || [];
+
+      // Check if there's a product matching the current product code
+      const matchedProduct = contractProducts.find(
+        (item: any) => item.Product?.product_code === productCode
+      );
+
+      console.log('matchedProduct', matchedProduct, contractProducts)
+      // Initialize the object for the update
+      let updateObject = {
+        id: record?.id,
+        contract_status: 'Reject', // Default to "Reject" if no matched product found
+        contract_vehicle: value,
+        contract_price: '',
+      };
+
+      // If we found a matched product, calculate the contract status
+      if (matchedProduct) {
+        const finalStatus = contractStatus(record, matchedProduct);
+        console.log('finalStatus', finalStatus)
+        if (finalStatus) {
+          updateObject = {
+            id: record?.id,
+            contract_status: finalStatus,
+            contract_vehicle: value,
+            contract_price: matchedProduct?.contract_price || '', // Fallback to empty string if contract price is undefined
+          };
+        }
+      }
+
+      console.log('Update Object:', updateObject);
+
+      // Dispatch to update the contract status
+      const updateResponse = await dispatch(updateProfitabilityById(updateObject));
+
+      if (updateResponse?.payload) {
+        // Fetch updated validation data for the current quote
+        await dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+      }
+    } catch (error) {
+      console.error('Error fetching or updating contract products:', error);
+      // Handle errors appropriately, e.g., show an error message, log, or retry
+    }
+  };
+
+  const contractStatus = (record: any, matchedProduct: any) => {
+    let fieldName = '';
+    let operator = '';
+    let finalSecondValue = '';
+    let status = '';
+    const statuses = ['green', 'yellow'];
+
+    console.log('dasdsad', record, matchedProduct)
+
+    for (let statusCheck of statuses) {
+      const matchingObjects =
+        contractConfigurationData?.filter(
+          (item: any) => item?.contract_status === statusCheck,
+        ) || [];
+
+      console.log('dfsdfsdf', matchingObjects, contractConfigurationData)
+
+      if (matchingObjects.length > 0) {
+        const finalData = matchingObjects?.[0]?.json && JSON?.parse(matchingObjects?.[0]?.json);
+        fieldName = finalData?.[0]?.['fieldName'];
+        operator = finalData?.[0]?.['operator'];
+
+
+        // Handle formula valueType
+        if (finalData?.[0]?.['valueType'] === 'formula') {
+          finalSecondValue = finalData?.[0]?.['value']?.reduce(
+            (acc: any, fieldName: any) => {
+              const value1 = fieldName === 'contract_price' ? matchedProduct?.[fieldName] : record?.[fieldName];
+              if (typeof value1 === 'number') {
+                return acc + value1; // Add if it's a number
+              } else if (typeof value1 === 'string') {
+                return acc + value1; // Concatenate if it's a string
+              }
+              return acc; // Skip if it's neither number nor string
+            },
+            typeof record?.[finalData?.[0]['value']?.[0]] === 'number' ? 0 : '',
+          );
+        } else {
+          finalSecondValue = finalData?.[0]?.['value'];
+        }
+
+
+        // Check if we can calculate status
+        if (operator && record?.[fieldName] && finalSecondValue) {
+          status = getContractStatus(
+            Number(record?.[fieldName]),
+            Number(finalSecondValue),
+            operator,
+          );
+        }
+
+        // Check the status and return accordingly
+        if (status === 'Correct') {
+          if (statusCheck === 'green') {
+            return 'success'; // Return "success" if contract_status is green
+          } else if (statusCheck === 'yellow') {
+            return 'warning'; // Return "warning" if contract_status is yellow
+          }
+        }
+      }
+    }
+    console.log('FInalStatus', status)
+    return status; // Return the final status if no match was found
+  };
+
+
+
+  console.log("activeKey", activeKey)
   return (
     <GlobalLoader loading={profitabilityDataByQuoteId?.length < 0}>
       {finalProfitTableCol && finalProfitTableCol?.length > 0 ? (

@@ -336,6 +336,8 @@ const GenerateQuote: React.FC = () => {
     },
   ];
 
+  console.log('activeTab', activeTab)
+
   const TabPaneData = [
     {
       key: 1,
@@ -390,6 +392,7 @@ const GenerateQuote: React.FC = () => {
           setIsDeleteProfitabilityModal={setIsDeleteProfitabilityModal}
           showRemoveBundleLineItemModal={showRemoveBundleLineItemModal}
           setShowRemoveBundleLineItemModal={setShowRemoveBundleLineItemModal}
+          activeKey={activeTab}
         />
       ),
     },
@@ -444,6 +447,8 @@ const GenerateQuote: React.FC = () => {
           setIsDeleteProfitabilityModal={setIsDeleteProfitabilityModal}
           showRemoveBundleLineItemModal={showRemoveBundleLineItemModal}
           setShowRemoveBundleLineItemModal={setShowRemoveBundleLineItemModal}
+          activeKey={activeTab}
+
         />
         // <Validation
         //   tableColumnDataShow={tableColumnDataShow}
