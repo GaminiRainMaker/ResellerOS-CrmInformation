@@ -11,7 +11,7 @@ import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
 import { pricingMethod } from '@/app/utils/CONSTANTS';
-import { currencyFormatter, getContractStatus } from '@/app/utils/base';
+import { calculateProfitabilityData, currencyFormatter, getContractStatus } from '@/app/utils/base';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
@@ -249,8 +249,23 @@ const Validation: FC<any> = ({
     value: any,
     type: string,) => {
     const updatedRecord = { ...record, [field]: value };
-    console.log('updatedRecord', updatedRecord)
-    setFinalFieldData(updatedRecord)
+    const result: any = calculateProfitabilityData(
+      Number(updatedRecord?.quantity),
+      updatedRecord?.pricing_method,
+      Number(updatedRecord?.line_amount) ?? 0,
+      Number(updatedRecord?.adjusted_price) ?? 0,
+      Number(updatedRecord?.list_price) ?? 0,
+    );
+    if (result) {
+      updatedRecord.unit_price = result.unitPrice;
+      updatedRecord.exit_price = result.exitPrice;
+      updatedRecord.gross_profit = result.grossProfit;
+      updatedRecord.gross_profit_percentage = result.grossProfitPercentage;
+    }
+    setFinalFieldData(updatedRecord);
+    if (type === 'select') {
+      handleSave(updatedRecord);
+    }
   }
 
 
@@ -296,14 +311,23 @@ const Validation: FC<any> = ({
       title: '#Line',
       dataIndex: 'line_number',
       key: 'line_number',
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <OsInput
-          disabled={renderEditableInput('Line')}
+          disabled={renderEditableInput('#Line')}
           style={{
             height: '36px',
           }}
-          value={text}
-          onChange={(v) => { }}
+          defaultValue={text}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
+          onChange={(e) =>
+            handleFieldChange(
+              record,
+              'line_number',
+              e.target.value,
+              'input',
+            )
+          }
         />
       ),
       width: 111,
@@ -327,13 +351,21 @@ const Validation: FC<any> = ({
       width: 200,
       render: (text: string, record: any) => (
         <CommonSelect
+          onBlur={(e) => handleBlur(record)}
           allowClear
           disabled={renderEditableInput('Pricing Method')}
-          style={{ width: '100%', height: '34px' }}
+          style={{ width: '100%', height: '36px' }}
           placeholder="Select"
           defaultValue={text}
-          onChange={(e) => { }}
-          options={[]}
+          onChange={(value) => {
+            handleFieldChange(
+              record,
+              'pricing_method',
+              value,
+              'select',
+            );
+          }}
+          options={pricingMethod}
         />
       ),
     },
@@ -415,7 +447,6 @@ const Validation: FC<any> = ({
       key: 'contract_price',
       width: 150,
       render: (text: number, record: any) => {
-        console.log('record', record)
         return <Typography name="Body 4/Medium">
           {text ? `$ ${abbreviate(text ?? 0)}` : 0}
         </Typography>
@@ -429,7 +460,6 @@ const Validation: FC<any> = ({
       width: 180,
       render(text: string, record: any) {
         const status = record?.contract_status
-        // const status = contractStatus(record);
         return {
           children: (
             <TableNameColumn
