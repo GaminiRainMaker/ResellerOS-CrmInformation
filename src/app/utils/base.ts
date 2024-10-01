@@ -632,7 +632,6 @@ export const updateTables = async (
       finalLineItems.push(obj1);
     }
 
-
     if (finalLineItems.length > 0) {
       let count = 0;
 
@@ -1088,17 +1087,17 @@ export const getContractStatus = (
 ): string => {
   switch (operator) {
     case '==':
-      return firstValue == secondValue ? 'Correct' : 'Reject';
+      return Number(firstValue) == Number(secondValue) ? 'Correct' : 'Reject';
     case '!=':
-      return firstValue != secondValue ? 'Correct' : 'Reject';
+      return Number(firstValue) != Number(secondValue) ? 'Correct' : 'Reject';
     case '>':
-      return firstValue > secondValue ? 'Correct' : 'Reject';
+      return Number(firstValue) > Number(secondValue) ? 'Correct' : 'Reject';
     case '<':
-      return firstValue < secondValue ? 'Correct' : 'Reject';
+      return Number(firstValue) < Number(secondValue) ? 'Correct' : 'Reject';
     case '>=':
-      return firstValue >= secondValue ? 'Correct' : 'Reject';
+      return Number(firstValue) >= Number(secondValue) ? 'Correct' : 'Reject';
     case '<=':
-      return firstValue <= secondValue ? 'Correct' : 'Reject';
+      return Number(firstValue) <= Number(secondValue) ? 'Correct' : 'Reject';
     default:
       return 'Invalid operator';
   }
