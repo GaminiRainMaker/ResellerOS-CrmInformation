@@ -173,9 +173,29 @@ const Validation: FC<any> = ({
   };
 
 
-  const contractVehicleStatus = async (value: number, record: any) => {
+  const contractVehicleStatus = async (value: number | null | undefined, record: any) => {
     try {
       const productCode = record?.product_code;
+
+      // Check if the value is null or undefined and handle accordingly
+      if (value === null || value === undefined) {
+        let updateObject = {
+          id: record?.id,
+          contract_status: 'Reject',
+          contract_vehicle: null,
+          contract_price: '',
+        };
+
+        // Dispatch to update the contract status with null contract_vehicle
+        const updateResponse = await dispatch(updateValidationById(updateObject));
+
+        if (updateResponse?.payload) {
+          // Fetch updated validation data for the current quote
+          await dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
+        }
+
+        return; // Exit the function early
+      }
 
       // Fetch the contract products for the given contract vehicle
       const response = await dispatch(getContractProductByContractVehicle(value));
