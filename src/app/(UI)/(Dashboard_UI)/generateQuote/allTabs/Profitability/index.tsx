@@ -1,5 +1,5 @@
 'use client';
-import React, {FC} from 'react';
+import React, { FC } from 'react';
 import GroupingData from './Profitability';
 
 const ProfitabilityMain: FC<any> = ({
@@ -19,6 +19,7 @@ const ProfitabilityMain: FC<any> = ({
   setShowRemoveBundleLineItemModal,
   collapseActiveKeys,
   setCollapseActiveKeys,
+  validationTab
 }) => {
   return (
     <>
@@ -39,6 +40,7 @@ const ProfitabilityMain: FC<any> = ({
         setShowRemoveBundleLineItemModal={setShowRemoveBundleLineItemModal}
         collapseActiveKeys={collapseActiveKeys}
         setCollapseActiveKeys={setCollapseActiveKeys}
+        validationTab={validationTab}
       />
     </>
   );

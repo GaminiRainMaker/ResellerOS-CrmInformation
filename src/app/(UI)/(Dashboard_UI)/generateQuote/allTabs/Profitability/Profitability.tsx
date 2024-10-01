@@ -62,7 +62,7 @@ const Profitablity: FC<any> = ({
   showRemoveBundleLineItemModal,
   setShowRemoveBundleLineItemModal,
   collapseActiveKeys,
-  setCollapseActiveKeys, activeKey
+  setCollapseActiveKeys, validationTab
 }) => {
   const dispatch = useAppDispatch();
   const [BundleForm] = Form.useForm();
@@ -102,6 +102,7 @@ const Profitablity: FC<any> = ({
       label: '',
     },
   ]);
+
 
   const filterDataByValue = (data: any, filterValue?: string) => {
     const groupedData: any = {};
@@ -463,7 +464,6 @@ const Profitablity: FC<any> = ({
         },
       },
       ]
-      let ddd = 4
       const newArr: any = [];
       console.log('newArrnewArr', newArr)
       ProfitabilityQuoteLineItemcolumns?.forEach((itemCol: any) => {
@@ -483,7 +483,7 @@ const Profitablity: FC<any> = ({
           newArr?.push(itemCol);
         }
       });
-      if (ddd === 4) {
+      if (validationTab) {
         validationArr?.map((item: any) => {
           newArr.push(item)
         })
@@ -1294,7 +1294,6 @@ const Profitablity: FC<any> = ({
 
 
 
-  console.log("activeKey", activeKey)
   return (
     <GlobalLoader loading={profitabilityDataByQuoteId?.length < 0}>
       {finalProfitTableCol && finalProfitTableCol?.length > 0 ? (
