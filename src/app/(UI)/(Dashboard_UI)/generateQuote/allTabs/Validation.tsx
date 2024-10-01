@@ -436,22 +436,19 @@ const Validation: FC<any> = ({
               fallbackIcon={
                 status === 'success' ? (
                   <CheckCircleIcon width={24} color={token?.colorSuccess} />
-                ) : status === 'Reject' ? (
-                  <XCircleIcon width={24} color={token?.colorError} />
+                ) : status === 'warning' ? (
+                  <ExclamationCircleIcon width={24} color={token?.colorWarning} />
                 ) : (
-                  <ExclamationCircleIcon
-                    width={24}
-                    color={token?.colorWarning}
-                  />
+                  <XCircleIcon width={24} color={token?.colorError} />
                 )
               }
               isNotification={false}
               iconBg={
                 status === 'success'
                   ? token?.colorSuccessBg
-                  : status === 'Reject'
-                    ? token?.colorErrorBg
-                    : token?.colorWarningBg
+                  : status === 'warning'
+                    ? token?.colorWarningBg
+                    : token?.colorErrorBg
               }
             />
           ),
