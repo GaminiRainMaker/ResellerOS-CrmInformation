@@ -54,6 +54,8 @@ const Validation: FC<any> = ({
 
   useEffect(() => {
     dispatch(getAllContract());
+    dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
+
   }, [])
 
   const contractVehicleOptions = contactData?.filter((item: any) => item?.organization === userInformation?.organization).map((option: any) => ({
@@ -167,54 +169,57 @@ const Validation: FC<any> = ({
   };
 
 
-
   const contractVehicleStatus = async (value: number, record: any) => {
     try {
-      console.log('value', value, record);
       const productCode = record?.product_code;
-
-      // Await the dispatch to get the contract product
-      const res = await dispatch(getContractProductByContractVehicle(value));
-
-      // Ensure res?.payload is an array
-      const contractProducts = res?.payload || [];
-      let obj: { id: number; contract_status: string, contract_vehicle: number, contract_price: string };
-
-      // Find the matched product by contract_product_name
-      const matchedProduct = contractProducts.find((item: any) => item.contract_product_name === productCode);
-      console.log('contractProductData', matchedProduct, productCode);
-      console.log('matchedProduct', matchedProduct)
-      // Set contract status based on the matched product
+  
+      // Fetch the contract products for the given contract vehicle
+      const response = await dispatch(getContractProductByContractVehicle(value));
+      
+      // Ensure res?.payload is an array, defaulting to an empty array if not
+      const contractProducts = response?.payload || [];
+      
+      // Check if there's a product matching the current product code
+      const matchedProduct = contractProducts.find(
+        (item: any) => item.contract_product_name === productCode
+      );
+  
+      // Initialize the object for the update
+      let updateObject = {
+        id: record?.id,
+        contract_status: 'Reject', // Default to "Reject" if no matched product found
+        contract_vehicle: value,
+        contract_price: '',
+      };
+  
+      // If we found a matched product, calculate the contract status
       if (matchedProduct) {
-        obj = {
-          id: record?.id,
-          contract_status: 'Correct',
-          contract_vehicle: value,
-          contract_price: matchedProduct?.contract_price
-        };
-      } else {
-        obj = {
-          id: record?.id,
-          contract_status: 'Reject',
-          contract_vehicle: value,
-          contract_price: ''
-        };
+        const finalStatus = contractStatus(record, matchedProduct);  
+        if (finalStatus) {
+          updateObject = {
+            id: record?.id,
+            contract_status: finalStatus,
+            contract_vehicle: value,
+            contract_price: matchedProduct?.contract_price || '', // Fallback to empty string if contract price is undefined
+          };
+        }
       }
-      console.log('objobjobj', obj);
-
-      // Dispatch the updated contract status
-      const updateRes = await dispatch(updateValidationById(obj));
-
-      if (updateRes?.payload) {
-        // Dispatch to get all validation data by quote ID
+  
+      console.log('Update Object:', updateObject);
+  
+      // Dispatch to update the contract status
+      const updateResponse = await dispatch(updateValidationById(updateObject));
+  
+      if (updateResponse?.payload) {
+        // Fetch updated validation data for the current quote
         await dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
       }
     } catch (error) {
       console.error('Error fetching or updating contract products:', error);
-      // Handle the error appropriately (e.g., show error message, retry, etc.)
+      // Handle errors appropriately, e.g., show an error message, log, or retry
     }
   };
-
+  
 
   const ValidationQuoteLineItemcolumns = [
     {
@@ -344,7 +349,7 @@ const Validation: FC<any> = ({
           children: (
             <TableNameColumn
               fallbackIcon={
-                status === 'Correct' ? (
+                status === 'success' ? (
                   <CheckCircleIcon width={24} color={token?.colorSuccess} />
                 ) : status === 'Reject' ? (
                   <XCircleIcon width={24} color={token?.colorError} />
@@ -357,7 +362,7 @@ const Validation: FC<any> = ({
               }
               isNotification={false}
               iconBg={
-                status === 'Correct'
+                status === 'success'
                   ? token?.colorSuccessBg
                   : status === 'Reject'
                     ? token?.colorErrorBg
@@ -413,30 +418,30 @@ const Validation: FC<any> = ({
     dispatch(getContractConfiguartion({}));
   }, []);
 
-  const contractStatus = (record: any) => {
+  const contractStatus = (record: any, matchedProduct: any) => {
     let fieldName = '';
     let operator = '';
     let finalSecondValue = '';
     let status = '';
-    const statuses = ['green', 'yellow', 'red'];
+    const statuses = ['green', 'yellow'];
 
     for (let statusCheck of statuses) {
       const matchingObjects =
-        contractConfigurationData &&
         contractConfigurationData?.filter(
           (item: any) => item?.contract_status === statusCheck,
-        );
+        ) || [];
+
 
       if (matchingObjects.length > 0) {
-        const finalData =
-          matchingObjects?.[0]?.json && JSON?.parse(matchingObjects?.[0]?.json);
+        const finalData = matchingObjects?.[0]?.json && JSON?.parse(matchingObjects?.[0]?.json);
         fieldName = finalData?.[0]?.['fieldName'];
         operator = finalData?.[0]?.['operator'];
 
+        // Handle formula valueType
         if (finalData?.[0]?.['valueType'] === 'formula') {
-          finalSecondValue = finalData?.[0]['value']?.reduce(
+          finalSecondValue = finalData?.[0]?.['value']?.reduce(
             (acc: any, fieldName: any) => {
-              const value1 = record?.[fieldName];
+              const value1 = fieldName === 'contract_price' ? matchedProduct?.[fieldName] : record?.[fieldName];
               if (typeof value1 === 'number') {
                 return acc + value1; // Add if it's a number
               } else if (typeof value1 === 'string') {
@@ -450,6 +455,8 @@ const Validation: FC<any> = ({
           finalSecondValue = finalData?.[0]?.['value'];
         }
 
+
+        // Check if we can calculate status
         if (operator && record?.[fieldName] && finalSecondValue) {
           status = getContractStatus(
             Number(record?.[fieldName]),
@@ -458,15 +465,18 @@ const Validation: FC<any> = ({
           );
         }
 
+        // Check the status and return accordingly
         if (status === 'Correct') {
-          break; // Exit loop if status is correct
+          if (statusCheck === 'green') {
+            return 'success'; // Return "success" if contract_status is green
+          } else if (statusCheck === 'yellow') {
+            return 'warning'; // Return "warning" if contract_status is yellow
+          }
         }
       }
     }
-    return status;
+    return status; // Return the final status if no match was found
   };
-
-  console.log('contractVehicleOptions', contractVehicleOptions, 'contactData', contactData)
 
   return (
     <>
@@ -522,58 +532,6 @@ const Validation: FC<any> = ({
                                       {finalDataItem?.name}
                                     </Typography>
                                   </Badge>
-                                </Col>
-                                <Col xs={24} sm={12} md={12} lg={6} xl={6}>
-                                  <span
-                                    style={{
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                    }}
-                                  >
-                                    Ext Price:{' '}
-                                    <Typography
-                                      name="Body 4/Medium"
-                                      color={token?.colorBgContainer}
-                                      ellipsis
-                                      tooltip
-                                      as="div"
-                                      style={{ marginLeft: '2px' }}
-                                    >
-                                      $
-                                      {abbreviate(
-                                        Number(
-                                          finalDataItem?.totalExtendedPrice ??
-                                          0.0,
-                                        ),
-                                      )}
-                                    </Typography>
-                                  </span>
-                                </Col>
-                                <Col xs={24} sm={12} md={12} lg={4} xl={4}>
-                                  <span
-                                    style={{
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                    }}
-                                  >
-                                    Contract Price:{' '}
-                                    <Typography
-                                      name="Body 4/Medium"
-                                      color={token?.colorBgContainer}
-                                      ellipsis
-                                      tooltip
-                                      as="div"
-                                      style={{ marginLeft: '2px' }}
-                                    >
-                                      $
-                                      {abbreviate(
-                                        Number(
-                                          finalDataItem?.totalContractPrice ??
-                                          0.0,
-                                        ),
-                                      )}
-                                    </Typography>
-                                  </span>
                                 </Col>
                               </Row>
                             ),
