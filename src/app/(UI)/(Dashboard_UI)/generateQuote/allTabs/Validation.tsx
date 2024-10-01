@@ -57,7 +57,6 @@ const Validation: FC<any> = ({
   useEffect(() => {
     dispatch(getAllContract());
     dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
-
   }, [])
 
   const contractVehicleOptions = contactData?.filter((item: any) => item?.organization === userInformation?.organization).map((option: any) => ({
@@ -159,7 +158,6 @@ const Validation: FC<any> = ({
       filterDataByValue(ValidationData, selectedFilter);
     }
   }, [JSON.stringify(ValidationData), selectedFilter]);
-
 
 
   const renderEditableInput = (field: string) => {
@@ -268,7 +266,6 @@ const Validation: FC<any> = ({
     }
   }
 
-
   const handleKeyDown = (e: any, record: any) => {
     if (e.key === 'Enter') {
       setKeyPressed(record?.id);
@@ -278,7 +275,6 @@ const Validation: FC<any> = ({
   const handleBlur = (record: any) => {
     setKeyPressed(record?.id);
   };
-
 
   useEffect(() => {
     if (
