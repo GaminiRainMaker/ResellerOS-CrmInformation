@@ -203,10 +203,10 @@ const Validation: FC<any> = ({
 
       // Check if there's a product matching the current product code
       const matchedProduct = contractProducts.find(
-        (item: any) => item.contract_product_name === productCode
+        (item: any) => item.Product?.product_code === productCode
       );
 
-      console.log('matchedProduct', matchedProduct)
+      console.log('matchedProduct', matchedProduct, contractProducts)
       // Initialize the object for the update
       let updateObject = {
         id: record?.id,
