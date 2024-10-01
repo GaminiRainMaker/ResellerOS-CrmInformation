@@ -403,20 +403,18 @@ const Profitablity: FC<any> = ({
         dataIndex: 'contract_vehicle',
         key: 'contract_vehicle',
         width: 200,
-        render: (text: string, record: any) => {
-          let finalValue = contractVehicleOptions?.find((item: any) => item?.value === text)
-          console.log('contractVehicleOptions123', contractVehicleOptions, finalValue)
-          return <CommonSelect
+        render: (text: string, record: any) => (
+          <CommonSelect
             allowClear
             style={{ width: '100%', height: '34px' }}
             placeholder="Select"
-            defaultValue={finalValue?.label}
+            defaultValue={text}
             options={contractVehicleOptions}
             onChange={(e) => {
               contractVehicleStatus(e, record)
             }}
           />
-        },
+        ),
       },
       {
         title: 'Contract Price ($)',
