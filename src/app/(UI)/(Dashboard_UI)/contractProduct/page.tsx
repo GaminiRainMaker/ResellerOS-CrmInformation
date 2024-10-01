@@ -3,18 +3,18 @@
 
 'use client';
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
-import {Form} from 'antd';
-import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import { Form } from 'antd';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 
 import OsButton from '@/app/components/common/os-button';
 import OsDrawer from '@/app/components/common/os-drawer';
@@ -24,13 +24,13 @@ import {
   PlusIcon,
   TrashIcon,
 } from '@heroicons/react/24/outline';
-import {getAllContract} from '../../../../../redux/actions/contract';
+import { getAllContract } from '../../../../../redux/actions/contract';
 import {
   deleteContractProduct,
   getAllContractProduct,
   insertContractProduct,
 } from '../../../../../redux/actions/contractProduct';
-import {getAllProductForContract} from '../../../../../redux/actions/product';
+import { getAllProductForContract } from '../../../../../redux/actions/product';
 import AddContractProduct from './AddContractProduct';
 
 const ContractProductMain: React.FC = () => {
@@ -43,15 +43,16 @@ const ContractProductMain: React.FC = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [contractObject, setContractObject] = useState<any>();
   const [openDrawer, setOpenDrawer] = useState<boolean>(false);
-  const {data: contactProductData, loading} = useAppSelector(
+  const { data: contactProductData, loading } = useAppSelector(
     (state) => state.contractProduct,
   );
+  const { data: contactData } = useAppSelector((state) => state.contract);
+
   const [productOptions, setProductOptions] = useState<any>();
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteId, setDeleteId] = useState<any>();
   const [recordId, setRecordId] = useState<any>();
-  const [optionsForContract, setOptionsForContract] = useState<any>();
-  const {userInformation} = useAppSelector((state) => state.user);
+  const { userInformation } = useAppSelector((state) => state.user);
   const [contractProductFinalData, setContractProductFinalData] =
     useState<any>();
 
@@ -76,16 +77,22 @@ const ContractProductMain: React.FC = () => {
 
   useEffect(() => {
     dispatch(getAllContractProduct());
-    dispatch(getAllContract())?.then((payload: any) => {
-      let newOptionsArr: any = [];
-      if (payload?.payload) {
-        payload?.payload?.map((items: any) => {
-          newOptionsArr?.push({label: items?.contract, value: items?.id});
-        });
-      }
-      setOptionsForContract(newOptionsArr);
-    });
+    dispatch(getAllContract());
   }, []);
+
+  const finalOptionsForContract = contactData
+    ?.filter((item: any) => {
+      // Apply the organization filter only if the role is not "superAdmin"
+      if (userInformation?.rRole !== "superAdmin") {
+        return item?.organization === userInformation?.organization;
+      }
+      return true; // Allow all items if the user is "superAdmin"
+    })
+    .map((option: any) => ({
+      label: option?.contract,
+      value: option?.id,
+    }));
+
 
   const locale = {
     emptyText: (
@@ -172,13 +179,13 @@ const ContractProductMain: React.FC = () => {
               setOpenDrawer(true);
             }}
             color={token.colorInfoBorder}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
           />
           <TrashIcon
             height={24}
             width={24}
             color={token.colorError}
-            style={{cursor: 'pointer'}}
+            style={{ cursor: 'pointer' }}
             onClick={() => {
               setDeleteId(record?.id);
               setShowModalDelete(true);
@@ -248,14 +255,14 @@ const ContractProductMain: React.FC = () => {
 
   return (
     <>
-      <Space size={24} direction="vertical" style={{width: '100%'}}>
+      <Space size={24} direction="vertical" style={{ width: '100%' }}>
         <Row justify="space-between" align="middle">
           <Col>
             <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
               All Contract Product
             </Typography>
           </Col>
-          <Col style={{display: 'flex', alignItems: 'center'}}>
+          <Col style={{ display: 'flex', alignItems: 'center' }}>
             <OsButton
               text="Add Contract Product"
               buttontype="PRIMARY"
@@ -285,7 +292,7 @@ const ContractProductMain: React.FC = () => {
 
       <OsModal
         body={
-          optionsForContract?.length === 0 ? (
+          finalOptionsForContract?.length === 0 ? (
             <Row
               justify="space-between"
               style={{
@@ -311,7 +318,7 @@ const ContractProductMain: React.FC = () => {
             <AddContractProduct
               setContractObject={setContractObject}
               contractObject={contractObject}
-              optionsForContract={optionsForContract}
+              optionsForContract={finalOptionsForContract}
               onFinish={updatebillDetails}
               form={form}
               drawer={false}
@@ -327,10 +334,10 @@ const ContractProductMain: React.FC = () => {
         }}
         footer
         primaryButtonText={
-          optionsForContract?.length === 0 ? 'Add Contract' : 'Add'
+          finalOptionsForContract?.length === 0 ? 'Add Contract' : 'Add'
         }
         onOk={() => {
-          if (optionsForContract?.length === 0) {
+          if (finalOptionsForContract?.length === 0) {
             router?.push('/contract');
           } else {
             // AddNewContractProduct();
@@ -358,11 +365,11 @@ const ContractProductMain: React.FC = () => {
         open={openDrawer}
         width={450}
         footer={
-          <Row style={{width: '100%', float: 'right'}}>
+          <Row style={{ width: '100%', float: 'right' }}>
             {' '}
             <OsButton
               loading={loading}
-              btnStyle={{width: '100%'}}
+              btnStyle={{ width: '100%' }}
               buttontype="PRIMARY"
               text="Update Changes"
               clickHandler={() => {
@@ -375,7 +382,7 @@ const ContractProductMain: React.FC = () => {
         <AddContractProduct
           setContractObject={setContractObject}
           contractObject={contractObject}
-          optionsForContract={optionsForContract}
+          optionsForContract={finalOptionsForContract}
           onFinish={updatebillDetails}
           form={form}
           drawer={true}
