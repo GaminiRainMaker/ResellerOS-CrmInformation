@@ -11,7 +11,7 @@ import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
 import { pricingMethod } from '@/app/utils/CONSTANTS';
-import { getContractStatus } from '@/app/utils/base';
+import { calculateProfitabilityData, currencyFormatter, getContractStatus } from '@/app/utils/base';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
@@ -32,6 +32,7 @@ import OsDrawer from '@/app/components/common/os-drawer';
 import OsModal from '@/app/components/common/os-modal';
 import UpdatingLineItems from '../UpdatingLineItems';
 import GlobalLoader from '@/app/components/common/os-global-loader';
+import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 
 const Validation: FC<any> = ({
   tableColumnDataShow,
@@ -57,12 +58,12 @@ const Validation: FC<any> = ({
   const [validationFinalData, setValidationFinalData] = useState<any>([]);
   const { userInformation } = useAppSelector((state) => state.user);
   const { data: contactData } = useAppSelector((state) => state.contract);
-  const { data: contractProductData } = useAppSelector((state) => state.contractProduct);
+  const [keyPressed, setKeyPressed] = useState('');
+  const [finalFieldData, setFinalFieldData] = useState<any>({});
 
   useEffect(() => {
     dispatch(getAllContract());
     dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
-
   }, [])
 
   const contractVehicleOptions = contactData?.filter((item: any) => item?.organization === userInformation?.organization).map((option: any) => ({
@@ -165,6 +166,7 @@ const Validation: FC<any> = ({
     }
   }, [JSON.stringify(ValidationData), selectedFilter]);
 
+
   const renderEditableInput = (field: string) => {
     const editableField = tableColumnDataShow.find(
       (item: any) => item.field_name === field,
@@ -176,9 +178,29 @@ const Validation: FC<any> = ({
   };
 
 
-  const contractVehicleStatus = async (value: number, record: any) => {
+  const contractVehicleStatus = async (value: number | null | undefined, record: any) => {
     try {
       const productCode = record?.product_code;
+
+      // Check if the value is null or undefined and handle accordingly
+      if (value === null || value === undefined) {
+        let updateObject = {
+          id: record?.id,
+          contract_status: 'Reject',
+          contract_vehicle: null,
+          contract_price: '',
+        };
+
+        // Dispatch to update the contract status with null contract_vehicle
+        const updateResponse = await dispatch(updateValidationById(updateObject));
+
+        if (updateResponse?.payload) {
+          // Fetch updated validation data for the current quote
+          await dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
+        }
+
+        return; // Exit the function early
+      }
 
       // Fetch the contract products for the given contract vehicle
       const response = await dispatch(getContractProductByContractVehicle(value));
@@ -188,9 +210,10 @@ const Validation: FC<any> = ({
 
       // Check if there's a product matching the current product code
       const matchedProduct = contractProducts.find(
-        (item: any) => item.contract_product_name === productCode
+        (item: any) => item.Product?.product_code === productCode
       );
 
+      console.log('matchedProduct', matchedProduct, contractProducts)
       // Initialize the object for the update
       let updateObject = {
         id: record?.id,
@@ -202,6 +225,7 @@ const Validation: FC<any> = ({
       // If we found a matched product, calculate the contract status
       if (matchedProduct) {
         const finalStatus = contractStatus(record, matchedProduct);
+        console.log('finalStatus', finalStatus)
         if (finalStatus) {
           updateObject = {
             id: record?.id,
@@ -227,20 +251,95 @@ const Validation: FC<any> = ({
     }
   };
 
+  const handleFieldChange = (record: any,
+    field: string,
+    value: any,
+    type: string,) => {
+    const updatedRecord = { ...record, [field]: value };
+    const result: any = calculateProfitabilityData(
+      Number(updatedRecord?.quantity),
+      updatedRecord?.pricing_method,
+      Number(updatedRecord?.line_amount) ?? 0,
+      Number(updatedRecord?.adjusted_price) ?? 0,
+      Number(updatedRecord?.list_price) ?? 0,
+    );
+    if (result) {
+      updatedRecord.unit_price = result.unitPrice;
+      updatedRecord.exit_price = result.exitPrice;
+      updatedRecord.gross_profit = result.grossProfit;
+      updatedRecord.gross_profit_percentage = result.grossProfitPercentage;
+    }
+    setFinalFieldData(updatedRecord);
+    if (type === 'select') {
+      handleSave(updatedRecord);
+    }
+  }
+
+  const handleKeyDown = (e: any, record: any) => {
+    if (e.key === 'Enter') {
+      setKeyPressed(record?.id);
+    }
+  };
+
+  const handleBlur = (record: any) => {
+    setKeyPressed(record?.id);
+  };
+
+  useEffect(() => {
+    if (
+      keyPressed &&
+      finalFieldData &&
+      Object.keys(finalFieldData).length > 0 &&
+      keyPressed === finalFieldData?.id
+    ) {
+      handleSave(finalFieldData);
+    }
+  }, [keyPressed, finalFieldData]);
+
+
+  const handleSave = async (record: any) => {
+    try {
+      await dispatch(updateValidationById(record)).then((d: any) => {
+        if (d?.payload) {
+          dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
+        }
+      });
+      setKeyPressed('');
+      setFinalFieldData({});
+    } catch (error) {
+      console.error('Error saving data:', error);
+    }
+  }
+  const updateAmountValue = (pricingMethods: string) => {
+    if (['cost_percentage', 'list_percentage', 'gp'].includes(pricingMethods)) {
+      return `%`;
+    }
+    return `$`;
+  };
+
 
   const ValidationQuoteLineItemcolumns = [
     {
       title: '#Line',
       dataIndex: 'line_number',
       key: 'line_number',
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <OsInput
-          disabled={renderEditableInput('Line')}
+          disabled={renderEditableInput('#Line')}
           style={{
             height: '36px',
           }}
-          value={text}
-          onChange={(v) => { }}
+          defaultValue={text}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
+          onChange={(e) =>
+            handleFieldChange(
+              record,
+              'line_number',
+              e.target.value,
+              'input',
+            )
+          }
         />
       ),
       width: 111,
@@ -251,6 +350,126 @@ const Validation: FC<any> = ({
       key: 'product_code',
       width: 130,
     },
+    {
+      title: 'Quantity',
+      dataIndex: 'quantity',
+      key: 'quantity',
+      sorter: (a: any, b: any) => a.quantity - b.quantity,
+      render: (text: string, record: any) => (
+        <OsInputNumber
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+          defaultValue={text ?? 0.0}
+          disabled={renderEditableInput('Quantity')}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
+          style={{
+            height: '36px',
+            textAlignLast: 'right',
+          }}
+          min={1}
+          onChange={(e) =>
+            handleFieldChange(record, 'quantity', e, 'input')
+          }
+        />
+      ),
+      width: 120,
+    },
+    {
+      title: 'MSRP ($)',
+      dataIndex: 'list_price',
+      key: 'list_price',
+      sorter: (a: any, b: any) => a.list_price - b.list_price,
+      render: (text: string, record: any) => (
+        <OsInputNumber
+          min={0}
+          precision={2}
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+          disabled={renderEditableInput('MSRP ($)')}
+          style={{
+            height: '36px',
+            textAlignLast: 'right',
+            width: '100%',
+          }}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
+          defaultValue={text ?? 0.0}
+          onChange={(e) =>
+            handleFieldChange(record, 'list_price', e, 'input')
+          }
+        />
+      ),
+      width: 150,
+    },
+    {
+      title: 'Cost ($)',
+      dataIndex: 'adjusted_price',
+      key: 'adjusted_price ',
+      sorter: (a: any, b: any) => a.adjusted_price - b.adjusted_price,
+      render: (text: string, record: any) => (
+        <OsInputNumber
+          precision={2}
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+          min={0}
+          style={{
+            height: '36px',
+            textAlignLast: 'right',
+            width: '100%',
+          }}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
+          disabled={renderEditableInput('Cost ($)')}
+          defaultValue={text ?? 0.0}
+          onChange={(e) =>
+            handleFieldChange(
+              record,
+              'adjusted_price',
+              e,
+              'input',
+            )
+          }
+        />
+      ),
+      width: 150,
+    },
+    // {
+    //   title: 'Product Family',
+    //   dataIndex: 'product_family',
+    //   key: 'product_family',
+    //   width: 285,
+    //   render(text: any, record: any) {
+    //     return {
+    //       children: (
+    //         <CommonSelect
+    //           disabled={renderEditableInput('Product Family')}
+    //           allowClear
+    //           onClear={() => {
+    //             handleFieldChange(
+    //               record,
+    //               'product_family',
+    //               '',
+    //               'select',
+    //             );
+    //           }}
+    //           style={{ width: '200px', height: '36px' }}
+    //           placeholder="Select"
+    //           defaultValue={text ?? record?.Product?.product_family}
+    //           // options={selectDataForProduct}
+    //           // onChange={(value) => {
+    //           //   handleFieldChange(
+    //           //     record,
+    //           //     'product_family',
+    //           //     value,
+    //           //     'select',
+    //           //   );
+    //           // }}
+    //         />
+    //       ),
+    //     };
+    //   },
+    // },
     {
       title: 'Product Description',
       dataIndex: 'description',
@@ -264,18 +483,26 @@ const Validation: FC<any> = ({
       width: 200,
       render: (text: string, record: any) => (
         <CommonSelect
+          onBlur={(e) => handleBlur(record)}
           allowClear
           disabled={renderEditableInput('Pricing Method')}
-          style={{ width: '100%', height: '34px' }}
+          style={{ width: '100%', height: '36px' }}
           placeholder="Select"
           defaultValue={text}
-          onChange={(e) => { }}
-          options={[]}
+          onChange={(value) => {
+            handleFieldChange(
+              record,
+              'pricing_method',
+              value,
+              'select',
+            );
+          }}
+          options={pricingMethod}
         />
       ),
     },
     {
-      title: 'Contract',
+      title: 'Contract Vehicle',
       dataIndex: 'contract_vehicle',
       key: 'contract_vehicle',
       width: 200,
@@ -298,14 +525,29 @@ const Validation: FC<any> = ({
       key: 'line_amount',
       width: 130,
       render: (text: string, record: any) => (
-
-        <OsInput
+        <OsInputNumber
+          min={0}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
           disabled={renderEditableInput('Amount')}
           style={{
             height: '36px',
+            textAlignLast: 'center',
+            width: '100%',
           }}
-          value={text}
-          onChange={(v) => { }}
+          precision={2}
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+          prefix={updateAmountValue(record?.pricing_method)}
+          defaultValue={text ?? 0.0}
+          onChange={(e) => {
+            handleFieldChange(
+              record,
+              'line_amount',
+              e,
+              'input',
+            );
+          }}
         />
       ),
     },
@@ -337,7 +579,6 @@ const Validation: FC<any> = ({
       key: 'contract_price',
       width: 150,
       render: (text: number, record: any) => {
-        console.log('record', record)
         return <Typography name="Body 4/Medium">
           {text ? `$ ${abbreviate(text ?? 0)}` : 0}
         </Typography>
@@ -351,29 +592,25 @@ const Validation: FC<any> = ({
       width: 180,
       render(text: string, record: any) {
         const status = record?.contract_status
-        // const status = contractStatus(record);
         return {
           children: (
             <TableNameColumn
               fallbackIcon={
                 status === 'success' ? (
                   <CheckCircleIcon width={24} color={token?.colorSuccess} />
-                ) : status === 'Reject' ? (
-                  <XCircleIcon width={24} color={token?.colorError} />
+                ) : status === 'warning' ? (
+                  <ExclamationCircleIcon width={24} color={token?.colorWarning} />
                 ) : (
-                  <ExclamationCircleIcon
-                    width={24}
-                    color={token?.colorWarning}
-                  />
+                  <XCircleIcon width={24} color={token?.colorError} />
                 )
               }
               isNotification={false}
               iconBg={
                 status === 'success'
                   ? token?.colorSuccessBg
-                  : status === 'Reject'
-                    ? token?.colorErrorBg
-                    : token?.colorWarningBg
+                  : status === 'warning'
+                    ? token?.colorWarningBg
+                    : token?.colorErrorBg
               }
             />
           ),
@@ -388,7 +625,6 @@ const Validation: FC<any> = ({
     const newArr: any = [];
     ValidationQuoteLineItemcolumns?.map((itemCol: any) => {
       let shouldPush = false;
-      let contractPush = false;
       let contractTypePush = false;
       tableColumnDataShow?.forEach((item: any) => {
         if (item?.field_name === itemCol?.title) {
@@ -396,12 +632,6 @@ const Validation: FC<any> = ({
         }
       });
       if (shouldPush) {
-        newArr?.push(itemCol);
-      }
-      if (itemCol?.title === 'Contract') {
-        contractPush = true;
-      }
-      if (contractPush) {
         newArr?.push(itemCol);
       }
       if (itemCol?.title === 'Contract Type') {
@@ -437,7 +667,6 @@ const Validation: FC<any> = ({
         contractConfigurationData?.filter(
           (item: any) => item?.contract_status === statusCheck,
         ) || [];
-
 
       if (matchingObjects.length > 0) {
         const finalData = matchingObjects?.[0]?.json && JSON?.parse(matchingObjects?.[0]?.json);
@@ -482,6 +711,7 @@ const Validation: FC<any> = ({
         }
       }
     }
+    console.log('FInalStatus', status)
     return status; // Return the final status if no match was found
   };
 

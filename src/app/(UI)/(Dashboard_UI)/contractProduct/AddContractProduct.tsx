@@ -88,6 +88,7 @@ const AddContractProduct: React.FC<any> = ({
                 ]}
               >
                 <CommonSelect
+                  allowClear
                   style={{ width: '100%' }}
                   options={optionsForContract || []}
                 />
