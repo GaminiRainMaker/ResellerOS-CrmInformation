@@ -206,6 +206,7 @@ const Validation: FC<any> = ({
         (item: any) => item.contract_product_name === productCode
       );
 
+      console.log('matchedProduct', matchedProduct)
       // Initialize the object for the update
       let updateObject = {
         id: record?.id,
@@ -217,6 +218,7 @@ const Validation: FC<any> = ({
       // If we found a matched product, calculate the contract status
       if (matchedProduct) {
         const finalStatus = contractStatus(record, matchedProduct);
+        console.log('finalStatus', finalStatus)
         if (finalStatus) {
           updateObject = {
             id: record?.id,
@@ -301,6 +303,13 @@ const Validation: FC<any> = ({
       console.error('Error saving data:', error);
     }
   }
+  const updateAmountValue = (pricingMethods: string) => {
+    if (['cost_percentage', 'list_percentage', 'gp'].includes(pricingMethods)) {
+      return `%`;
+    }
+    return `$`;
+  };
+
 
   const ValidationQuoteLineItemcolumns = [
     {
@@ -335,6 +344,126 @@ const Validation: FC<any> = ({
       width: 130,
     },
     {
+      title: 'Quantity',
+      dataIndex: 'quantity',
+      key: 'quantity',
+      sorter: (a: any, b: any) => a.quantity - b.quantity,
+      render: (text: string, record: any) => (
+        <OsInputNumber
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+          defaultValue={text ?? 0.0}
+          disabled={renderEditableInput('Quantity')}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
+          style={{
+            height: '36px',
+            textAlignLast: 'right',
+          }}
+          min={1}
+          onChange={(e) =>
+            handleFieldChange(record, 'quantity', e, 'input')
+          }
+        />
+      ),
+      width: 120,
+    },
+    {
+      title: 'MSRP ($)',
+      dataIndex: 'list_price',
+      key: 'list_price',
+      sorter: (a: any, b: any) => a.list_price - b.list_price,
+      render: (text: string, record: any) => (
+        <OsInputNumber
+          min={0}
+          precision={2}
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+          disabled={renderEditableInput('MSRP ($)')}
+          style={{
+            height: '36px',
+            textAlignLast: 'right',
+            width: '100%',
+          }}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
+          defaultValue={text ?? 0.0}
+          onChange={(e) =>
+            handleFieldChange(record, 'list_price', e, 'input')
+          }
+        />
+      ),
+      width: 150,
+    },
+    {
+      title: 'Cost ($)',
+      dataIndex: 'adjusted_price',
+      key: 'adjusted_price ',
+      sorter: (a: any, b: any) => a.adjusted_price - b.adjusted_price,
+      render: (text: string, record: any) => (
+        <OsInputNumber
+          precision={2}
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+          min={0}
+          style={{
+            height: '36px',
+            textAlignLast: 'right',
+            width: '100%',
+          }}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
+          disabled={renderEditableInput('Cost ($)')}
+          defaultValue={text ?? 0.0}
+          onChange={(e) =>
+            handleFieldChange(
+              record,
+              'adjusted_price',
+              e,
+              'input',
+            )
+          }
+        />
+      ),
+      width: 150,
+    },
+    // {
+    //   title: 'Product Family',
+    //   dataIndex: 'product_family',
+    //   key: 'product_family',
+    //   width: 285,
+    //   render(text: any, record: any) {
+    //     return {
+    //       children: (
+    //         <CommonSelect
+    //           disabled={renderEditableInput('Product Family')}
+    //           allowClear
+    //           onClear={() => {
+    //             handleFieldChange(
+    //               record,
+    //               'product_family',
+    //               '',
+    //               'select',
+    //             );
+    //           }}
+    //           style={{ width: '200px', height: '36px' }}
+    //           placeholder="Select"
+    //           defaultValue={text ?? record?.Product?.product_family}
+    //           // options={selectDataForProduct}
+    //           // onChange={(value) => {
+    //           //   handleFieldChange(
+    //           //     record,
+    //           //     'product_family',
+    //           //     value,
+    //           //     'select',
+    //           //   );
+    //           // }}
+    //         />
+    //       ),
+    //     };
+    //   },
+    // },
+    {
       title: 'Product Description',
       dataIndex: 'description',
       key: 'description',
@@ -366,7 +495,7 @@ const Validation: FC<any> = ({
       ),
     },
     {
-      title: 'Contract',
+      title: 'Contract Vehicle',
       dataIndex: 'contract_vehicle',
       key: 'contract_vehicle',
       width: 200,
@@ -402,7 +531,7 @@ const Validation: FC<any> = ({
           precision={2}
           formatter={currencyFormatter}
           parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
-          // prefix={updateAmountValue(record?.pricing_method)}
+          prefix={updateAmountValue(record?.pricing_method)}
           defaultValue={text ?? 0.0}
           onChange={(e) => {
             handleFieldChange(
@@ -489,7 +618,6 @@ const Validation: FC<any> = ({
     const newArr: any = [];
     ValidationQuoteLineItemcolumns?.map((itemCol: any) => {
       let shouldPush = false;
-      let contractPush = false;
       let contractTypePush = false;
       tableColumnDataShow?.forEach((item: any) => {
         if (item?.field_name === itemCol?.title) {
@@ -497,12 +625,6 @@ const Validation: FC<any> = ({
         }
       });
       if (shouldPush) {
-        newArr?.push(itemCol);
-      }
-      if (itemCol?.title === 'Contract') {
-        contractPush = true;
-      }
-      if (contractPush) {
         newArr?.push(itemCol);
       }
       if (itemCol?.title === 'Contract Type') {
@@ -538,7 +660,6 @@ const Validation: FC<any> = ({
         contractConfigurationData?.filter(
           (item: any) => item?.contract_status === statusCheck,
         ) || [];
-
 
       if (matchingObjects.length > 0) {
         const finalData = matchingObjects?.[0]?.json && JSON?.parse(matchingObjects?.[0]?.json);
@@ -583,6 +704,7 @@ const Validation: FC<any> = ({
         }
       }
     }
+    console.log('FInalStatus', status)
     return status; // Return the final status if no match was found
   };
 
