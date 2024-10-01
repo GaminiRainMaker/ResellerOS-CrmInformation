@@ -661,8 +661,9 @@ export const updateTables = async (
         //   await dispatch(insertValidation(newContractProductArr));
       }
       if (profitabilityArray)
-        await dispatch(insertProfitability(profitabilityArray));
-      await dispatch(insertValidation(profitabilityArray));
+        await dispatch(insertValidation(profitabilityArray));
+
+      await dispatch(insertProfitability(profitabilityArray));
 
       await dispatch(quoteFileVerification({id: fileData?.id})).then(
         (verificationResponse: any) => {

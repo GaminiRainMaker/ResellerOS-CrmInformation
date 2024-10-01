@@ -427,12 +427,30 @@ const GenerateQuote: React.FC = () => {
         </Typography>
       ),
       children: (
-        <Validation
+        <ProfitabilityMain
           tableColumnDataShow={tableColumnDataShow}
           selectedFilter={selectedFilter}
-          collapseActiveKeys={collapseActiveKeys}
+          setShowUpdateLineItemModal={setShowUpdateLineItemModal}
+          showUpdateLineItemModal={showUpdateLineItemModal}
+          selectTedRowData={selectTedRowData}
+          setSelectedRowData={setSelectedRowData}
           setCollapseActiveKeys={setCollapseActiveKeys}
+          collapseActiveKeys={collapseActiveKeys}
+          setShowBundleModal={setShowBundleModal}
+          selectTedRowIds={selectTedRowIds}
+          setSelectedRowIds={setSelectedRowIds}
+          showBundleModal={showBundleModal}
+          isDeleteProfitabilityModal={isDeleteProfitabilityModal}
+          setIsDeleteProfitabilityModal={setIsDeleteProfitabilityModal}
+          showRemoveBundleLineItemModal={showRemoveBundleLineItemModal}
+          setShowRemoveBundleLineItemModal={setShowRemoveBundleLineItemModal}
         />
+        // <Validation
+        //   tableColumnDataShow={tableColumnDataShow}
+        //   selectedFilter={selectedFilter}
+        //   collapseActiveKeys={collapseActiveKeys}
+        //   setCollapseActiveKeys={setCollapseActiveKeys}
+        // />
       ),
     },
     {
@@ -667,7 +685,7 @@ const GenerateQuote: React.FC = () => {
                       />
                     )}
 
-                    {activeTab === '2' && isView === 'false' && (
+                    {(activeTab === '2' || activeTab === '4') && isView === 'false' && (
                       <Space>
                         <OsDropdown menu={{ items }} />
                       </Space>

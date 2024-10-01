@@ -25,6 +25,13 @@ import { useAppDispatch, useAppSelector } from '../../../../../../redux/hook';
 import { getAllContract } from '../../../../../../redux/actions/contract';
 import { getContractProductByContractVehicle } from '../../../../../../redux/actions/contractProduct';
 import { getAllValidationByQuoteId, updateValidationById } from '../../../../../../redux/actions/validation';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import BundleSection from '../BundleSection';
+import OsButton from '@/app/components/common/os-button';
+import OsDrawer from '@/app/components/common/os-drawer';
+import OsModal from '@/app/components/common/os-modal';
+import UpdatingLineItems from '../UpdatingLineItems';
+import GlobalLoader from '@/app/components/common/os-global-loader';
 
 const Validation: FC<any> = ({
   tableColumnDataShow,
@@ -172,18 +179,18 @@ const Validation: FC<any> = ({
   const contractVehicleStatus = async (value: number, record: any) => {
     try {
       const productCode = record?.product_code;
-  
+
       // Fetch the contract products for the given contract vehicle
       const response = await dispatch(getContractProductByContractVehicle(value));
-      
+
       // Ensure res?.payload is an array, defaulting to an empty array if not
       const contractProducts = response?.payload || [];
-      
+
       // Check if there's a product matching the current product code
       const matchedProduct = contractProducts.find(
         (item: any) => item.contract_product_name === productCode
       );
-  
+
       // Initialize the object for the update
       let updateObject = {
         id: record?.id,
@@ -191,10 +198,10 @@ const Validation: FC<any> = ({
         contract_vehicle: value,
         contract_price: '',
       };
-  
+
       // If we found a matched product, calculate the contract status
       if (matchedProduct) {
-        const finalStatus = contractStatus(record, matchedProduct);  
+        const finalStatus = contractStatus(record, matchedProduct);
         if (finalStatus) {
           updateObject = {
             id: record?.id,
@@ -204,12 +211,12 @@ const Validation: FC<any> = ({
           };
         }
       }
-  
+
       console.log('Update Object:', updateObject);
-  
+
       // Dispatch to update the contract status
       const updateResponse = await dispatch(updateValidationById(updateObject));
-  
+
       if (updateResponse?.payload) {
         // Fetch updated validation data for the current quote
         await dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
@@ -219,7 +226,7 @@ const Validation: FC<any> = ({
       // Handle errors appropriately, e.g., show an error message, log, or retry
     }
   };
-  
+
 
   const ValidationQuoteLineItemcolumns = [
     {
@@ -572,6 +579,8 @@ const Validation: FC<any> = ({
       ) : (
         <EmptyContainer title="There Is No Validation Columns" />
       )}
+
+
     </>
   );
 };

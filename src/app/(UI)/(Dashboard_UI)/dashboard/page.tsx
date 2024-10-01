@@ -22,6 +22,7 @@ import { contactSales } from '../../../../../redux/actions/auth';
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import ContactSales from './ContactSales';
 import { CustomCardStyle } from './styled-components';
+import { fileDataa2, fileDataaJSON } from '@/app/utils/saleforce';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
@@ -74,6 +75,52 @@ const Dashboard = () => {
     });
   }, []);
 
+
+
+  useEffect(() => {
+
+    let LineItemsArrr: any = []
+    if (fileDataaJSON?.[0]?.analyzeResult?.tables?.length > 0) {
+      // if (fileDataa2?.[0]?.analyzeResult?.tables?.length > 0) {
+
+      let mainItem = fileDataa2?.[0]?.analyzeResult?.tables
+      for (let i = 0; i < mainItem?.length; i++) {
+        let innerIntems = mainItem[i]
+        let globalArr: any = []
+        if (innerIntems?.cells?.[0]?.kind === "columnHeader") {
+          let result: any = [];
+
+          // Step 1: Extract headers from column headers
+          let headers: any = {};
+          innerIntems?.cells.forEach((item) => {
+            if (item.kind === "columnHeader") {
+              headers[item.columnIndex] = item.content; // Store headers by their column index
+            }
+          });
+
+          // Step 2: Create the output based on the headers and rows
+          innerIntems?.cells.forEach(row => {
+            if (row.rowIndex > 0) { // Skip the header row
+              // Check if we need to push a new object
+              if (!result[row.rowIndex - 1]) {
+                result[row.rowIndex - 1] = {}; // Initialize a new object for this row
+              }
+
+              // Assign content to the respective header using columnIndex
+              if (row.columnIndex in headers) {
+                result[row.rowIndex - 1][headers[row.columnIndex]] = row.content; // Assign content for the matching column
+              }
+            }
+          });
+          console.log("resultresult", result
+          )
+
+        }
+
+
+      }
+    }
+  }, [])
   return (
     <GlobalLoader loading={cacheFlowLoading}>
       {isSubscribed &&
