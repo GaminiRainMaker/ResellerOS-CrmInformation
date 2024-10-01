@@ -11,7 +11,7 @@ import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import Typography from '@/app/components/common/typography';
 import { pricingMethod } from '@/app/utils/CONSTANTS';
-import { getContractStatus } from '@/app/utils/base';
+import { currencyFormatter, getContractStatus } from '@/app/utils/base';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
@@ -25,6 +25,7 @@ import { useAppDispatch, useAppSelector } from '../../../../../../redux/hook';
 import { getAllContract } from '../../../../../../redux/actions/contract';
 import { getContractProductByContractVehicle } from '../../../../../../redux/actions/contractProduct';
 import { getAllValidationByQuoteId, updateValidationById } from '../../../../../../redux/actions/validation';
+import OsInputNumber from '@/app/components/common/os-input/InputNumber';
 
 const Validation: FC<any> = ({
   tableColumnDataShow,
@@ -50,7 +51,8 @@ const Validation: FC<any> = ({
   const [validationFinalData, setValidationFinalData] = useState<any>([]);
   const { userInformation } = useAppSelector((state) => state.user);
   const { data: contactData } = useAppSelector((state) => state.contract);
-  const { data: contractProductData } = useAppSelector((state) => state.contractProduct);
+  const [keyPressed, setKeyPressed] = useState('');
+  const [finalFieldData, setFinalFieldData] = useState<any>({});
 
   useEffect(() => {
     dispatch(getAllContract());
@@ -158,6 +160,8 @@ const Validation: FC<any> = ({
     }
   }, [JSON.stringify(ValidationData), selectedFilter]);
 
+
+
   const renderEditableInput = (field: string) => {
     const editableField = tableColumnDataShow.find(
       (item: any) => item.field_name === field,
@@ -172,18 +176,18 @@ const Validation: FC<any> = ({
   const contractVehicleStatus = async (value: number, record: any) => {
     try {
       const productCode = record?.product_code;
-  
+
       // Fetch the contract products for the given contract vehicle
       const response = await dispatch(getContractProductByContractVehicle(value));
-      
+
       // Ensure res?.payload is an array, defaulting to an empty array if not
       const contractProducts = response?.payload || [];
-      
+
       // Check if there's a product matching the current product code
       const matchedProduct = contractProducts.find(
         (item: any) => item.contract_product_name === productCode
       );
-  
+
       // Initialize the object for the update
       let updateObject = {
         id: record?.id,
@@ -191,10 +195,10 @@ const Validation: FC<any> = ({
         contract_vehicle: value,
         contract_price: '',
       };
-  
+
       // If we found a matched product, calculate the contract status
       if (matchedProduct) {
-        const finalStatus = contractStatus(record, matchedProduct);  
+        const finalStatus = contractStatus(record, matchedProduct);
         if (finalStatus) {
           updateObject = {
             id: record?.id,
@@ -204,12 +208,12 @@ const Validation: FC<any> = ({
           };
         }
       }
-  
+
       console.log('Update Object:', updateObject);
-  
+
       // Dispatch to update the contract status
       const updateResponse = await dispatch(updateValidationById(updateObject));
-  
+
       if (updateResponse?.payload) {
         // Fetch updated validation data for the current quote
         await dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
@@ -219,7 +223,53 @@ const Validation: FC<any> = ({
       // Handle errors appropriately, e.g., show an error message, log, or retry
     }
   };
-  
+
+  const handleFieldChange = (record: any,
+    field: string,
+    value: any,
+    type: string,) => {
+    const updatedRecord = { ...record, [field]: value };
+    console.log('updatedRecord', updatedRecord)
+    setFinalFieldData(updatedRecord)
+  }
+
+
+  const handleKeyDown = (e: any, record: any) => {
+    if (e.key === 'Enter') {
+      setKeyPressed(record?.id);
+    }
+  };
+
+  const handleBlur = (record: any) => {
+    setKeyPressed(record?.id);
+  };
+
+
+  useEffect(() => {
+    if (
+      keyPressed &&
+      finalFieldData &&
+      Object.keys(finalFieldData).length > 0 &&
+      keyPressed === finalFieldData?.id
+    ) {
+      handleSave(finalFieldData);
+    }
+  }, [keyPressed, finalFieldData]);
+
+
+  const handleSave = async (record: any) => {
+    try {
+      await dispatch(updateValidationById(record)).then((d: any) => {
+        if (d?.payload) {
+          dispatch(getAllValidationByQuoteId(Number(getQuoteID)));
+        }
+      });
+      setKeyPressed('');
+      setFinalFieldData({});
+    } catch (error) {
+      console.error('Error saving data:', error);
+    }
+  }
 
   const ValidationQuoteLineItemcolumns = [
     {
@@ -291,14 +341,29 @@ const Validation: FC<any> = ({
       key: 'line_amount',
       width: 130,
       render: (text: string, record: any) => (
-
-        <OsInput
+        <OsInputNumber
+          min={0}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
           disabled={renderEditableInput('Amount')}
           style={{
             height: '36px',
+            textAlignLast: 'center',
+            width: '100%',
           }}
-          value={text}
-          onChange={(v) => { }}
+          precision={2}
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+          // prefix={updateAmountValue(record?.pricing_method)}
+          defaultValue={text ?? 0.0}
+          onChange={(e) => {
+            handleFieldChange(
+              record,
+              'line_amount',
+              e,
+              'input',
+            );
+          }}
         />
       ),
     },
