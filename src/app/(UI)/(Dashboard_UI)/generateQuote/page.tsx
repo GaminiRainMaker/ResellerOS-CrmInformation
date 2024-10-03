@@ -336,6 +336,10 @@ const GenerateQuote: React.FC = () => {
     },
   ];
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
   const TabPaneData = [
     {
       key: 1,
@@ -346,7 +350,16 @@ const GenerateQuote: React.FC = () => {
             name="Body 4/Regular"
             cursor="pointer"
             color={token?.colorTextBase}
+<<<<<<< Updated upstream
             onClick={() => setActiveTab('1')}
+=======
+            onClick={() => {
+              setActiveTab('1')
+              setValidationTab(false)
+
+
+            }}
+>>>>>>> Stashed changes
           >
             Review Quotes
           </Typography>
@@ -524,6 +537,10 @@ const GenerateQuote: React.FC = () => {
     }
   };
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
   return (
     <>
       {contextHolder}

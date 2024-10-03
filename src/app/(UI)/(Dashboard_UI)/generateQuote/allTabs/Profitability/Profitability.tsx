@@ -68,6 +68,7 @@ const Profitablity: FC<any> = ({
   const { data: profitabilityDataByQuoteId, loading } = useAppSelector(
     (state) => state.profitability,
   );
+
   const { loading: bundleLoading } = useAppSelector((state) => state.bundle);
   const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>([]);
   const { abbreviate } = useAbbreviationHook(0);
@@ -296,7 +297,6 @@ const Profitablity: FC<any> = ({
       return !editableField?.is_editable;
     }
   };
-
   useEffect(() => {
     if (
       keyPressed &&
@@ -373,8 +373,87 @@ const Profitablity: FC<any> = ({
 
   useEffect(() => {
     if (tableColumnDataShow && tableColumnDataShow.length > 0) {
+<<<<<<< Updated upstream
       const newArr: any = [];
       ProfitabilityQuoteLineItemcolumns?.forEach((itemCol: any) => {
+=======
+      let validationArr: any = [{
+        title: 'Contract Vehicle',
+        dataIndex: 'contract_vehicle',
+        key: 'contract_vehicle',
+        width: 200,
+        render: (text: string, record: any) => {
+          let valueForVeh = text ? Number(text) : null
+          return (
+            <CommonSelect
+              allowClear
+              disabled={renderEditableInput('Contract Vehicle')}
+              style={{ width: '100%', height: '34px' }}
+              placeholder="Select"
+              defaultValue={valueForVeh}
+              options={contractVehicleOptions}
+              onChange={(e) => {
+                contractVehicleStatus(e, record)
+              }}
+            />
+
+          )
+        },
+      },
+      {
+        title: 'Contract Price ($)',
+        dataIndex: 'contract_price',
+        key: 'contract_price',
+        width: 150,
+        render: (text: number, record: any) => {
+          return <Typography name="Body 4/Medium">
+            {text ? `$ ${abbreviate(text ?? 0)}` : 0}
+          </Typography>
+        }
+
+      },
+      {
+        title: 'Contract Status',
+        dataIndex: 'contract_status',
+        key: 'contract_status',
+        width: 180,
+        render(text: string, record: any) {
+          const status = record?.contract_status
+          return {
+            children: (
+              <TableNameColumn
+                fallbackIcon={
+                  status === 'success' ? (
+                    <CheckCircleIcon width={24} color={token?.colorSuccess} />
+                  ) : status === 'warning' ? (
+                    <ExclamationCircleIcon width={24} color={token?.colorWarning} />
+                  ) : (
+                    <XCircleIcon width={24} color={token?.colorError} />
+                  )
+                }
+                isNotification={false}
+                iconBg={
+                  status === 'success'
+                    ? token?.colorSuccessBg
+                    : status === 'warning'
+                      ? token?.colorWarningBg
+                      : token?.colorErrorBg
+                }
+              />
+            ),
+          };
+        },
+      },
+      ]
+      const newArr: any = [];
+      let newArrForComparision = [...ProfitabilityQuoteLineItemcolumns]
+      if (validationTab) {
+        validationArr?.map((item: any) => {
+          newArrForComparision.push(item)
+        })
+      }
+      newArrForComparision?.forEach((itemCol: any) => {
+>>>>>>> Stashed changes
         let shouldPush = false;
         tableColumnDataShow?.forEach((item: any) => {
           if (item?.field_name === itemCol?.title) {
@@ -391,6 +470,11 @@ const Profitablity: FC<any> = ({
           newArr?.push(itemCol);
         }
       });
+<<<<<<< Updated upstream
+=======
+
+
+>>>>>>> Stashed changes
       setFinalProfitTableCol(newArr);
     }
   }, [JSON.stringify(tableColumnDataShow)]);
@@ -1054,7 +1138,531 @@ const Profitablity: FC<any> = ({
       </div>
     );
   };
+<<<<<<< Updated upstream
   console.log("45645543543", finalData)
+=======
+
+
+  const contractVehicleStatus = async (value: number | null | undefined, record: any) => {
+    try {
+      const productCode = record?.product_code;
+
+      // Check if the value is null or undefined and handle accordingly
+      if (value === null || value === undefined) {
+        let updateObject = {
+          id: record?.id,
+          contract_status: 'Reject',
+          contract_vehicle: null,
+          contract_price: '',
+        };
+
+        // Dispatch to update the contract status with null contract_vehicle
+        const updateResponse = await dispatch(updateProfitabilityById(updateObject));
+
+        if (updateResponse?.payload) {
+          // Fetch updated validation data for the current quote
+          await dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+        }
+
+        return; // Exit the function early
+      }
+
+      // Fetch the contract products for the given contract vehicle
+      const response = await dispatch(getContractProductByContractVehicle(value));
+
+      // Ensure res?.payload is an array, defaulting to an empty array if not
+      const contractProducts = response?.payload || [];
+
+      // Check if there's a product matching the current product code
+      const matchedProduct = contractProducts.find(
+        (item: any) => item.Product?.product_code === productCode
+      );
+
+      console.log('matchedProduct', matchedProduct, contractProducts)
+      // Initialize the object for the update
+      let updateObject = {
+        id: record?.id,
+        contract_status: 'Reject', // Default to "Reject" if no matched product found
+        contract_vehicle: value,
+        contract_price: '',
+      };
+
+      // If we found a matched product, calculate the contract status
+      if (matchedProduct) {
+        const finalStatus = contractStatus(record, matchedProduct);
+        console.log('finalStatus', finalStatus)
+        if (finalStatus) {
+          updateObject = {
+            id: record?.id,
+            contract_status: finalStatus,
+            contract_vehicle: value,
+            contract_price: matchedProduct?.contract_price || '', // Fallback to empty string if contract price is undefined
+          };
+        }
+      }
+
+      console.log('Update Object:', updateObject);
+
+      // Dispatch to update the contract status
+      const updateResponse = await dispatch(updateProfitabilityById(updateObject));
+
+      if (updateResponse?.payload) {
+        // Fetch updated validation data for the current quote
+        await dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+      }
+    } catch (error) {
+      console.error('Error fetching or updating contract products:', error);
+      // Handle errors appropriately, e.g., show an error message, log, or retry
+    }
+  };
+
+  const contractStatus = (record: any, matchedProduct: any) => {
+    let fieldName = '';
+    let operator = '';
+    let finalSecondValue = '';
+    let status = '';
+    const statuses = ['green', 'yellow'];
+
+    console.log('dasdsad', record, matchedProduct)
+
+    for (let statusCheck of statuses) {
+      const matchingObjects =
+        contractConfigurationData?.filter(
+          (item: any) => item?.contract_status === statusCheck,
+        ) || [];
+
+      console.log('dfsdfsdf', matchingObjects, contractConfigurationData)
+
+      if (matchingObjects.length > 0) {
+        const finalData = matchingObjects?.[0]?.json && JSON?.parse(matchingObjects?.[0]?.json);
+        fieldName = finalData?.[0]?.['fieldName'];
+        operator = finalData?.[0]?.['operator'];
+
+
+        // Handle formula valueType
+        if (finalData?.[0]?.['valueType'] === 'formula') {
+          finalSecondValue = finalData?.[0]?.['value']?.reduce(
+            (acc: any, fieldName: any) => {
+              const value1 = fieldName === 'contract_price' ? matchedProduct?.[fieldName] : record?.[fieldName];
+              if (typeof value1 === 'number') {
+                return acc + value1; // Add if it's a number
+              } else if (typeof value1 === 'string') {
+                return acc + value1; // Concatenate if it's a string
+              }
+              return acc; // Skip if it's neither number nor string
+            },
+            typeof record?.[finalData?.[0]['value']?.[0]] === 'number' ? 0 : '',
+          );
+        } else {
+          finalSecondValue = finalData?.[0]?.['value'];
+        }
+
+
+        // Check if we can calculate status
+        if (operator && record?.[fieldName] && finalSecondValue) {
+          status = getContractStatus(
+            Number(record?.[fieldName]),
+            Number(finalSecondValue),
+            operator,
+          );
+        }
+
+        // Check the status and return accordingly
+        if (status === 'Correct') {
+          if (statusCheck === 'green') {
+            return 'success'; // Return "success" if contract_status is green
+          } else if (statusCheck === 'yellow') {
+            return 'warning'; // Return "warning" if contract_status is yellow
+          }
+        }
+      }
+    }
+    console.log('FInalStatus', status)
+    return status; // Return the final status if no match was found
+  };
+
+  // ValidationFlow =======================
+
+
+  const ValidationQuoteLineItemcolumns = [
+    {
+      title: '#Line',
+      dataIndex: 'line_number',
+      key: 'line_number',
+      render: (text: string, record: any) => (
+        <OsInput
+          disabled={renderEditableInput('#Line')}
+          style={{
+            height: '36px',
+          }}
+          defaultValue={text}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
+          onChange={(e) =>
+            handleFieldChange(
+              record,
+              'line_number',
+              e.target.value,
+              selectedFilter,
+              'input',
+            )
+          }
+        />
+      ),
+      width: 111,
+    },
+    {
+      title: 'SKU',
+      dataIndex: 'product_code',
+      key: 'product_code',
+      width: 120,
+    },
+    {
+      title: 'Quantity',
+      dataIndex: 'quantity',
+      key: 'quantity',
+      sorter: (a: any, b: any) => a.quantity - b.quantity,
+      render: (text: string, record: any) => (
+        <OsInputNumber
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+          defaultValue={text ?? 0.0}
+          disabled={renderEditableInput('Quantity')}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
+          style={{
+            height: '36px',
+            textAlignLast: 'right',
+          }}
+          min={1}
+          onChange={(e) =>
+            handleFieldChange(record, 'quantity', e, selectedFilter, 'input')
+          }
+        />
+      ),
+      width: 120,
+    },
+    {
+      title: 'MSRP ($)',
+      dataIndex: 'list_price',
+      key: 'list_price',
+      sorter: (a: any, b: any) => a.list_price - b.list_price,
+      render: (text: string, record: any) => (
+        <OsInputNumber
+          min={0}
+          precision={2}
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+          disabled={renderEditableInput('MSRP ($)')}
+          style={{
+            height: '36px',
+            textAlignLast: 'right',
+            width: '100%',
+          }}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
+          defaultValue={text ?? 0.0}
+          onChange={(e) =>
+            handleFieldChange(record, 'list_price', e, selectedFilter, 'input')
+          }
+        />
+      ),
+      width: 150,
+    },
+    {
+      title: 'Cost ($)',
+      dataIndex: 'adjusted_price',
+      key: 'adjusted_price ',
+      sorter: (a: any, b: any) => a.adjusted_price - b.adjusted_price,
+      render: (text: string, record: any) => (
+        <OsInputNumber
+          precision={2}
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+          min={0}
+          style={{
+            height: '36px',
+            textAlignLast: 'right',
+            width: '100%',
+          }}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
+          disabled={renderEditableInput('Cost ($)')}
+          defaultValue={text ?? 0.0}
+          onChange={(e) =>
+            handleFieldChange(
+              record,
+              'adjusted_price',
+              e,
+              selectedFilter,
+              'input',
+            )
+          }
+        />
+      ),
+      width: 150,
+    },
+    {
+      title: 'Product Description',
+      dataIndex: 'description',
+      key: 'description',
+      width: 290,
+      render: (text: number) => (
+        <Typography name="Body 4/Medium" style={{ color: '#0D0D0D' }}>
+          {text}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Product Family',
+      dataIndex: 'product_family',
+      key: 'product_family',
+      width: 285,
+      render(text: any, record: any) {
+        return {
+          children: (
+            <CommonSelect
+              disabled={renderEditableInput('Product Family')}
+              allowClear
+              onClear={() => {
+                handleFieldChange(
+                  record,
+                  'product_family',
+                  '',
+                  selectedFilter,
+                  'select',
+                );
+              }}
+              style={{ width: '200px', height: '36px' }}
+              placeholder="Select"
+              defaultValue={text ?? record?.Product?.product_family}
+              options={selectDataForProduct}
+              onChange={(value) => {
+                handleFieldChange(
+                  record,
+                  'product_family',
+                  value,
+                  selectedFilter,
+                  'select',
+                );
+              }}
+            />
+          ),
+        };
+      },
+    },
+    {
+      title: 'Pricing Method',
+      dataIndex: 'pricing_method',
+      key: 'pricing_method',
+      width: 200,
+      render: (text: string, record: any) => (
+        <CommonSelect
+          onBlur={(e) => handleBlur(record)}
+          allowClear
+          disabled={renderEditableInput('Pricing Method')}
+          style={{ width: '100%', height: '36px' }}
+          placeholder="Select"
+          defaultValue={text}
+          onChange={(value) => {
+            handleFieldChange(
+              record,
+              'pricing_method',
+              value,
+              selectedFilter,
+              'select',
+            );
+          }}
+          options={pricingMethod}
+        />
+      ),
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'line_amount',
+      key: 'line_amount',
+      sorter: (a: any, b: any) => a.line_amount - b.line_amount,
+      width: 150,
+      render: (text: string, record: any) => (
+        <OsInputNumber
+          min={0}
+          onKeyDown={(e) => handleKeyDown(e, record)}
+          onBlur={(e) => handleBlur(record)}
+          disabled={renderEditableInput('Amount')}
+          style={{
+            height: '36px',
+            textAlignLast: 'center',
+            width: '100%',
+          }}
+          precision={2}
+          formatter={currencyFormatter}
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
+          prefix={updateAmountValue(record?.pricing_method)}
+          defaultValue={text ?? 0.0}
+          onChange={(e) => {
+            handleFieldChange(
+              record,
+              'line_amount',
+              e,
+              selectedFilter,
+              'input',
+            );
+          }}
+        />
+      ),
+    },
+    {
+      title: 'Unit Price ($)',
+      dataIndex: 'unit_price',
+      key: 'unit_price',
+      sorter: (a: any, b: any) => a.unit_price - b.unit_price,
+      width: 150,
+      render: (text: number, record: any) => (
+        <Typography
+          name="Body 4/Medium"
+          style={{ display: 'flex', justifyContent: 'end' }}
+        >
+          {abbreviate(text ?? 0)}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Extended Price ($)',
+      dataIndex: 'exit_price',
+      key: 'exit_price',
+      sorter: (a: any, b: any) => a.exit_price - b.exit_price,
+      width: 190,
+      render: (text: number, record: any) => (
+        <Typography
+          name="Body 4/Medium"
+          style={{ display: 'flex', justifyContent: 'end' }}
+        >
+          ${abbreviate(text) ?? 0}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Gross Profit ($)',
+      dataIndex: 'gross_profit',
+      key: 'gross_profit',
+      sorter: (a: any, b: any) => a.gross_profit - b.gross_profit,
+      width: 150,
+      render: (text: number, record: any) => (
+        <Typography
+          name="Body 4/Medium"
+          style={{ display: 'flex', justifyContent: 'end' }}
+        >
+          {abbreviate(text) ?? 0}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Gross Profit %',
+      dataIndex: 'gross_profit_percentage',
+      key: 'gross_profit_percentage',
+      sorter: (a: any, b: any) =>
+        a.gross_profit_percentage - b.gross_profit_percentage,
+      width: 150,
+      render: (text: number, record: any) => (
+        <Typography
+          name="Body 4/Medium"
+          style={{ display: 'flex', justifyContent: 'end' }}
+        >
+          {abbreviate(text ?? 0)}
+        </Typography>
+      ),
+    },
+    {
+      title: 'Contract Vehicle',
+      dataIndex: 'contract_vehicle',
+      key: 'contract_vehicle',
+      width: 200,
+      render: (text: string, record: any) => (
+        <CommonSelect
+          allowClear
+          style={{ width: '100%', height: '34px' }}
+          placeholder="Select"
+          defaultValue={text}
+          options={contractVehicleOptions}
+          onChange={(e) => {
+            contractVehicleStatus(e, record)
+          }}
+        />
+      ),
+    },
+
+
+    {
+      title: 'Contract Price ($)',
+      dataIndex: 'contract_price',
+      key: 'contract_price',
+      width: 150,
+      render: (text: number, record: any) => {
+        return <Typography name="Body 4/Medium">
+          {text ? `$ ${abbreviate(text ?? 0)}` : 0}
+        </Typography>
+      }
+
+    },
+    {
+      title: 'Contract Status',
+      dataIndex: 'contract_status',
+      key: 'contract_status',
+      width: 180,
+      render(text: string, record: any) {
+        const status = record?.contract_status
+        return {
+          children: (
+            <TableNameColumn
+              fallbackIcon={
+                status === 'success' ? (
+                  <CheckCircleIcon width={24} color={token?.colorSuccess} />
+                ) : status === 'warning' ? (
+                  <ExclamationCircleIcon width={24} color={token?.colorWarning} />
+                ) : (
+                  <XCircleIcon width={24} color={token?.colorError} />
+                )
+              }
+              isNotification={false}
+              iconBg={
+                status === 'success'
+                  ? token?.colorSuccessBg
+                  : status === 'warning'
+                    ? token?.colorWarningBg
+                    : token?.colorErrorBg
+              }
+            />
+          ),
+        };
+      },
+    },
+  ];
+
+  const [finalValidationTableCol, setFinalValidationTableCol] = useState<any>();
+
+  useEffect(() => {
+    const newArr: any = [];
+    ValidationQuoteLineItemcolumns?.map((itemCol: any) => {
+      let shouldPush = false;
+      let contractTypePush = false;
+      tableColumnDataShow?.forEach((item: any) => {
+        if (item?.field_name === itemCol?.title) {
+          shouldPush = true;
+        }
+      });
+      if (shouldPush) {
+        newArr?.push(itemCol);
+      }
+      if (itemCol?.title === 'Contract Type') {
+        contractTypePush = true;
+      }
+      if (contractTypePush) {
+        newArr?.push(itemCol);
+      }
+    });
+    setFinalValidationTableCol(newArr);
+  }, [tableColumnDataShow, contactData]);
+>>>>>>> Stashed changes
   return (
     <GlobalLoader loading={profitabilityDataByQuoteId?.length < 0}>
       {finalProfitTableCol && finalProfitTableCol?.length > 0 ? (
