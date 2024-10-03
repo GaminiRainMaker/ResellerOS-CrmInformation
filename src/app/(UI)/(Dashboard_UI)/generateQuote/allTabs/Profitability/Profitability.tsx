@@ -904,6 +904,91 @@ const Profitablity: FC<any> = ({
     }
   };
 
+
+  const updateLineItems1 = async () => {
+    const finalData = selectTedRowData?.map(async (obj: any) => {
+      const newObj = JSON.parse(JSON.stringify(obj));      
+      console.log('newObj', newObj)
+
+      // Update fields based on profabilityUpdationState
+      profabilityUpdationState?.forEach((update: any) => {
+        if (newObj.hasOwnProperty(update?.field)) {
+          newObj[update?.field] = update?.value;
+        }
+      });
+
+      // Calculate profitability data
+      const profitabilityCalculationData = calculateProfitabilityData(
+        newObj.quantity,
+        newObj.pricing_method,
+        useRemoveDollarAndCommahook(newObj?.line_amount),
+        useRemoveDollarAndCommahook(newObj?.adjusted_price),
+        useRemoveDollarAndCommahook(newObj?.list_price),
+      );
+
+      // Update profitability fields
+      newObj.unit_price = profitabilityCalculationData?.unitPrice;
+      newObj.exit_price = profitabilityCalculationData?.exitPrice;
+      newObj.gross_profit = profitabilityCalculationData?.grossProfit;
+      newObj.gross_profit_percentage = profitabilityCalculationData?.grossProfitPercentage;
+
+      // Remove unwanted field
+      delete newObj?.profitabilityCalculationData;
+
+      // Call contractVehicleStatus API and update newObj with response values
+      const response: any = await contractVehicleStatus(newObj);
+
+      // Update newObj with the response values
+      newObj.contract_price = response.contract_price;
+      newObj.contract_status = response.contract_status;
+      newObj.contract_vehicle = response.contract_vehicle;
+      return newObj; // Return the updated object
+    });
+
+    // Wait for all promises to resolve
+    const resolvedFinalData = await Promise.all(finalData);
+
+    console.log('resolvedFinalData', resolvedFinalData)
+
+    // Find the product family from profabilityUpdationState
+    const ProductFamily = profabilityUpdationState?.find(
+      (field: any) => field?.field === 'product_family',
+    )?.value;
+
+    if (resolvedFinalData?.length > 0) {
+      // if (ProductFamily) {
+      //   const ids = resolvedFinalData?.map((item: any) => item?.product_id);
+      //   let obj = {
+      //     id: ids,
+      //     product_family: ProductFamily,
+      //   };
+      //   await dispatch(updateProductFamily(obj));
+      // }
+      // await dispatch(updateProfitabilityValueForBulk(resolvedFinalData));
+
+      // // Reset state
+      // setProfabilityUpdationState([
+      //   {
+      //     id: 1,
+      //     field: null,
+      //     value: '',
+      //     label: '',
+      //   },
+      // ]);
+      // setShowUpdateLineItemModal(false);
+
+      // // Fetch updated profitability data
+      // const response = await dispatch(
+      //   getProfitabilityByQuoteId(Number(getQuoteID)),
+      // );
+
+      // if (response.payload) {
+      //   setSelectedRowData([]);
+      //   setSelectedRowIds([]);
+      // }
+    }
+  };
+
   const handleBundleKeyDown = (e: any, record: any) => {
     if (e.key === 'Enter') {
       handleBundleSave(e, record);
