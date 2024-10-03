@@ -19,7 +19,13 @@ import {
   getContractStatus,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
-import { CheckCircleIcon, ExclamationCircleIcon, PencilSquareIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline';
+import {
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+  PencilSquareIcon,
+  TrashIcon,
+  XCircleIcon,
+} from '@heroicons/react/24/outline';
 import { Badge, Form, notification } from 'antd';
 import { useSearchParams } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
@@ -62,7 +68,8 @@ const Profitablity: FC<any> = ({
   showRemoveBundleLineItemModal,
   setShowRemoveBundleLineItemModal,
   collapseActiveKeys,
-  setCollapseActiveKeys, validationTab
+  setCollapseActiveKeys,
+  validationTab,
 }) => {
   const dispatch = useAppDispatch();
   const [BundleForm] = Form.useForm();
@@ -105,7 +112,6 @@ const Profitablity: FC<any> = ({
       label: '',
     },
   ]);
-
 
   const filterDataByValue = (data: any, filterValue?: string) => {
     const groupedData: any = {};
@@ -289,8 +295,7 @@ const Profitablity: FC<any> = ({
   useEffect(() => {
     dispatch(getAllContract());
     dispatch(getContractConfiguartion({}));
-
-  }, [])
+  }, []);
 
   useEffect(() => {
     dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then((payload: any) => {
@@ -371,7 +376,7 @@ const Profitablity: FC<any> = ({
     }
   };
 
-  const handleFieldChange = (
+  const handleFieldChange = async (
     record: any,
     field: string,
     value: any,
@@ -392,6 +397,17 @@ const Profitablity: FC<any> = ({
       updatedRecord.gross_profit = result.grossProfit;
       updatedRecord.gross_profit_percentage = result.grossProfitPercentage;
     }
+    const response: any = await contractVehicleStatus(updatedRecord);
+
+    // Update `updatedRecord` with new bits from the response
+    if (response) {
+      updatedRecord.contract_price = response.contract_price;
+      updatedRecord.contract_status = response.contract_status;
+      updatedRecord.contract_vehicle = response.contract_vehicle;
+    }
+
+    console.log('updateddata12', response, updatedRecord);
+
     setFinalFieldData(updatedRecord);
     if (type === 'select') {
       handleSave(updatedRecord);
@@ -405,88 +421,96 @@ const Profitablity: FC<any> = ({
     },
   };
 
-  const [contractVehicleOptions, setContractVehicleOptions] = useState<any>()
+  const [contractVehicleOptions, setContractVehicleOptions] = useState<any>();
   useEffect(() => {
-    const contractVehicleOption = contactData?.filter((item: any) => item?.organization === userInformation?.organization).map((option: any) => ({
-      label: option?.contract_vehicle_name,
-      value: option?.id
-    }));
-    setContractVehicleOptions(contractVehicleOption)
-  }, [contactData, JSON?.stringify(contactData)])
-
-
+    const contractVehicleOption = contactData
+      ?.filter(
+        (item: any) => item?.organization === userInformation?.organization,
+      )
+      .map((option: any) => ({
+        label: option?.contract_vehicle_name,
+        value: option?.id,
+      }));
+    setContractVehicleOptions(contractVehicleOption);
+  }, [contactData, JSON?.stringify(contactData)]);
 
   useEffect(() => {
     if (tableColumnDataShow && tableColumnDataShow.length > 0) {
 
-      let validationArr: any = [{
-        title: 'Contract Vehicle',
-        dataIndex: 'contract_vehicle',
-        key: 'contract_vehicle',
-        width: 200,
-        render: (text: string, record: any) => {
-          let valueForVeh = text ? Number(text) : null
-          return (
-            <CommonSelect
-              allowClear
-              disabled={renderEditableInput('Contract Vehicle')}
-
-              style={{ width: '100%', height: '34px' }}
-              placeholder="Select"
-              defaultValue={valueForVeh}
-              options={contractVehicleOptions}
-              onChange={(e) => {
-                contractVehicleStatus(e, record)
-              }}
-            />
-
-          )
-        },
-      },
-      {
-        title: 'Contract Price ($)',
-        dataIndex: 'contract_price',
-        key: 'contract_price',
-        width: 150,
-        render: (text: number, record: any) => {
-          return <Typography name="Body 4/Medium">
-            {text ? `$ ${abbreviate(text ?? 0)}` : 0}
-          </Typography>
-        }
-
-      },
-      {
-        title: 'Contract Status',
-        dataIndex: 'contract_status',
-        key: 'contract_status',
-        width: 180,
-        render(text: string, record: any) {
-          const status = record?.contract_status
-          return {
-            children: (
-              <TableNameColumn
-                fallbackIcon={
-                  status === 'success' ? (
-                    <CheckCircleIcon width={24} color={token?.colorSuccess} />
-                  ) : status === 'warning' ? (
-                    <ExclamationCircleIcon width={24} color={token?.colorWarning} />
-                  ) : (
-                    <XCircleIcon width={24} color={token?.colorError} />
-                  )
-                }
-                isNotification={false}
-                iconBg={
-                  status === 'success'
-                    ? token?.colorSuccessBg
-                    : status === 'warning'
-                      ? token?.colorWarningBg
-                      : token?.colorErrorBg
-                }
+      let validationArr: any = [
+        {
+          title: 'Contract Vehicle',
+          dataIndex: 'contract_vehicle',
+          key: 'contract_vehicle',
+          width: 200,
+          render: (text: string, record: any) => {
+            let valueForVeh = text ? Number(text) : null
+            return (
+              <CommonSelect
+                allowClear
+                disabled={renderEditableInput('Contract Vehicle')}
+                style={{ width: '100%', height: '34px' }}
+                placeholder="Select"
+                defaultValue={valueForVeh}
+                options={contractVehicleOptions}
+                onChange={(value) => {
+                  handleFieldChange(
+                    record,
+                    'contract_vehicle',
+                    value,
+                    selectedFilter,
+                    'select',
+                  );
+                }}
               />
-            ),
-          };
+
+            )
+          },
         },
-      },
+        {
+          title: 'Contract Price ($)',
+          dataIndex: 'contract_price',
+          key: 'contract_price',
+          width: 150,
+          render: (text: number, record: any) => {
+            return <Typography name="Body 4/Medium">
+              {text ? `$ ${abbreviate(text ?? 0)}` : 0}
+            </Typography>
+          }
+
+        },
+        {
+          title: 'Contract Status',
+          dataIndex: 'contract_status',
+          key: 'contract_status',
+          width: 180,
+          render(text: string, record: any) {
+            const status = record?.contract_status
+            return {
+              children: (
+                <TableNameColumn
+                  fallbackIcon={
+                    status === 'success' ? (
+                      <CheckCircleIcon width={24} color={token?.colorSuccess} />
+                    ) : status === 'warning' ? (
+                      <ExclamationCircleIcon width={24} color={token?.colorWarning} />
+                    ) : (
+                      <XCircleIcon width={24} color={token?.colorError} />
+                    )
+                  }
+                  isNotification={false}
+                  iconBg={
+                    status === 'success'
+                      ? token?.colorSuccessBg
+                      : status === 'warning'
+                        ? token?.colorWarningBg
+                        : token?.colorErrorBg
+                  }
+                />
+              ),
+            };
+          },
+        }
       ]
 
 
@@ -518,7 +542,12 @@ const Profitablity: FC<any> = ({
 
       setFinalProfitTableCol(newArr);
     }
-  }, [JSON.stringify(tableColumnDataShow), contractVehicleOptions, contactData, finalData]);
+  }, [
+    JSON.stringify(tableColumnDataShow),
+    contractVehicleOptions,
+    contactData,
+    finalData,
+  ]);
 
   const ActionColumn = {
     title: 'Action',
@@ -897,6 +926,91 @@ const Profitablity: FC<any> = ({
     }
   };
 
+
+  const updateLineItems1 = async () => {
+    const finalData = selectTedRowData?.map(async (obj: any) => {
+      const newObj = JSON.parse(JSON.stringify(obj));      
+      console.log('newObj', newObj)
+
+      // Update fields based on profabilityUpdationState
+      profabilityUpdationState?.forEach((update: any) => {
+        if (newObj.hasOwnProperty(update?.field)) {
+          newObj[update?.field] = update?.value;
+        }
+      });
+
+      // Calculate profitability data
+      const profitabilityCalculationData = calculateProfitabilityData(
+        newObj.quantity,
+        newObj.pricing_method,
+        useRemoveDollarAndCommahook(newObj?.line_amount),
+        useRemoveDollarAndCommahook(newObj?.adjusted_price),
+        useRemoveDollarAndCommahook(newObj?.list_price),
+      );
+
+      // Update profitability fields
+      newObj.unit_price = profitabilityCalculationData?.unitPrice;
+      newObj.exit_price = profitabilityCalculationData?.exitPrice;
+      newObj.gross_profit = profitabilityCalculationData?.grossProfit;
+      newObj.gross_profit_percentage = profitabilityCalculationData?.grossProfitPercentage;
+
+      // Remove unwanted field
+      delete newObj?.profitabilityCalculationData;
+
+      // Call contractVehicleStatus API and update newObj with response values
+      const response: any = await contractVehicleStatus(newObj);
+
+      // Update newObj with the response values
+      newObj.contract_price = response.contract_price;
+      newObj.contract_status = response.contract_status;
+      newObj.contract_vehicle = response.contract_vehicle;
+      return newObj; // Return the updated object
+    });
+
+    // Wait for all promises to resolve
+    const resolvedFinalData = await Promise.all(finalData);
+
+    console.log('resolvedFinalData', resolvedFinalData)
+
+    // Find the product family from profabilityUpdationState
+    const ProductFamily = profabilityUpdationState?.find(
+      (field: any) => field?.field === 'product_family',
+    )?.value;
+
+    if (resolvedFinalData?.length > 0) {
+      // if (ProductFamily) {
+      //   const ids = resolvedFinalData?.map((item: any) => item?.product_id);
+      //   let obj = {
+      //     id: ids,
+      //     product_family: ProductFamily,
+      //   };
+      //   await dispatch(updateProductFamily(obj));
+      // }
+      // await dispatch(updateProfitabilityValueForBulk(resolvedFinalData));
+
+      // // Reset state
+      // setProfabilityUpdationState([
+      //   {
+      //     id: 1,
+      //     field: null,
+      //     value: '',
+      //     label: '',
+      //   },
+      // ]);
+      // setShowUpdateLineItemModal(false);
+
+      // // Fetch updated profitability data
+      // const response = await dispatch(
+      //   getProfitabilityByQuoteId(Number(getQuoteID)),
+      // );
+
+      // if (response.payload) {
+      //   setSelectedRowData([]);
+      //   setSelectedRowIds([]);
+      // }
+    }
+  };
+
   const handleBundleKeyDown = (e: any, record: any) => {
     if (e.key === 'Enter') {
       handleBundleSave(e, record);
@@ -1200,84 +1314,77 @@ const Profitablity: FC<any> = ({
 
 
 
-  const contractVehicleStatus = async (value: number | null | undefined, record: any) => {
+
+
+  const contractVehicleStatus = async (record: any) => {
     try {
       const productCode = record?.product_code;
+      const value = record?.contract_vehicle; // Get value from record
 
-      // Check if the value is null or undefined and handle accordingly
+      // Initialize the default update object with correct typing for contract_vehicle
+      let updateObject: {
+        id: number;
+        contract_status: string;
+        contract_vehicle: number | null;
+        contract_price: string;
+      } = {
+        id: record?.id,
+        contract_status: 'Reject', // Default contract status
+        contract_vehicle: null,
+        contract_price: '',
+      };
+
+      // Check if the value is null or undefined and return the updateObject accordingly
       if (value === null || value === undefined) {
-        let updateObject = {
-          id: record?.id,
-          contract_status: 'Reject',
-          contract_vehicle: null,
-          contract_price: '',
-        };
-
-        // Dispatch to update the contract status with null contract_vehicle
-        const updateResponse = await dispatch(updateProfitabilityById(updateObject));
-
-        if (updateResponse?.payload) {
-          // Fetch updated validation data for the current quote
-          await dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then((payload: any) => {
-            if (payload?.payload) {
-              setProfitibilityDataa(payload?.payload)
-            }
-          })
-        }
-
-        return; // Exit the function early
+        return updateObject; // Exit early and return the default object
       }
 
       // Fetch the contract products for the given contract vehicle
-      const response = await dispatch(getContractProductByContractVehicle(value));
+      const response = await dispatch(
+        getContractProductByContractVehicle(value),
+      );
+      console.log('response', response);
 
-      // Ensure res?.payload is an array, defaulting to an empty array if not
+      // Ensure response?.payload is an array, defaulting to an empty array if not
       const contractProducts = response?.payload || [];
 
       // Check if there's a product matching the current product code
       const matchedProduct = contractProducts.find(
-        (item: any) => item.Product?.product_code === productCode
+        (item: any) => item.Product?.product_code === productCode,
       );
 
-      console.log('matchedProduct', matchedProduct, contractProducts)
-      // Initialize the object for the update
-      let updateObject = {
-        id: record?.id,
-        contract_status: 'Reject', // Default to "Reject" if no matched product found
-        contract_vehicle: value,
-        contract_price: '',
-      };
+      console.log('matchedProduct', matchedProduct, contractProducts);
 
       // If we found a matched product, calculate the contract status
       if (matchedProduct) {
         const finalStatus = contractStatus(record, matchedProduct);
-        console.log('finalStatus', finalStatus)
+        console.log('finalStatus', finalStatus);
+
         if (finalStatus) {
+          // Update the object with matched product and status
           updateObject = {
             id: record?.id,
             contract_status: finalStatus,
-            contract_vehicle: value,
+            contract_vehicle: value, // Assigning the number value
             contract_price: matchedProduct?.contract_price || '', // Fallback to empty string if contract price is undefined
           };
         }
+      } else {
+        // No matched product found, updateObject remains 'Reject' by default
+        updateObject = {
+          ...updateObject,
+          contract_vehicle: value, // Assigning the number value
+        };
       }
 
       console.log('Update Object:', updateObject);
 
-      // Dispatch to update the contract status
-      const updateResponse = await dispatch(updateProfitabilityById(updateObject));
-
-      if (updateResponse?.payload) {
-        // Fetch updated validation data for the current quote
-        await dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then((payload: any) => {
-          if (payload?.payload) {
-            setProfitibilityDataa(payload?.payload)
-          }
-        })
-      }
+      // Return the final updateObject without making any API calls
+      return updateObject;
     } catch (error) {
-      console.error('Error fetching or updating contract products:', error);
-      // Handle errors appropriately, e.g., show an error message, log, or retry
+      console.error('Error fetching contract products:', error);
+      // Handle errors if needed, e.g., show an error message or log the error
+      return null; // Optionally return null in case of error
     }
   };
 
@@ -1288,7 +1395,7 @@ const Profitablity: FC<any> = ({
     let status = '';
     const statuses = ['green', 'yellow'];
 
-    console.log('dasdsad', record, matchedProduct)
+    console.log('dasdsad', record, matchedProduct);
 
     for (let statusCheck of statuses) {
       const matchingObjects =
@@ -1296,19 +1403,22 @@ const Profitablity: FC<any> = ({
           (item: any) => item?.contract_status === statusCheck,
         ) || [];
 
-      console.log('dfsdfsdf', matchingObjects, contractConfigurationData)
+      console.log('dfsdfsdf', matchingObjects, contractConfigurationData);
 
       if (matchingObjects.length > 0) {
-        const finalData = matchingObjects?.[0]?.json && JSON?.parse(matchingObjects?.[0]?.json);
+        const finalData =
+          matchingObjects?.[0]?.json && JSON?.parse(matchingObjects?.[0]?.json);
         fieldName = finalData?.[0]?.['fieldName'];
         operator = finalData?.[0]?.['operator'];
-
 
         // Handle formula valueType
         if (finalData?.[0]?.['valueType'] === 'formula') {
           finalSecondValue = finalData?.[0]?.['value']?.reduce(
             (acc: any, fieldName: any) => {
-              const value1 = fieldName === 'contract_price' ? matchedProduct?.[fieldName] : record?.[fieldName];
+              const value1 =
+                fieldName === 'contract_price'
+                  ? matchedProduct?.[fieldName]
+                  : record?.[fieldName];
               if (typeof value1 === 'number') {
                 return acc + value1; // Add if it's a number
               } else if (typeof value1 === 'string') {
@@ -1321,7 +1431,6 @@ const Profitablity: FC<any> = ({
         } else {
           finalSecondValue = finalData?.[0]?.['value'];
         }
-
 
         // Check if we can calculate status
         if (operator && record?.[fieldName] && finalSecondValue) {
@@ -1342,7 +1451,7 @@ const Profitablity: FC<any> = ({
         }
       }
     }
-    console.log('FInalStatus', status)
+    console.log('FInalStatus', status);
     return status; // Return the final status if no match was found
   };
 
