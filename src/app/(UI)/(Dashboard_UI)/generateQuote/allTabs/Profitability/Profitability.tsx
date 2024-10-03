@@ -389,13 +389,16 @@ const Profitablity: FC<any> = ({
     },
   };
 
+  const [contractVehicleOptions, setContractVehicleOptions] = useState<any>()
+  useEffect(() => {
+    const contractVehicleOption = contactData?.filter((item: any) => item?.organization === userInformation?.organization).map((option: any) => ({
+      label: option?.contract_vehicle_name,
+      value: option?.id
+    }));
+    setContractVehicleOptions(contractVehicleOption)
+  }, [contactData, JSON?.stringify(contactData)])
 
-  const contractVehicleOptions = contactData?.filter((item: any) => item?.organization === userInformation?.organization).map((option: any) => ({
-    label: option?.contract_vehicle_name,
-    value: option?.id
-  }));
 
-  console.log('contractVehicleOptions', contractVehicleOptions)
 
   useEffect(() => {
     if (tableColumnDataShow && tableColumnDataShow.length > 0) {
@@ -404,18 +407,22 @@ const Profitablity: FC<any> = ({
         dataIndex: 'contract_vehicle',
         key: 'contract_vehicle',
         width: 200,
-        render: (text: string, record: any) => (
-          <CommonSelect
-            allowClear
-            style={{ width: '100%', height: '34px' }}
-            placeholder="Select"
-            defaultValue={text}
-            options={contractVehicleOptions}
-            onChange={(e) => {
-              contractVehicleStatus(e, record)
-            }}
-          />
-        ),
+        render: (text: string, record: any) => {
+          let valueForVeh = text ? Number(text) : null
+          return (
+            <CommonSelect
+              allowClear
+              style={{ width: '100%', height: '34px' }}
+              placeholder="Select"
+              defaultValue={valueForVeh}
+              options={contractVehicleOptions}
+              onChange={(e) => {
+                contractVehicleStatus(e, record)
+              }}
+            />
+
+          )
+        },
       },
       {
         title: 'Contract Price ($)',
@@ -489,7 +496,7 @@ const Profitablity: FC<any> = ({
 
       setFinalProfitTableCol(newArr);
     }
-  }, [JSON.stringify(tableColumnDataShow)]);
+  }, [JSON.stringify(tableColumnDataShow), contractVehicleOptions, contactData, finalData]);
 
   const ActionColumn = {
     title: 'Action',
@@ -1290,7 +1297,7 @@ const Profitablity: FC<any> = ({
     return status; // Return the final status if no match was found
   };
 
-
+  console.log("finalDatafinalData", finalData)
 
   return (
     <GlobalLoader loading={profitabilityDataByQuoteId?.length < 0}>
