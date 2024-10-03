@@ -75,12 +75,6 @@ const UpdatingLineItems: FC<UpdateLineItemsInterFace> = ({
     (option) => option?.is_editable,
   );
 
-  console.log(
-    'editableFieldOptions',
-    editableFieldOptions,
-    matchedFieldOptions,
-  );
-
   const [finalFieldOption, setFinalFieldOption] =
     useState<any>(editableFieldOptions);
 
