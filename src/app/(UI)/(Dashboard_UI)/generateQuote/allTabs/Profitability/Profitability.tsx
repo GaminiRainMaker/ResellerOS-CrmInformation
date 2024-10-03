@@ -51,7 +51,6 @@ import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import { getContractProductByContractVehicle } from '../../../../../../../redux/actions/contractProduct';
 import { getAllContract } from '../../../../../../../redux/actions/contract';
 import { getContractConfiguartion } from '../../../../../../../redux/actions/contractConfiguration';
-
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
   selectedFilter,
@@ -420,7 +419,6 @@ const Profitablity: FC<any> = ({
 
   useEffect(() => {
     if (tableColumnDataShow && tableColumnDataShow.length > 0) {
-
       let validationArr: any = [
         {
           title: 'Contract Vehicle',
@@ -428,7 +426,7 @@ const Profitablity: FC<any> = ({
           key: 'contract_vehicle',
           width: 200,
           render: (text: string, record: any) => {
-            let valueForVeh = text ? Number(text) : null
+            let valueForVeh = text ? Number(text) : null;
             return (
               <CommonSelect
                 allowClear
@@ -447,8 +445,7 @@ const Profitablity: FC<any> = ({
                   );
                 }}
               />
-
-            )
+            );
           },
         },
         {
@@ -457,11 +454,12 @@ const Profitablity: FC<any> = ({
           key: 'contract_price',
           width: 150,
           render: (text: number, record: any) => {
-            return <Typography name="Body 4/Medium">
-              {text ? `$ ${abbreviate(text ?? 0)}` : 0}
-            </Typography>
-          }
-
+            return (
+              <Typography name="Body 4/Medium">
+                {text ? `$ ${abbreviate(text ?? 0)}` : 0}
+              </Typography>
+            );
+          },
         },
         {
           title: 'Contract Status',
@@ -469,7 +467,7 @@ const Profitablity: FC<any> = ({
           key: 'contract_status',
           width: 180,
           render(text: string, record: any) {
-            const status = record?.contract_status
+            const status = record?.contract_status;
             return {
               children: (
                 <TableNameColumn
@@ -477,7 +475,10 @@ const Profitablity: FC<any> = ({
                     status === 'success' ? (
                       <CheckCircleIcon width={24} color={token?.colorSuccess} />
                     ) : status === 'warning' ? (
-                      <ExclamationCircleIcon width={24} color={token?.colorWarning} />
+                      <ExclamationCircleIcon
+                        width={24}
+                        color={token?.colorWarning}
+                      />
                     ) : (
                       <XCircleIcon width={24} color={token?.colorError} />
                     )
@@ -494,19 +495,17 @@ const Profitablity: FC<any> = ({
               ),
             };
           },
-        }
-      ]
-
+        },
+      ];
 
       const newArr: any = [];
-      let newArrForComparision = [...ProfitabilityQuoteLineItemcolumns]
+      let newArrForComparision = [...ProfitabilityQuoteLineItemcolumns];
       if (validationTab) {
         validationArr?.map((item: any) => {
-          newArrForComparision.push(item)
-        })
+          newArrForComparision.push(item);
+        });
       }
       newArrForComparision?.forEach((itemCol: any) => {
-
         let shouldPush = false;
         tableColumnDataShow?.forEach((item: any) => {
           if (item?.field_name === itemCol?.title) {
@@ -850,7 +849,8 @@ const Profitablity: FC<any> = ({
   ];
 
   const updateLineItems = async () => {
-    const finalData = selectTedRowData?.map((obj: any) => {
+    const finalArr: any = [];
+    selectTedRowData?.map((obj: any) => {
       const newObj = { ...obj };
       profabilityUpdationState?.forEach((update: any) => {
         if (newObj.hasOwnProperty(update?.field)) {
@@ -870,21 +870,38 @@ const Profitablity: FC<any> = ({
       newObj.gross_profit_percentage =
         profitabilityCalculationData?.grossProfitPercentage;
       delete newObj?.profitabilityCalculationData;
-      return newObj;
+      finalArr?.push(newObj);
     });
+    let UpdatedArr: any = [];
+    if (finalArr?.length > 0) {
+      for (let i = 0; i < finalArr?.length; i++) {
+        let itemss = finalArr[i];
+        const response: any = await contractVehicleStatus(itemss);
+        let newObjConObj = { ...itemss };
+        delete newObjConObj.contract_price;
+        delete newObjConObj.contract_status;
+        delete newObjConObj.contract_vehicle;
+        newObjConObj.contract_price = response.contract_price;
+        newObjConObj.contract_status = response.contract_status;
+        newObjConObj.contract_vehicle = response.contract_vehicle;
+        UpdatedArr?.push(newObjConObj);
+      }
+    }
+    console.log('finalDatafinalData', UpdatedArr);
+
     const ProductFamily = profabilityUpdationState?.find(
       (field: any) => field?.field === 'product_family',
     )?.value;
-    if (finalData?.length > 0) {
+    if (UpdatedArr?.length > 0) {
       if (ProductFamily) {
-        const ids = finalData?.map((item: any) => item?.product_id);
+        const ids = UpdatedArr?.map((item: any) => item?.product_id);
         let obj = {
           id: ids,
           product_family: ProductFamily,
         };
         await dispatch(updateProductFamily(obj));
       }
-      await dispatch(updateProfitabilityValueForBulk(finalData));
+      await dispatch(updateProfitabilityValueForBulk(UpdatedArr));
       setProfabilityUpdationState([
         {
           id: 1,
@@ -901,91 +918,6 @@ const Profitablity: FC<any> = ({
         setSelectedRowData([]);
         setSelectedRowIds([]);
       }
-    }
-  };
-
-
-  const updateLineItems1 = async () => {
-    const finalData = selectTedRowData?.map(async (obj: any) => {
-      const newObj = JSON.parse(JSON.stringify(obj));      
-      console.log('newObj', newObj)
-
-      // Update fields based on profabilityUpdationState
-      profabilityUpdationState?.forEach((update: any) => {
-        if (newObj.hasOwnProperty(update?.field)) {
-          newObj[update?.field] = update?.value;
-        }
-      });
-
-      // Calculate profitability data
-      const profitabilityCalculationData = calculateProfitabilityData(
-        newObj.quantity,
-        newObj.pricing_method,
-        useRemoveDollarAndCommahook(newObj?.line_amount),
-        useRemoveDollarAndCommahook(newObj?.adjusted_price),
-        useRemoveDollarAndCommahook(newObj?.list_price),
-      );
-
-      // Update profitability fields
-      newObj.unit_price = profitabilityCalculationData?.unitPrice;
-      newObj.exit_price = profitabilityCalculationData?.exitPrice;
-      newObj.gross_profit = profitabilityCalculationData?.grossProfit;
-      newObj.gross_profit_percentage = profitabilityCalculationData?.grossProfitPercentage;
-
-      // Remove unwanted field
-      delete newObj?.profitabilityCalculationData;
-
-      // Call contractVehicleStatus API and update newObj with response values
-      const response: any = await contractVehicleStatus(newObj);
-
-      // Update newObj with the response values
-      newObj.contract_price = response.contract_price;
-      newObj.contract_status = response.contract_status;
-      newObj.contract_vehicle = response.contract_vehicle;
-      return newObj; // Return the updated object
-    });
-
-    // Wait for all promises to resolve
-    const resolvedFinalData = await Promise.all(finalData);
-
-    console.log('resolvedFinalData', resolvedFinalData)
-
-    // Find the product family from profabilityUpdationState
-    const ProductFamily = profabilityUpdationState?.find(
-      (field: any) => field?.field === 'product_family',
-    )?.value;
-
-    if (resolvedFinalData?.length > 0) {
-      // if (ProductFamily) {
-      //   const ids = resolvedFinalData?.map((item: any) => item?.product_id);
-      //   let obj = {
-      //     id: ids,
-      //     product_family: ProductFamily,
-      //   };
-      //   await dispatch(updateProductFamily(obj));
-      // }
-      // await dispatch(updateProfitabilityValueForBulk(resolvedFinalData));
-
-      // // Reset state
-      // setProfabilityUpdationState([
-      //   {
-      //     id: 1,
-      //     field: null,
-      //     value: '',
-      //     label: '',
-      //   },
-      // ]);
-      // setShowUpdateLineItemModal(false);
-
-      // // Fetch updated profitability data
-      // const response = await dispatch(
-      //   getProfitabilityByQuoteId(Number(getQuoteID)),
-      // );
-
-      // if (response.payload) {
-      //   setSelectedRowData([]);
-      //   setSelectedRowIds([]);
-      // }
     }
   };
 
@@ -1277,10 +1209,6 @@ const Profitablity: FC<any> = ({
       </div>
     );
   };
-
-
-
-
 
   const contractVehicleStatus = async (record: any) => {
     try {
