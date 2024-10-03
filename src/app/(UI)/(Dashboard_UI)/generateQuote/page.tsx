@@ -76,6 +76,8 @@ const GenerateQuote: React.FC = () => {
   const getQuoteID = searchParams.get('id');
   const isView = searchParams.get('isView');
   const [activeTab, setActiveTab] = useState<any>('1');
+
+  const [validationTab, setValidationTab] = useState<boolean>(false)
   const { loading } = useAppSelector((state) => state.quoteLineItem);
   const { quoteById } = useAppSelector((state) => state.quote);
   const [selectTedRowIds, setSelectedRowIds] = useState<React.Key[]>([]);
@@ -131,6 +133,7 @@ const GenerateQuote: React.FC = () => {
     }
   }, [getQuoteFileDataCount]);
 
+  console.log("435435435543", validationTab)
   const getQuoteDetailById = async () => {
     dispatch(getQuoteByIdForFormStack(Number(getQuoteID)))?.then(
       (payload: any) => {
@@ -336,10 +339,8 @@ const GenerateQuote: React.FC = () => {
     },
   ];
 
-<<<<<<< Updated upstream
-=======
+  console.log('activeTab', activeTab)
 
->>>>>>> Stashed changes
   const TabPaneData = [
     {
       key: 1,
@@ -350,16 +351,12 @@ const GenerateQuote: React.FC = () => {
             name="Body 4/Regular"
             cursor="pointer"
             color={token?.colorTextBase}
-<<<<<<< Updated upstream
-            onClick={() => setActiveTab('1')}
-=======
             onClick={() => {
               setActiveTab('1')
               setValidationTab(false)
 
 
             }}
->>>>>>> Stashed changes
           >
             Review Quotes
           </Typography>
@@ -378,7 +375,11 @@ const GenerateQuote: React.FC = () => {
       name: (
         <Typography
           name="Body 4/Regular"
-          onClick={() => setActiveTab('2')}
+          onClick={() => {
+            setActiveTab('2')
+            setValidationTab(false)
+
+          }}
           cursor="pointer"
           color={token?.colorTextBase}
         >
@@ -403,6 +404,7 @@ const GenerateQuote: React.FC = () => {
           setIsDeleteProfitabilityModal={setIsDeleteProfitabilityModal}
           showRemoveBundleLineItemModal={showRemoveBundleLineItemModal}
           setShowRemoveBundleLineItemModal={setShowRemoveBundleLineItemModal}
+          validationTab={validationTab}
         />
       ),
     },
@@ -411,7 +413,11 @@ const GenerateQuote: React.FC = () => {
       name: (
         <Typography
           name="Body 4/Regular"
-          onClick={() => setActiveTab('3')}
+          onClick={() => {
+            setActiveTab('3')
+            setValidationTab(false)
+
+          }}
           cursor="pointer"
           color={token?.colorTextBase}
         >
@@ -432,7 +438,10 @@ const GenerateQuote: React.FC = () => {
       name: (
         <Typography
           name="Body 4/Regular"
-          onClick={() => setActiveTab('4')}
+          onClick={() => {
+            setActiveTab('4')
+            setValidationTab(true)
+          }}
           cursor="pointer"
           color={token?.colorTextBase}
         >
@@ -440,12 +449,32 @@ const GenerateQuote: React.FC = () => {
         </Typography>
       ),
       children: (
-        <Validation
+        <ProfitabilityMain
           tableColumnDataShow={tableColumnDataShow}
           selectedFilter={selectedFilter}
-          collapseActiveKeys={collapseActiveKeys}
+          setShowUpdateLineItemModal={setShowUpdateLineItemModal}
+          showUpdateLineItemModal={showUpdateLineItemModal}
+          selectTedRowData={selectTedRowData}
+          setSelectedRowData={setSelectedRowData}
           setCollapseActiveKeys={setCollapseActiveKeys}
+          collapseActiveKeys={collapseActiveKeys}
+          setShowBundleModal={setShowBundleModal}
+          selectTedRowIds={selectTedRowIds}
+          setSelectedRowIds={setSelectedRowIds}
+          showBundleModal={showBundleModal}
+          isDeleteProfitabilityModal={isDeleteProfitabilityModal}
+          setIsDeleteProfitabilityModal={setIsDeleteProfitabilityModal}
+          showRemoveBundleLineItemModal={showRemoveBundleLineItemModal}
+          setShowRemoveBundleLineItemModal={setShowRemoveBundleLineItemModal}
+          validationTab={validationTab}
+
         />
+        // <Validation
+        //   tableColumnDataShow={tableColumnDataShow}
+        //   selectedFilter={selectedFilter}
+        //   collapseActiveKeys={collapseActiveKeys}
+        //   setCollapseActiveKeys={setCollapseActiveKeys}
+        // />
       ),
     },
     {
@@ -453,8 +482,11 @@ const GenerateQuote: React.FC = () => {
       name: (
         <Typography
           name="Body 4/Regular"
-          onClick={() => setActiveTab('5')}
-          cursor="pointer"
+          onClick={() => {
+            setActiveTab('5')
+            setValidationTab(false)
+
+          }} cursor="pointer"
           color={token?.colorTextBase}
         >
           Metrics
@@ -537,10 +569,8 @@ const GenerateQuote: React.FC = () => {
     }
   };
 
-<<<<<<< Updated upstream
-=======
+  console.log("activeKeyactiveKey", activeTab)
 
->>>>>>> Stashed changes
   return (
     <>
       {contextHolder}
@@ -684,7 +714,7 @@ const GenerateQuote: React.FC = () => {
                       />
                     )}
 
-                    {activeTab === '2' && isView === 'false' && (
+                    {(activeTab === '2' || activeTab === '4') && isView === 'false' && (
                       <Space>
                         <OsDropdown menu={{ items }} />
                       </Space>

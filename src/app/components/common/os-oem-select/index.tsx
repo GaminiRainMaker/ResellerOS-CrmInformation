@@ -35,7 +35,7 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
   const [showOemModal, setShowOemModal] = useState<boolean>(false);
   const [finalOemOptions, setFinalOemOptions] = useState<any>();
 
-  const capitalizeFirstLetter = (str: string | undefined) => {
+ const capitalizeFirstLetter = (str: string | undefined) => {
     if (!str) {
       return '';
     }
@@ -96,7 +96,6 @@ const OsOemSelect: FC<OsOemSelectInterface> = ({
     JSON.stringify(quoteConfigData),
     distributorValue,
   ]);
-  console.log("234234324", finalOemOptions)
   return (
     <>
       <SelectFormItem

@@ -87,7 +87,6 @@ const OpportunityDetails = () => {
       });
     }
   }, [showDrawer]);
-  console.log("34543534", finalDealRegData)
   useEffect(() => {
     if (
       activeTab &&
@@ -168,14 +167,12 @@ const OpportunityDetails = () => {
   };
 
   useEffect(() => {
-    console.log("3432432343", opportunityData?.DealRegs, opportunityData)
     const separatedData = processDealRegData(
       opportunityData?.DealRegs,
       statusValue,
     );
     setFinalDealRegData(separatedData);
   }, [opportunityData?.DealRegs, statusValue]);
-  console.log("4564354353", opportunityData)
   const menuItems = [
     {
       key: '1',

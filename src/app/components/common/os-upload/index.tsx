@@ -145,7 +145,6 @@ const OsUpload: React.FC<any> = ({
       }),
     );
   }, [customerValue, opportunityValue, opportunityDetailId]);
-  console.log("34543534", opportunityDetailId, customerDetailId)
   return (
     <GlobalLoader loading={cardLoading || loading}>
       <Space size={24} direction="vertical" style={{ width: '100%' }}>

@@ -16,9 +16,10 @@ import { pricingMethod, selectDataForProduct } from '@/app/utils/CONSTANTS';
 import {
   calculateProfitabilityData,
   currencyFormatter,
+  getContractStatus,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
-import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { CheckCircleIcon, ExclamationCircleIcon, PencilSquareIcon, TrashIcon, XCircleIcon } from '@heroicons/react/24/outline';
 import { Badge, Form, notification } from 'antd';
 import { useSearchParams } from 'next/navigation';
 import { FC, useEffect, useState } from 'react';
@@ -40,6 +41,10 @@ import UpdatingLineItems from '../../UpdatingLineItems';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
+import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
+import { getContractProductByContractVehicle } from '../../../../../../../redux/actions/contractProduct';
+import { getAllContract } from '../../../../../../../redux/actions/contract';
+import { getContractConfiguartion } from '../../../../../../../redux/actions/contractConfiguration';
 
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
@@ -57,7 +62,7 @@ const Profitablity: FC<any> = ({
   showRemoveBundleLineItemModal,
   setShowRemoveBundleLineItemModal,
   collapseActiveKeys,
-  setCollapseActiveKeys,
+  setCollapseActiveKeys, validationTab
 }) => {
   const dispatch = useAppDispatch();
   const [BundleForm] = Form.useForm();
@@ -78,6 +83,11 @@ const Profitablity: FC<any> = ({
   const [showBundleDrawer, setShowBundleDrawer] = useState<boolean>(false);
   const [bundleRecordId, setBundleRecordId] = useState<any>();
   const [pageChange, setPageChange] = useState<any>();
+  const { data: contractConfigurationData } = useAppSelector(
+    (state) => state.contractConfiguration,
+  );
+  const { userInformation } = useAppSelector((state) => state.user);
+  const { data: contactData } = useAppSelector((state) => state.contract);
   const [profabilityUpdationState, setProfabilityUpdationState] = useState<
     Array<{
       id: number;
@@ -93,6 +103,7 @@ const Profitablity: FC<any> = ({
       label: '',
     },
   ]);
+
 
   const filterDataByValue = (data: any, filterValue?: string) => {
     const groupedData: any = {};
@@ -268,6 +279,12 @@ const Profitablity: FC<any> = ({
   };
 
   useEffect(() => {
+    dispatch(getAllContract());
+    dispatch(getContractConfiguartion({}));
+
+  }, [])
+
+  useEffect(() => {
     dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
   }, [getQuoteID]);
 
@@ -276,6 +293,7 @@ const Profitablity: FC<any> = ({
       filterDataByValue(profitabilityDataByQuoteId, selectedFilter);
     }
   }, [JSON.stringify(profitabilityDataByQuoteId), selectedFilter]);
+
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Profitability" />,
   };
@@ -371,12 +389,20 @@ const Profitablity: FC<any> = ({
     },
   };
 
+  const [contractVehicleOptions, setContractVehicleOptions] = useState<any>()
+  useEffect(() => {
+    const contractVehicleOption = contactData?.filter((item: any) => item?.organization === userInformation?.organization).map((option: any) => ({
+      label: option?.contract_vehicle_name,
+      value: option?.id
+    }));
+    setContractVehicleOptions(contractVehicleOption)
+  }, [contactData, JSON?.stringify(contactData)])
+
+
+
   useEffect(() => {
     if (tableColumnDataShow && tableColumnDataShow.length > 0) {
-<<<<<<< Updated upstream
-      const newArr: any = [];
-      ProfitabilityQuoteLineItemcolumns?.forEach((itemCol: any) => {
-=======
+
       let validationArr: any = [{
         title: 'Contract Vehicle',
         dataIndex: 'contract_vehicle',
@@ -387,7 +413,6 @@ const Profitablity: FC<any> = ({
           return (
             <CommonSelect
               allowClear
-              disabled={renderEditableInput('Contract Vehicle')}
               style={{ width: '100%', height: '34px' }}
               placeholder="Select"
               defaultValue={valueForVeh}
@@ -445,6 +470,8 @@ const Profitablity: FC<any> = ({
         },
       },
       ]
+
+  
       const newArr: any = [];
       let newArrForComparision = [...ProfitabilityQuoteLineItemcolumns]
       if (validationTab) {
@@ -453,7 +480,7 @@ const Profitablity: FC<any> = ({
         })
       }
       newArrForComparision?.forEach((itemCol: any) => {
->>>>>>> Stashed changes
+
         let shouldPush = false;
         tableColumnDataShow?.forEach((item: any) => {
           if (item?.field_name === itemCol?.title) {
@@ -470,14 +497,14 @@ const Profitablity: FC<any> = ({
           newArr?.push(itemCol);
         }
       });
-<<<<<<< Updated upstream
-=======
-
-
->>>>>>> Stashed changes
+      if (validationTab) {
+        validationArr?.map((item: any) => {
+          newArr.push(item)
+        })
+      }
       setFinalProfitTableCol(newArr);
     }
-  }, [JSON.stringify(tableColumnDataShow)]);
+  }, [JSON.stringify(tableColumnDataShow), contractVehicleOptions, contactData, finalData]);
 
   const ActionColumn = {
     title: 'Action',
@@ -1138,9 +1165,7 @@ const Profitablity: FC<any> = ({
       </div>
     );
   };
-<<<<<<< Updated upstream
-  console.log("45645543543", finalData)
-=======
+
 
 
   const contractVehicleStatus = async (value: number | null | undefined, record: any) => {
@@ -1280,10 +1305,6 @@ const Profitablity: FC<any> = ({
     console.log('FInalStatus', status)
     return status; // Return the final status if no match was found
   };
-
-  // ValidationFlow =======================
-
-
   const ValidationQuoteLineItemcolumns = [
     {
       title: '#Line',
@@ -1662,7 +1683,7 @@ const Profitablity: FC<any> = ({
     });
     setFinalValidationTableCol(newArr);
   }, [tableColumnDataShow, contactData]);
->>>>>>> Stashed changes
+
   return (
     <GlobalLoader loading={profitabilityDataByQuoteId?.length < 0}>
       {finalProfitTableCol && finalProfitTableCol?.length > 0 ? (

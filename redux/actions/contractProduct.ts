@@ -63,3 +63,14 @@ export const deleteContractProduct = createAsyncThunk(
     }
   },
 );
+export const getContractProductByContractVehicle = createAsyncThunk(
+  'contractProduct/getContractProductByContractVehicle',
+  async (id: any, thunkApi) => {
+    try {
+      const res = await CONTRACT_PRODUCT_API.getContractProductByContractVehicle(id);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

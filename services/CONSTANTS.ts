@@ -65,6 +65,7 @@ export const API = {
     profileImage: '/user/getUserProfileImage',
     GetSeats: '/user/getOranizationSeats',
     UpdateUserPasswordForNew: '/user/updateUserPasswordForNew',
+    GetAllOrganizations: '/user/queryAllOrganizations',
   },
   PRODUCT: {
     INDEX: '/product',
@@ -123,6 +124,8 @@ export const API = {
     QUERY: '/contractProduct/deleteContractProduct',
     getContractInBulk: '/contractProduct/getContractInBulkByProductCode',
     delete: '/contractProduct/deleteContractProduct',
+    GetContractProductByContractVehicle:
+      '/contractProduct/getContractProductByContractVehicle',
   },
   CUSTOMER: {
     INDEX: '/customer',
@@ -212,7 +215,8 @@ export const API = {
     DeleteById: '/partnerProgram/deleteById',
     UpdatePartnerProgramById: '/partnerProgram/updatePartnerProgramById',
     GetPartnerProgramById: '/partnerProgram/getPartnerProgramById',
-    deletePartnerProgramTemplateData: '/partnerProgram/deletePartnerProgramTemplateData',
+    deletePartnerProgramTemplateData:
+      '/partnerProgram/deletePartnerProgramTemplateData',
     GetUnassignedProgram: '/partnerProgram/getUnassignedProgram',
     GetFormDataProgram: '/partnerProgram/getFormDataProgram',
     REQ_ADMIN: '/partnerProgram/upadteToRequestPartnerandprogramfromAmin',

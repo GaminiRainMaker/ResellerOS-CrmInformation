@@ -321,7 +321,6 @@ const DealReg: React.FC = () => {
       />
     );
   };
-  console.log("3r3432432420", finalDealRegData)
   const tabItems: TabsProps['items'] = [
     {
       label: (

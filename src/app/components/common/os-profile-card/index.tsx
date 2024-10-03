@@ -32,7 +32,6 @@ const ProfileCard: FC<OSProfileInterface> = ({
   const [showAllContactModal, setShowAllContactModal] =
     useState<boolean>(false);
   const {billingContact} = useAppSelector((state) => state.billingContact);
-  console.log('customerData', customerData?.BillingContacts);
   return (
     <>
       <DetailCardStyle>
