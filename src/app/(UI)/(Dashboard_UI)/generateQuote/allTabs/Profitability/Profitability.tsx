@@ -80,6 +80,7 @@ const Profitablity: FC<any> = ({
   const { data: profitabilityDataByQuoteId, loading } = useAppSelector(
     (state) => state.profitability,
   );
+
   const { loading: bundleLoading } = useAppSelector((state) => state.bundle);
   const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>([]);
   const { abbreviate } = useAbbreviationHook(0);
@@ -319,7 +320,6 @@ const Profitablity: FC<any> = ({
       return !editableField?.is_editable;
     }
   };
-
   useEffect(() => {
     if (
       keyPressed &&
@@ -420,6 +420,7 @@ const Profitablity: FC<any> = ({
 
   useEffect(() => {
     if (tableColumnDataShow && tableColumnDataShow.length > 0) {
+
       let validationArr: any = [
         {
           title: 'Contract Vehicle',
@@ -427,10 +428,11 @@ const Profitablity: FC<any> = ({
           key: 'contract_vehicle',
           width: 200,
           render: (text: string, record: any) => {
-            let valueForVeh = text ? Number(text) : null;
+            let valueForVeh = text ? Number(text) : null
             return (
               <CommonSelect
                 allowClear
+                disabled={renderEditableInput('Contract Vehicle')}
                 style={{ width: '100%', height: '34px' }}
                 placeholder="Select"
                 defaultValue={valueForVeh}
@@ -438,14 +440,15 @@ const Profitablity: FC<any> = ({
                 onChange={(value) => {
                   handleFieldChange(
                     record,
-                    'product_family',
+                    'contract_vehicle',
                     value,
                     selectedFilter,
                     'select',
                   );
                 }}
               />
-            );
+
+            )
           },
         },
         {
@@ -454,12 +457,11 @@ const Profitablity: FC<any> = ({
           key: 'contract_price',
           width: 150,
           render: (text: number, record: any) => {
-            return (
-              <Typography name="Body 4/Medium">
-                {text ? `$ ${abbreviate(text ?? 0)}` : 0}
-              </Typography>
-            );
-          },
+            return <Typography name="Body 4/Medium">
+              {text ? `$ ${abbreviate(text ?? 0)}` : 0}
+            </Typography>
+          }
+
         },
         {
           title: 'Contract Status',
@@ -467,7 +469,7 @@ const Profitablity: FC<any> = ({
           key: 'contract_status',
           width: 180,
           render(text: string, record: any) {
-            const status = record?.contract_status;
+            const status = record?.contract_status
             return {
               children: (
                 <TableNameColumn
@@ -475,10 +477,7 @@ const Profitablity: FC<any> = ({
                     status === 'success' ? (
                       <CheckCircleIcon width={24} color={token?.colorSuccess} />
                     ) : status === 'warning' ? (
-                      <ExclamationCircleIcon
-                        width={24}
-                        color={token?.colorWarning}
-                      />
+                      <ExclamationCircleIcon width={24} color={token?.colorWarning} />
                     ) : (
                       <XCircleIcon width={24} color={token?.colorError} />
                     )
@@ -495,11 +494,19 @@ const Profitablity: FC<any> = ({
               ),
             };
           },
-        },
-      ];
+        }
+      ]
+
+
       const newArr: any = [];
-      console.log('newArrnewArr', newArr);
-      ProfitabilityQuoteLineItemcolumns?.forEach((itemCol: any) => {
+      let newArrForComparision = [...ProfitabilityQuoteLineItemcolumns]
+      if (validationTab) {
+        validationArr?.map((item: any) => {
+          newArrForComparision.push(item)
+        })
+      }
+      newArrForComparision?.forEach((itemCol: any) => {
+
         let shouldPush = false;
         tableColumnDataShow?.forEach((item: any) => {
           if (item?.field_name === itemCol?.title) {
@@ -516,11 +523,6 @@ const Profitablity: FC<any> = ({
           newArr?.push(itemCol);
         }
       });
-      if (validationTab) {
-        validationArr?.map((item: any) => {
-          newArr.push(item);
-        });
-      }
 
       setFinalProfitTableCol(newArr);
     }
@@ -1191,87 +1193,9 @@ const Profitablity: FC<any> = ({
     );
   };
 
-  const contractVehicleStatus1 = async (
-    value: number | null | undefined,
-    record: any,
-  ) => {
-    try {
-      const productCode = record?.product_code;
 
-      // Check if the value is null or undefined and handle accordingly
-      if (value === null || value === undefined) {
-        let updateObject = {
-          id: record?.id,
-          contract_status: 'Reject',
-          contract_vehicle: null,
-          contract_price: '',
-        };
 
-        // Dispatch to update the contract status with null contract_vehicle
-        const updateResponse = await dispatch(
-          updateProfitabilityById(updateObject),
-        );
 
-        if (updateResponse?.payload) {
-          // Fetch updated validation data for the current quote
-          await dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
-        }
-
-        return; // Exit the function early
-      }
-
-      // Fetch the contract products for the given contract vehicle
-      const response = await dispatch(
-        getContractProductByContractVehicle(value),
-      );
-
-      // Ensure res?.payload is an array, defaulting to an empty array if not
-      const contractProducts = response?.payload || [];
-
-      // Check if there's a product matching the current product code
-      const matchedProduct = contractProducts.find(
-        (item: any) => item.Product?.product_code === productCode,
-      );
-
-      console.log('matchedProduct', matchedProduct, contractProducts);
-      // Initialize the object for the update
-      let updateObject = {
-        id: record?.id,
-        contract_status: 'Reject', // Default to "Reject" if no matched product found
-        contract_vehicle: value,
-        contract_price: '',
-      };
-
-      // If we found a matched product, calculate the contract status
-      if (matchedProduct) {
-        const finalStatus = contractStatus(record, matchedProduct);
-        console.log('finalStatus', finalStatus);
-        if (finalStatus) {
-          updateObject = {
-            id: record?.id,
-            contract_status: finalStatus,
-            contract_vehicle: value,
-            contract_price: matchedProduct?.contract_price || '', // Fallback to empty string if contract price is undefined
-          };
-        }
-      }
-
-      console.log('Update Object:', updateObject);
-
-      // Dispatch to update the contract status
-      const updateResponse = await dispatch(
-        updateProfitabilityById(updateObject),
-      );
-
-      if (updateResponse?.payload) {
-        // Fetch updated validation data for the current quote
-        await dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
-      }
-    } catch (error) {
-      console.error('Error fetching or updating contract products:', error);
-      // Handle errors appropriately, e.g., show an error message, log, or retry
-    }
-  };
 
   const contractVehicleStatus = async (record: any) => {
     try {
@@ -1411,8 +1335,6 @@ const Profitablity: FC<any> = ({
     console.log('FInalStatus', status);
     return status; // Return the final status if no match was found
   };
-
-  console.log('finalDatafinalData', finalData);
 
   return (
     <GlobalLoader loading={profitabilityDataByQuoteId?.length < 0}>
