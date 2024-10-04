@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import {Input, InputNumber, InputNumberPassword} from '../antd/Input';
-import {Select} from '../antd/Select';
+import { Input, InputNumber, InputNumberPassword } from '../antd/Input';
+import { Select } from '../antd/Select';
 
 export const InputStyled = styled(Input)`
   display: flex;
@@ -72,6 +72,11 @@ export const InputNumberStyled = styled(InputNumber)`
   align-self: stretch;
   border-radius: 12px;
   border: 1px solid var(--foundation-neutrals-black-n-70, #a3a3a3);
+&.ant-input-number-out-of-range .ant-input-number-input-wrap input {
+     color: black; 
+}
+
+
   &.ant-input:focus-visible {
     border-color: none;
     box-shadow: none;

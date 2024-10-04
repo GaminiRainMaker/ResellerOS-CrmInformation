@@ -7,6 +7,7 @@ import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
 import {
   ContractOperatorsOptions,
+  formatStatus,
   quotLineItemsColumnsSync,
 } from '@/app/utils/CONSTANTS';
 import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
@@ -190,10 +191,19 @@ const StatusFile: React.FC<StatusFileProps> = ({
       title: 'Value',
       dataIndex: 'value',
       key: 'value',
-      render: (text, record) =>
-        record.valueType === 'input' ? (
+      render: (text, record) => {
+        let newArrr: any = [];
+        if (record.valueType !== 'input' && text?.length > 0) {
+          text?.map((items: any) => {
+            if (items !== '' && items !== null && items !== undefined) {
+              newArrr?.push(formatStatus(items))
+            }
+          })
+        }
+        let valueToShow = record.valueType === 'input' ? text : newArrr
+        return (<>{record.valueType === 'input' ? (
           <Input
-            value={text}
+            value={formatStatus(text)}
             placeholder="Enter value"
             onChange={(e) =>
               handleInputChange(e.target.value, record.key, 'value')
@@ -202,7 +212,7 @@ const StatusFile: React.FC<StatusFileProps> = ({
         ) : (
           <CommonSelect
             allowClear
-            value={text ?? text}
+            value={valueToShow}
             placeholder="Select Fields"
             onChange={(value) => {
               handleInputChange(value, record.key, 'value')
@@ -212,7 +222,10 @@ const StatusFile: React.FC<StatusFileProps> = ({
           >
             {getFieldOptions(fieldTypes[record.key] || '')}
           </CommonSelect>
-        ),
+        )}</>)
+      },
+
+
       width: 250,
     },
     {
