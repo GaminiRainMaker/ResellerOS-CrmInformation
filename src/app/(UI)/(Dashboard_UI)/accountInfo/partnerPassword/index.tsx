@@ -30,6 +30,7 @@ import AddPartnerPassword from './AddPartnerPassword';
 import DecryptedPassword from './DecryptedPassword';
 import { getAllPartnerandProgramFilterData } from '../../../../../../redux/actions/partner';
 import { getUserByTokenAccess } from '../../../../../../redux/actions/user';
+import React from 'react';
 
 const PartnerPassword = () => {
   const [token] = useThemeToken();
