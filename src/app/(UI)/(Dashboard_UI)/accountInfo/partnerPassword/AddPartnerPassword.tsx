@@ -173,10 +173,10 @@ const AddPartnerPassword: React.FC<any> = ({
                   required: true,
                   message: 'Password is required.',
                 },
-                {
-                  min: 8,
-                  message: 'Password must be at least 8 characters long.',
-                },
+                // {
+                //   min: 8,
+                //   message: 'Password must be at least 8 characters long.',
+                // },
                 // {
                 //   pattern:
                 //     /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
