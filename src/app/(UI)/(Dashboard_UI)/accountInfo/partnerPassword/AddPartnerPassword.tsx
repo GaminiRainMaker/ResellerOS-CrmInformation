@@ -8,13 +8,11 @@ import OsInputPassword from '@/app/components/common/os-input/InputPassword';
 import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import { decrypt, encrypt, partnerProgramFilter } from '@/app/utils/base';
 import { Checkbox, Form } from 'antd';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import eyeSlashIcon from '../../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye-slash.svg';
 import eyeIcon from '../../../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
-import { useAppDispatch, useAppSelector } from '../../../../../../redux/hook';
 
 const AddPartnerPassword: React.FC<any> = ({
   onFinish,
@@ -28,12 +26,8 @@ const AddPartnerPassword: React.FC<any> = ({
   userInformation,
 }) => {
   const [token] = useThemeToken();
-  const SECRET_KEY = process.env.NEXT_PUBLIC_SECRET_KEY;
-  const dispatch = useAppDispatch();
-  // const {userInformation} = useAppSelector((state) => state.user);
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [activeProgramOptions, setActiveProgramOptions] = useState<any>();
-  const [userNameEmail, setUserNameEmail] = useState<any>();
 
   useEffect(() => {
     setAllFilterPartnerData(partnerData);
@@ -173,10 +167,10 @@ const AddPartnerPassword: React.FC<any> = ({
                   required: true,
                   message: 'Password is required.',
                 },
-                {
-                  min: 8,
-                  message: 'Password must be at least 8 characters long.',
-                },
+                // {
+                //   min: 8,
+                //   message: 'Password must be at least 8 characters long.',
+                // },
                 // {
                 //   pattern:
                 //     /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,

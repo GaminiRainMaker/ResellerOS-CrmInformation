@@ -51,6 +51,7 @@ import TableNameColumn from '@/app/components/common/os-table/TableNameColumn';
 import { getContractProductByContractVehicle } from '../../../../../../../redux/actions/contractProduct';
 import { getAllContract } from '../../../../../../../redux/actions/contract';
 import { getContractConfiguartion } from '../../../../../../../redux/actions/contractConfiguration';
+import React from 'react';
 const Profitablity: FC<any> = ({
   tableColumnDataShow,
   selectedFilter,

@@ -12,6 +12,7 @@ import OsCustomerSelect from '@/app/components/common/os-customer-select';
 import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
 import { useEffect } from 'react';
 import { queryAllOrganizations } from '../../../../../redux/actions/user';
+import React from 'react';
 
 const AddContractProduct: React.FC<any> = ({
   optionsForContract,
@@ -209,7 +210,7 @@ const AddContractProduct: React.FC<any> = ({
                   />
                 ) : (
                   <CommonSelect
-                    style={{ width: '100%' }}
+                    style={{ width: '100%', minHeight: '48px',height: 'auto' }}
                     mode="multiple"
                     options={productOptions || []}
                   />
