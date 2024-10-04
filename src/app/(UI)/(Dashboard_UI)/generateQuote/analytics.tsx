@@ -50,7 +50,6 @@ const GenerateQuoteAnalytics: FC<any> = () => {
     let bundleExitPrice = 0;
     let BundleAdjustedPrice = 0;
     let adjustedPrice = 0;
-
     if (profitabilityDataByQuoteId && profitabilityDataByQuoteId.length > 0) {
       const uniqueBundleIds = new Set();
       profitabilityDataByQuoteId.forEach((item: any) => {
@@ -95,12 +94,13 @@ const GenerateQuoteAnalytics: FC<any> = () => {
         }
       });
     }
-    const totalGrossProfit = grossProfit + bundleGrossProfit;
-    const totalExitPrice = exitPrice + bundleExitPrice;
+    let totalGrossProfit = grossProfit + bundleGrossProfit;
+    let totalExitPrice = exitPrice + bundleExitPrice;
 
     if (totalExitPrice > 0) {
       grossProfitPercentage = (totalGrossProfit / totalExitPrice) * 100;
     }
+    console.log("profitabilityDataByQuoteIdprofitabilityDataByQuoteId", profitabilityDataByQuoteId, grossProfitPercentage)
 
     setTotalValues({
       GrossProfit: totalGrossProfit,
@@ -108,67 +108,73 @@ const GenerateQuoteAnalytics: FC<any> = () => {
       ExitPrice: totalExitPrice,
       TotalCost: adjustedPrice + BundleAdjustedPrice,
     });
-  }, [JSON.stringify(profitabilityDataByQuoteId)]);
+  }, [JSON.stringify(profitabilityDataByQuoteId), profitabilityDataByQuoteId]);
 
-  const analyticsData = [
-    {
-      key: 1,
-      primary: profitabilityDataByQuoteId
-        ? profitabilityDataByQuoteId?.length
-        : 0,
-      secondry: 'Line Items',
-      icon: <QueueListIcon width={24} color={token?.colorInfo} />,
-      iconBg: token?.colorInfoBgHover,
-    },
-    {
-      key: 2,
-      primary: `$${abbreviate(totalValues?.ExitPrice ?? 0)}`,
-      secondry: 'Quote Total',
-      icon: <TagIcon width={24} color={token?.colorSuccess} />,
-      iconBg: token?.colorSuccessBg,
-    },
-    {
-      key: 3,
-      primary: `$${abbreviate(totalValues?.TotalCost ?? 0)}`,
-      secondry: 'Total Cost',
-      icon: <CurrencyDollarIcon width={24} color={token?.colorLink} />,
-      iconBg: token?.colorLinkActive,
-    },
-    {
-      key: 4,
-      primary: `$${abbreviate(totalValues?.GrossProfit ?? 0)}`,
-      secondry: 'Total GP',
-      icon: (
-        <Image
-          src={MoneyRecive}
-          alt="MoneyRecive"
-          style={{ cursor: 'pointer', height: '24px', width: '24px' }}
-        />
-      ),
-      iconBg: token?.colorErrorBg,
-    },
-    {
-      key: 5,
-      primary: `${abbreviate(totalValues?.GrossProfitPercentage ?? 0)} %`,
-      secondry: 'Total GP%',
-      icon: <ReceiptPercentIcon width={24} color={token?.colorWarning} />,
-      iconBg: token?.colorWarningBg,
-    },
-    {
-      key: 6,
-      primary: `$${abbreviate(totalRebateAmount?.totalRebateAmountData ?? 0)}`,
-      secondry: 'Rebate Total',
-      icon: (
-        <Image
-          src={MoneySend}
-          alt="MoneySend"
-          style={{ cursor: 'pointer', height: '24px', width: '24px' }}
-        />
-      ),
-      iconBg: token?.colorInfoHover,
-    },
-  ];
+  const [analyticsData, setAnalyticsData] = useState<any>()
 
+  useEffect(() => {
+    const analyticsDataa = [
+      {
+        key: 1,
+        primary: profitabilityDataByQuoteId
+          ? profitabilityDataByQuoteId?.length
+          : 0,
+        secondry: 'Line Items',
+        icon: <QueueListIcon width={24} color={token?.colorInfo} />,
+        iconBg: token?.colorInfoBgHover,
+      },
+      {
+        key: 2,
+        primary: `$${abbreviate(totalValues?.ExitPrice ?? 0)}`,
+        secondry: 'Quote Total',
+        icon: <TagIcon width={24} color={token?.colorSuccess} />,
+        iconBg: token?.colorSuccessBg,
+      },
+      {
+        key: 3,
+        primary: `$${abbreviate(totalValues?.TotalCost ?? 0)}`,
+        secondry: 'Total Cost',
+        icon: <CurrencyDollarIcon width={24} color={token?.colorLink} />,
+        iconBg: token?.colorLinkActive,
+      },
+      {
+        key: 4,
+        primary: `$${abbreviate(totalValues?.GrossProfit ?? 0)}`,
+        secondry: 'Total GP',
+        icon: (
+          <Image
+            src={MoneyRecive}
+            alt="MoneyRecive"
+            style={{ cursor: 'pointer', height: '24px', width: '24px' }}
+          />
+        ),
+        iconBg: token?.colorErrorBg,
+      },
+      {
+        key: 5,
+        primary: `${abbreviate(totalValues?.GrossProfitPercentage ?? 0)} %`,
+        secondry: 'Total GP%',
+        icon: <ReceiptPercentIcon width={24} color={token?.colorWarning} />,
+        iconBg: token?.colorWarningBg,
+      },
+      {
+        key: 6,
+        primary: `$${abbreviate(totalRebateAmount?.totalRebateAmountData ?? 0)}`,
+        secondry: 'Rebate Total',
+        icon: (
+          <Image
+            src={MoneySend}
+            alt="MoneySend"
+            style={{ cursor: 'pointer', height: '24px', width: '24px' }}
+          />
+        ),
+        iconBg: token?.colorInfoHover,
+      },
+    ];
+    setAnalyticsData(analyticsDataa)
+  }, [JSON.stringify(profitabilityDataByQuoteId), profitabilityDataByQuoteId, totalValues])
+
+  console.log("23423423432", totalValues)
   return (
     <Row
       justify="space-between"
@@ -179,7 +185,7 @@ const GenerateQuoteAnalytics: FC<any> = () => {
       }}
       gutter={[0, 16]}
     >
-      {analyticsData?.map((item) => (
+      {analyticsData?.map((item: any) => (
         <Col>
           <TableNameColumn
             primaryText={item?.primary}

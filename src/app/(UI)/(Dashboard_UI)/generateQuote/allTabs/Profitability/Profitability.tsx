@@ -80,6 +80,8 @@ const Profitablity: FC<any> = ({
     (state) => state.profitability,
   );
 
+  const [profitibilityDataa, setProfitibilityDataa] = useState<any>()
+
   const { loading: bundleLoading } = useAppSelector((state) => state.bundle);
   const [finalProfitTableCol, setFinalProfitTableCol] = useState<any>([]);
   const { abbreviate } = useAbbreviationHook(0);
@@ -279,7 +281,13 @@ const Profitablity: FC<any> = ({
       }));
 
     if (bundleData?.length > 0 && uniqueBundleData) {
-      dispatch(updateBundleBulk(uniqueBundleData));
+      dispatch(updateBundleBulk(uniqueBundleData))?.then((payload: any) => {
+        if (payload?.payload) {
+          dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+
+        }
+      })
+
     }
   };
 
@@ -289,14 +297,18 @@ const Profitablity: FC<any> = ({
   }, []);
 
   useEffect(() => {
-    dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+    dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then((payload: any) => {
+      if (payload?.payload) {
+        setProfitibilityDataa(payload?.payload)
+      }
+    })
   }, [getQuoteID]);
 
   useEffect(() => {
-    if (profitabilityDataByQuoteId && profitabilityDataByQuoteId.length > 0) {
-      filterDataByValue(profitabilityDataByQuoteId, selectedFilter);
+    if (profitibilityDataa && profitibilityDataa.length > 0) {
+      filterDataByValue(profitibilityDataa, selectedFilter);
     }
-  }, [JSON.stringify(profitabilityDataByQuoteId), selectedFilter]);
+  }, [JSON.stringify(profitibilityDataa), selectedFilter]);
 
   const locale = {
     emptyText: <EmptyContainer title="There is no data for Profitability" />,
@@ -349,7 +361,11 @@ const Profitablity: FC<any> = ({
       await dispatch(updateProductFamily(data));
       await dispatch(updateProfitabilityById(record)).then((d: any) => {
         if (d?.payload) {
-          dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+          dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then((payload: any) => {
+            if (payload?.payload) {
+              setProfitibilityDataa(payload?.payload)
+            }
+          })
         }
       });
       setKeyPressed('');
@@ -912,12 +928,18 @@ const Profitablity: FC<any> = ({
       ]);
       setShowUpdateLineItemModal(false);
       const response = await dispatch(
-        getProfitabilityByQuoteId(Number(getQuoteID)),
-      );
-      if (response.payload) {
+        getProfitabilityByQuoteId(Number(getQuoteID))
+      )?.then((payload: any) => {
+        if (payload?.payload) {
+          setProfitibilityDataa(payload?.payload)
+        }
         setSelectedRowData([]);
         setSelectedRowIds([]);
-      }
+      })
+      // if (response.payload) {
+      //   setSelectedRowData([]);
+      //   setSelectedRowIds([]);
+      // }
     }
   };
 
@@ -950,7 +972,11 @@ const Profitablity: FC<any> = ({
     };
     if (obj) {
       await dispatch(updateBundleQuantity(obj));
-      dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+      dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then((payload: any) => {
+        if (payload?.payload) {
+          setProfitibilityDataa(payload?.payload)
+        }
+      })
     }
   };
 
@@ -958,7 +984,11 @@ const Profitablity: FC<any> = ({
     const Ids: any = selectTedRowData?.map((item: any) => item?.id);
     dispatch(deleteProfitabilityById({ Ids: Ids })).then((d) => {
       if (d?.payload) {
-        dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+        dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then((payload: any) => {
+          if (payload?.payload) {
+            setProfitibilityDataa(payload?.payload)
+          }
+        })
         setIsDeleteProfitabilityModal(false);
         setSelectedRowData([]);
         setSelectedRowIds([]);
@@ -971,7 +1001,11 @@ const Profitablity: FC<any> = ({
     if (Ids) {
       dispatch(removeBundleLineItems({ Ids: Ids })).then((d) => {
         if (d?.payload) {
-          dispatch(getProfitabilityByQuoteId(Number(getQuoteID)));
+          dispatch(getProfitabilityByQuoteId(Number(getQuoteID)))?.then((payload: any) => {
+            if (payload?.payload) {
+              setProfitibilityDataa(payload?.payload)
+            }
+          })
           setShowRemoveBundleLineItemModal(false);
           setSelectedRowData([]);
           setSelectedRowIds([]);
@@ -1350,7 +1384,7 @@ const Profitablity: FC<any> = ({
   };
 
   return (
-    <GlobalLoader loading={profitabilityDataByQuoteId?.length < 0}>
+    <GlobalLoader loading={profitibilityDataa?.length < 0}>
       {finalProfitTableCol && finalProfitTableCol?.length > 0 ? (
         !selectedFilter ? (
           <div key={JSON.stringify(finalData)}>{renderFinalData()}</div>
