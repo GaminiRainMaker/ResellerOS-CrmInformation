@@ -215,7 +215,7 @@ const DealRegDetail = () => {
 
       <OsModal
         // loading={dealRegLoading}
-        title="Electron Bot Setup"
+        title="DealregAI Bot Setup"
         bodyPadding={22}
         body={<ElectronBot />}
         width={583}
