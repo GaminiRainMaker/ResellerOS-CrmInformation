@@ -31,6 +31,7 @@ import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import { CollapseSpaceStyle } from '../dealRegDetail/styled-component';
 import { RemoveSheetUndoEntry } from 'hyperformula/typings/UndoRedo';
 import { rectIntersection } from '@dnd-kit/core';
+import React from 'react';
 
 const NewRegistrationForm: FC<any> = ({
   isDealRegDetail = false,

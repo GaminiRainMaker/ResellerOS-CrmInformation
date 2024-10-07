@@ -18,6 +18,7 @@ import { Istok_Web } from 'next/font/google';
 import { formatStatus } from '@/app/utils/CONSTANTS';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Checkbox } from '@/app/components/common/antd/Checkbox';
+import React from 'react';
 
 const AddFormula: React.FC<any> = ({
   drawer,
