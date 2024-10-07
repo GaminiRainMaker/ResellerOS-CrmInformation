@@ -1,6 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import {createAsyncThunk} from '@reduxjs/toolkit';
-import {AUTH_API} from '../../services/auth';
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { AUTH_API } from '../../services/auth';
 
 export const signUpAuth = createAsyncThunk(
   'auth',
@@ -139,6 +139,18 @@ export const getExcelData = createAsyncThunk(
   async (data: any, thunkApi) => {
     try {
       const res: any = await AUTH_API.getExcelData(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+
+export const getPDFFileData = createAsyncThunk(
+  'auth/fetchDataWithIntellengenceForPDFFile',
+  async (data: any, thunkApi) => {
+    try {
+      const res: any = await AUTH_API.getPDFFileData(data);
       return res.data;
     } catch (error: any) {
       return thunkApi.rejectWithValue(error?.message);

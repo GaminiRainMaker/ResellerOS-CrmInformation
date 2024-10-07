@@ -289,6 +289,16 @@ const Dashboard = () => {
               </Col>
               <Col>
                 <OsButton
+                  text="Testing Azure AI"
+                  buttontype="PRIMARY"
+                  // loading={loading}
+                  clickHandler={() => {
+                    window?.open('/azzureAi')
+                  }}
+                />
+              </Col>
+              <Col>
+                <OsButton
                   text="Contact Us"
                   buttontype="PRIMARY"
                   // loading={loading}

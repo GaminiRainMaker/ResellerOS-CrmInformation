@@ -17,6 +17,8 @@ export const AUTH_API = {
   addUpdateSales: (data: any) => post(API.AUTH.salesforceAddUpdate, data),
   addForAccount: (data: any) => post(API.AUTH.addForAccount, data),
   getExcelData: (data: any) => post(API.AUTH.getExcelData, data),
+  getPDFFileData: (data: any) => post(API.AUTH.getPDFFileData, data),
+
 
 
   getFields: (data: any) => post(API.AUTH.getFields, data),

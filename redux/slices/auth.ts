@@ -6,6 +6,7 @@ import {
   addSalesForceDataaForAccount,
   contactSales,
   getExcelData,
+  getPDFFileData,
   getSalesForceDataaForEditAsItIs,
   getSalesForceFields,
   getSalesForceFileData,
@@ -228,6 +229,21 @@ const authSlice = createSlice({
         // state.data = action.payload;
       })
       .addCase(getExcelData.rejected, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(getPDFFileData.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getPDFFileData.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          // state.data = action.payload;
+        },
+      )
+      .addCase(getPDFFileData.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
       });

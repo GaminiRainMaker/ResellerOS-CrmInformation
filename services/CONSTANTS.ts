@@ -12,6 +12,7 @@ export const API = {
     addForAccount: '/auth/addSalesForceDataaForAccount',
     getFields: '/auth/getSalesForceFields',
     getExcelData: '/auth/fetchAndParseExcel',
+    getPDFFileData: '/auth/fetchDataWithIntellengenceForPDFFile',
   },
   QUOTE: {
     INDEX: '/quote',
