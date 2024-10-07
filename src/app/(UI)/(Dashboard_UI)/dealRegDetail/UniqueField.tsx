@@ -41,9 +41,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
       onBlur: handleBlur,
 
     };
-    // if (itemCon?.name === 'Date' && initialValue) {
-    //   commonProps.defaultValue = dayjs(initialValue);
-    // }
     const dateName = 'u_' +
       convertToSnakeCase(itemCon.label) +
       itemIndex +
