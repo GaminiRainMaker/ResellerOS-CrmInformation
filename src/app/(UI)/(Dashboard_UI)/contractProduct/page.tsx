@@ -32,6 +32,7 @@ import {
 } from '../../../../../redux/actions/contractProduct';
 import { getAllProductForContract } from '../../../../../redux/actions/product';
 import AddContractProduct from './AddContractProduct';
+import React from 'react';
 
 const ContractProductMain: React.FC = () => {
   const [token] = useThemeToken();
