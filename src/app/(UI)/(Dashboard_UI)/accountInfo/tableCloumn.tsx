@@ -20,7 +20,7 @@ export function getMyTeamColumns(token: GlobalToken) {
           className="dragHandler"
           color={token?.colorPrimaryText}
         >
-          Name
+          Username
         </Typography>
       ),
       dataIndex: 'user_name',
@@ -97,7 +97,7 @@ export function getMyTeamAdminColumns(token: GlobalToken) {
           className="dragHandler"
           color={token?.colorPrimaryText}
         >
-          Name
+          Username
         </Typography>
       ),
       dataIndex: 'user_name',
