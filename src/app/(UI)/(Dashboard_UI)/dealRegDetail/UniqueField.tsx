@@ -22,6 +22,7 @@ import { UniqueFieldsProps } from './dealReg.interface';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import moment from 'moment';
 import { convertToSnakeCase, radioValidator } from '@/app/utils/base';
+import React from 'react';
 interface CheckboxState {
   [key: string]: boolean;
 }
