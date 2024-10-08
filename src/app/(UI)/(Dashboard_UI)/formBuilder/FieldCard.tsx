@@ -21,6 +21,7 @@ import {
 import Image from 'next/image';
 import AttachmentCircle from '../../../../../public/assets/static/attachcircle.svg';
 import FiledsDraggable from './FiledsDraggable';
+import React from 'react';
 
 const FieldCard = () => {
   const [token] = useThemeToken();

@@ -1,28 +1,21 @@
 import { Checkbox } from '@/app/components/common/antd/Checkbox';
 import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
 import { Switch } from '@/app/components/common/antd/Switch';
+import CommonDatePicker from '@/app/components/common/os-date-picker';
 import {
-  SectionColStyledInner,
-  SectionColStyledInnerContent,
-  SectionRowStyledInner,
   StyledDivider,
-  ToggleColStyled,
+  ToggleColStyled
 } from '@/app/components/common/os-div-row-col/styled-component';
 import OsInput from '@/app/components/common/os-input';
 import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
-import FormUpload from '@/app/components/common/os-upload/FormUpload';
-import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
 import Typography from '@/app/components/common/typography';
+import { convertToSnakeCase } from '@/app/utils/base';
 import { MailOutlined } from '@ant-design/icons';
 import { Form, Radio, TimePicker } from 'antd';
-import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
+import React, { useEffect, useState } from 'react';
 import { UniqueFieldsProps } from './dealReg.interface';
-import CommonDatePicker from '@/app/components/common/os-date-picker';
-import moment from 'moment';
-import { convertToSnakeCase, radioValidator } from '@/app/utils/base';
-import React from 'react';
 interface CheckboxState {
   [key: string]: boolean;
 }
@@ -40,14 +33,20 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
   const [uniqueTemplateData, setUniqueTemplateData] = useState<any>();
   const [radioValues, setRadioValues] = useState<{ [key: string]: any }>({});
 
-  const getInputComponent = (itemCon: any) => {
+  const getInputComponent = (itemCon: any, itemIndex: any, activeKey: any, required: any, userfill: any) => {
     const fieldName = convertToSnakeCase(itemCon?.label);
     const initialValue = uniqueTemplateData?.[fieldName];
-    const commonProps = { defaultValue: initialValue, onBlur: handleBlur };
+    const commonProps = {
+      defaultValue: initialValue,
+      onBlur: handleBlur,
 
-    if (itemCon?.name === 'Date' && initialValue) {
-      commonProps.defaultValue = moment(initialValue);
-    }
+    };
+    const dateName = 'u_' +
+      convertToSnakeCase(itemCon.label) +
+      itemIndex +
+      activeKey +
+      (required ? '_required' : '') +
+      (userfill ? '_userfill' : '')
 
     switch (itemCon?.name) {
       case 'Text':
@@ -71,7 +70,13 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 {...commonProps}
               />
             ) : itemCon?.name === 'Date' ? (
-              <CommonDatePicker {...commonProps} />
+              <CommonDatePicker
+                format="MMM D, YYYY"
+                onChange={(date, dateString) => {
+                  form.setFieldValue(dateName, date)
+                  commonProps.onBlur()
+                }}
+              />
             ) : itemCon?.name === 'Email' ? (
               <OsInput
                 type="email"
@@ -192,7 +197,11 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
         setUniqueTemplateData(uniqueFormData);
         const initialValues = Object.keys(uniqueFormData).reduce(
           (acc: any, key) => {
-            acc[key] = uniqueFormData[key];
+            if (key.includes("date")) {
+              acc[key] = uniqueFormData[key] ? dayjs(uniqueFormData[key]) : null;
+            } else {
+              acc[key] = uniqueFormData[key];
+            }
             return acc;
           },
           {},
@@ -200,7 +209,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
         form.setFieldsValue(initialValues);
       }
     }
-  }, [form, formData]);
+  }, [formData]);
 
   useEffect(() => {
     let newArrForTheSalesForceJson: any = [];
@@ -238,7 +247,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     }
   }, [allContent]);
 
-  console.log('formData', formData?.unique_form_data);
+  console.log('formData', form.getFieldsValue());
 
   return (
     <Form
@@ -302,7 +311,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                   },
                 ]}
               >
-                {getInputComponent(allContentItem)}
+                {getInputComponent(allContentItem, itemIndex, activeKey, required, userfill)}
               </SelectFormItem>
             </Col>
           );

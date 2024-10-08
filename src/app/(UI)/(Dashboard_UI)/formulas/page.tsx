@@ -33,6 +33,7 @@ import {
   changeTheALpabetsFromFormula,
   formatStatus,
 } from '@/app/utils/CONSTANTS';
+import React from 'react';
 
 const FormulaMain: React.FC = () => {
   const [token] = useThemeToken();

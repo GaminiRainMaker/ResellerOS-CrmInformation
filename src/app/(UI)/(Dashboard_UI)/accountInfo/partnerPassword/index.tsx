@@ -570,10 +570,12 @@ const PartnerPassword = () => {
                     setQuery({
                       ...query,
                       partner_name: null,
+                      partner_program_name: null
                     });
                     setSharedQuery({
                       ...sharedQuery,
                       partner_name: null,
+                      partner_program_name: null
                     });
                   }}
                 >

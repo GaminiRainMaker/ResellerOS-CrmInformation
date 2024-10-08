@@ -20,34 +20,35 @@
 import Typography from '@/app/components/common/typography';
 // eslint-disable-next-line import/no-extraneous-dependencies
 
-import {Col, Row} from '@/app/components/common/antd/Grid';
-import {Space} from '@/app/components/common/antd/Space';
+import { Col, Row } from '@/app/components/common/antd/Grid';
+import { Space } from '@/app/components/common/antd/Space';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsModal from '@/app/components/common/os-modal';
 import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
 import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
-import {Form} from 'antd';
-import {Option} from 'antd/es/mentions';
-import {useEffect, useState} from 'react';
+import { Form } from 'antd';
+import { Option } from 'antd/es/mentions';
+import { useEffect, useState } from 'react';
 import {
   deleteQuoteById,
   queryAllManualQuotes,
 } from '../../../../../redux/actions/quote';
-import {queryQuoteFile} from '../../../../../redux/actions/quoteFile';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {getSuperAdminQuoteColumns} from '../allQuote/tableColumns';
+import { queryQuoteFile } from '../../../../../redux/actions/quoteFile';
+import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import { getSuperAdminQuoteColumns } from '../allQuote/tableColumns';
 import ConcernDetail from './ConcernDetail';
 import EditedQuoteAnalytics from './editedQuoteAnalytic';
-import {useRouter} from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
 const AllQuote: React.FC = () => {
   const dispatch = useAppDispatch();
   const [form] = Form.useForm();
   const router = useRouter();
   const [token] = useThemeToken();
-  const {loading, data} = useAppSelector((state) => state.quoteFile);
+  const { loading, data } = useAppSelector((state) => state.quoteFile);
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [showConcernDetailModal, setShowConcernDetailModal] = useState<{
@@ -73,7 +74,7 @@ const AllQuote: React.FC = () => {
   );
 
   const deleteQuote = async () => {
-    const data = {Ids: deleteIds};
+    const data = { Ids: deleteIds };
     await dispatch(deleteQuoteById(data));
     setTimeout(() => {
       dispatch(queryAllManualQuotes({}));
@@ -83,7 +84,7 @@ const AllQuote: React.FC = () => {
     form.resetFields(['opportunity_id', 'customer_id']);
   };
   const actionEye = async (value: string) => {
-    setShowConcernDetailModal({visible: true, quoteId: value});
+    setShowConcernDetailModal({ visible: true, quoteId: value });
   };
 
   const Quotecolumns = getSuperAdminQuoteColumns(token, actionEye, router);
@@ -97,7 +98,7 @@ const AllQuote: React.FC = () => {
 
   return (
     <>
-      <Space size={24} direction="vertical" style={{width: '100%'}}>
+      <Space size={24} direction="vertical" style={{ width: '100%' }}>
         <EditedQuoteAnalytics />
         <Row justify="space-between" align="middle">
           <Col>
@@ -123,7 +124,7 @@ const AllQuote: React.FC = () => {
                   Reseller Organization
                 </Typography>
                 <CommonSelect
-                  style={{width: '200px'}}
+                  style={{ width: '200px' }}
                   placeholder="Search here"
                   showSearch
                   onSearch={(e) => {
@@ -150,7 +151,7 @@ const AllQuote: React.FC = () => {
               <Space direction="vertical" size={0}>
                 <Typography name="Body 4/Medium">Created By</Typography>
                 <CommonSelect
-                  style={{width: '200px'}}
+                  style={{ width: '200px' }}
                   placeholder="Search here"
                   showSearch
                   optionFilterProp="children"
@@ -220,7 +221,7 @@ const AllQuote: React.FC = () => {
         bodyPadding={40}
         open={showConcernDetailModal?.visible}
         onCancel={() => {
-          setShowConcernDetailModal({visible: false});
+          setShowConcernDetailModal({ visible: false });
         }}
         title="Concern & Documents"
         body={<ConcernDetail showConcernDetailModal={showConcernDetailModal} />}
