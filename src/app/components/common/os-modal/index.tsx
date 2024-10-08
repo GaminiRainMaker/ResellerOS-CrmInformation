@@ -57,6 +57,15 @@ const OsModal: FC<OSModalPropsInterface> = ({
         />
       }
       closable={isSalesForce}
+      maskStyle={
+        !isSalesForce
+          ? {
+            backgroundColor: 'rgba(0, 0, 0, 0.7)', // Darker semi-transparent mask
+            backdropFilter: 'blur(8px)', // Blurs the background content
+            WebkitBackdropFilter: 'blur(8px)', // For Safari support
+          }
+          : {}
+      }
       footer={
         footer && (
           <Space
