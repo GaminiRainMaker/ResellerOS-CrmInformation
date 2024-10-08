@@ -23,11 +23,14 @@ import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import { setFinalUpdatedDealRegData } from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
 import React from 'react';
+import { Button } from 'antd';
 
 const DealRegCustomTabs: React.FC<any> = ({ form, formData, setFormData }) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const searchParams = useSearchParams()!;
+  const salesForceUrl = searchParams.get('instance_url');
+
   const {
     data: DealRegData,
     getDealRegForNew,
@@ -105,6 +108,8 @@ const DealRegCustomTabs: React.FC<any> = ({ form, formData, setFormData }) => {
     let finalCommonFieldObject: any = {};
     let finalUniqueFieldObject: any = {};
     let finalDealReg: any = {};
+    console.log('commonFieldFormData', commonFieldFormData)
+    return
 
     if (commonFieldFormData) {
       for (const [key, value] of Object?.entries(commonFieldFormData)) {
@@ -273,6 +278,9 @@ const DealRegCustomTabs: React.FC<any> = ({ form, formData, setFormData }) => {
 
   return (
     <>
+      <Button onClick={() => {
+        onFinish()
+      }}>SAVE</Button>
       <CustmDealRegTab
         token={token}
         activeKey={activeKey as any}

@@ -175,103 +175,6 @@ const NewRegistrationForm: FC<any> = ({
       setRegesteriedPartner(newArr);
     }
   };
-  const registeredFormFinish = async () => {
-    const data = form.getFieldsValue();
-
-    if (
-      regesteriedPartner?.length <= 0 &&
-      selfRegesteriedPartner?.length <= 0 &&
-      formStep === 0
-    ) {
-      notification?.open({
-        message: 'Please add atleast one partner and partner program.',
-        type: 'info',
-      });
-      return;
-    }
-    let combinedData: any = [];
-    if (registeredPartnerData) {
-      combinedData = [
-        ...(registeredPartnerData.registeredPartners ?? [])?.map(
-          (obj: any) => ({
-            ...obj,
-            type: 'registered',
-          }),
-        ),
-        ...(registeredPartnerData.selfRegisteredPartners ?? [])?.map(
-          (obj: any) => ({
-            ...obj,
-            type: 'self_registered',
-          }),
-        ),
-      ];
-    } else {
-      combinedData = [
-        ...(data?.registeredPartners ?? [])?.map((obj: any) => ({
-          ...obj,
-          type: 'Registered',
-        })),
-        ...(data?.selfRegisteredPartners ?? [])?.map((obj: any) => ({
-          ...obj,
-          type: 'Self Registered',
-        })),
-      ];
-    }
-    console.log('32432432432', data);
-    if (formStep === 0 && !isDealRegDetail) {
-      setRegisteredPartnerData(data);
-      setFormStep(1);
-    } else if (
-      (registeredPartnerData && formStep === 1) ||
-      (data && isDealRegDetail)
-    ) {
-      let newData: any;
-      if (isDealRegDetail) {
-        newData = combinedData?.map((obj: any) => ({
-          ...obj,
-          ...addressData,
-          organization: userInformation?.organization,
-          opportunity_id: getOpportunityId,
-          contact_id: getContactId,
-          customer_id: getCustomerId,
-          status: 'New',
-          user_id: userInformation?.id,
-        }));
-      } else {
-        newData = combinedData?.map((obj: any) => ({
-          ...obj,
-          ...data,
-          ...addressData,
-          organization: userInformation?.organization,
-          status: 'New',
-          user_id: userInformation?.id,
-        }));
-      }
-
-      await dispatch(insertDealReg(newData)).then((d: any) => {
-        if (d?.payload) {
-          if (isDealRegDetail) {
-            dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-          } else {
-            dispatch(queryDealReg(''));
-          }
-        } else {
-          notification?.open({
-            message: 'This Combination already exists.',
-            type: 'info',
-          });
-          dispatch(queryDealReg(''));
-          dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-        }
-      });
-      setShowModal(false);
-      if (pathname === '/opportunityDetail') {
-        location.reload();
-      }
-    }
-  };
-
-
 
   const addNewPartnerFOrReg = (typeOfWorkFor: string) => {
     let checkIn =
@@ -462,68 +365,89 @@ const NewRegistrationForm: FC<any> = ({
       selfRegisteredPartners: selfRegesteriedPartner,
       registeredPartners: regesteriedPartner,
     };
-    if (salesForceUrl) {
-      console.log('datadata', data);
-      
+    if (formStep === 0 && !isDealRegDetail && !salesForceUrl) {
+      setRegisteredPartnerData(data);
+      setFormStep(1);
+    } else if (
+      (registeredPartnerData && formStep === 1) ||
+      (data && isDealRegDetail) ||
+      (data && salesForceUrl)
+    ) {
+      let newData: any;
+      if (isDealRegDetail) {
+        newData = combinedData?.map((obj: any) => ({
+          ...obj,
+          ...addressData,
+          organization: userInformation?.organization,
+          opportunity_id: getOpportunityId,
+          contact_id: getContactId,
+          customer_id: getCustomerId,
+          status: 'New',
+          user_id: userInformation?.id,
+        }));
+      } else if (salesForceUrl) {
+        console.log('salesForceUrl', salesForceUrl, data)
+        newData = combinedData?.map((obj: any) => ({
+          ...obj,
+          ...addressData,
+          organization: 'rainmakercloud-llc',
+          opportunity_id: 98,
+          contact_id: 44,
+          customer_id: 5,
+          status: 'New',
+          user_id: 99,
+          opportunity_name: 'Opportunity',
 
-    } else {
-      if (formStep === 0 && !isDealRegDetail) {
-        setRegisteredPartnerData(data);
-        setFormStep(1);
-      } else if (
-        (registeredPartnerData && formStep === 1) ||
-        (data && isDealRegDetail)
-      ) {
-        let newData: any;
-        if (isDealRegDetail) {
-          newData = combinedData?.map((obj: any) => ({
-            ...obj,
-            ...addressData,
-            organization: userInformation?.organization,
-            opportunity_id: getOpportunityId,
-            contact_id: getContactId,
-            customer_id: getCustomerId,
-            status: 'New',
-            user_id: userInformation?.id,
-          }));
-        } else {
-          newData = combinedData?.map((obj: any) => ({
-            ...obj,
-            ...dataForSelect,
-            ...addressData,
-            organization: userInformation?.organization,
-            status: 'New',
-            user_id: userInformation?.id,
-          }));
-        }
+        }));
+      }
+      else {
+        newData = combinedData?.map((obj: any) => ({
+          ...obj,
+          ...dataForSelect,
+          ...addressData,
+          organization: userInformation?.organization,
+          status: 'New',
+          user_id: userInformation?.id,
+        }));
+      }
+      console.log('newData', newData)
 
-        await dispatch(insertDealReg(newData)).then((d: any) => {
-          if (d?.payload) {
-            if (pathname === '/dealReg')
-              router?.push(
-                `/dealRegDetail?opportunityId=${d?.payload?.[0]?.opportunity_id}&customerId=${d?.payload?.[0]?.customer_id}&contactId=${d?.payload?.[0]?.contact_id}`,
-              );
-            if (isDealRegDetail) {
-              dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-            } else {
-              dispatch(queryDealReg(''));
-            }
-          } else {
-            notification?.open({
-              message: 'This Combination already exists.',
-              type: 'info',
-            });
-
-            dispatch(queryDealReg(''));
-            dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+      await dispatch(insertDealReg(newData)).then((d: any) => {
+        if (d?.payload) {
+          if (pathname === '/dealReg') {
+            router?.push(
+              `/dealRegDetail?opportunityId=${d?.payload?.[0]?.opportunity_id}&customerId=${d?.payload?.[0]?.customer_id}&contactId=${d?.payload?.[0]?.contact_id}`,
+            );
           }
-        });
-        setShowModal(false);
-        if (pathname === '/opportunityDetail') {
-          location.reload();
+          if (salesForceUrl) {
+            window.history.replaceState(
+              null,
+              '',
+              `/dealRegDetail?opportunityId=${d?.payload?.[0]?.opportunity_id}&customerId=${d?.payload?.[0]?.customer_id}&contactId=${d?.payload?.[0]?.contact_id}`,
+            );
+            location?.reload();
+          }
+          if (isDealRegDetail) {
+            dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+          } else {
+            dispatch(queryDealReg(''));
+          }
+        } else {
+          notification?.open({
+            message: 'This Combination already exists.',
+            type: 'info',
+          });
+
+          dispatch(queryDealReg(''));
+          dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
         }
+      });
+      setShowModal(false);
+      if (pathname === '/opportunityDetail') {
+        location.reload();
       }
     }
+
   };
 
 
