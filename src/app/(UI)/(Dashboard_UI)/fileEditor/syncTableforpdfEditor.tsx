@@ -709,29 +709,31 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
           if (data) {
             dispatch(insertValidation(data));
           }
+          if (finalOpportunityArray && syncTableData?.length > 0) {
+            dispatch(insertOpportunityLineItem(finalOpportunityArray));
+          }
+          let fileIdLatest = searchParams.get('fileId');
+          await dispatch(
+            quoteFileVerification({
+              id:
+                fullStackManul === 'true'
+                  ? currentFileData?.id
+                  : fileIdLatest
+                    ? fileIdLatest
+                    : quoteFileById?.[0]?.id
+                      ? quoteFileById?.[0]?.id
+                      : fileIdLatest,
+            }),
+          );
+
+          routingConditions();
           // Added to add lineItems to validations
 
         }
       });
     }
-    if (finalOpportunityArray && syncTableData?.length > 0) {
-      dispatch(insertOpportunityLineItem(finalOpportunityArray));
-    }
-    let fileIdLatest = searchParams.get('fileId');
-    await dispatch(
-      quoteFileVerification({
-        id:
-          fullStackManul === 'true'
-            ? currentFileData?.id
-            : fileIdLatest
-              ? fileIdLatest
-              : quoteFileById?.[0]?.id
-                ? quoteFileById?.[0]?.id
-                : fileIdLatest,
-      }),
-    );
-    return
-    routingConditions();
+
+
 
     setNanonetsLoading(false);
   };
