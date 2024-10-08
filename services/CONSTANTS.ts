@@ -204,6 +204,7 @@ export const API = {
     filterData: 'partner/getAllPartnerandProgramFilterData',
     filterDataAdmin: 'partner/getAllPartnerandProgramFilterDataForAdmin',
     approvedForOrg: 'partner/getAllPartnerandProgramApprovedForOrganization',
+    approvedForOrgSalesForce: 'partner/getAllPartnerandProgramApprovedForOrganizationSalesForce',
     CanAddedToOrg: 'partner/getPartnerCanAddedToOrganization',
     GetAllPartnerandProgramFilterDataForOrganizationOnly:
       'partner/getAllPartnerandProgramFilterDataForOrganizationOnly',

@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import Image from 'next/image';
-import {FC} from 'react';
+import { FC } from 'react';
 import ModalCloseIcon from '../../../../../public/assets/static/modalCloseIcon.svg';
-import {Space} from '../antd/Space';
+import { Space } from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import OsButton from '../os-button';
 import Typography from '../typography';
-import {OSModalPropsInterface} from './os-modal.interface';
-import {OSModalStyle} from './styled-components';
+import { OSModalPropsInterface } from './os-modal.interface';
+import { OSModalStyle } from './styled-components';
 
 const OsModal: FC<OSModalPropsInterface> = ({
   body,
@@ -29,9 +29,10 @@ const OsModal: FC<OSModalPropsInterface> = ({
   fifthButtonText,
   fifthButtonfunction,
   styleFooter,
+  isSalesForce,
   ...rest
 }) => {
-  const {onCancel, open, onOk} = rest;
+  const { onCancel, open, onOk } = rest;
   const [token] = useThemeToken();
   return (
     <OSModalStyle
@@ -52,9 +53,10 @@ const OsModal: FC<OSModalPropsInterface> = ({
         <Image
           src={ModalCloseIcon}
           alt="ModalCloseIcon"
-          style={{cursor: 'pointer'}}
+          style={{ cursor: 'pointer' }}
         />
       }
+      closable={isSalesForce}
       footer={
         footer && (
           <Space

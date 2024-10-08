@@ -25,7 +25,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { TabsProps } from 'antd';
 import { Option } from 'antd/es/mentions';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { queryDealReg } from '../../../../../redux/actions/dealReg';
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
@@ -33,10 +33,13 @@ import { SeparatedData } from '../dealRegDetail/dealReg.interface';
 import NewRegistrationForm from './NewRegistrationForm';
 import DealRegAnalytics from './dealRegAnalytics';
 import { StyledTable } from './styled-components';
+import React from 'react';
 
 const DealReg: React.FC = () => {
   const [token] = useThemeToken();
+  const searchParams = useSearchParams()!;
   const [activeTab, setActiveTab] = useState<any>('1');
+  const salesForceUrl = searchParams.get('instance_url');
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -410,6 +413,12 @@ const DealReg: React.FC = () => {
     new Set(DealRegData?.map((contact: any) => contact?.Customer?.name)),
   );
 
+  useEffect(() => {
+    if (salesForceUrl) {
+      setShowModal(true)
+    }
+  }, [salesForceUrl])
+
   return (
     <>
       <Space size={24} direction="vertical" style={{ width: '100%' }}>
@@ -498,9 +507,12 @@ const DealReg: React.FC = () => {
         open={showModal}
         onOk={() => { }}
         onCancel={() => {
-          setShowModal((p) => !p);
+          if (!salesForceUrl) {
+            setShowModal((p) => !p);
+          }
         }}
         footer={false}
+        isSalesForce={!salesForceUrl}
       />
     </>
   );

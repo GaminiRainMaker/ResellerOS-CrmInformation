@@ -12,7 +12,6 @@ import OsButton from '@/app/components/common/os-button';
 import OsCollapseAdmin from '@/app/components/common/os-collapse/adminCollapse';
 import OsContactSelect from '@/app/components/common/os-contact-select';
 import OsCustomerSelect from '@/app/components/common/os-customer-select';
-import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
 import OsOpportunitySelect from '@/app/components/common/os-opportunity-select';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
@@ -26,11 +25,9 @@ import {
   insertDealReg,
   queryDealReg,
 } from '../../../../../redux/actions/dealReg';
-import { getAllPartnerandProgramApprovedForOrganization } from '../../../../../redux/actions/partner';
+import { getAllPartnerandProgramApprovedForOrganizationSalesForce } from '../../../../../redux/actions/partner';
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import { CollapseSpaceStyle } from '../dealRegDetail/styled-component';
-import { RemoveSheetUndoEntry } from 'hyperformula/typings/UndoRedo';
-import { rectIntersection } from '@dnd-kit/core';
 import React from 'react';
 
 const NewRegistrationForm: FC<any> = ({
@@ -40,19 +37,17 @@ const NewRegistrationForm: FC<any> = ({
   const [form] = Form.useForm();
   const [token] = useThemeToken();
   const router = useRouter();
-
   const searchParams = useSearchParams()!;
   const getOpportunityId = Number(searchParams.get('opportunityId'));
   const getContactId = Number(searchParams.get('contactId'));
   const getCustomerId = Number(searchParams.get('customerId'));
+  const salesForceUrl = searchParams.get('instance_url');
+
   let pathname = usePathname();
   const dispatch = useAppDispatch();
   const { data: dataAddress } = useAppSelector((state) => state.customer);
   const { userInformation } = useAppSelector((state) => state.user);
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
-  const [allSeldPartnerFilterData, setAllSelfFilterPartnerData] =
-    useState<any>();
-
   const [formStep, setFormStep] = useState<number>(0);
   const [customerValue, setCustomerValue] = useState<number>();
   const [registeredPartnerData, setRegisteredPartnerData] = useState<any>();
@@ -63,8 +58,6 @@ const NewRegistrationForm: FC<any> = ({
 
   const [selefPartnerOptions, setSelfPartnerOptions] = useState<any>();
   const [partnerOptions, setPartnerOptions] = useState<any>();
-  const [allAddedSelfPartnerProgramIDs, setAllAddedSelfPartnerProgramIDs] =
-    useState<any>();
   const [choosenIdProgram, setChoosedIdProgram] = useState<any>();
   const [regesteriedPartner, setRegesteriedPartner] = useState<any>();
   const [selfRegesteriedPartner, setSelfRegesteriedPartner] = useState<any>();
@@ -72,14 +65,17 @@ const NewRegistrationForm: FC<any> = ({
 
   const [allAddedPartnerProgramIDs, setAllAddedPartnerProgramIDs] =
     useState<any>();
-
+  const org = 'cloudanalogy'
   useEffect(() => {
-    dispatch(getAllPartnerandProgramApprovedForOrganization({}))?.then(
+    dispatch(getAllPartnerandProgramApprovedForOrganizationSalesForce({
+      organization: org
+    }))?.then(
       (payload: any) => {
         setAllFilterPartnerData(payload?.payload);
       },
     );
   }, []);
+  console.log('salesForceUrl', salesForceUrl)
 
   useEffect(() => {
     if (isDealRegDetail) {
@@ -274,134 +270,8 @@ const NewRegistrationForm: FC<any> = ({
       }
     }
   };
-  const registeredFormFinishCurrent = async () => {
-    const dataForSelect = form.getFieldsValue();
 
-    let countForNonAdded: number = 0;
-    if (regesteriedPartner && regesteriedPartner?.length > 0) {
-      regesteriedPartner?.map((items: any) => {
-        console.log('itemsitems', items);
-        if (items?.partner_id === '' || items?.partner_program_id === '') {
-          countForNonAdded += 1;
-        }
-      });
-    }
-    if (selfRegesteriedPartner && selfRegesteriedPartner?.length > 0) {
-      selfRegesteriedPartner?.map((items: any) => {
-        if (items?.partner_id === '' || items?.partner_program_id === '') {
-          countForNonAdded += 1;
-        }
-      });
-    }
-    console.log('3443432432', countForNonAdded);
-    if (countForNonAdded > 0) {
-      setErrorForAll(true);
-      return;
-    } else {
-      setErrorForAll(false);
-    }
 
-    if (
-      regesteriedPartner?.length <= 0 &&
-      selfRegesteriedPartner?.length <= 0 &&
-      formStep === 0
-    ) {
-      notification?.open({
-        message: 'Please add atleast one partner and partner program.',
-        type: 'info',
-      });
-      return;
-    }
-    let combinedData: any = [];
-    if (registeredPartnerData) {
-      combinedData = [
-        ...(registeredPartnerData.registeredPartners ?? [])?.map(
-          (obj: any) => ({
-            ...obj,
-            type: 'registered',
-          }),
-        ),
-        ...(registeredPartnerData.selfRegisteredPartners ?? [])?.map(
-          (obj: any) => ({
-            ...obj,
-            type: 'self_registered',
-          }),
-        ),
-      ];
-    } else {
-      combinedData = [
-        ...(regesteriedPartner ?? [])?.map((obj: any) => ({
-          ...obj,
-          type: 'Registered',
-        })),
-        ...(selfRegesteriedPartner ?? [])?.map((obj: any) => ({
-          ...obj,
-          type: 'Self Registered',
-        })),
-      ];
-    }
-
-    let data = {
-      selfRegisteredPartners: selfRegesteriedPartner,
-      registeredPartners: regesteriedPartner,
-    };
-    if (formStep === 0 && !isDealRegDetail) {
-      setRegisteredPartnerData(data);
-      setFormStep(1);
-    } else if (
-      (registeredPartnerData && formStep === 1) ||
-      (data && isDealRegDetail)
-    ) {
-      let newData: any;
-      if (isDealRegDetail) {
-        newData = combinedData?.map((obj: any) => ({
-          ...obj,
-          ...addressData,
-          organization: userInformation?.organization,
-          opportunity_id: getOpportunityId,
-          contact_id: getContactId,
-          customer_id: getCustomerId,
-          status: 'New',
-          user_id: userInformation?.id,
-        }));
-      } else {
-        newData = combinedData?.map((obj: any) => ({
-          ...obj,
-          ...dataForSelect,
-          ...addressData,
-          organization: userInformation?.organization,
-          status: 'New',
-          user_id: userInformation?.id,
-        }));
-      }
-
-      await dispatch(insertDealReg(newData)).then((d: any) => {
-        if (d?.payload) {
-          if (pathname === '/dealReg')
-            router?.push(
-              `/dealRegDetail?opportunityId=${d?.payload?.[0]?.opportunity_id}&customerId=${d?.payload?.[0]?.customer_id}&contactId=${d?.payload?.[0]?.contact_id}`,
-            );
-          if (isDealRegDetail) {
-            dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-          } else {
-            dispatch(queryDealReg(''));
-          }
-        } else {
-          notification?.open({
-            message: 'This Combination already exists.',
-            type: 'info',
-          });
-
-          dispatch(queryDealReg(''));
-          dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-        }
-      });
-      setShowModal(false);
-      if (pathname === '/opportunityDetail') {
-        location.reload();
-      }
-    }
-  };
 
   const addNewPartnerFOrReg = (typeOfWorkFor: string) => {
     let checkIn =
@@ -520,6 +390,142 @@ const NewRegistrationForm: FC<any> = ({
 
     // optionsForProgram
   };
+
+  const registeredFormFinishCurrent = async () => {
+    const dataForSelect = form.getFieldsValue();
+
+    let countForNonAdded: number = 0;
+    if (regesteriedPartner && regesteriedPartner?.length > 0) {
+      regesteriedPartner?.map((items: any) => {
+        console.log('itemsitems', items);
+        if (items?.partner_id === '' || items?.partner_program_id === '') {
+          countForNonAdded += 1;
+        }
+      });
+    }
+    if (selfRegesteriedPartner && selfRegesteriedPartner?.length > 0) {
+      selfRegesteriedPartner?.map((items: any) => {
+        if (items?.partner_id === '' || items?.partner_program_id === '') {
+          countForNonAdded += 1;
+        }
+      });
+    }
+    console.log('3443432432', countForNonAdded);
+    if (countForNonAdded > 0) {
+      setErrorForAll(true);
+      return;
+    } else {
+      setErrorForAll(false);
+    }
+
+    if (
+      regesteriedPartner?.length <= 0 &&
+      selfRegesteriedPartner?.length <= 0 &&
+      formStep === 0
+    ) {
+      notification?.open({
+        message: 'Please add atleast one partner and partner program.',
+        type: 'info',
+      });
+      return;
+    }
+    let combinedData: any = [];
+    if (registeredPartnerData) {
+      combinedData = [
+        ...(registeredPartnerData.registeredPartners ?? [])?.map(
+          (obj: any) => ({
+            ...obj,
+            type: 'registered',
+          }),
+        ),
+        ...(registeredPartnerData.selfRegisteredPartners ?? [])?.map(
+          (obj: any) => ({
+            ...obj,
+            type: 'self_registered',
+          }),
+        ),
+      ];
+    } else {
+      combinedData = [
+        ...(regesteriedPartner ?? [])?.map((obj: any) => ({
+          ...obj,
+          type: 'Registered',
+        })),
+        ...(selfRegesteriedPartner ?? [])?.map((obj: any) => ({
+          ...obj,
+          type: 'Self Registered',
+        })),
+      ];
+    }
+
+    let data = {
+      selfRegisteredPartners: selfRegesteriedPartner,
+      registeredPartners: regesteriedPartner,
+    };
+    if (salesForceUrl) {
+      console.log('datadata', data);
+      
+
+    } else {
+      if (formStep === 0 && !isDealRegDetail) {
+        setRegisteredPartnerData(data);
+        setFormStep(1);
+      } else if (
+        (registeredPartnerData && formStep === 1) ||
+        (data && isDealRegDetail)
+      ) {
+        let newData: any;
+        if (isDealRegDetail) {
+          newData = combinedData?.map((obj: any) => ({
+            ...obj,
+            ...addressData,
+            organization: userInformation?.organization,
+            opportunity_id: getOpportunityId,
+            contact_id: getContactId,
+            customer_id: getCustomerId,
+            status: 'New',
+            user_id: userInformation?.id,
+          }));
+        } else {
+          newData = combinedData?.map((obj: any) => ({
+            ...obj,
+            ...dataForSelect,
+            ...addressData,
+            organization: userInformation?.organization,
+            status: 'New',
+            user_id: userInformation?.id,
+          }));
+        }
+
+        await dispatch(insertDealReg(newData)).then((d: any) => {
+          if (d?.payload) {
+            if (pathname === '/dealReg')
+              router?.push(
+                `/dealRegDetail?opportunityId=${d?.payload?.[0]?.opportunity_id}&customerId=${d?.payload?.[0]?.customer_id}&contactId=${d?.payload?.[0]?.contact_id}`,
+              );
+            if (isDealRegDetail) {
+              dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+            } else {
+              dispatch(queryDealReg(''));
+            }
+          } else {
+            notification?.open({
+              message: 'This Combination already exists.',
+              type: 'info',
+            });
+
+            dispatch(queryDealReg(''));
+            dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+          }
+        });
+        setShowModal(false);
+        if (pathname === '/opportunityDetail') {
+          location.reload();
+        }
+      }
+    }
+  };
+
 
   return (
     <>
@@ -933,11 +939,11 @@ const NewRegistrationForm: FC<any> = ({
         )}
         <OsButton
           text={
-            formStep === 0 && !isDealRegDetail
+            formStep === 0 && !isDealRegDetail && !salesForceUrl
               ? 'Save & Next'
-              : isDealRegDetail
+              : isDealRegDetail || salesForceUrl
                 ? 'Save'
-                : 'Save'
+                : 'Save & Continue'
           }
           buttontype="PRIMARY"
           clickHandler={form.submit}
