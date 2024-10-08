@@ -689,23 +689,23 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
     }
 
     if (newrrLineItems && newrrLineItems.length > 0) {
-      dispatch(insertQuoteLineItem(newrrLineItems)).then((d: any) => {
+      dispatch(insertQuoteLineItem(newrrLineItems)).then(async (d: any) => {
         if (rebateDataArray && rebateDataArray.length > 0) {
           const data = genericFun(d?.payload, rebateDataArray);
           dispatch(insertRebateQuoteLineItem(data));
         }
-        if (contractProductArray && contractProductArray.length > 0) {
-          const data = genericFun(d?.payload, contractProductArray);
-          dispatch(insertValidation(data));
-        }
+        // if (contractProductArray && contractProductArray.length > 0) {
+        //   const data = genericFun(d?.payload, contractProductArray);
+        //   dispatch(insertValidation(data));
+        // }
         if (newrrLineItems && newrrLineItems.length > 0) {
           const data = genericFun(d?.payload, newrrLineItems);
 
+          await dispatch(insertProfitability(data));
 
           if (data) {
             dispatch(insertValidation(data));
           }
-          dispatch(insertProfitability(data));
           // Added to add lineItems to validations
 
         }

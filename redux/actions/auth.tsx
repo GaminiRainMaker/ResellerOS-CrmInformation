@@ -157,3 +157,16 @@ export const getPDFFileData = createAsyncThunk(
     }
   },
 );
+
+
+export const fetchAndParseExcel = createAsyncThunk(
+  'auth/fetchAndParseExcel',
+  async (data: any, thunkApi) => {
+    try {
+      const res: any = await AUTH_API.fetchAndParseExcel(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

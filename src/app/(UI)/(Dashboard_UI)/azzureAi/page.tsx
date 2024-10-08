@@ -12,7 +12,6 @@
 'use client';
 
 import '@handsontable/pikaday/css/pikaday.css';
-import '@handsontable/pikaday/css/pikaday.css';
 const HotTable = dynamic(() => import('@handsontable/react'), {
     ssr: false,
 });
@@ -20,43 +19,30 @@ const HotTable = dynamic(() => import('@handsontable/react'), {
 // import {HotTable} from '@handsontable/react';
 import { HyperFormula } from 'hyperformula';
 
-import { useEffect, useState } from 'react';
-import './styles.css';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { addClassesToRows, alignHeaders } from '../fileEditor/hooksCallbacks';
-import GlobalLoader from '@/app/components/common/os-global-loader';
-import 'handsontable/dist/handsontable.min.css';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { formatStatus } from '@/app/utils/CONSTANTS';
-import OsModal from '@/app/components/common/os-modal';
-import SyncTableData from '../fileEditor/syncTableforpdfEditor';
-import OsButton from '@/app/components/common/os-button';
-import { message, notification, Space } from 'antd';
-import Typography from '@/app/components/common/typography';
-import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import { Col, Row } from '@/app/components/common/antd/Grid';
-import {
-    getfileByQuoteIdWithManual,
-    getQuoteFileById,
-} from '../../../../../redux/actions/quoteFile';
-import {
-    getPDFFileData,
-    getSalesForceFields,
-    getSalesForceFileData,
-} from '../../../../../redux/actions/auth';
-import OsInput from '@/app/components/common/os-input';
-import CommonSelect from '@/app/components/common/os-select';
-import { convertFileToBase64, getResultedValue } from '@/app/utils/base';
+import useThemeToken from '@/app/components/common/hooks/useThemeToken';
+import OsButton from '@/app/components/common/os-button';
+import GlobalLoader from '@/app/components/common/os-global-loader';
+import OsModal from '@/app/components/common/os-modal';
+import { OSDraggerStyle } from '@/app/components/common/os-upload/styled-components';
+import Typography from '@/app/components/common/typography';
+import { convertFileToBase64 } from '@/app/utils/base';
+import { formatStatus } from '@/app/utils/CONSTANTS';
+import { FolderArrowDownIcon } from '@heroicons/react/24/outline';
+import { message, Space } from 'antd';
+import 'handsontable/dist/handsontable.min.css';
 import { registerAllModules } from 'handsontable/registry';
 import dynamic from 'next/dynamic';
-import { getAllFormulas } from '../../../../../redux/actions/formulas';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
-    queryLineItemSyncing,
-    queryLineItemSyncingForSalesForce,
-} from '../../../../../redux/actions/LineItemSyncing';
-import { OSDraggerStyle } from '@/app/components/common/os-upload/styled-components';
-import { FolderArrowDownIcon } from '@heroicons/react/24/outline';
+    fetchAndParseExcel,
+    getPDFFileData
+} from '../../../../../redux/actions/auth';
 import { uploadExcelFileToAws, uploadToAws } from '../../../../../redux/actions/upload';
+import { useAppDispatch } from '../../../../../redux/hook';
+import { addClassesToRows, alignHeaders } from '../fileEditor/hooksCallbacks';
+import './styles.css';
 
 registerAllModules();
 
@@ -64,6 +50,7 @@ const EditorFile = () => {
     const dispatch = useAppDispatch();
     const [token] = useThemeToken();
     const searchParams = useSearchParams()!;
+    const excelFile = searchParams.get('excel');
 
     const [showModalForAI, setShowModalForAI] = useState<boolean>(false);
     const [UploadedFileData, setUploadedFileData] = useState<any>()
@@ -83,7 +70,7 @@ const EditorFile = () => {
         }
         setUploadedFileDataColumn(updateLineItemColumnArr);
     }, [UploadedFileData]);
-
+    console.log("43534543534", excelFile === "true")
     const beforeUpload = async (file: File) => {
         const obj: any = { ...file };
         let pathUsedToUpload = file?.type?.split('.')?.includes('spreadsheetml')
@@ -97,9 +84,22 @@ const EditorFile = () => {
                 dispatch(pathUsedToUpload({ document: base64String })).then(
                     (payload: any) => {
                         const doc_url = payload?.payload?.data?.Location;
+                        let pathToGo = excelFile === "true" ? fetchAndParseExcel : getPDFFileData
                         if (doc_url) {
-                            dispatch(getPDFFileData({ invoiceUrl: doc_url }))?.then((payload: any) => {
-                                setUploadedFileData(payload?.payload?.items)
+                            dispatch(pathToGo({ Url: doc_url }))?.then((payload: any) => {
+                                if (excelFile === "true") {
+                                    let requiredOutput = payload?.payload?.map((subArray: any) =>
+                                        subArray.filter((item: any) => item !== '')
+                                    ).filter((subArray: any) => subArray.length > 0);
+
+
+                                    console.log("324324234234", requiredOutput)
+                                    setUploadedFileData(requiredOutput)
+
+                                } else {
+                                    setUploadedFileData(payload?.payload?.items)
+
+                                }
                                 setShowModalForAI(false);
 
                             })
@@ -113,13 +113,32 @@ const EditorFile = () => {
             });
     };
 
+    let newArrColumn = [
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f',
+        'g',
+        'h',
+        'i',
+        'j',
+        'k',
+        'l',
+        'm',
+        'n',
+        'o',
+        'p',
+    ];
+
 
     return (
         <GlobalLoader loading={false}>
             <Row justify="space-between">
                 <Col>
                     <OsButton
-                        text="Upload Pdf"
+                        text={excelFile === "true" ? "Upload Excel" : "Upload Pdf"}
                         buttontype="PRIMARY"
                         clickHandler={() => {
                             setShowModalForAI(true);
@@ -139,7 +158,7 @@ const EditorFile = () => {
                         engine: HyperFormula,
                     }}
                     stretchH="all"
-                    colHeaders={UploadedFileDataColumn}
+                    colHeaders={ UploadedFileDataColumn}
                     width="auto"
                     minSpareRows={0}
                     autoWrapRow
@@ -182,6 +201,7 @@ const EditorFile = () => {
                                 beforeUpload={beforeUpload}
                                 showUploadList={false}
                                 multiple
+                                accept={excelFile === "true" ? ".xls,.xlsx" : ".pdf"}
                             >
                                 <FolderArrowDownIcon
                                     width={24}

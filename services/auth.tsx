@@ -18,6 +18,8 @@ export const AUTH_API = {
   addForAccount: (data: any) => post(API.AUTH.addForAccount, data),
   getExcelData: (data: any) => post(API.AUTH.getExcelData, data),
   getPDFFileData: (data: any) => post(API.AUTH.getPDFFileData, data),
+  fetchAndParseExcel: (data: any) => post(API.AUTH.fetchAndParseExcel, data),
+
 
 
 
