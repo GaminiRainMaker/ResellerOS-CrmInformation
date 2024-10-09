@@ -687,47 +687,53 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         finalOpportunityArray?.push(singleObjects);
       });
     }
-
+    console.log("hlloooooo1", newrrLineItems)
     if (newrrLineItems && newrrLineItems.length > 0) {
-      dispatch(insertQuoteLineItem(newrrLineItems)).then((d: any) => {
+      dispatch(insertQuoteLineItem(newrrLineItems)).then(async (d: any) => {
         if (rebateDataArray && rebateDataArray.length > 0) {
           const data = genericFun(d?.payload, rebateDataArray);
           dispatch(insertRebateQuoteLineItem(data));
         }
-        if (contractProductArray && contractProductArray.length > 0) {
-          const data = genericFun(d?.payload, contractProductArray);
-          dispatch(insertValidation(data));
-        }
+        // if (contractProductArray && contractProductArray.length > 0) {
+        //   const data = genericFun(d?.payload, contractProductArray);
+        //   dispatch(insertValidation(data));
+        // }
+        console.log("hlloooooo2", newrrLineItems)
+
         if (newrrLineItems && newrrLineItems.length > 0) {
           const data = genericFun(d?.payload, newrrLineItems);
+          console.log("hlloooooo3", data)
 
+          await dispatch(insertProfitability(data));
 
           if (data) {
             dispatch(insertValidation(data));
           }
-          dispatch(insertProfitability(data));
+          if (finalOpportunityArray && syncTableData?.length > 0) {
+            dispatch(insertOpportunityLineItem(finalOpportunityArray));
+          }
+          let fileIdLatest = searchParams.get('fileId');
+          await dispatch(
+            quoteFileVerification({
+              id:
+                fullStackManul === 'true'
+                  ? currentFileData?.id
+                  : fileIdLatest
+                    ? fileIdLatest
+                    : quoteFileById?.[0]?.id
+                      ? quoteFileById?.[0]?.id
+                      : fileIdLatest,
+            }),
+          );
+
+          routingConditions();
           // Added to add lineItems to validations
 
         }
       });
     }
-    if (finalOpportunityArray && syncTableData?.length > 0) {
-      dispatch(insertOpportunityLineItem(finalOpportunityArray));
-    }
-    let fileIdLatest = searchParams.get('fileId');
-    await dispatch(
-      quoteFileVerification({
-        id:
-          fullStackManul === 'true'
-            ? currentFileData?.id
-            : fileIdLatest
-              ? fileIdLatest
-              : quoteFileById?.[0]?.id
-                ? quoteFileById?.[0]?.id
-                : fileIdLatest,
-      }),
-    );
-    routingConditions();
+
+
 
     setNanonetsLoading(false);
   };

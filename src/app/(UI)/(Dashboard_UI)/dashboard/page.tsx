@@ -293,7 +293,17 @@ const Dashboard = () => {
                   buttontype="PRIMARY"
                   // loading={loading}
                   clickHandler={() => {
-                    window?.open('/azzureAi')
+                    window?.open('/azzureAi?excel=false')
+                  }}
+                />
+              </Col>
+              <Col>
+                <OsButton
+                  text="Testing Excel"
+                  buttontype="PRIMARY"
+                  // loading={loading}
+                  clickHandler={() => {
+                    window?.open('/azzureAi?excel=true')
                   }}
                 />
               </Col>

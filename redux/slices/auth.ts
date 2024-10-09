@@ -5,6 +5,7 @@ import {
   addSalesForceDataa,
   addSalesForceDataaForAccount,
   contactSales,
+  fetchAndParseExcel,
   getExcelData,
   getPDFFileData,
   getSalesForceDataaForEditAsItIs,
@@ -246,7 +247,25 @@ const authSlice = createSlice({
       .addCase(getPDFFileData.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      .addCase(fetchAndParseExcel.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchAndParseExcel.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          // state.data = action.payload;
+        },
+      )
+      .addCase(
+        fetchAndParseExcel.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      );
   },
 });
 
