@@ -44,6 +44,7 @@ import {
   updateOpportunity,
 } from '../../../../../redux/actions/opportunity';
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import React from 'react';
 
 const CrmOpportunity: React.FC = () => {
   const dispatch = useAppDispatch();

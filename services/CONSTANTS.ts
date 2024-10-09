@@ -68,6 +68,7 @@ export const API = {
     GetSeats: '/user/getOranizationSeats',
     UpdateUserPasswordForNew: '/user/updateUserPasswordForNew',
     GetAllOrganizations: '/user/queryAllOrganizations',
+    CreateNewOrganization: '/user/createNewOrganization',
   },
   PRODUCT: {
     INDEX: '/product',

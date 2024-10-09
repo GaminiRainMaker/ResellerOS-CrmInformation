@@ -32,6 +32,7 @@ import DailogModal from '../../common/os-modal/DialogModal';
 import Typography from '../../common/typography';
 import { AuthLayoutInterface } from './authLayout.interface';
 import { ContentSectionWrapper, CustomCheckbox } from './styled-components';
+import React from 'react';
 
 const ContentSection: FC<AuthLayoutInterface> = ({
   heading,
