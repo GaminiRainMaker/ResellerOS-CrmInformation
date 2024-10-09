@@ -111,7 +111,7 @@ const UserManagement = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Email
+          Master Email
         </Typography>
       ),
       dataIndex: 'email',
