@@ -33,6 +33,7 @@ import { SeparatedData } from '../dealRegDetail/dealReg.interface';
 import NewRegistrationForm from './NewRegistrationForm';
 import DealRegAnalytics from './dealRegAnalytics';
 import { StyledTable } from './styled-components';
+import React from 'react';
 
 const DealReg: React.FC = () => {
   const [token] = useThemeToken();

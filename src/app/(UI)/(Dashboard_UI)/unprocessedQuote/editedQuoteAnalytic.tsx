@@ -47,7 +47,7 @@ const EditedQuoteAnalytics = () => {
     {
       key: 3,
       primary: <div>{completedQuote?.length}</div>,
-      secondry: 'Completed',
+      secondry: 'Approved',
       icon: <CheckBadgeIcon width={24} color={token?.colorSuccess} />,
       iconBg: token?.colorSuccessBg,
     },
