@@ -37,12 +37,16 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import {
     fetchAndParseExcel,
-    getPDFFileData
+    getPDFFileData,
 } from '../../../../../redux/actions/auth';
-import { uploadExcelFileToAws, uploadToAws } from '../../../../../redux/actions/upload';
+import {
+    uploadExcelFileToAws,
+    uploadToAws,
+} from '../../../../../redux/actions/upload';
 import { useAppDispatch } from '../../../../../redux/hook';
 import { addClassesToRows, alignHeaders } from '../fileEditor/hooksCallbacks';
 import './styles.css';
+import { queryLineItemSyncingForSalesForce } from '../../../../../redux/actions/LineItemSyncing';
 
 registerAllModules();
 
@@ -53,24 +57,43 @@ const EditorFile = () => {
     const excelFile = searchParams.get('excel');
 
     const [showModalForAI, setShowModalForAI] = useState<boolean>(false);
-    const [UploadedFileData, setUploadedFileData] = useState<any>()
+    const [UploadedFileData, setUploadedFileData] = useState<any>();
     const [UploadedFileDataColumn, setUploadedFileDataColumn] = useState<any>();
+
+    const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
+
+    const [query, setQuery] = useState<{
+        searchValue: string;
+        asserType: boolean;
+        salesforce: boolean;
+    }>({
+        searchValue: '',
+        asserType: false,
+        salesforce: false,
+    });
+
+    useEffect(() => {
+        dispatch(queryLineItemSyncingForSalesForce(query))?.then((payload: any) => {
+            let approvedOne = payload?.payload?.filter(
+                (items: any) => items?.status === 'Approved',
+            );
+            setLineItemSyncingData(approvedOne);
+        });
+    }, []);
+
 
     useEffect(() => {
         const updateLineItemColumnArr: any = [];
         // let newObj = { data: "QuoteId", readOnly: true }
         const keysss =
-            UploadedFileData?.length > 0 &&
-            Object.keys(UploadedFileData?.[0]);
+            UploadedFileData?.length > 0 && Object.keys(UploadedFileData?.[0]);
         if (keysss) {
             keysss?.map((item: any) => {
                 updateLineItemColumnArr?.push(formatStatus(item));
-
             });
         }
         setUploadedFileDataColumn(updateLineItemColumnArr);
     }, [UploadedFileData]);
-    console.log("43534543534", excelFile === "true")
     const beforeUpload = async (file: File) => {
         const obj: any = { ...file };
         let pathUsedToUpload = file?.type?.split('.')?.includes('spreadsheetml')
@@ -84,25 +107,144 @@ const EditorFile = () => {
                 dispatch(pathUsedToUpload({ document: base64String })).then(
                     (payload: any) => {
                         const doc_url = payload?.payload?.data?.Location;
-                        let pathToGo = excelFile === "true" ? fetchAndParseExcel : getPDFFileData
+                        let pathToGo =
+                            excelFile === 'true' ? fetchAndParseExcel : getPDFFileData;
                         if (doc_url) {
                             dispatch(pathToGo({ Url: doc_url }))?.then((payload: any) => {
-                                if (excelFile === "true") {
-                                    let requiredOutput = payload?.payload?.map((subArray: any) =>
-                                        subArray.filter((item: any) => item !== '')
-                                    ).filter((subArray: any) => subArray.length > 0);
+                                if (excelFile === 'true') {
+                                    // this is  a check arrr
+                                    let newArrCheck = [
+                                        'line #',
+                                        'partnumber',
+                                        'manufacturer',
+                                        'description',
+                                        'listprice',
+                                        'gsaprice',
+                                        'Cost',
+                                        'quantity',
+                                        'Type',
+                                        'openmarket',
+                                        'productcode',
+                                        'listprice',
+                                    ];
+                                    const normalize = (str: any) => {
+                                        return str
+                                            ?.toString()
+                                            ?.toLowerCase()
+                                            .replace(/[\s_]+/g, ' ')
+                                            .trim();
+                                    };
 
+                                    // Normalize the newArrCheck values
+                                    let normalizedCheckArr = newArrCheck.map(normalize);
+                                    // check for best matching row
+                                    let maxMatches = 0;
+                                    let bestRowIndex = -1;
 
-                                    console.log("324324234234", requiredOutput)
-                                    setUploadedFileData(requiredOutput)
+                                    for (let i = 0; i < payload?.payload.length; i++) {
+                                        let currentRow = payload?.payload[i];
+                                        let matchCount = 0;
 
+                                        for (let item of currentRow) {
+                                            let normalizedItem = normalize(item);
+                                            // Check if normalizedItem matches any normalized check item
+                                            if (
+                                                normalizedCheckArr.some(
+                                                    (checkItem) =>
+                                                        normalizedItem === normalize(checkItem),
+                                                )
+                                            ) {
+                                                matchCount++;
+                                            }
+                                        }
+
+                                        if (matchCount > maxMatches) {
+                                            maxMatches = matchCount;
+                                            bestRowIndex = i;
+                                        }
+                                    }
+
+                                    // trim the arrr for valid lineItems
+
+                                    const isNullOrEmptyRow = (row: any) => {
+                                        return row.every(
+                                            (item: any) => item === null || item === '',
+                                        );
+                                    };
+
+                                    let indexFrom = -1;
+
+                                    // Find the index of the first row that is null or empty
+                                    for (let i = 0; i < payload?.payload?.length; i++) {
+                                        if (
+                                            isNullOrEmptyRow(payload?.payload[i]) &&
+                                            bestRowIndex + 3 < i
+                                        ) {
+                                            indexFrom = i;
+                                            break;
+                                        }
+                                    }
+
+                                    // Slice the array from the found index
+                                    let result =
+                                        indexFrom > 0
+                                            ? payload?.payload?.slice(bestRowIndex + 1, indexFrom - 1)
+                                            : payload?.payload?.slice(
+                                                bestRowIndex + 1,
+                                                payload?.payload?.length - 1,
+                                            );
+
+                                    let requiredOutput = result
+                                        ?.map((subArray: any) =>
+                                            subArray.filter((item: any) => item !== null),
+                                        )
+                                        .filter((subArray: any) => subArray.length > 0);
+
+                                    let headerKeys = payload?.payload[bestRowIndex]?.filter(
+                                        (items: any) => items !== null,
+                                    );
+                                    let modifiedArr = headerKeys.map((item: any) =>
+                                        item.replace(/\s+/g, '').replace(/[.]/g, ''),
+                                    );
+                                    // replace the syncing valueesss ========================
+
+                                    let syncedHeaderValue = modifiedArr
+                                        .map((item: any) => {
+                                            // Clean up the item by removing spaces and special characters
+                                            const cleanedItem = item
+                                                .trim()
+                                                .replace(/[^A-Za-z]/g, '')
+                                                .substring(0, 4)
+                                                .toLowerCase();
+
+                                            // Find the matching quoteHeader
+                                            const match = lineItemSyncingData.find(
+                                                (obj: any) =>
+                                                    obj.pdf_header.toLowerCase().substring(0, 4) ===
+                                                    cleanedItem,
+                                            );
+
+                                            // Return the expected value if a match is found, otherwise return undefined
+                                            return match ? match.quote_header : item;
+                                        })
+                                        .filter(Boolean); // Remove any undefined values
+
+                                    // end of above
+                                    // Transform newArr into an array of objects
+                                    let resultantValues = requiredOutput.map((row: any) => {
+                                        let obj: any = {};
+                                        syncedHeaderValue.forEach((header: any, index: any) => {
+                                            obj[header] = row[index] === '' ? null : row[index]; // Convert empty strings to null
+                                        });
+                                        return obj;
+                                    });
+
+                                    setUploadedFileData(resultantValues);
                                 } else {
-                                    setUploadedFileData(payload?.payload?.items)
-
+                                    setUploadedFileData(payload?.payload?.items);
                                 }
                                 setShowModalForAI(false);
-
-                            })
+                            });
                         }
                         obj.doc_url = doc_url;
                     },
@@ -132,13 +274,12 @@ const EditorFile = () => {
         'p',
     ];
 
-
     return (
         <GlobalLoader loading={false}>
             <Row justify="space-between">
                 <Col>
                     <OsButton
-                        text={excelFile === "true" ? "Upload Excel" : "Upload Pdf"}
+                        text={excelFile === 'true' ? 'Upload Excel' : 'Upload Pdf'}
                         buttontype="PRIMARY"
                         clickHandler={() => {
                             setShowModalForAI(true);
@@ -146,19 +287,19 @@ const EditorFile = () => {
                     />
                 </Col>
             </Row>
-            {UploadedFileData && UploadedFileData?.length > 0 &&
+            {UploadedFileData && UploadedFileData?.length > 0 && (
                 <HotTable
                     data={UploadedFileData}
                     colWidths={[
-                        300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300,
-                        300, 300,
+                        300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300, 300,
+                        300, 300, 300,
                     ]}
                     height="auto"
                     formulas={{
                         engine: HyperFormula,
                     }}
                     stretchH="all"
-                    colHeaders={ UploadedFileDataColumn}
+                    colHeaders={UploadedFileDataColumn}
                     width="auto"
                     minSpareRows={0}
                     autoWrapRow
@@ -178,18 +319,10 @@ const EditorFile = () => {
                     beforeRenderer={() => {
                         addClassesToRows('', '', '', '', '', '', UploadedFileData);
                     }}
-                    afterRemoveRow={(change, source) => {
-
-                    }}
-                    afterChange={(change: any, source) => {
-
-                    }}
+                    afterRemoveRow={(change, source) => { }}
+                    afterChange={(change: any, source) => { }}
                 />
-
-            }
-
-
-
+            )}
 
             <OsModal
                 // loading={loading}
@@ -201,7 +334,7 @@ const EditorFile = () => {
                                 beforeUpload={beforeUpload}
                                 showUploadList={false}
                                 multiple
-                                accept={excelFile === "true" ? ".xls,.xlsx" : ".pdf"}
+                                accept={excelFile === 'true' ? '.xls,.xlsx' : '.pdf'}
                             >
                                 <FolderArrowDownIcon
                                     width={24}
