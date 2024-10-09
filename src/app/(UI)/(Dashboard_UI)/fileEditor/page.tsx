@@ -154,6 +154,7 @@ const EditorFile = () => {
     );
   };
 
+
   useEffect(() => {
     dispatch(getAllFormulasByDistributorAndOem(fileData ? fileData : {}))?.then(
       (payload: any) => {
@@ -455,15 +456,7 @@ const EditorFile = () => {
                     const titles = itemNew?.cells.filter(
                       (innerCell: any) => innerCell.row === 1,
                     );
-                    const strifndfs = (str: any) => {
-                      const losadsd = str
-                        ?.toString()
-                        .match(/\d+(\.\d+)?/g)
-                        ?.map(Number)
-                        ?.toString()
-                        .match(/\d+(\.\d+)?/g)
-                        ?.map(Number);
-                    };
+
 
                     itemNew?.cells.forEach((item: any) => {
                       const rowNum = item.row;
@@ -487,14 +480,7 @@ const EditorFile = () => {
                             )
                             .text?.includes('Price')
                             ? item?.text
-                            : // ?.toString()
-                            // .match(/\d+(\.\d+)?/g)
-                            // ?.map(Number)
-                            // ?.toString()
-                            // .match(/\d+(\.\d+)?/g)
-                            // ?.map(Number)
-                            // ?.toString()
-                            item.text;
+                            : item.text;
                     });
                   }
 
@@ -1092,7 +1078,6 @@ const EditorFile = () => {
       `/generateQuote?id=${getQUoteId}&tab=2&isView=${getResultedValue()}`,
     );
   };
-  console.log('345435435', updateLineItemsValue);
   const CancelEditing = () => {
     const data = {
       issue_type: null,

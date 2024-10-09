@@ -186,10 +186,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             : NewFilterOption?.value,
           key: indexMerge,
         });
-        // console.log(
-        //   'syncTableQuoteLItemValuessyncTableQuoteLItemValues',
-        //   syncTableQuoteLItemValues,
-        // );
+
 
         // return;
         const newOptions: any = [...newSyncOptionChecks];
@@ -584,7 +581,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
                 productItemFind?.product_code?.replace(/\s/g, '') ===
                 productCode,
             );
-            // console.log('4354354353454', itemsOfProduct, itemsToAdd);
             const obj1: any = {
               quote_file_id:
                 fullStackManul === 'true'
@@ -687,7 +683,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         finalOpportunityArray?.push(singleObjects);
       });
     }
-    console.log("hlloooooo1", newrrLineItems)
     if (newrrLineItems && newrrLineItems.length > 0) {
       dispatch(insertQuoteLineItem(newrrLineItems)).then(async (d: any) => {
         if (rebateDataArray && rebateDataArray.length > 0) {
@@ -698,11 +693,9 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         //   const data = genericFun(d?.payload, contractProductArray);
         //   dispatch(insertValidation(data));
         // }
-        console.log("hlloooooo2", newrrLineItems)
 
         if (newrrLineItems && newrrLineItems.length > 0) {
           const data = genericFun(d?.payload, newrrLineItems);
-          console.log("hlloooooo3", data)
 
           await dispatch(insertProfitability(data));
 
