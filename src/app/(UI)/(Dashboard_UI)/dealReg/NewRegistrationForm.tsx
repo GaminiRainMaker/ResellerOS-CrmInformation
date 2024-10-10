@@ -29,7 +29,7 @@ import { getAllPartnerandProgramApprovedForOrganizationSalesForce } from '../../
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import { CollapseSpaceStyle } from '../dealRegDetail/styled-component';
 import React from 'react';
-import { createSalesForcePartner } from '../../../../../redux/actions/salesForce';
+import { createSalesForcePartner, createSalesforcePartnerProgram } from '../../../../../redux/actions/salesForce';
 
 const NewRegistrationForm: FC<any> = ({
   isDealRegDetail = false,
@@ -445,13 +445,14 @@ const NewRegistrationForm: FC<any> = ({
           partnersArray,
           partnerProgramsArray,
         );
-        await dispatch(
-          createSalesForcePartner({
-            baseURL: salesForceUrl,
-            token: salesForceKey,
-            data: { Name: 'Palo Alto', rosdealregai__External_Id__c: '125' },
-          }),
-        );
+        try {
+          await Promise.all(partnersArray?.map((partner: any) => dispatch(createSalesForcePartner({ baseURL: salesForceUrl, token: salesForceKey, data: partner }))));
+          // await Promise.all(partnerProgramsArray?.map((program: any) => dispatch(createSalesforcePartnerProgram({ baseURL: salesForceUrl, token: salesForceKey, data: program }))));
+
+          console.log('All partners created successfully');
+        } catch (error) {
+          console.error('Error creating partners:', error);
+        }
         // await dispatch(createSalesforcePartner(partnerProgramsArray))
 
 

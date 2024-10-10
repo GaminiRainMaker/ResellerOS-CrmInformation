@@ -406,7 +406,9 @@ const DealReg: React.FC = () => {
   ];
 
   useEffect(() => {
-    dispatch(queryDealReg(searchQuery));
+    if (!salesForceUrl) {
+      dispatch(queryDealReg(searchQuery));
+    }
   }, [searchQuery]);
 
   const uniqueCustomer = Array?.from(
