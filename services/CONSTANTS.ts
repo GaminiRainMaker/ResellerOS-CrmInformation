@@ -206,6 +206,8 @@ export const API = {
     filterData: 'partner/getAllPartnerandProgramFilterData',
     filterDataAdmin: 'partner/getAllPartnerandProgramFilterDataForAdmin',
     approvedForOrg: 'partner/getAllPartnerandProgramApprovedForOrganization',
+    approvedForOrgSalesForce:
+      'partner/getAllPartnerandProgramApprovedForOrganizationSalesForce',
     CanAddedToOrg: 'partner/getPartnerCanAddedToOrganization',
     GetAllPartnerandProgramFilterDataForOrganizationOnly:
       'partner/getAllPartnerandProgramFilterDataForOrganizationOnly',
@@ -313,5 +315,12 @@ export const API = {
     QUERY: 'lineItemSyncing/query',
     SalesForceAdd: '/lineItemSyncing/insertLineItemSyncingForSalesForce',
     SalesForceGet: '/lineItemSyncing/queryLineItemSyncinForSalesFOrce',
+  },
+  SALESFORCE: {
+    INDEX: '/salesForce',
+    CreateSalesForcePartner: '/salesForce/createSalesForcePartner',
+    CreateSalesForcePartnerProgram:
+      '/salesForce/createSalesForcePartnerProgram',
+    CreateSalesForceDealreg: '/salesForce/createSalesForceDealreg',
   },
 };

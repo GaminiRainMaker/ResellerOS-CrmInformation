@@ -29,19 +29,6 @@ const dealRegAddressSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-    //   .addCase(insertDealReg.pending, (state) => {
-    //     state.loading = true;
-    //     state.error = null;
-    //   })
-    //   .addCase(insertDealReg.fulfilled, (state, action: PayloadAction<any>) => {
-    //     state.loading = false;
-    //     state.data = [action.payload];
-    //   })
-    //   .addCase(insertDealReg.rejected, (state, action: PayloadAction<any>) => {
-    //     state.loading = false;
-    //     state.error = action.payload;
-    //   })
-
       .addCase(updateDealRegAddressById.pending, (state) => {
         state.loading = true;
         state.error = null;

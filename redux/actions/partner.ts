@@ -106,6 +106,17 @@ export const getAllPartnerandProgramApprovedForOrganization = createAsyncThunk(
     }
   },
 );
+export const getAllPartnerandProgramApprovedForOrganizationSalesForce = createAsyncThunk(
+  'partner/getAllPartnerandProgramApprovedForOrganizationSalesForce',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PARTNER_API.ApprovedForOrgSalesForce(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
 export const getPartnerCanAddedToOrganization = createAsyncThunk(
   'partner/getPartnerCanAddedToOrganization',
   async (data: any, thunkApi) => {

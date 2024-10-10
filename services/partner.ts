@@ -26,6 +26,8 @@ export const PARTNER_API = {
     post(API.PARTNER.filterDataAdmin, data) as Promise<AxiosResponse<[]>>,
   approvedForOrg: (data: any) =>
     post(API.PARTNER.approvedForOrg, data) as Promise<AxiosResponse<[]>>,
+  ApprovedForOrgSalesForce: (data: any) =>
+    post(API.PARTNER.approvedForOrgSalesForce, data) as Promise<AxiosResponse<[]>>,
   CanAddedToOrg: (data: any) =>
     post(API.PARTNER.CanAddedToOrg, data) as Promise<AxiosResponse<[]>>,
   getAllPartnerandProgramFilterDataForOrganizationOnly: (data: any) =>
