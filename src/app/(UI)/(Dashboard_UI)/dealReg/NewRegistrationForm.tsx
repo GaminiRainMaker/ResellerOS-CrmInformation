@@ -488,8 +488,8 @@ const NewRegistrationForm: FC<any> = ({
             dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
           }
         });
+        setShowModal(false);
       }
-      setShowModal(false);
       if (pathname === '/opportunityDetail') {
         location.reload();
       }
