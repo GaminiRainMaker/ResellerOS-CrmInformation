@@ -411,13 +411,6 @@ const NewRegistrationForm: FC<any> = ({
           customer_id: salesForceCustomerId,
           status: 'New',
           user_id: salesForceUserId,
-          // organization: 'rainmakercloud-llc',
-          // opportunity_id: 98,
-          // contact_id: 44,
-          // customer_id: 5,
-          // status: 'New',
-          // user_id: 99,
-          // opportunity_name: 'Opportunity',
         }));
       } else {
         newData = combinedData?.map((obj: any) => ({
