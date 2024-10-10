@@ -489,7 +489,7 @@ const NewRegistrationForm: FC<any> = ({
           }
         });
       }
-      // setShowModal(false);
+      setShowModal(false);
       if (pathname === '/opportunityDetail') {
         location.reload();
       }

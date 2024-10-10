@@ -108,8 +108,6 @@ const DealRegCustomTabs: React.FC<any> = ({ form, formData, setFormData }) => {
     let finalCommonFieldObject: any = {};
     let finalUniqueFieldObject: any = {};
     let finalDealReg: any = {};
-    console.log('commonFieldFormData', commonFieldFormData)
-    return
 
     if (commonFieldFormData) {
       for (const [key, value] of Object?.entries(commonFieldFormData)) {
@@ -205,7 +203,6 @@ const DealRegCustomTabs: React.FC<any> = ({ form, formData, setFormData }) => {
       setTabItems([]);
       return;
     }
-
     const newTabItems =
       finalUpdatedDealRegData &&
       finalUpdatedDealRegData?.map((element: any) => {
@@ -278,9 +275,9 @@ const DealRegCustomTabs: React.FC<any> = ({ form, formData, setFormData }) => {
 
   return (
     <>
-      <Button onClick={() => {
+      {/* <Button onClick={() => {
         onFinish()
-      }}>SAVE</Button>
+      }}>SAVE</Button> */}
       <CustmDealRegTab
         token={token}
         activeKey={activeKey as any}
