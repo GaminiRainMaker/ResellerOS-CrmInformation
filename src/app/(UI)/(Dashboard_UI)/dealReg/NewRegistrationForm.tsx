@@ -29,6 +29,7 @@ import { getAllPartnerandProgramApprovedForOrganizationSalesForce } from '../../
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import { CollapseSpaceStyle } from '../dealRegDetail/styled-component';
 import React from 'react';
+import { createSalesforcePartner } from '../../../../../redux/actions/salesForce';
 
 const NewRegistrationForm: FC<any> = ({
   isDealRegDetail = false,
@@ -41,7 +42,14 @@ const NewRegistrationForm: FC<any> = ({
   const getOpportunityId = Number(searchParams.get('opportunityId'));
   const getContactId = Number(searchParams.get('contactId'));
   const getCustomerId = Number(searchParams.get('customerId'));
+
   const salesForceUrl = searchParams.get('instance_url');
+  const salesForceKey = searchParams.get('key');
+  const salesForceOrganization = searchParams.get('org');
+  const salesForceOppId = searchParams.get('oppId');
+  const salesForceContactId = searchParams.get('contactId');
+  const salesForceCustomerId = searchParams.get('customerId');
+  const salesForceUserId = searchParams.get('user_id');
 
   let pathname = usePathname();
   const dispatch = useAppDispatch();
@@ -65,17 +73,17 @@ const NewRegistrationForm: FC<any> = ({
 
   const [allAddedPartnerProgramIDs, setAllAddedPartnerProgramIDs] =
     useState<any>();
-  const org = 'cloudanalogy'
+  const org = 'cloudanalogy';
   useEffect(() => {
-    dispatch(getAllPartnerandProgramApprovedForOrganizationSalesForce({
-      organization: org
-    }))?.then(
-      (payload: any) => {
-        setAllFilterPartnerData(payload?.payload);
-      },
-    );
+    dispatch(
+      getAllPartnerandProgramApprovedForOrganizationSalesForce({
+        organization: org,
+      }),
+    )?.then((payload: any) => {
+      setAllFilterPartnerData(payload?.payload);
+    });
   }, []);
-  console.log('salesForceUrl', salesForceUrl)
+  console.log('salesForceUrl', salesForceUrl);
 
   useEffect(() => {
     if (isDealRegDetail) {
@@ -183,6 +191,8 @@ const NewRegistrationForm: FC<any> = ({
     let newObj = {
       partner_id: '',
       partner_program_id: '',
+      partner_name: '',
+      partner_program_name: '',
       type: 'regestered',
       optionsForProgram: [],
     };
@@ -201,17 +211,21 @@ const NewRegistrationForm: FC<any> = ({
     partner_program_id: any,
     type: string,
     typeOfWorkFor: string,
+    name: string,
   ) => {
     let valueType = type === 'partner' ? partner_id : partner_program_id;
     let typePort = type === 'partner' ? 'partner_id' : 'partner_program_id';
+    let nameType = type === 'partner' ? 'partner_name' : 'partner_program_name';
     let checkIn =
       typeOfWorkFor === 'self' ? selfRegesteriedPartner : regesteriedPartner;
     // reges
     const newTempArr = checkIn.map((sectItem: any, sectioIndex: number) => {
+      console.log('sectItem', sectItem);
       if (sectioIndex === index) {
         return {
           ...sectItem,
           [typePort]: valueType,
+          [nameType]: name,
         };
       }
       return sectItem;
@@ -296,7 +310,6 @@ const NewRegistrationForm: FC<any> = ({
 
   const registeredFormFinishCurrent = async () => {
     const dataForSelect = form.getFieldsValue();
-
     let countForNonAdded: number = 0;
     if (regesteriedPartner && regesteriedPartner?.length > 0) {
       regesteriedPartner?.map((items: any) => {
@@ -386,21 +399,25 @@ const NewRegistrationForm: FC<any> = ({
           user_id: userInformation?.id,
         }));
       } else if (salesForceUrl) {
-        console.log('salesForceUrl', salesForceUrl, data)
+        console.log('salesForceUrl', salesForceUrl, data);
         newData = combinedData?.map((obj: any) => ({
           ...obj,
           ...addressData,
-          organization: 'rainmakercloud-llc',
-          opportunity_id: 98,
-          contact_id: 44,
-          customer_id: 5,
+          organization: salesForceOrganization,
+          opportunity_id: salesForceOppId,
+          contact_id: salesForceContactId,
+          customer_id: salesForceCustomerId,
           status: 'New',
-          user_id: 99,
-          opportunity_name: 'Opportunity',
-
+          user_id: salesForceUserId,
+          // organization: 'rainmakercloud-llc',
+          // opportunity_id: 98,
+          // contact_id: 44,
+          // customer_id: 5,
+          // status: 'New',
+          // user_id: 99,
+          // opportunity_name: 'Opportunity',
         }));
-      }
-      else {
+      } else {
         newData = combinedData?.map((obj: any) => ({
           ...obj,
           ...dataForSelect,
@@ -410,46 +427,71 @@ const NewRegistrationForm: FC<any> = ({
           user_id: userInformation?.id,
         }));
       }
-      console.log('newData', newData)
+      if (salesForceUrl) {
+        const partnersArray = newData?.map((item: any) => ({
+          Name: item.partner_name,
+          ExternalId: item.partner_id,
+        }));
+        const partnerProgramsArray = newData?.map((item: any) => ({
+          Name: item.partner_program_name,
+          ExternalId: item.partner_program_id,
+          partner_id: item?.partner_id
+        }));
+        console.log(
+          'partnerProgramsArray',
+          newData,
+          partnersArray,
+          partnerProgramsArray,
+        );
+        // await dispatch(
+        //   createSalesforcePartner({
+        //     baseURL: salesForceUrl,
+        //     key: salesForceKey,
+        //     finalData: partnersArray,
+        //   }),
+        // );
+        // await dispatch(createSalesforcePartner(partnerProgramsArray))
 
-      await dispatch(insertDealReg(newData)).then((d: any) => {
-        if (d?.payload) {
-          if (pathname === '/dealReg') {
-            router?.push(
-              `/dealRegDetail?opportunityId=${d?.payload?.[0]?.opportunity_id}&customerId=${d?.payload?.[0]?.customer_id}&contactId=${d?.payload?.[0]?.contact_id}`,
-            );
-          }
-          if (salesForceUrl) {
-            window.history.replaceState(
-              null,
-              '',
-              `/dealRegDetail?opportunityId=${d?.payload?.[0]?.opportunity_id}&customerId=${d?.payload?.[0]?.customer_id}&contactId=${d?.payload?.[0]?.contact_id}`,
-            );
-            location?.reload();
-          }
-          if (isDealRegDetail) {
-            dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+
+
+
+        // if (salesForceUrl) {
+        //   window.history.replaceState(
+        //     null,
+        //     '',
+        //     `/dealRegDetail?opportunityId=${d?.payload?.[0]?.opportunity_id}&customerId=${d?.payload?.[0]?.customer_id}&contactId=${d?.payload?.[0]?.contact_id}`,
+        //   );
+        //   location?.reload();
+        // }
+      } else {
+        await dispatch(insertDealReg(newData)).then((d: any) => {
+          if (d?.payload) {
+            if (pathname === '/dealReg') {
+              router?.push(
+                `/dealRegDetail?opportunityId=${d?.payload?.[0]?.opportunity_id}&customerId=${d?.payload?.[0]?.customer_id}&contactId=${d?.payload?.[0]?.contact_id}`,
+              );
+            }
+            if (isDealRegDetail) {
+              dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+            } else {
+              dispatch(queryDealReg(''));
+            }
           } else {
+            notification?.open({
+              message: 'This Combination already exists.',
+              type: 'info',
+            });
             dispatch(queryDealReg(''));
+            dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
           }
-        } else {
-          notification?.open({
-            message: 'This Combination already exists.',
-            type: 'info',
-          });
-
-          dispatch(queryDealReg(''));
-          dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-        }
-      });
-      setShowModal(false);
+        });
+      }
+      // setShowModal(false);
       if (pathname === '/opportunityDetail') {
         location.reload();
       }
     }
-
   };
-
 
   return (
     <>
@@ -506,15 +548,14 @@ const NewRegistrationForm: FC<any> = ({
                                             : '24px',
                                       }}
                                       options={partnerOptions}
-                                      onChange={(e) => {
-                                        // findPartnerProgramsById(value);
-                                        // setChoosedIdProgram(value);
+                                      onChange={(e, record: any) => {
                                         AddThePartnerAndPaartnerProgram(
                                           index,
                                           e,
                                           '',
                                           'partner',
                                           'reges',
+                                          record?.label?.props?.text,
                                         );
                                       }}
                                     />
@@ -534,13 +575,14 @@ const NewRegistrationForm: FC<any> = ({
                                       placeholder="Select"
                                       value={items?.partner_program_id}
                                       options={items?.optionsForProgram}
-                                      onChange={(e: any) => {
+                                      onChange={(e: any, record: any) => {
                                         AddThePartnerAndPaartnerProgram(
                                           index,
                                           '',
                                           e,
                                           'partnerprogram',
                                           'reges',
+                                          record?.label?.props?.text,
                                         );
 
                                         let AllIds: any =
@@ -682,7 +724,7 @@ const NewRegistrationForm: FC<any> = ({
                                             : '24px',
                                       }}
                                       options={selefPartnerOptions}
-                                      onChange={(e) => {
+                                      onChange={(e, record: any) => {
                                         // findPartnerProgramsById(value);
                                         // setChoosedIdProgram(value);
                                         AddThePartnerAndPaartnerProgram(
@@ -691,6 +733,7 @@ const NewRegistrationForm: FC<any> = ({
                                           '',
                                           'partner',
                                           'self',
+                                          record?.label?.props?.text,
                                         );
                                       }}
                                     />
@@ -710,13 +753,14 @@ const NewRegistrationForm: FC<any> = ({
                                       placeholder="Select"
                                       value={items?.partner_program_id}
                                       options={items?.optionsForProgram}
-                                      onChange={(e: any) => {
+                                      onChange={(e: any, record: any) => {
                                         AddThePartnerAndPaartnerProgram(
                                           index,
                                           '',
                                           e,
                                           'partnerprogram',
                                           'self',
+                                          record?.label?.props?.text,
                                         );
 
                                         let AllIds: any =
