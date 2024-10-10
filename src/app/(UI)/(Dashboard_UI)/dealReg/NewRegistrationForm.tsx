@@ -29,7 +29,7 @@ import { getAllPartnerandProgramApprovedForOrganizationSalesForce } from '../../
 import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import { CollapseSpaceStyle } from '../dealRegDetail/styled-component';
 import React from 'react';
-import { createSalesforcePartner } from '../../../../../redux/actions/salesForce';
+import { createSalesForcePartner } from '../../../../../redux/actions/salesForce';
 
 const NewRegistrationForm: FC<any> = ({
   isDealRegDetail = false,
@@ -50,6 +50,8 @@ const NewRegistrationForm: FC<any> = ({
   const salesForceContactId = searchParams.get('contactId');
   const salesForceCustomerId = searchParams.get('customerId');
   const salesForceUserId = searchParams.get('user_id');
+
+  console.log('salesForceCustomerId', salesForceCustomerId, salesForceUserId)
 
   let pathname = usePathname();
   const dispatch = useAppDispatch();
@@ -430,7 +432,7 @@ const NewRegistrationForm: FC<any> = ({
       if (salesForceUrl) {
         const partnersArray = newData?.map((item: any) => ({
           Name: item.partner_name,
-          ExternalId: item.partner_id,
+          rosdealregai__External_Id__c: item.partner_id,
         }));
         const partnerProgramsArray = newData?.map((item: any) => ({
           Name: item.partner_program_name,
@@ -443,13 +445,13 @@ const NewRegistrationForm: FC<any> = ({
           partnersArray,
           partnerProgramsArray,
         );
-        // await dispatch(
-        //   createSalesforcePartner({
-        //     baseURL: salesForceUrl,
-        //     key: salesForceKey,
-        //     finalData: partnersArray,
-        //   }),
-        // );
+        await dispatch(
+          createSalesForcePartner({
+            baseURL: salesForceUrl,
+            token: salesForceKey,
+            data: { Name: 'Palo Alto', rosdealregai__External_Id__c: '125' },
+          }),
+        );
         // await dispatch(createSalesforcePartner(partnerProgramsArray))
 
 
