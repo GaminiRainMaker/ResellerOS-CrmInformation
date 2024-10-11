@@ -7,10 +7,10 @@ import {
 
 const client = axios.create({
   //Local
-  baseURL: 'http://localhost:4000',
+  // baseURL: 'http://localhost:4000',
 
   //Developement
-  // baseURL: 'https://api.reselleros.com',
+  baseURL: 'https://3.218.195.191:4000',
 
   //Production
   // baseURL: 'https://44.206.217.110:4000',
