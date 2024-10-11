@@ -213,6 +213,7 @@ export const API = {
       'partner/getAllPartnerandProgramFilterDataForOrganizationOnly',
     upadteRequestForOrgNewPartnerApproval:
       'partner/upadteRequestForOrgNewPartnerApproval',
+    GetAllPartnerById: 'partner/getAllPartnerById',
   },
   PARTNER_PROGRAM: {
     INDEX: '/partnerProgram',
@@ -226,6 +227,7 @@ export const API = {
     GetFormDataProgram: '/partnerProgram/getFormDataProgram',
     REQ_ADMIN: '/partnerProgram/upadteToRequestPartnerandprogramfromAmin',
     LaunchPlayWright: '/partnerProgram/launchPlayWright',
+    GetAllPartnerProgramById: '/partnerProgram/getAllPartnerProgramById',
   },
   DISTRIBUTOR: {
     INDEX: '/distributor',

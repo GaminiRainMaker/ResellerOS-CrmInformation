@@ -27,7 +27,9 @@ export const PARTNER_API = {
   approvedForOrg: (data: any) =>
     post(API.PARTNER.approvedForOrg, data) as Promise<AxiosResponse<[]>>,
   ApprovedForOrgSalesForce: (data: any) =>
-    post(API.PARTNER.approvedForOrgSalesForce, data) as Promise<AxiosResponse<[]>>,
+    post(API.PARTNER.approvedForOrgSalesForce, data) as Promise<
+      AxiosResponse<[]>
+    >,
   CanAddedToOrg: (data: any) =>
     post(API.PARTNER.CanAddedToOrg, data) as Promise<AxiosResponse<[]>>,
   getAllPartnerandProgramFilterDataForOrganizationOnly: (data: any) =>
@@ -39,4 +41,6 @@ export const PARTNER_API = {
     post(API.PARTNER.upadteRequestForOrgNewPartnerApproval, data) as Promise<
       AxiosResponse<[]>
     >,
+  getAllPartnerById: (data: any) =>
+    post(API.PARTNER.GetAllPartnerById, data) as Promise<AxiosResponse<[]>>,
 };

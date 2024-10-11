@@ -247,7 +247,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     }
   }, [allContent]);
 
-  console.log('formData', form.getFieldsValue());
 
   return (
     <Form

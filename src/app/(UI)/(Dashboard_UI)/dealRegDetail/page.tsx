@@ -28,6 +28,7 @@ import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs from './DealRegCustomTabs';
 import ElectronBot from './ElectronBot';
 import SubmitDealRegForms from './SubmitDealRegForms';
+import {getSalesForceDealregByOpportunityId} from '../../../../../redux/actions/salesForce';
 
 const DealRegDetail = () => {
   const [getFormData] = Form.useForm();
@@ -47,14 +48,24 @@ const DealRegDetail = () => {
   const searchParams = useSearchParams()!;
   const getOpportunityId = searchParams && searchParams.get('opportunityId');
   const salesForceUrl = searchParams.get('instance_url');
+  const salesForceKey = searchParams.get('key');
 
   const [formData, setFormData] = useState<any>();
-  const [localIp, setLocalIp] = useState('');
   const {userInformation} = useAppSelector((state) => state.user);
+  const [salesForceDealregData, setSalesForceDealregData] = useState<any>();
 
   useEffect(() => {
-    if (getOpportunityId && salesForceUrl) {
-      // dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+    const obj = {
+      baseURL: salesForceUrl,
+      token: salesForceKey,
+      opportunityId: getOpportunityId,
+    };
+    if (getOpportunityId && salesForceUrl && salesForceKey && obj) {
+      dispatch(getSalesForceDealregByOpportunityId(obj)).then((res) => {
+        if (res?.payload) {
+          setSalesForceDealregData(res?.payload);
+        }
+      });
     } else if (getOpportunityId) {
       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
     }
@@ -86,7 +97,7 @@ const DealRegDetail = () => {
         <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
           {!salesForceUrl
             ? DealRegData?.[0]?.Opportunity?.title
-            : 'Demo Opportunity'}
+            : salesForceDealregData?.[0]?.opportunity_name}
         </Typography>
       ),
     },
@@ -117,7 +128,6 @@ const DealRegDetail = () => {
     if (SubmitDealRegFormData) {
       try {
         const finalAppData = {
-          IP: localIp,
           dealRegId: SubmitDealRegFormData?.id,
           userId: userInformation?.id,
         };
