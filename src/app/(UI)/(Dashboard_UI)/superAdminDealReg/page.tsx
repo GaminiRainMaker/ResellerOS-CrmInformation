@@ -803,7 +803,6 @@ const SuperAdminDealReg = () => {
               <OsButton
                 buttontype="PRIMARY"
                 text="EDIT"
-                color="red"
                 clickHandler={() => {
                   router?.push(`/formBuilder?id=${formData?.Id}`);
                 }}

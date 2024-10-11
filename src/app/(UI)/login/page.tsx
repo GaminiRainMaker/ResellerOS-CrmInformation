@@ -4,9 +4,9 @@ import AuthLayout from '@/app/components/layouts/auth-layouts/AuthLayout';
 import {useRouter} from 'next/navigation';
 import eyeIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/eye.svg';
 import smsIcon from '../../../../public/assets/static/iconsax-svg/Svg/All/outline/sms.svg';
-import {useAppDispatch} from '../../../../redux/hook';
 import {loginUser} from '../../../../redux/actions/user';
-import {useEffect} from 'react';
+import {useAppDispatch} from '../../../../redux/hook';
+import React from 'react';
 
 const LogIn = () => {
   const dispatch = useAppDispatch();
@@ -44,25 +44,6 @@ const LogIn = () => {
       icon: eyeIcon,
     },
   ];
-
-  useEffect(() => {
-    const fetchWsEndpoint = async () => {
-      try {
-        const response = await fetch('/api/playwright');
-        const data = await response.json();
-
-        if (response.ok) {
-          console.log(data.wsEndpoint);
-        } else {
-          console.log(data.error || 'Failed to fetch WebSocket endpoint');
-        }
-      } catch (err: any) {
-        console.log(err.message || 'An error occurred');
-      }
-    };
-
-    fetchWsEndpoint();
-  }, []);
 
   return (
     <>

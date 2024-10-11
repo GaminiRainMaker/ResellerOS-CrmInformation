@@ -13,7 +13,7 @@ const client = axios.create({
   // baseURL: 'https://api.reselleros.com',
 
   //Production
-  // baseURL: 'https://api.reselleros.com',
+  // baseURL: 'https://44.206.217.110:4000',
 
   withCredentials: false,
 });

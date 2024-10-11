@@ -1,7 +1,7 @@
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsBreadCrumb from '@/app/components/common/os-breadcrumb';
 import OsButton from '@/app/components/common/os-button';
@@ -9,17 +9,17 @@ import OsDropdown from '@/app/components/common/os-dropdown';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
-import { PlusIcon } from '@heroicons/react/24/outline';
-import { MenuProps } from 'antd';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import {MenuProps} from 'antd';
 import Form from 'antd/es/form';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {useEffect, useState} from 'react';
 import {
   dealRegFormScript,
   getDealRegByOpportunityId,
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {
   setDealReg,
   setOpenDealRegDrawer,
@@ -46,12 +46,16 @@ const DealRegDetail = () => {
   const [electronBotModal, showElectronBotModal] = useState(false);
   const searchParams = useSearchParams()!;
   const getOpportunityId = searchParams && searchParams.get('opportunityId');
+  const salesForceUrl = searchParams.get('instance_url');
+
   const [formData, setFormData] = useState<any>();
   const [localIp, setLocalIp] = useState('');
-  const { userInformation } = useAppSelector((state) => state.user);
+  const {userInformation} = useAppSelector((state) => state.user);
 
   useEffect(() => {
-    if (getOpportunityId) {
+    if (getOpportunityId && salesForceUrl) {
+      // dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
+    } else if (getOpportunityId) {
       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
     }
   }, []);
@@ -61,7 +65,7 @@ const DealRegDetail = () => {
   }, [DealRegData]);
 
   const OsBreadCrumbItems = [
-    {
+    !salesForceUrl && {
       key: '1',
       title: (
         <Typography
@@ -80,7 +84,9 @@ const DealRegDetail = () => {
       key: '2',
       title: (
         <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-          {DealRegData?.[0]?.Opportunity?.title}
+          {!salesForceUrl
+            ? DealRegData?.[0]?.Opportunity?.title
+            : 'Demo Opportunity'}
         </Typography>
       ),
     },
@@ -102,7 +108,6 @@ const DealRegDetail = () => {
     },
   ];
 
-
   const submitDealRegFormFun = async () => {
     const SubmitDealRegForm = submitDealRegForm.getFieldsValue();
     const SubmitDealRegFormData = {
@@ -114,12 +119,12 @@ const DealRegDetail = () => {
         const finalAppData = {
           IP: localIp,
           dealRegId: SubmitDealRegFormData?.id,
-          userId: userInformation?.id
-        }
+          userId: userInformation?.id,
+        };
         const response = await dispatch(dealRegFormScript(finalAppData));
         if (response) {
           await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
-            (response: { payload: any }) => {
+            (response: {payload: any}) => {
               if (response?.payload) {
                 dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
               }
@@ -135,12 +140,11 @@ const DealRegDetail = () => {
     }
   };
 
-
   return (
     <div>
       <Row justify="space-between" align="middle">
         <Col>
-          <OsBreadCrumb items={OsBreadCrumbItems} />
+          <OsBreadCrumb items={OsBreadCrumbItems as any} />
         </Col>
         <Col>
           <Space size={8}>
@@ -167,7 +171,7 @@ const DealRegDetail = () => {
                 setShowModal(true);
               }}
             />
-            <OsDropdown menu={{ items: dropDownItemss }} />
+            <OsDropdown menu={{items: dropDownItemss}} />
           </Space>
         </Col>
       </Row>
@@ -187,7 +191,7 @@ const DealRegDetail = () => {
         }
         width={583}
         open={showModal}
-        onOk={() => { }}
+        onOk={() => {}}
         onCancel={() => {
           setShowModal((p) => !p);
         }}
@@ -224,7 +228,7 @@ const DealRegDetail = () => {
         onCancel={() => {
           showElectronBotModal(false);
         }}
-      // primaryButtonText={'Save'}
+        // primaryButtonText={'Save'}
       />
     </div>
   );

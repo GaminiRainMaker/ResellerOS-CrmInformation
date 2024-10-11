@@ -18,7 +18,7 @@ export const createSalesforcePartnerProgram = createAsyncThunk(
   'salesforce/createSalesForcePartnerProgram',
   async (data: any, thunkApi) => {
     try {
-      const res = await SALESFORCE_API.createSalesForcePartner(data);
+      const res = await SALESFORCE_API.createSalesForcePartnerProgram(data);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);
@@ -30,7 +30,19 @@ export const createSalesforceDealreg = createAsyncThunk(
   'salesforce/createSalesForceDealreg',
   async (data: any, thunkApi) => {
     try {
-      const res = await SALESFORCE_API.createSalesForcePartner(data);
+      const res = await SALESFORCE_API.createSalesForceDealreg(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+export const getSalesForceDealregByOpportunityId = createAsyncThunk(
+  'salesforce/getSalesForceDealregByOpportunityId',
+  async (data: any, thunkApi) => {
+    try {
+      const res =
+        await SALESFORCE_API.getSalesForceDealregByOpportunityId(data);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

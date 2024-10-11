@@ -322,5 +322,7 @@ export const API = {
     CreateSalesForcePartnerProgram:
       '/salesForce/createSalesForcePartnerProgram',
     CreateSalesForceDealreg: '/salesForce/createSalesForceDealreg',
+    GetSalesForceDealregByOpportunityId:
+      '/salesForce/getSalesForceDealregByOpportunityId',
   },
 };

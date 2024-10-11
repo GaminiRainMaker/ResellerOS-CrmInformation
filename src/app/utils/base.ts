@@ -8,6 +8,7 @@
 import {FormInstance, InputNumberProps} from 'antd';
 import axios from 'axios';
 import moment from 'moment';
+import {getContractInBulkByProductCode} from '../../../redux/actions/contractProduct';
 import {
   getAllProfitabilityCount,
   getProfitabilityByQuoteId,
@@ -18,16 +19,10 @@ import {
   getQuoteFileCount,
   quoteFileVerification,
 } from '../../../redux/actions/quoteFile';
-import {
-  DeleteQuoteLineItemById,
-  updateQuoteLineItemById,
-} from '../../../redux/actions/quotelineitem';
 import {getRebatesInBulkByProductCode} from '../../../redux/actions/rebate';
 import {insertRebateQuoteLineItem} from '../../../redux/actions/rebateQuoteLineitem';
 import {insertValidation} from '../../../redux/actions/validation';
 import {setQuoteFileUnverifiedById} from '../../../redux/slices/quoteFile';
-import {Page} from '@playwright/test';
-import {getContractInBulkByProductCode} from '../../../redux/actions/contractProduct';
 
 export const getResultedValue = () => {
   if (typeof window !== 'undefined') {
@@ -1057,7 +1052,10 @@ export const encrypt = async (
     cryptoKey,
     encoded,
   );
-  return {iv: arrayBufferToBase64(iv), data: arrayBufferToBase64(encrypted)};
+  return {
+    iv: arrayBufferToBase64(iv as any),
+    data: arrayBufferToBase64(encrypted),
+  };
 };
 
 // Decrypt function
