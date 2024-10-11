@@ -8,11 +8,11 @@ import {
   getResultedValue,
   getValuesOFLineItemsThoseNotAddedBefore,
 } from '@/app/utils/base';
-import { PlusIcon } from '@heroicons/react/24/outline';
-import { Form, message } from 'antd';
-import { usePathname, useRouter } from 'next/navigation';
-import { FC, useEffect, useState } from 'react';
-import { insertOpportunityLineItem } from '../../../../../redux/actions/opportunityLineItem';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import {Form, message} from 'antd';
+import {usePathname, useRouter} from 'next/navigation';
+import {FC, useEffect, useState} from 'react';
+import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {
   getBulkProductIsExisting,
   insertProductsInBulk,
@@ -23,17 +23,17 @@ import {
   insertQuote,
   updateQuoteWithNewlineItemAddByID,
 } from '../../../../../redux/actions/quote';
-import { insertQuoteFile } from '../../../../../redux/actions/quoteFile';
-import { insertQuoteLineItem } from '../../../../../redux/actions/quotelineitem';
+import {insertQuoteFile} from '../../../../../redux/actions/quoteFile';
+import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
 import {
   uploadExcelFileToAws,
   uploadToAws,
 } from '../../../../../redux/actions/upload';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '../os-button';
 import OsUpload from '../os-upload';
-import { AddQuoteInterface, FormattedData } from './types';
-import { queryLineItemSyncingForSalesForce } from '../../../../../redux/actions/LineItemSyncing';
+import {AddQuoteInterface, FormattedData} from './types';
+import {queryLineItemSyncingForSalesForce} from '../../../../../redux/actions/LineItemSyncing';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
@@ -53,8 +53,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const [showModal, setShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { userInformation } = useAppSelector((state) => state.user);
-  const { data: syncTableData } = useAppSelector((state) => state.syncTable);
+  const {userInformation} = useAppSelector((state) => state.user);
+  const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const [form] = Form.useForm();
   let pathname = usePathname();
   const [loading, setLoading] = useState<boolean>(false);
@@ -62,9 +62,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const [existingQuoteId, setExistingQuoteId] = useState<number>();
   const [typeOfAddQuote, setTypeOfAddQuote] = useState<number>(1);
   const [allValuesForManual, setAllValuesForManual] = useState<boolean>(false);
-
-
-
 
   const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
 
@@ -88,7 +85,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
   }, [existingQuoteId, existingGenerateQuoteId]);
 
   const beforeUpload = (file: File) => {
-    const obj: any = { ...file };
+    const obj: any = {...file};
     let pathUsedToUpload = file?.type?.split('.')?.includes('spreadsheetml')
       ? uploadExcelFileToAws
       : uploadToAws;
@@ -98,7 +95,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
         obj.base64 = base64String;
         obj.file = file;
         setLoading(true);
-        dispatch(pathUsedToUpload({ document: base64String })).then(
+        dispatch(pathUsedToUpload({document: base64String})).then(
           (payload: any) => {
             const pdfUrl = payload?.payload?.data?.Location;
             obj.pdf_url = pdfUrl;
@@ -150,7 +147,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
       });
     }
 
-    let newArrFOrexecelFile: any = []
+    let newArrFOrexecelFile: any = [];
 
     try {
       setFinalLoading(true);
@@ -163,58 +160,13 @@ const AddQuote: FC<AddQuoteInterface> = ({
         const lineItems: any = [];
         let quoteItem = {};
         let quoteJson: any = [];
-        for (let j = 0; j < nanoNetsResult?.length; j++) {
-          const result: any = nanoNetsResult[j];
-          const predictions = result?.prediction?.filter((item: any) => item);
-          // eslint-disable-next-line @typescript-eslint/no-loop-func
-          if (predictions) {
-            predictions?.map((itemNew: any, predictionIndex: number) => {
-              if (itemNew.label === 'table') {
-                if (itemNew?.cells) {
-                  itemNew?.cells.forEach((item: any) => {
-                    const rowNum = item.row;
-                    if (!lineItemData[rowNum]) {
-                      lineItemData[rowNum] = {};
-                    }
-                    lineItemData[rowNum][item.label?.toLowerCase()] = item.text;
-                  });
-                }
-                quoteLineItemArr = Object.values(lineItemData);
-                quoteJson =
-                  predictionIndex > 0
-                    ? [...quoteLineItemArr, ...quoteJson]
-                    : quoteLineItemArr;
-                quoteLineItemArr?.forEach((obj: any) => {
-                  const newObj = {
-                    ...obj,
-                    organization: userInformation.organization,
-                    user_id: userInformation.id,
-                  };
-                  lineItems.push(newObj);
-                });
-              } else {
-                quoteItem = {
-                  ...quoteItem,
-                  [itemNew?.label?.toLowerCase()]: itemNew?.ocr_text,
-                };
-              }
-            });
-          } else {
-            newArrFOrexecelFile?.push(
-              {
-                file_name: newArrWithoutManual[i]?.file_name,
-                pdf_url: newArrWithoutManual[i]?.pdf_url,
-                quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
-                // nanonets_id: result?.id,
-                lineItems: newArrWithoutManual[i]?.lineItem.length > 0 ? newArrWithoutManual[i]?.lineItem : [],
-              },
-            )
-          }
-
-
+        if (
+          newArrWithoutManual[i]?.file?.type.includes('spreadsheetml') &&
+          newArrWithoutManual?.length === 1
+        ) {
           quoteObj = {
             ...quoteItem,
-            nanonets_id: result?.id,
+            // nanonets_id: result?.id,
             quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
             pdf_url: newArrWithoutManual[i]?.pdf_url,
             user_id: userInformation.id,
@@ -224,51 +176,167 @@ const AddQuote: FC<AddQuoteInterface> = ({
             status: 'Drafts',
             quoteFileObj: [
               {
-                file_name: newArrWithoutManual[i]?.file?.name,
+                file_name: newArrWithoutManual[i]?.file_name,
                 pdf_url: newArrWithoutManual[i]?.pdf_url,
                 quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
-                nanonets_id: result?.id,
-                lineItems: lineItems.length > 0 ? lineItems : [],
+                // nanonets_id: result?.id,
+                lineItems:
+                  newArrWithoutManual[i]?.lineItems.length > 0
+                    ? newArrWithoutManual[i]?.lineItems
+                    : [],
               },
             ],
           };
+        } else {
+          if (newArrWithoutManual[i]?.file?.type.includes('spreadsheetml')) {
+            newArrFOrexecelFile?.push({
+              file_name: newArrWithoutManual[i]?.file_name,
+              pdf_url: newArrWithoutManual[i]?.pdf_url,
+              quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
+              // nanonets_id: result?.id,
+              lineItems:
+                newArrWithoutManual[i]?.lineItems.length > 0
+                  ? newArrWithoutManual[i]?.lineItems
+                  : [],
+            });
+          } else {
+            for (let j = 0; j < nanoNetsResult?.length; j++) {
+              const result: any = nanoNetsResult[j];
+              const predictions = result?.prediction?.filter(
+                (item: any) => item,
+              );
+              // eslint-disable-next-line @typescript-eslint/no-loop-func
+
+              predictions?.map((itemNew: any, predictionIndex: number) => {
+                if (itemNew.label === 'table') {
+                  if (itemNew?.cells) {
+                    itemNew?.cells.forEach((item: any) => {
+                      const rowNum = item.row;
+                      if (!lineItemData[rowNum]) {
+                        lineItemData[rowNum] = {};
+                      }
+                      lineItemData[rowNum][item.label?.toLowerCase()] =
+                        item.text;
+                    });
+                  }
+                  quoteLineItemArr = Object.values(lineItemData);
+                  quoteJson =
+                    predictionIndex > 0
+                      ? [...quoteLineItemArr, ...quoteJson]
+                      : quoteLineItemArr;
+                  quoteLineItemArr?.forEach((obj: any) => {
+                    const newObj = {
+                      ...obj,
+                      organization: userInformation.organization,
+                      user_id: userInformation.id,
+                    };
+                    lineItems.push(newObj);
+                  });
+                } else {
+                  quoteItem = {
+                    ...quoteItem,
+                    [itemNew?.label?.toLowerCase()]: itemNew?.ocr_text,
+                  };
+                }
+              });
+
+              quoteObj = {
+                ...quoteItem,
+                nanonets_id: result?.id,
+                quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
+                pdf_url: newArrWithoutManual[i]?.pdf_url,
+                user_id: userInformation.id,
+                customer_id: customerId,
+                opportunity_id: opportunityId,
+                organization: userInformation.organization,
+                status: 'Drafts',
+                quoteFileObj: [
+                  {
+                    file_name: newArrWithoutManual[i]?.file?.name,
+                    pdf_url: newArrWithoutManual[i]?.pdf_url,
+                    quote_config_id:
+                      newArrWithoutManual[i]?.quote_config_id ?? 18,
+                    nanonets_id: result?.id,
+                    lineItems: lineItems.length > 0 ? lineItems : [],
+                  },
+                ],
+              };
+            }
+          }
         }
+
         if (singleQuote || quoteId) {
           if (i === 0) {
             quotesArr.push(quoteObj);
           } else {
-            quotesArr[0].quoteFileObj = [
-              ...quotesArr[0].quoteFileObj,
-              // eslint-disable-next-line no-unsafe-optional-chaining
-              ...quoteObj?.quoteFileObj,
-            ];
+            if (
+              quoteObj &&
+              !newArrWithoutManual[i]?.file?.type.includes('spreadsheetml')
+            ) {
+              // console.log(
+              //   '4354365345435434',
+              //   quoteObj &&
+              //     !newArrWithoutManual[i]?.file?.type.includes('spreadsheetml'),
+              //   quoteObj,
+              //   newArrWithoutManual[i],
+              // );
+              if (quotesArr[0].quoteFileObj?.length > 0) {
+                quotesArr[0].quoteFileObj = [
+                  ...quotesArr[0].quoteFileObj,
+                  // eslint-disable-next-line no-unsafe-optional-chaining
+                  ...quoteObj?.quoteFileObj,
+                ];
+              } else {
+                quotesArr[0].quoteFileObj = [...quoteObj?.quoteFileObj];
+              }
+            }
           }
         } else {
-          quotesArr.push(quoteObj);
+          if (
+            (quoteObj &&
+              !newArrWithoutManual[i]?.file?.type.includes('spreadsheetml')) ||
+            (newArrWithoutManual[i]?.file?.type.includes('spreadsheetml') &&
+              newArrWithoutManual?.length === 1)
+          ) {
+            quotesArr.push(quoteObj);
+          }
         }
       }
+      console.log('32543534532253hlo111', quotesArr, newArrFOrexecelFile);
 
-      console.log("43534534543534", quotesArr, newArrFOrexecelFile)
-      return
+      // if (newArrFOrexecelFile && newArrFOrexecelFile?.length > 0) {
+      //   quotesArr[0].quoteFileObj = [
+      //     ...quotesArr[0].quoteFileObj,
+      //     // eslint-disable-next-line no-unsafe-optional-chaining
+      //     ...newArrFOrexecelFile,
+      //   ];
+      // }
+
+      console.log('32543534532253hlo22', quotesArr);
+      return;
+      // console.log('34543543353453', quotesArr, newArrFOrexecelFile);
+      // return;
+
       if (quotesArr.length > 0 && !quoteId) {
         for (let i = 0; i < quotesArr.length; i++) {
           let newObj = {
             ...quotesArr[i],
             organization: userInformation?.organization,
             // quote_name: Date.now(),
-
           };
           const response = await dispatch(insertQuote([newObj]));
           // eslint-disable-next-line no-unsafe-optional-chaining
 
-          quotesArr[i] = { ...response?.payload?.data[0], ...quotesArr[i] };
+          quotesArr[i] = {...response?.payload?.data[0], ...quotesArr[i]};
         }
       } else {
         const payload = await dispatch(getQuoteById(quoteId));
+
         quotesArr[0] = {
           ...payload?.payload,
           quoteFileObj: [...quotesArr[0].quoteFileObj],
         };
+
         await dispatch(updateQuoteWithNewlineItemAddByID(Number(quoteId)));
       }
 
@@ -287,6 +355,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           );
 
           const lineItem = quotesArr[i].quoteFileObj[k]?.lineItems;
+
           let allProductCodes: any = [];
           let allProductCodeDataa: any = [];
           lineItem?.map((itemsPro: any) => {
@@ -357,6 +426,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           }
         }
       }
+      return;
       const finalOpportunityArray: any = [];
       if (finalLineItems && syncTableData?.length > 0) {
         const newRequiredArray: any = [];
@@ -391,7 +461,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
         resultArrForAllArr?.map((itemss: any) => {
           const singleObjects = itemss.reduce(
             (obj: any, item: any) =>
-              Object.assign(obj, { [item.key]: item.value }),
+              Object.assign(obj, {[item.key]: item.value}),
             {},
           );
           finalOpportunityArray?.push(singleObjects);
@@ -412,10 +482,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
       setLoading(false);
       console.log('object', err);
     }
+    return;
     await dispatch(getQuotesByDateFilter({}));
     setShowModal(false);
     setUploadFileData([]);
-    return
     if ((singleQuote || quoteId) && newArrWithManual?.length > 0) {
       let latestestFIleId: any;
       let quoteIdForManualss: any;
@@ -460,19 +530,16 @@ const AddQuote: FC<AddQuoteInterface> = ({
       }
 
       if (countOfExportFiles > 0) {
-
         router.push(
           `/fileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&quoteExist=false&manualFlow=true`,
         );
       } else {
-
         router.push(
           `/manualFileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&manualFlow=true`,
         );
       }
     }
     if (newArrWithManual?.length === 0) {
-
       router.push(
         `/generateQuote?id=${quotesArr[0]?.id}&isView=${getResultedValue()}`,
       );
@@ -518,12 +585,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
       setLoading(false);
       if (newArrWithManual?.length > 0) {
         if (countOfExportFiles > 0) {
-
           router.push(
             `/fileEditor?id=${latestQuoteId}&fileId=${null}&quoteExist=false&manualFlow=true`,
           );
         } else {
-
           router.push(
             `/manualFileEditor?id=${latestQuoteId}&fileId=${null}&manualFlow=true`,
           );
@@ -554,7 +619,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
     oem: string,
     distributer: string,
     fileName: string,
-  ) => { };
+  ) => {};
 
   const resetFields = () => {
     setShowModal(false);
@@ -563,7 +628,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
     setExistingQuoteId(0);
     form.resetFields(['customer_id', 'opportunity_id']);
   };
-
 
   useEffect(() => {
     dispatch(queryLineItemSyncingForSalesForce(query))?.then((payload: any) => {
@@ -619,7 +683,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
             opportunityDetailId={opportunityId}
             customerDetailId={customerId}
             lineItemSyncingData={lineItemSyncingData}
-
           />
         }
         width={1000}

@@ -1,15 +1,15 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable consistent-return */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { convertFileToBase64, sendDataToNanonets } from '@/app/utils/base';
-import { FolderArrowDownIcon } from '@heroicons/react/24/outline';
-import { Form, message } from 'antd';
-import React, { useEffect, useState } from 'react';
-import { getQuotesByExistingQuoteFilter } from '../../../../../redux/actions/quote';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { Col, Row } from '../antd/Grid';
-import { Space } from '../antd/Space';
-import { Switch } from '../antd/Switch';
+import {convertFileToBase64, sendDataToNanonets} from '@/app/utils/base';
+import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
+import {Form, message} from 'antd';
+import React, {useEffect, useState} from 'react';
+import {getQuotesByExistingQuoteFilter} from '../../../../../redux/actions/quote';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {Col, Row} from '../antd/Grid';
+import {Space} from '../antd/Space';
+import {Switch} from '../antd/Switch';
 import useThemeToken from '../hooks/useThemeToken';
 import OsCustomerSelect from '../os-customer-select';
 import GlobalLoader from '../os-global-loader';
@@ -17,9 +17,9 @@ import OsOpportunitySelect from '../os-opportunity-select';
 import OsTable from '../os-table';
 import Typography from '../typography';
 import UploadCard from './UploadCard';
-import { OSDraggerStyle } from './styled-components';
-import { fetchAndParseExcel } from '../../../../../redux/actions/auth';
-import { uploadExcelFileToAws } from '../../../../../redux/actions/upload';
+import {OSDraggerStyle} from './styled-components';
+import {fetchAndParseExcel} from '../../../../../redux/actions/auth';
+import {uploadExcelFileToAws} from '../../../../../redux/actions/upload';
 
 const OsUpload: React.FC<any> = ({
   beforeUpload,
@@ -40,7 +40,7 @@ const OsUpload: React.FC<any> = ({
   setTypeOfAddQuote,
   opportunityDetailId,
   customerDetailId,
-  lineItemSyncingData
+  lineItemSyncingData,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -48,12 +48,12 @@ const OsUpload: React.FC<any> = ({
   const [customerValue, setCustomerValue] = useState<number>();
   const [opportunityValue, setOpportunityValue] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
-  const { getExistingQuoteFilterData, getExistingQuoteFilterLoading } =
+  const {getExistingQuoteFilterData, getExistingQuoteFilterLoading} =
     useAppSelector((state) => state.quote);
   useEffect(() => {
     const newrrr: any = [...fileList];
     if (uploadFileData && uploadFileData?.length > 0) {
-      newrrr?.push({ nsss: uploadFileData?.data?.result?.[0]?.input });
+      newrrr?.push({nsss: uploadFileData?.data?.result?.[0]?.input});
     }
     setFileList(newrrr);
   }, [uploadFileData]);
@@ -69,165 +69,167 @@ const OsUpload: React.FC<any> = ({
   }, [quoteDetails]);
 
   const beforeUploadData = async (file: File) => {
-    const obj: any = { ...file };
-    let resultantValues: any
+    const obj: any = {...file};
+    let resultantValues: any;
     let uploadedUrl: any;
     await convertFileToBase64(file)
       .then(async (base64String: string) => {
         obj.base64 = base64String;
         obj.name = file?.name;
-        await dispatch(uploadExcelFileToAws({ document: base64String })).then(async (payload: any) => {
-          const doc_url = payload?.payload?.data?.Location;
-          uploadedUrl = payload?.payload?.data?.Location
-          if (doc_url) {
-            await dispatch(fetchAndParseExcel({ Url: doc_url }))?.then((payload: any) => {
+        await dispatch(uploadExcelFileToAws({document: base64String})).then(
+          async (payload: any) => {
+            const doc_url = payload?.payload?.data?.Location;
+            uploadedUrl = payload?.payload?.data?.Location;
+            if (doc_url) {
+              await dispatch(fetchAndParseExcel({Url: doc_url}))?.then(
+                (payload: any) => {
+                  // this is  a check arrr
+                  // let newArrCheck = [
+                  //     'line #',
+                  //     'partnumber',
+                  //     'manufacturer',
+                  //     'description',
+                  //     'listprice',
+                  //     'gsaprice',
+                  //     'Cost',
+                  //     'quantity',
+                  //     'Type',
+                  //     'openmarket',
+                  //     'productcode',
+                  //     'listprice',
+                  // ];
+                  let newArrCheck: any = [];
 
-              // this is  a check arrr
-              // let newArrCheck = [
-              //     'line #',
-              //     'partnumber',
-              //     'manufacturer',
-              //     'description',
-              //     'listprice',
-              //     'gsaprice',
-              //     'Cost',
-              //     'quantity',
-              //     'Type',
-              //     'openmarket',
-              //     'productcode',
-              //     'listprice',
-              // ];
-              let newArrCheck: any = [];
-
-
-              if (lineItemSyncingData && lineItemSyncingData?.length > 0) {
-                lineItemSyncingData?.map((items: any) => {
-                  newArrCheck?.push(items?.pdf_header)
-                })
-              }
-              const normalize = (str: any) => {
-                return str
-                  ?.toString()
-                  ?.toLowerCase()
-                  .replace(/[\s_]+/g, ' ')
-                  .trim();
-              };
-
-              // Normalize the newArrCheck values
-              let normalizedCheckArr = newArrCheck.map(normalize);
-              // check for best matching row
-              let maxMatches = 0;
-              let bestRowIndex = -1;
-
-              for (let i = 0; i < payload?.payload.length; i++) {
-                let currentRow = payload?.payload[i];
-                let matchCount = 0;
-
-                for (let item of currentRow) {
-                  let normalizedItem = normalize(item);
-                  // Check if normalizedItem matches any normalized check item
-                  if (
-                    normalizedCheckArr.some(
-                      (checkItem: any) =>
-                        normalizedItem === normalize(checkItem),
-                    )
-                  ) {
-                    matchCount++;
+                  if (lineItemSyncingData && lineItemSyncingData?.length > 0) {
+                    lineItemSyncingData?.map((items: any) => {
+                      newArrCheck?.push(items?.pdf_header);
+                    });
                   }
-                }
+                  const normalize = (str: any) => {
+                    return str
+                      ?.toString()
+                      ?.toLowerCase()
+                      .replace(/[\s_]+/g, ' ')
+                      .trim();
+                  };
 
-                if (matchCount > maxMatches) {
-                  maxMatches = matchCount;
-                  bestRowIndex = i;
-                }
-              }
+                  // Normalize the newArrCheck values
+                  let normalizedCheckArr = newArrCheck.map(normalize);
+                  // check for best matching row
+                  let maxMatches = 0;
+                  let bestRowIndex = -1;
 
-              // trim the arrr for valid lineItems
+                  for (let i = 0; i < payload?.payload.length; i++) {
+                    let currentRow = payload?.payload[i];
+                    let matchCount = 0;
 
-              const isNullOrEmptyRow = (row: any) => {
-                return row.every(
-                  (item: any) => item === null || item === '',
-                );
-              };
+                    for (let item of currentRow) {
+                      let normalizedItem = normalize(item);
+                      // Check if normalizedItem matches any normalized check item
+                      if (
+                        normalizedCheckArr.some(
+                          (checkItem: any) =>
+                            normalizedItem === normalize(checkItem),
+                        )
+                      ) {
+                        matchCount++;
+                      }
+                    }
 
-              let indexFrom = -1;
+                    if (matchCount > maxMatches) {
+                      maxMatches = matchCount;
+                      bestRowIndex = i;
+                    }
+                  }
 
-              // Find the index of the first row that is null or empty
-              for (let i = 0; i < payload?.payload?.length; i++) {
-                if (
-                  isNullOrEmptyRow(payload?.payload[i]) &&
-                  bestRowIndex + 3 < i
-                ) {
-                  indexFrom = i;
-                  break;
-                }
-              }
+                  // trim the arrr for valid lineItems
 
-              // Slice the array from the found index
-              let result =
-                indexFrom > 0
-                  ? payload?.payload?.slice(bestRowIndex + 1, indexFrom - 1)
-                  : payload?.payload?.slice(
-                    bestRowIndex + 1,
-                    payload?.payload?.length - 1,
+                  const isNullOrEmptyRow = (row: any) => {
+                    return row.every(
+                      (item: any) => item === null || item === '',
+                    );
+                  };
+
+                  let indexFrom = -1;
+
+                  // Find the index of the first row that is null or empty
+                  for (let i = 0; i < payload?.payload?.length; i++) {
+                    if (
+                      isNullOrEmptyRow(payload?.payload[i]) &&
+                      bestRowIndex + 3 < i
+                    ) {
+                      indexFrom = i;
+                      break;
+                    }
+                  }
+
+                  // Slice the array from the found index
+                  let result =
+                    indexFrom > 0
+                      ? payload?.payload?.slice(bestRowIndex + 1, indexFrom - 1)
+                      : payload?.payload?.slice(
+                          bestRowIndex + 1,
+                          payload?.payload?.length - 1,
+                        );
+
+                  let requiredOutput = result
+                    ?.map((subArray: any) =>
+                      subArray.filter((item: any) => item !== null),
+                    )
+                    .filter((subArray: any) => subArray.length > 0);
+
+                  let headerKeys = payload?.payload[bestRowIndex]?.filter(
+                    (items: any) => items !== null,
                   );
-
-              let requiredOutput = result
-                ?.map((subArray: any) =>
-                  subArray.filter((item: any) => item !== null),
-                )
-                .filter((subArray: any) => subArray.length > 0);
-
-              let headerKeys = payload?.payload[bestRowIndex]?.filter(
-                (items: any) => items !== null,
-              );
-              let modifiedArr = headerKeys.map((item: any) =>
-                item.replace(/\s+/g, '').replace(/[.]/g, ''),
-              );
-              // replace the syncing valueesss ========================
-
-              let syncedHeaderValue = modifiedArr
-                .map((item: any) => {
-                  // Clean up the item by removing spaces and special characters
-                  const cleanedItem = item
-                    .trim()
-                    .replace(/[^A-Za-z]/g, '')
-                    .substring(0, 4)
-                    .toLowerCase();
-
-                  // Find the matching quoteHeader
-                  const match = lineItemSyncingData.find(
-                    (obj: any) =>
-                      obj.pdf_header.toLowerCase().substring(0, 4) ===
-                      cleanedItem,
+                  let modifiedArr = headerKeys.map((item: any) =>
+                    item.replace(/\s+/g, '').replace(/[.]/g, ''),
                   );
+                  // replace the syncing valueesss ========================
 
-                  // Return the expected value if a match is found, otherwise return undefined
-                  return match ? match.quote_header : item;
-                })
-                .filter(Boolean); // Remove any undefined values
+                  let syncedHeaderValue = modifiedArr
+                    .map((item: any) => {
+                      // Clean up the item by removing spaces and special characters
+                      const cleanedItem = item
+                        .trim()
+                        .replace(/[^A-Za-z]/g, '')
+                        .substring(0, 4)
+                        .toLowerCase();
 
-              // end of above
-              // Transform newArr into an array of objects
-              resultantValues = requiredOutput.map((row: any) => {
-                let obj: any = {};
-                syncedHeaderValue.forEach((header: any, index: any) => {
-                  obj[header] = row[index] === '' ? null : row[index]; // Convert empty strings to null
-                });
-                return obj;
-              });
+                      // Find the matching quoteHeader
+                      const match = lineItemSyncingData.find(
+                        (obj: any) =>
+                          obj.pdf_header.toLowerCase().substring(0, 4) ===
+                          cleanedItem,
+                      );
 
+                      // Return the expected value if a match is found, otherwise return undefined
+                      return match ? match.quote_header : item;
+                    })
+                    .filter(Boolean); // Remove any undefined values
 
-            });
-          }
-        },
+                  // end of above
+                  // Transform newArr into an array of objects
+                  resultantValues = requiredOutput.map((row: any) => {
+                    let obj: any = {};
+                    syncedHeaderValue.forEach((header: any, index: any) => {
+                      obj[header] = row[index] === '' ? null : row[index]; // Convert empty strings to null
+                    });
+                    return obj;
+                  });
+                },
+              );
+            }
+          },
         );
       })
       .catch((error: any) => {
         message.error('Error converting file to base64', error);
       });
-    return { lineItem: resultantValues, file_name: file?.name, pdf_url: uploadedUrl }
-
+    return {
+      lineItems: resultantValues,
+      file_name: file?.name,
+      pdf_url: uploadedUrl,
+    };
   };
 
   const onFinish = async () => {
@@ -241,7 +243,7 @@ const OsUpload: React.FC<any> = ({
     setLoading(true);
 
     for (let i = 0; i < uploadFileData.length; i++) {
-      let obj: any = { ...uploadFileData[i] };
+      let obj: any = {...uploadFileData[i]};
 
       if (obj?.manualquote) {
         if (!obj?.distributor_name && !obj?.oem_name) {
@@ -263,12 +265,10 @@ const OsUpload: React.FC<any> = ({
         (obj?.model_id !== 'a02fffb7-5221-44a2-8eb1-85781a0ecd67' ||
           obj?.file?.type.includes('spreadsheetml'))
       ) {
-
         if (obj?.file?.type.includes('spreadsheetml')) {
-          const dataa = await beforeUploadData(obj?.file)
+          const dataa = await beforeUploadData(obj?.file);
 
-          obj = { ...obj, ...dataa };
-
+          obj = {...obj, ...dataa};
         } else {
           // eslint-disable-next-line no-await-in-loop
           const response: any = await sendDataToNanonets(
@@ -276,7 +276,7 @@ const OsUpload: React.FC<any> = ({
             obj?.file,
           );
 
-          obj = { ...obj, ...response };
+          obj = {...obj, ...response};
         }
       }
 
@@ -322,7 +322,7 @@ const OsUpload: React.FC<any> = ({
   }, [customerValue, opportunityValue, opportunityDetailId]);
   return (
     <GlobalLoader loading={cardLoading || loading}>
-      <Space size={24} direction="vertical" style={{ width: '100%' }}>
+      <Space size={24} direction="vertical" style={{width: '100%'}}>
         <OSDraggerStyle
           beforeUpload={beforeUpload}
           showUploadList={false}
@@ -336,7 +336,7 @@ const OsUpload: React.FC<any> = ({
           >
             <Typography
               name="Body 4/Medium"
-              style={{ textDecoration: 'underline', cursor: 'pointer' }}
+              style={{textDecoration: 'underline', cursor: 'pointer'}}
               color={token?.colorPrimary}
             >
               Click to Upload
