@@ -52,7 +52,7 @@
     "next": "14.0.1",
     "next-auth": "^4.24.5",
     "os": "^0.1.2",
-    "playwright": "^1.47.0",
+    "playwright": "^1.48.0",
     "pspdfkit": "^2023.5.4",
     "react": "^18",
     "react-copy-to-clipboard": "^5.1.0",
