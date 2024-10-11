@@ -4,8 +4,8 @@
 
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
@@ -15,21 +15,25 @@ import OsCustomerSelect from '@/app/components/common/os-customer-select';
 import OsOpportunitySelect from '@/app/components/common/os-opportunity-select';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import { PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { Form, notification } from 'antd';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { FC, useEffect, useState } from 'react';
-import { getAllCustomer } from '../../../../../redux/actions/customer';
+import {PlusIcon, TrashIcon} from '@heroicons/react/24/outline';
+import {Form, notification} from 'antd';
+import {usePathname, useRouter, useSearchParams} from 'next/navigation';
+import {FC, useEffect, useState} from 'react';
+import {getAllCustomer} from '../../../../../redux/actions/customer';
 import {
   getDealRegByOpportunityId,
   insertDealReg,
   queryDealReg,
 } from '../../../../../redux/actions/dealReg';
-import { getAllPartnerandProgramApprovedForOrganizationSalesForce } from '../../../../../redux/actions/partner';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { CollapseSpaceStyle } from '../dealRegDetail/styled-component';
+import {getAllPartnerandProgramApprovedForOrganizationSalesForce} from '../../../../../redux/actions/partner';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {CollapseSpaceStyle} from '../dealRegDetail/styled-component';
 import React from 'react';
-import { createSalesForcePartner, createSalesforcePartnerProgram } from '../../../../../redux/actions/salesForce';
+import {
+  createSalesforceDealreg,
+  createSalesForcePartner,
+  createSalesforcePartnerProgram,
+} from '../../../../../redux/actions/salesForce';
 
 const NewRegistrationForm: FC<any> = ({
   isDealRegDetail = false,
@@ -51,12 +55,12 @@ const NewRegistrationForm: FC<any> = ({
   const salesForceCustomerId = searchParams.get('customerId');
   const salesForceUserId = searchParams.get('user_id');
 
-  console.log('salesForceCustomerId', salesForceCustomerId, salesForceUserId)
+  console.log('salesForceCustomerId', salesForceCustomerId, salesForceUserId);
 
   let pathname = usePathname();
   const dispatch = useAppDispatch();
-  const { data: dataAddress } = useAppSelector((state) => state.customer);
-  const { userInformation } = useAppSelector((state) => state.user);
+  const {data: dataAddress} = useAppSelector((state) => state.customer);
+  const {userInformation} = useAppSelector((state) => state.user);
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [formStep, setFormStep] = useState<number>(0);
   const [customerValue, setCustomerValue] = useState<number>();
@@ -401,16 +405,8 @@ const NewRegistrationForm: FC<any> = ({
           user_id: userInformation?.id,
         }));
       } else if (salesForceUrl) {
-        console.log('salesForceUrl', salesForceUrl, data);
         newData = combinedData?.map((obj: any) => ({
           ...obj,
-          ...addressData,
-          organization: salesForceOrganization,
-          opportunity_id: salesForceOppId,
-          contact_id: salesForceContactId,
-          customer_id: salesForceCustomerId,
-          status: 'New',
-          user_id: salesForceUserId,
         }));
       } else {
         newData = combinedData?.map((obj: any) => ({
@@ -429,27 +425,70 @@ const NewRegistrationForm: FC<any> = ({
         }));
         const partnerProgramsArray = newData?.map((item: any) => ({
           Name: item.partner_program_name,
-          ExternalId: item.partner_program_id,
-          partner_id: item?.partner_id
+          rosdealregai__External_Id__c: item.partner_program_id,
+          rosdealregai__Partner_LR__r: {
+            rosdealregai__External_Id__c: item?.partner_id,
+          },
+        }));
+        const dealRegArray = newData?.map((item: any) => ({
+          organization: salesForceOrganization,
+          opportunity_id: salesForceOppId,
+          contact_id: salesForceContactId,
+          customer_id: salesForceCustomerId,
+          status: 'New',
+          user_id: salesForceUserId,
+          rosdealregai__Partner__r: {
+            rosdealregai__External_Id__c: item?.partner_id,
+          },
+          rosdealregai__Partner_Program__r: {
+            rosdealregai__External_Id__c: item?.partner_program_id,
+          },
         }));
         console.log(
-          'partnerProgramsArray',
-          newData,
+          'NEWDATAAAA',
           partnersArray,
           partnerProgramsArray,
+          dealRegArray,
         );
         try {
-          await Promise.all(partnersArray?.map((partner: any) => dispatch(createSalesForcePartner({ baseURL: salesForceUrl, token: salesForceKey, data: partner }))));
-          // await Promise.all(partnerProgramsArray?.map((program: any) => dispatch(createSalesforcePartnerProgram({ baseURL: salesForceUrl, token: salesForceKey, data: program }))));
+          await Promise.all(
+            partnersArray?.map((partner: any) =>
+              dispatch(
+                createSalesForcePartner({
+                  baseURL: salesForceUrl,
+                  token: salesForceKey,
+                  data: partner,
+                }),
+              ),
+            ),
+          );
+          await Promise.all(
+            partnerProgramsArray?.map((program: any) =>
+              dispatch(
+                createSalesforcePartnerProgram({
+                  baseURL: salesForceUrl,
+                  token: salesForceKey,
+                  data: program,
+                }),
+              ),
+            ),
+          );
+          await Promise.all(
+            dealRegArray?.map((dealreg: any) =>
+              dispatch(
+                createSalesforceDealreg({
+                  baseURL: salesForceUrl,
+                  token: salesForceKey,
+                  data: dealreg,
+                }),
+              ),
+            ),
+          );
 
           console.log('All partners created successfully');
         } catch (error) {
           console.error('Error creating partners:', error);
         }
-        // await dispatch(createSalesforcePartner(partnerProgramsArray))
-
-
-
 
         // if (salesForceUrl) {
         //   window.history.replaceState(
@@ -494,7 +533,7 @@ const NewRegistrationForm: FC<any> = ({
       <Form
         name="dynamic_form_nest_item"
         onFinish={registeredFormFinishCurrent}
-        style={{ maxWidth: 600 }}
+        style={{maxWidth: 600}}
         form={form}
         autoComplete="off"
         layout="vertical"
@@ -532,7 +571,7 @@ const NewRegistrationForm: FC<any> = ({
                                       Partner
                                     </Typography>
                                     <CommonSelect
-                                      dropdownStyle={{ marginBottom: '3px' }}
+                                      dropdownStyle={{marginBottom: '3px'}}
                                       value={items.partner_id}
                                       placeholder="Select"
                                       style={{
@@ -556,7 +595,7 @@ const NewRegistrationForm: FC<any> = ({
                                       }}
                                     />
                                     {!items?.partner_id && errorForAll && (
-                                      <div style={{ color: '#ff4d4f' }}>
+                                      <div style={{color: '#ff4d4f'}}>
                                         Partner is required!
                                       </div>
                                     )}
@@ -593,14 +632,14 @@ const NewRegistrationForm: FC<any> = ({
                                         height: '36px',
                                         marginBottom:
                                           !items?.partner_program_id &&
-                                            errorForAll
+                                          errorForAll
                                             ? ''
                                             : '24px',
                                       }}
                                     />
                                     {!items?.partner_program_id &&
                                       errorForAll && (
-                                        <div style={{ color: '#ff4d4f' }}>
+                                        <div style={{color: '#ff4d4f'}}>
                                           Partner Program is required!
                                         </div>
                                       )}
@@ -611,7 +650,7 @@ const NewRegistrationForm: FC<any> = ({
                                       paddingTop: '25px',
                                       marginBottom:
                                         !items?.partner_program_id &&
-                                          errorForAll
+                                        errorForAll
                                           ? '24px'
                                           : '24px',
                                     }}
@@ -659,7 +698,7 @@ const NewRegistrationForm: FC<any> = ({
                               <PlusIcon
                                 width={24}
                                 color={token?.colorLink}
-                                style={{ marginTop: '5px' }}
+                                style={{marginTop: '5px'}}
                               />
                               <Typography
                                 name="Body 3/Bold"
@@ -708,7 +747,7 @@ const NewRegistrationForm: FC<any> = ({
                                       Partner
                                     </Typography>
                                     <CommonSelect
-                                      dropdownStyle={{ marginBottom: '3px' }}
+                                      dropdownStyle={{marginBottom: '3px'}}
                                       value={items.partner_id}
                                       placeholder="Select"
                                       style={{
@@ -734,7 +773,7 @@ const NewRegistrationForm: FC<any> = ({
                                       }}
                                     />
                                     {!items?.partner_id && errorForAll && (
-                                      <div style={{ color: '#ff4d4f' }}>
+                                      <div style={{color: '#ff4d4f'}}>
                                         Partner is required!
                                       </div>
                                     )}
@@ -745,7 +784,7 @@ const NewRegistrationForm: FC<any> = ({
                                     </Typography>
 
                                     <CommonSelect
-                                      dropdownStyle={{ marginBottom: '3px' }}
+                                      dropdownStyle={{marginBottom: '3px'}}
                                       placeholder="Select"
                                       value={items?.partner_program_id}
                                       options={items?.optionsForProgram}
@@ -771,14 +810,14 @@ const NewRegistrationForm: FC<any> = ({
                                         height: '36px',
                                         marginBottom:
                                           !items?.partner_program_id &&
-                                            errorForAll
+                                          errorForAll
                                             ? ''
                                             : '24px',
                                       }}
                                     />
                                     {!items?.partner_program_id &&
                                       errorForAll && (
-                                        <div style={{ color: '#ff4d4f' }}>
+                                        <div style={{color: '#ff4d4f'}}>
                                           Partner Program is required!
                                         </div>
                                       )}
@@ -789,7 +828,7 @@ const NewRegistrationForm: FC<any> = ({
                                       paddingTop: '25px',
                                       marginBottom:
                                         !items?.partner_program_id &&
-                                          errorForAll
+                                        errorForAll
                                           ? '24px'
                                           : '24px',
                                     }}
@@ -836,7 +875,7 @@ const NewRegistrationForm: FC<any> = ({
                               <PlusIcon
                                 width={24}
                                 color={token?.colorLink}
-                                style={{ marginTop: '5px' }}
+                                style={{marginTop: '5px'}}
                               />
                               <Typography
                                 name="Body 3/Bold"
