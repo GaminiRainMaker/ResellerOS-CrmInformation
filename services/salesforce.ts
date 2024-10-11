@@ -16,4 +16,8 @@ export const SALESFORCE_API = {
     post(API.SALESFORCE.CreateSalesForceDealreg, data) as Promise<
       AxiosResponse<[]>
     >,
+  getSalesForceDealregByOpportunityId: (data: any) =>
+    post(API.SALESFORCE.GetSalesForceDealregByOpportunityId, data) as Promise<
+      AxiosResponse<any>
+    >,
 };
