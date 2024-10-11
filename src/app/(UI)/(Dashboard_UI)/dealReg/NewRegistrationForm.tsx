@@ -49,13 +49,7 @@ const NewRegistrationForm: FC<any> = ({
 
   const salesForceUrl = searchParams.get('instance_url');
   const salesForceKey = searchParams.get('key');
-  const salesForceOrganization = searchParams.get('org');
   const salesForceOppId = searchParams.get('oppId');
-  const salesForceContactId = searchParams.get('contactId');
-  const salesForceCustomerId = searchParams.get('customerId');
-  const salesForceUserId = searchParams.get('user_id');
-
-  console.log('salesForceCustomerId', salesForceCustomerId, salesForceUserId);
 
   let pathname = usePathname();
   const dispatch = useAppDispatch();
@@ -431,12 +425,7 @@ const NewRegistrationForm: FC<any> = ({
           },
         }));
         const dealRegArray = newData?.map((item: any) => ({
-          organization: salesForceOrganization,
-          opportunity_id: salesForceOppId,
-          contact_id: salesForceContactId,
-          customer_id: salesForceCustomerId,
-          status: 'New',
-          user_id: salesForceUserId,
+          rosdealregai__Opportunity__c: salesForceOppId,
           rosdealregai__Partner__r: {
             rosdealregai__External_Id__c: item?.partner_id,
           },
