@@ -146,16 +146,19 @@ const AddQuote: FC<AddQuoteInterface> = ({
         }
       });
     }
-
     try {
       setFinalLoading(true);
       setLoading(true);
       for (let i = 0; i < newArrWithoutManual.length; i++) {
         let quoteLineItemArr: any = [];
         const lineItemData: FormattedData = {};
-        const nanoNetsResult = newArrWithoutManual[i]?.data?.result;
+        const nanoNetsResult = newArrWithoutManual[i]?.data?.result
+          ? newArrWithoutManual[i]?.data?.result
+          : newArrWithoutManual[i]?.lineItems;
         let quoteObj: any = {};
-        const lineItems: any = [];
+        const lineItems: any = newArrWithoutManual[i]?.lineItems
+          ? newArrWithoutManual[i]?.lineItems
+          : [];
         let quoteItem = {};
         let quoteJson: any = [];
         for (let j = 0; j < nanoNetsResult?.length; j++) {
@@ -229,6 +232,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           quotesArr.push(quoteObj);
         }
       }
+
       if (quotesArr.length > 0 && !quoteId) {
         for (let i = 0; i < quotesArr.length; i++) {
           let newObj = {
