@@ -26,14 +26,13 @@ import {
   queryDealReg,
 } from '../../../../../redux/actions/dealReg';
 import {getAllPartnerandProgramApprovedForOrganizationSalesForce} from '../../../../../redux/actions/partner';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import {CollapseSpaceStyle} from '../dealRegDetail/styled-component';
-import React from 'react';
 import {
   createSalesforceDealreg,
   createSalesForcePartner,
   createSalesforcePartnerProgram,
 } from '../../../../../redux/actions/salesForce';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {CollapseSpaceStyle} from '../dealRegDetail/styled-component';
 
 const NewRegistrationForm: FC<any> = ({
   isDealRegDetail = false,
@@ -49,11 +48,11 @@ const NewRegistrationForm: FC<any> = ({
 
   const salesForceUrl = searchParams.get('instance_url');
   const salesForceKey = searchParams.get('key');
+  const salesForceOrganization = searchParams.get('org');
   const salesForceOppId = searchParams.get('oppId');
 
   let pathname = usePathname();
   const dispatch = useAppDispatch();
-  const {data: dataAddress} = useAppSelector((state) => state.customer);
   const {userInformation} = useAppSelector((state) => state.user);
   const [allPartnerFilterData, setAllFilterPartnerData] = useState<any>();
   const [formStep, setFormStep] = useState<number>(0);
@@ -73,17 +72,18 @@ const NewRegistrationForm: FC<any> = ({
 
   const [allAddedPartnerProgramIDs, setAllAddedPartnerProgramIDs] =
     useState<any>();
-  const org = 'cloudanalogy';
+
   useEffect(() => {
     dispatch(
       getAllPartnerandProgramApprovedForOrganizationSalesForce({
-        organization: org,
+        organization: salesForceOrganization
+          ? salesForceOrganization
+          : userInformation?.organization,
       }),
     )?.then((payload: any) => {
       setAllFilterPartnerData(payload?.payload);
     });
   }, []);
-  console.log('salesForceUrl', salesForceUrl);
 
   useEffect(() => {
     if (isDealRegDetail) {
