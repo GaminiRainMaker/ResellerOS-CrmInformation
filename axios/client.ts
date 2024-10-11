@@ -10,11 +10,11 @@ const client = axios.create({
   // baseURL: 'http://localhost:4000',
 
   //Developement
-  baseURL: 'https://api.reselleros.com',
+  // baseURL: 'https://3.218.195.191:4000',
 
   //Production
-  // baseURL: 'https://api.reselleros.com',
-
+  baseURL: 'https://44.206.217.110:4000',
+  
   withCredentials: false,
 });
 
