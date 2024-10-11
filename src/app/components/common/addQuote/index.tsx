@@ -147,8 +147,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
       });
     }
 
-    let newArrFOrexecelFile: any = [];
-
     try {
       setFinalLoading(true);
       setLoading(true);
@@ -160,13 +158,45 @@ const AddQuote: FC<AddQuoteInterface> = ({
         const lineItems: any = [];
         let quoteItem = {};
         let quoteJson: any = [];
-        if (
-          newArrWithoutManual[i]?.file?.type.includes('spreadsheetml') &&
-          newArrWithoutManual?.length === 1
-        ) {
+        for (let j = 0; j < nanoNetsResult?.length; j++) {
+          const result: any = nanoNetsResult[j];
+          const predictions = result?.prediction?.filter((item: any) => item);
+          // eslint-disable-next-line @typescript-eslint/no-loop-func
+          predictions?.map((itemNew: any, predictionIndex: number) => {
+            if (itemNew.label === 'table') {
+              if (itemNew?.cells) {
+                itemNew?.cells.forEach((item: any) => {
+                  const rowNum = item.row;
+                  if (!lineItemData[rowNum]) {
+                    lineItemData[rowNum] = {};
+                  }
+                  lineItemData[rowNum][item.label?.toLowerCase()] = item.text;
+                });
+              }
+              quoteLineItemArr = Object.values(lineItemData);
+              quoteJson =
+                predictionIndex > 0
+                  ? [...quoteLineItemArr, ...quoteJson]
+                  : quoteLineItemArr;
+              quoteLineItemArr?.forEach((obj: any) => {
+                const newObj = {
+                  ...obj,
+                  organization: userInformation.organization,
+                  user_id: userInformation.id,
+                };
+                lineItems.push(newObj);
+              });
+            } else {
+              quoteItem = {
+                ...quoteItem,
+                [itemNew?.label?.toLowerCase()]: itemNew?.ocr_text,
+              };
+            }
+          });
+
           quoteObj = {
             ...quoteItem,
-            // nanonets_id: result?.id,
+            nanonets_id: result?.id,
             quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
             pdf_url: newArrWithoutManual[i]?.pdf_url,
             user_id: userInformation.id,
@@ -176,147 +206,29 @@ const AddQuote: FC<AddQuoteInterface> = ({
             status: 'Drafts',
             quoteFileObj: [
               {
-                file_name: newArrWithoutManual[i]?.file_name,
+                file_name: newArrWithoutManual[i]?.file?.name,
                 pdf_url: newArrWithoutManual[i]?.pdf_url,
                 quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
-                // nanonets_id: result?.id,
-                lineItems:
-                  newArrWithoutManual[i]?.lineItems.length > 0
-                    ? newArrWithoutManual[i]?.lineItems
-                    : [],
+                nanonets_id: result?.id,
+                lineItems: lineItems.length > 0 ? lineItems : [],
               },
             ],
           };
-        } else {
-          if (newArrWithoutManual[i]?.file?.type.includes('spreadsheetml')) {
-            newArrFOrexecelFile?.push({
-              file_name: newArrWithoutManual[i]?.file_name,
-              pdf_url: newArrWithoutManual[i]?.pdf_url,
-              quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
-              // nanonets_id: result?.id,
-              lineItems:
-                newArrWithoutManual[i]?.lineItems.length > 0
-                  ? newArrWithoutManual[i]?.lineItems
-                  : [],
-            });
-          } else {
-            for (let j = 0; j < nanoNetsResult?.length; j++) {
-              const result: any = nanoNetsResult[j];
-              const predictions = result?.prediction?.filter(
-                (item: any) => item,
-              );
-              // eslint-disable-next-line @typescript-eslint/no-loop-func
-
-              predictions?.map((itemNew: any, predictionIndex: number) => {
-                if (itemNew.label === 'table') {
-                  if (itemNew?.cells) {
-                    itemNew?.cells.forEach((item: any) => {
-                      const rowNum = item.row;
-                      if (!lineItemData[rowNum]) {
-                        lineItemData[rowNum] = {};
-                      }
-                      lineItemData[rowNum][item.label?.toLowerCase()] =
-                        item.text;
-                    });
-                  }
-                  quoteLineItemArr = Object.values(lineItemData);
-                  quoteJson =
-                    predictionIndex > 0
-                      ? [...quoteLineItemArr, ...quoteJson]
-                      : quoteLineItemArr;
-                  quoteLineItemArr?.forEach((obj: any) => {
-                    const newObj = {
-                      ...obj,
-                      organization: userInformation.organization,
-                      user_id: userInformation.id,
-                    };
-                    lineItems.push(newObj);
-                  });
-                } else {
-                  quoteItem = {
-                    ...quoteItem,
-                    [itemNew?.label?.toLowerCase()]: itemNew?.ocr_text,
-                  };
-                }
-              });
-
-              quoteObj = {
-                ...quoteItem,
-                nanonets_id: result?.id,
-                quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
-                pdf_url: newArrWithoutManual[i]?.pdf_url,
-                user_id: userInformation.id,
-                customer_id: customerId,
-                opportunity_id: opportunityId,
-                organization: userInformation.organization,
-                status: 'Drafts',
-                quoteFileObj: [
-                  {
-                    file_name: newArrWithoutManual[i]?.file?.name,
-                    pdf_url: newArrWithoutManual[i]?.pdf_url,
-                    quote_config_id:
-                      newArrWithoutManual[i]?.quote_config_id ?? 18,
-                    nanonets_id: result?.id,
-                    lineItems: lineItems.length > 0 ? lineItems : [],
-                  },
-                ],
-              };
-            }
-          }
         }
-
         if (singleQuote || quoteId) {
           if (i === 0) {
             quotesArr.push(quoteObj);
           } else {
-            if (
-              quoteObj &&
-              !newArrWithoutManual[i]?.file?.type.includes('spreadsheetml')
-            ) {
-              // console.log(
-              //   '4354365345435434',
-              //   quoteObj &&
-              //     !newArrWithoutManual[i]?.file?.type.includes('spreadsheetml'),
-              //   quoteObj,
-              //   newArrWithoutManual[i],
-              // );
-              if (quotesArr[0].quoteFileObj?.length > 0) {
-                quotesArr[0].quoteFileObj = [
-                  ...quotesArr[0].quoteFileObj,
-                  // eslint-disable-next-line no-unsafe-optional-chaining
-                  ...quoteObj?.quoteFileObj,
-                ];
-              } else {
-                quotesArr[0].quoteFileObj = [...quoteObj?.quoteFileObj];
-              }
-            }
+            quotesArr[0].quoteFileObj = [
+              ...quotesArr[0].quoteFileObj,
+              // eslint-disable-next-line no-unsafe-optional-chaining
+              ...quoteObj?.quoteFileObj,
+            ];
           }
         } else {
-          if (
-            (quoteObj &&
-              !newArrWithoutManual[i]?.file?.type.includes('spreadsheetml')) ||
-            (newArrWithoutManual[i]?.file?.type.includes('spreadsheetml') &&
-              newArrWithoutManual?.length === 1)
-          ) {
-            quotesArr.push(quoteObj);
-          }
+          quotesArr.push(quoteObj);
         }
       }
-      console.log('32543534532253hlo111', quotesArr, newArrFOrexecelFile);
-
-      // if (newArrFOrexecelFile && newArrFOrexecelFile?.length > 0) {
-      //   quotesArr[0].quoteFileObj = [
-      //     ...quotesArr[0].quoteFileObj,
-      //     // eslint-disable-next-line no-unsafe-optional-chaining
-      //     ...newArrFOrexecelFile,
-      //   ];
-      // }
-
-      console.log('32543534532253hlo22', quotesArr);
-      return;
-      // console.log('34543543353453', quotesArr, newArrFOrexecelFile);
-      // return;
-
       if (quotesArr.length > 0 && !quoteId) {
         for (let i = 0; i < quotesArr.length; i++) {
           let newObj = {
@@ -331,12 +243,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
         }
       } else {
         const payload = await dispatch(getQuoteById(quoteId));
-
         quotesArr[0] = {
           ...payload?.payload,
           quoteFileObj: [...quotesArr[0].quoteFileObj],
         };
-
         await dispatch(updateQuoteWithNewlineItemAddByID(Number(quoteId)));
       }
 
@@ -355,7 +265,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
           );
 
           const lineItem = quotesArr[i].quoteFileObj[k]?.lineItems;
-
           let allProductCodes: any = [];
           let allProductCodeDataa: any = [];
           lineItem?.map((itemsPro: any) => {
@@ -426,7 +335,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
           }
         }
       }
-      return;
       const finalOpportunityArray: any = [];
       if (finalLineItems && syncTableData?.length > 0) {
         const newRequiredArray: any = [];
@@ -482,10 +390,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
       setLoading(false);
       console.log('object', err);
     }
-    return;
     await dispatch(getQuotesByDateFilter({}));
     setShowModal(false);
     setUploadFileData([]);
+
     if ((singleQuote || quoteId) && newArrWithManual?.length > 0) {
       let latestestFIleId: any;
       let quoteIdForManualss: any;
@@ -602,7 +510,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
     form.resetFields(['customer_id', 'opportunity_id']);
   };
-
   useEffect(() => {
     form.resetFields([
       'customer_id',
