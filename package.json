@@ -16,7 +16,8 @@
     "postinstall": "npm install playwright && npx playwright install"
   },
   "engines": {
-    "npm": "please-use-yarn"
+    "npm": "please-use-yarn",
+    "node": ">=18.0.0"
   },
   "dependencies": {
     "@ant-design/icons": "^5.2.6",

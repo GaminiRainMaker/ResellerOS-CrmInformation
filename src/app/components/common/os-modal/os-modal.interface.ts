@@ -25,6 +25,7 @@ export interface OSModalPropsInterface extends ModalProps {
   fourthButtonfunction?: any;
   fifthButtonText?: any;
   fifthButtonfunction?: any;
+  isSalesForce?: any;
 }
 
 export interface OSDailogInterface extends ModalProps {

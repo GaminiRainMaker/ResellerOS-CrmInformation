@@ -178,3 +178,15 @@ export const queryAllOrganizations = createAsyncThunk(
     }
   },
 );
+
+export const createNewOrganization = createAsyncThunk(
+  'user/createNewOrganization',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await USERAPI.createNewOrganization(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);

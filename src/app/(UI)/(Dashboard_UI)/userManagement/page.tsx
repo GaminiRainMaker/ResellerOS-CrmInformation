@@ -2,30 +2,37 @@
 
 import {Col, Row} from '@/app/components/common/antd/Grid';
 import {Space} from '@/app/components/common/antd/Space';
+import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import EmptyContainer from '@/app/components/common/os-empty-container';
 import OsModal from '@/app/components/common/os-modal';
+import CommonSelect from '@/app/components/common/os-select';
 import OsTable from '@/app/components/common/os-table';
 import Typography from '@/app/components/common/typography';
 import {EyeIcon, UsersIcon} from '@heroicons/react/24/outline';
-import {Form} from 'antd';
+import {Form, notification} from 'antd';
+import {Option} from 'antd/es/mentions';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
-import {getAdminUserOfAllOrganization} from '../../../../../redux/actions/user';
-import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-import AssignPartnerProgram from './AssignPartnerProgram';
 import {insertAssignPartnerProgram} from '../../../../../redux/actions/assignPartnerProgram';
+import {
+  createNewOrganization,
+  getAdminUserOfAllOrganization,
+} from '../../../../../redux/actions/user';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setAllResellerRecord} from '../../../../../redux/slices/user';
-import CommonSelect from '@/app/components/common/os-select';
-import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
-import {Option} from 'antd/es/mentions';
-import {getPartnerCanAddedToOrganization} from '../../../../../redux/actions/partner';
+import AssignPartnerProgram from './AssignPartnerProgram';
+import React from 'react';
+import OsButton from '@/app/components/common/os-button';
+import AddNewOrganization from './AddNewOrganization';
+import {Checkbox} from '@/app/components/common/antd/Checkbox';
 
 const UserManagement = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const router = useRouter();
   const [form] = Form.useForm();
+  const [newOrganizationFormData] = Form.useForm();
   const {data: userData, loading} = useAppSelector((state) => state.user);
   const {loading: AssignPartnerProgramLoading} = useAppSelector(
     (state) => state.assignPartnerProgram,
@@ -34,6 +41,8 @@ const UserManagement = () => {
     useState<boolean>(false);
 
   const [selectedRecordData, setSelectedRecordData] = useState<any>();
+  const [showNewOrganizationModal, setShowNewOrganizationModal] =
+    useState<boolean>(false);
   const updatedResellerData = userData?.filter(
     (d: any) => d?.organization !== 'rainmakercloud',
   );
@@ -102,7 +111,7 @@ const UserManagement = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
-          Email
+          Master Email
         </Typography>
       ),
       dataIndex: 'email',
@@ -111,6 +120,33 @@ const UserManagement = () => {
       render: (text: string) => (
         <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
       ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Organization Email
+        </Typography>
+      ),
+      dataIndex: 'organization_email',
+      key: 'organization_email',
+      width: 173,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular">{text ?? '--'}</Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
+          Salesforce Account
+        </Typography>
+      ),
+      dataIndex: 'is_salesforce',
+      key: 'is_salesforce',
+      width: 173,
+      render: (text: any, record: any) => {
+        console.log('recordrecord', record, text);
+        return <Checkbox checked={text} />;
+      },
     },
 
     {
@@ -198,6 +234,50 @@ const UserManagement = () => {
       ),
     ),
   );
+
+  const createNewOrganizationUser = () => {
+    const dataa = newOrganizationFormData.getFieldsValue();
+    const stringIn = dataa?.email?.split('@');
+    const newcheck = stringIn?.[1]?.split('.');
+    const checkss = [
+      'gmail',
+      'yahoo',
+      'yahoo',
+      'hotmail',
+      'aol',
+      'live',
+      'outlook',
+    ];
+    const organizationValue = newcheck?.[0];
+
+    if (checkss?.includes(newcheck?.[0])) {
+      notification?.open({
+        message: 'Please enter vaild organization email',
+        type: 'error',
+      });
+      return;
+    }
+    let obj = {
+      ...dataa,
+      organization: organizationValue,
+      password: `${dataa?.user_name}@123`,
+      is_admin: true,
+      master_admin: true,
+    };
+    dispatch(createNewOrganization(obj))?.then((res) => {
+      if (res?.payload) {
+        dispatch(getAdminUserOfAllOrganization(searchQuery));
+      } else {
+        notification?.open({
+          message: `This organization is already exist.`,
+          type: 'info',
+        });
+      }
+      setShowNewOrganizationModal(false);
+      newOrganizationFormData.resetFields();
+    });
+  };
+
   return (
     <>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
@@ -218,8 +298,16 @@ const UserManagement = () => {
             gap: 12,
           }}
         >
-          <Row justify={'space-between'}>
-            <Col />
+          <Row justify={'end'} style={{display: 'flex', alignItems: 'center'}}>
+            <Col style={{marginRight: '10px', marginTop: '18px'}}>
+              <OsButton
+                text="Add Organization"
+                buttontype="PRIMARY"
+                clickHandler={() => {
+                  setShowNewOrganizationModal(true);
+                }}
+              />
+            </Col>
             <Col>
               {' '}
               <Space size={12} align="center">
@@ -338,6 +426,29 @@ const UserManagement = () => {
         primaryButtonText="Assign"
         onOk={() => {
           form?.submit();
+        }}
+      />
+
+      <OsModal
+        loading={loading}
+        title="Create New Organization"
+        body={
+          <AddNewOrganization
+            form={newOrganizationFormData}
+            onFinish={createNewOrganizationUser}
+          />
+        }
+        bodyPadding={40}
+        width={638}
+        open={showNewOrganizationModal}
+        onCancel={() => {
+          setShowNewOrganizationModal(false);
+          newOrganizationFormData.resetFields();
+        }}
+        destroyOnClose
+        primaryButtonText="Save"
+        onOk={() => {
+          newOrganizationFormData?.submit();
         }}
       />
     </>

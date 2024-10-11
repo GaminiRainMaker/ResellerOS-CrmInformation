@@ -84,6 +84,7 @@ import {
   getBulkProductIsExisting,
   insertProductsInBulk,
 } from '../../../../../redux/actions/product';
+import React from 'react';
 
 registerAllModules();
 

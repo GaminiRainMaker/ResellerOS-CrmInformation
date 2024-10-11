@@ -14,6 +14,7 @@ import {
   getPartnerCanAddedToOrganization,
   getAllPartnerandProgramFilterDataForOrganizationOnly,
   upadteRequestForOrgNewPartnerApproval,
+  getAllPartnerandProgramApprovedForOrganizationSalesForce,
 } from '../actions/partner';
 
 type PartnerState = {
@@ -192,6 +193,27 @@ const partnerSlice = createSlice({
       )
       .addCase(
         getAllPartnerandProgramApprovedForOrganization.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(
+        getAllPartnerandProgramApprovedForOrganizationSalesForce.pending,
+        (state) => {
+          state.loading = true;
+          state.error = null;
+        },
+      )
+      .addCase(
+        getAllPartnerandProgramApprovedForOrganizationSalesForce.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.data = action.payload;
+        },
+      )
+      .addCase(
+        getAllPartnerandProgramApprovedForOrganizationSalesForce.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
