@@ -33,6 +33,7 @@ import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
 import OsButton from '../os-button';
 import OsUpload from '../os-upload';
 import { AddQuoteInterface, FormattedData } from './types';
+import { queryLineItemSyncingForSalesForce } from '../../../../../redux/actions/LineItemSyncing';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
@@ -63,6 +64,19 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const [allValuesForManual, setAllValuesForManual] = useState<boolean>(false);
 
 
+
+
+  const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
+
+  const [query, setQuery] = useState<{
+    searchValue: string;
+    asserType: boolean;
+    salesforce: boolean;
+  }>({
+    searchValue: '',
+    asserType: false,
+    salesforce: false,
+  });
   useEffect(() => {
     if (existingQuoteId || existingGenerateQuoteId) {
       const dddd = existingQuoteId ?? existingGenerateQuoteId;
@@ -136,6 +150,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
       });
     }
 
+    let newArrFOrexecelFile: any = []
+
     try {
       setFinalLoading(true);
       setLoading(true);
@@ -151,37 +167,50 @@ const AddQuote: FC<AddQuoteInterface> = ({
           const result: any = nanoNetsResult[j];
           const predictions = result?.prediction?.filter((item: any) => item);
           // eslint-disable-next-line @typescript-eslint/no-loop-func
-          predictions?.map((itemNew: any, predictionIndex: number) => {
-            if (itemNew.label === 'table') {
-              if (itemNew?.cells) {
-                itemNew?.cells.forEach((item: any) => {
-                  const rowNum = item.row;
-                  if (!lineItemData[rowNum]) {
-                    lineItemData[rowNum] = {};
-                  }
-                  lineItemData[rowNum][item.label?.toLowerCase()] = item.text;
+          if (predictions) {
+            predictions?.map((itemNew: any, predictionIndex: number) => {
+              if (itemNew.label === 'table') {
+                if (itemNew?.cells) {
+                  itemNew?.cells.forEach((item: any) => {
+                    const rowNum = item.row;
+                    if (!lineItemData[rowNum]) {
+                      lineItemData[rowNum] = {};
+                    }
+                    lineItemData[rowNum][item.label?.toLowerCase()] = item.text;
+                  });
+                }
+                quoteLineItemArr = Object.values(lineItemData);
+                quoteJson =
+                  predictionIndex > 0
+                    ? [...quoteLineItemArr, ...quoteJson]
+                    : quoteLineItemArr;
+                quoteLineItemArr?.forEach((obj: any) => {
+                  const newObj = {
+                    ...obj,
+                    organization: userInformation.organization,
+                    user_id: userInformation.id,
+                  };
+                  lineItems.push(newObj);
                 });
-              }
-              quoteLineItemArr = Object.values(lineItemData);
-              quoteJson =
-                predictionIndex > 0
-                  ? [...quoteLineItemArr, ...quoteJson]
-                  : quoteLineItemArr;
-              quoteLineItemArr?.forEach((obj: any) => {
-                const newObj = {
-                  ...obj,
-                  organization: userInformation.organization,
-                  user_id: userInformation.id,
+              } else {
+                quoteItem = {
+                  ...quoteItem,
+                  [itemNew?.label?.toLowerCase()]: itemNew?.ocr_text,
                 };
-                lineItems.push(newObj);
-              });
-            } else {
-              quoteItem = {
-                ...quoteItem,
-                [itemNew?.label?.toLowerCase()]: itemNew?.ocr_text,
-              };
-            }
-          });
+              }
+            });
+          } else {
+            newArrFOrexecelFile?.push(
+              {
+                file_name: newArrWithoutManual[i]?.file_name,
+                pdf_url: newArrWithoutManual[i]?.pdf_url,
+                quote_config_id: newArrWithoutManual[i]?.quote_config_id ?? 18,
+                // nanonets_id: result?.id,
+                lineItems: newArrWithoutManual[i]?.lineItem.length > 0 ? newArrWithoutManual[i]?.lineItem : [],
+              },
+            )
+          }
+
 
           quoteObj = {
             ...quoteItem,
@@ -218,6 +247,9 @@ const AddQuote: FC<AddQuoteInterface> = ({
           quotesArr.push(quoteObj);
         }
       }
+
+      console.log("43534534543534", quotesArr, newArrFOrexecelFile)
+      return
       if (quotesArr.length > 0 && !quoteId) {
         for (let i = 0; i < quotesArr.length; i++) {
           let newObj = {
@@ -383,7 +415,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
     await dispatch(getQuotesByDateFilter({}));
     setShowModal(false);
     setUploadFileData([]);
-
+    return
     if ((singleQuote || quoteId) && newArrWithManual?.length > 0) {
       let latestestFIleId: any;
       let quoteIdForManualss: any;
@@ -428,19 +460,19 @@ const AddQuote: FC<AddQuoteInterface> = ({
       }
 
       if (countOfExportFiles > 0) {
-        
+
         router.push(
           `/fileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&quoteExist=false&manualFlow=true`,
         );
       } else {
-        
+
         router.push(
           `/manualFileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&manualFlow=true`,
         );
       }
     }
     if (newArrWithManual?.length === 0) {
-      
+
       router.push(
         `/generateQuote?id=${quotesArr[0]?.id}&isView=${getResultedValue()}`,
       );
@@ -486,12 +518,12 @@ const AddQuote: FC<AddQuoteInterface> = ({
       setLoading(false);
       if (newArrWithManual?.length > 0) {
         if (countOfExportFiles > 0) {
-          
+
           router.push(
             `/fileEditor?id=${latestQuoteId}&fileId=${null}&quoteExist=false&manualFlow=true`,
           );
         } else {
-          
+
           router.push(
             `/manualFileEditor?id=${latestQuoteId}&fileId=${null}&manualFlow=true`,
           );
@@ -531,6 +563,16 @@ const AddQuote: FC<AddQuoteInterface> = ({
     setExistingQuoteId(0);
     form.resetFields(['customer_id', 'opportunity_id']);
   };
+
+
+  useEffect(() => {
+    dispatch(queryLineItemSyncingForSalesForce(query))?.then((payload: any) => {
+      let approvedOne = payload?.payload?.filter(
+        (items: any) => items?.status === 'Approved',
+      );
+      setLineItemSyncingData(approvedOne);
+    });
+  }, []);
 
   return (
     <>
@@ -576,6 +618,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
             setAllValuesForManual={setAllValuesForManual}
             opportunityDetailId={opportunityId}
             customerDetailId={customerId}
+            lineItemSyncingData={lineItemSyncingData}
+
           />
         }
         width={1000}
