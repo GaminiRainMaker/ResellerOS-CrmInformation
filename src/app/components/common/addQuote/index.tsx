@@ -321,8 +321,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
             );
           }
 
-          console.log('354353243243', allProductCodeDataa, lineItem);
-          return;
+          // console.log('354353243243', allProductCodeDataa, lineItem);
+          // return;
           if (lineItem) {
             lineItem?.map((itemssProduct: any) => {
               let productCode = itemssProduct?.product_code
