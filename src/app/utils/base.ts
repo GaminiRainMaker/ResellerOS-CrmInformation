@@ -26,7 +26,6 @@ import {getRebatesInBulkByProductCode} from '../../../redux/actions/rebate';
 import {insertRebateQuoteLineItem} from '../../../redux/actions/rebateQuoteLineitem';
 import {insertValidation} from '../../../redux/actions/validation';
 import {setQuoteFileUnverifiedById} from '../../../redux/slices/quoteFile';
-import {Page} from '@playwright/test';
 import {getContractInBulkByProductCode} from '../../../redux/actions/contractProduct';
 
 export const getResultedValue = () => {
