@@ -1275,7 +1275,6 @@ const SuperAdminPartner: React.FC = () => {
               <OsButton
                 buttontype="SECONDARY"
                 text="EDIT"
-                color="red"
                 clickHandler={() => {
                   router?.push(`/formBuilder?id=${formData?.Id}`);
                 }}

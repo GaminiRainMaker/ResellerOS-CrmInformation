@@ -16,6 +16,7 @@ const client = axios.create({
   // baseURL: 'https://api.reselleros.com',
 
   withCredentials: false,
+  
 });
 
 client.interceptors.request.use(requestInterceptor);

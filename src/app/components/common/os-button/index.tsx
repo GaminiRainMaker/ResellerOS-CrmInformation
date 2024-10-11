@@ -10,7 +10,6 @@ interface ButtonInterface extends ButtonProps {
   btnStyle?: any;
   icon?: any;
   commonIcon?: any;
-  color?: string;
   loading?: any;
   htmlType?: any;
 }
@@ -24,7 +23,6 @@ const OsButton: React.FC<ButtonInterface> = ({
   type,
   buttontype = 'PRIMARY',
   commonIcon,
-  color,
   loading,
   htmlType,
 }) => {

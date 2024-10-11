@@ -82,6 +82,7 @@ const EditorFile = () => {
     }, []);
 
 
+
     useEffect(() => {
         const updateLineItemColumnArr: any = [];
         // let newObj = { data: "QuoteId", readOnly: true }
@@ -113,20 +114,28 @@ const EditorFile = () => {
                             dispatch(pathToGo({ Url: doc_url }))?.then((payload: any) => {
                                 if (excelFile === 'true') {
                                     // this is  a check arrr
-                                    let newArrCheck = [
-                                        'line #',
-                                        'partnumber',
-                                        'manufacturer',
-                                        'description',
-                                        'listprice',
-                                        'gsaprice',
-                                        'Cost',
-                                        'quantity',
-                                        'Type',
-                                        'openmarket',
-                                        'productcode',
-                                        'listprice',
-                                    ];
+                                    // let newArrCheck = [
+                                    //     'line #',
+                                    //     'partnumber',
+                                    //     'manufacturer',
+                                    //     'description',
+                                    //     'listprice',
+                                    //     'gsaprice',
+                                    //     'Cost',
+                                    //     'quantity',
+                                    //     'Type',
+                                    //     'openmarket',
+                                    //     'productcode',
+                                    //     'listprice',
+                                    // ];
+                                    let newArrCheck: any = [];
+
+
+                                    if (lineItemSyncingData && lineItemSyncingData?.length > 0) {
+                                        lineItemSyncingData?.map((items: any) => {
+                                            newArrCheck?.push(items?.pdf_header)
+                                        })
+                                    }
                                     const normalize = (str: any) => {
                                         return str
                                             ?.toString()
@@ -150,7 +159,7 @@ const EditorFile = () => {
                                             // Check if normalizedItem matches any normalized check item
                                             if (
                                                 normalizedCheckArr.some(
-                                                    (checkItem) =>
+                                                    (checkItem: any) =>
                                                         normalizedItem === normalize(checkItem),
                                                 )
                                             ) {

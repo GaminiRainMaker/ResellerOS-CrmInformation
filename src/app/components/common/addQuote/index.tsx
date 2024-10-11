@@ -8,11 +8,11 @@ import {
   getResultedValue,
   getValuesOFLineItemsThoseNotAddedBefore,
 } from '@/app/utils/base';
-import { PlusIcon } from '@heroicons/react/24/outline';
-import { Form, message } from 'antd';
-import { usePathname, useRouter } from 'next/navigation';
-import { FC, useEffect, useState } from 'react';
-import { insertOpportunityLineItem } from '../../../../../redux/actions/opportunityLineItem';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import {Form, message} from 'antd';
+import {usePathname, useRouter} from 'next/navigation';
+import {FC, useEffect, useState} from 'react';
+import {insertOpportunityLineItem} from '../../../../../redux/actions/opportunityLineItem';
 import {
   getBulkProductIsExisting,
   insertProductsInBulk,
@@ -23,16 +23,17 @@ import {
   insertQuote,
   updateQuoteWithNewlineItemAddByID,
 } from '../../../../../redux/actions/quote';
-import { insertQuoteFile } from '../../../../../redux/actions/quoteFile';
-import { insertQuoteLineItem } from '../../../../../redux/actions/quotelineitem';
+import {insertQuoteFile} from '../../../../../redux/actions/quoteFile';
+import {insertQuoteLineItem} from '../../../../../redux/actions/quotelineitem';
 import {
   uploadExcelFileToAws,
   uploadToAws,
 } from '../../../../../redux/actions/upload';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import OsButton from '../os-button';
 import OsUpload from '../os-upload';
-import { AddQuoteInterface, FormattedData } from './types';
+import {AddQuoteInterface, FormattedData} from './types';
+import {queryLineItemSyncingForSalesForce} from '../../../../../redux/actions/LineItemSyncing';
 
 const AddQuote: FC<AddQuoteInterface> = ({
   uploadFileData,
@@ -52,8 +53,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const [showModal, setShowModal] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { userInformation } = useAppSelector((state) => state.user);
-  const { data: syncTableData } = useAppSelector((state) => state.syncTable);
+  const {userInformation} = useAppSelector((state) => state.user);
+  const {data: syncTableData} = useAppSelector((state) => state.syncTable);
   const [form] = Form.useForm();
   let pathname = usePathname();
   const [loading, setLoading] = useState<boolean>(false);
@@ -62,7 +63,17 @@ const AddQuote: FC<AddQuoteInterface> = ({
   const [typeOfAddQuote, setTypeOfAddQuote] = useState<number>(1);
   const [allValuesForManual, setAllValuesForManual] = useState<boolean>(false);
 
+  const [lineItemSyncingData, setLineItemSyncingData] = useState<any>();
 
+  const [query, setQuery] = useState<{
+    searchValue: string;
+    asserType: boolean;
+    salesforce: boolean;
+  }>({
+    searchValue: '',
+    asserType: false,
+    salesforce: false,
+  });
   useEffect(() => {
     if (existingQuoteId || existingGenerateQuoteId) {
       const dddd = existingQuoteId ?? existingGenerateQuoteId;
@@ -74,7 +85,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
   }, [existingQuoteId, existingGenerateQuoteId]);
 
   const beforeUpload = (file: File) => {
-    const obj: any = { ...file };
+    const obj: any = {...file};
     let pathUsedToUpload = file?.type?.split('.')?.includes('spreadsheetml')
       ? uploadExcelFileToAws
       : uploadToAws;
@@ -84,7 +95,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
         obj.base64 = base64String;
         obj.file = file;
         setLoading(true);
-        dispatch(pathUsedToUpload({ document: base64String })).then(
+        dispatch(pathUsedToUpload({document: base64String})).then(
           (payload: any) => {
             const pdfUrl = payload?.payload?.data?.Location;
             obj.pdf_url = pdfUrl;
@@ -135,16 +146,19 @@ const AddQuote: FC<AddQuoteInterface> = ({
         }
       });
     }
-
     try {
       setFinalLoading(true);
       setLoading(true);
       for (let i = 0; i < newArrWithoutManual.length; i++) {
         let quoteLineItemArr: any = [];
         const lineItemData: FormattedData = {};
-        const nanoNetsResult = newArrWithoutManual[i]?.data?.result;
+        const nanoNetsResult = newArrWithoutManual[i]?.data?.result
+          ? newArrWithoutManual[i]?.data?.result
+          : newArrWithoutManual[i]?.lineItems;
         let quoteObj: any = {};
-        const lineItems: any = [];
+        const lineItems: any = newArrWithoutManual[i]?.lineItems
+          ? newArrWithoutManual[i]?.lineItems
+          : [];
         let quoteItem = {};
         let quoteJson: any = [];
         for (let j = 0; j < nanoNetsResult?.length; j++) {
@@ -218,18 +232,18 @@ const AddQuote: FC<AddQuoteInterface> = ({
           quotesArr.push(quoteObj);
         }
       }
+
       if (quotesArr.length > 0 && !quoteId) {
         for (let i = 0; i < quotesArr.length; i++) {
           let newObj = {
             ...quotesArr[i],
             organization: userInformation?.organization,
             // quote_name: Date.now(),
-
           };
           const response = await dispatch(insertQuote([newObj]));
           // eslint-disable-next-line no-unsafe-optional-chaining
 
-          quotesArr[i] = { ...response?.payload?.data[0], ...quotesArr[i] };
+          quotesArr[i] = {...response?.payload?.data[0], ...quotesArr[i]};
         }
       } else {
         const payload = await dispatch(getQuoteById(quoteId));
@@ -268,7 +282,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
             getBulkProductIsExisting(allProductCodes),
           );
           if (valuessOfAlreayExist?.payload?.length > 0) {
-            allProductCodeDataa = valuessOfAlreayExist?.payload;
+            valuessOfAlreayExist?.payload?.map((items: any) => {
+              allProductCodeDataa?.push(items);
+            });
+            // allProductCodeDataa = valuessOfAlreayExist?.payload;
           }
 
           if (valuessOfAlreayExist?.payload?.length > 0) {
@@ -281,6 +298,13 @@ const AddQuote: FC<AddQuoteInterface> = ({
             if (newInsertionData?.length > 0) {
               await dispatch(insertProductsInBulk(newInsertionData))?.then(
                 (payload: any) => {
+                  // console.log(
+                  //   '3598329982',
+                  //   // lineItem,
+                  //   // allProductCodeDataa,
+                  //   payload,
+                  // );
+                  // return;
                   payload?.payload?.map((itemsBulk: any) => {
                     allProductCodeDataa?.push(itemsBulk);
                   });
@@ -297,6 +321,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
             );
           }
 
+          // console.log('354353243243', allProductCodeDataa, lineItem);
+          // return;
           if (lineItem) {
             lineItem?.map((itemssProduct: any) => {
               let productCode = itemssProduct?.product_code
@@ -359,7 +385,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
         resultArrForAllArr?.map((itemss: any) => {
           const singleObjects = itemss.reduce(
             (obj: any, item: any) =>
-              Object.assign(obj, { [item.key]: item.value }),
+              Object.assign(obj, {[item.key]: item.value}),
             {},
           );
           finalOpportunityArray?.push(singleObjects);
@@ -426,21 +452,18 @@ const AddQuote: FC<AddQuoteInterface> = ({
           latestestFIleId = payload?.payload?.id;
         });
       }
-
+      return;
       if (countOfExportFiles > 0) {
-        
         router.push(
           `/fileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&quoteExist=false&manualFlow=true`,
         );
       } else {
-        
         router.push(
           `/manualFileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&manualFlow=true`,
         );
       }
     }
     if (newArrWithManual?.length === 0) {
-      
       router.push(
         `/generateQuote?id=${quotesArr[0]?.id}&isView=${getResultedValue()}`,
       );
@@ -483,15 +506,14 @@ const AddQuote: FC<AddQuoteInterface> = ({
           },
         );
       }
+      return;
       setLoading(false);
       if (newArrWithManual?.length > 0) {
         if (countOfExportFiles > 0) {
-          
           router.push(
             `/fileEditor?id=${latestQuoteId}&fileId=${null}&quoteExist=false&manualFlow=true`,
           );
         } else {
-          
           router.push(
             `/manualFileEditor?id=${latestQuoteId}&fileId=${null}&manualFlow=true`,
           );
@@ -505,7 +527,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
     form.resetFields(['customer_id', 'opportunity_id']);
   };
-
   useEffect(() => {
     form.resetFields([
       'customer_id',
@@ -522,7 +543,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
     oem: string,
     distributer: string,
     fileName: string,
-  ) => { };
+  ) => {};
 
   const resetFields = () => {
     setShowModal(false);
@@ -531,6 +552,15 @@ const AddQuote: FC<AddQuoteInterface> = ({
     setExistingQuoteId(0);
     form.resetFields(['customer_id', 'opportunity_id']);
   };
+
+  useEffect(() => {
+    dispatch(queryLineItemSyncingForSalesForce(query))?.then((payload: any) => {
+      let approvedOne = payload?.payload?.filter(
+        (items: any) => items?.status === 'Approved',
+      );
+      setLineItemSyncingData(approvedOne);
+    });
+  }, []);
 
   return (
     <>
@@ -576,6 +606,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
             setAllValuesForManual={setAllValuesForManual}
             opportunityDetailId={opportunityId}
             customerDetailId={customerId}
+            lineItemSyncingData={lineItemSyncingData}
           />
         }
         width={1000}
