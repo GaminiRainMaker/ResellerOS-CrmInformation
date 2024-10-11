@@ -50,6 +50,8 @@ const NewRegistrationForm: FC<any> = ({
   const salesForceKey = searchParams.get('key');
   const salesForceOrganization = searchParams.get('org');
   const salesForceOppId = searchParams.get('oppId');
+  const salesForceContactId = searchParams.get('contactId');
+  const salesForceCustomerId = searchParams.get('customerId');
 
   let pathname = usePathname();
   const dispatch = useAppDispatch();
@@ -313,7 +315,6 @@ const NewRegistrationForm: FC<any> = ({
     let countForNonAdded: number = 0;
     if (regesteriedPartner && regesteriedPartner?.length > 0) {
       regesteriedPartner?.map((items: any) => {
-        console.log('itemsitems', items);
         if (items?.partner_id === '' || items?.partner_program_id === '') {
           countForNonAdded += 1;
         }
@@ -326,7 +327,6 @@ const NewRegistrationForm: FC<any> = ({
         }
       });
     }
-    console.log('3443432432', countForNonAdded);
     if (countForNonAdded > 0) {
       setErrorForAll(true);
       return;
@@ -433,12 +433,6 @@ const NewRegistrationForm: FC<any> = ({
             rosdealregai__External_Id__c: item?.partner_program_id,
           },
         }));
-        console.log(
-          'NEWDATAAAA',
-          partnersArray,
-          partnerProgramsArray,
-          dealRegArray,
-        );
         try {
           await Promise.all(
             partnersArray?.map((partner: any) =>
@@ -474,19 +468,26 @@ const NewRegistrationForm: FC<any> = ({
             ),
           );
 
-          console.log('All partners created successfully');
-        } catch (error) {
+          notification.success({
+            message: 'Success',
+            description: 'Dealreg form created successfully.',
+          });
+
+          if (salesForceUrl) {
+            window.history.replaceState(
+              null,
+              '',
+              `/dealRegDetail?opportunityId=${salesForceOppId}&instance_url=${salesForceUrl}&customerId=${salesForceCustomerId}&contactId=${salesForceContactId}`,
+            );
+            location?.reload();
+          }
+        } catch (error: any) {
+          notification.error({
+            message: 'Error',
+            description: `Error creating partners: ${error.message}`,
+          });
           console.error('Error creating partners:', error);
         }
-
-        // if (salesForceUrl) {
-        //   window.history.replaceState(
-        //     null,
-        //     '',
-        //     `/dealRegDetail?opportunityId=${d?.payload?.[0]?.opportunity_id}&customerId=${d?.payload?.[0]?.customer_id}&contactId=${d?.payload?.[0]?.contact_id}`,
-        //   );
-        //   location?.reload();
-        // }
       } else {
         await dispatch(insertDealReg(newData)).then((d: any) => {
           if (d?.payload) {
