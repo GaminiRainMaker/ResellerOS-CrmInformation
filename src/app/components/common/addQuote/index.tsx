@@ -282,7 +282,10 @@ const AddQuote: FC<AddQuoteInterface> = ({
             getBulkProductIsExisting(allProductCodes),
           );
           if (valuessOfAlreayExist?.payload?.length > 0) {
-            allProductCodeDataa = valuessOfAlreayExist?.payload;
+            valuessOfAlreayExist?.payload?.map((items: any) => {
+              allProductCodeDataa?.push(items);
+            });
+            // allProductCodeDataa = valuessOfAlreayExist?.payload;
           }
 
           if (valuessOfAlreayExist?.payload?.length > 0) {
@@ -295,6 +298,13 @@ const AddQuote: FC<AddQuoteInterface> = ({
             if (newInsertionData?.length > 0) {
               await dispatch(insertProductsInBulk(newInsertionData))?.then(
                 (payload: any) => {
+                  // console.log(
+                  //   '3598329982',
+                  //   // lineItem,
+                  //   // allProductCodeDataa,
+                  //   payload,
+                  // );
+                  // return;
                   payload?.payload?.map((itemsBulk: any) => {
                     allProductCodeDataa?.push(itemsBulk);
                   });
@@ -311,6 +321,8 @@ const AddQuote: FC<AddQuoteInterface> = ({
             );
           }
 
+          console.log('354353243243', allProductCodeDataa, lineItem);
+          return;
           if (lineItem) {
             lineItem?.map((itemssProduct: any) => {
               let productCode = itemssProduct?.product_code
@@ -440,7 +452,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           latestestFIleId = payload?.payload?.id;
         });
       }
-
+      return;
       if (countOfExportFiles > 0) {
         router.push(
           `/fileEditor?id=${quoteId ? quoteId : singleAddOnQuoteId ? singleAddOnQuoteId : quoteIdForManualss}&fileId=${null}&quoteExist=false&manualFlow=true`,
@@ -494,6 +506,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           },
         );
       }
+      return;
       setLoading(false);
       if (newArrWithManual?.length > 0) {
         if (countOfExportFiles > 0) {

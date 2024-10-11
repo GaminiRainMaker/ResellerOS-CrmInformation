@@ -225,8 +225,14 @@ const OsUpload: React.FC<any> = ({
       .catch((error: any) => {
         message.error('Error converting file to base64', error);
       });
+    let requiredResult = resultantValues?.filter(
+      (items: any) =>
+        items?.product_code &&
+        items?.product_code !== undefined &&
+        items?.product_code !== null,
+    );
     return {
-      lineItems: resultantValues,
+      lineItems: requiredResult,
       file_name: file?.name,
       pdf_url: uploadedUrl,
     };
