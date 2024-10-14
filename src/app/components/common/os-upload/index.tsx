@@ -83,26 +83,12 @@ const OsUpload: React.FC<any> = ({
             if (doc_url) {
               await dispatch(fetchAndParseExcel({Url: doc_url}))?.then(
                 (payload: any) => {
-                  // this is  a check arrr
-                  // let newArrCheck = [
-                  //     'line #',
-                  //     'partnumber',
-                  //     'manufacturer',
-                  //     'description',
-                  //     'listprice',
-                  //     'gsaprice',
-                  //     'Cost',
-                  //     'quantity',
-                  //     'Type',
-                  //     'openmarket',
-                  //     'productcode',
-                  //     'listprice',
-                  // ];
                   let newArrCheck: any = [];
 
                   if (lineItemSyncingData && lineItemSyncingData?.length > 0) {
                     lineItemSyncingData?.map((items: any) => {
-                      newArrCheck?.push(items?.pdf_header);
+                      let resultString = items?.pdf_header?.replace(/\s+/g, '');
+                      newArrCheck?.push(resultString);
                     });
                   }
                   const normalize = (str: any) => {
@@ -151,7 +137,6 @@ const OsUpload: React.FC<any> = ({
                   };
 
                   let indexFrom = -1;
-
                   // Find the index of the first row that is null or empty
                   for (let i = 0; i < payload?.payload?.length; i++) {
                     if (
@@ -171,36 +156,61 @@ const OsUpload: React.FC<any> = ({
                           bestRowIndex + 1,
                           payload?.payload?.length - 1,
                         );
+                  let requiredOutput = result;
+                  // ?.map((subArray: any) =>
+                  //   subArray.filter((item: any) => item !== null),
+                  // )
+                  // .filter((subArray: any) => subArray.length > 0);
+                  let headerKeys: any = payload?.payload[bestRowIndex];
 
-                  let requiredOutput = result
-                    ?.map((subArray: any) =>
-                      subArray.filter((item: any) => item !== null),
-                    )
-                    .filter((subArray: any) => subArray.length > 0);
+                  // let headerKeys: any =[]
+                  // payload?.payload[bestRowIndex]?.filter((items: any) => {
+                  //   if (items !== null && !headerKeys?.includes(items)) {
+                  //     headerKeys?.push(items);
+                  //   }
+                  // });
 
-                  let headerKeys = payload?.payload[bestRowIndex]?.filter(
-                    (items: any) => items !== null,
-                  );
-                  let modifiedArr = headerKeys.map((item: any) =>
-                    item.replace(/\s+/g, '').replace(/[.]/g, ''),
-                  );
+                  let modifiedArr = headerKeys.map((item: any) => {
+                    if (item) {
+                      return item.replace(/\s+/g, '').replace(/[.]/g, '');
+                    } else {
+                      return null;
+                    }
+                  });
+                  console.log('23233fdsesdsd', headerKeys, modifiedArr);
+
                   // replace the syncing valueesss ========================
 
                   let syncedHeaderValue = modifiedArr
                     .map((item: any) => {
                       // Clean up the item by removing spaces and special characters
-                      const cleanedItem = item
-                        .trim()
-                        .replace(/[^A-Za-z]/g, '')
-                        .substring(0, 4)
-                        .toLowerCase();
+                      const cleanedItem =
+                        item !== null
+                          ? item
+                              .trim()
+                              .replace(/[^A-Za-z]/g, '')
+                              .substring(0, 4)
+                              .toLowerCase()
+                          : null;
 
                       // Find the matching quoteHeader
+                      // let resultString = items?.pdf_header?.replace(/\s+/g, '');
                       const match = lineItemSyncingData.find(
                         (obj: any) =>
-                          obj.pdf_header.toLowerCase().substring(0, 4) ===
-                          cleanedItem,
+                          obj.pdf_header
+                            ?.replace(/\s+/g, '')
+                            ?.toLowerCase()
+                            .substring(0, 4) === cleanedItem &&
+                          item?.toString()?.toLowerCase() !== 'partner',
                       );
+
+                      // const match = lineItemSyncingData.find(
+                      //   (obj: any) =>
+                      //     obj.pdf_header
+                      //       ?.replace(/\s+/g, '')
+                      //       ?.toLowerCase()
+                      //       .substring(0, 4) === cleanedItem,
+                      // );
 
                       // Return the expected value if a match is found, otherwise return undefined
                       return match ? match.quote_header : item;
@@ -225,12 +235,21 @@ const OsUpload: React.FC<any> = ({
       .catch((error: any) => {
         message.error('Error converting file to base64', error);
       });
+    function containsLetterAndNumber(str: string) {
+      const regex = /(?=.*[a-zA-Z])(?=.*\d)/;
+      return regex.test(str);
+    }
+
+    console.log('3245324324324', resultantValues, lineItemSyncingData);
     let requiredResult = resultantValues?.filter(
       (items: any) =>
         items?.product_code &&
         items?.product_code !== undefined &&
         items?.product_code !== null,
+      // &&containsLetterAndNumber(items?.product_code),
     );
+    console.log('3245324324324', requiredResult);
+
     return {
       lineItems: requiredResult,
       file_name: file?.name,
