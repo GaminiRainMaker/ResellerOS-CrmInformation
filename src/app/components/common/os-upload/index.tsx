@@ -156,19 +156,19 @@ const OsUpload: React.FC<any> = ({
                           bestRowIndex + 1,
                           payload?.payload?.length - 1,
                         );
-                  let requiredOutput = result;
-                  // ?.map((subArray: any) =>
-                  //   subArray.filter((item: any) => item !== null),
-                  // )
-                  // .filter((subArray: any) => subArray.length > 0);
-                  let headerKeys: any = payload?.payload[bestRowIndex];
+                  let requiredOutput = result
+                    ?.map((subArray: any) =>
+                      subArray.filter((item: any) => item !== null),
+                    )
+                    .filter((subArray: any) => subArray.length > 0);
+                  // let headerKeys: any = payload?.payload[bestRowIndex];
 
-                  // let headerKeys: any =[]
-                  // payload?.payload[bestRowIndex]?.filter((items: any) => {
-                  //   if (items !== null && !headerKeys?.includes(items)) {
-                  //     headerKeys?.push(items);
-                  //   }
-                  // });
+                  let headerKeys: any = [];
+                  payload?.payload[bestRowIndex]?.filter((items: any) => {
+                    if (items !== null && !headerKeys?.includes(items)) {
+                      headerKeys?.push(items);
+                    }
+                  });
 
                   let modifiedArr = headerKeys.map((item: any) => {
                     if (item) {
@@ -177,7 +177,6 @@ const OsUpload: React.FC<any> = ({
                       return null;
                     }
                   });
-                  console.log('23233fdsesdsd', headerKeys, modifiedArr);
 
                   // replace the syncing valueesss ========================
 
@@ -240,15 +239,13 @@ const OsUpload: React.FC<any> = ({
       return regex.test(str);
     }
 
-    console.log('3245324324324', resultantValues, lineItemSyncingData);
     let requiredResult = resultantValues?.filter(
       (items: any) =>
         items?.product_code &&
         items?.product_code !== undefined &&
-        items?.product_code !== null,
-      // &&containsLetterAndNumber(items?.product_code),
+        items?.product_code !== null &&
+        containsLetterAndNumber(items?.product_code),
     );
-    console.log('3245324324324', requiredResult);
 
     return {
       lineItems: requiredResult,
