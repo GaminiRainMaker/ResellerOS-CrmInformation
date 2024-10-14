@@ -55,18 +55,7 @@ const DealRegDetail = () => {
   const [salesForceDealregData, setSalesForceDealregData] = useState<any>();
 
   useEffect(() => {
-    const obj = {
-      baseURL: salesForceUrl,
-      token: salesForceKey,
-      opportunityId: getOpportunityId,
-    };
-    if (getOpportunityId && salesForceUrl && salesForceKey && obj) {
-      dispatch(getSalesForceDealregByOpportunityId(obj)).then((res) => {
-        if (res?.payload) {
-          setSalesForceDealregData(res?.payload);
-        }
-      });
-    } else if (getOpportunityId) {
+    if (getOpportunityId && !salesForceUrl) {
       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
     }
   }, []);
@@ -190,6 +179,7 @@ const DealRegDetail = () => {
           form={getFormData}
           formData={formData}
           setFormData={setFormData}
+          setSalesForceDealregData={setSalesForceDealregData}
         />
       </GlobalLoader>
 

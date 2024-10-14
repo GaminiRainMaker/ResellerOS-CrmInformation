@@ -9,8 +9,12 @@ import {
 } from '@/app/components/common/os-custom-tab/styled-components';
 import CustomProgress from '@/app/components/common/os-progress/DealregProgressBar';
 import Typography from '@/app/components/common/typography';
-import {formatStatus} from '@/app/utils/CONSTANTS';
-import {calculateTabBarPercentage, filterRadioData} from '@/app/utils/base';
+import {dealregData, formatStatus} from '@/app/utils/CONSTANTS';
+import {
+  calculateTabBarPercentage,
+  filterRadioData,
+  updateSalesForceData,
+} from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {queryAttributeFieldForForm} from '../../../../../redux/actions/attributeField';
@@ -25,10 +29,13 @@ import DealRegDetailForm from './DealRegDetailForm';
 import React from 'react';
 import {Button} from 'antd';
 import {getSalesForceDealregByOpportunityId} from '../../../../../redux/actions/salesForce';
-import {getAllPartnerById} from '../../../../../redux/actions/partner';
-import {getAllPartnerProgramById} from '../../../../../redux/actions/partnerProgram';
 
-const DealRegCustomTabs: React.FC<any> = ({form, formData, setFormData}) => {
+const DealRegCustomTabs: React.FC<any> = ({
+  form,
+  formData,
+  setFormData,
+  setSalesForceDealregData,
+}) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const searchParams = useSearchParams()!;
@@ -42,12 +49,14 @@ const DealRegCustomTabs: React.FC<any> = ({form, formData, setFormData}) => {
   } = useAppSelector((state) => state.dealReg);
   const [activeKey, setActiveKey] = useState<number>();
   const [tabItems, setTabItems] = useState([]);
+  const [isData, setIsData] = useState<boolean>(false);
   const {queryData} = useAppSelector((state) => state.attributeField);
   const {allPartnersById} = useAppSelector((state) => state.partner);
   const {allPartnerProgramById} = useAppSelector(
     (state) => state.partnerProgram,
   );
   const getDealRegId = searchParams && searchParams.get('id');
+  const [salesForceDealregById, setSalesForceDealregById] = useState<any>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,52 +65,37 @@ const DealRegCustomTabs: React.FC<any> = ({form, formData, setFormData}) => {
         token: salesForceKey,
         opportunityId: getOpportunityId,
       };
-
       if (getOpportunityId && salesForceUrl && salesForceKey) {
         try {
-          const res = await dispatch(getSalesForceDealregByOpportunityId(obj));
-
+          const res1 = await dispatch(getSalesForceDealregByOpportunityId(obj));
+          const res: any = {
+            payload: [
+              {
+                id: 'a0DC2000001Uf5BMAS',
+                opportunity_id: '006C200000Cr3NSIAZ',
+                opportunity_name: 'Opp Test - KT',
+                partner_id: '108',
+                partner_program_id: '101',
+                common_form_data: '',
+                unique_form_data: '',
+                percentage: '',
+              },
+            ],
+          };
           if (res?.payload) {
-            const partnerArray = res.payload.map(
-              (item: any) => item.partner_id,
+            const finalData = await updateSalesForceData(
+              res,
+              allPartnersById,
+              allPartnerProgramById,
+              dispatch,
+              setIsData,
             );
-            const partnerProgramArray = res.payload.map(
-              (item: any) => item.partner_program_id,
-            );
-
-            // Dispatch actions to get all partners and partner programs
-            await dispatch(getAllPartnerById(partnerArray));
-            await dispatch(getAllPartnerProgramById(partnerProgramArray));
-
-            // Updating main data with matching partner and partner program
-            const newData = res.payload.map((item: any) => {
-              const updatedItem = {...item};
-
-              // Find matching partner data
-              const partner = allPartnersById.find(
-                (p: any) => p.id == item.partner_id,
-              );
-              if (partner) {
-                console.log('partner12345', partner);
-                updatedItem.Partner = {...partner}; // Add the whole partner object under 'Partner'
-              }
-
-              // Find matching partner program data
-              const partnerProgram = allPartnerProgramById.find(
-                (pp: any) => pp.id == item.partner_program_id,
-              );
-              if (partnerProgram) {
-                updatedItem.PartnerProgram = {...partnerProgram}; // Add the whole partner program object under 'PartnerProgram'
-              }
-
-              
-              console.log('updatedItem', updatedItem);
-              return updatedItem;
-            });
-
-            console.log('newData', newData);
-            // Optionally, you can set state here if needed
-            // setSalesForceDealregData(newData);
+            console.log('finalData', finalData);
+            if (finalData) {
+              setSalesForceDealregData(finalData);
+              setActiveKey(finalData[0]?.id);
+              dispatch(setFinalUpdatedDealRegData(finalData));
+            }
           }
         } catch (error) {
           console.error(
@@ -113,27 +107,36 @@ const DealRegCustomTabs: React.FC<any> = ({form, formData, setFormData}) => {
     };
 
     fetchData();
-  }, [salesForceUrl, salesForceKey, getOpportunityId]);
+  }, [salesForceUrl, isData]);
 
   useEffect(() => {
-    if (getDealRegId && DealRegData && DealRegData.length > 0) {
+    if (
+      getDealRegId &&
+      DealRegData &&
+      DealRegData.length > 0 &&
+      !salesForceUrl
+    ) {
       setActiveKey(Number(getDealRegId));
     } else if (DealRegData && DealRegData.length > 0) {
       setActiveKey(DealRegData[0]?.id);
     }
-    console.log('DealRegData', DealRegData);
     dispatch(setFinalUpdatedDealRegData(DealRegData));
   }, [DealRegData]);
 
   useEffect(() => {
-    if (activeKey) {
+    if (activeKey && !salesForceUrl) {
       dispatch(getDealRegById(activeKey));
+    } else if (activeKey && salesForceUrl) {
+      // call salesforce API get dealreg By id
+      setSalesForceDealregById(dealregData);
     }
   }, [activeKey]);
 
   useEffect(() => {
-    if (getDealRegForNew && Object.keys(getDealRegForNew).length > 0) {
-      let finalDealReg = getDealRegForNew;
+    const selectedDealRegData = salesForceDealregById || getDealRegForNew;
+    console.log('selectedDealRegData', selectedDealRegData);
+    if (selectedDealRegData && Object.keys(selectedDealRegData).length > 0) {
+      let finalDealReg = selectedDealRegData;
       const obj = {
         common_form_data:
           finalDealReg?.common_form_data &&
@@ -163,11 +166,9 @@ const DealRegCustomTabs: React.FC<any> = ({form, formData, setFormData}) => {
       };
       setFormData(obj);
     }
-  }, [getDealRegForNew]);
+  }, [getDealRegForNew, salesForceDealregById]);
 
-  useEffect(() => {
-    dispatch(queryAttributeFieldForForm(''));
-  }, [dispatch]);
+  console.log('formData', formData);
 
   const updateDealRegFinalData = (activeKey: any, formObj: any) => {
     const updatedData = finalUpdatedDealRegData?.map((item: any) =>
@@ -184,7 +185,7 @@ const DealRegCustomTabs: React.FC<any> = ({form, formData, setFormData}) => {
     let finalUniqueFieldObject: any = {};
     let finalDealReg: any = {};
 
-    if (commonFieldFormData) {
+    if (commonFieldFormData && !salesForceUrl) {
       for (const [key, value] of Object?.entries(commonFieldFormData)) {
         if (key?.startsWith('c_')) {
           commonFieldObject[key] = value;
@@ -290,7 +291,7 @@ const DealRegCustomTabs: React.FC<any> = ({form, formData, setFormData}) => {
             element?.unique_form_data,
             element?.common_form_data,
             true,
-            type,
+            type || 'registered',
           );
           const headerStyle = {
             background: isActive ? token.colorInfo : token.colorInfoBg,

@@ -1,21 +1,21 @@
-import { Checkbox } from '@/app/components/common/antd/Checkbox';
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Switch } from '@/app/components/common/antd/Switch';
+import {Checkbox} from '@/app/components/common/antd/Checkbox';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Switch} from '@/app/components/common/antd/Switch';
 import CommonDatePicker from '@/app/components/common/os-date-picker';
 import {
   StyledDivider,
-  ToggleColStyled
+  ToggleColStyled,
 } from '@/app/components/common/os-div-row-col/styled-component';
 import OsInput from '@/app/components/common/os-input';
-import { SelectFormItem } from '@/app/components/common/os-oem-select/oem-select-styled';
+import {SelectFormItem} from '@/app/components/common/os-oem-select/oem-select-styled';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import { convertToSnakeCase } from '@/app/utils/base';
-import { MailOutlined } from '@ant-design/icons';
-import { Form, Radio, TimePicker } from 'antd';
+import {convertToSnakeCase} from '@/app/utils/base';
+import {MailOutlined} from '@ant-design/icons';
+import {Form, Radio, TimePicker} from 'antd';
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
-import { UniqueFieldsProps } from './dealReg.interface';
+import React, {useEffect, useState} from 'react';
+import {UniqueFieldsProps} from './dealReg.interface';
 interface CheckboxState {
   [key: string]: boolean;
 }
@@ -31,22 +31,28 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     data?.form_data?.[0] &&
     JSON.parse(data?.form_data[0]).flatMap((section: any) => section.content);
   const [uniqueTemplateData, setUniqueTemplateData] = useState<any>();
-  const [radioValues, setRadioValues] = useState<{ [key: string]: any }>({});
+  const [radioValues, setRadioValues] = useState<{[key: string]: any}>({});
 
-  const getInputComponent = (itemCon: any, itemIndex: any, activeKey: any, required: any, userfill: any) => {
+  const getInputComponent = (
+    itemCon: any,
+    itemIndex: any,
+    activeKey: any,
+    required: any,
+    userfill: any,
+  ) => {
     const fieldName = convertToSnakeCase(itemCon?.label);
     const initialValue = uniqueTemplateData?.[fieldName];
     const commonProps = {
       defaultValue: initialValue,
       onBlur: handleBlur,
-
     };
-    const dateName = 'u_' +
+    const dateName =
+      'u_' +
       convertToSnakeCase(itemCon.label) +
       itemIndex +
       activeKey +
       (required ? '_required' : '') +
-      (userfill ? '_userfill' : '')
+      (userfill ? '_userfill' : '');
 
     switch (itemCon?.name) {
       case 'Text':
@@ -61,7 +67,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
               <TimePicker
                 use12Hours={itemCon?.use12hours}
                 format={itemCon?.timeformat}
-                style={{ width: '100%', height: '44px' }}
+                style={{width: '100%', height: '44px'}}
               />
             ) : itemCon?.name === 'Currency' ? (
               <OsInput
@@ -73,8 +79,8 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
               <CommonDatePicker
                 format="MMM D, YYYY"
                 onChange={(date, dateString) => {
-                  form.setFieldValue(dateName, date)
-                  commonProps.onBlur()
+                  form.setFieldValue(dateName, date);
+                  commonProps.onBlur();
                 }}
               />
             ) : itemCon?.name === 'Email' ? (
@@ -98,7 +104,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           <CommonSelect
             allowClear
             options={optionssMulti}
-            style={{ width: '100%' }}
+            style={{width: '100%'}}
             mode={itemCon?.type}
             {...commonProps}
           />
@@ -122,8 +128,8 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                         //   checkboxState[itemLabelOp as keyof CheckboxState]
                         // }
                         // onChange={() => handleToggleChange(itemLabelOp)}
-                        >
-                        </Switch>  {itemLabelOp}
+                        ></Switch>{' '}
+                        {itemLabelOp}
                       </>
                     ) : (
                       <Checkbox
@@ -154,10 +160,10 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 }));
                 form.setFieldValue(
                   'u_' +
-                  convertToSnakeCase(itemCon.label) +
-                  activeKey +
-                  (itemCon.required ? '_required' : '') +
-                  (itemCon.user_fill ? '_userfill' : ''),
+                    convertToSnakeCase(itemCon.label) +
+                    activeKey +
+                    (itemCon.required ? '_required' : '') +
+                    (itemCon.user_fill ? '_userfill' : ''),
                   value,
                 );
               }}
@@ -189,6 +195,8 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
         return null;
     }
   };
+  
+  console.log('formData123', formData);
 
   useEffect(() => {
     if (formData && formData?.unique_form_data) {
@@ -197,8 +205,10 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
         setUniqueTemplateData(uniqueFormData);
         const initialValues = Object.keys(uniqueFormData).reduce(
           (acc: any, key) => {
-            if (key.includes("date")) {
-              acc[key] = uniqueFormData[key] ? dayjs(uniqueFormData[key]) : null;
+            if (key.includes('date')) {
+              acc[key] = uniqueFormData[key]
+                ? dayjs(uniqueFormData[key])
+                : null;
             } else {
               acc[key] = uniqueFormData[key];
             }
@@ -206,6 +216,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           },
           {},
         );
+        console.log('initialValues', initialValues);
         form.setFieldsValue(initialValues);
       }
     }
@@ -247,11 +258,10 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
     }
   }, [allContent]);
 
-
   return (
     <Form
       layout="vertical"
-      style={{ width: '100%', background: 'white', borderRadius: '12px' }}
+      style={{width: '100%', background: 'white', borderRadius: '12px'}}
       form={form}
     >
       <Row>
@@ -264,9 +274,9 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
             return (
               <Col
                 span={24}
-                style={{ textAlign: alignment, padding: '12px 0px' }}
+                style={{textAlign: alignment, padding: '12px 0px'}}
               >
-                <p style={{ fontSize: fontSize === 'h2' ? 24 : 16 }}>
+                <p style={{fontSize: fontSize === 'h2' ? 24 : 16}}>
                   {allContentItem?.sectionTitle}
                 </p>
               </Col>
@@ -300,9 +310,9 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 rules={[
                   allContentItem.label === 'Email'
                     ? {
-                      type: 'email',
-                      message: 'Please enter a valid email address!',
-                    }
+                        type: 'email',
+                        message: 'Please enter a valid email address!',
+                      }
                     : {},
                   {
                     required: allContentItem.required,
@@ -310,7 +320,13 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                   },
                 ]}
               >
-                {getInputComponent(allContentItem, itemIndex, activeKey, required, userfill)}
+                {getInputComponent(
+                  allContentItem,
+                  itemIndex,
+                  activeKey,
+                  required,
+                  userfill,
+                )}
               </SelectFormItem>
             </Col>
           );

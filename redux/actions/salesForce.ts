@@ -37,12 +37,25 @@ export const createSalesforceDealreg = createAsyncThunk(
     }
   },
 );
+
 export const getSalesForceDealregByOpportunityId = createAsyncThunk(
   'salesforce/getSalesForceDealregByOpportunityId',
   async (data: any, thunkApi) => {
     try {
       const res =
         await SALESFORCE_API.getSalesForceDealregByOpportunityId(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+
+export const getSalesForceDealregById = createAsyncThunk(
+  'salesforce/getSalesForceDealregById',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await SALESFORCE_API.getSalesForceDealregById(data);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);
