@@ -6,6 +6,7 @@ export interface OsCustomerSelectInterface {
   isRequired?: boolean;
   customerValue?: any;
   isDisable?: boolean;
+  form?: FormInstance;
 }
 export interface OsContactSelectInterface {
   customerValue: any;
