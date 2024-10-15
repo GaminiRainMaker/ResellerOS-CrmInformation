@@ -147,7 +147,7 @@ const EditorFile = () => {
                   let maxMatches = 0;
                   let bestRowIndex = -1;
 
-                  for (let i = 0; i < payload?.payload.length; i++) {
+                  for (let i = 0; i < payload?.payload?.length; i++) {
                     let currentRow = payload?.payload[i];
                     let matchCount = 0;
 
