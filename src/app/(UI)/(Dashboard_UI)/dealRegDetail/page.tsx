@@ -10,10 +10,10 @@ import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
 import {PlusIcon} from '@heroicons/react/24/outline';
-import {MenuProps} from 'antd';
+import {Button, MenuProps} from 'antd';
 import Form from 'antd/es/form';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {
   dealRegFormScript,
   getDealRegByOpportunityId,
@@ -25,7 +25,7 @@ import {
   setOpenDealRegDrawer,
 } from '../../../../../redux/slices/dealReg';
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
-import DealRegCustomTabs from './DealRegCustomTabs';
+import DealRegCustomTabs, {DealRegCustomTabsHandle} from './DealRegCustomTabs';
 import ElectronBot from './ElectronBot';
 import SubmitDealRegForms from './SubmitDealRegForms';
 
@@ -138,6 +138,15 @@ const DealRegDetail = () => {
     }
   };
 
+  const dealRegTabsRef = useRef<DealRegCustomTabsHandle>(null);
+
+  const handleButtonClick = () => {
+    // Call the child's onFinish function using the ref
+    if (dealRegTabsRef.current) {
+      dealRegTabsRef.current.onFinish();
+    }
+  };
+
   return (
     <div>
       <Row justify="space-between" align="middle">
@@ -146,6 +155,15 @@ const DealRegDetail = () => {
         </Col>
         <Col>
           <Space size={8}>
+            {salesForceUrl && (
+              <OsButton
+                text="Save"
+                buttontype="SECONDARY"
+                clickHandler={() => {
+                  handleButtonClick();
+                }}
+              />
+            )}
             <OsButton
               text="Intial Setup"
               buttontype="SECONDARY"
@@ -179,6 +197,7 @@ const DealRegDetail = () => {
           formData={formData}
           setFormData={setFormData}
           setSalesForceDealregData={setSalesForceDealregData}
+          ref={dealRegTabsRef}
         />
       </GlobalLoader>
 

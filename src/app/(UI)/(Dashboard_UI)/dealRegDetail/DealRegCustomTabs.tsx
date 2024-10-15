@@ -9,31 +9,50 @@ import {
 } from '@/app/components/common/os-custom-tab/styled-components';
 import CustomProgress from '@/app/components/common/os-progress/DealregProgressBar';
 import Typography from '@/app/components/common/typography';
-import {dealregData, formatStatus} from '@/app/utils/CONSTANTS';
+import {formatStatus} from '@/app/utils/CONSTANTS';
 import {
   calculateTabBarPercentage,
   filterRadioData,
   updateSalesForceData,
 } from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
-import React, {useEffect, useState} from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import {
   getDealRegById,
   updateDealRegById,
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
-import {getSalesForceDealregByOpportunityId} from '../../../../../redux/actions/salesForce';
+import {
+  getSalesForceDealregById,
+  getSalesForceDealregByOpportunityId,
+  updateSalesForceDealregById,
+} from '../../../../../redux/actions/salesForce';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setFinalUpdatedDealRegData} from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
-import { queryAttributeFieldForForm } from '../../../../../redux/actions/attributeField';
+import {queryAttributeFieldForForm} from '../../../../../redux/actions/attributeField';
 
-const DealRegCustomTabs: React.FC<any> = ({
-  form,
-  formData,
-  setFormData,
-  setSalesForceDealregData,
-}) => {
+// Define the prop types for DealRegCustomTabs
+type DealRegCustomTabsProps = {
+  form: any;
+  formData: any;
+  setFormData: (data: any) => void;
+  setSalesForceDealregData: (data: any) => void;
+};
+
+export type DealRegCustomTabsHandle = {
+  onFinish: () => void;
+};
+
+const DealRegCustomTabs = forwardRef<
+  DealRegCustomTabsHandle,
+  DealRegCustomTabsProps
+>(({form, formData, setFormData, setSalesForceDealregData}, ref) => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
   const searchParams = useSearchParams()!;
@@ -57,6 +76,22 @@ const DealRegCustomTabs: React.FC<any> = ({
   const [salesForceDealregById, setSalesForceDealregById] = useState<any>();
 
   useEffect(() => {
+    if (
+      getDealRegId &&
+      DealRegData &&
+      DealRegData.length > 0 &&
+      !salesForceUrl
+    ) {
+      setActiveKey(Number(getDealRegId));
+    } else if (DealRegData && DealRegData.length > 0) {
+      setActiveKey(DealRegData[0]?.id);
+    }
+    if (DealRegData) {
+      dispatch(setFinalUpdatedDealRegData(DealRegData));
+    }
+  }, [DealRegData]);
+
+  useEffect(() => {
     const fetchData = async () => {
       const obj = {
         baseURL: salesForceUrl,
@@ -65,21 +100,9 @@ const DealRegCustomTabs: React.FC<any> = ({
       };
       if (getOpportunityId && salesForceUrl && salesForceKey) {
         try {
-          const res1 = await dispatch(getSalesForceDealregByOpportunityId(obj));
-          const res: any = {
-            payload: [
-              {
-                id: 'a0DC2000001Uf5BMAS',
-                opportunity_id: '006C200000Cr3NSIAZ',
-                opportunity_name: 'Opp Test - KT',
-                partner_id: '108',
-                partner_program_id: '101',
-                common_form_data: '',
-                unique_form_data: '',
-                percentage: '',
-              },
-            ],
-          };
+          const res: any = await dispatch(
+            getSalesForceDealregByOpportunityId(obj),
+          );
           if (res?.payload) {
             const finalData = await updateSalesForceData(
               res,
@@ -88,7 +111,6 @@ const DealRegCustomTabs: React.FC<any> = ({
               dispatch,
               setIsData,
             );
-            console.log('finalData', finalData);
             if (finalData) {
               setSalesForceDealregData(finalData);
               setActiveKey(finalData[0]?.id);
@@ -107,32 +129,48 @@ const DealRegCustomTabs: React.FC<any> = ({
     fetchData();
   }, [salesForceUrl, isData]);
 
-  useEffect(() => {
-    if (
-      getDealRegId &&
-      DealRegData &&
-      DealRegData.length > 0 &&
-      !salesForceUrl
-    ) {
-      setActiveKey(Number(getDealRegId));
-    } else if (DealRegData && DealRegData.length > 0) {
-      setActiveKey(DealRegData[0]?.id);
+  const callDealregApi = async (obj: any) => {
+    try {
+      // Wait for the dispatch to complete and get the result
+      const d: any = await dispatch(getSalesForceDealregById(obj));
+
+      // If the payload is present, call updateSalesForceData
+      if (d?.payload) {
+        const finalData = await updateSalesForceData(
+          d,
+          allPartnersById,
+          allPartnerProgramById,
+          dispatch,
+          setIsData,
+        );
+        // console.log('finalData3333', finalData, d?.payload);
+        setSalesForceDealregById(finalData);
+      }
+
+      // Set salesForceDealregById after the update
+    } catch (error) {
+      console.error('Error calling Dealreg API:', error);
     }
-    dispatch(setFinalUpdatedDealRegData(DealRegData));
-  }, [DealRegData]);
+  };
 
   useEffect(() => {
     if (activeKey && !salesForceUrl) {
       dispatch(getDealRegById(activeKey));
     } else if (activeKey && salesForceUrl) {
       // call salesforce API get dealreg By id
-      setSalesForceDealregById(dealregData);
+      let obj = {
+        baseURL: salesForceUrl,
+        token: salesForceKey,
+        dealregId: activeKey,
+      };
+      callDealregApi(obj);
     }
   }, [activeKey]);
 
   useEffect(() => {
-    const selectedDealRegData = salesForceDealregById || getDealRegForNew;
-    console.log('selectedDealRegData', selectedDealRegData);
+    const selectedDealRegData =
+      (salesForceDealregById?.length > 0 && salesForceDealregById?.[0]) ||
+      getDealRegForNew;
     if (selectedDealRegData && Object.keys(selectedDealRegData).length > 0) {
       let finalDealReg = selectedDealRegData;
       const obj = {
@@ -166,7 +204,6 @@ const DealRegCustomTabs: React.FC<any> = ({
     }
   }, [getDealRegForNew, salesForceDealregById]);
 
-
   useEffect(() => {
     dispatch(queryAttributeFieldForForm(''));
   }, [dispatch]);
@@ -186,7 +223,7 @@ const DealRegCustomTabs: React.FC<any> = ({
     let finalUniqueFieldObject: any = {};
     let finalDealReg: any = {};
 
-    if (commonFieldFormData && !salesForceUrl) {
+    if (commonFieldFormData) {
       for (const [key, value] of Object?.entries(commonFieldFormData)) {
         if (key?.startsWith('c_')) {
           commonFieldObject[key] = value;
@@ -194,9 +231,13 @@ const DealRegCustomTabs: React.FC<any> = ({
           uniqueFieldObject[key] = value;
         }
       }
-      const uniqueFieldObjectResult = filterRadioData(uniqueFieldObject);
-      if (getDealRegForNew && Object?.keys(getDealRegForNew).length > 0) {
-        finalDealReg = getDealRegForNew;
+      // const uniqueFieldObjectResult = filterRadioData(uniqueFieldObject);
+      const selectedDealRegData =
+        (salesForceDealregById?.length > 0 && salesForceDealregById?.[0]) ||
+        getDealRegForNew;
+
+      if (selectedDealRegData && Object?.keys(selectedDealRegData).length > 0) {
+        finalDealReg = selectedDealRegData;
         const parsedCommonFormData = finalDealReg?.common_form_data?.[0]
           ? JSON.parse(finalDealReg.common_form_data[0])
           : {};
@@ -209,7 +250,7 @@ const DealRegCustomTabs: React.FC<any> = ({
         };
         finalUniqueFieldObject = {
           ...parsedUniqueFormData,
-          ...uniqueFieldObjectResult,
+          ...uniqueFieldObject,
         };
       }
       const tabPercentage = calculateTabBarPercentage(
@@ -259,10 +300,11 @@ const DealRegCustomTabs: React.FC<any> = ({
         submitted_date: finalDealReg?.submitted_date,
         status: finalDealReg?.status,
       };
+      console.log('newObj1234', newObj, finalDealReg);
       setFormData(formObj);
       updateDealRegFinalData(activeKey, newObj);
 
-      if (obj) {
+      if (obj && !salesForceUrl) {
         await dispatch(updateDealRegById(obj));
         if (activeKey && tabPercentage > 0 && tabPercentage < 100) {
           const statusObj = {
@@ -271,6 +313,14 @@ const DealRegCustomTabs: React.FC<any> = ({
           };
           dispatch(updateDealRegStatus(statusObj));
         }
+      } else if (newObj && salesForceUrl) {
+        let finalObj = {
+          data: newObj,
+          baseURL: salesForceUrl,
+          token: salesForceKey,
+        };
+        console.log('finalObj', finalObj);
+        dispatch(updateSalesForceDealregById(finalObj));
       }
     }
   };
@@ -350,18 +400,17 @@ const DealRegCustomTabs: React.FC<any> = ({
     setTabItems(newTabItems);
   }, [finalUpdatedDealRegData, activeKey, token, dispatch, formData]);
 
+  useImperativeHandle(ref, () => ({
+    onFinish,
+  }));
+
   return (
-    <>
-      {/* <Button onClick={() => {
-        onFinish()
-      }}>SAVE</Button> */}
-      <CustmDealRegTab
-        token={token}
-        activeKey={activeKey as any}
-        items={tabItems}
-      />
-    </>
+    <CustmDealRegTab
+      token={token}
+      activeKey={activeKey as any}
+      items={tabItems}
+    />
   );
-};
+});
 
 export default DealRegCustomTabs;

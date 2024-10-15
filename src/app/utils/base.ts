@@ -1916,7 +1916,7 @@ export const updateSalesForceData = async (
   allPartnersById: Partner[],
   allPartnerProgramById: PartnerProgram[],
   dispatch: any,
-  setIsData: any,
+  setIsData?: any,
 ) => {
   if (!res?.payload) return;
 
@@ -1924,7 +1924,6 @@ export const updateSalesForceData = async (
   const partnerProgramArray = res?.payload?.map(
     (item: any) => item?.partner_program_id,
   );
-
   // Dispatch actions to get all partners and partner programs by id
   await dispatch(getAllPartnerById(partnerArray));
   await dispatch(getAllPartnerProgramById(partnerProgramArray));
@@ -1933,7 +1932,6 @@ export const updateSalesForceData = async (
   // Updating main data with matching partner and partner program
   const newData = res?.payload?.map((item: any) => {
     const updatedItem = {...item};
-
     // Find matching partner data
     const partner = allPartnersById?.find(
       (p: any) => p?.id == item?.partner_id,
@@ -1949,8 +1947,11 @@ export const updateSalesForceData = async (
     if (partnerProgram) {
       updatedItem.PartnerProgram = {...partnerProgram}; // Add the whole partner program object under 'PartnerProgram'
     }
+    console.log('updatedItem', updatedItem);
 
     return updatedItem;
   });
+  console.log('newData', newData);
+
   return newData;
 };

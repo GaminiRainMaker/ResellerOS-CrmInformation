@@ -16,6 +16,7 @@ import {Form, Radio, TimePicker} from 'antd';
 import dayjs from 'dayjs';
 import React, {useEffect, useState} from 'react';
 import {UniqueFieldsProps} from './dealReg.interface';
+import {useSearchParams} from 'next/navigation';
 interface CheckboxState {
   [key: string]: boolean;
 }
@@ -26,6 +27,9 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
   handleBlur,
   formData,
 }) => {
+  const searchParams = useSearchParams()!;
+  const salesForceUrl = searchParams.get('instance_url');
+
   const allContent =
     data?.form_data?.length > 0 &&
     data?.form_data?.[0] &&
@@ -42,10 +46,18 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
   ) => {
     const fieldName = convertToSnakeCase(itemCon?.label);
     const initialValue = uniqueTemplateData?.[fieldName];
-    const commonProps = {
-      defaultValue: initialValue,
-      onBlur: handleBlur,
-    };
+    let commonProps;
+    if (salesForceUrl) {
+      commonProps = {
+        defaultValue: initialValue,
+      };
+    } else {
+      commonProps = {
+        defaultValue: initialValue,
+        onBlur: handleBlur,
+      };
+    }
+
     const dateName =
       'u_' +
       convertToSnakeCase(itemCon.label) +
@@ -80,7 +92,12 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 format="MMM D, YYYY"
                 onChange={(date, dateString) => {
                   form.setFieldValue(dateName, date);
-                  commonProps.onBlur();
+                  if (
+                    'onBlur' in commonProps &&
+                    typeof commonProps.onBlur === 'function'
+                  ) {
+                    commonProps.onBlur();
+                  }
                 }}
               />
             ) : itemCon?.name === 'Email' ? (
@@ -195,8 +212,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
         return null;
     }
   };
-  
-  console.log('formData123', formData);
 
   useEffect(() => {
     if (formData && formData?.unique_form_data) {
