@@ -235,16 +235,20 @@ const OsUpload: React.FC<any> = ({
         message.error('Error converting file to base64', error);
       });
 
-    function containsLetterNumberOrHyphen(str: string) {
-      const regex = /(?=.*[a-zA-Z])(?=.*\d)(?=.*[-])/;
-      return regex.test(str);
+    function containsLetterAndNumber(str: string): boolean {
+      // const hasLetter = /[a-zA-Z]/.test(str);
+      // const hasDigit = /\d/.test(str);
+      const hasHyphen = /-/.test(str);
+
+      return hasHyphen;
     }
+
     let requiredResult = resultantValues?.filter(
       (items: any) =>
         items?.product_code &&
         items?.product_code !== undefined &&
         items?.product_code !== null &&
-        containsLetterNumberOrHyphen(items?.product_code),
+        containsLetterAndNumber(items?.product_code),
     );
 
     return {
