@@ -62,3 +62,15 @@ export const getSalesForceDealregById = createAsyncThunk(
     }
   },
 );
+
+export const updateSalesForceDealregById = createAsyncThunk(
+  'salesforce/updateSalesForceDealregById',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await SALESFORCE_API.updateSalesForceDealregById(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

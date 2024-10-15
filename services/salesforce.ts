@@ -24,4 +24,8 @@ export const SALESFORCE_API = {
     post(API.SALESFORCE.GetSalesForceDealregById, data) as Promise<
       AxiosResponse<any>
     >,
+  updateSalesForceDealregById: (data: any) =>
+    post(API.SALESFORCE.UpdateSalesForceDealregById, data) as Promise<
+      AxiosResponse<any>
+    >,
 };
