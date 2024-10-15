@@ -384,6 +384,7 @@ const OsUpload: React.FC<any> = ({
             <Row gutter={[16, 16]}>
               <Col sm={24} md={12}>
                 <OsCustomerSelect
+                  form={form}
                   setCustomerValue={setCustomerValue}
                   customerValue={customerValue}
                   isAddNewCustomer
