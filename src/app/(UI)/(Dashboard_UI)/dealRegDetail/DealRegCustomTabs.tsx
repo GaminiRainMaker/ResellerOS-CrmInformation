@@ -16,19 +16,17 @@ import {
   updateSalesForceData,
 } from '@/app/utils/base';
 import {useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
-import {queryAttributeFieldForForm} from '../../../../../redux/actions/attributeField';
+import React, {useEffect, useState} from 'react';
 import {
   getDealRegById,
   updateDealRegById,
   updateDealRegStatus,
 } from '../../../../../redux/actions/dealReg';
+import {getSalesForceDealregByOpportunityId} from '../../../../../redux/actions/salesForce';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {setFinalUpdatedDealRegData} from '../../../../../redux/slices/dealReg';
 import DealRegDetailForm from './DealRegDetailForm';
-import React from 'react';
-import {Button} from 'antd';
-import {getSalesForceDealregByOpportunityId} from '../../../../../redux/actions/salesForce';
+import { queryAttributeFieldForForm } from '../../../../../redux/actions/attributeField';
 
 const DealRegCustomTabs: React.FC<any> = ({
   form,
@@ -168,7 +166,10 @@ const DealRegCustomTabs: React.FC<any> = ({
     }
   }, [getDealRegForNew, salesForceDealregById]);
 
-  console.log('formData', formData);
+
+  useEffect(() => {
+    dispatch(queryAttributeFieldForForm(''));
+  }, [dispatch]);
 
   const updateDealRegFinalData = (activeKey: any, formObj: any) => {
     const updatedData = finalUpdatedDealRegData?.map((item: any) =>
