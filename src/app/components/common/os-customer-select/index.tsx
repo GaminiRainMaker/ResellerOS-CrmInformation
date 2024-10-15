@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable react/no-unstable-nested-components */
-import { PlusIcon } from '@heroicons/react/24/outline';
-import { Form } from 'antd';
-import { FC, useEffect, useState } from 'react';
-import { insertAddAddress } from '../../../../../redux/actions/address';
+import {PlusIcon} from '@heroicons/react/24/outline';
+import {Form} from 'antd';
+import {FC, useEffect, useState} from 'react';
+import {insertAddAddress} from '../../../../../redux/actions/address';
 import {
   getAllbillingContact,
   insertbillingContact,
@@ -12,15 +12,15 @@ import {
   getAllCustomer,
   insertCustomer,
 } from '../../../../../redux/actions/customer';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { setCustomerProfile } from '../../../../../redux/slices/customer';
-import { Space } from '../antd/Space';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {setCustomerProfile} from '../../../../../redux/slices/customer';
+import {Space} from '../antd/Space';
 import useThemeToken from '../hooks/useThemeToken';
 import AddCustomer from '../os-add-customer';
 import OsModal from '../os-modal';
 import CommonSelect from '../os-select';
 import Typography from '../typography';
-import { OsCustomerSelectInterface } from './os-customer-select-interface';
+import {OsCustomerSelectInterface} from './os-customer-select-interface';
 import {
   AlphabetsRegex,
   AlphabetsRegexWithSpecialChr,
@@ -33,11 +33,12 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
   isAddNewCustomer = false,
   isRequired = true,
   isDisable = false,
+  form,
 }) => {
   const [token] = useThemeToken();
-  const [form] = Form.useForm();
+  const [form1] = Form.useForm();
   const dispatch = useAppDispatch();
-  const { data: dataAddress, customerProfile } = useAppSelector(
+  const {data: dataAddress, customerProfile} = useAppSelector(
     (state) => state?.customer,
   );
   const [open, setOpen] = useState<boolean>(false);
@@ -69,8 +70,7 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
   }, []);
 
   const onFinish = async () => {
-    const FormData = form.getFieldsValue();
-
+    const FormData = form1?.getFieldsValue();
     if (
       !emailRegex?.test(objectValuesForContact?.billing_email) ||
       !objectValuesForContact?.billing_email ||
@@ -87,8 +87,21 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
     try {
       setLoading(true);
       await dispatch(
-        insertCustomer({ ...FormData, profile_image: customerProfile }),
+        insertCustomer({...FormData, profile_image: customerProfile}),
       ).then((data) => {
+        setCustomerOptions([
+          ...customerOptions,
+          {
+            value: data?.payload?.id,
+            label: (
+              <Typography color={token?.colorPrimaryText} name="Body 3/Regular">
+                {FormData?.name}
+              </Typography>
+            ),
+          },
+        ]);
+        setCustomerValue(data?.payload?.id);
+        form?.setFieldValue('customer_id', data?.payload?.id);
         const newAddressObj: any = {
           ...FormData,
           customer_id: data?.payload?.id,
@@ -106,7 +119,7 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
               if (data1?.payload) {
                 dispatch(getAllCustomer({}));
                 dispatch(getAllbillingContact(''));
-                form.resetFields();
+                form1?.resetFields();
                 setOpen(false);
               }
             },
@@ -116,12 +129,12 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
       });
       setLoading(false);
       setActiveKeyForTabs(1);
-      form.resetFields();
+      form1?.resetFields();
       setOpen(false);
     } catch (error) {
       setLoading(false);
       console.log(error);
-      form.resetFields();
+      form1?.resetFields();
       setOpen(false);
     }
   };
@@ -131,16 +144,15 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
       <Form.Item
         label="Customer"
         name="customer_id"
-        rules={[{ required: isRequired, message: 'Please Select Customer!' }]}
+        rules={[{required: isRequired, message: 'Please Select Customer!'}]}
       >
         <CommonSelect
-          data-testid="custom_select"
-          disabled={isDisable}
           placeholder="Select"
+          disabled={isDisable}
           allowClear
-          style={{ width: '100%' }}
+          style={{width: '100%'}}
           options={customerOptions}
-          value={customerValue}
+          // value={customerValue}
           onChange={(value: number) => {
             setCustomerValue && setCustomerValue(value);
           }}
@@ -148,14 +160,14 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
             <>
               {isAddNewCustomer && (
                 <Space
-                  style={{ cursor: 'pointer' }}
+                  style={{cursor: 'pointer'}}
                   size={8}
                   onClick={() => setOpen(true)}
                 >
                   <PlusIcon
                     width={24}
                     color={token?.colorInfoBorder}
-                    style={{ marginTop: '5px' }}
+                    style={{marginTop: '5px'}}
                   />
                   <Typography
                     color={token?.colorPrimaryText}
@@ -176,7 +188,7 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
         loading={loading}
         body={
           <AddCustomer
-            form={form}
+            form={form1}
             onFinish={onFinish}
             objectValuesForContact={objectValuesForContact}
             setObjectValueForContact={setObjectValueForContact}
@@ -194,9 +206,9 @@ const OsCustomerSelect: FC<OsCustomerSelectInterface> = ({
         open={open}
         onCancel={() => {
           setOpen((p) => !p);
-          form.resetFields();
+          form1?.resetFields();
         }}
-        onOk={form.submit}
+        onOk={form1?.submit}
         fourthButtonfunction={() => {
           setActiveKeyForTabs(activeKeyForTabs + 1);
         }}
