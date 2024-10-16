@@ -1925,29 +1925,43 @@ export const updateSalesForceData = async (
     (item: any) => item?.partner_program_id,
   );
   // Dispatch actions to get all partners and partner programs by id
-  await dispatch(getAllPartnerById(partnerArray));
-  await dispatch(getAllPartnerProgramById(partnerProgramArray));
+  let partnerData: any = [];
+  let partnerProgramData: any = [];
+
+  await dispatch(getAllPartnerById(partnerArray))?.then((payload: any) => {
+    if (payload?.payload && payload?.payload?.length > 0) {
+      payload?.payload?.map((items: any) => {
+        partnerData?.push(items);
+      });
+    }
+  });
+  await dispatch(getAllPartnerProgramById(partnerProgramArray))?.then(
+    (payload: any) => {
+      if (payload?.payload && payload?.payload?.length > 0) {
+        payload?.payload?.map((items: any) => {
+          partnerProgramData?.push(items);
+        });
+      }
+    },
+  );
   setIsData(true);
 
   // Updating main data with matching partner and partner program
   const newData = res?.payload?.map((item: any) => {
     const updatedItem = {...item};
     // Find matching partner data
-    const partner = allPartnersById?.find(
-      (p: any) => p?.id == item?.partner_id,
-    );
+    const partner = partnerData?.find((p: any) => p?.id == item?.partner_id);
     if (partner) {
       updatedItem.Partner = {...partner}; // Add the whole partner object under 'Partner'
     }
 
     // Find matching partner program data
-    const partnerProgram = allPartnerProgramById?.find(
+    const partnerProgram = partnerProgramData?.find(
       (pp: any) => pp?.id == item?.partner_program_id,
     );
     if (partnerProgram) {
       updatedItem.PartnerProgram = {...partnerProgram}; // Add the whole partner program object under 'PartnerProgram'
     }
-    console.log('updatedItem', updatedItem);
 
     return updatedItem;
   });
