@@ -84,7 +84,6 @@ const ReviewQuotes: FC<any> = ({
       } else if (filterValue === 'OEM') {
         name = item?.QuoteConfiguration?.Oem?.oem;
       }
-      console.log('45643534', name, data);
 
       if (name) {
         const convertToTitleCase = (input: string) => {

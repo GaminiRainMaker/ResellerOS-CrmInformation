@@ -239,7 +239,6 @@ const OsUpload: React.FC<any> = ({
       // const hasLetter = /[a-zA-Z]/.test(str);
       // const hasDigit = /\d/.test(str);
       const hasHyphen = /-/.test(str);
-
       return hasHyphen;
     }
 
