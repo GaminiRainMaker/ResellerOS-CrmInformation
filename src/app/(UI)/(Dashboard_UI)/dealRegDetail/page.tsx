@@ -118,6 +118,9 @@ const DealRegDetail = () => {
         const finalAppData = {
           dealRegId: SubmitDealRegFormData?.id,
           userId: userInformation?.id,
+          token: salesForceKey,
+          baseURL: salesForceUrl,
+          // partnerId: SubmitDealRegForm?.partnerId,       //Need to check the partnerId how it's comes.
         };
         const response = await dispatch(dealRegFormScript(finalAppData));
         if (response) {
