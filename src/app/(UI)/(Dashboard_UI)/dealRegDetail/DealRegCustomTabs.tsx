@@ -387,6 +387,7 @@ const DealRegCustomTabs = forwardRef<
         submitted_date: finalDealReg?.submitted_date,
         status: finalDealReg?.status,
         form_data_all: JSON?.stringify(allFiledObj),
+        percentage: tabPercentage,
       };
 
       setFormData(formObj);
