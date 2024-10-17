@@ -161,7 +161,7 @@ const DealRegCustomTabs = forwardRef<
       let obj = {
         baseURL: salesForceUrl,
         token: salesForceKey,
-        dealregId: activeKey,
+        dealRegId: activeKey,
       };
       callDealregApi(obj);
     }
