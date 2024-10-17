@@ -106,17 +106,18 @@ export const getAllPartnerandProgramApprovedForOrganization = createAsyncThunk(
     }
   },
 );
-export const getAllPartnerandProgramApprovedForOrganizationSalesForce = createAsyncThunk(
-  'partner/getAllPartnerandProgramApprovedForOrganizationSalesForce',
-  async (data: any, thunkApi) => {
-    try {
-      const res = await PARTNER_API.ApprovedForOrgSalesForce(data);
-      return res.data;
-    } catch (error: any) {
-      return thunkApi.rejectWithValue(error?.message);
-    }
-  },
-);
+export const getAllPartnerandProgramApprovedForOrganizationSalesForce =
+  createAsyncThunk(
+    'partner/getAllPartnerandProgramApprovedForOrganizationSalesForce',
+    async (data: any, thunkApi) => {
+      try {
+        const res = await PARTNER_API.ApprovedForOrgSalesForce(data);
+        return res.data;
+      } catch (error: any) {
+        return thunkApi.rejectWithValue(error?.message);
+      }
+    },
+  );
 export const getPartnerCanAddedToOrganization = createAsyncThunk(
   'partner/getPartnerCanAddedToOrganization',
   async (data: any, thunkApi) => {
@@ -133,22 +134,35 @@ export const getAllPartnerandProgramFilterDataForOrganizationOnly =
     'partner/getAllPartnerandProgramFilterDataForOrganizationOnly',
     async (data: any, thunkApi) => {
       try {
-        const res = await PARTNER_API.getAllPartnerandProgramFilterDataForOrganizationOnly(data);
+        const res =
+          await PARTNER_API.getAllPartnerandProgramFilterDataForOrganizationOnly(
+            data,
+          );
         return res.data;
       } catch (error: any) {
         return thunkApi.rejectWithValue(error?.message);
       }
     },
   );
-  export const upadteRequestForOrgNewPartnerApproval =
-  createAsyncThunk(
-    'partner/upadteRequestForOrgNewPartnerApproval',
-    async (data: any, thunkApi) => {
-      try {
-        const res = await PARTNER_API.upadteRequestForOrgNewPartnerApproval(data);
-        return res.data;
-      } catch (error: any) {
-        return thunkApi.rejectWithValue(error?.message);
-      }
-    },
-  );
+export const upadteRequestForOrgNewPartnerApproval = createAsyncThunk(
+  'partner/upadteRequestForOrgNewPartnerApproval',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PARTNER_API.upadteRequestForOrgNewPartnerApproval(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);
+export const getAllPartnerById = createAsyncThunk(
+  'partner/getAllPartnerById',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PARTNER_API.getAllPartnerById(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error?.message);
+    }
+  },
+);

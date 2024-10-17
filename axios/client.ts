@@ -9,9 +9,9 @@ const client = axios.create({
   // Local
   // baseURL: 'http://localhost:4000',
 
-  // Developement
+  //Developement
   baseURL: 'https://api-dev.reselleros.com',
-  //
+
   //Production
   // baseURL: 'https://api.reselleros.com',
 

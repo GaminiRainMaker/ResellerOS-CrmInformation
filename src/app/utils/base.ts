@@ -23,6 +23,8 @@ import {getRebatesInBulkByProductCode} from '../../../redux/actions/rebate';
 import {insertRebateQuoteLineItem} from '../../../redux/actions/rebateQuoteLineitem';
 import {insertValidation} from '../../../redux/actions/validation';
 import {setQuoteFileUnverifiedById} from '../../../redux/slices/quoteFile';
+import {getAllPartnerById} from '../../../redux/actions/partner';
+import {getAllPartnerProgramById} from '../../../redux/actions/partnerProgram';
 
 export const getResultedValue = () => {
   if (typeof window !== 'undefined') {
@@ -1891,4 +1893,79 @@ export const filterRadioData = (data: any) => {
   }
 
   return filteredData;
+};
+
+interface PayloadItem {
+  partner_id: string;
+  partner_program_id: string;
+  [key: string]: any;
+}
+
+interface Partner {
+  id: string;
+  [key: string]: any;
+}
+
+interface PartnerProgram {
+  id: string;
+  [key: string]: any;
+}
+
+export const updateSalesForceData = async (
+  res: {payload: PayloadItem[]} | undefined,
+  allPartnersById: Partner[],
+  allPartnerProgramById: PartnerProgram[],
+  dispatch: any,
+  setIsData?: any,
+) => {
+  if (!res?.payload) return;
+
+  const partnerArray = res?.payload?.map((item: any) => item?.partner_id);
+  const partnerProgramArray = res?.payload?.map(
+    (item: any) => item?.partner_program_id,
+  );
+  // Dispatch actions to get all partners and partner programs by id
+  let partnerData: any = [];
+  let partnerProgramData: any = [];
+
+  await dispatch(getAllPartnerById(partnerArray))?.then((payload: any) => {
+    if (payload?.payload && payload?.payload?.length > 0) {
+      payload?.payload?.map((items: any) => {
+        partnerData?.push(items);
+      });
+    }
+  });
+  await dispatch(getAllPartnerProgramById(partnerProgramArray))?.then(
+    (payload: any) => {
+      if (payload?.payload && payload?.payload?.length > 0) {
+        payload?.payload?.map((items: any) => {
+          partnerProgramData?.push(items);
+        });
+      }
+    },
+  );
+  setIsData(true);
+
+  // Updating main data with matching partner and partner program
+  const newData = res?.payload?.map((item: any) => {
+    const updatedItem = {...item};
+    // Find matching partner data
+    const partner = partnerData?.find((p: any) => p?.id == item?.partner_id);
+    if (partner) {
+      updatedItem.Partner = {...partner}; // Add the whole partner object under 'Partner'
+    }
+
+    // Find matching partner program data
+    const partnerProgram = partnerProgramData?.find(
+      (pp: any) => pp?.id == item?.partner_program_id,
+    );
+    if (partnerProgram) {
+      updatedItem.PartnerProgram = {...partnerProgram}; // Add the whole partner program object under 'PartnerProgram'
+    }
+
+    return updatedItem;
+  });
+  console.log('newData', newData);
+
+  return newData;
 };

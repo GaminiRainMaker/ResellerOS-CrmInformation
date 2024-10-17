@@ -10,10 +10,10 @@ import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
 import Typography from '@/app/components/common/typography';
 import {PlusIcon} from '@heroicons/react/24/outline';
-import {MenuProps} from 'antd';
+import {Button, MenuProps} from 'antd';
 import Form from 'antd/es/form';
 import {useRouter, useSearchParams} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {
   dealRegFormScript,
   getDealRegByOpportunityId,
@@ -25,9 +25,10 @@ import {
   setOpenDealRegDrawer,
 } from '../../../../../redux/slices/dealReg';
 import NewRegistrationForm from '../dealReg/NewRegistrationForm';
-import DealRegCustomTabs from './DealRegCustomTabs';
+import DealRegCustomTabs, {DealRegCustomTabsHandle} from './DealRegCustomTabs';
 import ElectronBot from './ElectronBot';
 import SubmitDealRegForms from './SubmitDealRegForms';
+import {getSalesForcePartnerCredentials} from '../../../../../redux/actions/salesForce';
 
 const DealRegDetail = () => {
   const [getFormData] = Form.useForm();
@@ -47,15 +48,14 @@ const DealRegDetail = () => {
   const searchParams = useSearchParams()!;
   const getOpportunityId = searchParams && searchParams.get('opportunityId');
   const salesForceUrl = searchParams.get('instance_url');
+  const salesForceKey = searchParams.get('key');
 
   const [formData, setFormData] = useState<any>();
-  const [localIp, setLocalIp] = useState('');
   const {userInformation} = useAppSelector((state) => state.user);
+  const [salesForceDealregData, setSalesForceDealregData] = useState<any>();
 
   useEffect(() => {
-    if (getOpportunityId && salesForceUrl) {
-      // dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
-    } else if (getOpportunityId) {
+    if (getOpportunityId && !salesForceUrl) {
       dispatch(getDealRegByOpportunityId(Number(getOpportunityId)));
     }
   }, []);
@@ -86,7 +86,7 @@ const DealRegDetail = () => {
         <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
           {!salesForceUrl
             ? DealRegData?.[0]?.Opportunity?.title
-            : 'Demo Opportunity'}
+            : salesForceDealregData?.[0]?.opportunity_name}
         </Typography>
       ),
     },
@@ -117,9 +117,12 @@ const DealRegDetail = () => {
     if (SubmitDealRegFormData) {
       try {
         const finalAppData = {
-          IP: localIp,
           dealRegId: SubmitDealRegFormData?.id,
           userId: userInformation?.id,
+          token: salesForceKey,
+          baseURL: salesForceUrl,
+          // partnerId: SubmitDealRegForm?.partnerId,       //Need to check the partnerId how it's comes.
+          // partnerProgramId: SubmitDealRegForm?.partnerProgramId,       //Need to check the partnerId how it's comes.
         };
         const response = await dispatch(dealRegFormScript(finalAppData));
         if (response) {
@@ -140,6 +143,27 @@ const DealRegDetail = () => {
     }
   };
 
+  const dealRegTabsRef = useRef<DealRegCustomTabsHandle>(null);
+
+  const handleButtonClick = () => {
+    // Call the child's onFinish function using the ref
+    if (dealRegTabsRef.current) {
+      dealRegTabsRef.current.onFinish();
+    }
+  };
+
+  const getCredentials = () => {
+    if (salesForceUrl) {
+      const obj = {
+        baseURL: salesForceUrl,
+        token: salesForceKey,
+        partnerId: 108,
+        partnerProgramId: 101,
+      };
+      dispatch(getSalesForcePartnerCredentials(obj));
+    }
+  };
+
   return (
     <div>
       <Row justify="space-between" align="middle">
@@ -148,6 +172,24 @@ const DealRegDetail = () => {
         </Col>
         <Col>
           <Space size={8}>
+            {salesForceUrl && (
+              <>
+                {/* <OsButton
+                  text="Credentials"
+                  buttontype="SECONDARY"
+                  clickHandler={() => {
+                    getCredentials();
+                  }}
+                /> */}
+                <OsButton
+                  text="Save"
+                  buttontype="SECONDARY"
+                  clickHandler={() => {
+                    handleButtonClick();
+                  }}
+                />
+              </>
+            )}
             <OsButton
               text="Intial Setup"
               buttontype="SECONDARY"
@@ -180,6 +222,8 @@ const DealRegDetail = () => {
           form={getFormData}
           formData={formData}
           setFormData={setFormData}
+          setSalesForceDealregData={setSalesForceDealregData}
+          ref={dealRegTabsRef}
         />
       </GlobalLoader>
 

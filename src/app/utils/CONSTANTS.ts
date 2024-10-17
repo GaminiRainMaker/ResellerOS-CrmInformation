@@ -768,4 +768,4 @@ export const PartnerOptions = [
     label: 'Industry',
     value: 'industry',
   },
-];
+]

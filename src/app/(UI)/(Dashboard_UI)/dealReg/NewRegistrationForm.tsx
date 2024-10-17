@@ -477,7 +477,7 @@ const NewRegistrationForm: FC<any> = ({
             window.history.replaceState(
               null,
               '',
-              `/dealRegDetail?opportunityId=${salesForceOppId}&instance_url=${salesForceUrl}&customerId=${salesForceCustomerId}&contactId=${salesForceContactId}`,
+              `/dealRegDetail?opportunityId=${salesForceOppId}&instance_url=${salesForceUrl}&key=${salesForceKey}&customerId=${salesForceCustomerId}&contactId=${salesForceContactId}`,
             );
             location?.reload();
           }
