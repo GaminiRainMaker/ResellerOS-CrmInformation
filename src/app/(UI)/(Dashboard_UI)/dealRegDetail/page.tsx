@@ -128,7 +128,7 @@ const DealRegDetail = () => {
           partnerProgramId: SubmitDealRegFormData?.partner_program_id,
         };
         const response = await dispatch(dealRegFormScript(finalAppData));
-        if (response) {
+        if (response && !salesForceUrl) {
           await dispatch(updateDealRegStatus(SubmitDealRegFormData)).then(
             (response: {payload: any}) => {
               if (response?.payload) {
