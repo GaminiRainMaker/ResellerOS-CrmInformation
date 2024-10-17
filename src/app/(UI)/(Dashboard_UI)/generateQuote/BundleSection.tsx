@@ -23,6 +23,7 @@ const BundleSection: FC<any> = ({
   drawer,
   setShowBundleDrawer,
   setSelectedRowIds,
+  setProfitibilityDataa,
 }) => {
   const searchParams = useSearchParams()!;
   const getQuoteId = searchParams.get('id');
@@ -60,7 +61,14 @@ const BundleSection: FC<any> = ({
     await dispatch(updateQuoteLineItemForBundleId(data));
     setSelectedRowData && setSelectedRowData([]);
     setSelectedRowIds && setSelectedRowIds([]);
-    await dispatch(getProfitabilityByQuoteId(Number(getQuoteId)));
+    await dispatch(getProfitabilityByQuoteId(Number(getQuoteId)))?.then(
+      (payload: any) => {
+        if (payload?.payload) {
+          setProfitibilityDataa(payload?.payload);
+        }
+      },
+    );
+    dispatch(getAllBundle(getQuoteId));
     setRadioValue(1);
     setShowBundleModal(false);
     setShowBundleDrawer && setShowBundleDrawer(false);
