@@ -28,4 +28,8 @@ export const SALESFORCE_API = {
     post(API.SALESFORCE.UpdateSalesForceDealregById, data) as Promise<
       AxiosResponse<any>
     >,
+  getSalesForcePartnerCredentials: (data: any) =>
+    post(API.SALESFORCE.GetSalesForcePartnerCredentials, data) as Promise<
+      AxiosResponse<any>
+    >,
 };

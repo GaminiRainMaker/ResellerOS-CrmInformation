@@ -74,3 +74,15 @@ export const updateSalesForceDealregById = createAsyncThunk(
     }
   },
 );
+
+export const getSalesForcePartnerCredentials = createAsyncThunk(
+  'salesforce/getSalesForcePartnerCredentials',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await SALESFORCE_API.getSalesForcePartnerCredentials(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);

@@ -28,6 +28,7 @@ import NewRegistrationForm from '../dealReg/NewRegistrationForm';
 import DealRegCustomTabs, {DealRegCustomTabsHandle} from './DealRegCustomTabs';
 import ElectronBot from './ElectronBot';
 import SubmitDealRegForms from './SubmitDealRegForms';
+import {getSalesForcePartnerCredentials} from '../../../../../redux/actions/salesForce';
 
 const DealRegDetail = () => {
   const [getFormData] = Form.useForm();
@@ -121,6 +122,7 @@ const DealRegDetail = () => {
           token: salesForceKey,
           baseURL: salesForceUrl,
           // partnerId: SubmitDealRegForm?.partnerId,       //Need to check the partnerId how it's comes.
+          // partnerProgramId: SubmitDealRegForm?.partnerProgramId,       //Need to check the partnerId how it's comes.
         };
         const response = await dispatch(dealRegFormScript(finalAppData));
         if (response) {
@@ -150,6 +152,18 @@ const DealRegDetail = () => {
     }
   };
 
+  const getCredentials = () => {
+    if (salesForceUrl) {
+      const obj = {
+        baseURL: salesForceUrl,
+        token: salesForceKey,
+        partnerId: 108,
+        partnerProgramId: 101,
+      };
+      dispatch(getSalesForcePartnerCredentials(obj));
+    }
+  };
+
   return (
     <div>
       <Row justify="space-between" align="middle">
@@ -159,13 +173,22 @@ const DealRegDetail = () => {
         <Col>
           <Space size={8}>
             {salesForceUrl && (
-              <OsButton
-                text="Save"
-                buttontype="SECONDARY"
-                clickHandler={() => {
-                  handleButtonClick();
-                }}
-              />
+              <>
+                {/* <OsButton
+                  text="Credentials"
+                  buttontype="SECONDARY"
+                  clickHandler={() => {
+                    getCredentials();
+                  }}
+                /> */}
+                <OsButton
+                  text="Save"
+                  buttontype="SECONDARY"
+                  clickHandler={() => {
+                    handleButtonClick();
+                  }}
+                />
+              </>
             )}
             <OsButton
               text="Intial Setup"

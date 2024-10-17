@@ -328,5 +328,6 @@ export const API = {
       '/salesForce/getSalesForceDealregByOpportunityId',
     GetSalesForceDealregById: '/salesForce/getSalesForceDealregById',
     UpdateSalesForceDealregById: '/salesForce/updateSalesForceDealregById',
+    GetSalesForcePartnerCredentials: '/salesForce/getSalesForcePartnerCredentials',
   },
 };
