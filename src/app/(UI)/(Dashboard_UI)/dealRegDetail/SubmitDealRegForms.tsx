@@ -36,7 +36,7 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
 
           if (tabPercentage === 100) {
             return {
-              value: element?.id,
+              value: JSON.stringify(element),
               label: (
                 <Typography cursor="pointer" name="Button 1">
                   {`${formatStatus(Partner?.partner)} - ${formatStatus(PartnerProgram?.partner_program)}`}

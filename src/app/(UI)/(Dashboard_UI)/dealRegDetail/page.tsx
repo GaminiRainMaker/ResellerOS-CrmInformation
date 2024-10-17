@@ -110,10 +110,13 @@ const DealRegDetail = () => {
 
   const submitDealRegFormFun = async () => {
     const SubmitDealRegForm = submitDealRegForm.getFieldsValue();
+    const FinalSubmitDealRegForm =
+      SubmitDealRegForm && JSON.parse(SubmitDealRegForm?.id);
     const SubmitDealRegFormData = {
-      ...SubmitDealRegForm,
+      ...FinalSubmitDealRegForm,
       status: 'Submitted',
     };
+
     if (SubmitDealRegFormData) {
       try {
         const finalAppData = {
@@ -121,8 +124,8 @@ const DealRegDetail = () => {
           userId: userInformation?.id,
           token: salesForceKey,
           baseURL: salesForceUrl,
-          // partnerId: SubmitDealRegForm?.partnerId,       //Need to check the partnerId how it's comes.
-          // partnerProgramId: SubmitDealRegForm?.partnerProgramId,       //Need to check the partnerId how it's comes.
+          partnerId: SubmitDealRegFormData?.partner_id,
+          partnerProgramId: SubmitDealRegFormData?.partner_program_id,
         };
         const response = await dispatch(dealRegFormScript(finalAppData));
         if (response) {
