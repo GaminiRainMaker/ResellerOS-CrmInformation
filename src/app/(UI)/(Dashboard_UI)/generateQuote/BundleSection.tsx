@@ -61,6 +61,7 @@ const BundleSection: FC<any> = ({
     setSelectedRowData && setSelectedRowData([]);
     setSelectedRowIds && setSelectedRowIds([]);
     await dispatch(getProfitabilityByQuoteId(Number(getQuoteId)));
+    dispatch(getAllBundle(getQuoteId));
     setRadioValue(1);
     setShowBundleModal(false);
     setShowBundleDrawer && setShowBundleDrawer(false);
