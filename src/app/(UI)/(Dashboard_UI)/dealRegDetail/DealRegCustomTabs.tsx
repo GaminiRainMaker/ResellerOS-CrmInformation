@@ -173,16 +173,23 @@ const DealRegCustomTabs = forwardRef<
       getDealRegForNew;
     if (selectedDealRegData && Object.keys(selectedDealRegData).length > 0) {
       let finalDealReg = selectedDealRegData;
+      let commonFormData =
+        typeof finalDealReg?.common_form_data === 'string'
+          ? JSON.parse(finalDealReg?.common_form_data)
+          : finalDealReg?.common_form_data;
+      let uniqueFormData =
+        typeof finalDealReg?.unique_form_data === 'string'
+          ? JSON.parse(finalDealReg?.unique_form_data)
+          : finalDealReg?.unique_form_data;
+      console.log('finalDealReg', finalDealReg);
       const obj = {
         common_form_data:
-          finalDealReg?.common_form_data &&
-          finalDealReg?.common_form_data.length > 0
-            ? JSON?.parse(finalDealReg?.common_form_data?.[0])
+          commonFormData && commonFormData.length > 0
+            ? JSON?.parse(commonFormData?.[0])
             : {},
         unique_form_data:
-          finalDealReg?.unique_form_data &&
-          finalDealReg?.unique_form_data.length > 0
-            ? JSON?.parse(finalDealReg?.unique_form_data?.[0])
+          uniqueFormData && uniqueFormData.length > 0
+            ? JSON?.parse(uniqueFormData?.[0])
             : {},
         id: finalDealReg?.id,
         unique_template:
@@ -239,11 +246,21 @@ const DealRegCustomTabs = forwardRef<
 
       if (selectedDealRegData && Object?.keys(selectedDealRegData).length > 0) {
         finalDealReg = selectedDealRegData;
-        const parsedCommonFormData = finalDealReg?.common_form_data?.[0]
-          ? JSON.parse(finalDealReg.common_form_data[0])
+
+        let commonFormData =
+          typeof finalDealReg?.common_form_data === 'string'
+            ? JSON.parse(finalDealReg?.common_form_data)
+            : finalDealReg?.common_form_data;
+        let uniqueFormData =
+          typeof finalDealReg?.unique_form_data === 'string'
+            ? JSON.parse(finalDealReg?.unique_form_data)
+            : finalDealReg?.unique_form_data;
+
+        const parsedCommonFormData = commonFormData?.[0]
+          ? JSON.parse(commonFormData[0])
           : {};
-        const parsedUniqueFormData = finalDealReg?.unique_form_data?.[0]
-          ? JSON.parse(finalDealReg.unique_form_data[0])
+        const parsedUniqueFormData = uniqueFormData?.[0]
+          ? JSON.parse(uniqueFormData[0])
           : {};
         finalCommonFieldObject = {
           ...parsedCommonFormData,
