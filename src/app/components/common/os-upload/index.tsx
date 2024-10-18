@@ -44,6 +44,8 @@ const OsUpload: React.FC<any> = ({
   setAdvancedUpload,
   advancedUpload,
   lineItemSyncingData,
+  setAdvancedSetting,
+  AdvancedSetting,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -51,7 +53,7 @@ const OsUpload: React.FC<any> = ({
   const [customerValue, setCustomerValue] = useState<number>();
   const [opportunityValue, setOpportunityValue] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [AdvancedSetting, setAdvancedSetting] = useState<boolean>(false);
+  // const [AdvancedSetting, setAdvancedSetting] = useState<boolean>(false);
 
   const {getExistingQuoteFilterData, getExistingQuoteFilterLoading} =
     useAppSelector((state) => state.quote);
@@ -330,8 +332,9 @@ const OsUpload: React.FC<any> = ({
       (items: any) =>
         items?.product_code &&
         items?.product_code !== undefined &&
-        items?.product_code !== null &&
-        containsLetterAndNumber(items?.product_code),
+        items?.product_code !== null,
+      //  &&
+      // containsLetterAndNumber(items?.product_code),
     );
 
     return {
