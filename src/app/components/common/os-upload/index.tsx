@@ -1,9 +1,9 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable consistent-return */
 /* eslint-disable react-hooks/exhaustive-deps */
-import {sendDataToNanonets} from '@/app/utils/base';
+import {convertFileToBase64, sendDataToNanonets} from '@/app/utils/base';
 import {FolderArrowDownIcon} from '@heroicons/react/24/outline';
-import {Form} from 'antd';
+import {Form, message} from 'antd';
 import React, {useEffect, useState} from 'react';
 import {getQuotesByExistingQuoteFilter} from '../../../../../redux/actions/quote';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
@@ -18,6 +18,8 @@ import OsTable from '../os-table';
 import Typography from '../typography';
 import UploadCard from './UploadCard';
 import {OSDraggerStyle} from './styled-components';
+import {uploadExcelFileToAws} from '../../../../../redux/actions/upload';
+import {fetchAndParseExcel} from '../../../../../redux/actions/auth';
 
 const OsUpload: React.FC<any> = ({
   beforeUpload,
@@ -38,6 +40,9 @@ const OsUpload: React.FC<any> = ({
   setTypeOfAddQuote,
   opportunityDetailId,
   customerDetailId,
+  setAdvancedUpload,
+  advancedUpload,
+  lineItemSyncingData,
 }) => {
   const [token] = useThemeToken();
   const dispatch = useAppDispatch();
@@ -137,6 +142,262 @@ const OsUpload: React.FC<any> = ({
     },
   };
 
+  const beforeUploadData = async (file: File) => {
+    const obj: any = {...file};
+    let resultantValues: any;
+    let uploadedUrl: any;
+    await convertFileToBase64(file)
+      .then(async (base64String: string) => {
+        obj.base64 = base64String;
+        obj.name = file?.name;
+        await dispatch(uploadExcelFileToAws({document: base64String})).then(
+          async (payload: any) => {
+            const doc_url = payload?.payload?.data?.Location;
+            uploadedUrl = payload?.payload?.data?.Location;
+            if (doc_url) {
+              await dispatch(fetchAndParseExcel({Url: doc_url}))?.then(
+                (payload: any) => {
+                  let newArrCheck: any = [];
+
+                  if (lineItemSyncingData && lineItemSyncingData?.length > 0) {
+                    lineItemSyncingData?.map((items: any) => {
+                      let resultString = items?.pdf_header?.replace(/\s+/g, '');
+                      newArrCheck?.push(resultString);
+                    });
+                  }
+                  const normalize = (str: any) => {
+                    return str
+                      ?.toString()
+                      ?.toLowerCase()
+                      .replace(/[\s_]+/g, ' ')
+                      .trim();
+                  };
+
+                  // Normalize the newArrCheck values
+                  let normalizedCheckArr = newArrCheck.map(normalize);
+                  // check for best matching row
+                  let maxMatches = 0;
+                  let bestRowIndex = -1;
+
+                  for (let i = 0; i < payload?.payload.length; i++) {
+                    let currentRow = payload?.payload[i];
+                    let matchCount = 0;
+
+                    for (let item of currentRow) {
+                      let normalizedItem = normalize(item);
+                      // Check if normalizedItem matches any normalized check item
+                      if (
+                        normalizedCheckArr.some(
+                          (checkItem: any) =>
+                            normalizedItem === normalize(checkItem),
+                        )
+                      ) {
+                        matchCount++;
+                      }
+                    }
+
+                    if (matchCount > maxMatches) {
+                      maxMatches = matchCount;
+                      bestRowIndex = i;
+                    }
+                  }
+
+                  // trim the arrr for valid lineItems
+
+                  const isNullOrEmptyRow = (row: any) => {
+                    return row.every(
+                      (item: any) => item === null || item === '',
+                    );
+                  };
+
+                  let indexFrom = -1;
+                  // Find the index of the first row that is null or empty
+                  for (let i = 0; i < payload?.payload?.length; i++) {
+                    if (
+                      isNullOrEmptyRow(payload?.payload[i]) &&
+                      bestRowIndex + 3 < i
+                    ) {
+                      indexFrom = i;
+                      break;
+                    }
+                  }
+
+                  // Slice the array from the found index
+                  let result =
+                    indexFrom > 0
+                      ? payload?.payload?.slice(bestRowIndex + 1, indexFrom - 1)
+                      : payload?.payload?.slice(
+                          bestRowIndex + 1,
+                          payload?.payload?.length - 1,
+                        );
+                  let requiredOutput = result
+                    ?.map((subArray: any) =>
+                      subArray.filter((item: any) => item !== null),
+                    )
+                    .filter((subArray: any) => subArray.length > 0);
+                  // let headerKeys: any = payload?.payload[bestRowIndex];
+
+                  let headerKeys: any = [];
+                  payload?.payload[bestRowIndex]?.filter((items: any) => {
+                    if (items !== null && !headerKeys?.includes(items)) {
+                      headerKeys?.push(items);
+                    }
+                  });
+
+                  let modifiedArr = headerKeys.map((item: any) => {
+                    if (item) {
+                      return item.replace(/\s+/g, '').replace(/[.]/g, '');
+                    } else {
+                      return null;
+                    }
+                  });
+
+                  // replace the syncing valueesss ========================
+
+                  let syncedHeaderValue = modifiedArr
+                    .map((item: any) => {
+                      // Clean up the item by removing spaces and special characters
+                      const cleanedItem =
+                        item !== null
+                          ? item
+                              .trim()
+                              .replace(/[^A-Za-z]/g, '')
+                              .substring(0, 4)
+                              .toLowerCase()
+                          : null;
+
+                      // Find the matching quoteHeader
+                      // let resultString = items?.pdf_header?.replace(/\s+/g, '');
+                      const match = lineItemSyncingData.find(
+                        (obj: any) =>
+                          obj.pdf_header
+                            ?.replace(/\s+/g, '')
+                            ?.toLowerCase()
+                            .substring(0, 4) === cleanedItem &&
+                          item?.toString()?.toLowerCase() !== 'partner',
+                      );
+
+                      // const match = lineItemSyncingData.find(
+                      //   (obj: any) =>
+                      //     obj.pdf_header
+                      //       ?.replace(/\s+/g, '')
+                      //       ?.toLowerCase()
+                      //       .substring(0, 4) === cleanedItem,
+                      // );
+
+                      // Return the expected value if a match is found, otherwise return undefined
+                      return match ? match.quote_header : item;
+                    })
+                    .filter(Boolean); // Remove any undefined values
+
+                  // end of above
+                  // Transform newArr into an array of objects
+                  resultantValues = requiredOutput.map((row: any) => {
+                    let obj: any = {};
+                    syncedHeaderValue.forEach((header: any, index: any) => {
+                      obj[header] = row[index] === '' ? null : row[index]; // Convert empty strings to null
+                    });
+                    return obj;
+                  });
+                },
+              );
+            }
+          },
+        );
+      })
+      .catch((error: any) => {
+        message.error('Error converting file to base64', error);
+      });
+
+    function containsLetterAndNumber(str: string): boolean {
+      // const hasLetter = /[a-zA-Z]/.test(str);
+      // const hasDigit = /\d/.test(str);
+      const hasHyphen = /-/.test(str);
+      return hasHyphen;
+    }
+
+    let requiredResult = resultantValues?.filter(
+      (items: any) =>
+        items?.product_code &&
+        items?.product_code !== undefined &&
+        items?.product_code !== null &&
+        containsLetterAndNumber(items?.product_code),
+    );
+
+    return {
+      lineItems: requiredResult,
+      file_name: file?.name,
+      pdf_url: uploadedUrl,
+    };
+  };
+
+  const onFinishAdvanced = async () => {
+    const customerId = form.getFieldValue('customer_id');
+    const opportunityId = form.getFieldValue('opportunity_id');
+    const singleQuote = form.getFieldValue('singleQuote');
+    const OemName = form.getFieldValue('oem_name');
+    const DistributerName = form.getFieldValue('distributor_name');
+    const fileName = form.getFieldValue('file_name');
+    const newArr = [];
+    setLoading(true);
+
+    for (let i = 0; i < uploadFileData.length; i++) {
+      let obj: any = {...uploadFileData[i]};
+
+      if (obj?.manualquote) {
+        if (!obj?.distributor_name && !obj?.oem_name) {
+          obj.error = true;
+        } else {
+          obj.error = false;
+        }
+      } else {
+        if (!obj?.distributor_id && !obj?.oem_id) {
+          obj.error = true;
+        } else {
+          obj.error = false;
+        }
+      }
+
+      if (
+        !obj.error &&
+        obj?.model_id &&
+        (obj?.model_id !== 'a02fffb7-5221-44a2-8eb1-85781a0ecd67' ||
+          obj?.file?.type.includes('spreadsheetml'))
+      ) {
+        if (obj?.file?.type.includes('spreadsheetml')) {
+          const dataa = await beforeUploadData(obj?.file);
+
+          obj = {...obj, ...dataa};
+        } else {
+          // eslint-disable-next-line no-await-in-loop
+          const response: any = await sendDataToNanonets(
+            obj?.model_id,
+            obj?.file,
+          );
+
+          obj = {...obj, ...response};
+        }
+      }
+
+      newArr.push(obj);
+    }
+    setLoading(false);
+    const index = newArr.findIndex((item) => item.error);
+
+    if (index > -1) {
+      setUploadFileData(newArr);
+    } else if (opportunityDetailId) {
+      addQuoteLineItem(
+        customerDetailId,
+        opportunityDetailId,
+        newArr,
+        singleQuote,
+      );
+    } else {
+      addQuoteLineItem(customerId, opportunityId, newArr, singleQuote);
+    }
+  };
+
   useEffect(() => {
     dispatch(
       getQuotesByExistingQuoteFilter({
@@ -147,6 +408,21 @@ const OsUpload: React.FC<any> = ({
   }, [customerValue, opportunityValue, opportunityDetailId]);
   return (
     <GlobalLoader loading={cardLoading || loading}>
+      <Space
+        size={30}
+        style={{marginBottom: '10px'}}
+        direction="horizontal"
+        align="center"
+      >
+        <Typography name="Body 2/Medium">Advanced Upload </Typography>
+        <Switch
+          size="default"
+          onChange={(e) => {
+            setAdvancedUpload(e);
+          }}
+          checked={advancedUpload}
+        />
+      </Space>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
         <OSDraggerStyle
           beforeUpload={beforeUpload}
