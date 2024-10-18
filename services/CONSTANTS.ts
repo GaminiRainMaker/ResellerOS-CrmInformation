@@ -328,6 +328,13 @@ export const API = {
       '/salesForce/getSalesForceDealregByOpportunityId',
     GetSalesForceDealregById: '/salesForce/getSalesForceDealregById',
     UpdateSalesForceDealregById: '/salesForce/updateSalesForceDealregById',
-    GetSalesForcePartnerCredentials: '/salesForce/getSalesForcePartnerCredentials',
+    GetSalesForcePartnerCredentials:
+      '/salesForce/getSalesForcePartnerCredentials',
+  },
+  SALESFORCE_CREDENTIALS: {
+    INDEX: '/salesForceCredential',
+    QueryAddSalesForceCredentials: '/salesForceCredential/query',
+    DeleteSalesForceCredentials:
+      '/salesForceCredential/deleteSalesForceCredentials',
   },
 };

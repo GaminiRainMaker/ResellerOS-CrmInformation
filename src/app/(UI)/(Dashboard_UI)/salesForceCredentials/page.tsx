@@ -12,59 +12,49 @@ import {
   TrashIcon,
 } from '@heroicons/react/24/outline';
 import {Form, message} from 'antd';
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 
 import {Switch} from '@/app/components/common/antd/Switch';
-import {useRouter} from 'next/navigation';
+import OsDrawer from '@/app/components/common/os-drawer';
 import OsModal from '@/app/components/common/os-modal';
-import AddSalesForceCredentials, { AddSalesForceCredentialsRef } from './AddSalesForceCredentials';
+import DeleteModal from '@/app/components/common/os-modal/DeleteModal';
+import {
+  deleteSalesForceCredentials,
+  queryAddSalesForceCredentials,
+  updateSalesForceCredentialsId,
+} from '../../../../../redux/actions/salesForceCredentials';
+import AddSalesForceCredentials, {
+  AddSalesForceCredentialsRef,
+} from './AddSalesForceCredentials';
+import EditSalesForceCredentials from './EditSalesForceCredentials';
 
 const AddUser = () => {
   const csvUploadRef = useRef<AddSalesForceCredentialsRef>(null);
   const dispatch = useAppDispatch();
-  const router = useRouter();
+  const [form] = Form.useForm();
   const [token] = useThemeToken();
   const [showAddUserModal, setShowAddUserModal] = useState<boolean>(false);
-  const {
-    data: UsersData,
-    loading,
-    userInformation,
-  } = useAppSelector((state) => state.user);
-  const [showDailogModal, setShowDailogModal] = useState<boolean>(false);
+  const {data: salesForceCredentialsData, loading} = useAppSelector(
+    (state) => state.salesForceCredentials,
+  );
   const [open, setOpen] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
   const [userData, setUserData] = useState<any>();
-  const [addUserType, setAddUserType] = useState<string>('');
   const [showModalDelete, setShowModalDelete] = useState<boolean>(false);
 
-  //   const deleteSelectedIds = async () => {
-  //     const dataa = {id: deleteIds};
-  //     await dispatch(deleteUser(dataa));
-  //     setTimeout(() => {
-  //       dispatch(getUserByOrganization(userInformation?.organization));
-  //     }, 1000);
-  //     setDeleteIds([]);
-  //     setShowModalDelete(false);
-  //     location?.reload();
-  //   };
+  const deleteSelectedIds = async () => {
+    const dataa = {id: deleteIds};
+    await dispatch(deleteSalesForceCredentials(dataa)).then((res) => {
+      if (res?.payload) {
+        dispatch(queryAddSalesForceCredentials(''));
+      }
+    });
+    setDeleteIds([]);
+    setShowModalDelete(false);
+  };
 
   const UserColumns = [
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          SalesForce Org ID
-        </Typography>
-      ),
-      dataIndex: 'salesforce_org_id',
-      key: 'salesforce_org_id',
-      width: 173,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular" hoverOnText>
-          {text ?? '--'}
-        </Typography>
-      ),
-    },
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
@@ -81,6 +71,21 @@ const AddUser = () => {
     {
       title: (
         <Typography name="Body 4/Medium" className="dragHandler">
+          SalesForce Org ID
+        </Typography>
+      ),
+      dataIndex: 'saleforce_org_Id',
+      key: 'saleforce_org_Id',
+      width: 173,
+      render: (text: string) => (
+        <Typography name="Body 4/Regular" hoverOnText>
+          {text ?? '--'}
+        </Typography>
+      ),
+    },
+    {
+      title: (
+        <Typography name="Body 4/Medium" className="dragHandler">
           SSO Login
         </Typography>
       ),
@@ -88,13 +93,7 @@ const AddUser = () => {
       key: 'is_sso',
       width: 173,
       render: (text: any, record: any) => (
-        <Switch
-          defaultChecked={text}
-          size="default"
-          onChange={(e) => {
-            // updateLoginStep(record?.id, e);
-          }}
-        />
+        <Switch checked={record?.is_sso} size="default" disabled />
       ),
     },
     {
@@ -114,9 +113,16 @@ const AddUser = () => {
             color={token.colorInfoBorder}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              //   setOpen(true);
-              //   setAddUserType('update');
-              //   setUserData(record);
+              setOpen(true);
+              setUserData(record);
+              form.setFieldsValue({
+                username: record?.username,
+                consumer_key: record?.consumer_key,
+                consumer_secret: record?.consumer_secret,
+                login_url: record?.login_url,
+                saleforce_org_Id: record?.saleforce_org_Id,
+                is_sso: record?.is_sso,
+              });
             }}
           />
           <TrashIcon
@@ -125,8 +131,8 @@ const AddUser = () => {
             color={token.colorError}
             style={{cursor: 'pointer'}}
             onClick={() => {
-              //   setDeleteIds([record?.id]);
-              //   setShowModalDelete(true);
+              setDeleteIds([record?.id]);
+              setShowModalDelete(true);
             }}
           />
         </Space>
@@ -134,25 +140,35 @@ const AddUser = () => {
     },
   ];
 
-  //   useEffect(() => {
-  //     if (userInformation?.organization) {
-  //       dispatch(getUserByOrganization(userInformation?.organization));
-  //     }
-  //   }, [userInformation?.organization]);
+  useEffect(() => {
+    dispatch(queryAddSalesForceCredentials(''));
+  }, []);
 
   const handleSaveClick = async () => {
     if (csvUploadRef.current) {
-      // setLoading(true); // Set loading state when save button is clicked
       try {
-        await csvUploadRef.current.uploadToDatabase(); // Trigger child function
+        await csvUploadRef.current.uploadToDatabase();
         message.success('Data successfully uploaded');
-        // setShowAddUserModal(false); // Close modal on success
       } catch (error) {
         message.error('Failed to upload data');
       } finally {
-        // setLoading(false); // Reset loading state
       }
     }
+  };
+
+  const updateData = () => {
+    const getformData = form.getFieldsValue();
+    let obj = {
+      ...getformData,
+      id: userData?.id,
+    };
+    dispatch(updateSalesForceCredentialsId(obj)).then((res) => {
+      if (res?.payload) {
+        dispatch(queryAddSalesForceCredentials(''));
+      }
+      setOpen(false);
+      form.resetFields();
+    });
   };
 
   return (
@@ -170,7 +186,6 @@ const AddUser = () => {
               buttontype="PRIMARY"
               icon={<PlusIcon />}
               clickHandler={() => {
-                // setAddUserType('insert');
                 setShowAddUserModal(true);
               }}
             />
@@ -179,7 +194,7 @@ const AddUser = () => {
 
         <OsTable
           columns={UserColumns}
-          dataSource={[]}
+          dataSource={salesForceCredentialsData}
           scroll
           loading={loading}
         />
@@ -188,7 +203,12 @@ const AddUser = () => {
       <OsModal
         title="Add SalesForce Credentials"
         loading={loading}
-        body={<AddSalesForceCredentials ref={csvUploadRef} />}
+        body={
+          <AddSalesForceCredentials
+            ref={csvUploadRef}
+            setShowAddUserModal={setShowAddUserModal}
+          />
+        }
         width={696}
         open={showAddUserModal}
         onCancel={() => {
@@ -196,39 +216,26 @@ const AddUser = () => {
         }}
         onOk={handleSaveClick}
         primaryButtonText="Save"
-        // footerPadding={24}
         bodyPadding={24}
       />
-
-      {/* <DailogModal
-        setShowDailogModal={setShowDailogModal}
-        showDailogModal={showDailogModal}
-        title="Invite Sent"
-        subTitle="Invite has been sent on email with auto-generated password"
-        primaryButtonText="Done"
-        icon={
-          <CheckCircleIcon width={35} height={35} color={token?.colorSuccess} />
-        }
-        onOk={() => {
-          window.location.reload();
-          setShowDailogModal(false);
-        }}
-      /> */}
-      {/* <DeleteModal
+      <DeleteModal
         loading={loading}
         setShowModalDelete={setShowModalDelete}
         setDeleteIds={setDeleteIds}
         showModalDelete={showModalDelete}
         deleteSelectedIds={deleteSelectedIds}
-        heading="Delete User"
-        description="Are you sure you want to delete this user?"
-      /> */}
-      {/* 
+        heading="Delete SalesForce Credentials"
+        description="Are you sure you want to delete this SalesForce Credentials?"
+      />
+
       <OsDrawer
-        title={<Typography name="Body 1/Regular">User Settings</Typography>}
+        title={
+          <Typography name="Body 1/Regular">Update User Credentials</Typography>
+        }
         placement="right"
         onClose={() => {
           setOpen(false);
+          form.resetFields();
         }}
         open={open}
         width={450}
@@ -243,13 +250,8 @@ const AddUser = () => {
           </Row>
         }
       >
-        <AddUsers
-          isDrawer
-          userData={userData}
-          onFinish={onFinish}
-          form={form}
-        />
-      </OsDrawer> */}
+        <EditSalesForceCredentials onFinish={updateData} form={form} />
+      </OsDrawer>
     </>
   );
 };

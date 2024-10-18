@@ -2,8 +2,13 @@ import {Button} from '@/app/components/common/antd/Button';
 import {Upload} from '@/app/components/common/antd/Upload';
 import {UploadOutlined, CheckCircleOutlined} from '@ant-design/icons';
 import {message} from 'antd';
-import React, {FC, forwardRef, useState, useImperativeHandle} from 'react';
+import React, {FC, forwardRef, useState, useImperativeHandle, Ref} from 'react';
 import Papa from 'papaparse';
+import {useAppDispatch} from '../../../../../redux/hook';
+import {
+  addSalesForceCredentials,
+  queryAddSalesForceCredentials,
+} from '../../../../../redux/actions/salesForceCredentials';
 
 export interface AddSalesForceCredentialsRef {
   uploadToDatabase: () => Promise<void>;
@@ -14,24 +19,29 @@ interface CsvRecord {
   [key: string]: any;
 }
 
-const AddSalesForceCredentials: FC<any> =
-  forwardRef<AddSalesForceCredentialsRef>((props, ref) => {
+interface Props {
+  setShowAddUserModal: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const AddSalesForceCredentials = forwardRef<AddSalesForceCredentialsRef, Props>(
+  (props, ref) => {
+    const {setShowAddUserModal} = props;
     const [csvData, setCsvData] = useState<CsvRecord[]>([]);
-    const [uploadSuccess, setUploadSuccess] = useState(false); // New state for tracking upload success
+    const [uploadSuccess, setUploadSuccess] = useState(false); 
+    const dispatch = useAppDispatch();
 
     const handleFileUpload = (file: File) => {
       Papa.parse(file, {
         header: true,
         complete: function (results: Papa.ParseResult<CsvRecord>) {
-          // Filter data to include only those records with a valid 'saleforce_org_Id'
           const filteredData = results?.data?.filter(
             (record: CsvRecord) => record?.saleforce_org_Id,
           );
 
           if (filteredData.length > 0) {
-            setCsvData(filteredData); // Store the filtered data in the state
+            setCsvData(filteredData); 
             message.success(`${file.name} file uploaded successfully.`);
-            setUploadSuccess(true); // Reset the upload success state
+            setUploadSuccess(true); 
           } else {
             message.warning('No valid records with saleforce_org_Id found.');
           }
@@ -40,7 +50,7 @@ const AddSalesForceCredentials: FC<any> =
           message.error(`Failed to parse CSV file: ${err.message}`);
         },
       });
-      return false; // prevent default upload behavior
+      return false;
     };
 
     const uploadToDatabase = async () => {
@@ -48,29 +58,23 @@ const AddSalesForceCredentials: FC<any> =
         message.error('No data to upload.');
         return;
       }
-      console.log('csvData', csvData);
-
-      // try {
-      //   const response = await fetch('/api/upload-csv', {
-      //     method: 'POST',
-      //     headers: {
-      //       'Content-Type': 'application/json',
-      //     },
-      //     body: JSON.stringify(csvData),
-      //   });
-
-      //   if (response.ok) {
-      //     message.success('Data uploaded to database successfully!');
-      //     setUploadSuccess(true); // Set upload success state
-      //   } else {
-      //     message.error('Failed to upload data to database.');
-      //   }
-      // } catch (error: any) {
-      //   message.error(`Error uploading data: ${error.message}`);
-      // }
+      try {
+        dispatch(addSalesForceCredentials(csvData)).then((res) => {
+          if (res?.payload) {
+            message.success('Data uploaded to database successfully!');
+            setUploadSuccess(true);
+            setShowAddUserModal(false);
+            dispatch(queryAddSalesForceCredentials(''));
+          } else {
+            message.error('Failed to upload data to database.');
+            setShowAddUserModal(false);
+          }
+        });
+      } catch (error: any) {
+        message.error(`Error uploading data: ${error.message}`);
+        setShowAddUserModal(false);
+      }
     };
-
-    // Expose the uploadToDatabase function to the parent component
     useImperativeHandle(ref, () => ({
       uploadToDatabase,
     }));
@@ -89,6 +93,7 @@ const AddSalesForceCredentials: FC<any> =
         )}
       </div>
     );
-  });
+  },
+);
 
 export default AddSalesForceCredentials;
