@@ -34,7 +34,7 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
             element?.type,
           );
 
-          if (tabPercentage === 100) {
+          if (tabPercentage === 100 || Number(element?.percentage) === 100) {
             return {
               value: JSON.stringify(element),
               label: (

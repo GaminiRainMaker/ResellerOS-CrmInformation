@@ -174,13 +174,23 @@ const DealRegCustomTabs = forwardRef<
     if (selectedDealRegData && Object.keys(selectedDealRegData).length > 0) {
       let finalDealReg = selectedDealRegData;
       let commonFormData =
-        typeof finalDealReg?.common_form_data === 'string'
+        typeof finalDealReg?.common_form_data === 'string' &&
+        finalDealReg?.common_form_data !== ''
           ? JSON.parse(finalDealReg?.common_form_data)
-          : finalDealReg?.common_form_data;
+          : Array.isArray(finalDealReg?.common_form_data) &&
+              finalDealReg?.common_form_data.length === 0
+            ? []
+            : finalDealReg?.common_form_data;
+
       let uniqueFormData =
-        typeof finalDealReg?.unique_form_data === 'string'
+        typeof finalDealReg?.unique_form_data === 'string' &&
+        finalDealReg?.unique_form_data !== ''
           ? JSON.parse(finalDealReg?.unique_form_data)
-          : finalDealReg?.unique_form_data;
+          : Array.isArray(finalDealReg?.unique_form_data) &&
+              finalDealReg?.unique_form_data.length === 0
+            ? []
+            : finalDealReg?.unique_form_data;
+
       console.log('finalDealReg', finalDealReg);
       const obj = {
         common_form_data:
@@ -238,8 +248,6 @@ const DealRegCustomTabs = forwardRef<
           uniqueFieldObject[key] = value;
         }
       }
-
-      // const uniqueFieldObjectResult = filterRadioData(uniqueFieldObject);
       const selectedDealRegData =
         (salesForceDealregById?.length > 0 && salesForceDealregById?.[0]) ||
         getDealRegForNew;
@@ -248,13 +256,22 @@ const DealRegCustomTabs = forwardRef<
         finalDealReg = selectedDealRegData;
 
         let commonFormData =
-          typeof finalDealReg?.common_form_data === 'string'
+          typeof finalDealReg?.common_form_data === 'string' &&
+          finalDealReg?.common_form_data !== ''
             ? JSON.parse(finalDealReg?.common_form_data)
-            : finalDealReg?.common_form_data;
+            : Array.isArray(finalDealReg?.common_form_data) &&
+                finalDealReg?.common_form_data.length === 0
+              ? []
+              : finalDealReg?.common_form_data;
+
         let uniqueFormData =
-          typeof finalDealReg?.unique_form_data === 'string'
+          typeof finalDealReg?.unique_form_data === 'string' &&
+          finalDealReg?.unique_form_data !== ''
             ? JSON.parse(finalDealReg?.unique_form_data)
-            : finalDealReg?.unique_form_data;
+            : Array.isArray(finalDealReg?.unique_form_data) &&
+                finalDealReg?.unique_form_data.length === 0
+              ? []
+              : finalDealReg?.unique_form_data;
 
         const parsedCommonFormData = commonFormData?.[0]
           ? JSON.parse(commonFormData[0])
@@ -458,7 +475,7 @@ const DealRegCustomTabs = forwardRef<
                     <CustomProgress
                       isActive={isActive}
                       token={token}
-                      percent={tabPercentage}
+                      percent={tabPercentage || element?.percentage}
                     />
                     <Typography
                       style={{color: textColor}}
