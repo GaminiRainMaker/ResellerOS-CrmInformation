@@ -19,10 +19,20 @@ import {
   getAllGeneralSetting,
   insertUpdateGeneralSetting,
 } from '../../../../../../../../redux/actions/generalSetting';
+import {ToggleColStyled} from '@/app/components/common/os-div-row-col/styled-component';
+import {Switch} from '@/app/components/common/antd/Switch';
+import {
+  getUserByTokenAccess,
+  updateAdvancedSetting,
+} from '../../../../../../../../redux/actions/user';
 
 const ConverSationProcess = () => {
   const [attachDocType, setAttachDocType] = useState<any>();
   const dispatch = useAppDispatch();
+  const {userInformation} = useAppSelector((state) => state.user);
+
+  const [AdvancedSetting, setAdvancedSetting] = useState<boolean>(false);
+
   const {data: generalSettingData, loading} = useAppSelector(
     (state) => state.gereralSetting,
   );
@@ -37,11 +47,45 @@ const ConverSationProcess = () => {
   useEffect(() => {
     dispatch(getAllGeneralSetting(''));
   }, []);
-
+  useEffect(() => {
+    dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
+      setAdvancedSetting(payload?.payload?.advanced_excel);
+    });
+  }, []);
+  const updateAdvancedSettingdd = async (value: boolean) => {
+    await dispatch(updateAdvancedSetting({advanced_excel: value}));
+    dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
+      setAdvancedSetting(payload?.payload?.advanced_excel);
+    });
+  };
   return (
     <TabContainerStyle>
       <Row>
         <Col span={24}>
+          {userInformation?.Admin && (
+            <Space
+              size={24}
+              direction="horizontal"
+              style={{
+                width: '100%',
+                background: 'white',
+                padding: '24px',
+                borderRadius: '12px',
+              }}
+            >
+              <Switch
+                checked={AdvancedSetting}
+                onChange={(e) => {
+                  setAdvancedSetting(e);
+
+                  updateAdvancedSettingdd(e);
+                }}
+              />
+              <Typography name="Body 2/Medium">
+                Advanced Excel Processing
+              </Typography>
+            </Space>
+          )}
           <Space
             size={24}
             direction="vertical"
@@ -49,6 +93,7 @@ const ConverSationProcess = () => {
               width: '100%',
               background: 'white',
               padding: '24px',
+              marginTop: '30px',
               borderRadius: '12px',
             }}
           >

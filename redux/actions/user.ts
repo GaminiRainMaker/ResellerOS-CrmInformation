@@ -190,3 +190,15 @@ export const createNewOrganization = createAsyncThunk(
     }
   },
 );
+
+export const updateAdvancedSetting = createAsyncThunk(
+  'user/updateAdvancedSetting',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await USERAPI.updateAdvancedSetting(data);
+      return res.data;
+    } catch (error: any) {
+      return thunkApi.rejectWithValue(error.message);
+    }
+  },
+);

@@ -20,6 +20,7 @@ import UploadCard from './UploadCard';
 import {OSDraggerStyle} from './styled-components';
 import {uploadExcelFileToAws} from '../../../../../redux/actions/upload';
 import {fetchAndParseExcel} from '../../../../../redux/actions/auth';
+import {getUserByTokenAccess} from '../../../../../redux/actions/user';
 
 const OsUpload: React.FC<any> = ({
   beforeUpload,
@@ -50,6 +51,8 @@ const OsUpload: React.FC<any> = ({
   const [customerValue, setCustomerValue] = useState<number>();
   const [opportunityValue, setOpportunityValue] = useState<number>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [AdvancedSetting, setAdvancedSetting] = useState<boolean>(false);
+
   const {getExistingQuoteFilterData, getExistingQuoteFilterLoading} =
     useAppSelector((state) => state.quote);
   useEffect(() => {
@@ -69,6 +72,13 @@ const OsUpload: React.FC<any> = ({
       setCustomerValue(quoteDetails.customer_id);
     }
   }, [quoteDetails]);
+  useEffect(() => {
+    setLoading(true);
+    dispatch(getUserByTokenAccess(''))?.then((payload: any) => {
+      setAdvancedSetting(payload?.payload?.advanced_excel);
+    });
+    setLoading(false);
+  }, []);
 
   const onFinish = async () => {
     const customerId = form.getFieldValue('customer_id');
@@ -408,21 +418,6 @@ const OsUpload: React.FC<any> = ({
   }, [customerValue, opportunityValue, opportunityDetailId]);
   return (
     <GlobalLoader loading={cardLoading || loading}>
-      <Space
-        size={30}
-        style={{marginBottom: '10px'}}
-        direction="horizontal"
-        align="center"
-      >
-        <Typography name="Body 2/Medium">Advanced Upload </Typography>
-        <Switch
-          size="default"
-          onChange={(e) => {
-            setAdvancedUpload(e);
-          }}
-          checked={advancedUpload}
-        />
-      </Space>
       <Space size={24} direction="vertical" style={{width: '100%'}}>
         <OSDraggerStyle
           beforeUpload={beforeUpload}
@@ -457,7 +452,7 @@ const OsUpload: React.FC<any> = ({
           layout="vertical"
           requiredMark={false}
           form={form}
-          onFinish={advancedUpload ? onFinishAdvanced : onFinish}
+          onFinish={AdvancedSetting ? onFinishAdvanced : onFinish}
         >
           {!isGenerateQuote && !opportunityDetailId && (
             <Row gutter={[16, 16]}>

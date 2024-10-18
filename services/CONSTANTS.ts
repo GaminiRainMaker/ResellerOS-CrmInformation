@@ -69,6 +69,7 @@ export const API = {
     UpdateUserPasswordForNew: '/user/updateUserPasswordForNew',
     GetAllOrganizations: '/user/queryAllOrganizations',
     CreateNewOrganization: '/user/createNewOrganization',
+    updateAdvancedSetting: '/user/updateAdvancedSetting',
   },
   PRODUCT: {
     INDEX: '/product',
