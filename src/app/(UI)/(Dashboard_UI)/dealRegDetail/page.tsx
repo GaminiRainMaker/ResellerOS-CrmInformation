@@ -155,18 +155,6 @@ const DealRegDetail = () => {
     }
   };
 
-  const getCredentials = () => {
-    if (salesForceUrl) {
-      const obj = {
-        baseURL: salesForceUrl,
-        token: salesForceKey,
-        partnerId: 108,
-        partnerProgramId: 101,
-      };
-      dispatch(getSalesForcePartnerCredentials(obj));
-    }
-  };
-
   return (
     <div>
       <Row justify="space-between" align="middle">
@@ -176,22 +164,13 @@ const DealRegDetail = () => {
         <Col>
           <Space size={8}>
             {salesForceUrl && (
-              <>
-                {/* <OsButton
-                  text="Credentials"
-                  buttontype="SECONDARY"
-                  clickHandler={() => {
-                    getCredentials();
-                  }}
-                /> */}
-                <OsButton
-                  text="Save"
-                  buttontype="SECONDARY"
-                  clickHandler={() => {
-                    handleButtonClick();
-                  }}
-                />
-              </>
+              <OsButton
+                text="Save"
+                buttontype="SECONDARY"
+                clickHandler={() => {
+                  handleButtonClick();
+                }}
+              />
             )}
             <OsButton
               text="Intial Setup"
