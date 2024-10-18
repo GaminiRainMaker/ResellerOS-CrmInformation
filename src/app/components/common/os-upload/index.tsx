@@ -457,7 +457,7 @@ const OsUpload: React.FC<any> = ({
           layout="vertical"
           requiredMark={false}
           form={form}
-          onFinish={onFinish}
+          onFinish={advancedUpload ? onFinishAdvanced : onFinish}
         >
           {!isGenerateQuote && !opportunityDetailId && (
             <Row gutter={[16, 16]}>
