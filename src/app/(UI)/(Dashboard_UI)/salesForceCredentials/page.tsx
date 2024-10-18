@@ -28,6 +28,7 @@ import AddSalesForceCredentials, {
   AddSalesForceCredentialsRef,
 } from './AddSalesForceCredentials';
 import EditSalesForceCredentials from './EditSalesForceCredentials';
+import EmptyContainer from '@/app/components/common/os-empty-container';
 
 const AddUser = () => {
   const csvUploadRef = useRef<AddSalesForceCredentialsRef>(null);
@@ -170,6 +171,9 @@ const AddUser = () => {
       form.resetFields();
     });
   };
+  const locale = {
+    emptyText: <EmptyContainer title="No data." />,
+  };
 
   return (
     <>
@@ -197,6 +201,7 @@ const AddUser = () => {
           dataSource={salesForceCredentialsData}
           scroll
           loading={loading}
+          locale={locale}
         />
       </Space>
 
