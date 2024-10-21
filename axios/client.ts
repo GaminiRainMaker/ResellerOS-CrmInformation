@@ -6,15 +6,15 @@ import {
 } from './interceptors/response.interceptor';
 
 const client = axios.create({
-  //Local
-  // baseURL: 'http://localhost:4000',
+  // Local
+  baseURL: 'http://localhost:4000',
 
   //Developement
-  // baseURL: 'https://3.218.195.191:4000',
+  // baseURL: 'https://api-dev.reselleros.com',
 
   //Production
-  baseURL: 'https://api.reselleros.com',
-  
+  // baseURL: 'https://api.reselleros.com',
+
   withCredentials: false,
 });
 
