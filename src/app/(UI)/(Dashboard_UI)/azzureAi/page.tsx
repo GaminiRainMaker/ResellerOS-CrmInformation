@@ -108,31 +108,25 @@ const EditorFile = () => {
             const doc_url = payload?.payload?.data?.Location;
             let pathToGo =
               excelFile === 'true' ? fetchAndParseExcel : getPDFFileData;
+            let objName = excelFile === 'true' ? 'Url' : 'pdfUrl';
             if (doc_url) {
-              dispatch(pathToGo({Url: doc_url}))?.then((payload: any) => {
+              dispatch(pathToGo({[objName]: doc_url}))?.then((payload: any) => {
                 if (excelFile === 'true') {
                   // this is  a check arrr
-                  // let newArrCheck = [
-                  //     'line #',
-                  //     'partnumber',
-                  //     'manufacturer',
-                  //     'description',
-                  //     'listprice',
-                  //     'gsaprice',
-                  //     'Cost',
-                  //     'quantity',
-                  //     'Type',
-                  //     'openmarket',
-                  //     'productcode',
-                  //     'listprice',
-                  // ];
-                  let newArrCheck: any = [];
-
-                  if (lineItemSyncingData && lineItemSyncingData?.length > 0) {
-                    lineItemSyncingData?.map((items: any) => {
-                      newArrCheck?.push(items?.pdf_header);
-                    });
-                  }
+                  let newArrCheck = [
+                    'line #',
+                    'partnumber',
+                    'manufacturer',
+                    'description',
+                    'listprice',
+                    'gsaprice',
+                    'Cost',
+                    'quantity',
+                    'Type',
+                    'openmarket',
+                    'productcode',
+                    'listprice',
+                  ];
                   const normalize = (str: any) => {
                     return str
                       ?.toString()
@@ -147,7 +141,7 @@ const EditorFile = () => {
                   let maxMatches = 0;
                   let bestRowIndex = -1;
 
-                  for (let i = 0; i < payload?.payload?.length; i++) {
+                  for (let i = 0; i < payload?.payload.length; i++) {
                     let currentRow = payload?.payload[i];
                     let matchCount = 0;
 
@@ -156,7 +150,7 @@ const EditorFile = () => {
                       // Check if normalizedItem matches any normalized check item
                       if (
                         normalizedCheckArr.some(
-                          (checkItem: any) =>
+                          (checkItem) =>
                             normalizedItem === normalize(checkItem),
                         )
                       ) {
@@ -192,7 +186,6 @@ const EditorFile = () => {
                   }
 
                   // Slice the array from the found index
-
                   let result =
                     indexFrom > 0
                       ? payload?.payload?.slice(bestRowIndex + 1, indexFrom - 1)
@@ -238,7 +231,6 @@ const EditorFile = () => {
 
                   // end of above
                   // Transform newArr into an array of objects
-
                   let resultantValues = requiredOutput.map((row: any) => {
                     let obj: any = {};
                     syncedHeaderValue.forEach((header: any, index: any) => {
@@ -246,11 +238,108 @@ const EditorFile = () => {
                     });
                     return obj;
                   });
-                  console.log('354354353', resultantValues);
 
-                  setUploadedFileData(payload?.payload);
+                  setUploadedFileData(resultantValues);
                 } else {
-                  setUploadedFileData(payload?.payload?.items);
+                  if (payload?.payload?.analyzeResult?.tables?.length > 0) {
+                    // if (fileDataa2?.[0]?.analyzeResult?.tables?.length > 0) {
+
+                    let mainItem = payload?.payload?.analyzeResult?.tables;
+                    let globalArr: any = [];
+
+                    for (let i = 0; i < mainItem?.length; i++) {
+                      let innerIntems = mainItem[i];
+                      if (innerIntems?.cells?.[0]?.kind === 'columnHeader') {
+                        let result: any = [];
+
+                        // Step 1: Extract headers from column headers
+                        let headers: any = {};
+                        innerIntems?.cells.forEach((item: any) => {
+                          if (item.kind === 'columnHeader') {
+                            headers[item.columnIndex] = item.content; // Store headers by their column index
+                          }
+                        });
+
+                        // Step 2: Create the output based on the headers and rows
+                        innerIntems?.cells.forEach((row: any) => {
+                          if (row.rowIndex > 0) {
+                            // Skip the header row
+                            // Check if we need to push a new object
+                            if (!result[row.rowIndex - 1]) {
+                              result[row.rowIndex - 1] = {}; // Initialize a new object for this row
+                            }
+
+                            // Assign content to the respective header using columnIndex
+                            if (row.columnIndex in headers) {
+                              result[row.rowIndex - 1][
+                                headers[row.columnIndex]
+                              ] = row.content; // Assign content for the matching column
+                            }
+                          }
+                        });
+                        globalArr?.push(result);
+                      }
+                    }
+
+                    if (globalArr && globalArr?.length > 1) {
+                      const flattenedArray = globalArr?.flat();
+
+                      const uniqueKeys = Array.from(
+                        new Set(
+                          flattenedArray.flatMap((obj: any) =>
+                            Object.keys(obj),
+                          ),
+                        ),
+                      );
+                      const resultArray = flattenedArray.map((obj: any) => {
+                        const newObj: any = {};
+                        uniqueKeys.forEach((key: any) => {
+                          newObj[key] = obj[key] !== undefined ? obj[key] : '';
+                        });
+
+                        return newObj;
+                      });
+                      const transformObjects = (arr: any) => {
+                        const transformedArray = arr.map(
+                          (obj: any, index: number) => {
+                            if (obj[''] !== undefined) {
+                              obj[`emptyHeader ${index}`] = obj[''];
+                              delete obj[''];
+                            }
+                            return obj;
+                          },
+                        );
+                        return transformedArray;
+                      };
+
+                      // Apply transformation
+                      let result = transformObjects(resultArray);
+                      const cleanKeys = (obj: any) => {
+                        const cleanedObj: any = {};
+                        // Iterate over each key-value pair in the object
+                        for (const [key, value] of Object.entries(obj)) {
+                          // Remove special characters (e.g., periods, spaces) from the key
+                          const cleanedKey: any = key.replace(/[^\w]/g, '');
+                          cleanedObj[cleanedKey] = value;
+                        }
+                        return cleanedObj;
+                      };
+
+                      const cleanArray = (arr: any) => {
+                        // Apply the cleanKeys function to each object in the array
+                        return arr.map(cleanKeys);
+                      };
+
+                      // Clean the array
+                      let cleanedArr = cleanArray(result);
+
+                      // setMergedVaalues(cleanedArr);
+                      // setFinalArrayForMerged(cleanedArr);
+                      setUploadedFileData(cleanedArr);
+                    } else {
+                      setUploadedFileData(globalArr?.[0]);
+                    }
+                  }
                 }
                 setShowModalForAI(false);
               });
