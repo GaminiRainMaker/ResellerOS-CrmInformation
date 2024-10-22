@@ -52,7 +52,7 @@ const ElectronBot = () => {
       case 'windows':
         return 'https://reselller-os.s3.amazonaws.com/DealRegAI+Setup+0.1.0.exe';
       case 'mac':
-        return 'https://reselller-os.s3.amazonaws.com/DealRegAI-0.1.0.dmg.zip';
+        return 'https://reselller-os.s3.amazonaws.com/DealRegAI-0.1.0.dmg';
       case 'linux':
         return 'https://reselller-os.s3.amazonaws.com/MyApp-linux-x64.zip';
       default:
