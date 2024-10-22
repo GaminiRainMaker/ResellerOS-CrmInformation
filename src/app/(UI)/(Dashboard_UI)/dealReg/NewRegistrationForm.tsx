@@ -413,17 +413,6 @@ const NewRegistrationForm: FC<any> = ({
         }));
       }
       if (salesForceUrl) {
-        const partnersArray = newData?.map((item: any) => ({
-          Name: item.partner_name,
-          rosdealregai__External_Id__c: item.partner_id,
-        }));
-        const partnerProgramsArray = newData?.map((item: any) => ({
-          Name: item.partner_program_name,
-          rosdealregai__External_Id__c: item.partner_program_id,
-          rosdealregai__Partner_LR__r: {
-            rosdealregai__External_Id__c: item?.partner_id,
-          },
-        }));
         const dealRegArray = newData?.map((item: any) => ({
           rosdealregai__Opportunity__c: salesForceOppId,
           rosdealregai__Partner__r: {
@@ -434,57 +423,6 @@ const NewRegistrationForm: FC<any> = ({
           },
         }));
         try {
-          // Handle partners creation
-          const partnerResponses = await Promise.all(
-            partnersArray?.map(async (partner: any) => {
-              const response = await dispatch(
-                createSalesForcePartner({
-                  baseURL: salesForceUrl,
-                  token: salesForceKey,
-                  data: partner,
-                }),
-              );
-              return response;
-            }),
-          );
-
-          // Check if any partner creation failed
-          for (const response of partnerResponses) {
-            if (response.status === 400 && response.success === false) {
-              notification.error({
-                message: 'Error',
-                description: `Error creating partner: ${response.errors.join(', ') || 'Unknown error'}`,
-              });
-              return; // Stop further execution
-            }
-          }
-
-          // Handle partner programs creation
-          const programResponses = await Promise.all(
-            partnerProgramsArray?.map(async (program: any) => {
-              const response = await dispatch(
-                createSalesforcePartnerProgram({
-                  baseURL: salesForceUrl,
-                  token: salesForceKey,
-                  data: program,
-                }),
-              );
-              return response;
-            }),
-          );
-
-          // Check if any partner program creation failed
-          for (const response of programResponses) {
-            if (response.status === 400 && response.success === false) {
-              notification.error({
-                message: 'Error',
-                description: `Error creating partner program: ${response.errors.join(', ') || 'Unknown error'}`,
-              });
-              return; // Stop further execution
-            }
-          }
-
-          // Handle deal registrations creation
           const dealRegResponses = await Promise.all(
             dealRegArray?.map(async (dealreg: any) => {
               const response = await dispatch(
