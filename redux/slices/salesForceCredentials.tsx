@@ -4,6 +4,7 @@ import {
   deleteSalesForceCredentials,
   queryAddSalesForceCredentials,
   updateSalesForceCredentialsId,
+  updateSalesForceSSOLogin,
 } from '../actions/salesForceCredentials';
 
 type SalesForceCredentials = {
@@ -97,6 +98,24 @@ const SalesForceCredentialsSlice = createSlice({
       )
       .addCase(
         updateSalesForceCredentialsId.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(updateSalesForceSSOLogin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateSalesForceSSOLogin.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          //   state.data = action.payload;
+        },
+      )
+      .addCase(
+        updateSalesForceSSOLogin.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

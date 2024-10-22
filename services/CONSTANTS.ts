@@ -334,6 +334,7 @@ export const API = {
   SALESFORCE_CREDENTIALS: {
     INDEX: '/salesForceCredential',
     QueryAddSalesForceCredentials: '/salesForceCredential/query',
+    UpdateSalesForceSSOLogin: '/salesForceCredential/updateSalesForceSSOLogin',
     DeleteSalesForceCredentials:
       '/salesForceCredential/deleteSalesForceCredentials',
   },

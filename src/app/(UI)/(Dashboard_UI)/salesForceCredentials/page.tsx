@@ -14,7 +14,6 @@ import {
 import {Form, message} from 'antd';
 import {useEffect, useRef, useState} from 'react';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
-
 import {Switch} from '@/app/components/common/antd/Switch';
 import OsDrawer from '@/app/components/common/os-drawer';
 import OsModal from '@/app/components/common/os-modal';
@@ -23,12 +22,14 @@ import {
   deleteSalesForceCredentials,
   queryAddSalesForceCredentials,
   updateSalesForceCredentialsId,
+  updateSalesForceSSOLogin,
 } from '../../../../../redux/actions/salesForceCredentials';
 import AddSalesForceCredentials, {
   AddSalesForceCredentialsRef,
 } from './AddSalesForceCredentials';
 import EditSalesForceCredentials from './EditSalesForceCredentials';
 import EmptyContainer from '@/app/components/common/os-empty-container';
+import OsCollapse from '@/app/components/common/os-collapse';
 
 const AddUser = () => {
   const csvUploadRef = useRef<AddSalesForceCredentialsRef>(null);
@@ -36,7 +37,7 @@ const AddUser = () => {
   const [form] = Form.useForm();
   const [token] = useThemeToken();
   const [showAddUserModal, setShowAddUserModal] = useState<boolean>(false);
-  const {data: salesForceCredentialsData, loading} = useAppSelector(
+  const {data: salesForceCredentials, loading} = useAppSelector(
     (state) => state.salesForceCredentials,
   );
   const [open, setOpen] = useState<boolean>(false);
@@ -82,19 +83,6 @@ const AddUser = () => {
         <Typography name="Body 4/Regular" hoverOnText>
           {text ?? '--'}
         </Typography>
-      ),
-    },
-    {
-      title: (
-        <Typography name="Body 4/Medium" className="dragHandler">
-          SSO Login
-        </Typography>
-      ),
-      dataIndex: 'is_sso',
-      key: 'is_sso',
-      width: 173,
-      render: (text: any, record: any) => (
-        <Switch checked={record?.is_sso} size="default" disabled />
       ),
     },
     {
@@ -175,6 +163,36 @@ const AddUser = () => {
     emptyText: <EmptyContainer title="No data." />,
   };
 
+  const groupedData = salesForceCredentials?.reduce((acc: any, item: any) => {
+    const existingGroup = acc?.find(
+      (group: any) => group?.OrganizationId === item?.saleforce_org_Id,
+    );
+    if (existingGroup) {
+      existingGroup?.credentialsData?.push(item);
+    } else {
+      acc.push({
+        OrganizationId: item?.saleforce_org_Id,
+        is_sso: item?.is_sso,
+        credentialsData: [item],
+      });
+    }
+    return acc;
+  }, []);
+
+  const updateSSOLogin = (value: boolean, orgId: string) => {
+    let obj = {
+      is_sso: value,
+      saleforce_org_Id: orgId,
+    };
+    if (obj) {
+      dispatch(updateSalesForceSSOLogin(obj)).then((res) => {
+        if (res?.payload) {
+          dispatch(queryAddSalesForceCredentials(''));
+        }
+      });
+    }
+  };
+
   return (
     <>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
@@ -195,14 +213,76 @@ const AddUser = () => {
             />
           </Col>
         </Row>
-
-        <OsTable
-          columns={UserColumns}
-          dataSource={salesForceCredentialsData}
-          scroll
-          loading={loading}
-          locale={locale}
-        />
+        <div
+          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
+        >
+          {groupedData?.map((finalDataItem: any, index: number) => {
+            return (
+              <OsCollapse
+                key={index}
+                items={[
+                  {
+                    key: index,
+                    label: (
+                      <Row
+                        justify="space-between"
+                        align="middle"
+                        gutter={[8, 8]}
+                      >
+                        <Col>
+                          <Typography
+                            style={{padding: '5px 8px 0px 0px'}}
+                            name="Body 4/Medium"
+                            color={token?.colorBgContainer}
+                            ellipsis
+                            tooltip
+                            as="div"
+                            maxWidth={240}
+                          >
+                            {finalDataItem?.OrganizationId}
+                          </Typography>
+                        </Col>
+                        <Col>
+                          <span
+                            onClick={(e: any) => {
+                              e.stopPropagation();
+                            }}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                            }}
+                          >
+                            SSO Login:{' '}
+                            <Switch
+                              checked={finalDataItem?.is_sso}
+                              onClick={(e) => {
+                                updateSSOLogin(
+                                  e,
+                                  finalDataItem?.OrganizationId,
+                                );
+                              }}
+                            />
+                          </span>
+                        </Col>
+                      </Row>
+                    ),
+                    children: (
+                      <div key={JSON.stringify(finalDataItem?.QuoteLineItem)}>
+                        <OsTable
+                          columns={UserColumns}
+                          dataSource={finalDataItem?.credentialsData}
+                          scroll
+                          loading={loading}
+                          locale={locale}
+                        />
+                      </div>
+                    ),
+                  },
+                ]}
+              />
+            );
+          })}
+        </div>
       </Space>
 
       <OsModal

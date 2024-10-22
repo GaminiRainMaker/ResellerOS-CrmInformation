@@ -14,6 +14,9 @@ export const SALESFORCE_CREDENTIALS_API = {
   updatesalesForceCredentialsId: (data: any) =>
     patch(API.SALESFORCE_CREDENTIALS.INDEX, data) as Promise<AxiosResponse<[]>>,
 
+  updateSalesForceSSOLogin: (data: any) =>
+    patch(API.SALESFORCE_CREDENTIALS.UpdateSalesForceSSOLogin, data) as Promise<AxiosResponse<[]>>,
+
   deleteSalesForceCredentials: (data: any) =>
     post(API.SALESFORCE_CREDENTIALS.DeleteSalesForceCredentials, data) as Promise<AxiosResponse<any>>,
 };

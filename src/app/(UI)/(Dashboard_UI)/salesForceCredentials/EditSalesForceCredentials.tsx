@@ -93,16 +93,6 @@ const EditSalesForceCredentials: FC<{
             <OsInput placeholder="Enter Login URL" />
           </SelectFormItem>
         </Col>
-
-        <Col span={12}>
-          <SelectFormItem
-            label={<Typography name="Body 4/Medium">SSO Login</Typography>}
-            name="is_sso"
-            valuePropName="checked"
-          >
-            <Switch />
-          </SelectFormItem>
-        </Col>
       </Row>
     </Form>
   );

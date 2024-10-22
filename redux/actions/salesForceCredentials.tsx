@@ -53,3 +53,17 @@ export const deleteSalesForceCredentials = createAsyncThunk(
     }
   },
 );
+
+
+export const updateSalesForceSSOLogin = createAsyncThunk(
+  'salesforceCredentials/updateSalesForceSSOLogin',
+  async (data: any, thunkApi) => {
+    try {
+      const res =
+        await SALESFORCE_CREDENTIALS_API.updateSalesForceSSOLogin(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
