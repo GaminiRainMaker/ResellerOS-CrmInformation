@@ -35,16 +35,16 @@ const SubmitDealRegForms: FC<any> = ({form, onFinish}) => {
           );
 
           // if (tabPercentage === 100 || Number(element?.percentage) != 100 ) {
-          if (tabPercentage) {
-            return {
-              value: JSON.stringify(element),
-              label: (
-                <Typography cursor="pointer" name="Button 1">
-                  {`${formatStatus(Partner?.partner)} - ${formatStatus(PartnerProgram?.partner_program)}`}
-                </Typography>
-              ),
-            };
-          }
+          // if (tabPercentage) {
+          return {
+            value: JSON.stringify(element),
+            label: (
+              <Typography cursor="pointer" name="Button 1">
+                {`${formatStatus(Partner?.partner)} - ${formatStatus(PartnerProgram?.partner_program)}`}
+              </Typography>
+            ),
+            // };
+          };
 
           return null;
         })
