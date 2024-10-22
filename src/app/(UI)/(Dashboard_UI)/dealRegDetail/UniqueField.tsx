@@ -178,6 +178,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 form.setFieldValue(
                   'u_' +
                     convertToSnakeCase(itemCon.label) +
+                    '_' +
                     activeKey +
                     (itemCon.required ? '_required' : '') +
                     (itemCon.user_fill ? '_userfill' : ''),
@@ -249,6 +250,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
         let labelVal =
           'u_' +
           convertToSnakeCase(allContentItem.label) +
+          '_' +
           itemIndex +
           activeKey +
           (required ? '_required' : '');
@@ -311,6 +313,7 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                 name={
                   'u_' +
                   convertToSnakeCase(allContentItem.label) +
+                  '_' +
                   itemIndex +
                   activeKey +
                   (required ? '_required' : '') +

@@ -206,7 +206,7 @@ const CommonFields: FC<CommonFieldsProps> = ({
                     <SelectFormItem
                       name={
                         'c_' +
-                        convertToSnakeCase(child?.label) +
+                        convertToSnakeCase(child?.label) + '_' +
                         Childndex +
                         activeKey +
                         (required ? '_required' : '')
