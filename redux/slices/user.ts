@@ -18,6 +18,7 @@ import {
   getOranizationSeats,
   queryAllOrganizations,
   createNewOrganization,
+  updateAdvancedSetting,
 } from '../actions/user';
 
 type UserState = {
@@ -324,6 +325,24 @@ const userSlice = createSlice({
       )
       .addCase(
         createNewOrganization.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(updateAdvancedSetting.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        updateAdvancedSetting.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.allOrganization = action.payload;
+        },
+      )
+      .addCase(
+        updateAdvancedSetting.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;
