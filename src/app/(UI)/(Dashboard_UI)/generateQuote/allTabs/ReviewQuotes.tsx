@@ -191,7 +191,6 @@ const ReviewQuotes: FC<any> = ({
       sorter: (a: any, b: any) => a.quantity - b.quantity,
       render: (text: any, record: any) => (
         <Typography name="Body 4/Medium">
-          {' '}
           {typeof text === 'number' && text ? text : 0}
         </Typography>
       ),

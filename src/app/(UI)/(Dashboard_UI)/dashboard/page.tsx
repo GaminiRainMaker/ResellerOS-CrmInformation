@@ -1,13 +1,13 @@
 'use client';
 
-import { Avatar } from '@/app/components/common/antd/Avatar';
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Avatar} from '@/app/components/common/antd/Avatar';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import OsModal from '@/app/components/common/os-modal';
-import { AvatarStyled } from '@/app/components/common/os-table/styled-components';
+import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
 import {
   CheckBadgeIcon,
@@ -16,23 +16,23 @@ import {
   MapPinIcon,
   PhoneIcon,
 } from '@heroicons/react/24/outline';
-import { Form, Tag } from 'antd';
-import { useEffect, useState } from 'react';
-import { contactSales } from '../../../../../redux/actions/auth';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {Form, Tag} from 'antd';
+import {useEffect, useState} from 'react';
+import {contactSales} from '../../../../../redux/actions/auth';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import ContactSales from './ContactSales';
-import { CustomCardStyle } from './styled-components';
-import { fileDataa2, fileDataaJSON } from '@/app/utils/saleforce';
+import {CustomCardStyle} from './styled-components';
+import {fileDataa2, fileDataaJSON} from '@/app/utils/saleforce';
 
 const Dashboard = () => {
   const [token] = useThemeToken();
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const { isSubscribed, loading: cacheFlowLoading } = useAppSelector(
+  const {isSubscribed, loading: cacheFlowLoading} = useAppSelector(
     (state) => state.cacheFLow,
   );
-  const { loading } = useAppSelector((state) => state.auth);
-  const { userInformation } = useAppSelector((state) => state.user);
+  const {loading} = useAppSelector((state) => state.auth);
+  const {userInformation} = useAppSelector((state) => state.user);
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const ContactData = [
@@ -75,57 +75,11 @@ const Dashboard = () => {
     });
   }, []);
 
-
-
-  useEffect(() => {
-
-    let LineItemsArrr: any = []
-    if (fileDataaJSON?.[0]?.analyzeResult?.tables?.length > 0) {
-      // if (fileDataa2?.[0]?.analyzeResult?.tables?.length > 0) {
-
-      let mainItem = fileDataa2?.[0]?.analyzeResult?.tables
-      for (let i = 0; i < mainItem?.length; i++) {
-        let innerIntems = mainItem[i]
-        let globalArr: any = []
-        if (innerIntems?.cells?.[0]?.kind === "columnHeader") {
-          let result: any = [];
-
-          // Step 1: Extract headers from column headers
-          let headers: any = {};
-          innerIntems?.cells.forEach((item) => {
-            if (item.kind === "columnHeader") {
-              headers[item.columnIndex] = item.content; // Store headers by their column index
-            }
-          });
-
-          // Step 2: Create the output based on the headers and rows
-          innerIntems?.cells.forEach(row => {
-            if (row.rowIndex > 0) { // Skip the header row
-              // Check if we need to push a new object
-              if (!result[row.rowIndex - 1]) {
-                result[row.rowIndex - 1] = {}; // Initialize a new object for this row
-              }
-
-              // Assign content to the respective header using columnIndex
-              if (row.columnIndex in headers) {
-                result[row.rowIndex - 1][headers[row.columnIndex]] = row.content; // Assign content for the matching column
-              }
-            }
-          });
-          console.log("resultresult", result
-          )
-
-        }
-
-
-      }
-    }
-  }, [])
   return (
     <GlobalLoader loading={cacheFlowLoading}>
       {isSubscribed &&
-        userInformation?.Role === 'reseller' &&
-        (userInformation?.DealReg || userInformation?.QuoteAI) ? (
+      userInformation?.Role === 'reseller' &&
+      (userInformation?.DealReg || userInformation?.QuoteAI) ? (
         <Tag
           style={{
             display: 'flex',
@@ -135,7 +89,7 @@ const Dashboard = () => {
           }}
           color="success"
         >
-          <Row justify="space-between" style={{ width: '100%' }} align="middle">
+          <Row justify="space-between" style={{width: '100%'}} align="middle">
             <Col span={12}>
               <>
                 <Avatar
@@ -171,7 +125,7 @@ const Dashboard = () => {
           }}
           color="success"
         >
-          <Row justify="space-between" style={{ width: '100%' }} align="middle">
+          <Row justify="space-between" style={{width: '100%'}} align="middle">
             <Col span={12}>
               <>
                 <Avatar
@@ -218,7 +172,7 @@ const Dashboard = () => {
             >
               <Row
                 justify="space-between"
-                style={{ width: '100%' }}
+                style={{width: '100%'}}
                 align="middle"
               >
                 <Col span={12}>
@@ -250,7 +204,7 @@ const Dashboard = () => {
                         color={token?.colorError}
                         name="Body 3/Medium"
                         as="span"
-                      // style={{display: 'flex', flexWrap: 'wrap'}}
+                        // style={{display: 'flex', flexWrap: 'wrap'}}
                       >
                         Unlock premium features and exclusive content by
                         subscribing to our web application today!
@@ -269,7 +223,7 @@ const Dashboard = () => {
                   <Typography
                     color={token?.colorLink}
                     name="Button 1"
-                    style={{ fontWeight: 700 }}
+                    style={{fontWeight: 700}}
                     hoverOnText
                   >
                     Subscribe Now
@@ -293,7 +247,7 @@ const Dashboard = () => {
                   buttontype="PRIMARY"
                   // loading={loading}
                   clickHandler={() => {
-                    window?.open('/azzureAi?excel=false')
+                    window?.open('/azzureAi?excel=false');
                   }}
                 />
               </Col>
@@ -303,7 +257,7 @@ const Dashboard = () => {
                   buttontype="PRIMARY"
                   // loading={loading}
                   clickHandler={() => {
-                    window?.open('/azzureAi?excel=true')
+                    window?.open('/azzureAi?excel=true');
                   }}
                 />
               </Col>
