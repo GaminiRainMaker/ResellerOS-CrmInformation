@@ -13,7 +13,9 @@ export const USERAPI = {
   query: (data: any) =>
     post(API.USER.QUERY, data) as Promise<AxiosResponse<[]>>,
   getAdminUserOfAllOrganization: (data: any) =>
-    post(API.USER.GetAdminUserOfAllOrganization, data) as Promise<AxiosResponse<[]>>,
+    post(API.USER.GetAdminUserOfAllOrganization, data) as Promise<
+      AxiosResponse<[]>
+    >,
   getById: (id: number) =>
     get(`${API.USER.INDEX}/${id}`) as Promise<AxiosResponse<any>>,
   updateUserById: (data: any) =>
@@ -26,10 +28,8 @@ export const USERAPI = {
     post(API.USER.UpdateUserPasswordForNew, data) as Promise<
       AxiosResponse<any>
     >,
-    createNewOrganization: (data: any) =>
-    post(API.USER.CreateNewOrganization, data) as Promise<
-      AxiosResponse<any>
-    >,
+  createNewOrganization: (data: any) =>
+    post(API.USER.CreateNewOrganization, data) as Promise<AxiosResponse<any>>,
   deleteById: (data: any) =>
     patch(API.USER.DeleteById, data) as Promise<AxiosResponse<any>>,
   getForGlobalSearch: (search: any) =>
@@ -39,5 +39,8 @@ export const USERAPI = {
   getUserProfile: () =>
     get(API.USER.profileImage) as Promise<AxiosResponse<[]>>,
   getSeat: () => get(API.USER.GetSeats) as Promise<AxiosResponse<[]>>,
-  getAllOrganizations: () => get(API.USER.GetAllOrganizations) as Promise<AxiosResponse<[]>>,
+  getAllOrganizations: () =>
+    get(API.USER.GetAllOrganizations) as Promise<AxiosResponse<[]>>,
+  updateAdvancedSetting: (data: any) =>
+    post(API.USER.updateAdvancedSetting, data) as Promise<AxiosResponse<any>>,
 };

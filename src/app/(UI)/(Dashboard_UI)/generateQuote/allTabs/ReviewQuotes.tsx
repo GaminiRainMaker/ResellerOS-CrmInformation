@@ -111,10 +111,16 @@ const ReviewQuotes: FC<any> = ({
           groupedData[name].QuoteLineItem.push(quoteLineItem);
           groupedData[name].totalAdjustedPrice += Number(
             useRemoveDollarAndCommahook(
-              quoteLineItem?.adjusted_price ? quoteLineItem?.adjusted_price : 0,
+              quoteLineItem?.adjusted_price &&
+                typeof quoteLineItem?.adjusted_price === 'number'
+                ? quoteLineItem?.adjusted_price
+                : 0,
             ) *
               useRemoveDollarAndCommahook(
-                quoteLineItem?.quantity ? quoteLineItem?.quantity : 0,
+                quoteLineItem?.quantity &&
+                  typeof quoteLineItem?.quantity === 'number'
+                  ? quoteLineItem?.quantity
+                  : 0,
               ),
           );
         });
@@ -184,7 +190,9 @@ const ReviewQuotes: FC<any> = ({
       key: 'quantity',
       sorter: (a: any, b: any) => a.quantity - b.quantity,
       render: (text: any, record: any) => (
-        <Typography name="Body 4/Medium">{text ?? 0}</Typography>
+        <Typography name="Body 4/Medium">
+          {typeof text === 'number' && text ? text : 0}
+        </Typography>
       ),
       width: 120,
     },
@@ -343,7 +351,6 @@ const ReviewQuotes: FC<any> = ({
     }
   };
 
-  console.log('reviewQuotesDatareviewQuotesData', reviewQuotesData);
   return (
     <GlobalLoader loading={quoteFileDataLoading}>
       {contextHolder}
