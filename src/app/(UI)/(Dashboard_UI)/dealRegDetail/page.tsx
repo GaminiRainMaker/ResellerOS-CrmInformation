@@ -49,6 +49,8 @@ const DealRegDetail = () => {
   const getOpportunityId = searchParams && searchParams.get('opportunityId');
   const salesForceUrl = searchParams.get('instance_url');
   const salesForceKey = searchParams.get('key');
+  const salesForceUserId = searchParams.get('user_id');
+
 
   const [formData, setFormData] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
@@ -121,7 +123,7 @@ const DealRegDetail = () => {
       try {
         const finalAppData = {
           dealRegId: SubmitDealRegFormData?.id,
-          userId: userInformation?.id,
+          userId: userInformation?.id ?? salesForceUserId,
           token: salesForceKey,
           baseURL: salesForceUrl,
           partnerId: SubmitDealRegFormData?.partner_id,
