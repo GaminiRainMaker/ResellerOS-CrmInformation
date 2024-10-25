@@ -93,6 +93,20 @@ const EditSalesForceCredentials: FC<{
             <OsInput placeholder="Enter Login URL" />
           </SelectFormItem>
         </Col>
+        <Col span={24}>
+          <SelectFormItem
+            label={<Typography name="Body 4/Medium">Base URL</Typography>}
+            name={'base_url'}
+            rules={[
+              {
+                required: true,
+                message: 'Base URL is required!',
+              },
+            ]}
+          >
+            <OsInput placeholder="Enter Base URL" />
+          </SelectFormItem>
+        </Col>
       </Row>
     </Form>
   );

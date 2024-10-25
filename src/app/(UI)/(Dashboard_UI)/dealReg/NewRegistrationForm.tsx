@@ -52,6 +52,7 @@ const NewRegistrationForm: FC<any> = ({
   const salesForceOppId = searchParams.get('oppId');
   const salesForceContactId = searchParams.get('contactId');
   const salesForceCustomerId = searchParams.get('customerId');
+  const salesForceUserId = searchParams.get('user_id');
 
   let pathname = usePathname();
   const dispatch = useAppDispatch();
@@ -454,7 +455,7 @@ const NewRegistrationForm: FC<any> = ({
           window.history.replaceState(
             null,
             '',
-            `/dealRegDetail?opportunityId=${salesForceOppId}&instance_url=${salesForceUrl}&key=${salesForceKey}&customerId=${salesForceCustomerId}&contactId=${salesForceContactId}`,
+            `/dealRegDetail?opportunityId=${salesForceOppId}&instance_url=${salesForceUrl}&key=${salesForceKey}&customerId=${salesForceCustomerId}&contactId=${salesForceContactId}&user_id=${salesForceUserId}`,
           );
           location?.reload();
         } catch (error: any) {
