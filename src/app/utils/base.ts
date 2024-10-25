@@ -171,6 +171,8 @@ export const formbuildernewObject = (newItem: string) => {
       hintext: false,
       hintTextValue: '',
       options: [],
+      dependentFiledArr: [],
+      dependentFiled: false,
     };
   } else if (newItem === 'Line Break') {
     newObjAddedon = {
@@ -240,6 +242,8 @@ export const formbuildernewObject = (newItem: string) => {
       hintext: false,
       hintTextValue: 'Hint Value',
       labelOptions: [],
+      dependentFiledArr: [],
+      dependentFiled: false,
     };
   } else if (newItem === 'Text Content') {
     newObjAddedon = {
@@ -261,6 +265,8 @@ export const formbuildernewObject = (newItem: string) => {
       requiredLabel: true,
       filedType: 'Checkbox',
       label: 'Label',
+      dependentFiledArr: [],
+      dependentFiled: false,
     };
   } else if (newItem === 'Text' || newItem === 'Email') {
     newObjAddedon = {
