@@ -18,3 +18,10 @@ export const CollapseSpaceStyle = styled(Space)`
   padding: 24px;
   border-radius: 12px;
 `;
+
+export const CollapseSpaceStyleForInnerOptions = styled(Space)`
+  width: 100%;
+  background: #f5f5f5;
+  padding: 4px;
+  border-radius: 2px;
+`;
