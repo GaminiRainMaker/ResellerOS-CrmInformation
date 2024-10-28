@@ -15,12 +15,10 @@ import {
 import {Checkbox, Collapse, Form, notification, Space} from 'antd';
 import React, {useEffect, useState} from 'react';
 import {EditableFiledsCommonInterface} from '../formBuilder.interface';
-import {
-  CollapseSpaceStyle,
-  CollapseSpaceStyleForInnerOptions,
-} from '../../dealRegDetail/styled-component';
+import {CollapseSpaceStyle} from '../../dealRegDetail/styled-component';
 import OsModal from '@/app/components/common/os-modal';
 import {Panel} from '@/app/components/common/antd/Collapse';
+import {OsCollapseStyleForAdmin} from '@/app/components/common/os-collapse/styled-components';
 
 const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
   sectionIndex,
@@ -100,10 +98,6 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
       return sectItem;
     });
 
-    // const CommonIndexOfUsedd =
-    //   newTempArr?.[sectionIndex || 0]?.content?.[contentIndex || 0];
-    // setCommonIndexOfUse(CommonIndexOfUsedd);
-    // console.log('35432432432', newTempArr);
     setCartItems(newTempArr);
   };
 
@@ -578,7 +572,6 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
       changeFieldValues(checked, 'dependentFiled');
     }
   };
-  console.log('34543543432', CommonIndexOfUse);
   return (
     <>
       <Row>
@@ -605,25 +598,27 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
           marginRight: '15px',
         }}
       >
-        <div
-          style={{
-            display: 'flex',
-          }}
-        >
-          {' '}
-          <div style={{marginRight: '4px'}}>
+        {NameofTheCurrentFiled !== 'Toggle' && (
+          <div
+            style={{
+              display: 'flex',
+            }}
+          >
             {' '}
-            <Checkbox
-              checked={CommonIndexOfUse?.dependentFiled}
-              onChange={(e: any) => {
-                openModalFordependentFileds(e?.target?.checked);
-              }}
-            />
+            <div style={{marginRight: '4px'}}>
+              {' '}
+              <Checkbox
+                checked={CommonIndexOfUse?.dependentFiled}
+                onChange={(e: any) => {
+                  openModalFordependentFileds(e?.target?.checked);
+                }}
+              />
+            </div>
+            <Typography name="Body 3/Regular" color={'#0D0D0D'}>
+              Create Dependent Field
+            </Typography>{' '}
           </div>
-          <Typography name="Body 3/Regular" color={'#0D0D0D'}>
-            Create Dependent Field
-          </Typography>{' '}
-        </div>
+        )}
         {CommonIndexOfUse?.dependentFiled && (
           <Typography
             name="Body 3/Bold"
@@ -660,9 +655,10 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
                         gap: '24px',
                         margin: '10px',
                         width: '100%',
+                        borderStyle: 'dotted',
                         border:
                           activeIndexForDependent === index
-                            ? '1px solid grey'
+                            ? '1px solid #3DA5D9'
                             : '',
                       }}
                       span={11}
@@ -745,19 +741,18 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
                           ]}
                         />
                       </div>
-                      <Row style={{marginTop: '10px', width: '100%'}}>
-                        <Collapse
+                      <Row
+                        style={{
+                          marginTop: '10px',
+                          width: '100%',
+                        }}
+                      >
+                        <OsCollapseStyleForAdmin
                           key={index}
-                          defaultActiveKey={[0]}
-                          style={{width: '100%'}}
+                          defaultActiveKey={['1']}
+                          style={{width: '100%', padding: '10px'}}
                           bordered={false}
-                          expandIcon={() => (
-                            <ChevronDownIcon
-                              className="viewIcon"
-                              width={24}
-                              style={{color: token.colorInfoBorder}}
-                            />
-                          )}
+                          // expandIcon={true}
                         >
                           <Panel
                             header={
@@ -771,6 +766,7 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
                             key="1"
                             showArrow={false}
                           >
+                            {' '}
                             <>
                               {' '}
                               <div
@@ -875,7 +871,7 @@ const EditCheckBoxField: React.FC<EditableFiledsCommonInterface> = ({
                               </Form>
                             </>
                           </Panel>
-                        </Collapse>
+                        </OsCollapseStyleForAdmin>
                       </Row>
                     </Col>
                   );

@@ -1,6 +1,7 @@
 import {Collapse} from '@/app/components/common/antd/Collapse';
 import {Space} from '@/app/components/common/antd/Space';
 import styled from '@emotion/styled';
+import {Row} from 'antd';
 
 export const ChildCollapse = styled(Collapse)`
   &.ant-collapse > .ant-collapse-item > .ant-collapse-header {
@@ -16,6 +17,12 @@ export const CollapseSpaceStyle = styled(Space)`
   width: 100%;
   background: white;
   padding: 24px;
+  border-radius: 12px;
+`;
+export const CollapseSpaceStyleForDepenent = styled(Row)`
+  width: 100%;
+  background: white;
+  padding: 2px;
   border-radius: 12px;
 `;
 

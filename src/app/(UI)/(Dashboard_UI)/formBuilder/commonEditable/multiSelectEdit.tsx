@@ -17,11 +17,12 @@ import {Checkbox, Collapse, Form, notification, Space} from 'antd';
 import React, {useEffect, useState} from 'react';
 import {
   CollapseSpaceStyle,
-  CollapseSpaceStyleForInnerOptions,
+  CollapseSpaceStyleForDepenent,
 } from '../../dealRegDetail/styled-component';
 import {EditableFiledsCommonInterface} from '../formBuilder.interface';
 import OsModal from '@/app/components/common/os-modal';
 import {Panel} from '@/app/components/common/antd/Collapse';
+import {OsCollapseStyleForAdmin} from '@/app/components/common/os-collapse/styled-components';
 
 const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
   sectionIndex,
@@ -135,8 +136,7 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
       nameOptions
     ]?.[activeIndexForDependent || 0]?.['options']?.push('');
 
-    console.log('2343243232', activeIndexForDependent, tempvalue),
-      setCartItems(tempvalue);
+    setCartItems(tempvalue);
   };
   const deleteOption = (indexofoption: number, nameOptions: any) => {
     const tempvalue: any = [...cartItems];
@@ -611,111 +611,6 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
     }
   };
 
-  console.log(
-    '435345443432',
-    cartItems?.[sectionIndex || 0]?.content?.[contentIndex || 0]
-      ?.dependentFiledArr,
-  );
-
-  const editChoicesOptionsForDependent = [
-    {
-      key: '1',
-      label: (
-        <Typography name="Body 2/Medium" color={token?.colorInfo}>
-          Edit Choices
-        </Typography>
-      ),
-      children: (
-        <>
-          {' '}
-          <div style={{marginBottom: '10px', width: '100%'}}>
-            <Typography
-              name="Body 3/Bold"
-              color={token?.colorLink}
-              onClick={() => addnewOptionsForDependent('dependentFiledArr')}
-              cursor="pointer"
-              style={{cursor: 'pointer'}}
-            >
-              + Add New
-            </Typography>
-          </div>{' '}
-          <Form layout="vertical">
-            <div>
-              {cartItems?.[sectionIndex || 0]?.content?.[
-                contentIndex || 0
-              ]?.dependentFiledArr?.[
-                activeIndexForDependent || 0
-              ]?.options?.map((itemOption: any, indexOp: number) => (
-                <Row style={{width: '100%'}}>
-                  <Col
-                    key={indexOp}
-                    className="list-item"
-                    draggable
-                    onDragStart={(e) => {
-                      dragItem.current = indexOp;
-                    }}
-                    onDragEnter={(e) => {
-                      dragOverItem.current = indexOp;
-                    }}
-                    onDragEnd={() =>
-                      handleSortForDependent('dependentFiledArr')
-                    }
-                    onDragOver={(e) => e.preventDefault()}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      width: '100%',
-                      marginBottom: '25px',
-                      gap: '12px',
-                    }}
-                  >
-                    {/* <div>{itemOption}</div> */}
-                    <OsInput
-                      key={indexOp}
-                      // defaultValue={itemOption}
-                      value={itemOption}
-                      onChange={(e: any) => {
-                        changeFiellOptionsValueForDependent(
-                          e?.target?.value,
-                          indexOp,
-                          'dependentFiledArr',
-                        );
-                      }}
-                    />{' '}
-                    <TrashIcon
-                      color="#EB445A"
-                      width={35}
-                      onClick={() =>
-                        deleteOptionForDependent(indexOp, 'dependentFiledArr')
-                      }
-                    />{' '}
-                    <ArrowsPointingOutIcon
-                      color="#2364AA"
-                      width={35}
-                      key={indexOp}
-                      className="list-item"
-                      // draggable
-                      onDragStart={(e) => {
-                        dragItem.current = indexOp;
-                      }}
-                      onDragEnter={(e) => {
-                        dragOverItem.current = indexOp;
-                      }}
-                      onDragEnd={() =>
-                        handleSortForDependent('dependentFiledArr')
-                      }
-                      onDragOver={(e) => e.preventDefault()}
-                    />
-                  </Col>
-                </Row>
-              ))}
-            </div>
-          </Form>
-        </>
-      ),
-    },
-  ];
-
   return (
     <>
       <Row>
@@ -797,9 +692,10 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
                         gap: '24px',
                         margin: '10px',
                         width: '100%',
+                        borderStyle: 'dotted',
                         border:
                           activeIndexForDependent === index
-                            ? '1px solid grey'
+                            ? '1px solid #3DA5D9'
                             : '',
                       }}
                       span={11}
@@ -882,19 +778,18 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
                           ]}
                         />
                       </div>
-                      <Row style={{marginTop: '10px', width: '100%'}}>
-                        <Collapse
+                      <Row
+                        style={{
+                          marginTop: '10px',
+                          width: '100%',
+                        }}
+                      >
+                        <OsCollapseStyleForAdmin
                           key={index}
-                          defaultActiveKey={[0]}
-                          style={{width: '100%'}}
+                          defaultActiveKey={['1']}
+                          style={{width: '100%', padding: '10px'}}
                           bordered={false}
-                          expandIcon={() => (
-                            <ChevronDownIcon
-                              className="viewIcon"
-                              width={24}
-                              style={{color: token.colorInfoBorder}}
-                            />
-                          )}
+                          // expandIcon={true}
                         >
                           <Panel
                             header={
@@ -908,6 +803,7 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
                             key="1"
                             showArrow={false}
                           >
+                            {' '}
                             <>
                               {' '}
                               <div
@@ -1012,7 +908,7 @@ const EditMultiSelectFields: React.FC<EditableFiledsCommonInterface> = ({
                               </Form>
                             </>
                           </Panel>
-                        </Collapse>
+                        </OsCollapseStyleForAdmin>
                       </Row>
                     </Col>
                   );
