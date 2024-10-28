@@ -51,7 +51,6 @@ const DealRegDetail = () => {
   const salesForceKey = searchParams.get('key');
   const salesForceUserId = searchParams.get('user_id');
 
-
   const [formData, setFormData] = useState<any>();
   const {userInformation} = useAppSelector((state) => state.user);
   const [salesForceDealregData, setSalesForceDealregData] = useState<any>();
@@ -189,14 +188,16 @@ const DealRegDetail = () => {
                 setShowSubmitFormModal(true);
               }}
             />
-            <OsButton
-              text="Add New Form"
-              buttontype="PRIMARY"
-              icon={<PlusIcon width={24} />}
-              clickHandler={() => {
-                setShowModal(true);
-              }}
-            />
+            {!salesForceUrl && (
+              <OsButton
+                text="Add New Form"
+                buttontype="PRIMARY"
+                icon={<PlusIcon width={24} />}
+                clickHandler={() => {
+                  setShowModal(true);
+                }}
+              />
+            )}
             <OsDropdown menu={{items: dropDownItemss}} />
           </Space>
         </Col>
