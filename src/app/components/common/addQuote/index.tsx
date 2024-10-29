@@ -582,6 +582,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
 
     // console.log("435435435435",newArrWithoutManual)
     // return
+    return;
 
     try {
       setFinalLoading(true);
@@ -633,7 +634,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
               };
             }
           });
-
           quoteObj = {
             ...quoteItem,
             nanonets_id: result?.id,
