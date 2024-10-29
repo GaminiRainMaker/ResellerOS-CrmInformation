@@ -7,15 +7,15 @@
 
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsInput from '@/app/components/common/os-input';
 import CommonSelect from '@/app/components/common/os-select';
 import Typography from '@/app/components/common/typography';
-import { MailOutlined, PlayCircleOutlined } from '@ant-design/icons';
-import { useDroppable } from '@dnd-kit/core';
+import {MailOutlined, PlayCircleOutlined} from '@ant-design/icons';
+import {useDroppable} from '@dnd-kit/core';
 import 'react-phone-number-input/style.css';
 
 import ContactInput from '@/app/components/common/os-contact';
@@ -32,19 +32,19 @@ import {
 } from '@/app/components/common/os-div-row-col/styled-component';
 import FormUpload from '@/app/components/common/os-upload/FormUpload';
 import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
-import { formatStatus } from '@/app/utils/CONSTANTS';
-import { formbuildernewObject } from '@/app/utils/base';
-import { TrashIcon } from '@heroicons/react/24/outline';
-import { Checkbox, Radio, Switch, TimePicker, notification } from 'antd';
+import {formatStatus} from '@/app/utils/CONSTANTS';
+import {formbuildernewObject} from '@/app/utils/base';
+import {TrashIcon} from '@heroicons/react/24/outline';
+import {Checkbox, Radio, Switch, TimePicker, notification} from 'antd';
 import moment from 'moment';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import {usePathname, useRouter, useSearchParams} from 'next/navigation';
+import React, {useEffect, useState} from 'react';
 import {
   getPartnerProgramById,
   updatePartnerProgramById,
 } from '../../../../../redux/actions/partnerProgram';
 
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import ItemName from './ItemName';
 import GlobalLoader from '../os-global-loader';
 
@@ -79,9 +79,11 @@ const FormBuilderMain: React.FC<any> = ({
   const [holdelSelectedValue, setHoldSelectedValue] = useState<any>();
   const [radioValue, setRadioValue] = useState<any>();
   const [token] = useThemeToken();
-  const { data: partnerData, loading: partnerProgramLoading } = useAppSelector(
+  const {data: partnerData, loading: partnerProgramLoading} = useAppSelector(
     (state) => state.partnerProgram,
   );
+  const [selectIndexFOrAllDependentField, setSelectIndexFOrAllDependentField] =
+    useState<any>();
   const [api, contextHolder] = notification.useNotification();
 
   const openNotificationWithIcon = () => {
@@ -91,6 +93,28 @@ const FormBuilderMain: React.FC<any> = ({
     });
   };
 
+  useEffect(() => {
+    let allTHeIndexAndSection: any = [];
+    if (cartItems) {
+      cartItems?.map((items: any, indexOut: number) => {
+        items?.content?.map((itemsin: any, indexIn: number) => {
+          if (itemsin?.dependentFiled) {
+            allTHeIndexAndSection.push({
+              section: indexOut,
+              indexOfItems: indexIn,
+              selectedIndexForDepend: null,
+            });
+          }
+        });
+      });
+    }
+    setSelectIndexFOrAllDependentField(allTHeIndexAndSection);
+  }, [cartItems]);
+
+  console.log(
+    'selectIndexFOrAllDependentFieldselectIndexFOrAllDependentField',
+    selectIndexFOrAllDependentField,
+  );
   const deleteSelectedIntem = (sectionInde: number) => {
     const temp: any = [...cartItems];
     temp?.splice(sectionInde, 1);
@@ -98,7 +122,7 @@ const FormBuilderMain: React.FC<any> = ({
     setCollapsed(false);
   };
 
-  console.log('isLoginTemplate', isLoginTemplate === 'true')
+  console.log('isLoginTemplate', isLoginTemplate === 'true');
 
   useEffect(() => {
     if (!openPreviewModal && getPartnerProgramID) {
@@ -175,12 +199,12 @@ const FormBuilderMain: React.FC<any> = ({
     onDragOver: (e: any) => e.preventDefault(),
   });
 
-  const { setNodeRef } = useDroppable({
+  const {setNodeRef} = useDroppable({
     id: 'cart-droppable',
   });
 
   const addFormData = async () => {
-    let objNew = {}
+    let objNew = {};
     if (isLoginTemplate === 'true') {
       objNew = {
         login_template: [JSON?.stringify(cartItems)],
@@ -232,6 +256,37 @@ const FormBuilderMain: React.FC<any> = ({
     }
   }, [cartItems]);
   console.log('cartItemscartItems', cartItems);
+
+  const changeOptionsSelected = (
+    indexOfItem: number,
+    indexOfSection: number,
+    valueIndex: any,
+  ) => {
+    const newTempArr = selectIndexFOrAllDependentField.map(
+      (sectItem: any, sectioIndex: number) => {
+        if (
+          sectItem?.section === indexOfSection &&
+          indexOfItem === sectItem?.indexOfItems
+        ) {
+          return {
+            ...sectItem,
+            selectedIndexForDepend: valueIndex,
+          };
+        }
+        return sectItem;
+      },
+    );
+
+    console.log(
+      '32432432423',
+      indexOfItem,
+      indexOfSection,
+      valueIndex,
+      newTempArr,
+    );
+
+    setSelectIndexFOrAllDependentField(newTempArr);
+  };
   return (
     <GlobalLoader loading={formLoading}>
       {contextHolder}
@@ -293,7 +348,7 @@ const FormBuilderMain: React.FC<any> = ({
                     Section {Sectidx + 1}
                     <TrashIcon
                       cursor="pointer"
-                      style={{ marginLeft: '20px' }}
+                      style={{marginLeft: '20px'}}
                       width={18}
                       onClick={() => {
                         deleteSelectedIntem(Sectidx);
@@ -357,7 +412,7 @@ const FormBuilderMain: React.FC<any> = ({
                                 )}
                               {itemCon?.noOfRowsData?.map(
                                 (rowsMapItem: string) => (
-                                  <Row style={{ width: '100%' }}>
+                                  <Row style={{width: '100%'}}>
                                     {itemCon?.ColumnsData?.map(
                                       (itemColum: any) => {
                                         const totalSpanVaue = 24;
@@ -382,7 +437,7 @@ const FormBuilderMain: React.FC<any> = ({
                                               span={totalFloorValue}
                                             >
                                               {itemColum?.type === 'single' ||
-                                                itemColum?.type === 'multiple' ? (
+                                              itemColum?.type === 'multiple' ? (
                                                 <CommonSelect
                                                   variant="borderless"
                                                   mode={itemColum?.type}
@@ -458,7 +513,7 @@ const FormBuilderMain: React.FC<any> = ({
                             <Typography name="Body 4/Medium">
                               {itemCon?.requiredLabel && itemCon?.label}{' '}
                               {itemCon?.required && (
-                                <span style={{ color: 'red' }}>*</span>
+                                <span style={{color: 'red'}}>*</span>
                               )}
                             </Typography>
                             <SectionDivStyled1>
@@ -542,7 +597,7 @@ const FormBuilderMain: React.FC<any> = ({
                                     limitMaxLength
                                     defaultCountry={itemCon?.defaultcountry}
                                     max={11}
-                                  // countryCallingCodeEditable={false}
+                                    // countryCallingCodeEditable={false}
                                   />
                                 </>
                               ) : itemCon?.name === 'Email' ||
@@ -579,7 +634,7 @@ const FormBuilderMain: React.FC<any> = ({
                               {item?.content?.length - 1 === ItemConindex &&
                                 !previewFile && (
                                   <OsButton
-                                    style={{ marginLeft: '10px' }}
+                                    style={{marginLeft: '10px'}}
                                     buttontype="PRIMARY_ICON"
                                     icon="+"
                                     clickHandler={() => {
@@ -607,67 +662,167 @@ const FormBuilderMain: React.FC<any> = ({
                             });
                           }
                         });
+                        let findIndexx =
+                          selectIndexFOrAllDependentField?.findIndex(
+                            (items: any) =>
+                              items?.indexOfItems === ItemConindex &&
+                              items?.section === Sectidx,
+                          );
+                        let PropertSelected =
+                          selectIndexFOrAllDependentField?.[findIndexx]
+                            ?.selectedIndexForDepend;
+                        let dependentDataaForIndex =
+                          itemCon?.dependentFiledArr?.find(
+                            (items: any) => items?.id === PropertSelected,
+                          );
                         return (
-                          <Col
-                            span={12}
-                            {...(!previewFile && {
-                              ...commonDraggableProps(ItemConindex, Sectidx),
-                            })}
-                          >
-                            {!previewFile && (
-                              <ItemName
-                                itemName={itemCon?.name}
-                                cartItems={cartItems}
-                                ItemConindex={ItemConindex}
-                                Sectidx={Sectidx}
-                                setCartItems={setCartItems}
-                                isPreview={!previewFile}
-                                setCollapsed={setCollapsed}
-                                onClick={(e: any) => {
-                                  e?.preventDefault();
-                                  setCollapsed(true);
-                                  setActiveContentIndex(ItemConindex);
-                                  setActiveSectionIndex(Sectidx);
-                                  form.resetFields();
-                                }}
-                              />
-                            )}
-                            <Typography name="Body 4/Medium">
-                              {itemCon?.requiredLabel && itemCon?.label}{' '}
-                              {itemCon?.required && (
-                                <span style={{ color: 'red' }}>*</span>
+                          <>
+                            {' '}
+                            <Col
+                              span={itemCon?.dependentFiled ? 24 : 12}
+                              {...(!previewFile && {
+                                ...commonDraggableProps(ItemConindex, Sectidx),
+                              })}
+                            >
+                              {!previewFile && (
+                                <ItemName
+                                  itemName={itemCon?.name}
+                                  cartItems={cartItems}
+                                  ItemConindex={ItemConindex}
+                                  Sectidx={Sectidx}
+                                  setCartItems={setCartItems}
+                                  isPreview={!previewFile}
+                                  setCollapsed={setCollapsed}
+                                  onClick={(e: any) => {
+                                    e?.preventDefault();
+                                    setCollapsed(true);
+                                    setActiveContentIndex(ItemConindex);
+                                    setActiveSectionIndex(Sectidx);
+                                    form.resetFields();
+                                  }}
+                                />
                               )}
-                            </Typography>
-                            <SectionDivStyled1>
-                              <CommonSelect
-                                options={optionssMulti}
-                                style={{
-                                  width: '100%',
-                                }}
-                                mode={itemCon?.type}
-                                defaultValue={itemCon?.value}
-                                onChange={(e: any) => {
-                                  if (pathnameForFlow) {
-                                    updateTheValues(e, Sectidx, ItemConindex);
-                                  }
-                                }}
-                              />
-                              {item?.content?.length - 1 === ItemConindex &&
-                                !previewFile && (
-                                  <OsButton
-                                    style={{ marginLeft: '10px' }}
-                                    buttontype="PRIMARY_ICON"
-                                    icon="+"
-                                    clickHandler={() => {
-                                      updateSection(Sectidx, itemCon?.name);
+                              <Typography name="Body 4/Medium">
+                                {itemCon?.requiredLabel && itemCon?.label}{' '}
+                                {itemCon?.required && (
+                                  <span style={{color: 'red'}}>*</span>
+                                )}
+                              </Typography>
+                              <SectionDivStyled1>
+                                <CommonSelect
+                                  options={optionssMulti}
+                                  style={{
+                                    width: '100%',
+                                  }}
+                                  mode={itemCon?.type}
+                                  defaultValue={itemCon?.value}
+                                  onChange={(e: any) => {
+                                    if (pathnameForFlow) {
+                                      updateTheValues(e, Sectidx, ItemConindex);
+                                    }
+
+                                    changeOptionsSelected(
+                                      ItemConindex,
+                                      Sectidx,
+                                      e,
+                                    );
+                                  }}
+                                />
+                                {item?.content?.length - 1 === ItemConindex &&
+                                  !previewFile && (
+                                    <OsButton
+                                      style={{marginLeft: '10px'}}
+                                      buttontype="PRIMARY_ICON"
+                                      icon="+"
+                                      clickHandler={() => {
+                                        updateSection(Sectidx, itemCon?.name);
+                                      }}
+                                    />
+                                  )}
+                              </SectionDivStyled1>
+                              {itemCon?.hintext && (
+                                <div>{itemCon?.hintTextValue}</div>
+                              )}
+                            </Col>
+                            {itemCon?.dependentFiled && (
+                              <Col
+                                span={itemCon?.dependentFiled ? 24 : 12}
+                                {...(!previewFile && {
+                                  ...commonDraggableProps(
+                                    ItemConindex,
+                                    Sectidx,
+                                  ),
+                                })}
+                              >
+                                {!previewFile && (
+                                  <ItemName
+                                    itemName={`${itemCon?.name}-Dependent-Select`}
+                                    cartItems={cartItems}
+                                    ItemConindex={ItemConindex}
+                                    Sectidx={Sectidx}
+                                    setCartItems={setCartItems}
+                                    isPreview={!previewFile}
+                                    setCollapsed={setCollapsed}
+                                    onClick={(e: any) => {
+                                      if (itemCon?.dependentFiled) {
+                                        return;
+                                      }
+                                      e?.preventDefault();
+                                      setCollapsed(true);
+                                      setActiveContentIndex(ItemConindex);
+                                      setActiveSectionIndex(Sectidx);
+                                      form.resetFields();
                                     }}
                                   />
                                 )}
-                            </SectionDivStyled1>
-                            {itemCon?.hintext && (
-                              <div>{itemCon?.hintTextValue}</div>
+                                <Typography name="Body 4/Medium">
+                                  {dependentDataaForIndex?.requiredLabel &&
+                                    dependentDataaForIndex?.label}{' '}
+                                  {dependentDataaForIndex?.required && (
+                                    <span style={{color: 'red'}}>*</span>
+                                  )}
+                                </Typography>
+                                <SectionDivStyled1>
+                                  <CommonSelect
+                                    disabled={PropertSelected === null}
+                                    options={dependentDataaForIndex?.options?.map(
+                                      (items: any) => {
+                                        return {label: items, value: items};
+                                      },
+                                    )}
+                                    style={{
+                                      width: '100%',
+                                    }}
+                                    mode={dependentDataaForIndex?.type}
+                                    defaultValue={itemCon?.value}
+                                    onChange={(e: any) => {
+                                      if (pathnameForFlow) {
+                                        updateTheValues(
+                                          e,
+                                          Sectidx,
+                                          ItemConindex,
+                                        );
+                                      }
+                                    }}
+                                  />
+                                  {item?.content?.length - 1 === ItemConindex &&
+                                    !previewFile && (
+                                      <OsButton
+                                        style={{marginLeft: '10px'}}
+                                        buttontype="PRIMARY_ICON"
+                                        icon="+"
+                                        clickHandler={() => {
+                                          updateSection(Sectidx, itemCon?.name);
+                                        }}
+                                      />
+                                    )}
+                                </SectionDivStyled1>
+                                {itemCon?.hintext && (
+                                  <div>{itemCon?.hintTextValue}</div>
+                                )}
+                              </Col>
                             )}
-                          </Col>
+                          </>
                         );
                       }
                       if (itemCon?.name === 'Text Content') {
@@ -752,127 +907,246 @@ const FormBuilderMain: React.FC<any> = ({
                         // if (itemCon?.name === 'Checkbox') {
                         //   setHoldSelectedValue(itemCon?.value);
                         // }
-                        return (
-                          <Col
-                            span={12}
-                            {...(!previewFile && {
-                              ...commonDraggableProps(ItemConindex, Sectidx),
-                            })}
-                          >
-                            {!previewFile && (
-                              <ItemName
-                                itemName={itemCon?.name}
-                                ItemConindex={ItemConindex}
-                                setCollapsed={setCollapsed}
-                                Sectidx={Sectidx}
-                                cartItems={cartItems}
-                                setCartItems={setCartItems}
-                                isPreview={!previewFile}
-                                onClick={(e: any) => {
-                                  e?.preventDefault();
-                                  setCollapsed(true);
-                                  setActiveContentIndex(ItemConindex);
-                                  setActiveSectionIndex(Sectidx);
-                                  form.resetFields();
-                                }}
-                              />
-                            )}
-                            <Typography name="Body 4/Medium">
-                              {itemCon?.requiredLabel && itemCon?.label}{' '}
-                              {itemCon?.required && (
-                                <span style={{ color: 'red' }}>*</span>
-                              )}
-                            </Typography>
-                            <SectionDivStyled1>
-                              <Row
-                                style={{
-                                  width: '100%',
-                                }}
-                              >
-                                {itemCon?.labelOptions?.map(
-                                  (itemLabelOp: any, itemLabelInde: number) => {
-                                    const totalSpanVaue = 24;
-                                    const totalCol = itemCon?.columnRequired;
-                                    const totalLengthAchived =
-                                      totalSpanVaue / totalCol;
-                                    const totalFloorValue =
-                                      Math.floor(totalLengthAchived);
-                                    return (
-                                      <ToggleColStyled span={totalFloorValue}>
-                                        {itemCon?.name === 'Radio Button' ? (
-                                          <Radio.Group
-                                            onChange={(e: any) => {
-                                              setRadioValue(e.target.value);
-                                            }}
-                                            defaultValue={radioValue}
-                                          >
-                                            <Radio value={itemLabelInde}>
-                                              {' '}
-                                              {itemLabelOp}
-                                            </Radio>
-                                          </Radio.Group>
-                                        ) : itemCon?.name === 'Toggle' ? (
-                                          <>
-                                            <Switch /> {itemLabelOp}
-                                          </>
-                                        ) : (
-                                          <>
-                                            {' '}
-                                            {/* setHoldSelectedValue */}
-                                            <Checkbox.Group
-                                              onChange={(e) => {
-                                                if (
-                                                  itemCon?.filedType ===
-                                                  'multiple'
-                                                ) {
-                                                  const temp: any =
-                                                    holdelSelectedValue?.length >
-                                                      0
-                                                      ? [...holdelSelectedValue]
-                                                      : [];
-                                                  temp?.push(e?.[0]);
-                                                  if (pathnameForFlow) {
-                                                    updateTheValues(
-                                                      temp,
-                                                      Sectidx,
-                                                      ItemConindex,
-                                                    );
-                                                  }
 
-                                                  setHoldSelectedValue(temp);
-                                                } else {
-                                                  setHoldSelectedValue(e?.[0]);
-                                                  if (pathnameForFlow) {
-                                                    updateTheValues(
-                                                      e?.[0],
-                                                      Sectidx,
-                                                      ItemConindex,
-                                                    );
-                                                  }
-                                                }
+                        let findIndexx =
+                          selectIndexFOrAllDependentField?.findIndex(
+                            (items: any) =>
+                              items?.indexOfItems === ItemConindex &&
+                              items?.section === Sectidx,
+                          );
+
+                        console.log(
+                          'selectIndexFOrAllDependentFieldselectIndexFOrAllDependentField',
+                          selectIndexFOrAllDependentField,
+                        );
+                        let PropertSelected =
+                          selectIndexFOrAllDependentField?.[findIndexx]
+                            ?.selectedIndexForDepend;
+                        let dependentDataaForIndex =
+                          itemCon?.dependentFiledArr[PropertSelected];
+                        // let dependentDataaForIndex =
+                        //   itemCon?.dependentFiledArr?.[0];
+                        return (
+                          <>
+                            <Col
+                              span={itemCon?.dependentFiled ? 24 : 12}
+                              {...(!previewFile && {
+                                ...commonDraggableProps(ItemConindex, Sectidx),
+                              })}
+                            >
+                              {!previewFile && (
+                                <ItemName
+                                  itemName={itemCon?.name}
+                                  ItemConindex={ItemConindex}
+                                  setCollapsed={setCollapsed}
+                                  Sectidx={Sectidx}
+                                  cartItems={cartItems}
+                                  setCartItems={setCartItems}
+                                  isPreview={!previewFile}
+                                  onClick={(e: any) => {
+                                    e?.preventDefault();
+                                    setCollapsed(true);
+                                    setActiveContentIndex(ItemConindex);
+                                    setActiveSectionIndex(Sectidx);
+                                    form.resetFields();
+                                  }}
+                                />
+                              )}
+                              <Typography name="Body 4/Medium">
+                                {itemCon?.requiredLabel && itemCon?.label}{' '}
+                                {itemCon?.required && (
+                                  <span style={{color: 'red'}}>*</span>
+                                )}
+                              </Typography>
+                              <SectionDivStyled1>
+                                <Row
+                                  style={{
+                                    width: '100%',
+                                  }}
+                                >
+                                  {itemCon?.labelOptions?.map(
+                                    (
+                                      itemLabelOp: any,
+                                      itemLabelInde: number,
+                                    ) => {
+                                      const totalSpanVaue = 24;
+                                      const totalCol = itemCon?.columnRequired;
+                                      const totalLengthAchived =
+                                        totalSpanVaue / totalCol;
+                                      const totalFloorValue =
+                                        Math.floor(totalLengthAchived);
+                                      return (
+                                        <ToggleColStyled span={totalFloorValue}>
+                                          {itemCon?.name === 'Radio Button' ? (
+                                            <Radio.Group
+                                              onChange={(e: any) => {
+                                                setRadioValue(e.target.value);
+                                                changeOptionsSelected(
+                                                  ItemConindex,
+                                                  Sectidx,
+                                                  itemLabelInde,
+                                                );
                                               }}
-                                              value={holdelSelectedValue}
-                                              defaultValue={itemCon?.value}
+                                              defaultValue={radioValue}
                                             >
-                                              {' '}
-                                              <Checkbox
-                                                value={itemLabelOp}
-                                                checked
-                                              >
+                                              <Radio value={itemLabelInde}>
                                                 {' '}
                                                 {itemLabelOp}
-                                              </Checkbox>
-                                            </Checkbox.Group>
-                                          </>
-                                        )}
-                                      </ToggleColStyled>
-                                    );
-                                  },
+                                              </Radio>
+                                            </Radio.Group>
+                                          ) : itemCon?.name === 'Toggle' ? (
+                                            <>
+                                              <Switch /> {itemLabelOp}
+                                            </>
+                                          ) : (
+                                            <>
+                                              {' '}
+                                              {/* setHoldSelectedValue */}
+                                              <Checkbox.Group
+                                                onChange={(e) => {
+                                                  console.log('eeeeee', e);
+                                                  changeOptionsSelected(
+                                                    ItemConindex,
+                                                    Sectidx,
+                                                    itemLabelInde,
+                                                  );
+                                                  if (
+                                                    itemCon?.filedType ===
+                                                    'multiple'
+                                                  ) {
+                                                    const temp: any =
+                                                      holdelSelectedValue?.length >
+                                                      0
+                                                        ? [
+                                                            ...holdelSelectedValue,
+                                                          ]
+                                                        : [];
+                                                    temp?.push(e?.[0]);
+                                                    if (pathnameForFlow) {
+                                                      updateTheValues(
+                                                        temp,
+                                                        Sectidx,
+                                                        ItemConindex,
+                                                      );
+                                                    }
+
+                                                    setHoldSelectedValue(temp);
+                                                  } else {
+                                                    setHoldSelectedValue(
+                                                      e?.[0],
+                                                    );
+                                                    if (pathnameForFlow) {
+                                                      updateTheValues(
+                                                        e?.[0],
+                                                        Sectidx,
+                                                        ItemConindex,
+                                                      );
+                                                    }
+                                                  }
+                                                }}
+                                                value={holdelSelectedValue}
+                                                defaultValue={itemCon?.value}
+                                              >
+                                                {' '}
+                                                <Checkbox
+                                                  value={itemLabelOp}
+                                                  checked
+                                                >
+                                                  {' '}
+                                                  {itemLabelOp}
+                                                </Checkbox>
+                                              </Checkbox.Group>
+                                            </>
+                                          )}
+                                        </ToggleColStyled>
+                                      );
+                                    },
+                                  )}
+                                </Row>
+                              </SectionDivStyled1>
+                              {itemCon?.hintext && (
+                                <> {itemCon?.hintTextValue}</>
+                              )}
+                            </Col>
+                            {itemCon?.dependentFiled && (
+                              <Col
+                                span={itemCon?.dependentFiled ? 24 : 12}
+                                {...(!previewFile && {
+                                  ...commonDraggableProps(
+                                    ItemConindex,
+                                    Sectidx,
+                                  ),
+                                })}
+                              >
+                                {!previewFile && (
+                                  <ItemName
+                                    itemName={`${itemCon?.name}-Dependent-Select`}
+                                    cartItems={cartItems}
+                                    ItemConindex={ItemConindex}
+                                    Sectidx={Sectidx}
+                                    setCartItems={setCartItems}
+                                    isPreview={!previewFile}
+                                    setCollapsed={setCollapsed}
+                                    onClick={(e: any) => {
+                                      if (itemCon?.dependentFiled) {
+                                        return;
+                                      }
+                                      e?.preventDefault();
+                                      setCollapsed(true);
+                                      setActiveContentIndex(ItemConindex);
+                                      setActiveSectionIndex(Sectidx);
+                                      form.resetFields();
+                                    }}
+                                  />
                                 )}
-                              </Row>
-                            </SectionDivStyled1>
-                            {itemCon?.hintext && <> {itemCon?.hintTextValue}</>}
-                          </Col>
+                                <Typography name="Body 4/Medium">
+                                  {dependentDataaForIndex?.requiredLabel &&
+                                    dependentDataaForIndex?.label}{' '}
+                                  {dependentDataaForIndex?.required && (
+                                    <span style={{color: 'red'}}>*</span>
+                                  )}
+                                </Typography>
+                                <SectionDivStyled1>
+                                  <CommonSelect
+                                    disabled={PropertSelected === null}
+                                    options={dependentDataaForIndex?.options?.map(
+                                      (items: any) => {
+                                        return {label: items, value: items};
+                                      },
+                                    )}
+                                    style={{
+                                      width: '100%',
+                                    }}
+                                    mode={dependentDataaForIndex?.type}
+                                    defaultValue={itemCon?.value}
+                                    onChange={(e: any) => {
+                                      if (pathnameForFlow) {
+                                        updateTheValues(
+                                          e,
+                                          Sectidx,
+                                          ItemConindex,
+                                        );
+                                      }
+                                    }}
+                                  />
+                                  {item?.content?.length - 1 === ItemConindex &&
+                                    !previewFile && (
+                                      <OsButton
+                                        style={{marginLeft: '10px'}}
+                                        buttontype="PRIMARY_ICON"
+                                        icon="+"
+                                        clickHandler={() => {
+                                          updateSection(Sectidx, itemCon?.name);
+                                        }}
+                                      />
+                                    )}
+                                </SectionDivStyled1>
+                                {itemCon?.hintext && (
+                                  <div>{itemCon?.hintTextValue}</div>
+                                )}
+                              </Col>
+                            )}
+                          </>
                         );
                       }
                       if (itemCon?.name === 'Attachment') {
