@@ -2005,3 +2005,8 @@ export const handleDate = (
         return dayjs(date || new Date()).utc().format();
     }
 };
+
+export function convertToNumber(variable :any) {
+  const num = Number(variable);
+  return isNaN(num) ? 0 : num;
+}

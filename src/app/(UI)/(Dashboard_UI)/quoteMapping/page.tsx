@@ -12,11 +12,13 @@ import OsModal from '@/app/components/common/os-modal';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import {Form, notification} from 'antd';
+import {Checkbox, Divider, Form, notification} from 'antd';
 import {MenuProps} from 'antd/lib';
 import {useRouter} from 'next/navigation';
 import {useEffect, useState} from 'react';
 import {
+  addLineItemSyncingManualy,
+  insertLineItemSyncingForSalesForce,
   queryLineItemSyncing,
   updateLineItemSyncing,
 } from '../../../../../redux/actions/LineItemSyncing';
@@ -26,11 +28,15 @@ import {
   newQuoteMappingColumns,
   rejectQuoteMappingColumns,
 } from './quoteMappingColumns';
+import OsButton from '@/app/components/common/os-button';
+import GlobalLoader from '@/app/components/common/os-global-loader';
+import {formatStatus, quoteLineItemColumnForSync} from '@/app/utils/CONSTANTS';
+import CommonSelect from '@/app/components/common/os-select';
 
 const QuoteMappings = () => {
   const dispatch = useAppDispatch();
   const [token] = useThemeToken();
-  
+
   const [form] = Form.useForm();
   const router = useRouter();
   const {data: LineItemSyncingData, loading} = useAppSelector(
@@ -49,6 +55,8 @@ const QuoteMappings = () => {
   const [selectedId, setSelectedId] = useState<any>([]);
   const [recordData, setRecordData] = useState<any>();
   const searchQuery = useDebounceHook(query, 500);
+  const [manualRecord, setManualRecord] = useState<any>();
+  const [showSyncModal, setShowSyncModal] = useState<boolean>(false);
 
   useEffect(() => {
     dispatch(queryLineItemSyncing(searchQuery));
@@ -87,6 +95,17 @@ const QuoteMappings = () => {
     },
   };
 
+  const addNewSyncingManually = async () => {
+    let newObj = {...manualRecord};
+    dispatch(addLineItemSyncingManualy(newObj))?.then((payload: any) => {
+      setManualRecord({});
+      setShowSyncModal(false);
+      if (payload?.payload) {
+        dispatch(queryLineItemSyncing(searchQuery));
+      }
+      setActiveTab(2);
+    });
+  };
   const superAdmintabItems = [
     {
       label: (
@@ -176,12 +195,22 @@ const QuoteMappings = () => {
     if (selectedId?.length > 0) {
       const status = reason ? 'Rejected' : 'Approved';
       const obj = {
+        quote_header: recordData?.quote_header,
+        pdf_header: recordData?.pdf_header,
         id: selectedId,
         status: status,
         status_date: new Date(),
         ...(reason && {reason: reason}),
       };
+
       dispatch(updateLineItemSyncing(obj)).then((d) => {
+        if (d?.payload === undefined) {
+          notification?.open({
+            message: 'Combination already exist!',
+            type: 'error',
+          });
+          return;
+        }
         if (d?.payload) {
           dispatch(queryLineItemSyncing(searchQuery));
         }
@@ -291,42 +320,17 @@ const QuoteMappings = () => {
           style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
           <OsTabs
-            // tabBarExtraContent={
-            //   <Space size={12} align="center">
-            //     <Space direction="vertical" size={0}>
-            //       <Typography name="Body 4/Medium">Search here</Typography>
-            //       <OsInput
-            //         style={{width: '250px'}}
-            //         placeholder="Search here"
-            //         onChange={(e) => {
-            //           setQuery({
-            //             ...query,
-            //             searchValue: e?.target?.value,
-            //           });
-            //         }}
-            //         value={query?.searchValue}
-            //       />
-            //     </Space>
-            //     <div
-            //       style={{
-            //         marginTop: '15px',
-            //       }}
-            //     >
-            //       <Typography
-            //         cursor="pointer"
-            //         name="Button 1"
-            //         color={query?.searchValue ? '#0D0D0D' : '#C6CDD5'}
-            //         onClick={() => {
-            //           setQuery({
-            //             searchValue: '',
-            //           });
-            //         }}
-            //       >
-            //         Reset
-            //       </Typography>
-            //     </div>
-            //   </Space>
-            // }
+            tabBarExtraContent={
+              <Space size={12} align="center">
+                <OsButton
+                  buttontype="PRIMARY"
+                  text="Add New Syncing"
+                  clickHandler={() => {
+                    setShowSyncModal(true);
+                  }}
+                />
+              </Space>
+            }
             items={superAdmintabItems}
           />
         </Row>
@@ -391,6 +395,128 @@ const QuoteMappings = () => {
         primaryButtonText="Reject"
         onOk={form.submit}
         styleFooter
+      />
+
+      <OsModal
+        // loading={loading}
+        body={
+          <>
+            <GlobalLoader loading={false}>
+              <Row
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  padding: '20px',
+                }}
+              >
+                <Col>
+                  <Row style={{marginTop: '6px'}}>
+                    {' '}
+                    <Typography
+                      style={{marginLeft: '10px'}}
+                      align="center"
+                      name="Body 2/Medium"
+                    >
+                      Your Pdf Header Name
+                    </Typography>
+                  </Row>
+                </Col>
+
+                <Col>
+                  <Row style={{marginTop: '6px'}}>
+                    {' '}
+                    <Typography
+                      style={{marginLeft: '10px'}}
+                      align="center"
+                      name="Body 2/Medium"
+                    >
+                      Your Quote Header Name
+                    </Typography>
+                  </Row>
+                </Col>
+              </Row>
+              <Row style={{marginLeft: '30px'}}>
+                <Checkbox
+                  style={{marginRight: '10px'}}
+                  onChange={(e) => {
+                    setManualRecord({
+                      ...manualRecord,
+                      is_salesforce: e.target.checked,
+                    });
+                  }}
+                />{' '}
+                <Typography name="Body 3/Regular">Is Salesforce</Typography>
+              </Row>
+              <Row
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  padding: '20px',
+                }}
+              >
+                <Col>
+                  <Row style={{marginTop: '6px'}}>
+                    <OsInput
+                      value={formatStatus(manualRecord?.pdf_header)}
+                      onChange={(e: any) => {
+                        setManualRecord({
+                          ...manualRecord,
+                          pdf_header: e?.target?.value,
+                        });
+                      }}
+                    />
+                  </Row>
+                </Col>
+
+                <Col>
+                  <Row style={{marginTop: '6px'}}>
+                    <CommonSelect
+                      onChange={(e) => {
+                        setManualRecord({...manualRecord, quote_header: e});
+                      }}
+                      allowClear
+                      onClear={() => {
+                        setManualRecord({
+                          ...manualRecord,
+                          quote_header: '',
+                        });
+                      }}
+                      defaultValue={formatStatus(
+                        manualRecord?.quote_header?.toString()?.toUpperCase(),
+                      )}
+                      // value={formatStatus(
+                      //   newLabel?.label?.toString()?.toUpperCase(),
+                      // )}
+                      style={{width: '250px'}}
+                      options={quoteLineItemColumnForSync}
+                    />
+                  </Row>
+                </Col>
+              </Row>
+
+              <Row
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  marginRight: '40px',
+                }}
+              >
+                <OsButton
+                  text="Add"
+                  buttontype="PRIMARY"
+                  clickHandler={addNewSyncingManually}
+                />
+              </Row>
+            </GlobalLoader>
+          </>
+        }
+        width={600}
+        open={showSyncModal}
+        // open={true}
+        onCancel={() => {
+          setShowSyncModal((p) => !p);
+        }}
       />
     </>
   );

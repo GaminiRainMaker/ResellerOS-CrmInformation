@@ -166,11 +166,12 @@ const OsUpload: React.FC<any> = ({
                   // Slice the array from the found index
                   let result =
                     indexFrom > 0
-                      ? payload?.payload?.slice(bestRowIndex + 1, indexFrom - 1)
+                      ? payload?.payload?.slice(bestRowIndex + 1, indexFrom)
                       : payload?.payload?.slice(
                           bestRowIndex + 1,
-                          payload?.payload?.length - 1,
+                          payload?.payload?.length,
                         );
+
                   let requiredOutput = result
                     ?.map((subArray: any) =>
                       subArray.filter((item: any) => item !== null),
@@ -184,6 +185,8 @@ const OsUpload: React.FC<any> = ({
                       headerKeys?.push(items);
                     }
                   });
+
+                  // return;
 
                   let modifiedArr = headerKeys.map((item: any) => {
                     if (item) {
@@ -211,28 +214,18 @@ const OsUpload: React.FC<any> = ({
                       // let resultString = items?.pdf_header?.replace(/\s+/g, '');
                       const match = lineItemSyncingData.find(
                         (obj: any) =>
-                          obj.pdf_header
+                          (obj.pdf_header
                             ?.replace(/\s+/g, '')
                             ?.toLowerCase()
                             .substring(0, 4) === cleanedItem &&
-                          item?.toString()?.toLowerCase() !== 'partner',
+                            item?.toString()?.toLowerCase() !== 'partner') ||
+                          obj.pdf_header === item,
                       );
 
-                      // const match = lineItemSyncingData.find(
-                      //   (obj: any) =>
-                      //     obj.pdf_header
-                      //       ?.replace(/\s+/g, '')
-                      //       ?.toLowerCase()
-                      //       .substring(0, 4) === cleanedItem,
-                      // );
-
-                      // Return the expected value if a match is found, otherwise return undefined
                       return match ? match.quote_header : item;
                     })
                     .filter(Boolean); // Remove any undefined values
 
-                  // end of above
-                  // Transform newArr into an array of objects
                   resultantValues = requiredOutput.map((row: any) => {
                     let obj: any = {};
                     syncedHeaderValue.forEach((header: any, index: any) => {
