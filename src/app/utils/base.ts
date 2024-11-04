@@ -1975,3 +1975,9 @@ export const updateSalesForceData = async (
 
   return newData;
 };
+
+
+export function convertToNumber(variable :any) {
+  const num = Number(variable);
+  return isNaN(num) ? 0 : num;
+}
