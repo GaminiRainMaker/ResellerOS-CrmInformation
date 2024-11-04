@@ -7,6 +7,7 @@ import {
   getLineItemsWithNonRepitive,
   getResultedValue,
   getValuesOFLineItemsThoseNotAddedBefore,
+  handleDate,
 } from '@/app/utils/base';
 import {PlusIcon} from '@heroicons/react/24/outline';
 import {Form, message} from 'antd';
@@ -159,9 +160,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
       });
     }
 
-    // console.log("435435435435",newArrWithoutManual)
-    // return
-
     try {
       setFinalLoading(true);
       setLoading(true);
@@ -212,7 +210,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
               };
             }
           });
-
           quoteObj = {
             ...quoteItem,
             nanonets_id: result?.id,
@@ -223,6 +220,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
             opportunity_id: opportunityId,
             organization: userInformation.organization,
             status: 'Drafts',
+            date: handleDate(),
             quoteFileObj: [
               {
                 file_name: newArrWithoutManual[i]?.file?.name,
@@ -314,13 +312,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
             if (newInsertionData?.length > 0) {
               await dispatch(insertProductsInBulk(newInsertionData))?.then(
                 (payload: any) => {
-                  // console.log(
-                  //   '3598329982',
-                  //   // lineItem,
-                  //   // allProductCodeDataa,
-                  //   payload,
-                  // );
-                  // return;
                   payload?.payload?.map((itemsBulk: any) => {
                     allProductCodeDataa?.push(itemsBulk);
                   });
@@ -336,9 +327,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
               },
             );
           }
-
-          // console.log('354353243243', allProductCodeDataa, lineItem);
-          // return;
           if (lineItem) {
             lineItem?.map((itemssProduct: any) => {
               let productCode = itemssProduct?.product_code
@@ -579,10 +567,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
         }
       });
     }
-
-    // console.log("435435435435",newArrWithoutManual)
-    // return
-
     try {
       setFinalLoading(true);
       setLoading(true);
@@ -735,13 +719,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
             if (newInsertionData?.length > 0) {
               await dispatch(insertProductsInBulk(newInsertionData))?.then(
                 (payload: any) => {
-                  // console.log(
-                  //   '3598329982',
-                  //   // lineItem,
-                  //   // allProductCodeDataa,
-                  //   payload,
-                  // );
-                  // return;
                   payload?.payload?.map((itemsBulk: any) => {
                     allProductCodeDataa?.push(itemsBulk);
                   });
@@ -758,8 +735,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
             );
           }
 
-          // console.log('354353243243', allProductCodeDataa, lineItem);
-          // return;
           if (lineItem) {
             lineItem?.map((itemssProduct: any) => {
               let productCode = itemssProduct?.product_code
