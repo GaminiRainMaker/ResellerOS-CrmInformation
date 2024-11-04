@@ -923,7 +923,7 @@ const FormBuilderMain: React.FC<any> = ({
                           selectIndexFOrAllDependentField?.[findIndexx]
                             ?.selectedIndexForDepend;
                         let dependentDataaForIndex =
-                          itemCon?.dependentFiledArr[PropertSelected];
+                          itemCon?.dependentFiledArr?.[PropertSelected];
                         // let dependentDataaForIndex =
                         //   itemCon?.dependentFiledArr?.[0];
                         return (
