@@ -14,7 +14,7 @@ const client = axios.create({
 
   //Production
   baseURL: 'https://api.reselleros.com',
-  
+
   withCredentials: false,
 });
 
