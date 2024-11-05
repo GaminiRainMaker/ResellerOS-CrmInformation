@@ -272,6 +272,10 @@ const OsUpload: React.FC<any> = ({
     };
   };
 
+  function transformString(str: any) {
+    return str.toLowerCase().replace(/[^a-z0-9]/g, '');
+  }
+
   const beforeUploadDataForPdf = async (file: File) => {
     const obj: any = {...file};
     let resultantValues: any;
@@ -392,34 +396,59 @@ const OsUpload: React.FC<any> = ({
                   } else {
                     resultTantArrr = [...globalArr?.[0]];
                   }
-                  console.log('35435324234', resultTantArrr);
 
-                  resultTantArrr?.map((obj: any) => {
-                    const newObj: any = {};
-                    lineItemSyncingData?.forEach((mapping: any) => {
-                      if (mapping?.preVal in obj) {
-                        newObj[mapping?.newVal] = obj[mapping?.preVal];
-                      }
-                    });
-                    Object.entries(obj).forEach(([key, value]) => {
-                      if (
-                        !lineItemSyncingData?.some(
-                          (mapping: any) => mapping?.preVal === key,
-                        )
-                      ) {
-                        newObj[key] = value;
-                      }
-                    });
-                    resultantValues?.push(newObj);
-                  });
+                  let transformedArrForLOwerCase = resultTantArrr.map(
+                    (item: any) => {
+                      let newItem: any = {};
+                      for (let key in item) {
+                        // Remove spaces, periods, hashes, and other non-alphanumeric characters, and convert to lowercase
+                        let newKey = key
+                          .replace(/[^\w\s]/g, '')
+                          .replace(/\s+/g, '')
+                          .toLowerCase();
 
-                  // resultantValues = resultTantArrr.map((row: any) => {
-                  //   let obj: any = {};
-                  //   syncedHeaderValue.forEach((header: any, index: any) => {
-                  //     obj[header] = row[index] === '' ? null : row[index]; // Convert empty strings to null
-                  //   });
-                  //   return obj;
-                  // });
+                        // Assign the value to the new key
+                        newItem[newKey] = item[key];
+                      }
+                      return newItem;
+                    },
+                  );
+
+                  resultantValues = transformedArrForLOwerCase?.map(
+                    (obj: any) => {
+                      const newObj: any = {};
+                      lineItemSyncingData?.forEach((mapping: any) => {
+                        console.log(
+                          '43543543432',
+                          mapping?.pdf_header,
+                          transformString(mapping?.pdf_header),
+                        );
+
+                        if (transformString(mapping?.pdf_header) in obj) {
+                          console.log(
+                            '43543543432',
+                            mapping?.quote_header,
+                            mapping?.pdf_header,
+                          );
+                          newObj[mapping?.quote_header] =
+                            obj[transformString(mapping?.pdf_header)];
+                        }
+                      });
+                      console.log('35435324234', lineItemSyncingData);
+
+                      Object.entries(obj).forEach(([key, value]) => {
+                        if (
+                          !lineItemSyncingData?.some(
+                            (mapping: any) =>
+                              transformString(mapping?.pdf_header) === key,
+                          )
+                        ) {
+                          newObj[key] = value;
+                        }
+                      });
+                      return newObj;
+                    },
+                  );
                 },
               );
             }
@@ -429,7 +458,6 @@ const OsUpload: React.FC<any> = ({
       .catch((error: any) => {
         message.error('Error converting file to base64', error);
       });
-
     function containsLetterAndNumber(str: string): boolean {
       // const hasLetter = /[a-zA-Z]/.test(str);
       // const hasDigit = /\d/.test(str);
@@ -444,8 +472,7 @@ const OsUpload: React.FC<any> = ({
         items?.product_code !== null &&
         containsLetterAndNumber(items?.product_code),
     );
-    console.log('43543534532', resultantValues);
-    return;
+
     return {
       lineItems: requiredResult,
       file_name: file?.name,

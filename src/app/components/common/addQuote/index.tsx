@@ -570,9 +570,6 @@ const AddQuote: FC<AddQuoteInterface> = ({
       });
     }
 
-    // console.log("435435435435",newArrWithoutManual)
-    // return
-
     try {
       setFinalLoading(true);
       setLoading(true);
