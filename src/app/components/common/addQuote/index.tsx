@@ -899,6 +899,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           status: 'Drafts',
           customer_id: customerId,
           opportunity_id: opportunityId,
+          date: handleDate(),
         };
         const response = await dispatch(insertQuote([newObj]))?.then(
           async (payload: any) => {
