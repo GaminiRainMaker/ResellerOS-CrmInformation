@@ -177,8 +177,8 @@ const ReviewQuotes: FC<any> = ({
       title: '#Line',
       dataIndex: 'line_number',
       key: 'line_number',
-      render: (text: any) => (
-        <Typography name="Body 4/Medium">{text}</Typography>
+      render: (text: any, record: any, index: number) => (
+        <Typography name="Body 4/Medium">{index + 1}</Typography>
       ),
       width: 130,
     },
