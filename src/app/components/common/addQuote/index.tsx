@@ -427,6 +427,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           opportunity_id: opportunityId,
           organization: userInformation.organization,
           status: 'Drafts',
+          date: handleDate(),
         };
         const response = await dispatch(insertQuote([newObj]));
         quoteIdForManualss = response?.payload?.data[0]?.id;
@@ -486,6 +487,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           status: 'Drafts',
           customer_id: customerId,
           opportunity_id: opportunityId,
+          date: handleDate(),
         };
         const response = await dispatch(insertQuote([newObj]))?.then(
           async (payload: any) => {
@@ -629,6 +631,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
             opportunity_id: opportunityId,
             organization: userInformation.organization,
             status: 'Drafts',
+            date: handleDate(),
             quoteFileObj: [
               {
                 file_name: newArrWithoutManual[i]?.file?.name,
@@ -836,6 +839,7 @@ const AddQuote: FC<AddQuoteInterface> = ({
           opportunity_id: opportunityId,
           organization: userInformation.organization,
           status: 'Drafts',
+          date: handleDate(),
         };
         const response = await dispatch(insertQuote([newObj]));
         quoteIdForManualss = response?.payload?.data[0]?.id;
