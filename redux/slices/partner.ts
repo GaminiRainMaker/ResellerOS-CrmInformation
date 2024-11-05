@@ -15,6 +15,7 @@ import {
   getAllPartnerandProgramFilterDataForOrganizationOnly,
   upadteRequestForOrgNewPartnerApproval,
   getAllPartnerandProgramApprovedForOrganizationSalesForce,
+  getAllPartnerById,
 } from '../actions/partner';
 
 type PartnerState = {
@@ -26,6 +27,7 @@ type PartnerState = {
   partner: any;
   partnerRequestData: any;
   AllPartnerandProgramFilterData: any;
+  allPartnersById: any;
 };
 const initialState: PartnerState = {
   loading: false,
@@ -36,6 +38,7 @@ const initialState: PartnerState = {
   partner: [],
   partnerRequestData: {},
   AllPartnerandProgramFilterData: [],
+  allPartnersById: [],
 };
 
 const partnerSlice = createSlice({
@@ -271,6 +274,24 @@ const partnerSlice = createSlice({
       )
       .addCase(
         upadteRequestForOrgNewPartnerApproval.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(getAllPartnerById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        getAllPartnerById.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.allPartnersById = action.payload;
+        },
+      )
+      .addCase(
+        getAllPartnerById.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

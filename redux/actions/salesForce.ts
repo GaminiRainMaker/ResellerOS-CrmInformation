@@ -37,12 +37,49 @@ export const createSalesforceDealreg = createAsyncThunk(
     }
   },
 );
+
 export const getSalesForceDealregByOpportunityId = createAsyncThunk(
   'salesforce/getSalesForceDealregByOpportunityId',
   async (data: any, thunkApi) => {
     try {
       const res =
         await SALESFORCE_API.getSalesForceDealregByOpportunityId(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+
+export const getSalesForceDealregById = createAsyncThunk(
+  'salesforce/getSalesForceDealregById',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await SALESFORCE_API.getSalesForceDealregById(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+
+export const updateSalesForceDealregById = createAsyncThunk(
+  'salesforce/updateSalesForceDealregById',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await SALESFORCE_API.updateSalesForceDealregById(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+
+export const getSalesForcePartnerCredentials = createAsyncThunk(
+  'salesforce/getSalesForcePartnerCredentials',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await SALESFORCE_API.getSalesForcePartnerCredentials(data);
       return res.data;
     } catch (error) {
       return thunkApi.rejectWithValue(error);

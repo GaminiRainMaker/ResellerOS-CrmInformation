@@ -20,6 +20,7 @@ import {
 } from './dealReg.interface';
 import {ChildCollapse} from './styled-component';
 import {formatStatus} from '@/app/utils/CONSTANTS';
+import {useSearchParams} from 'next/navigation';
 
 const CommonFields: FC<CommonFieldsProps> = ({
   form,
@@ -27,6 +28,8 @@ const CommonFields: FC<CommonFieldsProps> = ({
   handleBlur,
   formData,
 }) => {
+  const searchParams = useSearchParams()!;
+  const salesForceUrl = searchParams.get('instance_url');
   const {queryData} = useAppSelector((state) => state.attributeField);
   const {data: DealRegData} = useAppSelector((state) => state.dealReg);
   const [commonTemplateData, setCommonTemplateData] = useState<any>();
@@ -108,7 +111,17 @@ const CommonFields: FC<CommonFieldsProps> = ({
   const getInputComponent = (child: TransformedChild) => {
     const fieldName = convertToSnakeCase(child?.label);
     const initialValue = commonTemplateData?.[fieldName];
-    const commonProps = {defaultValue: initialValue, onBlur: handleBlur};
+    let commonProps;
+    if (salesForceUrl) {
+      commonProps = {
+        defaultValue: initialValue,
+      };
+    } else {
+      commonProps = {
+        defaultValue: initialValue,
+        onBlur: handleBlur,
+      };
+    }
     switch (child.data_type) {
       case 'textarea':
       case 'text':
@@ -193,7 +206,7 @@ const CommonFields: FC<CommonFieldsProps> = ({
                     <SelectFormItem
                       name={
                         'c_' +
-                        convertToSnakeCase(child?.label) +
+                        convertToSnakeCase(child?.label) + '_' +
                         Childndex +
                         activeKey +
                         (required ? '_required' : '')

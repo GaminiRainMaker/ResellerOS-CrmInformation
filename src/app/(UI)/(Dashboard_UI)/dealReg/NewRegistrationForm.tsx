@@ -52,6 +52,7 @@ const NewRegistrationForm: FC<any> = ({
   const salesForceOppId = searchParams.get('oppId');
   const salesForceContactId = searchParams.get('contactId');
   const salesForceCustomerId = searchParams.get('customerId');
+  const salesForceUserId = searchParams.get('user_id');
 
   let pathname = usePathname();
   const dispatch = useAppDispatch();
@@ -413,17 +414,6 @@ const NewRegistrationForm: FC<any> = ({
         }));
       }
       if (salesForceUrl) {
-        const partnersArray = newData?.map((item: any) => ({
-          Name: item.partner_name,
-          rosdealregai__External_Id__c: item.partner_id,
-        }));
-        const partnerProgramsArray = newData?.map((item: any) => ({
-          Name: item.partner_program_name,
-          rosdealregai__External_Id__c: item.partner_program_id,
-          rosdealregai__Partner_LR__r: {
-            rosdealregai__External_Id__c: item?.partner_id,
-          },
-        }));
         const dealRegArray = newData?.map((item: any) => ({
           rosdealregai__Opportunity__c: salesForceOppId,
           rosdealregai__Partner__r: {
@@ -434,59 +424,46 @@ const NewRegistrationForm: FC<any> = ({
           },
         }));
         try {
-          await Promise.all(
-            partnersArray?.map((partner: any) =>
-              dispatch(
-                createSalesForcePartner({
-                  baseURL: salesForceUrl,
-                  token: salesForceKey,
-                  data: partner,
-                }),
-              ),
-            ),
-          );
-          await Promise.all(
-            partnerProgramsArray?.map((program: any) =>
-              dispatch(
-                createSalesforcePartnerProgram({
-                  baseURL: salesForceUrl,
-                  token: salesForceKey,
-                  data: program,
-                }),
-              ),
-            ),
-          );
-          await Promise.all(
-            dealRegArray?.map((dealreg: any) =>
-              dispatch(
+          const dealRegResponses = await Promise.all(
+            dealRegArray?.map(async (dealreg: any) => {
+              const response = await dispatch(
                 createSalesforceDealreg({
                   baseURL: salesForceUrl,
                   token: salesForceKey,
                   data: dealreg,
                 }),
-              ),
-            ),
+              );
+              return response;
+            }),
           );
 
+          // Check if any deal registration creation failed
+          for (const response of dealRegResponses) {
+            if (response.status === 400 && response.success === false) {
+              notification.error({
+                message: 'Error',
+                description: `Error creating deal registration: ${response.errors.join(', ') || 'Unknown error'}`,
+              });
+              return; // Stop further execution
+            }
+          }
+          // If all APIs succeed, show success notification and navigate
           notification.success({
             message: 'Success',
             description: 'Dealreg form created successfully.',
           });
-
-          if (salesForceUrl) {
-            window.history.replaceState(
-              null,
-              '',
-              `/dealRegDetail?opportunityId=${salesForceOppId}&instance_url=${salesForceUrl}&customerId=${salesForceCustomerId}&contactId=${salesForceContactId}`,
-            );
-            location?.reload();
-          }
+          window.history.replaceState(
+            null,
+            '',
+            `/dealRegDetail?opportunityId=${salesForceOppId}&instance_url=${salesForceUrl}&key=${salesForceKey}&customerId=${salesForceCustomerId}&contactId=${salesForceContactId}&user_id=${salesForceUserId}`,
+          );
+          location?.reload();
         } catch (error: any) {
           notification.error({
             message: 'Error',
-            description: `Error creating partners: ${error.message}`,
+            description: `Error creating entries: ${error.message}`,
           });
-          console.error('Error creating partners:', error);
+          console.error('Error creating entries:', error);
         }
       } else {
         await dispatch(insertDealReg(newData)).then((d: any) => {

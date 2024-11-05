@@ -214,6 +214,7 @@ export const API = {
       'partner/getAllPartnerandProgramFilterDataForOrganizationOnly',
     upadteRequestForOrgNewPartnerApproval:
       'partner/upadteRequestForOrgNewPartnerApproval',
+    GetAllPartnerById: 'partner/getAllPartnerById',
   },
   PARTNER_PROGRAM: {
     INDEX: '/partnerProgram',
@@ -227,6 +228,7 @@ export const API = {
     GetFormDataProgram: '/partnerProgram/getFormDataProgram',
     REQ_ADMIN: '/partnerProgram/upadteToRequestPartnerandprogramfromAmin',
     LaunchPlayWright: '/partnerProgram/launchPlayWright',
+    GetAllPartnerProgramById: '/partnerProgram/getAllPartnerProgramById',
   },
   DISTRIBUTOR: {
     INDEX: '/distributor',
@@ -316,6 +318,7 @@ export const API = {
     QUERY: 'lineItemSyncing/query',
     SalesForceAdd: '/lineItemSyncing/insertLineItemSyncingForSalesForce',
     SalesForceGet: '/lineItemSyncing/queryLineItemSyncinForSalesFOrce',
+    postManual: '/lineItemSyncing/addLineItemSyncingManualy',
   },
   SALESFORCE: {
     INDEX: '/salesForce',
@@ -325,5 +328,16 @@ export const API = {
     CreateSalesForceDealreg: '/salesForce/createSalesForceDealreg',
     GetSalesForceDealregByOpportunityId:
       '/salesForce/getSalesForceDealregByOpportunityId',
+    GetSalesForceDealregById: '/salesForce/getSalesForceDealregById',
+    UpdateSalesForceDealregById: '/salesForce/updateSalesForceDealregById',
+    GetSalesForcePartnerCredentials:
+      '/salesForce/getSalesForcePartnerCredentials',
+  },
+  SALESFORCE_CREDENTIALS: {
+    INDEX: '/salesForceCredential',
+    QueryAddSalesForceCredentials: '/salesForceCredential/query',
+    UpdateSalesForceSSOLogin: '/salesForceCredential/updateSalesForceSSOLogin',
+    DeleteSalesForceCredentials:
+      '/salesForceCredential/deleteSalesForceCredentials',
   },
 };

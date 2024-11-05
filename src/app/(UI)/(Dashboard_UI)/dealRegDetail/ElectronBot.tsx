@@ -1,10 +1,10 @@
-import { Space } from '@/app/components/common/antd/Space';
+import {Space} from '@/app/components/common/antd/Space';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsButton from '@/app/components/common/os-button';
 import OsTooltip from '@/app/components/common/os-tooltip';
 import Typography from '@/app/components/common/typography';
-import { InformationCircleIcon } from '@heroicons/react/24/outline';
-import { useEffect, useState } from 'react';
+import {InformationCircleIcon} from '@heroicons/react/24/outline';
+import {useEffect, useState} from 'react';
 
 const ElectronBot = () => {
   const [os, setOs] = useState('');
@@ -50,9 +50,9 @@ const ElectronBot = () => {
   const getElectronAppLink = () => {
     switch (os) {
       case 'windows':
-        return 'https://reselller-os.s3.amazonaws.com/DealRegAI+Setup+0.1.0.exe';
+        return 'https://reselller-os.s3.us-east-1.amazonaws.com/DealRegAI+Setup+0.1.0.exe';
       case 'mac':
-        return 'https://reselller-os.s3.amazonaws.com/DealRegAI-0.1.0.dmg.zip';
+        return 'https://reselller-os.s3.us-east-1.amazonaws.com/DealRegAI-0.1.0.dmg';
       case 'linux':
         return 'https://reselller-os.s3.amazonaws.com/MyApp-linux-x64.zip';
       default:
@@ -74,7 +74,7 @@ const ElectronBot = () => {
   };
 
   return (
-    <div style={{ padding: '10px', marginTop: '10px' }}>
+    <div style={{padding: '10px', marginTop: '10px'}}>
       <Space direction="vertical" size="middle">
         <Typography name="Body 3/Medium">
           <Typography name="Body 3/Bold">Step 1:</Typography> Download Node.js
@@ -89,7 +89,7 @@ const ElectronBot = () => {
             <OsButton buttontype="PRIMARY" text="Download Node.js" />
           </a>
 
-          <div style={{ position: 'relative', display: 'inline-block' }}>
+          <div style={{position: 'relative', display: 'inline-block'}}>
             <a href={getVideoLink()} target="_blank" rel="noopener noreferrer">
               <OsButton buttontype="SECONDARY" text="Watch Video" />
             </a>
@@ -102,7 +102,7 @@ const ElectronBot = () => {
                   Node.js.
                 </Typography>
               }
-              overlayStyle={{ marginLeft: '500px', width: '800px' }}
+              overlayStyle={{marginLeft: '500px', width: '800px'}}
             >
               <InformationCircleIcon
                 width={25}
@@ -164,7 +164,7 @@ const ElectronBot = () => {
               </Space>
             </Space>
           )} */}
-          <div style={{ position: 'relative', display: 'inline-block' }}>
+          <div style={{position: 'relative', display: 'inline-block'}}>
             <a
               href={getPlaywrightVideoLink()}
               target="_blank"
@@ -181,7 +181,7 @@ const ElectronBot = () => {
                   app and install Playwright.
                 </Typography>
               }
-              overlayStyle={{ marginLeft: '500px', width: '800px' }}
+              overlayStyle={{marginLeft: '500px', width: '800px'}}
             >
               <InformationCircleIcon
                 width={25}
@@ -198,16 +198,16 @@ const ElectronBot = () => {
       <br />
       <br />
       <br />
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{display: 'flex', flexDirection: 'column'}}>
         <Typography
           name="Body 3/Bold"
           color={token?.colorLink}
-          style={{ marginBottom: '6px' }}
+          style={{marginBottom: '6px'}}
         >
           Note:
         </Typography>
         <Typography name="Body 4/Medium" color={token?.colorPrimaryText}>
-          <ul style={{ listStyleType: 'disc', marginLeft: '20px' }}>
+          <ul style={{listStyleType: 'disc', marginLeft: '20px'}}>
             <li>
               <a
                 href={getNodeJsRequirementsLink()}

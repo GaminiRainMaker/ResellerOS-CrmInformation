@@ -3,12 +3,12 @@
 
 'use client';
 
-import { Space } from '@/app/components/common/antd/Space';
+import {Space} from '@/app/components/common/antd/Space';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
 import OsAvatar from '@/app/components/common/os-avatar';
 import Typography from '@/app/components/common/typography';
-import { ChevronRightIcon } from '@heroicons/react/20/solid';
+import {ChevronRightIcon} from '@heroicons/react/20/solid';
 import {
   AdjustmentsHorizontalIcon,
   BoltIcon,
@@ -19,19 +19,19 @@ import {
   UserGroupIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
-import { Layout, MenuProps } from 'antd';
+import {Layout, MenuProps} from 'antd';
 import Image from 'next/image';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import {usePathname, useRouter, useSearchParams} from 'next/navigation';
+import React, {useEffect, useState} from 'react';
 import ActiveCrmIcon from '../../../../../public/assets/static/activeCrmIcon.svg';
 import InActiveCrmIcon from '../../../../../public/assets/static/inActiveCrmIcon.svg';
 import {
   getOranizationSeats,
   getUserByTokenAccess,
 } from '../../../../../redux/actions/user';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { setUserInformation } from '../../../../../redux/slices/user';
-import { LayoutMenuStyle } from './styled-components';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {setUserInformation} from '../../../../../redux/slices/user';
+import {LayoutMenuStyle} from './styled-components';
 import {
   getAllCustomerOfCacheFlow,
   getProposalForSubscription,
@@ -44,7 +44,7 @@ import {
   setCacheTotalDealRegSeats,
 } from '../../../../../redux/slices/cacheFLow';
 
-const { Sider } = Layout;
+const {Sider} = Layout;
 
 const SideBar = () => {
   const [token] = useThemeToken();
@@ -53,8 +53,8 @@ const SideBar = () => {
   const [collapsed, setCollapsed] = useState<boolean>(true);
   const [selectedKey, setSelectedKey] = useState<number>(1);
   const [crmChildKey, setCrmChildKey] = useState<number>(0);
-  const { userInformation } = useAppSelector((state) => state.user);
-  const { cacheAvailableSeats } = useAppSelector((state) => state.cacheFLow);
+  const {userInformation} = useAppSelector((state) => state.user);
+  const {cacheAvailableSeats} = useAppSelector((state) => state.cacheFLow);
   const searchParams = useSearchParams()!;
   const salesForceUrl = searchParams.get('instance_url');
 
@@ -211,7 +211,7 @@ const SideBar = () => {
             }
             if (items?.name === 'DealRegAI') {
               dispatch(
-                setCacheTotalDealRegSeats({ TotalDealRegSeats: items?.quantity }),
+                setCacheTotalDealRegSeats({TotalDealRegSeats: items?.quantity}),
               );
             }
           });
@@ -271,593 +271,633 @@ const SideBar = () => {
 
   const items: MenuItem[] = [
     Role !== 'superAdmin' &&
-    !salesForceUrl &&
-    getItem(
-      <Typography
-        cursor="pointer"
-        onClick={() => {
-          setSelectedKey(1);
-          setCrmChildKey(0);
-          router?.push('/dashboard');
-        }}
-        name="Button 1"
-      >
-        <Space size={12}>
-          <OsAvatar
-            icon={
-              <Squares2X2Icon
-                color={
-                  selectedKey == 1
-                    ? token?.colorLink
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
-          <Typography
-            cursor="pointer"
-            name="Button 1"
-            style={{
-              marginTop: '1px',
-            }}
-            color={
-              selectedKey == 1 ? token?.colorLink : token?.colorTextSecondary
-            }
-          >
-            Dashboard
-          </Typography>
-        </Space>
-      </Typography>,
-      '1',
-    ),
+      !salesForceUrl &&
+      getItem(
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setSelectedKey(1);
+            setCrmChildKey(0);
+            router?.push('/dashboard');
+          }}
+          name="Button 1"
+        >
+          <Space size={12}>
+            <OsAvatar
+              icon={
+                <Squares2X2Icon
+                  color={
+                    selectedKey == 1
+                      ? token?.colorLink
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+              }}
+              color={
+                selectedKey == 1 ? token?.colorLink : token?.colorTextSecondary
+              }
+            >
+              Dashboard
+            </Typography>
+          </Space>
+        </Typography>,
+        '1',
+      ),
     isAdmin &&
-    Role === 'superAdmin' &&
-    getItem(
-      <Typography
-        cursor="pointer"
-        onClick={() => {
-          setSelectedKey(2);
-        }}
-        name="Button 1"
-        color={token?.colorTextSecondary}
-      >
-        <Space size={12}>
-          <OsAvatar
-            icon={
-              <CurrencyDollarIcon
-                color={
-                  selectedKey === 2 ||
+      Role === 'superAdmin' &&
+      getItem(
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setSelectedKey(2);
+          }}
+          name="Button 1"
+          color={token?.colorTextSecondary}
+        >
+          <Space size={12}>
+            <OsAvatar
+              icon={
+                <CurrencyDollarIcon
+                  color={
+                    selectedKey === 2 ||
                     selectedKey === 3 ||
                     selectedKey === 4 ||
                     selectedKey === 5
-                    ? token?.colorLink
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
-          <Typography
-            cursor="pointer"
-            name="Button 1"
-            style={{
-              marginTop: '1px',
-              marginRight: '60px',
-            }}
-            color={
-              selectedKey === 2 ||
+                      ? token?.colorLink
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+                marginRight: '60px',
+              }}
+              color={
+                selectedKey === 2 ||
                 selectedKey === 3 ||
                 selectedKey === 4 ||
                 selectedKey === 5
-                ? token?.colorLink
-                : token?.colorTextSecondary
-            }
-          >
-            Quote
-          </Typography>
-        </Space>
-      </Typography>,
-      '2',
-      '',
-      [
-        getItem(
-          <Space
-            size={12}
-            onClick={() => {
-              setSelectedKey(2);
-              router?.push('/unprocessedQuote');
-            }}
-          >
-            <OsAvatar
-              icon={
-                selectedKey === 2 ? (
-                  <Image
-                    src={ActiveCrmIcon}
-                    alt="ActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                ) : (
-                  <Image
-                    src={InActiveCrmIcon}
-                    alt="InActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                )
-              }
-            />
-            <Typography
-              name="Button 1"
-              cursor="pointer"
-              color={
-                selectedKey?.toString()?.includes('2')
-                  ? token.colorPrimaryBorder
+                  ? token?.colorLink
                   : token?.colorTextSecondary
               }
             >
-              Edited Quotes
+              Quote
             </Typography>
-          </Space>,
-          '2',
-        ),
-        getItem(
-          <Space
-            size={12}
-            onClick={() => {
-              setSelectedKey(3);
-              router?.push('/quoteConfiguration');
-            }}
-            color={token?.colorTextSecondary}
-          >
-            <OsAvatar
-              icon={
-                selectedKey === 3 ? (
-                  <Image
-                    src={ActiveCrmIcon}
-                    alt="ActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                ) : (
-                  <Image
-                    src={InActiveCrmIcon}
-                    alt="InActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                )
-              }
-            />
-            <Typography
-              cursor="pointer"
-              name="Button 1"
-              color={
-                selectedKey?.toString()?.includes('3')
-                  ? token.colorPrimaryBorder
-                  : token?.colorTextSecondary
-              }
+          </Space>
+        </Typography>,
+        '2',
+        '',
+        [
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(2);
+                router?.push('/unprocessedQuote');
+              }}
             >
-              Quotes Configuration
-            </Typography>
-          </Space>,
-          '3',
-        ),
-        getItem(
-          <Space
-            size={12}
-            onClick={() => {
-              setSelectedKey(4);
-              router?.push('/contract');
-            }}
-            color={token?.colorTextSecondary}
-          >
-            <OsAvatar
-              icon={
-                selectedKey === 4 ? (
-                  <Image
-                    src={ActiveCrmIcon}
-                    alt="ActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                ) : (
-                  <Image
-                    src={InActiveCrmIcon}
-                    alt="InActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                )
-              }
-            />
-            <Typography
-              cursor="pointer"
-              name="Button 1"
-              color={
-                selectedKey?.toString()?.includes('4')
-                  ? token.colorPrimaryBorder
-                  : token?.colorTextSecondary
-              }
-            >
-              Contract
-            </Typography>
-          </Space>,
-          '4',
-        ),
-        getItem(
-          <Space
-            size={12}
-            onClick={() => {
-              setSelectedKey(5);
-              router?.push('/contractProduct');
-            }}
-            color={token?.colorTextSecondary}
-          >
-            <OsAvatar
-              icon={
-                selectedKey === 5 ? (
-                  <Image
-                    src={ActiveCrmIcon}
-                    alt="ActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                ) : (
-                  <Image
-                    src={InActiveCrmIcon}
-                    alt="InActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                )
-              }
-            />
-            <Typography
-              cursor="pointer"
-              name="Button 1"
-              color={
-                selectedKey?.toString()?.includes('5')
-                  ? token.colorPrimaryBorder
-                  : token?.colorTextSecondary
-              }
-            >
-              Contract Product
-            </Typography>
-          </Space>,
-          '5',
-        ),
-        getItem(
-          <Space
-            size={12}
-            onClick={() => {
-              setSelectedKey(6);
-              router?.push('/quoteMapping');
-            }}
-            color={token?.colorTextSecondary}
-          >
-            <OsAvatar
-              icon={
-                selectedKey === 6 ? (
-                  <Image
-                    src={ActiveCrmIcon}
-                    alt="ActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                ) : (
-                  <Image
-                    src={InActiveCrmIcon}
-                    alt="InActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                )
-              }
-            />
-            <Typography
-              cursor="pointer"
-              name="Button 1"
-              color={
-                selectedKey?.toString()?.includes('6')
-                  ? token.colorPrimaryBorder
-                  : token?.colorTextSecondary
-              }
-            >
-              Quote Mappings
-            </Typography>
-          </Space>,
-          '6',
-        ),
-        getItem(
-          <Space
-            size={12}
-            onClick={() => {
-              setSelectedKey(7);
-              router?.push('/formulas');
-            }}
-            color={token?.colorTextSecondary}
-          >
-            <OsAvatar
-              icon={
-                selectedKey === 7 ? (
-                  <Image
-                    src={ActiveCrmIcon}
-                    alt="ActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                ) : (
-                  <Image
-                    src={InActiveCrmIcon}
-                    alt="InActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                )
-              }
-            />
-            <Typography
-              cursor="pointer"
-              name="Button 1"
-              color={
-                selectedKey?.toString()?.includes('6')
-                  ? token.colorPrimaryBorder
-                  : token?.colorTextSecondary
-              }
-            >
-              Stored Formulas
-            </Typography>
-          </Space>,
-          '7',
-        ),
-      ],
-    ),
-    isQuoteAI &&
-    Role === 'reseller' &&
-    getItem(
-      <Typography
-        cursor="pointer"
-        onClick={() => {
-          setSelectedKey(6);
-          router?.push('/allQuote');
-        }}
-        name="Button 1"
-        color={token?.colorTextSecondary}
-      >
-        <Space size={12}>
-          <OsAvatar
-            icon={
-              <CurrencyDollarIcon
+              <OsAvatar
+                icon={
+                  selectedKey === 2 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                name="Button 1"
+                cursor="pointer"
                 color={
-                  selectedKey === 6
-                    ? token?.colorLink
+                  selectedKey?.toString()?.includes('2')
+                    ? token.colorPrimaryBorder
                     : token?.colorTextSecondary
                 }
-                width={24}
+              >
+                Edited Quotes
+              </Typography>
+            </Space>,
+            '2',
+          ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(3);
+                router?.push('/quoteConfiguration');
+              }}
+              color={token?.colorTextSecondary}
+            >
+              <OsAvatar
+                icon={
+                  selectedKey === 3 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
               />
-            }
-          />
-          <Typography
-            cursor="pointer"
-            name="Button 1"
-            style={{
-              marginTop: '1px',
-              marginRight: '60px',
-            }}
-            color={
-              selectedKey === 6 ? token?.colorLink : token?.colorTextSecondary
-            }
-          >
-            Quote AI
-          </Typography>
-        </Space>
-      </Typography>,
-      '6',
-      '',
-    ),
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                color={
+                  selectedKey?.toString()?.includes('3')
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                Quotes Configuration
+              </Typography>
+            </Space>,
+            '3',
+          ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(4);
+                router?.push('/contract');
+              }}
+              color={token?.colorTextSecondary}
+            >
+              <OsAvatar
+                icon={
+                  selectedKey === 4 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                color={
+                  selectedKey?.toString()?.includes('4')
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                Contract
+              </Typography>
+            </Space>,
+            '4',
+          ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(5);
+                router?.push('/contractProduct');
+              }}
+              color={token?.colorTextSecondary}
+            >
+              <OsAvatar
+                icon={
+                  selectedKey === 5 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                color={
+                  selectedKey?.toString()?.includes('5')
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                Contract Product
+              </Typography>
+            </Space>,
+            '5',
+          ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(6);
+                router?.push('/quoteMapping');
+              }}
+              color={token?.colorTextSecondary}
+            >
+              <OsAvatar
+                icon={
+                  selectedKey === 6 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                color={
+                  selectedKey?.toString()?.includes('6')
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                Quote Mappings
+              </Typography>
+            </Space>,
+            '6',
+          ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(7);
+                router?.push('/formulas');
+              }}
+              color={token?.colorTextSecondary}
+            >
+              <OsAvatar
+                icon={
+                  selectedKey === 7 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                color={
+                  selectedKey?.toString()?.includes('6')
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                Stored Formulas
+              </Typography>
+            </Space>,
+            '7',
+          ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(8);
+                router?.push('/salesForceCredentials');
+              }}
+              color={token?.colorTextSecondary}
+            >
+              <OsAvatar
+                icon={
+                  selectedKey === 8 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                color={
+                  selectedKey?.toString()?.includes('8')
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                SalesForce Credentials
+              </Typography>
+            </Space>,
+            '8',
+          ),
+        ],
+      ),
+    isQuoteAI &&
+      Role === 'reseller' &&
+      getItem(
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setSelectedKey(6);
+            router?.push('/allQuote');
+          }}
+          name="Button 1"
+          color={token?.colorTextSecondary}
+        >
+          <Space size={12}>
+            <OsAvatar
+              icon={
+                <CurrencyDollarIcon
+                  color={
+                    selectedKey === 6
+                      ? token?.colorLink
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+                marginRight: '60px',
+              }}
+              color={
+                selectedKey === 6 ? token?.colorLink : token?.colorTextSecondary
+              }
+            >
+              Quote AI
+            </Typography>
+          </Space>
+        </Typography>,
+        '6',
+        '',
+      ),
 
     isDealReg &&
-    Role === 'reseller' &&
-    getItem(
-      <Typography
-        cursor="pointer"
-        onClick={() => {
-          setSelectedKey(7);
-          setCrmChildKey(0);
-          router?.push('/dealReg');
-        }}
-        name="Button 1"
-        color={token?.colorTextSecondary}
-      >
-        <Space size={12}>
-          <OsAvatar
-            icon={
-              <ReceiptPercentIcon
-                color={
-                  selectedKey === 7
-                    ? token?.colorLink
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
-
-          <Typography
-            cursor="pointer"
-            name="Button 1"
-            style={{
-              marginTop: '1px',
-            }}
-            color={
-              selectedKey === 7 ? token?.colorLink : token?.colorTextSecondary
-            }
-          >
-            {' '}
-            DealRegAI
-          </Typography>
-        </Space>
-      </Typography>,
-      '7',
-    ),
-    isAdmin &&
-    Role === 'superAdmin' &&
-    getItem(
-      <Space>
+      Role === 'reseller' &&
+      getItem(
         <Typography
           cursor="pointer"
           onClick={() => {
             setSelectedKey(7);
             setCrmChildKey(0);
-            router?.push('/assertMapping');
+            router?.push('/dealReg');
           }}
           name="Button 1"
           color={token?.colorTextSecondary}
         >
-          {' '}
-          <OsAvatar
-            icon={
-              <ShoppingBagIcon
-                color={
-                  selectedKey === 8 || selectedKey === 7
-                    ? token?.colorLink
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
-          <Typography
-            cursor="pointer"
-            name="Button 1"
-            color={
-              selectedKey === 8 || selectedKey === 7
-                ? token?.colorLink
-                : token?.colorTextSecondary
-            }
-            style={{ marginLeft: '12px' }}
-          >
-            Order AI{' '}
-          </Typography>
-        </Typography>
-      </Space>,
-      '7',
-      '',
-      [
-        // getItem(
-        //   <Space
-        //     size={12}
-        //     onClick={() => {
-        //       setSelectedKey(7);
-        //       router?.push('/dealReg');
-        //     }}
-        //   >
-        //     <OsAvatar
-        //       icon={
-        //         selectedKey === 7 ? (
-        //           <Image
-        //             src={ActiveCrmIcon}
-        //             alt="ActiveCrmIcon"
-        //             style={{width: '15px', height: '15px'}}
-        //           />
-        //         ) : (
-        //           <Image
-        //             src={InActiveCrmIcon}
-        //             alt="InActiveCrmIcon"
-        //             style={{width: '15px', height: '15px'}}
-        //           />
-        //         )
-        //       }
-        //     />
-        //     <Typography
-        //       name="Button 1"
-        //       cursor="pointer"
-        //       color={
-        //         selectedKey === 7
-        //           ? token.colorPrimaryBorder
-        //           : token?.colorTextSecondary
-        //       }
-        //     >
-        //       DealRegAI
-        //     </Typography>
-        //   </Space>,
-        //   '7',
-        // ),
-        getItem(
-          <Space
-            size={12}
-            onClick={() => {
-              setSelectedKey(8);
-              router?.push('/assertMapping');
-            }}
-          >
+          <Space size={12}>
             <OsAvatar
               icon={
-                selectedKey === 8 ? (
-                  <Image
-                    src={ActiveCrmIcon}
-                    alt="ActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                ) : (
-                  <Image
-                    src={InActiveCrmIcon}
-                    alt="InActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                )
+                <ReceiptPercentIcon
+                  color={
+                    selectedKey === 7
+                      ? token?.colorLink
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+              }}
+              color={
+                selectedKey === 7 ? token?.colorLink : token?.colorTextSecondary
+              }
+            >
+              {' '}
+              DealRegAI
+            </Typography>
+          </Space>
+        </Typography>,
+        '7',
+      ),
+    isAdmin &&
+      Role === 'superAdmin' &&
+      getItem(
+        <Space>
+          <Typography
+            cursor="pointer"
+            onClick={() => {
+              setSelectedKey(7);
+              setCrmChildKey(0);
+              router?.push('/assertMapping');
+            }}
+            name="Button 1"
+            color={token?.colorTextSecondary}
+          >
+            {' '}
+            <OsAvatar
+              icon={
+                <ShoppingBagIcon
+                  color={
+                    selectedKey === 8 || selectedKey === 7
+                      ? token?.colorLink
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
               }
             />
             <Typography
-              name="Button 1"
               cursor="pointer"
+              name="Button 1"
               color={
-                selectedKey === 8
-                  ? token.colorPrimaryBorder
+                selectedKey === 8 || selectedKey === 7
+                  ? token?.colorLink
                   : token?.colorTextSecondary
               }
+              style={{marginLeft: '12px'}}
             >
-              Asset Mappings
+              Order AI{' '}
             </Typography>
-          </Space>,
-          '8',
-        ),
-      ],
-    ),
-    isDealReg &&
-    Role === 'superAdmin' &&
-    getItem(
-      <Typography
-        cursor="pointer"
-        onClick={() => {
-          setSelectedKey(9);
-          setCrmChildKey(0);
-          router?.push('/superAdminDealReg');
-        }}
-        name="Button 1"
-        color={token?.colorTextSecondary}
-      >
-        <Space size={12}>
-          <OsAvatar
-            icon={
-              <ReceiptPercentIcon
+          </Typography>
+        </Space>,
+        '7',
+        '',
+        [
+          // getItem(
+          //   <Space
+          //     size={12}
+          //     onClick={() => {
+          //       setSelectedKey(7);
+          //       router?.push('/dealReg');
+          //     }}
+          //   >
+          //     <OsAvatar
+          //       icon={
+          //         selectedKey === 7 ? (
+          //           <Image
+          //             src={ActiveCrmIcon}
+          //             alt="ActiveCrmIcon"
+          //             style={{width: '15px', height: '15px'}}
+          //           />
+          //         ) : (
+          //           <Image
+          //             src={InActiveCrmIcon}
+          //             alt="InActiveCrmIcon"
+          //             style={{width: '15px', height: '15px'}}
+          //           />
+          //         )
+          //       }
+          //     />
+          //     <Typography
+          //       name="Button 1"
+          //       cursor="pointer"
+          //       color={
+          //         selectedKey === 7
+          //           ? token.colorPrimaryBorder
+          //           : token?.colorTextSecondary
+          //       }
+          //     >
+          //       DealRegAI
+          //     </Typography>
+          //   </Space>,
+          //   '7',
+          // ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(8);
+                router?.push('/assertMapping');
+              }}
+            >
+              <OsAvatar
+                icon={
+                  selectedKey === 8 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                name="Button 1"
+                cursor="pointer"
                 color={
-                  selectedKey === 9
-                    ? token?.colorLink
+                  selectedKey === 8
+                    ? token.colorPrimaryBorder
                     : token?.colorTextSecondary
                 }
-                width={24}
-              />
-            }
-          />
+              >
+                Asset Mappings
+              </Typography>
+            </Space>,
+            '8',
+          ),
+        ],
+      ),
+    isDealReg &&
+      Role === 'superAdmin' &&
+      getItem(
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setSelectedKey(9);
+            setCrmChildKey(0);
+            router?.push('/superAdminDealReg');
+          }}
+          name="Button 1"
+          color={token?.colorTextSecondary}
+        >
+          <Space size={12}>
+            <OsAvatar
+              icon={
+                <ReceiptPercentIcon
+                  color={
+                    selectedKey === 9
+                      ? token?.colorLink
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
 
-          <Typography
-            cursor="pointer"
-            name="Button 1"
-            style={{
-              marginTop: '1px',
-            }}
-            color={
-              selectedKey === 9 ? token?.colorLink : token?.colorTextSecondary
-            }
-          >
-            {' '}
-            DealRegAI
-          </Typography>
-        </Space>
-      </Typography>,
-      '9',
-    ),
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+              }}
+              color={
+                selectedKey === 9 ? token?.colorLink : token?.colorTextSecondary
+              }
+            >
+              {' '}
+              DealRegAI
+            </Typography>
+          </Space>
+        </Typography>,
+        '9',
+      ),
     // isOrderAI &&
     //   getItem(
     //     <Typography
@@ -904,97 +944,97 @@ const SideBar = () => {
     //   ),
 
     isDealReg &&
-    Role === 'reseller' &&
-    getItem(
-      <Typography
-        cursor="pointer"
-        onClick={() => {
-          setSelectedKey(10);
-          setCrmChildKey(0);
-          router?.push(
-            isAdmin && Role === 'superAdmin'
-              ? 'superAdminPartner'
-              : '/partners',
-          );
-        }}
-        name="Button 1"
-        color={token?.colorTextSecondary}
-      >
-        <Space size={12}>
-          <OsAvatar
-            icon={
-              <UsersIcon
-                color={
-                  selectedKey === 10
-                    ? token?.colorLink
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
-          <Typography
-            cursor="pointer"
-            name="Button 1"
-            style={{
-              marginTop: '1px',
-            }}
-            color={
-              selectedKey === 10
-                ? token?.colorLink
-                : token?.colorTextSecondary
-            }
-          >
-            Partners & Partners Program
-          </Typography>
-        </Space>
-      </Typography>,
-      '10',
-    ),
+      Role === 'reseller' &&
+      getItem(
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setSelectedKey(10);
+            setCrmChildKey(0);
+            router?.push(
+              isAdmin && Role === 'superAdmin'
+                ? 'superAdminPartner'
+                : '/partners',
+            );
+          }}
+          name="Button 1"
+          color={token?.colorTextSecondary}
+        >
+          <Space size={12}>
+            <OsAvatar
+              icon={
+                <UsersIcon
+                  color={
+                    selectedKey === 10
+                      ? token?.colorLink
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+              }}
+              color={
+                selectedKey === 10
+                  ? token?.colorLink
+                  : token?.colorTextSecondary
+              }
+            >
+              Partners & Partners Program
+            </Typography>
+          </Space>
+        </Typography>,
+        '10',
+      ),
     isAdmin &&
-    Role === 'superAdmin' &&
-    getItem(
-      <Typography
-        cursor="pointer"
-        onClick={() => {
-          setSelectedKey(11);
-          setCrmChildKey(0);
-          router?.push('superAdminPartner');
-        }}
-        name="Button 1"
-        color={token?.colorTextSecondary}
-      >
-        <Space size={12}>
-          <OsAvatar
-            icon={
-              <UsersIcon
-                color={
-                  selectedKey === 11
-                    ? token?.colorLink
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
-          <Typography
-            cursor="pointer"
-            name="Button 1"
-            style={{
-              marginTop: '1px',
-            }}
-            color={
-              selectedKey === 11
-                ? token?.colorLink
-                : token?.colorTextSecondary
-            }
-          >
-            Partners & Partners Program
-          </Typography>
-        </Space>
-      </Typography>,
-      '11',
-    ),
+      Role === 'superAdmin' &&
+      getItem(
+        <Typography
+          cursor="pointer"
+          onClick={() => {
+            setSelectedKey(11);
+            setCrmChildKey(0);
+            router?.push('superAdminPartner');
+          }}
+          name="Button 1"
+          color={token?.colorTextSecondary}
+        >
+          <Space size={12}>
+            <OsAvatar
+              icon={
+                <UsersIcon
+                  color={
+                    selectedKey === 11
+                      ? token?.colorLink
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+              }}
+              color={
+                selectedKey === 11
+                  ? token?.colorLink
+                  : token?.colorTextSecondary
+              }
+            >
+              Partners & Partners Program
+            </Typography>
+          </Space>
+        </Typography>,
+        '11',
+      ),
     // !isAdmin &&
     //   Role === 'reseller' &&
     //   getItem(
@@ -1040,231 +1080,192 @@ const SideBar = () => {
     //     '12',
     //   ),
     (isQuoteAI || isDealReg) &&
-    Role === 'reseller' &&
-    getItem(
-      <Typography
-        cursor="pointer"
-        onClick={() => {
-          setSelectedKey(13);
-        }}
-        name="Button 1"
-        color={token?.colorTextSecondary}
-      >
-        <Space size={12}>
-          <OsAvatar
-            icon={
-              <UserGroupIcon
-                color={
-                  selectedKey === 14 ||
-                    selectedKey === 13 ||
-                    selectedKey === 15
-                    ? token?.colorLink
-                    : token?.colorTextSecondary
-                }
-                width={24}
-              />
-            }
-          />
-          <Typography
-            cursor="pointer"
-            name="Button 1"
-            style={{
-              marginTop: '1px',
-              marginRight: '60px',
-            }}
-            color={
-              selectedKey === 14 || selectedKey === 13 || selectedKey === 15
-                ? token?.colorLink
-                : token?.colorTextSecondary
-            }
-          >
-            CRM Information
-          </Typography>
-        </Space>
-      </Typography>,
-      '13',
-      '',
-      [
-        getItem(
-          <Space
-            size={12}
-            onClick={() => {
-              setCrmChildKey(1);
-              setSelectedKey(13);
-              router?.push('/crmInAccount');
-            }}
-          >
-            <OsAvatar
-              icon={
-                crmChildKey === 1 ? (
-                  <Image
-                    src={ActiveCrmIcon}
-                    alt="ActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                ) : (
-                  <Image
-                    src={InActiveCrmIcon}
-                    alt="InActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                )
-              }
-            />
-            <Typography
-              name="Button 1"
-              cursor="pointer"
-              color={
-                crmChildKey === 1
-                  ? token.colorPrimaryBorder
-                  : token?.colorTextSecondary
-              }
-            >
-              Accounts
-            </Typography>
-          </Space>,
-          '13',
-        ),
-        getItem(
-          <Space
-            size={12}
-            onClick={() => {
-              setCrmChildKey(2);
-              setSelectedKey(14);
-              router?.push('/crmContact');
-            }}
-            color={token?.colorTextSecondary}
-          >
-            <OsAvatar
-              icon={
-                crmChildKey === 2 ? (
-                  <Image
-                    src={ActiveCrmIcon}
-                    alt="ActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                ) : (
-                  <Image
-                    src={InActiveCrmIcon}
-                    alt="InActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                )
-              }
-            />
-            <Typography
-              cursor="pointer"
-              name="Button 1"
-              color={
-                crmChildKey === 2
-                  ? token.colorPrimaryBorder
-                  : token?.colorTextSecondary
-              }
-            >
-              Contacts
-            </Typography>
-          </Space>,
-          '14',
-        ),
-        getItem(
-          <Space
-            size={12}
-            onClick={() => {
-              setCrmChildKey(3);
-              setSelectedKey(15);
-              router?.push('/crmOpportunity');
-            }}
-            color={token?.colorTextSecondary}
-          >
-            <OsAvatar
-              icon={
-                crmChildKey === 3 ? (
-                  <Image
-                    src={ActiveCrmIcon}
-                    alt="ActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                ) : (
-                  <Image
-                    src={InActiveCrmIcon}
-                    alt="InActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                )
-              }
-            />
-            <Typography
-              cursor="pointer"
-              name="Button 1"
-              color={
-                crmChildKey === 3
-                  ? token.colorPrimaryBorder
-                  : token?.colorTextSecondary
-              }
-            >
-              Opportunity
-            </Typography>
-          </Space>,
-          '15',
-        ),
-      ],
-    ),
-    isAdmin &&
-    Role === 'reseller' &&
-    getItem(
-      <Space
-        size={12}
-        onClick={() => {
-          setSelectedKey(16);
-          setCrmChildKey(0);
-          router?.push('/admin');
-        }}
-        color={token?.colorTextSecondary}
-      >
-        <OsAvatar
-          icon={
-            <AdjustmentsHorizontalIcon
-              color={
-                selectedKey === 16
-                  ? token?.colorLink
-                  : token?.colorTextSecondary
-              }
-              width={24}
-            />
-          }
-        />
-
-        <Typography
-          cursor="pointer"
-          name="Button 1"
-          color={
-            selectedKey === 16 ? token?.colorLink : token?.colorTextSecondary
-          }
-        >
-          Admin
-        </Typography>
-      </Space>,
-      '16',
-    ),
-    isAdmin &&
-    Role === 'superAdmin' &&
-    getItem(
-      <Space>
+      Role === 'reseller' &&
+      getItem(
         <Typography
           cursor="pointer"
           onClick={() => {
-            setSelectedKey(17);
-            setCrmChildKey(0);
-            router?.push('/userManagement');
+            setSelectedKey(13);
           }}
           name="Button 1"
           color={token?.colorTextSecondary}
         >
+          <Space size={12}>
+            <OsAvatar
+              icon={
+                <UserGroupIcon
+                  color={
+                    selectedKey === 14 ||
+                    selectedKey === 13 ||
+                    selectedKey === 15
+                      ? token?.colorLink
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
+              }
+            />
+            <Typography
+              cursor="pointer"
+              name="Button 1"
+              style={{
+                marginTop: '1px',
+                marginRight: '60px',
+              }}
+              color={
+                selectedKey === 14 || selectedKey === 13 || selectedKey === 15
+                  ? token?.colorLink
+                  : token?.colorTextSecondary
+              }
+            >
+              CRM Information
+            </Typography>
+          </Space>
+        </Typography>,
+        '13',
+        '',
+        [
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setCrmChildKey(1);
+                setSelectedKey(13);
+                router?.push('/crmInAccount');
+              }}
+            >
+              <OsAvatar
+                icon={
+                  crmChildKey === 1 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                name="Button 1"
+                cursor="pointer"
+                color={
+                  crmChildKey === 1
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                Accounts
+              </Typography>
+            </Space>,
+            '13',
+          ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setCrmChildKey(2);
+                setSelectedKey(14);
+                router?.push('/crmContact');
+              }}
+              color={token?.colorTextSecondary}
+            >
+              <OsAvatar
+                icon={
+                  crmChildKey === 2 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                color={
+                  crmChildKey === 2
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                Contacts
+              </Typography>
+            </Space>,
+            '14',
+          ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setCrmChildKey(3);
+                setSelectedKey(15);
+                router?.push('/crmOpportunity');
+              }}
+              color={token?.colorTextSecondary}
+            >
+              <OsAvatar
+                icon={
+                  crmChildKey === 3 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                color={
+                  crmChildKey === 3
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                Opportunity
+              </Typography>
+            </Space>,
+            '15',
+          ),
+        ],
+      ),
+    isAdmin &&
+      Role === 'reseller' &&
+      getItem(
+        <Space
+          size={12}
+          onClick={() => {
+            setSelectedKey(16);
+            setCrmChildKey(0);
+            router?.push('/admin');
+          }}
+          color={token?.colorTextSecondary}
+        >
           <OsAvatar
             icon={
-              <UserGroupIcon
+              <AdjustmentsHorizontalIcon
                 color={
-                  selectedKey === 18 || selectedKey === 17
+                  selectedKey === 16
                     ? token?.colorLink
                     : token?.colorTextSecondary
                 }
@@ -1277,100 +1278,139 @@ const SideBar = () => {
             cursor="pointer"
             name="Button 1"
             color={
-              selectedKey === 17 || selectedKey === 18
-                ? token?.colorLink
-                : token?.colorTextSecondary
+              selectedKey === 16 ? token?.colorLink : token?.colorTextSecondary
             }
-            style={{ marginLeft: '12px' }}
           >
-            User Management
+            Admin
           </Typography>
-        </Typography>
-      </Space>,
-      '17',
-      '',
-      [
-        getItem(
-          <Space
-            size={12}
+        </Space>,
+        '16',
+      ),
+    isAdmin &&
+      Role === 'superAdmin' &&
+      getItem(
+        <Space>
+          <Typography
+            cursor="pointer"
             onClick={() => {
               setSelectedKey(17);
+              setCrmChildKey(0);
               router?.push('/userManagement');
             }}
-          >
-            <OsAvatar
-              icon={
-                selectedKey === 17 ? (
-                  <Image
-                    src={ActiveCrmIcon}
-                    alt="ActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                ) : (
-                  <Image
-                    src={InActiveCrmIcon}
-                    alt="InActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                )
-              }
-            />
-            <Typography
-              name="Button 1"
-              cursor="pointer"
-              color={
-                selectedKey === 17
-                  ? token.colorPrimaryBorder
-                  : token?.colorTextSecondary
-              }
-            >
-              All Resellers
-            </Typography>
-          </Space>,
-          '17',
-        ),
-        getItem(
-          <Space
-            size={12}
-            onClick={() => {
-              setSelectedKey(18);
-              router?.push('/superAdminPermissions');
-            }}
+            name="Button 1"
             color={token?.colorTextSecondary}
           >
             <OsAvatar
               icon={
-                selectedKey === 18 ? (
-                  <Image
-                    src={ActiveCrmIcon}
-                    alt="ActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                ) : (
-                  <Image
-                    src={InActiveCrmIcon}
-                    alt="InActiveCrmIcon"
-                    style={{ width: '15px', height: '15px' }}
-                  />
-                )
+                <UserGroupIcon
+                  color={
+                    selectedKey === 18 || selectedKey === 17
+                      ? token?.colorLink
+                      : token?.colorTextSecondary
+                  }
+                  width={24}
+                />
               }
             />
+
             <Typography
               cursor="pointer"
               name="Button 1"
               color={
-                selectedKey === 18
-                  ? token.colorPrimaryBorder
+                selectedKey === 17 || selectedKey === 18
+                  ? token?.colorLink
                   : token?.colorTextSecondary
               }
+              style={{marginLeft: '12px'}}
             >
-              Super Admin Permissions
+              User Management
             </Typography>
-          </Space>,
-          '18',
-        ),
-      ],
-    ),
+          </Typography>
+        </Space>,
+        '17',
+        '',
+        [
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(17);
+                router?.push('/userManagement');
+              }}
+            >
+              <OsAvatar
+                icon={
+                  selectedKey === 17 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                name="Button 1"
+                cursor="pointer"
+                color={
+                  selectedKey === 17
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                All Resellers
+              </Typography>
+            </Space>,
+            '17',
+          ),
+          getItem(
+            <Space
+              size={12}
+              onClick={() => {
+                setSelectedKey(18);
+                router?.push('/superAdminPermissions');
+              }}
+              color={token?.colorTextSecondary}
+            >
+              <OsAvatar
+                icon={
+                  selectedKey === 18 ? (
+                    <Image
+                      src={ActiveCrmIcon}
+                      alt="ActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  ) : (
+                    <Image
+                      src={InActiveCrmIcon}
+                      alt="InActiveCrmIcon"
+                      style={{width: '15px', height: '15px'}}
+                    />
+                  )
+                }
+              />
+              <Typography
+                cursor="pointer"
+                name="Button 1"
+                color={
+                  selectedKey === 18
+                    ? token.colorPrimaryBorder
+                    : token?.colorTextSecondary
+                }
+              >
+                Super Admin Permissions
+              </Typography>
+            </Space>,
+            '18',
+          ),
+        ],
+      ),
   ];
 
   return (
@@ -1394,9 +1434,9 @@ const SideBar = () => {
               width: '24px',
               color:
                 selectedKey?.toString()?.includes('7') ||
-                  selectedKey?.toString()?.includes('8') ||
-                  selectedKey?.toString()?.includes('0') ||
-                  selectedKey?.toString()?.includes('9')
+                selectedKey?.toString()?.includes('8') ||
+                selectedKey?.toString()?.includes('0') ||
+                selectedKey?.toString()?.includes('9')
                   ? token?.colorLink
                   : token?.colorTextSecondary,
             }}

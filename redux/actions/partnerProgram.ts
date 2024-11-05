@@ -120,3 +120,15 @@ export const launchPlayWright = createAsyncThunk(
     }
   },
 );
+export const getAllPartnerProgramById = createAsyncThunk(
+  'partnerProgram/getAllPartnerProgramById',
+  async (data: any, thunkApi) => {
+    try {
+      const res = await PARTNER_PROGRAM_API.getAllPartnerProgramById(data);
+      return res.data;
+    } catch (error: any) {
+      console.error('API error:', error); // Log the error for debugging
+      return thunkApi.rejectWithValue(error?.response?.data || error.message);
+    }
+  },
+);

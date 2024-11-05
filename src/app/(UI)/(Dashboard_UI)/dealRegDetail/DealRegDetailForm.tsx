@@ -11,6 +11,7 @@ import {setOpenDealRegDrawer} from '../../../../../redux/slices/dealReg';
 import CommonFields from './CommonField';
 import ResponseDetailForm from './ResponseDetailForm';
 import UniqueFields from './UniqueField';
+import {useSearchParams} from 'next/navigation';
 
 const DealRegDetailForm: FC<any> = ({
   data,
@@ -20,6 +21,9 @@ const DealRegDetailForm: FC<any> = ({
   formData,
 }) => {
   const [token] = useThemeToken();
+  const searchParams = useSearchParams()!;
+  const salesForceUrl = searchParams.get('instance_url');
+
   const dispatch = useAppDispatch();
   const {openDealRegDrawer} = useAppSelector((state) => state.dealReg);
 
@@ -78,18 +82,20 @@ const DealRegDetailForm: FC<any> = ({
 
   return (
     <>
-      <Space
-        style={{
-          width: '100%',
-          background: 'white',
-          padding: '24px',
-          borderRadius: '12px',
-        }}
-        size={24}
-        direction="vertical"
-      >
-        <OsCollapseAdmin items={ResponseDetails} />
-      </Space>
+      {!salesForceUrl && (
+        <Space
+          style={{
+            width: '100%',
+            background: 'white',
+            padding: '24px',
+            borderRadius: '12px',
+          }}
+          size={24}
+          direction="vertical"
+        >
+          <OsCollapseAdmin items={ResponseDetails} />
+        </Space>
+      )}
       <>
         {data?.PartnerProgram?.form_data &&
           data?.type !== 'self_registered' && (

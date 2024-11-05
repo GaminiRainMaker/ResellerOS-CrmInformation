@@ -42,6 +42,7 @@ import contractConfiguration from './slices/contractConfiguration';
 import attachmentDocument from './slices/attachmentDocument';
 import LineItemSyncing from './slices/LineItemSyncing';
 import formulas from './slices/formulas';
+import salesForceCredentials from './slices/salesForceCredentials';
 
 // Configure redux store
 const store = configureStore({
@@ -87,6 +88,7 @@ const store = configureStore({
     attachmentDocument,
     LineItemSyncing,
     formulas,
+    salesForceCredentials,
   },
   middleware: [thunk],
   devTools: true,
