@@ -26,6 +26,7 @@ import {
   newAssertMappingColumns,
   rejectAssertMappingColumns,
 } from './assertMapping';
+import {handleDate} from '@/app/utils/base';
 
 const QuoteMappings = () => {
   const dispatch = useAppDispatch();
@@ -175,9 +176,11 @@ const QuoteMappings = () => {
     if (selectedId?.length > 0) {
       const status = reason ? 'Rejected' : 'Approved';
       const obj = {
+        quote_header: recordData?.quote_header,
+        pdf_header: recordData?.pdf_header,
         id: selectedId,
         status: status,
-        status_date: new Date(),
+        status_date: handleDate(),
         ...(reason && {reason: reason}),
       };
       dispatch(updateLineItemSyncing(obj)).then((d) => {

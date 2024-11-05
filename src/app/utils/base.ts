@@ -228,7 +228,7 @@ export const formbuildernewObject = (newItem: string) => {
       requiredLabel: true,
       hintext: false,
       hintTextValue: 'Hint Value',
-      currency: 'USB',
+      currency: 'USD',
       deciamlHide: false,
     };
   } else if (newItem === 'Radio Button' || newItem === 'Toggle') {

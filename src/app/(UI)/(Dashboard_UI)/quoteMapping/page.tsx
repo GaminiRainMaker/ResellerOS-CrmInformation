@@ -32,6 +32,7 @@ import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
 import {formatStatus, quoteLineItemColumnForSync} from '@/app/utils/CONSTANTS';
 import CommonSelect from '@/app/components/common/os-select';
+import { handleDate } from '@/app/utils/base';
 
 const QuoteMappings = () => {
   const dispatch = useAppDispatch();
@@ -199,7 +200,7 @@ const QuoteMappings = () => {
         pdf_header: recordData?.pdf_header,
         id: selectedId,
         status: status,
-        status_date: new Date(),
+        status_date: handleDate(),
         ...(reason && {reason: reason}),
       };
 
