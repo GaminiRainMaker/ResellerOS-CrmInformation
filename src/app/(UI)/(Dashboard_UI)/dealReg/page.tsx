@@ -73,8 +73,12 @@ const DealReg: React.FC = () => {
       dataIndex: 'date',
       key: 'date',
       width: 187,
-      render: (text: string) => (
-        <Typography name="Body 4/Regular">{handleDate(text, true)}</Typography>
+      render: (text: string, record: any) => (
+        <Typography name="Body 4/Regular">
+          {text
+            ? handleDate(text, true)
+            : formatDate(record?.createdAt, 'MM/DD/YYYY | HH:MM')}
+        </Typography>
       ),
     },
     {

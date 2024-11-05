@@ -195,7 +195,9 @@ function approvedAssertMappingColumns(
       key: 'status_date',
       width: 173,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{handleDate(text, true)}</Typography>
+        <Typography name="Body 4/Regular">
+          {text ? handleDate(text, true) : handleDate(handleDate(), true)}
+        </Typography>
       ),
     },
 
@@ -316,7 +318,9 @@ function rejectAssertMappingColumns(
       key: 'status_date',
       width: 173,
       render: (text: string) => (
-        <Typography name="Body 4/Regular">{handleDate(text, true)}</Typography>
+        <Typography name="Body 4/Regular">
+          {text ? handleDate(text, true) : handleDate(handleDate(), true)}
+        </Typography>
       ),
     },
 

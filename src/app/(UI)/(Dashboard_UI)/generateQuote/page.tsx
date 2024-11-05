@@ -533,9 +533,8 @@ const GenerateQuote: React.FC = () => {
       key: '2',
       title: (
         <Typography name="Heading 3/Medium" color={token?.colorPrimaryText}>
-          {handleDate(quoteById?.date, true) ??
-            quoteById?.file_name ??
-            formatDate(quoteById?.createdAt, 'MM/DD/YYYY | HH:MM')}
+          {quoteById?.file_name ??
+            (quoteById?.date ? handleDate(quoteById?.date, true) : '--')}
         </Typography>
       ),
     },
