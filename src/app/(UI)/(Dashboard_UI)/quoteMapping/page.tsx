@@ -292,7 +292,6 @@ const QuoteMappings = () => {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(' ');
   };
-
   return (
     <>
       <Space direction="vertical" size={24} style={{width: '100%'}}>
@@ -471,26 +470,38 @@ const QuoteMappings = () => {
 
                 <Col>
                   <Row style={{marginTop: '6px'}}>
-                    <CommonSelect
-                      onChange={(e) => {
-                        setManualRecord({...manualRecord, quote_header: e});
-                      }}
-                      allowClear
-                      onClear={() => {
-                        setManualRecord({
-                          ...manualRecord,
-                          quote_header: '',
-                        });
-                      }}
-                      defaultValue={formatStatus(
-                        manualRecord?.quote_header?.toString()?.toUpperCase(),
-                      )}
-                      // value={formatStatus(
-                      //   newLabel?.label?.toString()?.toUpperCase(),
-                      // )}
-                      style={{width: '250px'}}
-                      options={quoteLineItemColumnForSync}
-                    />
+                    {manualRecord?.is_salesforce ? (
+                      <OsInput
+                        value={formatStatus(manualRecord?.quote_header)}
+                        onChange={(e: any) => {
+                          setManualRecord({
+                            ...manualRecord,
+                            quote_header: e?.target?.value,
+                          });
+                        }}
+                      />
+                    ) : (
+                      <CommonSelect
+                        onChange={(e) => {
+                          setManualRecord({...manualRecord, quote_header: e});
+                        }}
+                        allowClear
+                        onClear={() => {
+                          setManualRecord({
+                            ...manualRecord,
+                            quote_header: '',
+                          });
+                        }}
+                        defaultValue={formatStatus(
+                          manualRecord?.quote_header?.toString()?.toUpperCase(),
+                        )}
+                        // value={formatStatus(
+                        //   newLabel?.label?.toString()?.toUpperCase(),
+                        // )}
+                        style={{width: '250px'}}
+                        options={quoteLineItemColumnForSync}
+                      />
+                    )}
                   </Row>
                 </Col>
               </Row>
