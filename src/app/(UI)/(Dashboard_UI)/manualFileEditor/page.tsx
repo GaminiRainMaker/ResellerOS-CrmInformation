@@ -99,7 +99,6 @@ const EditorFile = () => {
     asserType: salesFOrceAccoutFlow === 'true' ? true : false,
     salesforce: salesForceUrl ? true : false,
   });
-
   const addNewLine = () => {
     let newArr = [
       {

@@ -156,7 +156,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       setSyncTableQuoteLItemValues(accoutSyncOptions);
     }
   }, [accoutSyncOptions]);
-
   useEffect(() => {
     const newSyncTableData =
       syncedNewValue?.length > 0 ? [...syncedNewValue] : [];
@@ -293,10 +292,22 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             assert_mapping: salesFOrceAccoutFlow === 'true' ? true : false,
           }),
         );
+    let updatedArrForAddingLineItemSync: any = [];
+    updatedData?.map((items: any) => {
+      let findThevalue = lineItemSyncingData?.find(
+        (itemInn: any) =>
+          itemInn?.pdf_header === items?.pdf_header &&
+          itemInn?.quote_header === items?.quote_header &&
+          (itemInn?.status === 'Pending' || itemInn?.status === 'Approved'),
+      );
+      if (!findThevalue) {
+        updatedArrForAddingLineItemSync?.push(items);
+      }
+    });
 
-    if (updatedData && !SaleQuoteId) {
-      dispatch(insertLineItemSyncing(updatedData));
-    } else if (updatedData && SaleQuoteId) {
+    if (updatedArrForAddingLineItemSync && !SaleQuoteId) {
+      dispatch(insertLineItemSyncing(updatedArrForAddingLineItemSync));
+    } else if (updatedArrForAddingLineItemSync && SaleQuoteId) {
       const NewupdatedData: SalesUpdatedDataItem[] =
         syncedNewValue &&
         syncedNewValue?.length > 0 &&
@@ -311,7 +322,24 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             }),
           );
 
-      dispatch(insertLineItemSyncingForSalesForce(NewupdatedData));
+      let updatedArrForAddingLineItemSyncFOrSales: any = [];
+      NewupdatedData?.map((items: any) => {
+        let findThevalue = lineItemSyncingData?.find(
+          (itemInn: any) =>
+            itemInn?.pdf_header === items?.pdf_header &&
+            itemInn?.quote_header === items?.quote_header &&
+            (itemInn?.status === 'Pending' || itemInn?.status === 'Approved'),
+        );
+        if (!findThevalue) {
+          updatedArrForAddingLineItemSync?.push(items);
+        }
+      });
+
+      dispatch(
+        insertLineItemSyncingForSalesForce(
+          updatedArrForAddingLineItemSyncFOrSales,
+        ),
+      );
     }
 
     mergedValue?.map((obj: any) => {
@@ -328,7 +356,6 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
       });
       alllArrayValue?.push(newObj);
     });
-
     function cleanObject(obj: any) {
       let cleanedObj: any = {};
       // Iterate through the keys of the object
@@ -413,21 +440,8 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
         setNanonetsLoading(false);
         return;
       }
-      // let cleanObjecto = (obj: any) => {
-      //   let cleanedObj: any = {};
-      //   // Iterate through the keys of the object
-      //   // currentFileName
-      //   Object.keys(obj).forEach((key) => {
-      //     // Only add to the cleaned object if key is not empty and value is defined
-      //     if (key !== '' && obj[key] !== undefined && obj[key] !== '') {
-      //       cleanedObj[key] = obj[key];
-      //     }
-      //   });
-      //   return cleanedObj;
-      // }
-      if (salesFOrceAccoutFlow === 'true') {
-        // let requiredOutput = newArrWIthFileName.map((obj: any) => cleanObjecto(obj));
 
+      if (salesFOrceAccoutFlow === 'true') {
         let newdata = {
           token: salesToken,
           AccountId: salesFOrceAccoutId,
