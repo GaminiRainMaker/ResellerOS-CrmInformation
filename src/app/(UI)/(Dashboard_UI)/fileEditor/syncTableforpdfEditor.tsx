@@ -22,6 +22,7 @@ import {
 import {
   getLineItemsWithNonRepitive,
   getValuesOFLineItemsThoseNotAddedBefore,
+  handleDate,
   useRemoveDollarAndCommahook,
 } from '@/app/utils/base';
 import {Col, Row, Select, notification} from 'antd';
@@ -60,6 +61,7 @@ type UpdatedDataItem = {
   pdf_header: string;
   quote_header: string;
   status: string;
+  date: string;
   quote_file_id: number;
   is_salesforce: boolean;
   assert_mapping: boolean;
@@ -282,6 +284,7 @@ const SyncTableData: FC<EditPdfDataInterface> = ({
             pdf_header: preVal,
             quote_header: newVal,
             status: 'Pending',
+            date: handleDate(),
             quote_file_id:
               fullStackManul === 'true'
                 ? currentFileData?.id

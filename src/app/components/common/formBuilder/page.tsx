@@ -33,7 +33,7 @@ import {
 import FormUpload from '@/app/components/common/os-upload/FormUpload';
 import FormUploadCard from '@/app/components/common/os-upload/FormUploadCard';
 import {formatStatus} from '@/app/utils/CONSTANTS';
-import {formbuildernewObject} from '@/app/utils/base';
+import {formbuildernewObject, handleDate} from '@/app/utils/base';
 import {TrashIcon} from '@heroicons/react/24/outline';
 import {Checkbox, Radio, Switch, TimePicker, notification} from 'antd';
 import moment from 'moment';
@@ -214,6 +214,7 @@ const FormBuilderMain: React.FC<any> = ({
       objNew = {
         form_data: [JSON?.stringify(cartItems)],
         id: Number(getPartnerProgramID),
+        date: handleDate(),
       };
     }
     if (cartItems?.[0]?.content?.length > 0) {
