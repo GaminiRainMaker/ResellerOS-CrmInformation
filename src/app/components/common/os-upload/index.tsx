@@ -82,7 +82,6 @@ const OsUpload: React.FC<any> = ({
     });
     setLoading(false);
   }, []);
-
   const beforeUploadData = async (file: File) => {
     const obj: any = {...file};
     let resultantValues: any;
@@ -198,7 +197,7 @@ const OsUpload: React.FC<any> = ({
 
                   // replace the syncing valueesss ========================
 
-                  let syncedHeaderValue = modifiedArr
+                  let syncedHeaderValue = headerKeys
                     .map((item: any) => {
                       // Clean up the item by removing spaces and special characters
                       const cleanedItem =
@@ -213,15 +212,13 @@ const OsUpload: React.FC<any> = ({
                       // Find the matching quoteHeader
                       // let resultString = items?.pdf_header?.replace(/\s+/g, '');
                       const match = lineItemSyncingData.find(
-                        (obj: any) =>
-                          (obj.pdf_header
-                            ?.replace(/\s+/g, '')
-                            ?.toLowerCase()
-                            .substring(0, 4) === cleanedItem &&
-                            item?.toString()?.toLowerCase() !== 'partner') ||
-                          obj.pdf_header === item,
+                        (obj: any) => obj.pdf_header === item,
+                        // (obj.pdf_header
+                        //   ?.replace(/\s+/g, '')
+                        //   ?.toLowerCase()
+                        //   .substring(0, 4) === cleanedItem &&
+                        //   item?.toString()?.toLowerCase() !== 'partner'),
                       );
-
                       return match ? match.quote_header : item;
                     })
                     .filter(Boolean); // Remove any undefined values
