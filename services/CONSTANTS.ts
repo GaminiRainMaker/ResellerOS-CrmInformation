@@ -318,6 +318,7 @@ export const API = {
     QUERY: 'lineItemSyncing/query',
     SalesForceAdd: '/lineItemSyncing/insertLineItemSyncingForSalesForce',
     SalesForceGet: '/lineItemSyncing/queryLineItemSyncinForSalesFOrce',
+    postManual: '/lineItemSyncing/addLineItemSyncingManualy',
   },
   SALESFORCE: {
     INDEX: '/salesForce',

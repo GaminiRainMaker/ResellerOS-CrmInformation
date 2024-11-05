@@ -172,11 +172,12 @@ const OsUpload: React.FC<any> = ({
                   // Slice the array from the found index
                   let result =
                     indexFrom > 0
-                      ? payload?.payload?.slice(bestRowIndex + 1, indexFrom - 1)
+                      ? payload?.payload?.slice(bestRowIndex + 1, indexFrom)
                       : payload?.payload?.slice(
                           bestRowIndex + 1,
-                          payload?.payload?.length - 1,
+                          payload?.payload?.length,
                         );
+
                   let requiredOutput = result
                     ?.map((subArray: any) =>
                       subArray.filter((item: any) => item !== null),
@@ -191,6 +192,8 @@ const OsUpload: React.FC<any> = ({
                     }
                   });
 
+                  // return;
+
                   let modifiedArr = headerKeys.map((item: any) => {
                     if (item) {
                       return item.replace(/\s+/g, '').replace(/[.]/g, '');
@@ -201,7 +204,7 @@ const OsUpload: React.FC<any> = ({
 
                   // replace the syncing valueesss ========================
 
-                  let syncedHeaderValue = modifiedArr
+                  let syncedHeaderValue = headerKeys
                     .map((item: any) => {
                       // Clean up the item by removing spaces and special characters
                       const cleanedItem =
@@ -216,23 +219,13 @@ const OsUpload: React.FC<any> = ({
                       // Find the matching quoteHeader
                       // let resultString = items?.pdf_header?.replace(/\s+/g, '');
                       const match = lineItemSyncingData.find(
-                        (obj: any) =>
-                          obj.pdf_header
-                            ?.replace(/\s+/g, '')
-                            ?.toLowerCase()
-                            .substring(0, 4) === cleanedItem &&
-                          item?.toString()?.toLowerCase() !== 'partner',
+                        (obj: any) => obj.pdf_header === item,
+                        // (obj.pdf_header
+                        //   ?.replace(/\s+/g, '')
+                        //   ?.toLowerCase()
+                        //   .substring(0, 4) === cleanedItem &&
+                        //   item?.toString()?.toLowerCase() !== 'partner'),
                       );
-
-                      // const match = lineItemSyncingData.find(
-                      //   (obj: any) =>
-                      //     obj.pdf_header
-                      //       ?.replace(/\s+/g, '')
-                      //       ?.toLowerCase()
-                      //       .substring(0, 4) === cleanedItem,
-                      // );
-
-                      // Return the expected value if a match is found, otherwise return undefined
                       return match ? match.quote_header : item;
                     })
                     .filter(Boolean); // Remove any undefined values

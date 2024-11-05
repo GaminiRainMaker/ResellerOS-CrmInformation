@@ -4,7 +4,7 @@ import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCa
 import OsStatusWrapper from '@/app/components/common/os-status';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
-import {formatDate} from '@/app/utils/base';
+import {formatDate, handleDate} from '@/app/utils/base';
 import {CheckIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {Checkbox, GlobalToken} from 'antd';
 import {SetStateAction} from 'react';
@@ -54,12 +54,14 @@ function newAssertMappingColumns(
           Requested Date
         </Typography>
       ),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'date',
+      key: 'date',
       width: 173,
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
-          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
+          {text
+            ? handleDate(text, true)
+            : formatDate(record?.createdAt, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },
@@ -172,12 +174,14 @@ function approvedAssertMappingColumns(
           Requested Date
         </Typography>
       ),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'date',
+      key: 'date',
       width: 173,
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
-          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
+          {text
+            ? handleDate(text, true)
+            : formatDate(record?.createdAt, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },
@@ -192,7 +196,7 @@ function approvedAssertMappingColumns(
       width: 173,
       render: (text: string) => (
         <Typography name="Body 4/Regular">
-          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
+          {text ? handleDate(text, true) : handleDate(handleDate(), true)}
         </Typography>
       ),
     },
@@ -293,12 +297,14 @@ function rejectAssertMappingColumns(
           Requested Date
         </Typography>
       ),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'date',
+      key: 'date',
       width: 173,
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
-          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
+          {text
+            ? handleDate(text, true)
+            : formatDate(record?.createdAt, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },
@@ -313,7 +319,7 @@ function rejectAssertMappingColumns(
       width: 173,
       render: (text: string) => (
         <Typography name="Body 4/Regular">
-          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
+          {text ? handleDate(text, true) : handleDate(handleDate(), true)}
         </Typography>
       ),
     },

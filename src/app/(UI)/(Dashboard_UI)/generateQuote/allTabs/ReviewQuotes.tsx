@@ -12,7 +12,11 @@ import RaiseConcern from '@/app/components/common/os-raise-concern';
 import OsTableWithOutDrag from '@/app/components/common/os-table/CustomTable';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
-import {updateTables, useRemoveDollarAndCommahook} from '@/app/utils/base';
+import {
+  convertToNumber,
+  updateTables,
+  useRemoveDollarAndCommahook,
+} from '@/app/utils/base';
 import {CheckIcon, XMarkIcon} from '@heroicons/react/24/outline';
 import {Form, notification} from 'antd';
 import {useRouter, useSearchParams} from 'next/navigation';
@@ -173,8 +177,8 @@ const ReviewQuotes: FC<any> = ({
       title: '#Line',
       dataIndex: 'line_number',
       key: 'line_number',
-      render: (text: any) => (
-        <Typography name="Body 4/Medium">{text}</Typography>
+      render: (text: any, record: any, index: number) => (
+        <Typography name="Body 4/Medium">{index + 1}</Typography>
       ),
       width: 130,
     },
@@ -190,9 +194,7 @@ const ReviewQuotes: FC<any> = ({
       key: 'quantity',
       sorter: (a: any, b: any) => a.quantity - b.quantity,
       render: (text: any, record: any) => (
-        <Typography name="Body 4/Medium">
-          {typeof text === 'number' && text ? text : 0}
-        </Typography>
+        <Typography name="Body 4/Medium">{convertToNumber(text)}</Typography>
       ),
       width: 120,
     },

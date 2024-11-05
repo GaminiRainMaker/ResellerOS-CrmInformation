@@ -2,8 +2,8 @@
 
 'use client';
 
-import { Col, Row } from '@/app/components/common/antd/Grid';
-import { Space } from '@/app/components/common/antd/Space';
+import {Col, Row} from '@/app/components/common/antd/Grid';
+import {Space} from '@/app/components/common/antd/Space';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import useDebounceHook from '@/app/components/common/hooks/useDebounceHook';
 import useThemeToken from '@/app/components/common/hooks/useThemeToken';
@@ -15,7 +15,7 @@ import OsStatusWrapper from '@/app/components/common/os-status';
 import OsTable from '@/app/components/common/os-table';
 import OsTabs from '@/app/components/common/os-tabs';
 import Typography from '@/app/components/common/typography';
-import { formatDate } from '@/app/utils/base';
+import {formatDate, handleDate} from '@/app/utils/base';
 import {
   ArrowTopRightOnSquareIcon,
   MinusCircleIcon,
@@ -23,16 +23,16 @@ import {
   PlusCircleIcon,
   PlusIcon,
 } from '@heroicons/react/24/outline';
-import { TabsProps } from 'antd';
-import { Option } from 'antd/es/mentions';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { queryDealReg } from '../../../../../redux/actions/dealReg';
-import { useAppDispatch, useAppSelector } from '../../../../../redux/hook';
-import { SeparatedData } from '../dealRegDetail/dealReg.interface';
+import {TabsProps} from 'antd';
+import {Option} from 'antd/es/mentions';
+import {useRouter, useSearchParams} from 'next/navigation';
+import {useEffect, useState} from 'react';
+import {queryDealReg} from '../../../../../redux/actions/dealReg';
+import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
+import {SeparatedData} from '../dealRegDetail/dealReg.interface';
 import NewRegistrationForm from './NewRegistrationForm';
 import DealRegAnalytics from './dealRegAnalytics';
-import { StyledTable } from './styled-components';
+import {StyledTable} from './styled-components';
 import React from 'react';
 
 const DealReg: React.FC = () => {
@@ -44,10 +44,10 @@ const DealReg: React.FC = () => {
   const router = useRouter();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [deleteIds, setDeleteIds] = useState<any>();
-  const { data: DealRegData, loading: dealLoading } = useAppSelector(
+  const {data: DealRegData, loading: dealLoading} = useAppSelector(
     (state) => state.dealReg,
   );
-  const { userInformation } = useAppSelector((state) => state.user);
+  const {userInformation} = useAppSelector((state) => state.user);
   const [finalDealRegData, setFinalDealRegData] = useState<any>();
   const [query, setQuery] = useState<{
     customer: string | null;
@@ -70,12 +70,14 @@ const DealReg: React.FC = () => {
           Generated Date
         </Typography>
       ),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'date',
+      key: 'date',
       width: 187,
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
-          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
+          {text
+            ? handleDate(text, true)
+            : formatDate(record?.createdAt, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },
@@ -168,7 +170,7 @@ const DealReg: React.FC = () => {
       key: 'status',
       width: 187,
       render: (text: string) => (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
           <OsStatusWrapper value={text} />
         </div>
       ),
@@ -215,7 +217,7 @@ const DealReg: React.FC = () => {
           height={24}
           width={24}
           color={token.colorInfoBorder}
-          style={{ cursor: 'pointer' }}
+          style={{cursor: 'pointer'}}
           onClick={() => {
             router.push(
               `/dealRegDetail?opportunityId=${record.opportunity_id}&customerId=${record.customer_id}&contactId=${record.contact_id}`,
@@ -244,9 +246,9 @@ const DealReg: React.FC = () => {
     const finalData = userInformation?.Admin
       ? dealRegData
       : dealRegData?.filter(
-        (dealRegDataItem: any) =>
-          dealRegDataItem?.user_id === userInformation?.id,
-      );
+          (dealRegDataItem: any) =>
+            dealRegDataItem?.user_id === userInformation?.id,
+        );
 
     const filteredDealRegData =
       status === 'All'
@@ -309,7 +311,7 @@ const DealReg: React.FC = () => {
             );
           },
           rowExpandable: (record: any) => record.title !== 'Not Expandable',
-          expandIcon: ({ expanded, onExpand, record }) =>
+          expandIcon: ({expanded, onExpand, record}) =>
             expanded ? (
               <MinusIcon width={20} onClick={(e: any) => onExpand(record, e)} />
             ) : (
@@ -320,7 +322,7 @@ const DealReg: React.FC = () => {
         // scroll
         locale={locale}
         loading={false}
-      // drag
+        // drag
       />
     );
   };
@@ -417,13 +419,13 @@ const DealReg: React.FC = () => {
 
   useEffect(() => {
     if (salesForceUrl) {
-      setShowModal(true)
+      setShowModal(true);
     }
-  }, [salesForceUrl])
+  }, [salesForceUrl]);
 
   return (
     <>
-      <Space size={24} direction="vertical" style={{ width: '100%' }}>
+      <Space size={24} direction="vertical" style={{width: '100%'}}>
         <DealRegAnalytics />
         <Row justify="space-between" align="middle">
           <Col>
@@ -431,7 +433,7 @@ const DealReg: React.FC = () => {
               All Registered Forms
             </Typography>
           </Col>
-          <Col style={{ display: 'flex', alignItems: 'center' }}>
+          <Col style={{display: 'flex', alignItems: 'center'}}>
             <OsButton
               text="New Registration"
               buttontype="PRIMARY"
@@ -441,7 +443,7 @@ const DealReg: React.FC = () => {
           </Col>
         </Row>
         <Row
-          style={{ background: 'white', padding: '24px', borderRadius: '12px' }}
+          style={{background: 'white', padding: '24px', borderRadius: '12px'}}
         >
           <OsTabs
             onChange={(e: any) => {
@@ -453,7 +455,7 @@ const DealReg: React.FC = () => {
                 <Space direction="vertical" size={0}>
                   <Typography name="Body 4/Medium">Customer Account</Typography>
                   <CommonSelect
-                    style={{ width: '200px' }}
+                    style={{width: '200px'}}
                     placeholder="Search here"
                     showSearch
                     onSearch={(e: any) => {
@@ -507,7 +509,7 @@ const DealReg: React.FC = () => {
         body={<NewRegistrationForm setShowModal={setShowModal} />}
         width={583}
         open={showModal}
-        onOk={() => { }}
+        onOk={() => {}}
         onCancel={() => {
           if (!salesForceUrl) {
             setShowModal((p) => !p);

@@ -23,4 +23,6 @@ export const LINEITEM_SYNCING_API = {
     post(API.LINEITEM_SYNCING.SalesForceGet, data) as Promise<
       AxiosResponse<any>
     >,
+  postManual: (data: any) =>
+    post(API.LINEITEM_SYNCING.postManual, data) as Promise<AxiosResponse<any>>,
 };

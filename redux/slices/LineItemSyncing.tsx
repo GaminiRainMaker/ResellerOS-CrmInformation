@@ -1,5 +1,6 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {
+  addLineItemSyncingManualy,
   deleteLineItemSyncings,
   getLineItemSyncingBYId,
   insertLineItemSyncing,
@@ -154,6 +155,24 @@ const LineItemSyncingSlice = createSlice({
       )
       .addCase(
         insertLineItemSyncingForSalesForce.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.error = action.payload;
+        },
+      )
+      .addCase(addLineItemSyncingManualy.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        addLineItemSyncingManualy.fulfilled,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.lineItemSyncing = action.payload;
+        },
+      )
+      .addCase(
+        addLineItemSyncingManualy.rejected,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.error = action.payload;

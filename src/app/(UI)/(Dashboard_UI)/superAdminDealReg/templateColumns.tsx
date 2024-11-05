@@ -4,7 +4,7 @@ import {Space} from '@/app/components/common/antd/Space';
 import {Switch} from '@/app/components/common/antd/Switch';
 import CustomTextCapitalization from '@/app/components/common/hooks/CustomTextCapitalizationHook';
 import Typography from '@/app/components/common/typography';
-import {formatDate} from '@/app/utils/base';
+import {formatDate, handleDate} from '@/app/utils/base';
 import {PencilSquareIcon, TrashIcon} from '@heroicons/react/24/outline';
 import {GlobalToken} from 'antd';
 import {JSX, SetStateAction} from 'react';
@@ -67,12 +67,14 @@ function templateColumns(
           Generated Date
         </Typography>
       ),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'date',
+      key: 'date',
       width: 187,
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
-          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
+          {text
+            ? handleDate(text, true)
+            : formatDate(record?.createdAt, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },
@@ -199,12 +201,14 @@ function standardAttributes(
           Generated Date
         </Typography>
       ),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'date',
+      key: 'date',
       width: 187,
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
-          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
+          {text
+            ? handleDate(text, true)
+            : formatDate(record?.createdAt, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },
@@ -356,12 +360,14 @@ function standardAttributesSection(
           Generated Date
         </Typography>
       ),
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      dataIndex: 'date',
+      key: 'date',
       width: 187,
-      render: (text: string) => (
+      render: (text: string, record: any) => (
         <Typography name="Body 4/Regular">
-          {formatDate(text, 'MM/DD/YYYY | HH:MM')}
+          {text
+            ? handleDate(text, true)
+            : formatDate(record?.createdAt, 'MM/DD/YYYY | HH:MM')}
         </Typography>
       ),
     },

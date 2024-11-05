@@ -2,7 +2,7 @@ import {Space} from '@/app/components/common/antd/Space';
 import OsStatusWrapper from '@/app/components/common/os-status';
 import {AvatarStyled} from '@/app/components/common/os-table/styled-components';
 import Typography from '@/app/components/common/typography';
-import {formatDate, formatDateWithTime} from '@/app/utils/base';
+import {formatDate, formatDateWithTime, handleDate} from '@/app/utils/base';
 import {
   CheckIcon,
   EyeIcon,
@@ -55,8 +55,7 @@ function getColumns(
             editQuote(record.id);
           }}
         >
-          {record?.file_name ??
-            formatDate(record?.createdAt, 'MM/DD/YYYY | HH:MM')}
+          {handleDate(record?.date, true) ?? record?.file_name}
         </Typography>
       ),
     },

@@ -77,6 +77,24 @@ export const queryLineItemSyncing = createAsyncThunk(
   },
 );
 
+
+export const addLineItemSyncingManualy = createAsyncThunk(
+  'lineItemSyncing/addLineItemSyncingManualy',
+  async (data: any, thunkApi) => {
+    try {
+      //   const obj = {
+      //     pdf_header: query?.pdf_header,
+      //     quote_header: query?.quote_header,
+      //   };
+      const res = await LINEITEM_SYNCING_API.postManual(data);
+      return res.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  },
+);
+
+
 export const queryLineItemSyncingForSalesForce = createAsyncThunk(
   'lineItemSyncing/queryLineItemSyncinForSalesFOrce',
   async (query: any, thunkApi) => {

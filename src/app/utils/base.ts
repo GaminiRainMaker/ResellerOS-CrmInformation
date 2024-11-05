@@ -228,7 +228,7 @@ export const formbuildernewObject = (newItem: string) => {
       requiredLabel: true,
       hintext: false,
       hintTextValue: 'Hint Value',
-      currency: 'USB',
+      currency: 'USD',
       deciamlHide: false,
     };
   } else if (newItem === 'Radio Button' || newItem === 'Toggle') {
@@ -1975,3 +1975,38 @@ export const updateSalesForceData = async (
 
   return newData;
 };
+
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+/**
+ * Generic date utility function for handling UTC and user timezone conversions
+ * @param {string | Date | null} date - The date to handle. Pass `null` to get the current date in UTC.
+ * @param {boolean} toUserTimezone - Set `true` to convert UTC date to user's local timezone.
+ * @param {string} format - Optional date format for display. Defaults to 'MM/DD/YYYY | HH:mm' if not provided.
+ * @returns {string} Formatted date in UTC or user's timezone.
+ */
+export const handleDate = (
+    date: string | Date | null = null,
+    toUserTimezone: boolean = false,
+    format: string = 'MM/DD/YYYY | HH:mm'
+): string => {
+    const userTimeZone = dayjs.tz.guess();
+
+    if (toUserTimezone) {
+        // Convert stored UTC date to user's timezone with specified format
+        return dayjs.utc(date).tz(userTimeZone).format(format);
+    } else {
+        // Save the current date or provided date in UTC with specified format
+        return dayjs(date || new Date()).utc().format();
+    }
+};
+
+export function convertToNumber(variable :any) {
+  const num = Number(variable);
+  return isNaN(num) ? 0 : num;
+}
