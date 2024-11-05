@@ -33,6 +33,7 @@ import {
 } from '../../../../../redux/actions/salesForce';
 import {useAppDispatch, useAppSelector} from '../../../../../redux/hook';
 import {CollapseSpaceStyle} from '../dealRegDetail/styled-component';
+import {handleDate} from '@/app/utils/base';
 
 const NewRegistrationForm: FC<any> = ({
   isDealRegDetail = false,
@@ -398,6 +399,7 @@ const NewRegistrationForm: FC<any> = ({
           customer_id: getCustomerId,
           status: 'New',
           user_id: userInformation?.id,
+          date: handleDate(),
         }));
       } else if (salesForceUrl) {
         newData = combinedData?.map((obj: any) => ({
@@ -411,6 +413,7 @@ const NewRegistrationForm: FC<any> = ({
           organization: userInformation?.organization,
           status: 'New',
           user_id: userInformation?.id,
+          date: handleDate(),
         }));
       }
       if (salesForceUrl) {

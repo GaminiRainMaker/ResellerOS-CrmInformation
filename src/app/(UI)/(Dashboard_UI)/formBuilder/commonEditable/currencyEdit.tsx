@@ -252,7 +252,7 @@ const CurrencyEditField: React.FC<EditableFiledsCommonInterface> = ({
               value={CommonIndexOfUse?.currency}
               style={{width: '100%'}}
               options={[
-                {label: 'USB', value: 'USB'},
+                {label: 'USD', value: 'USD'},
                 {label: 'Euro', value: 'Euro'},
                 {label: 'EUR', value: 'EUR'},
                 {label: 'KWANZA', value: 'KWANZA'},
