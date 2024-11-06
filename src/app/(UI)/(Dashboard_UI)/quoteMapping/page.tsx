@@ -62,6 +62,7 @@ const QuoteMappings = () => {
   const searchQuery = useDebounceHook(query, 500);
   const [manualRecord, setManualRecord] = useState<any>();
   const [showSyncModal, setShowSyncModal] = useState<boolean>(false);
+  const [showError, setShowError] = useState<boolean>(false);
 
   useEffect(() => {
     dispatch(queryLineItemSyncing(searchQuery));
@@ -99,17 +100,40 @@ const QuoteMappings = () => {
       setSelectedId(selectedRowKeys);
     },
   };
-
+  useEffect(() => {
+    if (
+      manualRecord?.quote_header &&
+      manualRecord?.quote_header !== '' &&
+      manualRecord?.pdf_header &&
+      manualRecord?.pdf_header !== ''
+    ) {
+      setShowError(false);
+    }
+  }, [showError, manualRecord, JSON?.stringify(manualRecord)]);
   const addNewSyncingManually = async () => {
     let newObj = {...manualRecord};
-    if (!newObj?.pdf_header || newObj?.pdf_header === '') {
-      notification?.open({
-        message: 'Pdf Header is required!. Please add value for the pdf header',
-        type: 'error',
-      });
+    if (
+      !newObj?.quote_header ||
+      newObj?.quote_header === '' ||
+      !newObj?.pdf_header ||
+      newObj?.pdf_header === ''
+    ) {
+      setShowError(true);
       return;
     }
-    if (!newObj?.quote_header || newObj?.quote_header === '') {
+    // if (!newObj?.pdf_header || newObj?.pdf_header === '') {
+    //   notification?.open({
+    //      message: "Combination for lineItem syncing already exist!" ,
+    //     type: 'error',
+    //   });
+    //   return;
+    // }
+    if (
+      !newObj?.quote_header ||
+      newObj?.quote_header === '' ||
+      !newObj?.pdf_header ||
+      newObj?.pdf_header === ''
+    ) {
       notification?.open({
         message:
           'Quote Header is required!. Please add value for the Quote header',
@@ -118,16 +142,26 @@ const QuoteMappings = () => {
       return;
     }
     dispatch(addLineItemSyncingManualy(newObj))?.then((payload: any) => {
-      setManualRecord({});
-      notification?.open({
-        message: 'Quote mapping added successfully',
-        type: 'success',
-      });
-      setShowSyncModal(false);
       if (payload?.payload) {
-        dispatch(queryLineItemSyncing(searchQuery));
+        setManualRecord({});
+        notification?.open({
+          message: 'Quote mapping added successfully',
+          type: 'success',
+        });
+        setShowSyncModal(false);
+        if (payload?.payload) {
+          dispatch(queryLineItemSyncing(searchQuery));
+        }
+        setActiveTab(2);
+      } else {
+        setManualRecord({});
+        setShowSyncModal(false);
+
+        notification?.open({
+          message: 'Combination for lineItem syncing already exist!',
+          type: 'error',
+        });
       }
-      setActiveTab(2);
     });
   };
   const superAdmintabItems = [
@@ -489,6 +523,20 @@ const QuoteMappings = () => {
                       }}
                     />
                   </Row>
+                  {showError &&
+                    (!manualRecord?.pdf_header ||
+                      manualRecord?.pdf_header === '') && (
+                      <div
+                        style={{
+                          display: 'flex',
+                          // justifyContent: 'center',
+                          color: 'red',
+                          marginLeft: '2px',
+                        }}
+                      >
+                        This filed is required!
+                      </div>
+                    )}
                 </Col>
 
                 <Col>
@@ -539,6 +587,20 @@ const QuoteMappings = () => {
                       />
                     )}
                   </Row>
+                  {showError &&
+                    (!manualRecord?.quote_header ||
+                      manualRecord?.quote_header === '') && (
+                      <div
+                        style={{
+                          display: 'flex',
+                          // justifyContent: 'center',
+                          color: 'red',
+                          marginLeft: '2px',
+                        }}
+                      >
+                        This filed is required!
+                      </div>
+                    )}
                 </Col>
               </Row>
 
