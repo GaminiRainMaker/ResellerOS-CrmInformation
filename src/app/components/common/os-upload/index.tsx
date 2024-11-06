@@ -187,7 +187,7 @@ const OsUpload: React.FC<any> = ({
 
                   let headerKeys: any = [];
                   payload?.payload[bestRowIndex]?.filter((items: any) => {
-                    if (items !== null && !headerKeys?.includes(items)) {
+                    if (!headerKeys?.includes(items)) {
                       headerKeys?.push(items);
                     }
                   });
@@ -205,34 +205,26 @@ const OsUpload: React.FC<any> = ({
                   // replace the syncing valueesss ========================
 
                   let syncedHeaderValue = headerKeys
-                    .map((item: any) => {
-                      // Clean up the item by removing spaces and special characters
-                      const cleanedItem =
-                        item !== null
-                          ? item
-                              .trim()
-                              .replace(/[^A-Za-z]/g, '')
-                              .substring(0, 4)
-                              .toLowerCase()
-                          : null;
-
-                      // Find the matching quoteHeader
-                      // let resultString = items?.pdf_header?.replace(/\s+/g, '');
+                    .map((item: any, index: number) => {
                       const match = lineItemSyncingData.find(
                         (obj: any) => obj.pdf_header === item,
-                        // (obj.pdf_header
-                        //   ?.replace(/\s+/g, '')
-                        //   ?.toLowerCase()
-                        //   .substring(0, 4) === cleanedItem &&
-                        //   item?.toString()?.toLowerCase() !== 'partner'),
                       );
-                      return match ? match.quote_header : item;
+                      // if (item === null) {
+                      //   return `emptyHeader${index}`;
+                      // } else {
+                      return match ? match.quote_header : item ? item : null;
+                      // }
                     })
                     .filter(Boolean); // Remove any undefined values
 
                   // end of above
                   // Transform newArr into an array of objects
-
+                  // console.log(
+                  //   'requiredOutputrequiredOutput',
+                  //   headerKeys,
+                  //   syncedHeaderValue,
+                  //   requiredOutput,
+                  // );
                   resultantValues = requiredOutput.map((row: any) => {
                     let obj: any = {};
                     syncedHeaderValue.forEach((header: any, index: any) => {

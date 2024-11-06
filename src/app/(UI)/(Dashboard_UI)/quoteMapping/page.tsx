@@ -30,9 +30,13 @@ import {
 } from './quoteMappingColumns';
 import OsButton from '@/app/components/common/os-button';
 import GlobalLoader from '@/app/components/common/os-global-loader';
-import {formatStatus, quoteLineItemColumnForSync} from '@/app/utils/CONSTANTS';
+import {
+  formatStatus,
+  quoteLineItemColumnForSync,
+  quoteLineItemColumnForSyncFOrSalesFporceUpdatedOnce,
+} from '@/app/utils/CONSTANTS';
 import CommonSelect from '@/app/components/common/os-select';
-import { handleDate } from '@/app/utils/base';
+import {handleDate} from '@/app/utils/base';
 
 const QuoteMappings = () => {
   const dispatch = useAppDispatch();
@@ -471,14 +475,27 @@ const QuoteMappings = () => {
                 <Col>
                   <Row style={{marginTop: '6px'}}>
                     {manualRecord?.is_salesforce ? (
-                      <OsInput
-                        value={formatStatus(manualRecord?.quote_header)}
-                        onChange={(e: any) => {
+                      <CommonSelect
+                        onChange={(e) => {
+                          setManualRecord({...manualRecord, quote_header: e});
+                        }}
+                        allowClear
+                        onClear={() => {
                           setManualRecord({
                             ...manualRecord,
-                            quote_header: e?.target?.value,
+                            quote_header: '',
                           });
                         }}
+                        defaultValue={formatStatus(
+                          manualRecord?.quote_header?.toString()?.toUpperCase(),
+                        )}
+                        // value={formatStatus(
+                        //   newLabel?.label?.toString()?.toUpperCase(),
+                        // )}
+                        style={{width: '250px'}}
+                        options={
+                          quoteLineItemColumnForSyncFOrSalesFporceUpdatedOnce
+                        }
                       />
                     ) : (
                       <CommonSelect
