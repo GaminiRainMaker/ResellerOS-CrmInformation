@@ -121,26 +121,6 @@ const QuoteMappings = () => {
       setShowError(true);
       return;
     }
-    // if (!newObj?.pdf_header || newObj?.pdf_header === '') {
-    //   notification?.open({
-    //      message: "Combination for lineItem syncing already exist!" ,
-    //     type: 'error',
-    //   });
-    //   return;
-    // }
-    if (
-      !newObj?.quote_header ||
-      newObj?.quote_header === '' ||
-      !newObj?.pdf_header ||
-      newObj?.pdf_header === ''
-    ) {
-      notification?.open({
-        message:
-          'Quote Header is required!. Please add value for the Quote header',
-        type: 'error',
-      });
-      return;
-    }
     dispatch(addLineItemSyncingManualy(newObj))?.then((payload: any) => {
       if (payload?.payload) {
         setManualRecord({});
