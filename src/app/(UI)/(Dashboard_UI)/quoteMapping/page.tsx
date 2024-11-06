@@ -102,8 +102,27 @@ const QuoteMappings = () => {
 
   const addNewSyncingManually = async () => {
     let newObj = {...manualRecord};
+    if (!newObj?.pdf_header || newObj?.pdf_header === '') {
+      notification?.open({
+        message: 'Pdf Header is required!. Please add value for the pdf header',
+        type: 'error',
+      });
+      return;
+    }
+    if (!newObj?.quote_header || newObj?.quote_header === '') {
+      notification?.open({
+        message:
+          'Quote Header is required!. Please add value for the Quote header',
+        type: 'error',
+      });
+      return;
+    }
     dispatch(addLineItemSyncingManualy(newObj))?.then((payload: any) => {
       setManualRecord({});
+      notification?.open({
+        message: 'Quote mapping added successfully',
+        type: 'success',
+      });
       setShowSyncModal(false);
       if (payload?.payload) {
         dispatch(queryLineItemSyncing(searchQuery));
