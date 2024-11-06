@@ -17,6 +17,7 @@ import dayjs from 'dayjs';
 import React, {useEffect, useState} from 'react';
 import {UniqueFieldsProps} from './dealReg.interface';
 import {useSearchParams} from 'next/navigation';
+import {Option} from 'antd/es/mentions';
 interface CheckboxState {
   [key: string]: boolean;
 }
@@ -65,6 +66,18 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
       activeKey +
       (required ? '_required' : '') +
       (userfill ? '_userfill' : '');
+
+    // If dependentFiled is true, call a new function to handle dependent fields
+    if (itemCon.dependentFiled) {
+      return renderDependentField(
+        itemCon,
+        itemIndex,
+        activeKey,
+        required,
+        userfill,
+        commonProps,
+      );
+    }
 
     switch (itemCon?.name) {
       case 'Text':
@@ -127,7 +140,6 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
           />
         );
 
-      case 'Checkbox':
       case 'Toggle':
         return (
           <>
@@ -138,29 +150,61 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
                     span={Math.floor(24 / itemCon?.columnRequired)}
                     key={itemLabelIndex}
                   >
-                    {itemCon?.name === 'Toggle' ? (
+                    {itemCon?.name === 'Toggle' && (
                       <>
-                        <Switch
-                        // checked={
-                        //   checkboxState[itemLabelOp as keyof CheckboxState]
-                        // }
-                        // onChange={() => handleToggleChange(itemLabelOp)}
-                        ></Switch>{' '}
-                        {itemLabelOp}
+                        <Switch></Switch> {itemLabelOp}
                       </>
-                    ) : (
-                      <Checkbox
-                      // checked={form.getFieldValue(itemLabelOp) === 'true'}
-                      // onChange={(e) => handleCheckboxChange(itemLabelOp, e)}
-                      >
-                        {itemLabelOp}
-                      </Checkbox>
                     )}
                   </Col>
                 ),
               )
             ) : (
               <></>
+            )}
+          </>
+        );
+
+      case 'Checkbox':
+        return (
+          <>
+            {itemCon?.labelOptions?.map(
+              (itemLabelOp: any, itemLabelIndex: number) => {
+                const totalFloorValue = Math.floor(
+                  24 / itemCon?.columnRequired,
+                );
+
+                return (
+                  <ToggleColStyled span={totalFloorValue} key={itemLabelIndex}>
+                    <Checkbox
+                      value={itemLabelOp}
+                      {...commonProps}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        const currentValues =
+                          form.getFieldValue(dateName) || [];
+
+                        if (checked) {
+                          // Add the value if checked
+                          form.setFieldValue(dateName, [
+                            ...currentValues,
+                            itemLabelOp,
+                          ]);
+                        } else {
+                          // Remove the value if unchecked
+                          form.setFieldValue(
+                            dateName,
+                            currentValues.filter(
+                              (value: any) => value !== itemLabelOp,
+                            ),
+                          );
+                        }
+                      }}
+                    >
+                      {itemLabelOp}
+                    </Checkbox>
+                  </ToggleColStyled>
+                );
+              },
             )}
           </>
         );
@@ -212,6 +256,117 @@ const UniqueFields: React.FC<UniqueFieldsProps> = ({
       default:
         return null;
     }
+  };
+
+  const renderDependentField = (
+    itemCon: {
+      name: string;
+      options: string[];
+      labelOptions: string[];
+      dependentFiledArr: {
+        id: string;
+        label: string;
+        options: string[];
+        type: string;
+      }[];
+    },
+    itemIndex: number,
+    activeKey: any,
+    required: boolean,
+    userfill: any,
+    commonProps: any,
+  ) => {
+    const [selectedOption, setSelectedOption] = useState<string | null>(null); // Store the selected main option
+    const [checkboxSelections, setCheckboxSelections] = useState<string[]>([]); // Store checkbox selections
+    const [radioSelection, setRadioSelection] = useState<string | null>(null); // Store selected radio option
+
+    // Find the dependent field array based on the selected option
+    const dependentField = itemCon?.dependentFiledArr.find(
+      (depField) => depField.id === (selectedOption || radioSelection), // Check both selections
+    );
+
+    const handleCheckboxChange = (value: string) => {
+      // Deselect all checkboxes except the selected one
+      const newSelections = checkboxSelections.includes(value)
+        ? checkboxSelections.filter((v) => v !== value) // Deselect if already selected
+        : [value]; // Only keep the currently selected checkbox
+
+      setCheckboxSelections(newSelections);
+      setSelectedOption(newSelections[0]); // Set the selected option to the first checkbox selected
+    };
+
+    const handleRadioChange = (e: any) => {
+      const value = e.target.value;
+      setRadioSelection(value);
+      setSelectedOption(value); // Update selected option based on radio button selection
+      setCheckboxSelections([]); // Clear checkbox selections when selecting a radio button
+    };
+
+    return (
+      <>
+        {/* Render Main Field Based on the Type */}
+        {itemCon.name === 'Multi-Select' || itemCon.name === 'Drop Down' ? (
+          <CommonSelect
+            style={{width: '100%', marginBottom: '1rem'}}
+            placeholder="Select an option"
+            onChange={(value) => {
+              setSelectedOption(value);
+              setCheckboxSelections([]); // Clear checkbox selections when selecting from dropdown
+              setRadioSelection(null); // Clear radio selection when selecting from dropdown
+            }}
+            allowClear
+          >
+            {itemCon?.options?.map((option) => (
+              <Option key={option} value={option}>
+                {option}
+              </Option>
+            ))}
+          </CommonSelect>
+        ) : itemCon.name === 'Checkbox' ? (
+          <>
+            {itemCon?.labelOptions?.map((option) => (
+              <Checkbox
+                style={{width: '100%'}}
+                key={option}
+                checked={checkboxSelections.includes(option)}
+                onChange={() => handleCheckboxChange(option)}
+              >
+                {option}
+              </Checkbox>
+            ))}
+          </>
+        ) : itemCon.name === 'Radio Button' ? (
+          <>
+            <Radio.Group onChange={handleRadioChange} value={radioSelection}>
+              {itemCon?.labelOptions?.map((option) => (
+                <Radio style={{width: '100%'}} key={option} value={option}>
+                  {option}
+                </Radio>
+              ))}
+            </Radio.Group>
+          </>
+        ) : (
+          <></>
+        )}
+
+        {/* Conditionally Render Dependent Field Based on Selection */}
+        {(selectedOption || radioSelection) && dependentField && (
+          <>
+            <Typography name="Body 4/Medium">{dependentField.label}</Typography>
+            <CommonSelect
+              style={{width: '100%'}}
+              placeholder={`Select ${dependentField.label}`}
+              allowClear
+              options={dependentField.options.map((opt) => ({
+                label: opt,
+                value: opt,
+              }))}
+              {...commonProps}
+            />
+          </>
+        )}
+      </>
+    );
   };
 
   useEffect(() => {
