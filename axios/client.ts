@@ -6,7 +6,7 @@ import {
 } from './interceptors/response.interceptor';
 
 const client = axios.create({
-  // Local
+  //Local
   // baseURL: 'http://localhost:4000',
 
   //Developement
